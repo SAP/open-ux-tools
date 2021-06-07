@@ -9,6 +9,9 @@ baseComponents[FrameworkVersion.V2][TemplateType.OverviewPage] = 'sap/ovp/app/Co
 baseComponents[FrameworkVersion.V4] = {};
 baseComponents[FrameworkVersion.V4][TemplateType.ListReport] = 'sap/fe/core/AppComponent';
 
+/**
+ * @param template
+ */
 export function getBaseComponent(template: Template): string | undefined {
     return baseComponents[template.version][template.type];
 }

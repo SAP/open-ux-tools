@@ -7,6 +7,11 @@ import { generate as generateUi5Project } from '@sap/ux-ui5-application-template
 import { generate as addOdataService} from '@sap/ux-odata-service-template';
 import { FEApp, getBaseComponent } from './data';
 
+/**
+ * @param basePath
+ * @param data
+ * @param fs
+ */
 async function generate<T>(basePath: string, data: FEApp<T>, fs?: Editor): Promise<Editor>{
 
     // generate base UI5 project
@@ -46,4 +51,4 @@ async function generate<T>(basePath: string, data: FEApp<T>, fs?: Editor): Promi
 
 export {
     generate
-}
+};
