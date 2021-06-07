@@ -6,7 +6,7 @@ import { render } from 'ejs';
 
 import { OdataService, OdataVersion, enhanceData } from './data';
 
-async function generate<T>(basePath: string, data: OdataService, fs?: Editor): Promise<Editor>{
+async function generate<T>(basePath: string, data: OdataService, fs: Editor): Promise<Editor>{
 
     if (!fs) {
         fs = create(createStorage());

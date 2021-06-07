@@ -3,6 +3,6 @@ module.exports = {
         '^.+\\.ts$': 'ts-jest'
     },
     collectCoverage: true,
-    collectCoverageFrom: ['src/**/*.ts'],
-    coverageDirectory: 'reports/test/unit/coverage'
+    coverageReporters: ['text'],
+    collectCoverageFrom: ['src/**/*.ts']
 };

@@ -25,12 +25,32 @@ describe('Test generate method with valid input', () => {
             ...commonConfig,
             version: OdataVersion.v2,
             annotations: {
-                technicalName: 'TEST_ME'
+                technicalName: 'TEST_ME',
+                xml: '<HELLO WORLD />'
             }
-        } as OdataService;
-        await generate(testDir, config, fs);
+        };
+        await generate(testDir, config as OdataService, fs);
 
+        // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+        expect(manifest['sap.app'].dataSources[config.annotations.technicalName as string]).toBeDefined();
+        // verify local copy of metadata
+        expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
+        expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations.technicalName}.xml`))).toBe(config.annotations.xml);
+    });
+
+    it('Valid OData V4 service', async () => {
+        const config = {
+            ...commonConfig,
+            version: OdataVersion.v4
+        };
+        await generate(testDir, config as OdataService, fs);
+        
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
+        expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+        // verify local copy of metadata
+        expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
     });
 });
