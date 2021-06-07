@@ -23,7 +23,7 @@ async function generate<T>(basePath: string, data: FEApp<T>, fs?: Editor): Promi
     fs.copyTpl(join(tmpPath, '**/*.*'), basePath, data);
 
     // merge content into existing files
-    const extRoot = join(__dirname, 'templates', 'extend');
+    const extRoot = join(__dirname, '..', 'templates', 'extend');
 
     // package.json
     const packagePath = join(basePath, 'package.json');
