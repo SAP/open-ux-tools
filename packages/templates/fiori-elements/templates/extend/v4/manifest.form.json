@@ -1,0 +1,25 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "routes": [
+                {
+                    "pattern": "<%=template.settings.mainEntity%>({key}):?query:",
+                    "name": "<%=template.settings.mainEntity%>ObjectPage",
+                    "target": "<%=template.settings.mainEntity%>ObjectPage"
+                }
+            ],
+            "targets": {
+                "TravelObjectPage": {
+                    "type": "Component",
+                    "id": "<%=template.settings.mainEntity%>ObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "entitySet": "<%=template.settings.mainEntity%>"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

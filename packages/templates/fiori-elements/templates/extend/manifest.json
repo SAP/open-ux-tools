@@ -1,0 +1,18 @@
+{
+    "sap.app": {
+        "dataSources": {
+            "annotation": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation.xml",
+                "settings": {
+                    "localUri": "annotations/annotation.xml"
+                }
+            }
+        },
+        "offline": false,
+        "sourceTemplate": {
+            "id": "@sap/ux-fiori-elements-template",
+            "version": "0.1.0"
+        }
+    }
+}

@@ -1,0 +1,13 @@
+  - name: sap-fe-mockserver
+    mountPath: /
+    afterMiddleware: compression
+    configuration:
+      annotations:<%if (annotations.technicalName) {%>
+        localPath: './webapp/localService/<%=annotations.technicalName%>.xml'<% } %>
+        urlPath: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*'
+      service:
+        urlBasePath: '<%=path.split('/').slice(0,path.split('/').length-1).join('/')%>'
+        name: '<%=path.split('/').pop()%>'
+        metadataXmlPath: './webapp/localService/metadata.xml'
+        mockdataRootPath: './webapp/localService/data'
+        generateMockData: true

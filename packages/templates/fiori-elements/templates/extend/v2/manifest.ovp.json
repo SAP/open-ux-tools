@@ -1,0 +1,27 @@
+{
+    "sap.ui5": {
+        "dependencies": {
+            "libs": {
+                "sap.ui.core": {
+                    "lazy": false
+                },
+                "sap.ovp": {}
+            }
+        },
+        "models": {
+            "<%=service.model%>": {
+                "settings": {
+                    "defaultCountMode": "Inline"
+                }
+            }
+        }
+    },
+    "sap.ovp": {
+        "globalFilterModel": "<%=service.model%>",
+        "globalFilterEntityType": "<%=template.settings.filterEntity%>",
+        "containerLayout": "resizable",
+        "enableLiveFilter": true,
+        "considerAnalyticalParameters": false,
+        "cards": {}
+  }
+}

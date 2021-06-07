@@ -1,0 +1,7 @@
+node_modules
+.idea
+dist
+.cache
+.parcel-cache
+.DS_Store
+**/*.tgz

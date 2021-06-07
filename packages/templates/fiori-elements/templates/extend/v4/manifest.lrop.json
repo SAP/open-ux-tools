@@ -1,0 +1,58 @@
+{
+    "sap.ui5": {
+        "models": {
+            "": {
+                "settings": { 
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            }
+        },
+        "routing": {
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "<%=template.settings.mainEntity%>List",
+                    "target": "<%=template.settings.mainEntity%>List"
+                },
+                {
+                    "pattern": "<%=template.settings.mainEntity%>({key}):?query:",
+                    "name": "<%=template.settings.mainEntity%>ObjectPage",
+                    "target": "<%=template.settings.mainEntity%>ObjectPage"
+                }
+            ],
+            "targets": {
+                "TravelList": {
+                    "type": "Component",
+                    "id": "<%=template.settings.mainEntity%>List",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "entitySet": "<%=template.settings.mainEntity%>",
+                            "variantManagement": "Page",
+                            "navigation": {
+                                "Travel": {
+                                    "detail": {
+                                        "route": "<%=template.settings.mainEntity%>ObjectPage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "TravelObjectPage": {
+                    "type": "Component",
+                    "id": "<%=template.settings.mainEntity%>ObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "entitySet": "<%=template.settings.mainEntity%>"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
