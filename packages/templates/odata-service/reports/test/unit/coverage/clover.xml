@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1623095637667" clover="3.2.0">
+  <project timestamp="1623095637667" name="All files">
+    <metrics statements="41" coveredstatements="36" conditionals="16" coveredconditionals="8" methods="4" coveredmethods="4" elements="61" coveredelements="48" complexity="0" loc="41" ncloc="41" packages="2" files="4" classes="4"/>
+    <package name="src">
+      <metrics statements="26" coveredstatements="24" conditionals="6" coveredconditionals="3" methods="2" coveredmethods="2"/>
+      <file name="index.ts" path="/Users/i821846/SAPDevelop/git/sap/ux-tools/packages/templates/odata-service/src/index.ts">
+        <metrics statements="26" coveredstatements="24" conditionals="6" coveredconditionals="3" methods="2" coveredmethods="2"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="11" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="40" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="43" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="51" count="1" type="stmt"/>
+        <line num="52" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.data">
+      <metrics statements="15" coveredstatements="12" conditionals="10" coveredconditionals="5" methods="2" coveredmethods="2"/>
+      <file name="defaults.ts" path="/Users/i821846/SAPDevelop/git/sap/ux-tools/packages/templates/odata-service/src/data/defaults.ts">
+        <metrics statements="10" coveredstatements="7" conditionals="8" coveredconditionals="3" methods="1" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="5" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="8" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="11" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="15" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="16" count="0" type="stmt"/>
+      </file>
+      <file name="index.ts" path="/Users/i821846/SAPDevelop/git/sap/ux-tools/packages/templates/odata-service/src/data/index.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+      </file>
+      <file name="types.ts" path="/Users/i821846/SAPDevelop/git/sap/ux-tools/packages/templates/odata-service/src/data/types.ts">
+        <metrics statements="3" coveredstatements="3" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="1" count="1" type="cond" truecount="2" falsecount="0"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
