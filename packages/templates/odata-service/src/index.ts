@@ -1,4 +1,3 @@
-
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
@@ -6,8 +5,12 @@ import { render } from 'ejs';
 
 import { OdataService, OdataVersion, enhanceData } from './data';
 
-async function generate<T>(basePath: string, data: OdataService, fs: Editor): Promise<Editor>{
-
+/**
+ * @param basePath
+ * @param data
+ * @param fs
+ */
+async function generate<T>(basePath: string, data: OdataService, fs: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -41,14 +44,13 @@ async function generate<T>(basePath: string, data: OdataService, fs: Editor): Pr
         fs.write(join(basePath, 'webapp', 'localService', 'metadata.xml'), data.metadata);
     }
     if (data.annotations?.xml) {
-        fs.write(join(basePath, 'webapp', 'localService', `${data.annotations.technicalName}.xml`), data.annotations.xml);
+        fs.write(
+            join(basePath, 'webapp', 'localService', `${data.annotations.technicalName}.xml`),
+            data.annotations.xml
+        );
     }
 
     return fs;
 }
 
-export {
-    generate,
-    OdataVersion,
-    OdataService
-}
+export { generate, OdataVersion, OdataService };

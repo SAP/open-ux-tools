@@ -1,5 +1,8 @@
-import { OdataService } from "./types";
+import { OdataService } from './types';
 
+/**
+ * @param data
+ */
 export function enhanceData(data: OdataService): void {
     // required otherwise ejs has problems
     if (data.annotations === undefined) {
@@ -11,9 +14,7 @@ export function enhanceData(data: OdataService): void {
     if (data.name === undefined) {
         data.name = 'mainService';
         data.model = '';
-    } else {
-        if (data.model === undefined) {
-            data.model = data.name;
-        }
+    } else if (data.model === undefined) {
+        data.model = data.name;
     }
 }
