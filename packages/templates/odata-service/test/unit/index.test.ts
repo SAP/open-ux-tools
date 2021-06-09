@@ -4,11 +4,22 @@ import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 
 const testDir = 'virtual-temp';
-const commonConfig: Partial<OdataService> = {
+const commonConfig = {
     url: 'http://localhost',
     path: '/sap/odata/testme',
     metadata: '<HELLO WORLD />',
 };
+
+describe('Test generate method with invalid location', () => {
+    it('No package.json or ui5.yaml', async () => {
+        try {
+            await generate(testDir, commonConfig as OdataService);
+            fail('An error should have been thrown')
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
+    });
+});
 
 describe('Test generate method with valid input', () => {
     let fs: Editor;
@@ -34,23 +45,43 @@ describe('Test generate method with valid input', () => {
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
-        expect(manifest['sap.app'].dataSources[config.annotations.technicalName as string]).toBeDefined();
+        expect(manifest['sap.app'].dataSources[config.annotations.technicalName]).toBeDefined();
         // verify local copy of metadata
         expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
         expect(fs.read(join(testDir, 'webapp', 'localService', `${config.annotations.technicalName}.xml`))).toBe(config.annotations.xml);
     });
 
     it('Valid OData V4 service', async () => {
+        const config  = {
+            ...commonConfig,
+            version: OdataVersion.v4,
+            name: 'myService'
+        };
+        await generate(testDir, config as OdataService, fs);
+        
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
+        expect(manifest['sap.app'].dataSources[config.name].uri).toBe(config.path);
+        // verify local copy of metadata
+        expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
+        // verify that no destination is added to the ui5.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('destination: ');
+    });
+
+    it('Valid OData service with destination', async () => {
         const config = {
             ...commonConfig,
-            version: OdataVersion.v4
+            version: OdataVersion.v4,
+            destination: {
+                name: 'test'
+            }
         };
         await generate(testDir, config as OdataService, fs);
         
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
-        // verify local copy of metadata
-        expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
+        // verify that the destination is added to the ui5.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain(`destination: ${config.destination.name}`);
     });
 });

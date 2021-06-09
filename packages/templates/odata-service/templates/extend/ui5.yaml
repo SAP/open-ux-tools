@@ -4,7 +4,9 @@
       ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
       backend:
       - path: /sap
-        url: <%=url%>
+        url: <%=url%><% if(locals.destination) { %>
+        destination: <%= destination.name %><% if(destination.instance) { %>
+        destinationInstance: <%= destination.instance %><% } %><% } %>
       ui5:
         path: 
         - /resources

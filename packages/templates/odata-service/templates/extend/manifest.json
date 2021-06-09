@@ -5,13 +5,13 @@
                 "uri": "<%=path%>",
                 "type": "OData",
                 "settings": {
-                    "annotations": [<%if (annotations.technicalName) {%>
+                    "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
                        "<%=annotations.technicalName%>"<% } %>
                     ],
                     "localUri": "localService/metadata.xml"<%if (version==='4.0') {%>,
                     "odataVersion": "<%=version%>"<% } %>
                 }
-            }<%if (annotations.technicalName) {%>,
+            }<%if (locals.annotations && annotations.technicalName) {%>,
             "<%=annotations.technicalName%>": {
                 "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%=annotations.technicalName%>',Version='0001')/$value/",
                 "type": "ODataAnnotation",

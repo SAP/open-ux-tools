@@ -1,10 +1,6 @@
 import { OdataService } from "./types";
 
 export function enhanceData(data: OdataService): void {
-    // required otherwise ejs has problems
-    if (data.annotations === undefined) {
-        data.annotations = {};
-    }
     if (data.path.substring(data.path.length - 1) !== '/') {
         data.path = data.path + '/';
     }

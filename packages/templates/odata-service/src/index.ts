@@ -6,11 +6,25 @@ import { render } from 'ejs';
 
 import { OdataService, OdataVersion, enhanceData } from './data';
 
-async function generate<T>(basePath: string, data: OdataService, fs: Editor): Promise<Editor>{
+function validateBasePath(basePath: string, fs: Editor) {
+    [
+        join(basePath, 'package.json'),
+        join(basePath, 'webapp', 'manifest.json'),
+        join(basePath, 'ui5.yaml')
+    ].forEach(path => {
+        if (!fs.exists(path)) {
+            throw new Error(`Invalid project folder. Cannot find required file ${path}`);
+        }
+    });
+    
+}
+
+async function generate<T>(basePath: string, data: OdataService, fs?: Editor): Promise<Editor>{
 
     if (!fs) {
         fs = create(createStorage());
     }
+    validateBasePath(basePath, fs);
     enhanceData(data);
 
     // add new and overwrite files from templates

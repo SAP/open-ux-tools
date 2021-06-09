@@ -2,7 +2,7 @@
     mountPath: /
     afterMiddleware: compression
     configuration:
-      annotations:<%if (annotations.technicalName) {%>
+      annotations:<%if (locals.annotations && annotations.technicalName) {%>
         localPath: './webapp/localService/<%=annotations.technicalName%>.xml'<% } %>
         urlPath: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*'
       service:
