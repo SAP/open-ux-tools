@@ -1,24 +1,24 @@
 {
-	"name": "@sap/ux-odata-service-template",
-	"version": "0.0.1",
-	"main": "dist/index.js",
-	"scripts": {
-		"build": "rimraf dist && tsc",
-		"watch": "tsc --watch",
-		"test": "jest --colors --silent",
-		"test:local": "node -r ts-node/register test/index.ts"
-	},
-	"files": [
-		"dist",
-		"templates"
-	],
-	"dependencies": {
-		"ejs": "^3.1.6",
-		"mem-fs": "^2.1.0",
-		"mem-fs-editor": "^9.0.0"
-	},
-	"devDependencies": {
-		"@types/ejs": "^3.0.6",
-		"@types/mem-fs-editor": "^7.0.0"
-	}
+    "name": "@sap/ux-odata-service-template",
+    "version": "0.0.1",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "rimraf dist && tsc",
+        "watch": "tsc --watch",
+        "test": "jest --colors --silent",
+        "test:local": "node -r ts-node/register test/index.ts"
+    },
+    "files": [
+        "dist",
+        "templates"
+    ],
+    "dependencies": {
+        "ejs": "^3.1.6",
+        "mem-fs": "^2.1.0",
+        "mem-fs-editor": "^9.0.0"
+    },
+    "devDependencies": {
+        "@types/ejs": "^3.0.6",
+        "@types/mem-fs-editor": "^7.0.0"
+    }
 }

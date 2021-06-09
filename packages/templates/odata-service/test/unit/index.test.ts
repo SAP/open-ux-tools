@@ -68,14 +68,17 @@ describe('Test generate method with valid input', () => {
         expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('destination: ');
     });
 
-    it('Valid OData service with destination', async () => {
+    it('Valid OData service with destination and no optional parameters', async () => {
         const config = {
-            ...commonConfig,
+            url: commonConfig.url,
+            path: commonConfig.path + '/',
             version: OdataVersion.v4,
             destination: {
                 name: 'test'
-            }
+            },
         };
+        // no localService folder needed
+
         await generate(testDir, config as OdataService, fs);
         
         // verify updated manifest.json
@@ -83,5 +86,7 @@ describe('Test generate method with valid input', () => {
         expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
         // verify that the destination is added to the ui5.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).toContain(`destination: ${config.destination.name}`);
+        // verify that no localService folder has been created
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBeFalsy();
     });
 });

@@ -22,11 +22,5 @@ module.exports = {
     singleQuote: true,
     tabWidth: 4,
     trailingComma: 'none',
-    useTabs: false,
-    overrides: [
-        {
-            files: ['*.yaml', '*.yml', '*.json'],
-            options: { tabWidth: 2 }
-        }
-    ]
+    useTabs: false
 };
