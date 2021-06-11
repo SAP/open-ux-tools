@@ -89,4 +89,21 @@ describe('Test generate method with valid input', () => {
         // verify that no localService folder has been created
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBeFalsy();
     });
+
+    it('Valid service with neiter metadata nor annotations and not starting with /sap', async () => {
+        const config = {
+            url: 'https://services.odata.org',
+            path: '/V2/Northwind/Northwind.svc',
+            version: OdataVersion.v2
+        };
+        // no localService folder needed
+
+        await generate(testDir, config as OdataService, fs);
+        
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
+        expect(manifest['sap.app'].dataSources.mainService.settings.annotations).toStrictEqual([]);
+        // verify that the path is correct in ui5.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /V2');
+    });
 });
