@@ -1,10 +1,9 @@
-
 import { join } from 'path';
 import { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
 import { generate as generateUi5Project } from '@sap/ux-ui5-application-template';
-import { generate as addOdataService} from '@sap/ux-odata-service-template';
+import { generate as addOdataService } from '@sap/ux-odata-service-template';
 import { FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType } from './data';
 
 /**
@@ -12,8 +11,7 @@ import { FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType } from
  * @param data
  * @param fs
  */
-async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor>{
-
+async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
     // generate base UI5 project
     data.app.baseComponent = 'sap/ui/core/UIComponent';
     fs = await generateUi5Project(basePath, data, fs);
@@ -30,8 +28,14 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')), data)));
 
     // i18n.yaml
-    fs.append(join(basePath, 'webapp', 'i18n', 'i18n.properties'), render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), data));
-    fs.append(join(basePath, 'webapp', 'i18n', 'i18n_en.properties'), render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), data));
+    fs.append(
+        join(basePath, 'webapp', 'i18n', 'i18n.properties'),
+        render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), data)
+    );
+    fs.append(
+        join(basePath, 'webapp', 'i18n', 'i18n_en.properties'),
+        render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), data)
+    );
 
     // package.json
     const packagePath = join(basePath, 'package.json');
@@ -39,10 +43,10 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const packageJson = JSON.parse(fs.read(packagePath));
     packageJson.ui5.dependencies.push('@sap/ux-ui5-tooling');
     fs.writeJSON(packagePath, packageJson);
-    
+
     // ui5.yaml
     fs.append(join(basePath, 'ui5.yaml'), render(fs.read(join(tmpPath, 'common', 'extend', 'ui5.yaml')), data));
-    
+
     // add service to the project if provided
     if (data.service) {
         await addOdataService(basePath, data.service, fs);
@@ -54,10 +58,4 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     return fs;
 }
 
-export {
-    generate,
-    FreestyleApp,
-    WorklistSettings,
-    ListDetailSettings,
-    TemplateType
-};
+export { generate, FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType };

@@ -31,5 +31,4 @@ export interface FEApp<T> extends Ui5App {
         ns?: string;
     };
     service: OdataService;
-    
 }

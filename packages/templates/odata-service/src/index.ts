@@ -10,16 +10,13 @@ import { OdataService, OdataVersion, enhanceData } from './data';
  * @param fs
  */
 function validateBasePath(basePath: string, fs: Editor) {
-    [
-        join(basePath, 'package.json'),
-        join(basePath, 'webapp', 'manifest.json'),
-        join(basePath, 'ui5.yaml')
-    ].forEach(path => {
-        if (!fs.exists(path)) {
-            throw new Error(`Invalid project folder. Cannot find required file ${path}`);
+    [join(basePath, 'package.json'), join(basePath, 'webapp', 'manifest.json'), join(basePath, 'ui5.yaml')].forEach(
+        (path) => {
+            if (!fs.exists(path)) {
+                throw new Error(`Invalid project folder. Cannot find required file ${path}`);
+            }
         }
-    });
-    
+    );
 }
 
 /**
@@ -27,8 +24,7 @@ function validateBasePath(basePath: string, fs: Editor) {
  * @param data
  * @param fs
  */
-async function generate<T>(basePath: string, data: OdataService, fs?: Editor): Promise<Editor>{
-
+async function generate<T>(basePath: string, data: OdataService, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }

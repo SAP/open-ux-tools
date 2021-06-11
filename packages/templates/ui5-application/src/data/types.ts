@@ -23,7 +23,7 @@ export interface UI5 {
 }
 
 export interface Ui5App {
-    app: App,
-    ui5?: UI5,
-    package: Package
+    app: App;
+    ui5?: UI5;
+    package: Package;
 }

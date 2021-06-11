@@ -1,10 +1,9 @@
-
 import { join } from 'path';
 import { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
 import { generate as generateUi5Project } from '@sap/ux-ui5-application-template';
-import { generate as addOdataService} from '@sap/ux-odata-service-template';
+import { generate as addOdataService } from '@sap/ux-odata-service-template';
 import { FEApp, getBaseComponent } from './data';
 
 /**
@@ -12,8 +11,7 @@ import { FEApp, getBaseComponent } from './data';
  * @param data
  * @param fs
  */
-async function generate<T>(basePath: string, data: FEApp<T>, fs?: Editor): Promise<Editor>{
-
+async function generate<T>(basePath: string, data: FEApp<T>, fs?: Editor): Promise<Editor> {
     // generate base UI5 project
     data.app.baseComponent = getBaseComponent(data.template);
     fs = await generateUi5Project(basePath, data, fs);
@@ -35,7 +33,10 @@ async function generate<T>(basePath: string, data: FEApp<T>, fs?: Editor): Promi
     // manifest.json
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     fs.extendJSON(manifestPath, fs.readJSON(join(extRoot, 'manifest.json')));
-    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, data.template.version, `manifest.${data.template.type}.json`)), data)));
+    fs.extendJSON(
+        manifestPath,
+        JSON.parse(render(fs.read(join(extRoot, data.template.version, `manifest.${data.template.type}.json`)), data))
+    );
 
     // ui5.yaml
     fs.append(join(basePath, 'ui5.yaml'), render(fs.read(join(extRoot, data.template.version, 'ui5.yaml')), data));
@@ -49,6 +50,4 @@ async function generate<T>(basePath: string, data: FEApp<T>, fs?: Editor): Promi
     return fs;
 }
 
-export {
-    generate
-};
+export { generate };

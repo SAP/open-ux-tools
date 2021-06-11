@@ -1,6 +1,6 @@
 import { FrameworkVersion, Template, TemplateType } from './types';
 
-const baseComponents: Record<string, Record<string,string>> = {};
+const baseComponents: Record<string, Record<string, string>> = {};
 baseComponents[FrameworkVersion.V2] = {};
 baseComponents[FrameworkVersion.V2][TemplateType.ListReport] = 'sap/suite/ui/generic/template/lib/AppComponent';
 baseComponents[FrameworkVersion.V2][TemplateType.Form] = 'sap/suite/ui/generic/template/lib/AppComponent';
