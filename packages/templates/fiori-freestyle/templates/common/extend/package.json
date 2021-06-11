@@ -1,0 +1,10 @@
+{
+    "scripts": {
+        "start": "fiori run --open 'index.html'",
+        "deploy-config": "fiori add deploy-config"
+    },
+    "devDependencies": {
+        "@sap/ux-ui5-tooling": "1",
+        "@sap/ux-specification": "latest"
+    } 
+}
