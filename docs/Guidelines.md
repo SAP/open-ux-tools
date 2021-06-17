@@ -3,8 +3,51 @@
 We enforce code style rules using [ESLint](https://eslint.org). Execute `yarn lint` to check your code for style issues.  
 You may also find an ESLint integration for your favorite IDE [here](https://eslint.org/docs/user-guide/integrations).
 
+You can fix auto-fixable problems by running:
+
+```shell
+yarn lint --fix
+```
 ## Testing
-*TBD: how to test*. You can run all tests using `yarn test`.
+You can run all the tests by running:
+```
+yarn test
+```
+
+Please make sure you add or modify tests for the code you are contributing.
+
+We use [`jest`](https://jestjs.io/docs/getting-started) for our tests. Please look at their documentation for help.
+
+Keep the following in mind when writing tests:
+* Test code should be simple and straightforward
+* Keep the scope of the tests focussed. Breaking tests then indicate the problem area directly
+* Test behavior and not implementation. Do not write tests for implementation details that should be hidden from callers
+* Test the public interface for all possible inputs
+  - Test that correct values are returned
+  - Test that correct side-effects are carried out
+  - When calling other code that has side-effects, assert that correct parameters are passed in and the number of invocations are correct
+  - When calling other code that has no side-effects, mock the result values. Don't write tests for them, they belong elsewhere
+* Tests should be in the form of given/when/then. Example:
+```typescript
+describe('Fiori elements templates'), () => {
+    it('generate V2 LROP files correctly', async () => {
+        const v2LropOutput = join(outputDir, 'v2-lrop');
+
+        // Given that I'm generating a Fiori elements application
+        // When I generate by passing in options for V2 List Report Object Page
+        const fsEditor = await generate(v2LropOutput, v2LropTestData);
+
+        // Files are correctly generated
+        expect((fsEditor as any).dump(v2LropOutput)).toMatchSnapshot();
+    });
+});
+```
+(The comments above are only there for illustration).
+
+* If writing tests is hard, it could be an indication of a design that needs simplification
+* If too many objects need to be mocked, it could be an indication of too much coupling between objects/functions
+* Preferably write tests first, when it makes sense. This is a judgement call
+* We use jest snapshots to validate the generated files. Please follow the documentation here: https://jestjs.io/docs/snapshot-testing
 
 ## Git Guidelines
 
