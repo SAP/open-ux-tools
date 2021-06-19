@@ -1,0 +1,107 @@
+import { initI18n, t } from './i18n';
+import yaml, { Document } from 'yaml';
+import { doc } from 'prettier';
+
+export class YamlDocument {
+    private document: Document;
+
+    static async newInstance(serializedYaml: string): Promise<YamlDocument> {
+        await initI18n();
+        return new YamlDocument(serializedYaml);
+    }
+
+    private constructor(serializedYaml: string) {
+        this.document = yaml.parseDocument(serializedYaml);
+        if (this.document.errors?.length > 0) {
+            throw new Error(t('error.yamlParsing') + '\n' + this.document.errors.map((e) => e.message).join(''));
+        }
+    }
+
+    toString(): string {
+        return this.document.toString();
+    }
+
+    addDocumentComment({
+        comment,
+        location = 'beginning'
+    }: {
+        comment: string;
+        location?: 'beginning' | 'end';
+    }): YamlDocument {
+        switch (location) {
+            case 'beginning':
+                this.document.commentBefore = comment;
+                break;
+            case 'end':
+                this.document.comment = comment;
+                break;
+            default:
+                break;
+        }
+        return this;
+    }
+
+    /**
+     * Set the value at a given path
+     * @param path - hierarchical path where the node will be inserted/updated
+     * @param value
+     * @param createIntermediateKeys - create the intermediate keys if they're missing. Error if not
+     * @param comment - an optional comment
+     *
+     * @example
+     * If the document is:
+     * key1:
+     *   key2: value2
+     *   key3:
+     *     key4:
+     *       - item: item1
+     *       - item: item2
+     *
+     * To set the second item, the path will be `/key1/key3/key4/1/item`
+     * To set key2's value: `/key1/key2`
+     * To set a property at the root: `/keyX` or 'keyX'
+     *
+     * @returns
+     */
+    setIn({
+        path,
+        value,
+        createIntermediateKeys,
+        comment
+    }: {
+        path: string;
+        value: unknown;
+        createIntermediateKeys?: boolean;
+        comment?: string;
+    }): YamlDocument {
+        const pathArray = this.toPathArray(path);
+
+        if (pathArray.length > 1) {
+            const parentPath = pathArray.slice(0, -1);
+            const parentNode = this.document.getIn(parentPath);
+            if (!parentNode && !createIntermediateKeys) {
+                // Not at root and we're not asked to create the intermediate keys
+                throw new Error(t('error.pathDoesNotExist', { path: parentPath }));
+            }
+        }
+        const newNode = this.document.createNode(value);
+        if (comment) {
+            newNode.commentBefore = comment;
+        }
+        this.document.setIn(pathArray, newNode);
+
+        return this;
+    }
+
+    appendTo(path: string, value: unknown, createIntermediateKeys?: boolean, comment?: string): YamlDocument {
+        return this;
+    }
+
+    private toPathArray(path: string): string[] {
+        const result = path?.split('/').filter((p) => p !== '');
+
+        if (!(result?.length > 0)) throw new Error(t('error.pathCannotBeEmpty'));
+
+        return result;
+    }
+}
