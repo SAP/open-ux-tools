@@ -255,4 +255,507 @@ key1: 42
             expect(doc.toString()).toEqual(expectedValue);
         });
     });
+
+    describe('appendTo', () => {
+        it('appends scalar to existing empty sequence, at root', async () => {
+            const serializedYaml = `key1: 42
+seq1: []`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: 42 });
+            const expectedValue = `key1: 42
+seq1: [ 42 ]
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends scalar to existing sequence, at root (flow formatting)', async () => {
+            const serializedYaml = `key1: 42
+seq1: [ 13 ]`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: 42 });
+            const expectedValue = `key1: 42
+seq1: [ 13, 42 ]
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends scalar to existing sequence, at root (block formatting)', async () => {
+            const serializedYaml = `key1: 42
+seq1:
+  - 13
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: 42 });
+            const expectedValue = `key1: 42
+seq1:
+  - 13
+  - 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object to existing empty sequence, at root', async () => {
+            const serializedYaml = `key1: 42
+seq1: []`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: { item1: 42 } });
+            const expectedValue = `key1: 42
+seq1: [ { item1: 42 } ]
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object to existing sequence, at root', async () => {
+            const serializedYaml = `key1: 42
+seq1:
+  - name: name1
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: { name: 'name2' } });
+            const expectedValue = `key1: 42
+seq1:
+  - name: name1
+  - name: name2
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends scalar, after creating sequence, at root', async () => {
+            const serializedYaml = `key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: 42 });
+            const expectedValue = `key1: 42
+seq1:
+  - 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('error if trying to append to non-sequence', async () => {
+            const serializedYaml = `key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() => doc.appendTo({ path: '/key1', value: 42 })).toThrow();
+        });
+
+        it('appends object, after creating sequence, at root', async () => {
+            const serializedYaml = `key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: { item1: 42 } });
+            const expectedValue = `key1: 42
+seq1:
+  - item1: 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it("error if seq doesn't exist & createIntermediateKeys = false, scalar", async () => {
+            const serializedYaml = `key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() => doc.appendTo({ path: '/seq1', value: 42, createIntermediateKeys: false })).toThrow();
+        });
+
+        it("error if seq doesn't exist & createIntermediateKeys = false, object", async () => {
+            const serializedYaml = `key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() => doc.appendTo({ path: '/seq1', value: { item: 42 }, createIntermediateKeys: false })).toThrow();
+        });
+
+        it('appends scalar with comment to existing empty sequence, at root', async () => {
+            const serializedYaml = `key1: 42
+seq1: []`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: 42, comment: 'commented item' });
+            const expectedValue = `key1: 42
+seq1:
+  [
+    #commented item
+    42
+  ]
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends scalar with comment to existing sequence, at root', async () => {
+            const serializedYaml = `key1: 42
+seq1:
+  - 13 # old comment`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: 42, comment: 'commented item' });
+            const expectedValue = `key1: 42
+seq1:
+  - 13 # old comment
+  #commented item
+  - 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object with comment to existing empty sequence, at root', async () => {
+            const serializedYaml = `key1: 42
+seq1: []`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: { item: 42 }, comment: 'commented item' });
+            const expectedValue = `key1: 42
+seq1:
+  [
+    #commented item
+    { item: 42 }
+  ]
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object with comment to existing sequence, at root', async () => {
+            const serializedYaml = `key1: 42
+seq1:
+  - item: 13 # old comment`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/seq1', value: { item: 42 }, comment: 'commented item' });
+            const expectedValue = `key1: 42
+seq1:
+  - item: 13 # old comment
+  #commented item
+  - item: 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends scalar to existing empty sequence', async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        seq1: []`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42 });
+            const expectedValue = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        seq1: [ 42 ]
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends scalar to existing sequence', async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        seq1:
+          - 13`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42 });
+            const expectedValue = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        seq1:
+          - 13
+          - 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object to existing empty sequence', async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        seq1: []`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 } });
+            const expectedValue = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        seq1: [ { item: 42 } ]
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object to existing sequence', async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        seq1:
+          - item: 13`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 } });
+            const expectedValue = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        seq1:
+          - item: 13
+          - item: 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends scalar, after creating sequence', async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42 });
+            const expectedValue = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42
+        seq1:
+          - 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object, after creating sequence', async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 } });
+            const expectedValue = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42
+        seq1:
+          - item: 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it("error if seq doesn't exist & createIntermediateKeys = false, scalar", async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() =>
+                doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, createIntermediateKeys: false })
+            ).toThrow();
+        });
+
+        it("error if seq doesn't exist & createIntermediateKeys = false, object", async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() =>
+                doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, createIntermediateKeys: false })
+            ).toThrow();
+        });
+
+        it('appends scalar with comment to existing empty sequence', async () => {
+            const serializedYaml = `# Top comment
+
+key1: 42 # key1
+l1: # level 1
+  l2: # level 2
+    l3: # level 3
+      l4: # level 4
+        seq1: []
+        
+#End comment
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, comment: ' commented item' });
+            const expectedValue = `# Top comment
+
+key1: 42 # key1
+l1:
+  # level 1
+  l2:
+    # level 2
+    l3:
+      # level 3
+      l4:
+        # level 4
+        seq1:
+          [
+            # commented item
+            42
+          ]
+
+#End comment
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends scalar with comment to existing sequence', async () => {
+            const serializedYaml = `# Top comment
+
+key1: 42 # key1
+l1: # level 1
+  l2: # level 2
+    l3: # level 3
+      l4: # level 4
+        seq1:
+          - 13
+        
+#End comment
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, comment: ' commented item' });
+            const expectedValue = `# Top comment
+
+key1: 42 # key1
+l1:
+  # level 1
+  l2:
+    # level 2
+    l3:
+      # level 3
+      l4:
+        # level 4
+        seq1:
+          - 13
+          # commented item
+          - 42
+
+#End comment
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object with comment to existing emptysequence', async () => {
+            const serializedYaml = `# Top comment
+
+key1: 42 # key1
+l1: # level 1
+  l2: # level 2
+    l3: # level 3
+      l4: # level 4
+        seq1: []
+        
+#End comment
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, comment: ' commented item' });
+            const expectedValue = `# Top comment
+
+key1: 42 # key1
+l1:
+  # level 1
+  l2:
+    # level 2
+    l3:
+      # level 3
+      l4:
+        # level 4
+        seq1:
+          [
+            # commented item
+            { item: 42 }
+          ]
+
+#End comment
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object with comment to existing sequence', async () => {
+            const serializedYaml = `# Top comment
+
+key1: 42 # key1
+l1: # level 1
+  l2: # level 2
+    l3: # level 3
+      l4: # level 4
+        seq1:
+          - item: 13
+        
+#End comment
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, comment: ' commented item' });
+            const expectedValue = `# Top comment
+
+key1: 42 # key1
+l1:
+  # level 1
+  l2:
+    # level 2
+    l3:
+      # level 3
+      l4:
+        # level 4
+        seq1:
+          - item: 13
+          # commented item
+          - item: 42
+
+#End comment
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends scalar with comment, after creating sequence', async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, comment: 'commented item' });
+            const expectedValue = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42
+        seq1:
+          #commented item
+          - 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('appends object with comment, after creating sequence', async () => {
+            const serializedYaml = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, comment: 'commented item' });
+            const expectedValue = `key1: 42
+l1:
+  l2:
+    l3:
+      l4:
+        key1: 42
+        seq1:
+          #commented item
+          - item: 42
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+    });
 });

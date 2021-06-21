@@ -1,6 +1,5 @@
 import { initI18n, t } from './i18n';
-import yaml, { Document } from 'yaml';
-import { doc } from 'prettier';
+import yaml, { Document, isSeq, YAMLSeq } from 'yaml';
 
 export class YamlDocument {
     private document: Document;
@@ -92,8 +91,43 @@ export class YamlDocument {
 
         return this;
     }
+    /**
+     * Append node to a sequence in the document
+     *
+     * @param {string} path - hierarchical path to the node @see `path` param in `setIn`
+     * @param {unknown} value
+     * @param {boolean} createIntermediateKeys - defaults to true. If false and path does not exist, will throw an error
+     * @param {string} comment - optional comment to add to the node
+     * @returns YamlDocument
+     */
+    appendTo({
+        path,
+        value,
+        createIntermediateKeys = true,
+        comment
+    }: {
+        path: string;
+        value: unknown;
+        createIntermediateKeys?: boolean;
+        comment?: string;
+    }): YamlDocument {
+        const pathArray = this.toPathArray(path);
+        let seq = this.document.getIn(pathArray) as YAMLSeq;
+        if (!seq) {
+            if (!createIntermediateKeys) {
+                throw new Error(t('error.seqDoesNotExist', { path }));
+            }
 
-    appendTo(path: string, value: unknown, createIntermediateKeys?: boolean, comment?: string): YamlDocument {
+            seq = new YAMLSeq();
+            this.document.setIn(pathArray, seq);
+        } else {
+            if (!isSeq(seq)) {
+                throw new Error(t('error.tryingToAppendToNonSequence', { path }));
+            }
+        }
+        const newNode = this.document.createNode(value);
+        if (comment) newNode.commentBefore = comment;
+        seq.items.push(newNode);
         return this;
     }
 
