@@ -7,7 +7,7 @@ export const getUI5Libs = (templateType: TemplateType, version: FrameworkVersion
         case FrameworkVersion.V4:
             return getV4Libs(templateType);
         default:
-            throw new Error('Unsupport version: ' + version);
+            throw new Error('Unsupported version: ' + version);
     }
 };
 
