@@ -14,7 +14,7 @@
     "dependencies": {
         "@sap/ux-odata-service-template": "0.0.1",
         "@sap/ux-ui5-application-template": "0.0.1",
-        "@sap/ux-yaml": "0.0.1",
+        "@sap/ux-ui5-config": "0.0.1",
         "ejs": "^3.1.6",
         "mem-fs": "^2.1.0",
         "mem-fs-editor": "^9.0.0"

@@ -1,8 +1,0 @@
-    - name: sap.ushell
-server:
-  customMiddleware:
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp

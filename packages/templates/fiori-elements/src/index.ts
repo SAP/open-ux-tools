@@ -5,6 +5,9 @@ import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap/ux-ui5-application-template';
 import { generate as addOdataService } from '@sap/ux-odata-service-template';
 import { FEApp, getBaseComponent } from './data';
+import { UI5Config } from '../../../lib/ui5-config/dist';
+import { getUI5Libs } from './data/ui5Libs';
+import { getMiddlewareConfig } from './data/middlewareConfig';
 
 /**
  * @param basePath
@@ -39,8 +42,12 @@ async function generate<T>(basePath: string, data: FEApp<T>, fs?: Editor): Promi
     );
 
     // ui5.yaml
-    fs.append(join(basePath, 'ui5.yaml'), render(fs.read(join(extRoot, data.template.version, 'ui5.yaml')), data));
-    fs.append(join(basePath, 'ui5.yaml'), render(fs.read(join(extRoot, 'ui5.yaml')), data));
+    const ui5ConfigPath = join(basePath, 'ui5.yaml');
+    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+    ui5Config
+        .addLibraries(getUI5Libs(data.template.type, data.template.version))
+        .addCustomMiddleware(getMiddlewareConfig());
+    fs.write(ui5ConfigPath, ui5Config.toString());
 
     // add service to the project
     await addOdataService(basePath, data.service, fs);
