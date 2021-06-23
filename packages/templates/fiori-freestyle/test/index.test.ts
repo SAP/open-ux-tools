@@ -7,7 +7,7 @@ import { rmdirSync } from 'fs';
 
 describe('Fiori freestyle templates', () => {
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(tmpdir(), '/templates/odata-service');
+    const outputDir = join(tmpdir(), '/templates/fiori-freestyle');
 
     const commonConfig = {
         app: {
