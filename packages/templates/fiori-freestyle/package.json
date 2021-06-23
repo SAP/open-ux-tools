@@ -5,6 +5,7 @@
     "scripts": {
         "build": "rimraf dist && tsc",
         "watch": "tsc --watch",
+        "test": "jest",
         "test:local": "node -r ts-node/register test/index.ts"
     },
     "files": [
