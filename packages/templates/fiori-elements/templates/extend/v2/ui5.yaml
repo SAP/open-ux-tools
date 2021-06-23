@@ -1,6 +1,0 @@
-    - name: sap.f
-    - name: sap.ui.comp
-    - name: sap.ui.table<%if (template.type === 'lrop') {%>
-    - name: sap.suite.ui.generic.template
-    - name: sap.ui.generic.app<% } %><%if (template.type === 'ovp') {%>
-    - name: sap.ovp<% } %>

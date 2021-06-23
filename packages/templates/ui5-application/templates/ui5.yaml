@@ -3,8 +3,8 @@ metadata:
   name: <%= app.id %>
 type: application
 resources:
-    configuration:
-        propertiesFileSourceEncoding: UTF-8
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 framework:
   name: SAPUI5
   version: <%= ui5.version %>

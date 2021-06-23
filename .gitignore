@@ -5,3 +5,4 @@ dist
 .parcel-cache
 .DS_Store
 **/*.tgz
+yarn-error.log

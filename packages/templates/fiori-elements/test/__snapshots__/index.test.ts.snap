@@ -39,8 +39,8 @@ metadata:
   name: test.new.gen.myApp
 type: application
 resources:
-    configuration:
-        propertiesFileSourceEncoding: UTF-8
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 framework:
   name: SAPUI5
   version: 1.84.0
@@ -52,16 +52,16 @@ framework:
     - name: sap.f
     - name: sap.ui.comp
     - name: sap.ui.table
+    - name: sap.ushell
     - name: sap.suite.ui.generic.template
     - name: sap.ui.generic.app
-    - name: sap.ushell
 server:
   customMiddleware:
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
   - name: sap-fe-mockserver
     mountPath: /
     afterMiddleware: compression
@@ -83,8 +83,8 @@ metadata:
   name: test.new.gen.myApp
 type: application
 resources:
-    configuration:
-        propertiesFileSourceEncoding: UTF-8
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 framework:
   name: SAPUI5
   version: 1.84.0
@@ -96,27 +96,27 @@ framework:
     - name: sap.f
     - name: sap.ui.comp
     - name: sap.ui.table
+    - name: sap.ushell
     - name: sap.suite.ui.generic.template
     - name: sap.ui.generic.app
-    - name: sap.ushell
 server:
   customMiddleware:
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp
-- name: fiori-tools-proxy
-  afterMiddleware: compression
-  configuration:
-      ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-      backend:
-      - path: /sap
-        url: https://iccsrm.sap.com:44300
-      ui5:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: https://iccsrm.sap.com:44300
+        ui5:
           path:
-              - /resources
-              - /test-resources
+            - /resources
+            - /test-resources
           url: https://ui5.sap.com
           version: # The UI5 version, for instance, 1.78.1. Empty means latest version
 ",
@@ -4166,8 +4166,8 @@ metadata:
   name: test.new.gen.myApp
 type: application
 resources:
-    configuration:
-        propertiesFileSourceEncoding: UTF-8
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 framework:
   name: SAPUI5
   version: 1.84.0
@@ -4179,15 +4179,15 @@ framework:
     - name: sap.f
     - name: sap.ui.comp
     - name: sap.ui.table
-    - name: sap.ovp
     - name: sap.ushell
+    - name: sap.ovp
 server:
   customMiddleware:
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
   - name: sap-fe-mockserver
     mountPath: /
     afterMiddleware: compression
@@ -4209,8 +4209,8 @@ metadata:
   name: test.new.gen.myApp
 type: application
 resources:
-    configuration:
-        propertiesFileSourceEncoding: UTF-8
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 framework:
   name: SAPUI5
   version: 1.84.0
@@ -4222,26 +4222,26 @@ framework:
     - name: sap.f
     - name: sap.ui.comp
     - name: sap.ui.table
-    - name: sap.ovp
     - name: sap.ushell
+    - name: sap.ovp
 server:
   customMiddleware:
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp
-- name: fiori-tools-proxy
-  afterMiddleware: compression
-  configuration:
-      ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-      backend:
-      - path: /sap
-        url: https://sap-ux-mock-services-v2-ovp.cfapps.us10.hana.ondemand.com
-      ui5:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: https://sap-ux-mock-services-v2-ovp.cfapps.us10.hana.ondemand.com
+        ui5:
           path:
-              - /resources
-              - /test-resources
+            - /resources
+            - /test-resources
           url: https://ui5.sap.com
           version: # The UI5 version, for instance, 1.78.1. Empty means latest version
 ",
@@ -5205,8 +5205,8 @@ metadata:
   name: test.new.gen.myV4App
 type: application
 resources:
-    configuration:
-        propertiesFileSourceEncoding: UTF-8
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 framework:
   name: SAPUI5
   version: 1.84.0
@@ -5219,11 +5219,11 @@ framework:
     - name: sap.ushell
 server:
   customMiddleware:
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
   - name: sap-fe-mockserver
     mountPath: /
     afterMiddleware: compression
@@ -5244,8 +5244,8 @@ metadata:
   name: test.new.gen.myV4App
 type: application
 resources:
-    configuration:
-        propertiesFileSourceEncoding: UTF-8
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
 framework:
   name: SAPUI5
   version: 1.84.0
@@ -5258,22 +5258,22 @@ framework:
     - name: sap.ushell
 server:
   customMiddleware:
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp
-- name: fiori-tools-proxy
-  afterMiddleware: compression
-  configuration:
-      ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-      backend:
-      - path: /sap
-        url: https://ldai1er9.wdf.sap.corp:44300
-      ui5:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: https://ldai1er9.wdf.sap.corp:44300
+        ui5:
           path:
-              - /resources
-              - /test-resources
+            - /resources
+            - /test-resources
           url: https://ui5.sap.com
           version: # The UI5 version, for instance, 1.78.1. Empty means latest version
 ",

@@ -25,10 +25,12 @@
         "webpack-merge": "4.2.2"
     },
     "workspaces": [
-        "packages/templates/*"
+        "packages/templates/*",
+        "packages/lib/*"
     ],
     "files": [
-        "packages/templates"
+        "packages/templates",
+        "packages/lib"
     ],
     "scripts": {
         "build": "lerna run --reject-cycles --stream build",
