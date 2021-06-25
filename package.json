@@ -34,6 +34,7 @@
     ],
     "scripts": {
         "build": "lerna run --reject-cycles --stream build",
-        "lint": "lerna run --reject-cycles --stream lint"
+        "lint": "lerna run --reject-cycles --stream lint",
+        "test": "lerna run --reject-cycles --stream test"
     }
 }
