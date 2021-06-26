@@ -97,19 +97,19 @@ export class YamlDocument {
      * @param {string} path - hierarchical path to the node @see `path` param in `setIn`
      * @param {unknown} value
      * @param {boolean} createIntermediateKeys - defaults to true. If false and path does not exist, will throw an error
-     * @param {string} comment - optional comment to add to the node
+     * @optional @param {string} nodeComment - optional comment to add to the node
      * @returns YamlDocument
      */
     appendTo({
         path,
         value,
         createIntermediateKeys = true,
-        comment
+        nodeComment
     }: {
         path: string;
         value: unknown;
         createIntermediateKeys?: boolean;
-        comment?: string;
+        nodeComment?: string;
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
         let seq = this.document.getIn(pathArray) as YAMLSeq;
@@ -126,7 +126,7 @@ export class YamlDocument {
             }
         }
         const newNode = this.document.createNode(value);
-        if (comment) newNode.commentBefore = comment;
+        if (nodeComment) newNode.commentBefore = nodeComment;
         seq.items.push(newNode);
         return this;
     }

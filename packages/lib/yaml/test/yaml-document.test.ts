@@ -364,7 +364,7 @@ seq1:
             const serializedYaml = `key1: 42
 seq1: []`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: 42, comment: 'commented item' });
+            doc.appendTo({ path: '/seq1', value: 42, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 seq1:
   [
@@ -380,7 +380,7 @@ seq1:
 seq1:
   - 13 # old comment`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: 42, comment: 'commented item' });
+            doc.appendTo({ path: '/seq1', value: 42, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 seq1:
   - 13 # old comment
@@ -394,7 +394,7 @@ seq1:
             const serializedYaml = `key1: 42
 seq1: []`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: { item: 42 }, comment: 'commented item' });
+            doc.appendTo({ path: '/seq1', value: { item: 42 }, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 seq1:
   [
@@ -410,7 +410,7 @@ seq1:
 seq1:
   - item: 13 # old comment`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: { item: 42 }, comment: 'commented item' });
+            doc.appendTo({ path: '/seq1', value: { item: 42 }, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 seq1:
   - item: 13 # old comment
@@ -583,7 +583,7 @@ l1: # level 1
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, comment: ' commented item' });
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, nodeComment: ' commented item' });
             const expectedValue = `# Top comment
 
 key1: 42 # key1
@@ -620,7 +620,7 @@ l1: # level 1
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, comment: ' commented item' });
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, nodeComment: ' commented item' });
             const expectedValue = `# Top comment
 
 key1: 42 # key1
@@ -655,7 +655,7 @@ l1: # level 1
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, comment: ' commented item' });
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, nodeComment: ' commented item' });
             const expectedValue = `# Top comment
 
 key1: 42 # key1
@@ -692,7 +692,7 @@ l1: # level 1
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, comment: ' commented item' });
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, nodeComment: ' commented item' });
             const expectedValue = `# Top comment
 
 key1: 42 # key1
@@ -722,7 +722,7 @@ l1:
       l4:
         key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, comment: 'commented item' });
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 l1:
   l2:
@@ -744,7 +744,7 @@ l1:
       l4:
         key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, comment: 'commented item' });
+            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 l1:
   l2:
