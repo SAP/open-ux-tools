@@ -98,18 +98,21 @@ export class YamlDocument {
      * @param {unknown} value
      * @param {boolean} createIntermediateKeys - defaults to true. If false and path does not exist, will throw an error
      * @optional @param {string} nodeComment - optional comment to add to the node
+     * @optional @param comments - comments for subnodes in value being added
      * @returns YamlDocument
      */
     appendTo({
         path,
         value,
         createIntermediateKeys = true,
-        nodeComment
+        nodeComment,
+        comments
     }: {
         path: string;
         value: unknown;
         createIntermediateKeys?: boolean;
         nodeComment?: string;
+        comments?: Array<{ path: string; comment: string }>;
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
         let seq = this.document.getIn(pathArray) as YAMLSeq;
@@ -128,6 +131,17 @@ export class YamlDocument {
         const newNode = this.document.createNode(value);
         if (nodeComment) newNode.commentBefore = nodeComment;
         seq.items.push(newNode);
+
+        if (comments && comments.length > 0) {
+            if (typeof value !== 'object') throw new Error(t('error.scalarValuesDoNotHaveProperties'));
+            const index = seq.items.length - 1;
+            for (const c of comments) {
+                const propPathArray = this.toPathArray(c.path);
+                const n = this.document.getIn([...pathArray, index, ...propPathArray], true) as yaml.Node;
+                if (!n) throw new Error(t('error.propertyNotFound', { path: c.path }));
+                n.comment = c.comment;
+            }
+        }
         return this;
     }
 

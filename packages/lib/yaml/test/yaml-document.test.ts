@@ -757,5 +757,106 @@ l1:
 `;
             expect(doc.toString()).toEqual(expectedValue);
         });
+
+        it("throws an error to try to add comment to scalar value's properties", async () => {
+            const serializedYaml = 'seq1: []';
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() =>
+                doc.appendTo({ path: '/seq1', value: 42, comments: [{ path: 'key1/key2', comment: 'hey' }] })
+            ).toThrow(t('error.scalarValuesDoNotHaveProperties'));
+        });
+
+        it('throws an error to try to add comment to property with empty path', async () => {
+            const serializedYaml = 'seq1: []';
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() => doc.appendTo({ path: '/seq1', value: {}, comments: [{ path: '', comment: 'hey' }] })).toThrow(
+                t('error.pathCannotBeEmpty')
+            );
+        });
+
+        it('throws an error to try to add comment to property with invalid path', async () => {
+            const serializedYaml = 'seq1: []';
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() =>
+                doc.appendTo({ path: '/seq1', value: {}, comments: [{ path: 'a/b/c', comment: 'hey' }] })
+            ).toThrow();
+        });
+
+        it('adds comments to object properties, existing seq at root', async () => {
+            const serializedYaml = `seq1:
+  - a: 13`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({
+                path: '/seq1',
+                value: { a: 1, b: { c: { d: 42 } } },
+                comments: [
+                    { path: 'a', comment: 'A' },
+                    { path: 'b/c/d', comment: 'The answer!' }
+                ]
+            });
+            const expectedValue = `seq1:
+  - a: 13
+  - a: 1 #A
+    b:
+      c:
+        d: 42 #The answer!
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('adds comments to object properties, creating seq at root', async () => {
+            const serializedYaml = `seq2:
+- a: 13`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.appendTo({
+                path: '/seq1',
+                value: { a: 1, b: { c: { d: 42 } } },
+                comments: [
+                    { path: 'a', comment: 'A' },
+                    { path: 'b/c/d', comment: 'The answer!' }
+                ]
+            });
+            const expectedValue = `seq2:
+  - a: 13
+seq1:
+  - a: 1 #A
+    b:
+      c:
+        d: 42 #The answer!
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+    });
+
+    it('adds comments to object properties, existing seq', async () => {
+        const serializedYaml = `seq1:
+  - a: 13
+  - a: 
+      b:
+        c: 42
+        d:
+          - w: 13`;
+        const doc = await YamlDocument.newInstance(serializedYaml);
+        doc.appendTo({
+            path: '/seq1/1/a/b/d',
+            value: { w: 1, x: { y: { z: 42 } } },
+            comments: [
+                { path: 'w', comment: 'W' },
+                { path: 'x/y/z', comment: 'The answer!' }
+            ]
+        });
+        const expectedValue = `seq1:
+  - a: 13
+  - a:
+      b:
+        c: 42
+        d:
+          - w: 13
+          - w: 1 #W
+            x:
+              y:
+                z: 42 #The answer!
+`;
+        expect(doc.toString()).toEqual(expectedValue);
     });
 });
