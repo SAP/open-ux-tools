@@ -358,23 +358,24 @@ framework:
     - name: sap.ushell
 server:
   customMiddleware:
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp
-  - name: sap-fe-mockserver
-    mountPath: /
-    afterMiddleware: compression
-    configuration:
-      annotations:
-        urlPath: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*'
-      service:
-        urlBasePath: '/V2/Northwind/Northwind.svc'
-        name: ''
-        metadataXmlPath: './webapp/localService/metadata.xml'
-        mockdataRootPath: './webapp/localService/data'
-        generateMockData: true",
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+    - name: sap-fe-mockserver
+      mountPath: /
+      afterMiddleware: compression
+      configuration:
+        annotations:
+          urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
+        service:
+          urlBasePath: /V2/Northwind/Northwind.svc
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
     "state": "modified",
   },
   "worklist/ui5.yaml": Object {
@@ -396,11 +397,11 @@ framework:
     - name: sap.ushell
 server:
   customMiddleware:
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -413,7 +414,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: # The UI5 version, for instance, 1.78.1. Empty means latest version
+          version: null # The UI5 version, for instance, 1.78.1. Empty means latest version
 ",
     "state": "modified",
   },
