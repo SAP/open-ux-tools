@@ -415,7 +415,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: null # The UI5 version, for instance, 1.78.1. Empty means latest version
+          version: null # The UI5 version, for instance, 1.78.1. null means latest version
 ",
     "state": "modified",
   },

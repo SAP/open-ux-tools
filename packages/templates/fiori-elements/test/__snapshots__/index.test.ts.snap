@@ -62,19 +62,20 @@ server:
       configuration:
         port: 35729
         path: webapp
-  - name: sap-fe-mockserver
-    mountPath: /
-    afterMiddleware: compression
-    configuration:
-      annotations:
-        localPath: './webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml'
-        urlPath: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*'
-      service:
-        urlBasePath: '/sap/opu/odata/sap/SEPMRA_PROD_MAN'
-        name: ''
-        metadataXmlPath: './webapp/localService/metadata.xml'
-        mockdataRootPath: './webapp/localService/data'
-        generateMockData: true",
+    - name: sap-fe-mockserver
+      mountPath: /
+      afterMiddleware: compression
+      configuration:
+        annotations:
+          localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
+        service:
+          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
     "state": "modified",
   },
   "ui5.yaml": Object {
@@ -118,7 +119,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: # The UI5 version, for instance, 1.78.1. Empty means latest version
+          version: null # The UI5 version, for instance, 1.78.1. null means latest version
 ",
     "state": "modified",
   },
@@ -4188,19 +4189,20 @@ server:
       configuration:
         port: 35729
         path: webapp
-  - name: sap-fe-mockserver
-    mountPath: /
-    afterMiddleware: compression
-    configuration:
-      annotations:
-        localPath: './webapp/localService/GWSAMPLE_BASIC.xml'
-        urlPath: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*'
-      service:
-        urlBasePath: '/sap/opu/odata/sap/GWSAMPLE_BASIC'
-        name: ''
-        metadataXmlPath: './webapp/localService/metadata.xml'
-        mockdataRootPath: './webapp/localService/data'
-        generateMockData: true",
+    - name: sap-fe-mockserver
+      mountPath: /
+      afterMiddleware: compression
+      configuration:
+        annotations:
+          localPath: ./webapp/localService/GWSAMPLE_BASIC.xml
+          urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
+        service:
+          urlBasePath: /sap/opu/odata/sap/GWSAMPLE_BASIC
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
     "state": "modified",
   },
   "ui5.yaml": Object {
@@ -4243,7 +4245,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: # The UI5 version, for instance, 1.78.1. Empty means latest version
+          version: null # The UI5 version, for instance, 1.78.1. null means latest version
 ",
     "state": "modified",
   },
@@ -5224,18 +5226,19 @@ server:
       configuration:
         port: 35729
         path: webapp
-  - name: sap-fe-mockserver
-    mountPath: /
-    afterMiddleware: compression
-    configuration:
-      annotations:
-        urlPath: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*'
-      service:
-        urlBasePath: '/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001'
-        name: ''
-        metadataXmlPath: './webapp/localService/metadata.xml'
-        mockdataRootPath: './webapp/localService/data'
-        generateMockData: true",
+    - name: sap-fe-mockserver
+      mountPath: /
+      afterMiddleware: compression
+      configuration:
+        annotations:
+          urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
+        service:
+          urlBasePath: /sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
     "state": "modified",
   },
   "ui5.yaml": Object {
@@ -5275,7 +5278,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: # The UI5 version, for instance, 1.78.1. Empty means latest version
+          version: null # The UI5 version, for instance, 1.78.1. null means latest version
 ",
     "state": "modified",
   },
