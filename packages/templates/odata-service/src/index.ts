@@ -2,8 +2,10 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
+import { UI5Config } from '../../../lib/ui5-config/dist';
 
 import { OdataService, OdataVersion, enhanceData } from './data';
+import { getMiddlewareConfig, getLocalMiddlewareConfig } from './data/middleware';
 
 /**
  * @param basePath
@@ -50,9 +52,16 @@ async function generate<T>(basePath: string, data: OdataService, fs?: Editor): P
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, `manifest.json`)), data)));
 
     // ui5.yaml and ui5-local.yaml
-    fs.write(join(basePath, 'ui5-local.yaml'), fs.read(join(basePath, 'ui5.yaml')));
-    fs.append(join(basePath, 'ui5.yaml'), render(fs.read(join(extRoot, 'ui5.yaml')), data));
-    fs.append(join(basePath, 'ui5-local.yaml'), render(fs.read(join(extRoot, 'ui5-local.yaml')), data));
+    const ui5ConfigPath = join(basePath, 'ui5.yaml');
+    const existingUI5Config = fs.read(ui5ConfigPath);
+
+    const ui5Config = await UI5Config.newInstance(existingUI5Config);
+    ui5Config.addCustomMiddleware(...getMiddlewareConfig(data));
+    fs.write(ui5ConfigPath, ui5Config.toString());
+
+    const ui5LocalConfig = await UI5Config.newInstance(existingUI5Config);
+    ui5LocalConfig.addCustomMiddleware(getLocalMiddlewareConfig(data));
+    fs.write(join(basePath, 'ui5-local.yaml'), ui5LocalConfig.toString());
 
     // create local copy of metadata and annotations
     if (data.metadata) {

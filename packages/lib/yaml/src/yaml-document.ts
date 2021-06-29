@@ -1,6 +1,11 @@
 import { initI18n, t } from './i18n';
 import yaml, { Document, isSeq, YAMLSeq } from 'yaml';
 
+export interface NodeComment {
+    path: string;
+    comment: string;
+}
+
 export class YamlDocument {
     private document: Document;
 
@@ -17,7 +22,7 @@ export class YamlDocument {
     }
 
     toString(): string {
-        return this.document.toString();
+        return this.document.toString({ singleQuote: true });
     }
 
     addDocumentComment({
@@ -112,7 +117,7 @@ export class YamlDocument {
         value: unknown;
         createIntermediateKeys?: boolean;
         nodeComment?: string;
-        comments?: Array<{ path: string; comment: string }>;
+        comments?: Array<NodeComment>;
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
         let seq = this.document.getIn(pathArray) as YAMLSeq;

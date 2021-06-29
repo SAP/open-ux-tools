@@ -22,23 +22,30 @@ Object {
   },
   "ui5-local.yaml": Object {
     "contents": "#empty file
-  - name: sap-fe-mockserver
-    mountPath: /
-    afterMiddleware: compression
-    configuration:
-      annotations:
-        localPath: './webapp/localService/SEPM_XYZ.xml'
-        urlPath: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*'
-      service:
-        urlBasePath: '/sap/odata/testme'
-        name: ''
-        metadataXmlPath: './webapp/localService/metadata.xml'
-        mockdataRootPath: './webapp/localService/data'
-        generateMockData: true",
+
+server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      mountPath: /
+      afterMiddleware: compression
+      configuration:
+        annotations:
+          localPath: ./webapp/localService/SEPM_XYZ.xml
+          urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
+        service:
+          urlBasePath: /sap/odata/testme
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
     "state": "modified",
   },
   "ui5.yaml": Object {
     "contents": "#empty file
+
+server:
+  customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -51,7 +58,7 @@ Object {
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: # The UI5 version, for instance, 1.78.1. Empty means latest version
+          version: null # The UI5 version, for instance, 1.78.1. Empty means latest version
 ",
     "state": "modified",
   },

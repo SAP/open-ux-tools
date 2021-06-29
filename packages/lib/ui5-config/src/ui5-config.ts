@@ -1,5 +1,5 @@
 import { MiddlewareConfig } from './types';
-import { YamlDocument } from '@sap/ux-yaml';
+import { YamlDocument, NodeComment } from '@sap/ux-yaml';
 
 /**
  * Adds utility methods to deal with UI5 config (ui5(-*).yaml)
@@ -19,9 +19,9 @@ export class UI5Config {
         return this;
     }
 
-    public addCustomMiddleware(middleware: MiddlewareConfig[]): UI5Config {
+    public addCustomMiddleware(middleware: MiddlewareConfig[], comments?: NodeComment[]): UI5Config {
         for (const mw of middleware) {
-            this.document.appendTo({ path: '/server/customMiddleware', value: mw });
+            this.document.appendTo({ path: '/server/customMiddleware', value: mw, comments });
         }
         return this;
     }

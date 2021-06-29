@@ -1,1 +1,1 @@
-export { YamlDocument } from './yaml-document';
+export { YamlDocument, NodeComment } from './yaml-document';
