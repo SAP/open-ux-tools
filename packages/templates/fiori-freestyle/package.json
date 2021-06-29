@@ -17,7 +17,8 @@
         "mem-fs": "^2.1.0",
         "mem-fs-editor": "^9.0.0",
         "@sap/ux-ui5-application-template": "0.0.1",
-        "@sap/ux-odata-service-template": "0.0.1"
+        "@sap/ux-odata-service-template": "0.0.1",
+        "@sap/ux-ui5-config": "0.0.1"
     },
     "devDependencies": {
         "@types/ejs": "^3.0.6",
