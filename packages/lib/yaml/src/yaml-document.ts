@@ -1,8 +1,22 @@
 import { initI18n, t } from './i18n';
 import yaml, { Document, isSeq, YAMLSeq } from 'yaml';
 
-export interface NodeComment {
-    path: string;
+// From here: https://twitter.com/diegohaz/status/1309489079378219009
+// Explanation here: https://dev.to/phenomnominal/i-need-to-learn-about-typescript-template-literal-types-51po
+type PathImpl<T, Key extends keyof T> = Key extends string
+    ? T[Key] extends Record<string, any>
+        ?
+              | `${Key}.${PathImpl<T[Key], Exclude<keyof T[Key], keyof any[]>> & string}`
+              | `${Key}.${Exclude<keyof T[Key], keyof any[]> & string}`
+        : never
+    : never;
+
+type PathImpl2<T> = PathImpl<T, keyof T> | keyof T;
+
+export type Path<T> = PathImpl2<T> extends string | keyof T ? PathImpl2<T> : keyof T;
+
+export interface NodeComment<T> {
+    path: Path<T>;
     comment: string;
 }
 
@@ -61,9 +75,9 @@ export class YamlDocument {
      *       - item: item1
      *       - item: item2
      *
-     * To set the second item, the path will be `/key1/key3/key4/1/item`
-     * To set key2's value: `/key1/key2`
-     * To set a property at the root: `/keyX` or 'keyX'
+     * To set the second item, the path will be `key1.key3.key4.1.item`
+     * To set key2's value: `key1.key2`
+     * To set a property at the root: 'keyX'
      *
      * @returns
      */
@@ -106,7 +120,7 @@ export class YamlDocument {
      * @optional @param comments - comments for subnodes in value being added
      * @returns YamlDocument
      */
-    appendTo({
+    appendTo<T = unknown>({
         path,
         value,
         createIntermediateKeys = true,
@@ -114,10 +128,10 @@ export class YamlDocument {
         comments
     }: {
         path: string;
-        value: unknown;
+        value: T;
         createIntermediateKeys?: boolean;
         nodeComment?: string;
-        comments?: Array<NodeComment>;
+        comments?: Array<NodeComment<T>>;
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
         let seq = this.document.getIn(pathArray) as YAMLSeq;
@@ -150,8 +164,11 @@ export class YamlDocument {
         return this;
     }
 
-    private toPathArray(path: string): string[] {
-        const result = path?.split('/').filter((p) => p !== '');
+    private toPathArray<T>(path: Path<T>): string[] {
+        const result = path
+            ?.toString()
+            .split('.')
+            .filter((p) => p !== '');
 
         if (!(result?.length > 0)) throw new Error(t('error.pathCannotBeEmpty'));
 

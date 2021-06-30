@@ -28,26 +28,10 @@ foo:
     });
 
     describe('setIn', () => {
-        it("throws an error when path is empty ('/')", async () => {
-            const serializedYaml = 'key1: 42';
-            const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.setIn({ path: '/', value: 42 })).toThrow(t('error.pathCannotBeEmpty'));
-        });
-
         it("throws an error when path is empty ('')", async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.setIn({ path: '/', value: 42 })).toThrow(t('error.pathCannotBeEmpty'));
-        });
-
-        it("'/new key' at root without createParent true works for scalars", async () => {
-            const serializedYaml = 'key1: 42';
-            const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.setIn({ path: '/new key', value: 'new value' });
-            const expectedValue = `key1: 42
-new key: new value
-`;
-            expect(doc.toString()).toEqual(expectedValue);
+            expect(() => doc.setIn({ path: '', value: 42 })).toThrow(t('error.pathCannotBeEmpty'));
         });
 
         it("'new key' at root without createParent true works for scalars", async () => {
@@ -60,22 +44,10 @@ new key: new value
             expect(doc.toString()).toEqual(expectedValue);
         });
 
-        it("'/new key' at root without createParent true works for objects", async () => {
-            const serializedYaml = 'key1: 42';
-            const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.setIn({ path: '/new key', value: { keyA: 'value', keyB: 'value' } });
-            const expectedValue = `key1: 42
-new key:
-  keyA: value
-  keyB: value
-`;
-            expect(doc.toString()).toEqual(expectedValue);
-        });
-
         it("'new key' at root without createParent true works for objects", async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.setIn({ path: '/new key', value: { keyA: 'value', keyB: 'value' } });
+            doc.setIn({ path: 'new key', value: { keyA: 'value', keyB: 'value' } });
             const expectedValue = `key1: 42
 new key:
   keyA: value
@@ -87,7 +59,7 @@ new key:
         it('changes existing value at root, adds scalar value', async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.setIn({ path: '/key1', value: 'new value' });
+            doc.setIn({ path: 'key1', value: 'new value' });
             const expectedValue = `key1: new value
 `;
             expect(doc.toString()).toEqual(expectedValue);
@@ -96,7 +68,7 @@ new key:
         it('changes existing value at root, adds object value', async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.setIn({ path: '/key1', value: { a: 13, b: 42, c: [1, 2] } });
+            doc.setIn({ path: 'key1', value: { a: 13, b: 42, c: [1, 2] } });
             const expectedValue = `key1:
   a: 13
   b: 42
@@ -117,7 +89,7 @@ new key:
           level5 key1: foobar
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            const path = '/level1 key1/1/level2 key2/level3 key1/level4 key2/level5 key1';
+            const path = 'level1 key1.1.level2 key2.level3 key1.level4 key2.level5 key1';
             doc.setIn({
                 path,
                 value: { 'level6 key1': { 'level7 key1': 'a', 'level7 key2': 'b', 'level7 key3': 'c' } }
@@ -140,13 +112,13 @@ new key:
         it('will throw an error when called on a path that does not exist, createIntermediateKeys = false', async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.setIn({ path: '/a/b/c', value: 42 })).toThrow();
+            expect(() => doc.setIn({ path: 'a.b.c', value: 42 })).toThrow();
         });
 
         it('will not throw an error when called on a path that does not exist, createIntermediateKeys = true', async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.setIn({ path: '/a/b/c', value: 42, createIntermediateKeys: true })).not.toThrow();
+            expect(() => doc.setIn({ path: 'a.b.c', value: 42, createIntermediateKeys: true })).not.toThrow();
             const expectedValue = `key1: 42
 a:
   b:
@@ -161,7 +133,7 @@ a:
     c:
       d: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.setIn({ path: '/a/b/c/key', value: 13, comment: 'We like prime numbers' });
+            doc.setIn({ path: 'a.b.c.key', value: 13, comment: 'We like prime numbers' });
             const expectedValue = `a:
   b:
     c:
@@ -180,7 +152,7 @@ a:
       - d: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
             doc.setIn({
-                path: '/a/b/c/1/key',
+                path: 'a.b.c.1.key',
                 value: 13,
                 comment: 'We like prime numbers',
                 createIntermediateKeys: true
@@ -261,7 +233,7 @@ key1: 42
             const serializedYaml = `key1: 42
 seq1: []`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: 42 });
+            doc.appendTo({ path: 'seq1', value: 42 });
             const expectedValue = `key1: 42
 seq1: [ 42 ]
 `;
@@ -272,7 +244,7 @@ seq1: [ 42 ]
             const serializedYaml = `key1: 42
 seq1: [ 13 ]`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: 42 });
+            doc.appendTo({ path: 'seq1', value: 42 });
             const expectedValue = `key1: 42
 seq1: [ 13, 42 ]
 `;
@@ -285,7 +257,7 @@ seq1:
   - 13
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: 42 });
+            doc.appendTo({ path: 'seq1', value: 42 });
             const expectedValue = `key1: 42
 seq1:
   - 13
@@ -298,7 +270,7 @@ seq1:
             const serializedYaml = `key1: 42
 seq1: []`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: { item1: 42 } });
+            doc.appendTo({ path: 'seq1', value: { item1: 42 } });
             const expectedValue = `key1: 42
 seq1: [ { item1: 42 } ]
 `;
@@ -311,7 +283,7 @@ seq1:
   - name: name1
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: { name: 'name2' } });
+            doc.appendTo({ path: 'seq1', value: { name: 'name2' } });
             const expectedValue = `key1: 42
 seq1:
   - name: name1
@@ -323,7 +295,7 @@ seq1:
         it('appends scalar, after creating sequence, at root', async () => {
             const serializedYaml = `key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: 42 });
+            doc.appendTo({ path: 'seq1', value: 42 });
             const expectedValue = `key1: 42
 seq1:
   - 42
@@ -334,13 +306,13 @@ seq1:
         it('error if trying to append to non-sequence', async () => {
             const serializedYaml = `key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.appendTo({ path: '/key1', value: 42 })).toThrow();
+            expect(() => doc.appendTo({ path: 'key1', value: 42 })).toThrow();
         });
 
         it('appends object, after creating sequence, at root', async () => {
             const serializedYaml = `key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: { item1: 42 } });
+            doc.appendTo({ path: 'seq1', value: { item1: 42 } });
             const expectedValue = `key1: 42
 seq1:
   - item1: 42
@@ -351,20 +323,20 @@ seq1:
         it("error if seq doesn't exist & createIntermediateKeys = false, scalar", async () => {
             const serializedYaml = `key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.appendTo({ path: '/seq1', value: 42, createIntermediateKeys: false })).toThrow();
+            expect(() => doc.appendTo({ path: 'seq1', value: 42, createIntermediateKeys: false })).toThrow();
         });
 
         it("error if seq doesn't exist & createIntermediateKeys = false, object", async () => {
             const serializedYaml = `key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.appendTo({ path: '/seq1', value: { item: 42 }, createIntermediateKeys: false })).toThrow();
+            expect(() => doc.appendTo({ path: 'seq1', value: { item: 42 }, createIntermediateKeys: false })).toThrow();
         });
 
         it('appends scalar with comment to existing empty sequence, at root', async () => {
             const serializedYaml = `key1: 42
 seq1: []`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: 42, nodeComment: 'commented item' });
+            doc.appendTo({ path: 'seq1', value: 42, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 seq1:
   [
@@ -380,7 +352,7 @@ seq1:
 seq1:
   - 13 # old comment`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: 42, nodeComment: 'commented item' });
+            doc.appendTo({ path: 'seq1', value: 42, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 seq1:
   - 13 # old comment
@@ -394,7 +366,7 @@ seq1:
             const serializedYaml = `key1: 42
 seq1: []`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: { item: 42 }, nodeComment: 'commented item' });
+            doc.appendTo({ path: 'seq1', value: { item: 42 }, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 seq1:
   [
@@ -410,7 +382,7 @@ seq1:
 seq1:
   - item: 13 # old comment`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/seq1', value: { item: 42 }, nodeComment: 'commented item' });
+            doc.appendTo({ path: 'seq1', value: { item: 42 }, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 seq1:
   - item: 13 # old comment
@@ -428,7 +400,7 @@ l1:
       l4:
         seq1: []`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42 });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: 42 });
             const expectedValue = `key1: 42
 l1:
   l2:
@@ -448,7 +420,7 @@ l1:
         seq1:
           - 13`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42 });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: 42 });
             const expectedValue = `key1: 42
 l1:
   l2:
@@ -469,7 +441,7 @@ l1:
       l4:
         seq1: []`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 } });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: { item: 42 } });
             const expectedValue = `key1: 42
 l1:
   l2:
@@ -489,7 +461,7 @@ l1:
         seq1:
           - item: 13`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 } });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: { item: 42 } });
             const expectedValue = `key1: 42
 l1:
   l2:
@@ -510,7 +482,7 @@ l1:
       l4:
         key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42 });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: 42 });
             const expectedValue = `key1: 42
 l1:
   l2:
@@ -531,7 +503,7 @@ l1:
       l4:
         key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 } });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: { item: 42 } });
             const expectedValue = `key1: 42
 l1:
   l2:
@@ -553,7 +525,7 @@ l1:
         key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
             expect(() =>
-                doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, createIntermediateKeys: false })
+                doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: 42, createIntermediateKeys: false })
             ).toThrow();
         });
 
@@ -566,7 +538,7 @@ l1:
         key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
             expect(() =>
-                doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, createIntermediateKeys: false })
+                doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: { item: 42 }, createIntermediateKeys: false })
             ).toThrow();
         });
 
@@ -583,7 +555,7 @@ l1: # level 1
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, nodeComment: ' commented item' });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: 42, nodeComment: ' commented item' });
             const expectedValue = `# Top comment
 
 key1: 42 # key1
@@ -620,7 +592,7 @@ l1: # level 1
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, nodeComment: ' commented item' });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: 42, nodeComment: ' commented item' });
             const expectedValue = `# Top comment
 
 key1: 42 # key1
@@ -655,7 +627,7 @@ l1: # level 1
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, nodeComment: ' commented item' });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: { item: 42 }, nodeComment: ' commented item' });
             const expectedValue = `# Top comment
 
 key1: 42 # key1
@@ -692,7 +664,7 @@ l1: # level 1
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, nodeComment: ' commented item' });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: { item: 42 }, nodeComment: ' commented item' });
             const expectedValue = `# Top comment
 
 key1: 42 # key1
@@ -722,7 +694,7 @@ l1:
       l4:
         key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: 42, nodeComment: 'commented item' });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: 42, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 l1:
   l2:
@@ -744,7 +716,7 @@ l1:
       l4:
         key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
-            doc.appendTo({ path: '/l1/l2/l3/l4/seq1', value: { item: 42 }, nodeComment: 'commented item' });
+            doc.appendTo({ path: 'l1.l2.l3.l4.seq1', value: { item: 42 }, nodeComment: 'commented item' });
             const expectedValue = `key1: 42
 l1:
   l2:
@@ -758,40 +730,16 @@ l1:
             expect(doc.toString()).toEqual(expectedValue);
         });
 
-        it("throws an error to try to add comment to scalar value's properties", async () => {
-            const serializedYaml = 'seq1: []';
-            const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() =>
-                doc.appendTo({ path: '/seq1', value: 42, comments: [{ path: 'key1/key2', comment: 'hey' }] })
-            ).toThrow(t('error.scalarValuesDoNotHaveProperties'));
-        });
-
-        it('throws an error to try to add comment to property with empty path', async () => {
-            const serializedYaml = 'seq1: []';
-            const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.appendTo({ path: '/seq1', value: {}, comments: [{ path: '', comment: 'hey' }] })).toThrow(
-                t('error.pathCannotBeEmpty')
-            );
-        });
-
-        it('throws an error to try to add comment to property with invalid path', async () => {
-            const serializedYaml = 'seq1: []';
-            const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() =>
-                doc.appendTo({ path: '/seq1', value: {}, comments: [{ path: 'a/b/c', comment: 'hey' }] })
-            ).toThrow();
-        });
-
         it('adds comments to object properties, existing seq at root', async () => {
             const serializedYaml = `seq1:
   - a: 13`;
             const doc = await YamlDocument.newInstance(serializedYaml);
             doc.appendTo({
-                path: '/seq1',
+                path: 'seq1',
                 value: { a: 1, b: { c: { d: 42 } } },
                 comments: [
                     { path: 'a', comment: 'A' },
-                    { path: 'b/c/d', comment: 'The answer!' }
+                    { path: 'b.c.d', comment: 'The answer!' }
                 ]
             });
             const expectedValue = `seq1:
@@ -809,11 +757,11 @@ l1:
 - a: 13`;
             const doc = await YamlDocument.newInstance(serializedYaml);
             doc.appendTo({
-                path: '/seq1',
+                path: 'seq1',
                 value: { a: 1, b: { c: { d: 42 } } },
                 comments: [
                     { path: 'a', comment: 'A' },
-                    { path: 'b/c/d', comment: 'The answer!' }
+                    { path: 'b.c.d', comment: 'The answer!' }
                 ]
             });
             const expectedValue = `seq2:
@@ -838,11 +786,11 @@ seq1:
           - w: 13`;
         const doc = await YamlDocument.newInstance(serializedYaml);
         doc.appendTo({
-            path: '/seq1/1/a/b/d',
+            path: 'seq1.1.a.b.d',
             value: { w: 1, x: { y: { z: 42 } } },
             comments: [
                 { path: 'w', comment: 'W' },
-                { path: 'x/y/z', comment: 'The answer!' }
+                { path: 'x.y.z', comment: 'The answer!' }
             ]
         });
         const expectedValue = `seq1:

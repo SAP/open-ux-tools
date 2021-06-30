@@ -2,7 +2,7 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { UI5Config } from '../../../lib/ui5-config/dist';
+import { UI5Config } from '@sap/ux-ui5-config';
 
 import { OdataService, OdataVersion, enhanceData } from './data';
 import { getMiddlewareConfig, getLocalMiddlewareConfig } from './data/middleware';

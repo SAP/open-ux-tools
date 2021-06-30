@@ -35,4 +35,4 @@ export interface MiddlewareConfig {
     };
 }
 
-export { NodeComment } from '@sap/ux-yaml';
+export { NodeComment, Path } from '@sap/ux-yaml';

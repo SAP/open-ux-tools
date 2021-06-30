@@ -1,7 +1,7 @@
-import { MiddlewareConfig, NodeComment } from '@sap/ux-ui5-config';
+import { MiddlewareConfig, NodeComment, Path } from '@sap/ux-ui5-config';
 import { OdataService } from './types';
 
-export const getMiddlewareConfig = (data: OdataService): [MiddlewareConfig[], NodeComment[]] => {
+export const getMiddlewareConfig = (data: OdataService): [MiddlewareConfig[], NodeComment<MiddlewareConfig>[]] => {
     const destination = data.destination?.name || undefined;
     const destinationInstance = data.destination?.instance || undefined;
 
@@ -29,14 +29,14 @@ export const getMiddlewareConfig = (data: OdataService): [MiddlewareConfig[], No
         }
     ];
 
-    const comments: NodeComment[] = [
+    const comments: NodeComment<MiddlewareConfig>[] = [
         {
-            path: '/configuration/ignoreCertError',
+            path: 'configuration.ignoreCertError',
             comment:
                 ' If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted'
         },
         {
-            path: '/configuration/ui5/version',
+            path: 'configuration.ui5.version' as Path<MiddlewareConfig>,
             comment: ' The UI5 version, for instance, 1.78.1. null means latest version'
         }
     ];

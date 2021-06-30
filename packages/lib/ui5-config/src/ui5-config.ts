@@ -15,13 +15,13 @@ export class UI5Config {
     private constructor() {}
 
     public addLibraries(libraries: string[]): UI5Config {
-        libraries.forEach((lib) => this.document.appendTo({ path: '/framework/libraries', value: { name: lib } }));
+        libraries.forEach((lib) => this.document.appendTo({ path: 'framework.libraries', value: { name: lib } }));
         return this;
     }
 
-    public addCustomMiddleware(middleware: MiddlewareConfig[], comments?: NodeComment[]): UI5Config {
+    public addCustomMiddleware(middleware: MiddlewareConfig[], comments?: NodeComment<MiddlewareConfig>[]): UI5Config {
         for (const mw of middleware) {
-            this.document.appendTo({ path: '/server/customMiddleware', value: mw, comments });
+            this.document.appendTo({ path: 'server.customMiddleware', value: mw, comments });
         }
         return this;
     }
