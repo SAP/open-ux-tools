@@ -1,0 +1,22 @@
+{
+    "include": ["global.d.ts"],
+    "exclude": ["node_modules/"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "declaration": true,
+        "declarationMap": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "lib": ["es6", "dom", "dom.iterable"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noEmit": false,
+        "outDir": "./dist",
+        "sourceMap": true,
+        "strict": true,
+        "strictPropertyInitialization": false,
+        "target": "ES6",
+        "skipLibCheck": true
+    }
+}

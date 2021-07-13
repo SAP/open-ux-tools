@@ -1,0 +1,12 @@
+{
+    "error": {
+        "yamlParsing": "Error parsing YAML document",
+        "nodeNotFound": "Node not found at path: [{{- path }}]",
+        "propertyNotFound": "Node not found at path: [{{- path }}]",
+        "pathCannotBeEmpty": "Path cannot be empty",
+        "pathDoesNotExist": "Parent node does not exist at: [{{- path }}]",
+        "seqDoesNotExist": "Sequence does not exist at: [{{- path }}]",
+        "tryingToAppendToNonSequence": "Cannot append to non-sequence at: [{{- path }}]",
+        "scalarValuesDoNotHaveProperties": "Scalar values do not have properties"
+    }
+}

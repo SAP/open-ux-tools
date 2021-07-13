@@ -1,0 +1,25 @@
+{
+    "name": "@sap/ux-ui5-application-template",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "rimraf dist && tsc",
+        "watch": "tsc --watch",
+        "test": "jest"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "templates"
+    ],
+    "dependencies": {
+        "ejs": "^3.1.6",
+        "mem-fs": "^2.1.0",
+        "mem-fs-editor": "^9.0.0"
+    },
+    "devDependencies": {
+        "@types/ejs": "^3.0.6",
+        "@types/mem-fs-editor": "^7.0.0"
+    }
+}
