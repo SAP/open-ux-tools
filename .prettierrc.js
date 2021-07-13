@@ -1,6 +1,5 @@
 // https://prettier.io/docs/en/options.html
 // https://prettier.io/docs/en/options.html#parser
-// https://github.wdf.sap.corp/ux-engineering/tools-suite/blob/master/docs/dev-guide/formatting.md
 
 /* Override the shared config in individual packages if required like this:
     module.exports = {
