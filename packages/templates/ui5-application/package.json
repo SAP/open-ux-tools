@@ -1,6 +1,7 @@
 {
     "name": "@sap/ux-ui5-application-template",
     "version": "0.0.1",
+    "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
         "build": "rimraf dist && tsc",
@@ -8,6 +9,7 @@
         "test": "jest"
     },
     "files": [
+        "LICENSE",
         "dist",
         "templates"
     ],

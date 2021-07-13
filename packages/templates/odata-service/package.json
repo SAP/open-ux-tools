@@ -1,6 +1,7 @@
 {
     "name": "@sap/ux-odata-service-template",
     "version": "0.0.1",
+    "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
         "build": "rimraf dist && tsc",
@@ -9,6 +10,7 @@
         "test:local": "node -r ts-node/register test/index.ts"
     },
     "files": [
+        "LICENSE",
         "dist",
         "templates"
     ],
