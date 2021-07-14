@@ -1,0 +1,9 @@
+{
+    "scripts": {
+        "start-local": "fiori run --config ui5-local.yaml --open 'index.html'",
+        "deploy-config": "fiori add deploy-config"
+    },
+    "devDependencies": {
+        "@sap/ux-ui5-fe-mockserver-middleware": "latest"
+    }
+}

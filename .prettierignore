@@ -1,0 +1,4 @@
+*.md
+dist/
+**/packages/templates/**/templates
+!packages/templates/

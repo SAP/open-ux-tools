@@ -1,0 +1,17 @@
+{
+    "name": "@sap/ux-ui5-config",
+    "description": "Library to UI5 configuration artifacts",
+    "version": "0.0.1",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "rimraf dist && tsc",
+        "watch": "tsc --watch",
+        "test": "jest --passWithNoTests"
+    },
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "@sap/ux-yaml": "0.0.1"
+    }
+}

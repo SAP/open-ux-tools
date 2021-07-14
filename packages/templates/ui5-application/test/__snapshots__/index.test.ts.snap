@@ -1,0 +1,187 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UI5 templates generates files correctly 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+	\\"name\\": \\"test\\",
+	\\"version\\": \\"0.9.0\\",
+	\\"main\\": \\"dist/index.html\\",
+	\\"dependencies\\": {},
+	\\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.8.1\\"
+},
+	\\"scripts\\": {
+    \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
+},
+	\\"ui5\\": {
+		\\"dependencies\\": []
+	},
+	\\"files\\": [
+		\\"dist\\"
+	]
+}",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "specVersion: \\"2.2\\"
+metadata:
+  name: myApp
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+framework:
+  name: SAPUI5
+  version: 1.84.0
+  libraries:
+    - name: sap.ui.core
+    - name: sap.m
+    - name: sap.ui.layout
+    - name: themelib_sap_fiori_3
+",
+    "state": "modified",
+  },
+  "webapp/Component.js": Object {
+    "contents": "sap.ui.define(
+    [\\"sap/ui/core/UIComponent\\"],
+    function (UIComponent) {
+        \\"use strict\\";
+
+        return UIComponent.extend(\\"myApp.Component\\", {
+            metadata: {
+                manifest: \\"json\\"
+            },
+
+            /**
+             * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+             * @public
+             * @override
+             */
+            init: function () {
+                // call the base component's init function
+                UIComponent.prototype.init.apply(this, arguments);
+
+                // enable routing
+                this.getRouter().initialize();
+            }
+        });
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "#XTIT: Application name
+appTitle=My application
+
+#YDES: Application description
+appDescription=Description of myApp",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n_en.properties": Object {
+    "contents": "appTitle=My application
+appDescription=Description of myApp",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>My application</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-resourceroots='{
+            \\"myApp\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"myApp\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"myApp\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.12.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"myApp\\",
+      \\"type\\": \\"application\\",
+      \\"i18n\\": \\"i18n/i18n.properties\\",
+      \\"applicationVersion\\": {
+        \\"version\\": \\"0.9.0\\"
+      },
+      \\"title\\": \\"{{appTitle}}\\",
+      \\"description\\": \\"{{appDescription}}\\"
+    },
+    \\"sap.ui\\": {
+      \\"technology\\": \\"UI5\\",
+      \\"icons\\": {
+        \\"icon\\": \\"\\",
+        \\"favIcon\\": \\"\\",
+        \\"phone\\": \\"\\",
+        \\"phone@2\\": \\"\\",
+        \\"tablet\\": \\"\\",
+        \\"tablet@2\\": \\"\\"
+      },
+      \\"deviceTypes\\": {
+        \\"desktop\\": true,
+        \\"tablet\\": true,
+        \\"phone\\": true
+      }
+    },
+    \\"sap.ui5\\": {
+      \\"flexEnabled\\": true,
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.60\\",
+        \\"libs\\": {
+          \\"sap.ui.core\\": {}
+        }
+      },
+      \\"contentDensities\\": {
+        \\"compact\\": true,
+        \\"cozy\\": true
+      },
+      \\"models\\": {
+        \\"i18n\\": {
+          \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+          \\"settings\\": {
+            \\"bundleName\\": \\"myApp.i18n.i18n\\"
+          }
+        }
+      },
+      \\"resources\\": {
+        \\"css\\": []
+      },
+      \\"routing\\": {
+        \\"config\\": {},
+        \\"routes\\": [],
+        \\"targets\\": {}
+      }
+    }
+  }",
+    "state": "modified",
+  },
+}
+`;

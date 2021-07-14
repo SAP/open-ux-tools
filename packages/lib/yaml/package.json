@@ -1,0 +1,22 @@
+{
+    "name": "@sap/ux-yaml",
+    "description": "Library to manipulate YAML file contents",
+    "version": "0.0.1",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "rimraf dist && tsc",
+        "watch": "tsc --watch",
+        "test": "jest"
+    },
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "i18next": "20.3.2",
+        "i18next-fs-backend": "1.1.1",
+        "yaml": "^2.0.0-6"
+    },
+    "devDependencies": {
+        "@types/i18next-fs-backend": "1.0.0"
+    }
+}

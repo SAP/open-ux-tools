@@ -1,0 +1,14 @@
+{
+	"name": "<%=package.name.toLowerCase()%>",
+	"version": "<%= package.version %>",
+	"main": "dist/index.html",
+	"dependencies": {},
+	"devDependencies": <%- JSON.stringify(package.devDependencies, null, 4) -%>,
+	"scripts": <%- JSON.stringify(package.scripts, null, 4) -%>,
+	"ui5": {
+		"dependencies": []
+	},
+	"files": [
+		"dist"
+	]
+}

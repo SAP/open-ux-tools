@@ -1,0 +1,27 @@
+{
+    "name": "@sap/ux-odata-service-template",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "rimraf dist && tsc",
+        "watch": "tsc --watch",
+        "test": "jest --colors --silent",
+        "test:local": "node -r ts-node/register test/index.ts"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "templates"
+    ],
+    "dependencies": {
+        "ejs": "^3.1.6",
+        "mem-fs": "^2.1.0",
+        "mem-fs-editor": "^9.0.0",
+        "@sap/ux-ui5-config": "0.0.1"
+    },
+    "devDependencies": {
+        "@types/ejs": "^3.0.6",
+        "@types/mem-fs-editor": "^7.0.0"
+    }
+}
