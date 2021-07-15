@@ -1004,7 +1004,7 @@ worklistTableTitleCount=<Products> ({0})
 #XTIT: The title of the column containing the ProductName of Products
 tableNameColumnTitle=<ProductName>
 
-#XTIT: The title of the column containing the {{1worklist.parameters.Object_Number.value.name}} and the unit of measure
+#XTIT: The title of the column containing the UnitsInStock and the unit of measure
 tableUnitNumberColumnTitle=<UnitsInStock>
 
 #XBLI: text for a table with no data
@@ -1024,7 +1024,7 @@ objectTitle=<Products>
 ProductNameLabel=ProductName
 
 
-#XTIT: Label for the {{1worklist.parameters.Object_Number.value.name}}
+#XTIT: Label for the UnitsInStock
 UnitsInStockLabel=UnitsInStock
 
 
@@ -1088,7 +1088,7 @@ worklistTableTitleCount=<Products> ({0})
 #XTIT: The title of the column containing the ProductName of Products
 tableNameColumnTitle=<ProductName>
 
-#XTIT: The title of the column containing the {{1worklist.parameters.Object_Number.value.name}} and the unit of measure
+#XTIT: The title of the column containing the UnitsInStock and the unit of measure
 tableUnitNumberColumnTitle=<UnitsInStock>
 
 #XBLI: text for a table with no data
@@ -1108,7 +1108,7 @@ objectTitle=<Products>
 ProductNameLabel=ProductName
 
 
-#XTIT: Label for the {{1worklist.parameters.Object_Number.value.name}}
+#XTIT: Label for the UnitsInStock
 UnitsInStockLabel=UnitsInStock
 
 
