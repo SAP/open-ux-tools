@@ -1,0 +1,122 @@
+<mvc:View
+	controllerName="{{2masterdetail.parameters.AppId.value}}.controller.Detail"
+	xmlns="sap.m"
+	xmlns:semantic="sap.f.semantic"{{#if 2masterdetail.parameters.FLP.value.value}}
+	xmlns:footerbar="sap.ushell.ui.footerbar"{{/if}}
+	xmlns:mvc="sap.ui.core.mvc">
+
+	<semantic:SemanticPage
+		id="detailPage"
+		busy="{detailView>/busy}"
+		busyIndicatorDelay="{detailView>/delay}">
+		<semantic:titleHeading>
+			<Title
+				text="{{#addCurlyBrackets}}{{2masterdetail.parameters.Object_Identifier.value.name}}{{/addCurlyBrackets}}"
+				level="H2"/>
+		</semantic:titleHeading>
+		<semantic:headerContent>
+			<ObjectAttribute title="{i18n>priceTitle}"/>
+			{{#if 2masterdetail.parameters.Object_Number.value.name}}
+			<ObjectNumber
+				id="objectHeaderNumber"
+				number="{
+					path: '{{2masterdetail.parameters.Object_Number.value.name}}',
+					formatter: '.formatter.currencyValue'
+				}"
+			{{#if 2masterdetail.parameters.Object_UnitOfMeasure.value.name}}
+				unit="{{#addCurlyBrackets}}{{2masterdetail.parameters.Object_UnitOfMeasure.value.name}}{{/addCurlyBrackets}}"{{/if}}
+			/>{{/if}}
+		</semantic:headerContent>
+		<semantic:content>
+{{#if 2masterdetail.parameters.LineItemCollection.value.name }}
+			<Table
+				id="lineItemsList"
+				width="auto"
+				items="{{#addCurlyBrackets}}{{2masterdetail.parameters.LineItemCollection.value.name}}{{/addCurlyBrackets}}"
+				updateFinished=".onListUpdateFinished"
+				noDataText="{i18n>detailLineItemTableNoDataText}"
+				busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+				<headerToolbar>
+					<Toolbar>
+						<Title
+							id="lineItemsTitle"
+							text="{detailView>/lineItemListTitle}"
+							titleStyle="H3"
+							level="H3"/>
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column>
+						<Text text="{i18n>detailLineItemTableIDColumn}"/>
+					</Column>
+					<Column
+						minScreenWidth="Tablet"
+						demandPopin="true"
+						hAlign="End">
+						<Text text="{i18n>detailLineItemTableUnitNumberColumn}"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<ObjectIdentifier
+								title="{{#addCurlyBrackets}}{{2masterdetail.parameters.LineItem_Identifier.value.name}}{{/addCurlyBrackets}}"
+								text="{{#addCurlyBrackets}}{{2masterdetail.parameters.LineItemCollection_Key.value.name}}{{/addCurlyBrackets}}"/>
+							<ObjectNumber
+{{#if 2masterdetail.parameters.LineItem_Number.value.name }}
+								number="{
+									path: '{{2masterdetail.parameters.LineItem_Number.value.name}}',
+									formatter: '.formatter.currencyValue'
+								}"
+{{/if}}
+{{#if 2masterdetail.parameters.LineItem_UnitOfMeasure.value.name }}
+								unit="{{#addCurlyBrackets}}{{2masterdetail.parameters.LineItem_UnitOfMeasure.value.name }}{{/addCurlyBrackets}}"{{/if}}/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>{{/if}}
+		</semantic:content>
+		<!--Semantic ShareMenu Buttons-->
+		<semantic:sendEmailAction>
+			<semantic:SendEmailAction
+				id="shareEmail"
+				press=".onSendEmailPress"/>
+		</semantic:sendEmailAction>
+
+		{{#if 2masterdetail.parameters.FLP.value.value}}
+		<semantic:shareInJamAction>
+			<semantic:ShareInJamAction
+				id="shareInJam"
+				visible="{FLP>/isShareInJamActive}"
+				press=".onShareInJamPress"/>
+		</semantic:shareInJamAction>
+
+		<semantic:saveAsTileAction>
+			<footerbar:AddBookmarkButton
+				id="shareTile"
+				title="{detailView>/saveAsTileTitle}"/>
+		</semantic:saveAsTileAction>
+
+		{{/if}}
+		<semantic:closeAction>
+			<semantic:CloseAction
+					id="closeColumn"
+					press=".onCloseDetailPress"/>
+		</semantic:closeAction>
+
+		<semantic:fullScreenAction>
+			<semantic:FullScreenAction
+					id="enterFullScreen"
+					visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+					press=".toggleFullScreen"/>
+		</semantic:fullScreenAction>
+		<semantic:exitFullScreenAction>
+			<semantic:ExitFullScreenAction
+					id="exitFullScreen"
+					visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}"
+					press=".toggleFullScreen"/>
+		</semantic:exitFullScreenAction>
+
+	</semantic:SemanticPage>
+
+</mvc:View>

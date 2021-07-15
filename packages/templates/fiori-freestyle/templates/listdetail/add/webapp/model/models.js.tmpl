@@ -1,0 +1,25 @@
+sap.ui.define([
+	"sap/ui/model/json/JSONModel",
+	"sap/ui/Device"{{#if 2masterdetail.parameters.FLP.value.value}},
+	"sap/base/util/ObjectPath"{{/if}}
+], function (JSONModel, Device{{#if 2masterdetail.parameters.FLP.value.value}}, ObjectPath{{/if}}) {
+	"use strict";
+
+	return {
+		createDeviceModel : function () {
+			var oModel = new JSONModel(Device);
+			oModel.setDefaultBindingMode("OneWay");
+			return oModel;
+		}{{#if 2masterdetail.parameters.FLP.value.value}},
+
+		createFLPModel : function () {
+			var fnGetuser = ObjectPath.get("sap.ushell.Container.getUser"),
+				bIsShareInJamActive = fnGetuser ? fnGetuser().isJamActive() : false,
+				oModel = new JSONModel({
+					isShareInJamActive: bIsShareInJamActive
+				});
+			oModel.setDefaultBindingMode("OneWay");
+			return oModel;
+		}{{/if}}
+	};
+});
