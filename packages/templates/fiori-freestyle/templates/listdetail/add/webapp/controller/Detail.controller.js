@@ -131,9 +131,9 @@ sap.ui.define([
 			// No data for the binding
 			if (!oElementBinding.getBoundContext()) {
 				this.getRouter().getTargets().display("detailObjectNotFound");
-				// if object could not be found, the selection in the master list
+				// if object could not be found, the selection in the list list
 				// does not make sense anymore.
-				this.getOwnerComponent().oListSelector.clearMasterListSelection();
+				this.getOwnerComponent().oListSelector.clearListListSelection();
 				return;
 			}
 
@@ -176,13 +176,13 @@ sap.ui.define([
 		},
 
 		/**
-		 * Set the full screen mode to false and navigate to master page
+		 * Set the full screen mode to false and navigate to list page
 		 */
 		onCloseDetailPress: function () {
 			this.getModel("appView").setProperty("/actionButtonsInfo/midColumn/fullScreen", false);
-			// No item should be selected on master after detail page is closed
-			this.getOwnerComponent().oListSelector.clearMasterListSelection();
-			this.getRouter().navTo("master");
+			// No item should be selected on list after detail page is closed
+			this.getOwnerComponent().oListSelector.clearListListSelection();
+			this.getRouter().navTo("list");
 		},
 
 		/**

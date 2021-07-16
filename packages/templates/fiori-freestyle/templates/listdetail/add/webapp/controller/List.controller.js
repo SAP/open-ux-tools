@@ -11,7 +11,7 @@ sap.ui.define([
 ], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter) {
 	"use strict";
 
-	return BaseController.extend("<%=app.id%>.controller.Master", {
+	return BaseController.extend("<%=app.id%>.controller.List", {
 
 		formatter: formatter,
 
@@ -20,16 +20,16 @@ sap.ui.define([
 		/* =========================================================== */
 
 		/**
-		 * Called when the master list controller is instantiated. It sets up the event handling for the master/detail communication and other lifecycle tasks.
+		 * Called when the list list controller is instantiated. It sets up the event handling for the list/detail communication and other lifecycle tasks.
 		 * @public
 		 */
 		onInit : function () {
 			// Control state model
 			var oList = this.byId("list"),
 				oViewModel = this._createViewModel(),
-				// Put down master list's original value for busy indicator delay,
-				// so it can be restored later on. Busy handling on the master list is
-				// taken care of by the master list itself.
+				// Put down list list's original value for busy indicator delay,
+				// so it can be restored later on. Busy handling on the list list is
+				// taken care of by the list list itself.
 				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
 
 <%if (template.settings.entity.numberProperty) {%>
@@ -39,10 +39,10 @@ sap.ui.define([
 						key, text;
 					if (iNumber <= 20) {
 						key = "LE20";
-						text = this.getResourceBundle().getText("masterGroup1Header1");
+						text = this.getResourceBundle().getText("listGroup1Header1");
 					} else {
 						key = "GT20";
-						text = this.getResourceBundle().getText("masterGroup1Header2");
+						text = this.getResourceBundle().getText("listGroup1Header2");
 					}
 					return {
 						key: key,
@@ -58,7 +58,7 @@ sap.ui.define([
 				aSearch : []
 			};
 
-			this.setModel(oViewModel, "masterView");
+			this.setModel(oViewModel, "listView");
 			// Make sure, busy indication is showing immediately so there is no
 			// break after the busy indication for loading the view's meta data is
 			// ended (see promise 'oWhenMetadataIsLoaded' in AppController)
@@ -73,7 +73,7 @@ sap.ui.define([
 				}.bind(this)
 			});
 
-			this.getRouter().getRoute("master").attachPatternMatched(this._onMasterMatched, this);
+			this.getRouter().getRoute("list").attachPatternMatched(this._onMasterMatched, this);
 			this.getRouter().attachBypassed(this.onBypassed, this);
 		},
 
@@ -83,17 +83,17 @@ sap.ui.define([
 
 		/**
 		 * After list data is available, this handler method updates the
-		 * master list counter
+		 * list list counter
 		 * @param {sap.ui.base.Event} oEvent the update finished event
 		 * @public
 		 */
 		onUpdateFinished : function (oEvent) {
-			// update the master list object counter after new data is loaded
+			// update the list list object counter after new data is loaded
 			this._updateListItemCount(oEvent.getParameter("total"));
 		},
 
 		/**
-		 * Event handler for the master search field. Applies current
+		 * Event handler for the list search field. Applies current
 		 * filter value and triggers a new search. If the search field's
 		 * 'refresh' button has been pressed, no new search is triggered
 		 * and the list binding is refresh instead.
@@ -103,7 +103,7 @@ sap.ui.define([
 		onSearch: function (oEvent) {
 			if (oEvent.getParameters().refreshButtonPressed) {
 				// Search field's 'refresh' button has been pressed.
-				// This is visible if you select any master list item.
+				// This is visible if you select any list list item.
 				// In this case no new search is triggered, we only
 				// refresh the list binding.
 				this.onRefresh();
@@ -165,8 +165,8 @@ sap.ui.define([
 		/**
 		 * Event handler called when ViewSettingsDialog has been confirmed, i.e.
 		 * has been closed with 'OK'. In the case, the currently chosen filters, sorters or groupers
-		 * are applied to the master list, which can also mean that they
-		 * are removed from the master list, in case they are
+		 * are applied to the list list, which can also mean that they
+		 * are removed from the list list, in case they are
 		 * removed in the ViewSettingsDialog.
 		 * @param {sap.ui.base.Event} oEvent the confirm event
 		 * @public
@@ -200,7 +200,7 @@ sap.ui.define([
 		},
 
 		/**
-		 * Apply the chosen sorter and grouper to the master list
+		 * Apply the chosen sorter and grouper to the list list
 		 * @param {sap.ui.base.Event} oEvent the confirm event
 		 * @private
 		 */
@@ -243,7 +243,7 @@ sap.ui.define([
 
 		/**
 		 * Event handler for the bypassed event, which is fired when no routing pattern matched.
-		 * If there was an object selected in the master list, that selection is removed.
+		 * If there was an object selected in the list list, that selection is removed.
 		 * @public
 		 */
 		onBypassed: function () {
@@ -252,8 +252,8 @@ sap.ui.define([
 
 		/**
 		 * Used to create GroupHeaders with non-capitalized caption.
-		 * These headers are inserted into the master list to
-		 * group the master list's items.
+		 * These headers are inserted into the list list to
+		 * group the list list's items.
 		 * @param {Object} oGroup group whose text is to be displayed
 		 * @public
 		 * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
@@ -285,8 +285,8 @@ sap.ui.define([
 				isFilterBarVisible: false,
 				filterBarLabel: "",
 				delay: 0,
-				title: this.getResourceBundle().getText("masterTitleCount", [0]),
-				noDataText: this.getResourceBundle().getText("masterListNoDataText"),
+				title: this.getResourceBundle().getText("listTitleCount", [0]),
+				noDataText: this.getResourceBundle().getText("listListNoDataText"),
 				sortBy: "<%=template.settings.entity.idProperty%>",
 				groupBy: "None"
 			});
@@ -313,7 +313,7 @@ sap.ui.define([
 		},
 
 		/**
-		 * Sets the item count on the master list header
+		 * Sets the item count on the list list header
 		 * @param {integer} iTotalItems the total number of items in the list
 		 * @private
 		 */
@@ -321,8 +321,8 @@ sap.ui.define([
 			var sTitle;
 			// only update the counter if the length is final
 			if (this._oList.getBinding("items").isLengthFinal()) {
-				sTitle = this.getResourceBundle().getText("masterTitleCount", [iTotalItems]);
-				this.getModel("masterView").setProperty("/title", sTitle);
+				sTitle = this.getResourceBundle().getText("listTitleCount", [iTotalItems]);
+				this.getModel("listView").setProperty("/title", sTitle);
 			}
 		},
 
@@ -332,14 +332,14 @@ sap.ui.define([
 		 */
 		_applyFilterSearch: function () {
 			var aFilters = this._oListFilterState.aSearch.concat(this._oListFilterState.aFilter),
-				oViewModel = this.getModel("masterView");
+				oViewModel = this.getModel("listView");
 			this._oList.getBinding("items").filter(aFilters, "Application");
 			// changes the noDataText of the list in case there are no filter results
 			if (aFilters.length !== 0) {
-				oViewModel.setProperty("/noDataText", this.getResourceBundle().getText("masterListNoDataWithFilterOrSearchText"));
+				oViewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataWithFilterOrSearchText"));
 			} else if (this._oListFilterState.aSearch.length > 0) {
 				// only reset the no data text to default when no new search was triggered
-				oViewModel.setProperty("/noDataText", this.getResourceBundle().getText("masterListNoDataText"));
+				oViewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataText"));
 			}
 		},
 
@@ -349,9 +349,9 @@ sap.ui.define([
 		 * @private
 		 */
 		_updateFilterBar : function (sFilterBarText) {
-			var oViewModel = this.getModel("masterView");
+			var oViewModel = this.getModel("listView");
 			oViewModel.setProperty("/isFilterBarVisible", (this._oListFilterState.aFilter.length > 0));
-			oViewModel.setProperty("/filterBarLabel", this.getResourceBundle().getText("masterFilterBarText", [sFilterBarText]));
+			oViewModel.setProperty("/filterBarLabel", this.getResourceBundle().getText("listFilterBarText", [sFilterBarText]));
 		}
 
 	});

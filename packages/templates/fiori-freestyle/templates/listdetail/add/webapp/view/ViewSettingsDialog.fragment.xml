@@ -7,36 +7,36 @@
 		confirm=".onConfirmViewSettingsDialog">
 		<sortItems>
 			<ViewSettingsItem
-				text="{i18n>masterSort1}"
-				key="{{2masterdetail.parameters.Object_Identifier.value.name}}"
+				text="{i18n>listSort1}"
+				key="<%=template.settings.entity.idProperty%>"
 				selected="true"/>
 <%if (template.settings.entity.numberProperty) {%>
 			<ViewSettingsItem
-				text="{i18n>masterSort2}"
-				key="{{2masterdetail.parameters.Object_Number.value.name}}"/><%}%>
+				text="{i18n>listSort2}"
+				key="<%=template.settings.entity.numberProperty%>"/><%}%>
 		</sortItems>
 <%if (template.settings.entity.numberProperty) {%>
 		<filterItems>
 			<ViewSettingsFilterItem
 				id="filterItems"
-				text="{i18n>masterFilterName}"
+				text="{i18n>listFilterName}"
 				multiSelect="false">
 				<items>
 					<ViewSettingsItem
 						id="viewFilter1"
-						text="{i18n>masterFilter1}"
+						text="{i18n>listFilter1}"
 						key="Filter1"/>
 					<ViewSettingsItem
 						id="viewFilter2"
-						text="{i18n>masterFilter2}"
+						text="{i18n>listFilter2}"
 						key="Filter2"/>
 				</items>
 			</ViewSettingsFilterItem>
 		</filterItems>
 		<groupItems>
 			<ViewSettingsItem
-				text="{i18n>masterGroup1}"
-				key="{{2masterdetail.parameters.Object_Number.value.name}}"/>
+				text="{i18n>listGroup1}"
+				key="<%=template.settings.entity.numberProperty%>"/>
 		</groupItems><%}%>
 	</ViewSettingsDialog>
 </core:FragmentDefinition>

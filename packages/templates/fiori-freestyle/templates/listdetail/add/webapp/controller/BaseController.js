@@ -47,7 +47,7 @@ sap.ui.define([
 		/**
 		 * Event handler for navigating back.
 		 * It there is a history entry we go one step back in the browser history
-		 * If not, it will replace the current entry of the browser history with the master route.
+		 * If not, it will replace the current entry of the browser history with the list route.
 		 * @public
 		 */
 		onNavBack : function() {
@@ -57,7 +57,7 @@ sap.ui.define([
 				// eslint-disable-next-line sap-no-history-manipulation
 				history.go(-1);
 			} else {
-				this.getRouter().navTo("master", {}, true);
+				this.getRouter().navTo("list", {}, true);
 			}
 		}
 

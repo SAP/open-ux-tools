@@ -11,7 +11,7 @@
 		 * function.
 		 * @class
 		 * @public
-		 * @alias {{2masterdetail.parameters.AppId.value}}.controller.ListSelector
+		 * @alias {{2listdetail.parameters.AppId.value}}.controller.ListSelector
 		 */
 
 		constructor : function () {
@@ -21,7 +21,7 @@
 			// This promise needs to be created in the constructor, since it is allowed to
 			// invoke selectItem functions before calling setBoundMasterList
 			this.oWhenListLoadingIsDone = new Promise(function (fnResolve, fnReject) {
-				// Used to wait until the setBound masterList function is invoked
+				// Used to wait until the setBound lis function is invoked
 				this._oWhenListHasBeenSet
 					.then(function (oList) {
 						oList.getBinding("items").attachEventOnce("dataReceived",
@@ -91,8 +91,8 @@
 		},
 
 		/**
-		 * Removes all selections from master list.
-		 * Does not trigger 'selectionChange' event on master list, though.
+		 * Removes all selections from list list.
+		 * Does not trigger 'selectionChange' event on list list, though.
 		 * @public
 		 */
 		clearMasterListSelection : function () {

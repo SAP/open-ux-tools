@@ -281,7 +281,7 @@ server:
 		/**
 		 * Event handler for navigating back.
 		 * It there is a history entry we go one step back in the browser history
-		 * If not, it will replace the current entry of the browser history with the master route.
+		 * If not, it will replace the current entry of the browser history with the list route.
 		 * @public
 		 */
 		onNavBack : function() {
@@ -291,7 +291,7 @@ server:
 				// eslint-disable-next-line sap-no-history-manipulation
 				history.go(-1);
 			} else {
-				this.getRouter().navTo(\\"master\\", {}, true);
+				this.getRouter().navTo(\\"list\\", {}, true);
 			}
 		}
 
@@ -434,9 +434,9 @@ server:
 			// No data for the binding
 			if (!oElementBinding.getBoundContext()) {
 				this.getRouter().getTargets().display(\\"detailObjectNotFound\\");
-				// if object could not be found, the selection in the master list
+				// if object could not be found, the selection in the list list
 				// does not make sense anymore.
-				this.getOwnerComponent().oListSelector.clearMasterListSelection();
+				this.getOwnerComponent().oListSelector.clearListListSelection();
 				return;
 			}
 
@@ -479,13 +479,13 @@ server:
 		},
 
 		/**
-		 * Set the full screen mode to false and navigate to master page
+		 * Set the full screen mode to false and navigate to list page
 		 */
 		onCloseDetailPress: function () {
 			this.getModel(\\"appView\\").setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", false);
-			// No item should be selected on master after detail page is closed
-			this.getOwnerComponent().oListSelector.clearMasterListSelection();
-			this.getRouter().navTo(\\"master\\");
+			// No item should be selected on list after detail page is closed
+			this.getOwnerComponent().oListSelector.clearListListSelection();
+			this.getRouter().navTo(\\"list\\");
 		},
 
 		/**
@@ -598,6 +598,318 @@ server:
 });",
     "state": "modified",
   },
+  "listdetail/webapp/controller/List.controller.js": Object {
+    "contents": "sap.ui.define([
+	\\"./BaseController\\",
+	\\"sap/ui/model/json/JSONModel\\",
+	\\"sap/ui/model/Filter\\",
+	\\"sap/ui/model/Sorter\\",
+	\\"sap/ui/model/FilterOperator\\",
+	\\"sap/m/GroupHeaderListItem\\",
+	\\"sap/ui/Device\\",
+	\\"sap/ui/core/Fragment\\",
+	\\"../model/formatter\\"
+], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter) {
+	\\"use strict\\";
+
+	return BaseController.extend(\\"test.me.controller.List\\", {
+
+		formatter: formatter,
+
+		/* =========================================================== */
+		/* lifecycle methods                                           */
+		/* =========================================================== */
+
+		/**
+		 * Called when the list list controller is instantiated. It sets up the event handling for the list/detail communication and other lifecycle tasks.
+		 * @public
+		 */
+		onInit : function () {
+			// Control state model
+			var oList = this.byId(\\"list\\"),
+				oViewModel = this._createViewModel(),
+				// Put down list list's original value for busy indicator delay,
+				// so it can be restored later on. Busy handling on the list list is
+				// taken care of by the list list itself.
+				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
+
+
+			this._oList = oList;
+			// keeps the filter and search state
+			this._oListFilterState = {
+				aFilter : [],
+				aSearch : []
+			};
+
+			this.setModel(oViewModel, \\"listView\\");
+			// Make sure, busy indication is showing immediately so there is no
+			// break after the busy indication for loading the view's meta data is
+			// ended (see promise 'oWhenMetadataIsLoaded' in AppController)
+			oList.attachEventOnce(\\"updateFinished\\", function(){
+				// Restore original busy indicator delay for the list
+				oViewModel.setProperty(\\"/delay\\", iOriginalBusyDelay);
+			});
+
+			this.getView().addEventDelegate({
+				onBeforeFirstShow: function () {
+					this.getOwnerComponent().oListSelector.setBoundMasterList(oList);
+				}.bind(this)
+			});
+
+			this.getRouter().getRoute(\\"list\\").attachPatternMatched(this._onMasterMatched, this);
+			this.getRouter().attachBypassed(this.onBypassed, this);
+		},
+
+		/* =========================================================== */
+		/* event handlers                                              */
+		/* =========================================================== */
+
+		/**
+		 * After list data is available, this handler method updates the
+		 * list list counter
+		 * @param {sap.ui.base.Event} oEvent the update finished event
+		 * @public
+		 */
+		onUpdateFinished : function (oEvent) {
+			// update the list list object counter after new data is loaded
+			this._updateListItemCount(oEvent.getParameter(\\"total\\"));
+		},
+
+		/**
+		 * Event handler for the list search field. Applies current
+		 * filter value and triggers a new search. If the search field's
+		 * 'refresh' button has been pressed, no new search is triggered
+		 * and the list binding is refresh instead.
+		 * @param {sap.ui.base.Event} oEvent the search event
+		 * @public
+		 */
+		onSearch: function (oEvent) {
+			if (oEvent.getParameters().refreshButtonPressed) {
+				// Search field's 'refresh' button has been pressed.
+				// This is visible if you select any list list item.
+				// In this case no new search is triggered, we only
+				// refresh the list binding.
+				this.onRefresh();
+				return;
+			}
+
+			var sQuery = oEvent.getParameter(\\"query\\");
+
+			if (sQuery) {
+				this._oListFilterState.aSearch = [new Filter(\\"CompanyName\\", FilterOperator.Contains, sQuery)];
+			} else {
+				this._oListFilterState.aSearch = [];
+			}
+			this._applyFilterSearch();
+
+		},
+
+		/**
+		 * Event handler for refresh event. Keeps filter, sort
+		 * and group settings and refreshes the list binding.
+		 * @public
+		 */
+		onRefresh: function () {
+			this._oList.getBinding(\\"items\\").refresh();
+		},
+
+		/**
+		 * Event handler for the filter, sort and group buttons to open the ViewSettingsDialog.
+		 * @param {sap.ui.base.Event} oEvent the button press event
+		 * @public
+		 */
+		onOpenViewSettings: function (oEvent) {
+			var sDialogTab = \\"filter\\";
+			if (oEvent.getSource() instanceof sap.m.Button) {
+				var sButtonId = oEvent.getSource().getId();
+				if (sButtonId.match(\\"sort\\")) {
+					sDialogTab = \\"sort\\";
+				} else if (sButtonId.match(\\"group\\")) {
+					sDialogTab = \\"group\\";
+				}
+			}
+			// load asynchronous XML fragment
+			if (!this.byId(\\"viewSettingsDialog\\")) {
+				Fragment.load({
+					id: this.getView().getId(),
+					name: \\"test.me.view.ViewSettingsDialog\\",
+					controller: this
+				}).then(function(oDialog){
+					// connect dialog to the root view of this component (models, lifecycle)
+					this.getView().addDependent(oDialog);
+					oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
+					oDialog.open(sDialogTab);
+				}.bind(this));
+			} else {
+				this.byId(\\"viewSettingsDialog\\").open(sDialogTab);
+			}
+		},
+
+		/**
+		 * Event handler called when ViewSettingsDialog has been confirmed, i.e.
+		 * has been closed with 'OK'. In the case, the currently chosen filters, sorters or groupers
+		 * are applied to the list list, which can also mean that they
+		 * are removed from the list list, in case they are
+		 * removed in the ViewSettingsDialog.
+		 * @param {sap.ui.base.Event} oEvent the confirm event
+		 * @public
+		 */
+		onConfirmViewSettingsDialog: function (oEvent) {
+			
+			this._applySortGroup(oEvent);
+		},
+
+		/**
+		 * Apply the chosen sorter and grouper to the list list
+		 * @param {sap.ui.base.Event} oEvent the confirm event
+		 * @private
+		 */
+		_applySortGroup: function (oEvent) {
+			var mParams = oEvent.getParameters(),
+				sPath,
+				bDescending,
+				aSorters = [];
+			
+			sPath = mParams.sortItem.getKey();
+			bDescending = mParams.sortDescending;
+			aSorters.push(new Sorter(sPath, bDescending));
+			this._oList.getBinding(\\"items\\").sort(aSorters);
+		},
+
+		/**
+		 * Event handler for the list selection event
+		 * @param {sap.ui.base.Event} oEvent the list selectionChange event
+		 * @public
+		 */
+		onSelectionChange: function (oEvent) {
+			var oList = oEvent.getSource(),
+				bSelected = oEvent.getParameter(\\"selected\\");
+
+			// skip navigation when deselecting an item in multi selection mode
+			if (!(oList.getMode() === \\"MultiSelect\\" && !bSelected)) {
+				// get the list item, either from the listItem parameter or from the event's source itself (will depend on the device-dependent mode).
+				this._showDetail(oEvent.getParameter(\\"listItem\\") || oEvent.getSource());
+			}
+		},
+
+		/**
+		 * Event handler for the bypassed event, which is fired when no routing pattern matched.
+		 * If there was an object selected in the list list, that selection is removed.
+		 * @public
+		 */
+		onBypassed: function () {
+			this._oList.removeSelections(true);
+		},
+
+		/**
+		 * Used to create GroupHeaders with non-capitalized caption.
+		 * These headers are inserted into the list list to
+		 * group the list list's items.
+		 * @param {Object} oGroup group whose text is to be displayed
+		 * @public
+		 * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
+		 */
+		createGroupHeader: function (oGroup) {
+			return new GroupHeaderListItem({
+				title : oGroup.text,
+				upperCase : false
+			});
+		},
+
+		/**
+		 * Event handler for navigating back.
+		 * We navigate back in the browser historz
+		 * @public
+		 */
+		onNavBack: function() {
+			// eslint-disable-next-line sap-no-history-manipulation
+			history.go(-1);
+		},
+
+		/* =========================================================== */
+		/* begin: internal methods                                     */
+		/* =========================================================== */
+
+
+		_createViewModel: function() {
+			return new JSONModel({
+				isFilterBarVisible: false,
+				filterBarLabel: \\"\\",
+				delay: 0,
+				title: this.getResourceBundle().getText(\\"listTitleCount\\", [0]),
+				noDataText: this.getResourceBundle().getText(\\"listListNoDataText\\"),
+				sortBy: \\"CompanyName\\",
+				groupBy: \\"None\\"
+			});
+		},
+
+		_onMasterMatched:  function() {
+			//Set the layout property of the FCL control to 'OneColumn'
+			this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
+		},
+
+		/**
+		 * Shows the selected item on the detail page
+		 * On phones a additional history entry is created
+		 * @param {sap.m.ObjectListItem} oItem selected Item
+		 * @private
+		 */
+		_showDetail: function (oItem) {
+			var bReplace = !Device.system.phone;
+			// set the layout property of FCL control to show two columns
+			this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
+			this.getRouter().navTo(\\"object\\", {
+				objectId : oItem.getBindingContext().getProperty(\\"SupplierID\\")
+			}, bReplace);
+		},
+
+		/**
+		 * Sets the item count on the list list header
+		 * @param {integer} iTotalItems the total number of items in the list
+		 * @private
+		 */
+		_updateListItemCount: function (iTotalItems) {
+			var sTitle;
+			// only update the counter if the length is final
+			if (this._oList.getBinding(\\"items\\").isLengthFinal()) {
+				sTitle = this.getResourceBundle().getText(\\"listTitleCount\\", [iTotalItems]);
+				this.getModel(\\"listView\\").setProperty(\\"/title\\", sTitle);
+			}
+		},
+
+		/**
+		 * Internal helper method to apply both filter and search state together on the list binding
+		 * @private
+		 */
+		_applyFilterSearch: function () {
+			var aFilters = this._oListFilterState.aSearch.concat(this._oListFilterState.aFilter),
+				oViewModel = this.getModel(\\"listView\\");
+			this._oList.getBinding(\\"items\\").filter(aFilters, \\"Application\\");
+			// changes the noDataText of the list in case there are no filter results
+			if (aFilters.length !== 0) {
+				oViewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"listListNoDataWithFilterOrSearchText\\"));
+			} else if (this._oListFilterState.aSearch.length > 0) {
+				// only reset the no data text to default when no new search was triggered
+				oViewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"listListNoDataText\\"));
+			}
+		},
+
+		/**
+		 * Internal helper method that sets the filter bar visibility property and the label's caption to be shown
+		 * @param {string} sFilterBarText the selected filter value
+		 * @private
+		 */
+		_updateFilterBar : function (sFilterBarText) {
+			var oViewModel = this.getModel(\\"listView\\");
+			oViewModel.setProperty(\\"/isFilterBarVisible\\", (this._oListFilterState.aFilter.length > 0));
+			oViewModel.setProperty(\\"/filterBarLabel\\", this.getResourceBundle().getText(\\"listFilterBarText\\", [sFilterBarText]));
+		}
+
+	});
+
+});",
+    "state": "modified",
+  },
   "listdetail/webapp/controller/ListSelector.js": Object {
     "contents": "sap.ui.define([
 	\\"sap/ui/base/Object\\",
@@ -612,7 +924,7 @@ server:
 		 * function.
 		 * @class
 		 * @public
-		 * @alias {{2masterdetail.parameters.AppId.value}}.controller.ListSelector
+		 * @alias {{2listdetail.parameters.AppId.value}}.controller.ListSelector
 		 */
 
 		constructor : function () {
@@ -622,7 +934,7 @@ server:
 			// This promise needs to be created in the constructor, since it is allowed to
 			// invoke selectItem functions before calling setBoundMasterList
 			this.oWhenListLoadingIsDone = new Promise(function (fnResolve, fnReject) {
-				// Used to wait until the setBound masterList function is invoked
+				// Used to wait until the setBound lis function is invoked
 				this._oWhenListHasBeenSet
 					.then(function (oList) {
 						oList.getBinding(\\"items\\").attachEventOnce(\\"dataReceived\\",
@@ -692,8 +1004,8 @@ server:
 		},
 
 		/**
-		 * Removes all selections from master list.
-		 * Does not trigger 'selectionChange' event on master list, though.
+		 * Removes all selections from list list.
+		 * Does not trigger 'selectionChange' event on list list, though.
 		 * @public
 		 */
 		clearMasterListSelection : function () {
@@ -703,318 +1015,6 @@ server:
 			}.bind(this));
 		}
 	});
-});",
-    "state": "modified",
-  },
-  "listdetail/webapp/controller/Master.controller.js": Object {
-    "contents": "sap.ui.define([
-	\\"./BaseController\\",
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"sap/ui/model/Filter\\",
-	\\"sap/ui/model/Sorter\\",
-	\\"sap/ui/model/FilterOperator\\",
-	\\"sap/m/GroupHeaderListItem\\",
-	\\"sap/ui/Device\\",
-	\\"sap/ui/core/Fragment\\",
-	\\"../model/formatter\\"
-], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter) {
-	\\"use strict\\";
-
-	return BaseController.extend(\\"test.me.controller.Master\\", {
-
-		formatter: formatter,
-
-		/* =========================================================== */
-		/* lifecycle methods                                           */
-		/* =========================================================== */
-
-		/**
-		 * Called when the master list controller is instantiated. It sets up the event handling for the master/detail communication and other lifecycle tasks.
-		 * @public
-		 */
-		onInit : function () {
-			// Control state model
-			var oList = this.byId(\\"list\\"),
-				oViewModel = this._createViewModel(),
-				// Put down master list's original value for busy indicator delay,
-				// so it can be restored later on. Busy handling on the master list is
-				// taken care of by the master list itself.
-				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
-
-
-			this._oList = oList;
-			// keeps the filter and search state
-			this._oListFilterState = {
-				aFilter : [],
-				aSearch : []
-			};
-
-			this.setModel(oViewModel, \\"masterView\\");
-			// Make sure, busy indication is showing immediately so there is no
-			// break after the busy indication for loading the view's meta data is
-			// ended (see promise 'oWhenMetadataIsLoaded' in AppController)
-			oList.attachEventOnce(\\"updateFinished\\", function(){
-				// Restore original busy indicator delay for the list
-				oViewModel.setProperty(\\"/delay\\", iOriginalBusyDelay);
-			});
-
-			this.getView().addEventDelegate({
-				onBeforeFirstShow: function () {
-					this.getOwnerComponent().oListSelector.setBoundMasterList(oList);
-				}.bind(this)
-			});
-
-			this.getRouter().getRoute(\\"master\\").attachPatternMatched(this._onMasterMatched, this);
-			this.getRouter().attachBypassed(this.onBypassed, this);
-		},
-
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
-
-		/**
-		 * After list data is available, this handler method updates the
-		 * master list counter
-		 * @param {sap.ui.base.Event} oEvent the update finished event
-		 * @public
-		 */
-		onUpdateFinished : function (oEvent) {
-			// update the master list object counter after new data is loaded
-			this._updateListItemCount(oEvent.getParameter(\\"total\\"));
-		},
-
-		/**
-		 * Event handler for the master search field. Applies current
-		 * filter value and triggers a new search. If the search field's
-		 * 'refresh' button has been pressed, no new search is triggered
-		 * and the list binding is refresh instead.
-		 * @param {sap.ui.base.Event} oEvent the search event
-		 * @public
-		 */
-		onSearch: function (oEvent) {
-			if (oEvent.getParameters().refreshButtonPressed) {
-				// Search field's 'refresh' button has been pressed.
-				// This is visible if you select any master list item.
-				// In this case no new search is triggered, we only
-				// refresh the list binding.
-				this.onRefresh();
-				return;
-			}
-
-			var sQuery = oEvent.getParameter(\\"query\\");
-
-			if (sQuery) {
-				this._oListFilterState.aSearch = [new Filter(\\"CompanyName\\", FilterOperator.Contains, sQuery)];
-			} else {
-				this._oListFilterState.aSearch = [];
-			}
-			this._applyFilterSearch();
-
-		},
-
-		/**
-		 * Event handler for refresh event. Keeps filter, sort
-		 * and group settings and refreshes the list binding.
-		 * @public
-		 */
-		onRefresh: function () {
-			this._oList.getBinding(\\"items\\").refresh();
-		},
-
-		/**
-		 * Event handler for the filter, sort and group buttons to open the ViewSettingsDialog.
-		 * @param {sap.ui.base.Event} oEvent the button press event
-		 * @public
-		 */
-		onOpenViewSettings: function (oEvent) {
-			var sDialogTab = \\"filter\\";
-			if (oEvent.getSource() instanceof sap.m.Button) {
-				var sButtonId = oEvent.getSource().getId();
-				if (sButtonId.match(\\"sort\\")) {
-					sDialogTab = \\"sort\\";
-				} else if (sButtonId.match(\\"group\\")) {
-					sDialogTab = \\"group\\";
-				}
-			}
-			// load asynchronous XML fragment
-			if (!this.byId(\\"viewSettingsDialog\\")) {
-				Fragment.load({
-					id: this.getView().getId(),
-					name: \\"test.me.view.ViewSettingsDialog\\",
-					controller: this
-				}).then(function(oDialog){
-					// connect dialog to the root view of this component (models, lifecycle)
-					this.getView().addDependent(oDialog);
-					oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
-					oDialog.open(sDialogTab);
-				}.bind(this));
-			} else {
-				this.byId(\\"viewSettingsDialog\\").open(sDialogTab);
-			}
-		},
-
-		/**
-		 * Event handler called when ViewSettingsDialog has been confirmed, i.e.
-		 * has been closed with 'OK'. In the case, the currently chosen filters, sorters or groupers
-		 * are applied to the master list, which can also mean that they
-		 * are removed from the master list, in case they are
-		 * removed in the ViewSettingsDialog.
-		 * @param {sap.ui.base.Event} oEvent the confirm event
-		 * @public
-		 */
-		onConfirmViewSettingsDialog: function (oEvent) {
-			
-			this._applySortGroup(oEvent);
-		},
-
-		/**
-		 * Apply the chosen sorter and grouper to the master list
-		 * @param {sap.ui.base.Event} oEvent the confirm event
-		 * @private
-		 */
-		_applySortGroup: function (oEvent) {
-			var mParams = oEvent.getParameters(),
-				sPath,
-				bDescending,
-				aSorters = [];
-			
-			sPath = mParams.sortItem.getKey();
-			bDescending = mParams.sortDescending;
-			aSorters.push(new Sorter(sPath, bDescending));
-			this._oList.getBinding(\\"items\\").sort(aSorters);
-		},
-
-		/**
-		 * Event handler for the list selection event
-		 * @param {sap.ui.base.Event} oEvent the list selectionChange event
-		 * @public
-		 */
-		onSelectionChange: function (oEvent) {
-			var oList = oEvent.getSource(),
-				bSelected = oEvent.getParameter(\\"selected\\");
-
-			// skip navigation when deselecting an item in multi selection mode
-			if (!(oList.getMode() === \\"MultiSelect\\" && !bSelected)) {
-				// get the list item, either from the listItem parameter or from the event's source itself (will depend on the device-dependent mode).
-				this._showDetail(oEvent.getParameter(\\"listItem\\") || oEvent.getSource());
-			}
-		},
-
-		/**
-		 * Event handler for the bypassed event, which is fired when no routing pattern matched.
-		 * If there was an object selected in the master list, that selection is removed.
-		 * @public
-		 */
-		onBypassed: function () {
-			this._oList.removeSelections(true);
-		},
-
-		/**
-		 * Used to create GroupHeaders with non-capitalized caption.
-		 * These headers are inserted into the master list to
-		 * group the master list's items.
-		 * @param {Object} oGroup group whose text is to be displayed
-		 * @public
-		 * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
-		 */
-		createGroupHeader: function (oGroup) {
-			return new GroupHeaderListItem({
-				title : oGroup.text,
-				upperCase : false
-			});
-		},
-
-		/**
-		 * Event handler for navigating back.
-		 * We navigate back in the browser historz
-		 * @public
-		 */
-		onNavBack: function() {
-			// eslint-disable-next-line sap-no-history-manipulation
-			history.go(-1);
-		},
-
-		/* =========================================================== */
-		/* begin: internal methods                                     */
-		/* =========================================================== */
-
-
-		_createViewModel: function() {
-			return new JSONModel({
-				isFilterBarVisible: false,
-				filterBarLabel: \\"\\",
-				delay: 0,
-				title: this.getResourceBundle().getText(\\"masterTitleCount\\", [0]),
-				noDataText: this.getResourceBundle().getText(\\"masterListNoDataText\\"),
-				sortBy: \\"CompanyName\\",
-				groupBy: \\"None\\"
-			});
-		},
-
-		_onMasterMatched:  function() {
-			//Set the layout property of the FCL control to 'OneColumn'
-			this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
-		},
-
-		/**
-		 * Shows the selected item on the detail page
-		 * On phones a additional history entry is created
-		 * @param {sap.m.ObjectListItem} oItem selected Item
-		 * @private
-		 */
-		_showDetail: function (oItem) {
-			var bReplace = !Device.system.phone;
-			// set the layout property of FCL control to show two columns
-			this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
-			this.getRouter().navTo(\\"object\\", {
-				objectId : oItem.getBindingContext().getProperty(\\"SupplierID\\")
-			}, bReplace);
-		},
-
-		/**
-		 * Sets the item count on the master list header
-		 * @param {integer} iTotalItems the total number of items in the list
-		 * @private
-		 */
-		_updateListItemCount: function (iTotalItems) {
-			var sTitle;
-			// only update the counter if the length is final
-			if (this._oList.getBinding(\\"items\\").isLengthFinal()) {
-				sTitle = this.getResourceBundle().getText(\\"masterTitleCount\\", [iTotalItems]);
-				this.getModel(\\"masterView\\").setProperty(\\"/title\\", sTitle);
-			}
-		},
-
-		/**
-		 * Internal helper method to apply both filter and search state together on the list binding
-		 * @private
-		 */
-		_applyFilterSearch: function () {
-			var aFilters = this._oListFilterState.aSearch.concat(this._oListFilterState.aFilter),
-				oViewModel = this.getModel(\\"masterView\\");
-			this._oList.getBinding(\\"items\\").filter(aFilters, \\"Application\\");
-			// changes the noDataText of the list in case there are no filter results
-			if (aFilters.length !== 0) {
-				oViewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"masterListNoDataWithFilterOrSearchText\\"));
-			} else if (this._oListFilterState.aSearch.length > 0) {
-				// only reset the no data text to default when no new search was triggered
-				oViewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"masterListNoDataText\\"));
-			}
-		},
-
-		/**
-		 * Internal helper method that sets the filter bar visibility property and the label's caption to be shown
-		 * @param {string} sFilterBarText the selected filter value
-		 * @private
-		 */
-		_updateFilterBar : function (sFilterBarText) {
-			var oViewModel = this.getModel(\\"masterView\\");
-			oViewModel.setProperty(\\"/isFilterBarVisible\\", (this._oListFilterState.aFilter.length > 0));
-			oViewModel.setProperty(\\"/filterBarLabel\\", this.getResourceBundle().getText(\\"masterFilterBarText\\", [sFilterBarText]));
-		}
-
-	});
-
 });",
     "state": "modified",
   },
@@ -1043,24 +1043,24 @@ appTitle=My Test App
 
 #YDES: Application description
 appDescription=Description of test.me
-# This is the resource bundle for {{2masterdetail.parameters.ApplicationTitle.value}}
+# This is the resource bundle for {{2listdetail.parameters.ApplicationTitle.value}}
 
-#~~~ Master View ~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#XTIT: Master view title with placeholder for the number of items
-masterTitleCount=<Suppliers> ({0})
+#XTIT: List view title with placeholder for the number of items
+listTitleCount=<Suppliers> ({0})
 
 #XTOL: Tooltip for the search field
-masterSearchTooltip=Enter an <Suppliers> name or a part of it.
+listSearchTooltip=Enter an <Suppliers> name or a part of it.
 
 #XBLI: text for a list with no data
-masterListNoDataText=No <SuppliersPlural> are currently available
+listListNoDataText=No <SuppliersPlural> are currently available
 
 #XBLI: text for a list with no data with filter or search
-masterListNoDataWithFilterOrSearchText=No matching <SuppliersPlural> found
+listListNoDataWithFilterOrSearchText=No matching <SuppliersPlural> found
 
-#XSEL: Option to sort the master list by CompanyName
-masterSort1=Sort By <CompanyName>
+#XSEL: Option to sort the list list by CompanyName
+listSort1=Sort By <CompanyName>
 
 
 
@@ -1088,7 +1088,7 @@ detailLineItemTableHeadingCount=<ProductsPlural> ({0})
 #XGRP: Title for the ProductName column in the Products table
 detailLineItemTableIDColumn=<FirstColumnName>
 
-#XGRP: Title for the {{2masterdetail.parameters.LineItem_Number.value.name}} column in the Products table
+#XGRP: Title for the {{2listdetail.parameters.LineItem_Number.value.name}} column in the Products table
 detailLineItemTableUnitNumberColumn=<LastColumnName>
 
 
@@ -1117,7 +1117,7 @@ notFoundText=The requested resource was not found
 
 #~~~ Not Available View ~~~~~~~~~~~~~~~~~~~~~~~
 
-#XTIT: Master view title
+#XTIT: List view title
 notAvailableViewTitle=<Suppliers>
 
 #~~~ Error Handling ~~~~~~~~~~~~~~~~~~~~~~~
@@ -1129,24 +1129,24 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   "listdetail/webapp/i18n/i18n_en.properties": Object {
     "contents": "appTitle=My Test App
 appDescription=Description of test.me
-# This is the resource bundle for {{2masterdetail.parameters.ApplicationTitle.value}}
+# This is the resource bundle for {{2listdetail.parameters.ApplicationTitle.value}}
 
-#~~~ Master View ~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#XTIT: Master view title with placeholder for the number of items
-masterTitleCount=<Suppliers> ({0})
+#XTIT: List view title with placeholder for the number of items
+listTitleCount=<Suppliers> ({0})
 
 #XTOL: Tooltip for the search field
-masterSearchTooltip=Enter an <Suppliers> name or a part of it.
+listSearchTooltip=Enter an <Suppliers> name or a part of it.
 
 #XBLI: text for a list with no data
-masterListNoDataText=No <SuppliersPlural> are currently available
+listListNoDataText=No <SuppliersPlural> are currently available
 
 #XBLI: text for a list with no data with filter or search
-masterListNoDataWithFilterOrSearchText=No matching <SuppliersPlural> found
+listListNoDataWithFilterOrSearchText=No matching <SuppliersPlural> found
 
-#XSEL: Option to sort the master list by CompanyName
-masterSort1=Sort By <CompanyName>
+#XSEL: Option to sort the list list by CompanyName
+listSort1=Sort By <CompanyName>
 
 
 
@@ -1174,7 +1174,7 @@ detailLineItemTableHeadingCount=<ProductsPlural> ({0})
 #XGRP: Title for the ProductName column in the Products table
 detailLineItemTableIDColumn=<FirstColumnName>
 
-#XGRP: Title for the {{2masterdetail.parameters.LineItem_Number.value.name}} column in the Products table
+#XGRP: Title for the {{2listdetail.parameters.LineItem_Number.value.name}} column in the Products table
 detailLineItemTableUnitNumberColumn=<LastColumnName>
 
 
@@ -1203,7 +1203,7 @@ notFoundText=The requested resource was not found
 
 #~~~ Not Available View ~~~~~~~~~~~~~~~~~~~~~~~
 
-#XTIT: Master view title
+#XTIT: List view title
 notAvailableViewTitle=<Suppliers>
 
 #~~~ Error Handling ~~~~~~~~~~~~~~~~~~~~~~~
@@ -1338,23 +1338,23 @@ errorText=Sorry, a technical error occurred! Please try again later.",
       \\"routes\\": [
         {
           \\"pattern\\": \\"\\",
-          \\"name\\": \\"master\\",
-          \\"target\\": \\"master\\"
+          \\"name\\": \\"list\\",
+          \\"target\\": \\"list\\"
         },
         {
           \\"pattern\\": \\"Suppliers/{objectId}\\",
           \\"name\\": \\"object\\",
           \\"target\\": [
-            \\"master\\",
+            \\"list\\",
             \\"object\\"
           ]
         }
       ],
       \\"targets\\": {
-        \\"master\\": {
-          \\"viewName\\": \\"Master\\",
+        \\"list\\": {
+          \\"viewName\\": \\"List\\",
           \\"viewLevel\\": 1,
-          \\"viewId\\": \\"master\\"
+          \\"viewId\\": \\"list\\"
         },
         \\"object\\": {
           \\"viewName\\": \\"Detail\\",
@@ -1559,21 +1559,21 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </mvc:View>",
     "state": "modified",
   },
-  "listdetail/webapp/view/Master.view.xml": Object {
+  "listdetail/webapp/view/List.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"test.me.controller.Master\\"
+	controllerName=\\"test.me.controller.List\\"
 	xmlns=\\"sap.m\\"
 	xmlns:semantic=\\"sap.f.semantic\\"
 	xmlns:mvc=\\"sap.ui.core.mvc\\">
 
 	<semantic:SemanticPage
-		id=\\"masterPage\\"
+		id=\\"listPage\\"
 		preserveHeaderStateOnScroll=\\"true\\"
 		toggleHeaderOnTitleClick=\\"false\\">
 		<semantic:titleHeading>
 			<Title
-				id=\\"masterPageTitle\\"
-				text=\\"{masterView>/title}\\"
+				id=\\"listPageTitle\\"
+				text=\\"{listView>/title}\\"
 				level=\\"H2\\"/>
 		</semantic:titleHeading>
 		<semantic:content>
@@ -1590,8 +1590,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 					},
 					groupHeaderFactory: '.createGroupHeader'
 				}\\"
-				busyIndicatorDelay=\\"{masterView>/delay}\\"
-				noDataText=\\"{masterView>/noDataText}\\"
+				busyIndicatorDelay=\\"{listView>/delay}\\"
+				noDataText=\\"{listView>/noDataText}\\"
 				mode=\\"{= \${device>/system/phone} ? 'None' : 'SingleSelectMaster'}\\"
 				growing=\\"true\\"
 				growingScrollToLoad=\\"true\\"
@@ -1603,7 +1603,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 						<SearchField
 							id=\\"searchField\\"
 							showRefreshButton=\\"true\\"
-							tooltip=\\"{i18n>masterSearchTooltip}\\"
+							tooltip=\\"{i18n>listSearchTooltip}\\"
 							search=\\".onSearch\\"
 							width=\\"auto\\">
 							<layoutData>
@@ -1662,8 +1662,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 		confirm=\\".onConfirmViewSettingsDialog\\">
 		<sortItems>
 			<ViewSettingsItem
-				text=\\"{i18n>masterSort1}\\"
-				key=\\"{{2masterdetail.parameters.Object_Identifier.value.name}}\\"
+				text=\\"{i18n>listSort1}\\"
+				key=\\"CompanyName\\"
 				selected=\\"true\\"/>
 
 		</sortItems>

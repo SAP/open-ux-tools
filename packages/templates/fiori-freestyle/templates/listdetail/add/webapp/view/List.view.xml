@@ -1,17 +1,17 @@
 <mvc:View
-	controllerName="<%=app.id%>.controller.Master"
+	controllerName="<%=app.id%>.controller.List"
 	xmlns="sap.m"
 	xmlns:semantic="sap.f.semantic"
 	xmlns:mvc="sap.ui.core.mvc">
 
 	<semantic:SemanticPage
-		id="masterPage"
+		id="listPage"
 		preserveHeaderStateOnScroll="true"
 		toggleHeaderOnTitleClick="false">
 		<semantic:titleHeading>
 			<Title
-				id="masterPageTitle"
-				text="{masterView>/title}"
+				id="listPageTitle"
+				text="{listView>/title}"
 				level="H2"/>
 		</semantic:titleHeading>
 		<semantic:content>
@@ -28,8 +28,8 @@
 					},
 					groupHeaderFactory: '.createGroupHeader'
 				}"
-				busyIndicatorDelay="{masterView>/delay}"
-				noDataText="{masterView>/noDataText}"
+				busyIndicatorDelay="{listView>/delay}"
+				noDataText="{listView>/noDataText}"
 				mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}"
 				growing="true"
 				growingScrollToLoad="true"
@@ -40,11 +40,11 @@
 					<Toolbar
 						active="true"
 						id="filterBar"
-						visible="{masterView>/isFilterBarVisible}"
+						visible="{listView>/isFilterBarVisible}"
 						press=".onOpenViewSettings">
 						<Title
 							id="filterBarLabel"
-							text="{masterView>/filterBarLabel}"
+							text="{listView>/filterBarLabel}"
 							level="H3"/>
 					</Toolbar>
 				</infoToolbar>
@@ -54,7 +54,7 @@
 						<SearchField
 							id="searchField"
 							showRefreshButton="true"
-							tooltip="{i18n>masterSearchTooltip}"
+							tooltip="{i18n>listSearchTooltip}"
 							search=".onSearch"
 							width="auto">
 							<layoutData>

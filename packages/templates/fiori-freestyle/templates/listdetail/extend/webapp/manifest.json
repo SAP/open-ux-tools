@@ -30,24 +30,24 @@
 			"routes": [
 				{
 					"pattern": "",
-					"name": "master",
-					"target": "master"
+					"name": "list",
+					"target": "list"
 				},
 				{
 					"pattern": "<%=template.settings.entity.name%>/{objectId}",
 					"name": "object",
 					"target": [
-						"master",
+						"list",
 						"object"
 					]
 				}
 			],
 
 			"targets": {
-				"master": {
-					"viewName": "Master",
+				"list": {
+					"viewName": "List",
 					"viewLevel": 1,
-					"viewId": "master"
+					"viewId": "list"
 				},
 				"object": {
 					"viewName": "Detail",
