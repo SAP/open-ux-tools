@@ -1,0 +1,1676 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fiori freestyle template: ListDetail generates files for template: listdetail-good 1`] = `
+Object {
+  "listdetail/package.json": Object {
+    "contents": "{
+  \\"name\\": \\"test.me\\",
+  \\"version\\": \\"0.9.0\\",
+  \\"main\\": \\"dist/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.8.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"latest\\",
+    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"latest\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"fiori run --open 'index.html'\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-local\\": \\"fiori run --config ui5-local.yaml --open 'index.html'\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
+      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+    ]
+  },
+  \\"files\\": [
+    \\"dist\\"
+  ]
+}
+",
+    "state": "modified",
+  },
+  "listdetail/ui5-local.yaml": Object {
+    "contents": "specVersion: \\"2.2\\"
+metadata:
+  name: test.me
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+framework:
+  name: SAPUI5
+  version: 1.84.0
+  libraries:
+    - name: sap.ui.core
+    - name: sap.m
+    - name: sap.ui.layout
+    - name: themelib_sap_fiori_3
+    - name: sap.ushell
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+    - name: sap-fe-mockserver
+      mountPath: /
+      afterMiddleware: compression
+      configuration:
+        annotations:
+          urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
+        service:
+          urlBasePath: /V2/Northwind/Northwind.svc
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
+    "state": "modified",
+  },
+  "listdetail/ui5.yaml": Object {
+    "contents": "specVersion: \\"2.2\\"
+metadata:
+  name: test.me
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+framework:
+  name: SAPUI5
+  version: 1.84.0
+  libraries:
+    - name: sap.ui.core
+    - name: sap.m
+    - name: sap.ui.layout
+    - name: themelib_sap_fiori_3
+    - name: sap.ushell
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /V2
+            url: https://services.odata.org
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: null # The UI5 version, for instance, 1.78.1. null means latest version
+",
+    "state": "modified",
+  },
+  "listdetail/webapp/Component.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/core/UIComponent\\",
+	\\"sap/ui/Device\\",
+	\\"./model/models\\",
+	\\"./controller/ListSelector\\",
+	\\"./controller/ErrorHandler\\"
+], function (UIComponent, Device, models, ListSelector, ErrorHandler) {
+	\\"use strict\\";
+
+	return UIComponent.extend(\\"test.me.Component\\", {
+
+		metadata : {
+			manifest : \\"json\\"
+		},
+
+		/**
+		 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+		 * In this method, the device models are set and the router is initialized.
+		 * @public
+		 * @override
+		 */
+		init : function () {
+			this.oListSelector = new ListSelector();
+			this._oErrorHandler = new ErrorHandler(this);
+
+			// set the device model
+			this.setModel(models.createDeviceModel(), \\"device\\");
+
+			// call the base component's init function and create the App view
+			UIComponent.prototype.init.apply(this, arguments);
+
+			// create the views based on the url/hash
+			this.getRouter().initialize();
+		},
+
+		/**
+		 * The component is destroyed by UI5 automatically.
+		 * In this method, the ListSelector and ErrorHandler are destroyed.
+		 * @public
+		 * @override
+		 */
+		destroy : function () {
+			this.oListSelector.destroy();
+			this._oErrorHandler.destroy();
+			// call the base component's destroy function
+			UIComponent.prototype.destroy.apply(this, arguments);
+		},
+
+		/**
+		 * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
+		 * design mode class should be set, which influences the size appearance of some controls.
+		 * @public
+		 * @return {string} css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
+		 */
+		getContentDensityClass : function() {
+			if (this._sContentDensityClass === undefined) {
+				// check whether FLP has already set the content density class; do nothing in this case
+				// eslint-disable-next-line sap-no-proprietary-browser-api
+				if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
+					this._sContentDensityClass = \\"\\";
+				} else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
+					this._sContentDensityClass = \\"sapUiSizeCompact\\";
+				} else {
+					// \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
+					this._sContentDensityClass = \\"sapUiSizeCozy\\";
+				}
+			}
+			return this._sContentDensityClass;
+		}
+
+	});
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/controller/App.controller.js": Object {
+    "contents": "sap.ui.define([
+	\\"./BaseController\\",
+	\\"sap/ui/model/json/JSONModel\\"
+], function (BaseController, JSONModel) {
+	\\"use strict\\";
+
+	return BaseController.extend(\\"test.me.controller.App\\", {
+
+		onInit : function () {
+			var oViewModel,
+				fnSetAppNotBusy,
+				iOriginalBusyDelay = this.getView().getBusyIndicatorDelay();
+
+			oViewModel = new JSONModel({
+				busy : true,
+				delay : 0,
+				layout : \\"OneColumn\\",
+				previousLayout : \\"\\",
+				actionButtonsInfo : {
+					midColumn : {
+						fullScreen : false
+					}
+				}
+			});
+			this.setModel(oViewModel, \\"appView\\");
+
+			fnSetAppNotBusy = function() {
+				oViewModel.setProperty(\\"/busy\\", false);
+				oViewModel.setProperty(\\"/delay\\", iOriginalBusyDelay);
+			};
+
+			// since then() has no \\"reject\\"-path attach to the MetadataFailed-Event to disable the busy indicator in case of an error
+			this.getOwnerComponent().getModel().metadataLoaded().then(fnSetAppNotBusy);
+			this.getOwnerComponent().getModel().attachMetadataFailed(fnSetAppNotBusy);
+
+			// apply content density mode to root view
+			this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
+		}
+
+	});
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/controller/BaseController.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/core/mvc/Controller\\",
+	\\"sap/ui/core/routing/History\\"
+], function (Controller, History) {
+	\\"use strict\\";
+
+	return Controller.extend(\\"test.me.controller.BaseController\\", {
+		/**
+		 * Convenience method for accessing the router in every controller of the application.
+		 * @public
+		 * @returns {sap.ui.core.routing.Router} the router for this component
+		 */
+		getRouter : function () {
+			return this.getOwnerComponent().getRouter();
+		},
+
+		/**
+		 * Convenience method for getting the view model by name in every controller of the application.
+		 * @public
+		 * @param {string} sName the model name
+		 * @returns {sap.ui.model.Model} the model instance
+		 */
+		getModel : function (sName) {
+			return this.getView().getModel(sName);
+		},
+
+		/**
+		 * Convenience method for setting the view model in every controller of the application.
+		 * @public
+		 * @param {sap.ui.model.Model} oModel the model instance
+		 * @param {string} sName the model name
+		 * @returns {sap.ui.mvc.View} the view instance
+		 */
+		setModel : function (oModel, sName) {
+			return this.getView().setModel(oModel, sName);
+		},
+
+		/**
+		 * Convenience method for getting the resource bundle.
+		 * @public
+		 * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
+		 */
+		getResourceBundle : function () {
+			return this.getOwnerComponent().getModel(\\"i18n\\").getResourceBundle();
+		},
+
+		/**
+		 * Event handler for navigating back.
+		 * It there is a history entry we go one step back in the browser history
+		 * If not, it will replace the current entry of the browser history with the master route.
+		 * @public
+		 */
+		onNavBack : function() {
+			var sPreviousHash = History.getInstance().getPreviousHash();
+
+			if (sPreviousHash !== undefined) {
+				// eslint-disable-next-line sap-no-history-manipulation
+				history.go(-1);
+			} else {
+				this.getRouter().navTo(\\"master\\", {}, true);
+			}
+		}
+
+	});
+
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/controller/Detail.controller.js": Object {
+    "contents": "sap.ui.define([
+	\\"./BaseController\\",
+	\\"sap/ui/model/json/JSONModel\\",
+	\\"../model/formatter\\",
+	\\"sap/m/library\\"
+], function (BaseController, JSONModel, formatter, mobileLibrary) {
+	\\"use strict\\";
+
+	// shortcut for sap.m.URLHelper
+	var URLHelper = mobileLibrary.URLHelper;
+
+	return BaseController.extend(\\"test.me.controller.Detail\\", {
+
+		formatter: formatter,
+
+		/* =========================================================== */
+		/* lifecycle methods                                           */
+		/* =========================================================== */
+
+		onInit: function () {
+			// Model used to manipulate control states. The chosen values make sure,
+			// detail page is busy indication immediately so there is no break in
+			// between the busy indication for loading the view's meta data
+			var oViewModel = new JSONModel({
+				busy : false,
+				delay : 0,
+				lineItemListTitle : this.getResourceBundle().getText(\\"detailLineItemTableHeading\\")
+			});
+
+			this.getRouter().getRoute(\\"object\\").attachPatternMatched(this._onObjectMatched, this);
+
+			this.setModel(oViewModel, \\"detailView\\");
+
+			this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
+		},
+
+		/* =========================================================== */
+		/* event handlers                                              */
+		/* =========================================================== */
+
+		/**
+		 * Event handler when the share by E-Mail button has been clicked
+		 * @public
+		 */
+		onSendEmailPress: function () {
+			var oViewModel = this.getModel(\\"detailView\\");
+
+			URLHelper.triggerEmail(
+				null,
+				oViewModel.getProperty(\\"/shareSendEmailSubject\\"),
+				oViewModel.getProperty(\\"/shareSendEmailMessage\\")
+			);
+		},
+
+		
+		/**
+		 * Updates the item count within the line item table's header
+		 * @param {object} oEvent an event containing the total number of items in the list
+		 * @private
+		 */
+		onListUpdateFinished: function (oEvent) {
+			var sTitle,
+				iTotalItems = oEvent.getParameter(\\"total\\"),
+				oViewModel = this.getModel(\\"detailView\\");
+
+			// only update the counter if the length is final
+			if (this.byId(\\"lineItemsList\\").getBinding(\\"items\\").isLengthFinal()) {
+				if (iTotalItems) {
+					sTitle = this.getResourceBundle().getText(\\"detailLineItemTableHeadingCount\\", [iTotalItems]);
+				} else {
+					//Display 'Line Items' instead of 'Line items (0)'
+					sTitle = this.getResourceBundle().getText(\\"detailLineItemTableHeading\\");
+				}
+				oViewModel.setProperty(\\"/lineItemListTitle\\", sTitle);
+			}
+		},
+
+		/* =========================================================== */
+		/* begin: internal methods                                     */
+		/* =========================================================== */
+
+		/**
+		 * Binds the view to the object path and expands the aggregated line items.
+		 * @function
+		 * @param {sap.ui.base.Event} oEvent pattern match event in route 'object'
+		 * @private
+		 */
+		_onObjectMatched: function (oEvent) {
+			var sObjectId =  oEvent.getParameter(\\"arguments\\").objectId;
+			this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
+			this.getModel().metadataLoaded().then( function() {
+				var sObjectPath = this.getModel().createKey(\\"Suppliers\\", {
+					SupplierID:  sObjectId
+				});
+				this._bindView(\\"/\\" + sObjectPath);
+			}.bind(this));
+		},
+
+		/**
+		 * Binds the view to the object path. Makes sure that detail view displays
+		 * a busy indicator while data for the corresponding element binding is loaded.
+		 * @function
+		 * @param {string} sObjectPath path to the object to be bound to the view.
+		 * @private
+		 */
+		_bindView: function (sObjectPath) {
+			// Set busy indicator during view binding
+			var oViewModel = this.getModel(\\"detailView\\");
+
+			// If the view was not bound yet its not busy, only if the binding requests data it is set to busy again
+			oViewModel.setProperty(\\"/busy\\", false);
+
+			this.getView().bindElement({
+				path : sObjectPath,
+				events: {
+					change : this._onBindingChange.bind(this),
+					dataRequested : function () {
+						oViewModel.setProperty(\\"/busy\\", true);
+					},
+					dataReceived: function () {
+						oViewModel.setProperty(\\"/busy\\", false);
+					}
+				}
+			});
+		},
+
+		_onBindingChange: function () {
+			var oView = this.getView(),
+				oElementBinding = oView.getElementBinding();
+
+			// No data for the binding
+			if (!oElementBinding.getBoundContext()) {
+				this.getRouter().getTargets().display(\\"detailObjectNotFound\\");
+				// if object could not be found, the selection in the master list
+				// does not make sense anymore.
+				this.getOwnerComponent().oListSelector.clearMasterListSelection();
+				return;
+			}
+
+			var sPath = oElementBinding.getPath(),
+				oResourceBundle = this.getResourceBundle(),
+				oObject = oView.getModel().getObject(sPath),
+				sObjectId = oObject.SupplierID,
+				sObjectName = oObject.CompanyName,
+				oViewModel = this.getModel(\\"detailView\\");
+
+			this.getOwnerComponent().oListSelector.selectAListItem(sPath);
+
+			oViewModel.setProperty(\\"/shareSendEmailSubject\\",
+				oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
+			oViewModel.setProperty(\\"/shareSendEmailMessage\\",
+				oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
+		},
+
+		_onMetadataLoaded: function () {
+			// Store original busy indicator delay for the detail view
+			var iOriginalViewBusyDelay = this.getView().getBusyIndicatorDelay(),
+				oViewModel = this.getModel(\\"detailView\\"),
+				oLineItemTable = this.byId(\\"lineItemsList\\"),
+				iOriginalLineItemTableBusyDelay = oLineItemTable.getBusyIndicatorDelay();
+
+			// Make sure busy indicator is displayed immediately when
+			// detail view is displayed for the first time
+			oViewModel.setProperty(\\"/delay\\", 0);
+			oViewModel.setProperty(\\"/lineItemTableDelay\\", 0);
+
+			oLineItemTable.attachEventOnce(\\"updateFinished\\", function() {
+				// Restore original busy indicator delay for line item table
+				oViewModel.setProperty(\\"/lineItemTableDelay\\", iOriginalLineItemTableBusyDelay);
+			});
+
+			// Binding the view will set it to not busy - so the view is always busy if it is not bound
+			oViewModel.setProperty(\\"/busy\\", true);
+			// Restore original busy indicator delay for the detail view
+			oViewModel.setProperty(\\"/delay\\", iOriginalViewBusyDelay);
+		},
+
+		/**
+		 * Set the full screen mode to false and navigate to master page
+		 */
+		onCloseDetailPress: function () {
+			this.getModel(\\"appView\\").setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", false);
+			// No item should be selected on master after detail page is closed
+			this.getOwnerComponent().oListSelector.clearMasterListSelection();
+			this.getRouter().navTo(\\"master\\");
+		},
+
+		/**
+		 * Toggle between full and non full screen mode.
+		 */
+		toggleFullScreen: function () {
+			var bFullScreen = this.getModel(\\"appView\\").getProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\");
+			this.getModel(\\"appView\\").setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", !bFullScreen);
+			if (!bFullScreen) {
+				// store current layout and go full screen
+				this.getModel(\\"appView\\").setProperty(\\"/previousLayout\\", this.getModel(\\"appView\\").getProperty(\\"/layout\\"));
+				this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"MidColumnFullScreen\\");
+			} else {
+				// reset to previous layout
+				this.getModel(\\"appView\\").setProperty(\\"/layout\\",  this.getModel(\\"appView\\").getProperty(\\"/previousLayout\\"));
+			}
+		}
+	});
+
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/controller/DetailObjectNotFound.controller.js": Object {
+    "contents": "sap.ui.define([
+	\\"./BaseController\\"
+], function (BaseController) {
+	\\"use strict\\";
+
+	return BaseController.extend(\\"test.me.controller.DetailObjectNotFound\\", {});
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/controller/DetailObjectNotFound.js": Object {
+    "contents": "sap.ui.define([
+	\\"./BaseController\\"
+], function (BaseController) {
+	\\"use strict\\";
+
+	return BaseController.extend(\\"test.me.controller.DetailObjectNotFound\\", {});
+});
+",
+    "state": "modified",
+  },
+  "listdetail/webapp/controller/ErrorHandler.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/base/Object\\",
+	\\"sap/m/MessageBox\\"
+], function (UI5Object, MessageBox) {
+	\\"use strict\\";
+
+	return UI5Object.extend(\\"test.me.controller.ErrorHandler\\", {
+
+		/**
+		 * Handles application errors by automatically attaching to the model events and displaying errors when needed.
+		 * @class
+		 * @param {sap.ui.core.UIComponent} oComponent reference to the app's component
+		 * @public
+		 * @alias test.me.controller.ErrorHandler
+		 */
+		constructor : function (oComponent) {
+			this._oResourceBundle = oComponent.getModel(\\"i18n\\").getResourceBundle();
+			this._oComponent = oComponent;
+			this._oModel = oComponent.getModel();
+			this._bMessageOpen = false;
+			this._sErrorText = this._oResourceBundle.getText(\\"errorText\\");
+
+			this._oModel.attachMetadataFailed(function (oEvent) {
+				var oParams = oEvent.getParameters();
+				this._showServiceError(oParams.response);
+			}, this);
+
+			this._oModel.attachRequestFailed(function (oEvent) {
+				var oParams = oEvent.getParameters();
+				// An entity that was not found in the service is also throwing a 404 error in oData.
+				// We already cover this case with a notFound target so we skip it here.
+				// A request that cannot be sent to the server is a technical error that we have to handle though
+				if (oParams.response.statusCode !== \\"404\\" || (oParams.response.statusCode === 404 && oParams.response.responseText.indexOf(\\"Cannot POST\\") === 0)) {
+					this._showServiceError(oParams.response);
+				}
+			}, this);
+		},
+
+		/**
+		 * Shows a {@link sap.m.MessageBox} when a service call has failed.
+		 * Only the first error message will be display.
+		 * @param {string} sDetails a technical error to be displayed on request
+		 * @private
+		 */
+		_showServiceError : function (sDetails) {
+			if (this._bMessageOpen) {
+				return;
+			}
+			this._bMessageOpen = true;
+			MessageBox.error(
+				this._sErrorText,
+				{
+					id : \\"serviceErrorMessageBox\\",
+					details : sDetails,
+					styleClass : this._oComponent.getContentDensityClass(),
+					actions : [MessageBox.Action.CLOSE],
+					onClose : function () {
+						this._bMessageOpen = false;
+					}.bind(this)
+				}
+			);
+		}
+
+	});
+
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/controller/ListSelector.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/base/Object\\",
+	\\"sap/base/Log\\"
+], function (BaseObject, Log) {
+	\\"use strict\\";
+
+	return BaseObject.extend(\\"test.me.controller.ListSelector\\", {
+
+		/**
+		 * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundMasterList
+		 * function.
+		 * @class
+		 * @public
+		 * @alias {{2masterdetail.parameters.AppId.value}}.controller.ListSelector
+		 */
+
+		constructor : function () {
+			this._oWhenListHasBeenSet = new Promise(function (fnResolveListHasBeenSet) {
+				this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
+			}.bind(this));
+			// This promise needs to be created in the constructor, since it is allowed to
+			// invoke selectItem functions before calling setBoundMasterList
+			this.oWhenListLoadingIsDone = new Promise(function (fnResolve, fnReject) {
+				// Used to wait until the setBound masterList function is invoked
+				this._oWhenListHasBeenSet
+					.then(function (oList) {
+						oList.getBinding(\\"items\\").attachEventOnce(\\"dataReceived\\",
+							function () {
+								if (this._oList.getItems().length) {
+									fnResolve({
+										list : oList
+									});
+								} else {
+									// No items in the list
+									fnReject({
+										list : oList
+									});
+								}
+							}.bind(this)
+						);
+					}.bind(this));
+			}.bind(this));
+		},
+
+		/**
+		 * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
+		 * May only be invoked once per ListSelector instance.
+		 * @param {sap.m.List} oList The list all the select functions will be invoked on.
+		 * @public
+		 */
+		setBoundMasterList : function (oList) {
+			this._oList = oList;
+			this._fnResolveListHasBeenSet(oList);
+		},
+
+		/**
+		 * Tries to select and scroll to a list item with a matching binding context. If there are no items matching the binding context or the ListMode is none,
+		 * no selection/scrolling will happen
+		 * @param {string} sBindingPath the binding path matching the binding path of a list item
+		 * @public
+		 */
+		selectAListItem : function (sBindingPath) {
+
+			this.oWhenListLoadingIsDone.then(
+				function () {
+					var oList = this._oList,
+						oSelectedItem;
+
+					if (oList.getMode() === \\"None\\") {
+						return;
+					}
+
+					oSelectedItem = oList.getSelectedItem();
+
+					// skip update if the current selection is already matching the object path
+					if (oSelectedItem && oSelectedItem.getBindingContext().getPath() === sBindingPath) {
+						return;
+					}
+
+					oList.getItems().some(function (oItem) {
+						if (oItem.getBindingContext() && oItem.getBindingContext().getPath() === sBindingPath) {
+							oList.setSelectedItem(oItem);
+							return true;
+						}
+					});
+				}.bind(this),
+				function () {
+					Log.warning(\\"Could not select the list item with the path\\" + sBindingPath + \\" because the list encountered an error or had no items\\");
+				}
+			);
+		},
+
+		/**
+		 * Removes all selections from master list.
+		 * Does not trigger 'selectionChange' event on master list, though.
+		 * @public
+		 */
+		clearMasterListSelection : function () {
+			//use promise to make sure that 'this._oList' is available
+			this._oWhenListHasBeenSet.then(function () {
+				this._oList.removeSelections(true);
+			}.bind(this));
+		}
+	});
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/controller/Master.controller.js": Object {
+    "contents": "sap.ui.define([
+	\\"./BaseController\\",
+	\\"sap/ui/model/json/JSONModel\\",
+	\\"sap/ui/model/Filter\\",
+	\\"sap/ui/model/Sorter\\",
+	\\"sap/ui/model/FilterOperator\\",
+	\\"sap/m/GroupHeaderListItem\\",
+	\\"sap/ui/Device\\",
+	\\"sap/ui/core/Fragment\\",
+	\\"../model/formatter\\"
+], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter) {
+	\\"use strict\\";
+
+	return BaseController.extend(\\"test.me.controller.Master\\", {
+
+		formatter: formatter,
+
+		/* =========================================================== */
+		/* lifecycle methods                                           */
+		/* =========================================================== */
+
+		/**
+		 * Called when the master list controller is instantiated. It sets up the event handling for the master/detail communication and other lifecycle tasks.
+		 * @public
+		 */
+		onInit : function () {
+			// Control state model
+			var oList = this.byId(\\"list\\"),
+				oViewModel = this._createViewModel(),
+				// Put down master list's original value for busy indicator delay,
+				// so it can be restored later on. Busy handling on the master list is
+				// taken care of by the master list itself.
+				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
+
+
+			this._oList = oList;
+			// keeps the filter and search state
+			this._oListFilterState = {
+				aFilter : [],
+				aSearch : []
+			};
+
+			this.setModel(oViewModel, \\"masterView\\");
+			// Make sure, busy indication is showing immediately so there is no
+			// break after the busy indication for loading the view's meta data is
+			// ended (see promise 'oWhenMetadataIsLoaded' in AppController)
+			oList.attachEventOnce(\\"updateFinished\\", function(){
+				// Restore original busy indicator delay for the list
+				oViewModel.setProperty(\\"/delay\\", iOriginalBusyDelay);
+			});
+
+			this.getView().addEventDelegate({
+				onBeforeFirstShow: function () {
+					this.getOwnerComponent().oListSelector.setBoundMasterList(oList);
+				}.bind(this)
+			});
+
+			this.getRouter().getRoute(\\"master\\").attachPatternMatched(this._onMasterMatched, this);
+			this.getRouter().attachBypassed(this.onBypassed, this);
+		},
+
+		/* =========================================================== */
+		/* event handlers                                              */
+		/* =========================================================== */
+
+		/**
+		 * After list data is available, this handler method updates the
+		 * master list counter
+		 * @param {sap.ui.base.Event} oEvent the update finished event
+		 * @public
+		 */
+		onUpdateFinished : function (oEvent) {
+			// update the master list object counter after new data is loaded
+			this._updateListItemCount(oEvent.getParameter(\\"total\\"));
+		},
+
+		/**
+		 * Event handler for the master search field. Applies current
+		 * filter value and triggers a new search. If the search field's
+		 * 'refresh' button has been pressed, no new search is triggered
+		 * and the list binding is refresh instead.
+		 * @param {sap.ui.base.Event} oEvent the search event
+		 * @public
+		 */
+		onSearch: function (oEvent) {
+			if (oEvent.getParameters().refreshButtonPressed) {
+				// Search field's 'refresh' button has been pressed.
+				// This is visible if you select any master list item.
+				// In this case no new search is triggered, we only
+				// refresh the list binding.
+				this.onRefresh();
+				return;
+			}
+
+			var sQuery = oEvent.getParameter(\\"query\\");
+
+			if (sQuery) {
+				this._oListFilterState.aSearch = [new Filter(\\"CompanyName\\", FilterOperator.Contains, sQuery)];
+			} else {
+				this._oListFilterState.aSearch = [];
+			}
+			this._applyFilterSearch();
+
+		},
+
+		/**
+		 * Event handler for refresh event. Keeps filter, sort
+		 * and group settings and refreshes the list binding.
+		 * @public
+		 */
+		onRefresh: function () {
+			this._oList.getBinding(\\"items\\").refresh();
+		},
+
+		/**
+		 * Event handler for the filter, sort and group buttons to open the ViewSettingsDialog.
+		 * @param {sap.ui.base.Event} oEvent the button press event
+		 * @public
+		 */
+		onOpenViewSettings: function (oEvent) {
+			var sDialogTab = \\"filter\\";
+			if (oEvent.getSource() instanceof sap.m.Button) {
+				var sButtonId = oEvent.getSource().getId();
+				if (sButtonId.match(\\"sort\\")) {
+					sDialogTab = \\"sort\\";
+				} else if (sButtonId.match(\\"group\\")) {
+					sDialogTab = \\"group\\";
+				}
+			}
+			// load asynchronous XML fragment
+			if (!this.byId(\\"viewSettingsDialog\\")) {
+				Fragment.load({
+					id: this.getView().getId(),
+					name: \\"test.me.view.ViewSettingsDialog\\",
+					controller: this
+				}).then(function(oDialog){
+					// connect dialog to the root view of this component (models, lifecycle)
+					this.getView().addDependent(oDialog);
+					oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
+					oDialog.open(sDialogTab);
+				}.bind(this));
+			} else {
+				this.byId(\\"viewSettingsDialog\\").open(sDialogTab);
+			}
+		},
+
+		/**
+		 * Event handler called when ViewSettingsDialog has been confirmed, i.e.
+		 * has been closed with 'OK'. In the case, the currently chosen filters, sorters or groupers
+		 * are applied to the master list, which can also mean that they
+		 * are removed from the master list, in case they are
+		 * removed in the ViewSettingsDialog.
+		 * @param {sap.ui.base.Event} oEvent the confirm event
+		 * @public
+		 */
+		onConfirmViewSettingsDialog: function (oEvent) {
+			
+			this._applySortGroup(oEvent);
+		},
+
+		/**
+		 * Apply the chosen sorter and grouper to the master list
+		 * @param {sap.ui.base.Event} oEvent the confirm event
+		 * @private
+		 */
+		_applySortGroup: function (oEvent) {
+			var mParams = oEvent.getParameters(),
+				sPath,
+				bDescending,
+				aSorters = [];
+			
+			sPath = mParams.sortItem.getKey();
+			bDescending = mParams.sortDescending;
+			aSorters.push(new Sorter(sPath, bDescending));
+			this._oList.getBinding(\\"items\\").sort(aSorters);
+		},
+
+		/**
+		 * Event handler for the list selection event
+		 * @param {sap.ui.base.Event} oEvent the list selectionChange event
+		 * @public
+		 */
+		onSelectionChange: function (oEvent) {
+			var oList = oEvent.getSource(),
+				bSelected = oEvent.getParameter(\\"selected\\");
+
+			// skip navigation when deselecting an item in multi selection mode
+			if (!(oList.getMode() === \\"MultiSelect\\" && !bSelected)) {
+				// get the list item, either from the listItem parameter or from the event's source itself (will depend on the device-dependent mode).
+				this._showDetail(oEvent.getParameter(\\"listItem\\") || oEvent.getSource());
+			}
+		},
+
+		/**
+		 * Event handler for the bypassed event, which is fired when no routing pattern matched.
+		 * If there was an object selected in the master list, that selection is removed.
+		 * @public
+		 */
+		onBypassed: function () {
+			this._oList.removeSelections(true);
+		},
+
+		/**
+		 * Used to create GroupHeaders with non-capitalized caption.
+		 * These headers are inserted into the master list to
+		 * group the master list's items.
+		 * @param {Object} oGroup group whose text is to be displayed
+		 * @public
+		 * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
+		 */
+		createGroupHeader: function (oGroup) {
+			return new GroupHeaderListItem({
+				title : oGroup.text,
+				upperCase : false
+			});
+		},
+
+		/**
+		 * Event handler for navigating back.
+		 * We navigate back in the browser historz
+		 * @public
+		 */
+		onNavBack: function() {
+			// eslint-disable-next-line sap-no-history-manipulation
+			history.go(-1);
+		},
+
+		/* =========================================================== */
+		/* begin: internal methods                                     */
+		/* =========================================================== */
+
+
+		_createViewModel: function() {
+			return new JSONModel({
+				isFilterBarVisible: false,
+				filterBarLabel: \\"\\",
+				delay: 0,
+				title: this.getResourceBundle().getText(\\"masterTitleCount\\", [0]),
+				noDataText: this.getResourceBundle().getText(\\"masterListNoDataText\\"),
+				sortBy: \\"CompanyName\\",
+				groupBy: \\"None\\"
+			});
+		},
+
+		_onMasterMatched:  function() {
+			//Set the layout property of the FCL control to 'OneColumn'
+			this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
+		},
+
+		/**
+		 * Shows the selected item on the detail page
+		 * On phones a additional history entry is created
+		 * @param {sap.m.ObjectListItem} oItem selected Item
+		 * @private
+		 */
+		_showDetail: function (oItem) {
+			var bReplace = !Device.system.phone;
+			// set the layout property of FCL control to show two columns
+			this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
+			this.getRouter().navTo(\\"object\\", {
+				objectId : oItem.getBindingContext().getProperty(\\"SupplierID\\")
+			}, bReplace);
+		},
+
+		/**
+		 * Sets the item count on the master list header
+		 * @param {integer} iTotalItems the total number of items in the list
+		 * @private
+		 */
+		_updateListItemCount: function (iTotalItems) {
+			var sTitle;
+			// only update the counter if the length is final
+			if (this._oList.getBinding(\\"items\\").isLengthFinal()) {
+				sTitle = this.getResourceBundle().getText(\\"masterTitleCount\\", [iTotalItems]);
+				this.getModel(\\"masterView\\").setProperty(\\"/title\\", sTitle);
+			}
+		},
+
+		/**
+		 * Internal helper method to apply both filter and search state together on the list binding
+		 * @private
+		 */
+		_applyFilterSearch: function () {
+			var aFilters = this._oListFilterState.aSearch.concat(this._oListFilterState.aFilter),
+				oViewModel = this.getModel(\\"masterView\\");
+			this._oList.getBinding(\\"items\\").filter(aFilters, \\"Application\\");
+			// changes the noDataText of the list in case there are no filter results
+			if (aFilters.length !== 0) {
+				oViewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"masterListNoDataWithFilterOrSearchText\\"));
+			} else if (this._oListFilterState.aSearch.length > 0) {
+				// only reset the no data text to default when no new search was triggered
+				oViewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"masterListNoDataText\\"));
+			}
+		},
+
+		/**
+		 * Internal helper method that sets the filter bar visibility property and the label's caption to be shown
+		 * @param {string} sFilterBarText the selected filter value
+		 * @private
+		 */
+		_updateFilterBar : function (sFilterBarText) {
+			var oViewModel = this.getModel(\\"masterView\\");
+			oViewModel.setProperty(\\"/isFilterBarVisible\\", (this._oListFilterState.aFilter.length > 0));
+			oViewModel.setProperty(\\"/filterBarLabel\\", this.getResourceBundle().getText(\\"masterFilterBarText\\", [sFilterBarText]));
+		}
+
+	});
+
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/controller/NotFound.controller.js": Object {
+    "contents": "sap.ui.define([
+	\\"./BaseController\\"
+], function (BaseController) {
+	\\"use strict\\";
+
+	return BaseController.extend(\\"test.me.controller.NotFound\\", {
+
+		onInit: function () {
+			this.getRouter().getTarget(\\"notFound\\").attachDisplay(this._onNotFoundDisplayed, this);
+		},
+
+		_onNotFoundDisplayed : function () {
+			this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
+		}
+	});
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/i18n/i18n.properties": Object {
+    "contents": "#XTIT: Application name
+appTitle=My Test App
+
+#YDES: Application description
+appDescription=Description of test.me
+# This is the resource bundle for {{2masterdetail.parameters.ApplicationTitle.value}}
+
+#~~~ Master View ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTIT: Master view title with placeholder for the number of items
+masterTitleCount=<Suppliers> ({0})
+
+#XTOL: Tooltip for the search field
+masterSearchTooltip=Enter an <Suppliers> name or a part of it.
+
+#XBLI: text for a list with no data
+masterListNoDataText=No <SuppliersPlural> are currently available
+
+#XBLI: text for a list with no data with filter or search
+masterListNoDataWithFilterOrSearchText=No matching <SuppliersPlural> found
+
+#XSEL: Option to sort the master list by CompanyName
+masterSort1=Sort By <CompanyName>
+
+
+
+#~~~ Detail View ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTOL: Icon Tab Bar Info
+detailIconTabBarInfo=Info
+
+#XTOL: Icon Tab Bar Attachments
+detailIconTabBarAttachments=Attachments
+
+#XTOL: Tooltip text for close column button
+closeColumn=Close
+
+
+#XBLI: Text for the Products table with no data
+detailLineItemTableNoDataText=No <ProductsPlural>
+
+#XTIT: Title of the Products table
+detailLineItemTableHeading=<ProductsPlural>
+
+#XTIT: Title of the Products table
+detailLineItemTableHeadingCount=<ProductsPlural> ({0})
+
+#XGRP: Title for the ProductName column in the Products table
+detailLineItemTableIDColumn=<FirstColumnName>
+
+#XGRP: Title for the {{2masterdetail.parameters.LineItem_Number.value.name}} column in the Products table
+detailLineItemTableUnitNumberColumn=<LastColumnName>
+
+
+#XTIT: Send E-Mail subject
+shareSendEmailObjectSubject=<Email subject including object identifier PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0}
+
+#YMSG: Send E-Mail message
+shareSendEmailObjectMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0} (id: {1})\\\\r\\\\n{2}
+
+#XBUT: Text for the send e-mail button
+sendEmail=Send E-Mail
+
+#XTIT: Title text for the price
+priceTitle=Price
+
+#~~~ Not Found View ~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTIT: Not found view title
+notFoundTitle=Not Found
+
+#YMSG: The Suppliers not found text is displayed when there is no Suppliers with this id
+noObjectFoundText=This <Suppliers> is not available
+
+#YMSG: The not found text is displayed when there was an error loading the resource (404 error)
+notFoundText=The requested resource was not found
+
+#~~~ Not Available View ~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTIT: Master view title
+notAvailableViewTitle=<Suppliers>
+
+#~~~ Error Handling ~~~~~~~~~~~~~~~~~~~~~~~
+
+#YMSG: Error dialog description
+errorText=Sorry, a technical error occurred! Please try again later.",
+    "state": "modified",
+  },
+  "listdetail/webapp/i18n/i18n_en.properties": Object {
+    "contents": "appTitle=My Test App
+appDescription=Description of test.me
+# This is the resource bundle for {{2masterdetail.parameters.ApplicationTitle.value}}
+
+#~~~ Master View ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTIT: Master view title with placeholder for the number of items
+masterTitleCount=<Suppliers> ({0})
+
+#XTOL: Tooltip for the search field
+masterSearchTooltip=Enter an <Suppliers> name or a part of it.
+
+#XBLI: text for a list with no data
+masterListNoDataText=No <SuppliersPlural> are currently available
+
+#XBLI: text for a list with no data with filter or search
+masterListNoDataWithFilterOrSearchText=No matching <SuppliersPlural> found
+
+#XSEL: Option to sort the master list by CompanyName
+masterSort1=Sort By <CompanyName>
+
+
+
+#~~~ Detail View ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTOL: Icon Tab Bar Info
+detailIconTabBarInfo=Info
+
+#XTOL: Icon Tab Bar Attachments
+detailIconTabBarAttachments=Attachments
+
+#XTOL: Tooltip text for close column button
+closeColumn=Close
+
+
+#XBLI: Text for the Products table with no data
+detailLineItemTableNoDataText=No <ProductsPlural>
+
+#XTIT: Title of the Products table
+detailLineItemTableHeading=<ProductsPlural>
+
+#XTIT: Title of the Products table
+detailLineItemTableHeadingCount=<ProductsPlural> ({0})
+
+#XGRP: Title for the ProductName column in the Products table
+detailLineItemTableIDColumn=<FirstColumnName>
+
+#XGRP: Title for the {{2masterdetail.parameters.LineItem_Number.value.name}} column in the Products table
+detailLineItemTableUnitNumberColumn=<LastColumnName>
+
+
+#XTIT: Send E-Mail subject
+shareSendEmailObjectSubject=<Email subject including object identifier PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0}
+
+#YMSG: Send E-Mail message
+shareSendEmailObjectMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0} (id: {1})\\\\r\\\\n{2}
+
+#XBUT: Text for the send e-mail button
+sendEmail=Send E-Mail
+
+#XTIT: Title text for the price
+priceTitle=Price
+
+#~~~ Not Found View ~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTIT: Not found view title
+notFoundTitle=Not Found
+
+#YMSG: The Suppliers not found text is displayed when there is no Suppliers with this id
+noObjectFoundText=This <Suppliers> is not available
+
+#YMSG: The not found text is displayed when there was an error loading the resource (404 error)
+notFoundText=The requested resource was not found
+
+#~~~ Not Available View ~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTIT: Master view title
+notAvailableViewTitle=<Suppliers>
+
+#~~~ Error Handling ~~~~~~~~~~~~~~~~~~~~~~~
+
+#YMSG: Error dialog description
+errorText=Sorry, a technical error occurred! Please try again later.",
+    "state": "modified",
+  },
+  "listdetail/webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>My Test App</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-resourceroots='{
+            \\"test.me\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"test.me\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"test.me\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "listdetail/webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.12.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"test.me\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.9.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.60\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {},
+        \\"sap.m\\": {},
+        \\"sap.f\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"test.me.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {}
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": []
+    },
+    \\"routing\\": {
+      \\"config\\": {
+        \\"routerClass\\": \\"sap.f.routing.Router\\",
+        \\"viewType\\": \\"XML\\",
+        \\"viewPath\\": \\"test.me.view\\",
+        \\"controlId\\": \\"layout\\",
+        \\"controlAggregation\\": \\"beginColumnPages\\",
+        \\"bypassed\\": {
+          \\"target\\": [
+            \\"notFound\\"
+          ]
+        },
+        \\"async\\": true
+      },
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\"\\",
+          \\"name\\": \\"master\\",
+          \\"target\\": \\"master\\"
+        },
+        {
+          \\"pattern\\": \\"Suppliers/{objectId}\\",
+          \\"name\\": \\"object\\",
+          \\"target\\": [
+            \\"master\\",
+            \\"object\\"
+          ]
+        }
+      ],
+      \\"targets\\": {
+        \\"master\\": {
+          \\"viewName\\": \\"Master\\",
+          \\"viewLevel\\": 1,
+          \\"viewId\\": \\"master\\"
+        },
+        \\"object\\": {
+          \\"viewName\\": \\"Detail\\",
+          \\"viewId\\": \\"detail\\",
+          \\"viewLevel\\": 1,
+          \\"controlAggregation\\": \\"midColumnPages\\"
+        },
+        \\"detailObjectNotFound\\": {
+          \\"viewName\\": \\"DetailObjectNotFound\\",
+          \\"viewId\\": \\"detailObjectNotFound\\",
+          \\"controlAggregation\\": \\"midColumnPages\\"
+        },
+        \\"notFound\\": {
+          \\"viewName\\": \\"NotFound\\",
+          \\"viewId\\": \\"notFound\\"
+        }
+      }
+    },
+    \\"rootView\\": {
+      \\"viewName\\": \\"test.me.view.App\\",
+      \\"type\\": \\"XML\\",
+      \\"async\\": true,
+      \\"id\\": \\"app\\"
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+  "listdetail/webapp/model/formatter.js": Object {
+    "contents": "sap.ui.define([], function () {
+	\\"use strict\\";
+
+	return {
+		/**
+		 * Rounds the currency value to 2 digits
+		 *
+		 * @public
+		 * @param {string} sValue value to be formatted
+		 * @returns {string} formatted currency value with 2 digits
+		 */
+		currencyValue : function (sValue) {
+			if (!sValue) {
+				return \\"\\";
+			}
+
+			return parseFloat(sValue).toFixed(2);
+		}
+	};
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/model/models.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/model/json/JSONModel\\",
+	\\"sap/ui/Device\\"
+], function (JSONModel, Device) {
+	\\"use strict\\";
+
+	return {
+		createDeviceModel : function () {
+			var oModel = new JSONModel(Device);
+			oModel.setDefaultBindingMode(\\"OneWay\\");
+			return oModel;
+		}
+	};
+});",
+    "state": "modified",
+  },
+  "listdetail/webapp/view/App.view.xml": Object {
+    "contents": "<mvc:View
+	controllerName=\\"test.me.controller.App\\"
+	displayBlock=\\"true\\"
+	height=\\"100%\\"
+	xmlns=\\"sap.m\\"
+	xmlns:f=\\"sap.f\\"
+	xmlns:mvc=\\"sap.ui.core.mvc\\">
+	<App
+		id=\\"app\\"
+		busy=\\"{appView>/busy}\\"
+		busyIndicatorDelay=\\"{appView>/delay}\\">
+		<f:FlexibleColumnLayout
+			id=\\"layout\\"
+			layout=\\"{appView>/layout}\\"
+			backgroundDesign=\\"Translucent\\">
+		</f:FlexibleColumnLayout>
+	</App>
+</mvc:View>",
+    "state": "modified",
+  },
+  "listdetail/webapp/view/Detail.view.xml": Object {
+    "contents": "<mvc:View
+	controllerName=\\"test.me.controller.Detail\\"
+	xmlns=\\"sap.m\\"
+	xmlns:semantic=\\"sap.f.semantic\\"
+	xmlns:mvc=\\"sap.ui.core.mvc\\">
+
+	<semantic:SemanticPage
+		id=\\"detailPage\\"
+		busy=\\"{detailView>/busy}\\"
+		busyIndicatorDelay=\\"{detailView>/delay}\\">
+		<semantic:titleHeading>
+			<Title
+				text=\\"{CompanyName}\\"
+				level=\\"H2\\"/>
+		</semantic:titleHeading>
+		<semantic:headerContent>
+			<ObjectAttribute title=\\"{i18n>priceTitle}\\"/>
+			<ObjectNumber />
+		</semantic:headerContent>
+		<semantic:content>
+
+			<Table
+				id=\\"lineItemsList\\"
+				width=\\"auto\\"
+				items=\\"{Products}\\"
+				updateFinished=\\".onListUpdateFinished\\"
+				noDataText=\\"{i18n>detailLineItemTableNoDataText}\\"
+				busyIndicatorDelay=\\"{detailView>/lineItemTableDelay}\\">
+				<headerToolbar>
+					<Toolbar>
+						<Title
+							id=\\"lineItemsTitle\\"
+							text=\\"{detailView>/lineItemListTitle}\\"
+							titleStyle=\\"H3\\"
+							level=\\"H3\\"/>
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column>
+						<Text text=\\"{i18n>detailLineItemTableIDColumn}\\"/>
+					</Column>
+					<Column
+						minScreenWidth=\\"Tablet\\"
+						demandPopin=\\"true\\"
+						hAlign=\\"End\\">
+						<Text text=\\"{i18n>detailLineItemTableUnitNumberColumn}\\"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<ObjectIdentifier
+								title=\\"{ProductName}\\"
+								text=\\"{ProductID}\\"/>
+							<ObjectNumber
+								number=\\"{
+									path: 'UnitsInStock',
+									formatter: '.formatter.currencyValue'
+								}\\"
+								unit=\\"{QuantityPerUnit}\\" />
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</semantic:content>
+		<!--Semantic ShareMenu Buttons-->
+		<semantic:sendEmailAction>
+			<semantic:SendEmailAction
+				id=\\"shareEmail\\"
+				press=\\".onSendEmailPress\\"/>
+		</semantic:sendEmailAction>
+
+		<semantic:closeAction>
+			<semantic:CloseAction
+					id=\\"closeColumn\\"
+					press=\\".onCloseDetailPress\\"/>
+		</semantic:closeAction>
+
+		<semantic:fullScreenAction>
+			<semantic:FullScreenAction
+					id=\\"enterFullScreen\\"
+					visible=\\"{= !\${device>/system/phone} &amp;&amp; !\${appView>/actionButtonsInfo/midColumn/fullScreen}}\\"
+					press=\\".toggleFullScreen\\"/>
+		</semantic:fullScreenAction>
+		<semantic:exitFullScreenAction>
+			<semantic:ExitFullScreenAction
+					id=\\"exitFullScreen\\"
+					visible=\\"{= !\${device>/system/phone} &amp;&amp; \${appView>/actionButtonsInfo/midColumn/fullScreen}}\\"
+					press=\\".toggleFullScreen\\"/>
+		</semantic:exitFullScreenAction>
+
+	</semantic:SemanticPage>
+
+</mvc:View>",
+    "state": "modified",
+  },
+  "listdetail/webapp/view/DetailObjectNotFound.view.xml": Object {
+    "contents": "<mvc:View
+	controllerName=\\"test.me.controller.DetailObjectNotFound\\"
+	xmlns=\\"sap.m\\"
+	xmlns:mvc=\\"sap.ui.core.mvc\\">
+
+	<MessagePage
+		id=\\"page\\"
+		title=\\"{i18n>detailTitle}\\"
+		text=\\"{i18n>noObjectFoundText}\\"
+		icon=\\"sap-icon://product\\"
+		description=\\"\\">
+	</MessagePage>
+
+</mvc:View>",
+    "state": "modified",
+  },
+  "listdetail/webapp/view/Master.view.xml": Object {
+    "contents": "<mvc:View
+	controllerName=\\"test.me.controller.Master\\"
+	xmlns=\\"sap.m\\"
+	xmlns:semantic=\\"sap.f.semantic\\"
+	xmlns:mvc=\\"sap.ui.core.mvc\\">
+
+	<semantic:SemanticPage
+		id=\\"masterPage\\"
+		preserveHeaderStateOnScroll=\\"true\\"
+		toggleHeaderOnTitleClick=\\"false\\">
+		<semantic:titleHeading>
+			<Title
+				id=\\"masterPageTitle\\"
+				text=\\"{masterView>/title}\\"
+				level=\\"H2\\"/>
+		</semantic:titleHeading>
+		<semantic:content>
+			<!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}\\" -->
+			<List
+				id=\\"list\\"
+				width=\\"auto\\"
+				class=\\"sapFDynamicPageAlignContent\\"
+				items=\\"{
+					path: '/Suppliers',
+					sorter: {
+						path: 'CompanyName',
+						descending: false
+					},
+					groupHeaderFactory: '.createGroupHeader'
+				}\\"
+				busyIndicatorDelay=\\"{masterView>/delay}\\"
+				noDataText=\\"{masterView>/noDataText}\\"
+				mode=\\"{= \${device>/system/phone} ? 'None' : 'SingleSelectMaster'}\\"
+				growing=\\"true\\"
+				growingScrollToLoad=\\"true\\"
+				updateFinished=\\".onUpdateFinished\\"
+				selectionChange=\\".onSelectionChange\\">
+
+				<headerToolbar>
+					<OverflowToolbar>
+						<SearchField
+							id=\\"searchField\\"
+							showRefreshButton=\\"true\\"
+							tooltip=\\"{i18n>masterSearchTooltip}\\"
+							search=\\".onSearch\\"
+							width=\\"auto\\">
+							<layoutData>
+								<OverflowToolbarLayoutData
+									minWidth=\\"150px\\"
+									maxWidth=\\"240px\\"
+									shrinkable=\\"true\\"
+									priority=\\"NeverOverflow\\"/>
+							</layoutData>
+						</SearchField>
+						<ToolbarSpacer/>
+						<Button
+							id=\\"sortButton\\"
+							press=\\".onOpenViewSettings\\"
+							icon=\\"sap-icon://sort\\"
+							type=\\"Transparent\\"/>
+
+					</OverflowToolbar>
+				</headerToolbar>
+				<items>
+					<ObjectListItem
+						type=\\"Navigation\\"
+						press=\\".onSelectionChange\\"
+						title=\\"{CompanyName}\\"
+						 />
+				</items>
+			</List>
+		</semantic:content>
+	</semantic:SemanticPage>
+</mvc:View>",
+    "state": "modified",
+  },
+  "listdetail/webapp/view/NotFound.view.xml": Object {
+    "contents": "<mvc:View
+	controllerName=\\"test.me.controller.NotFound\\"
+	xmlns=\\"sap.m\\"
+	xmlns:mvc=\\"sap.ui.core.mvc\\">
+
+	<MessagePage
+		id=\\"page\\"
+		title=\\"{i18n>notFoundTitle}\\"
+		text=\\"{i18n>notFoundText}\\"
+		icon=\\"sap-icon://document\\">
+	</MessagePage>
+
+</mvc:View>",
+    "state": "modified",
+  },
+  "listdetail/webapp/view/ViewSettingsDialog.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition
+	xmlns=\\"sap.m\\"
+	xmlns:core=\\"sap.ui.core\\">
+
+	<ViewSettingsDialog
+		id=\\"viewSettingsDialog\\"
+		confirm=\\".onConfirmViewSettingsDialog\\">
+		<sortItems>
+			<ViewSettingsItem
+				text=\\"{i18n>masterSort1}\\"
+				key=\\"{{2masterdetail.parameters.Object_Identifier.value.name}}\\"
+				selected=\\"true\\"/>
+
+		</sortItems>
+
+	</ViewSettingsDialog>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+}
+`;

@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="{{2masterdetail.parameters.AppId.value}}.controller.App"
+	controllerName="<%=app.id%>.controller.App"
 	displayBlock="true"
 	height="100%"
 	xmlns="sap.m"

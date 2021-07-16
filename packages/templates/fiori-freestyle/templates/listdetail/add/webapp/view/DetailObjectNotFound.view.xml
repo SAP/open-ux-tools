@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="{{2masterdetail.parameters.AppId.value}}.controller.DetailObjectNotFound"
+	controllerName="<%=app.id%>.controller.DetailObjectNotFound"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc">
 
@@ -8,14 +8,7 @@
 		title="{i18n>detailTitle}"
 		text="{i18n>noObjectFoundText}"
 		icon="sap-icon://product"
-		description=""
-		{{#unless 2masterdetail.parameters.FLP.value.value}}
-		showNavButton="{=
-			${device>/system/phone} ||
-			${device>/system/tablet} &amp;&amp;
-			${device>/orientation/portrait}
-		}"
-		navButtonPress=".onNavBack"{{/unless}}>
+		description="">
 	</MessagePage>
 
 </mvc:View>

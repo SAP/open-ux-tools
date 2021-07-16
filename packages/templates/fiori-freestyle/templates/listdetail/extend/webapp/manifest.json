@@ -1,136 +1,17 @@
 {
-	"_version": "{{2masterdetail.parameters.ManifestVersion.value}}",
-
-	"sap.app": {
-		"id": "{{2masterdetail.parameters.AppId.value}}",
-		"type": "application",
-		"i18n": "i18n/i18n.properties",
-		"title": "{{doubleCurlyBrackets "appTitle"}}",
-		"description": "{{doubleCurlyBrackets "appDescription"}}",
-
-		"applicationVersion": {
-{{#if 2masterdetail.environment.internal}}
-{{#if isModule}}
-		"version": "1.0.0"
-{{else}}
-		"version": "1.0.0"
-{{/if}}
-{{else}}
-		"version": "1.0.0"
-{{/if}}
-		},
-{{#if 2masterdetail.environment.internal}}
-	{{#if 2masterdetail.parameters.ApplicationComponentHierarchy.value}}
-		"ach": "{{2masterdetail.parameters.ApplicationComponentHierarchy.value}}",
-	{{else}}
-		"ach": "set-ach",
-	{{/if}}
-{{/if}}
-		"resources": "resources.json",
-		"dataSources": {
-			"mainService": {
-			{{#if isModule}}
-				{{#if isFullUrl}}
-				"uri": "/{{connectionData.destination.name}}{{{formatUrl datasource.url}}}",
-				{{else}}
-					{{#if_eq connectionData.destination.proxyType "OnPremise"}}
-				"uri": "/{{connectionData.destination.name}}{{{formatUrl datasource.url}}}",
-					{{else}}
-						{{#if_eq connectionData.destination.proxyType "Internet"}}
-							{{#if isServiceCatalog}}
-				"uri": "/{{connectionData.destination.name}}{{{formatUrl datasource.url}}}",
-							{{else}}
-				"uri": "{{{formatUrl datasource.url}}}",
-							{{/if}}
-						{{else}}
-				"uri": "{{{formatUrl datasource.url}}}",
-						{{/if_eq}}
-					{{/if_eq}}
-				{{/if}}
-			{{else}}
-				"uri": "{{{formatUrl datasource.url}}}",
-			{{/if}}
-				"type": "OData",
-				"settings": {
-					"odataVersion": "2.0",
-					"localUri": "localService/metadata.xml"
-				}
-			}
-		}
-	},
-
-{{#if 2masterdetail.environment.internal}}
-	"sap.fiori": {
-		"registrationIds": [
-{{#if 2masterdetail.parameters.FioriID.value}}
-			"{{2masterdetail.parameters.FioriID.value}}"
-{{/if}}
-		],
-		"archeType": "transactional"
-	},
-
-{{/if}}
-	"sap.ui": {
-		"technology": "UI5",
-		"icons": {
-			"icon": "sap-icon://detail-view",
-			"favIcon": "",
-			"phone": "",
-			"phone@2": "",
-			"tablet": "",
-			"tablet@2": ""
-		},
-		"deviceTypes": {
-			"desktop": true,
-			"tablet": true,
-			"phone": true
-		}
-	},
-
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "{{2masterdetail.parameters.AppId.value}}.view.App",
+			"viewName": "<%=app.id%>.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "app"
 		},
 
 		"dependencies": {
-{{#if 2masterdetail.environment.internal}}
-		{{#if isModule}}
-			"minUI5Version": "1.66.0",
-		{{else}}
-			"minUI5Version": "1.66.0",
-		{{/if}}
-{{else}}
-			"minUI5Version": "1.66.0",
-{{/if}}
 			"libs": {
 				"sap.ui.core": {},
 				"sap.m": {},
-				"sap.f": {}{{#if 2masterdetail.parameters.FLP.value.value}},
-				"sap.ushell": {},
-				"sap.collaboration": {
-					"lazy": true
-				}{{/if}}
-			}
-		},
-
-		"contentDensities": {
-			"compact": true,
-			"cozy": true
-		},
-
-		"models": {
-			"i18n": {
-				"type": "sap.ui.model.resource.ResourceModel",
-				"settings": {
-					"bundleName": "{{2masterdetail.parameters.AppId.value}}.i18n.i18n"
-				}
-			},
-			"": {
-				"dataSource": "mainService",
-				"preload": true
+				"sap.f": {}
 			}
 		},
 
@@ -138,15 +19,14 @@
 			"config": {
 				"routerClass": "sap.f.routing.Router",
 				"viewType": "XML",
-				"viewPath": "{{2masterdetail.parameters.AppId.value}}.view",
+				"viewPath": "<%=app.id%>.view",
 				"controlId": "layout",
 				"controlAggregation": "beginColumnPages",
 				"bypassed": {
-					"target": "notFound"
+					"target": ["notFound"]
 				},
 				"async": true
 			},
-
 			"routes": [
 				{
 					"pattern": "",
@@ -154,7 +34,7 @@
 					"target": "master"
 				},
 				{
-					"pattern": "{{2masterdetail.parameters.ObjectCollection.value.name}}/{objectId}",
+					"pattern": "<%=template.settings.entity.name%>/{objectId}",
 					"name": "object",
 					"target": [
 						"master",

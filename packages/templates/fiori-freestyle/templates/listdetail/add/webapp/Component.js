@@ -7,7 +7,7 @@ sap.ui.define([
 ], function (UIComponent, Device, models, ListSelector, ErrorHandler) {
 	"use strict";
 
-	return UIComponent.extend("{{2masterdetail.parameters.AppId.value}}.Component", {
+	return UIComponent.extend("<%=app.id%>.Component", {
 
 		metadata : {
 			manifest : "json"
@@ -15,7 +15,7 @@ sap.ui.define([
 
 		/**
 		 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-		 * In this method, the {{#if 2masterdetail.parameters.FLP.value.value}}FLP and {{/if}}device models are set and the router is initialized.
+		 * In this method, the device models are set and the router is initialized.
 		 * @public
 		 * @override
 		 */
@@ -25,10 +25,6 @@ sap.ui.define([
 
 			// set the device model
 			this.setModel(models.createDeviceModel(), "device");
-			{{#if 2masterdetail.parameters.FLP.value.value}}
-			// set the FLP model
-			this.setModel(models.createFLPModel(), "FLP");
-			{{/if}}
 
 			// call the base component's init function and create the App view
 			UIComponent.prototype.init.apply(this, arguments);

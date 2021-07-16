@@ -10,12 +10,12 @@
 				text="{i18n>masterSort1}"
 				key="{{2masterdetail.parameters.Object_Identifier.value.name}}"
 				selected="true"/>
-{{#if 2masterdetail.parameters.Object_Number.value.name}}
+<%if (template.settings.entity.numberProperty) {%>
 			<ViewSettingsItem
 				text="{i18n>masterSort2}"
-				key="{{2masterdetail.parameters.Object_Number.value.name}}"/>{{/if}}
+				key="{{2masterdetail.parameters.Object_Number.value.name}}"/><%}%>
 		</sortItems>
-{{#if 2masterdetail.parameters.Object_Number.value.name}}
+<%if (template.settings.entity.numberProperty) {%>
 		<filterItems>
 			<ViewSettingsFilterItem
 				id="filterItems"
@@ -37,6 +37,6 @@
 			<ViewSettingsItem
 				text="{i18n>masterGroup1}"
 				key="{{2masterdetail.parameters.Object_Number.value.name}}"/>
-		</groupItems>{{/if}}
+		</groupItems><%}%>
 	</ViewSettingsDialog>
 </core:FragmentDefinition>

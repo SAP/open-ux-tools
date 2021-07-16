@@ -4,7 +4,7 @@ sap.ui.define([
 ], function (BaseController, JSONModel) {
 	"use strict";
 
-	return BaseController.extend("{{2masterdetail.parameters.AppId.value}}.controller.App", {
+	return BaseController.extend("<%=app.id%>.controller.App", {
 
 		onInit : function () {
 			var oViewModel,

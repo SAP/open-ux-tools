@@ -4,7 +4,7 @@
 ], function (BaseObject, Log) {
 	"use strict";
 
-	return BaseObject.extend("{{2masterdetail.parameters.AppId.value}}.controller.ListSelector", {
+	return BaseObject.extend("<%=app.id%>.controller.ListSelector", {
 
 		/**
 		 * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundMasterList

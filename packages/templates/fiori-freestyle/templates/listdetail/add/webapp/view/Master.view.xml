@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="{{2masterdetail.parameters.AppId.value}}.controller.Master"
+	controllerName="<%=app.id%>.controller.Master"
 	xmlns="sap.m"
 	xmlns:semantic="sap.f.semantic"
 	xmlns:mvc="sap.ui.core.mvc">
@@ -21,9 +21,9 @@
 				width="auto"
 				class="sapFDynamicPageAlignContent"
 				items="{
-					path: '/{{2masterdetail.parameters.ObjectCollection.value.name}}',
+					path: '/<%=template.settings.entity.name%>',
 					sorter: {
-						path: '{{2masterdetail.parameters.Object_Identifier.value.name}}',
+						path: '<%=template.settings.entity.idProperty%>',
 						descending: false
 					},
 					groupHeaderFactory: '.createGroupHeader'
@@ -35,7 +35,7 @@
 				growingScrollToLoad="true"
 				updateFinished=".onUpdateFinished"
 				selectionChange=".onSelectionChange">
-{{#if 2masterdetail.parameters.Object_Number.value.name}}
+<%if (template.settings.entity.numberProperty) {%>
 				<infoToolbar>
 					<Toolbar
 						active="true"
@@ -48,7 +48,7 @@
 							level="H3"/>
 					</Toolbar>
 				</infoToolbar>
-{{/if}}
+<%}%>
 				<headerToolbar>
 					<OverflowToolbar>
 						<SearchField
@@ -71,7 +71,7 @@
 							press=".onOpenViewSettings"
 							icon="sap-icon://sort"
 							type="Transparent"/>
-{{#if 2masterdetail.parameters.Object_Number.value.name}}
+<%if (template.settings.entity.numberProperty) {%>
 						<Button
 							id="filterButton"
 							press=".onOpenViewSettings"
@@ -82,23 +82,19 @@
 							press=".onOpenViewSettings"
 							icon="sap-icon://group-2"
 							type="Transparent"/>
-{{/if}}
+<%}%>
 					</OverflowToolbar>
 				</headerToolbar>
 				<items>
 					<ObjectListItem
 						type="Navigation"
 						press=".onSelectionChange"
-						title="{{#addCurlyBrackets}}{{2masterdetail.parameters.Object_Identifier.value.name}}{{/addCurlyBrackets}}"
-{{#if 2masterdetail.parameters.Object_Number.value.name}}
-						number="{
-							path: '{{2masterdetail.parameters.Object_Number.value.name}}',
-							formatter: '.formatter.currencyValue'
-						}"
-{{/if}}
-{{#if 2masterdetail.parameters.Object_UnitOfMeasure.value.name}}
-						numberUnit="{{#addCurlyBrackets}}{{2masterdetail.parameters.Object_UnitOfMeasure.value.name}}{{/addCurlyBrackets}}"{{/if}}>
-					</ObjectListItem>
+						title="{<%=template.settings.entity.idProperty%>}"
+						<%if (template.settings.entity.numberProperty) {%>number="{
+							path: '<%=template.settings.entity.numberProperty%>',
+							formatter: '.formatter.numberUnit'
+						}"<%}%><%if (template.settings.entity.unitOfMeasureProperty) {%>
+						unit="{<%=template.settings.entity.unitOfMeasureProperty%>}"<%}%> />
 				</items>
 			</List>
 		</semantic:content>

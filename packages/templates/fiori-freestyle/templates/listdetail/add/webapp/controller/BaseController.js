@@ -4,7 +4,7 @@ sap.ui.define([
 ], function (Controller, History) {
 	"use strict";
 
-	return Controller.extend("{{2masterdetail.parameters.AppId.value}}.controller.BaseController", {
+	return Controller.extend("<%=app.id%>.controller.BaseController", {
 		/**
 		 * Convenience method for accessing the router in every controller of the application.
 		 * @public
@@ -46,23 +46,14 @@ sap.ui.define([
 
 		/**
 		 * Event handler for navigating back.
-{{#if 2masterdetail.parameters.FLP.value.value}}
-		 * It there is a history entry or an previous app-to-app navigation we go one step back in the browser history
-{{else}}
 		 * It there is a history entry we go one step back in the browser history
-{{/if}}
 		 * If not, it will replace the current entry of the browser history with the master route.
 		 * @public
 		 */
 		onNavBack : function() {
-{{#if 2masterdetail.parameters.FLP.value.value}}
-			var sPreviousHash = History.getInstance().getPreviousHash(),
-				oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
-{{else}}
 			var sPreviousHash = History.getInstance().getPreviousHash();
-{{/if}}
 
-			if (sPreviousHash !== undefined{{#if 2masterdetail.parameters.FLP.value.value}} || !oCrossAppNavigator.isInitialNavigation(){{/if}}) {
+			if (sPreviousHash !== undefined) {
 				// eslint-disable-next-line sap-no-history-manipulation
 				history.go(-1);
 			} else {

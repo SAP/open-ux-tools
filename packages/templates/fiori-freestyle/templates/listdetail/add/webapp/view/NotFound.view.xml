@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="{{2masterdetail.parameters.AppId.value}}.controller.NotFound"
+	controllerName="<%=app.id%>.controller.NotFound"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc">
 
@@ -7,10 +7,7 @@
 		id="page"
 		title="{i18n>notFoundTitle}"
 		text="{i18n>notFoundText}"
-		icon="sap-icon://document"
-		{{#unless 2masterdetail.parameters.FLP.value.value}}
-		showNavButton="true"
-		navButtonPress=".onNavBack"{{/unless}}>
+		icon="sap-icon://document">
 	</MessagePage>
 
 </mvc:View>

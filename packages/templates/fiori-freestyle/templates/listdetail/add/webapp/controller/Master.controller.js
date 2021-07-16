@@ -1,9 +1,6 @@
 sap.ui.define([
 	"./BaseController",
 	"sap/ui/model/json/JSONModel",
-{{#if 2masterdetail.parameters.FLP.value.value}}
-	"sap/ui/core/routing/History",
-{{/if}}
 	"sap/ui/model/Filter",
 	"sap/ui/model/Sorter",
 	"sap/ui/model/FilterOperator",
@@ -11,10 +8,10 @@ sap.ui.define([
 	"sap/ui/Device",
 	"sap/ui/core/Fragment",
 	"../model/formatter"
-], function (BaseController, JSONModel, {{#if 2masterdetail.parameters.FLP.value.value}}History, {{/if}}Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter) {
+], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter) {
 	"use strict";
 
-	return BaseController.extend("{{2masterdetail.parameters.AppId.value}}.controller.Master", {
+	return BaseController.extend("<%=app.id%>.controller.Master", {
 
 		formatter: formatter,
 
@@ -35,10 +32,10 @@ sap.ui.define([
 				// taken care of by the master list itself.
 				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
 
-{{#if 2masterdetail.parameters.Object_Number.value.name}}
+<%if (template.settings.entity.numberProperty) {%>
 			this._oGroupFunctions = {
-				{{2masterdetail.parameters.Object_Number.value.name}} : function(oContext) {
-					var iNumber = oContext.getProperty('{{2masterdetail.parameters.Object_Number.value.name}}'),
+				<%=template.settings.entity.numberProperty%>: function(oContext) {
+					var iNumber = oContext.getProperty('<%=template.settings.entity.numberProperty%>'),
 						key, text;
 					if (iNumber <= 20) {
 						key = "LE20";
@@ -53,8 +50,7 @@ sap.ui.define([
 					};
 				}.bind(this)
 			};
-{{/if}}
-
+<%}%>
 			this._oList = oList;
 			// keeps the filter and search state
 			this._oListFilterState = {
@@ -104,7 +100,7 @@ sap.ui.define([
 		 * @param {sap.ui.base.Event} oEvent the search event
 		 * @public
 		 */
-		onSearch : function (oEvent) {
+		onSearch: function (oEvent) {
 			if (oEvent.getParameters().refreshButtonPressed) {
 				// Search field's 'refresh' button has been pressed.
 				// This is visible if you select any master list item.
@@ -117,7 +113,7 @@ sap.ui.define([
 			var sQuery = oEvent.getParameter("query");
 
 			if (sQuery) {
-				this._oListFilterState.aSearch = [new Filter("{{2masterdetail.parameters.Object_Identifier.value.name}}", FilterOperator.Contains, sQuery)];
+				this._oListFilterState.aSearch = [new Filter("<%=template.settings.entity.idProperty%>", FilterOperator.Contains, sQuery)];
 			} else {
 				this._oListFilterState.aSearch = [];
 			}
@@ -130,7 +126,7 @@ sap.ui.define([
 		 * and group settings and refreshes the list binding.
 		 * @public
 		 */
-		onRefresh : function () {
+		onRefresh: function () {
 			this._oList.getBinding("items").refresh();
 		},
 
@@ -139,7 +135,7 @@ sap.ui.define([
 		 * @param {sap.ui.base.Event} oEvent the button press event
 		 * @public
 		 */
-		onOpenViewSettings : function (oEvent) {
+		onOpenViewSettings: function (oEvent) {
 			var sDialogTab = "filter";
 			if (oEvent.getSource() instanceof sap.m.Button) {
 				var sButtonId = oEvent.getSource().getId();
@@ -153,7 +149,7 @@ sap.ui.define([
 			if (!this.byId("viewSettingsDialog")) {
 				Fragment.load({
 					id: this.getView().getId(),
-					name: "{{2masterdetail.parameters.AppId.value}}.view.ViewSettingsDialog",
+					name: "<%=app.id%>.view.ViewSettingsDialog",
 					controller: this
 				}).then(function(oDialog){
 					// connect dialog to the root view of this component (models, lifecycle)
@@ -175,8 +171,8 @@ sap.ui.define([
 		 * @param {sap.ui.base.Event} oEvent the confirm event
 		 * @public
 		 */
-		onConfirmViewSettingsDialog : function (oEvent) {
-			{{#if 2masterdetail.parameters.Object_Number.value.name}}
+		onConfirmViewSettingsDialog: function (oEvent) {
+			<%if (template.settings.entity.numberProperty) {%>
 			var aFilterItems = oEvent.getParameters().filterItems,
 				aFilters = [],
 				aCaptions = [];
@@ -186,10 +182,10 @@ sap.ui.define([
 			aFilterItems.forEach(function (oItem) {
 				switch (oItem.getKey()) {
 					case "Filter1" :
-						aFilters.push(new Filter("{{2masterdetail.parameters.Object_Number.value.name}}", FilterOperator.LE, 100));
+						aFilters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.LE, 100));
 						break;
 					case "Filter2" :
-						aFilters.push(new Filter("{{2masterdetail.parameters.Object_Number.value.name}}", FilterOperator.GT, 100));
+						aFilters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.GT, 100));
 						break;
 					default :
 						break;
@@ -199,7 +195,7 @@ sap.ui.define([
 
 			this._oListFilterState.aFilter = aFilters;
 			this._updateFilterBar(aCaptions.join(", "));
-			this._applyFilterSearch();{{/if}}
+			this._applyFilterSearch();<%}%>
 			this._applySortGroup(oEvent);
 		},
 
@@ -213,7 +209,7 @@ sap.ui.define([
 				sPath,
 				bDescending,
 				aSorters = [];
-			{{#if 2masterdetail.parameters.Object_Number.value.name}}
+			<%if (template.settings.entity.numberProperty) {%>
 			// apply sorter to binding
 			// (grouping comes before sorting)
 			if (mParams.groupItem) {
@@ -222,7 +218,7 @@ sap.ui.define([
 				var vGroup = this._oGroupFunctions[sPath];
 				aSorters.push(new Sorter(sPath, bDescending, vGroup));
 			}
-			{{/if}}
+			<%}%>
 			sPath = mParams.sortItem.getKey();
 			bDescending = mParams.sortDescending;
 			aSorters.push(new Sorter(sPath, bDescending));
@@ -234,7 +230,7 @@ sap.ui.define([
 		 * @param {sap.ui.base.Event} oEvent the list selectionChange event
 		 * @public
 		 */
-		onSelectionChange : function (oEvent) {
+		onSelectionChange: function (oEvent) {
 			var oList = oEvent.getSource(),
 				bSelected = oEvent.getParameter("selected");
 
@@ -250,7 +246,7 @@ sap.ui.define([
 		 * If there was an object selected in the master list, that selection is removed.
 		 * @public
 		 */
-		onBypassed : function () {
+		onBypassed: function () {
 			this._oList.removeSelections(true);
 		},
 
@@ -262,63 +258,41 @@ sap.ui.define([
 		 * @public
 		 * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
 		 */
-		createGroupHeader : function (oGroup) {
+		createGroupHeader: function (oGroup) {
 			return new GroupHeaderListItem({
 				title : oGroup.text,
 				upperCase : false
 			});
 		},
 
-{{#if 2masterdetail.parameters.FLP.value.value}}
-		/**
-		 * Event handler for navigating back.
-		 * It there is a history entry or an previous app-to-app navigation we go one step back in the browser history
-		 * If not, it will navigate to the shell home
-		 * @public
-		 */
-		onNavBack : function() {
-			var sPreviousHash = History.getInstance().getPreviousHash(),
-				oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
-
-			if (sPreviousHash !== undefined || !oCrossAppNavigator.isInitialNavigation()) {
-				// eslint-disable-next-line sap-no-history-manipulation
-				history.go(-1);
-			} else {
-				oCrossAppNavigator.toExternal({
-					target: {shellHash: "#Shell-home"}
-				});
-			}
-		},
-{{else}}
 		/**
 		 * Event handler for navigating back.
 		 * We navigate back in the browser historz
 		 * @public
 		 */
-		onNavBack : function() {
+		onNavBack: function() {
 			// eslint-disable-next-line sap-no-history-manipulation
 			history.go(-1);
 		},
-{{/if}}
 
 		/* =========================================================== */
 		/* begin: internal methods                                     */
 		/* =========================================================== */
 
 
-		_createViewModel : function() {
+		_createViewModel: function() {
 			return new JSONModel({
 				isFilterBarVisible: false,
 				filterBarLabel: "",
 				delay: 0,
 				title: this.getResourceBundle().getText("masterTitleCount", [0]),
 				noDataText: this.getResourceBundle().getText("masterListNoDataText"),
-				sortBy: "{{2masterdetail.parameters.Object_Identifier.value.name}}",
+				sortBy: "<%=template.settings.entity.idProperty%>",
 				groupBy: "None"
 			});
 		},
 
-		_onMasterMatched :  function() {
+		_onMasterMatched:  function() {
 			//Set the layout property of the FCL control to 'OneColumn'
 			this.getModel("appView").setProperty("/layout", "OneColumn");
 		},
@@ -329,12 +303,12 @@ sap.ui.define([
 		 * @param {sap.m.ObjectListItem} oItem selected Item
 		 * @private
 		 */
-		_showDetail : function (oItem) {
+		_showDetail: function (oItem) {
 			var bReplace = !Device.system.phone;
 			// set the layout property of FCL control to show two columns
 			this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
 			this.getRouter().navTo("object", {
-				objectId : oItem.getBindingContext().getProperty("{{2masterdetail.parameters.ObjectCollection_Key.value.name}}")
+				objectId : oItem.getBindingContext().getProperty("<%=template.settings.entity.key%>")
 			}, bReplace);
 		},
 
@@ -343,7 +317,7 @@ sap.ui.define([
 		 * @param {integer} iTotalItems the total number of items in the list
 		 * @private
 		 */
-		_updateListItemCount : function (iTotalItems) {
+		_updateListItemCount: function (iTotalItems) {
 			var sTitle;
 			// only update the counter if the length is final
 			if (this._oList.getBinding("items").isLengthFinal()) {
@@ -356,7 +330,7 @@ sap.ui.define([
 		 * Internal helper method to apply both filter and search state together on the list binding
 		 * @private
 		 */
-		_applyFilterSearch : function () {
+		_applyFilterSearch: function () {
 			var aFilters = this._oListFilterState.aSearch.concat(this._oListFilterState.aFilter),
 				oViewModel = this.getModel("masterView");
 			this._oList.getBinding("items").filter(aFilters, "Application");

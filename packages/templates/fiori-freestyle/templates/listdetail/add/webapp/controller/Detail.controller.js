@@ -9,7 +9,7 @@ sap.ui.define([
 	// shortcut for sap.m.URLHelper
 	var URLHelper = mobileLibrary.URLHelper;
 
-	return BaseController.extend("{{2masterdetail.parameters.AppId.value}}.controller.Detail", {
+	return BaseController.extend("<%=app.id%>.controller.Detail", {
 
 		formatter: formatter,
 
@@ -17,14 +17,14 @@ sap.ui.define([
 		/* lifecycle methods                                           */
 		/* =========================================================== */
 
-		onInit : function () {
+		onInit: function () {
 			// Model used to manipulate control states. The chosen values make sure,
 			// detail page is busy indication immediately so there is no break in
 			// between the busy indication for loading the view's meta data
 			var oViewModel = new JSONModel({
 				busy : false,
-				delay : 0{{#if 2masterdetail.parameters.LineItemCollection.value.name }},
-				lineItemListTitle : this.getResourceBundle().getText("detailLineItemTableHeading"){{/if}}
+				delay : 0<%if (template.settings.lineItem.name) {%>,
+				lineItemListTitle : this.getResourceBundle().getText("detailLineItemTableHeading")<%}%>
 			});
 
 			this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);
@@ -42,7 +42,7 @@ sap.ui.define([
 		 * Event handler when the share by E-Mail button has been clicked
 		 * @public
 		 */
-		onSendEmailPress : function () {
+		onSendEmailPress: function () {
 			var oViewModel = this.getModel("detailView");
 
 			URLHelper.triggerEmail(
@@ -52,32 +52,13 @@ sap.ui.define([
 			);
 		},
 
-{{#if 2masterdetail.parameters.FLP.value.value}}
-		/**
-		 * Event handler when the share in JAM button has been clicked
-		 * @public
-		 */
-		onShareInJamPress : function () {
-			var oViewModel = this.getModel("detailView"),
-				oShareDialog = sap.ui.getCore().createComponent({
-					name : "sap.collaboration.components.fiori.sharing.dialog",
-					settings : {
-						object :{
-							id : location.href,
-							share : oViewModel.getProperty("/shareOnJamTitle")
-						}
-					}
-				});
-
-			oShareDialog.open();
-		},
-{{/if}}{{#if 2masterdetail.parameters.LineItemCollection.value.name }}
+		<%if (template.settings.lineItem.name) {%>
 		/**
 		 * Updates the item count within the line item table's header
 		 * @param {object} oEvent an event containing the total number of items in the list
 		 * @private
 		 */
-		onListUpdateFinished : function (oEvent) {
+		onListUpdateFinished: function (oEvent) {
 			var sTitle,
 				iTotalItems = oEvent.getParameter("total"),
 				oViewModel = this.getModel("detailView");
@@ -92,7 +73,7 @@ sap.ui.define([
 				}
 				oViewModel.setProperty("/lineItemListTitle", sTitle);
 			}
-		},{{/if}}
+		},<%}%>
 
 		/* =========================================================== */
 		/* begin: internal methods                                     */
@@ -104,12 +85,12 @@ sap.ui.define([
 		 * @param {sap.ui.base.Event} oEvent pattern match event in route 'object'
 		 * @private
 		 */
-		_onObjectMatched : function (oEvent) {
+		_onObjectMatched: function (oEvent) {
 			var sObjectId =  oEvent.getParameter("arguments").objectId;
 			this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
 			this.getModel().metadataLoaded().then( function() {
-				var sObjectPath = this.getModel().createKey("{{2masterdetail.parameters.ObjectCollection.value.name}}", {
-					{{2masterdetail.parameters.ObjectCollection_Key.value.name}} :  sObjectId
+				var sObjectPath = this.getModel().createKey("<%=template.settings.entity.name%>", {
+					<%=template.settings.entity.key%>:  sObjectId
 				});
 				this._bindView("/" + sObjectPath);
 			}.bind(this));
@@ -122,7 +103,7 @@ sap.ui.define([
 		 * @param {string} sObjectPath path to the object to be bound to the view.
 		 * @private
 		 */
-		_bindView : function (sObjectPath) {
+		_bindView: function (sObjectPath) {
 			// Set busy indicator during view binding
 			var oViewModel = this.getModel("detailView");
 
@@ -143,7 +124,7 @@ sap.ui.define([
 			});
 		},
 
-		_onBindingChange : function () {
+		_onBindingChange: function () {
 			var oView = this.getView(),
 				oElementBinding = oView.getElementBinding();
 
@@ -159,38 +140,34 @@ sap.ui.define([
 			var sPath = oElementBinding.getPath(),
 				oResourceBundle = this.getResourceBundle(),
 				oObject = oView.getModel().getObject(sPath),
-				sObjectId = oObject.{{2masterdetail.parameters.ObjectCollection_Key.value.name}},
-				sObjectName = oObject.{{2masterdetail.parameters.Object_Identifier.value.name}},
+				sObjectId = oObject.<%=template.settings.entity.key%>,
+				sObjectName = oObject.<%=template.settings.entity.idProperty%>,
 				oViewModel = this.getModel("detailView");
 
 			this.getOwnerComponent().oListSelector.selectAListItem(sPath);
 
-{{#if 2masterdetail.parameters.FLP.value.value}}
-			oViewModel.setProperty("/saveAsTileTitle",oResourceBundle.getText("shareSaveTileAppTitle", [sObjectName]));
-			oViewModel.setProperty("/shareOnJamTitle", sObjectName);
-{{/if}}
 			oViewModel.setProperty("/shareSendEmailSubject",
 				oResourceBundle.getText("shareSendEmailObjectSubject", [sObjectId]));
 			oViewModel.setProperty("/shareSendEmailMessage",
 				oResourceBundle.getText("shareSendEmailObjectMessage", [sObjectName, sObjectId, location.href]));
 		},
 
-		_onMetadataLoaded : function () {
+		_onMetadataLoaded: function () {
 			// Store original busy indicator delay for the detail view
 			var iOriginalViewBusyDelay = this.getView().getBusyIndicatorDelay(),
-				oViewModel = this.getModel("detailView"){{#if 2masterdetail.parameters.LineItemCollection.value.name }},
+				oViewModel = this.getModel("detailView")<%if (template.settings.lineItem.name) {%>,
 				oLineItemTable = this.byId("lineItemsList"),
-				iOriginalLineItemTableBusyDelay = oLineItemTable.getBusyIndicatorDelay(){{/if}};
+				iOriginalLineItemTableBusyDelay = oLineItemTable.getBusyIndicatorDelay()<%}%>;
 
 			// Make sure busy indicator is displayed immediately when
 			// detail view is displayed for the first time
-			oViewModel.setProperty("/delay", 0);{{#if 2masterdetail.parameters.LineItemCollection.value.name }}
+			oViewModel.setProperty("/delay", 0);<%if (template.settings.lineItem.name) {%>
 			oViewModel.setProperty("/lineItemTableDelay", 0);
 
 			oLineItemTable.attachEventOnce("updateFinished", function() {
 				// Restore original busy indicator delay for line item table
 				oViewModel.setProperty("/lineItemTableDelay", iOriginalLineItemTableBusyDelay);
-			});{{/if}}
+			});<%}%>
 
 			// Binding the view will set it to not busy - so the view is always busy if it is not bound
 			oViewModel.setProperty("/busy", true);

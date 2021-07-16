@@ -1,8 +1,7 @@
 <mvc:View
-	controllerName="{{2masterdetail.parameters.AppId.value}}.controller.Detail"
+	controllerName="<%=app.id%>.controller.Detail"
 	xmlns="sap.m"
-	xmlns:semantic="sap.f.semantic"{{#if 2masterdetail.parameters.FLP.value.value}}
-	xmlns:footerbar="sap.ushell.ui.footerbar"{{/if}}
+	xmlns:semantic="sap.f.semantic"
 	xmlns:mvc="sap.ui.core.mvc">
 
 	<semantic:SemanticPage
@@ -11,28 +10,24 @@
 		busyIndicatorDelay="{detailView>/delay}">
 		<semantic:titleHeading>
 			<Title
-				text="{{#addCurlyBrackets}}{{2masterdetail.parameters.Object_Identifier.value.name}}{{/addCurlyBrackets}}"
+				text="{<%=template.settings.entity.idProperty%>}"
 				level="H2"/>
 		</semantic:titleHeading>
 		<semantic:headerContent>
 			<ObjectAttribute title="{i18n>priceTitle}"/>
-			{{#if 2masterdetail.parameters.Object_Number.value.name}}
-			<ObjectNumber
-				id="objectHeaderNumber"
+			<ObjectNumber<%if (template.settings.entity.numberProperty) {%>
 				number="{
-					path: '{{2masterdetail.parameters.Object_Number.value.name}}',
-					formatter: '.formatter.currencyValue'
-				}"
-			{{#if 2masterdetail.parameters.Object_UnitOfMeasure.value.name}}
-				unit="{{#addCurlyBrackets}}{{2masterdetail.parameters.Object_UnitOfMeasure.value.name}}{{/addCurlyBrackets}}"{{/if}}
-			/>{{/if}}
+					path: '<%=template.settings.entity.numberProperty%>',
+					formatter: '.formatter.numberUnit'
+				}"<%}%><%if (template.settings.entity.unitOfMeasureProperty) {%>
+				unit="{<%=template.settings.entity.unitOfMeasureProperty%>}"<%}%> />
 		</semantic:headerContent>
 		<semantic:content>
-{{#if 2masterdetail.parameters.LineItemCollection.value.name }}
+<%if (template.settings.lineItem.name) {%>
 			<Table
 				id="lineItemsList"
 				width="auto"
-				items="{{#addCurlyBrackets}}{{2masterdetail.parameters.LineItemCollection.value.name}}{{/addCurlyBrackets}}"
+				items="{<%=template.settings.lineItem.name%>}"
 				updateFinished=".onListUpdateFinished"
 				noDataText="{i18n>detailLineItemTableNoDataText}"
 				busyIndicatorDelay="{detailView>/lineItemTableDelay}">
@@ -60,21 +55,18 @@
 					<ColumnListItem>
 						<cells>
 							<ObjectIdentifier
-								title="{{#addCurlyBrackets}}{{2masterdetail.parameters.LineItem_Identifier.value.name}}{{/addCurlyBrackets}}"
-								text="{{#addCurlyBrackets}}{{2masterdetail.parameters.LineItemCollection_Key.value.name}}{{/addCurlyBrackets}}"/>
-							<ObjectNumber
-{{#if 2masterdetail.parameters.LineItem_Number.value.name }}
+								title="{<%=template.settings.lineItem.idProperty%>}"
+								text="{<%=template.settings.lineItem.key%>}"/>
+							<ObjectNumber<%if (template.settings.lineItem.numberProperty) {%>
 								number="{
-									path: '{{2masterdetail.parameters.LineItem_Number.value.name}}',
+									path: '<%=template.settings.lineItem.numberProperty%>',
 									formatter: '.formatter.currencyValue'
-								}"
-{{/if}}
-{{#if 2masterdetail.parameters.LineItem_UnitOfMeasure.value.name }}
-								unit="{{#addCurlyBrackets}}{{2masterdetail.parameters.LineItem_UnitOfMeasure.value.name }}{{/addCurlyBrackets}}"{{/if}}/>
+								}"<%}%><%if (template.settings.lineItem.unitOfMeasureProperty) {%>
+								unit="{<%=template.settings.lineItem.unitOfMeasureProperty%>}"<%}%> />
 						</cells>
 					</ColumnListItem>
 				</items>
-			</Table>{{/if}}
+			</Table><%}%>
 		</semantic:content>
 		<!--Semantic ShareMenu Buttons-->
 		<semantic:sendEmailAction>
@@ -83,21 +75,6 @@
 				press=".onSendEmailPress"/>
 		</semantic:sendEmailAction>
 
-		{{#if 2masterdetail.parameters.FLP.value.value}}
-		<semantic:shareInJamAction>
-			<semantic:ShareInJamAction
-				id="shareInJam"
-				visible="{FLP>/isShareInJamActive}"
-				press=".onShareInJamPress"/>
-		</semantic:shareInJamAction>
-
-		<semantic:saveAsTileAction>
-			<footerbar:AddBookmarkButton
-				id="shareTile"
-				title="{detailView>/saveAsTileTitle}"/>
-		</semantic:saveAsTileAction>
-
-		{{/if}}
 		<semantic:closeAction>
 			<semantic:CloseAction
 					id="closeColumn"

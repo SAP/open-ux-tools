@@ -20,7 +20,7 @@ export interface WorklistSettings {
 }
 
 export interface ListDetailSettings {
-    mainObject: Entity;
+    entity: Entity;
     lineItem: Entity;
 }
 
