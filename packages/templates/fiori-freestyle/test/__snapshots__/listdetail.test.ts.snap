@@ -1048,19 +1048,19 @@ appDescription=Description of test.me
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
-listTitleCount=<Suppliers> ({0})
+listTitleCount=Suppliers ({0})
 
 #XTOL: Tooltip for the search field
-listSearchTooltip=Enter an <Suppliers> name or a part of it.
+listSearchTooltip=Enter an Suppliers name or a part of it.
 
 #XBLI: text for a list with no data
-listListNoDataText=No <SuppliersPlural> are currently available
+listListNoDataText=No Suppliers are currently available
 
 #XBLI: text for a list with no data with filter or search
-listListNoDataWithFilterOrSearchText=No matching <SuppliersPlural> found
+listListNoDataWithFilterOrSearchText=No matching Suppliers found
 
 #XSEL: Option to sort the list list by CompanyName
-listSort1=Sort By <CompanyName>
+listSort1=Sort By CompanyName
 
 
 
@@ -1077,19 +1077,19 @@ closeColumn=Close
 
 
 #XBLI: Text for the Products table with no data
-detailLineItemTableNoDataText=No <ProductsPlural>
+detailLineItemTableNoDataText=No Products
 
 #XTIT: Title of the Products table
-detailLineItemTableHeading=<ProductsPlural>
+detailLineItemTableHeading=Products
 
 #XTIT: Title of the Products table
-detailLineItemTableHeadingCount=<ProductsPlural> ({0})
+detailLineItemTableHeadingCount=Products ({0})
 
 #XGRP: Title for the ProductName column in the Products table
-detailLineItemTableIDColumn=<FirstColumnName>
+detailLineItemTableIDColumn=ProductName
 
-#XGRP: Title for the {{2listdetail.parameters.LineItem_Number.value.name}} column in the Products table
-detailLineItemTableUnitNumberColumn=<LastColumnName>
+#XGRP: Title for the UnitsInStock column in the Products table
+detailLineItemTableUnitNumberColumn=UnitsInStock
 
 
 #XTIT: Send E-Mail subject
@@ -1110,7 +1110,7 @@ priceTitle=Price
 notFoundTitle=Not Found
 
 #YMSG: The Suppliers not found text is displayed when there is no Suppliers with this id
-noObjectFoundText=This <Suppliers> is not available
+noObjectFoundText=This Suppliers is not available
 
 #YMSG: The not found text is displayed when there was an error loading the resource (404 error)
 notFoundText=The requested resource was not found
@@ -1118,7 +1118,7 @@ notFoundText=The requested resource was not found
 #~~~ Not Available View ~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title
-notAvailableViewTitle=<Suppliers>
+notAvailableViewTitle=Suppliers
 
 #~~~ Error Handling ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1134,19 +1134,19 @@ appDescription=Description of test.me
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
-listTitleCount=<Suppliers> ({0})
+listTitleCount=Suppliers ({0})
 
 #XTOL: Tooltip for the search field
-listSearchTooltip=Enter an <Suppliers> name or a part of it.
+listSearchTooltip=Enter an Suppliers name or a part of it.
 
 #XBLI: text for a list with no data
-listListNoDataText=No <SuppliersPlural> are currently available
+listListNoDataText=No Suppliers are currently available
 
 #XBLI: text for a list with no data with filter or search
-listListNoDataWithFilterOrSearchText=No matching <SuppliersPlural> found
+listListNoDataWithFilterOrSearchText=No matching Suppliers found
 
 #XSEL: Option to sort the list list by CompanyName
-listSort1=Sort By <CompanyName>
+listSort1=Sort By CompanyName
 
 
 
@@ -1163,19 +1163,19 @@ closeColumn=Close
 
 
 #XBLI: Text for the Products table with no data
-detailLineItemTableNoDataText=No <ProductsPlural>
+detailLineItemTableNoDataText=No Products
 
 #XTIT: Title of the Products table
-detailLineItemTableHeading=<ProductsPlural>
+detailLineItemTableHeading=Products
 
 #XTIT: Title of the Products table
-detailLineItemTableHeadingCount=<ProductsPlural> ({0})
+detailLineItemTableHeadingCount=Products ({0})
 
 #XGRP: Title for the ProductName column in the Products table
-detailLineItemTableIDColumn=<FirstColumnName>
+detailLineItemTableIDColumn=ProductName
 
-#XGRP: Title for the {{2listdetail.parameters.LineItem_Number.value.name}} column in the Products table
-detailLineItemTableUnitNumberColumn=<LastColumnName>
+#XGRP: Title for the UnitsInStock column in the Products table
+detailLineItemTableUnitNumberColumn=UnitsInStock
 
 
 #XTIT: Send E-Mail subject
@@ -1196,7 +1196,7 @@ priceTitle=Price
 notFoundTitle=Not Found
 
 #YMSG: The Suppliers not found text is displayed when there is no Suppliers with this id
-noObjectFoundText=This <Suppliers> is not available
+noObjectFoundText=This Suppliers is not available
 
 #YMSG: The not found text is displayed when there was an error loading the resource (404 error)
 notFoundText=The requested resource was not found
@@ -1204,7 +1204,7 @@ notFoundText=The requested resource was not found
 #~~~ Not Available View ~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title
-notAvailableViewTitle=<Suppliers>
+notAvailableViewTitle=Suppliers
 
 #~~~ Error Handling ~~~~~~~~~~~~~~~~~~~~~~~
 
