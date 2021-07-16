@@ -1,7 +1,9 @@
 import { OdataService } from './types';
 
 /**
- * @param data
+ * Enhances the provided OData service object with path, name and model information.
+ *
+ * @param {OdataService} data - the OData service object
  */
 export function enhanceData(data: OdataService): void {
     if (data.path.substring(data.path.length - 1) !== '/') {

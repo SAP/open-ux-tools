@@ -4,9 +4,13 @@
     "version": "0.0.1",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rimraf dist && tsc",
-        "watch": "tsc --watch",
-        "test": "jest --passWithNoTests"
+        "build": "pnpm clean && tsc",
+        "clean": "rimraf dist",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --passWithNoTests --runInBand --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --watch"
     },
     "files": [
         "dist"

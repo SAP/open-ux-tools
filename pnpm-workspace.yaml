@@ -1,0 +1,4 @@
+packages:
+  - 'packages/lib/**'
+  - 'packages/templates/**'
+  - '!packages/templates/**/templates' # Ignoring templates folder within template packages that might contain invalid json characters
