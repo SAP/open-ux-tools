@@ -19,6 +19,7 @@ export interface App {
 export interface UI5 {
     minVersion?: string;
     version?: string;
+    typesVersion?: string;
     descriptorVersion?: string;
 }
 

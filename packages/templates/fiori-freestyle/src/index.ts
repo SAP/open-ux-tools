@@ -19,6 +19,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     data.app.baseComponent = 'sap/ui/core/UIComponent';
     fs = await generateUi5Project(basePath, data, fs);
 
+
+    console.log(JSON.stringify(data, null, 4));
+
     // add new and overwrite files from templates e.g. annotations.xml
     const tmpPath = join(__dirname, '..', 'templates');
     fs.copyTpl(join(tmpPath, data.template.type, 'add', '**/*.*'), basePath, data);
@@ -42,7 +45,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // package.json
     const packagePath = join(basePath, 'package.json');
-    fs.extendJSON(packagePath, fs.readJSON(join(tmpPath, 'common', 'extend', 'package.json')));
+    fs.extendJSON(packagePath, JSON.parse(render(fs.read(join(tmpPath, 'common', 'extend', 'package.json')), data)));
     const packageJson = JSON.parse(fs.read(packagePath));
     packageJson.ui5.dependencies.push('@sap/ux-ui5-tooling');
     fs.writeJSON(packagePath, packageJson);

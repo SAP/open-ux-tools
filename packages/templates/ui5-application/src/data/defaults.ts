@@ -32,5 +32,6 @@ export function mergeUi5(ui5?: UI5): UI5 {
     };
     merged.descriptorVersion =
         ui5?.descriptorVersion || (mappings as Record<string, string>)[merged.minVersion!] || '1.12.0';
+    merged.typesVersion = ui5?.typesVersion || parseFloat(merged.version!) >= 1.76 ? merged.version : '1.71.18';
     return merged as UI5;
 }

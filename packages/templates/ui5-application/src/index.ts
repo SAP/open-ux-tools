@@ -7,10 +7,10 @@ async function generate(basePath: string, data: Ui5App, fs?: Editor): Promise<Ed
     if (!fs) {
         fs = create(createStorage());
     }
-    const fullData = mergeWithDefaults(data);
+    mergeWithDefaults(data);
     const tmpPath = join(__dirname, '..', 'templates');
 
-    fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), fullData);
+    fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), data);
 
     return fs;
 }

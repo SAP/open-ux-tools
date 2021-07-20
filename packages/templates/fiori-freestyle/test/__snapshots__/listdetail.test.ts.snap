@@ -12,6 +12,8 @@ Object {
     \\"@ui5/cli\\": \\"^2.8.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
+    \\"@sapui5/ts-types\\": \\"1.84.0\\",
+    \\"@sapui5/ts-types-esm\\": \\"1.84.0\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"latest\\"
   },
   \\"scripts\\": {
