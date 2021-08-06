@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: UX-Tools
+Upstream-Name: Open-UX-Tools
 Upstream-Contact: sapfiorielements@sap.com
-Source: https://github.com/SAP/ux-tools
+Source: https://github.com/SAP/open-ux-tools
 Disclaimer: The code in this project may include calls to APIs (“API Calls”) of
  SAP or third-party products or services developed outside of this project
  (“External Products”).
@@ -24,6 +24,6 @@ Disclaimer: The code in this project may include calls to APIs (“API Calls”)
  you any rights to use or access any SAP External Product, or provide any third
  parties the right to use of access any SAP External Product, through API Calls.
 
-#Files: <ANOTHER-THIRD-PARTY-FILE-OR-FOLDER-LIST>
-#Copyright: <COPYRIGHT-OF-ANOTHER-THIRD-PARTY-CODE>
-#License: <LICENSE-OF-ANOTHER- THIRD-PARTY-CODE>
+Files: *
+Copyright: 2021 SAP SE
+License: Apache-2.0
