@@ -18,6 +18,13 @@ export async function initI18n(): Promise<void> {
 
 type StringMap = { [key: string]: unknown };
 
+/**
+ * Translates the provided key using the i18n instance.
+ *
+ * @param {string} key - the key to be translated
+ * @param {(string | TOptions<StringMap & TOptionsBase>)} [options] - a list of options for translation interpolation
+ * @returns {string} the translated string
+ */
 export function t(key: string, options?: string | TOptions<StringMap & TOptionsBase>): string {
     return i18nInstance.t(key, options);
 }

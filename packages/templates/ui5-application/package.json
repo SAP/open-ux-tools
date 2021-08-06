@@ -4,9 +4,13 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rimraf dist && tsc",
-        "watch": "tsc --watch",
-        "test": "jest"
+        "build": "pnpm clean && tsc",
+        "clean": "rimraf dist",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --watch"
     },
     "files": [
         "LICENSE",
@@ -14,12 +18,12 @@
         "templates"
     ],
     "dependencies": {
-        "ejs": "^3.1.6",
-        "mem-fs": "^2.1.0",
-        "mem-fs-editor": "^9.0.0"
+        "ejs": "3.1.6",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.0.0"
     },
     "devDependencies": {
-        "@types/ejs": "^3.0.6",
-        "@types/mem-fs-editor": "^7.0.0"
+        "@types/ejs": "3.0.6",
+        "@types/mem-fs-editor": "7.0.0"
     }
 }

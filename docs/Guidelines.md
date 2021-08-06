@@ -1,17 +1,17 @@
 # Development Conventions and Guidelines
 ## TypeScript Coding Guidelines
-We enforce code style rules using [ESLint](https://eslint.org). Execute `yarn lint` to check your code for style issues.  
+We enforce code style rules using [ESLint](https://eslint.org). Execute `pnpm lint` to check your code for style issues.  
 You may also find an ESLint integration for your favorite IDE [here](https://eslint.org/docs/user-guide/integrations).
 
 You can fix auto-fixable problems by running:
 
 ```shell
-yarn lint --fix
+pnpm lint:fix
 ```
 ## Testing
 You can run all the tests by running:
 ```
-yarn test
+pnpm test
 ```
 
 Please make sure you add or modify tests for the code you are contributing.
