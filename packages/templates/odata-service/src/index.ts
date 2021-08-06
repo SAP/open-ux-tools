@@ -8,8 +8,10 @@ import { OdataService, OdataVersion, enhanceData } from './data';
 import { getMiddlewareConfig, getLocalMiddlewareConfig } from './data/middleware';
 
 /**
- * @param basePath
- * @param fs
+ * Validates the provided base path.
+ *
+ * @param {string} basePath - the base path
+ * @param {Editor} fs - the memfs editor instance
  */
 function validateBasePath(basePath: string, fs: Editor) {
     [join(basePath, 'package.json'), join(basePath, 'webapp', 'manifest.json'), join(basePath, 'ui5.yaml')].forEach(
@@ -20,13 +22,15 @@ function validateBasePath(basePath: string, fs: Editor) {
         }
     );
 }
-
 /**
- * @param basePath
- * @param data
- * @param fs
+ * Writes the template to the memfs editor instance.
+ *
+ * @param {string} basePath - the base path
+ * @param {OdataService} data - the OData service instance
+ * @param {Editor} [fs] - the memfs editor instance
+ * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function generate<T>(basePath: string, data: OdataService, fs?: Editor): Promise<Editor> {
+async function generate(basePath: string, data: OdataService, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }

@@ -1,4 +1,6 @@
 *.md
 dist/
+node_modules/
+typings/
 **/packages/templates/**/templates
 !packages/templates/
