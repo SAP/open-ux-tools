@@ -6,21 +6,12 @@ Open UX Tools is a set of tools and libraries that makes it faster and easier to
 
 ### Install `pnpm` globally
 
-To install `pnpm` globally, run the following commands:
-
-**macOS:**
-
+To install `pnpm` globally using `npm`, run the following:
 ```shell
-curl -f https://get.pnpm.io/v6.7.js | node - add --global pnpm
+npm install -g pnpm
 ```
 
-**Windows (Poweshell):** 
-
-```shell
-(Invoke-WebRequest 'https://get.pnpm.io/v6.7.js' -UseBasicParsing).Content | node - add --global pnpm
-```
-
-More information here - https://pnpm.io/installation
+More information on pnpm installation options can be found [here](https://pnpm.io/installation).
 
 ### Build packages
 
