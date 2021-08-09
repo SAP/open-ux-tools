@@ -25,5 +25,11 @@
         "lint": "pnpm recursive run lint",
         "lint:fix": "pnpm recursive run lint:fix",
         "test": "pnpm recursive run test"
+    },
+    "engines": {
+        "npm": "please-use-pnpm",
+        "yarn": "please-use-pnpm",
+        "pnpm": ">=6.0.2",
+	  	"node": ">=12.18.2 < 13.0.0 || > 14.0.0 < 15.0.0 || >=16.1.0 < 17.0.0"
     }
 }
