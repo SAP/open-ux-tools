@@ -11,7 +11,7 @@ export function packageDefaults(version?: string): Partial<Package> {
         version: version || '0.9.0',
         description: '',
         devDependencies: {
-            '@ui5/cli': '^2.8.1'
+            '@ui5/cli': '^2.12.0'
         },
         scripts: {
             start: 'ui5 serve --config=ui5.yaml --open index.html',
