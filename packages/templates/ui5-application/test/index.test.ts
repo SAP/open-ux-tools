@@ -1,4 +1,3 @@
-import { Ui5App } from '../src/data';
 import { generate } from '../src';
 import { join } from 'path';
 import { tmpdir } from 'os';
