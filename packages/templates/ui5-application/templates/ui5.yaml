@@ -1,4 +1,4 @@
-specVersion: "2.2"
+specVersion: "2.5"
 metadata:
   name: <%= app.id %>
 type: application
