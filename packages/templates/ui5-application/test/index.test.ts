@@ -1,4 +1,3 @@
-import { Ui5App } from '../src/data';
 import { generate } from '../src';
 import { join } from 'path';
 import { tmpdir } from 'os';
@@ -6,7 +5,7 @@ import { rmdirSync } from 'fs';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(tmpdir(), '/templates/odata-service');
+    const outputDir = join(tmpdir(), '/templates/ui5-application');
     if (debug) console.log(outputDir);
 
     afterEach(() => {
