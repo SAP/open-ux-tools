@@ -9,7 +9,7 @@ Object {
   \\"main\\": \\"dist/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.8.1\\",
+    \\"@ui5/cli\\": \\"^2.12.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types\\": \\"1.84.0\\",
@@ -36,7 +36,7 @@ Object {
     "state": "modified",
   },
   "listdetail/ui5-local.yaml": Object {
-    "contents": "specVersion: \\"2.2\\"
+    "contents": "specVersion: \\"2.5\\"
 metadata:
   name: test.me
 type: application
@@ -75,7 +75,7 @@ server:
     "state": "modified",
   },
   "listdetail/ui5.yaml": Object {
-    "contents": "specVersion: \\"2.2\\"
+    "contents": "specVersion: \\"2.5\\"
 metadata:
   name: test.me
 type: application

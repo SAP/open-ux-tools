@@ -7,6 +7,7 @@
         "build": "rimraf dist && tsc",
         "watch": "tsc --watch",
         "test": "jest",
+        "test-u": "jest -u",
         "test:local": "node -r ts-node/register test/index.ts"
     },
     "files": [
