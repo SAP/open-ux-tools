@@ -9,7 +9,7 @@ import { UI5Config } from '@sap/ux-ui5-config';
 import { getMiddlewareConfig } from './data/middleware';
 import { getUI5Libs } from './data/ui5Libs';
 
-/**
+/*
  * @param basePath
  * @param data
  * @param fs
