@@ -2,10 +2,29 @@
 
 exports[`UI5 templates generates files correctly 1`] = `
 Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip",
+    "state": "modified",
+  },
   "package.json": Object {
     "contents": "{
 	\\"name\\": \\"test\\",
-	\\"version\\": \\"0.9.0\\",
+	\\"version\\": \\"0.0.1\\",
+	\\"private\\": true,
+	\\"description\\": \\"\\",
+	\\"keywords\\": [
+		\\"ui5\\",
+		\\"openui5\\",
+		\\"sapui5\\"
+	  ],
 	\\"main\\": \\"dist/index.html\\",
 	\\"dependencies\\": {},
 	\\"devDependencies\\": {

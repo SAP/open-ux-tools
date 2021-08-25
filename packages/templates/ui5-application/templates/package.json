@@ -1,6 +1,13 @@
 {
 	"name": "<%=package.name.toLowerCase()%>",
 	"version": "<%= package.version %>",
+	"private": true,
+	"description": "<%= package.description %>",
+	"keywords": [
+		"ui5",
+		"openui5",
+		"sapui5"
+	  ],
 	"main": "dist/index.html",
 	"dependencies": {},
 	"devDependencies": <%- JSON.stringify(package.devDependencies, null, 4) -%>,

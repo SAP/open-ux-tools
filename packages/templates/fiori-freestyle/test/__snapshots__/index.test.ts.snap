@@ -2,10 +2,29 @@
 
 exports[`Fiori freestyle templates generates files for template: basic 1`] = `
 Object {
+  "basic/.gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip",
+    "state": "modified",
+  },
   "basic/package.json": Object {
     "contents": "{
   \\"name\\": \\"test.me\\",
-  \\"version\\": \\"0.9.0\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
   \\"main\\": \\"dist/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
@@ -311,10 +330,29 @@ title=My Test App",
 
 exports[`Fiori freestyle templates generates files for template: worklist 1`] = `
 Object {
+  "worklist/.gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip",
+    "state": "modified",
+  },
   "worklist/package.json": Object {
     "contents": "{
   \\"name\\": \\"test.me\\",
-  \\"version\\": \\"0.9.0\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
   \\"main\\": \\"dist/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {

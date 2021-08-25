@@ -18,7 +18,8 @@ async function generate(basePath: string, data: Ui5App, fs?: Editor): Promise<Ed
     mergeWithDefaults(data);
     const tmpPath = join(__dirname, '..', 'templates');
 
-    fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), data);
+    fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), data, undefined, { globOptions: { dot: true } }
+    );
 
     return fs;
 }

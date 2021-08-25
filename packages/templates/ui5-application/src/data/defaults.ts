@@ -6,10 +6,10 @@ import mappings from './version-to-descriptor-mapping.json'; // from https://git
  * @param {string} [version] - the package version
  * @returns {Partial<Package>} the package instance
  */
-export function packageDefaults(version?: string): Partial<Package> {
+export function packageDefaults(version?: string, description?: string): Partial<Package> {
     return {
-        version: version || '0.9.0',
-        description: '',
+        version: version || '0.0.1',
+        description: description || '',
         devDependencies: {
             '@ui5/cli': '^2.12.0'
         },
