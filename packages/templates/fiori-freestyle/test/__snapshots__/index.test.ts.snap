@@ -11,7 +11,8 @@ Makefile*.mta
 mta_archives
 mta-*
 resources
-archive.zip",
+archive.zip
+.*_mta_build_tmp",
     "state": "modified",
   },
   "basic/package.json": Object {
@@ -25,12 +26,11 @@ archive.zip",
     \\"openui5\\",
     \\"sapui5\\"
   ],
-  \\"main\\": \\"dist/index.html\\",
+  \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.12.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types\\": \\"1.84.0\\",
     \\"@sapui5/ts-types-esm\\": \\"1.84.0\\"
   },
@@ -43,10 +43,7 @@ archive.zip",
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\"
     ]
-  },
-  \\"files\\": [
-    \\"dist\\"
-  ]
+  }
 }
 ",
     "state": "modified",
@@ -339,7 +336,8 @@ Makefile*.mta
 mta_archives
 mta-*
 resources
-archive.zip",
+archive.zip
+.*_mta_build_tmp",
     "state": "modified",
   },
   "worklist/package.json": Object {
@@ -353,12 +351,11 @@ archive.zip",
     \\"openui5\\",
     \\"sapui5\\"
   ],
-  \\"main\\": \\"dist/index.html\\",
+  \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.12.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types\\": \\"1.84.0\\",
     \\"@sapui5/ts-types-esm\\": \\"1.84.0\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"latest\\"
@@ -374,10 +371,7 @@ archive.zip",
       \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
-  },
-  \\"files\\": [
-    \\"dist\\"
-  ]
+  }
 }
 ",
     "state": "modified",

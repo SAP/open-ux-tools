@@ -4,9 +4,6 @@
         "deploy-config": "fiori add deploy-config"
     },
     "devDependencies": {
-        "@sap/ux-ui5-tooling": "1",
-        "@sap/ux-specification": "latest",
-        "@sapui5/ts-types": "<%=ui5.typesVersion%>",
-        "@sapui5/ts-types-esm": "<%=ui5.typesVersion%>"
-    } 
+        "@sap/ux-ui5-tooling": "1"
+    }
 }

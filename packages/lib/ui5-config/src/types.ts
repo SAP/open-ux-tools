@@ -9,6 +9,7 @@ export type Backend = Partial<Destination> & {
 
 export interface MiddlewareConfig {
     name: string;
+    beforeMiddleware?: string;
     afterMiddleware?: string;
     mountPath?: string;
     configuration: {

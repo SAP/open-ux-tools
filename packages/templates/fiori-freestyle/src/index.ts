@@ -33,7 +33,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')), data)));
 
-    // i18n.yaml
+    // i18n.properties
     fs.append(
         join(basePath, 'webapp', 'i18n', 'i18n.properties'),
         render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), data)

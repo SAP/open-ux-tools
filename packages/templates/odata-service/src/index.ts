@@ -5,7 +5,7 @@ import { render } from 'ejs';
 import { UI5Config } from '@sap/ux-ui5-config';
 
 import { OdataService, OdataVersion, enhanceData } from './data';
-import { getMiddlewareConfig, getLocalMiddlewareConfig } from './data/middleware';
+import { getMiddlewareConfig, getMockServerMiddlewareConfig } from './data/middleware';
 
 /**
  * Validates the provided base path.
@@ -55,7 +55,7 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, `manifest.json`)), data)));
 
-    // ui5.yaml and ui5-local.yaml
+    // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const existingUI5Config = fs.read(ui5ConfigPath);
 
@@ -63,9 +63,16 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     ui5Config.addCustomMiddleware(...getMiddlewareConfig(data));
     fs.write(ui5ConfigPath, ui5Config.toString());
 
+    // ui5-local.yaml
     const ui5LocalConfig = await UI5Config.newInstance(existingUI5Config);
-    ui5LocalConfig.addCustomMiddleware(getLocalMiddlewareConfig(data));
+    ui5LocalConfig.addCustomMiddleware(getMockServerMiddlewareConfig(data));
     fs.write(join(basePath, 'ui5-local.yaml'), ui5LocalConfig.toString());
+
+
+    // ui5-mock.yaml
+    const ui5MockConfig = await UI5Config.newInstance(existingUI5Config);
+    ui5MockConfig.addCustomMiddleware(getMockServerMiddlewareConfig(data));
+    fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
 
     // create local copy of metadata and annotations
     if (data.metadata) {

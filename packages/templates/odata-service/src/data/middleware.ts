@@ -44,21 +44,13 @@ export const getMiddlewareConfig = (data: OdataService): [MiddlewareConfig[], No
     return [config, comments];
 };
 
-export const getLocalMiddlewareConfig = (data: OdataService): MiddlewareConfig[] => {
-    const localPath = data?.annotations?.technicalName
-        ? `./webapp/localService/${data.annotations.technicalName}.xml`
-        : undefined;
+export const getMockServerMiddlewareConfig = (data: OdataService): MiddlewareConfig[] => {
     const pathSegments = data.path.split('/');
     return [
         {
             name: 'sap-fe-mockserver',
-            mountPath: '/',
-            afterMiddleware: 'compression',
+            beforeMiddleware: 'fiori-tools-proxy',
             configuration: {
-                annotations: {
-                    localPath,
-                    urlPath: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*'
-                },
                 service: {
                     urlBasePath: pathSegments.slice(0, -1).join('/'),
                     name: pathSegments[pathSegments.length - 1],
