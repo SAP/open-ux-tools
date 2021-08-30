@@ -9,7 +9,7 @@ export * from './types';
  * @returns {Ui5App} - the updated Ui5App instance
  */
 /**
-  * @param {Ui5App} data - the Ui5App instance
+ * @param {Ui5App} data - the Ui5App instance
  */
 export function mergeWithDefaults(data: Ui5App): void {
 	data.app = Object.assign(appDefaults(data.app.id), data.app);

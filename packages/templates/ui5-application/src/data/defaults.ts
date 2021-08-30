@@ -4,6 +4,7 @@ import mappings from './version-to-descriptor-mapping.json'; // from https://git
  * Returns a package instance with default properties.
  *
  * @param {string} [version] - the package version
+ * @param {string} [description] - the package description
  * @returns {Partial<Package>} the package instance
  */
 export function packageDefaults(version?: string, description?: string): Partial<Package> {
