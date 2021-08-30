@@ -31,8 +31,6 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.12.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sapui5/ts-types\\": \\"1.84.0\\",
-    \\"@sapui5/ts-types-esm\\": \\"1.84.0\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"latest\\"
   },
   \\"scripts\\": {
@@ -56,18 +54,6 @@ archive.zip
 metadata:
   name: test.me
 type: application
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-framework:
-  name: SAPUI5
-  version: 1.84.0
-  libraries:
-    - name: sap.ui.core
-    - name: sap.m
-    - name: sap.ui.layout
-    - name: themelib_sap_fiori_3
-    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -76,17 +62,44 @@ server:
         port: 35729
         path: webapp
     - name: sap-fe-mockserver
-      mountPath: /
-      afterMiddleware: compression
+      beforeMiddleware: fiori-tools-proxy
       configuration:
-        annotations:
-          urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations*
         service:
           urlBasePath: /V2/Northwind/Northwind.svc
           name: ''
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
+framework:
+  libraries:
+    - name: sap.ushell
+",
+    "state": "modified",
+  },
+  "listdetail/ui5-mock.yaml": Object {
+    "contents": "specVersion: \\"2.5\\"
+metadata:
+  name: test.me
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /V2/Northwind/Northwind.svc
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+framework:
+  libraries:
+    - name: sap.ushell
 ",
     "state": "modified",
   },
@@ -95,18 +108,6 @@ server:
 metadata:
   name: test.me
 type: application
-resources:
-  configuration:
-    propertiesFileSourceEncoding: UTF-8
-framework:
-  name: SAPUI5
-  version: 1.84.0
-  libraries:
-    - name: sap.ui.core
-    - name: sap.m
-    - name: sap.ui.layout
-    - name: themelib_sap_fiori_3
-    - name: sap.ushell
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -127,6 +128,9 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: null # The UI5 version, for instance, 1.78.1. null means latest version
+framework:
+  libraries:
+    - name: sap.ushell
 ",
     "state": "modified",
   },

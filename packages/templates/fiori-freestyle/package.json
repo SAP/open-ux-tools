@@ -8,7 +8,9 @@
         "watch": "tsc --watch",
         "test": "jest",
         "test-u": "jest -u",
-        "test:local": "node -r ts-node/register test/index.ts"
+        "test:local": "node -r ts-node/register test/index.ts",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
     },
     "files": [
         "dist",
@@ -24,6 +26,14 @@
     },
     "devDependencies": {
         "@types/ejs": "^3.0.6",
-        "@types/mem-fs-editor": "^7.0.0"
+        "@types/mem-fs-editor": "^7.0.0",
+        "typescript": "4.2.4"
+
+    },
+    "engines": {
+        "npm": "please-use-pnpm",
+        "yarn": "please-use-pnpm",
+        "pnpm": ">=6.0.2",
+        "node": ">=12.18.2 < 13.0.0 || > 14.0.0 < 15.0.0 || >=16.1.0 < 17.0.0"
     }
 }

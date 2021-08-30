@@ -37,14 +37,17 @@ importers:
   packages/lib/ui5-config:
     specifiers:
       '@sap/ux-yaml': 0.0.1
+      typescript: 4.2.4
     dependencies:
       '@sap/ux-yaml': link:../yaml
+      typescript: 4.2.4
 
   packages/lib/yaml:
     specifiers:
       '@types/i18next-fs-backend': 1.0.0
       i18next: 20.3.2
       i18next-fs-backend: 1.1.1
+      typescript: 4.2.4
       yaml: 2.0.0-6
     dependencies:
       i18next: 20.3.2
@@ -52,6 +55,7 @@ importers:
       yaml: 2.0.0-6
     devDependencies:
       '@types/i18next-fs-backend': 1.0.0
+      typescript: 4.2.4
 
   packages/templates/fiori-freestyle:
     specifiers:
@@ -63,6 +67,7 @@ importers:
       ejs: ^3.1.6
       mem-fs: ^2.1.0
       mem-fs-editor: ^9.0.0
+      typescript: 4.2.4
     dependencies:
       '@sap/ux-odata-service-template': link:../odata-service
       '@sap/ux-ui5-application-template': link:../ui5-application
@@ -73,6 +78,7 @@ importers:
     devDependencies:
       '@types/ejs': 3.0.6
       '@types/mem-fs-editor': 7.0.0
+      typescript: 4.2.4
 
   packages/templates/odata-service:
     specifiers:
@@ -82,6 +88,7 @@ importers:
       ejs: 3.1.6
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0
+      typescript: 4.2.4
     dependencies:
       '@sap/ux-ui5-config': link:../../lib/ui5-config
       ejs: 3.1.6
@@ -90,6 +97,7 @@ importers:
     devDependencies:
       '@types/ejs': 3.0.6
       '@types/mem-fs-editor': 7.0.0
+      typescript: 4.2.4
 
   packages/templates/ui5-application:
     specifiers:
@@ -98,6 +106,7 @@ importers:
       ejs: 3.1.6
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0
+      typescript: 4.2.4
     dependencies:
       ejs: 3.1.6
       mem-fs: 2.1.0
@@ -105,6 +114,7 @@ importers:
     devDependencies:
       '@types/ejs': 3.0.6
       '@types/mem-fs-editor': 7.0.0
+      typescript: 4.2.4
 
 packages:
 
@@ -3612,7 +3622,6 @@ packages:
     resolution: {integrity: sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /universalify/0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
