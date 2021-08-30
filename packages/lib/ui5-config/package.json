@@ -18,7 +18,7 @@
         "dist"
     ],
     "dependencies": {
-        "@sap/ux-yaml": "0.0.1",
+        "@sap/ux-yaml": "workspace:*",
         "typescript": "4.2.4"
 
     },

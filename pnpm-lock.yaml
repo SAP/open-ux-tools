@@ -36,7 +36,7 @@ importers:
 
   packages/lib/ui5-config:
     specifiers:
-      '@sap/ux-yaml': 0.0.1
+      '@sap/ux-yaml': workspace:*
       typescript: 4.2.4
     dependencies:
       '@sap/ux-yaml': link:../yaml
@@ -59,9 +59,9 @@ importers:
 
   packages/templates/fiori-freestyle:
     specifiers:
-      '@sap/ux-odata-service-template': 0.0.1
-      '@sap/ux-ui5-application-template': 0.0.1
-      '@sap/ux-ui5-config': 0.0.1
+      '@sap/ux-odata-service-template': workspace:*
+      '@sap/ux-ui5-application-template': workspace:*
+      '@sap/ux-ui5-config': workspace:*
       '@types/ejs': ^3.0.6
       '@types/mem-fs-editor': ^7.0.0
       ejs: ^3.1.6
@@ -82,7 +82,7 @@ importers:
 
   packages/templates/odata-service:
     specifiers:
-      '@sap/ux-ui5-config': 0.0.1
+      '@sap/ux-ui5-config': workspace:*
       '@types/ejs': 3.0.6
       '@types/mem-fs-editor': 7.0.0
       ejs: 3.1.6
