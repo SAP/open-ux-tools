@@ -15,11 +15,12 @@ describe('UI5 templates', () => {
     it('generates files correctly', async () => {
         const fs = await generate(outputDir, {
             app: {
-                id: 'myApp',
-                title: 'My application'
+                id: 'testAppId',
+                title: 'Test App Title',
+                description: 'Test App Description'
             },
             package: {
-                name: 'Test'
+                name: 'testPackageName'
             }
         });
         if (debug) fs.commit(() => 0);

@@ -17,10 +17,10 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-	\\"name\\": \\"test\\",
+	\\"name\\": \\"testpackagename\\",
 	\\"version\\": \\"0.0.1\\",
 	\\"private\\": true,
-	\\"description\\": \\"\\",
+	\\"description\\": \\"Test App Description\\",
 	\\"keywords\\": [
 		\\"ui5\\",
 		\\"openui5\\",
@@ -29,14 +29,17 @@ archive.zip
 	\\"main\\": \\"webapp/index.html\\",
 	\\"dependencies\\": {},
 	\\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.12.0\\"
+        \\"@ui5/cli\\": \\"^2.12.0\\",
+        \\"@sap/ux-ui5-tooling\\": \\"1\\"
 },
 	\\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
 },
 	\\"ui5\\": {
-		\\"dependencies\\": []
+		\\"dependencies\\": [
+			\\"@sap/ux-ui5-tooling\\"
+		]
 	}
 }",
     "state": "modified",
@@ -44,7 +47,7 @@ archive.zip
   "ui5.yaml": Object {
     "contents": "specVersion: \\"2.5\\"
 metadata:
-  name: myApp
+  name: testAppId
 type: application
 ",
     "state": "modified",
@@ -55,7 +58,7 @@ type: application
     function (UIComponent) {
         \\"use strict\\";
 
-        return UIComponent.extend(\\"myApp.Component\\", {
+        return UIComponent.extend(\\"testAppId.Component\\", {
             metadata: {
                 manifest: \\"json\\"
             },
@@ -79,15 +82,15 @@ type: application
   },
   "webapp/i18n/i18n.properties": Object {
     "contents": "#XTIT: Application name
-appTitle=My application
+appTitle=Test App Title
 
 #YDES: Application description
-appDescription=Description of myApp",
+appDescription=Test App Description",
     "state": "modified",
   },
   "webapp/i18n/i18n_en.properties": Object {
-    "contents": "appTitle=My application
-appDescription=Description of myApp",
+    "contents": "appTitle=Test App Title
+appDescription=Test App Description",
     "state": "modified",
   },
   "webapp/index.html": Object {
@@ -97,7 +100,7 @@ appDescription=Description of myApp",
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <title>My application</title>
+    <title>Test App Title</title>
     <style>
         html, body, body > div, #container, #container-uiarea {
             height: 100%;
@@ -108,7 +111,7 @@ appDescription=Description of myApp",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-resourceroots='{
-            \\"myApp\\": \\"./\\"
+            \\"testAppId\\": \\"./\\"
         }'
         data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
@@ -119,9 +122,9 @@ appDescription=Description of myApp",
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"myApp\\"
+        data-name=\\"testAppId\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"myApp\\"}'
+        data-settings='{\\"id\\" : \\"testAppId\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -132,7 +135,7 @@ appDescription=Description of myApp",
     "contents": "{
     \\"_version\\": \\"1.12.0\\",
     \\"sap.app\\": {
-        \\"id\\": \\"myApp\\",
+        \\"id\\": \\"testAppId\\",
       \\"type\\": \\"application\\",
       \\"i18n\\": \\"i18n/i18n.properties\\",
       \\"applicationVersion\\": {
@@ -173,7 +176,7 @@ appDescription=Description of myApp",
         \\"i18n\\": {
           \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
           \\"settings\\": {
-            \\"bundleName\\": \\"myApp.i18n.i18n\\"
+            \\"bundleName\\": \\"testAppId.i18n.i18n\\"
           }
         }
       },

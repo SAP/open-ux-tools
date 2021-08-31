@@ -5,15 +5,18 @@ export interface Package {
     scripts?: Record<string, string>;
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
+    ui5?: {
+        dependencies?: string[];
+    }
 }
 
 export interface App {
     id: string;
-    uri?: string;
-    version?: string;
+    uri?: string; // What is this?
+    version?: string; // What is this?
     title?: string;
     description?: string;
-    baseComponent?: string;
+    baseComponent?: string; // UI5 Component `required` by Component.js
 }
 
 export interface UI5 {

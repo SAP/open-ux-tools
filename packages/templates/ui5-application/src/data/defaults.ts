@@ -12,11 +12,15 @@ export function packageDefaults(version?: string, description?: string): Partial
         version: version || '0.0.1',
         description: description || '',
         devDependencies: {
-            '@ui5/cli': '^2.12.0'
+            '@ui5/cli': '^2.12.0',
+            '@sap/ux-ui5-tooling': '1'
         },
         scripts: {
             start: 'ui5 serve --config=ui5.yaml --open index.html',
             build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist'
+        },
+        ui5: {
+            dependencies: ['@sap/ux-ui5-tooling']
         }
     };
 }
@@ -49,5 +53,6 @@ export function mergeUi5(ui5?: UI5): UI5 {
     merged.descriptorVersion =
         ui5?.descriptorVersion || (mappings as Record<string, string>)[merged.minVersion!] || '1.12.0';
     merged.typesVersion = ui5?.typesVersion || parseFloat(merged.version!) >= 1.76 ? merged.version : '1.71.18';
+
     return merged as UI5;
 }
