@@ -9,16 +9,18 @@ import { UI5Config } from '@sap/ux-ui5-config';
 import { getMiddlewareConfig } from './data/middleware';
 import { getUI5Libs } from './data/ui5Libs';
 
-/*
- * @param basePath
- * @param data
- * @param fs
+/**
+ * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
+ * 
+ * @param basePath - the absolute target path where the applciation will be generated
+ * @param data - ???
+ * @param fs - an optional reference to a mem-fs editor
+ * @returns Reference to a mem-fs-editor
  */
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
     // generate base UI5 project
     data.app.baseComponent = 'sap/ui/core/UIComponent';
     fs = await generateUi5Project(basePath, data, fs);
-
 
     console.log(JSON.stringify(data, null, 4));
 
