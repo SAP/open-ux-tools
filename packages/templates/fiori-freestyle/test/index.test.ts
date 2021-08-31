@@ -13,7 +13,8 @@ describe('Fiori freestyle templates', () => {
     const commonConfig = {
         app: {
             id: 'test.me',
-            title: 'My Test App'
+            title: 'My Test App',
+            description: 'Test App Description'
         },
         package: {
             name: 'test.me'

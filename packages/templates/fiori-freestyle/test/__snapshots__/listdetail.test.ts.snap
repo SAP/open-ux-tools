@@ -20,7 +20,7 @@ archive.zip
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
-  \\"description\\": \\"\\",
+  \\"description\\": \\"Description of test.me\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -41,6 +41,7 @@ archive.zip
   },
   \\"ui5\\": {
     \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]

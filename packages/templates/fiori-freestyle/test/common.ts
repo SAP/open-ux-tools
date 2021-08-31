@@ -12,7 +12,7 @@ export function prepareDebug(): { enabled: boolean, outputDir: string} {
 export const commonConfig = {
     app: {
         id: 'test.me',
-        title: 'My Test App'
+        title: 'My Test App',
     },
     package: {
         name: 'test.me'

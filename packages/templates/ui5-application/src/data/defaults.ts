@@ -34,8 +34,8 @@ export function appDefaults(appId: string): Partial<App> {
     return {
         version: '0.9.0',
         uri: appId.replace('.', '/'),
-        title: `Title of ${appId}`,
-        description: `Description of ${appId}`,
+        title: `Title of ${appId}`, //todo: localise
+        description: `Description of ${appId}`, //todo: localise
         baseComponent: 'sap/ui/core/UIComponent'
     };
 }

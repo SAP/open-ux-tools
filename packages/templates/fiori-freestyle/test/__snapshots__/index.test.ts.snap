@@ -20,7 +20,7 @@ archive.zip
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
-  \\"description\\": \\"\\",
+  \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -39,6 +39,7 @@ archive.zip
   },
   \\"ui5\\": {
     \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-tooling\\"
     ]
   }
@@ -126,14 +127,14 @@ framework:
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Test App Description
 #XTIT: Main view title
 title=My Test App",
     "state": "modified",
   },
   "basic/webapp/i18n/i18n_en.properties": Object {
     "contents": "appTitle=My Test App
-appDescription=Description of test.me
+appDescription=Test App Description
 #XTIT: Main view title
 title=My Test App",
     "state": "modified",
@@ -334,7 +335,7 @@ archive.zip
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
-  \\"description\\": \\"\\",
+  \\"description\\": \\"Test App Description\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -355,6 +356,7 @@ archive.zip
   },
   \\"ui5\\": {
     \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
@@ -1010,7 +1012,7 @@ framework:
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Test App Description
 #~~~ Worklist View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 #XTIT: Worklist view title
 worklistViewTitle=Manage Products
@@ -1094,7 +1096,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "worklist/webapp/i18n/i18n_en.properties": Object {
     "contents": "appTitle=My Test App
-appDescription=Description of test.me
+appDescription=Test App Description
 #~~~ Worklist View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 #XTIT: Worklist view title
 worklistViewTitle=Manage Products
