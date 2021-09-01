@@ -25,18 +25,19 @@ export function packageDefaults(version?: string, description?: string): Partial
     };
 }
 /**
- * Returns an app instance with default properties.
+ * Returns an app instance with default properties. Every property must have a value for templating to succeed.
  *
- * @param {string} appId - the appID of the application
+ * @param {App} app - specifies the application properties
  * @returns {Partial<App>} the App instance
  */
-export function appDefaults(appId: string): Partial<App> {
+export function appDefaults(app: App): App {
     return {
-        version: '0.9.0',
-        uri: appId.replace('.', '/'),
-        title: `Title of ${appId}`, //todo: localise
-        description: `Description of ${appId}`, //todo: localise
-        baseComponent: 'sap/ui/core/UIComponent'
+        version: app.version || '0.0.1',
+		id: app.id,
+        uri: app.id.replace('.', '/'), // todo: remove if unused
+        title: app.title || `Title of ${app.id}`, //todo: localise
+        description: app.description || `Description of ${app.id}`, //todo: localise
+        baseComponent:  app.baseComponent || 'sap/ui/core/UIComponent'
     };
 }
 /**

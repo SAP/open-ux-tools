@@ -19,7 +19,7 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
     }
     ui5AppCloned = mergeWithDefaults(ui5AppCloned);
     const tmpPath = join(__dirname, '..', 'templates');
-
+    
     fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), ui5AppCloned, undefined, { globOptions: { dot: true } });
 
     return fs;

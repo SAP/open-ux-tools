@@ -185,7 +185,7 @@ title=My Test App",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
-      \\"version\\": \\"0.9.0\\"
+      \\"version\\": \\"\\"
     },
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\"
@@ -1224,7 +1224,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
-      \\"version\\": \\"0.9.0\\"
+      \\"version\\": \\"\\"
     },
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
