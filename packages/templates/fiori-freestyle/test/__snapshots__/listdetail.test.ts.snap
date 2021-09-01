@@ -1281,7 +1281,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
-      \\"version\\": \\"\\"
+      \\"version\\": \\"0.0.1\\"
     },
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
