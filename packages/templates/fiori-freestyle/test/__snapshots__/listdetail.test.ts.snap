@@ -1061,7 +1061,11 @@ framework:
     "state": "modified",
   },
   "listdetail/webapp/i18n/i18n.properties": Object {
-    "contents": "#XTIT: Application name
+    "contents": "# This is the resource bundle for My Test App
+
+#Texts for manifest.json
+
+#XTIT: Application name
 appTitle=My Test App
 
 #YDES: Application description
@@ -1150,7 +1154,14 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "state": "modified",
   },
   "listdetail/webapp/i18n/i18n_en.properties": Object {
-    "contents": "appTitle=My Test App
+    "contents": "# This is the resource bundle for My Test App
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=My Test App
+
+#YDES: Application description
 appDescription=Description of test.me
 # This is the resource bundle for {{2listdetail.parameters.ApplicationTitle.value}}
 

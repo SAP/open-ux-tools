@@ -81,7 +81,11 @@ type: application
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "#XTIT: Application name
+    "contents": "# This is the resource bundle for Test App Title
+
+#Texts for manifest.json
+
+#XTIT: Application name
 appTitle=Test App Title
 
 #YDES: Application description
@@ -89,7 +93,14 @@ appDescription=Test App Description",
     "state": "modified",
   },
   "webapp/i18n/i18n_en.properties": Object {
-    "contents": "appTitle=Test App Title
+    "contents": "# This is the resource bundle for Test App Title
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=Test App Title
+
+#YDES: Application description
 appDescription=Test App Description",
     "state": "modified",
   },

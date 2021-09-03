@@ -1,6 +1,6 @@
 {
 	"name": "<%=package.name.toLowerCase()%>",
-	"version": "<%= package.version %>",
+	"version": "<%- package.version %>",
 	"private": true,
 	"description": "<%= package.description %>",
 	"keywords": [

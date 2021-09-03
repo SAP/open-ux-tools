@@ -1,9 +1,9 @@
 sap.ui.define(
-    ["<%=app.baseComponent%>"],
+    ["<%- app.baseComponent %>"],
     function (UIComponent) {
         "use strict";
 
-        return UIComponent.extend("<%=app.id%>.Component", {
+        return UIComponent.extend("<%- app.id %>.Component", {
             metadata: {
                 manifest: "json"
             },

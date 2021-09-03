@@ -1,11 +1,11 @@
 {
-    "_version": "<%=ui5.descriptorVersion%>",
+    "_version": "<%- ui5.descriptorVersion %>",
     "sap.app": {
-        "id": "<%=app.id%>",
+        "id": "<%- app.id %>",
       "type": "application",
       "i18n": "i18n/i18n.properties",
       "applicationVersion": {
-        "version": "<%=app.version%>"
+        "version": "<%- app.version %>"
       },
       "title": "{{appTitle}}",
       "description": "{{appDescription}}"
@@ -29,7 +29,7 @@
     "sap.ui5": {
       "flexEnabled": true,
       "dependencies": {
-        "minUI5Version": "<%=ui5.minVersion%>",
+        "minUI5Version": "<%- ui5.minVersion %>",
         "libs": {
           "sap.ui.core": {}
         }
@@ -42,7 +42,7 @@
         "i18n": {
           "type": "sap.ui.model.resource.ResourceModel",
           "settings": {
-            "bundleName": "<%=app.id%>.i18n.i18n"
+            "bundleName": "<%- app.id %>.i18n.i18n"
           }
         }
       },
