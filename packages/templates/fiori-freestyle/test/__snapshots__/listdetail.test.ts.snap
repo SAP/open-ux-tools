@@ -1061,7 +1061,7 @@ framework:
     "state": "modified",
   },
   "listdetail/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for My Test App
+    "contents": "# This is the resource bundle for test.me
 
 #Texts for manifest.json
 
@@ -1154,7 +1154,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "state": "modified",
   },
   "listdetail/webapp/i18n/i18n_en.properties": Object {
-    "contents": "# This is the resource bundle for My Test App
+    "contents": "# This is the resource bundle for test.me
 
 #Texts for manifest.json
 

@@ -81,7 +81,7 @@ type: application
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for Test App Title
+    "contents": "# This is the resource bundle for testPackageName
 
 #Texts for manifest.json
 
@@ -93,7 +93,7 @@ appDescription=Test App Description",
     "state": "modified",
   },
   "webapp/i18n/i18n_en.properties": Object {
-    "contents": "# This is the resource bundle for Test App Title
+    "contents": "# This is the resource bundle for testPackageName
 
 #Texts for manifest.json
 
