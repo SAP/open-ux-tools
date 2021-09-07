@@ -1,6 +1,6 @@
 name: Update lockfiles
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   lockfiles:
