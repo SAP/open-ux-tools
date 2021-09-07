@@ -20,4 +20,4 @@ jobs:
           permission: write
           issue-type: pull-request
           dispatch-type: workflow
-          static-args: ref=${{ head_ref }}
+          static-args: ref=$
