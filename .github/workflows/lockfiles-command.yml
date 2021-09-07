@@ -28,7 +28,7 @@ jobs:
       - name: Pnpm Install recursive
         if: success()
         # as CI is defined then frozen lockfile is always used
-        run: pnpm install --force
+        run: pnpm install --frozen-lockfile=false
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         if: success()
