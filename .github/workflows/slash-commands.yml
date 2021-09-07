@@ -2,6 +2,7 @@ name: Slash Command Dispatch
 on:
   issue_comment:
     types: [created]
+
 jobs:
   slashCommandDispatch:
     runs-on: ubuntu-latest
@@ -10,10 +11,10 @@ jobs:
       - uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
 
-      - name: Dump context
-        env:
-          COMMENT_CONTEXT: ${{ toJson(steps.comment-branch.outputs) }}
-        run: echo "$COMMENT_CONTEXT"
+#      - name: Dump context
+#        env:
+#          COMMENT_CONTEXT: ${{ toJson(steps.comment-branch.outputs) }}
+#        run: echo "$COMMENT_CONTEXT"
 
       - name: Slash Command Dispatch
         uses: peter-evans/slash-command-dispatch@v2

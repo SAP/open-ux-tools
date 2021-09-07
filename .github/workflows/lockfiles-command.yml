@@ -1,15 +1,15 @@
 name: Update lockfiles
 on:
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Reference'
-        required: true
+  workflow_dispatch
 
 jobs:
   lockfiles:
     runs-on: ubuntu-latest
     steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
       - uses: actions/checkout@v2
         with:
