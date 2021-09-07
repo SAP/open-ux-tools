@@ -1,0 +1,23 @@
+name: Slash Command Dispatch
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  slashCommandDispatch:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
+
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v2
+        id: slash-command
+        with:
+          token: $
+          commands: |
+            lockfiles
+          permission: write
+          issue-type: pull-request
+          dispatch-type: workflow
+          static-args: ref=$

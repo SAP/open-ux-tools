@@ -1,0 +1,31 @@
+name: Update lockfiles
+on:
+  workflow_dispatch:
+
+jobs:
+  lockfiles:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: $
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.0.2
+          run_install: true
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+
+      - name: Pnpm Install recursive
+        run: pnpm install
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update lockfiles
