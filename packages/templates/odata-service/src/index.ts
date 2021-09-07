@@ -42,7 +42,8 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     //fs.copyTpl(join(tmpPath, '**/*.*'), basePath, data);
 
     // merge content into existing files
-    const extRoot = join(__dirname, '..', 'templates', 'extend');
+    const templateRoot = join(__dirname, '..', 'templates');
+    const extRoot = join(templateRoot, 'extend');
 
     // package.json
     const packagePath = join(basePath, 'package.json');
@@ -68,11 +69,12 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     ui5LocalConfig.addCustomMiddleware(getMockServerMiddlewareConfig(data));
     fs.write(join(basePath, 'ui5-local.yaml'), ui5LocalConfig.toString());
 
-
-    // ui5-mock.yaml
-    const ui5MockConfig = await UI5Config.newInstance(existingUI5Config);
-    ui5MockConfig.addCustomMiddleware(getMockServerMiddlewareConfig(data));
-    fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
+    // ui5-mock.yaml, not currently supported for odata version v2
+    if (data.version === OdataVersion.v4) {
+        const ui5MockConfig = await UI5Config.newInstance(existingUI5Config);
+        ui5MockConfig.addCustomMiddleware(getMockServerMiddlewareConfig(data));
+        fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
+    }
 
     // create local copy of metadata and annotations
     if (data.metadata) {
@@ -84,7 +86,13 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
             data.annotations.xml
         );
     }
-
+    if (data.schemas) {
+        fs.copyTpl(
+            join(templateRoot, 'annotation.xml'),
+            join(basePath, 'webapp', 'annotations', 'annotation.xml'),
+            data
+        );
+    }
     return fs;
 }
 

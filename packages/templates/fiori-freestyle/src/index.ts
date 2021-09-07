@@ -40,10 +40,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         join(basePath, 'webapp', 'i18n', 'i18n.properties'),
         render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), data)
     );
-    fs.append(
-        join(basePath, 'webapp', 'i18n', 'i18n_en.properties'),
-        render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), data)
-    );
 
     // package.json
     const packagePath = join(basePath, 'package.json');

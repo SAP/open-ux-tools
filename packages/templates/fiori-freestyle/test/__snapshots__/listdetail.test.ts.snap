@@ -77,33 +77,6 @@ framework:
 ",
     "state": "modified",
   },
-  "listdetail/ui5-mock.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
-metadata:
-  name: test.me
-type: application
-server:
-  customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-    - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
-      configuration:
-        service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
-framework:
-  libraries:
-    - name: sap.ushell
-",
-    "state": "modified",
-  },
   "listdetail/ui5.yaml": Object {
     "contents": "specVersion: \\"2.5\\"
 metadata:
@@ -1061,99 +1034,6 @@ framework:
     "state": "modified",
   },
   "listdetail/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for test.me
-
-#Texts for manifest.json
-
-#XTIT: Application name
-appTitle=My Test App
-
-#YDES: Application description
-appDescription=Description of test.me
-# This is the resource bundle for {{2listdetail.parameters.ApplicationTitle.value}}
-
-#~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#XTIT: List view title with placeholder for the number of items
-listTitleCount=Suppliers ({0})
-
-#XTOL: Tooltip for the search field
-listSearchTooltip=Enter an Suppliers name or a part of it.
-
-#XBLI: text for a list with no data
-listListNoDataText=No Suppliers are currently available
-
-#XBLI: text for a list with no data with filter or search
-listListNoDataWithFilterOrSearchText=No matching Suppliers found
-
-#XSEL: Option to sort the list list by CompanyName
-listSort1=Sort By CompanyName
-
-
-
-#~~~ Detail View ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#XTOL: Icon Tab Bar Info
-detailIconTabBarInfo=Info
-
-#XTOL: Icon Tab Bar Attachments
-detailIconTabBarAttachments=Attachments
-
-#XTOL: Tooltip text for close column button
-closeColumn=Close
-
-
-#XBLI: Text for the Products table with no data
-detailLineItemTableNoDataText=No Products
-
-#XTIT: Title of the Products table
-detailLineItemTableHeading=Products
-
-#XTIT: Title of the Products table
-detailLineItemTableHeadingCount=Products ({0})
-
-#XGRP: Title for the ProductName column in the Products table
-detailLineItemTableIDColumn=ProductName
-
-#XGRP: Title for the UnitsInStock column in the Products table
-detailLineItemTableUnitNumberColumn=UnitsInStock
-
-
-#XTIT: Send E-Mail subject
-shareSendEmailObjectSubject=<Email subject including object identifier PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0}
-
-#YMSG: Send E-Mail message
-shareSendEmailObjectMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0} (id: {1})\\\\r\\\\n{2}
-
-#XBUT: Text for the send e-mail button
-sendEmail=Send E-Mail
-
-#XTIT: Title text for the price
-priceTitle=Price
-
-#~~~ Not Found View ~~~~~~~~~~~~~~~~~~~~~~~
-
-#XTIT: Not found view title
-notFoundTitle=Not Found
-
-#YMSG: The Suppliers not found text is displayed when there is no Suppliers with this id
-noObjectFoundText=This Suppliers is not available
-
-#YMSG: The not found text is displayed when there was an error loading the resource (404 error)
-notFoundText=The requested resource was not found
-
-#~~~ Not Available View ~~~~~~~~~~~~~~~~~~~~~~~
-
-#XTIT: List view title
-notAvailableViewTitle=Suppliers
-
-#~~~ Error Handling ~~~~~~~~~~~~~~~~~~~~~~~
-
-#YMSG: Error dialog description
-errorText=Sorry, a technical error occurred! Please try again later.",
-    "state": "modified",
-  },
-  "listdetail/webapp/i18n/i18n_en.properties": Object {
     "contents": "# This is the resource bundle for test.me
 
 #Texts for manifest.json

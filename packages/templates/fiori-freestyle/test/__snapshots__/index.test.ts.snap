@@ -136,20 +136,6 @@ appDescription=Test App Description
 title=My Test App",
     "state": "modified",
   },
-  "basic/webapp/i18n/i18n_en.properties": Object {
-    "contents": "# This is the resource bundle for test.me
-
-#Texts for manifest.json
-
-#XTIT: Application name
-appTitle=My Test App
-
-#YDES: Application description
-appDescription=Test App Description
-#XTIT: Main view title
-title=My Test App",
-    "state": "modified",
-  },
   "basic/webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
 <html>
@@ -377,33 +363,6 @@ archive.zip
     "state": "modified",
   },
   "worklist/ui5-local.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
-metadata:
-  name: test.me
-type: application
-server:
-  customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-    - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
-      configuration:
-        service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
-framework:
-  libraries:
-    - name: sap.ushell
-",
-    "state": "modified",
-  },
-  "worklist/ui5-mock.yaml": Object {
     "contents": "specVersion: \\"2.5\\"
 metadata:
   name: test.me
@@ -1019,97 +978,6 @@ framework:
     "state": "modified",
   },
   "worklist/webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for test.me
-
-#Texts for manifest.json
-
-#XTIT: Application name
-appTitle=My Test App
-
-#YDES: Application description
-appDescription=Test App Description
-#~~~ Worklist View ~~~~~~~~~~~~~~~~~~~~~~~~~~
-#XTIT: Worklist view title
-worklistViewTitle=Manage Products
-
-#XTIT: Worklist page title
-worklistTitle=My Test App
-
-#XTIT: Table view title
-worklistTableTitle=Products
-
-#XTOL: Tooltip for the search field
-worklistSearchTooltip=Enter an Products name or a part of it.
-
-#XBLI: text for a table with no data with filter or search
-worklistNoDataWithSearchText=No matching Products found
-
-#XTIT: Table view title with placeholder for the number of items
-worklistTableTitleCount=Products ({0})
-
-#XTIT: The title of the column containing the ProductName of Products
-tableNameColumnTitle=ProductName
-
-#XTIT: The title of the column containing the UnitsInStock and the unit of measure
-tableUnitNumberColumnTitle=UnitsInStock
-
-#XBLI: text for a table with no data
-tableNoDataText=No Products are currently available
-
-#XLNK: text for link in 'not found' pages
-backToWorklist=Show My Test App
-
-#~~~ Object View ~~~~~~~~~~~~~~~~~~~~~~~~~~
-#XTIT: Object view title
-objectViewTitle=Products Details
-
-#XTIT: Object page title
-objectTitle=Products
-
-#XTIT: Label for the ProductName
-ProductNameLabel=ProductName
-
-
-#XTIT: Label for the UnitsInStock
-UnitsInStockLabel=UnitsInStock
-
-
-#~~~ Share Menu Options ~~~~~~~~~~~~~~~~~~~~~~~
-
-#XTIT: Send E-Mail subject
-shareSendEmailWorklistSubject=<Email subject PLEASE REPLACE ACCORDING TO YOUR USE CASE>
-
-#YMSG: Send E-Mail message
-shareSendEmailWorklistMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE>\\\\r\\\\n{0}
-
-#XTIT: Send E-Mail subject
-shareSendEmailObjectSubject=<Email subject including object identifier PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0}
-
-#YMSG: Send E-Mail message
-shareSendEmailObjectMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0} (id: {1})\\\\r\\\\n{2}
-
-
-#~~~ Not Found View ~~~~~~~~~~~~~~~~~~~~~~~
-
-#XTIT: Not found view title
-notFoundTitle=Not Found
-
-#YMSG: The Products not found text is displayed when there is no Products with this id
-noObjectFoundText=This Products is not available
-
-#YMSG: The Products not available text is displayed when there is no data when starting the app
-noObjectsAvailableText=No Products are currently available
-
-#YMSG: The not found text is displayed when there was an error loading the resource (404 error)
-notFoundText=The requested resource was not found
-
-#~~~ Error Handling ~~~~~~~~~~~~~~~~~~~~~~~
-
-#YMSG: Error dialog description
-errorText=Sorry, a technical error occurred! Please try again later.",
-    "state": "modified",
-  },
-  "worklist/webapp/i18n/i18n_en.properties": Object {
     "contents": "# This is the resource bundle for test.me
 
 #Texts for manifest.json

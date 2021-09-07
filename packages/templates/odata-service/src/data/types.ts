@@ -17,4 +17,9 @@ export interface OdataService {
         technicalName: string;
         xml: string;
     };
+    namespace?: string; // Used in schema defintions
+    schemas?: {
+        namespace: string;
+        alias: string;
+    }[]
 }
