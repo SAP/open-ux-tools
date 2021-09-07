@@ -28,7 +28,8 @@ jobs:
           node-version: 12.x
 
       - name: Pnpm Install recursive
-        run: pnpm install
+        # as CI is defined then frozen lockfile is always used
+        run: pnpm install --force
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
