@@ -22,8 +22,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     data.app.baseComponent = 'sap/ui/core/UIComponent';
     fs = await generateUi5Project(basePath, data, fs);
 
-    console.log(JSON.stringify(data, null, 4));
-
     // add new and overwrite files from templates e.g. annotations.xml
     const tmpPath = join(__dirname, '..', 'templates');
     fs.copyTpl(join(tmpPath, data.template.type, 'add', '**/*.*'), basePath, data);
