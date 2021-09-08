@@ -86,13 +86,6 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
             data.annotations.xml
         );
     }
-    if (data.schemas) {
-        fs.copyTpl(
-            join(templateRoot, 'annotation.xml'),
-            join(basePath, 'webapp', 'annotations', 'annotation.xml'),
-            data
-        );
-    }
     return fs;
 }
 
