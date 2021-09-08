@@ -20,7 +20,7 @@ async function generate(basePath: string, data: Ui5App, fs?: Editor): Promise<Ed
 
     fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), fullData);
 
-    return fs;
+    return fs as Editor;
 }
 
 export { Ui5App, generate };
