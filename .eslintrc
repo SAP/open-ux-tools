@@ -3,13 +3,25 @@
         "node": true,
         "es6": true
     },
-    "plugins": ["promise", "prettier", "jsdoc", "@typescript-eslint"],
-    "extends": ["plugin:jsdoc/recommended"],
+    "plugins": [
+        "promise",
+        "prettier",
+        "jsdoc",
+        "@typescript-eslint",
+        "import"
+    ],
+    "extends": [
+        "plugin:jsdoc/recommended"
+    ],
     "overrides": [
         {
             "parser": "@typescript-eslint/parser",
-            "files": ["**/*.ts"],
-            "extends": ["plugin:@typescript-eslint/recommended"],
+            "files": [
+                "**/*.ts"
+            ],
+            "extends": [
+                "plugin:@typescript-eslint/recommended"
+            ],
             "rules": {
                 "@typescript-eslint/ban-types": "off",
                 "@typescript-eslint/no-explicit-any": "off",
@@ -17,7 +29,12 @@
                 "@typescript-eslint/no-unused-vars": "error",
                 "jsdoc/require-param-type": 0,
                 "jsdoc/require-returns-type": 0,
-                "prefer-const": ["error", { "destructuring": "all" }]
+                "prefer-const": [
+                    "error",
+                    {
+                        "destructuring": "all"
+                    }
+                ]
             },
             "settings": {
                 "jsdoc": {
@@ -27,7 +44,10 @@
         },
         {
             "parser": "@typescript-eslint/parser",
-            "files": ["packages/*/test/**/*.js", "packages/*/test/**/*.ts"],
+            "files": [
+                "packages/*/test/**/*.js",
+                "packages/*/test/**/*.ts"
+            ],
             "rules": {
                 "jsdoc/require-param": 0,
                 "jsdoc/require-param-description": 0,
@@ -39,7 +59,13 @@
                 "jsdoc/require-returns-type": 0,
                 "jsdoc/require-jsdoc": [
                     0,
-                    { "require": { "ClassDeclaration": true, "MethodDefinition": true }, "exemptEmptyFunctions": true }
+                    {
+                        "require": {
+                            "ClassDeclaration": true,
+                            "MethodDefinition": true
+                        },
+                        "exemptEmptyFunctions": true
+                    }
                 ],
                 "jsdoc/valid-types": 0,
                 "jsdoc/check-types": 0,
@@ -52,7 +78,10 @@
         }
     ],
     "rules": {
-        "comma-dangle": [2, "never"],
+        "comma-dangle": [
+            2,
+            "never"
+        ],
         "jsdoc/require-param": 2,
         "jsdoc/require-param-description": 1,
         "jsdoc/require-param-name": 2,
@@ -63,7 +92,13 @@
         "jsdoc/require-returns-type": 2,
         "jsdoc/require-jsdoc": [
             1,
-            { "require": { "ClassDeclaration": true, "MethodDefinition": true }, "exemptEmptyFunctions": true }
+            {
+                "require": {
+                    "ClassDeclaration": true,
+                    "MethodDefinition": true
+                },
+                "exemptEmptyFunctions": true
+            }
         ],
         "jsdoc/valid-types": 2,
         "jsdoc/check-types": 2,
@@ -71,7 +106,11 @@
         "jsdoc/check-tag-names": [
             "error",
             {
-                "definedTags": ["ui5-restricted", "experimental", "final"]
+                "definedTags": [
+                    "ui5-restricted",
+                    "experimental",
+                    "final"
+                ]
             }
         ],
         "jsdoc/match-description": 2,
@@ -99,10 +138,16 @@
         "no-empty": 2,
         "no-ex-assign": 2,
         "no-extra-boolean-cast": 1,
-        "no-extra-parens": [2, "functions"],
+        "no-extra-parens": [
+            2,
+            "functions"
+        ],
         "no-extra-semi": 2,
         "no-func-assign": 2,
-        "no-inner-declarations": [2, "functions"],
+        "no-inner-declarations": [
+            2,
+            "functions"
+        ],
         "no-invalid-regexp": 2,
         "no-irregular-whitespace": 2,
         "no-negated-in-lhs": 2,
@@ -115,7 +160,10 @@
         "accessor-pairs": 2,
         "block-scoped-var": 1,
         "consistent-return": 1,
-        "curly": [2, "all"],
+        "curly": [
+            2,
+            "all"
+        ],
         "default-case": 1,
         "no-alert": 2,
         "no-caller": 2,
@@ -147,9 +195,15 @@
         "no-warning-comments": 1,
         "no-with": 2,
         "radix": 2,
-        "wrap-iife": [2, "any"],
+        "wrap-iife": [
+            2,
+            "any"
+        ],
         "yoda": 2,
-        "strict": [2, "function"],
+        "strict": [
+            2,
+            "function"
+        ],
         "no-catch-shadow": 2,
         "no-delete-var": 2,
         "no-label-var": 2,
@@ -163,7 +217,10 @@
                 "args": "none"
             }
         ],
-        "no-use-before-define": [1, "nofunc"],
+        "no-use-before-define": [
+            1,
+            "nofunc"
+        ],
         "brace-style": [
             2,
             "1tbs",
@@ -172,14 +229,23 @@
             }
         ],
         "camelcase": 1,
-        "consistent-this": [1, "that"],
+        "consistent-this": [
+            1,
+            "that"
+        ],
         "linebreak-style": 1,
-        "max-nested-callbacks": [1, 3],
+        "max-nested-callbacks": [
+            1,
+            3
+        ],
         "new-cap": 1,
         "new-parens": 2,
         "no-array-constructor": 2,
         "no-lonely-if": 1,
-        "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
+        "no-mixed-spaces-and-tabs": [
+            2,
+            "smart-tabs"
+        ],
         "no-nested-ternary": 2,
         "no-new-object": 2,
         "no-spaced-func": 2,
@@ -220,8 +286,10 @@
                 "words": true,
                 "nonwords": false
             }
-        ]
+        ],
         //		"sap-no-jquery": 2
+        // turn on errors for missing imports
+        "import/no-unresolved": "error"
     },
     "settings": {
         "jsdoc": {
@@ -230,6 +298,27 @@
                     "message": "@extends is to be used over @augments as it is more evocative of classes than @augments",
                     "replacement": "extends"
                 }
+            }
+        },
+        "import/resolver": {
+            "typescript": {
+                "alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+                //   // Choose from one of the "project" configs below or omit to use <root>/tsconfig.json by default
+                //   // use <root>/path/to/folder/tsconfig.json
+                // "project": "<root>/tsconfig.json"
+                //   // Multiple tsconfigs (Useful for monorepos)
+                //   // use a glob pattern
+                //  "project": "packages/**/tsconfig.json"
+                //   // use an array
+                //   "project": [
+                //     "packages/module-a/tsconfig.json",
+                //     "packages/module-b/tsconfig.json"
+                //   ],
+                //   // use an array of glob patterns
+                  "project": [
+                    "./packages/*/tsconfig.json",
+                    "./tsconfig.json"
+                  ]
             }
         }
     }
