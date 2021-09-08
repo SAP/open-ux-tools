@@ -11,7 +11,7 @@ import { getUI5Libs } from './data/ui5Libs';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
- * 
+ *
  * @param basePath - the absolute target path where the applciation will be generated
  * @param data - ???
  * @param fs - an optional reference to a mem-fs editor

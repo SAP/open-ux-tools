@@ -37,6 +37,23 @@ server:
 ",
     "state": "modified",
   },
+  "ui5-mock.yaml": Object {
+    "contents": "#empty file
+
+server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /sap/odata/testme
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
+    "state": "modified",
+  },
   "ui5.yaml": Object {
     "contents": "#empty file
 
