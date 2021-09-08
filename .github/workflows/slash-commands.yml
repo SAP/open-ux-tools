@@ -10,11 +10,13 @@ jobs:
 
       - uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
+        continue-on-error: true
 
-#      - name: Dump context
-#        env:
-#          COMMENT_CONTEXT: ${{ toJson(steps.comment-branch.outputs) }}
-#        run: echo "$COMMENT_CONTEXT"
+      - name: Dump context
+        if: success()
+        env:
+          COMMENT_CONTEXT: ${{ toJson(steps.comment-branch.outputs) }}
+        run: echo "$COMMENT_CONTEXT"
 
       - name: Slash Command Dispatch
         uses: peter-evans/slash-command-dispatch@v2
@@ -28,8 +30,3 @@ jobs:
           issue-type: pull-request
           dispatch-type: workflow
           static-args: ref=${{ steps.comment-branch.outputs.head_ref }}
-
-      - name: Dump context
-        env:
-          SLASH_CONTEXT: ${{ toJson(steps.slash-command) }}
-        run: echo "$SLASH_CONTEXT"
