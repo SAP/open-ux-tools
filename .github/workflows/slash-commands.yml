@@ -12,15 +12,9 @@ jobs:
         id: comment-branch
         continue-on-error: true
 
-      - name: Dump context
-        if: success()
-        env:
-          COMMENT_CONTEXT: ${{ toJson(steps.comment-branch.outputs) }}
-        run: echo "$COMMENT_CONTEXT"
-
       - name: Slash Command Dispatch
         uses: peter-evans/slash-command-dispatch@v2
-        if: success()
+        if: success() && steps.comment-branch.outputs.head_ref
         id: slash-command
         with:
           token: ${{ secrets.ACCESS_PAT }}
