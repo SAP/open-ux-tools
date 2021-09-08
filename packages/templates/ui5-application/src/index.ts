@@ -22,7 +22,7 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
     
     fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), ui5AppCloned, undefined, { globOptions: { dot: true } });
 
-    return fs;
+    return fs as Editor;
 }
 
 export { Ui5App, generate };

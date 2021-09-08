@@ -12,5 +12,9 @@ updates:
 
   - package-ecosystem: "npm"
     directory: "/"
+    open-pull-requests-limit: 20
+    rebase-strategy: "auto"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    allow:
+      - dependency-type: "direct"

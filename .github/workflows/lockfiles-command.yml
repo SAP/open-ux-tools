@@ -1,0 +1,36 @@
+name: Update lockfiles
+on:
+  workflow_dispatch:
+
+jobs:
+  lockfiles:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.ACCESS_PAT }}
+
+      - name: Use Node.js 12.x
+        if: success()
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2.0.1
+        if: success()
+        with:
+          version: 6.0.2
+          run_install: false
+
+      - name: Pnpm Install recursive
+        if: success()
+        # as CI is defined then frozen lockfile is always used
+        run: pnpm install --frozen-lockfile=false
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        if: success()
+        with:
+          commit_message: Update lockfiles
