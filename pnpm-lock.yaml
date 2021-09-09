@@ -57,6 +57,21 @@ importers:
     devDependencies:
       '@types/i18next-fs-backend': 1.0.0
 
+  packages/templates/fev4-fpm:
+    specifiers:
+      '@types/ejs': 3.0.6
+      '@types/mem-fs-editor': 7.0.0
+      ejs: 3.1.6
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.0.0
+    dependencies:
+      ejs: 3.1.6
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.0.0_mem-fs@2.1.0
+    devDependencies:
+      '@types/ejs': 3.0.6
+      '@types/mem-fs-editor': 7.0.0
+
   packages/templates/odata-service:
     specifiers:
       '@sap/ux-ui5-config': 0.0.1

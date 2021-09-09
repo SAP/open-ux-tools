@@ -1,0 +1,39 @@
+<mvc:View
+	id="application-product"
+	height="100%"
+	controllerName="sap.fe.core.fpmExplorer.customPageContent.CustomPage"
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:l="sap.ui.layout"
+	xmlns:macros="sap.fe.macros"
+>
+	<Page>
+		<content>
+			<MessageStrip
+				showIcon="true"
+				type="Information"
+				text="Navigation to Fiori Elements Object Page via Generic Tiles."
+				class="sapUiTinyMargin"
+			/>
+			<VBox class="sapUiTinyMargin">
+				<l:HorizontalLayout id="TileContainerExpanded" allowWrapping="true" content="{/RootEntity}" class="sapUiTinyMarginTopBottom">
+					<GenericTile header="{TitleProperty}" subheader="{DescriptionProperty}" press="onPressed" class="sapUiTinyMarginEnd">
+						<TileContent unit="{unit}" footer="{footer}">
+							<NumericContent withMargin="false" value="{kpivalue}" valueColor="{color}" indicator="{trend}" scale="{scale}" />
+						</TileContent>
+					</GenericTile>
+				</l:HorizontalLayout>
+				<l:HorizontalLayout id="macroTableContainer" allowWrapping="true" class="sapMSampleTileContainer">
+					<MessageStrip
+						showIcon="true"
+						type="Information"
+						text="Navigation to Fiori Elements Object Page via building block table"
+						class="sapUiTinyMargin"
+					/>
+					<macros:Table contextPath="/RootEntity" metaPath="@com.sap.vocabularies.UI.v1.LineItem" id="macroTable" />
+				</l:HorizontalLayout>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>
