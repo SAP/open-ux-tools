@@ -33,11 +33,12 @@ export function packageDefaults(version?: string, description?: string): Partial
 export function appDefaults(app: App): App {
     return {
         version: app.version || '0.0.1',
-		id: app.id,
+        id: app.id,
         uri: app.id.replace('.', '/'), // todo: remove if unused
         title: app.title || `Title of ${app.id}`, //todo: localise
         description: app.description || `Description of ${app.id}`, //todo: localise
-        baseComponent:  app.baseComponent || 'sap/ui/core/UIComponent'
+        baseComponent: app.baseComponent || 'sap/ui/core/UIComponent',
+        flpAppId: `app.id.replace(/[-_.]/g, '')}-tile`
     };
 }
 /**

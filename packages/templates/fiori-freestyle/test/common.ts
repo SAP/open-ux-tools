@@ -2,10 +2,11 @@ import { OdataService, OdataVersion } from "@sap/ux-odata-service-template";
 import { tmpdir } from "os";
 import { join } from "path";
 
-export function prepareDebug(): { enabled: boolean, outputDir: string} {
+export function prepareDebug(): { enabled: boolean, outputDir: string } {
     const debug = !!process.env['UX_DEBUG'];
     const outputDir = join(tmpdir(), '/templates/fiori-freestyle');
-    if (debug) console.log(outputDir);
+    // eslint-disable-next-line no-console
+    if (debug) { console.log(outputDir); }
     return { enabled: debug, outputDir };
 }
 
@@ -14,7 +15,7 @@ export const commonConfig = {
         id: 'test.me',
         title: 'My Test App'
     },
-    package: {
+    "package": {
         name: 'test.me'
     }
 };

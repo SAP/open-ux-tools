@@ -17,6 +17,7 @@ export interface App {
     title?: string;
     description?: string;
     baseComponent?: string; // UI5 Component `required` by Component.js
+    flpAppId?: string;
 }
 
 export interface UI5 {

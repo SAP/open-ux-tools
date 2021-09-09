@@ -22,8 +22,12 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     data.app.baseComponent = 'sap/ui/core/UIComponent';
     fs = await generateUi5Project(basePath, data, fs);
 
-    // add new and overwrite files from templates e.g. annotations.xml
+    // add new and overwrite files from templates e.g.
     const tmpPath = join(__dirname, '..', 'templates');
+    // Common files
+    fs.copyTpl(join(tmpPath, 'common', 'add', '**/*.*'), basePath, data);
+
+    // By template type
     fs.copyTpl(join(tmpPath, data.template.type, 'add', '**/*.*'), basePath, data);
 
     // merge content into existing files
@@ -50,7 +54,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
     ui5Config.addCustomMiddleware(getMiddlewareConfig());
-    ui5Config.addLibraries(getUI5Libs());
     fs.write(ui5ConfigPath, ui5Config.toString());
 
     // add service to the project if provided
@@ -60,6 +63,14 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         manifest['sap.app'].dataSources[data.service.name!].settings.annotations.push('annotation');
         fs.writeJSON(manifestPath, manifest);
     }
+
+    // ui5-local.yaml
+    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+    ui5LocalConfig.addCustomMiddleware(getMiddlewareConfig());
+    ui5Config.addLibraries(getUI5Libs());
+    fs.write(ui5LocalConfigPath, ui5Config.toString());
+
 
     return fs;
 }

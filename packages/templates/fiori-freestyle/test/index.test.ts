@@ -2,21 +2,28 @@ import { FreestyleApp, generate } from '../src';
 import { join } from 'path';
 import { TemplateType } from '../src/data';
 import { OdataService, OdataVersion } from '@sap/ux-odata-service-template';
-import { tmpdir } from 'os';
 import { rmdirSync } from 'fs';
 
 describe('Fiori freestyle templates', () => {
+
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(tmpdir(), '/templates/fiori-freestyle');
-    if (debug) console.log(outputDir);
+    const outputDir = join(__dirname, 'test-output');
+
+    beforeAll(() => {
+        rmdirSync(outputDir, { recursive: true });
+    });
+    // eslint-disable-next-line no-console
+    if (debug) { console.log(outputDir); }
 
     const commonConfig = {
         app: {
             id: 'test.me',
             title: 'My Test App',
-            description: 'Test App Description'
+            description: 'Test App Description',
+            flpAppId: 'test.me'
+
         },
-        package: {
+        "package": {
             name: 'test.me'
         }
     };
@@ -59,13 +66,12 @@ describe('Fiori freestyle templates', () => {
         }
     ];
 
-    afterEach(() => {
-        if (!debug) rmdirSync(outputDir, { recursive: true });
-    });
+
 
     test.each(configuration)('generates files for template: $name', async ({ config }) => {
-        const fs = await generate(join(outputDir, config.template.type), config);
-        if (debug) fs.commit(() => 0);
-        expect((fs as any).dump(outputDir)).toMatchSnapshot();
+        const templateOutputDir = join(outputDir, config.template.type);
+        const fs = await generate(join(templateOutputDir, config.template.type), config);
+        fs.commit(() => 0);
+        expect((fs as any).dump(templateOutputDir)).toMatchSnapshot();
     });
 });

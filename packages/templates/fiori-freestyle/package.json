@@ -8,6 +8,7 @@
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "test": "jest",
+        "test": "jest",
         "test-u": "jest -u",
         "test:local": "node -r ts-node/register test/index.ts",
         "link": "pnpm link --global",

@@ -6,7 +6,12 @@
             "request": "launch",
             "name": "lib/yaml: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "args": [
+                "${file}",
+                "--config",
+                "jest.config.js",
+                "--coverage=false"
+            ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,
@@ -18,23 +23,33 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "templates/fiori-elements: Debug Current Jest File",
+            "name": "templates/fiori-freestyle: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "args": [
+                "${file}",
+                "--config",
+                "jest.config.js",
+                "--coverage=false"
+            ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,
             "windows": {
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
-            "cwd": "${workspaceFolder}/packages/templates/fiori-elements"
+            "cwd": "${workspaceFolder}/packages/templates/fiori-freestyle"
         },
         {
             "type": "node",
             "request": "launch",
             "name": "templates/odata-service: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "args": [
+                "${file}",
+                "--config",
+                "jest.config.js",
+                "--coverage=false"
+            ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,

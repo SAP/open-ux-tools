@@ -37,12 +37,12 @@ describe('Fiori freestyle template: ListDetail', () => {
     ];
 
     afterEach(() => {
-        if (!debug.enabled) rmdirSync(debug.outputDir, { recursive: true });
+        if (!debug.enabled) {rmdirSync(debug.outputDir, { recursive: true });}
     });
 
     test.each(configuration)('generates files for template: $name', async ({ config }) => {
         const fs = await generate(join(debug.outputDir, config.template.type), config);
-        if (debug.enabled) fs.commit(() => 0);
+        if (debug.enabled) {fs.commit(() => 0);}
         expect((fs as any).dump(debug.outputDir)).toMatchSnapshot();
     });
 });
