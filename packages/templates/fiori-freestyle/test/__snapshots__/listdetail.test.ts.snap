@@ -62,6 +62,10 @@ server:
       configuration:
         port: 35729
         path: webapp
+framework:
+  libraries:
+    - name: sap.m
+    - name: sap.ushell
 ",
     "state": "modified",
   },
@@ -1652,7 +1656,7 @@ if (parseInt(version[0]) <= 1 && parseInt(version[1]) < 78) {
 				}
 			},
 			applications: {
-				\\"\\": {
+				\\"testme-app\\": {
 					title: \\"My Test App\\",
 					description: \\"\\",
 					additionalInformation: \\"SAPUI5.Component=test.me\\",
@@ -1667,10 +1671,10 @@ if (parseInt(version[0]) <= 1 && parseInt(version[1]) < 78) {
 	<!-- Bootstrap the UI5 core library -->
 	<script id=\\"sap-ui-bootstrap\\"
 		src=\\"/resources/sap-ui-core.js\\"
-		data-sap-ui-libs=\\"\\"
+		data-sap-ui-libs=\\"sap.m,sap.ushell\\"
 		data-sap-ui-async=\\"true\\"
 		data-sap-ui-preload=\\"async\\"
-		data-sap-ui-theme=\\"\\"
+		data-sap-ui-theme=\\"sap_fiori_3\\"
 		data-sap-ui-compatVersion=\\"edge\\"
 		data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"test/me/test/changes_loader\\", \\"custom\\":true}]'
 		data-sap-ui-language=\\"en\\"
