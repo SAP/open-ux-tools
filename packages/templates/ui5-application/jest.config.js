@@ -5,5 +5,6 @@ module.exports = {
     },
     collectCoverage: true,
     coverageReporters: ['text'],
-    collectCoverageFrom: ['src/**/*.ts']
+    collectCoverageFrom: ['src/**/*.ts'],
+	  modulePathIgnorePatterns: ['<rootDir>/dist', '<rootDir>/test/test-output']
 };

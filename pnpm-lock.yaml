@@ -92,12 +92,14 @@ importers:
       ejs: 3.1.6
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0
+      prettify-xml: 1.2.0
       typescript: 4.2.4
     dependencies:
       '@sap/ux-ui5-config': link:../../lib/ui5-config
       ejs: 3.1.6
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
+      prettify-xml: 1.2.0
     devDependencies:
       '@types/ejs': 3.0.6
       '@types/mem-fs-editor': 7.0.0
@@ -3556,6 +3558,10 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
+
+  /prettify-xml/1.2.0:
+    resolution: {integrity: sha1-Rtzx7oqNi3PbMLfgbvJtyc8/bxg=}
+    dev: false
 
   /pretty-format/27.0.6:
     resolution: {integrity: sha512-8tGD7gBIENgzqA+UBzObyWqQ5B778VIFZA/S66cclyd5YkFLYs2Js7gxDKf0MXtTc9zcS7t1xhdfcElJ3YIvkQ==}

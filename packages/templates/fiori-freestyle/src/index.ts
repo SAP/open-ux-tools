@@ -68,9 +68,12 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
     ui5LocalConfig.addCustomMiddleware(getMiddlewareConfig());
-    ui5Config.addLibraries(getUI5Libs());
-    fs.write(ui5LocalConfigPath, ui5Config.toString());
+    if (data?.ui5?.localVersion) {
+        // ui5Config.addUI5Framework(data.ui5.localVersion);
+				ui5Config.addLibraries(getUI5Libs(data?.ui5?.ui5Libs));
+    }
 
+    fs.write(ui5LocalConfigPath, ui5Config.toString());
 
     return fs;
 }

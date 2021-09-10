@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { Ui5App, mergeWithDefaults } from './data';
+import { Ui5App, UI5, mergeWithDefaults } from './data';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 
@@ -19,10 +19,10 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
     }
     ui5AppCloned = mergeWithDefaults(ui5AppCloned);
     const tmpPath = join(__dirname, '..', 'templates');
-    
+
     fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), ui5AppCloned, undefined, { globOptions: { dot: true } });
 
     return fs as Editor;
 }
 
-export { Ui5App, generate };
+export { Ui5App, UI5, generate };

@@ -58,8 +58,21 @@ server:
 ",
     "state": "modified",
   },
+  "webapp/localService/SEPM_XYZ.xml": Object {
+    "contents": "<HELLO>
+    <ANNOTATION>
+    </ANNOTATION>
+</WORLD>
+</HELLO>",
+    "state": "modified",
+  },
   "webapp/localService/metadata.xml": Object {
-    "contents": "<HELLO WORLD />",
+    "contents": "<HELLO>
+    <WORLD>
+        <METADATA>
+        </METADATA>
+    </WORLD>
+</HELLO>",
     "state": "modified",
   },
   "webapp/manifest.json": Object {

@@ -58,10 +58,10 @@
 	<!-- Bootstrap the UI5 core library -->
 	<script id="sap-ui-bootstrap"
 		src="/resources/sap-ui-core.js"
-		data-sap-ui-libs="<%- app.sapUiLibs %>"
+		data-sap-ui-libs="<%- ui5.ui5Libs %>"
 		data-sap-ui-async="true"
 		data-sap-ui-preload="async"
-		data-sap-ui-theme="<%- app.ui5Theme %>"
+		data-sap-ui-theme="<%- ui5.ui5Theme %>"
 		data-sap-ui-compatVersion="edge"
 		data-sap-ui-flexibilityServices='[{"applyConnector":"<%= app.id.replace(/\./g, "/") %>/test/changes_loader", "custom":true}]'
 		data-sap-ui-language="en"

@@ -62,9 +62,6 @@ server:
       configuration:
         port: 35729
         path: webapp
-framework:
-  libraries:
-    - name: sap.ushell
 ",
     "state": "modified",
   },

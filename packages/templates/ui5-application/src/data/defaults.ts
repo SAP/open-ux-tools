@@ -38,7 +38,7 @@ export function appDefaults(app: App): App {
         title: app.title || `Title of ${app.id}`, //todo: localise
         description: app.description || `Description of ${app.id}`, //todo: localise
         baseComponent: app.baseComponent || 'sap/ui/core/UIComponent',
-        flpAppId: `app.id.replace(/[-_.]/g, '')}-tile`
+        flpAppId: `${app.id}.replace(/[-_.]/g, '')}-tile`
     };
 }
 /**

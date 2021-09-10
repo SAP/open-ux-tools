@@ -9,15 +9,15 @@ import { tmpdir } from 'os';
 describe('Fiori freestyle templates', () => {
     const debug = !!process.env['UX_DEBUG'];
 
-    const outputDir = join(tmpdir(), '/templates/odata-service');
+    const outputDir = join(__dirname, 'test-output');
     if (debug) console.log(outputDir);
 
-    afterEach(() => {
-        if (!debug) rmdirSync(outputDir, { recursive: true });
+    beforeAll(() => {
+        rmdirSync(outputDir, { recursive: true });
     });
 
     it('generates all expected files correctly', async () => {
-        const testDir = join(outputDir, 'v2');
+        const testDir = join(outputDir, 'odata-service-v2');
         const fs = create(createStorage());
         fs.write(join(testDir, 'ui5.yaml'), '#empty file');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
@@ -29,14 +29,15 @@ describe('Fiori freestyle templates', () => {
                 url: 'http://localhost',
                 path: '/sap/odata/testme',
                 version: OdataVersion.v2,
-                metadata: '<HELLO WORLD />',
+                metadata: '<HELLO><WORLD><METADATA></METADATA></WORLD></HELLO>',
                 annotations: {
-                    technicalName: 'SEPM_XYZ'
+                    technicalName: 'SEPM_XYZ',
+									  xml: '<HELLO><ANNOTATION></ANNOTATION></WORLD></HELLO>'
                 }
             } as OdataService,
             fs
         );
-        if (debug) fsEditor.commit(() => 0);
+        fsEditor.commit(() => 0);
         expect((fsEditor as any).dump(testDir)).toMatchSnapshot();
     });
 });

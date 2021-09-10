@@ -3,6 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { UI5Config } from '@sap/ux-ui5-config';
+import prettifyXml from 'prettify-xml';
 
 import { OdataService, OdataVersion, enhanceData } from './data';
 import { getMiddlewareConfig, getMockServerMiddlewareConfig } from './data/middleware';
@@ -71,12 +72,13 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
 
     // create local copy of metadata and annotations
     if (data.metadata) {
-        fs.write(join(basePath, 'webapp', 'localService', 'metadata.xml'), data.metadata);
+        fs.write(join(basePath, 'webapp', 'localService', 'metadata.xml'), prettifyXml(data.metadata, { indent: 4 }));
     }
+
     if (data.annotations?.xml) {
         fs.write(
             join(basePath, 'webapp', 'localService', `${data.annotations.technicalName}.xml`),
-            data.annotations.xml
+            prettifyXml(data.annotations.xml, { indent: 4 })
         );
     }
     return fs;
