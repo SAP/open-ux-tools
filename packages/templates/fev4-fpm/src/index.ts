@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
-import { CustomPage, enhanceData } from './data';
+import { CustomPage, CustomPageConfig, enhanceData } from './data';
 
 /**
  * Validates the provided base path.
@@ -12,7 +12,7 @@ import { CustomPage, enhanceData } from './data';
  * @param {Editor} fs - the memfs editor instance
  */
 function validateBasePath(basePath: string, fs: Editor) {
-    [join(basePath, 'package.json'), join(basePath, 'webapp', 'manifest.json')].forEach(
+    [join(basePath, 'webapp', 'manifest.json')].forEach(
         (path) => {
             if (!fs.exists(path)) {
                 throw new Error(`Invalid project folder. Cannot find required file ${path}`);
@@ -33,14 +33,27 @@ async function generateCustomPage(basePath: string, data: CustomPage, fs?: Edito
         fs = create(createStorage());
     }
     validateBasePath(basePath, fs);
-    enhanceData(data);
-
+    
+    
+    const manifestPath = join(basePath, 'webapp/manifest.json');
+    const config = enhanceData(data, manifestPath, fs);
+    
     // merge content into existing files
-    const extRoot = join(__dirname, '..', 'templates', 'extend');
+    const root = join(__dirname, '..', 'templates/customPage');
 
-    // manifest.json
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
-    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, `manifest.json`)), data)));
+    // enhance manifest.json
+    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)));
+
+    // add extension content
+    if (data.view.path === undefined) {
+        data.view.path = join(basePath, `webapp/ext/view/${config.view.name}.view.xml`);
+        fs.copyTpl(
+            join(root,'ext/view/CustomPage.view.xml'), 
+            data.view.path, config);
+        fs.copyTpl(
+            join(root,'ext/controller/CustomPage.controller.js'), 
+            join(basePath, `webapp/ext/controller/${config.view.name}.controller.js`), config);
+    }
 
     return fs;
 }
