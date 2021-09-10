@@ -1194,9 +1194,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
-          \\"annotations\\": [
-            \\"annotation\\"
-          ],
+          \\"annotations\\": [],
           \\"localUri\\": \\"localService/metadata.xml\\"
         }
       }

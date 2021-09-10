@@ -59,9 +59,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // add service to the project if provided
     if (data.service) {
         await addOdataService(basePath, data.service, fs);
-        const manifest = JSON.parse(fs.read(manifestPath));
-        manifest['sap.app'].dataSources[data.service.name!].settings.annotations.push('annotation');
-        fs.writeJSON(manifestPath, manifest);
     }
 
     // ui5-local.yaml
@@ -70,7 +67,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     ui5LocalConfig.addCustomMiddleware(getMiddlewareConfig());
     if (data?.ui5?.localVersion) {
         // ui5Config.addUI5Framework(data.ui5.localVersion);
-				ui5Config.addLibraries(getUI5Libs(data?.ui5?.ui5Libs));
+        ui5Config.addLibraries(getUI5Libs(data?.ui5?.ui5Libs));
     }
 
     fs.write(ui5LocalConfigPath, ui5Config.toString());
