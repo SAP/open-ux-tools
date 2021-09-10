@@ -13,7 +13,7 @@
                 }
             }<%if (locals.annotations && annotations.technicalName) {%>,
             "<%- annotations.technicalName %>": {
-                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%=annotations.technicalName%>',Version='0001')/$value/",
+                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- annotations.technicalName %>',Version='0001')/$value/",
                 "type": "ODataAnnotation",
                 "settings": {
                     "localUri": "localService/<%- annotations.technicalName %>.xml"
