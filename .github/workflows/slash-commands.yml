@@ -10,15 +10,11 @@ jobs:
 
       - uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
-
-#      - name: Dump context
-#        env:
-#          COMMENT_CONTEXT: ${{ toJson(steps.comment-branch.outputs) }}
-#        run: echo "$COMMENT_CONTEXT"
+        continue-on-error: true
 
       - name: Slash Command Dispatch
         uses: peter-evans/slash-command-dispatch@v2
-        if: success()
+        if: success() && steps.comment-branch.outputs.head_ref
         id: slash-command
         with:
           token: ${{ secrets.ACCESS_PAT }}
@@ -28,8 +24,3 @@ jobs:
           issue-type: pull-request
           dispatch-type: workflow
           static-args: ref=${{ steps.comment-branch.outputs.head_ref }}
-
-      - name: Dump context
-        env:
-          SLASH_CONTEXT: ${{ toJson(steps.slash-command) }}
-        run: echo "$SLASH_CONTEXT"
