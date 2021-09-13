@@ -39,7 +39,6 @@ archive.zip
   },
   \\"ui5\\": {
     \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-tooling\\"
     ]
   }
@@ -885,7 +884,6 @@ archive.zip
   },
   \\"ui5\\": {
     \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
@@ -3686,7 +3684,6 @@ archive.zip
   },
   \\"ui5\\": {
     \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
