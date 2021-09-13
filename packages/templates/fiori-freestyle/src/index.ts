@@ -51,10 +51,10 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     fs.writeJSON(packagePath, packageJson);
 
     // ui5.yaml
-    const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addCustomMiddleware(getAppReloadMiddlewareConfig());
-    fs.write(ui5ConfigPath, ui5Config.toString());
+    // const ui5ConfigPath = join(basePath, 'ui5.yaml');
+    // const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+    // ui5Config.addCustomMiddleware(getAppReloadMiddlewareConfig());
+    // fs.write(ui5ConfigPath, ui5Config.toString());
 
     // add service to the project if provided
     if (ffApp.service) {
@@ -64,14 +64,10 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addCustomMiddleware(getAppReloadMiddlewareConfig());
     if (ffApp?.ui5?.localVersion) {
-			ui5Config.addUI5Framework(ffApp.ui5.localVersion, getUI5Libs(ffApp?.ui5?.ui5Libs));
-			// ui5Config.addLibraries(getUI5Libs(ffApp?.ui5?.ui5Libs));
+			ui5LocalConfig.addUI5Framework(ffApp.ui5.localVersion, getUI5Libs(ffApp?.ui5?.ui5Libs));
     }
-    ui5LocalConfig.addCustomMiddleware(getAppReloadMiddlewareConfig());
-
-    fs.write(ui5LocalConfigPath, ui5Config.toString());
+    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     return fs;
 }

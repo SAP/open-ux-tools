@@ -54,13 +54,6 @@ archive.zip
 metadata:
   name: test.me
 type: application
-server:
-  customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
 framework:
   name: SAPUI5
   version: 1.90.0
@@ -68,6 +61,20 @@ framework:
     - name: sap.m
     - name: sap.ushell
     - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /V2
+            url: https://services.odata.org
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
 ",
     "state": "modified",
   },
@@ -78,35 +85,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-    - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
-      configuration:
-        service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
-",
-    "state": "modified",
-  },
-  "listdetail/ui5.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
-metadata:
-  name: test.me
-type: application
-server:
-  customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -120,6 +98,48 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /V2/Northwind/Northwind.svc
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+",
+    "state": "modified",
+  },
+  "listdetail/ui5.yaml": Object {
+    "contents": "specVersion: \\"2.5\\"
+metadata:
+  name: test.me
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /V2
+            url: https://services.odata.org
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
 ",
     "state": "modified",
   },
