@@ -31,7 +31,7 @@ describe('Fiori freestyle templates', () => {
             localVersion: '1.90.0',
             version: '', // I.e Latest
             ui5Theme: 'sap_fiori_3',
-						ui5Libs: 'sap.m,sap.ushell'
+						ui5Libs: 'sap.m,sap.ushell,themelib_sap_fiori_3'
         }
     };
 

@@ -36,14 +36,42 @@ export class UI5Config {
     }
 
     /**
+     * Adds a UI5 Framework entry to the yaml file.
+     *
+     * @param {string} ui5Version - ui5 version
+     * @param {string[]} libraries - a list of libraries
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public addUI5Framework(ui5Version: string, libraries: string[]): UI5Config {
+        const libraryObjs = [];
+        for (const library of libraries) {
+            libraryObjs.push({ name: library });
+        }
+        this.document.setIn({
+            path: 'framework',
+            value: { name: 'SAPUI5', version: ui5Version, libraries: libraryObjs }
+        });
+        return this;
+    }
+
+    /**
      * Adds a list of custom middlewares to the config.
      *
      * @param {MiddlewareConfig[]} middlewares - the list of custom middlewares
      * @param {NodeComment<MiddlewareConfig>[]} [comments] - a list of comments
+     * @param {addPath} - Create key path
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addCustomMiddleware(middlewares: MiddlewareConfig[], comments?: NodeComment<MiddlewareConfig>[]): UI5Config {
+    public addCustomMiddleware(
+        middlewares: MiddlewareConfig[],
+        comments?: NodeComment<MiddlewareConfig>[],
+        addPath = false
+    ): UI5Config {
+        if (addPath) {
+            this.document.setIn({ path: 'server', value: 'customMiddleware' });
+        }
         for (const mw of middlewares) {
             this.document.appendTo({ path: 'server.customMiddleware', value: mw, comments });
         }

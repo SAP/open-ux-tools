@@ -4,7 +4,6 @@ import { join } from 'path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { rmdirSync } from 'fs';
-import { tmpdir } from 'os';
 
 describe('Fiori freestyle templates', () => {
     const debug = !!process.env['UX_DEBUG'];
@@ -20,6 +19,8 @@ describe('Fiori freestyle templates', () => {
         const testDir = join(outputDir, 'odata-service-v2');
         const fs = create(createStorage());
         fs.write(join(testDir, 'ui5.yaml'), '#empty file');
+        fs.write(join(testDir, 'ui5-local.yaml'), '#empty file');
+        fs.write(join(testDir, 'ui5-mock.yaml'), '#empty file');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
         fs.write(join(testDir, 'webapp', 'manifest.json'), '{}');
 

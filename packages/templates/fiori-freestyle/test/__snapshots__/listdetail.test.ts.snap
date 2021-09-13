@@ -63,9 +63,12 @@ server:
         port: 35729
         path: webapp
 framework:
+  name: SAPUI5
+  version: 1.90.0
   libraries:
     - name: sap.m
     - name: sap.ushell
+    - name: themelib_sap_fiori_3
 ",
     "state": "modified",
   },
@@ -117,7 +120,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: null # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
 ",
     "state": "modified",
   },
@@ -1669,7 +1672,7 @@ if (parseInt(version[0]) <= 1 && parseInt(version[1]) < 78) {
 	<!-- Bootstrap the UI5 core library -->
 	<script id=\\"sap-ui-bootstrap\\"
 		src=\\"/resources/sap-ui-core.js\\"
-		data-sap-ui-libs=\\"sap.m,sap.ushell\\"
+		data-sap-ui-libs=\\"sap.m,sap.ushell,themelib_sap_fiori_3\\"
 		data-sap-ui-async=\\"true\\"
 		data-sap-ui-preload=\\"async\\"
 		data-sap-ui-theme=\\"sap_fiori_3\\"

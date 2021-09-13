@@ -27,6 +27,8 @@ describe('Test generate method with valid input', () => {
         // generate required files
         fs = create(createStorage());
         fs.write(join(testDir, 'ui5.yaml'), '#empty file');
+        fs.write(join(testDir, 'ui5-local.yaml'), '#empty file');
+        fs.write(join(testDir, 'ui5-mock.yaml'), '#empty file');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
         fs.write(join(testDir, 'webapp', 'manifest.json'), '{}');
     });

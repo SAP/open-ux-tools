@@ -1,5 +1,6 @@
 {
     "include": ["src"],
+    "exclude": ["dist"],
     "compilerOptions": {
         "declaration": true,
         "outDir": "dist",

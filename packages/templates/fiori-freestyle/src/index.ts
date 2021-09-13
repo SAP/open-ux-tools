@@ -5,8 +5,7 @@ import { render } from 'ejs';
 import { generate as generateUi5Project } from '@sap/ux-ui5-application-template';
 import { generate as addOdataService } from '@sap/ux-odata-service-template';
 import { FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType } from './data';
-import { UI5Config } from '@sap/ux-ui5-config';
-import { getMiddlewareConfig } from './data/middleware';
+import { UI5Config, getAppReloadMiddlewareConfig } from '@sap/ux-ui5-config';
 import { getUI5Libs } from './data/ui5Libs';
 
 /**
@@ -53,7 +52,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addCustomMiddleware(getMiddlewareConfig());
+    ui5Config.addCustomMiddleware(getAppReloadMiddlewareConfig());
     fs.write(ui5ConfigPath, ui5Config.toString());
 
     // add service to the project if provided
@@ -64,11 +63,10 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addCustomMiddleware(getMiddlewareConfig());
     if (data?.ui5?.localVersion) {
-        // ui5Config.addUI5Framework(data.ui5.localVersion);
-        ui5Config.addLibraries(getUI5Libs(data?.ui5?.ui5Libs));
+        ui5Config.addUI5Framework(data.ui5.localVersion, getUI5Libs(data?.ui5?.ui5Libs));
     }
+    ui5LocalConfig.addCustomMiddleware(getAppReloadMiddlewareConfig());
 
     fs.write(ui5LocalConfigPath, ui5Config.toString());
 

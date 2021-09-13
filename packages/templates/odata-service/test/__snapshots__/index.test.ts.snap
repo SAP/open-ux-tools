@@ -20,20 +20,58 @@ Object {
 ",
     "state": "modified",
   },
+  "ui5-local.yaml": Object {
+    "contents": "#empty file
+
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://localhost
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+",
+    "state": "modified",
+  },
   "ui5-mock.yaml": Object {
     "contents": "#empty file
 
 server:
   customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
       configuration:
-        service:
-          urlBasePath: /sap/odata/testme
-          name: ''
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://localhost
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://localhost
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
 ",
     "state": "modified",
   },
@@ -54,7 +92,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: null # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
 ",
     "state": "modified",
   },

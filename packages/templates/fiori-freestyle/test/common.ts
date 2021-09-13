@@ -4,7 +4,7 @@ import { join } from 'path';
 
 export function prepareDebug(): { enabled: boolean; outputDir: string } {
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(tmpdir(), '/templates/fiori-freestyle');
+    const outputDir = join(__dirname, '/test-output/fiori-freestyle');
     // eslint-disable-next-line no-console
     if (debug) {
         console.log(outputDir);
@@ -25,7 +25,7 @@ export const commonConfig = {
         localVersion: '1.90.0',
         version: '', // I.e Latest
         ui5Theme: 'sap_fiori_3',
-        ui5Libs: 'sap.m,sap.ushell'
+        ui5Libs: 'sap.m,sap.ushell,themelib_sap_fiori_3'
     }
 };
 

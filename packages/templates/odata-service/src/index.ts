@@ -2,11 +2,15 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { UI5Config } from '@sap/ux-ui5-config';
+import {
+	getFioriToolsProxyMiddlewareConfig,
+	getMockServerMiddlewareConfig,
+	addMiddlewareConfig, NodeComment
+} from "@sap/ux-ui5-config";
 import prettifyXml from 'prettify-xml';
 
 import { OdataService, OdataVersion, enhanceData } from './data';
-import { getMiddlewareConfig, getMockServerMiddlewareConfig } from './data/middleware';
+
 
 /**
  * Validates the provided base path.
@@ -57,18 +61,34 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, `manifest.json`)), data)));
 
-    // ui5.yaml
-    const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const existingUI5Config = fs.read(ui5ConfigPath);
-
-    const ui5Config = await UI5Config.newInstance(existingUI5Config);
-    ui5Config.addCustomMiddleware(...getMiddlewareConfig(data));
-    fs.write(ui5ConfigPath, ui5Config.toString());
-
-    // ui5-mock.yaml
-    const ui5MockConfig = await UI5Config.newInstance(existingUI5Config);
-    ui5MockConfig.addCustomMiddleware(getMockServerMiddlewareConfig(data));
-    fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
+    // ui*.yaml
+		const proxyMiddleware = getFioriToolsProxyMiddlewareConfig(data);
+		await addMiddlewareConfig(fs, basePath,'ui5.yaml', proxyMiddleware.config, proxyMiddleware.comments);
+		await addMiddlewareConfig(fs, basePath,'ui5-local.yaml', proxyMiddleware.config, proxyMiddleware.comments);
+		const mwMock = getFioriToolsProxyMiddlewareConfig(data);
+		await addMiddlewareConfig(fs, basePath,'ui5-mock.yaml',proxyMiddleware.config, proxyMiddleware.comments);
+		await addMiddlewareConfig(fs, basePath,'ui5-mock.yaml',mwMock.config, mwMock.comments);
+		// await addMiddlewareConfig(basePath,'ui5-mock.yaml', ,fs);
+    // // ui5.yaml
+    // const ui5ConfigPath = join(basePath, 'ui5.yaml');
+    // const existingUI5Config = fs.read(ui5ConfigPath);
+		//
+    // const ui5Config = await UI5Config.newInstance(existingUI5Config);
+    // ui5Config.addCustomMiddleware(...getFioriToolsProxyMiddlewareConfig(data));
+    // fs.write(ui5ConfigPath, ui5Config.toString());
+		//
+    // // ui5-local.yaml
+    // const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+    // const existingUI5LocalConfig = fs.read(ui5LocalConfigPath);
+		//
+    // const ui5LocalConfig = await UI5Config.newInstance(existingUI5LocalConfig);
+    // ui5LocalConfig.addCustomMiddleware(...getFioriToolsProxyMiddlewareConfig(data));
+    // fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+		//
+    // // ui5-mock.yaml
+    // const ui5MockConfig = await UI5Config.newInstance(existingUI5Config);
+    // ui5MockConfig.addCustomMiddleware(getMockServerMiddlewareConfig(data));
+    // fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
 
     // create local copy of metadata and annotations
     if (data.metadata) {

@@ -1,19 +1,19 @@
 import { generate } from '../src';
 import { join } from 'path';
-import { tmpdir } from 'os';
 import { rmdirSync } from 'fs';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(tmpdir(), '/templates/ui5-application');
+    const outputDir = join(__dirname, '/test-output');
     if (debug) console.log(outputDir);
 
-    afterEach(() => {
+    beforeAll(() => {
         if (!debug) rmdirSync(outputDir, { recursive: true });
     });
 
     it('generates files correctly', async () => {
-        const fs = await generate(outputDir, {
+    	const projectDir = join(outputDir,'testapp1');
+        const fs = await generate(projectDir, {
             app: {
                 id: 'testAppId',
                 title: 'Test App Title',
@@ -23,7 +23,7 @@ describe('UI5 templates', () => {
                 name: 'testPackageName'
             }
         });
-        if (debug) fs.commit(() => 0);
-        expect((fs as any).dump(outputDir)).toMatchSnapshot();
+        fs.commit(() => 0)
+        expect((fs as any).dump(projectDir)).toMatchSnapshot();
     });
 });
