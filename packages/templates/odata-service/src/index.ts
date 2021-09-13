@@ -6,7 +6,6 @@ import {
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig,
     addMiddlewareConfig,
-    NodeComment,
     getAppReloadMiddlewareConfig
 } from '@sap/ux-ui5-config';
 import prettifyXml from 'prettify-xml';

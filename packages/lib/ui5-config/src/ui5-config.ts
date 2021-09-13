@@ -40,14 +40,18 @@ export class UI5Config {
      *
      * @param {string} ui5Version - ui5 version
      * @param {string[]} libraries - a list of libraries
+     * @param ui5Theme - ui5 theme
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addUI5Framework(ui5Version: string, libraries: string[]): UI5Config {
+    public addUI5Framework(ui5Version: string, libraries: string[], ui5Theme = 'sap_fiori_3'): UI5Config {
         const libraryObjs = [];
         for (const library of libraries) {
             libraryObjs.push({ name: library });
         }
+        // Add theme lib
+        libraryObjs.push({ name: `themelib_${ui5Theme}` });
+
         this.document.setIn({
             path: 'framework',
             value: { name: 'SAPUI5', version: ui5Version, libraries: libraryObjs }
@@ -60,7 +64,7 @@ export class UI5Config {
      *
      * @param {MiddlewareConfig[]} middlewares - the list of custom middlewares
      * @param {NodeComment<MiddlewareConfig>[]} [comments] - a list of comments
-     * @param {addPath} - Create key path
+     * @param addPath - Add yaml key e.g. server.customMiddleware
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */

@@ -1691,7 +1691,7 @@ if (parseInt(version[0]) <= 1 && parseInt(version[1]) < 78) {
 	<!-- Bootstrap the UI5 core library -->
 	<script id=\\"sap-ui-bootstrap\\"
 		src=\\"/resources/sap-ui-core.js\\"
-		data-sap-ui-libs=\\"sap.m,sap.ushell,themelib_sap_fiori_3\\"
+		data-sap-ui-libs=\\"sap.m,sap.ushell\\"
 		data-sap-ui-async=\\"true\\"
 		data-sap-ui-preload=\\"async\\"
 		data-sap-ui-theme=\\"sap_fiori_3\\"
