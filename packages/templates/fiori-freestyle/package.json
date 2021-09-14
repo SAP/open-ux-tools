@@ -24,7 +24,8 @@
         "mem-fs-editor": "^9.0.0",
         "@sap/ux-ui5-application-template": "workspace:*",
         "@sap/ux-odata-service-template": "workspace:*",
-        "@sap/ux-ui5-config": "workspace:*"
+        "@sap/ux-ui5-config": "workspace:*",
+        "@sap/open-ux-tools-common": "workspace:*"
     },
     "devDependencies": {
         "@types/ejs": "^3.0.6",

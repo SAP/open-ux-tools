@@ -4,6 +4,7 @@ export enum OdataVersion {
 }
 export interface OdataService {
     url: string;
+    client?: string;
     destination?: {
         name: string;
         instance?: string;

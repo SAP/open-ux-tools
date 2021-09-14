@@ -4,9 +4,11 @@ import { render } from 'ejs';
 
 import { generate as generateUi5Project } from '@sap/ux-ui5-application-template';
 import { generate as addOdataService } from '@sap/ux-odata-service-template';
-import { FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType } from './data';
+import { FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType, Template } from './data';
 import { UI5Config } from '@sap/ux-ui5-config';
+import { getStartTasks } from '@sap/open-ux-tools-common';
 import { getUI5Libs } from './data/ui5Libs';
+import { Package } from '@sap/ux-ui5-application-template/dist/data';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -47,7 +49,12 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // package.json
     const packagePath = join(basePath, 'package.json');
     fs.extendJSON(packagePath, JSON.parse(render(fs.read(join(tmpPath, 'common', 'extend', 'package.json')), ffApp)));
-    const packageJson = JSON.parse(fs.read(packagePath));
+    const packageJson: Package = JSON.parse(fs.read(packagePath));
+
+    packageJson.scripts = Object.assign(packageJson.scripts, {
+        ...getStartTasks(!ffApp.service?.url, ffApp.service?.client, ffApp.app.flpAppId)
+    });
+
     fs.writeJSON(packagePath, packageJson);
 
     // add service to the project if provided
@@ -59,11 +66,11 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
     if (ffApp?.ui5?.localVersion) {
-			ui5LocalConfig.addUI5Framework(ffApp.ui5.localVersion, getUI5Libs(ffApp?.ui5?.ui5Libs), ffApp.ui5.ui5Theme);
+        ui5LocalConfig.addUI5Framework(ffApp.ui5.localVersion, getUI5Libs(ffApp?.ui5?.ui5Libs), ffApp.ui5.ui5Theme);
     }
     fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     return fs;
 }
 
-export { generate, FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType };
+export { generate, FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType, Template };

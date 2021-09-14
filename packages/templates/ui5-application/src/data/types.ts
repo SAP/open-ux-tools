@@ -23,11 +23,11 @@ export interface App {
 export interface UI5 {
     minVersion?: string;
     version?: string;
-		localVersion?: string;
+	localVersion?: string;
     typesVersion?: string;
     descriptorVersion?: string;
     ui5Libs?: string;
-	  ui5Theme?: string;
+	ui5Theme?: string;
 }
 
 export interface Ui5App {
