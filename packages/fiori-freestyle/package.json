@@ -1,0 +1,40 @@
+{
+    "name": "@sap/ux-fiori-freestyle-template",
+    "version": "0.0.2",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "rimraf dist && tsc",
+        "clean": "rimraf dist test/test-output",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "test": "jest",
+        "test-u": "jest -u",
+        "test:local": "node -r ts-node/register test/index.ts",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "dist",
+        "templates"
+    ],
+    "dependencies": {
+        "ejs": "^3.1.6",
+        "mem-fs": "^2.1.0",
+        "mem-fs-editor": "^9.0.0",
+        "@sap/ux-ui5-application-template": "workspace:*",
+        "@sap/ux-odata-service-template": "workspace:*",
+        "@sap/ux-ui5-config": "workspace:*",
+        "@sap/open-ux-tools-common": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/ejs": "^3.0.6",
+        "@types/mem-fs-editor": "^7.0.0",
+        "typescript": "4.2.4",
+        "@sap/open-ux-tools-types": "workspace:*"
+    },
+    "engines": {
+        "pnpm": ">=6.0.2",
+        "node": ">=12.18.2 < 13.0.0 || > 14.0.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+    }
+}

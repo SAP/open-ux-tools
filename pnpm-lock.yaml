@@ -38,7 +38,7 @@ importers:
       ts-node: 10.2.1_typescript@4.4.2
       typescript: 4.4.2
 
-  packages/lib/common:
+  packages/common:
     specifiers:
       i18next: 20.3.2
       typescript: 4.2.4
@@ -47,35 +47,10 @@ importers:
     devDependencies:
       typescript: 4.2.4
 
-  packages/lib/ui5-config:
-    specifiers:
-      '@sap/ux-odata-service-template': workspace:*
-      '@sap/ux-yaml': workspace:*
-      typescript: 4.2.4
-    dependencies:
-      '@sap/ux-yaml': link:../yaml
-      typescript: 4.2.4
-    devDependencies:
-      '@sap/ux-odata-service-template': link:../../templates/odata-service
-
-  packages/lib/yaml:
-    specifiers:
-      '@types/i18next-fs-backend': 1.0.0
-      i18next: 20.3.2
-      i18next-fs-backend: 1.1.1
-      typescript: 4.2.4
-      yaml: 2.0.0-6
-    dependencies:
-      i18next: 20.3.2
-      i18next-fs-backend: 1.1.1
-      yaml: 2.0.0-6
-    devDependencies:
-      '@types/i18next-fs-backend': 1.0.0
-      typescript: 4.2.4
-
-  packages/templates/fiori-freestyle:
+  packages/fiori-freestyle:
     specifiers:
       '@sap/open-ux-tools-common': workspace:*
+      '@sap/open-ux-tools-types': workspace:*
       '@sap/ux-odata-service-template': workspace:*
       '@sap/ux-ui5-application-template': workspace:*
       '@sap/ux-ui5-config': workspace:*
@@ -86,20 +61,22 @@ importers:
       mem-fs-editor: ^9.0.0
       typescript: 4.2.4
     dependencies:
-      '@sap/open-ux-tools-common': link:../../lib/common
+      '@sap/open-ux-tools-common': link:../common
       '@sap/ux-odata-service-template': link:../odata-service
       '@sap/ux-ui5-application-template': link:../ui5-application
-      '@sap/ux-ui5-config': link:../../lib/ui5-config
+      '@sap/ux-ui5-config': link:../ui5-config
       ejs: 3.1.6
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
     devDependencies:
+      '@sap/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
       '@types/mem-fs-editor': 7.0.0
       typescript: 4.2.4
 
-  packages/templates/odata-service:
+  packages/odata-service:
     specifiers:
+      '@sap/open-ux-tools-types': workspace:*
       '@sap/ux-ui5-application-template': workspace:*
       '@sap/ux-ui5-config': workspace:*
       '@types/ejs': 3.0.6
@@ -110,19 +87,30 @@ importers:
       prettify-xml: 1.2.0
       typescript: 4.2.4
     dependencies:
-      '@sap/ux-ui5-config': link:../../lib/ui5-config
+      '@sap/ux-ui5-config': link:../ui5-config
       ejs: 3.1.6
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
       prettify-xml: 1.2.0
     devDependencies:
+      '@sap/open-ux-tools-types': link:../types
       '@sap/ux-ui5-application-template': link:../ui5-application
       '@types/ejs': 3.0.6
       '@types/mem-fs-editor': 7.0.0
       typescript: 4.2.4
 
-  packages/templates/ui5-application:
+  packages/types:
     specifiers:
+      '@sap/ux-yaml': workspace:*
+      typescript: 4.2.4
+    dependencies:
+      typescript: 4.2.4
+    devDependencies:
+      '@sap/ux-yaml': link:../yaml
+
+  packages/ui5-application:
+    specifiers:
+      '@sap/open-ux-tools-types': workspace:*
       '@types/ejs': 3.0.6
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.0
@@ -135,9 +123,38 @@ importers:
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
     devDependencies:
+      '@sap/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.0
+      typescript: 4.2.4
+
+  packages/ui5-config:
+    specifiers:
+      '@sap/open-ux-tools-types': workspace:*
+      '@sap/ux-odata-service-template': workspace:*
+      '@sap/ux-yaml': workspace:*
+      typescript: 4.2.4
+    dependencies:
+      '@sap/ux-yaml': link:../yaml
+      typescript: 4.2.4
+    devDependencies:
+      '@sap/open-ux-tools-types': link:../types
+      '@sap/ux-odata-service-template': link:../odata-service
+
+  packages/yaml:
+    specifiers:
+      '@types/i18next-fs-backend': 1.0.0
+      i18next: 20.3.2
+      i18next-fs-backend: 1.1.1
+      typescript: 4.2.4
+      yaml: 2.0.0-6
+    dependencies:
+      i18next: 20.3.2
+      i18next-fs-backend: 1.1.1
+      yaml: 2.0.0-6
+    devDependencies:
+      '@types/i18next-fs-backend': 1.0.0
       typescript: 4.2.4
 
 packages:
