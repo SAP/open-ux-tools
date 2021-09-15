@@ -15,7 +15,7 @@ export async function initI18n(): Promise<void> {
         defaultNS: COMMON_NS,
         ns: [COMMON_NS]
     });
-    console.log(t('DEBUG_MSG_I18N_INITIALISED')); // todo: use proper logger
+    // console.log(t('DEBUG_MSG_I18N_INITIALISED'));
 }
 
 export function addTranslations(translations: object, ns: string): void {

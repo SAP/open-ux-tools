@@ -26,7 +26,7 @@ export interface UI5 {
 	localVersion?: string;
 	typesVersion?: string;
 	descriptorVersion?: string;
-	ui5Libs?: string;
+	ui5Libs?: string | string[];
 	ui5Theme?: string;
 }
 

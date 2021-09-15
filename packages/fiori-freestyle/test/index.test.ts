@@ -3,14 +3,14 @@ import { join } from 'path';
 import { TemplateType, OdataService, OdataVersion } from '@sap/open-ux-tools-types';
 import { rmdirSync } from 'fs';
 import { sample } from './sample/metadata';
+import { outputDir, debug, northwind } from './common';
 
 describe('Fiori freestyle templates', () => {
-    const debug = !!process.env['UX_DEBUG'];
-    const outputDir = join(__dirname, 'test-output');
 
     beforeAll(() => {
         rmdirSync(outputDir, { recursive: true });
     });
+
     // eslint-disable-next-line no-console
     if (debug) {
         console.log(outputDir);
@@ -34,12 +34,7 @@ describe('Fiori freestyle templates', () => {
         }
     };
 
-    const northwind: OdataService = {
-        url: 'https://services.odata.org',
-        path: '/V2/Northwind/Northwind.svc',
-        version: OdataVersion.v2,
-        metadata: sample.NorthwindV2
-    };
+    const northwindMetadata: OdataService = Object.assign(northwind, { metadata: sample.NorthwindV2 });
 
     const configuration: Array<{ name: string; config: FreestyleApp<any> }> = [
         {
@@ -56,7 +51,7 @@ describe('Fiori freestyle templates', () => {
             name: 'listdetail',
             config: {
                 ...commonConfig,
-                service: northwind,
+                service: northwindMetadata,
                 template: {
                     type: TemplateType.ListDetail,
                     settings: {
@@ -76,7 +71,7 @@ describe('Fiori freestyle templates', () => {
             name: 'worklist',
             config: {
                 ...commonConfig,
-                service: northwind,
+                service: northwindMetadata,
                 template: {
                     type: TemplateType.Worklist,
                     settings: {
@@ -96,7 +91,7 @@ describe('Fiori freestyle templates', () => {
     test.each(configuration)('generates files for template: $name', async ({ config }) => {
         const templateOutputDir = join(outputDir);
         const fs = await generate(join(templateOutputDir, config.template.type), config);
-        fs.commit(() => 0);
+        if (debug.enabled) fs.commit(() => 0);
         expect((fs as any).dump(templateOutputDir)).toMatchSnapshot();
     });
 });
