@@ -1,0 +1,27 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "routes": [
+                {
+					"pattern": "/<%= entity %>({key}):?query:",
+					"name": "<%= name %>",
+					"target": "<%= name %>"
+				}
+            ],
+            "targets": {
+                "<%= name %>": {
+					"type": "Component",
+					"id": "customPage",
+					"name": "<%= id %>",
+					"options": {
+						"settings": {
+							"viewName": "<%= id %>.<%= name %>",
+							"entitySet": "<%= entity %>",
+							"navigation": { }
+						}
+					}
+				}
+            }
+        }
+    }
+}

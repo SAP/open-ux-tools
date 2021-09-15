@@ -3,7 +3,7 @@ import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { generateCustomPage } from '../../src';
 
-describe('Test generate a custom page', () => {
+describe('CustomPage', () => {
     let fs: Editor;
     const testDir = 'virtual-temp';
     beforeEach(() => {
@@ -16,15 +16,10 @@ describe('Test generate a custom page', () => {
         }));
     });
 
-    test('Add new custom page', async () => {
+    test('Add a custom page with minimal input', async () => {
         generateCustomPage(testDir, {
-            navigation: {
-                sourcePage: "MyObjectPage",
-                targetEntity:  "MyNavEntity"
-            },
-            view: {
-                name: "MyCustomView"
-            }
+            name: "MyCustomPage",
+            entity: "RootEnity"
         }, fs);
         expect((fs as any).dump(testDir)).toMatchSnapshot();
     });
