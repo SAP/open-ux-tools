@@ -19,7 +19,7 @@ import { CustomPage, CustomPageConfig } from '../types';
     const manifest: any = fs.readJSON(manifestPath);
     const config: CustomPageConfig = {
         ...data,
-        id: `${manifest.app.id}.ext.${nameForId}`,
+        id: `${manifest['sap.app'].id}.ext.${nameForId}`,
         path: join(dirname(manifestPath), 'ext', nameForId)
     };
     if (config.view === undefined) {
@@ -72,10 +72,19 @@ export async function generateCustomPage(basePath: string, data: CustomPage, fs?
     const root = join(__dirname, '../../templates/page');
 
     // enhance manifest.json
-    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)));
+    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)), ( key, value ) => {
+        if (key === 'routes') {
+            const routes = value as object[];
+            routes.push({
+                pattern: `${config.navigation ? config.navigation.sourceEntity + '({key})/' + config.navigation.navEntity + '({key2})' : config.entity + '({key})'}:?query:`,
+                name: `${config.entity}${config.name}`,
+                target: `${config.entity}${config.name}`
+            });
+        }
+        return value;
+    });
 
     // add extension content
-    fs.copyTpl(join(root,'ext/NAME/Component.js'), config.path, config);
     if (config.view?.path) {
         // TODO: copying is not that simple, controller path needs to be read from view.xml and if the controller is copied, it's id in the sources needs to be changed
         fs.copy(config.view.path, join(config.path, `${config.name}.view.xml`));

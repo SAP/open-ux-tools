@@ -1,18 +1,11 @@
 {
     "sap.ui5": {
         "routing": {
-            "routes": [
-                {
-					"pattern": "/<%= entity %>({key}):?query:",
-					"name": "<%= name %>",
-					"target": "<%= name %>"
-				}
-            ],
             "targets": {
-                "<%= name %>": {
+                "<%= entity %><%= name %>": {
 					"type": "Component",
-					"id": "customPage",
-					"name": "<%= id %>",
+					"id": "<%= id %>",
+					"name": "sap.fe.core.fpm",
 					"options": {
 						"settings": {
 							"viewName": "<%= id %>.<%= name %>",
@@ -20,7 +13,20 @@
 							"navigation": { }
 						}
 					}
-				}
+				}<%if (locals.navigation) {%>,
+                "<%= navigation.sourcePage %>": {
+                    "options": {
+                        "settings": {
+                            "navigation": {
+                                "<%= navigation.navEntity %>": {
+                                    "detail": {
+                                        "route": "<%= entity %><%= name %>"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }<% } %>
             }
         }
     }
