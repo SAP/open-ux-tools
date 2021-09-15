@@ -4,7 +4,8 @@ import { render } from 'ejs';
 
 import { generate as generateUi5Project } from '@sap/ux-ui5-application-template';
 import { generate as addOdataService } from '@sap/ux-odata-service-template';
-import type { FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType, Template, Package } from '@sap/open-ux-tools-types';
+import type { FreestyleApp, WorklistSettings, ListDetailSettings, Template, Package } from '@sap/open-ux-tools-types';
+import { TemplateType } from '@sap/open-ux-tools-types'; // This is an enum dont import as type, we lose runtime values
 import { UI5Config } from '@sap/ux-ui5-config';
 import { getStartTasks } from '@sap/open-ux-tools-common';
 import { getUI5Libs } from './data/ui5Libs';
@@ -13,7 +14,7 @@ import { getUI5Libs } from './data/ui5Libs';
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
  *
  * @param basePath - the absolute target path where the applciation will be generated
- * @param data - ???
+ * @param data - 
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
