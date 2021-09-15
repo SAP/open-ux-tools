@@ -101,11 +101,13 @@ importers:
 
   packages/types:
     specifiers:
+      '@sap/ux-ui5-config': workspace:*
       '@sap/ux-yaml': workspace:*
       typescript: 4.2.4
     dependencies:
       typescript: 4.2.4
     devDependencies:
+      '@sap/ux-ui5-config': link:../ui5-config
       '@sap/ux-yaml': link:../yaml
 
   packages/ui5-application:
