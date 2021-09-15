@@ -35,5 +35,5 @@ export interface MiddlewareConfig {
 		ignoreCertError?: boolean;
 	};
 }
-
-export { NodeComment, Path } from '@sap/ux-yaml';
+// TypeDefs using TypeScript 4.1 feature will break consumer compilation < 4.1
+// export { NodeComment, Path } from '@sap/ux-yaml';
