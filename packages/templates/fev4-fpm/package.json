@@ -10,7 +10,6 @@
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test:local": "node -r ts-node/register test/index.ts",
         "watch": "tsc --watch"
     },
     "files": [
