@@ -20,7 +20,9 @@ export const getAppReloadMiddlewareConfig = (): MiddlewareConfig[] => {
 
 export const getFioriToolsProxyMiddlewareConfig = (
     data: OdataService,
-    useUi5Cdn = true
+    useUi5Cdn = true,
+		ui5CdnUrl = 'https://ui5.sap.com',
+		ui5Version = ''
 ): { config: MiddlewareConfig[]; comments: NodeComment<MiddlewareConfig>[] } => {
     const destination = data.destination?.name || undefined;
     const destinationInstance = data.destination?.instance || undefined;
@@ -44,8 +46,8 @@ export const getFioriToolsProxyMiddlewareConfig = (
     if (useUi5Cdn === true) {
         fioriToolsProxy.configuration['ui5'] = {
             path: ['/resources', '/test-resources'],
-            url: 'https://ui5.sap.com',
-            version: ''
+            url: ui5CdnUrl,
+            version: ui5Version ?? ''
         };
     }
     const config: MiddlewareConfig[] = [fioriToolsProxy];

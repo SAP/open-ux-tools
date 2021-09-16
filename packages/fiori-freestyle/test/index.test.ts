@@ -8,7 +8,6 @@ import { testOutputDir, debug, northwind } from './common';
 const TEST_NAME = 'allTemplate';
 
 describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
-
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
     // eslint-disable-next-line no-console
@@ -85,7 +84,10 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
-        fs.commit(() => {});
         expect((fs as any).dump(testPath)).toMatchSnapshot();
+        // write out the files for debugging
+        return new Promise((resolve) => {
+            fs.commit(resolve);
+        });
     });
 });

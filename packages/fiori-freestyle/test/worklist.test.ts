@@ -7,7 +7,6 @@ import { OdataVersion, Template, WorklistSettings } from '@sap/open-ux-tools-typ
 const TEST_NAME = 'worklistTemplate';
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
-
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
     const configuration: Array<{ name: string; config: FreestyleApp<unknown> }> = [
@@ -17,7 +16,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 app: {
                     id: 'wrk1',
                     title: 'App Title',
-                    description: 'A Fiori application.',
+                    description: 'A Fiori application.'
                     //flpAppId: 'wrk1-tile'
                 },
                 package: {
@@ -70,7 +69,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
-        fs.commit(() => {});
         expect((fs as any).dump(testPath)).toMatchSnapshot();
+        // write out the files for debugging
+        return new Promise((resolve) => {
+            fs.commit(resolve);
+        });
     });
 });

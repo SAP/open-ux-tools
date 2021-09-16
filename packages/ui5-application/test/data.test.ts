@@ -7,13 +7,13 @@ describe('Setting defaults', () => {
         const testData: { input: UI5, expected: UI5}[] = [
             { input: {}, expected: {
                 version: '1.84.0',
-                minVersion: '1.60',
+								minUI5Version: '1.60',
                 descriptorVersion: '1.12.0',
                 typesVersion: '1.84.0' }
             },
             { input: { version: '1.72.0'}, expected: {
                 version: '1.72.0',
-                minVersion: '1.60',
+								minUI5Version: '1.60',
                 descriptorVersion: '1.12.0',
                 typesVersion: '1.71.18' }
             }

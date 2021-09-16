@@ -23,7 +23,7 @@ export interface App {
 }
 
 export interface UI5 {
-	minVersion?: string;
+	minUI5Version?: string;
 	version?: string;
 	localVersion?: string;
 	typesVersion?: string;

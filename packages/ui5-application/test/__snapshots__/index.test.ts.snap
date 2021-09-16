@@ -204,7 +204,8 @@ appDescription=Test App Description",
         \\"targets\\": {}
       }
     }
-  }",
+  }
+",
     "state": "modified",
   },
 }
