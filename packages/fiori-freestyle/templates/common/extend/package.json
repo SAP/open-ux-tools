@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "start": "fiori run --open 'flpSandbox.html'",
+        "deploy-config": "fiori add deploy-config"
+    }
+}

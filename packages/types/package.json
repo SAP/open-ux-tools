@@ -1,0 +1,31 @@
+{
+    "name": "@sap/open-ux-tools-types",
+    "description": "@sap/open-ux-tools types",
+    "version": "0.0.1",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "pnpm clean && tsc",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --passWithNoTests --ci --forceExit --detectOpenHandles --colors",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "typescript": "4.2.4"
+    },
+    "devDependencies": {
+	  "@sap/ux-yaml": "workspace:*",
+	  "@sap/ux-ui5-config": "workspace:*"
+	},
+    "engines": {
+        "pnpm": ">=6.0.2",
+        "node": ">=12.18.2 < 13.0.0 || > 14.0.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+    }
+}
