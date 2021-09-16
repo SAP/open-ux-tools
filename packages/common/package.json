@@ -1,6 +1,6 @@
 {
     "name": "@sap/open-ux-tools-common",
-    "description": "Shared libs for open source uc-tools",
+    "description": "Shared libs for open source ux-tools",
     "version": "0.0.1",
     "main": "dist/index.js",
     "scripts": {

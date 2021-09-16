@@ -52,7 +52,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
     packageJson.scripts = Object.assign(packageJson.scripts, {
-        ...getPackageTasks(!ffApp.service?.url, ffApp.service?.client, ffApp.app.flpAppId, )
+        ...getPackageTasks(!ffApp.service?.url, ffApp.service?.client, ffApp.app.flpAppId)
     });
 
     fs.writeJSON(packagePath, packageJson);
