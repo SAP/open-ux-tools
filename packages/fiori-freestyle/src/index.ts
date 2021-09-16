@@ -14,7 +14,7 @@ import { getUI5Libs } from './data/ui5Libs';
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
  *
  * @param basePath - the absolute target path where the applciation will be generated
- * @param data - 
+ * @param data -
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
@@ -52,7 +52,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
     packageJson.scripts = Object.assign(packageJson.scripts, {
-        ...getPackageTasks(!ffApp.service?.url, ffApp.service?.client, ffApp.app.flpAppId)
+        ...getPackageTasks(!ffApp.service?.url, ffApp.service?.client, ffApp.app.flpAppId, data?.app?.startFile, data?.app?.localStartFile)
     });
 
     fs.writeJSON(packagePath, packageJson);

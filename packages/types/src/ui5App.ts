@@ -18,6 +18,8 @@ export interface App {
 	description?: string;
 	baseComponent?: string; // UI5 Component `required` by Component.js
 	flpAppId?: string;
+	startFile?: string;
+	localStartFile?: string;
 }
 
 export interface UI5 {
