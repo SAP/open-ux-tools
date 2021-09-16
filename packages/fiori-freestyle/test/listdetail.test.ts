@@ -41,7 +41,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         rmdirSync(testOutputDir, { recursive: true });
     });
 
-    test.each(configuration)('generates files for template: $name', async ({ name, config }) => {
+    test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
         const fs = await generate(join(testOutputDir, TEST_NAME, name), config);
         if (debug.enabled) fs.commit(() => 0)
         expect((fs as any).dump(debug.outputDir)).toMatchSnapshot();

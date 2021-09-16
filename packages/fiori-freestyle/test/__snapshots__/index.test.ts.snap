@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fiori freestyle templates: Template: All generates files for template: basic 1`] = `
+exports[`Fiori freestyle templates: Template: All Generate files for template: basic 1`] = `
 Object {
   "Template: All/basic/.gitignore": Object {
     "contents": "node_modules/
@@ -832,7 +832,7 @@ sap.registerComponentDependencyPaths(manifestUri);
 }
 `;
 
-exports[`Fiori freestyle templates: Template: All generates files for template: listdetail 1`] = `
+exports[`Fiori freestyle templates: Template: All Generate files for template: listdetail 1`] = `
 Object {
   "Template: All/listdetail/.gitignore": Object {
     "contents": "node_modules/
@@ -3654,7 +3654,7 @@ sap.registerComponentDependencyPaths(manifestUri);
 }
 `;
 
-exports[`Fiori freestyle templates: Template: All generates files for template: worklist 1`] = `
+exports[`Fiori freestyle templates: Template: All Generate files for template: worklist 1`] = `
 Object {
   "Template: All/worklist/.gitignore": Object {
     "contents": "node_modules/
