@@ -12,16 +12,15 @@ import { create, Editor } from 'mem-fs-editor';
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {*}  {Promise<Editor>} the updated memfs editor instance
  */
-async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<Editor> {
-    let ui5AppCloned: Ui5App = Object.assign({}, ui5App);
+async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<Editor>{ 
 
     if (!fs) {
         fs = create(createStorage());
     }
-    ui5AppCloned = mergeWithDefaults(ui5AppCloned);
+    ui5App = mergeWithDefaults(ui5App);
     const tmpPath = join(__dirname, '..', 'templates');
 
-    fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), ui5AppCloned, undefined, { globOptions: { dot: true } });
+    fs.copyTpl(join(tmpPath, '**/*.*'), join(basePath), ui5App, undefined, { globOptions: { dot: true } });
 
     return fs as Editor;
 }

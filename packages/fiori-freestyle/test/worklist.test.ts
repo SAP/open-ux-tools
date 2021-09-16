@@ -18,7 +18,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     id: 'wrk1',
                     title: 'App Title',
                     description: 'A Fiori application.',
-                    flpAppId: 'wrk1-tile'
+                    //flpAppId: 'wrk1-tile'
                 },
                 package: {
                     name: 'nods1',

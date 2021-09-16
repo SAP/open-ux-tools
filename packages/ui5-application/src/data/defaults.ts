@@ -38,7 +38,7 @@ export function appDefaults(app: App): App {
         title: app.title || `Title of ${app.id}`, //todo: localise
         description: app.description || `Description of ${app.id}`, //todo: localise
         baseComponent: app.baseComponent || 'sap/ui/core/UIComponent',
-        flpAppId: `${app.id}.replace(/[-_.]/g, '')}-tile`
+        flpAppId: app.flpAppId || `${app.id.replace(/[-_.]/g, '')}-tile`
     };
 }
 /**
@@ -55,6 +55,6 @@ export function mergeUi5(ui5?: UI5): UI5 {
     merged.descriptorVersion =
         ui5?.descriptorVersion || (mappings as Record<string, string>)[merged.minVersion!] || '1.12.0';
     merged.typesVersion = ui5?.typesVersion || parseFloat(merged.version!) >= 1.76 ? merged.version : '1.71.18';
-
-    return merged as UI5;
+    // Return merged, does not update passed ref
+    return Object.assign({}, ui5, merged) as UI5;
 }

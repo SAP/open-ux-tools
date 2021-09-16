@@ -2240,7 +2240,7 @@ if (parseInt(version[0]) <= 1 && parseInt(version[1]) < 78) {
 			applications: {
 				\\"testme-app\\": {
 					title: \\"My Test App\\",
-					description: \\"\\",
+					description: \\"Description of test.me\\",
 					additionalInformation: \\"SAPUI5.Component=test.me\\",
 					applicationType: \\"URL\\",
 					url: \\"../\\"
