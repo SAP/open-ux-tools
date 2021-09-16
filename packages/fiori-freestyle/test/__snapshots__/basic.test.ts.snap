@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fiori freestyle template: TemplateBasic Generate files for template: basic-no_datasource 1`] = `
+exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_no_datasource 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/

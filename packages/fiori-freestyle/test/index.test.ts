@@ -5,7 +5,7 @@ import { rmdirSync } from 'fs';
 import { sample } from './sample/metadata';
 import { testOutputDir, debug, northwind } from './common';
 
-const TEST_NAME = 'TemplateAll';
+const TEST_NAME = 'allTemplate';
 
 describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
 

@@ -5,7 +5,7 @@ import { rmdirSync } from 'fs';
 import { promisify } from 'util';
 import { commonConfig, northwind, debug, testOutputDir } from './common';
 
-const TEST_NAME = 'TemplateListDetail';
+const TEST_NAME = 'listDetailTemplate';
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
 

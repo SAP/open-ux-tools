@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fiori freestyle template: TemplateListDetail Generate files for template: listdetail-good 1`] = `
+exports[`Fiori freestyle template: listDetailTemplate Generate files for template: listdetail-good 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
