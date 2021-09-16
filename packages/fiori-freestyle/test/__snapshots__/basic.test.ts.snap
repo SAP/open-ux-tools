@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fiori freestyle template: Basic generates files for template: basic:no_datasource 1`] = `
+exports[`Fiori freestyle template: Template: Basic generates files for template: basic:no_datasource 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
@@ -36,7 +36,7 @@ archive.zip
     \\"start\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\\\\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandboxMockServer.html'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html'\\",
     \\"start-noflp\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\\\\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ui5-mock.yaml --open 'test/flpSandbox.html'\\"
   },

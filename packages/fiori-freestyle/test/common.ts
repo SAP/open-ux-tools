@@ -1,8 +1,7 @@
 import { OdataService, OdataVersion } from '@sap/ux-odata-service-template';
-import { tmpdir } from 'os';
 import { join } from 'path';
 
-export const outputDir = join(__dirname, '/test-output');
+export const testOutputDir = join(__dirname, '/test-output');
 
 export const debug = prepareDebug();
 
@@ -10,9 +9,9 @@ export function prepareDebug(): { enabled: boolean; outputDir: string } {
     const debug = !!process.env['UX_DEBUG'];
     // eslint-disable-next-line no-console
     if (debug) {
-        console.log(outputDir);
+        console.log(testOutputDir);
     }
-    return { enabled: debug, outputDir };
+    return { enabled: debug, outputDir: testOutputDir };
 }
 
 export const commonConfig = {

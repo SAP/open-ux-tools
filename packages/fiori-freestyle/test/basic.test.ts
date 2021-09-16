@@ -1,9 +1,11 @@
 import { FreestyleApp, generate, TemplateType } from '../src';
 import { join } from 'path';
 import { rmdirSync } from 'fs';
-import { outputDir, debug } from './common';
+import { testOutputDir, debug } from './common';
 
-describe('Fiori freestyle template: Basic', () => {
+const TEST_NAME = 'Template: Basic';
+
+describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const configuration: Array<{ name: string; config: FreestyleApp<unknown> }> = [
         {
             name: 'basic:no_datasource',
@@ -42,11 +44,11 @@ describe('Fiori freestyle template: Basic', () => {
     ];
 
     beforeAll(() => {
-        rmdirSync(outputDir, { recursive: true });
+        rmdirSync(testOutputDir, { recursive: true });
     });
 
     test.each(configuration)('generates files for template: $name', async ({ name, config }) => {
-        const testPath = join(outputDir, name);
+        const testPath = join(testOutputDir, TEST_NAME, name);
         const fs = await generate(testPath, config);
         if (debug.enabled) fs.commit(() => {});
         expect((fs as any).dump(testPath)).toMatchSnapshot();
