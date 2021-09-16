@@ -2,10 +2,6 @@
 
 Open UX Tools is a set of tools and libraries that makes it faster and easier to develop SAP Fiori applications.
 
-## Badges
-
-[![DepShield Badge](https://depshield.sonatype.org/badges/SAP/open-ux-tools/depshield.svg)](https://depshield.github.io)
-
 ## Setup
 
 ### Install `pnpm` globally
