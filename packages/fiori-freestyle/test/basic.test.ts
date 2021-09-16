@@ -4,9 +4,12 @@ import { rmdirSync } from 'fs';
 import { testOutputDir, debug } from './common';
 import { OdataVersion } from '@sap/open-ux-tools-types';
 
-const TEST_NAME = 'Template: Basic';
+const TEST_NAME = 'TemplateBasic';
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
+
+    const curTestOutPath = join(testOutputDir, TEST_NAME);
+
     const configuration: Array<{ name: string; config: FreestyleApp<unknown> }> = [
         {
             name: 'basic:no_datasource',
@@ -50,37 +53,14 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         }
     ];
 
-    /**
-     * server:
-  customMiddleware:
-  - name: fiori-tools-proxy
-    afterMiddleware: compression
-    configuration:
-      ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-      backend:
-      - path: /sap/opu/odata
-        url: http://localhost
-      ui5:
-        path: 
-        - /resources
-        - /test-resources
-        url: https://ui5.sap.com
-        version: 1.86.3 # The UI5 version, for instance, 1.78.1. Empty means latest version
-  - name: fiori-tools-appreload
-    afterMiddleware: compression
-    configuration:
-     port: 35729
-     path: webapp
-     */
-
     beforeAll(() => {
-        rmdirSync(testOutputDir, { recursive: true });
+        rmdirSync(curTestOutPath, { recursive: true });
     });
 
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
-        const testPath = join(testOutputDir, TEST_NAME, name);
+        const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
-        if (debug.enabled) fs.commit(() => {});
+        fs.commit(() => {});
         expect((fs as any).dump(testPath)).toMatchSnapshot();
     });
 });

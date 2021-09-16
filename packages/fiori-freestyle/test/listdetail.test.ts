@@ -2,11 +2,14 @@ import { FreestyleApp, generate } from '../src';
 import { join } from 'path';
 import { ListDetailSettings, TemplateType } from '@sap/open-ux-tools-types';
 import { rmdirSync } from 'fs';
+import { promisify } from 'util';
 import { commonConfig, northwind, debug, testOutputDir } from './common';
 
-const TEST_NAME = 'Template: ListDetail';
+const TEST_NAME = 'TemplateListDetail';
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
+
+    const curTestOutPath = join(testOutputDir, TEST_NAME);
 
     const configuration: Array<{ name: string; config: FreestyleApp<unknown> }> = [
         {
@@ -38,12 +41,13 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     ];
 
     beforeAll(() => {
-        rmdirSync(testOutputDir, { recursive: true });
+        rmdirSync(curTestOutPath, { recursive: true });
     });
 
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
-        const fs = await generate(join(testOutputDir, TEST_NAME, name), config);
-        if (debug.enabled) fs.commit(() => 0)
-        expect((fs as any).dump(debug.outputDir)).toMatchSnapshot();
+        const testPath = join(curTestOutPath, name);
+        const fs = await generate(join(testPath), config);
+        fs.commit(() => 0);
+        expect((fs as any).dump(testPath)).toMatchSnapshot();
     });
 });

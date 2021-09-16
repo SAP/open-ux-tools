@@ -5,13 +5,11 @@ import { rmdirSync } from 'fs';
 import { sample } from './sample/metadata';
 import { testOutputDir, debug, northwind } from './common';
 
-const TEST_NAME = 'Template: All';
+const TEST_NAME = 'TemplateAll';
 
 describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
 
-    beforeAll(() => {
-        rmdirSync(testOutputDir, { recursive: true });
-    });
+    const curTestOutPath = join(testOutputDir, TEST_NAME);
 
     // eslint-disable-next-line no-console
     if (debug) {
@@ -90,10 +88,14 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
         }
     ];
 
+    beforeAll(() => {
+        rmdirSync(curTestOutPath, { recursive: true });
+    });
+
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
-        const templateOutputDir = join(testOutputDir);
-        const fs = await generate(join(templateOutputDir, TEST_NAME, name), config);
-        if (debug.enabled) fs.commit(() => 0);
-        expect((fs as any).dump(templateOutputDir)).toMatchSnapshot();
+        const testPath = join(curTestOutPath, name);
+        const fs = await generate(testPath, config);
+        fs.commit(() => {});
+        expect((fs as any).dump(testPath)).toMatchSnapshot();
     });
 });
