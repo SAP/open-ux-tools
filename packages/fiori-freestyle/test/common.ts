@@ -2,7 +2,7 @@ import { OdataService, OdataVersion } from '@sap/ux-odata-service-template';
 import { tmpdir } from 'os';
 import { join } from 'path';
 
-export const outputDir = join(__dirname, '/test-output/fiori-freestyle');
+export const outputDir = join(__dirname, '/test-output');
 
 export const debug = prepareDebug();
 

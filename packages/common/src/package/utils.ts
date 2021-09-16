@@ -12,7 +12,7 @@ export function getPackageTasks(
         ? `echo \\"${t('INFO_MSG_MOCK_ONLY_WARNING')}\\"`
         : `fiori run --open '${startFile || 'test/flpSandbox.html'}${params}'`;
     const startLocalCommand = `fiori run --config ./ui5-local.yaml --open '${localStartFile ||
-        'test/flpSandboxMockServer.html'}${params}'`;
+        'test/flpSandbox.html'}${params}'`;
     const startNoFlpCommand = localOnly
         ? `echo \\"${t('INFO_MSG_MOCK_ONLY_WARNING')}\\"`
         : `fiori run --open '${'index.html'}${sapClientParam}'`;

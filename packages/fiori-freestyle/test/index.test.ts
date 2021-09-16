@@ -88,9 +88,9 @@ describe('Fiori freestyle templates', () => {
         }
     ];
 
-    test.each(configuration)('generates files for template: $name', async ({ config }) => {
+    test.each(configuration)('generates files for template: $name', async ({ name, config }) => {
         const templateOutputDir = join(outputDir);
-        const fs = await generate(join(templateOutputDir, config.template.type), config);
+        const fs = await generate(join(templateOutputDir, name), config);
         if (debug.enabled) fs.commit(() => 0);
         expect((fs as any).dump(templateOutputDir)).toMatchSnapshot();
     });
