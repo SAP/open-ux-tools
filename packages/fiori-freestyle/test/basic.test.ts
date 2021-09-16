@@ -3,16 +3,16 @@ import { join } from 'path';
 import { rmdirSync } from 'fs';
 import { testOutputDir, debug } from './common';
 import { OdataVersion } from '@sap/open-ux-tools-types';
+import { sample } from './sample/metadata';
 
 const TEST_NAME = 'TemplateBasic';
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
-
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
     const configuration: Array<{ name: string; config: FreestyleApp<unknown> }> = [
         {
-            name: 'basic:no_datasource',
+            name: 'basic-no_datasource',
             config: {
                 app: {
                     id: 'nods1',
@@ -47,7 +47,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 service: {
                     path: '/sap/opu/odata/',
                     url: 'http://localhost',
-                    version: OdataVersion.v2
+                    version: OdataVersion.v2,
+                    metadata: sample.NorthwindV2
                 }
             }
         }

@@ -34,24 +34,14 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
         }
     };
 
-    const northwindMetadata: OdataService = Object.assign(northwind, { metadata: sample.NorthwindV2 });
+    const northwindV2Metadata: OdataService = Object.assign(northwind, { metadata: sample.NorthwindV2 });
 
     const configuration: Array<{ name: string; config: FreestyleApp<any> }> = [
-        {
-            name: 'basic',
-            config: {
-                ...commonConfig,
-                template: {
-                    type: TemplateType.Basic,
-                    settings: {}
-                }
-            }
-        },
         {
             name: 'listdetail',
             config: {
                 ...commonConfig,
-                service: northwindMetadata,
+                service: northwindV2Metadata,
                 template: {
                     type: TemplateType.ListDetail,
                     settings: {
@@ -71,7 +61,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
             name: 'worklist',
             config: {
                 ...commonConfig,
-                service: northwindMetadata,
+                service: northwindV2Metadata,
                 template: {
                     type: TemplateType.Worklist,
                     settings: {

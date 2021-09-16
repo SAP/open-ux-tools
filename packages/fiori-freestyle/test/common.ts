@@ -1,5 +1,6 @@
 import { OdataService, OdataVersion } from '@sap/ux-odata-service-template';
 import { join } from 'path';
+import { sample } from "./sample/metadata";
 
 export const testOutputDir = join(__dirname, '/test-output');
 
@@ -34,5 +35,6 @@ export const commonConfig = {
 export const northwind: OdataService = {
     url: 'https://services.odata.org',
     path: '/V2/Northwind/Northwind.svc',
-    version: OdataVersion.v2
+    version: OdataVersion.v2,
+		metadata: sample.NorthwindV2
 };
