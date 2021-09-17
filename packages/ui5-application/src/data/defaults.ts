@@ -49,11 +49,11 @@ export function appDefaults(app: App): App {
  */
 export function mergeUi5(ui5?: UI5): UI5 {
     const merged: Partial<UI5> = {
-        minVersion: ui5?.minVersion || '1.60',
+        minUI5Version: ui5?.minUI5Version || '1.60',
         version: ui5?.version || '1.84.0'
     };
     merged.descriptorVersion =
-        ui5?.descriptorVersion || (mappings as Record<string, string>)[merged.minVersion!] || '1.12.0';
+        ui5?.descriptorVersion || (mappings as Record<string, string>)[merged.minUI5Version!] || '1.12.0';
     merged.typesVersion = ui5?.typesVersion || parseFloat(merged.version!) >= 1.76 ? merged.version : '1.71.18';
     // Return merged, does not update passed ref
     return Object.assign({}, ui5, merged) as UI5;

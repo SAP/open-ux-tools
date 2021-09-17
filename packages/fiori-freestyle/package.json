@@ -5,11 +5,11 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "rimraf dist && tsc",
-        "clean": "rimraf dist test/test-output",
+        "clean": "rimraf dist test/test-output coverage",
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
-        "test": "jest",
-        "test-u": "jest -u",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "test:local": "node -r ts-node/register test/index.ts",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"

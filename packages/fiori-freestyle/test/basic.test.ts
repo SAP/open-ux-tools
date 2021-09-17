@@ -18,7 +18,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     id: 'nods1',
                     title: 'App Title',
                     description: 'A Fiori application.',
-										flpAppId: 'nods1-tile'
+                    flpAppId: 'nods1-tile'
                 },
                 package: {
                     name: 'nods1',
@@ -62,7 +62,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
-        fs.commit(() => {});
         expect((fs as any).dump(testPath)).toMatchSnapshot();
+        // write out the files for debugging
+        return new Promise((resolve) => {
+            fs.commit(resolve);
+        });
     });
 });
