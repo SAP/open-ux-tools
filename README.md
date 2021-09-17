@@ -53,3 +53,6 @@ To run unit test using `jest`, run the following command at the root of the repo
 ```shell
 pnpm test
 ```
+### Licensing
+
+Copyright (2021) SAP SE and `open-ux-tools` contributors. Please see our [LICENSE](./LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available via the [REUSE tool](https://api.reuse.software/info/github.com/SAP/open-ux-tools).
