@@ -1,4 +1,7 @@
+
 # @sap/open-ux-tools-root
+
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/open-ux-tools)](https://api.reuse.software/info/github.com/SAP/open-ux-tools)
 
 Open UX Tools is a set of tools and libraries that makes it faster and easier to develop SAP Fiori applications.
 
@@ -50,11 +53,3 @@ To run unit test using `jest`, run the following command at the root of the repo
 ```shell
 pnpm test
 ```
-
-## Containing files
-
-1. The LICENSE file:
-In the most cases, the license of SAP's projects is `Apache 2.0`.
-
-2. The .reuse/dep5 file: 
-The [Reuse Tool](https://reuse.software/) must be used for your open source project. You can find the .reuse/dep5 in the project initial. Please replace the parts inside the single angle quotation marks < > by the specific information for your repository.
