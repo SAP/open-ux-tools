@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "eslint-plugin-fiori-custom"
+  ],
+  "extends": [
+    "./node_modules/eslint-plugin-fiori-custom/configure.eslintrc"
+  ],
+  "ignorePatterns": [
+    "webapp/localservice/**",
+    "webapp/test/**"
+  ]
+}

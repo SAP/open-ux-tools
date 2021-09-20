@@ -32,8 +32,16 @@ export interface UI5 {
 	ui5Theme?: string;
 }
 
+// Additional configurable features
+export interface AppOptions {
+	codeAssist?: boolean; // Enables code assist
+    eslint?: boolean; // Enables Fiori linting
+    sapux?: boolean; // Enables Fiori Tools Suite integration
+}
+
 export interface Ui5App {
 	app: App;
+	appOptions?: AppOptions;
 	ui5?: UI5;
 	package: Package;
 }

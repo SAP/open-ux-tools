@@ -11,24 +11,8 @@ describe('UI5 templates', () => {
         if (!debug) rmdirSync(outputDir, { recursive: true });
     });
 
-    it('generates files correctly', async () => {
-    	const projectDir = join(outputDir,'testapp1');
-        const fs = await generate(projectDir, {
-            app: {
-                id: 'testAppId',
-                title: 'Test App Title',
-                description: 'Test App Description'
-            },
-            package: {
-                name: 'testPackageName'
-            }
-        });
-        fs.commit(() => 0)
-        expect((fs as any).dump(projectDir)).toMatchSnapshot();
-    });
-
     it('generates options', async () => {
-    	const projectDir = join(outputDir,'testapp1');
+    	const projectDir = join(outputDir,'testapp_options');
         const fs = await generate(projectDir, {
             app: {
                 id: 'testAppId',
@@ -37,6 +21,11 @@ describe('UI5 templates', () => {
             },
             package: {
                 name: 'testPackageName'
+            },
+            appOptions: {
+                codeAssist: true,
+                eslint: true,
+                sapux: true
             }
         });
         fs.commit(() => 0)
