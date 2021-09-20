@@ -5,6 +5,7 @@ import { mergeWithDefaults } from './data';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { mergeObjects } from 'json-merger';
+import { render } from 'ejs';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -36,7 +37,7 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
                     if (!fs?.exists(outPath)) {
                         fs?.copyTpl(optTmplFilePath, outPath, ui5App, undefined, { globOptions: { dot: true } });
                     } else {
-                        const add = JSON.parse(fs?.read(optTmplFilePath));
+                        const add = JSON.parse(render(fs?.read(optTmplFilePath), ui5App));
                         const existingFile = JSON.parse(fs?.read(outPath));
                         const merged = mergeObjects([existingFile, add], { defaultArrayMergeOperation: 'concat' });
                         fs?.writeJSON(outPath, merged);
