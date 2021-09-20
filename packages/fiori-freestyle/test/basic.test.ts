@@ -48,8 +48,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 service: {
                     path: '/sap/opu/odata/',
                     url: 'http://localhost',
-                    version: OdataVersion.v2,
-                    metadata: sample.NorthwindV2
+                    version: OdataVersion.v2
                 }
             }
         }
