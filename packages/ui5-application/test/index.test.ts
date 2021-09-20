@@ -26,20 +26,4 @@ describe('UI5 templates', () => {
         fs.commit(() => 0)
         expect((fs as any).dump(projectDir)).toMatchSnapshot();
     });
-
-    it('generates options', async () => {
-    	const projectDir = join(outputDir,'testapp1');
-        const fs = await generate(projectDir, {
-            app: {
-                id: 'testAppId',
-                title: 'Test App Title',
-                description: 'Test App Description'
-            },
-            package: {
-                name: 'testPackageName'
-            }
-        });
-        fs.commit(() => 0)
-        expect((fs as any).dump(projectDir)).toMatchSnapshot();
-    });
 });
