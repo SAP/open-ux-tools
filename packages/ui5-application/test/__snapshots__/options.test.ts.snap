@@ -56,7 +56,8 @@ archive.zip
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
-    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
