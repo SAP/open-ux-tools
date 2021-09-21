@@ -7,7 +7,7 @@
 		"ui5",
 		"openui5",
 		"sapui5"
-	  ],
+	],
 	"main": "webapp/index.html",
 	"dependencies": {},
 	"devDependencies": <%- JSON.stringify(package.devDependencies, null, 8) -%>,

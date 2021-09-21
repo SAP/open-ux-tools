@@ -1,7 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UI5 templates generates files correctly 1`] = `
+exports[`UI5 templates generates options 1`] = `
 Object {
+  ".eslintrc": Object {
+    "contents": "{
+  \\"plugins\\": [
+    \\"@sap/ui5-jsdocs\\",
+    \\"eslint-plugin-fiori-custom\\"
+  ],
+  \\"extends\\": [
+    \\"plugin:@sap/ui5-jsdocs/recommended\\",
+    \\"eslint:recommended\\",
+    \\"./node_modules/eslint-plugin-fiori-custom/configure.eslintrc\\"
+  ],
+  \\"ignorePatterns\\": [
+    \\"webapp/localservice/**\\",
+    \\"webapp/test/**\\"
+  ]
+}
+",
+    "state": "modified",
+  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -17,30 +36,50 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-	\\"name\\": \\"testpackagename\\",
-	\\"version\\": \\"0.0.1\\",
-	\\"private\\": true,
-	\\"description\\": \\"Test App Description\\",
-	\\"keywords\\": [
-		\\"ui5\\",
-		\\"openui5\\",
-		\\"sapui5\\"
-	],
-	\\"main\\": \\"webapp/index.html\\",
-	\\"dependencies\\": {},
-	\\"devDependencies\\": {
-        \\"@ui5/cli\\": \\"^2.12.0\\",
-        \\"@sap/ux-ui5-tooling\\": \\"1\\"
-},
-	\\"scripts\\": {
+  \\"name\\": \\"testpackagename\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"Test App Description\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.12.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"eslint\\": \\"7.32.0\\",
+    \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
+    \\"@sapui5/ts-types\\": \\"1.92.2\\"
+  },
+  \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
-    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
-},
-	\\"ui5\\": {
-		\\"dependencies\\": [
-			\\"@sap/ux-ui5-tooling\\"
-		]
-	}
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\"
+    ]
+  },
+  \\"sapux\\": true
+}
+",
+    "state": "modified",
+  },
+  "tsconfig.json": Object {
+    "contents": "{
+  \\"compilerOptions\\": {
+    \\"module\\": \\"none\\",
+    \\"noEmit\\": true,
+    \\"checkJs\\": true,
+    \\"allowJs\\": true,
+    \\"types\\": [
+      \\"@sapui5/ts-types\\"
+    ]
+  }
 }",
     "state": "modified",
   },
