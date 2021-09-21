@@ -3,14 +3,14 @@ import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
-import { CustomPage, CustomPageConfig } from '../types';
+import { CustomPage, CustomPageConfig, Ui5Route } from '../types';
 
 /**
  * Enhances the provided custom page configuration with default data
  *
  * @param {CustomPage} data - a custom page configuration object
  */
- export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): CustomPageConfig {
+ function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): CustomPageConfig {
     // enforce naming conventions
     const firstChar = data.name[0];
     const nameForId = firstChar.toLocaleLowerCase() + data.name.substring(1);
@@ -28,6 +28,35 @@ import { CustomPage, CustomPageConfig } from '../types';
         };
     }
     return config;
+}
+
+/**
+ * Add a new route to the provided route array, and update existing routes if necessary (e.g. if targets are defined as arrays for FCL)
+ * @param routes existing application routes (from the manifest)
+ * @param config configuration object
+ */
+function updateRoutes(routes: Ui5Route[], config: CustomPageConfig) {
+    const newRoute: Partial<Ui5Route> = {
+        name: `${config.entity}${config.name}`
+    };
+    if (config.navigation) {
+        newRoute.pattern = `${config.navigation.sourceEntity}({key})/${config.navigation.navEntity}({key2}):?query:`;
+        const sourceRoute = routes.find((route) => route.name === config.navigation?.sourcePage);
+        if (sourceRoute?.target.constructor === Array) {
+            routes.forEach(route => {
+                if (route?.target.constructor === Array) {
+                    route.target.push(newRoute.name!);
+                }
+            });
+            newRoute.target = sourceRoute.target;       
+        } else {
+            newRoute.target = newRoute.name;
+        }
+    } else {
+        newRoute.pattern = `${config.entity}({key}):?query:`;
+        newRoute.target = newRoute.name;
+    }
+    routes.push(newRoute as Ui5Route);
 }
 
 /**
@@ -74,12 +103,7 @@ export async function generateCustomPage(basePath: string, data: CustomPage, fs?
     // enhance manifest.json
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)), ( key, value ) => {
         if (key === 'routes') {
-            const routes = value as object[];
-            routes.push({
-                pattern: `${config.navigation ? config.navigation.sourceEntity + '({key})/' + config.navigation.navEntity + '({key2})' : config.entity + '({key})'}:?query:`,
-                name: `${config.entity}${config.name}`,
-                target: `${config.entity}${config.name}`
-            });
+            updateRoutes(value as Ui5Route[], config);
         }
         return value;
     });
