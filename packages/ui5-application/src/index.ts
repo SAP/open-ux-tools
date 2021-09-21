@@ -20,6 +20,7 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
         fs = create(createStorage());
     }
     ui5App = mergeWithDefaults(ui5App);
+
     const tmplPath = join(__dirname, '..', 'templates');
 
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, { globOptions: { dot: true } });

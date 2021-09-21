@@ -71,17 +71,17 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     await addMiddlewareConfig(fs, basePath, 'ui5.yaml', appReloadMiddleware);
 
 	// ui5-local.yaml
+    await addMiddlewareConfig(
+        fs,
+        basePath,
+        'ui5-local.yaml',
+        proxyLocalMiddleware.config,
+        proxyLocalMiddleware.comments
+    );
+    await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', appReloadMiddleware);
+    const mwMock = getMockServerMiddlewareConfig(data);
+
     if (data.metadata) {
-        await addMiddlewareConfig(
-            fs,
-            basePath,
-            'ui5-local.yaml',
-            proxyLocalMiddleware.config,
-            proxyLocalMiddleware.comments
-        );
-        await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', appReloadMiddleware);
-        const mwMock = getMockServerMiddlewareConfig(data);
-    
         // ui5-mock.yaml
         await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', proxyMiddleware.config, proxyMiddleware.comments);
         await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', mwMock);

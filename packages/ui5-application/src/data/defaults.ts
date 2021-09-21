@@ -41,6 +41,7 @@ export function appDefaults(app: App): App {
         flpAppId: app.flpAppId || `${app.id.replace(/[-_.]/g, '')}-tile`
     };
 }
+
 /**
  * Merges version properties with the provided UI5 instance.
  *
