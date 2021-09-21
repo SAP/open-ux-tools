@@ -1,17 +1,23 @@
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { generateCustomPage } from '../../src';
+import { generateCustomPage, validateBasePath, CustomPage } from '../../src';
 import { Ui5Route } from '../../src/types';
 
 describe('CustomPage', () => {
-    let fs = create(createStorage());
-    const testDir = 'virtual-temp';
+    const testDir = '' + Date.now();
+    let fs: Editor;
+    
     const testAppManifest = JSON.stringify({
         "sap.app": {
             id: "my.test.App"
         },
         "sap.ui5": {
+            dependencies: { 
+                libs: { 
+                    'sap.fe.templates': {}
+                }
+            },
             routing: {
                 routes: [] as Ui5Route[]
             },
@@ -23,18 +29,36 @@ describe('CustomPage', () => {
         }
     }, null, 2);
 
-    beforeAll(() => {
+    beforeEach(() => {
+        fs = create(createStorage());
         fs.delete(testDir);
     });
 
-    test('Add a custom page with minimal input', async () => {
-        const target = join(testDir, '' + Date.now());
+    test('validateBasePath', () => {
+        const target = join(testDir, 'validateBasePath');
+        fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+        expect(validateBasePath(target, fs)).toBeTruthy();
+
+        expect(() => validateBasePath(join(testDir, '' + Date.now()))).toThrowError();
+        expect(() => generateCustomPage(join(testDir, '' + Date.now()), {} as CustomPage)).toThrowError();
+
+        const invalidManifest = JSON.parse(testAppManifest);
+        delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
+        fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
+        expect(() => validateBasePath(join(testDir, '' + Date.now()), fs)).toThrowError();
+    });
+
+    test('generateCustomPage: with minimal input', () => {
+        const target = join(testDir, 'minimal-input');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
         generateCustomPage(target, {
             name: "CustomPage",
             entity: "RootEnity"
         }, fs);
-        expect((fs as any).dump(target)).toMatchSnapshot();
+
+        expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot(); 
+        expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot(); 
+        expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot(); 
     });
 
     const inputWithNavigation = {
@@ -47,14 +71,14 @@ describe('CustomPage', () => {
         }
     };
 
-    test('Add a custom page with navigation to it', async () => {
-        const target = join(testDir, '' + Date.now());
+    test('generateCustomPage: with navigation to it', () => {
+        const target = join(testDir, 'with-nav');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
         generateCustomPage(target, inputWithNavigation, fs);
         expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot(); 
     });
 
-    test('Add a custom page to app with target as array', async () => {
+    test('generateCustomPage: to app with target as array', () => {
         const testManifestWithArray = JSON.parse(testAppManifest);
         testManifestWithArray['sap.ui5'].routing.routes.push({
             pattern: "object/{key}",
@@ -63,7 +87,7 @@ describe('CustomPage', () => {
                 "TestObjectPage"
             ]
         });
-        const target = join(testDir, '' + Date.now());
+        const target = join(testDir, 'target-as-array');
         fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
         generateCustomPage(target, inputWithNavigation, fs);
         expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot(); 

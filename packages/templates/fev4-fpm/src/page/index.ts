@@ -6,15 +6,18 @@ import { render } from 'ejs';
 import { CustomPage, CustomPageConfig, Ui5Route } from '../types';
 
 /**
- * Enhances the provided custom page configuration with default data
+ * Enhances the provided custom page configuration with default data.
  *
  * @param {CustomPage} data - a custom page configuration object
+ * @param manifestPath - path to the application manifest
+ * @param fs - mem-fs reference to be used for file access
+ * @returns enhanced configuration
  */
  function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): CustomPageConfig {
     // enforce naming conventions
     const firstChar = data.name[0];
     const nameForId = firstChar.toLocaleLowerCase() + data.name.substring(1);
-    data.name = firstChar.toUpperCase() + data.name.substring(1)
+    data.name = firstChar.toUpperCase() + data.name.substring(1);
 
     const manifest: any = fs.readJSON(manifestPath);
     const config: CustomPageConfig = {
@@ -31,7 +34,8 @@ import { CustomPage, CustomPageConfig, Ui5Route } from '../types';
 }
 
 /**
- * Add a new route to the provided route array, and update existing routes if necessary (e.g. if targets are defined as arrays for FCL)
+ * Add a new route to the provided route array, and update existing routes if necessary (e.g. if targets are defined as arrays for FCL).
+ *
  * @param routes existing application routes (from the manifest)
  * @param config configuration object
  */
@@ -45,7 +49,7 @@ function updateRoutes(routes: Ui5Route[], config: CustomPageConfig) {
         if (sourceRoute?.target.constructor === Array) {
             routes.forEach(route => {
                 if (route?.target.constructor === Array) {
-                    route.target.push(newRoute.name!);
+                    route.target.push((newRoute as Ui5Route).name);
                 }
             });
             newRoute.target = sourceRoute.target;       
@@ -64,8 +68,9 @@ function updateRoutes(routes: Ui5Route[], config: CustomPageConfig) {
  *
  * @param {string} basePath - the base path
  * @param {Editor} fs - the memfs editor instance
+ * @returns true if the path is valid, otherwise, throws and error
  */
-export function validateBasePath(basePath: string, fs?: Editor) {
+export function validateBasePath(basePath: string, fs?: Editor): boolean {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -74,11 +79,15 @@ export function validateBasePath(basePath: string, fs?: Editor) {
     if (!fs.exists(manifestPath)) {
         throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
     } else {
-        const manifest = fs.readJSON(manifestPath);
-        // TODO: check if this is an FE app
+        const manifest = fs.readJSON(manifestPath) as any;
+        if ( (manifest['sap.ui5']?.dependencies?.libs?.['sap.fe.templates'] !== undefined) === false) {
+            throw new Error('Dependency sap.fe.templates is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.');
+        }
     }
 
+    return true;
 }
+
 /**
  * Writes the template to the memfs editor instance.
  *
@@ -87,12 +96,11 @@ export function validateBasePath(basePath: string, fs?: Editor) {
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export async function generateCustomPage(basePath: string, data: CustomPage, fs?: Editor): Promise<Editor> {
+export function generateCustomPage(basePath: string, data: CustomPage, fs?: Editor): Editor {
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs);
-    
+    validateBasePath(basePath, fs);  
     
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const config = enhanceData(data, manifestPath, fs);
