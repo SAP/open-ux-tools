@@ -118,9 +118,13 @@ export function generateCustomPage(basePath: string, data: CustomPage, fs?: Edit
 
     // add extension content
     if (config.view?.path) {
-        // TODO: copying is not that simple, controller path needs to be read from view.xml and if the controller is copied, it's id in the sources needs to be changed
-        fs.copy(config.view.path, join(config.path, `${config.name}.view.xml`));
-        fs.copy(config.view.path.replace('view.xml', 'controller.js'), join(config.path, `${config.name}.controller.js`));
+        const viewXml = fs.read(config.view.path);
+        fs.write(join(config.path, `${config.name}.view.xml`), viewXml);
+        // TODO: read controller path from view
+        const controllerPath = config.view.path.replace('view.xml', 'controller.js');
+        const controllerJs = fs.read(controllerPath);
+        // TODO: when the controller is copied, it's id in the sources needs to be changed
+        fs.write(join(config.path, `${config.name}.controller.js`), controllerJs);
     } else {
         fs.copyTpl(
             join(root,'ext/NAME/View.xml'), 

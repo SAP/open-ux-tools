@@ -65,6 +65,47 @@ Object {
 }
 `;
 
+exports[`CustomPage generateCustomPage: with existing controller/view 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "ChildEntityCustomPage",
+          "pattern": "ChildEntity({key}):?query:",
+          "target": "ChildEntityCustomPage",
+        },
+      ],
+      "targets": Object {
+        "ChildEntityCustomPage": Object {
+          "id": "my.test.App.ext.customPage",
+          "name": "sap.fe.core.fpm",
+          "options": Object {
+            "settings": Object {
+              "entitySet": "ChildEntity",
+              "navigation": Object {},
+              "viewName": "my.test.App.ext.customPage.CustomPage",
+            },
+          },
+          "type": "Component",
+        },
+      },
+    },
+    "targets": Object {
+      "TestObjectPage": Object {},
+    },
+  },
+}
+`;
+
 exports[`CustomPage generateCustomPage: with minimal input 1`] = `
 Object {
   "sap.app": Object {

@@ -1,4 +1,5 @@
 import { create as createStorage } from 'mem-fs';
+import { dirname } from 'path';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { generateCustomPage, validateBasePath, CustomPage } from '../../src';
@@ -45,7 +46,7 @@ describe('CustomPage', () => {
         const invalidManifest = JSON.parse(testAppManifest);
         delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
         fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
-        expect(() => validateBasePath(join(testDir, '' + Date.now()), fs)).toThrowError();
+        expect(() => validateBasePath(target, fs)).toThrowError();
     });
 
     test('generateCustomPage: with minimal input', () => {
@@ -91,5 +92,26 @@ describe('CustomPage', () => {
         fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
         generateCustomPage(target, inputWithNavigation, fs);
         expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot(); 
+    });
+
+    test('generateCustomPage: with existing controller/view', () => {
+        const inputWithView = {
+            name: "CustomPage",
+            entity: "ChildEntity",
+            view: {
+                path: join(testDir, 'existing/ExistingPage.view.xml')
+            }
+        };
+        const viewXml = '<mvc:View controllerName="ExistingPage" />';
+        const controllerCode = 'new Controller();';
+        fs.write(inputWithView.view.path, viewXml);
+        fs.write(inputWithView.view.path.replace('view.xml', 'controller.js'), controllerCode);
+        const target = join(testDir, 'with-existing-view');
+        fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+        generateCustomPage(target, inputWithView, fs);
+
+        expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot(); 
+        expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toBe(viewXml); 
+        expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toBe(controllerCode); 
     });
 });
