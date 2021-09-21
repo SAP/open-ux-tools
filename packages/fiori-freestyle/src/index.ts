@@ -23,6 +23,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const ffApp: FreestyleApp<T> = Object.assign({}, data);
     // generate base UI5 project
     ffApp.app.baseComponent = ffApp.app.baseComponent || 'sap/ui/core/UIComponent';
+
     fs = await generateUi5Project(basePath, ffApp, fs);
 
     // add new and overwrite files from templates e.g.
@@ -52,7 +53,14 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
     packageJson.scripts = Object.assign(packageJson.scripts, {
-        ...getPackageTasks(!ffApp.service?.url, ffApp.service?.client, ffApp.app.flpAppId, data?.app?.startFile, data?.app?.localStartFile)
+        ...getPackageTasks(
+            !ffApp.service?.url,
+            !!ffApp.service?.metadata,
+            ffApp.service?.client,
+            ffApp.app.flpAppId,
+            data?.app?.startFile,
+            data?.app?.localStartFile
+        )
     });
 
     fs.writeJSON(packagePath, packageJson);
@@ -60,6 +68,10 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
+    }
+    // Dont generate an invalid ui5-mock.yaml
+    if (!ffApp.service?.metadata) {
+        fs.delete(join(basePath, 'ui5-mock.yaml'));
     }
 
     // ui5-local.yaml
