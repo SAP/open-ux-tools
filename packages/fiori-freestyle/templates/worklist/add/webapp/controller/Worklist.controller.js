@@ -91,7 +91,7 @@ sap.ui.define([
 		onSearch : function (oEvent) {
 			if (oEvent.getParameters().refreshButtonPressed) {
 				// Search field's 'refresh' button has been pressed.
-				// This is visible if you select any master list item.
+				// This is visible if you select any main list item.
 				// In this case no new search is triggered, we only
 				// refresh the list binding.
 				this.onRefresh();

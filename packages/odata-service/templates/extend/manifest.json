@@ -8,8 +8,8 @@
                     "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
                        "<%- annotations.technicalName %>"<% } %>
                     ],
-                    "localUri": "localService/metadata.xml"<%if (version === '4.0') {%>,
-                    "odataVersion": "<%- version %>"<% } %>
+                    "localUri": "localService/metadata.xml"<%if (version === '4') {%>,
+                    "odataVersion": "4.0"<% } %>
                 }
             }<%if (locals.annotations && annotations.technicalName) {%>,
             "<%- annotations.technicalName %>": {
@@ -26,7 +26,13 @@
             "<%=model%>": {
                 "dataSource": "<%=name%>",
                 "preload": true,
-                "settings": { }
+                "settings": {<%if (version === '4') {%>
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true,
+                    "groupId": "$direct"<% } %>
+                }
             }
         }
     }
