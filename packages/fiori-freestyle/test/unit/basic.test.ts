@@ -1,4 +1,4 @@
-import { FreestyleApp, generate, TemplateType } from '../src';
+import { FreestyleApp, generate, TemplateType } from '../../src';
 import { join } from 'path';
 import { rmdirSync } from 'fs';
 import { testOutputDir, debug } from './common';

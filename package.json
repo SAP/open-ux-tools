@@ -28,6 +28,7 @@
         "lint": "pnpm recursive run lint",
         "lint:fix": "pnpm recursive run lint:fix",
         "test": "pnpm recursive run test",
+        "test:int": "pnpm recursive run test:int",
         "link": "pnpm recursive run link",
         "unlink": "pnpm recursive run unlink"
     },

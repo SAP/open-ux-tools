@@ -45,7 +45,7 @@ export const northwind: OdataService = {
 const sampleTestStore = create(createStore());
 export const getMetadata = (serviceName: string) => {
 
-    const metadataPath = join(__dirname, 'sample', serviceName, 'metadata.xml');
+    const metadataPath = join(__dirname, '..', 'sample', serviceName, 'metadata.xml');
     if (sampleTestStore.exists(metadataPath)) {
         return sampleTestStore.read(metadataPath);
     }

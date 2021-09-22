@@ -8,9 +8,10 @@
         "clean": "rimraf dist test/test-output coverage",
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "jest -c ./test/unit/jest.config.js --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest -c ./test/unit/jest.config.js --ci --forceExit --detectOpenHandles --colors -u",
         "test:local": "node -r ts-node/register test/index.ts",
+        "test:int": "jest -c ./test/integration/jest.config.js",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -28,10 +29,20 @@
         "@sap/open-ux-tools-common": "workspace:*"
     },
     "devDependencies": {
+        "@types/jest-environment-puppeteer": "4.4.1",
+        "@types/puppeteer": "5.4.4",
+        "@types/expect-puppeteer": "4.4.6",
         "@types/ejs": "^3.0.6",
         "@types/mem-fs-editor": "^7.0.0",
         "typescript": "4.2.4",
-        "@sap/open-ux-tools-types": "workspace:*"
+        "@sap/open-ux-tools-types": "workspace:*",
+        "jest-dev-server": "5.0.3",
+        "jest-puppeteer": "5.0.4",
+	  	"jest-each": "27.2.0",
+        "puppeteer": "10.2.0",
+        "@sap/ux-ui5-tooling": "latest",
+        "@ui5/cli": "latest",
+        "@sap/ux-ui5-fe-mockserver-middleware/": "latest"
     },
     "engines": {
         "pnpm": ">=6.0.2",

@@ -1,4 +1,4 @@
-import { FreestyleApp, generate } from '../src';
+import { FreestyleApp, generate } from '../../src';
 import { join } from 'path';
 import { TemplateType, OdataService, OdataVersion } from '@sap/open-ux-tools-types';
 import { rmdirSync } from 'fs';
