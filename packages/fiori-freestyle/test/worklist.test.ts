@@ -96,7 +96,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                         }
                     } as WorklistSettings
                 },
-                // Add a placeholder middleware, required for local run
                 service: {
                     path: '/here/goes/your/serviceurl/',
                     version: OdataVersion.v4,
