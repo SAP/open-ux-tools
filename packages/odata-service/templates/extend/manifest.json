@@ -8,7 +8,7 @@
                     "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
                        "<%- annotations.technicalName %>"<% } %>
                     ],
-                    "localUri": "localService/metadata.xml"<%if (version === '4.0') {%>,
+                    "localUri": "localService/metadata.xml"<%if (version === '4') {%>,
                     "odataVersion": "<%- version %>"<% } %>
                 }
             }<%if (locals.annotations && annotations.technicalName) {%>,
@@ -26,7 +26,7 @@
             "<%=model%>": {
                 "dataSource": "<%=name%>",
                 "preload": true,
-                "settings": {<%if (version === '4.0') {%>
+                "settings": {<%if (version === '4') {%>
                     "synchronizationMode": "None",
                     "operationMode": "Server",
                     "autoExpandSelect": true,

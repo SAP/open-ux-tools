@@ -9583,7 +9583,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"settings\\": {
           \\"annotations\\": [],
           \\"localUri\\": \\"localService/metadata.xml\\",
-          \\"odataVersion\\": \\"4.0\\"
+          \\"odataVersion\\": \\"4\\"
         }
       }
     }

@@ -1,6 +1,6 @@
 export enum OdataVersion {
-	v2 = '2.0',
-	v4 = '4.0'
+	v2 = '2',
+	v4 = '4'
 }
 export interface OdataService {
 	url?: string;
