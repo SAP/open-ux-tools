@@ -4,6 +4,7 @@ import { OdataService } from '@sap/open-ux-tools-types';
 import { join } from 'path';
 import { UI5Config } from './ui5-config';
 import type { Editor } from 'mem-fs-editor';
+import { DEFAULT_HOST } from './constants';
 
 export const getAppReloadMiddlewareConfig = (): MiddlewareConfig[] => {
     return [
@@ -36,7 +37,7 @@ export const getFioriToolsProxyMiddlewareConfig = (
             backend: [
                 {
                     path: `/${pathSegments[0]}`,
-                    url: data.url,
+                    url: data.url ?? DEFAULT_HOST,
                     destination,
                     destinationInstance
                 }

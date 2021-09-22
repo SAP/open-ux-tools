@@ -26,7 +26,13 @@
             "<%=model%>": {
                 "dataSource": "<%=name%>",
                 "preload": true,
-                "settings": { }
+                "settings": {<%if (version === '4.0') {%>
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true,
+                    "groupId": "$direct"<% } %>
+                }
             }
         }
     }

@@ -4,7 +4,14 @@ import { render } from 'ejs';
 
 import { generate as generateUi5Project } from '@sap/ux-ui5-application-template';
 import { generate as addOdataService } from '@sap/ux-odata-service-template';
-import type { FreestyleApp, WorklistSettings, ListDetailSettings, Template, Package } from '@sap/open-ux-tools-types';
+import {
+    FreestyleApp,
+    WorklistSettings,
+    ListDetailSettings,
+    Template,
+    Package,
+    OdataVersion
+} from '@sap/open-ux-tools-types';
 import { TemplateType } from '@sap/open-ux-tools-types'; // This is an enum dont import as type, we lose runtime values
 import { UI5Config } from '@sap/ux-ui5-config';
 import { getPackageTasks } from '@sap/open-ux-tools-common';
@@ -27,12 +34,11 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     fs = await generateUi5Project(basePath, ffApp, fs);
 
     // add new and overwrite files from templates e.g.
-    const tmpPath = join(__dirname, '..', 'templates');
+    const tmplPath = join(__dirname, '..', 'templates');
     // Common files
-    fs.copyTpl(join(tmpPath, 'common', 'add', '**/*.*'), basePath, ffApp);
+    fs.copyTpl(join(tmplPath, 'common', 'add', '**/*.*'), basePath, ffApp);
 
-    // By template type
-    fs.copyTpl(join(tmpPath, ffApp.template.type, 'add', '**/*.*'), basePath, ffApp);
+    copyTemplates(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp, fs);
 
     // merge content into existing files
     const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
@@ -49,7 +55,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // package.json
     const packagePath = join(basePath, 'package.json');
-    fs.extendJSON(packagePath, JSON.parse(render(fs.read(join(tmpPath, 'common', 'extend', 'package.json')), ffApp)));
+    fs.extendJSON(packagePath, JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp)));
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
     packageJson.scripts = Object.assign(packageJson.scripts, {
@@ -83,6 +89,32 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     return fs;
+}
+
+/**
+ * Copies the templates at the specified folder, taking care of version specific folders.
+ * @param tmplPath
+ * @param basePath
+ * @param ffApp
+ * @param fs
+ */
+function copyTemplates(tmplPath: string, basePath: string, ffApp: FreestyleApp<unknown>, fs: Editor) {
+    // Remove odata versions specific path while copying template files
+    const replaceVer = `\\/v${Object.values(OdataVersion).join('|\\/v')}`;
+    const removeVersionTmplPath = (path: string): string => path.replace(new RegExp(replaceVer), '');
+    // Ignore other odata version specific template folders
+    const ignoreFolderPattern = Object.values(OdataVersion).filter((ver) => ver !== ffApp.service?.version);
+    // By template type
+    fs.copyTpl(
+        tmplPath,
+        basePath,
+        ffApp,
+        {},
+        {
+            globOptions: { ignore: ignoreFolderPattern.map((folder) => `**/v${folder}/**`) },
+            processDestinationPath: removeVersionTmplPath
+        }
+    );
 }
 
 export { generate, FreestyleApp, WorklistSettings, ListDetailSettings, TemplateType, Template };
