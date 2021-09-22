@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, normalize } from 'path';
 import { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
@@ -101,7 +101,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 function copyTemplates(tmplPath: string, basePath: string, ffApp: FreestyleApp<unknown>, fs: Editor) {
     // Remove odata versions specific path while copying template files
     const replaceVer = `\\/v${Object.values(OdataVersion).join('|\\/v')}`;
-    const removeVersionTmplPath = (path: string): string => path.replace(new RegExp(replaceVer), '');
+    const removeVersionTmplPath = (path: string): string => normalize(path.replace(new RegExp(replaceVer), ''));
     // Ignore other odata version specific template folders
     const ignoreFolderPattern = Object.values(OdataVersion).filter((ver) => ver !== ffApp.service?.version);
     // By template type
