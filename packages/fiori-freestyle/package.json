@@ -41,6 +41,7 @@
         "puppeteer": "10.2.0",
         "@sap/ux-ui5-tooling": "latest",
         "@ui5/cli": "latest",
+	  	"xml-js": "1.6.11",
         "@sap/ux-ui5-fe-mockserver-middleware": "latest"
     },
     "engines": {
