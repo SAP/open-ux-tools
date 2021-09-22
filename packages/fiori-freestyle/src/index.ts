@@ -112,7 +112,7 @@ function copyTemplates(tmplPath: string, basePath: string, ffApp: FreestyleApp<u
         ffApp,
         {},
         {
-            globOptions: { ignore: ignoreFolderPattern.map((folder) => join(`**/v${folder}/**`)) },
+            globOptions: { ignore: ignoreFolderPattern.map((folder) => `**/v${folder}/**`) },
             processDestinationPath: removeVersionTmplPath
         }
     );
