@@ -30,6 +30,7 @@ export interface UI5 {
 	descriptorVersion?: string;
 	ui5Libs?: string | string[];
 	ui5Theme?: string;
+	bootstrapSrc?: string; // scaffolding-time: where to consume the bootstrap resources from (cdn, local)
 }
 
 // Additional configurable features
