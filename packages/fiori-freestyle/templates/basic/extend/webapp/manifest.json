@@ -1,10 +1,10 @@
 {
     "sap.ui5": {
         "rootView": {
-            "viewName": "<%=app.id%>.view.View1",
+            "viewName": "<%=app.id%>.view.<%= ui5.initialViewName ? ui5.initialViewName : 'View1' %>",
             "type": "XML",
             "async": true,
-            "id": "View1"
+            "id": "<%= ui5.initialViewName ? ui5.initialViewName : 'View1' %>"
         },
         "resources": {
             "css": [
@@ -25,10 +25,10 @@
             },
             "routes": [
                 {
-                    "name": "RouteView1",
-                    "pattern": "RouteView1",
+                    "name": "Route<%= ui5.initialViewName ? ui5.initialViewName : 'View1' %>",
+                    "pattern": "Route<%= ui5.initialViewName ? ui5.initialViewName : 'View1' %>",
                     "target": [
-                        "TargetView1"
+                        "Target<%= ui5.initialViewName ? ui5.initialViewName : 'View1' %>"
                     ]
                 }
             ],
@@ -37,8 +37,8 @@
                     "viewType": "XML",
                     "transition": "slide",
                     "clearControlAggregation": false,
-                    "viewId": "View1",
-                    "viewName": "View1"
+                    "viewId": "<%= ui5.initialViewName ? ui5.initialViewName : 'View1' %>",
+                    "viewName": "<%= ui5.initialViewName ? ui5.initialViewName : 'View1' %>"
                 }
             }
         }
