@@ -3,7 +3,8 @@ import { generate } from '../src';
 import { join } from 'path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { rmdirSync } from 'fs';
+import { removeSync } from 'fs-extra';
+
 
 describe('Fiori freestyle templates', () => {
     const debug = !!process.env['UX_DEBUG'];
@@ -12,7 +13,7 @@ describe('Fiori freestyle templates', () => {
     if (debug) console.log(outputDir);
 
     beforeAll(() => {
-        rmdirSync(outputDir, { recursive: true });
+        removeSync(outputDir);
     });
 
     it('generates all expected files correctly', async () => {

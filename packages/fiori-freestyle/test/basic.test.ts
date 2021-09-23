@@ -1,6 +1,6 @@
 import { FreestyleApp, generate, TemplateType } from '../src';
 import { join } from 'path';
-import { rmdirSync } from 'fs';
+import { removeSync } from 'fs-extra';
 import { testOutputDir, debug } from './common';
 import { OdataVersion } from '@sap/open-ux-tools-types';
 import { sample } from './sample/metadata';
@@ -55,7 +55,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     ];
 
     beforeAll(() => {
-        rmdirSync(curTestOutPath, { recursive: true });
+        removeSync(curTestOutPath);
     });
 
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {

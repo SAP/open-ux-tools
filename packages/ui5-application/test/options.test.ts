@@ -1,6 +1,6 @@
 import { generate } from '../src';
 import { join } from 'path';
-import { rmdirSync } from 'fs';
+import { removeSync } from 'fs-extra';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
@@ -8,7 +8,7 @@ describe('UI5 templates', () => {
     if (debug) console.log(outputDir);
 
     beforeAll(() => {
-        if (!debug) rmdirSync(outputDir, { recursive: true });
+        if (!debug) removeSync(outputDir);
     });
 
     it('generates options', async () => {
