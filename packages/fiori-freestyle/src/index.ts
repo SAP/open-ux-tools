@@ -102,7 +102,12 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 function copyTemplates(tmplPath: string, basePath: string, ffApp: FreestyleApp<unknown>, fs: Editor) {
     // Remove odata versions specific path while copying template files
     const replaceVer = `\\${sep}v${Object.values(OdataVersion).join(`|\\${sep}v`)}`;
-    const removeVersionTmplPath = (path: string): string => path.replace(new RegExp(replaceVer), '');
+    const destPathManipulations = (path: string): string => {
+        return path
+            .replace(new RegExp(replaceVer), '') // remove version template path
+            .replace(/\$ViewName/, ffApp.ui5?.initialViewName || "View1") // dynamically set inital view file name
+            .replace(/\$ControllerName/, ffApp.ui5?.initialControllerName || "View1") // dynamically set inital view file name
+    };
     // Ignore other odata version specific template folders
     const ignoreFolderPattern = Object.values(OdataVersion).filter((ver) => ver !== ffApp.service?.version);
     // By template type
@@ -113,7 +118,7 @@ function copyTemplates(tmplPath: string, basePath: string, ffApp: FreestyleApp<u
         {},
         {
             globOptions: { ignore: ignoreFolderPattern.map((folder) => `**/v${folder}/**`) },
-            processDestinationPath: removeVersionTmplPath
+            processDestinationPath: destPathManipulations
         }
     );
 }

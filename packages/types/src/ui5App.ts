@@ -30,6 +30,8 @@ export interface UI5 {
 	descriptorVersion?: string;
 	ui5Libs?: string | string[];
 	ui5Theme?: string;
+	initialViewName?: string; // scaffolding-time: dynamic view name
+	initialControllerName?: string; // scaffolding-time: dynamic controller name
 	bootstrapSrc?: string; // scaffolding-time: where to consume the bootstrap resources from (cdn, local)
 }
 
