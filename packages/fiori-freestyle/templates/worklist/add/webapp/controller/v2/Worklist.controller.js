@@ -7,7 +7,7 @@ sap.ui.define([
 ], function (BaseController, JSONModel, formatter, Filter, FilterOperator) {
 	"use strict";
 
-	return BaseController.extend("<%=app.id%>.controller.Worklist", {
+	return BaseController.extend("<%- app.id %>.controller.Worklist", {
 
 		formatter: formatter,
 
