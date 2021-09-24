@@ -39,16 +39,20 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     ];
 
     beforeAll(() => {
-        removeSync(curTestOutPath);
+        removeSync(curTestOutPath);  // even for in memory
     });
 
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(join(testPath), config);
         expect((fs as any).dump(testPath)).toMatchSnapshot();
-        // write out the files for debugging
         return new Promise((resolve) => {
-            fs.commit(resolve);
+            // write out the files for debugging
+            if (debug?.enabled) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
         });
     });
 });
