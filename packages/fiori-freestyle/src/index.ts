@@ -106,7 +106,7 @@ function copyTemplates(tmplPath: string, basePath: string, ffApp: FreestyleApp<u
         return path
             .replace(new RegExp(replaceVer), '') // remove version template path
             .replace(/\$ViewName/, ffApp.ui5?.initialViewName || "View1") // dynamically set inital view file name
-            .replace(/\$ControllerName/, ffApp.ui5?.initialControllerName || "View1") // dynamically set inital controller file name
+            .replace(/\$ControllerName/, ffApp.ui5?.initialControllerName || "View1"); // dynamically set inital controller file name
     };
     // Ignore other odata version specific template folders
     const ignoreFolderPattern = Object.values(OdataVersion).filter((ver) => ver !== ffApp.service?.version);
