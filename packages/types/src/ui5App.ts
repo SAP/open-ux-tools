@@ -22,6 +22,11 @@ export interface App {
 	localStartFile?: string;
 }
 
+export enum BootstrapSrc {
+	CdnOpenUI5 = "Content delivery network (OpenUI5)",
+	CdnSAPUI5 = "Content delivery network (SAPUI5)",
+	Local = "Local Resources"
+}
 export interface UI5 {
 	minUI5Version?: string;
 	version?: string;
@@ -32,7 +37,7 @@ export interface UI5 {
 	ui5Theme?: string;
 	initialViewName?: string; // scaffolding-time: dynamic view name
 	initialControllerName?: string; // scaffolding-time: dynamic controller name
-	bootstrapSrc?: string; // scaffolding-time: where to consume the bootstrap resources from (cdn, local)
+	bootstrapSrc?: BootstrapSrc; // scaffolding-time: where to consume the bootstrap resources from (cdn, local)
 }
 
 // Additional configurable features
