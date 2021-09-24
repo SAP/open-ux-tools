@@ -33,7 +33,7 @@
                 }
             ],
             "targets": {
-                "TargetView1": {
+                "Target<%= ui5.initialViewName ? ui5.initialViewName : 'View1' %>": {
                     "viewType": "XML",
                     "transition": "slide",
                     "clearControlAggregation": false,
