@@ -90,4 +90,30 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
             fs.commit(resolve);
         });
     });
+
+    test("initial view- and controller-name can be adjusted by configuration", async () => {
+        const testPath = join(curTestOutPath, "initViewAndController")
+        const viewPrefix = "MainView"
+        const contollerPrefix = "MainView" // well...
+        const FreestyleApp: FreestyleApp<any> = {
+            app: {
+                id: "someId",
+            },
+            ui5: {
+                initialViewName: viewPrefix,
+                initialControllerName: contollerPrefix
+            },
+            package: {
+                name: "someId",
+            },
+            template: {
+                type: TemplateType.Basic,
+                settings: {}
+            }
+        }
+
+        const fs = await generate(testPath, FreestyleApp)
+        expect(fs.exists(join(testPath, "webapp", "view", `${viewPrefix}.view.xml`))).toBeTruthy()
+        expect(fs.exists(join(testPath, "webapp", "controller", `${contollerPrefix}.controller.js`))).toBeTruthy()
+    })
 });
