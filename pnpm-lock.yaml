@@ -55,7 +55,7 @@ importers:
       '@sap/ux-ui5-application-template': workspace:*
       '@sap/ux-ui5-config': workspace:*
       '@types/ejs': ^3.0.6
-      '@types/lodash.clonedeep': 4.5.6
+      '@types/lodash.clonedeep': 4.5.0
       '@types/mem-fs-editor': ^7.0.0
       ejs: ^3.1.6
       lodash.clonedeep: 4.5.0
@@ -74,7 +74,7 @@ importers:
     devDependencies:
       '@sap/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
-      '@types/lodash.clonedeep': 4.5.6
+      '@types/lodash.clonedeep': 4.5.0
       '@types/mem-fs-editor': 7.0.0
       typescript: 4.2.4
 
@@ -935,8 +935,8 @@ packages:
     resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
     dev: true
 
-  /@types/lodash.clonedeep/4.5.6:
-    resolution: {integrity: sha512-cE1jYr2dEg1wBImvXlNtp0xDoS79rfEdGozQVgliDZj1uERH4k+rmEMTudP9b4VQ8O6nRb5gPqft0QzEQGMQgA==}
+  /@types/lodash.clonedeep/4.5.0:
+    resolution: {integrity: sha1-w0cjAfsdLY+cPIlry9ARMNOuEdE=}
     dependencies:
       '@types/lodash': 4.14.173
     dev: true
