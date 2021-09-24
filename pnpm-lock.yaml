@@ -55,10 +55,10 @@ importers:
       '@sap/ux-ui5-application-template': workspace:*
       '@sap/ux-ui5-config': workspace:*
       '@types/ejs': ^3.0.6
-      '@types/lodash': 4.14.173
+      '@types/lodash.clonedeep': 4.5.6
       '@types/mem-fs-editor': ^7.0.0
       ejs: ^3.1.6
-      lodash: 4.17.21
+      lodash.clonedeep: 4.5.0
       mem-fs: ^2.1.0
       mem-fs-editor: ^9.0.0
       typescript: 4.2.4
@@ -68,13 +68,13 @@ importers:
       '@sap/ux-ui5-application-template': link:../ui5-application
       '@sap/ux-ui5-config': link:../ui5-config
       ejs: 3.1.6
-      lodash: 4.17.21
+      lodash.clonedeep: 4.5.0
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
     devDependencies:
       '@sap/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
-      '@types/lodash': 4.14.173
+      '@types/lodash.clonedeep': 4.5.6
       '@types/mem-fs-editor': 7.0.0
       typescript: 4.2.4
 
@@ -933,6 +933,12 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
+    dev: true
+
+  /@types/lodash.clonedeep/4.5.6:
+    resolution: {integrity: sha512-cE1jYr2dEg1wBImvXlNtp0xDoS79rfEdGozQVgliDZj1uERH4k+rmEMTudP9b4VQ8O6nRb5gPqft0QzEQGMQgA==}
+    dependencies:
+      '@types/lodash': 4.14.173
     dev: true
 
   /@types/lodash/4.14.173:
@@ -3276,7 +3282,6 @@ packages:
 
   /lodash.clonedeep/4.5.0:
     resolution: {integrity: sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=}
-    dev: true
 
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -3292,6 +3297,7 @@ packages:
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: true
 
   /lru-cache/6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}

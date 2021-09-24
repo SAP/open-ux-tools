@@ -24,14 +24,14 @@
         "@sap/ux-ui5-application-template": "workspace:*",
         "@sap/ux-ui5-config": "workspace:*",
         "ejs": "^3.1.6",
-        "lodash": "4.17.21",
+        "lodash.clonedeep": "4.5.0",
         "mem-fs": "^2.1.0",
         "mem-fs-editor": "^9.0.0"
     },
     "devDependencies": {
         "@sap/open-ux-tools-types": "workspace:*",
         "@types/ejs": "^3.0.6",
-        "@types/lodash": "4.14.173",
+        "@types/lodash.clonedeep": "4.5.6",
         "@types/mem-fs-editor": "^7.0.0",
         "typescript": "4.2.4"
     },

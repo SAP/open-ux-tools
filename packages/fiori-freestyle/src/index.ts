@@ -15,7 +15,7 @@ import { TemplateType } from '@sap/open-ux-tools-types'; // This is an enum dont
 import { UI5Config } from '@sap/ux-ui5-config';
 import { getPackageTasks } from '@sap/open-ux-tools-common';
 import { getUI5Libs } from './data/ui5Libs';
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
