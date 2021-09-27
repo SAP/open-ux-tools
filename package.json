@@ -5,7 +5,7 @@
     "private": true,
     "devDependencies": {
         "@types/jest": "27.0.1",
-        "@typescript-eslint/eslint-plugin": "4.31.0",
+        "@typescript-eslint/eslint-plugin": "4.31.2",
         "eslint-import-resolver-typescript": "2.5.0",
         "eslint-plugin-import": "2.24.2",
         "@typescript-eslint/parser": "4.31.0",
