@@ -55,10 +55,12 @@ importers:
       '@sap/ux-ui5-application-template': workspace:*
       '@sap/ux-ui5-config': workspace:*
       '@types/ejs': ^3.0.6
-      '@types/lodash.clonedeep': 4.5.0
+      '@types/fs-extra': 9.0.13
+      '@types/lodash': 4.14.175
       '@types/mem-fs-editor': ^7.0.0
       ejs: ^3.1.6
-      lodash.clonedeep: 4.5.0
+      fs-extra: 10.0.0
+      lodash: 4.17.21
       mem-fs: ^2.1.0
       mem-fs-editor: ^9.0.0
       typescript: 4.2.4
@@ -68,14 +70,16 @@ importers:
       '@sap/ux-ui5-application-template': link:../ui5-application
       '@sap/ux-ui5-config': link:../ui5-config
       ejs: 3.1.6
-      lodash.clonedeep: 4.5.0
+      lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
     devDependencies:
       '@sap/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
-      '@types/lodash.clonedeep': 4.5.0
+      '@types/fs-extra': 9.0.13
+      '@types/lodash': 4.14.175
       '@types/mem-fs-editor': 7.0.0
+      fs-extra: 10.0.0
       typescript: 4.2.4
 
   packages/odata-service:
@@ -119,9 +123,11 @@ importers:
       '@sap/open-ux-tools-common': workspace:*
       '@sap/open-ux-tools-types': workspace:*
       '@types/ejs': 3.0.6
+      '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.0
       ejs: 3.1.6
+      fs-extra: 10.0.0
       json-merger: 1.1.6
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0
@@ -135,8 +141,10 @@ importers:
       '@sap/open-ux-tools-common': link:../common
       '@sap/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
+      '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.0
+      fs-extra: 10.0.0
       typescript: 4.2.4
 
   packages/ui5-config:
@@ -885,6 +893,12 @@ packages:
     resolution: {integrity: sha512-Q5Vn3yjTDyCMV50TB6VRIbQNxSE4OmZR86VSbGaNpfUolm0iePBB4KdEEHmxoY5sT2+2DIvXW0rvMDP2nHZ4Mg==}
     dev: true
 
+  /@types/fs-extra/9.0.13:
+    resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
+    dependencies:
+      '@types/node': 16.3.2
+    dev: true
+
   /@types/glob/7.1.4:
     resolution: {integrity: sha512-w+LsMxKyYQm347Otw+IfBXOv9UWVjpHpCDdbBMt8Kz/xbvCYNjP+0qPh91Km3iKfSRLBB0P7fAMf0KHrPu+MyA==}
     dependencies:
@@ -935,14 +949,8 @@ packages:
     resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
     dev: true
 
-  /@types/lodash.clonedeep/4.5.0:
-    resolution: {integrity: sha1-w0cjAfsdLY+cPIlry9ARMNOuEdE=}
-    dependencies:
-      '@types/lodash': 4.14.173
-    dev: true
-
-  /@types/lodash/4.14.173:
-    resolution: {integrity: sha512-vv0CAYoaEjCw/mLy96GBTnRoZrSxkGE0BKzKimdR8P3OzrNYNvBgtW7p055A+E8C31vXNUhWKoFCbhq7gbyhFg==}
+  /@types/lodash/4.14.175:
+    resolution: {integrity: sha512-XmdEOrKQ8a1Y/yxQFOMbC47G/V2VDO1GvMRnl4O75M4GW/abC5tnfzadQYkqEveqRM1dEJGFFegfPNA2vvx2iw==}
     dev: true
 
   /@types/mem-fs-editor/7.0.0:
@@ -2161,6 +2169,15 @@ packages:
       mime-types: 2.1.31
     dev: true
 
+  /fs-extra/10.0.0:
+    resolution: {integrity: sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      graceful-fs: 4.2.6
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
   /fs-extra/9.1.0:
     resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
     engines: {node: '>=10'}
@@ -3220,7 +3237,6 @@ packages:
       universalify: 2.0.0
     optionalDependencies:
       graceful-fs: 4.2.6
-    dev: false
 
   /jsonpath/1.1.1:
     resolution: {integrity: sha512-l6Cg7jRpixfbgoWgkrl77dgEj8RPvND0wMH6TwQmi9Qs4TFfS9u5cUFnbeKTwj5ga5Y3BTGGNI28k117LJ009w==}
@@ -3282,6 +3298,7 @@ packages:
 
   /lodash.clonedeep/4.5.0:
     resolution: {integrity: sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=}
+    dev: true
 
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -3297,7 +3314,6 @@ packages:
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /lru-cache/6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
@@ -4301,7 +4317,6 @@ packages:
   /universalify/2.0.0:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==}
     engines: {node: '>= 10.0.0'}
-    dev: false
 
   /uri-js/4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}

@@ -1,6 +1,6 @@
 {
     "name": "@sap/ux-fiori-freestyle-template",
-    "version": "0.0.2",
+    "version": "0.9.0",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -31,9 +31,11 @@
     "devDependencies": {
         "@sap/open-ux-tools-types": "workspace:*",
         "@types/ejs": "^3.0.6",
-        "@types/lodash.clonedeep": "4.5.0",
+        "@types/fs-extra": "9.0.13",
+        "@types/lodash": "4.14.175",
         "@types/mem-fs-editor": "^7.0.0",
-        "typescript": "4.2.4"
+        "typescript": "4.2.4",
+        "fs-extra": "10.0.0"
     },
     "engines": {
         "pnpm": ">=6.0.2",

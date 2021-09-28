@@ -1,6 +1,6 @@
 import { FreestyleApp, generate, TemplateType } from '../src';
 import { join } from 'path';
-import { rmdirSync } from 'fs';
+import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, getMetadata } from './common';
 import { OdataVersion, Template, WorklistSettings } from '@sap/open-ux-tools-types';
 
@@ -154,16 +154,20 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     ];
 
     beforeAll(() => {
-        rmdirSync(curTestOutPath, { recursive: true });
+        removeSync(curTestOutPath); // even for in memory
     });
 
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
         expect((fs as any).dump(testPath)).toMatchSnapshot();
-        // write out the files for debugging
         return new Promise((resolve) => {
-            fs.commit(resolve);
+            // write out the files for debugging
+            if (debug?.enabled) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
         });
     });
 });
