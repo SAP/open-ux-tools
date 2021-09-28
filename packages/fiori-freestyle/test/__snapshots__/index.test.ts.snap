@@ -3329,24 +3329,21 @@ server:
 				return;
 			}
 
-			var oResourceBundle = this.getResourceBundle();
-
-			oView.getBindingContext().requestObject().then((function (oObject) {
-				var sObjectId = oObject.ID,
-					sObjectName = oObject.relatedProduct_ID;
-
+			var oResourceBundle = this.getResourceBundle(),
+				oObject = oView.getBindingContext().getObject(),
+				sObjectId = oObject.ProductName,
+				sObjectName = oObject.Products;
 
 				oViewModel.setProperty(\\"/busy\\", false);
 				oViewModel.setProperty(\\"/shareSendEmailSubject\\",
 					oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
 				oViewModel.setProperty(\\"/shareSendEmailMessage\\",
 					oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
-			}).bind(this));
 		}
-
 	});
 
-});",
+});
+",
     "state": "modified",
   },
   "webapp/controller/Worklist.controller.js": Object {
@@ -3380,7 +3377,6 @@ server:
 			// Model used to manipulate control states
 			oViewModel = new JSONModel({
 				worklistTableTitle : this.getResourceBundle().getText(\\"worklistTableTitle\\"),
-				shareOnJamTitle: this.getResourceBundle().getText(\\"worklistTitle\\"),
 				shareSendEmailSubject: this.getResourceBundle().getText(\\"shareSendEmailWorklistSubject\\"),
 				shareSendEmailMessage: this.getResourceBundle().getText(\\"shareSendEmailWorklistMessage\\", [location.href]),
 				tableNoDataText : this.getResourceBundle().getText(\\"tableNoDataText\\")
@@ -3450,7 +3446,7 @@ server:
 				var sQuery = oEvent.getParameter(\\"query\\");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"ID\\", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter(\\"Products\\", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}
@@ -3473,18 +3469,12 @@ server:
 
 		/**
 		 * Shows the selected item on the object page
-		 * On phones a additional history entry is created
 		 * @param {sap.m.ObjectListItem} oItem selected Item
 		 * @private
 		 */
 		_showObject : function (oItem) {
-			var that = this;
-
-			oItem.getBindingContext().requestCanonicalPath().then(function (sObjectPath) {
-				that.getRouter().navTo(\\"object\\", {
-					objectId_Old: oItem.getBindingContext().getProperty(\\"ID\\"),
-					objectId : sObjectPath.slice(\\"/Products\\".length) // /Products(3)->(3)
-				});
+			this.getRouter().navTo(\\"object\\", {
+				objectId: oItem.getBindingContext().getPath().substring(\\"/Products\\".length)
 			});
 		},
 
@@ -3504,7 +3494,8 @@ server:
 		}
 
 	});
-});",
+});
+",
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {

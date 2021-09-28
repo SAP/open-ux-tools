@@ -28,7 +28,6 @@ sap.ui.define([
 			// Model used to manipulate control states
 			oViewModel = new JSONModel({
 				worklistTableTitle : this.getResourceBundle().getText("worklistTableTitle"),
-				shareOnJamTitle: this.getResourceBundle().getText("worklistTitle"),
 				shareSendEmailSubject: this.getResourceBundle().getText("shareSendEmailWorklistSubject"),
 				shareSendEmailMessage: this.getResourceBundle().getText("shareSendEmailWorklistMessage", [location.href]),
 				tableNoDataText : this.getResourceBundle().getText("tableNoDataText")
@@ -98,7 +97,7 @@ sap.ui.define([
 				var sQuery = oEvent.getParameter("query");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter("ID", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter("<%- template.settings.entity.name %>", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}
@@ -121,18 +120,12 @@ sap.ui.define([
 
 		/**
 		 * Shows the selected item on the object page
-		 * On phones a additional history entry is created
 		 * @param {sap.m.ObjectListItem} oItem selected Item
 		 * @private
 		 */
 		_showObject : function (oItem) {
-			var that = this;
-
-			oItem.getBindingContext().requestCanonicalPath().then(function (sObjectPath) {
-				that.getRouter().navTo("object", {
-					objectId_Old: oItem.getBindingContext().getProperty("ID"),
-					objectId : sObjectPath.slice("/Products".length) // /Products(3)->(3)
-				});
+			this.getRouter().navTo("object", {
+				objectId: oItem.getBindingContext().getPath().substring("/<%- template.settings.entity.name %>".length)
 			});
 		},
 

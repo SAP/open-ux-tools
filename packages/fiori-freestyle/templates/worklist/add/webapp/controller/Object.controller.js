@@ -62,7 +62,7 @@ sap.ui.define([
 		 */
 		_onObjectMatched : function (oEvent) {
 			var sObjectId =  oEvent.getParameter("arguments").objectId;
-			this._bindView("/Products" + sObjectId);
+			this._bindView("/<%- template.settings.entity.name %>" + sObjectId);
 		},
 
 		/**
@@ -99,21 +99,17 @@ sap.ui.define([
 				return;
 			}
 
-			var oResourceBundle = this.getResourceBundle();
-
-			oView.getBindingContext().requestObject().then((function (oObject) {
-				var sObjectId = oObject.ID,
-					sObjectName = oObject.relatedProduct_ID;
-
+			var oResourceBundle = this.getResourceBundle(),
+				oObject = oView.getBindingContext().getObject(),
+				sObjectId = oObject.<%- template.settings.entity.idProperty %>,
+				sObjectName = oObject.<%- template.settings.entity.name %>;
 
 				oViewModel.setProperty("/busy", false);
 				oViewModel.setProperty("/shareSendEmailSubject",
 					oResourceBundle.getText("shareSendEmailObjectSubject", [sObjectId]));
 				oViewModel.setProperty("/shareSendEmailMessage",
 					oResourceBundle.getText("shareSendEmailObjectMessage", [sObjectName, sObjectId, location.href]));
-			}).bind(this));
 		}
-
 	});
 
 });
