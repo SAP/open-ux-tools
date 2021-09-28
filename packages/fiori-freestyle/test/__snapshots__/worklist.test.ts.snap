@@ -630,7 +630,7 @@ server:
 				var sQuery = oEvent.getParameter(\\"query\\");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"SalesOrderItem\\", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter(\\"ID\\", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}
@@ -7525,7 +7525,7 @@ server:
 				var sQuery = oEvent.getParameter(\\"query\\");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"SEPMRA_C_PD_Product\\", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter(\\"Product\\", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}
@@ -11016,7 +11016,7 @@ server:
 				var sQuery = oEvent.getParameter(\\"query\\");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"Products\\", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter(\\"ID\\", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}
