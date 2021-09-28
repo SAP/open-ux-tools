@@ -97,7 +97,7 @@ sap.ui.define([
 				var sQuery = oEvent.getParameter("query");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter("<%- template.settings.entity.key %>", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter("<%- template.settings.entity.idProperty %>", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}

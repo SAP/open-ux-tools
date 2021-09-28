@@ -630,7 +630,7 @@ server:
 				var sQuery = oEvent.getParameter(\\"query\\");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"ID\\", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter(\\"PurchaseOrderByCustomer\\", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}
@@ -7525,7 +7525,7 @@ server:
 				var sQuery = oEvent.getParameter(\\"query\\");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"Product\\", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter(\\"Name\\", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}

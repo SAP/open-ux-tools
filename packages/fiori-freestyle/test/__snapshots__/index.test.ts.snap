@@ -3446,7 +3446,7 @@ server:
 				var sQuery = oEvent.getParameter(\\"query\\");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"ProductID\\", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter(\\"ProductName\\", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}
