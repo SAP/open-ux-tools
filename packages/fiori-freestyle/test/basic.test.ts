@@ -72,4 +72,26 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
 					}
         });
     });
+
+    test("app id prefix correctly generated in template's Component.js", async () => {
+        const FreestyleApp: FreestyleApp<any> = {
+            app: {
+                id: "my.demo.App",
+            },
+            package: {
+                name: "my.demo.App",
+            },
+            template: {
+                type: TemplateType.Basic,
+                settings: {}
+            }
+        }
+
+        const testPath = join(curTestOutPath, "generateAppIdComponentJs")
+        const fs = await generate(testPath, FreestyleApp)
+        const Component = { js: join(testPath, "webapp", "Component.js") }
+
+        expect(fs.exists(Component.js)).toBeTruthy()
+        expect(await fs.read(Component.js).includes("my/demo/App")).toBeTruthy()
+    })
 });
