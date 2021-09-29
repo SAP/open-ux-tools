@@ -7,7 +7,7 @@ sap.ui.define([
 ], function (BaseController, JSONModel, formatter, Filter, FilterOperator) {
 	"use strict";
 
-	return BaseController.extend("<%=app.id%>.controller.Worklist", {
+	return BaseController.extend("<%- app.id %>.controller.Worklist", {
 
 		formatter: formatter,
 
@@ -20,14 +20,8 @@ sap.ui.define([
 		 * @public
 		 */
 		onInit : function () {
-			var oViewModel,
-				iOriginalBusyDelay,
-				oTable = this.byId("table");
+			var oViewModel;
 
-			// Put down worklist table's original value for busy indicator delay,
-			// so it can be restored later on. Busy handling on the table is
-			// taken care of by the table itself.
-			iOriginalBusyDelay = oTable.getBusyIndicatorDelay();
 			// keeps the search state
 			this._aTableSearchState = [];
 
@@ -36,18 +30,10 @@ sap.ui.define([
 				worklistTableTitle : this.getResourceBundle().getText("worklistTableTitle"),
 				shareSendEmailSubject: this.getResourceBundle().getText("shareSendEmailWorklistSubject"),
 				shareSendEmailMessage: this.getResourceBundle().getText("shareSendEmailWorklistMessage", [location.href]),
-				tableNoDataText : this.getResourceBundle().getText("tableNoDataText"),
-				tableBusyDelay : 0
+				tableNoDataText : this.getResourceBundle().getText("tableNoDataText")
 			});
 			this.setModel(oViewModel, "worklistView");
 
-			// Make sure, busy indication is showing immediately so there is no
-			// break after the busy indication for loading the view's meta data is
-			// ended (see promise 'oWhenMetadataIsLoaded' in AppController)
-			oTable.attachEventOnce("updateFinished", function(){
-				// Restore original busy indicator delay for worklist's table
-				oViewModel.setProperty("/tableBusyDelay", iOriginalBusyDelay);
-			});
 		},
 
 		/* =========================================================== */
@@ -88,6 +74,17 @@ sap.ui.define([
 			this._showObject(oEvent.getSource());
 		},
 
+		/**
+		 * Event handler for navigating back.
+		 * Navigate back in the browser history
+		 * @public
+		 */
+		onNavBack : function() {
+			// eslint-disable-next-line sap-no-history-manipulation
+			history.go(-1);
+		},
+
+
 		onSearch : function (oEvent) {
 			if (oEvent.getParameters().refreshButtonPressed) {
 				// Search field's 'refresh' button has been pressed.
@@ -100,7 +97,7 @@ sap.ui.define([
 				var sQuery = oEvent.getParameter("query");
 
 				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter("<%=template.settings.entity.idProperty%>", FilterOperator.Contains, sQuery)];
+					aTableSearchState = [new Filter("<%- template.settings.entity.idProperty %>", FilterOperator.Contains, sQuery)];
 				}
 				this._applySearch(aTableSearchState);
 			}
@@ -123,13 +120,12 @@ sap.ui.define([
 
 		/**
 		 * Shows the selected item on the object page
-		 * On phones a additional history entry is created
 		 * @param {sap.m.ObjectListItem} oItem selected Item
 		 * @private
 		 */
 		_showObject : function (oItem) {
 			this.getRouter().navTo("object", {
-				objectId: oItem.getBindingContext().getProperty("<%=template.settings.entity.key%>")
+				objectId: oItem.getBindingContext().getPath().substring("/<%- template.settings.entity.name %>".length)
 			});
 		},
 
