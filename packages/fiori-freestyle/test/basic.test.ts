@@ -3,7 +3,6 @@ import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug } from './common';
 import { OdataVersion } from '@sap/open-ux-tools-types';
-import { sample } from './sample/metadata';
 
 const TEST_NAME = 'basicTemplate';
 
