@@ -54,7 +54,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     ];
 
     beforeAll(() => {
-        removeSync(curTestOutPath);  // even for in memory
+        removeSync(curTestOutPath); // even for in memory
     });
 
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
@@ -63,34 +63,34 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         expect((fs as any).dump(testPath)).toMatchSnapshot();
 
         return new Promise((resolve) => {
-					// write out the files for debugging
-					if (debug?.enabled) {
-						fs.commit(resolve);
-					} else {
-						resolve(true)
-					}
+            // write out the files for debugging
+            if (debug?.enabled) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
         });
     });
 
     test("app id prefix correctly generated in template's Component.js", async () => {
         const FreestyleApp: FreestyleApp<any> = {
             app: {
-                id: "my.demo.App",
+                id: 'my.demo.App'
             },
             package: {
-                name: "my.demo.App",
+                name: 'my.demo.App'
             },
             template: {
                 type: TemplateType.Basic,
                 settings: {}
             }
-        }
+        };
 
-        const testPath = join(curTestOutPath, "generateAppIdComponentJs")
-        const fs = await generate(testPath, FreestyleApp)
-        const Component = { js: join(testPath, "webapp", "Component.js") }
+        const testPath = join(curTestOutPath, 'generateAppIdComponentJs');
+        const fs = await generate(testPath, FreestyleApp);
+        const Component = { js: join(testPath, 'webapp', 'Component.js') };
 
-        expect(fs.exists(Component.js)).toBeTruthy()
-        expect(await fs.read(Component.js).includes("my/demo/App")).toBeTruthy()
-    })
+        expect(fs.exists(Component.js)).toBeTruthy();
+        expect(await fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
+    });
 });
