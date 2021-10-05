@@ -1,7 +1,7 @@
 sap.ui.define([
 		"<%=app.baseComponent%>",
 		"sap/ui/Device",
-		"<%=app.id.replace('.', '/')%>/model/models"
+		"<%=app.id.replace(/\./g, '/')%>/model/models"
 	],
     function (UIComponent, Device, models) {
         "use strict";

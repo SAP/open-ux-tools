@@ -3,7 +3,7 @@ import { generate } from '../src';
 import { join } from 'path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { rmdirSync } from 'fs';
+import { removeSync } from 'fs-extra';
 
 describe('Fiori freestyle templates', () => {
     const debug = !!process.env['UX_DEBUG'];
@@ -12,7 +12,7 @@ describe('Fiori freestyle templates', () => {
     if (debug) console.log(outputDir);
 
     beforeAll(() => {
-        rmdirSync(outputDir, { recursive: true });
+        removeSync(outputDir); // even for in memory
     });
 
     it('generates all expected files correctly', async () => {
@@ -33,12 +33,14 @@ describe('Fiori freestyle templates', () => {
                 metadata: '<HELLO><WORLD><METADATA></METADATA></WORLD></HELLO>',
                 annotations: {
                     technicalName: 'SEPM_XYZ',
-									  xml: '<HELLO><ANNOTATION></ANNOTATION></WORLD></HELLO>'
+                    xml: '<HELLO><ANNOTATION></ANNOTATION></WORLD></HELLO>'
                 }
             } as OdataService,
             fs
         );
-        fsEditor.commit(() => 0);
         expect((fsEditor as any).dump(testDir)).toMatchSnapshot();
+        if (debug) {
+            fsEditor.commit(() => 0);
+        }
     });
 });

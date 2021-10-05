@@ -1,6 +1,7 @@
 import { generate } from '../src';
 import { join } from 'path';
-import { rmdirSync } from 'fs';
+import { removeSync } from 'fs-extra';
+import { debug } from '../../fiori-freestyle/test/common';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
@@ -8,11 +9,11 @@ describe('UI5 templates', () => {
     if (debug) console.log(outputDir);
 
     beforeAll(() => {
-        if (!debug) rmdirSync(outputDir, { recursive: true });
+        removeSync(outputDir); // even for in memory
     });
 
     it('generates files correctly', async () => {
-    	const projectDir = join(outputDir,'testapp1');
+        const projectDir = join(outputDir, 'testapp1');
         const fs = await generate(projectDir, {
             app: {
                 id: 'testAppId',
@@ -23,7 +24,14 @@ describe('UI5 templates', () => {
                 name: 'testPackageName'
             }
         });
-        fs.commit(() => 0)
         expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
     });
 });
