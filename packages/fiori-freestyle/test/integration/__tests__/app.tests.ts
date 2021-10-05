@@ -1,4 +1,5 @@
-import { rmdirSync, mkdirSync } from 'fs';
+import { mkdirSync } from 'fs';
+import { removeSync } from 'fs-extra';
 
 const path = require('path');
 
@@ -52,7 +53,7 @@ const checkApp = async (config: AppConfig) => {
 jest.setTimeout(200000);
 describe('Fiori Freestyle integration tests', () => {
     beforeAll(() => {
-        rmdirSync(reportDir, { recursive: true });
+				removeSync(reportDir);
         mkdirSync(reportDir);
     });
     describe('allTemplate/listdetail', () => {
