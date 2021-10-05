@@ -64,6 +64,7 @@ importers:
       '@types/mem-fs-editor': ^7.0.0
       '@types/puppeteer': 5.4.4
       '@ui5/cli': latest
+      cross-env: 7.0.3
       ejs: ^3.1.6
       fs-extra: 10.0.0
       jest-dev-server: 5.0.3
@@ -94,7 +95,8 @@ importers:
       '@types/lodash': 4.14.175
       '@types/mem-fs-editor': 7.0.0
       '@types/puppeteer': 5.4.4
-      '@ui5/cli': 2.12.1
+      '@ui5/cli': 2.13.0
+      cross-env: 7.0.3
       fs-extra: 10.0.0
       jest-dev-server: 5.0.3
       jest-puppeteer: 5.0.4_puppeteer@10.2.0
@@ -1281,8 +1283,8 @@ packages:
       eslint-visitor-keys: 2.1.0
     dev: true
 
-  /@ui5/builder/2.9.5:
-    resolution: {integrity: sha512-aq/RSweNPKWMNW7Izp7X5PBuaSaUKXd3OBSKcXn7Q2aRl2eznIuMPK1UsSlMCU9nsO2w9/Mp3Uh77XPHGe2i0A==}
+  /@ui5/builder/2.10.0:
+    resolution: {integrity: sha512-VEKoLAs+wWkhpUZe+jWEeg7sGBS0tmuTSGHn/jY6YZgG5RsljcPH2Dlf+6a5IPZSjkEGttiyT9qnEOsnhazIhw==}
     engines: {node: '>= 10', npm: '>= 5'}
     dependencies:
       '@ui5/fs': 2.0.6
@@ -1306,18 +1308,18 @@ packages:
       yazl: 2.5.1
     dev: true
 
-  /@ui5/cli/2.12.1:
-    resolution: {integrity: sha512-ShvmU/bPXM/PYoCCpxo2+B8UY7xqJXkybFyI+pSR8/KukED/s8n54DI+m1a7gdpePIuicUBBDORzSgS7eEVN8w==}
+  /@ui5/cli/2.13.0:
+    resolution: {integrity: sha512-F5h1mMs0Y/HWAQHP5Twkvo1yrcMdLFUViMx9xH534SQKEmRJVJT2f6XF02GKugGKeOpHDbXEJsuO+b1+Z0h3tg==}
     engines: {node: '>= 10', npm: '>= 5'}
     hasBin: true
     dependencies:
-      '@ui5/builder': 2.9.5
+      '@ui5/builder': 2.10.0
       '@ui5/fs': 2.0.6
       '@ui5/logger': 2.0.1
       '@ui5/project': 2.5.0
       '@ui5/server': 2.3.1
       chalk: 4.1.2
-      data-with-position: 0.4.1
+      data-with-position: 0.5.0
       import-local: 3.0.2
       js-yaml: 4.1.0
       open: 7.4.2
@@ -1337,7 +1339,7 @@ packages:
       '@ui5/logger': 2.0.1
       clone: 2.1.2
       globby: 11.0.4
-      graceful-fs: 4.2.6
+      graceful-fs: 4.2.8
       make-dir: 3.1.0
       micromatch: 4.0.4
       minimatch: 3.0.4
@@ -1356,14 +1358,14 @@ packages:
     resolution: {integrity: sha512-6sVgwT/7W0H5mpTQ3qnqYj2v618GCBdIbXxMYFW1108VMrFrpemUFSvsLBaU8YwZBUsFD27Gkp0a/pet9TglkQ==}
     engines: {node: '>= 10', npm: '>= 5'}
     dependencies:
-      '@ui5/builder': 2.9.5
+      '@ui5/builder': 2.10.0
       '@ui5/logger': 2.0.1
       '@ui5/server': 2.3.1
       ajv: 6.12.6
       ajv-errors: 1.0.1_ajv@6.12.6
       chalk: 4.1.2
       escape-string-regexp: 4.0.0
-      graceful-fs: 4.2.6
+      graceful-fs: 4.2.8
       js-yaml: 4.1.0
       libnpmconfig: 1.2.1
       lockfile: 1.0.4
@@ -1384,7 +1386,7 @@ packages:
     resolution: {integrity: sha512-TsqAngYwZLanG2I3H3Fd9NFsdaa+NfWwM/v5PgQopTdYno7h839hfcxccrpDYS/1BHDkv0PhxoDD4mZQJnexIw==}
     engines: {node: '>= 10', npm: '>= 5'}
     dependencies:
-      '@ui5/builder': 2.9.5
+      '@ui5/builder': 2.10.0
       '@ui5/fs': 2.0.6
       '@ui5/logger': 2.0.1
       body-parser: 1.19.0
@@ -1396,7 +1398,7 @@ packages:
       etag: 1.8.1
       express: 4.17.1
       fresh: 0.5.2
-      graceful-fs: 4.2.6
+      graceful-fs: 4.2.8
       make-dir: 3.1.0
       mime-types: 2.1.31
       parseurl: 1.3.3
@@ -2326,6 +2328,14 @@ packages:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
 
+  /cross-env/7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+    dev: true
+
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
@@ -2406,8 +2416,8 @@ packages:
       whatwg-url: 8.7.0
     dev: true
 
-  /data-with-position/0.4.1:
-    resolution: {integrity: sha512-EX8Q0e0DrDFcg0DzHMhkO5vDcm4VKJht/qtQFrhtlzLzAbIHda1lPmw+TaYfrz69+NrhpCbAqYEuy3b+zwpbNA==}
+  /data-with-position/0.5.0:
+    resolution: {integrity: sha512-GhsgEIPWk7WCAisjwBkOjvPqpAlVUOSl1CTmy9KyhVMG1wxl29Zj5+J71WhQ/KgoJS/Psxq6Cnioz3xdBjeIWQ==}
     dependencies:
       yaml-ast-parser: 0.0.43
     dev: true
@@ -5430,7 +5440,7 @@ packages:
   /minipass/2.9.0:
     resolution: {integrity: sha512-wxfUjg9WebH+CUDX/CdbRlh5SmfZiy/hpkxaRI16Y9W56Pa75sWgd/rvFilSgrauD9NyFymP/+JFV3KwzIsJeg==}
     dependencies:
-      safe-buffer: 5.1.2
+      safe-buffer: 5.2.1
       yallist: 3.1.1
     dev: true
 
@@ -5874,7 +5884,7 @@ packages:
       promise-retry: 1.1.1
       protoduck: 5.0.1
       rimraf: 2.7.1
-      safe-buffer: 5.1.2
+      safe-buffer: 5.2.1
       semver: 5.7.1
       ssri: 6.0.2
       tar: 4.4.19
@@ -7217,7 +7227,7 @@ packages:
   /tunnel-agent/0.6.0:
     resolution: {integrity: sha1-J6XeoGs2sEoKmWZ3SykIaPD8QP0=}
     dependencies:
-      safe-buffer: 5.1.2
+      safe-buffer: 5.2.1
     dev: true
     optional: true
 
