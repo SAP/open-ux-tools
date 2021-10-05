@@ -22,28 +22,30 @@ export const getAppReloadMiddlewareConfig = (): MiddlewareConfig[] => {
 export const getFioriToolsProxyMiddlewareConfig = (
     data: OdataService,
     useUi5Cdn = true,
-		ui5CdnUrl = 'https://ui5.sap.com',
-		ui5Version = ''
+    ui5CdnUrl = 'https://ui5.sap.com',
+    ui5Version = ''
 ): { config: MiddlewareConfig[]; comments: NodeComment<MiddlewareConfig>[] } => {
-    const destination = data.destination?.name || undefined;
-    const destinationInstance = data.destination?.instance || undefined;
-
-    const pathSegments = data.path.split('/').filter((s: string) => s !== '');
     const fioriToolsProxy: MiddlewareConfig = {
         name: 'fiori-tools-proxy',
         afterMiddleware: 'compression',
         configuration: {
-            ignoreCertError: false,
-            backend: [
-                {
-                    path: `/${pathSegments[0]}`,
-                    url: data.url ?? DEFAULT_HOST,
-                    destination,
-                    destinationInstance
-                }
-            ]
+            ignoreCertError: false
         }
     };
+
+    if (data.url || data.path || data.destination?.name || data.destination?.instance) {
+        const destination = data.destination?.name || undefined;
+        const destinationInstance = data.destination?.instance || undefined;
+        const pathSegments = data.path.split('/').filter((s: string) => s !== '');
+        fioriToolsProxy.configuration.backend = [
+            {
+                path: `/${pathSegments[0]}`,
+                url: data.url ?? DEFAULT_HOST,
+                destination,
+                destinationInstance
+            }
+        ];
+    }
     if (useUi5Cdn === true) {
         fioriToolsProxy.configuration['ui5'] = {
             path: ['/resources', '/test-resources'],

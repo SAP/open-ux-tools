@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fiori freestyle templates generates all expected files correctly 1`] = `
+exports[`ODataService templates generates all expected files correctly 1`] = `
 Object {
   "package.json": Object {
     "contents": "{
@@ -37,8 +37,10 @@ server:
     "state": "modified",
   },
   "ui5-mock.yaml": Object {
-    "contents": "#empty file
-
+    "contents": "specVersion: \\"2.5\\"
+metadata:
+  name: testappid
+type: application
 server:
   customMiddleware:
     - name: fiori-tools-proxy

@@ -43,10 +43,6 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     validateBasePath(basePath, fs);
     enhanceData(data);
 
-    // add new and overwrite files from templates
-    //const tmpPath = join(__dirname, 'templates', 'add');
-    //fs.copyTpl(join(tmpPath, '**/*.*'), basePath, data);
-
     // merge content into existing files
     const templateRoot = join(__dirname, '..', 'templates');
     const extRoot = join(templateRoot, 'extend');
@@ -79,12 +75,15 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         proxyLocalMiddleware.comments
     );
     await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', appReloadMiddleware);
-    const mwMock = getMockServerMiddlewareConfig(data);
 
+    // ui5-mock.yaml
     if (data.metadata) {
-        // ui5-mock.yaml
+        fs.copyTpl(join(templateRoot, 'add', 'ui5-mock.yaml'), join(basePath, 'ui5-mock.yaml'), data);
         await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', proxyMiddleware.config, proxyMiddleware.comments);
+
+        const mwMock = getMockServerMiddlewareConfig(data);
         await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', mwMock);
+
         await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', appReloadMiddleware);
         // create local copy of metadata and annotations
         fs.write(join(basePath, 'webapp', 'localService', 'metadata.xml'), prettifyXml(data.metadata, { indent: 4 }));

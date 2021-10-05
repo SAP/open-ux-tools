@@ -7,7 +7,8 @@ const testDir = 'virtual-temp';
 const commonConfig = {
     url: 'http://localhost',
     path: '/sap/odata/testme',
-    metadata: '<HELLO WORLD />'
+    metadata: '<HELLO WORLD />',
+    appid: 'testappid'
 };
 
 describe('Test generate method with invalid location', () => {

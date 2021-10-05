@@ -5,7 +5,7 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { removeSync } from 'fs-extra';
 
-describe('Fiori freestyle templates', () => {
+describe('ODataService templates', () => {
     const debug = !!process.env['UX_DEBUG'];
 
     const outputDir = join(__dirname, 'test-output');
@@ -34,7 +34,8 @@ describe('Fiori freestyle templates', () => {
                 annotations: {
                     technicalName: 'SEPM_XYZ',
                     xml: '<HELLO><ANNOTATION></ANNOTATION></WORLD></HELLO>'
-                }
+                },
+                appid: 'testappid'
             } as OdataService,
             fs
         );
