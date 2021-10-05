@@ -92,5 +92,12 @@ exports.apps  = [
 		dir : 'worklistTemplate/worklist_service_url_v4',
 		yamlFile: 'ui5-mock.yaml',
 		port: 4017
-	}
+	},
+	// worklistTemplate/worklist_metadata_v4
+	{
+		dir : 'worklistTemplate/worklist_metadata_v4',
+		yamlFile: 'ui5-mock.yaml',
+		port: 4018
+	},
+
 ]

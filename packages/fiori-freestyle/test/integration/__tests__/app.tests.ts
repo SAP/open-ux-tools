@@ -302,7 +302,7 @@ describe('Fiori Freestyle integration tests', () => {
 				appId: 'wrk1',
 				listSelectorKey: '[id="__item2-__clone0"]',
 				selectorKey: '[id="application-wrk1-tile-component---worklist--tableHeader-inner"]',
-				listPageTitle: /SalesOrderItem/,
+				listPageTitle: /Products/,
 				title: 'App Title',
 				url: `${host}:4015/test/flpSandbox.html#wrk1-tile`
 			});
@@ -314,7 +314,7 @@ describe('Fiori Freestyle integration tests', () => {
 				appId: 'wrk1',
 				listSelectorKey: '[id="__item2-__clone0"]',
 				selectorKey: '[id="container-wrk1---worklist--tableHeader-inner"]',
-				listPageTitle: /SalesOrderItem/,
+				listPageTitle: /Products/,
 				title: 'App Title',
 				url: `${host}:4015/index.html`
 			});
@@ -327,7 +327,7 @@ describe('Fiori Freestyle integration tests', () => {
 
 				listSelectorKey: '[id="__item2-__clone0"]',
 				selectorKey: '[id="application-wrk1-tile-component---worklist--tableHeader-inner"]',
-				listPageTitle: /SalesOrderItem/,
+				listPageTitle: /Products/,
 				title: 'App Title',
 				url: `${host}:4016/test/flpSandbox.html#wrk1-tile`
 			});
@@ -338,9 +338,25 @@ describe('Fiori Freestyle integration tests', () => {
 				appId: 'wrk1',
 				listSelectorKey: '[id="__item2-__clone0"]',
 				selectorKey: '[id="application-wrk1-tile-component---worklist--tableHeader-inner"]',
-				listPageTitle: /SalesOrderItem/,
+				listPageTitle: /Products/,
 				title: 'App Title',
 				url: `${host}:4017/test/flpSandbox.html#wrk1-tile`
+			});
+		});
+	});
+
+
+	// worklistTemplate/worklist_metadata_v4
+	describe('worklistTemplate/worklist_metadata_v4', () => {
+		test('npm run start-mock - worklistTemplate/worklist_metadata_v4 - should display Fiori page', async () => {
+			await checkApp({
+				name: 'npm run start-mock',
+				appId: 'wrk1',
+				listSelectorKey: '[id="__item2-__clone0"]',
+				selectorKey: '[id="application-wrk1-tile-component---worklist--tableHeader-inner"]',
+				listPageTitle: /SalesOrderItem/,
+				title: 'App Title',
+				url: `${host}:4018/test/flpSandbox.html#wrk1-tile`
 			});
 		});
 	});

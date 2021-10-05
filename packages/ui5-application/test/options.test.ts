@@ -1,7 +1,7 @@
 import { generate } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { debug } from '../../fiori-freestyle/test/common';
+import { debug } from '../../fiori-freestyle/test/unit/common';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
