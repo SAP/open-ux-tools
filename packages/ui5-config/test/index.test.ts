@@ -40,6 +40,7 @@ describe('Fiori config utils', () => {
             ]
         `);
     });
+
     test('getFioriToolsProxyMiddlewareConfig', async () => {
         expect(getFioriToolsProxyMiddlewareConfig(serviceData)).toMatchInlineSnapshot(`
             Object {
@@ -81,6 +82,7 @@ describe('Fiori config utils', () => {
             }
         `);
     });
+
     test('getAppReloadMiddlewareConfig', async () => {
         expect(getAppReloadMiddlewareConfig()).toMatchInlineSnapshot(`
             Array [
@@ -116,8 +118,6 @@ describe('Fiori config utils', () => {
         `);
     });
 
-
-
     test('UI5Config addUI5Framework', async () => {
         const ui5Config = await UI5Config.newInstance('');
         ui5Config.addUI5Framework('1.64.0s', ['sap.m'], 'sap_belize');
@@ -129,6 +129,48 @@ describe('Fiori config utils', () => {
                 - name: sap.m
                 - name: themelib_sap_belize
             "
+        `);
+    });
+
+    /**
+     * Consumers may require scaffolded apps that do not yet have a service defined.
+     * This test ensures a valid middleware definition is generated without a full service defintion.
+     */
+    test('getFioriToolsProxyMiddlewareConfig no datasource provided', async () => {
+        const serviceData = {
+            name: 'maintestService',
+            version: OdataVersion.v2
+        } as OdataService;
+        expect(getFioriToolsProxyMiddlewareConfig(serviceData)).toMatchInlineSnapshot(`
+            Object {
+              "comments": Array [
+                Object {
+                  "comment": " If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted",
+                  "path": "configuration.ignoreCertError",
+                },
+                Object {
+                  "comment": " The UI5 version, for instance, 1.78.1. null means latest version",
+                  "path": "configuration.ui5.version",
+                },
+              ],
+              "config": Array [
+                Object {
+                  "afterMiddleware": "compression",
+                  "configuration": Object {
+                    "ignoreCertError": false,
+                    "ui5": Object {
+                      "path": Array [
+                        "/resources",
+                        "/test-resources",
+                      ],
+                      "url": "https://ui5.sap.com",
+                      "version": "",
+                    },
+                  },
+                  "name": "fiori-tools-proxy",
+                },
+              ],
+            }
         `);
     });
 });

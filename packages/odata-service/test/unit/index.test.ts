@@ -30,7 +30,11 @@ describe('Test generate method with valid input', () => {
         fs.write(join(testDir, 'ui5-local.yaml'), '#empty file');
         fs.write(join(testDir, 'ui5-mock.yaml'), '#empty file');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
-        fs.write(join(testDir, 'webapp', 'manifest.json'), '{}');
+        fs.write(join(testDir, 'webapp', 'manifest.json'), JSON.stringify({
+            'sap.app': {
+                'id': 'testappid'
+            }
+        }));
     });
 
     it('Valid OData V2 service', async () => {

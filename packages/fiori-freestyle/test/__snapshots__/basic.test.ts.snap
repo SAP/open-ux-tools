@@ -85,10 +85,6 @@ server:
 ",
     "state": "modified",
   },
-  "ui5-mock.yaml": Object {
-    "contents": null,
-    "state": "deleted",
-  },
   "ui5.yaml": Object {
     "contents": "specVersion: \\"2.5\\"
 metadata:

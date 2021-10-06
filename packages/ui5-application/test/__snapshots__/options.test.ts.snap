@@ -91,14 +91,6 @@ type: application
 ",
     "state": "modified",
   },
-  "ui5-mock.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
-metadata:
-  name: testAppId
-type: application
-",
-    "state": "modified",
-  },
   "ui5.yaml": Object {
     "contents": "specVersion: \\"2.5\\"
 metadata:
