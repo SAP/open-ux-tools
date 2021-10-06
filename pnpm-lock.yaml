@@ -90,6 +90,7 @@ importers:
       '@types/ejs': 3.0.6
       '@types/mem-fs-editor': 7.0.0
       ejs: 3.1.6
+      lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0
       prettify-xml: 1.2.0
@@ -105,6 +106,7 @@ importers:
       '@sap/ux-ui5-application-template': link:../ui5-application
       '@types/ejs': 3.0.6
       '@types/mem-fs-editor': 7.0.0
+      lodash: 4.17.21
       typescript: 4.2.4
 
   packages/types:

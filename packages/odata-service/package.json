@@ -33,7 +33,8 @@
         "@types/mem-fs-editor": "7.0.0",
         "typescript": "4.2.4",
 	  	"@sap/ux-ui5-application-template":  "workspace:*",
-	  	"@sap/open-ux-tools-types":  "workspace:*"
+	  	"@sap/open-ux-tools-types":  "workspace:*",
+        "lodash": "4.17.21"
 	},
     "engines": {
         "pnpm": ">=6.0.2",

@@ -2,6 +2,8 @@ import { generate, OdataService, OdataVersion } from '../../src';
 import { join } from 'path';
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import { enhanceData } from '../../src/data';
+import cloneDeep from 'lodash/cloneDeep';
 
 const testDir = 'virtual-temp';
 const commonConfig = {
@@ -109,5 +111,37 @@ describe('Test generate method with valid input', () => {
         expect(manifest['sap.app'].dataSources.mainService.settings.annotations).toStrictEqual([]);
         // verify that the path is correct in ui5.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /V2');
+    });
+
+    it('Enhance unspecified input data with defaults', async () => {
+        const config = {
+            url: 'https://services.odata.org',
+            path: '/V2/Northwind/Northwind.svc',
+            version: OdataVersion.v2
+        } as OdataService;
+
+        let configCopy = cloneDeep(config);
+        enhanceData(configCopy);
+        expect(configCopy).toMatchInlineSnapshot(`
+            Object {
+              "model": "",
+              "name": "mainService",
+              "path": "/V2/Northwind/Northwind.svc/",
+              "url": "https://services.odata.org",
+              "version": "2",
+            }
+        `);
+
+        configCopy = cloneDeep(Object.assign(config, { model: 'modelName', name: 'datasourceName' }));
+        enhanceData(configCopy);
+        expect(configCopy).toMatchInlineSnapshot(`
+            Object {
+              "model": "modelName",
+              "name": "datasourceName",
+              "path": "/V2/Northwind/Northwind.svc/",
+              "url": "https://services.odata.org",
+              "version": "2",
+            }
+        `);
     });
 });
