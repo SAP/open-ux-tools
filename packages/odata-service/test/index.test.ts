@@ -46,7 +46,7 @@ describe('ODataService templates', () => {
         );
     });
 
-    xit('generates all expected files correctly', async () => {
+    it('generates all expected files correctly', async () => {
         const testDir = join(outputDir, 'odata-service-v2');
         const fs = create(createStorage());
         fs.write(join(testDir, 'ui5.yaml'), '#empty file');

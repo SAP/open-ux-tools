@@ -30,7 +30,7 @@ function validateBasePath(basePath: string, fs: Editor) {
     );
 }
 /**
- * Writes the odata service related file updates to an exiting UI5 project specified by the base path.
+ * Writes the odata service related file updates to an existing UI5 project specified by the base path.
  *
  *
  * @param {string} basePath - the root path of an existing UI5 application
