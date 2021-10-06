@@ -4,13 +4,7 @@ import { render } from 'ejs';
 
 import { generate as generateUi5Project } from '@sap/ux-ui5-application-template';
 import { generate as addOdataService } from '@sap/ux-odata-service-template';
-import {
-    FreestyleApp,
-    WorklistSettings,
-    ListDetailSettings,
-    Template,
-    Package
-} from '@sap/open-ux-tools-types';
+import { FreestyleApp, WorklistSettings, ListDetailSettings, Template, Package } from '@sap/open-ux-tools-types';
 import { TemplateType } from '@sap/open-ux-tools-types'; // This is an enum dont import as type, we lose runtime values
 import { UI5Config } from '@sap/ux-ui5-config';
 import { getPackageTasks } from '@sap/open-ux-tools-common';
@@ -74,10 +68,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
-    }
-    // Dont generate an invalid ui5-mock.yaml
-    if (!ffApp.service?.metadata) {
-        fs.delete(join(basePath, 'ui5-mock.yaml'));
     }
 
     // ui5-local.yaml
