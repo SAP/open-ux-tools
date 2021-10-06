@@ -12,28 +12,31 @@ import prettifyXml from 'prettify-xml';
 
 import { enhanceData } from './data';
 import { OdataService, OdataVersion } from '@sap/open-ux-tools-types';
+import { t } from '@sap/open-ux-tools-common';
 
 /**
  * Validates the provided base path.
  *
- * @param {string} basePath - the base path
+ * @param {string} basePath - the root path of an existing UI5 application
  * @param {Editor} fs - the memfs editor instance
  */
 function validateBasePath(basePath: string, fs: Editor) {
     [join(basePath, 'package.json'), join(basePath, 'webapp', 'manifest.json'), join(basePath, 'ui5.yaml')].forEach(
         (path) => {
             if (!fs.exists(path)) {
-                throw new Error(`Invalid project folder. Cannot find required file ${path}`);
+                throw new Error(t('ERROR_REQUIRED_PROJECT_FILE_NOT_FOUND', { path }));
             }
         }
     );
 }
 /**
- * Writes the template to the memfs editor instance.
+ * Writes the odata service related file updates to an exiting UI5 project specified by the base path.
  *
- * @param {string} basePath - the base path
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} data - the OData service instance
  * @param {Editor} [fs] - the memfs editor instance
+ * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 async function generate(basePath: string, data: OdataService, fs?: Editor): Promise<Editor> {
@@ -56,7 +59,19 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
 
     // manifest.json
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
-    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, `manifest.json`)), data)));
+    // Get component app id
+    const manifest = fs.readJSON(manifestPath);
+    const appProp = 'sap.app';
+    const appid = manifest?.[appProp]?.id;
+    // Throw if required property is not found manifest.json
+    if (!appid) {
+        throw new Error(
+            t('ERROR_REQUIRED_PROJECT_PROPERTY_NOT_FOUND', { property: `'${appProp}'.id`, path: manifestPath })
+        );
+    }
+
+    const manifestJsonExt = fs.read(join(extRoot, `manifest.json`));
+    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, data)));
 
     // ui*.yaml
     const proxyMiddleware = getFioriToolsProxyMiddlewareConfig(data);
@@ -66,7 +81,7 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     await addMiddlewareConfig(fs, basePath, 'ui5.yaml', proxyMiddleware.config, proxyMiddleware.comments);
     await addMiddlewareConfig(fs, basePath, 'ui5.yaml', appReloadMiddleware);
 
-	// ui5-local.yaml
+    // ui5-local.yaml
     await addMiddlewareConfig(
         fs,
         basePath,
@@ -78,7 +93,11 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
 
     // ui5-mock.yaml
     if (data.metadata) {
-        fs.copyTpl(join(templateRoot, 'add', 'ui5-mock.yaml'), join(basePath, 'ui5-mock.yaml'), data);
+        fs.copyTpl(
+            join(templateRoot, 'add', 'ui5-mock.yaml'),
+            join(basePath, 'ui5-mock.yaml'),
+            Object.assign(data, { appid })
+        );
         await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', proxyMiddleware.config, proxyMiddleware.comments);
 
         const mwMock = getMockServerMiddlewareConfig(data);

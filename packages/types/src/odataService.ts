@@ -18,5 +18,4 @@ export interface OdataService {
 		technicalName: string;
 		xml: string;
 	};
-	appid?: string; // Required for writing ui5-mock.yaml
 }

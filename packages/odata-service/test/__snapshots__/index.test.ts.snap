@@ -119,6 +119,7 @@ server:
   "webapp/manifest.json": Object {
     "contents": "{
   \\"sap.app\\": {
+    \\"id\\": \\"testappid\\",
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/sap/odata/testme/\\",

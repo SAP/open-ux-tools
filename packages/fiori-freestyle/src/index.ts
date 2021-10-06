@@ -67,7 +67,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // Add service to the project if provided
     if (ffApp.service) {
-        await addOdataService(basePath, Object.assign(ffApp.service, { appid: ffApp.app.id }), fs);
+        await addOdataService(basePath, ffApp.service, fs);
     }
 
     // ui5-local.yaml
