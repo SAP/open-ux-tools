@@ -5,7 +5,7 @@ import {
     addMiddlewareConfig,
     UI5Config
 } from '../src';
-import { OdataService, OdataVersion } from '@sap/ux-odata-service-template';
+import { OdataService, OdataVersion } from '@sap/open-ux-tools-types';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
