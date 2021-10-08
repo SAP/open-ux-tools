@@ -34,17 +34,19 @@ export const getFioriToolsProxyMiddlewareConfig = (
     };
 
     if (data.url || data.path || data.destination?.name || data.destination?.instance) {
-        const destination = data.destination?.name || undefined;
-        const destinationInstance = data.destination?.instance || undefined;
-        const pathSegments = data.path.split('/').filter((s: string) => s !== '');
-        fioriToolsProxy.configuration.backend = [
-            {
-                path: `/${pathSegments[0]}`,
-                url: data.url ?? DEFAULT_HOST,
-                destination,
-                destinationInstance
-            }
-        ];
+        const rootSegment = data.path?.split('/').filter((s: string) => s !== '')[0];
+        const backend = {
+            path: `/${rootSegment || ''}`,
+            url: data.url ?? DEFAULT_HOST
+        };
+
+        if (data.destination?.name) {
+            Object.assign(backend, { destination: data.destination.name });
+        }
+        if (data.destination?.instance) {
+            Object.assign(backend, { destinationInstance: data.destination.instance });
+        }
+        fioriToolsProxy.configuration.backend = [backend];
     }
     if (useUi5Cdn === true) {
         fioriToolsProxy.configuration['ui5'] = {
