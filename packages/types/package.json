@@ -22,8 +22,6 @@
         "typescript": "4.2.4"
     },
     "devDependencies": {
-	  "@sap/ux-yaml": "workspace:*",
-	  "@sap/ux-ui5-config": "workspace:*"
 	},
     "engines": {
         "pnpm": ">=6.0.2",

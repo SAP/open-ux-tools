@@ -115,14 +115,9 @@ importers:
 
   packages/types:
     specifiers:
-      '@sap/ux-ui5-config': workspace:*
-      '@sap/ux-yaml': workspace:*
       typescript: 4.2.4
     dependencies:
       typescript: 4.2.4
-    devDependencies:
-      '@sap/ux-ui5-config': link:../ui5-config
-      '@sap/ux-yaml': link:../yaml
 
   packages/ui5-application:
     specifiers:
@@ -156,7 +151,6 @@ importers:
   packages/ui5-config:
     specifiers:
       '@sap/open-ux-tools-types': workspace:*
-      '@sap/ux-odata-service-template': workspace:*
       '@sap/ux-yaml': workspace:*
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0
@@ -166,7 +160,6 @@ importers:
       typescript: 4.2.4
     devDependencies:
       '@sap/open-ux-tools-types': link:../types
-      '@sap/ux-odata-service-template': link:../odata-service
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
 
@@ -2202,6 +2195,7 @@ packages:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
+    requiresBuild: true
     dev: true
     optional: true
 
