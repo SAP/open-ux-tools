@@ -2,7 +2,7 @@ import { FreestyleApp, generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, getMetadata } from './common';
-import { OdataVersion, Template, WorklistSettings } from '@sap/open-ux-tools-types';
+import { OdataVersion, Template, WorklistSettings } from '@sap-ux/open-ux-tools-types';
 
 const TEST_NAME = 'worklistTemplate';
 

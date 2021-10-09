@@ -7,12 +7,12 @@ import {
     getMockServerMiddlewareConfig,
     addMiddlewareConfig,
     getAppReloadMiddlewareConfig
-} from '@sap/ux-ui5-config';
+} from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 
 import { enhanceData } from './data';
-import { OdataService, OdataVersion } from '@sap/open-ux-tools-types';
-import { t } from '@sap/open-ux-tools-common';
+import { OdataService, OdataVersion } from '@sap-ux/open-ux-tools-types';
+import { t } from '@sap-ux/open-ux-tools-common';
 
 /**
  * Validates the provided base path.

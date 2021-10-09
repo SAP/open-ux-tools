@@ -1,6 +1,6 @@
 import { join } from 'path';
-import { Ui5App, UI5 } from '@sap/open-ux-tools-types';
-import { getFilePaths } from '@sap/open-ux-tools-common';
+import { Ui5App, UI5 } from '@sap-ux/open-ux-tools-types';
+import { getFilePaths } from '@sap-ux/open-ux-tools-common';
 import { mergeWithDefaults } from './data';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';

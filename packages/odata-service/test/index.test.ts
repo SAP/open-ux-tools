@@ -1,5 +1,5 @@
-import { OdataService, OdataVersion } from '@sap/open-ux-tools-types';
-import { t } from '@sap/open-ux-tools-common';
+import { OdataService, OdataVersion } from '@sap-ux/open-ux-tools-types';
+import { t } from '@sap-ux/open-ux-tools-common';
 import { generate } from '../src';
 import { join } from 'path';
 import { create } from 'mem-fs-editor';

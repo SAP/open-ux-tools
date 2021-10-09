@@ -1,5 +1,5 @@
 {
-    "name": "@sap/ux-odata-service-template",
+    "name": "@sap-ux/odata-service-template",
     "version": "0.9.0",
     "license": "Apache-2.0",
     "main": "dist/index.js",
@@ -25,8 +25,8 @@
         "ejs": "3.1.6",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.0.0",
-        "@sap/ux-ui5-config": "workspace:*",
-        "@sap/open-ux-tools-common": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/open-ux-tools-common": "workspace:*",
         "prettify-xml": "1.2.0"
     },
     "devDependencies": {
@@ -35,8 +35,8 @@
         "@types/mem-fs-editor": "7.0.0",
         "fs-extra": "10.0.0",
         "typescript": "4.2.4",
-        "@sap/ux-ui5-application-template":  "workspace:*",
-        "@sap/open-ux-tools-types":  "workspace:*",
+        "@sap-ux/ui5-application-template":  "workspace:*",
+        "@sap-ux/open-ux-tools-types":  "workspace:*",
         "lodash": "4.17.21"
     },
     "engines": {

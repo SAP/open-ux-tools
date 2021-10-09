@@ -1,4 +1,4 @@
-import { OdataService } from '@sap/open-ux-tools-types';
+import { OdataService } from '@sap-ux/open-ux-tools-types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 
 /**

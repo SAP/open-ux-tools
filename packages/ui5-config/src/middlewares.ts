@@ -1,6 +1,6 @@
-import type { MiddlewareConfig } from '@sap/open-ux-tools-types';
-import type { NodeComment, Path } from '@sap/ux-yaml';
-import { OdataService } from '@sap/open-ux-tools-types';
+import type { MiddlewareConfig } from '@sap-ux/open-ux-tools-types';
+import type { NodeComment, Path } from '@sap-ux/yaml';
+import { OdataService } from '@sap-ux/open-ux-tools-types';
 import { join } from 'path';
 import { UI5Config } from './ui5-config';
 import type { Editor } from 'mem-fs-editor';

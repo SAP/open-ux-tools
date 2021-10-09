@@ -1,5 +1,5 @@
 {
-    "name": "@sap/open-ux-tools-root",
+    "name": "@sap-ux/open-ux-tools-root",
     "version": "0.9.0",
     "license": "Apache-2.0",
     "private": true,

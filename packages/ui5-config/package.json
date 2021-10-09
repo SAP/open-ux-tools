@@ -1,5 +1,5 @@
 {
-    "name": "@sap/ux-ui5-config",
+    "name": "@sap-ux/ui5-config",
     "description": "Library to UI5 configuration artifacts",
     "version": "0.9.0",
     "main": "dist/index.js",
@@ -19,11 +19,11 @@
         "dist"
     ],
     "dependencies": {
-        "@sap/ux-yaml": "workspace:*",
+        "@sap-ux/yaml": "workspace:*",
         "typescript": "4.2.4"
     },
   "devDependencies": {
-	"@sap/open-ux-tools-types": "workspace:*",
+	"@sap-ux/open-ux-tools-types": "workspace:*",
 	"mem-fs": "2.1.0",
 	"mem-fs-editor": "9.0.0"
   },

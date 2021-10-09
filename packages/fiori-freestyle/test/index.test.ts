@@ -1,6 +1,6 @@
 import { FreestyleApp, generate } from '../src';
 import { join } from 'path';
-import { TemplateType, OdataService, OdataVersion } from '@sap/open-ux-tools-types';
+import { TemplateType, OdataService, OdataVersion } from '@sap-ux/open-ux-tools-types';
 import { removeSync } from 'fs-extra';
 import { sample } from './sample/metadata';
 import { testOutputDir, debug, northwind } from './common';

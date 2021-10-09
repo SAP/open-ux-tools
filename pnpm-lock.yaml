@@ -49,11 +49,11 @@ importers:
 
   packages/fiori-freestyle:
     specifiers:
-      '@sap/open-ux-tools-common': workspace:*
-      '@sap/open-ux-tools-types': workspace:*
-      '@sap/ux-odata-service-template': workspace:*
-      '@sap/ux-ui5-application-template': workspace:*
-      '@sap/ux-ui5-config': workspace:*
+      '@sap-ux/open-ux-tools-common': workspace:*
+      '@sap-ux/open-ux-tools-types': workspace:*
+      '@sap-ux/odata-service-template': workspace:*
+      '@sap-ux/ui5-application-template': workspace:*
+      '@sap-ux/ui5-config': workspace:*
       '@types/ejs': ^3.0.6
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.175
@@ -65,16 +65,16 @@ importers:
       mem-fs-editor: ^9.0.0
       typescript: 4.2.4
     dependencies:
-      '@sap/open-ux-tools-common': link:../common
-      '@sap/ux-odata-service-template': link:../odata-service
-      '@sap/ux-ui5-application-template': link:../ui5-application
-      '@sap/ux-ui5-config': link:../ui5-config
+      '@sap-ux/open-ux-tools-common': link:../common
+      '@sap-ux/odata-service-template': link:../odata-service
+      '@sap-ux/ui5-application-template': link:../ui5-application
+      '@sap-ux/ui5-config': link:../ui5-config
       ejs: 3.1.6
       lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
     devDependencies:
-      '@sap/open-ux-tools-types': link:../types
+      '@sap-ux/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.175
@@ -84,10 +84,10 @@ importers:
 
   packages/odata-service:
     specifiers:
-      '@sap/open-ux-tools-common': workspace:*
-      '@sap/open-ux-tools-types': workspace:*
-      '@sap/ux-ui5-application-template': workspace:*
-      '@sap/ux-ui5-config': workspace:*
+      '@sap-ux/open-ux-tools-common': workspace:*
+      '@sap-ux/open-ux-tools-types': workspace:*
+      '@sap-ux/ui5-application-template': workspace:*
+      '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/mem-fs-editor': 7.0.0
@@ -99,15 +99,15 @@ importers:
       prettify-xml: 1.2.0
       typescript: 4.2.4
     dependencies:
-      '@sap/open-ux-tools-common': link:../common
-      '@sap/ux-ui5-config': link:../ui5-config
+      '@sap-ux/open-ux-tools-common': link:../common
+      '@sap-ux/ui5-config': link:../ui5-config
       ejs: 3.1.6
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
       prettify-xml: 1.2.0
     devDependencies:
-      '@sap/open-ux-tools-types': link:../types
-      '@sap/ux-ui5-application-template': link:../ui5-application
+      '@sap-ux/open-ux-tools-types': link:../types
+      '@sap-ux/ui5-application-template': link:../ui5-application
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/mem-fs-editor': 7.0.0
@@ -123,8 +123,8 @@ importers:
 
   packages/ui5-application:
     specifiers:
-      '@sap/open-ux-tools-common': workspace:*
-      '@sap/open-ux-tools-types': workspace:*
+      '@sap-ux/open-ux-tools-common': workspace:*
+      '@sap-ux/open-ux-tools-types': workspace:*
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -141,8 +141,8 @@ importers:
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
     devDependencies:
-      '@sap/open-ux-tools-common': link:../common
-      '@sap/open-ux-tools-types': link:../types
+      '@sap-ux/open-ux-tools-common': link:../common
+      '@sap-ux/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -152,16 +152,16 @@ importers:
 
   packages/ui5-config:
     specifiers:
-      '@sap/open-ux-tools-types': workspace:*
-      '@sap/ux-yaml': workspace:*
+      '@sap-ux/open-ux-tools-types': workspace:*
+      '@sap-ux/yaml': workspace:*
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0
       typescript: 4.2.4
     dependencies:
-      '@sap/ux-yaml': link:../yaml
+      '@sap-ux/yaml': link:../yaml
       typescript: 4.2.4
     devDependencies:
-      '@sap/open-ux-tools-types': link:../types
+      '@sap-ux/open-ux-tools-types': link:../types
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
 
