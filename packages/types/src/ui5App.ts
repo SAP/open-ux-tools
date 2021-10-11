@@ -7,7 +7,7 @@ export interface Package {
     devDependencies?: Record<string, string>;
     ui5?: {
         dependencies?: string[];
-    }
+    };
 }
 
 export interface App {

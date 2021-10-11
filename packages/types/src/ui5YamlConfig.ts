@@ -36,4 +36,4 @@ export interface MiddlewareConfig {
     };
 }
 // TypeDefs using TypeScript 4.1 feature will break consumer compilation < 4.1
-// export { NodeComment, Path } from '@sap/ux-yaml';
+// export { NodeComment, Path } from '@sap-ux/yaml';
