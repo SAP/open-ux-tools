@@ -7,7 +7,7 @@
         "sourceMap": true,
         "baseUrl": "./src",
         "resolveJsonModule": true,
-	  	"noImplicitAny": false
+        "noImplicitAny": false
     },
     "extends": "../../tsconfig.json"
 }

@@ -1,4 +1,4 @@
-import { OdataService, OdataVersion } from '@sap-ux/odata-service-template';
+import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { sample } from './sample/metadata';
