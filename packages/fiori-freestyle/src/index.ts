@@ -2,7 +2,7 @@ import { join } from 'path';
 import { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
-import { generate as generateUi5Project } from '@sap-ux/ui5-application-template';
+import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { FreestyleApp, WorklistSettings, ListDetailSettings, Template, Package } from '@sap-ux/open-ux-tools-types';
 import { TemplateType } from '@sap-ux/open-ux-tools-types'; // This is an enum dont import as type, we lose runtime values

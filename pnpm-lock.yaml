@@ -55,7 +55,7 @@ importers:
             '@sap-ux/odata-service-template': workspace:*
             '@sap-ux/open-ux-tools-common': workspace:*
             '@sap-ux/open-ux-tools-types': workspace:*
-            '@sap-ux/ui5-application-template': workspace:*
+            '@sap-ux/ui5-application-writer': workspace:*
             '@sap-ux/ui5-config': workspace:*
             '@types/ejs': ^3.0.6
             '@types/fs-extra': 9.0.13
@@ -70,7 +70,7 @@ importers:
         dependencies:
             '@sap-ux/odata-service-writer': link:../odata-service-writer
             '@sap-ux/open-ux-tools-common': link:../common
-            '@sap-ux/ui5-application-template': link:../ui5-application
+            '@sap-ux/ui5-application-writer': link:../ui5-application-writer
             '@sap-ux/ui5-config': link:../ui5-config
             ejs: 3.1.6
             lodash: 4.17.21
@@ -89,7 +89,7 @@ importers:
         specifiers:
             '@sap-ux/open-ux-tools-common': workspace:*
             '@sap-ux/open-ux-tools-types': workspace:*
-            '@sap-ux/ui5-application-template': workspace:*
+            '@sap-ux/ui5-application-writer': workspace:*
             '@sap-ux/ui5-config': workspace:*
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
@@ -110,7 +110,7 @@ importers:
             prettify-xml: 1.2.0
         devDependencies:
             '@sap-ux/open-ux-tools-types': link:../types
-            '@sap-ux/ui5-application-template': link:../ui5-application
+            '@sap-ux/ui5-application-writer': link:../ui5-application-writer
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
             '@types/mem-fs-editor': 7.0.0
@@ -124,7 +124,7 @@ importers:
         dependencies:
             typescript: 4.2.4
 
-    packages/ui5-application:
+    packages/ui5-application-writer:
         specifiers:
             '@sap-ux/open-ux-tools-common': workspace:*
             '@sap-ux/open-ux-tools-types': workspace:*

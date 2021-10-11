@@ -21,7 +21,7 @@
     "dependencies": {
         "@sap-ux/open-ux-tools-common": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
-        "@sap-ux/ui5-application-template": "workspace:*",
+        "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "^3.1.6",
         "lodash": "4.17.21",
