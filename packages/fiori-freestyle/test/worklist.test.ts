@@ -55,7 +55,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     url: 'https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com',
                     version: OdataVersion.v2,
                     metadata: getMetadata('sepmra_prod_man_v2'),
-                    model: ''
+                    model: '',
+                    client: '123'
                 }
             }
         },
