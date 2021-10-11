@@ -1,7 +1,7 @@
 import { OdataService, OdataVersion } from '@sap-ux/odata-service-template';
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import { sample } from "./sample/metadata";
+import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 
@@ -39,16 +39,15 @@ export const northwind: OdataService = {
     url: 'https://services.odata.org',
     path: '/V2/Northwind/Northwind.svc',
     version: OdataVersion.v2,
-	metadata: sample.NorthwindV2
+    metadata: sample.NorthwindV2
 };
 
 const sampleTestStore = create(createStore());
 export const getMetadata = (serviceName: string) => {
-
     const metadataPath = join(__dirname, 'sample', serviceName, 'metadata.xml');
     if (sampleTestStore.exists(metadataPath)) {
         return sampleTestStore.read(metadataPath);
     }
 
     return sampleTestStore.write(metadataPath, readFileSync(metadataPath));
-}
+};
