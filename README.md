@@ -1,5 +1,5 @@
 
-# @sap/open-ux-tools-root
+# @sap-ux/open-ux-tools-root
 
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/open-ux-tools)](https://api.reuse.software/info/github.com/SAP/open-ux-tools)
 

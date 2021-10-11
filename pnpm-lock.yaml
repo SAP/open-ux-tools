@@ -14,8 +14,10 @@ importers:
       eslint-plugin-jsdoc: 36.1.0
       eslint-plugin-prettier: 4.0.0
       eslint-plugin-promise: 5.1.0
+      husky: 7.0.2
       jest: 27.2.0
       prettier: 2.4.0
+      pretty-quick: 3.1.1
       rimraf: 3.0.2
       ts-jest: 27.0.5
       ts-node: 10.2.1
@@ -31,8 +33,10 @@ importers:
       eslint-plugin-jsdoc: 36.1.0_eslint@7.32.0
       eslint-plugin-prettier: 4.0.0_5559632aa3c77deec3ae5c2ea6ed0f36
       eslint-plugin-promise: 5.1.0_eslint@7.32.0
+      husky: 7.0.2
       jest: 27.2.0_ts-node@10.2.1
       prettier: 2.4.0
+      pretty-quick: 3.1.1_prettier@2.4.0
       rimraf: 3.0.2
       ts-jest: 27.0.5_77a678c07bcdbdfd88181ff63fe325b2
       ts-node: 10.2.1_typescript@4.4.3
@@ -47,13 +51,13 @@ importers:
     devDependencies:
       typescript: 4.2.4
 
-  packages/fiori-freestyle:
+  packages/fiori-freestyle-writer:
     specifiers:
-      '@sap/open-ux-tools-common': workspace:*
-      '@sap/open-ux-tools-types': workspace:*
-      '@sap/ux-odata-service-template': workspace:*
-      '@sap/ux-ui5-application-template': workspace:*
-      '@sap/ux-ui5-config': workspace:*
+      '@sap-ux/odata-service-writer': workspace:*
+      '@sap-ux/open-ux-tools-common': workspace:*
+      '@sap-ux/open-ux-tools-types': workspace:*
+      '@sap-ux/ui5-application-writer': workspace:*
+      '@sap-ux/ui5-config': workspace:*
       '@types/ejs': ^3.0.6
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.175
@@ -65,16 +69,16 @@ importers:
       mem-fs-editor: ^9.0.0
       typescript: 4.2.4
     dependencies:
-      '@sap/open-ux-tools-common': link:../common
-      '@sap/ux-odata-service-template': link:../odata-service
-      '@sap/ux-ui5-application-template': link:../ui5-application
-      '@sap/ux-ui5-config': link:../ui5-config
+      '@sap-ux/odata-service-writer': link:../odata-service-writer
+      '@sap-ux/open-ux-tools-common': link:../common
+      '@sap-ux/ui5-application-writer': link:../ui5-application-writer
+      '@sap-ux/ui5-config': link:../ui5-config
       ejs: 3.1.6
       lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
     devDependencies:
-      '@sap/open-ux-tools-types': link:../types
+      '@sap-ux/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.175
@@ -82,12 +86,12 @@ importers:
       fs-extra: 10.0.0
       typescript: 4.2.4
 
-  packages/odata-service:
+  packages/odata-service-writer:
     specifiers:
-      '@sap/open-ux-tools-common': workspace:*
-      '@sap/open-ux-tools-types': workspace:*
-      '@sap/ux-ui5-application-template': workspace:*
-      '@sap/ux-ui5-config': workspace:*
+      '@sap-ux/open-ux-tools-common': workspace:*
+      '@sap-ux/open-ux-tools-types': workspace:*
+      '@sap-ux/ui5-application-writer': workspace:*
+      '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/mem-fs-editor': 7.0.0
@@ -99,15 +103,15 @@ importers:
       prettify-xml: 1.2.0
       typescript: 4.2.4
     dependencies:
-      '@sap/open-ux-tools-common': link:../common
-      '@sap/ux-ui5-config': link:../ui5-config
+      '@sap-ux/open-ux-tools-common': link:../common
+      '@sap-ux/ui5-config': link:../ui5-config
       ejs: 3.1.6
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
       prettify-xml: 1.2.0
     devDependencies:
-      '@sap/open-ux-tools-types': link:../types
-      '@sap/ux-ui5-application-template': link:../ui5-application
+      '@sap-ux/open-ux-tools-types': link:../types
+      '@sap-ux/ui5-application-writer': link:../ui5-application-writer
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/mem-fs-editor': 7.0.0
@@ -121,10 +125,10 @@ importers:
     dependencies:
       typescript: 4.2.4
 
-  packages/ui5-application:
+  packages/ui5-application-writer:
     specifiers:
-      '@sap/open-ux-tools-common': workspace:*
-      '@sap/open-ux-tools-types': workspace:*
+      '@sap-ux/open-ux-tools-common': workspace:*
+      '@sap-ux/open-ux-tools-types': workspace:*
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -141,8 +145,8 @@ importers:
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
     devDependencies:
-      '@sap/open-ux-tools-common': link:../common
-      '@sap/open-ux-tools-types': link:../types
+      '@sap-ux/open-ux-tools-common': link:../common
+      '@sap-ux/open-ux-tools-types': link:../types
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -152,16 +156,16 @@ importers:
 
   packages/ui5-config:
     specifiers:
-      '@sap/open-ux-tools-types': workspace:*
-      '@sap/ux-yaml': workspace:*
+      '@sap-ux/open-ux-tools-types': workspace:*
+      '@sap-ux/yaml': workspace:*
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0
       typescript: 4.2.4
     dependencies:
-      '@sap/ux-yaml': link:../yaml
+      '@sap-ux/yaml': link:../yaml
       typescript: 4.2.4
     devDependencies:
-      '@sap/open-ux-tools-types': link:../types
+      '@sap-ux/open-ux-tools-types': link:../types
       mem-fs: 2.1.0
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
 
@@ -1442,6 +1446,14 @@ packages:
       escape-string-regexp: 1.0.5
       supports-color: 5.5.0
 
+  /chalk/3.0.0:
+    resolution: {integrity: sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg==}
+    engines: {node: '>=8'}
+    dependencies:
+      ansi-styles: 4.3.0
+      supports-color: 7.2.0
+    dev: true
+
   /chalk/4.1.1:
     resolution: {integrity: sha512-diHzdDKxcU+bAsUboHLPEDQiw0qEe0qd7SYUn3HgcFlWgbDcfLGswOHYeGrHKzG9z6UYf01d9VFMfZxPM1xZSg==}
     engines: {node: '>=10'}
@@ -1706,6 +1718,12 @@ packages:
 
   /emoji-regex/8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
+    dev: true
+
+  /end-of-stream/1.4.4:
+    resolution: {integrity: sha512-+uw1inIHVPQoaVuHzRyXd21icM+cnt4CzD5rW+NC1wjOUSTOs+Te7FOv7AhN7vS9x/oIyhLP5PR1H+phQAHu5Q==}
+    dependencies:
+      once: 1.4.0
     dev: true
 
   /enquirer/2.3.6:
@@ -2042,6 +2060,21 @@ packages:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
 
+  /execa/4.1.0:
+    resolution: {integrity: sha512-j5W0//W7f8UxAn8hXVnwG8tLwdiUy4FJLcSupCg6maBYZDpyBvTApK7KyuI4bKj8KOh1r2YH+6ucuYtJv1bTZA==}
+    engines: {node: '>=10'}
+    dependencies:
+      cross-spawn: 7.0.3
+      get-stream: 5.2.0
+      human-signals: 1.1.1
+      is-stream: 2.0.0
+      merge-stream: 2.0.0
+      npm-run-path: 4.0.1
+      onetime: 5.1.2
+      signal-exit: 3.0.3
+      strip-final-newline: 2.0.0
+    dev: true
+
   /execa/5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
     engines: {node: '>=10'}
@@ -2232,6 +2265,13 @@ packages:
     engines: {node: '>=8.0.0'}
     dev: true
 
+  /get-stream/5.2.0:
+    resolution: {integrity: sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==}
+    engines: {node: '>=8'}
+    dependencies:
+      pump: 3.0.0
+    dev: true
+
   /get-stream/6.0.1:
     resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
     engines: {node: '>=10'}
@@ -2356,9 +2396,20 @@ packages:
       - supports-color
     dev: true
 
+  /human-signals/1.1.1:
+    resolution: {integrity: sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==}
+    engines: {node: '>=8.12.0'}
+    dev: true
+
   /human-signals/2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
+    dev: true
+
+  /husky/7.0.2:
+    resolution: {integrity: sha512-8yKEWNX4z2YsofXAMT7KvA1g8p+GxtB1ffV8XtpAEGuXNAbCV5wdNKH+qTpw8SM9fh4aMPDR+yQuKfgnreyZlg==}
+    engines: {node: '>=12'}
+    hasBin: true
     dev: true
 
   /i18next-fs-backend/1.1.1:
@@ -3409,12 +3460,28 @@ packages:
     resolution: {integrity: sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==}
     dev: true
 
+  /mri/1.2.0:
+    resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
+    engines: {node: '>=4'}
+    dev: true
+
   /ms/2.0.0:
     resolution: {integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=}
     dev: true
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
+    dev: true
+
+  /multimatch/4.0.0:
+    resolution: {integrity: sha512-lDmx79y1z6i7RNx0ZGCPq1bzJ6ZoDDKbvh7jxr9SJcWLkShMzXrHbYVpTdnhNM5MXpDUxCQ4DgqVttVXlBgiBQ==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@types/minimatch': 3.0.5
+      array-differ: 3.0.0
+      array-union: 2.1.0
+      arrify: 2.0.1
+      minimatch: 3.0.4
     dev: true
 
   /multimatch/5.0.0:
@@ -3716,6 +3783,22 @@ packages:
       react-is: 17.0.2
     dev: true
 
+  /pretty-quick/3.1.1_prettier@2.4.0:
+    resolution: {integrity: sha512-ZYLGiMoV2jcaas3vTJrLvKAYsxDoXQBUn8OSTxkl67Fyov9lyXivJTl0+2WVh+y6EovGcw7Lm5ThYpH+Sh3XxQ==}
+    engines: {node: '>=10.13'}
+    hasBin: true
+    peerDependencies:
+      prettier: '>=2.0.0'
+    dependencies:
+      chalk: 3.0.0
+      execa: 4.1.0
+      find-up: 4.1.0
+      ignore: 5.1.8
+      mri: 1.2.0
+      multimatch: 4.0.0
+      prettier: 2.4.0
+    dev: true
+
   /process-nextick-args/2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
 
@@ -3734,6 +3817,13 @@ packages:
 
   /psl/1.8.0:
     resolution: {integrity: sha512-RIdOzyoavK+hA18OGGWDqUTsCLhtA7IcZ/6NCs4fFJaHBDab+pDDmDIByWFRQJq2Cd7r1OoQxBGKOaztq+hjIQ==}
+    dev: true
+
+  /pump/3.0.0:
+    resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
+    dependencies:
+      end-of-stream: 1.4.4
+      once: 1.4.0
     dev: true
 
   /punycode/2.1.1:
