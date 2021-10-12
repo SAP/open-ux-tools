@@ -1,6 +1,6 @@
-import type { MiddlewareConfig } from '@sap/open-ux-tools-types';
-import type { NodeComment, Path } from '@sap/ux-yaml';
-import { OdataService } from '@sap/open-ux-tools-types';
+import type { MiddlewareConfig } from '@sap-ux/open-ux-tools-types';
+import type { NodeComment, Path } from '@sap-ux/yaml';
+import { OdataService } from '@sap-ux/open-ux-tools-types';
 import { join } from 'path';
 import { UI5Config } from './ui5-config';
 import type { Editor } from 'mem-fs-editor';
@@ -22,28 +22,32 @@ export const getAppReloadMiddlewareConfig = (): MiddlewareConfig[] => {
 export const getFioriToolsProxyMiddlewareConfig = (
     data: OdataService,
     useUi5Cdn = true,
-		ui5CdnUrl = 'https://ui5.sap.com',
-		ui5Version = ''
+    ui5CdnUrl = 'https://ui5.sap.com',
+    ui5Version = ''
 ): { config: MiddlewareConfig[]; comments: NodeComment<MiddlewareConfig>[] } => {
-    const destination = data.destination?.name || undefined;
-    const destinationInstance = data.destination?.instance || undefined;
-
-    const pathSegments = data.path.split('/').filter((s: string) => s !== '');
     const fioriToolsProxy: MiddlewareConfig = {
         name: 'fiori-tools-proxy',
         afterMiddleware: 'compression',
         configuration: {
-            ignoreCertError: false,
-            backend: [
-                {
-                    path: `/${pathSegments[0]}`,
-                    url: data.url ?? DEFAULT_HOST,
-                    destination,
-                    destinationInstance
-                }
-            ]
+            ignoreCertError: false
         }
     };
+
+    if (data.url || data.path || data.destination?.name || data.destination?.instance) {
+        const rootSegment = data.path?.split('/').filter((s: string) => s !== '')[0];
+        const backend = {
+            path: `/${rootSegment || ''}`,
+            url: data.url ?? DEFAULT_HOST
+        };
+
+        if (data.destination?.name) {
+            Object.assign(backend, { destination: data.destination.name });
+        }
+        if (data.destination?.instance) {
+            Object.assign(backend, { destinationInstance: data.destination.instance });
+        }
+        fioriToolsProxy.configuration.backend = [backend];
+    }
     if (useUi5Cdn === true) {
         fioriToolsProxy.configuration['ui5'] = {
             path: ['/resources', '/test-resources'],
