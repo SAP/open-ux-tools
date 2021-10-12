@@ -24,12 +24,13 @@ export function getFilePaths(dir: string): string[] | [] {
 /**
  * Generates the package.json task entries.
  *
- * @param localOnly
- * @param addMock
- * @param sapClient
- * @param flpAppId
- * @param startFile
- * @param localStartFile
+ * @param {Object} packageJsonInputs
+ * @param {string} packageJsonInputs.localOnly
+ * @param {string} packageJsonInputs.addMock
+ * @param {string} packageJsonInputs.sapClient
+ * @param {string} packageJsonInputs.flpAppId
+ * @param {string} packageJsonInputs.startFile
+ * @param {string} packageJsonInputs.localStartFile
  * @returns An object represeting the task names (properties) and commands (values)
  */
 export function getPackageJsonTasks({
