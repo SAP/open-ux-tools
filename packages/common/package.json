@@ -12,8 +12,7 @@
         "watch": "tsc --watch",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u"
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "files": [
         "dist"
