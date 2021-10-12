@@ -26,7 +26,7 @@ export function getFilePaths(dir: string): string[] | [] {
  *
  * @param {Object} packageJsonInputs
  * @param {string} packageJsonInputs.localOnly
- * @param {string} packageJsonInputs.addMock
+ * @param {boolean} packageJsonInputs.addMock
  * @param {string} packageJsonInputs.sapClient
  * @param {string} packageJsonInputs.flpAppId
  * @param {string} packageJsonInputs.startFile
