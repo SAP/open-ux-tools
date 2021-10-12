@@ -31,7 +31,8 @@
         "lint:fix": "pnpm recursive run lint:fix",
         "test": "pnpm recursive run test",
         "link": "pnpm recursive run link",
-        "unlink": "pnpm recursive run unlink"
+        "unlink": "pnpm recursive run unlink",
+        "prepare": "husky install"
     },
     "engines": {
         "npm": "please-use-pnpm",
