@@ -2,7 +2,12 @@ import { getPackageJsonTasks } from '../src/utils';
 
 describe('Test common utils', () => {
     test('Test package json task generation', () => {
-        let tasks = getPackageJsonTasks(false, true, '100', 'testApp-tile');
+        let tasks = getPackageJsonTasks({
+            localOnly: false,
+            addMock: true,
+            sapClient: '100',
+            flpAppId: 'testApp-tile'
+        });
         expect(tasks).toMatchInlineSnapshot(`
             Object {
               "start": "fiori run --open 'test/flpSandbox.html?sap-client=100#testApp-tile'",
@@ -12,7 +17,7 @@ describe('Test common utils', () => {
             }
         `);
 
-        tasks = getPackageJsonTasks(false, true);
+        tasks = getPackageJsonTasks({ localOnly: false, addMock: true });
         expect(tasks).toMatchInlineSnapshot(`
             Object {
               "start": "fiori run --open 'test/flpSandbox.html'",
@@ -22,7 +27,13 @@ describe('Test common utils', () => {
             }
         `);
 
-        tasks = getPackageJsonTasks(true, false, undefined, 'testApp-tile', undefined, 'testLocalStart.html');
+        tasks = getPackageJsonTasks({
+            localOnly: true,
+            addMock: false,
+            sapClient: undefined,
+            flpAppId: 'testApp-tile',
+            localStartFile: 'testLocalStart.html'
+        });
         expect(tasks).toMatchInlineSnapshot(`
             Object {
               "start": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",

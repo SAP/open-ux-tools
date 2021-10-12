@@ -1,5 +1,5 @@
-import { MiddlewareConfig } from '@sap/open-ux-tools-types';
-import { YamlDocument, NodeComment } from '@sap/ux-yaml';
+import { MiddlewareConfig } from '@sap-ux/open-ux-tools-types';
+import { YamlDocument, NodeComment } from '@sap-ux/yaml';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.

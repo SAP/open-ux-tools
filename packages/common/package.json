@@ -1,5 +1,5 @@
 {
-    "name": "@sap/open-ux-tools-common",
+    "name": "@sap-ux/open-ux-tools-common",
     "description": "Shared libs for open source ux-tools",
     "version": "0.9.0",
     "main": "dist/index.js",
