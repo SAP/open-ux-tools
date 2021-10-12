@@ -8,7 +8,7 @@ You can fix auto-fixable problems by running:
 ```shell
 pnpm lint:fix
 ```
-## Testing
+## Unit Testing
 You can run all the tests by running:
 ```
 pnpm test
@@ -40,7 +40,7 @@ describe('Fiori elements templates'), () => {
         // Files are correctly generated
         expect((fsEditor as any).dump(v2LropOutput)).toMatchSnapshot();
     });
-});
+};
 ```
 (The comments above are only there for illustration).
 
@@ -48,6 +48,42 @@ describe('Fiori elements templates'), () => {
 * If too many objects need to be mocked, it could be an indication of too much coupling between objects/functions
 * Preferably write tests first, when it makes sense. This is a judgement call
 * We use jest snapshots to validate the generated files. Please follow the documentation here: https://jestjs.io/docs/snapshot-testing
+
+## Integration Testing
+You can run all the tests by running:
+```
+pnpm run test:int
+```
+The aim of integration tests are to validate that the apps generated can be started and load correctly in the browser.
+Adding new servers to start for the integration tests 
+`packages/fiori-freestyle-writer/test/integration/servers.js`
+
+```JavaScript
+ // worklistTemplate/worklist_metadata_v4
+    {
+        dir: 'worklistTemplate/worklist_metadata_v4',
+        yamlFile: 'ui5-mock.yaml',
+        port: 4018
+    }
+```
+Add a new test in `packages/fiori-freestyle-writer/test/integration/__tests__/app.tests.ts`
+```Typescript
+ // worklistTemplate/worklist_metadata_v4
+    describe('worklistTemplate/worklist_metadata_v4', () => {
+        test('npm run start-mock - worklistTemplate/worklist_metadata_v4 - should display Fiori page', async () => {
+            await checkApp({
+                name: 'npm run start-mock',
+                appId: 'wrk1',
+                listSelectorKey: '[id="__item2-__clone0"]',
+                selectorKey: '[id="application-wrk1-tile-component---worklist--tableHeader-inner"]',
+                listPageTitle: /SalesOrderItem/,
+                title: 'App Title',
+                url: `${host}:4018/test/flpSandbox.html#wrk1-tile`
+            });
+        });
+    });
+```
+The port in the server file should match the port in the test `url`.
 
 ## Git Guidelines
 
