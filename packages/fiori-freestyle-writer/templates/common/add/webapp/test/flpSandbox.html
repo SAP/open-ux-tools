@@ -63,15 +63,12 @@
 		data-sap-ui-preload="async"
 		data-sap-ui-theme="<%- ui5.ui5Theme %>"
 		data-sap-ui-compatVersion="edge"
-		data-sap-ui-flexibilityServices='[{"applyConnector":"<%= app.id.replace(/\./g, "/") %>/test/changes_loader", "custom":true}]'
 		data-sap-ui-language="en"
 		data-sap-ui-resourceroots='{"<%- app.id  %>": "../"}'
 		data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
 		</script>
 		<script src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
 		</script>
-	<!-- relevant for version < 1.78.0 only -->
-	<script src="changes_preview.js"></script>
 </head>
 
 <!-- UI Content -->

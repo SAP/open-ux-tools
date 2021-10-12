@@ -32,7 +32,8 @@
         "test": "pnpm recursive run test",
         "test:int": "pnpm recursive run test:int",
         "link": "pnpm recursive run link",
-        "unlink": "pnpm recursive run unlink"
+        "unlink": "pnpm recursive run unlink",
+        "prepare": "husky install"
     },
     "engines": {
         "npm": "please-use-pnpm",
