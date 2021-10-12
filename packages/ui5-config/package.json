@@ -20,7 +20,7 @@
     ],
     "dependencies": {
         "@sap-ux/yaml": "workspace:*",
-        "typescript": "4.2.4"
+        "typescript": "4.4.3"
     },
     "devDependencies": {
         "@sap-ux/open-ux-tools-types": "workspace:*",
