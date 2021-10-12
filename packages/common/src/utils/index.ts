@@ -60,7 +60,7 @@ export function getPackageJsonTasks({
         ? `echo \\"${t('INFO_MSG_MOCK_ONLY_WARNING')}\\"`
         : `fiori run --open '${'index.html'}${sapClientParam}'`;
 
-    const mockTask = `fiori run --config ui5-mock.yaml --open 'test/flpSandbox.html${params}'`;
+    const mockTask = `fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html${params}'`;
     return Object.assign(
         {
             start: startCommand,
