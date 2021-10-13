@@ -7,7 +7,7 @@ import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { FreestyleApp, WorklistSettings, ListDetailSettings, Template, Package } from '@sap-ux/open-ux-tools-types';
 import { TemplateType } from '@sap-ux/open-ux-tools-types'; // This is an enum dont import as type, we lose runtime values
 import { UI5Config } from '@sap-ux/ui5-config';
-import { getPackageTasks } from '@sap-ux/open-ux-tools-common';
+import { getPackageJsonTasks } from '@sap-ux/open-ux-tools-common';
 import { getUI5Libs } from './data/ui5Libs';
 import cloneDeep from 'lodash/cloneDeep';
 
@@ -53,14 +53,14 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
     packageJson.scripts = Object.assign(packageJson.scripts, {
-        ...getPackageTasks(
-            !ffApp.service?.url,
-            !!ffApp.service?.metadata,
-            ffApp.service?.client,
-            ffApp.app.flpAppId,
-            data?.app?.startFile,
-            data?.app?.localStartFile
-        )
+        ...getPackageJsonTasks({ 
+            localOnly: !ffApp.service?.url,
+            addMock: !!ffApp.service?.metadata,
+            sapClient: ffApp.service?.client,
+            flpAppId: ffApp.app.flpAppId,
+            startFile: data?.app?.startFile,
+            localStartFile: data?.app?.localStartFile
+        })
     });
 
     fs.writeJSON(packagePath, packageJson);
