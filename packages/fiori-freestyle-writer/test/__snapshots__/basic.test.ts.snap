@@ -77,6 +77,15 @@ server:
         backend:
           - path: /sap
             url: http://localhost
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /sap/opu/odata
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
