@@ -15,7 +15,12 @@ npm install -g pnpm
 ```
 
 More information on pnpm installation options can be found [here](https://pnpm.io/installation).
+### Install dependencies
+To install `dependencies` and `devDependencies` run following command at root of the repo:
 
+```shell
+pnpm install
+```
 ### Build packages
 
 To transpile the packages, run the following command at the root of the repo or in the individual package:
