@@ -89,6 +89,9 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         proxyLocalMiddleware.config,
         proxyLocalMiddleware.comments
     );
+
+    const mwMock = getMockServerMiddlewareConfig(data);
+    await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', mwMock);
     await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', appReloadMiddleware);
 
     // ui5-mock.yaml
@@ -99,10 +102,7 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
             Object.assign(data, { appid })
         );
         await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', proxyMiddleware.config, proxyMiddleware.comments);
-
-        const mwMock = getMockServerMiddlewareConfig(data);
         await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', mwMock);
-
         await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', appReloadMiddleware);
         // create local copy of metadata and annotations
         fs.write(join(basePath, 'webapp', 'localService', 'metadata.xml'), prettifyXml(data.metadata, { indent: 4 }));
