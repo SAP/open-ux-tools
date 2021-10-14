@@ -56,7 +56,7 @@ export function mergeUi5(ui5?: UI5): UI5 {
     merged.descriptorVersion =
         ui5?.descriptorVersion || (mappings as Record<string, string>)[merged.minUI5Version!] || '1.12.0';
     merged.typesVersion = ui5?.typesVersion || parseFloat(merged.version!) >= 1.76 ? merged.version : '1.71.18';
-    merged.ui5Theme = ui5?.ui5Theme || 'sap_fiori_3'
+    merged.ui5Theme = ui5?.ui5Theme || 'sap_fiori_3';
     // Return merged, does not update passed ref
     return Object.assign({}, ui5, merged) as UI5;
 }
