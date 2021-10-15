@@ -90,11 +90,11 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         proxyLocalMiddleware.comments
     );
 
-    const mockserverMiddleware = getMockServerMiddlewareConfig(data);
     await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', appReloadMiddleware);
 
     // ui5-mock.yaml
     if (data.metadata) {
+        const mockserverMiddleware = getMockServerMiddlewareConfig(data);
         await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', mockserverMiddleware);
         fs.copyTpl(
             join(templateRoot, 'add', 'ui5-mock.yaml'),
