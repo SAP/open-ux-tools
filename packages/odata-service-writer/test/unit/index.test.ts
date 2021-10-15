@@ -139,13 +139,26 @@ describe('Test generate method with valid input', () => {
             }
         `);
 
-        configCopy = cloneDeep(Object.assign(config, { model: 'modelName', name: 'datasourceName' }));
+        configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
             Object {
               "model": "modelName",
               "name": "datasourceName",
               "path": "/V2/Northwind/Northwind.svc/",
+              "url": "https://services.odata.org",
+              "version": "2",
+            }
+        `);
+
+        // Undefined path does not throw but sets valid path
+        configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
+        enhanceData(configCopy);
+        expect(configCopy).toMatchInlineSnapshot(`
+            Object {
+              "model": "",
+              "name": "mainService",
+              "path": "/",
               "url": "https://services.odata.org",
               "version": "2",
             }

@@ -11,8 +11,7 @@ export function enhanceData(data: OdataService): void {
     // Dont throw is path is not set
     if (data.path === undefined) {
         data.path = '/';
-    }
-    else if (data.path.substring(data.path.length - 1) !== '/') {
+    } else if (data.path.substring(data.path.length - 1) !== '/') {
         data.path = data.path + '/';
     }
 
