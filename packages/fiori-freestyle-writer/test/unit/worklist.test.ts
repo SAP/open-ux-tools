@@ -130,7 +130,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                         'sap.ui.table',
                         'sap.ushell'
                     ],
-                    ui5Theme: 'sap_belize',
+                    ui5Theme: 'sap_fiori_3_dark',
                     localVersion: '1.86.3'
                 },
                 template: {

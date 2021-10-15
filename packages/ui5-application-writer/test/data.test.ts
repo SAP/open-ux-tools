@@ -10,7 +10,8 @@ describe('Setting defaults', () => {
                     version: '1.84.0',
                     minUI5Version: '1.60',
                     descriptorVersion: '1.12.0',
-                    typesVersion: '1.84.0'
+                    typesVersion: '1.84.0',
+                    ui5Theme: 'sap_fiori_3'
                 }
             },
             {
@@ -19,7 +20,20 @@ describe('Setting defaults', () => {
                     version: '1.72.0',
                     minUI5Version: '1.60',
                     descriptorVersion: '1.12.0',
-                    typesVersion: '1.71.18'
+                    typesVersion: '1.71.18',
+                    ui5Theme: 'sap_fiori_3'
+                }
+            },
+            {
+                input: {
+                    ui5Theme: 'sap_fiori_3_dark'
+                },
+                expected: {
+                    version: '1.84.0',
+                    minUI5Version: '1.60',
+                    descriptorVersion: '1.12.0',
+                    typesVersion: '1.84.0',
+                    ui5Theme: 'sap_fiori_3_dark'
                 }
             }
         ];

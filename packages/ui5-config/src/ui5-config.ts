@@ -38,6 +38,7 @@ export class UI5Config {
             libraryObjs.push({ name: library });
         }
         // Add theme lib
+        ui5Theme = ui5Theme.replace(/_dark$/, ''); // Dark theme versions are provided by base theme lib
         libraryObjs.push({ name: `themelib_${ui5Theme}` });
 
         this.document.setIn({
