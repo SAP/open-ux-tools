@@ -131,6 +131,20 @@ describe('Fiori config utils', () => {
         `);
     });
 
+    test('UI5Config addUI5Framework: dark theme lib handling', async () => {
+      const ui5Config = await UI5Config.newInstance('');
+      ui5Config.addUI5Framework('1.64.0s', ['sap.m'], 'sap_fiori_3_dark');
+      expect((await ui5Config).toString()).toMatchInlineSnapshot(`
+          "framework:
+            name: SAPUI5
+            version: 1.64.0s
+            libraries:
+              - name: sap.m
+              - name: themelib_sap_fiori_3
+          "
+      `);
+  });
+
     /**
      * Consumers may require scaffolded apps that do not yet have a service defined.
      * This test ensures a valid middleware definition is generated without a full service defintion.
