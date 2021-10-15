@@ -9,7 +9,7 @@ export interface OdataService {
         name: string;
         instance?: string;
     };
-    path: string;
+    path?: string;
     version: OdataVersion;
     name?: string;
     model?: string;
