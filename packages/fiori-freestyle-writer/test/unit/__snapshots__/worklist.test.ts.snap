@@ -83,6 +83,15 @@ server:
       configuration:
         port: 35729
         path: webapp
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /here/goes/your/serviceurl
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
 ",
     "state": "modified",
   },
@@ -786,7 +795,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <script
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
-        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
@@ -6716,6 +6725,15 @@ server:
       configuration:
         port: 35729
         path: webapp
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
 ",
     "state": "modified",
   },
@@ -7422,7 +7440,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <script
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
-        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
@@ -9930,7 +9948,7 @@ framework:
     - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
-    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
 server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -9945,6 +9963,15 @@ server:
       configuration:
         port: 35729
         path: webapp
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /catalog-admin-noauth
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
 ",
     "state": "modified",
   },
@@ -10651,7 +10678,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <script
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
-        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-theme=\\"sap_fiori_3_dark\\"
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
@@ -12320,7 +12347,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 		data-sap-ui-libs=\\"sap.f,sap.m,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.core,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
 		data-sap-ui-async=\\"true\\"
 		data-sap-ui-preload=\\"async\\"
-		data-sap-ui-theme=\\"sap_belize\\"
+		data-sap-ui-theme=\\"sap_fiori_3_dark\\"
 		data-sap-ui-compatVersion=\\"edge\\"
 		data-sap-ui-language=\\"en\\"
 		data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
