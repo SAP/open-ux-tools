@@ -32,11 +32,17 @@ export interface UI5 {
     ui5Theme?: string;
 }
 
+export enum SapUxLayer {
+    VENDOR = 'VENDOR',
+    CUSTOMER_BASE = 'CUSTOMER_BASE'
+}
+
 // Additional configurable features
 export interface AppOptions {
     codeAssist?: boolean; // Enables code assist
     eslint?: boolean; // Enables Fiori linting
     sapux?: boolean; // Enables Fiori Tools Suite integration
+    sapuxLayer?: SapUxLayer; // Define flex changes layer when using Fiori Tools Suite
 }
 
 export interface Ui5App {

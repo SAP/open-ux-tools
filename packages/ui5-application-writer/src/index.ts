@@ -28,7 +28,7 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
     // Add optional features
     if (ui5App.appOptions) {
         Object.entries(ui5App.appOptions).forEach(([key, value]) => {
-            if (value === true) {
+            if (value !== false) {
                 const optTmplDirPath = join(tmplPath, 'optional', `${key}`);
                 const optTmplFilePaths = getFilePaths(optTmplDirPath);
                 optTmplFilePaths.forEach((optTmplFilePath) => {

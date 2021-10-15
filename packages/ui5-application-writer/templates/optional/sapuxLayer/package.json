@@ -1,0 +1,3 @@
+{
+    "sapuxLayer": "<%- appOptions.sapuxLayer %>"
+}
