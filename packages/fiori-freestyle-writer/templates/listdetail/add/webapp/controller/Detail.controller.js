@@ -9,7 +9,7 @@ sap.ui.define([
 	// shortcut for sap.m.URLHelper
 	var URLHelper = mobileLibrary.URLHelper;
 
-	return BaseController.extend("<%=app.id%>.controller.Detail", {
+	return BaseController.extend("<%- app.id %>.controller.Detail", {
 
 		formatter: formatter,
 
