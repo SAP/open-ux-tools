@@ -1,24 +1,14 @@
 import { t } from './i18n';
 
 /**
- * Generates the package.json scripts
- *
- * @export
- * @param {{
- *     localOnly: boolean;
- *     addMock: boolean;
- *     sapClient?: string;
- *     flpAppId?: string;
- *     startFile?: string;
- *     localStartFile?: string;
- * }} {
- *     localOnly,
- *     addMock = true,
- *     sapClient,
- *     flpAppId = '',
- *     startFile,
- *     localStartFile
- * }
+ * @param options
+ * @param options.localOnly
+ * @param options.addMock
+ * @param options.sapClient
+ * @param options.flpAppId
+ * @param options.startFile
+ * @param options.localStartFile
+ * @description Generates the package.json scripts
  * @returns package.json scripts
  */
 export function getPackageJsonTasks({
