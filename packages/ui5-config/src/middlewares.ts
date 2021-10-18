@@ -76,7 +76,7 @@ export const getFioriToolsProxyMiddlewareConfig = (
 };
 
 export const getMockServerMiddlewareConfig = (data: OdataService): MiddlewareConfig[] => {
-    const pathSegments = data.path.split('/');
+    const pathSegments = data.path?.split('/') || [];
     return [
         {
             name: 'sap-fe-mockserver',
