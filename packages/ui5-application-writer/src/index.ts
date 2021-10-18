@@ -1,11 +1,11 @@
 import { join } from 'path';
 import { Ui5App, UI5 } from '@sap-ux/open-ux-tools-types';
-import { getFilePaths } from '@sap-ux/open-ux-tools-common';
 import { mergeWithDefaults } from './data';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { mergeObjects } from 'json-merger';
 import { render } from 'ejs';
+import { getFilePaths } from './files';
 
 /**
  * Writes the template to the memfs editor instance.
