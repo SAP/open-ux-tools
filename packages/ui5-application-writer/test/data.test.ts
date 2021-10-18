@@ -1,5 +1,5 @@
 import { mergeUi5 } from '../src/data/defaults';
-import type { UI5 } from '@sap-ux/open-ux-tools-types';
+import type { UI5 } from '../src/types';
 
 describe('Setting defaults', () => {
     it('mergeUi5', async () => {

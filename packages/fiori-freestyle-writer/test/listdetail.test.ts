@@ -1,6 +1,6 @@
 import { FreestyleApp, generate } from '../src';
 import { join } from 'path';
-import { ListDetailSettings, TemplateType } from '@sap-ux/open-ux-tools-types';
+import { ListDetailSettings, TemplateType } from '../src/types';
 import { removeSync } from 'fs-extra';
 import { commonConfig, northwind, debug, testOutputDir } from './common';
 
@@ -39,7 +39,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     ];
 
     beforeAll(() => {
-        removeSync(curTestOutPath);  // even for in memory
+        removeSync(curTestOutPath); // even for in memory
     });
 
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
