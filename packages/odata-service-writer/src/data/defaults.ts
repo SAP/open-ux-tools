@@ -8,9 +8,13 @@ import { DEFAULT_DATASOURCE_NAME } from './constants';
  * @param {OdataService} data - the OData service object
  */
 export function enhanceData(data: OdataService): void {
-    if (data.path.substring(data.path.length - 1) !== '/') {
+    // Set default path
+    if (data.path === undefined) {
+        data.path = '/';
+    } else if (data.path.substring(data.path.length - 1) !== '/') {
         data.path = data.path + '/';
     }
+
     if (data.name === undefined) {
         data.name = DEFAULT_DATASOURCE_NAME;
     }
