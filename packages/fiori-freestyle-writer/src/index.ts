@@ -1,7 +1,6 @@
 import { join } from 'path';
 import { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-
 import { generate as generateUi5Project, Package } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -81,4 +80,4 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 }
 
 export { generate, FreestyleApp };
-export { WorklistSettings, ListDetailSettings, TemplateType, Template } from './types';
+export { WorklistSettings, ListDetailSettings, TemplateType, Template, OdataVersion } from './types';

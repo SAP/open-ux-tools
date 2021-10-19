@@ -33,3 +33,6 @@ export interface FreestyleApp<T> extends Ui5App {
     template: Template<T>;
     service?: OdataService;
 }
+
+// We need this for the service version
+export { OdataVersion } from '@sap-ux/odata-service-writer';
