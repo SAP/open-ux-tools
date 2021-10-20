@@ -1,41 +1,132 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        node-version: [12.x, 14.x, 16.x]
-    
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
+    build:
+        strategy:
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+                node-version: [12.x, 14.x, 16.x]
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 15
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@v2
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2.0.1
+              with:
+                  version: 6.0.2
+                  run_install: true
+            - name: Cache pnpm modules
+              uses: actions/cache@v2
+              env:
+                  cache-name: cache-pnpm-modules
+              with:
+                  path: ~/.pnpm-store
+                  key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - name: Install pnpm modules
+              run: pnpm install
+            - name: Run build
+              run: pnpm recursive run build
+            - name: Run linting
+              run: pnpm recursive run lint
+            - name: Run unit tests
+              run: pnpm recursive run test
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 6.0.2
-          run_install: true
-      - name: Cache pnpm modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-pnpm-modules
-        with:
-          path: ~/.pnpm-store
-          key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - run: pnpm install
-      - run: pnpm recursive run build
-      - run: pnpm recursive run lint
-      - run: pnpm recursive run test
+    version:
+        # Run version job only on pushes to the main branch. The job depends on completion of the build job.
+        if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        runs-on: ubuntu-latest
+        needs: build
+        outputs:
+            changes: ${{ steps.changesetVersion.outputs.changes }} # map step output to job output
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2.0.1
+              with:
+                  version: 6.0.2
+                  run_install: true
+            - name: Cache pnpm modules
+              uses: actions/cache@v2
+              env:
+                  cache-name: cache-pnpm-modules
+              with:
+                  path: ~/.pnpm-store
+                  key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-build-${{ env.cache-name }}-
+            - name: Use Node.js 14.x
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 14.x
+            - name: Install pnpm modules
+              run: pnpm install
+            - name: Apply changesets
+              id: changesetVersion
+              run: |
+                  echo ::set-output name=changes::$(pnpm ci:version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
+                  git status
+            - name: Commit and push changes
+              if: steps.changesetVersion.outputs.changes == 'true'
+              run: |
+                  git config user.name github-actions
+                  git config user.email github-actions@github.com
+                  git status
+                  git add -A
+                  git status
+                  git commit -m "chore: apply latest changesets" || echo "No changesets found"
+                  git log --pretty=oneline | head -n 10
+                  git push
+
+    release:
+        # Run release job only on pushes to the main branch. The job depends on completion of the build job.
+        # This job needs to run after the version job commit has been merged - so check if that step returns 'false'
+        if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version.outputs.changes == 'false'
+        runs-on: ubuntu-latest
+        needs: version
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@v2
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v2.0.1
+              with:
+                  version: 6.0.2
+                  run_install: true
+            - name: Cache pnpm modules
+              uses: actions/cache@v2
+              env:
+                  cache-name: cache-pnpm-modules
+              with:
+                  path: ~/.pnpm-store
+                  key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-build-${{ env.cache-name }}-
+            - name: Use Node.js 14.x
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 14.x
+            - name: Install pnpm modules
+              run: pnpm install
+            - name: Run build
+              run: pnpm recursive run build
+            - name: Setup npmrc with npmjs.com token
+              run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
+            - name: 'Publish to npmjs'
+              uses: changesets/action@master
+              with:
+                  publish: pnpm ci:publish
