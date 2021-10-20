@@ -5,7 +5,6 @@ import {
     addMiddlewareConfig,
     UI5Config
 } from '../src';
-import { OdataService, OdataVersion } from '../src/types';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
@@ -14,11 +13,9 @@ describe('Fiori config utils', () => {
     const serviceData = {
         name: 'maintestService',
         path: '/testpath',
-        version: OdataVersion.v2,
-        metadata: '<xml/>',
         url: 'http://localhost:8080',
         destination: { name: 'SIDCLNT000' }
-    } as OdataService;
+    };
     beforeAll(() => {});
 
     test('getMockServerMiddlewareConfig', async () => {
@@ -150,10 +147,7 @@ describe('Fiori config utils', () => {
      * This test ensures a valid middleware definition is generated without a full service defintion.
      */
     test('getFioriToolsProxyMiddlewareConfig no datasource provided', async () => {
-        let serviceData = {
-            name: 'maintestService',
-            version: OdataVersion.v2
-        } as OdataService;
+        let serviceData = {};
 
         expect(getFioriToolsProxyMiddlewareConfig(serviceData)).toMatchInlineSnapshot(`
             Object {
@@ -190,10 +184,8 @@ describe('Fiori config utils', () => {
 
     test('getFioriToolsProxyMiddlewareConfig no path provided', async () => {
         let serviceData = {
-            name: 'maintestService',
-            version: OdataVersion.v2,
             url: 'http://localhost:8080'
-        } as OdataService;
+        };
 
         expect(getFioriToolsProxyMiddlewareConfig(serviceData)).toMatchInlineSnapshot(`
           Object {
