@@ -1,3 +1,25 @@
+export enum OdataVersion {
+    v2 = '2',
+    v4 = '4'
+}
+export interface OdataService {
+    url?: string;
+    client?: string;
+    destination?: {
+        name: string;
+        instance?: string;
+    };
+    path?: string;
+    version: OdataVersion;
+    name?: string;
+    model?: string;
+    metadata?: string;
+    annotations?: {
+        technicalName: string;
+        xml: string;
+    };
+}
+
 export interface Destination {
     destination: string;
     destinationInstance?: string;
@@ -35,5 +57,3 @@ export interface MiddlewareConfig {
         ignoreCertError?: boolean;
     };
 }
-// TypeDefs using TypeScript 4.1 feature will break consumer compilation < 4.1
-// export { NodeComment, Path } from '@sap-ux/yaml';

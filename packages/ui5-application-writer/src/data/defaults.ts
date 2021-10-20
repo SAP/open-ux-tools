@@ -1,4 +1,4 @@
-import type { App, Package, UI5 } from '@sap-ux/open-ux-tools-types';
+import { App, Package, UI5 } from '../types';
 import mappings from './version-to-descriptor-mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 /**
  * Returns a package instance with default properties.
