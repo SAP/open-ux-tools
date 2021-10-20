@@ -5,7 +5,7 @@ import {
     addMiddlewareConfig,
     UI5Config
 } from '../src';
-import { OdataService, OdataVersion } from '@sap-ux/open-ux-tools-types';
+import { OdataService, OdataVersion } from '../src/types';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
@@ -132,9 +132,9 @@ describe('Fiori config utils', () => {
     });
 
     test('UI5Config addUI5Framework: dark theme lib handling', async () => {
-      const ui5Config = await UI5Config.newInstance('');
-      ui5Config.addUI5Framework('1.64.0s', ['sap.m'], 'sap_fiori_3_dark');
-      expect((await ui5Config).toString()).toMatchInlineSnapshot(`
+        const ui5Config = await UI5Config.newInstance('');
+        ui5Config.addUI5Framework('1.64.0s', ['sap.m'], 'sap_fiori_3_dark');
+        expect((await ui5Config).toString()).toMatchInlineSnapshot(`
           "framework:
             name: SAPUI5
             version: 1.64.0s
@@ -143,7 +143,7 @@ describe('Fiori config utils', () => {
               - name: themelib_sap_fiori_3
           "
       `);
-  });
+    });
 
     /**
      * Consumers may require scaffolded apps that do not yet have a service defined.
