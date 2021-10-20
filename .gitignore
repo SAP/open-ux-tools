@@ -1,6 +1,7 @@
 # IDE and OS temporary files
 
 .idea
+.project
 .DS_Store
 
 ## Original Source: https://github.com/github/gitignore/blob/master/Node.gitignore
