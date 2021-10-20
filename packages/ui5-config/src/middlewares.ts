@@ -1,6 +1,5 @@
 import type { MiddlewareConfig } from './types';
 import type { NodeComment, Path } from '@sap-ux/yaml';
-import { OdataService } from './types';
 import { join } from 'path';
 import { UI5Config } from './ui5-config';
 import type { Editor } from 'mem-fs-editor';
@@ -20,7 +19,7 @@ export const getAppReloadMiddlewareConfig = (): MiddlewareConfig[] => {
 };
 
 export const getFioriToolsProxyMiddlewareConfig = (
-    data: OdataService,
+    { url, path, destination }: { url?: string; path?: string; destination?: { name?: string; instance?: string } },
     useUi5Cdn = true,
     ui5CdnUrl = 'https://ui5.sap.com',
     ui5Version = ''
@@ -33,18 +32,18 @@ export const getFioriToolsProxyMiddlewareConfig = (
         }
     };
 
-    if (data.url || data.path || data.destination?.name || data.destination?.instance) {
-        const rootSegment = data.path?.split('/').filter((s: string) => s !== '')[0];
+    if (url || path || destination?.name || destination?.instance) {
+        const rootSegment = path?.split('/').filter((s: string) => s !== '')[0];
         const backend = {
             path: `/${rootSegment || ''}`,
-            url: data.url ?? DEFAULT_HOST
+            url: url ?? DEFAULT_HOST
         };
 
-        if (data.destination?.name) {
-            Object.assign(backend, { destination: data.destination.name });
+        if (destination?.name) {
+            Object.assign(backend, { destination: destination.name });
         }
-        if (data.destination?.instance) {
-            Object.assign(backend, { destinationInstance: data.destination.instance });
+        if (destination?.instance) {
+            Object.assign(backend, { destinationInstance: destination.instance });
         }
         fioriToolsProxy.configuration.backend = [backend];
     }
@@ -75,8 +74,8 @@ export const getFioriToolsProxyMiddlewareConfig = (
     return { config, comments };
 };
 
-export const getMockServerMiddlewareConfig = (data: OdataService): MiddlewareConfig[] => {
-    const pathSegments = data.path?.split('/') || [];
+export const getMockServerMiddlewareConfig = ({ path }: { path?: string }): MiddlewareConfig[] => {
+    const pathSegments = path?.split('/') || [];
     return [
         {
             name: 'sap-fe-mockserver',
