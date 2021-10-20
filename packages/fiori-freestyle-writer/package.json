@@ -29,7 +29,6 @@
         "mem-fs-editor": "^9.0.0"
     },
     "devDependencies": {
-        "@sap-ux/open-ux-tools-types": "workspace:*",
         "@types/ejs": "^3.0.6",
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.175",

@@ -1,4 +1,4 @@
-import { Ui5App } from '@sap-ux/open-ux-tools-types';
+import { Ui5App } from '../types';
 import { appDefaults, packageDefaults, mergeUi5 } from './defaults';
 
 /**

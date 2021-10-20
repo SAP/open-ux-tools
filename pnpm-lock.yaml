@@ -44,7 +44,6 @@ importers:
     packages/fiori-freestyle-writer:
         specifiers:
             '@sap-ux/odata-service-writer': workspace:*
-            '@sap-ux/open-ux-tools-types': workspace:*
             '@sap-ux/ui5-application-writer': workspace:*
             '@sap-ux/ui5-config': workspace:*
             '@types/ejs': ^3.0.6
@@ -68,7 +67,6 @@ importers:
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
         devDependencies:
-            '@sap-ux/open-ux-tools-types': link:../types
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
             '@types/lodash': 4.14.175
@@ -78,8 +76,6 @@ importers:
 
     packages/odata-service-writer:
         specifiers:
-            '@sap-ux/open-ux-tools-types': workspace:*
-            '@sap-ux/ui5-application-writer': workspace:*
             '@sap-ux/ui5-config': workspace:*
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
@@ -100,8 +96,6 @@ importers:
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
             prettify-xml: 1.2.0
         devDependencies:
-            '@sap-ux/open-ux-tools-types': link:../types
-            '@sap-ux/ui5-application-writer': link:../ui5-application-writer
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
             '@types/mem-fs-editor': 7.0.0
@@ -109,15 +103,8 @@ importers:
             lodash: 4.17.21
             typescript: 4.2.4
 
-    packages/types:
-        specifiers:
-            typescript: 4.2.4
-        dependencies:
-            typescript: 4.2.4
-
     packages/ui5-application-writer:
         specifiers:
-            '@sap-ux/open-ux-tools-types': workspace:*
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
             '@types/mem-fs': 1.1.2
@@ -134,7 +121,6 @@ importers:
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
         devDependencies:
-            '@sap-ux/open-ux-tools-types': link:../types
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
             '@types/mem-fs': 1.1.2
@@ -144,7 +130,6 @@ importers:
 
     packages/ui5-config:
         specifiers:
-            '@sap-ux/open-ux-tools-types': workspace:*
             '@sap-ux/yaml': workspace:*
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0
@@ -153,7 +138,6 @@ importers:
             '@sap-ux/yaml': link:../yaml
             typescript: 4.2.4
         devDependencies:
-            '@sap-ux/open-ux-tools-types': link:../types
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
 

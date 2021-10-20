@@ -1,6 +1,7 @@
 import { FreestyleApp, generate } from '../src';
 import { join } from 'path';
-import { TemplateType, OdataService, OdataVersion } from '@sap-ux/open-ux-tools-types';
+import { TemplateType } from '../src/types';
+import { OdataService } from '@sap-ux/odata-service-writer';
 import { removeSync } from 'fs-extra';
 import { sample } from './sample/metadata';
 import { testOutputDir, debug, northwind } from './common';
@@ -78,7 +79,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
     ];
 
     beforeAll(() => {
-        removeSync(curTestOutPath);  // even for in memory
+        removeSync(curTestOutPath); // even for in memory
     });
 
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
