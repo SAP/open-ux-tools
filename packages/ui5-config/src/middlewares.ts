@@ -1,5 +1,5 @@
 import type { MiddlewareConfig } from './types';
-import { NodeComment, Path } from '@sap-ux/yaml';
+import type { NodeComment, Path } from '@sap-ux/yaml';
 import { join } from 'path';
 import { UI5Config } from './ui5-config';
 import type { Editor } from 'mem-fs-editor';
