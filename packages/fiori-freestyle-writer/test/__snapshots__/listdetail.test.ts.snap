@@ -966,7 +966,6 @@ server:
 		 * function.
 		 * @class
 		 * @public
-		 * @alias {{2listdetail.parameters.AppId.value}}.controller.ListSelector
 		 */
 
 		constructor : function () {
@@ -1089,8 +1088,6 @@ appTitle=My Test App
 
 #YDES: Application description
 appDescription=Description of test.me
-# This is the resource bundle for {{2listdetail.parameters.ApplicationTitle.value}}
-
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items

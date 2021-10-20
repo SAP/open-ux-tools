@@ -11,7 +11,6 @@
 		 * function.
 		 * @class
 		 * @public
-		 * @alias {{2listdetail.parameters.AppId.value}}.controller.ListSelector
 		 */
 
 		constructor : function () {
