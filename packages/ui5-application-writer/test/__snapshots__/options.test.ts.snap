@@ -52,7 +52,9 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"1.92.2\\"
+    \\"@sapui5/ts-types\\": \\"1.92.2\\",
+    \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
+    \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
