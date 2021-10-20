@@ -1,4 +1,4 @@
-import { OdataService, OdataVersion } from '@sap-ux/open-ux-tools-types';
+import { OdataService, OdataVersion } from '../src/types';
 import { t } from '@sap-ux/open-ux-tools-common';
 import { generate } from '../src';
 import { join } from 'path';

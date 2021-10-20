@@ -11,7 +11,7 @@ import {
 import prettifyXml from 'prettify-xml';
 
 import { enhanceData } from './data';
-import { OdataService, OdataVersion } from '@sap-ux/open-ux-tools-types';
+import { OdataService, OdataVersion } from './types';
 import { t } from '@sap-ux/open-ux-tools-common';
 
 /**
