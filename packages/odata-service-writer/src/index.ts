@@ -50,13 +50,6 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     const templateRoot = join(__dirname, '..', 'templates');
     const extRoot = join(templateRoot, 'extend');
 
-    // package.json
-    const packagePath = join(basePath, 'package.json');
-    fs.extendJSON(packagePath, fs.readJSON(join(extRoot, 'package.json')));
-    const packageJson = JSON.parse(fs.read(packagePath));
-    packageJson.ui5.dependencies.push('@sap/ux-ui5-fe-mockserver-middleware');
-    fs.writeJSON(packagePath, packageJson);
-
     // manifest.json
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
@@ -90,12 +83,26 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         proxyLocalMiddleware.comments
     );
 
-    const mockserverMiddleware = getMockServerMiddlewareConfig(data);
-    await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', mockserverMiddleware);
     await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', appReloadMiddleware);
 
-    // ui5-mock.yaml
+    // Add mockserver entries
     if (data.metadata) {
+        // package.json updates
+        const mockDevDeps = {
+            devDependencies: {
+                '@sap/ux-ui5-fe-mockserver-middleware': 'latest'
+            }
+        };
+        const packagePath = join(basePath, 'package.json');
+        fs.extendJSON(packagePath, mockDevDeps);
+        // Extending here would overwrite existing array entries so we have to parse and push
+        const packageJson = JSON.parse(fs.read(packagePath));
+        packageJson.ui5.dependencies.push('@sap/ux-ui5-fe-mockserver-middleware');
+        fs.writeJSON(packagePath, packageJson);
+
+        // yaml updates
+        const mockserverMiddleware = getMockServerMiddlewareConfig(data);
+        await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', mockserverMiddleware);
         fs.copyTpl(
             join(templateRoot, 'add', 'ui5-mock.yaml'),
             join(basePath, 'ui5-mock.yaml'),
