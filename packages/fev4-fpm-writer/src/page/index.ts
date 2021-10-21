@@ -13,7 +13,7 @@ import { CustomPage, CustomPageConfig, Ui5Route } from '../types';
  * @param fs - mem-fs reference to be used for file access
  * @returns enhanced configuration
  */
- function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): CustomPageConfig {
+function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): CustomPageConfig {
     // enforce naming conventions
     const firstChar = data.name[0];
     const nameForId = firstChar.toLocaleLowerCase() + data.name.substring(1);
@@ -47,12 +47,12 @@ function updateRoutes(routes: Ui5Route[], config: CustomPageConfig) {
         newRoute.pattern = `${config.navigation.sourceEntity}({key})/${config.navigation.navEntity}({key2}):?query:`;
         const sourceRoute = routes.find((route) => route.name === config.navigation?.sourcePage);
         if (sourceRoute?.target.constructor === Array) {
-            routes.forEach(route => {
+            routes.forEach((route) => {
                 if (route?.target.constructor === Array) {
                     route.target.push((newRoute as Ui5Route).name);
                 }
             });
-            newRoute.target = sourceRoute.target;       
+            newRoute.target = sourceRoute.target;
         } else {
             newRoute.target = newRoute.name;
         }
@@ -80,8 +80,10 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
         throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
     } else {
         const manifest = fs.readJSON(manifestPath) as any;
-        if ( (manifest['sap.ui5']?.dependencies?.libs?.['sap.fe.templates'] !== undefined) === false) {
-            throw new Error('Dependency sap.fe.templates is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.');
+        if ((manifest['sap.ui5']?.dependencies?.libs?.['sap.fe.templates'] !== undefined) === false) {
+            throw new Error(
+                'Dependency sap.fe.templates is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
+            );
         }
     }
 
@@ -100,16 +102,16 @@ export function generateCustomPage(basePath: string, data: CustomPage, fs?: Edit
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs);  
-    
+    validateBasePath(basePath, fs);
+
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const config = enhanceData(data, manifestPath, fs);
-    
+
     // merge content into existing files
     const root = join(__dirname, '../../templates/page');
 
     // enhance manifest.json
-    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)), ( key, value ) => {
+    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)), (key, value) => {
         if (key === 'routes') {
             updateRoutes(value as Ui5Route[], config);
         }
@@ -126,12 +128,8 @@ export function generateCustomPage(basePath: string, data: CustomPage, fs?: Edit
         // TODO: when the controller is copied, it's id in the sources needs to be changed
         fs.write(join(config.path, `${config.name}.controller.js`), controllerJs);
     } else {
-        fs.copyTpl(
-            join(root,'ext/NAME/View.xml'), 
-            join(config.path, `${config.name}.view.xml`), config);
-        fs.copyTpl(
-            join(root,'ext/NAME/Controller.js'), 
-            join(config.path, `${config.name}.controller.js`), config);
+        fs.copyTpl(join(root, 'ext/NAME/View.xml'), join(config.path, `${config.name}.view.xml`), config);
+        fs.copyTpl(join(root, 'ext/NAME/Controller.js'), join(config.path, `${config.name}.controller.js`), config);
     }
 
     return fs;

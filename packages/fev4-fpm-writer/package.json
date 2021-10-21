@@ -1,5 +1,5 @@
 {
-    "name": "@sap/ux-fev4-fpm-templates",
+    "name": "@sap-ux/fev4-fpm-writer",
     "version": "0.0.1",
     "license": "Apache-2.0",
     "main": "dist/index.js",

@@ -1,4 +1,3 @@
-
 export interface CustomPage {
     name: string;
     entity: string;
@@ -6,11 +5,11 @@ export interface CustomPage {
         sourcePage: string;
         sourceEntity: string;
         navEntity: string;
-    },
+    };
     view?: {
         title?: string;
         path?: string;
-    }
+    };
 }
 
 export interface CustomPageConfig extends CustomPage {
