@@ -1,0 +1,39 @@
+{
+    "sap.app": {
+        "dataSources": {
+            "<%=name%>": {
+                "uri": "<%=path%>",
+                "type": "OData",
+                "settings": {
+                    "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
+                       "<%- annotations.technicalName %>"<% } %>
+                    ],
+                    "localUri": "localService/metadata.xml"<%if (version === '4') {%>,
+                    "odataVersion": "4.0"<% } %>
+                }
+            }<%if (locals.annotations && annotations.technicalName) {%>,
+            "<%- annotations.technicalName %>": {
+                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- annotations.technicalName %>',Version='0001')/$value/",
+                "type": "ODataAnnotation",
+                "settings": {
+                    "localUri": "localService/<%- annotations.technicalName %>.xml"
+                }
+            }<% } %>
+        }
+    },
+    "sap.ui5": {
+        "models": {
+            "<%=model%>": {
+                "dataSource": "<%=name%>",
+                "preload": true,
+                "settings": {<%if (version === '4') {%>
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true,
+                    "groupId": "$direct"<% } %>
+                }
+            }
+        }
+    }
+}

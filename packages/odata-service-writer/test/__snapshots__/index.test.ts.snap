@@ -1,0 +1,166 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ODataService templates generates all expected files correctly 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+    ]
+  },
+  \\"devDependencies\\": {
+    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"latest\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "#empty file
+
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://localhost
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /sap/odata/testme
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
+    "state": "modified",
+  },
+  "ui5-mock.yaml": Object {
+    "contents": "specVersion: \\"2.5\\"
+metadata:
+  name: testappid
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://localhost
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: /sap/odata/testme
+          name: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "#empty file
+
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://localhost
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+",
+    "state": "modified",
+  },
+  "webapp/localService/SEPM_XYZ.xml": Object {
+    "contents": "<HELLO>
+    <ANNOTATION>
+    </ANNOTATION>
+</WORLD>
+</HELLO>",
+    "state": "modified",
+  },
+  "webapp/localService/metadata.xml": Object {
+    "contents": "<HELLO>
+    <WORLD>
+        <METADATA>
+        </METADATA>
+    </WORLD>
+</HELLO>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"testappid\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/odata/testme/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPM_XYZ\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"SEPM_XYZ\\": {
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPM_XYZ',Version='0001')/$value/\\",
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"localService/SEPM_XYZ.xml\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"models\\": {
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {}
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;

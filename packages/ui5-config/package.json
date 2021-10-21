@@ -1,0 +1,33 @@
+{
+    "name": "@sap-ux/ui5-config",
+    "description": "Library to UI5 configuration artifacts",
+    "version": "0.9.1",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "pnpm clean && tsc",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output coverage",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "@sap-ux/yaml": "workspace:*",
+        "typescript": "4.2.4"
+    },
+    "devDependencies": {
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.0.0"
+    },
+    "engines": {
+        "pnpm": ">=6.0.2",
+        "node": ">=12.18.2 < 13.0.0 || > 14.0.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+    }
+}
