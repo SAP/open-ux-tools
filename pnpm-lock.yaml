@@ -43,19 +43,9 @@ importers:
             ts-node: 10.2.1_typescript@4.4.3
             typescript: 4.4.3
 
-    packages/common:
-        specifiers:
-            i18next: 20.3.2
-            typescript: 4.2.4
-        dependencies:
-            i18next: 20.3.2
-        devDependencies:
-            typescript: 4.2.4
-
     packages/fiori-freestyle-writer:
         specifiers:
             '@sap-ux/odata-service-writer': workspace:*
-            '@sap-ux/open-ux-tools-common': workspace:*
             '@sap-ux/ui5-application-writer': workspace:*
             '@sap-ux/ui5-config': workspace:*
             '@types/ejs': ^3.0.6
@@ -64,16 +54,17 @@ importers:
             '@types/mem-fs-editor': ^7.0.0
             ejs: ^3.1.6
             fs-extra: 10.0.0
+            i18next: 20.3.2
             lodash: 4.17.21
             mem-fs: ^2.1.0
             mem-fs-editor: ^9.0.0
             typescript: 4.2.4
         dependencies:
             '@sap-ux/odata-service-writer': link:../odata-service-writer
-            '@sap-ux/open-ux-tools-common': link:../common
             '@sap-ux/ui5-application-writer': link:../ui5-application-writer
             '@sap-ux/ui5-config': link:../ui5-config
             ejs: 3.1.6
+            i18next: 20.3.2
             lodash: 4.17.21
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
@@ -87,22 +78,22 @@ importers:
 
     packages/odata-service-writer:
         specifiers:
-            '@sap-ux/open-ux-tools-common': workspace:*
             '@sap-ux/ui5-config': workspace:*
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
             '@types/mem-fs-editor': 7.0.0
             ejs: 3.1.6
             fs-extra: 10.0.0
+            i18next: 20.3.2
             lodash: 4.17.21
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0
             prettify-xml: 1.2.0
             typescript: 4.2.4
         dependencies:
-            '@sap-ux/open-ux-tools-common': link:../common
             '@sap-ux/ui5-config': link:../ui5-config
             ejs: 3.1.6
+            i18next: 20.3.2
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
             prettify-xml: 1.2.0
@@ -116,7 +107,6 @@ importers:
 
     packages/ui5-application-writer:
         specifiers:
-            '@sap-ux/open-ux-tools-common': workspace:*
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
             '@types/mem-fs': 1.1.2
@@ -133,7 +123,6 @@ importers:
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
         devDependencies:
-            '@sap-ux/open-ux-tools-common': link:../common
             '@types/ejs': 3.0.6
             '@types/fs-extra': 9.0.13
             '@types/mem-fs': 1.1.2
