@@ -6734,6 +6734,8 @@ server:
         backend:
           - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
+            client: \\"123\\"
+            destination: SIDCLNT123
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -6765,6 +6767,8 @@ server:
         backend:
           - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
+            client: \\"123\\"
+            destination: SIDCLNT123
         ui5:
           path:
             - /resources
@@ -6802,6 +6806,8 @@ server:
         backend:
           - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
+            client: \\"123\\"
+            destination: SIDCLNT123
         ui5:
           path:
             - /resources
