@@ -4,7 +4,7 @@ import { render } from 'ejs';
 import { generate as generateUi5Project, Package } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { getPackageJsonTasks } from '@sap-ux/open-ux-tools-common';
+import { getPackageJsonTasks } from './packageConfig';
 import { getUI5Libs } from './data/ui5Libs';
 import cloneDeep from 'lodash/cloneDeep';
 import { FreestyleApp } from 'types';
