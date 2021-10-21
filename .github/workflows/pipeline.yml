@@ -90,7 +90,7 @@ jobs:
                   git status
                   git add -A
                   git status
-                  git commit -m "chore: apply latest changesets" || echo "No changesets found"
+                  git commit -m "chore: apply latest changesets" --no-verify || echo "No changesets found"
                   git log --pretty=oneline | head -n 10
                   git push
 
