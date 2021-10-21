@@ -30,8 +30,7 @@ archive.zip
   \\"dependencies\\": {},
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.12.0\\",
-    \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"latest\\"
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open 'test/flpSandbox.html#nods1-tile'\\",
@@ -42,8 +41,7 @@ archive.zip
   },
   \\"ui5\\": {
     \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap/ux-ui5-tooling\\"
     ]
   }
 }
@@ -77,15 +75,6 @@ server:
         backend:
           - path: /sap
             url: http://localhost
-    - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
-      configuration:
-        service:
-          urlBasePath: /sap/opu/odata
-          name: ''
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
