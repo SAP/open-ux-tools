@@ -11,7 +11,6 @@
 		 * function.
 		 * @class
 		 * @public
-		 * @alias {{2listdetail.parameters.AppId.value}}.controller.ListSelector
 		 */
 
 		constructor : function () {
@@ -21,7 +20,6 @@
 			// This promise needs to be created in the constructor, since it is allowed to
 			// invoke selectItem functions before calling setBoundMasterList
 			this.oWhenListLoadingIsDone = new Promise(function (fnResolve, fnReject) {
-				// Used to wait until the setBound lis function is invoked
 				this._oWhenListHasBeenSet
 					.then(function (oList) {
 						oList.getBinding("items").attachEventOnce("dataReceived",

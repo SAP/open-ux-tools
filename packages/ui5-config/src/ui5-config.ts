@@ -1,4 +1,4 @@
-import { MiddlewareConfig } from '@sap-ux/open-ux-tools-types';
+import { MiddlewareConfig } from './types';
 import { YamlDocument, NodeComment } from '@sap-ux/yaml';
 
 /**
@@ -56,10 +56,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addCustomMiddleware(
-        middlewares: MiddlewareConfig[],
-        comments?: NodeComment<MiddlewareConfig>[],
-    ): UI5Config {
+    public addCustomMiddleware(middlewares: MiddlewareConfig[], comments?: NodeComment<MiddlewareConfig>[]): UI5Config {
         for (const mw of middlewares) {
             this.document.appendTo({ path: 'server.customMiddleware', value: mw, comments });
         }

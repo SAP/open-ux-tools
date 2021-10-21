@@ -1,11 +1,11 @@
 import { join } from 'path';
-import { Ui5App, UI5 } from '@sap-ux/open-ux-tools-types';
-import { getFilePaths } from '@sap-ux/open-ux-tools-common';
 import { mergeWithDefaults } from './data';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { mergeObjects } from 'json-merger';
 import { render } from 'ejs';
+import { getFilePaths } from './files';
+import { Ui5App } from './types';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -50,4 +50,5 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
     return fs as Editor;
 }
 
-export { Ui5App, UI5, generate };
+export { Ui5App, generate };
+export { Package, UI5 } from './types';

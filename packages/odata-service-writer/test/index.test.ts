@@ -1,5 +1,5 @@
-import { OdataService, OdataVersion } from '@sap-ux/open-ux-tools-types';
-import { t } from '@sap-ux/open-ux-tools-common';
+import { t } from '../src/i18n';
+import { OdataService, OdataVersion } from '../src/types';
 import { generate } from '../src';
 import { join } from 'path';
 import { create } from 'mem-fs-editor';
@@ -42,7 +42,7 @@ describe('ODataService templates', () => {
                 fs
             )
         ).rejects.toEqual(
-            Error(t('ERROR_REQUIRED_PROJECT_PROPERTY_NOT_FOUND', { property: `'sap.app'.id`, path: manifestPath }))
+            Error(t('error.requiredProjectPropertyNotFound', { property: `'sap.app'.id`, path: manifestPath }))
         );
     });
 
