@@ -966,7 +966,6 @@ server:
 		 * function.
 		 * @class
 		 * @public
-		 * @alias {{2listdetail.parameters.AppId.value}}.controller.ListSelector
 		 */
 
 		constructor : function () {
@@ -976,7 +975,6 @@ server:
 			// This promise needs to be created in the constructor, since it is allowed to
 			// invoke selectItem functions before calling setBoundMasterList
 			this.oWhenListLoadingIsDone = new Promise(function (fnResolve, fnReject) {
-				// Used to wait until the setBound lis function is invoked
 				this._oWhenListHasBeenSet
 					.then(function (oList) {
 						oList.getBinding(\\"items\\").attachEventOnce(\\"dataReceived\\",
@@ -1089,8 +1087,6 @@ appTitle=My Test App
 
 #YDES: Application description
 appDescription=Description of test.me
-# This is the resource bundle for {{2listdetail.parameters.ApplicationTitle.value}}
-
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
