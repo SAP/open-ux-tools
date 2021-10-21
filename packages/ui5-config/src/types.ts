@@ -1,4 +1,3 @@
-
 export interface Destination {
     destination: string;
     destinationInstance?: string;

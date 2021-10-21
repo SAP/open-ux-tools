@@ -1,4 +1,4 @@
-import { getPackageJsonTasks } from '../src/utils';
+import { getPackageJsonTasks } from '../src/packageConfig';
 
 describe('Test common utils', () => {
     describe('package.json task generation', () => {

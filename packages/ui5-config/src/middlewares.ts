@@ -19,7 +19,7 @@ export const getAppReloadMiddlewareConfig = (): MiddlewareConfig[] => {
 };
 
 export const getFioriToolsProxyMiddlewareConfig = (
-    { url, path, destination }: { url?: string; path?: string; destination?: { name?: string; instance?: string }},
+    { url, path, destination }: { url?: string; path?: string; destination?: { name?: string; instance?: string } },
     useUi5Cdn = true,
     ui5CdnUrl = 'https://ui5.sap.com',
     ui5Version = ''

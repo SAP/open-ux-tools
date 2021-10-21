@@ -11,8 +11,8 @@ import {
 import prettifyXml from 'prettify-xml';
 
 import { enhanceData } from './data';
+import { t } from './i18n';
 import { OdataService, OdataVersion } from './types';
-import { t } from '@sap-ux/open-ux-tools-common';
 
 /**
  * Validates the provided base path.
@@ -24,7 +24,7 @@ function validateBasePath(basePath: string, fs: Editor) {
     [join(basePath, 'package.json'), join(basePath, 'webapp', 'manifest.json'), join(basePath, 'ui5.yaml')].forEach(
         (path) => {
             if (!fs.exists(path)) {
-                throw new Error(t('ERROR_REQUIRED_PROJECT_FILE_NOT_FOUND', { path }));
+                throw new Error(t('error.requiredProjectFileNotFound', { path }));
             }
         }
     );
@@ -59,7 +59,7 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     // Throw if required property is not found manifest.json
     if (!appid) {
         throw new Error(
-            t('ERROR_REQUIRED_PROJECT_PROPERTY_NOT_FOUND', { property: `'${appProp}'.id`, path: manifestPath })
+            t('error.requiredProjectPropertyNotFound', { property: `'${appProp}'.id`, path: manifestPath })
         );
     }
 
