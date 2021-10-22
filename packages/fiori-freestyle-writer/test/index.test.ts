@@ -75,6 +75,47 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
                     }
                 }
             }
+        },
+        {
+            name: 'listdetail_cap',
+            config: {
+                ...commonConfig,
+                service: northwindV2Metadata,
+                cap: true,
+                template: {
+                    type: TemplateType.ListDetail,
+                    settings: {
+                        entity: {
+                            name: 'Products',
+                            key: 'ProductID',
+                            idProperty: 'ProductName',
+                            numberProperty: 'UnitsInStock',
+                            unitOfMeasureProperty: 'QuantityPerUnit'
+                        },
+                        lineItem: { name: 'Products' }
+                    }
+                }
+            }
+        },
+        {
+            name: 'worklist_cap',
+            config: {
+                ...commonConfig,
+                service: northwindV2Metadata,
+                cap: true,
+                template: {
+                    type: TemplateType.Worklist,
+                    settings: {
+                        entity: {
+                            name: 'Products',
+                            key: 'ProductID',
+                            idProperty: 'ProductName',
+                            numberProperty: 'UnitsInStock',
+                            unitOfMeasureProperty: 'QuantityPerUnit'
+                        }
+                    }
+                }
+            }
         }
     ];
 

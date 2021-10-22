@@ -5,58 +5,34 @@
             "type": "node",
             "request": "launch",
             "name": "lib/yaml: Debug Current Jest File",
-            "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": [
-                "${file}",
-                "--config",
-                "jest.config.js",
-                "--coverage=false"
-            ],
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,
-            "windows": {
-                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-            },
             "cwd": "${workspaceFolder}/packages/lib/yaml"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "templates/fiori-freestyle: Debug Current Jest File",
-            "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": [
-                "${file}",
-                "--config",
-                "jest.config.js",
-                "--coverage=false"
-            ],
+            "name": "fiori-freestyle-writer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,
-            "windows": {
-                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-            },
-            "cwd": "${workspaceFolder}/packages/templates/fiori-freestyle"
+            "cwd": "${workspaceFolder}/packages/fiori-freestyle-writer"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "templates/odata-service: Debug Current Jest File",
-            "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": [
-                "${file}",
-                "--config",
-                "jest.config.js",
-                "--coverage=false"
-            ],
+            "name": "odata-service-writer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,
-            "windows": {
-                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-            },
-            "cwd": "${workspaceFolder}/packages/templates/odata-service"
+            "cwd": "${workspaceFolder}/packages/odata-service-writer"
         }
     ]
 }

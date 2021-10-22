@@ -31,6 +31,7 @@ export interface Template<T = {}> {
 
 export interface FreestyleApp<T> extends Ui5App {
     template: Template<T>;
+    cap?: boolean;
     service?: OdataService;
 }
 
