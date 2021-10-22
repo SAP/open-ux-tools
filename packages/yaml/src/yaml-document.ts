@@ -227,14 +227,14 @@ export class YamlDocument {
         value: T;
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
-        let seq = this.document.getIn(pathArray) as YAMLSeq;
+        let seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq) {
             throw new Error(t('error.seqDoesNotExist', { path }));
         }
 
-        const node: any = seq.items.find((node: any) => node.toJSON()[matcher.key] === matcher.value);
-        const newNode = this.document.createNode(merge(node.toJSON(), value));
-        seq.items.splice(seq.items.indexOf(node), 1, newNode);
+        const node = seq.items.find((node) => node.toJSON()[matcher.key] === matcher.value);
+        const newNode = this.document.createNode(merge(node!.toJSON(), value));
+        seq.items.splice(seq.items.indexOf(node!), 1, newNode);
 
         return this;
     }
