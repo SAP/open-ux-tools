@@ -6736,11 +6736,6 @@ server:
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -7499,7 +7494,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
