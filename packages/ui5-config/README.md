@@ -1,5 +1,6 @@
 # @sap-ux/ui5-config
 
+Utilities functions to generate middleware sections in ui*.yaml files
 
 
 
@@ -14,7 +15,7 @@ Pnpm
 `pnpm add @sap-ux/ui5-config`
 
 ## Usage
-
+See example in `/test/index.test.ts`
 
 ## Keywords
 SAP Fiori Freestyle
