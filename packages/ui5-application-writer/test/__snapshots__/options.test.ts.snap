@@ -114,11 +114,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -129,6 +124,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
 ",
     "state": "modified",
   },
