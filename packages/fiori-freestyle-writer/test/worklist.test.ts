@@ -57,7 +57,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     version: OdataVersion.v2,
                     metadata: getMetadata('sepmra_prod_man_v2'),
                     model: '',
-                    client: '123'
+                    client: '012',
+                    destination: {
+                        name: 'SIDCLNT012'
+                    }
                 }
             }
         },
