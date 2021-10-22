@@ -36,6 +36,7 @@ archive.zip
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open 'test/flpSandbox.html#testme-app'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#testme-app'\\",
     \\"start-noflp\\": \\"fiori run --open 'index.html'\\",
@@ -2615,6 +2616,7 @@ archive.zip
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open 'test/flpSandbox.html#testme-app'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#testme-app'\\",
     \\"start-noflp\\": \\"fiori run --open 'index.html'\\",
