@@ -1,5 +1,11 @@
-import { MiddlewareConfig } from './types';
+import { FioriToolsProxyConfig, Backend } from './types';
 import { YamlDocument, NodeComment } from '@sap-ux/yaml';
+import {
+    getAppReloadMiddlewareConfig,
+    getFioriToolsProxyMiddlewareConfig,
+    getMockServerMiddlewareConfig
+} from './middlewares';
+import { CustomMiddleware } from 'index';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.
@@ -62,10 +68,48 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addCustomMiddleware(middlewares: MiddlewareConfig[], comments?: NodeComment<MiddlewareConfig>[]): UI5Config {
+    public addCustomMiddleware(
+        middlewares: CustomMiddleware<any>[],
+        comments?: NodeComment<CustomMiddleware<any>>[]
+    ): UI5Config {
         for (const mw of middlewares) {
             this.document.appendTo({ path: 'server.customMiddleware', value: mw, comments });
         }
+        return this;
+    }
+
+    public addFioriToolsAppReloadMiddleware(): UI5Config {
+        this.document.appendTo({
+            path: 'server.customMiddleware',
+            value: getAppReloadMiddlewareConfig()
+        });
+        return this;
+    }
+
+    public addFioriToolsProxydMiddleware(proxyConfig: FioriToolsProxyConfig): UI5Config {
+        const { config, comments } = getFioriToolsProxyMiddlewareConfig(proxyConfig.backend, proxyConfig.ui5);
+        this.document.appendTo({
+            path: 'server.customMiddleware',
+            value: config,
+            comments: comments as any
+        });
+        return this;
+    }
+
+    public addBackendToFioriToolsProxydMiddleware(backend: Backend): UI5Config {
+        this.document.updateAt({
+            path: 'server.customMiddleware',
+            matcher: { key: 'name', value: 'fiori-tools-proxy' },
+            value: { configuration: { backend: [backend] } } as FioriToolsProxyConfig
+        });
+        return this;
+    }
+
+    public addMockServerMiddleware(path?: string): UI5Config {
+        this.document.appendTo({
+            path: 'server.customMiddleware',
+            value: getMockServerMiddlewareConfig(path)
+        });
         return this;
     }
 
