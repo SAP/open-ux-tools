@@ -1,6 +1,8 @@
 import { initI18n, t } from './i18n';
 import yaml, { Document, isSeq, YAMLSeq } from 'yaml';
 
+const merge = require('lodash.merge');
+
 // From here: https://twitter.com/diegohaz/status/1309489079378219009
 // Explanation here: https://dev.to/phenomnominal/i-need-to-learn-about-typescript-template-literal-types-51po
 type PathImpl<T, Key extends keyof T> = Key extends string
@@ -202,6 +204,38 @@ export class YamlDocument {
                 n.comment = c.comment;
             }
         }
+        return this;
+    }
+
+    /**
+     * Updates a node in a sequence in the document.
+     *
+     * @param path - hierarchical path where the node will be inserted/updated
+     * @param {string} path.path - the path object's path
+     * @param {Object} path.matcher - key/value pair identifying the object
+     * @param {Object} path.value - the path object's value
+     * @returns {YamlDocument} the YamlDocument instance
+     * @memberof YamlDocument
+     */
+    updateAt<T = unknown>({
+        path,
+        matcher,
+        value
+    }: {
+        path: string;
+        matcher: { key: string; value: string };
+        value: T;
+    }): YamlDocument {
+        const pathArray = this.toPathArray(path);
+        let seq = this.document.getIn(pathArray) as YAMLSeq;
+        if (!seq) {
+            throw new Error(t('error.seqDoesNotExist', { path }));
+        }
+
+        const node: any = seq.items.find((node: any) => node.toJSON()[matcher.key] === matcher.value);
+        const newNode = this.document.createNode(merge(node.toJSON(), value));
+        seq.items.splice(seq.items.indexOf(node), 1, newNode);
+
         return this;
     }
 
