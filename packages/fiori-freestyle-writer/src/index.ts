@@ -1,6 +1,6 @@
 import { join } from 'path';
-import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import { create as createStore } from 'mem-fs';
+import { create as createEditor, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { generate as generateUi5Project, Package } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
@@ -20,7 +20,7 @@ import { FreestyleApp } from 'types';
  */
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
     if (!fs) {
-        fs = create(createStorage());
+        fs = createEditor(createStore());
     }
     const ffApp = mergeWithDefaults(data);
     await generateUi5Project(basePath, ffApp, fs);
