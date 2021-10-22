@@ -6691,13 +6691,13 @@ archive.zip
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open 'test/flpSandbox.html?sap-client=123#wrk1-tile'\\",
+    \\"start\\": \\"fiori run --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=123#wrk1-tile'\\",
-    \\"start-noflp\\": \\"fiori run --open 'index.html?sap-client=123'\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?sap-client=123#wrk1-tile'\\"
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\",
+    \\"start-noflp\\": \\"fiori run --open 'index.html?sap-client=012'\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
@@ -6736,6 +6736,8 @@ server:
         backend:
           - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
+            client: \\"012\\"
+            destination: SIDCLNT012
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -6767,6 +6769,8 @@ server:
         backend:
           - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
+            client: \\"012\\"
+            destination: SIDCLNT012
         ui5:
           path:
             - /resources
@@ -6804,6 +6808,8 @@ server:
         backend:
           - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
+            client: \\"012\\"
+            destination: SIDCLNT012
         ui5:
           path:
             - /resources
