@@ -47,7 +47,9 @@ export const CONST = {
     DEFAULT_UI5_VERSION: '',
     DEFAULT_LOCAL_UI5_VERSION: '1.95.0',
     MIN_LOCAL_SAPUI5_VERSION: '1.76.0',
-    MIN_LOCAL_OPENUI5_VERSION: '1.52.5'
+    MIN_LOCAL_OPENUI5_VERSION: '1.52.5',
+    SAPUI5_CDN: 'https://ui5.sap.com',
+    OPENUI5_CDN: 'https://openui5.hana.ondemand.com'
 };
 
 /**
@@ -62,6 +64,8 @@ export function mergeUi5(ui5?: UI5): UI5 {
         version: ui5?.version || CONST.DEFAULT_UI5_VERSION // no version indicates the latest available should be used
     };
     merged.framework = ui5?.framework || 'SAPUI5';
+    merged.frameworkUrl = ui5?.frameworkUrl || merged.framework === 'SAPUI5' ? CONST.SAPUI5_CDN : CONST.OPENUI5_CDN;
+
     // if a specific local version is provided, use it, otherwise, sync with version but keep minimum versions in mind
     if (ui5?.localVersion) {
         merged.localVersion = ui5.localVersion;

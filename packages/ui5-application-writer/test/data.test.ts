@@ -8,6 +8,7 @@ describe('Setting defaults', () => {
                 input: {},
                 expected: {
                     framework: 'SAPUI5',
+                    frameworkUrl: 'https://ui5.sap.com',
                     version: CONST.DEFAULT_UI5_VERSION,
                     localVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
                     minUI5Version: '1.60',
@@ -20,6 +21,7 @@ describe('Setting defaults', () => {
                 input: { framework: 'OpenUI5' },
                 expected: {
                     framework: 'OpenUI5',
+                    frameworkUrl: 'https://openui5.hana.ondemand.com',
                     version: CONST.DEFAULT_UI5_VERSION,
                     localVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
                     minUI5Version: '1.60',
@@ -32,6 +34,7 @@ describe('Setting defaults', () => {
                 input: { framework: 'OpenUI5', version: '1.72.0' },
                 expected: {
                     framework: 'OpenUI5',
+                    frameworkUrl: 'https://openui5.hana.ondemand.com',
                     version: '1.72.0',
                     localVersion: '1.72.0',
                     minUI5Version: '1.60',
@@ -46,6 +49,7 @@ describe('Setting defaults', () => {
                 },
                 expected: {
                     framework: 'SAPUI5',
+                    frameworkUrl: 'https://ui5.sap.com',
                     version: CONST.DEFAULT_UI5_VERSION,
                     localVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
                     minUI5Version: '1.60',

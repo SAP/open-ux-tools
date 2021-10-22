@@ -27,6 +27,18 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
 
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, { globOptions: { dot: true } });
 
+    // ui5.yaml
+    const ui5ConfigPath = join(basePath, 'ui5.yaml');
+    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+    ui5Config.addFioriToolsAppReloadMiddleware();
+    ui5Config.addFioriToolsProxydMiddleware({
+        ui5: {
+            version: ui5App.ui5?.version,
+            url: ui5App.ui5?.frameworkUrl
+        }
+    });
+    fs.write(ui5ConfigPath, ui5Config.toString());
+
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
@@ -36,6 +48,7 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
         getUI5Libs(ui5App.ui5!.ui5Libs),
         ui5App.ui5!.ui5Theme
     );
+    ui5LocalConfig.addFioriToolsAppReloadMiddleware();
     fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     // Add optional features
