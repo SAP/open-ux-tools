@@ -1,4 +1,4 @@
-import { mergeUi5 } from '../src/data/defaults';
+import { CONST, mergeUi5 } from '../src/data/defaults';
 import type { UI5 } from '../src/types';
 
 describe('Setting defaults', () => {
@@ -8,11 +8,11 @@ describe('Setting defaults', () => {
                 input: {},
                 expected: {
                     framework: 'SAPUI5',
-                    version: '1.84.0',
-                    localVersion: '1.84.0',
+                    version: CONST.DEFAULT_UI5_VERSION,
+                    localVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
                     minUI5Version: '1.60',
                     descriptorVersion: '1.12.0',
-                    typesVersion: '1.84.0',
+                    typesVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
                     ui5Theme: 'sap_fiori_3'
                 }
             },
@@ -20,20 +20,20 @@ describe('Setting defaults', () => {
                 input: { framework: 'OpenUI5' },
                 expected: {
                     framework: 'OpenUI5',
-                    version: '1.84.0',
-                    localVersion: '1.84.0',
+                    version: CONST.DEFAULT_UI5_VERSION,
+                    localVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
                     minUI5Version: '1.60',
                     descriptorVersion: '1.12.0',
-                    typesVersion: '1.84.0',
+                    typesVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
                     ui5Theme: 'sap_fiori_3'
                 }
             },
             {
-                input: { version: '1.72.0' },
+                input: { framework: 'OpenUI5', version: '1.72.0' },
                 expected: {
-                    framework: 'SAPUI5',
+                    framework: 'OpenUI5',
                     version: '1.72.0',
-                    localVersion: '1.76.0',
+                    localVersion: '1.72.0',
                     minUI5Version: '1.60',
                     descriptorVersion: '1.12.0',
                     typesVersion: '1.71.18',
@@ -46,11 +46,11 @@ describe('Setting defaults', () => {
                 },
                 expected: {
                     framework: 'SAPUI5',
-                    version: '1.84.0',
-                    localVersion: '1.84.0',
+                    version: CONST.DEFAULT_UI5_VERSION,
+                    localVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
                     minUI5Version: '1.60',
                     descriptorVersion: '1.12.0',
-                    typesVersion: '1.84.0',
+                    typesVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
                     ui5Theme: 'sap_fiori_3_dark'
                 }
             }
