@@ -1,11 +1,11 @@
-export interface Backend {
+export interface ProxyBackend {
     path?: string;
     url: string;
     destination?: string;
     destinationInstance?: string;
 }
 
-export interface UI5Host {
+export interface ProxyUIConfig {
     path?: string[];
     url?: string;
     version?: string;
@@ -25,8 +25,8 @@ export interface FioriAppReloadConfig {
 }
 
 export interface FioriToolsProxyConfig {
-    backend?: Backend[];
-    ui5?: UI5Host;
+    backend?: ProxyBackend[];
+    ui5?: ProxyUIConfig;
     ignoreCertError?: boolean;
 }
 

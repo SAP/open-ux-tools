@@ -1,10 +1,10 @@
 import type {
-    Backend,
+    ProxyBackend,
     CustomMiddleware,
     FioriAppReloadConfig,
     FioriToolsProxyConfig,
     MockserverConfig,
-    UI5Host
+    ProxyUIConfig
 } from './types';
 import type { NodeComment, Path } from '@sap-ux/yaml';
 
@@ -20,8 +20,8 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
 }
 
 export function getFioriToolsProxyMiddlewareConfig(
-    backends?: Backend[],
-    ui5?: UI5Host
+    backends?: ProxyBackend[],
+    ui5?: ProxyUIConfig
 ): {
     config: CustomMiddleware<FioriToolsProxyConfig>;
     comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[];

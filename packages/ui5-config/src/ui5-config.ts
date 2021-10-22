@@ -1,4 +1,4 @@
-import { FioriToolsProxyConfig, Backend } from './types';
+import { FioriToolsProxyConfig, ProxyBackend } from './types';
 import { YamlDocument, NodeComment } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
@@ -96,7 +96,7 @@ export class UI5Config {
         return this;
     }
 
-    public addBackendToFioriToolsProxydMiddleware(backend: Backend): UI5Config {
+    public addBackendToFioriToolsProxydMiddleware(backend: ProxyBackend): UI5Config {
         this.document.updateAt({
             path: 'server.customMiddleware',
             matcher: { key: 'name', value: 'fiori-tools-proxy' },
