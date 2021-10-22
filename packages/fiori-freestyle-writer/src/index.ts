@@ -11,8 +11,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { FreestyleApp } from 'types';
 
 /**
- * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
- *
+ * @description Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
  * @param basePath - the absolute target path where the applciation will be generated
  * @param data -
  * @param fs - an optional reference to a mem-fs editor
@@ -89,13 +88,16 @@ async function addUi5ConfigFiles<T>({ basePath, fs, ffApp }: { basePath: string;
 }
 
 /**
- * For CAP for refrain from adding files that are not relevant but we _don't_ completely
+ * @description For CAP for refrain from adding files that are not relevant but we _don't_ completely
  * generate the required files.
  *
  * Partial list of files not fully generated/updated:
  * annotations.cds, README.md, ui5.yaml, package.json, index.cds/service.cds, root package.json
+ * @param options
+ * @param options.basePath
+ * @param options.fs
  */
-function updateCapSpecificFiles<T>({ basePath, fs }: { basePath: string; fs: Editor }): void {
+function updateCapSpecificFiles({ basePath, fs }: { basePath: string; fs: Editor }): void {
     const deleteIfExists = (filepath: string) => {
         if (fs.exists(filepath)) {
             fs.delete(filepath);
