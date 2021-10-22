@@ -43,7 +43,7 @@ export function appDefaults(app: App): App {
     };
 }
 
-export const CONST = {
+export const UI5_DEFAULT = {
     DEFAULT_UI5_VERSION: '',
     DEFAULT_LOCAL_UI5_VERSION: '1.95.0',
     MIN_LOCAL_SAPUI5_VERSION: '1.76.0',
@@ -61,21 +61,22 @@ export const CONST = {
 export function mergeUi5(ui5?: UI5): UI5 {
     const merged: Partial<UI5> = {
         minUI5Version: ui5?.minUI5Version || '1.60',
-        version: ui5?.version || CONST.DEFAULT_UI5_VERSION // no version indicates the latest available should be used
+        version: ui5?.version || UI5_DEFAULT.DEFAULT_UI5_VERSION // no version indicates the latest available should be used
     };
     merged.framework = ui5?.framework || 'SAPUI5';
-    merged.frameworkUrl = ui5?.frameworkUrl || merged.framework === 'SAPUI5' ? CONST.SAPUI5_CDN : CONST.OPENUI5_CDN;
+    merged.frameworkUrl =
+        ui5?.frameworkUrl || merged.framework === 'SAPUI5' ? UI5_DEFAULT.SAPUI5_CDN : UI5_DEFAULT.OPENUI5_CDN;
 
     // if a specific local version is provided, use it, otherwise, sync with version but keep minimum versions in mind
     if (ui5?.localVersion) {
         merged.localVersion = ui5.localVersion;
     } else {
         merged.localVersion =
-            merged.version === CONST.DEFAULT_UI5_VERSION
-                ? CONST.DEFAULT_LOCAL_UI5_VERSION
+            merged.version === UI5_DEFAULT.DEFAULT_UI5_VERSION
+                ? UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION
                 : merged.framework === 'SAPUI5'
-                ? CONST.MIN_LOCAL_SAPUI5_VERSION
-                : CONST.MIN_LOCAL_OPENUI5_VERSION; // minimum version available as local libs
+                ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION
+                : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION; // minimum version available as local libs
         if (parseFloat(merged.version!) > parseFloat(merged.localVersion)) {
             merged.localVersion = merged.version!;
         }

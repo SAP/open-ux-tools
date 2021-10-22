@@ -1,4 +1,4 @@
-import { CONST, mergeUi5 } from '../src/data/defaults';
+import { UI5_DEFAULT, mergeUi5 } from '../src/data/defaults';
 import type { UI5 } from '../src/types';
 
 describe('Setting defaults', () => {
@@ -9,11 +9,11 @@ describe('Setting defaults', () => {
                 expected: {
                     framework: 'SAPUI5',
                     frameworkUrl: 'https://ui5.sap.com',
-                    version: CONST.DEFAULT_UI5_VERSION,
-                    localVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
+                    version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
+                    localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                     minUI5Version: '1.60',
                     descriptorVersion: '1.12.0',
-                    typesVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
+                    typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                     ui5Theme: 'sap_fiori_3'
                 }
             },
@@ -22,11 +22,11 @@ describe('Setting defaults', () => {
                 expected: {
                     framework: 'OpenUI5',
                     frameworkUrl: 'https://openui5.hana.ondemand.com',
-                    version: CONST.DEFAULT_UI5_VERSION,
-                    localVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
+                    version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
+                    localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                     minUI5Version: '1.60',
                     descriptorVersion: '1.12.0',
-                    typesVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
+                    typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                     ui5Theme: 'sap_fiori_3'
                 }
             },
@@ -50,11 +50,11 @@ describe('Setting defaults', () => {
                 expected: {
                     framework: 'SAPUI5',
                     frameworkUrl: 'https://ui5.sap.com',
-                    version: CONST.DEFAULT_UI5_VERSION,
-                    localVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
+                    version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
+                    localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                     minUI5Version: '1.60',
                     descriptorVersion: '1.12.0',
-                    typesVersion: CONST.DEFAULT_LOCAL_UI5_VERSION,
+                    typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                     ui5Theme: 'sap_fiori_3_dark'
                 }
             }
