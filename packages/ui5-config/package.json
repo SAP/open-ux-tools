@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-config",
     "description": "Library to UI5 configuration artifacts",
-    "version": "0.9.1",
+    "version": "0.9.2",
     "main": "dist/index.js",
     "scripts": {
         "build": "pnpm clean && tsc",

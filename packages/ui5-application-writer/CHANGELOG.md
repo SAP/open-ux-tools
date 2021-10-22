@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.9.2
+
+### Patch Changes
+
+-   a16d4e7: fix versions in modules for patch instead of minor
+
 ## 0.10.0
 
 ### Minor Changes
