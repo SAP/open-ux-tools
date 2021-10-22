@@ -17,6 +17,7 @@ export function packageDefaults(version?: string, description?: string): Partial
         },
         scripts: {
             start: 'ui5 serve --config=ui5.yaml --open index.html',
+            'start-local': 'ui5 serve --config=ui5-local.yaml --open index.html',
             build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist'
         },
         ui5: {

@@ -34,6 +34,7 @@ archive.zip
 },
 	\\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
+    \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
 },
 	\\"ui5\\": {
@@ -49,6 +50,12 @@ archive.zip
 metadata:
   name: testAppId
 type: application
+framework:
+  name: OpenUI5
+  version: 1.84.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_fiori_3
 ",
     "state": "modified",
   },
