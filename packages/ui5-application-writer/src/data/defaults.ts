@@ -53,6 +53,12 @@ export function mergeUi5(ui5?: UI5): UI5 {
         minUI5Version: ui5?.minUI5Version || '1.60',
         version: ui5?.version || '1.84.0'
     };
+    merged.framework = ui5?.framework || 'SAPUI5';
+    merged.localVersion = merged.framework === 'SAPUI5' ? '1.76.0' : '1.52.5'; // minimum version available as local libs
+    if (parseFloat(merged.version!) > parseFloat(merged.localVersion)) {
+        merged.localVersion = merged.version!;
+    }
+
     merged.descriptorVersion =
         ui5?.descriptorVersion || (mappings as Record<string, string>)[merged.minUI5Version!] || '1.12.0';
     merged.typesVersion = ui5?.typesVersion || parseFloat(merged.version!) >= 1.76 ? merged.version : '1.71.18';
