@@ -4,6 +4,7 @@ import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { enhanceData } from '../../src/data';
 import cloneDeep from 'lodash/cloneDeep';
+import { UI5Config } from '@sap-ux/ui5-config';
 
 const testDir = 'virtual-temp';
 const commonConfig = {
@@ -25,10 +26,11 @@ describe('Test generate method with invalid location', () => {
 
 describe('Test generate method with valid input', () => {
     let fs: Editor;
-    beforeEach(() => {
+    beforeEach(async () => {
+        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
         // generate required files
         fs = create(createStorage());
-        fs.write(join(testDir, 'ui5.yaml'), '#empty file');
+        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
         fs.write(join(testDir, 'ui5-local.yaml'), '#empty file');
         fs.write(join(testDir, 'ui5-mock.yaml'), '#empty file');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });

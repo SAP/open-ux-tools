@@ -5,6 +5,7 @@ import { join } from 'path';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { removeSync } from 'fs-extra';
+import { UI5Config } from '@sap-ux/ui5-config';
 
 describe('ODataService templates', () => {
     const debug = !!process.env['UX_DEBUG'];
@@ -18,8 +19,10 @@ describe('ODataService templates', () => {
 
     it('Invalid project throws expected errors', async () => {
         const testDir = join(outputDir, 'odata-service-v2');
+        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
+
         const fs = create(createStorage());
-        fs.write(join(testDir, 'ui5.yaml'), '#empty file');
+        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
         fs.write(join(testDir, 'ui5-local.yaml'), '#empty file');
         fs.write(join(testDir, 'ui5-mock.yaml'), '#empty file');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
@@ -48,8 +51,10 @@ describe('ODataService templates', () => {
 
     it('generates all expected files correctly', async () => {
         const testDir = join(outputDir, 'odata-service-v2');
+        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
+
         const fs = create(createStorage());
-        fs.write(join(testDir, 'ui5.yaml'), '#empty file');
+        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
         fs.write(join(testDir, 'ui5-local.yaml'), '#empty file');
         fs.write(join(testDir, 'ui5-mock.yaml'), '#empty file');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
