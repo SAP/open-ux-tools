@@ -26,13 +26,19 @@ export class UI5Config {
     /**
      * Adds a UI5 Framework entry to the yaml file.
      *
+     * @param {string} ui5Framework - whether to user SAPUI5 or OpenUI5
      * @param {string} ui5Version - ui5 version
      * @param {string[]} libraries - a list of libraries
      * @param ui5Theme - ui5 theme
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addUI5Framework(ui5Version: string, libraries: string[], ui5Theme = 'sap_fiori_3'): UI5Config {
+    public addUI5Framework(
+        ui5Framework: string,
+        ui5Version: string,
+        libraries: string[],
+        ui5Theme = 'sap_fiori_3'
+    ): UI5Config {
         const libraryObjs = [];
         for (const library of libraries) {
             libraryObjs.push({ name: library });
@@ -43,7 +49,7 @@ export class UI5Config {
 
         this.document.setIn({
             path: 'framework',
-            value: { name: 'SAPUI5', version: ui5Version, libraries: libraryObjs }
+            value: { name: ui5Framework, version: ui5Version, libraries: libraryObjs }
         });
         return this;
     }

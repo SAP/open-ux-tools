@@ -116,11 +116,11 @@ describe('Fiori config utils', () => {
 
     test('UI5Config addUI5Framework', async () => {
         const ui5Config = await UI5Config.newInstance('');
-        ui5Config.addUI5Framework('1.64.0s', ['sap.m'], 'sap_belize');
+        ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_belize');
         expect((await ui5Config).toString()).toMatchInlineSnapshot(`
             "framework:
               name: SAPUI5
-              version: 1.64.0s
+              version: 1.64.0
               libraries:
                 - name: sap.m
                 - name: themelib_sap_belize
@@ -130,11 +130,11 @@ describe('Fiori config utils', () => {
 
     test('UI5Config addUI5Framework: dark theme lib handling', async () => {
         const ui5Config = await UI5Config.newInstance('');
-        ui5Config.addUI5Framework('1.64.0s', ['sap.m'], 'sap_fiori_3_dark');
+        ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_fiori_3_dark');
         expect((await ui5Config).toString()).toMatchInlineSnapshot(`
           "framework:
             name: SAPUI5
-            version: 1.64.0s
+            version: 1.64.0
             libraries:
               - name: sap.m
               - name: themelib_sap_fiori_3
