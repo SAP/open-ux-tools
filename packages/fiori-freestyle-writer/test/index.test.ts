@@ -16,7 +16,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
         console.log(testOutputDir);
     }
 
-    const commonConfig = {
+    const commonConfig: Partial<FreestyleApp<any>> = {
         app: {
             id: 'test.me',
             title: 'My Test App',
@@ -55,7 +55,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
                         lineItem: { name: 'Products' }
                     }
                 }
-            }
+            } as FreestyleApp<any>
         },
         {
             name: 'worklist',
@@ -74,7 +74,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
                         }
                     }
                 }
-            }
+            } as FreestyleApp<any>
         }
     ];
 

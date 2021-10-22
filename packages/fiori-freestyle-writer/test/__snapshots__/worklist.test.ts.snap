@@ -35,9 +35,9 @@ archive.zip
   },
   \\"scripts\\": {
     \\"start\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\\\\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#wrk1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#wrk1-tile'\\",
     \\"start-noflp\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\\\\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html#wrk1-tile'\\"
   },
@@ -61,13 +61,13 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -78,6 +78,11 @@ server:
         backend:
           - path: /here
             url: http://localhost
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -87,11 +92,6 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
 ",
     "state": "modified",
   },
@@ -6691,9 +6691,9 @@ archive.zip
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open 'test/flpSandbox.html?sap-client=123#wrk1-tile'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=123#wrk1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=123#wrk1-tile'\\",
     \\"start-noflp\\": \\"fiori run --open 'index.html?sap-client=123'\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?sap-client=123#wrk1-tile'\\"
   },
@@ -6717,13 +6717,13 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -6734,6 +6734,11 @@ server:
         backend:
           - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -6743,11 +6748,6 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
 ",
     "state": "modified",
   },
@@ -9943,9 +9943,9 @@ archive.zip
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open 'test/flpSandbox.html#wrk1-tile'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#wrk1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#wrk1-tile'\\",
     \\"start-noflp\\": \\"fiori run --open 'index.html'\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html#wrk1-tile'\\"
   },
@@ -9969,13 +9969,13 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -9986,6 +9986,11 @@ server:
         backend:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -9995,11 +10000,6 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
 ",
     "state": "modified",
   },
