@@ -117,24 +117,24 @@ describe('Fiori config utils', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
             ui5Config.addBackendToFioriToolsProxydMiddleware(serviceData);
             expect((await ui5Config).toString()).toMatchInlineSnapshot(`
-          "server:
-            customMiddleware:
-              - name: fiori-tools-proxy
-                afterMiddleware: compression
-                configuration:
-                  ignoreCertError: false
-                  ui5:
-                    path:
-                      - /resources
-                      - /test-resources
-                    url: https://ui5.sap.com
-                    version: ''
-                  backend:
-                    - path: /testpath
-                      url: http://localhost:8080
-                      destination: SIDCLNT000
-          "
-          `);
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - path: /testpath
+            url: http://localhost:8080
+            destination: SIDCLNT000
+"
+`);
         });
     });
     /**

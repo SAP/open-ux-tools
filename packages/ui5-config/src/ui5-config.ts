@@ -1,5 +1,5 @@
 import { FioriToolsProxyConfig, ProxyBackend } from './types';
-import { YamlDocument, NodeComment } from '@sap-ux/yaml';
+import { YamlDocument, NodeComment, YAMLMap } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
     getFioriToolsProxyMiddlewareConfig,
@@ -97,11 +97,15 @@ export class UI5Config {
     }
 
     public addBackendToFioriToolsProxydMiddleware(backend: ProxyBackend): UI5Config {
-        this.document.updateAt({
-            path: 'server.customMiddleware',
-            matcher: { key: 'name', value: 'fiori-tools-proxy' },
-            value: { configuration: { backend: [backend] } } as FioriToolsProxyConfig
-        });
+        const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+        const proxyMiddleware = this.document.findItem(
+            middlewareList,
+            (item: any) => item.name === 'fiori-tools-proxy'
+        );
+        if (!proxyMiddleware) {
+            throw new Error('Could not find fiori-tools-proxy');
+        }
+        this.document.getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' }).set('backend', [backend]);
         return this;
     }
 

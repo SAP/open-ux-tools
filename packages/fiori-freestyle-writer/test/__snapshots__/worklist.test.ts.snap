@@ -71,6 +71,11 @@ framework:
     - name: themelib_sap_belize
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -78,11 +83,6 @@ server:
         backend:
           - path: /here
             url: http://localhost
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -106,15 +106,17 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /here
-            url: http://localhost
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. null means latest version
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -124,11 +126,6 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
 ",
     "state": "modified",
   },
@@ -143,15 +140,15 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /here
-            url: http://localhost
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - path: /here
+            url: http://localhost
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -6690,12 +6687,21 @@ archive.zip
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"latest\\"
   },
   \\"scripts\\": {
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=123#wrk1-tile'\\",
+    \\"start\\": \\"fiori run --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open 'index.html?sap-client=123'\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?sap-client=123#wrk1-tile'\\"
+    \\"start-noflp\\": \\"fiori run --open 'index.html?sap-client=012'\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\"
   },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
+      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+    ]
+  }
+}
+",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -6718,6 +6724,11 @@ framework:
     - name: themelib_sap_belize
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6725,11 +6736,7 @@ server:
         backend:
           - path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
+            destination: SIDCLNT012
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -6753,17 +6760,17 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /sap
-            url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
-            client: \\"012\\"
-            destination: SIDCLNT012
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. null means latest version
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -6773,11 +6780,6 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
 ",
     "state": "modified",
   },
@@ -6792,17 +6794,16 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /sap
-            url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
-            client: \\"012\\"
-            destination: SIDCLNT012
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - path: /sap
+            url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
+            destination: SIDCLNT012
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -9974,6 +9975,11 @@ framework:
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -9981,11 +9987,6 @@ server:
         backend:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -10009,15 +10010,17 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /catalog-admin-noauth
-            url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. null means latest version
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -10027,11 +10030,6 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
 ",
     "state": "modified",
   },
@@ -10046,15 +10044,15 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /catalog-admin-noauth
-            url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - path: /catalog-admin-noauth
+            url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

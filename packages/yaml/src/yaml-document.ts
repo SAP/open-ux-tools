@@ -1,24 +1,10 @@
 import { initI18n, t } from './i18n';
-import yaml, { Document, isSeq, YAMLSeq } from 'yaml';
+import yaml, { Document, isMap, isSeq, Node, Scalar, YAMLMap, YAMLSeq } from 'yaml';
 
 const merge = require('lodash.merge');
 
-// From here: https://twitter.com/diegohaz/status/1309489079378219009
-// Explanation here: https://dev.to/phenomnominal/i-need-to-learn-about-typescript-template-literal-types-51po
-type PathImpl<T, Key extends keyof T> = Key extends string
-    ? T[Key] extends Record<string, any>
-        ?
-              | `${Key}.${PathImpl<T[Key], Exclude<keyof T[Key], keyof any[]>> & string}`
-              | `${Key}.${Exclude<keyof T[Key], keyof any[]> & string}`
-        : never
-    : never;
-
-type PathImpl2<T> = PathImpl<T, keyof T> | keyof T;
-
-export type Path<T> = PathImpl2<T> extends string | keyof T ? PathImpl2<T> : keyof T;
-
 export interface NodeComment<T> {
-    path: Path<T>;
+    path: string;
     comment: string;
 }
 
@@ -213,6 +199,7 @@ export class YamlDocument {
      * @param path - hierarchical path where the node will be inserted/updated
      * @param {string} path.path - the path object's path
      * @param {Object} path.matcher - key/value pair identifying the object
+     * @param {string} path.key - key of the property being set
      * @param {Object} path.value - the path object's value
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
@@ -239,6 +226,47 @@ export class YamlDocument {
         return this;
     }
 
+    getNode({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): unknown {
+        if (start) {
+            if (!(isSeq(start) || isMap(start))) {
+                throw new Error(t('error.startNodeMustBeCollection'));
+            }
+        }
+        const pathArray = this.toPathArray(path);
+        const node = start || this.document;
+        const targetNode = node?.getIn(pathArray);
+        if (!targetNode) {
+            throw new Error(t('error.nodeNotFound', { path }));
+        } else {
+            return targetNode;
+        }
+    }
+
+    getSequence({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLSeq {
+        const a = this.getNode({ start, path });
+        if (!isSeq(a)) {
+            throw new Error(t('error.seqDoesNotExist', { path }));
+        } else {
+            return a as YAMLSeq<Node>;
+        }
+    }
+
+    getMap({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLMap {
+        const a = this.getNode({ start, path });
+        if (!isMap(a)) {
+            throw new Error(t('error.nodeNotAMap', { path }));
+        } else {
+            return a as YAMLMap<Node>;
+        }
+    }
+
+    findItem(sequence: YAMLSeq, predicate: (o: any) => boolean): unknown {
+        const toJson = (o: unknown) =>
+            (o !== undefined && typeof (o as any).toJSON === 'function' && (o as any).toJSON.call(o)) || {};
+
+        return sequence.items.find((item) => predicate(toJson(item)));
+    }
+
     /**
      * Converts to a path object to an array.
      *
@@ -248,7 +276,7 @@ export class YamlDocument {
      * @returns {string[]} - the path array
      * @memberof YamlDocument
      */
-    private toPathArray<T>(path: Path<T>): string[] {
+    private toPathArray<T>(path: string): string[] {
         const result = path
             ?.toString()
             .split('.')

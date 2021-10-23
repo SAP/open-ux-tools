@@ -6,7 +6,7 @@ import type {
     MockserverConfig,
     ProxyUIConfig
 } from './types';
-import type { NodeComment, Path } from '@sap-ux/yaml';
+import type { NodeComment } from '@sap-ux/yaml';
 
 export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadConfig> {
     return {
@@ -55,7 +55,7 @@ export function getFioriToolsProxyMiddlewareConfig(
             version: ui5.version || ''
         };
         comments.push({
-            path: 'configuration.ui5.version' as Path<CustomMiddleware<FioriToolsProxyConfig>>,
+            path: 'configuration.ui5.version',
             comment: ' The UI5 version, for instance, 1.78.1. null means latest version'
         });
     }
