@@ -74,7 +74,7 @@ export const getFioriToolsProxyMiddlewareConfig = (
     if (useUi5Cdn === true) {
         comments.push({
             path: 'configuration.ui5.version' as Path<MiddlewareConfig>,
-            comment: ' The UI5 version, for instance, 1.78.1. null means latest version'
+            comment: ' The UI5 version, for instance, 1.78.1. Empty string means latest version'
         });
     }
 
