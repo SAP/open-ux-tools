@@ -137,7 +137,8 @@ server:
           \\"annotations\\": [
             \\"SEPM_XYZ\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\"
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       },
       \\"SEPM_XYZ\\": {

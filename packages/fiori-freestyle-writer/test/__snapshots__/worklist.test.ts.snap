@@ -9311,7 +9311,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\"
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
