@@ -90,7 +90,7 @@ async function generate(basePath: string, data: OdataService, ui5?: UI5, fs?: Ed
         // package.json updates
         const mockDevDeps = {
             devDependencies: {
-                '@sap/ux-ui5-fe-mockserver-middleware': 'latest'
+                '@sap/ux-ui5-fe-mockserver-middleware': '1'
             }
         };
         const packagePath = join(basePath, 'package.json');

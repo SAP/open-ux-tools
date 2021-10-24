@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.9.3
+
+### Patch Changes
+
+-   6888c5b: Add Readme for modules, add deploy script FF template, engines.node update to lts and small clean-up
+
 ## 0.9.2
 
 ### Patch Changes
