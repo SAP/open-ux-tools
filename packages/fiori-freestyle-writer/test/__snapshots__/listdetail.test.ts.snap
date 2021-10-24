@@ -108,7 +108,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.84.0 # The UI5 version, for instance, 1.78.1. null means latest version
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -145,7 +145,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.84.0 # The UI5 version, for instance, 1.78.1. null means latest version
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

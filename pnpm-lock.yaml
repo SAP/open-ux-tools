@@ -79,6 +79,7 @@ importers:
 
   packages/odata-service-writer:
     specifiers:
+      '@sap-ux/ui5-application-writer': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
@@ -99,6 +100,7 @@ importers:
       mem-fs-editor: 9.0.0_mem-fs@2.1.0
       prettify-xml: 1.2.0
     devDependencies:
+      '@sap-ux/ui5-application-writer': link:../ui5-application-writer
       '@types/ejs': 3.0.6
       '@types/fs-extra': 9.0.13
       '@types/mem-fs-editor': 7.0.0

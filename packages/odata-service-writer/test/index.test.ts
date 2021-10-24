@@ -39,6 +39,7 @@ describe('ODataService templates', () => {
                         xml: '<HELLO><ANNOTATION></ANNOTATION></WORLD></HELLO>'
                     }
                 } as OdataService,
+                undefined,
                 fs
             )
         ).rejects.toEqual(
@@ -74,6 +75,7 @@ describe('ODataService templates', () => {
                     xml: '<HELLO><ANNOTATION></ANNOTATION></WORLD></HELLO>'
                 }
             } as OdataService,
+            undefined,
             fs
         );
         expect((fsEditor as any).dump(testDir)).toMatchSnapshot();
