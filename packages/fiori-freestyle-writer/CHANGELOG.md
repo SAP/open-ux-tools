@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.9.3
+
+### Patch Changes
+
+-   6888c5b: Add Readme for modules, add deploy script FF template, engines.node update to lts and small clean-up
+-   Updated dependencies [6888c5b]
+    -   @sap-ux/odata-service-writer@0.9.3
+    -   @sap-ux/ui5-application-writer@0.9.3
+    -   @sap-ux/ui5-config@0.9.3
+
 ## 0.9.2
 
 ### Patch Changes
