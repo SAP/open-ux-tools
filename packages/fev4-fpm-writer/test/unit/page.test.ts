@@ -21,10 +21,10 @@ describe('CustomPage', () => {
                     }
                 },
                 routing: {
-                    routes: [] as Ui5Route[]
-                },
-                targets: {
-                    TestObjectPage: {}
+                    routes: [] as Ui5Route[],
+                    targets: {
+                        TestObjectPage: {}
+                    }
                 }
             }
         },
