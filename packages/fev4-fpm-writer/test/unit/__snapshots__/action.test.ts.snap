@@ -1,0 +1,164 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomAction generateCustomAction generateCustomAction 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerName": "my.test.App.ext.MyCustomAction",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {
+                  "MyCustomAction": Object {
+                    "enabled": true,
+                    "press": "my.test.App.ext.MyCustomAction.onPress",
+                    "text": "{i18n>customHeaderAction}",
+                    "visible": true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomAction generateCustomAction 2`] = `
+"
+  
+sap.ui.define([
+    \\"sap/ui/core/mvc/ControllerExtension\\", 
+    \\"sap/m/MessageToast\\"], 
+    function(
+        ControllerExtension, 
+        MessageToast) {
+    \\"use strict\\";
+	return ControllerExtension.extend(\\"my.test.App.ext.MyCustomAction\\", {
+		// controller extensions can be used for handling manifest based custom action events
+		onPress: function(oContext) {
+			MessageToast.show(\\"Controller extension based action handler invoked.\\");
+		}
+	});
+});"
+`;
+
+exports[`CustomAction getTargetElementReference get reference for different control types 1`] = `
+Object {
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "TestPage": Object {
+          "options": Object {
+            "content": Object {
+              "header": Object {
+                "actions": Object {},
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction getTargetElementReference get reference for different control types 2`] = `
+Object {
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "TestPage": Object {
+          "options": Object {
+            "content": Object {
+              "footer": Object {
+                "actions": Object {},
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction getTargetElementReference get reference for different control types 3`] = `
+Object {
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "TestPage": Object {
+          "options": Object {
+            "controlConfiguration": Object {
+              "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+                "actions": Object {},
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction getTargetElementReference get reference for different control types 4`] = `
+Object {
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "TestPage": Object {
+          "options": Object {
+            "controlConfiguration": Object {
+              "@com.sap.vocabularies.UI.v1.FieldGroup#FacetCustomAction": Object {
+                "actions": Object {},
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction getTargetElementReference get reference for different control types 5`] = `
+Object {
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "TestPage": Object {
+          "options": Object {
+            "controlConfiguration": Object {
+              "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+                "actions": Object {},
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;

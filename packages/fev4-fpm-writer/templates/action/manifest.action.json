@@ -1,0 +1,12 @@
+{
+    "<%- name %>": {
+        "press": "<%- controller %>.onPress",
+        "visible": true,
+        "enabled": true,
+        "text": "{i18n>customHeaderAction}"<%if (settings.position) {%>,
+        "position": {
+            "placement": "Before",
+            "anchor": "anotherCustomHeaderAction"
+        }<% } %>
+    }
+}

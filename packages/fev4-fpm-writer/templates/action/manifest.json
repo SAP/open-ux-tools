@@ -1,0 +1,13 @@
+{
+	"sap.ui5": {
+		"extends": {
+			"extensions": {
+				"sap.ui.controllerExtensions": {
+					"sap.fe.templates.ObjectPage.ObjectPageController": {
+						"controllerName": "<%- controller %>"
+					}
+				}
+			}
+		}
+	}
+}
