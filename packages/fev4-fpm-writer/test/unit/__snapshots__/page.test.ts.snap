@@ -5,14 +5,14 @@ Object {
   "routes": Array [
     Object {
       "name": "TestObjectPage",
-      "pattern": "object/{key}",
+      "pattern": "RootEntity({key}):?query:",
       "target": Array [
         "TestObjectPage",
       ],
     },
     Object {
       "name": "ChildEntityCustomPage",
-      "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
+      "pattern": "RootEntity({key})/navToChildEntity({navToChildEntityKey}):?query:",
       "target": Array [
         "TestObjectPage",
         "ChildEntityCustomPage",
@@ -54,7 +54,7 @@ Object {
   "routes": Array [
     Object {
       "name": "TestObjectPage",
-      "pattern": "object/{key}",
+      "pattern": "RootEntity({key})/NestedEntiry({nestedKey}):?query:",
       "target": Array [
         "TestList",
         "TestNestedList",
@@ -63,7 +63,7 @@ Object {
     },
     Object {
       "name": "ChildEntityCustomPage",
-      "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
+      "pattern": "RootEntity({key})/NestedEntiry({nestedKey})/navToChildEntity({navToChildEntityKey}):?query:",
       "target": Array [
         "ChildEntityCustomPage",
       ],
@@ -104,7 +104,7 @@ Object {
   "routes": Array [
     Object {
       "name": "ChildEntityCustomPage",
-      "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
+      "pattern": "undefined/navToChildEntity({navToChildEntityKey}):?query:",
       "target": "ChildEntityCustomPage",
     },
   ],

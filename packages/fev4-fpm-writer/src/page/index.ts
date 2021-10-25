@@ -45,8 +45,10 @@ function updateRoutes(routes: Ui5Route[], config: CustomPageConfig) {
         name: `${config.entity}${config.name}`
     };
     if (config.navigation) {
-        newRoute.pattern = `${config.navigation.sourceEntity}({key})/${config.navigation.navEntity}({key2}):?query:`;
         const sourceRoute = routes.find((route) => route.name === config.navigation?.sourcePage);
+        newRoute.pattern = `${sourceRoute?.pattern.replace(':?query:', '')}/${config.navigation.navEntity}({${
+            config.navigation.navEntity
+        }Key}):?query:`;
         if (sourceRoute?.target.constructor === Array) {
             const pages = sourceRoute.target as string[];
             // FCL only supports 3 columns, therefore, show the page in fullscreen if it is the 4th level of navigation

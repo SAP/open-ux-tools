@@ -103,7 +103,7 @@ describe('CustomPage', () => {
         test('inbound navigation defined as array (for FCL)', () => {
             const testManifestWithArray = JSON.parse(testAppManifest);
             testManifestWithArray['sap.ui5'].routing.routes.push({
-                pattern: 'object/{key}',
+                pattern: 'RootEntity({key}):?query:',
                 name: 'TestObjectPage',
                 target: ['TestObjectPage']
             });
@@ -116,7 +116,7 @@ describe('CustomPage', () => {
         test('inbound navigation defined as array with max nesting for FCL', () => {
             const testManifestWithArray = JSON.parse(testAppManifest);
             testManifestWithArray['sap.ui5'].routing.routes.push({
-                pattern: 'object/{key}',
+                pattern: 'RootEntity({key})/NestedEntiry({nestedKey}):?query:',
                 name: 'TestObjectPage',
                 target: ['TestList', 'TestNestedList', 'TestObjectPage']
             });
