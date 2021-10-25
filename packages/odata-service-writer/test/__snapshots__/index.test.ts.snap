@@ -10,7 +10,7 @@ Object {
     ]
   },
   \\"devDependencies\\": {
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"latest\\"
+    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   }
 }
 ",

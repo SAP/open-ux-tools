@@ -131,7 +131,7 @@ sap.ui.define([
 			// No data for the binding
 			if (!oElementBinding.getBoundContext()) {
 				this.getRouter().getTargets().display("detailObjectNotFound");
-				// if object could not be found, the selection in the list list
+				// if object could not be found, the selection in the list
 				// does not make sense anymore.
 				this.getOwnerComponent().oListSelector.clearListListSelection();
 				return;

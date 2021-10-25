@@ -89,8 +89,8 @@
 		},
 
 		/**
-		 * Removes all selections from list list.
-		 * Does not trigger 'selectionChange' event on list list, though.
+		 * Removes all selections from list.
+		 * Does not trigger 'selectionChange' event on list, though.
 		 * @public
 		 */
 		clearMasterListSelection : function () {
