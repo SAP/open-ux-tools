@@ -5,8 +5,8 @@ import { generate as generateUi5Project, Package } from '@sap-ux/ui5-application
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import { FreestyleApp } from './types';
-import { setAdditionalAppDefaults } from './defaults';
+import { BasicAppSettings, FreestyleApp, TemplateType } from './types';
+import { setDefaults } from './defaults';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -24,15 +24,23 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     fs = await generateUi5Project(basePath, ffApp, fs);
 
-    // set additional app defaults
-    setAdditionalAppDefaults(ffApp.app);
+    // set additional defaults
+    setDefaults(ffApp);
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     // Common files
     fs.copyTpl(join(tmplPath, 'common', 'add', '**/*.*'), basePath, ffApp);
 
-    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp);
+    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp, undefined, {
+        processDestinationPath(path: string): string {
+            if (ffApp.template.type === TemplateType.Basic) {
+                return path.replace('View1', (ffApp.template.settings as unknown as BasicAppSettings).viewName!);
+            } else {
+                return path;
+            }
+        }
+    });
 
     // merge content into existing files
     const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
