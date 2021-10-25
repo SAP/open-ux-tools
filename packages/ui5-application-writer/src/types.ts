@@ -12,12 +12,10 @@ export interface Package {
 
 export interface App {
     id: string;
-    uri?: string; // What is this?
-    version?: string; // What is this?
+    version?: string;
     title?: string;
     description?: string;
     baseComponent?: string; // UI5 Component `required` by Component.js
-    flpAppId?: string;
     startFile?: string;
     localStartFile?: string;
 }

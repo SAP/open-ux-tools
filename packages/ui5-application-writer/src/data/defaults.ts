@@ -31,16 +31,15 @@ export function packageDefaults(version?: string, description?: string): Partial
  * @param {App} app - specifies the application properties
  * @returns {Partial<App>} the App instance
  */
-export function appDefaults(app: App): App {
-    return {
+export function mergeApp(app: App): App {
+    // Return merged, does not update passed ref
+    return Object.assign({}, app, {
         version: app.version || '0.0.1',
         id: app.id,
-        uri: app.id.replace('.', '/'), // todo: remove if unused
         title: app.title || `Title of ${app.id}`, //todo: localise
         description: app.description || `Description of ${app.id}`, //todo: localise
-        baseComponent: app.baseComponent || 'sap/ui/core/UIComponent',
-        flpAppId: app.flpAppId || `${app.id.replace(/[-_.]/g, '')}-tile`
-    };
+        baseComponent: app.baseComponent || 'sap/ui/core/UIComponent'
+    }) as App;
 }
 
 export const UI5_DEFAULT = {

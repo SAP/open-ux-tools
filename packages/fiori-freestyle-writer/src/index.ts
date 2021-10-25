@@ -5,7 +5,8 @@ import { generate as generateUi5Project, Package } from '@sap-ux/ui5-application
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import { FreestyleApp } from 'types';
+import { FreestyleApp } from './types';
+import { setAdditionalAppDefaults } from './defaults';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -22,6 +23,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     ffApp.app.baseComponent = ffApp.app.baseComponent || 'sap/ui/core/UIComponent';
 
     fs = await generateUi5Project(basePath, ffApp, fs);
+
+    // set additional app defaults
+    setAdditionalAppDefaults(ffApp.app);
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');

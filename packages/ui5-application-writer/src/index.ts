@@ -77,4 +77,4 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
 }
 
 export { Ui5App, generate };
-export { Package, UI5 } from './types';
+export { App, Package, UI5 } from './types';
