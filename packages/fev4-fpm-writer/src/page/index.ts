@@ -48,12 +48,7 @@ function updateRoutes(routes: Ui5Route[], config: CustomPageConfig) {
         newRoute.pattern = `${config.navigation.sourceEntity}({key})/${config.navigation.navEntity}({key2}):?query:`;
         const sourceRoute = routes.find((route) => route.name === config.navigation?.sourcePage);
         if (sourceRoute?.target.constructor === Array) {
-            routes.forEach((route) => {
-                if (route?.target.constructor === Array) {
-                    route.target.push((newRoute as Ui5Route).name);
-                }
-            });
-            newRoute.target = sourceRoute.target;
+            newRoute.target = [...sourceRoute.target, (newRoute as Ui5Route).name];
         } else {
             newRoute.target = newRoute.name;
         }

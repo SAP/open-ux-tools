@@ -225,7 +225,6 @@ Object {
           "pattern": "object/{key}",
           "target": Array [
             "TestObjectPage",
-            "ChildEntityCustomPage",
           ],
         },
         Object {
