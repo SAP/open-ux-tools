@@ -69,6 +69,11 @@ framework:
     - name: themelib_sap_belize
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -76,11 +81,6 @@ server:
         backend:
           - path: /sap
             url: http://localhost
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
 ",
     "state": "modified",
   },
@@ -95,15 +95,15 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /sap
-            url: http://localhost
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - path: /sap
+            url: http://localhost
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
