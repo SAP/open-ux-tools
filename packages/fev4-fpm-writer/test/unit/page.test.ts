@@ -82,33 +82,48 @@ describe('CustomPage', () => {
         });
     });
 
-    const inputWithNavigation = {
-        name: 'CustomPage',
-        entity: 'ChildEntity',
-        navigation: {
-            sourcePage: 'TestObjectPage',
-            sourceEntity: 'RootEntity',
-            navEntity: 'navToChildEntity'
-        }
-    };
+    describe('generateCustomPage: different navigations', () => {
+        const inputWithNavigation = {
+            name: 'CustomPage',
+            entity: 'ChildEntity',
+            navigation: {
+                sourcePage: 'TestObjectPage',
+                sourceEntity: 'RootEntity',
+                navEntity: 'navToChildEntity'
+            }
+        };
 
-    test('generateCustomPage: with navigation to it', () => {
-        const target = join(testDir, 'with-nav');
-        fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        generateCustomPage(target, inputWithNavigation, undefined, fs);
-        expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-    });
-
-    test('generateCustomPage: to app with target as array', () => {
-        const testManifestWithArray = JSON.parse(testAppManifest);
-        testManifestWithArray['sap.ui5'].routing.routes.push({
-            pattern: 'object/{key}',
-            name: 'TestObjectPage',
-            target: ['TestObjectPage']
+        test('simple inbound navigation', () => {
+            const target = join(testDir, 'with-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generateCustomPage(target, inputWithNavigation, undefined, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
         });
-        const target = join(testDir, 'target-as-array');
-        fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
-        generateCustomPage(target, inputWithNavigation, undefined, fs);
-        expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+
+        test('inbound navigation defined as array (for FCL)', () => {
+            const testManifestWithArray = JSON.parse(testAppManifest);
+            testManifestWithArray['sap.ui5'].routing.routes.push({
+                pattern: 'object/{key}',
+                name: 'TestObjectPage',
+                target: ['TestObjectPage']
+            });
+            const target = join(testDir, 'target-as-array');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
+            generateCustomPage(target, inputWithNavigation, undefined, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('inbound navigation defined as array with max nesting for FCL', () => {
+            const testManifestWithArray = JSON.parse(testAppManifest);
+            testManifestWithArray['sap.ui5'].routing.routes.push({
+                pattern: 'object/{key}',
+                name: 'TestObjectPage',
+                target: ['TestList', 'TestNestedList', 'TestObjectPage']
+            });
+            const target = join(testDir, 'target-as-nested-array');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
+            generateCustomPage(target, inputWithNavigation, undefined, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+        });
     });
 });

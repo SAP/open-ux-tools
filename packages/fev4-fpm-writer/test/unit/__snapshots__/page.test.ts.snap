@@ -1,5 +1,143 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CustomPage generateCustomPage: different navigations inbound navigation defined as array (for FCL) 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "TestObjectPage",
+      "pattern": "object/{key}",
+      "target": Array [
+        "TestObjectPage",
+      ],
+    },
+    Object {
+      "name": "ChildEntityCustomPage",
+      "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
+      "target": Array [
+        "TestObjectPage",
+        "ChildEntityCustomPage",
+      ],
+    },
+  ],
+  "targets": Object {
+    "ChildEntityCustomPage": Object {
+      "id": "my.test.App.ext.customPage",
+      "name": "sap.fe.core.fpm",
+      "options": Object {
+        "settings": Object {
+          "entitySet": "ChildEntity",
+          "navigation": Object {},
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+      },
+      "type": "Component",
+    },
+    "TestObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "navToChildEntity": Object {
+              "detail": Object {
+                "route": "ChildEntityCustomPage",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomPage generateCustomPage: different navigations inbound navigation defined as array with max nesting for FCL 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "TestObjectPage",
+      "pattern": "object/{key}",
+      "target": Array [
+        "TestList",
+        "TestNestedList",
+        "TestObjectPage",
+      ],
+    },
+    Object {
+      "name": "ChildEntityCustomPage",
+      "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
+      "target": Array [
+        "ChildEntityCustomPage",
+      ],
+    },
+  ],
+  "targets": Object {
+    "ChildEntityCustomPage": Object {
+      "id": "my.test.App.ext.customPage",
+      "name": "sap.fe.core.fpm",
+      "options": Object {
+        "settings": Object {
+          "entitySet": "ChildEntity",
+          "navigation": Object {},
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+      },
+      "type": "Component",
+    },
+    "TestObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "navToChildEntity": Object {
+              "detail": Object {
+                "route": "ChildEntityCustomPage",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomPage generateCustomPage: different navigations simple inbound navigation 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "ChildEntityCustomPage",
+      "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
+      "target": "ChildEntityCustomPage",
+    },
+  ],
+  "targets": Object {
+    "ChildEntityCustomPage": Object {
+      "id": "my.test.App.ext.customPage",
+      "name": "sap.fe.core.fpm",
+      "options": Object {
+        "settings": Object {
+          "entitySet": "ChildEntity",
+          "navigation": Object {},
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+      },
+      "type": "Component",
+    },
+    "TestObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "navToChildEntity": Object {
+              "detail": Object {
+                "route": "ChildEntityCustomPage",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomPage generateCustomPage: different versions latest version with minimal input 1`] = `
 Object {
   "sap.app": Object {
@@ -204,118 +342,4 @@ exports[`CustomPage generateCustomPage: different versions with older but suppor
     }
 );
 "
-`;
-
-exports[`CustomPage generateCustomPage: to app with target as array 1`] = `
-Object {
-  "sap.app": Object {
-    "id": "my.test.App",
-  },
-  "sap.ui5": Object {
-    "dependencies": Object {
-      "libs": Object {
-        "sap.fe.templates": Object {},
-      },
-      "minUI5Version": "1.94.0",
-    },
-    "routing": Object {
-      "routes": Array [
-        Object {
-          "name": "TestObjectPage",
-          "pattern": "object/{key}",
-          "target": Array [
-            "TestObjectPage",
-          ],
-        },
-        Object {
-          "name": "ChildEntityCustomPage",
-          "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
-          "target": Array [
-            "TestObjectPage",
-            "ChildEntityCustomPage",
-          ],
-        },
-      ],
-      "targets": Object {
-        "ChildEntityCustomPage": Object {
-          "id": "my.test.App.ext.customPage",
-          "name": "sap.fe.core.fpm",
-          "options": Object {
-            "settings": Object {
-              "entitySet": "ChildEntity",
-              "navigation": Object {},
-              "viewName": "my.test.App.ext.customPage.CustomPage",
-            },
-          },
-          "type": "Component",
-        },
-        "TestObjectPage": Object {
-          "options": Object {
-            "settings": Object {
-              "navigation": Object {
-                "navToChildEntity": Object {
-                  "detail": Object {
-                    "route": "ChildEntityCustomPage",
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-`;
-
-exports[`CustomPage generateCustomPage: with navigation to it 1`] = `
-Object {
-  "sap.app": Object {
-    "id": "my.test.App",
-  },
-  "sap.ui5": Object {
-    "dependencies": Object {
-      "libs": Object {
-        "sap.fe.templates": Object {},
-      },
-      "minUI5Version": "1.94.0",
-    },
-    "routing": Object {
-      "routes": Array [
-        Object {
-          "name": "ChildEntityCustomPage",
-          "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
-          "target": "ChildEntityCustomPage",
-        },
-      ],
-      "targets": Object {
-        "ChildEntityCustomPage": Object {
-          "id": "my.test.App.ext.customPage",
-          "name": "sap.fe.core.fpm",
-          "options": Object {
-            "settings": Object {
-              "entitySet": "ChildEntity",
-              "navigation": Object {},
-              "viewName": "my.test.App.ext.customPage.CustomPage",
-            },
-          },
-          "type": "Component",
-        },
-        "TestObjectPage": Object {
-          "options": Object {
-            "settings": Object {
-              "navigation": Object {
-                "navToChildEntity": Object {
-                  "detail": Object {
-                    "route": "ChildEntityCustomPage",
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
 `;
