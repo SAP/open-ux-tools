@@ -1,4 +1,4 @@
-import { getAppReloadMiddlewareConfig, getFioriToolsProxyMiddlewareConfig } from '../src/middlewares';
+import { getFioriToolsProxyMiddlewareConfig } from '../src/middlewares';
 import { UI5Config } from '../src/ui5-config';
 
 describe('UI5Config', () => {
