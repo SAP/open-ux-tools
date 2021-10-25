@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CustomPage generateCustomPage: to app with target as array 1`] = `
+exports[`CustomPage generateCustomPage: different versions latest version with minimal input 1`] = `
 Object {
   "sap.app": Object {
     "id": "my.test.App",
@@ -10,115 +10,7 @@ Object {
       "libs": Object {
         "sap.fe.templates": Object {},
       },
-      "minUI5Version": "1.93.0",
-    },
-    "routing": Object {
-      "routes": Array [
-        Object {
-          "name": "TestObjectPage",
-          "pattern": "object/{key}",
-          "target": Array [
-            "TestObjectPage",
-            "ChildEntityCustomPage",
-          ],
-        },
-        Object {
-          "name": "ChildEntityCustomPage",
-          "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
-          "target": Array [
-            "TestObjectPage",
-            "ChildEntityCustomPage",
-          ],
-        },
-      ],
-      "targets": Object {
-        "ChildEntityCustomPage": Object {
-          "id": "my.test.App.ext.customPage",
-          "name": "sap.fe.core.fpm",
-          "options": Object {
-            "settings": Object {
-              "entitySet": "ChildEntity",
-              "navigation": Object {},
-              "viewName": "my.test.App.ext.customPage.CustomPage",
-            },
-          },
-          "type": "Component",
-        },
-        "TestObjectPage": Object {
-          "options": Object {
-            "settings": Object {
-              "navigation": Object {
-                "navToChildEntity": Object {
-                  "detail": Object {
-                    "route": "ChildEntityCustomPage",
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    "targets": Object {
-      "TestObjectPage": Object {},
-    },
-  },
-}
-`;
-
-exports[`CustomPage generateCustomPage: with existing controller/view 1`] = `
-Object {
-  "sap.app": Object {
-    "id": "my.test.App",
-  },
-  "sap.ui5": Object {
-    "dependencies": Object {
-      "libs": Object {
-        "sap.fe.templates": Object {},
-      },
-      "minUI5Version": "1.93.0",
-    },
-    "routing": Object {
-      "routes": Array [
-        Object {
-          "name": "ChildEntityCustomPage",
-          "pattern": "ChildEntity({key}):?query:",
-          "target": "ChildEntityCustomPage",
-        },
-      ],
-      "targets": Object {
-        "ChildEntityCustomPage": Object {
-          "id": "my.test.App.ext.customPage",
-          "name": "sap.fe.core.fpm",
-          "options": Object {
-            "settings": Object {
-              "entitySet": "ChildEntity",
-              "navigation": Object {},
-              "viewName": "my.test.App.ext.customPage.CustomPage",
-            },
-          },
-          "type": "Component",
-        },
-      },
-    },
-    "targets": Object {
-      "TestObjectPage": Object {},
-    },
-  },
-}
-`;
-
-exports[`CustomPage generateCustomPage: with minimal input 1`] = `
-Object {
-  "sap.app": Object {
-    "id": "my.test.App",
-  },
-  "sap.ui5": Object {
-    "dependencies": Object {
-      "libs": Object {
-        "sap.fe.templates": Object {},
-      },
-      "minUI5Version": "1.93.0",
+      "minUI5Version": "1.94.0",
     },
     "routing": Object {
       "routes": Array [
@@ -141,16 +33,14 @@ Object {
           },
           "type": "Component",
         },
+        "TestObjectPage": Object {},
       },
-    },
-    "targets": Object {
-      "TestObjectPage": Object {},
     },
   },
 }
 `;
 
-exports[`CustomPage generateCustomPage: with minimal input 2`] = `
+exports[`CustomPage generateCustomPage: different versions latest version with minimal input 2`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
 	xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
 	
@@ -165,7 +55,7 @@ exports[`CustomPage generateCustomPage: with minimal input 2`] = `
 </mvc:View>"
 `;
 
-exports[`CustomPage generateCustomPage: with minimal input 3`] = `
+exports[`CustomPage generateCustomPage: different versions latest version with minimal input 3`] = `
 "sap.ui.define(
     [
         'sap/fe/core/PageController'
@@ -214,6 +104,171 @@ exports[`CustomPage generateCustomPage: with minimal input 3`] = `
 "
 `;
 
+exports[`CustomPage generateCustomPage: different versions with older but supported UI5 version 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+      "minUI5Version": "1.84.0",
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEnityCustomPage",
+          "pattern": "RootEnity({key}):?query:",
+          "target": "RootEnityCustomPage",
+        },
+      ],
+      "targets": Object {
+        "RootEnityCustomPage": Object {
+          "options": Object {
+            "settings": Object {
+              "entitySet": "RootEnity",
+              "navigation": Object {},
+            },
+          },
+          "viewId": "CustomPageView",
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+        "TestObjectPage": Object {},
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomPage generateCustomPage: different versions with older but supported UI5 version 2`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+	xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
+	
+	<App>
+		<pages>
+			<Page title=\\"CustomPage\\">
+				<content></content>
+			</Page>
+		</pages>
+	</App>
+	
+</mvc:View>"
+`;
+
+exports[`CustomPage generateCustomPage: different versions with older but supported UI5 version 3`] = `
+"sap.ui.define(
+    [
+        'sap/ui/core/mvc/Controller' /** If UI5 version 1.94 or newer can be used, the change the base controller to sap/fe/core/PageController to get full FEv4 FPM supprot */
+    ],
+    function(PageController) {
+        'use strict';
+
+        return PageController.extend('my.test.App.ext.customPage.CustomPage', {
+            /**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf my.test.App.ext.customPage.CustomPage
+             */
+            //	onInit: function () {
+            //
+            //	},
+
+            /**
+             * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
+             * (NOT before the first rendering! onInit() is used for that one!).
+             * @memberOf my.test.App.ext.customPage.CustomPage
+             */
+            //	onBeforeRendering: function() {
+            //
+            //	},
+
+            /**
+             * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
+             * This hook is the same one that SAPUI5 controls get after being rendered.
+             * @memberOf my.test.App.ext.customPage.CustomPage
+             */
+            //	onAfterRendering: function() {
+            //
+            //	},
+
+            /**
+             * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
+             * @memberOf my.test.App.ext.customPage.CustomPage
+             */
+            //	onExit: function() {
+            //
+            //	}
+        });
+    }
+);
+"
+`;
+
+exports[`CustomPage generateCustomPage: to app with target as array 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+      "minUI5Version": "1.94.0",
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "TestObjectPage",
+          "pattern": "object/{key}",
+          "target": Array [
+            "TestObjectPage",
+            "ChildEntityCustomPage",
+          ],
+        },
+        Object {
+          "name": "ChildEntityCustomPage",
+          "pattern": "RootEntity({key})/navToChildEntity({key2}):?query:",
+          "target": Array [
+            "TestObjectPage",
+            "ChildEntityCustomPage",
+          ],
+        },
+      ],
+      "targets": Object {
+        "ChildEntityCustomPage": Object {
+          "id": "my.test.App.ext.customPage",
+          "name": "sap.fe.core.fpm",
+          "options": Object {
+            "settings": Object {
+              "entitySet": "ChildEntity",
+              "navigation": Object {},
+              "viewName": "my.test.App.ext.customPage.CustomPage",
+            },
+          },
+          "type": "Component",
+        },
+        "TestObjectPage": Object {
+          "options": Object {
+            "settings": Object {
+              "navigation": Object {
+                "navToChildEntity": Object {
+                  "detail": Object {
+                    "route": "ChildEntityCustomPage",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomPage generateCustomPage: with navigation to it 1`] = `
 Object {
   "sap.app": Object {
@@ -224,7 +279,7 @@ Object {
       "libs": Object {
         "sap.fe.templates": Object {},
       },
-      "minUI5Version": "1.93.0",
+      "minUI5Version": "1.94.0",
     },
     "routing": Object {
       "routes": Array [
@@ -261,9 +316,6 @@ Object {
           },
         },
       },
-    },
-    "targets": Object {
-      "TestObjectPage": Object {},
     },
   },
 }

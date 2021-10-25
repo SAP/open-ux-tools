@@ -1,2 +1,2 @@
-export { CustomPage } from './types';
+export { CustomPage } from './page/types';
 export { validateBasePath, generateCustomPage } from './page';

@@ -3,7 +3,8 @@ import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
-import { CustomPage, CustomPageConfig, Ui5Route } from '../types';
+import { CustomPage, CustomPageConfig, Ui5Route } from './types';
+import { getTemplateRoot } from './version';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -91,14 +92,15 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
 }
 
 /**
- * Writes the template to the memfs editor instance.
+ * Add a custom page to an existing UI5 application.
  *
  * @param {string} basePath - the base path
  * @param {CustomPage} data - the custom page configuration
+ * @param {Number} ui5Version - optional parameter to define the minimum UI5 version that the generated code must support. If nothing can be generated for the given version then an exception is thrown.
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export function generateCustomPage(basePath: string, data: CustomPage, fs?: Editor): Editor {
+export function generateCustomPage(basePath: string, data: CustomPage, ui5Version?: number, fs?: Editor): Editor {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -108,7 +110,7 @@ export function generateCustomPage(basePath: string, data: CustomPage, fs?: Edit
     const config = enhanceData(data, manifestPath, fs);
 
     // merge content into existing files
-    const root = join(__dirname, '../../templates/page');
+    const root = getTemplateRoot(ui5Version);
 
     // enhance manifest.json
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)), (key, value) => {
@@ -119,18 +121,8 @@ export function generateCustomPage(basePath: string, data: CustomPage, fs?: Edit
     });
 
     // add extension content
-    if (config.view?.path) {
-        const viewXml = fs.read(config.view.path);
-        fs.write(join(config.path, `${config.name}.view.xml`), viewXml);
-        // TODO: read controller path from view
-        const controllerPath = config.view.path.replace('view.xml', 'controller.js');
-        const controllerJs = fs.read(controllerPath);
-        // TODO: when the controller is copied, it's id in the sources needs to be changed
-        fs.write(join(config.path, `${config.name}.controller.js`), controllerJs);
-    } else {
-        fs.copyTpl(join(root, 'ext/NAME/View.xml'), join(config.path, `${config.name}.view.xml`), config);
-        fs.copyTpl(join(root, 'ext/NAME/Controller.js'), join(config.path, `${config.name}.controller.js`), config);
-    }
+    fs.copyTpl(join(root, 'ext/View.xml'), join(config.path, `${config.name}.view.xml`), config);
+    fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.name}.controller.js`), config);
 
     return fs;
 }

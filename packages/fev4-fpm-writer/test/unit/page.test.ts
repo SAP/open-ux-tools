@@ -1,9 +1,8 @@
 import { create as createStorage } from 'mem-fs';
-import { dirname } from 'path';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { generateCustomPage, validateBasePath, CustomPage } from '../../src';
-import { Ui5Route } from '../../src/types';
+import { Ui5Route } from '../../src/page/types';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -51,21 +50,36 @@ describe('CustomPage', () => {
         expect(() => validateBasePath(target, fs)).toThrowError();
     });
 
-    test('generateCustomPage: with minimal input', () => {
-        const target = join(testDir, 'minimal-input');
-        fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        generateCustomPage(
-            target,
-            {
-                name: 'CustomPage',
-                entity: 'RootEnity'
-            },
-            fs
-        );
+    describe('generateCustomPage: different versions', () => {
+        const minimalInput = {
+            name: 'CustomPage',
+            entity: 'RootEnity'
+        };
+        test('latest version with minimal input', () => {
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generateCustomPage(target, minimalInput, undefined, fs);
 
-        expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-        expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
-        expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+        });
+
+        test('with older but supported UI5 version', () => {
+            const target = join(testDir, 'version-1.84');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generateCustomPage(target, minimalInput, 1.84, fs);
+
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+        });
+
+        test('with not supported version', () => {
+            const target = join(testDir, 'version-not-supported');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            expect(() => generateCustomPage(target, minimalInput, 1.83, fs)).toThrowError();
+        });
     });
 
     const inputWithNavigation = {
@@ -81,7 +95,7 @@ describe('CustomPage', () => {
     test('generateCustomPage: with navigation to it', () => {
         const target = join(testDir, 'with-nav');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        generateCustomPage(target, inputWithNavigation, fs);
+        generateCustomPage(target, inputWithNavigation, undefined, fs);
         expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
     });
 
@@ -94,28 +108,7 @@ describe('CustomPage', () => {
         });
         const target = join(testDir, 'target-as-array');
         fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
-        generateCustomPage(target, inputWithNavigation, fs);
+        generateCustomPage(target, inputWithNavigation, undefined, fs);
         expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-    });
-
-    test('generateCustomPage: with existing controller/view', () => {
-        const inputWithView = {
-            name: 'CustomPage',
-            entity: 'ChildEntity',
-            view: {
-                path: join(testDir, 'existing/ExistingPage.view.xml')
-            }
-        };
-        const viewXml = '<mvc:View controllerName="ExistingPage" />';
-        const controllerCode = 'new Controller();';
-        fs.write(inputWithView.view.path, viewXml);
-        fs.write(inputWithView.view.path.replace('view.xml', 'controller.js'), controllerCode);
-        const target = join(testDir, 'with-existing-view');
-        fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        generateCustomPage(target, inputWithView, fs);
-
-        expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-        expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toBe(viewXml);
-        expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toBe(controllerCode);
     });
 });

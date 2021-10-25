@@ -1,3 +1,9 @@
+export interface Ui5Route {
+    name: string;
+    pattern: string;
+    target: string | string[];
+}
+
 export interface CustomPage {
     name: string;
     entity: string;
