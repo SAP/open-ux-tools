@@ -32,30 +32,24 @@ export class UI5Config {
     /**
      * Adds a UI5 Framework entry to the yaml file.
      *
-     * @param {string} ui5Framework - whether to user SAPUI5 or OpenUI5
-     * @param {string} ui5Version - ui5 version
+     * @param {string} framework - whether to user SAPUI5 or OpenUI5
+     * @param {string} version - ui5 version
      * @param {string[]} libraries - a list of libraries
-     * @param ui5Theme - ui5 theme
+     * @param theme - optional ui5 theme
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addUI5Framework(
-        ui5Framework: string,
-        ui5Version: string,
-        libraries: string[],
-        ui5Theme = 'sap_fiori_3'
-    ): UI5Config {
+    public addUI5Framework(framework: string, version: string, libraries: string[], theme = 'sap_fiori_3'): UI5Config {
         const libraryObjs = [];
         for (const library of libraries) {
             libraryObjs.push({ name: library });
         }
-        // Add theme lib
-        ui5Theme = ui5Theme.replace(/_dark$/, ''); // Dark theme versions are provided by base theme lib
-        libraryObjs.push({ name: `themelib_${ui5Theme}` });
+        // Add theme lib (dark theme versions are provided by base theme lib)
+        libraryObjs.push({ name: `themelib_${theme.replace(/_dark$/, '')}` });
 
         this.document.setIn({
             path: 'framework',
-            value: { name: ui5Framework, version: ui5Version, libraries: libraryObjs }
+            value: { name: framework, version, libraries: libraryObjs }
         });
         return this;
     }
@@ -78,6 +72,11 @@ export class UI5Config {
         return this;
     }
 
+    /**
+     * Adds a instance of the Fiori tools app-reload middleware to the config.
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
     public addFioriToolsAppReloadMiddleware(): UI5Config {
         this.document.appendTo({
             path: 'server.customMiddleware',
@@ -86,6 +85,12 @@ export class UI5Config {
         return this;
     }
 
+    /**
+     * Adds a instance of the Fiori tools proxy middleware to the config.
+     * @param proxyConfig proxy configuration containing an optional array of backend and an option UI5 host configuration
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
     public addFioriToolsProxydMiddleware(proxyConfig: FioriToolsProxyConfig): UI5Config {
         const { config, comments } = getFioriToolsProxyMiddlewareConfig(proxyConfig.backend, proxyConfig.ui5);
         this.document.appendTo({
@@ -96,6 +101,12 @@ export class UI5Config {
         return this;
     }
 
+    /**
+     * Adds a backend configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     * @param backend config of backend that is to be proxied
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
     public addBackendToFioriToolsProxydMiddleware(backend: ProxyBackend): UI5Config {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
         const proxyMiddleware = this.document.findItem(
@@ -109,6 +120,12 @@ export class UI5Config {
         return this;
     }
 
+    /**
+     * Adds a instance of the mockserver middleware to the config.
+     * @param path option path that is to be mocked
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
     public addMockServerMiddleware(path?: string): UI5Config {
         this.document.appendTo({
             path: 'server.customMiddleware',
