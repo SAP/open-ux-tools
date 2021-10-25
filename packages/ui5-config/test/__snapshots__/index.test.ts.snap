@@ -1,0 +1,190 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out backend first and then call add backend 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+"
+`;
+
+exports[`UI5Config addCustomMiddleware 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+"
+`;
+
+exports[`UI5Config addFioriToolsProxydMiddleware add backend without destination (and UI5 defaults) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+"
+`;
+
+exports[`UI5Config addFioriToolsProxydMiddleware add backend without path or destination (and UI5 defaults) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+"
+`;
+
+exports[`UI5Config addFioriToolsProxydMiddleware add fully configured backend (and UI5 defaults) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+            destination: ~destination~
+            destinationInstance: ~destinationInstance~
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+"
+`;
+
+exports[`UI5Config addFioriToolsProxydMiddleware add without backend or UI5 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+"
+`;
+
+exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but UI5 defaults 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+"
+`;
+
+exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: ''
+          name: ~testpath~
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+"
+`;
+
+exports[`UI5Config addMockServerMiddleware add without path 1`] = `
+"server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        service:
+          urlBasePath: ''
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+"
+`;
+
+exports[`UI5Config addUI5Framework Add with specific theme and additional library 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.64.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_belize
+"
+`;
+
+exports[`UI5Config addUI5Framework Minimal set of inputs 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.64.0
+  libraries:
+    - name: themelib_sap_fiori_3
+"
+`;
+
+exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.64.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_fiori_3
+"
+`;
+
+exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+"
+`;
