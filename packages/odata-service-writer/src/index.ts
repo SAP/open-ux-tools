@@ -83,14 +83,12 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         proxyLocalMiddleware.comments
     );
 
-    await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', appReloadMiddleware);
-
     // Add mockserver entries
     if (data.metadata) {
         // package.json updates
         const mockDevDeps = {
             devDependencies: {
-                '@sap/ux-ui5-fe-mockserver-middleware': 'latest'
+                '@sap/ux-ui5-fe-mockserver-middleware': '1'
             }
         };
         const packagePath = join(basePath, 'package.json');
@@ -114,6 +112,8 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         // create local copy of metadata and annotations
         fs.write(join(basePath, 'webapp', 'localService', 'metadata.xml'), prettifyXml(data.metadata, { indent: 4 }));
     }
+
+    await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', appReloadMiddleware);
 
     if (data.annotations?.xml) {
         fs.write(

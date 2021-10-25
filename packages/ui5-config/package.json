@@ -1,7 +1,8 @@
 {
     "name": "@sap-ux/ui5-config",
     "description": "Library to UI5 configuration artifacts",
-    "version": "0.9.1",
+    "version": "0.9.3",
+    "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
         "build": "pnpm clean && tsc",
@@ -16,6 +17,7 @@
         "unlink": "pnpm unlink --global"
     },
     "files": [
+        "LICENSE",
         "dist"
     ],
     "dependencies": {
@@ -28,6 +30,6 @@
     },
     "engines": {
         "pnpm": ">=6.0.2",
-        "node": ">=12.18.2 < 13.0.0 || > 14.0.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+        "node": ">=12.22.7 < 13.0.0 || >= 14.18.1 < 15.0.0 || >=16.1.0 < 17.0.0"
     }
 }
