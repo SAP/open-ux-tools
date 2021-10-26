@@ -32,8 +32,7 @@ describe('Test generate method with valid input', () => {
         // generate required files
         fs = create(createStorage());
         fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
-        fs.write(join(testDir, 'ui5-local.yaml'), '#empty file');
-        fs.write(join(testDir, 'ui5-mock.yaml'), '#empty file');
+        fs.write(join(testDir, 'ui5-local.yaml'), '');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
         fs.write(
             join(testDir, 'webapp', 'manifest.json'),
@@ -126,7 +125,28 @@ describe('Test generate method with valid input', () => {
         await generate(testDir, config as OdataService, fs);
 
         // verify tha the optional properties are being added
-        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot();
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - path: /sap
+            url: http://localhost
+            apiHub: true
+            scp: false
+            pathPrefix: /~prefix
+            destination: test
+"
+`);
     });
 
     it('Valid service with neither metadata nor annotations and not starting with /sap', async () => {
