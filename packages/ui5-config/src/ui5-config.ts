@@ -32,24 +32,29 @@ export class UI5Config {
     /**
      * Adds a UI5 Framework entry to the yaml file.
      *
-     * @param {string} framework - whether to user SAPUI5 or OpenUI5
-     * @param {string} version - ui5 version
-     * @param {string[]} libraries - a list of libraries
-     * @param theme - optional ui5 theme
+     * @param {string} ui5Framework - whether to user SAPUI5 or OpenUI5
+     * @param {string} ui5Version - ui5 version
+     * @param {string[]} ui5Libraries - a list of libraries
+     * @param {string} ui5Theme - optional ui5 theme
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addUI5Framework(framework: string, version: string, libraries: string[], theme = 'sap_fiori_3'): UI5Config {
+    public addUI5Framework(
+        ui5Framework: string,
+        ui5Version: string,
+        ui5Libraries: string[],
+        ui5Theme = 'sap_fiori_3'
+    ): UI5Config {
         const libraryObjs = [];
-        for (const library of libraries) {
+        for (const library of ui5Libraries) {
             libraryObjs.push({ name: library });
         }
         // Add theme lib (dark theme versions are provided by base theme lib)
-        libraryObjs.push({ name: `themelib_${theme.replace(/_dark$/, '')}` });
+        libraryObjs.push({ name: `themelib_${ui5Theme.replace(/_dark$/, '')}` });
 
         this.document.setIn({
             path: 'framework',
-            value: { name: framework, version, libraries: libraryObjs }
+            value: { name: ui5Framework, ui5Version, libraries: libraryObjs }
         });
         return this;
     }
