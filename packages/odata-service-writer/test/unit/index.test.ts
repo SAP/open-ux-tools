@@ -115,7 +115,7 @@ describe('Test generate method with valid input', () => {
             destination: {
                 name: 'test'
             },
-            optionalPreviewSettings: {
+            previewSettings: {
                 apiHub: true,
                 scp: false,
                 pathPrefix: '/~prefix'
@@ -139,11 +139,11 @@ describe('Test generate method with valid input', () => {
           url: https://ui5.sap.com
           version: '' # The UI5 version, for instance, 1.78.1. null means latest version
         backend:
-          - path: /sap
-            url: http://localhost
-            apiHub: true
+          - apiHub: true
             scp: false
             pathPrefix: /~prefix
+            path: /sap
+            url: http://localhost
             destination: test
 "
 `);
@@ -163,7 +163,7 @@ describe('Test generate method with valid input', () => {
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources.mainService.settings.annotations).toStrictEqual([]);
         // verify that the path is correct in ui5.yaml
-        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /V2');
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('path: /V2');
     });
 
     it('Enhance unspecified input data with defaults', async () => {
@@ -176,38 +176,50 @@ describe('Test generate method with valid input', () => {
         let configCopy = cloneDeep(config);
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
-            Object {
-              "model": "",
-              "name": "mainService",
-              "path": "/V2/Northwind/Northwind.svc/",
-              "url": "https://services.odata.org",
-              "version": "2",
-            }
-        `);
+Object {
+  "model": "",
+  "name": "mainService",
+  "path": "/V2/Northwind/Northwind.svc/",
+  "previewSettings": Object {
+    "path": "/V2",
+    "url": "https://services.odata.org",
+  },
+  "url": "https://services.odata.org",
+  "version": "2",
+}
+`);
 
         configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
-            Object {
-              "model": "modelName",
-              "name": "datasourceName",
-              "path": "/V2/Northwind/Northwind.svc/",
-              "url": "https://services.odata.org",
-              "version": "2",
-            }
-        `);
+Object {
+  "model": "modelName",
+  "name": "datasourceName",
+  "path": "/V2/Northwind/Northwind.svc/",
+  "previewSettings": Object {
+    "path": "/V2",
+    "url": "https://services.odata.org",
+  },
+  "url": "https://services.odata.org",
+  "version": "2",
+}
+`);
 
         // Undefined path does not throw but sets valid path
         configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
-            Object {
-              "model": "",
-              "name": "mainService",
-              "path": "/",
-              "url": "https://services.odata.org",
-              "version": "2",
-            }
-        `);
+Object {
+  "model": "",
+  "name": "mainService",
+  "path": "/",
+  "previewSettings": Object {
+    "path": "/",
+    "url": "https://services.odata.org",
+  },
+  "url": "https://services.odata.org",
+  "version": "2",
+}
+`);
     });
 });

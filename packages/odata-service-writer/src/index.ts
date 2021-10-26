@@ -61,31 +61,15 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     const manifestJsonExt = fs.read(join(extRoot, `manifest.json`));
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, data)));
 
-    // ui*.yaml
-    const backend: ProxyBackend = {
-        path: `/${data.path?.split('/').filter((s: string) => s !== '')[0] || ''}`,
-        url: data.url ?? 'http://localhost',
-        ...(data.optionalPreviewSettings || {})
-    };
-    if (data.client) {
-        backend.client = data.client;
-    }
-    if (data.destination) {
-        backend.destination = data.destination.name;
-        if (data.destination.instance) {
-            backend.destinationInstance = data.destination.instance;
-        }
-    }
-
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addBackendToFioriToolsProxydMiddleware(backend);
+    ui5Config.addBackendToFioriToolsProxydMiddleware(data.previewSettings as ProxyBackend);
 
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [backend] });
+    ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend] });
 
     // Add mockserver entries
     if (data.metadata) {

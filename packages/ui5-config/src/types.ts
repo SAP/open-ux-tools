@@ -1,10 +1,14 @@
 export interface ProxyBackend {
-    [key: string]: unknown | undefined;
     path?: string;
     url: string;
     client?: string;
     destination?: string;
     destinationInstance?: string;
+    pathPrefix?: string;
+    scp?: boolean;
+    apiHub?: boolean;
+    ws?: boolean;
+    xfwd?: boolean;
 }
 
 export interface ProxyUIConfig {

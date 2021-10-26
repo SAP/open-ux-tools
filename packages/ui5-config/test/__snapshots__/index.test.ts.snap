@@ -142,6 +142,23 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but UI5 
 "
 `;
 
+exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all properties for UI5 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: http://~url
+          version: 1.23.3 # The UI5 version, for instance, 1.78.1. null means latest version
+          directLoad: true
+"
+`;
+
 exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
 "server:
   customMiddleware:
@@ -174,7 +191,7 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
 exports[`UI5Config addUI5Framework Add with specific theme and additional library 1`] = `
 "framework:
   name: SAPUI5
-  ui5Version: 1.64.0
+  version: 1.64.0
   libraries:
     - name: sap.m
     - name: themelib_sap_belize
@@ -184,7 +201,7 @@ exports[`UI5Config addUI5Framework Add with specific theme and additional librar
 exports[`UI5Config addUI5Framework Minimal set of inputs 1`] = `
 "framework:
   name: SAPUI5
-  ui5Version: 1.64.0
+  version: 1.64.0
   libraries:
     - name: themelib_sap_fiori_3
 "
@@ -193,7 +210,7 @@ exports[`UI5Config addUI5Framework Minimal set of inputs 1`] = `
 exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
 "framework:
   name: SAPUI5
-  ui5Version: 1.64.0
+  version: 1.64.0
   libraries:
     - name: sap.m
     - name: themelib_sap_fiori_3

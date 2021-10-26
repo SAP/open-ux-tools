@@ -54,7 +54,7 @@ export class UI5Config {
 
         this.document.setIn({
             path: 'framework',
-            value: { name: ui5Framework, ui5Version, libraries: libraryObjs }
+            value: { name: ui5Framework, version: ui5Version, libraries: libraryObjs }
         });
         return this;
     }
@@ -62,7 +62,7 @@ export class UI5Config {
     /**
      * Adds a list of custom middlewares to the config.
      *
-     * @param {MiddlewareConfig[]} middlewares - the list of custom middlewares
+     * @param {CustomMiddleware<any>[]} middlewares - the list of custom middlewares
      * @param {NodeComment<MiddlewareConfig>[]} [comments] - a list of comments
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
