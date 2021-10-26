@@ -43,6 +43,18 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
+        test('add without backend or but all properties for UI5', () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                ui5: {
+                    directLoad: true,
+                    path: ['/~customResources', '/~other'],
+                    url: 'http://~url',
+                    version: '1.23.3'
+                }
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
         test('add commonly configured backend (and UI5 defaults)', () => {
             ui5Config.addFioriToolsProxydMiddleware({
                 backend: [{ url, path, destination, destinationInstance }],
