@@ -1,6 +1,7 @@
 export interface ProxyBackend {
     path?: string;
     url: string;
+    client?: string;
     destination?: string;
     destinationInstance?: string;
 }

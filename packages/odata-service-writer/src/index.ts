@@ -66,6 +66,9 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         path: `/${data.path?.split('/').filter((s: string) => s !== '')[0] || ''}`,
         url: data.url ?? 'http://localhost'
     };
+    if (data.client) {
+        backend.client = data.client;
+    }
     if (data.destination) {
         backend.destination = data.destination.name;
         if (data.destination.instance) {

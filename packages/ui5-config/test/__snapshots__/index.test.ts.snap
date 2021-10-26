@@ -45,6 +45,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without destination
         backend:
           - url: http://localhost:8080
             path: /~testpath~
+            client: \\"012\\"
         ui5:
           path:
             - /resources

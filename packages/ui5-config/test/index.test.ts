@@ -6,7 +6,8 @@ describe('UI5Config', () => {
     const path = '/~testpath~',
         url = 'http://localhost:8080',
         destination = '~destination~',
-        destinationInstance = '~destinationInstance~';
+        destinationInstance = '~destinationInstance~',
+        client = '012';
 
     // object under test
     let ui5Config: UI5Config;
@@ -51,7 +52,7 @@ describe('UI5Config', () => {
         });
 
         test('add backend without destination (and UI5 defaults)', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ backend: [{ url, path }], ui5: {} });
+            ui5Config.addFioriToolsProxydMiddleware({ backend: [{ url, path, client }], ui5: {} });
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 

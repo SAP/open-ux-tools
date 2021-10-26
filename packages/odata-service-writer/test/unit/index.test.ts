@@ -9,6 +9,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 const testDir = 'virtual-temp';
 const commonConfig = {
     url: 'http://localhost',
+    client: '012',
     path: '/sap/odata/testme',
     metadata: '<HELLO WORLD />'
 };
@@ -81,6 +82,8 @@ describe('Test generate method with valid input', () => {
         expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
         // verify that no destination is added to the ui5.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('destination: ');
+        // verify that client is set
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('client: ');
     });
 
     it('Valid OData service with destination and no optional parameters', async () => {
