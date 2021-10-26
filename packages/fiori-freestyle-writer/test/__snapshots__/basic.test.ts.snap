@@ -91,11 +91,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -109,6 +104,11 @@ server:
         backend:
           - path: /sap
             url: http://localhost
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
 ",
     "state": "modified",
   },
@@ -722,11 +722,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -740,6 +735,11 @@ server:
         backend:
           - path: /sap
             url: http://localhost
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
 ",
     "state": "modified",
   },

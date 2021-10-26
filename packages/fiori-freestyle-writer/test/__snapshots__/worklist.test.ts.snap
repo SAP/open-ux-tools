@@ -103,11 +103,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -121,6 +116,11 @@ server:
         backend:
           - path: /here
             url: http://localhost
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -140,11 +140,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -158,6 +153,11 @@ server:
         backend:
           - path: /here
             url: http://localhost
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
 ",
     "state": "modified",
   },
@@ -6762,11 +6762,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6782,6 +6777,11 @@ server:
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -6801,11 +6801,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6821,6 +6816,11 @@ server:
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
 ",
     "state": "modified",
   },
@@ -10019,11 +10019,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -10037,6 +10032,11 @@ server:
         backend:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -10056,11 +10056,6 @@ metadata:
 type: application
 server:
   customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -10074,6 +10069,11 @@ server:
         backend:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
 ",
     "state": "modified",
   },
