@@ -1,6 +1,5 @@
-import { Ui5App } from '@sap-ux/ui5-application-writer';
+import { Ui5App, App } from '@sap-ux/ui5-application-writer';
 import { OdataService } from '@sap-ux/odata-service-writer';
-import { App } from '@sap-ux/ui5-application-writer/dist/types';
 
 export enum TemplateType {
     Basic = 'basic',
