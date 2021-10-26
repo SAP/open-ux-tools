@@ -30,13 +30,13 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+    ui5Config.addFioriToolsAppReloadMiddleware();
     ui5Config.addFioriToolsProxydMiddleware({
         ui5: {
             version: ui5App.ui5?.version,
             url: ui5App.ui5?.frameworkUrl
         }
     });
-    ui5Config.addFioriToolsAppReloadMiddleware();
     fs.write(ui5ConfigPath, ui5Config.toString());
 
     // ui5-local.yaml

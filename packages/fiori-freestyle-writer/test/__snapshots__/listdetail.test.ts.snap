@@ -97,6 +97,11 @@ metadata:
 type: application
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -110,11 +115,6 @@ server:
         backend:
           - path: /V2
             url: https://services.odata.org
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -134,6 +134,11 @@ metadata:
 type: application
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -147,11 +152,6 @@ server:
         backend:
           - path: /V2
             url: https://services.odata.org
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
 ",
     "state": "modified",
   },
