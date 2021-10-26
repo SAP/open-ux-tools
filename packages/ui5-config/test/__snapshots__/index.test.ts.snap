@@ -35,6 +35,27 @@ exports[`UI5Config addCustomMiddleware 1`] = `
 "
 `;
 
+exports[`UI5Config addFioriToolsProxydMiddleware add backend with flexible parameters (and UI5 defaults) 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+            pathPrefix: /~prefix
+            scp: true
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+"
+`;
+
 exports[`UI5Config addFioriToolsProxydMiddleware add backend without destination (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:
@@ -74,7 +95,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without path or des
 "
 `;
 
-exports[`UI5Config addFioriToolsProxydMiddleware add fully configured backend (and UI5 defaults) 1`] = `
+exports[`UI5Config addFioriToolsProxydMiddleware add commonly configured backend (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
@@ -153,7 +174,7 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
 exports[`UI5Config addUI5Framework Add with specific theme and additional library 1`] = `
 "framework:
   name: SAPUI5
-  version: 1.64.0
+  ui5Version: 1.64.0
   libraries:
     - name: sap.m
     - name: themelib_sap_belize
@@ -163,7 +184,7 @@ exports[`UI5Config addUI5Framework Add with specific theme and additional librar
 exports[`UI5Config addUI5Framework Minimal set of inputs 1`] = `
 "framework:
   name: SAPUI5
-  version: 1.64.0
+  ui5Version: 1.64.0
   libraries:
     - name: themelib_sap_fiori_3
 "
@@ -172,7 +193,7 @@ exports[`UI5Config addUI5Framework Minimal set of inputs 1`] = `
 exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
 "framework:
   name: SAPUI5
-  version: 1.64.0
+  ui5Version: 1.64.0
   libraries:
     - name: sap.m
     - name: themelib_sap_fiori_3
