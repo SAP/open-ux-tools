@@ -3,5 +3,5 @@ sap.ui.define([
 ], function (BaseController) {
 	"use strict";
 
-	return BaseController.extend("<%=app.id%>.controller.DetailObjectNotFound", {});
+	return BaseController.extend("<%- app.id %>.controller.DetailObjectNotFound", {});
 });
