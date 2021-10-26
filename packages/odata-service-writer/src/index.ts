@@ -99,7 +99,7 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         fs.writeJSON(packagePath, packageJson);
 
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
-        const ui5MockConfig = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+        const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
         ui5MockConfig.addMockServerMiddleware(data.path);
         fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
 

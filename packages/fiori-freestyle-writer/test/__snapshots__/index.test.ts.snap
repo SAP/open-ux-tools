@@ -107,6 +107,9 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - path: /V2
+            url: https://services.odata.org
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -2684,6 +2687,9 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - path: /V2
+            url: https://services.odata.org
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

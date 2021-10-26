@@ -53,6 +53,9 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - path: /sap
+            url: http://localhost
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
