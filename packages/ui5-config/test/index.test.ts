@@ -43,9 +43,17 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('add fully configured backend (and UI5 defaults)', () => {
+        test('add commonly configured backend (and UI5 defaults)', () => {
             ui5Config.addFioriToolsProxydMiddleware({
                 backend: [{ url, path, destination, destinationInstance }],
+                ui5: {}
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add backend with flexible parameters (and UI5 defaults)', () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                backend: [{ url, path, pathPrefix: '/~prefix', scp: true }],
                 ui5: {}
             });
             expect(ui5Config.toString()).toMatchSnapshot();

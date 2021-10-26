@@ -1,4 +1,5 @@
 export interface ProxyBackend {
+    [key: string]: unknown | undefined;
     path?: string;
     url: string;
     client?: string;
@@ -7,9 +8,11 @@ export interface ProxyBackend {
 }
 
 export interface ProxyUIConfig {
+    [key: string]: unknown | undefined;
     path?: string[];
     url?: string;
     version?: string;
+    directLoad?: boolean;
 }
 
 export interface CustomMiddleware<C extends any> {

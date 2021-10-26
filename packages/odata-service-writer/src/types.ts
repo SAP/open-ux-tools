@@ -2,6 +2,15 @@ export enum OdataVersion {
     v2 = '2',
     v4 = '4'
 }
+
+export interface PreviewSettings {
+    [key: string]: unknown | undefined;
+    pathPrefix?: string;
+    scp?: boolean;
+    apiHub?: boolean;
+    ws?: boolean;
+    xfwd?: boolean;
+}
 export interface OdataService {
     url?: string;
     client?: string;
@@ -18,4 +27,5 @@ export interface OdataService {
         technicalName: string;
         xml: string;
     };
+    optionalPreviewSettings?: PreviewSettings;
 }

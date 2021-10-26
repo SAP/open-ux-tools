@@ -108,6 +108,27 @@ describe('Test generate method with valid input', () => {
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBeFalsy();
     });
 
+    it('Valid OData service with additional optional preview settings', async () => {
+        const config: OdataService = {
+            url: commonConfig.url,
+            path: commonConfig.path + '/',
+            version: OdataVersion.v4,
+            destination: {
+                name: 'test'
+            },
+            optionalPreviewSettings: {
+                apiHub: true,
+                scp: false,
+                pathPrefix: '/~prefix'
+            }
+        };
+
+        await generate(testDir, config as OdataService, fs);
+
+        // verify tha the optional properties are being added
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot();
+    });
+
     it('Valid service with neither metadata nor annotations and not starting with /sap', async () => {
         const config = {
             url: 'https://services.odata.org',

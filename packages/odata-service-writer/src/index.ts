@@ -64,7 +64,8 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     // ui*.yaml
     const backend: ProxyBackend = {
         path: `/${data.path?.split('/').filter((s: string) => s !== '')[0] || ''}`,
-        url: data.url ?? 'http://localhost'
+        url: data.url ?? 'http://localhost',
+        ...(data.optionalPreviewSettings || {})
     };
     if (data.client) {
         backend.client = data.client;
