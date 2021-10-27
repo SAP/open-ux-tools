@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomAction generateCustomColumn generateCustomColumn, version 1.86, no handler, only mandatory properties 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
+	xmlns:l=\\"sap.ui.layout\\">
+	<l:VerticalLayout >
+		
+			<Text text=\\"to be defined\\" /> 
+		
+	</l:VerticalLayout>
+</core:FragmentDefinition>
+"
+`;

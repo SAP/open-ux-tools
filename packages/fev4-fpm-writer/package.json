@@ -19,6 +19,7 @@
     ],
     "dependencies": {
         "ejs": "3.1.6",
+        "jest": "^27.3.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.0.0"
     },

@@ -1,0 +1,26 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%= target %>": { 
+                    "controlConfiguration": {
+                        "<%= targetEntity %>": {
+                            "columns": {
+                                "<%= id %>": {
+                                    "header": "<%= header %>",
+                                    "width": "<%= width %>",
+                                    "position": {
+                                        "placement": "<%= placement %>",
+                                        "anchor": "<%= anchor %>"
+                                    },
+                                    "template": "<%= template %>",
+                                    "availability": "<%= availability %>"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
