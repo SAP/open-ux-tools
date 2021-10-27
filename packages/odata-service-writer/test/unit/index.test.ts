@@ -51,7 +51,7 @@ describe('Test generate method with valid input', () => {
                 xml: '<HELLO WORLD />'
             }
         };
-        await generate(testDir, config as OdataService, undefined,fs);
+        await generate(testDir, config as OdataService, fs);
 
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
@@ -70,7 +70,7 @@ describe('Test generate method with valid input', () => {
             version: OdataVersion.v4,
             name: 'myService'
         };
-        await generate(testDir, config as OdataService, {version:  '1.90.0'}, fs);
+        await generate(testDir, config as OdataService, fs);
 
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
@@ -92,7 +92,7 @@ describe('Test generate method with valid input', () => {
         };
         // no localService folder needed
 
-        await generate(testDir, config as OdataService,undefined, fs);
+        await generate(testDir, config as OdataService, fs);
 
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
@@ -111,7 +111,7 @@ describe('Test generate method with valid input', () => {
         };
         // no localService folder needed
 
-        await generate(testDir, config as OdataService,undefined, fs);
+        await generate(testDir, config as OdataService, fs);
 
         // verify updated manifest.json
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;

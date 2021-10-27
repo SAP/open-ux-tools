@@ -398,7 +398,7 @@ server:
 			);
 		},
 
-		
+
 		/**
 		 * Updates the item count within the line item table's header
 		 * @param {object} oEvent an event containing the total number of items in the list
@@ -816,7 +816,7 @@ server:
 		 * @public
 		 */
 		onConfirmViewSettingsDialog: function (oEvent) {
-			
+
 			var aFilterItems = oEvent.getParameters().filterItems,
 				aFilters = [],
 				aCaptions = [];
@@ -853,7 +853,7 @@ server:
 				sPath,
 				bDescending,
 				aSorters = [];
-			
+
 			// apply sorter to binding
 			// (grouping comes before sorting)
 			if (mParams.groupItem) {
@@ -862,7 +862,7 @@ server:
 				var vGroup = this._oGroupFunctions[sPath];
 				aSorters.push(new Sorter(sPath, bDescending, vGroup));
 			}
-			
+
 			sPath = mParams.sortItem.getKey();
 			bDescending = mParams.sortDescending;
 			aSorters.push(new Sorter(sPath, bDescending));
@@ -1166,10 +1166,10 @@ listFilterName=UnitsInStock
 listFilterNone=none
 
 #XSEL: Option to filter the list list by  if the value is less than 100
-listFilter1=<100 
+listFilter1=<100
 
 #XSEL: Option to filter the list list by  if the value is greater than 100
-listFilter2=>100 
+listFilter2=>100
 
 #YMSG: Filter text that is displayed above the list list
 listFilterBarText=Filtered by {0}

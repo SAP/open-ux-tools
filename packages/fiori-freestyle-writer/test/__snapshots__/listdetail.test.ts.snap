@@ -398,7 +398,7 @@ server:
 			);
 		},
 
-		
+
 		/**
 		 * Updates the item count within the line item table's header
 		 * @param {object} oEvent an event containing the total number of items in the list
@@ -798,7 +798,7 @@ server:
 		 * @public
 		 */
 		onConfirmViewSettingsDialog: function (oEvent) {
-			
+
 			this._applySortGroup(oEvent);
 		},
 
@@ -812,7 +812,7 @@ server:
 				sPath,
 				bDescending,
 				aSorters = [];
-			
+
 			sPath = mParams.sortItem.getKey();
 			bDescending = mParams.sortDescending;
 			aSorters.push(new Sorter(sPath, bDescending));

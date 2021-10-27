@@ -13,7 +13,6 @@ import prettifyXml from 'prettify-xml';
 import { enhanceData } from './data';
 import { t } from './i18n';
 import { OdataService, OdataVersion } from './types';
-import { UI5 } from "@sap-ux/ui5-application-writer";
 
 /**
  * Validates the provided base path.
@@ -36,12 +35,11 @@ function validateBasePath(basePath: string, fs: Editor) {
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} data - the OData service instance
- * @param {UI5} ui5 - the UI5 instance
  * @param {Editor} [fs] - the memfs editor instance
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function generate(basePath: string, data: OdataService, ui5?: UI5, fs?: Editor): Promise<Editor> {
+async function generate(basePath: string, data: OdataService, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -69,7 +67,7 @@ async function generate(basePath: string, data: OdataService, ui5?: UI5, fs?: Ed
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, data)));
 
     // ui*.yaml
-    const proxyMiddleware = getFioriToolsProxyMiddlewareConfig(data, true, undefined,  ui5?.version);
+    const proxyMiddleware = getFioriToolsProxyMiddlewareConfig(data);
     const proxyLocalMiddleware = getFioriToolsProxyMiddlewareConfig(data, false);
     const appReloadMiddleware = getAppReloadMiddlewareConfig();
     // ui5.yaml
