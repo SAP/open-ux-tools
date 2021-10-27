@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.9.4
+
+### Patch Changes
+
+-   d37c8bd: Added support for selecting a custom view name for Fiori freestyle - Basic template
+-   Updated dependencies [d37c8bd]
+    -   @sap-ux/ui5-config@0.10.0
+
 ## 0.9.3
 
 ### Patch Changes
