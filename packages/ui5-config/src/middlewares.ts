@@ -1,69 +1,47 @@
-import type { MiddlewareConfig } from './types';
-import type { NodeComment, Path } from '@sap-ux/yaml';
-import { join } from 'path';
-import { UI5Config } from './ui5-config';
-import type { Editor } from 'mem-fs-editor';
-import { DEFAULT_HOST } from './constants';
+import type {
+    ProxyBackend,
+    CustomMiddleware,
+    FioriAppReloadConfig,
+    FioriToolsProxyConfig,
+    MockserverConfig,
+    ProxyUIConfig
+} from './types';
+import type { NodeComment } from '@sap-ux/yaml';
 
-export const getAppReloadMiddlewareConfig = (): MiddlewareConfig[] => {
-    return [
-        {
-            name: 'fiori-tools-appreload',
-            afterMiddleware: 'compression',
-            configuration: {
-                port: 35729,
-                path: 'webapp'
-            }
+/**
+ * @returns {FioriAppReloadConfig}
+ */
+export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadConfig> {
+    return {
+        name: 'fiori-tools-appreload',
+        afterMiddleware: 'compression',
+        configuration: {
+            port: 35729,
+            path: 'webapp'
         }
-    ];
-};
+    };
+}
 
-export const getFioriToolsProxyMiddlewareConfig = (
-    {
-        url,
-        path,
-        destination,
-        client
-    }: { url?: string; path?: string; destination?: { name?: string; instance?: string }; client?: string },
-    useUi5Cdn = true,
-    ui5CdnUrl = 'https://ui5.sap.com',
-    ui5Version = ''
-): { config: MiddlewareConfig[]; comments: NodeComment<MiddlewareConfig>[] } => {
-    const fioriToolsProxy: MiddlewareConfig = {
+/**
+ * @param backends
+ * @param ui5
+ * @returns {{config, comments}}
+ */
+export function getFioriToolsProxyMiddlewareConfig(
+    backends?: ProxyBackend[],
+    ui5?: ProxyUIConfig
+): {
+    config: CustomMiddleware<FioriToolsProxyConfig>;
+    comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[];
+} {
+    const fioriToolsProxy: CustomMiddleware<FioriToolsProxyConfig> = {
         name: 'fiori-tools-proxy',
         afterMiddleware: 'compression',
         configuration: {
             ignoreCertError: false
         }
     };
-
-    if (url || path || destination?.name || destination?.instance) {
-        const rootSegment = path?.split('/').filter((s: string) => s !== '')[0];
-        const backend = {
-            path: `/${rootSegment || ''}`,
-            url: url ?? DEFAULT_HOST
-        };
-        if (client) {
-            Object.assign(backend, { client: client });
-        }
-        if (destination?.name) {
-            Object.assign(backend, { destination: destination.name });
-        }
-        if (destination?.instance) {
-            Object.assign(backend, { destinationInstance: destination.instance });
-        }
-        fioriToolsProxy.configuration.backend = [backend];
-    }
-    if (useUi5Cdn === true) {
-        fioriToolsProxy.configuration['ui5'] = {
-            path: ['/resources', '/test-resources'],
-            url: ui5CdnUrl,
-            version: ui5Version ?? ''
-        };
-    }
-    const config: MiddlewareConfig[] = [fioriToolsProxy];
-
-    const comments: NodeComment<MiddlewareConfig>[] = [
+    const comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [
         {
             path: 'configuration.ignoreCertError',
             comment:
@@ -71,47 +49,44 @@ export const getFioriToolsProxyMiddlewareConfig = (
         }
     ];
 
-    if (useUi5Cdn === true) {
+    if (backends && backends.length > 0) {
+        backends.forEach((element) => {
+            element.path = element.path || '/';
+        });
+        fioriToolsProxy.configuration.backend = backends;
+    }
+
+    if (ui5 !== undefined) {
+        fioriToolsProxy.configuration['ui5'] = {
+            path: ['/resources', '/test-resources'],
+            url: ui5.url || 'https://ui5.sap.com',
+            version: ui5.version || ''
+        };
+        if (ui5.directLoad) {
+            fioriToolsProxy.configuration['ui5'].directLoad = true;
+        }
         comments.push({
-            path: 'configuration.ui5.version' as Path<MiddlewareConfig>,
+            path: 'configuration.ui5.version',
             comment: ' The UI5 version, for instance, 1.78.1. null means latest version'
         });
     }
 
-    return { config, comments };
-};
+    return { config: fioriToolsProxy, comments };
+}
 
-export const getMockServerMiddlewareConfig = ({ path }: { path?: string }): MiddlewareConfig[] => {
+export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<MockserverConfig> => {
     const pathSegments = path?.split('/') || [];
-    return [
-        {
-            name: 'sap-fe-mockserver',
-            beforeMiddleware: 'fiori-tools-proxy',
-            configuration: {
-                service: {
-                    urlBasePath: pathSegments.slice(0, -1).join('/'),
-                    name: pathSegments[pathSegments.length - 1],
-                    metadataXmlPath: './webapp/localService/metadata.xml',
-                    mockdataRootPath: './webapp/localService/data',
-                    generateMockData: true
-                }
+    return {
+        name: 'sap-fe-mockserver',
+        beforeMiddleware: 'fiori-tools-proxy',
+        configuration: {
+            service: {
+                urlBasePath: pathSegments.slice(0, -1).join('/'),
+                name: pathSegments[pathSegments.length - 1],
+                metadataXmlPath: './webapp/localService/metadata.xml',
+                mockdataRootPath: './webapp/localService/data',
+                generateMockData: true
             }
         }
-    ];
-};
-
-export const addMiddlewareConfig = async (
-    fs: Editor,
-    basePath: string,
-    filename: string,
-    middlewares: MiddlewareConfig[],
-    comments?: NodeComment<MiddlewareConfig>[]
-): Promise<void> => {
-    // update filename e.g. ui5.yaml
-    const ui5ConfigPath = join(basePath, filename);
-    const existingUI5Config = fs.read(ui5ConfigPath);
-
-    const ui5Config = await UI5Config.newInstance(existingUI5Config);
-    ui5Config.addCustomMiddleware(middlewares, comments);
-    fs.write(ui5ConfigPath, ui5Config.toString());
+    };
 };
