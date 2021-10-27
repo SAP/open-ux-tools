@@ -105,4 +105,46 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         expect(fs.exists(Component.js)).toBeTruthy();
         expect(await fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
     });
+
+    describe('set view-name at scaffolding time', () => {
+        const viewPrefix = 'MainView';
+        const FreestyleApp: FreestyleApp<BasicAppSettings> = {
+            app: {
+                id: 'someId'
+            },
+            package: {
+                name: 'someId'
+            },
+            template: {
+                type: TemplateType.Basic,
+                settings: {
+                    viewName: viewPrefix
+                }
+            }
+        };
+
+        test('initial view- and controller-name can be adjusted by configuration', async () => {
+            const testPath = join(curTestOutPath, 'initViewAndController');
+            const fs = await generate(testPath, FreestyleApp);
+            expect(fs.exists(join(testPath, 'webapp', 'view', `${viewPrefix}.view.xml`))).toBeTruthy();
+            expect(fs.exists(join(testPath, 'webapp', 'controller', `${viewPrefix}.controller.js`))).toBeTruthy();
+        });
+
+        test('manifest.json adheres to view-/controller-name set at scaffolding time', async () => {
+            const testPath = join(curTestOutPath, 'mainfestJson');
+            const fs = await generate(testPath, FreestyleApp);
+            const manifest = { json: fs.readJSON(join(testPath, 'webapp', 'manifest.json')) as any };
+            expect(
+                [
+                    manifest.json['sap.ui5'].rootView.viewName,
+                    manifest.json['sap.ui5'].rootView.id,
+                    manifest.json['sap.ui5'].routing.routes[0].name,
+                    manifest.json['sap.ui5'].routing.routes[0].pattern,
+                    manifest.json['sap.ui5'].routing.routes[0].target[0],
+                    manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewId,
+                    manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewName
+                ].every((entry) => entry.includes(viewPrefix))
+            ).toBeTruthy();
+        });
+    });
 });
