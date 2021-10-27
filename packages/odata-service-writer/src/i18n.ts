@@ -17,6 +17,11 @@ export async function initI18n(): Promise<void> {
     });
 }
 
+/**
+ * @param key
+ * @param options
+ * @returns {string}
+ */
 export function t(key: string, options?: TOptions): string {
     return i18next.t(key, options);
 }

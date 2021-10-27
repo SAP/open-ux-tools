@@ -11,7 +11,7 @@ sap.ui.define([
 ], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter) {
 	"use strict";
 
-	return BaseController.extend("<%=app.id%>.controller.List", {
+	return BaseController.extend("<%- app.id %>.controller.List", {
 
 		formatter: formatter,
 
@@ -20,16 +20,16 @@ sap.ui.define([
 		/* =========================================================== */
 
 		/**
-		 * Called when the list list controller is instantiated. It sets up the event handling for the list/detail communication and other lifecycle tasks.
+		 * Called when the list controller is instantiated. It sets up the event handling for the list/detail communication and other lifecycle tasks.
 		 * @public
 		 */
 		onInit : function () {
 			// Control state model
 			var oList = this.byId("list"),
 				oViewModel = this._createViewModel(),
-				// Put down list list's original value for busy indicator delay,
-				// so it can be restored later on. Busy handling on the list list is
-				// taken care of by the list list itself.
+				// Put down list's original value for busy indicator delay,
+				// so it can be restored later on. Busy handling on the list is
+				// taken care of by the list itself.
 				iOriginalBusyDelay = oList.getBusyIndicatorDelay();
 
 <%if (template.settings.entity.numberProperty) {%>
@@ -83,12 +83,12 @@ sap.ui.define([
 
 		/**
 		 * After list data is available, this handler method updates the
-		 * list list counter
+		 * list counter
 		 * @param {sap.ui.base.Event} oEvent the update finished event
 		 * @public
 		 */
 		onUpdateFinished : function (oEvent) {
-			// update the list list object counter after new data is loaded
+			// update the list object counter after new data is loaded
 			this._updateListItemCount(oEvent.getParameter("total"));
 		},
 
@@ -103,7 +103,7 @@ sap.ui.define([
 		onSearch: function (oEvent) {
 			if (oEvent.getParameters().refreshButtonPressed) {
 				// Search field's 'refresh' button has been pressed.
-				// This is visible if you select any list list item.
+				// This is visible if you select any list item.
 				// In this case no new search is triggered, we only
 				// refresh the list binding.
 				this.onRefresh();
@@ -149,7 +149,7 @@ sap.ui.define([
 			if (!this.byId("viewSettingsDialog")) {
 				Fragment.load({
 					id: this.getView().getId(),
-					name: "<%=app.id%>.view.ViewSettingsDialog",
+					name: "<%- app.id %>.view.ViewSettingsDialog",
 					controller: this
 				}).then(function(oDialog){
 					// connect dialog to the root view of this component (models, lifecycle)
@@ -165,8 +165,8 @@ sap.ui.define([
 		/**
 		 * Event handler called when ViewSettingsDialog has been confirmed, i.e.
 		 * has been closed with 'OK'. In the case, the currently chosen filters, sorters or groupers
-		 * are applied to the list list, which can also mean that they
-		 * are removed from the list list, in case they are
+		 * are applied to the list, which can also mean that they
+		 * are removed from the list, in case they are
 		 * removed in the ViewSettingsDialog.
 		 * @param {sap.ui.base.Event} oEvent the confirm event
 		 * @public
@@ -200,7 +200,7 @@ sap.ui.define([
 		},
 
 		/**
-		 * Apply the chosen sorter and grouper to the list list
+		 * Apply the chosen sorter and grouper to the list
 		 * @param {sap.ui.base.Event} oEvent the confirm event
 		 * @private
 		 */
@@ -243,7 +243,7 @@ sap.ui.define([
 
 		/**
 		 * Event handler for the bypassed event, which is fired when no routing pattern matched.
-		 * If there was an object selected in the list list, that selection is removed.
+		 * If there was an object selected in the list, that selection is removed.
 		 * @public
 		 */
 		onBypassed: function () {
@@ -252,8 +252,8 @@ sap.ui.define([
 
 		/**
 		 * Used to create GroupHeaders with non-capitalized caption.
-		 * These headers are inserted into the list list to
-		 * group the list list's items.
+		 * These headers are inserted into the list to
+		 * group the list's items.
 		 * @param {Object} oGroup group whose text is to be displayed
 		 * @public
 		 * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
@@ -313,7 +313,7 @@ sap.ui.define([
 		},
 
 		/**
-		 * Sets the item count on the list list header
+		 * Sets the item count on the list header
 		 * @param {integer} iTotalItems the total number of items in the list
 		 * @private
 		 */

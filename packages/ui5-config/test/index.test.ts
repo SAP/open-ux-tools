@@ -1,228 +1,120 @@
-import {
-    getMockServerMiddlewareConfig,
-    getFioriToolsProxyMiddlewareConfig,
-    getAppReloadMiddlewareConfig,
-    addMiddlewareConfig,
-    UI5Config
-} from '../src';
-import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
-import { join } from 'path';
+import { getFioriToolsProxyMiddlewareConfig } from '../src/middlewares';
+import { UI5Config } from '../src/ui5-config';
 
-describe('Fiori config utils', () => {
-    const serviceData = {
-        name: 'maintestService',
-        path: '/testpath',
-        url: 'http://localhost:8080',
-        destination: { name: 'SIDCLNT000' }
-    };
-    beforeAll(() => {});
+describe('UI5Config', () => {
+    // values for testing
+    const path = '/~testpath~',
+        url = 'http://localhost:8080',
+        destination = '~destination~',
+        destinationInstance = '~destinationInstance~',
+        client = '012';
 
-    test('getMockServerMiddlewareConfig', async () => {
-        expect(getMockServerMiddlewareConfig(serviceData)).toMatchInlineSnapshot(`
-            Array [
-              Object {
-                "beforeMiddleware": "fiori-tools-proxy",
-                "configuration": Object {
-                  "service": Object {
-                    "generateMockData": true,
-                    "metadataXmlPath": "./webapp/localService/metadata.xml",
-                    "mockdataRootPath": "./webapp/localService/data",
-                    "name": "testpath",
-                    "urlBasePath": "",
-                  },
-                },
-                "name": "sap-fe-mockserver",
-              },
-            ]
-        `);
+    // object under test
+    let ui5Config: UI5Config;
+    beforeEach(async () => {
+        ui5Config = await UI5Config.newInstance('');
     });
 
-    test('getFioriToolsProxyMiddlewareConfig', async () => {
-        expect(getFioriToolsProxyMiddlewareConfig(serviceData)).toMatchInlineSnapshot(`
-Object {
-  "comments": Array [
-    Object {
-      "comment": " If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted",
-      "path": "configuration.ignoreCertError",
-    },
-    Object {
-      "comment": " The UI5 version, for instance, 1.78.1. Empty string means latest version",
-      "path": "configuration.ui5.version",
-    },
-  ],
-  "config": Array [
-    Object {
-      "afterMiddleware": "compression",
-      "configuration": Object {
-        "backend": Array [
-          Object {
-            "destination": "SIDCLNT000",
-            "path": "/testpath",
-            "url": "http://localhost:8080",
-          },
-        ],
-        "ignoreCertError": false,
-        "ui5": Object {
-          "path": Array [
-            "/resources",
-            "/test-resources",
-          ],
-          "url": "https://ui5.sap.com",
-          "version": "",
-        },
-      },
-      "name": "fiori-tools-proxy",
-    },
-  ],
-}
-`);
+    describe('addUI5Framework', () => {
+        test('Minimal set of inputs', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.64.0', []);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('Add with specific theme and additional library', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_belize');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('Use a dark theme', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_fiori_3_dark');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
     });
 
-    test('getAppReloadMiddlewareConfig', async () => {
-        expect(getAppReloadMiddlewareConfig()).toMatchInlineSnapshot(`
-            Array [
-              Object {
-                "afterMiddleware": "compression",
-                "configuration": Object {
-                  "path": "webapp",
-                  "port": 35729,
-                },
-                "name": "fiori-tools-appreload",
-              },
-            ]
-        `);
+    describe('addFioriToolsProxydMiddleware', () => {
+        test('add without backend or UI5', () => {
+            ui5Config.addFioriToolsProxydMiddleware({});
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add without backend or but UI5 defaults', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add without backend or but all properties for UI5', () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                ui5: {
+                    directLoad: true,
+                    path: ['/~customResources', '/~other'],
+                    url: 'http://~url',
+                    version: '1.23.3'
+                }
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add commonly configured backend (and UI5 defaults)', () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                backend: [{ url, path, destination, destinationInstance }],
+                ui5: {}
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add backend with flexible parameters (and UI5 defaults)', () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                backend: [{ url, path, pathPrefix: '/~prefix', scp: true }],
+                ui5: {}
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add backend without destination (and UI5 defaults)', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ backend: [{ url, path, client }], ui5: {} });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add backend without path or destination (and UI5 defaults)', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ backend: [{ url }], ui5: {} });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
     });
 
-    test('addMiddlewareConfig', async () => {
-        const fs = create(createStorage());
-        const basePath = '/tmptests';
-        const filename = 'ui5-test.yaml';
-        const filePath = join(basePath, filename);
-        fs.write(filePath, '');
-        const mw = getAppReloadMiddlewareConfig();
-        await addMiddlewareConfig(fs, basePath, filename, mw);
-        expect(fs.read(filePath)).toMatchInlineSnapshot(`
-            "server:
-              customMiddleware:
-                - name: fiori-tools-appreload
-                  afterMiddleware: compression
-                  configuration:
-                    port: 35729
-                    path: webapp
-            "
-        `);
+    describe('addBackendToFioriToolsProxydMiddleware', () => {
+        test('add proxy without out backend first and then call add backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
+            ui5Config.addBackendToFioriToolsProxydMiddleware({ url, path });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('try adding backend without a proxy middleware added before', () => {
+            ui5Config.addFioriToolsAppReloadMiddleware();
+            expect(() => ui5Config.addBackendToFioriToolsProxydMiddleware({ url, path })).toThrowError();
+        });
     });
 
-    test('UI5Config addUI5Framework', async () => {
-        const ui5Config = await UI5Config.newInstance('');
-        ui5Config.addUI5Framework('1.64.0s', ['sap.m'], 'sap_belize');
-        expect((await ui5Config).toString()).toMatchInlineSnapshot(`
-            "framework:
-              name: SAPUI5
-              version: 1.64.0s
-              libraries:
-                - name: sap.m
-                - name: themelib_sap_belize
-            "
-        `);
+    describe('addMockServerMiddleware', () => {
+        test('add with given path', () => {
+            ui5Config.addMockServerMiddleware(path);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('add without path', () => {
+            ui5Config.addMockServerMiddleware();
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
     });
 
-    test('UI5Config addUI5Framework: dark theme lib handling', async () => {
-        const ui5Config = await UI5Config.newInstance('');
-        ui5Config.addUI5Framework('1.64.0s', ['sap.m'], 'sap_fiori_3_dark');
-        expect((await ui5Config).toString()).toMatchInlineSnapshot(`
-          "framework:
-            name: SAPUI5
-            version: 1.64.0s
-            libraries:
-              - name: sap.m
-              - name: themelib_sap_fiori_3
-          "
-      `);
+    test('getAppReloadMiddlewareConfig', () => {
+        ui5Config.addFioriToolsAppReloadMiddleware();
+        expect(ui5Config.toString()).toMatchSnapshot();
     });
 
-    /**
-     * Consumers may require scaffolded apps that do not yet have a service defined.
-     * This test ensures a valid middleware definition is generated without a full service defintion.
-     */
-    test('getFioriToolsProxyMiddlewareConfig no datasource provided', async () => {
-        let serviceData = {};
-
-        expect(getFioriToolsProxyMiddlewareConfig(serviceData)).toMatchInlineSnapshot(`
-Object {
-  "comments": Array [
-    Object {
-      "comment": " If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted",
-      "path": "configuration.ignoreCertError",
-    },
-    Object {
-      "comment": " The UI5 version, for instance, 1.78.1. Empty string means latest version",
-      "path": "configuration.ui5.version",
-    },
-  ],
-  "config": Array [
-    Object {
-      "afterMiddleware": "compression",
-      "configuration": Object {
-        "ignoreCertError": false,
-        "ui5": Object {
-          "path": Array [
-            "/resources",
-            "/test-resources",
-          ],
-          "url": "https://ui5.sap.com",
-          "version": "",
-        },
-      },
-      "name": "fiori-tools-proxy",
-    },
-  ],
-}
-`);
-    });
-
-    test('getFioriToolsProxyMiddlewareConfig no path provided', async () => {
-        let serviceData = {
-            url: 'http://localhost:8080'
-        };
-
-        expect(getFioriToolsProxyMiddlewareConfig(serviceData)).toMatchInlineSnapshot(`
-Object {
-  "comments": Array [
-    Object {
-      "comment": " If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted",
-      "path": "configuration.ignoreCertError",
-    },
-    Object {
-      "comment": " The UI5 version, for instance, 1.78.1. Empty string means latest version",
-      "path": "configuration.ui5.version",
-    },
-  ],
-  "config": Array [
-    Object {
-      "afterMiddleware": "compression",
-      "configuration": Object {
-        "backend": Array [
-          Object {
-            "path": "/",
-            "url": "http://localhost:8080",
-          },
-        ],
-        "ignoreCertError": false,
-        "ui5": Object {
-          "path": Array [
-            "/resources",
-            "/test-resources",
-          ],
-          "url": "https://ui5.sap.com",
-          "version": "",
-        },
-      },
-      "name": "fiori-tools-proxy",
-    },
-  ],
-}
-`);
+    test('addCustomMiddleware', () => {
+        const { config, comments } = getFioriToolsProxyMiddlewareConfig([], {});
+        ui5Config.addCustomMiddleware([config], comments);
+        expect(ui5Config.toString()).toMatchSnapshot();
     });
 });

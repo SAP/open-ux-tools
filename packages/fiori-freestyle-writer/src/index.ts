@@ -63,18 +63,21 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     fs.writeJSON(packagePath, packageJson);
 
+    // ui5-local.yaml
+    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+    ui5LocalConfig.addUI5Framework(
+        'SAPUI5',
+        ffApp.ui5!.localVersion!,
+        getUI5Libs(ffApp?.ui5?.ui5Libs),
+        ffApp.ui5!.ui5Theme
+    );
+    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
     }
-
-    // ui5-local.yaml
-    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    if (ffApp?.ui5?.localVersion) {
-        ui5LocalConfig.addUI5Framework(ffApp.ui5.localVersion, getUI5Libs(ffApp?.ui5?.ui5Libs), ffApp.ui5.ui5Theme);
-    }
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     return fs;
 }

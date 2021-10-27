@@ -228,6 +228,29 @@ key1: 42
         });
     });
 
+    describe('updateAt', () => {
+        it('appends scalar to existing empty sequence, at root', async () => {
+            const serializedYaml = `key1: 42
+seq1:
+  - name: name1
+    config:
+      prop1: a      
+  - name: name2
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.updateAt({ path: 'seq1', matcher: { key: 'name', value: 'name1' }, value: { config: { prop2: 'b' } } });
+            const expectedValue = `key1: 42
+seq1:
+  - name: name1
+    config:
+      prop1: a
+      prop2: b
+  - name: name2
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+    });
+
     describe('appendTo', () => {
         it('appends scalar to existing empty sequence, at root', async () => {
             const serializedYaml = `key1: 42

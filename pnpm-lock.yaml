@@ -147,16 +147,20 @@ importers:
   packages/yaml:
     specifiers:
       '@types/i18next-fs-backend': 1.0.0
+      '@types/lodash.merge': 4.6.6
       i18next: 20.3.2
       i18next-fs-backend: 1.1.1
+      lodash.merge: 4.6.2
       typescript: 4.2.4
       yaml: 2.0.0-6
     dependencies:
       i18next: 20.3.2
       i18next-fs-backend: 1.1.1
+      lodash.merge: 4.6.2
       yaml: 2.0.0-6
     devDependencies:
       '@types/i18next-fs-backend': 1.0.0
+      '@types/lodash.merge': 4.6.6
       typescript: 4.2.4
 
 packages:
@@ -1116,6 +1120,12 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=}
+    dev: true
+
+  /@types/lodash.merge/4.6.6:
+    resolution: {integrity: sha512-IB90krzMf7YpfgP3u/EvZEdXVvm4e3gJbUvh5ieuI+o+XqiNEt6fCzqNRaiLlPVScLI59RxIGZMQ3+Ko/DJ8vQ==}
+    dependencies:
+      '@types/lodash': 4.14.175
     dev: true
 
   /@types/lodash/4.14.175:
@@ -3823,7 +3833,6 @@ packages:
 
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
-    dev: true
 
   /lodash.range/3.2.0:
     resolution: {integrity: sha1-9GHliPZmg/fq3q3lE+OKaaVloV0=}
