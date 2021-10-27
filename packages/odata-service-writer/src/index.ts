@@ -2,7 +2,7 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { UI5Config, ProxyBackend } from '@sap-ux/ui5-config';
+import { ProxyBackend, UI5Config } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 
 import { enhanceData } from './data';

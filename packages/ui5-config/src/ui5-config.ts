@@ -79,6 +79,7 @@ export class UI5Config {
 
     /**
      * Adds a instance of the Fiori tools app-reload middleware to the config.
+     *
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
@@ -92,6 +93,7 @@ export class UI5Config {
 
     /**
      * Adds a instance of the Fiori tools proxy middleware to the config.
+     *
      * @param proxyConfig proxy configuration containing an optional array of backend and an option UI5 host configuration
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -108,6 +110,7 @@ export class UI5Config {
 
     /**
      * Adds a backend configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
      * @param backend config of backend that is to be proxied
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
@@ -127,6 +130,7 @@ export class UI5Config {
 
     /**
      * Adds a instance of the mockserver middleware to the config.
+     *
      * @param path option path that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config

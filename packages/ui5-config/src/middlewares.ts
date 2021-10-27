@@ -8,6 +8,9 @@ import type {
 } from './types';
 import type { NodeComment } from '@sap-ux/yaml';
 
+/**
+ * @returns {FioriAppReloadConfig}
+ */
 export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadConfig> {
     return {
         name: 'fiori-tools-appreload',
@@ -19,6 +22,11 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
     };
 }
 
+/**
+ * @param backends
+ * @param ui5
+ * @returns {{config, comments}}
+ */
 export function getFioriToolsProxyMiddlewareConfig(
     backends?: ProxyBackend[],
     ui5?: ProxyUIConfig

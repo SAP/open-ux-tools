@@ -1,8 +1,9 @@
 import { initI18n, t } from './i18n';
-import yaml, { Document, isMap, isSeq, Node, Scalar, YAMLMap, YAMLSeq } from 'yaml';
+import yaml, { Document, isMap, isSeq, Node, YAMLMap, YAMLSeq } from 'yaml';
 
-const merge = require('lodash.merge');
+import merge = require('lodash.merge');
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface NodeComment<T> {
     path: string;
     comment: string;
@@ -199,8 +200,9 @@ export class YamlDocument {
      * @param path - hierarchical path where the node will be inserted/updated
      * @param {string} path.path - the path object's path
      * @param {Object} path.matcher - key/value pair identifying the object
-     * @param {string} path.key - key of the property being set
      * @param {Object} path.value - the path object's value
+     * @param path.matcher.key
+     * @param path.matcher.value
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
      */
@@ -214,7 +216,7 @@ export class YamlDocument {
         value: T;
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
-        let seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
+        const seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq) {
             throw new Error(t('error.seqDoesNotExist', { path }));
         }
@@ -226,6 +228,12 @@ export class YamlDocument {
         return this;
     }
 
+    /**
+     * @param root0
+     * @param root0.start
+     * @param root0.path
+     * @returns {unknown}
+     */
     getNode({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): unknown {
         if (start) {
             if (!(isSeq(start) || isMap(start))) {
@@ -242,6 +250,12 @@ export class YamlDocument {
         }
     }
 
+    /**
+     * @param root0
+     * @param root0.start
+     * @param root0.path
+     * @returns {unknown}
+     */
     getSequence({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLSeq {
         const a = this.getNode({ start, path });
         if (!isSeq(a)) {
@@ -251,6 +265,12 @@ export class YamlDocument {
         }
     }
 
+    /**
+     * @param root0
+     * @param root0.start
+     * @param root0.path
+     * @returns {YAMLMap}
+     */
     getMap({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLMap {
         const a = this.getNode({ start, path });
         if (!isMap(a)) {
@@ -260,6 +280,11 @@ export class YamlDocument {
         }
     }
 
+    /**
+     * @param sequence
+     * @param predicate
+     * @returns {unknown}
+     */
     findItem(sequence: YAMLSeq, predicate: (o: any) => boolean): unknown {
         const toJson = (o: unknown) =>
             (o !== undefined && typeof (o as any).toJSON === 'function' && (o as any).toJSON.call(o)) || {};
@@ -276,6 +301,7 @@ export class YamlDocument {
      * @returns {string[]} - the path array
      * @memberof YamlDocument
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private toPathArray<T>(path: string): string[] {
         const result = path
             ?.toString()
