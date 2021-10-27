@@ -84,7 +84,7 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
 
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
     ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [backend] });
 
     // Add mockserver entries
