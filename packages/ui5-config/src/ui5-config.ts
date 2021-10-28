@@ -1,4 +1,4 @@
-import { FioriToolsProxyConfig, ProxyBackend } from './types';
+import { FioriToolsProxyConfig, ProxyBackend, ProxyUIConfig } from './types';
 import { YamlDocument, NodeComment, YAMLMap } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
@@ -128,6 +128,40 @@ export class UI5Config {
         return this;
     }
 
+    /**
+     * Adds a ui configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
+     * @param ui5 config of backend that is to be proxied
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public addUi5ToFioriToolsProxydMiddleware(ui5: ProxyUIConfig): UI5Config {
+        try {
+            const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+            const proxyMiddleware = this.document.findItem(
+                middlewareList,
+                (item: any) => item.name === 'fiori-tools-proxy'
+            );
+            if (proxyMiddleware && ui5 !== undefined) {
+                const configurationUi5Doc = this.document.getMap({
+                    start: proxyMiddleware as YAMLMap,
+                    path: 'configuration.ui5'
+                });
+                if (ui5.version) {
+                    configurationUi5Doc.set('version', ui5.version);
+                }
+                if (ui5.url) {
+                    configurationUi5Doc.set('url', ui5.url);
+                }
+                if (ui5.directLoad) {
+                    configurationUi5Doc.set('directLoad', ui5.directLoad);
+                }
+            }
+        } catch (e) {
+            // Ignore
+        }
+        return this;
+    }
     /**
      * Adds a instance of the mockserver middleware to the config.
      *

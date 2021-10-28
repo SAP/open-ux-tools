@@ -78,6 +78,19 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
     }
+    // Temp fix to set ui5 version be removed as part of PR #144
+    // ui5.yaml
+    if (ffApp.ui5) {
+        const ui5ConfigPath = join(basePath, 'ui5.yaml');
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+
+        ui5Config.addUi5ToFioriToolsProxydMiddleware({
+            version: ffApp.ui5?.version,
+            url: ffApp.ui5?.frameworkUrl,
+            directLoad: ffApp.ui5.directLoad
+        });
+        fs.write(ui5ConfigPath, ui5Config.toString());
+    }
 
     return fs;
 }

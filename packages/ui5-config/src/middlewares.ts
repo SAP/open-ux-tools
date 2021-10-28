@@ -22,6 +22,35 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
     };
 }
 
+export const getUi5ProxyConfig = (
+    ui5: ProxyUIConfig
+): {
+    config: CustomMiddleware<FioriToolsProxyConfig>;
+    comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[];
+} => {
+    const config: CustomMiddleware<FioriToolsProxyConfig> = {
+        name: 'fiori-tools-proxy',
+        afterMiddleware: 'compression',
+        configuration: {
+            ignoreCertError: false
+        }
+    };
+    const comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [];
+    config.configuration['ui5'] = {
+        path: ['/resources', '/test-resources'],
+        url: ui5.url || 'https://ui5.sap.com',
+        version: ui5.version || ''
+    };
+    if (ui5.directLoad) {
+        config.configuration['ui5'].directLoad = true;
+    }
+    comments.push({
+        path: 'configuration.ui5.version',
+        comment: ' The UI5 version, for instance, 1.78.1. Empty string means latest version'
+    });
+    return { config, comments };
+};
+
 /**
  * @param backends
  * @param ui5
@@ -41,7 +70,7 @@ export function getFioriToolsProxyMiddlewareConfig(
             ignoreCertError: false
         }
     };
-    const comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [
+    let comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[] = [
         {
             path: 'configuration.ignoreCertError',
             comment:
@@ -57,18 +86,9 @@ export function getFioriToolsProxyMiddlewareConfig(
     }
 
     if (ui5 !== undefined) {
-        fioriToolsProxy.configuration['ui5'] = {
-            path: ['/resources', '/test-resources'],
-            url: ui5.url || 'https://ui5.sap.com',
-            version: ui5.version || ''
-        };
-        if (ui5.directLoad) {
-            fioriToolsProxy.configuration['ui5'].directLoad = true;
-        }
-        comments.push({
-            path: 'configuration.ui5.version',
-            comment: ' The UI5 version, for instance, 1.78.1. Empty string means latest version'
-        });
+        const { config, comments: ui5Comments } = getUi5ProxyConfig(ui5);
+        fioriToolsProxy.configuration['ui5'] = config.configuration['ui5'];
+        comments = comments.concat(ui5Comments);
     }
 
     return { config: fioriToolsProxy, comments };

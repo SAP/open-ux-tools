@@ -103,7 +103,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
+          version: '1.78.16' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

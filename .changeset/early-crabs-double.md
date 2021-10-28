@@ -3,6 +3,7 @@
 '@sap-ux/odata-service-writer': patch
 '@sap-ux/ui5-application-writer': patch
 '@sap-ux/ui5-config': patch
+'@sap-ux/yaml': patch
 ---
 
-Fix - Set ui5 version in proxy middleware, correct odata v2 settings in manifest.json
+Update ui5 verison handling for ui5.yaml. Allow setting view name in basic template, enhancements to yaml lib.
