@@ -3,6 +3,9 @@ import translations from './translations/fiori-freestyle-writer.i18n.json';
 
 const NS = 'fiori-freestyle-writer';
 
+/**
+ * Initialize i18next with the translations for this module.
+ */
 export async function initI18n(): Promise<void> {
     await i18next.init({
         resources: {
@@ -18,9 +21,11 @@ export async function initI18n(): Promise<void> {
 }
 
 /**
- * @param key
- * @param options
- * @returns i18next instance
+ * Helper function facading the call call to i18next.
+ *
+ * @param key i18n key
+ * @param options additional options
+ * @returns {string} localized string stored for the given key
  */
 export function t(key: string, options?: TOptions): string {
     return i18next.t(key, options);

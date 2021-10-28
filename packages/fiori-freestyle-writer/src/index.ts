@@ -35,6 +35,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     fs.copyTpl(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp, undefined, {
         processDestinationPath(path: string): string {
             if (ffApp.template.type === TemplateType.Basic) {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 return path.replace('View1', (ffApp.template.settings as unknown as BasicAppSettings).viewName!);
             } else {
                 return path;

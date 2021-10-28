@@ -1,13 +1,15 @@
 import { t } from './i18n';
 
 /**
- * @param options
- * @param options.localOnly
- * @param options.addMock
- * @param options.sapClient
- * @param options.flpAppId
- * @param options.startFile
- * @param options.localStartFile
+ * Get and object reflecting the scripts that need to be added to the package.json.
+ *
+ * @param options Collection of mostly optional settings.
+ * @param options.localOnly no server available
+ * @param options.addMock add a script for using the mockserver
+ * @param options.sapClient SAP client required for connecting to the backend
+ * @param options.flpAppId local FLP id
+ * @param options.startFile path that should be opened with the start script
+ * @param options.localStartFile path that should be opend with the start-local script
  * @description Generates the package.json scripts
  * @returns package.json scripts
  */
