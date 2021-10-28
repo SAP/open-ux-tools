@@ -32,25 +32,25 @@ describe('CustomAction', () => {
     });
     describe('generateCustomColumn', () => {
         let fs: Editor;
+        const testVersions = [1.86, 1.85, 1.84];
+        const customColumn: TableCustomColumn = {
+            target: 'sample',
+            targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
+            id: 'NewColumn',
+            header: 'col header',
+            template: 'customColumnContent.CustomColumn',
+            position: {
+                placement: Placement.After,
+                anchor: 'DataField::BooleanProperty'
+            }
+        };
+        const handler = undefined;
         beforeEach(() => {
             fs = create(createStorage());
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp', 'manifest.json'), JSON.stringify(Manifest));
         });
-        test('generateCustomColumn, version 1.86, no handler, only mandatory properties', () => {
-            const customColumn: TableCustomColumn = {
-                target: 'sample',
-                targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
-                id: 'NewColumn',
-                header: 'col header',
-                template: 'customColumnContent.CustomColumn',
-                position: {
-                    placement: Placement.After,
-                    anchor: 'DataField::BooleanProperty'
-                }
-            };
-            const handler = undefined;
-            const ui5Version = 1.86;
+        test.each(testVersions)('generateCustomColumn, no handler, only mandatory properties', (ui5Version) => {
             //sut
             generateCustomColumn(testDir, customColumn, handler, ui5Version, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));

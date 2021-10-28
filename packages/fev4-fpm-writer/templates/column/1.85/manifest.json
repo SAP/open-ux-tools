@@ -2,19 +2,31 @@
     "sap.ui5": {
         "routing": {
             "targets": {
-                "<%= target %>": { 
-                    "controlConfiguration": {
-                        "<%= targetEntity %>": {
-                            "columns": {
-                                "<%= id %>": {
-                                    "header": "<%= header %>",
-                                    "width": "<%= width %>",
-                                    "position": {
-                                        "placement": "<%= placement %>",
-                                        "anchor": "<%= anchor %>"
-                                    },
-                                    "template": "<%= template %>",
-                                    "availability": "<%= availability %>"
+                "<%= target %>": {
+                    "options": {
+                        "settings": {
+                            "controlConfiguration": {
+                                "<%= targetEntity %>": {
+                                    "columns": {
+                                        "<%= id %>": {
+                                            "header": "<%= header %>",
+                                            <% if (width)  { %> 
+                                                "width": "<%= width %>",  
+                                            <% } %>
+                                            "position": {
+                                                <% if (position.placement) { %> 
+                                                    "placement": "<%= position.placement %>", 
+                                                <% } %>
+                                                <% if (position.anchor) { %> 
+                                                    "anchor": "<%= position.anchor %>" 
+                                                <% } %>
+                                            },
+                                            "template": "<%= template %>"
+                                            <% if (availability) { %> 
+                                                ", availability": "<%= availability %>" 
+                                            <% } %>
+                                        }
+                                    }
                                 }
                             }
                         }
