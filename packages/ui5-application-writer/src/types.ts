@@ -23,6 +23,8 @@ export interface App {
 }
 
 export interface UI5 {
+    framework?: 'SAPUI5' | 'OpenUI5';
+    frameworkUrl?: string;
     minUI5Version?: string;
     version?: string;
     localVersion?: string;
@@ -30,6 +32,7 @@ export interface UI5 {
     descriptorVersion?: string;
     ui5Libs?: string | string[];
     ui5Theme?: string;
+    directLoad?: boolean;
 }
 
 // Additional configurable features

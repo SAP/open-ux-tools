@@ -115,7 +115,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -152,7 +152,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '1.78.16' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -693,7 +693,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for nods1
+    "contents": "# This is the resource bundle for wrk1
 
 #Texts for manifest.json
 
@@ -6734,7 +6734,8 @@ server:
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - path: /sap
+          - scp: true
+            path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
@@ -6767,7 +6768,8 @@ server:
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - path: /sap
+          - scp: true
+            path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
@@ -6776,7 +6778,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -6806,7 +6808,8 @@ server:
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - path: /sap
+          - scp: true
+            path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
@@ -6815,7 +6818,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '1.78.16' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -7356,7 +7359,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for nods1
+    "contents": "# This is the resource bundle for wrk1
 
 #Texts for manifest.json
 
@@ -9313,7 +9316,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\"
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -10031,7 +10035,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -10068,7 +10072,7 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '1.78.16' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -10609,7 +10613,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for nods1
+    "contents": "# This is the resource bundle for wrk1
 
 #Texts for manifest.json
 

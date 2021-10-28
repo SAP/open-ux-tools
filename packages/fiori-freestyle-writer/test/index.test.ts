@@ -11,11 +11,6 @@ const TEST_NAME = 'allTemplate';
 describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
-    // eslint-disable-next-line no-console
-    if (debug) {
-        console.log(testOutputDir);
-    }
-
     const commonConfig = {
         app: {
             id: 'test.me',

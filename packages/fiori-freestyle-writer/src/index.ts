@@ -7,13 +7,14 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { getPackageJsonTasks } from './packageConfig';
 import { getUI5Libs } from './data/ui5Libs';
 import cloneDeep from 'lodash/cloneDeep';
-import { FreestyleApp } from 'types';
+import { BasicAppSettings, FreestyleApp, TemplateType } from './types';
+import { setDefaults } from './defaults';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
  *
  * @param basePath - the absolute target path where the applciation will be generated
- * @param data -
+ * @param data - configuration to generate the freestyle application
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
@@ -25,12 +26,23 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     fs = await generateUi5Project(basePath, ffApp, fs);
 
+    // set additional defaults
+    setDefaults(ffApp);
+
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     // Common files
     fs.copyTpl(join(tmplPath, 'common', 'add', '**/*.*'), basePath, ffApp);
 
-    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp);
+    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp, undefined, {
+        processDestinationPath(path: string): string {
+            if (ffApp.template.type === TemplateType.Basic) {
+                return path.replace('View1', (ffApp.template.settings as unknown as BasicAppSettings).viewName!);
+            } else {
+                return path;
+            }
+        }
+    });
 
     // merge content into existing files
     const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
@@ -63,18 +75,34 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     fs.writeJSON(packagePath, packageJson);
 
+    // ui5-local.yaml
+    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+    ui5LocalConfig.addUI5Framework(
+        'SAPUI5',
+        ffApp.ui5!.localVersion!,
+        getUI5Libs(ffApp?.ui5?.ui5Libs),
+        ffApp.ui5!.ui5Theme
+    );
+    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
     }
+    // Temp fix to set ui5 version be removed as part of PR #144
+    // ui5.yaml
+    if (ffApp.ui5) {
+        const ui5ConfigPath = join(basePath, 'ui5.yaml');
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
 
-    // ui5-local.yaml
-    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    if (ffApp?.ui5?.localVersion) {
-        ui5LocalConfig.addUI5Framework(ffApp.ui5.localVersion, getUI5Libs(ffApp?.ui5?.ui5Libs), ffApp.ui5.ui5Theme);
+        ui5Config.addUi5ToFioriToolsProxydMiddleware({
+            version: ffApp.ui5?.version,
+            url: ffApp.ui5?.frameworkUrl,
+            directLoad: ffApp.ui5.directLoad
+        });
+        fs.write(ui5ConfigPath, ui5Config.toString());
     }
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     return fs;
 }
