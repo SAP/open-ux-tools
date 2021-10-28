@@ -943,7 +943,7 @@ title=App Title",
         }
       ],
       \\"targets\\": {
-        \\"TargetView1\\": {
+        \\"TargetCustomViewName\\": {
           \\"viewType\\": \\"XML\\",
           \\"transition\\": \\"slide\\",
           \\"clearControlAggregation\\": false,

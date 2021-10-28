@@ -33,7 +33,7 @@
                 }
             ],
             "targets": {
-                "TargetView1": {
+                "Target<%- template.settings.viewName %>": {
                     "viewType": "XML",
                     "transition": "slide",
                     "clearControlAggregation": false,
