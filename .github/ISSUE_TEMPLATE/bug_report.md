@@ -9,8 +9,8 @@ assignees: ''
 
 <!-- 🔍 Please search existing issues to avoid creating duplicates. -->
 
-### Related User Story
-User Story: _issue number_
+### Related Feature
+Feature request: _issue number_
 
 ### Description
 A clear description of what the bug is.
@@ -43,7 +43,9 @@ OS:
 - [ ] Windows
 - [ ] Other
 
-<!-- 🗒️ Developer should document the Root Cause Analysis of the bug to improve process or code in future -->
+
+<!-- 🛑 The reporter of this issue can skip filling this section. -->
+<!-- 🗒️ When the issue is fixed, developer will document the Root Cause Analysis of the bug to improve process or code in future. -->
 ## Root Cause Analysis 
 
 ### Problem
