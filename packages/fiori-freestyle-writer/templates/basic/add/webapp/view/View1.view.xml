@@ -1,5 +1,5 @@
 <mvc:View
-    controllerName="<%- app.id %>.controller.View1"
+    controllerName="<%- app.id %>.controller.<%- template.settings.viewName %>"
     xmlns:mvc="sap.ui.core.mvc"
     displayBlock="true"
     xmlns="sap.m"

@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.10.0
+
+### Minor Changes
+
+-   d37c8bd: Added support for selecting a custom view name for Fiori freestyle - Basic template
+
 ## 0.9.2
 
 ### Patch Changes
