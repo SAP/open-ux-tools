@@ -51,11 +51,13 @@ importers:
             jest: ^27.3.1
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0
+            xml-js: 1.6.11
         dependencies:
             ejs: 3.1.6
             jest: 27.3.1_ts-node@10.2.1
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
+            xml-js: 1.6.11
         devDependencies:
             '@types/ejs': 3.0.6
             '@types/mem-fs-editor': 7.0.0
@@ -6722,6 +6724,13 @@ packages:
                 integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
             }
 
+    /sax/1.2.4:
+        resolution:
+            {
+                integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
+            }
+        dev: false
+
     /saxes/5.0.1:
         resolution:
             {
@@ -7759,6 +7768,16 @@ packages:
                 optional: true
             utf-8-validate:
                 optional: true
+
+    /xml-js/1.6.11:
+        resolution:
+            {
+                integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==
+            }
+        hasBin: true
+        dependencies:
+            sax: 1.2.4
+        dev: false
 
     /xml-name-validator/3.0.0:
         resolution:

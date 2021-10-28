@@ -5,8 +5,9 @@ import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column/version';
 import { Availability, EventHandler, HorizontalAlign, Placement, TableCustomColumn } from '../../src/column/types';
 import * as Manifest from '../data/columnManifest.json';
+import { xml2json } from 'xml-js';
 
-const testDir = '' + Date.now();
+const testDir = 'fpm/column/test';
 
 describe('CustomAction', () => {
     describe('getTemplateRoot', () => {
@@ -52,7 +53,7 @@ describe('CustomAction', () => {
         });
         test.each(testVersions)('generateCustomColumn, no handler, only mandatory properties', (ui5Version) => {
             //sut
-            generateCustomColumn(testDir, customColumn, handler, ui5Version, fs);
+            generateCustomColumn(fs, testDir, customColumn, handler, ui5Version);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
             expect(settings).toBeDefined();
@@ -81,7 +82,7 @@ describe('CustomAction', () => {
                 fileName: 'controller/CustomColumn',
                 predefinedMethod: 'buttonPressed'
             };
-            generateCustomColumn(testDir, testCustomColumn, handler, 1.86, fs);
+            generateCustomColumn(fs, testDir, testCustomColumn, handler, 1.86);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
             expect(settings).toBeDefined();
@@ -100,7 +101,13 @@ describe('CustomAction', () => {
             });
 
             const view = fs.read(join(testDir, 'webapp', 'ext', 'customColumnContent', 'CustomColumn.view.xml'));
-            expect(view).toMatchSnapshot();
+            expect(view).toBeDefined();
+            const viewJson = JSON.parse(xml2json(view, { compact: true }));
+            const layout = viewJson['core:FragmentDefinition']['l:VerticalLayout'];
+            expect(layout).toBeDefined;
+            expect(layout['_attributes']['core:require']).toBeDefined;
+            expect(layout['Button']['_attributes']).toEqual({ text: 'to be defined', press: 'handler.buttonPressed' });
+
             const controller = fs.read(join(testDir, 'webapp', 'ext', 'controller', 'CustomColumn.js'));
             expect(controller).toMatchSnapshot();
         });
@@ -111,7 +118,7 @@ describe('CustomAction', () => {
                 horizontalAlign: HorizontalAlign.Center,
                 width: '150px'
             };
-            generateCustomColumn(testDir, testCustomColumn, handler, 1.85, fs);
+            generateCustomColumn(fs, testDir, testCustomColumn, handler, 1.85);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
             expect(settings).toBeDefined();

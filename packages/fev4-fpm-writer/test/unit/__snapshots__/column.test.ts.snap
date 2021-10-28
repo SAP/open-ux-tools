@@ -3,7 +3,7 @@
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, all properties 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: '1635414110304/webapp/ext/controller/CustomColumn'}\\">
+	<l:VerticalLayout  core:require=\\"{ handler: 'fpm/column/test/webapp/ext/controller/CustomColumn'}\\">
 		
 			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
 		
@@ -13,18 +13,6 @@ exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler
 `;
 
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 1`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
-	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: '1635414110304/webapp/ext/controller/CustomColumn'}\\">
-		
-			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
-		
-	</l:VerticalLayout>
-</core:FragmentDefinition>
-"
-`;
-
-exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 2`] = `
 "sap.ui.define([], function() {
     'use strict';
 

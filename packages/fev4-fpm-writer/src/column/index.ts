@@ -26,25 +26,22 @@ const emptyDefaultColumn = {
 /**
  * Add a custom column to an existing UI5 application.
  *
+ * @returns {Promise<Editor>} the updated mem-fs editor instance
  * @param {string} basePath - the base path
  * @param {TableCustomColumn} customColumn - the custom column configuration
  * @param {string} handler (optional) - event handler path and name (relative path from the base path). If passed, an event handler JS gets additionally created and added to the fragment
  * @param {Number} ui5Version - optional parameter to define the minimum UI5 version that the generated code must support. If nothing can be generated for the given version then an exception is thrown.
  * @param {Editor} [fs] - the mem-fs editor instance
- * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
 export function generateCustomColumn(
+    fs: Editor,
     basePath: string,
     customColumn: TableCustomColumn,
     handler?: EventHandler | undefined,
-    ui5Version?: number,
-    fs?: Editor
+    ui5Version?: number
 ): Editor {
     validateVersion(ui5Version);
 
-    if (!fs) {
-        fs = create(createStorage());
-    }
     const completeColumn = Object.assign(emptyDefaultColumn, customColumn);
 
     // enhance manifest with column definition
