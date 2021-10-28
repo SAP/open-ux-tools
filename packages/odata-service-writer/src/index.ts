@@ -61,21 +61,6 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     const manifestJsonExt = fs.read(join(extRoot, `manifest.json`));
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, data)));
 
-    // // ui*.yaml
-    // const backend: ProxyBackend = {
-    //     path: `/${data.path?.split('/').filter((s: string) => s !== '')[0] || ''}`,
-    //     url: data.url || 'http://localhost'
-    // };
-    // if (data.client) {
-    //     backend.client = data.client;
-    // }
-    // if (data.destination) {
-    //     backend.destination = data.destination.name;
-    //     if (data.destination.instance) {
-    //         backend.destinationInstance = data.destination.instance;
-    //     }
-    // }
-
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
