@@ -27,7 +27,7 @@ describe('Test generate method with invalid location', () => {
 
 describe('Test generate method with valid input', () => {
     let fs: Editor;
-    beforeEach(async () => {
+    beforeEach( () => {
         // generate required files
         fs = create(createStorage());
         fs.write(join(testDir, 'ui5.yaml'), '');
