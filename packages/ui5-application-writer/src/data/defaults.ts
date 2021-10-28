@@ -85,11 +85,11 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     merged.descriptorVersion =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         ui5.descriptorVersion || (mappings as Record<string, string>)[merged.minUI5Version!] || '1.12.0';
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     merged.typesVersion =
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         ui5.typesVersion || parseFloat(merged.localVersion!) >= 1.76 ? merged.localVersion : '1.71.18';
     merged.ui5Theme = ui5?.ui5Theme || 'sap_fiori_3';
     merged.ui5Libs = ui5?.ui5Libs || [];
