@@ -28,10 +28,10 @@ describe('Test generate method with invalid location', () => {
 describe('Test generate method with valid input', () => {
     let fs: Editor;
     beforeEach(async () => {
-        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
+        // const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
         // generate required files
         fs = create(createStorage());
-        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
+        fs.write(join(testDir, 'ui5.yaml'), '');
         fs.write(join(testDir, 'ui5-local.yaml'), '');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
         fs.write(
@@ -90,7 +90,8 @@ describe('Test generate method with valid input', () => {
             version: OdataVersion.v4,
             destination: {
                 name: 'test'
-            }
+            },
+            client: '099'
         };
         // no localService folder needed
 
@@ -133,19 +134,25 @@ describe('Test generate method with valid input', () => {
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
         backend:
           - apiHub: true
             scp: false
             pathPrefix: /~prefix
             path: /sap
             url: http://localhost
+            client: \\"013\\"
             destination: test
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
 "
 `);
     });

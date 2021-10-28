@@ -6734,7 +6734,8 @@ server:
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - path: /sap
+          - scp: true
+            path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
@@ -6767,7 +6768,8 @@ server:
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - path: /sap
+          - scp: true
+            path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
@@ -6806,7 +6808,8 @@ server:
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - path: /sap
+          - scp: true
+            path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
