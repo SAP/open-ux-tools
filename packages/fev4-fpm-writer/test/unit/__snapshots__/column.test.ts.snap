@@ -3,7 +3,19 @@
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, all properties 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'fpm/column/test/webapp/custom/controller/CustomColumn'}\\">
+	<l:VerticalLayout  core:require=\\"{ handler: '/Users/d022159/git/open-ux-tools/packages/fev4-fpm-writer/test/unit/test4Column/webapp/custom/controller/CustomColumn'}\\">
+		
+			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
+		
+	</l:VerticalLayout>
+</core:FragmentDefinition>
+"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, no fs, all properties 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
+	xmlns:l=\\"sap.ui.layout\\">
+	<l:VerticalLayout  core:require=\\"{ handler: '/Users/d022159/git/open-ux-tools/packages/fev4-fpm-writer/test/unit/test4Column/webapp/custom/controller/CustomColumn'}\\">
 		
 			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
 		

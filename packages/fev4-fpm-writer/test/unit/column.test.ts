@@ -4,10 +4,10 @@ import { join } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column/version';
 import { Availability, EventHandler, HorizontalAlign, Placement, TableCustomColumn } from '../../src/column/types';
-import * as Manifest from '../data/columnManifest.json';
+import * as Manifest from './test4Column/webapp/manifest.json';
 import { xml2json } from 'xml-js';
 
-const testDir = 'fpm/column/test';
+const testDir = join(__dirname, '/test4Column');
 
 describe('CustomAction', () => {
     describe('getTemplateRoot', () => {
@@ -53,7 +53,7 @@ describe('CustomAction', () => {
         });
         test.each(testVersions)('generateCustomColumn, no handler, only mandatory properties', (ui5Version) => {
             //sut
-            generateCustomColumn(fs, testDir, customColumn, handler, ui5Version);
+            generateCustomColumn(testDir, customColumn, handler, ui5Version, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
             expect(settings).toBeDefined();
@@ -64,7 +64,7 @@ describe('CustomAction', () => {
             expect(newColumn.columns['NewColumn']).toEqual({
                 header: 'col header',
                 position: { placement: 'After', anchor: 'DataField::BooleanProperty' },
-                template: 'fpm/column/test/webapp/custom/CustomColumn'
+                template: join(testDir, 'webapp/custom/CustomColumn')
             });
 
             const view = fs.read(join(testDir, 'webapp/custom/CustomColumn.view.xml'));
@@ -82,7 +82,7 @@ describe('CustomAction', () => {
                 fileName: join(testDir, 'webapp/custom/controller/CustomColumn'),
                 predefinedMethod: 'buttonPressed'
             };
-            generateCustomColumn(fs, testDir, testCustomColumn, handler, 1.86);
+            generateCustomColumn(testDir, testCustomColumn, handler, 1.86, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
             expect(settings).toBeDefined();
@@ -93,7 +93,7 @@ describe('CustomAction', () => {
             expect(newColumn.columns['NewColumn']).toEqual({
                 header: 'col header',
                 position: { placement: 'After', anchor: 'DataField::BooleanProperty' },
-                template: 'fpm/column/test/webapp/custom/CustomColumn',
+                template: join(testDir, 'webapp/custom/CustomColumn'),
                 availability: Availability.Adaptation,
                 horizontalAlign: HorizontalAlign.Center,
                 width: '150px',
@@ -118,7 +118,7 @@ describe('CustomAction', () => {
                 horizontalAlign: HorizontalAlign.Center,
                 width: '150px'
             };
-            generateCustomColumn(fs, testDir, testCustomColumn, handler, 1.85);
+            generateCustomColumn(testDir, testCustomColumn, handler, 1.85, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
             expect(settings).toBeDefined();
@@ -129,12 +129,39 @@ describe('CustomAction', () => {
             expect(newColumn.columns['NewColumn']).toEqual({
                 header: 'col header',
                 position: { placement: 'After', anchor: 'DataField::BooleanProperty' },
-                template: 'fpm/column/test/webapp/custom/CustomColumn',
+                template: join(testDir, 'webapp/custom/CustomColumn'),
                 availability: Availability.Adaptation,
                 width: '150px'
             });
 
             const view = fs.read(join(testDir, 'webapp/custom/CustomColumn.view.xml'));
+            expect(view).toMatchSnapshot();
+        });
+        test('generateCustomColumn 1.85, no handler, no fs, all properties', () => {
+            const testCustomColumn: TableCustomColumn = {
+                ...customColumn,
+                availability: Availability.Adaptation,
+                horizontalAlign: HorizontalAlign.Center,
+                width: '150px'
+            };
+
+            const testFS = generateCustomColumn(testDir, testCustomColumn, handler, 1.85);
+            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings).toBeDefined();
+            expect(settings.controlConfiguration).toBeDefined();
+            expect(settings.controlConfiguration['items/@com.sap.vocabularies.UI.v1.LineItem']).toBeDefined();
+            const newColumn = settings.controlConfiguration['@com.sap.vocabularies.UI.v1.LineItem'];
+            expect(newColumn).toBeDefined();
+            expect(newColumn.columns['NewColumn']).toEqual({
+                header: 'col header',
+                position: { placement: 'After', anchor: 'DataField::BooleanProperty' },
+                template: join(testDir, 'webapp/custom/CustomColumn'),
+                availability: Availability.Adaptation,
+                width: '150px'
+            });
+
+            const view = testFS.read(join(testDir, 'webapp/custom/CustomColumn.view.xml'));
             expect(view).toMatchSnapshot();
         });
     });

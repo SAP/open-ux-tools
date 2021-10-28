@@ -34,19 +34,21 @@ const emptyDefaultColumn: InternalCustomColumn = {
  * @param {Editor} [fs] - the mem-fs editor instance
  */
 export function generateCustomColumn(
-    fs: Editor,
     basePath: string,
     customColumn: TableCustomColumn,
     handler?: EventHandler | undefined,
-    ui5Version?: number
+    ui5Version?: number,
+    fs?: Editor
 ): Editor {
     validateVersion(ui5Version);
-
+    const manifestPath = join(basePath, 'webapp/manifest.json');
+    if (!fs) {
+        fs = create(createStorage());
+        fs.readJSON(manifestPath);
+    }
     const completeColumn = Object.assign(emptyDefaultColumn, customColumn);
 
     // enhance manifest with column definition
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
-
     const manifestRoot = getManifestRoot(ui5Version);
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn);
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
