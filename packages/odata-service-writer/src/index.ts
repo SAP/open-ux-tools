@@ -61,31 +61,16 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     const manifestJsonExt = fs.read(join(extRoot, `manifest.json`));
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, data)));
 
-    // ui*.yaml
-    const backend: ProxyBackend = {
-        path: `/${data.path?.split('/').filter((s: string) => s !== '')[0] || ''}`,
-        url: data.url || 'http://localhost'
-    };
-    if (data.client) {
-        backend.client = data.client;
-    }
-    if (data.destination) {
-        backend.destination = data.destination.name;
-        if (data.destination.instance) {
-            backend.destinationInstance = data.destination.instance;
-        }
-    }
-
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addFioriToolsProxydMiddleware({ backend: [backend], ui5: {} });
+    ui5Config.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend], ui5: {} });
     ui5Config.addFioriToolsAppReloadMiddleware();
 
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [backend] });
+    ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend] });
 
     // Add mockserver entries
     if (data.metadata) {
@@ -110,7 +95,7 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         );
         const ui5MockConfigPath = join(basePath, 'ui5-mock.yaml');
         const ui5MockConfig = await UI5Config.newInstance(fs.read(ui5MockConfigPath));
-        ui5MockConfig.addFioriToolsProxydMiddleware({ backend: [backend], ui5: {} });
+        ui5MockConfig.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend], ui5: {} });
         ui5MockConfig.addMockServerMiddleware(data.path);
         ui5MockConfig.addFioriToolsAppReloadMiddleware();
         fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());

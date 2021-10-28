@@ -12,7 +12,7 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out 
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - url: http://localhost:8080
             path: /~testpath~
@@ -31,7 +31,7 @@ exports[`UI5Config addCustomMiddleware 1`] = `
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -52,7 +52,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend with flexible param
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -72,7 +72,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without destination
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -91,7 +91,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without path or des
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -112,7 +112,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add commonly configured backend
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -138,7 +138,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but UI5 
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -154,7 +154,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all 
             - /resources
             - /test-resources
           url: http://~url
-          version: 1.23.3 # The UI5 version, for instance, 1.78.1. null means latest version
+          version: 1.23.3 # The UI5 version, for instance, 1.78.1. Empty string means latest version
           directLoad: true
 "
 `;
