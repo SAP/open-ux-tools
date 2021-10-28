@@ -6,22 +6,23 @@ import { create, Editor } from 'mem-fs-editor';
 import { mergeObjects } from 'json-merger';
 import { render } from 'ejs';
 import { getFilePaths } from './files';
-import { Ui5App } from './types';
+import { App, AppOptions, Package, UI5, Ui5App } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
  * Writes the template to the memfs editor instance.
  *
  * @param {string} basePath - the base path
- * @param {Ui5App} ui5App - the Ui5App instance
+ * @param {Ui5App} ui5AppConfig - the Ui5App instance
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {*}  {Promise<Editor>} the updated memfs editor instance
  */
-async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<Editor> {
+async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
-    ui5App = mergeWithDefaults(ui5App);
+    const ui5App: { app: App; appOptions: Partial<AppOptions>; ui5: UI5; package: Package } =
+        mergeWithDefaults(ui5AppConfig);
 
     const tmplPath = join(__dirname, '..', 'templates');
 
@@ -43,10 +44,10 @@ async function generate(basePath: string, ui5App: Ui5App, fs?: Editor): Promise<
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
     ui5LocalConfig.addUI5Framework(
-        ui5App.ui5!.framework!,
-        ui5App.ui5!.localVersion!,
-        getUI5Libs(ui5App.ui5!.ui5Libs),
-        ui5App.ui5!.ui5Theme
+        ui5App.ui5.framework,
+        ui5App.ui5.localVersion,
+        getUI5Libs(ui5App.ui5.ui5Libs),
+        ui5App.ui5.ui5Theme
     );
     ui5LocalConfig.addFioriToolsAppReloadMiddleware();
     fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());

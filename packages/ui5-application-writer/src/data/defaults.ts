@@ -45,6 +45,7 @@ export function mergeApp(app: App): App {
 export const UI5_DEFAULT = {
     DEFAULT_UI5_VERSION: '',
     DEFAULT_LOCAL_UI5_VERSION: '1.95.0',
+    MIN_UI5_VERSION: '1.60',
     MIN_LOCAL_SAPUI5_VERSION: '1.76.0',
     MIN_LOCAL_OPENUI5_VERSION: '1.52.5',
     SAPUI5_CDN: 'https://ui5.sap.com',
@@ -57,35 +58,41 @@ export const UI5_DEFAULT = {
  * @param {UI5} [ui5] - the UI5 instance
  * @returns {UI5} the updated UI5 instance
  */
-export function mergeUi5(ui5?: UI5): UI5 {
+export function mergeUi5(ui5: Partial<UI5>): UI5 {
     const merged: Partial<UI5> = {
-        minUI5Version: ui5?.minUI5Version || '1.60',
-        version: ui5?.version || UI5_DEFAULT.DEFAULT_UI5_VERSION // no version indicates the latest available should be used
+        minUI5Version: ui5.minUI5Version || UI5_DEFAULT.MIN_UI5_VERSION,
+        version: ui5.version || UI5_DEFAULT.DEFAULT_UI5_VERSION // no version indicates the latest available should be used
     };
-    merged.framework = ui5?.framework || 'SAPUI5';
+    merged.framework = ui5.framework || 'SAPUI5';
     merged.frameworkUrl =
-        ui5?.frameworkUrl || merged.framework === 'SAPUI5' ? UI5_DEFAULT.SAPUI5_CDN : UI5_DEFAULT.OPENUI5_CDN;
+        ui5.frameworkUrl || merged.framework === 'SAPUI5' ? UI5_DEFAULT.SAPUI5_CDN : UI5_DEFAULT.OPENUI5_CDN;
 
     // if a specific local version is provided, use it, otherwise, sync with version but keep minimum versions in mind
-    if (ui5?.localVersion) {
+    if (ui5.localVersion) {
         merged.localVersion = ui5.localVersion;
     } else {
-        merged.localVersion =
-            merged.version === UI5_DEFAULT.DEFAULT_UI5_VERSION
-                ? UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION
-                : merged.framework === 'SAPUI5'
-                ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION
-                : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION; // minimum version available as local libs
+        if (merged.version === UI5_DEFAULT.DEFAULT_UI5_VERSION) {
+            merged.localVersion = UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION;
+        } else {
+            merged.localVersion =
+                merged.framework === 'SAPUI5'
+                    ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION
+                    : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION; // minimum version available as local libs
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         if (parseFloat(merged.version!) > parseFloat(merged.localVersion)) {
-            merged.localVersion = merged.version!;
+            merged.localVersion = merged.version;
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     merged.descriptorVersion =
-        ui5?.descriptorVersion || (mappings as Record<string, string>)[merged.minUI5Version!] || '1.12.0';
+        ui5.descriptorVersion || (mappings as Record<string, string>)[merged.minUI5Version!] || '1.12.0';
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     merged.typesVersion =
-        ui5?.typesVersion || parseFloat(merged.localVersion!) >= 1.76 ? merged.localVersion : '1.71.18';
+        ui5.typesVersion || parseFloat(merged.localVersion!) >= 1.76 ? merged.localVersion : '1.71.18';
     merged.ui5Theme = ui5?.ui5Theme || 'sap_fiori_3';
+    merged.ui5Libs = ui5?.ui5Libs || [];
     // Return merged, does not update passed ref
     return Object.assign({}, ui5, merged) as UI5;
 }
