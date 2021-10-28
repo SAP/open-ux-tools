@@ -21,13 +21,13 @@
                                     <% if (horizontalAlign) { %> "horizontalAlign": "<%= horizontalAlign %>", <%
                                             } %>
                                     "template": "<%= template %>"
-                                    <% if (availability) { %> ", availability": "<%= availability %>" <%
+                                    <% if (availability) { %> , "availability": "<%= availability %>" <%
                                             } %>
-                                    <% if (properties) { %> ", properties": [ 
+                                    <% if (properties) { %> , "properties": [ 
                                         <% for (var i =0; i < properties.length; i++) { %>
                                             "<%= properties[i] %>"
-                                            <% if (i < properties.length) { %>
-                                                ","
+                                            <% if (i < properties.length - 1) { %>
+                                                ,
                                             <%
                                                         } %>
                                         <%

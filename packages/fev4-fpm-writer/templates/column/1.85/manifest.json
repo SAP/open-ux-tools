@@ -23,7 +23,7 @@
                                             },
                                             "template": "<%= template %>"
                                             <% if (availability) { %> 
-                                                ", availability": "<%= availability %>" 
+                                                , "availability": "<%= availability %>" 
                                             <% } %>
                                         }
                                     }

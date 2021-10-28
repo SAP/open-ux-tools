@@ -1,11 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, all properties 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
+	xmlns:l=\\"sap.ui.layout\\">
+	<l:VerticalLayout  core:require=\\"{ handler: '1635414110304/webapp/ext/controller/CustomColumn'}\\">
+		
+			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
+		
+	</l:VerticalLayout>
+</core:FragmentDefinition>
+"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
+	xmlns:l=\\"sap.ui.layout\\">
+	<l:VerticalLayout  core:require=\\"{ handler: '1635414110304/webapp/ext/controller/CustomColumn'}\\">
+		
+			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
+		
+	</l:VerticalLayout>
+</core:FragmentDefinition>
+"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 2`] = `
+"sap.ui.define([], function() {
+    'use strict';
+
+    return {
+        buttonPressed: function() {}
+    };
+});
+"
+`;
+
 exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, only mandatory properties 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout >
+	<l:VerticalLayout  core:require=\\"{ handler: 'undefined'}\\">
 		
-			<Text text=\\"to be defined\\" /> 
+			<Button text=\\"to be defined\\" press=\\"handler.\\" />
 		
 	</l:VerticalLayout>
 </core:FragmentDefinition>
@@ -15,9 +50,9 @@ exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, onl
 exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, only mandatory properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout >
+	<l:VerticalLayout  core:require=\\"{ handler: 'undefined'}\\">
 		
-			<Text text=\\"to be defined\\" /> 
+			<Button text=\\"to be defined\\" press=\\"handler.\\" />
 		
 	</l:VerticalLayout>
 </core:FragmentDefinition>
@@ -27,9 +62,9 @@ exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, onl
 exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, only mandatory properties 3`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout >
+	<l:VerticalLayout  core:require=\\"{ handler: 'undefined'}\\">
 		
-			<Text text=\\"to be defined\\" /> 
+			<Button text=\\"to be defined\\" press=\\"handler.\\" />
 		
 	</l:VerticalLayout>
 </core:FragmentDefinition>

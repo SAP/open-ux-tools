@@ -86,3 +86,8 @@ export interface TableCustomColumn {
      */
     properties?: ColumnPropertiesType;
 }
+
+export type EventHandler = {
+    fileName: string;
+    predefinedMethod: string;
+};

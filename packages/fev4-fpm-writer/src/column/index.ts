@@ -1,7 +1,7 @@
 import { validateVersion } from '../common/version';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
-import { TableCustomColumn } from './types';
+import { TableCustomColumn, EventHandler } from './types';
 import { join, sep } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';
@@ -36,7 +36,7 @@ const emptyDefaultColumn = {
 export function generateCustomColumn(
     basePath: string,
     customColumn: TableCustomColumn,
-    handler?: string,
+    handler?: EventHandler | undefined,
     ui5Version?: number,
     fs?: Editor
 ): Editor {
@@ -62,14 +62,20 @@ export function generateCustomColumn(
         'ext',
         (customColumn.template?.replace('.', sep) as string) + '.view.xml'
     );
+    const handlerPath = handler ? join(basePath, 'webapp', 'ext', handler.fileName.replace('.', sep)) : undefined;
     fs.copyTpl(join(extRoot, 'CustomColumnfragment.xml'), templatePath, {
         ...completeColumn,
-        handler: handler
+        eventHandler: {
+            fileName: handlerPath,
+            predefinedMethod: handler?.predefinedMethod
+        }
     });
 
     // add event handler
     if (handler) {
-        fs.copyTpl(join(extRoot, 'EventHandler.js'), join(basePath, `${handler}.js`), { handler: handler });
+        fs.copyTpl(join(extRoot, 'EventHandler.js'), handlerPath + '.js', {
+            predefinedMethod: handler.predefinedMethod
+        });
     }
 
     return fs;
