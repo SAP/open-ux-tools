@@ -82,7 +82,7 @@ server:
             - /resources
             - /test-resources
           url: https://openui5.hana.ondemand.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -120,7 +120,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for testPackageName
+    "contents": "# This is the resource bundle for testAppId
 
 #Texts for manifest.json
 

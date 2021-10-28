@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/yaml",
     "description": "Library to manipulate YAML file contents",
-    "version": "0.10.0",
+    "version": "0.10.1",
     "main": "dist/index.js",
     "scripts": {
         "build": "pnpm clean && tsc",
@@ -31,6 +31,6 @@
     },
     "engines": {
         "pnpm": ">=6.0.2",
-        "node": ">=12.22.7 < 13.0.0 || >= 14.18.1 < 15.0.0 || >=16.1.0 < 17.0.0"
+        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"
     }
 }

@@ -67,7 +67,7 @@ export function getFioriToolsProxyMiddlewareConfig(
         }
         comments.push({
             path: 'configuration.ui5.version',
-            comment: ' The UI5 version, for instance, 1.78.1. null means latest version'
+            comment: ' The UI5 version, for instance, 1.78.1. Empty string means latest version'
         });
     }
 

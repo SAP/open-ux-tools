@@ -9,8 +9,8 @@ import { UI5Config } from '@sap-ux/ui5-config';
 const testDir = 'virtual-temp';
 const commonConfig = {
     url: 'http://localhost',
-    client: '012',
     path: '/sap/odata/testme',
+    client: '012',
     metadata: '<HELLO WORLD />'
 };
 
@@ -92,7 +92,8 @@ describe('Test generate method with valid input', () => {
             version: OdataVersion.v4,
             destination: {
                 name: 'test'
-            }
+            },
+            client: '099'
         };
         // no localService folder needed
 
@@ -103,6 +104,8 @@ describe('Test generate method with valid input', () => {
         expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
         // verify that the destination is added to the ui5.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).toContain(`destination: ${config.destination.name}`);
+        // verify that client is set
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('client: ');
         // verify that no localService folder has been created
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBeFalsy();
     });
@@ -137,7 +140,7 @@ describe('Test generate method with valid input', () => {
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - apiHub: true
             scp: false

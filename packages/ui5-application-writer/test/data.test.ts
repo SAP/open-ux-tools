@@ -2,7 +2,7 @@ import { UI5_DEFAULT, mergeUi5 } from '../src/data/defaults';
 import type { UI5 } from '../src/types';
 
 describe('Setting defaults', () => {
-    it('mergeUi5', async () => {
+
         const testData: { input: Partial<UI5>; expected: UI5 }[] = [
             {
                 input: {},
@@ -80,8 +80,7 @@ describe('Setting defaults', () => {
             }
         ];
 
-        testData.forEach((test) => {
+        test.each(testData)(`mergeUi5 testData index %#`,(test) => {
             expect(mergeUi5(test.input)).toEqual(test.expected);
         });
-    });
 });
