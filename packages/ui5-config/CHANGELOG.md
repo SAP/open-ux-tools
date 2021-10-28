@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.10.1
+
+### Patch Changes
+
+-   a7670a0: Update ui5 verison handling for ui5.yaml. Allow setting view name in basic template, enhancements to yaml lib.
+-   Updated dependencies [a7670a0]
+    -   @sap-ux/yaml@0.10.1
+
 ## 0.10.0
 
 ### Minor Changes
