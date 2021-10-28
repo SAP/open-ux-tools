@@ -693,7 +693,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for nods1
+    "contents": "# This is the resource bundle for wrk1
 
 #Texts for manifest.json
 
@@ -7356,7 +7356,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for nods1
+    "contents": "# This is the resource bundle for wrk1
 
 #Texts for manifest.json
 
@@ -10610,7 +10610,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for nods1
+    "contents": "# This is the resource bundle for wrk1
 
 #Texts for manifest.json
 

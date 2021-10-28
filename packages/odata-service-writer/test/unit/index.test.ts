@@ -4,11 +4,13 @@ import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { enhanceData } from '../../src/data';
 import cloneDeep from 'lodash/cloneDeep';
+import { UI5Config } from '@sap-ux/ui5-config';
 
 const testDir = 'virtual-temp';
 const commonConfig = {
     url: 'http://localhost',
     path: '/sap/odata/testme',
+    client: '012',
     metadata: '<HELLO WORLD />'
 };
 
@@ -25,12 +27,12 @@ describe('Test generate method with invalid location', () => {
 
 describe('Test generate method with valid input', () => {
     let fs: Editor;
-    beforeEach(() => {
+    beforeEach(async () => {
+        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
         // generate required files
         fs = create(createStorage());
-        fs.write(join(testDir, 'ui5.yaml'), '#empty file');
-        fs.write(join(testDir, 'ui5-local.yaml'), '#empty file');
-        fs.write(join(testDir, 'ui5-mock.yaml'), '#empty file');
+        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
+        fs.write(join(testDir, 'ui5-local.yaml'), '');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
         fs.write(
             join(testDir, 'webapp', 'manifest.json'),
@@ -99,8 +101,53 @@ describe('Test generate method with valid input', () => {
         expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
         // verify that the destination is added to the ui5.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).toContain(`destination: ${config.destination.name}`);
+        // verify that client is set
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('client: ');
         // verify that no localService folder has been created
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBeFalsy();
+    });
+
+    it('Valid OData service with additional optional preview settings', async () => {
+        const config: OdataService = {
+            url: commonConfig.url,
+            path: commonConfig.path + '/',
+            version: OdataVersion.v4,
+            destination: {
+                name: 'test'
+            },
+            client: '013',
+            previewSettings: {
+                apiHub: true,
+                scp: false,
+                pathPrefix: '/~prefix'
+            }
+        };
+
+        await generate(testDir, config as OdataService, fs);
+
+        // verify tha the optional properties are being added
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: '' # The UI5 version, for instance, 1.78.1. null means latest version
+        backend:
+          - apiHub: true
+            scp: false
+            pathPrefix: /~prefix
+            path: /sap
+            url: http://localhost
+            destination: test
+"
+`);
     });
 
     it('Valid service with neither metadata nor annotations and not starting with /sap', async () => {
@@ -130,38 +177,50 @@ describe('Test generate method with valid input', () => {
         let configCopy = cloneDeep(config);
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
-            Object {
-              "model": "",
-              "name": "mainService",
-              "path": "/V2/Northwind/Northwind.svc/",
-              "url": "https://services.odata.org",
-              "version": "2",
-            }
-        `);
+Object {
+  "model": "",
+  "name": "mainService",
+  "path": "/V2/Northwind/Northwind.svc/",
+  "previewSettings": Object {
+    "path": "/V2",
+    "url": "https://services.odata.org",
+  },
+  "url": "https://services.odata.org",
+  "version": "2",
+}
+`);
 
         configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
-            Object {
-              "model": "modelName",
-              "name": "datasourceName",
-              "path": "/V2/Northwind/Northwind.svc/",
-              "url": "https://services.odata.org",
-              "version": "2",
-            }
-        `);
+Object {
+  "model": "modelName",
+  "name": "datasourceName",
+  "path": "/V2/Northwind/Northwind.svc/",
+  "previewSettings": Object {
+    "path": "/V2",
+    "url": "https://services.odata.org",
+  },
+  "url": "https://services.odata.org",
+  "version": "2",
+}
+`);
 
         // Undefined path does not throw but sets valid path
         configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
-            Object {
-              "model": "",
-              "name": "mainService",
-              "path": "/",
-              "url": "https://services.odata.org",
-              "version": "2",
-            }
-        `);
+Object {
+  "model": "",
+  "name": "mainService",
+  "path": "/",
+  "previewSettings": Object {
+    "path": "/",
+    "url": "https://services.odata.org",
+  },
+  "url": "https://services.odata.org",
+  "version": "2",
+}
+`);
     });
 });
