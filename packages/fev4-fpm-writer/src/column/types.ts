@@ -12,7 +12,7 @@ export type Position = {
     /**
      * Define the placement, either before or after the anchor column.
      */
-    placement: Placement | undefined;
+    placement: Placement;
 };
 
 export type Positionable = {
@@ -44,32 +44,32 @@ export interface TableCustomColumn {
     /**
      * Name of the routing target
      */
-    target: string | undefined;
+    target: string;
     /**
      * Name of the target entity for the control configuration
      */
-    targetEntity: string | undefined;
+    targetEntity: string;
     /**
      * Unique identifier for the column
      */
-    id: string | undefined;
+    id: string;
     /**
      *   Defines the position of the column relative to other columns.
      */
-    position: Position | undefined;
+    position: Position;
     /**
      * The header is shown on the table as header, as well as in the add/remove dialog.
      */
-    header: string | undefined;
+    header: string;
     /**
      * A string type that represents CSS size values.
      * Refer to https://openui5.hana.ondemand.com/api/sap.ui.core.CSSSize.
      */
-    width?: string | undefined;
+    width?: string;
     /**
      * Relevant for extension columns; allows the definition of a target fragment.
      */
-    template: string | undefined;
+    template: string;
     /**
      * Aligns the header as well as the content horizontally.
      */
@@ -91,3 +91,22 @@ export type EventHandler = {
     fileName: string;
     predefinedMethod: string;
 };
+
+export type InternalPosition = {
+    anchor: string | undefined;
+    placement: Placement | undefined;
+};
+
+export interface InternalCustomColumn {
+    target: string | undefined;
+    targetEntity: string | undefined;
+    id: string | undefined;
+    position: InternalPosition | undefined;
+    header: string | undefined;
+    width: string | undefined;
+    template: string | undefined;
+    horizontalAlign: HorizontalAlign | undefined;
+    availability: Availability | undefined;
+    properties: ColumnPropertiesType | undefined;
+    name: string;
+}

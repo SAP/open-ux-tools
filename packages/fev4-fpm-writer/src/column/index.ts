@@ -1,12 +1,12 @@
 import { validateVersion } from '../common/version';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
-import { TableCustomColumn, EventHandler } from './types';
+import { TableCustomColumn, EventHandler, InternalCustomColumn } from './types';
 import { join, sep } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';
 
-const emptyDefaultColumn = {
+const emptyDefaultColumn: InternalCustomColumn = {
     header: undefined,
     id: undefined,
     position: {
@@ -52,14 +52,9 @@ export function generateCustomColumn(
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment
-    const extRoot = join(__dirname, '..', '..', 'templates', 'column', 'ext');
-    const templatePath = join(
-        basePath,
-        'webapp',
-        'ext',
-        (customColumn.template?.replace('.', sep) as string) + '.view.xml'
-    );
-    const handlerPath = handler ? join(basePath, 'webapp', 'ext', handler.fileName.replace('.', sep)) : undefined;
+    const extRoot = join(__dirname, '../../templates/column/ext');
+    const templatePath = customColumn.template?.replace('.', sep) + '.view.xml';
+    const handlerPath = handler ? handler.fileName.replace('.', sep) : undefined;
     fs.copyTpl(join(extRoot, 'CustomColumnfragment.xml'), templatePath, {
         ...completeColumn,
         eventHandler: {
