@@ -44,10 +44,8 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout >
-		
-			<Text text=\\"to be defined\\" /> 
-		
+	<l:VerticalLayout>
+		<Text text=\\"Sample Text\\" />
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
@@ -97,10 +95,8 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, no fs, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout >
-		
-			<Text text=\\"to be defined\\" /> 
-		
+	<l:VerticalLayout>
+		<Text text=\\"Sample Text\\" />
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
@@ -156,10 +152,8 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
-		
-			<Button text=\\"to be defined\\" press=\\"handler.onPress\\" />
-		
+	<l:VerticalLayout core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
+		<Button text=\\"{=%{ID} + \\" \\" + %{TotalNetAmount} + \\" \\" + %{_CustomerPaymentTerms/CustomerPaymentTerms}}\\" press=\\"handler.onPress\\" />
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
@@ -173,6 +167,55 @@ exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handl
         onPress: function() {}
     };
 });
+"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn, custom control 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "NewCustomColumn": Object {
+        "header": "col header",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
+      },
+    },
+  },
+  "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "ExistingCustomColumn": Object {
+        "availability": "Default",
+        "header": "{i18n>customColumn}",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "properties": Array [
+          "BooleanProperty",
+          "TextProperty",
+        ],
+        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
+        "width": "15em",
+      },
+    },
+    "tableSettings": Object {
+      "selectionMode": "Single",
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn, custom control 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
+	xmlns:l=\\"sap.ui.layout\\">
+	<l:VerticalLayout>
+		<CustomXML text=\\"\\" />
+	</l:VerticalLayout>
+</core:FragmentDefinition>
 "
 `;
 
@@ -218,10 +261,8 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout >
-		
-			<Text text=\\"to be defined\\" /> 
-		
+	<l:VerticalLayout>
+		<Text text=\\"Sample Text\\" />
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
@@ -269,10 +310,8 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 4`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout >
-		
-			<Text text=\\"to be defined\\" /> 
-		
+	<l:VerticalLayout>
+		<Text text=\\"Sample Text\\" />
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
@@ -320,10 +359,8 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 6`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout >
-		
-			<Text text=\\"to be defined\\" /> 
-		
+	<l:VerticalLayout>
+		<Text text=\\"Sample Text\\" />
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "

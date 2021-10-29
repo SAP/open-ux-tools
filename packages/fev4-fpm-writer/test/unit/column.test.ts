@@ -64,7 +64,7 @@ describe('CustomAction', () => {
         test('generateCustomColumn 1.86, with handler, all properties', () => {
             const testCustomColumn: TableCustomColumn = {
                 ...customColumn,
-                control: 'Button',
+                eventHandler: true,
                 availability: Availability.Adaptation,
                 horizontalAlign: HorizontalAlign.Center,
                 width: '150px',
@@ -74,7 +74,6 @@ describe('CustomAction', () => {
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
-            expect(settings).toBeDefined();
             expect(settings.controlConfiguration).toMatchSnapshot();
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
@@ -91,7 +90,19 @@ describe('CustomAction', () => {
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
-            expect(settings).toBeDefined();
+            expect(settings.controlConfiguration).toMatchSnapshot();
+
+            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+        });
+        test('generateCustomColumn, custom control', () => {
+            const testCustomColumn: TableCustomColumn = {
+                ...customColumn,
+                control: '<CustomXML text="" />'
+            };
+            generateCustomColumn(testDir, testCustomColumn, undefined, fs);
+            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
             expect(settings.controlConfiguration).toMatchSnapshot();
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
@@ -108,7 +119,6 @@ describe('CustomAction', () => {
             const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
 
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
-            expect(settings).toBeDefined();
             expect(settings.controlConfiguration).toMatchSnapshot();
 
             expect(testFS.read(expectedFragmentPath)).toMatchSnapshot();

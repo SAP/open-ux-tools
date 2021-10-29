@@ -2,10 +2,25 @@ import { validateVersion } from '../common/version';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { TableCustomColumn, EventHandler, InternalTableCustomColumn } from './types';
-import { join, sep, dirname } from 'path';
+import { join, dirname } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';
-import { InternalCustomAction } from 'action/types';
+
+function generateColumnContent(config: TableCustomColumn): string {
+    if (config.control) {
+        return config.control;
+    } else {
+        const content =
+            config.properties && config.properties.length > 0
+                ? `{=%{${config.properties.join('} + " " + %{')}}}`
+                : 'Sample Text';
+        if (config.eventHandler) {
+            return `<Button text="${content}" press="handler.onPress" />`;
+        } else {
+            return `<Text text="${content}" />`;
+        }
+    }
+}
 
 /**
  * Add a custom column to an existing UI5 application.
@@ -32,9 +47,8 @@ export function generateCustomColumn(
     // merge with defaults
     const completeColumn = Object.assign(
         {
-            content: 'to be defined',
-            folder: 'ext',
-            control: 'Text'
+            content: generateColumnContent(customColumn),
+            folder: 'ext'
         } as Partial<InternalTableCustomColumn>,
         customColumn
     ) as InternalTableCustomColumn;
@@ -50,11 +64,10 @@ export function generateCustomColumn(
     // add fragment
     const extRoot = join(__dirname, '../../templates/column/ext');
     const viewPath = join(dirname(manifestPath), completeColumn.folder, `${completeColumn.id}.fragment.xml`);
-    //const handlerPath = handler ? handler.fileName.replace('.', sep) : undefined;
     fs.copyTpl(join(extRoot, 'CustomColumnFragment.xml'), viewPath, completeColumn);
 
-    // add event handler
-    if (completeColumn.control === 'Button') {
+    // add event handler if control type is button
+    if (completeColumn.eventHandler) {
         fs.copy(join(extRoot, 'EventHandler.js'), viewPath.replace('.fragment.xml', '.js'));
     }
 
