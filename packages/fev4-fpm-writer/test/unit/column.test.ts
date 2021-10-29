@@ -7,7 +7,7 @@ import { Availability, EventHandler, HorizontalAlign, Placement, TableCustomColu
 import * as Manifest from './test4Column/webapp/manifest.json';
 import { xml2json } from 'xml-js';
 
-const testDir = join(__dirname, '/test4Column');
+const testDir = join('./test4Column');
 
 describe('CustomAction', () => {
     describe('getTemplateRoot', () => {
