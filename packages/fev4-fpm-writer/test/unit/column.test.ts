@@ -4,10 +4,10 @@ import { join } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column/version';
 import { Availability, EventHandler, HorizontalAlign, Placement, TableCustomColumn } from '../../src/column/types';
-import * as Manifest from './test4Column/webapp/manifest.json';
+import * as Manifest from './sample/column/webapp/manifest.json';
 import { xml2json } from 'xml-js';
 
-const testDir = join('./test4Column');
+const testDir = join('./sample/column');
 
 describe('CustomAction', () => {
     describe('getTemplateRoot', () => {
