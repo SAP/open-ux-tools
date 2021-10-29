@@ -10,7 +10,7 @@
                                     "columns": {
                                         "<%= id %>": {
                                             "header": "<%= header %>",
-                                            <% if (width)  { %> 
+                                            <% if (locals.width)  { %> 
                                                 "width": "<%= width %>",  
                                             <% } %>
                                             "position": {
@@ -22,7 +22,7 @@
                                                 <% } %>
                                             },
                                             "template": "<%= template %>"
-                                            <% if (availability) { %> 
+                                            <% if (locals.availability) { %> 
                                                 , "availability": "<%= availability %>" 
                                             <% } %>
                                         }
