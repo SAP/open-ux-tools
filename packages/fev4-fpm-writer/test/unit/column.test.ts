@@ -1,13 +1,13 @@
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join } from 'path';
+import { join, relative } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column/version';
 import { Availability, EventHandler, HorizontalAlign, Placement, TableCustomColumn } from '../../src/column/types';
 import * as Manifest from './sample/column/webapp/manifest.json';
 import { xml2json } from 'xml-js';
 
-const testDir = join('./sample/column');
+const testDir = relative('.', join(__dirname, 'sample/column'));
 
 describe('CustomAction', () => {
     describe('getTemplateRoot', () => {
