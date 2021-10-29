@@ -2,7 +2,7 @@ import { validateVersion } from '../common/version';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { TableCustomColumn, EventHandler } from './types';
-import { join, sep } from 'path';
+import { join, sep, dirname } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';
 
@@ -37,9 +37,10 @@ export function generateCustomColumn(
 
     // add fragment
     const extRoot = join(__dirname, '../../templates/column/ext');
-    const templatePath = customColumn.template?.replace('.', sep) + '.view.xml';
+    const viewPath = join(dirname(manifestPath), customColumn.template.replace(/\./g, '/') + '.view.xml');
+    console.log(viewPath);
     const handlerPath = handler ? handler.fileName.replace('.', sep) : undefined;
-    fs.copyTpl(join(extRoot, 'CustomColumnfragment.xml'), templatePath, {
+    fs.copyTpl(join(extRoot, 'CustomColumnFragment.xml'), viewPath, {
         ...completeColumn,
         eventHandler: {
             fileName: handlerPath,

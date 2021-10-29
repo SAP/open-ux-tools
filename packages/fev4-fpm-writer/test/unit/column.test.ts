@@ -1,12 +1,12 @@
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join, relative } from 'path';
+import { join, resolve, relative } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column/version';
 import { Availability, EventHandler, HorizontalAlign, Placement, TableCustomColumn } from '../../src/column/types';
-import * as Manifest from './sample/column/webapp/manifest.json';
+import * as manifest from './sample/column/webapp/manifest.json';
 
-const testDir = relative('.', join(__dirname, 'sample/column'));
+const testDir = join(__dirname, 'sample/column');
 
 describe('CustomAction', () => {
     describe('getTemplateRoot', () => {
@@ -32,23 +32,24 @@ describe('CustomAction', () => {
     });
     describe('generateCustomColumn', () => {
         let fs: Editor;
-        let handler: EventHandler | undefined;
+        let handler: EventHandler;
         const customColumn: TableCustomColumn = {
             target: 'sample',
             targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
             id: 'NewColumn',
             header: 'col header',
-            template: join(testDir, 'webapp/custom/CustomColumn'),
+            template: 'ext.CustomColumn',
             position: {
                 placement: Placement.After,
                 anchor: 'DataField::BooleanProperty'
             }
         };
+        const expectedViewPath = join(testDir, `webapp/${customColumn.template.replace('.', '/')}.view.xml`);
         const testVersions = [1.86, 1.85, 1.84];
         beforeEach(() => {
             fs = create(createStorage());
             fs.delete(testDir);
-            fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(Manifest));
+            fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
         });
         test.each(testVersions)('generateCustomColumn, no handler, only mandatory properties', (ui5Version) => {
             //sut
@@ -59,8 +60,7 @@ describe('CustomAction', () => {
             expect(settings).toBeDefined();
             expect(settings.controlConfiguration).toMatchSnapshot();
 
-            const view = fs.read(join(testDir, 'webapp/custom/CustomColumn.view.xml'));
-            expect(view).toMatchSnapshot();
+            expect(fs.read(expectedViewPath)).toMatchSnapshot();
         });
         test('generateCustomColumn 1.86, with handler, all properties', () => {
             const testCustomColumn: TableCustomColumn = {
@@ -71,7 +71,7 @@ describe('CustomAction', () => {
                 properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
             };
             handler = {
-                fileName: join(testDir, 'webapp/custom/controller/CustomColumn'),
+                fileName: ('sap.fe.core.fpmExplorer.customColumnContent.' + customColumn.template).replace(/\./g, '/'),
                 predefinedMethod: 'buttonPressed'
             };
             generateCustomColumn(testDir, testCustomColumn, handler, 1.86, fs);
@@ -81,8 +81,7 @@ describe('CustomAction', () => {
             expect(settings).toBeDefined();
             expect(settings.controlConfiguration).toMatchSnapshot();
 
-            const view = fs.read(join(testDir, 'webapp/custom/CustomColumn.view.xml'));
-            expect(view).toMatchSnapshot();
+            expect(fs.read(expectedViewPath)).toMatchSnapshot();
         });
         test('generateCustomColumn 1.85, no handler, all properties', () => {
             const testCustomColumn: TableCustomColumn = {
@@ -98,8 +97,7 @@ describe('CustomAction', () => {
             expect(settings).toBeDefined();
             expect(settings.controlConfiguration).toMatchSnapshot();
 
-            const view = fs.read(join(testDir, 'webapp/custom/CustomColumn.view.xml'));
-            expect(view).toMatchSnapshot();
+            expect(fs.read(expectedViewPath)).toMatchSnapshot();
         });
         test('generateCustomColumn 1.85, no handler, no fs, all properties', () => {
             const testCustomColumn: TableCustomColumn = {
@@ -116,8 +114,7 @@ describe('CustomAction', () => {
             expect(settings).toBeDefined();
             expect(settings.controlConfiguration).toMatchSnapshot();
 
-            const view = testFS.read(join(testDir, 'webapp/custom/CustomColumn.view.xml'));
-            expect(view).toMatchSnapshot();
+            expect(testFS.read(expectedViewPath)).toMatchSnapshot();
         });
     });
 });

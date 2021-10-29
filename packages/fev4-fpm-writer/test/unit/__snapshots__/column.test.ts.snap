@@ -11,7 +11,7 @@ Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "test/unit/sample/column/webapp/custom/CustomColumn",
+        "template": "ext.CustomColumn",
         "width": "150px",
       },
     },
@@ -50,7 +50,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'test/unit/sample/column/webapp/custom/controller/CustomColumn'}\\">
+	<l:VerticalLayout  core:require=\\"{ handler: 'sap/fe/core/fpmExplorer/customColumnContent/ext/CustomColumn'}\\">
 		
 			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
 		
@@ -70,7 +70,7 @@ Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "test/unit/sample/column/webapp/custom/CustomColumn",
+        "template": "ext.CustomColumn",
         "width": "150px",
       },
     },
@@ -109,7 +109,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, no fs, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'test/unit/sample/column/webapp/custom/controller/CustomColumn'}\\">
+	<l:VerticalLayout  core:require=\\"{ handler: 'sap/fe/core/fpmExplorer/customColumnContent/ext/CustomColumn'}\\">
 		
 			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
 		
@@ -135,7 +135,7 @@ Object {
           "TotalNetAmount",
           "_CustomerPaymentTerms/CustomerPaymentTerms",
         ],
-        "template": "test/unit/sample/column/webapp/custom/CustomColumn",
+        "template": "ext.CustomColumn",
         "width": "150px",
       },
     },
@@ -174,7 +174,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'test/unit/sample/column/webapp/custom/controller/CustomColumn'}\\">
+	<l:VerticalLayout  core:require=\\"{ handler: 'sap/fe/core/fpmExplorer/customColumnContent/ext/CustomColumn'}\\">
 		
 			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
 		
@@ -193,7 +193,7 @@ Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "test/unit/sample/column/webapp/custom/CustomColumn",
+        "template": "ext.CustomColumn",
       },
     },
   },
@@ -250,7 +250,7 @@ Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "test/unit/sample/column/webapp/custom/CustomColumn",
+        "template": "ext.CustomColumn",
       },
     },
   },
@@ -307,7 +307,7 @@ Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "test/unit/sample/column/webapp/custom/CustomColumn",
+        "template": "ext.CustomColumn",
       },
     },
   },
