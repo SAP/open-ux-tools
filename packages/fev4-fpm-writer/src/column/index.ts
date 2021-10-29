@@ -44,7 +44,6 @@ export function generateCustomColumn(
     const manifestPath = join(basePath, 'webapp/manifest.json');
     if (!fs) {
         fs = create(createStorage());
-        fs.readJSON(manifestPath);
     }
     const completeColumn = Object.assign(emptyDefaultColumn, customColumn);
 
