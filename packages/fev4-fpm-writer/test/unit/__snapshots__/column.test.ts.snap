@@ -44,9 +44,9 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
+	<l:VerticalLayout >
 		
-			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
+			<Text text=\\"to be defined\\" /> 
 		
 	</l:VerticalLayout>
 </core:FragmentDefinition>
@@ -97,9 +97,9 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, no fs, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
+	<l:VerticalLayout >
 		
-			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
+			<Text text=\\"to be defined\\" /> 
 		
 	</l:VerticalLayout>
 </core:FragmentDefinition>
@@ -158,14 +158,25 @@ exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handl
 	xmlns:l=\\"sap.ui.layout\\">
 	<l:VerticalLayout  core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
 		
-			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
+			<Button text=\\"to be defined\\" press=\\"handler.onPress\\" />
 		
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, only mandatory properties 1`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 3`] = `
+"sap.ui.define([], function() {
+    'use strict';
+
+    return {
+        onPress: function() {}
+    };
+});
+"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -204,19 +215,19 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, only mandatory properties 2`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'undefined'}\\">
+	<l:VerticalLayout >
 		
-			<Button text=\\"to be defined\\" press=\\"handler.\\" />
+			<Text text=\\"to be defined\\" /> 
 		
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, only mandatory properties 3`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 3`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -255,19 +266,19 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, only mandatory properties 4`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 4`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'undefined'}\\">
+	<l:VerticalLayout >
 		
-			<Button text=\\"to be defined\\" press=\\"handler.\\" />
+			<Text text=\\"to be defined\\" /> 
 		
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, only mandatory properties 5`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 5`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -306,12 +317,12 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, only mandatory properties 6`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 6`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'undefined'}\\">
+	<l:VerticalLayout >
 		
-			<Button text=\\"to be defined\\" press=\\"handler.\\" />
+			<Text text=\\"to be defined\\" /> 
 		
 	</l:VerticalLayout>
 </core:FragmentDefinition>

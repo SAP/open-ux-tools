@@ -1,10 +1,12 @@
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"
 	xmlns:l="sap.ui.layout">
-	<l:VerticalLayout <%- locals.eventHandler ? ' core:require="{ handler: \'' + eventHandler.fileName + '\'}"' : '' %>>
-		<% if (locals.eventHandler) { %>
-			<Button text="<%= content %>" press="handler.<%= eventHandler.predefinedMethod %>" />
-		<% } else { %>
+	<l:VerticalLayout <%- locals.control === 'Button' ? ' core:require="{ handler: \'' + template.replace(/\./g, '/') + '\'}"' : '' %>>
+		<% if (locals.control === 'Button') { %>
+			<Button text="<%= content %>" press="handler.onPress" />
+		<% } else if (locals.control === 'Text') { %>
 			<Text text="<%= content %>" /> 
+		<% } else { %>
+			<%= control %>
 		<% } %>
 	</l:VerticalLayout>
 </core:FragmentDefinition>

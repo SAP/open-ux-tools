@@ -13,14 +13,12 @@ import { InternalCustomAction } from 'action/types';
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  * @param {string} basePath - the base path
  * @param {TableCustomColumn} customColumn - the custom column configuration
- * @param {string} handler (optional) - event handler path and name (relative path from the base path). If passed, an event handler JS gets additionally created and added to the fragment
  * @param {Number} ui5Version - optional parameter to define the minimum UI5 version that the generated code must support. If nothing can be generated for the given version then an exception is thrown.
  * @param {Editor} [fs] - the mem-fs editor instance
  */
 export function generateCustomColumn(
     basePath: string,
     customColumn: TableCustomColumn,
-    handler?: EventHandler | undefined,
     ui5Version?: number,
     fs?: Editor
 ): Editor {
@@ -35,7 +33,8 @@ export function generateCustomColumn(
     const completeColumn = Object.assign(
         {
             content: 'to be defined',
-            folder: 'ext'
+            folder: 'ext',
+            control: 'Text'
         } as Partial<InternalTableCustomColumn>,
         customColumn
     ) as InternalTableCustomColumn;
@@ -51,20 +50,12 @@ export function generateCustomColumn(
     // add fragment
     const extRoot = join(__dirname, '../../templates/column/ext');
     const viewPath = join(dirname(manifestPath), completeColumn.folder, `${completeColumn.id}.fragment.xml`);
-    const handlerPath = handler ? handler.fileName.replace('.', sep) : undefined;
-    fs.copyTpl(join(extRoot, 'CustomColumnFragment.xml'), viewPath, {
-        ...completeColumn,
-        eventHandler: {
-            fileName: handlerPath,
-            predefinedMethod: handler?.predefinedMethod
-        }
-    });
+    //const handlerPath = handler ? handler.fileName.replace('.', sep) : undefined;
+    fs.copyTpl(join(extRoot, 'CustomColumnFragment.xml'), viewPath, completeColumn);
 
     // add event handler
-    if (handler) {
-        fs.copyTpl(join(extRoot, 'EventHandler.js'), handlerPath + '.js', {
-            predefinedMethod: handler.predefinedMethod
-        });
+    if (completeColumn.control === 'Button') {
+        fs.copy(join(extRoot, 'EventHandler.js'), viewPath.replace('.fragment.xml', '.js'));
     }
 
     return fs;

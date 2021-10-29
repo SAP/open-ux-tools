@@ -66,6 +66,10 @@ export interface TableCustomColumn {
      */
     folder?: string;
     /**
+     * Control that will be generated into the fragment for table column. It could be Text or Button or any valid XML definition of a UI5 control.
+     */
+    control?: 'Text' | 'Button' | string;
+    /**
      * A string type that represents CSS size values.
      * Refer to https://openui5.hana.ondemand.com/api/sap.ui.core.CSSSize.
      */
