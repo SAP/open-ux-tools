@@ -4,21 +4,21 @@ exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "NewColumn": Object {
+      "NewCustomColumn": Object {
         "availability": "Adaptation",
         "header": "col header",
         "position": Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "ext.CustomColumn",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
         "width": "150px",
       },
     },
   },
   "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "CustomColumnOnObjectPage": Object {
+      "ExistingCustomColumn": Object {
         "availability": "Default",
         "header": "{i18n>customColumn}",
         "horizontalAlign": "Center",
@@ -32,12 +32,6 @@ Object {
         ],
         "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
         "width": "15em",
-      },
-      "anotherCustomColumnOnObjectPage": Object {
-        "availability": "Adaptation",
-        "header": "{i18n>customColumnAdaptation}",
-        "horizontalAlign": "Begin",
-        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnAdaptation",
       },
     },
     "tableSettings": Object {
@@ -50,7 +44,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'sap/fe/core/fpmExplorer/customColumnContent/ext/CustomColumn'}\\">
+	<l:VerticalLayout  core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
 		
 			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
 		
@@ -63,21 +57,21 @@ exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "NewColumn": Object {
+      "NewCustomColumn": Object {
         "availability": "Adaptation",
         "header": "col header",
         "position": Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "ext.CustomColumn",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
         "width": "150px",
       },
     },
   },
   "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "CustomColumnOnObjectPage": Object {
+      "ExistingCustomColumn": Object {
         "availability": "Default",
         "header": "{i18n>customColumn}",
         "horizontalAlign": "Center",
@@ -91,12 +85,6 @@ Object {
         ],
         "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
         "width": "15em",
-      },
-      "anotherCustomColumnOnObjectPage": Object {
-        "availability": "Adaptation",
-        "header": "{i18n>customColumnAdaptation}",
-        "horizontalAlign": "Begin",
-        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnAdaptation",
       },
     },
     "tableSettings": Object {
@@ -109,7 +97,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, no fs, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'sap/fe/core/fpmExplorer/customColumnContent/ext/CustomColumn'}\\">
+	<l:VerticalLayout  core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
 		
 			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
 		
@@ -122,7 +110,7 @@ exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handl
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "NewColumn": Object {
+      "NewCustomColumn": Object {
         "availability": "Adaptation",
         "header": "col header",
         "horizontalAlign": "Center",
@@ -135,14 +123,14 @@ Object {
           "TotalNetAmount",
           "_CustomerPaymentTerms/CustomerPaymentTerms",
         ],
-        "template": "ext.CustomColumn",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
         "width": "150px",
       },
     },
   },
   "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "CustomColumnOnObjectPage": Object {
+      "ExistingCustomColumn": Object {
         "availability": "Default",
         "header": "{i18n>customColumn}",
         "horizontalAlign": "Center",
@@ -156,12 +144,6 @@ Object {
         ],
         "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
         "width": "15em",
-      },
-      "anotherCustomColumnOnObjectPage": Object {
-        "availability": "Adaptation",
-        "header": "{i18n>customColumnAdaptation}",
-        "horizontalAlign": "Begin",
-        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnAdaptation",
       },
     },
     "tableSettings": Object {
@@ -174,7 +156,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout  core:require=\\"{ handler: 'sap/fe/core/fpmExplorer/customColumnContent/ext/CustomColumn'}\\">
+	<l:VerticalLayout  core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
 		
 			<Button text=\\"to be defined\\" press=\\"handler.buttonPressed\\" />
 		
@@ -187,19 +169,19 @@ exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, onl
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "NewColumn": Object {
+      "NewCustomColumn": Object {
         "header": "col header",
         "position": Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "ext.CustomColumn",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
       },
     },
   },
   "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "CustomColumnOnObjectPage": Object {
+      "ExistingCustomColumn": Object {
         "availability": "Default",
         "header": "{i18n>customColumn}",
         "horizontalAlign": "Center",
@@ -213,12 +195,6 @@ Object {
         ],
         "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
         "width": "15em",
-      },
-      "anotherCustomColumnOnObjectPage": Object {
-        "availability": "Adaptation",
-        "header": "{i18n>customColumnAdaptation}",
-        "horizontalAlign": "Begin",
-        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnAdaptation",
       },
     },
     "tableSettings": Object {
@@ -244,19 +220,19 @@ exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, onl
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "NewColumn": Object {
+      "NewCustomColumn": Object {
         "header": "col header",
         "position": Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "ext.CustomColumn",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
       },
     },
   },
   "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "CustomColumnOnObjectPage": Object {
+      "ExistingCustomColumn": Object {
         "availability": "Default",
         "header": "{i18n>customColumn}",
         "horizontalAlign": "Center",
@@ -270,12 +246,6 @@ Object {
         ],
         "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
         "width": "15em",
-      },
-      "anotherCustomColumnOnObjectPage": Object {
-        "availability": "Adaptation",
-        "header": "{i18n>customColumnAdaptation}",
-        "horizontalAlign": "Begin",
-        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnAdaptation",
       },
     },
     "tableSettings": Object {
@@ -301,19 +271,19 @@ exports[`CustomAction generateCustomColumn generateCustomColumn, no handler, onl
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "NewColumn": Object {
+      "NewCustomColumn": Object {
         "header": "col header",
         "position": Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "template": "ext.CustomColumn",
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
       },
     },
   },
   "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
-      "CustomColumnOnObjectPage": Object {
+      "ExistingCustomColumn": Object {
         "availability": "Default",
         "header": "{i18n>customColumn}",
         "horizontalAlign": "Center",
@@ -327,12 +297,6 @@ Object {
         ],
         "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
         "width": "15em",
-      },
-      "anotherCustomColumnOnObjectPage": Object {
-        "availability": "Adaptation",
-        "header": "{i18n>customColumnAdaptation}",
-        "horizontalAlign": "Begin",
-        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnAdaptation",
       },
     },
     "tableSettings": Object {

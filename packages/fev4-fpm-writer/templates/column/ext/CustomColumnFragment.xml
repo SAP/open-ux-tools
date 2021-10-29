@@ -2,9 +2,9 @@
 	xmlns:l="sap.ui.layout">
 	<l:VerticalLayout <%- locals.eventHandler ? ' core:require="{ handler: \'' + eventHandler.fileName + '\'}"' : '' %>>
 		<% if (locals.eventHandler) { %>
-			<Button text="<%= name %>" press="handler.<%= eventHandler.predefinedMethod %>" />
+			<Button text="<%= content %>" press="handler.<%= eventHandler.predefinedMethod %>" />
 		<% } else { %>
-			<Text text="<%= name %>" /> 
+			<Text text="<%= content %>" /> 
 		<% } %>
 	</l:VerticalLayout>
 </core:FragmentDefinition>

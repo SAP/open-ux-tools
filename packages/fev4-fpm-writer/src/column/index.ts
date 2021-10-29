@@ -1,10 +1,11 @@
 import { validateVersion } from '../common/version';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
-import { TableCustomColumn, EventHandler } from './types';
+import { TableCustomColumn, EventHandler, InternalTableCustomColumn } from './types';
 import { join, sep, dirname } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';
+import { InternalCustomAction } from 'action/types';
 
 /**
  * Add a custom column to an existing UI5 application.
@@ -24,11 +25,23 @@ export function generateCustomColumn(
     fs?: Editor
 ): Editor {
     validateVersion(ui5Version);
-    const manifestPath = join(basePath, 'webapp/manifest.json');
     if (!fs) {
         fs = create(createStorage());
     }
-    const completeColumn = Object.assign({ name: 'to be defined' }, customColumn);
+    const manifestPath = join(basePath, 'webapp/manifest.json');
+    const manifest = fs.readJSON(manifestPath);
+
+    // merge with defaults
+    const completeColumn = Object.assign(
+        {
+            content: 'to be defined',
+            folder: 'ext'
+        } as Partial<InternalTableCustomColumn>,
+        customColumn
+    ) as InternalTableCustomColumn;
+    completeColumn.template = `${(manifest as any)['sap.app']!.id}.${completeColumn.folder.replace('/', '.')}.${
+        completeColumn.id
+    }`;
 
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(ui5Version);
@@ -37,7 +50,7 @@ export function generateCustomColumn(
 
     // add fragment
     const extRoot = join(__dirname, '../../templates/column/ext');
-    const viewPath = join(dirname(manifestPath), customColumn.template.replace(/\./g, '/') + '.view.xml');
+    const viewPath = join(dirname(manifestPath), completeColumn.folder, `${completeColumn.id}.fragment.xml`);
     const handlerPath = handler ? handler.fileName.replace('.', sep) : undefined;
     fs.copyTpl(join(extRoot, 'CustomColumnFragment.xml'), viewPath, {
         ...completeColumn,

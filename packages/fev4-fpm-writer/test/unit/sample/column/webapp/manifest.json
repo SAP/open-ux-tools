@@ -1,7 +1,7 @@
 {
     "_version": "1.12.0",
     "sap.app": {
-        "id": "sap.fe.core.fpmExplorer.customColumnContent",
+        "id": "sapux.fe.fpm.writer.test",
         "type": "application",
         "i18n": {
             "bundleUrl": "../../i18n/i18n.properties",
@@ -68,7 +68,7 @@
                                         "selectionMode": "Single"
                                     },
                                     "columns": {
-                                        "CustomColumnOnObjectPage": {
+                                        "ExistingCustomColumn": {
                                             "header": "{i18n>customColumn}",
                                             "width": "15em",
                                             "horizontalAlign": "Center",
@@ -79,12 +79,6 @@
                                             "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
                                             "availability": "Default",
                                             "properties": ["BooleanProperty", "TextProperty"]
-                                        },
-                                        "anotherCustomColumnOnObjectPage": {
-                                            "header": "{i18n>customColumnAdaptation}",
-                                            "horizontalAlign": "Begin",
-                                            "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnAdaptation",
-                                            "availability": "Adaptation"
                                         }
                                     }
                                 }

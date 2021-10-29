@@ -1,6 +1,6 @@
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { join, resolve, relative } from 'path';
+import { join } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column/version';
 import { Availability, EventHandler, HorizontalAlign, Placement, TableCustomColumn } from '../../src/column/types';
@@ -36,15 +36,15 @@ describe('CustomAction', () => {
         const customColumn: TableCustomColumn = {
             target: 'sample',
             targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
-            id: 'NewColumn',
+            id: 'NewCustomColumn',
             header: 'col header',
-            template: 'ext.CustomColumn',
+            folder: 'extensions/custom',
             position: {
                 placement: Placement.After,
                 anchor: 'DataField::BooleanProperty'
             }
         };
-        const expectedViewPath = join(testDir, `webapp/${customColumn.template.replace('.', '/')}.view.xml`);
+        const expectedViewPath = join(testDir, 'webapp', customColumn.folder!, `${customColumn.id}.fragment.xml`);
         const testVersions = [1.86, 1.85, 1.84];
         beforeEach(() => {
             fs = create(createStorage());
@@ -71,7 +71,7 @@ describe('CustomAction', () => {
                 properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
             };
             handler = {
-                fileName: ('sap.fe.core.fpmExplorer.customColumnContent.' + customColumn.template).replace(/\./g, '/'),
+                fileName: `sapux/fe/fpm/writer/test/${customColumn.folder}/${customColumn.id}`,
                 predefinedMethod: 'buttonPressed'
             };
             generateCustomColumn(testDir, testCustomColumn, handler, 1.86, fs);

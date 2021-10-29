@@ -62,14 +62,14 @@ export interface TableCustomColumn {
      */
     header: string;
     /**
+     * Target folder relative to the manifest that is used to generate the custom column fragments. If not provided, then `ext` is used.
+     */
+    folder?: string;
+    /**
      * A string type that represents CSS size values.
      * Refer to https://openui5.hana.ondemand.com/api/sap.ui.core.CSSSize.
      */
     width?: string;
-    /**
-     * Relevant for extension columns; allows the definition of a target fragment.
-     */
-    template: string;
     /**
      * Aligns the header as well as the content horizontally.
      */
@@ -93,6 +93,15 @@ export type EventHandler = {
 };
 
 export type InternalPosition = {
-    anchor: string | undefined;
-    placement: Placement | undefined;
+    anchor?: string;
+    placement?: Placement;
 };
+
+export interface InternalTableCustomColumn extends TableCustomColumn {
+    /**
+     * Relevant for extension columns; allows the definition of a target fragment.
+     */
+    template: string;
+    folder: string;
+    content: string;
+}
