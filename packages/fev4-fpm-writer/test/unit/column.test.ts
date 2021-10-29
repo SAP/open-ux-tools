@@ -147,19 +147,10 @@ describe('CustomAction', () => {
 
             const testFS = generateCustomColumn(testDir, testCustomColumn, handler, 1.85);
             const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
+
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
             expect(settings).toBeDefined();
-            expect(settings.controlConfiguration).toBeDefined();
-            expect(settings.controlConfiguration['items/@com.sap.vocabularies.UI.v1.LineItem']).toBeDefined();
-            const newColumn = settings.controlConfiguration['@com.sap.vocabularies.UI.v1.LineItem'];
-            expect(newColumn).toBeDefined();
-            expect(newColumn.columns['NewColumn']).toEqual({
-                header: 'col header',
-                position: { placement: 'After', anchor: 'DataField::BooleanProperty' },
-                template: join(testDir, 'webapp/custom/CustomColumn'),
-                availability: Availability.Adaptation,
-                width: '150px'
-            });
+            expect(settings.controlConfiguration).toMatchSnapshot();
 
             const view = testFS.read(join(testDir, 'webapp/custom/CustomColumn.view.xml'));
             expect(view).toMatchSnapshot();
