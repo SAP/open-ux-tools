@@ -38,7 +38,6 @@ export function generateCustomColumn(
     // add fragment
     const extRoot = join(__dirname, '../../templates/column/ext');
     const viewPath = join(dirname(manifestPath), customColumn.template.replace(/\./g, '/') + '.view.xml');
-    console.log(viewPath);
     const handlerPath = handler ? handler.fileName.replace('.', sep) : undefined;
     fs.copyTpl(join(extRoot, 'CustomColumnFragment.xml'), viewPath, {
         ...completeColumn,
