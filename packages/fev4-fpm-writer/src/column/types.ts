@@ -96,17 +96,3 @@ export type InternalPosition = {
     anchor: string | undefined;
     placement: Placement | undefined;
 };
-
-export interface InternalCustomColumn {
-    target: string | undefined;
-    targetEntity: string | undefined;
-    id: string | undefined;
-    position: InternalPosition | undefined;
-    header: string | undefined;
-    width: string | undefined;
-    template: string | undefined;
-    horizontalAlign: HorizontalAlign | undefined;
-    availability: Availability | undefined;
-    properties: ColumnPropertiesType | undefined;
-    name: string;
-}

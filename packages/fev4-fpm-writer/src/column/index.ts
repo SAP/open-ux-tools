@@ -1,27 +1,10 @@
 import { validateVersion } from '../common/version';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
-import { TableCustomColumn, EventHandler, InternalCustomColumn } from './types';
+import { TableCustomColumn, EventHandler } from './types';
 import { join, sep } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';
-
-const emptyDefaultColumn: InternalCustomColumn = {
-    header: undefined,
-    id: undefined,
-    position: {
-        placement: undefined,
-        anchor: undefined
-    },
-    target: undefined,
-    targetEntity: undefined,
-    template: undefined,
-    availability: undefined,
-    horizontalAlign: undefined,
-    properties: undefined,
-    width: undefined,
-    name: 'to be defined'
-};
 
 /**
  * Add a custom column to an existing UI5 application.
@@ -45,7 +28,7 @@ export function generateCustomColumn(
     if (!fs) {
         fs = create(createStorage());
     }
-    const completeColumn = Object.assign(emptyDefaultColumn, customColumn);
+    const completeColumn = Object.assign({ name: 'to be defined' }, customColumn);
 
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(ui5Version);
