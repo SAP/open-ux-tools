@@ -50,10 +50,12 @@ importers:
             ejs: 3.1.6
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0
+            xml-js: 1.6.11
         dependencies:
             ejs: 3.1.6
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
+            xml-js: 1.6.11
         devDependencies:
             '@types/ejs': 3.0.6
             '@types/mem-fs-editor': 7.0.0
@@ -6102,6 +6104,13 @@ packages:
             }
         dev: true
 
+    /sax/1.2.4:
+        resolution:
+            {
+                integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
+            }
+        dev: false
+
     /saxes/5.0.1:
         resolution:
             {
@@ -7172,6 +7181,16 @@ packages:
             utf-8-validate:
                 optional: true
         dev: true
+
+    /xml-js/1.6.11:
+        resolution:
+            {
+                integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==
+            }
+        hasBin: true
+        dependencies:
+            sax: 1.2.4
+        dev: false
 
     /xml-name-validator/3.0.0:
         resolution:
