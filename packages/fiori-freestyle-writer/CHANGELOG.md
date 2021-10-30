@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.2
+
+### Patch Changes
+
+-   3d7b9f6: Use exact versions of dependencies
+
 ## 0.10.1
 
 ### Patch Changes
