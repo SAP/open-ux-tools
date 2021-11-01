@@ -1,1 +1,2 @@
-export { YamlDocument, NodeComment, Path } from './yaml-document';
+export { YamlDocument, NodeComment } from './yaml-document';
+export { Node, YAMLSeq, YAMLMap } from 'yaml';

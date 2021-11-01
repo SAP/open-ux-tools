@@ -6,7 +6,7 @@ sap.ui.define([
 ], function (UIComponent, Device, models, ErrorHandler) {
 	"use strict";
 
-	return UIComponent.extend("<%=app.id%>.Component", {
+	return UIComponent.extend("<%- app.id %>.Component", {
 
 		metadata : {
 			manifest: "json"

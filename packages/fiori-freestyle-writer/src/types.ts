@@ -15,6 +15,9 @@ interface Entity {
     unitOfMeasureProperty?: string;
 }
 
+export interface BasicAppSettings {
+    viewName?: string;
+}
 export interface WorklistSettings {
     entity: Entity;
 }

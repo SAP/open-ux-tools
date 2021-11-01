@@ -1,5 +1,5 @@
 <mvc:View
-	controllerName="<%=app.id%>.controller.Worklist"
+	controllerName="<%- app.id %>.controller.Worklist"
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns:semantic="sap.f.semantic">

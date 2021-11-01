@@ -9,7 +9,8 @@
                        "<%- annotations.technicalName %>"<% } %>
                     ],
                     "localUri": "localService/metadata.xml"<%if (version === '4') {%>,
-                    "odataVersion": "4.0"<% } %>
+                    "odataVersion": "4.0"<% } %><%if (version === '2') {%>,
+                    "odataVersion": "2.0"<% } %>
                 }
             }<%if (locals.annotations && annotations.technicalName) {%>,
             "<%- annotations.technicalName %>": {
