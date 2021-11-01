@@ -27,7 +27,7 @@ describe('use FPM with existing apps', () => {
             generateCustomPage(
                 targetPath,
                 {
-                    name: 'MyCustomPage',
+                    id: 'MyCustomPage',
                     entity: 'Booking',
                     navigation: {
                         sourceEntity: 'Travel',
@@ -35,7 +35,6 @@ describe('use FPM with existing apps', () => {
                         navEntity: '_Booking'
                     }
                 },
-                undefined,
                 fs
             );
         });
