@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.9.6
+
+### Patch Changes
+
+-   8de261b: Update npm dep and devDeps
+-   Updated dependencies [8de261b]
+    -   @sap-ux/ui5-config@0.10.2
+
 ## 0.9.5
 
 ### Patch Changes
