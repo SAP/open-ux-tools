@@ -15,20 +15,24 @@ import { getTemplateRoot } from './version';
  * @returns enhanced configuration
  */
 function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): CustomPageConfig {
-    // enforce naming conventions
-    const firstChar = data.name[0];
-    const nameForId = firstChar.toLocaleLowerCase() + data.name.substring(1);
-    data.name = firstChar.toUpperCase() + data.name.substring(1);
-
     const manifest: any = fs.readJSON(manifestPath);
+
+    // enforce naming conventions
+    const firstChar = data.id[0];
+    const nameForId = firstChar.toLocaleLowerCase() + data.id.substring(1);
+    data.id = firstChar.toUpperCase() + data.id.substring(1);
+
+    // set target folder if not provided
+    data.folder = data.folder || `ext/${nameForId}`;
+
     const config: CustomPageConfig = {
         ...data,
-        id: `${manifest['sap.app'].id}.ext.${nameForId}`,
-        path: join(dirname(manifestPath), 'ext', nameForId)
+        ns: `${manifest['sap.app'].id}.${data.folder.replace(/\//g, '.')}`,
+        path: join(dirname(manifestPath), data.folder)
     };
     if (config.view === undefined) {
         config.view = {
-            title: config.name
+            title: config.id
         };
     }
     return config;
@@ -42,7 +46,7 @@ function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): Custom
  */
 function updateRoutes(routes: Ui5Route[], config: CustomPageConfig) {
     const newRoute: Partial<Ui5Route> = {
-        name: `${config.entity}${config.name}`
+        name: `${config.entity}${config.id}`
     };
     if (config.navigation) {
         const sourceRoute = routes.find((route) => route.name === config.navigation?.sourcePage);
@@ -96,11 +100,10 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
  *
  * @param {string} basePath - the base path
  * @param {CustomPage} data - the custom page configuration
- * @param {Number} ui5Version - optional parameter to define the minimum UI5 version that the generated code must support. If nothing can be generated for the given version then an exception is thrown.
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export function generateCustomPage(basePath: string, data: CustomPage, ui5Version?: number, fs?: Editor): Editor {
+export function generateCustomPage(basePath: string, data: CustomPage, fs?: Editor): Editor {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -110,7 +113,7 @@ export function generateCustomPage(basePath: string, data: CustomPage, ui5Versio
     const config = enhanceData(data, manifestPath, fs);
 
     // merge content into existing files
-    const root = getTemplateRoot(ui5Version);
+    const root = getTemplateRoot(data.ui5Version);
 
     // enhance manifest.json
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)), (key, value) => {
@@ -121,8 +124,8 @@ export function generateCustomPage(basePath: string, data: CustomPage, ui5Versio
     });
 
     // add extension content
-    fs.copyTpl(join(root, 'ext/View.xml'), join(config.path, `${config.name}.view.xml`), config);
-    fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.name}.controller.js`), config);
+    fs.copyTpl(join(root, 'ext/View.xml'), join(config.path, `${config.id}.view.xml`), config);
+    fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.id}.controller.js`), config);
 
     return fs;
 }

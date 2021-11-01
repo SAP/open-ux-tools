@@ -1,3 +1,5 @@
+import { CustomElement } from '../common/types';
+
 export enum ControlType {
     header = 'header',
     footer = 'footer',
@@ -11,8 +13,7 @@ export interface CustomActionTarget {
     qualifier?: string;
 }
 
-export interface CustomAction {
-    name: string;
+export interface CustomAction extends CustomElement {
     target: CustomActionTarget;
     settings: {
         text: string;

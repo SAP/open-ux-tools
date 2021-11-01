@@ -16,9 +16,9 @@ import { render } from 'ejs';
 function enhanceConfig(data: CustomAction, manifest: any, fs: Editor): InternalCustomAction {
     // clone input data
     const config: InternalCustomAction = {
-        name: data.name,
+        id: data.id,
         target: { ...data.target },
-        controller: `${manifest['sap.app'].id}.ext.${data.name}`,
+        controller: `${manifest['sap.app'].id}.ext.${data.id}`,
         settings: {
             ...data.settings
         }
@@ -58,13 +58,8 @@ export function getTargetElementReference(manifest: any, target: CustomActionTar
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export function generateCustomAction(
-    basePath: string,
-    actionConfig: CustomAction,
-    ui5Version?: number,
-    fs?: Editor
-): Editor {
-    validateVersion(ui5Version);
+export function generateCustomAction(basePath: string, actionConfig: CustomAction, fs?: Editor): Editor {
+    validateVersion(actionConfig.ui5Version);
     if (!fs) {
         fs = create(createStorage());
     }
@@ -85,7 +80,7 @@ export function generateCustomAction(
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)));
 
     // add controller extension
-    fs.copyTpl(join(root, 'ext/Controller.js'), join(basePath, 'webapp/ext', `${config.name}.controller.js`), config);
+    fs.copyTpl(join(root, 'ext/Controller.js'), join(basePath, 'webapp/ext', `${config.id}.controller.js`), config);
 
     return fs;
 }

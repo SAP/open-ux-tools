@@ -57,7 +57,7 @@ describe('CustomAction', () => {
             generateCustomAction(
                 testDir,
                 {
-                    name: 'MyCustomAction',
+                    id: 'MyCustomAction',
                     target: {
                         page: 'TestObjectPage',
                         control: ControlType.header
@@ -66,7 +66,6 @@ describe('CustomAction', () => {
                         text: 'My custom action text'
                     }
                 },
-                undefined,
                 fs
             );
 

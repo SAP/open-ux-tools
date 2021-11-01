@@ -5,14 +5,14 @@
         },
         "routing": {
             "targets": {
-                "<%= entity %><%= name %>": {
+                "<%= entity %><%= id %>": {
 					"type": "Component",
-					"id": "<%= id %>",
+					"id": "<%- ns %>",
 					"name": "sap.fe.core.fpm",
 					"options": {
 						"settings": {
-							"viewName": "<%= id %>.<%= name %>",
-							"entitySet": "<%= entity %>",
+							"viewName": "<%- ns %>.<%- id %>",
+							"entitySet": "<%- entity %>",
 							"navigation": { }
 						}
 					}
@@ -23,7 +23,7 @@
                             "navigation": {
                                 "<%= navigation.navEntity %>": {
                                     "detail": {
-                                        "route": "<%= entity %><%= name %>"
+                                        "route": "<%- entity %><%- id %>"
                                     }
                                 }
                             }

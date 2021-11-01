@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column/version';
-import { Availability, EventHandler, HorizontalAlign, Placement, TableCustomColumn } from '../../src/column/types';
+import { Availability, EventHandler, HorizontalAlign, Placement, CustomTableColumn } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
 
 const testDir = join(__dirname, 'sample/column');
@@ -32,7 +32,7 @@ describe('CustomAction', () => {
     });
     describe('generateCustomColumn', () => {
         let fs: Editor;
-        const customColumn: TableCustomColumn = {
+        const customColumn: CustomTableColumn = {
             target: 'sample',
             targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
             id: 'NewCustomColumn',
@@ -52,7 +52,7 @@ describe('CustomAction', () => {
         });
         test.each(testVersions)('generateCustomColumn, only mandatory properties', (ui5Version) => {
             //sut
-            generateCustomColumn(testDir, customColumn, ui5Version, fs);
+            generateCustomColumn(testDir, { ...customColumn, ui5Version }, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
@@ -62,7 +62,7 @@ describe('CustomAction', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
         test('generateCustomColumn 1.86, with handler, all properties', () => {
-            const testCustomColumn: TableCustomColumn = {
+            const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 eventHandler: true,
                 availability: Availability.Adaptation,
@@ -70,7 +70,7 @@ describe('CustomAction', () => {
                 width: '150px',
                 properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
             };
-            generateCustomColumn(testDir, testCustomColumn, 1.86, fs);
+            generateCustomColumn(testDir, { ...testCustomColumn, ui5Version: 1.86 }, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
@@ -80,13 +80,13 @@ describe('CustomAction', () => {
             expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
         });
         test('generateCustomColumn 1.85, no handler, all properties', () => {
-            const testCustomColumn: TableCustomColumn = {
+            const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 availability: Availability.Adaptation,
                 horizontalAlign: HorizontalAlign.Center,
                 width: '150px'
             };
-            generateCustomColumn(testDir, testCustomColumn, 1.85, fs);
+            generateCustomColumn(testDir, { ...testCustomColumn, ui5Version: 1.85 }, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
@@ -95,11 +95,11 @@ describe('CustomAction', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
         test('generateCustomColumn, custom control', () => {
-            const testCustomColumn: TableCustomColumn = {
+            const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 control: '<CustomXML text="" />'
             };
-            generateCustomColumn(testDir, testCustomColumn, undefined, fs);
+            generateCustomColumn(testDir, testCustomColumn, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
@@ -108,14 +108,14 @@ describe('CustomAction', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
         test('generateCustomColumn 1.85, no handler, no fs, all properties', () => {
-            const testCustomColumn: TableCustomColumn = {
+            const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 availability: Availability.Adaptation,
                 horizontalAlign: HorizontalAlign.Center,
                 width: '150px'
             };
 
-            const testFS = generateCustomColumn(testDir, testCustomColumn, 1.85);
+            const testFS = generateCustomColumn(testDir, { ...testCustomColumn, ui5Version: 1.85 });
             const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
 
             const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];

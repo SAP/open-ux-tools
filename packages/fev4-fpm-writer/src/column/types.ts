@@ -1,3 +1,5 @@
+import { CustomElement } from '../common/types';
+
 export enum Placement {
     After = 'After',
     Before = 'Before',
@@ -40,7 +42,7 @@ export type ColumnPropertiesType = string[];
  * Custom Column
  * @isViewNode true
  */
-export interface TableCustomColumn {
+export interface CustomTableColumn extends CustomElement {
     /**
      * Name of the routing target
      */
@@ -50,10 +52,6 @@ export interface TableCustomColumn {
      */
     targetEntity: string;
     /**
-     * Unique identifier for the column
-     */
-    id: string;
-    /**
      *   Defines the position of the column relative to other columns.
      */
     position: Position;
@@ -61,10 +59,6 @@ export interface TableCustomColumn {
      * The header is shown on the table as header, as well as in the add/remove dialog.
      */
     header: string;
-    /**
-     * Target folder relative to the manifest that is used to generate the custom column fragments. If not provided, then `ext` is used.
-     */
-    folder?: string;
     /**
      * If it is set to true then an additional event handler is generated.
      */
@@ -105,7 +99,7 @@ export type InternalPosition = {
     placement?: Placement;
 };
 
-export interface InternalTableCustomColumn extends TableCustomColumn {
+export interface InternalCustomTableColumn extends CustomTableColumn {
     /**
      * Relevant for extension columns; allows the definition of a target fragment.
      */

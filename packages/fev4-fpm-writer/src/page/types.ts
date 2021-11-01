@@ -1,11 +1,12 @@
+import { CustomElement } from '../common/types';
+
 export interface Ui5Route {
     name: string;
     pattern: string;
     target: string | string[];
 }
 
-export interface CustomPage {
-    name: string;
+export interface CustomPage extends CustomElement {
     entity: string;
     navigation?: {
         sourcePage: string;
@@ -19,6 +20,6 @@ export interface CustomPage {
 }
 
 export interface CustomPageConfig extends CustomPage {
-    id: string;
+    ns: string;
     path: string;
 }
