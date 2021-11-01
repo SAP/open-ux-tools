@@ -5,7 +5,7 @@
         },
         "routing": {
             "targets": {
-                "<%= entity %><%= id %>": {
+                "<%- entity %><%- id %>": {
 					"viewId": "<%- id %>View",
 					"viewName": "<%- ns %>.<%- id %>",
 					"options": {

@@ -21,7 +21,7 @@ Object {
   ],
   "targets": Object {
     "ChildEntityCustomPage": Object {
-      "id": "my.test.App.ext.customPage",
+      "id": "ChildEntityCustomPage",
       "name": "sap.fe.core.fpm",
       "options": Object {
         "settings": Object {
@@ -71,7 +71,7 @@ Object {
   ],
   "targets": Object {
     "ChildEntityCustomPage": Object {
-      "id": "my.test.App.ext.customPage",
+      "id": "ChildEntityCustomPage",
       "name": "sap.fe.core.fpm",
       "options": Object {
         "settings": Object {
@@ -110,7 +110,7 @@ Object {
   ],
   "targets": Object {
     "ChildEntityCustomPage": Object {
-      "id": "my.test.App.ext.customPage",
+      "id": "ChildEntityCustomPage",
       "name": "sap.fe.core.fpm",
       "options": Object {
         "settings": Object {
@@ -160,7 +160,7 @@ Object {
       ],
       "targets": Object {
         "RootEnityCustomPage": Object {
-          "id": "my.test.App.ext.customPage",
+          "id": "RootEnityCustomPage",
           "name": "sap.fe.core.fpm",
           "options": Object {
             "settings": Object {
@@ -264,7 +264,7 @@ Object {
       ],
       "targets": Object {
         "RootEnityCustomPage": Object {
-          "id": "my.test.App.ext.different",
+          "id": "RootEnityCustomPage",
           "name": "sap.fe.core.fpm",
           "options": Object {
             "settings": Object {

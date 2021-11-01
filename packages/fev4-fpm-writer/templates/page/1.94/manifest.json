@@ -5,9 +5,9 @@
         },
         "routing": {
             "targets": {
-                "<%= entity %><%= id %>": {
+                "<%- entity %><%- id %>": {
 					"type": "Component",
-					"id": "<%- ns %>",
+					"id": "<%- entity %><%- id %>",
 					"name": "sap.fe.core.fpm",
 					"options": {
 						"settings": {
