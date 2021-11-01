@@ -19,7 +19,7 @@ export interface ProxyUIConfig {
     directLoad?: boolean;
 }
 
-export interface CustomMiddleware<C extends any> {
+export interface CustomMiddleware<C> {
     name: string;
     beforeMiddleware?: string;
     afterMiddleware?: string;
