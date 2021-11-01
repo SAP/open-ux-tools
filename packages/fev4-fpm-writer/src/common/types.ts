@@ -41,3 +41,13 @@ export type Position = {
      */
     placement: Placement;
 };
+
+/**
+ * Interface of an object generated from a UI5 manifest.json
+ */
+export interface Manifest {
+    [key: string]: object;
+    'sap.app': {
+        id: string;
+    };
+}

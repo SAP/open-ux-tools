@@ -4,16 +4,16 @@ import { create, Editor } from 'mem-fs-editor';
 import { ControlType, CustomAction, CustomActionTarget, InternalCustomAction } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
+import { Manifest } from '../common/types';
 
 /**
  * Enhances the provided custom action configuration with default data.
  *
  * @param {CustomAction} data - a custom action configuration object
- * @param manifest - the application manifest
- * @param fs - mem-fs reference to be used for file access
+ * @param {Manifest} manifest - the application manifest
  * @returns enhanced configuration
  */
-function enhanceConfig(data: CustomAction, manifest: any, fs: Editor): InternalCustomAction {
+function enhanceConfig(data: CustomAction, manifest: Manifest): InternalCustomAction {
     // clone input data
     const config: InternalCustomAction = {
         id: data.id,
@@ -54,7 +54,6 @@ export function getTargetElementReference(manifest: any, target: CustomActionTar
  *
  * @param {string} basePath - the base path
  * @param {CustomAction} actionConfig - the custom action configuration
- * @param {Number} ui5Version - optional parameter to define the minimum UI5 version that the generated code must support. If nothing can be generated for the given version then an exception is thrown.
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
@@ -65,9 +64,9 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     }
 
     const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest: any = fs.readJSON(manifestPath);
+    const manifest = fs.readJSON(manifestPath) as Manifest;
 
-    const config = enhanceConfig(actionConfig, manifest, fs);
+    const config = enhanceConfig(actionConfig, manifest);
 
     const root = join(__dirname, '../../templates/action');
 

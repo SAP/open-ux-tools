@@ -15,7 +15,8 @@ export enum HorizontalAlign {
 export type ColumnPropertiesType = string[];
 
 /**
- * Custom Column
+ * Custom Column.
+ *
  * @isViewNode true
  */
 export interface CustomTableColumn extends CustomElement {

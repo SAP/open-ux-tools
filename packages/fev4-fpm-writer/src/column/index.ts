@@ -5,7 +5,14 @@ import { CustomTableColumn, InternalCustomTableColumn } from './types';
 import { join, dirname } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';
+import { Manifest } from 'common/types';
 
+/**
+ * Generate XML content for the column fragment.
+ *
+ * @param config configuration for the custom column
+ * @returns XML snippet.
+ */
 function generateColumnContent(config: CustomTableColumn): string {
     if (config.control) {
         return config.control;
@@ -27,7 +34,7 @@ function generateColumnContent(config: CustomTableColumn): string {
  *
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  * @param {string} basePath - the base path
- * @param {TableCustomColumn} customColumn - the custom column configuration
+ * @param {CustomTableColumn} customColumn - the custom column configuration
  * @param {Editor} [fs] - the mem-fs editor instance
  */
 export function generateCustomColumn(basePath: string, customColumn: CustomTableColumn, fs?: Editor): Editor {
@@ -36,7 +43,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
         fs = create(createStorage());
     }
     const manifestPath = join(basePath, 'webapp/manifest.json');
-    const manifest = fs.readJSON(manifestPath);
+    const manifest = fs.readJSON(manifestPath) as Manifest;
 
     // merge with defaults
     const completeColumn = Object.assign(
@@ -46,7 +53,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
         } as Partial<InternalCustomTableColumn>,
         customColumn
     ) as InternalCustomTableColumn;
-    completeColumn.template = `${(manifest as any)['sap.app']!.id}.${completeColumn.folder.replace(/\//g, '.')}.${
+    completeColumn.template = `${(manifest as any)['sap.app'].id}.${completeColumn.folder.replace(/\//g, '.')}.${
         completeColumn.id
     }`;
 
