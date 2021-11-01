@@ -18,3 +18,26 @@ export interface CustomElement {
      */
     ui5Version?: number;
 }
+
+/**
+ * Enumeration with all values possible as position placement attribute
+ */
+export enum Placement {
+    After = 'After',
+    Before = 'Before',
+    End = 'End'
+}
+
+/**
+ * Position of a custom element relative to an anchor element.
+ */
+export type Position = {
+    /**
+     * The key of another element to be used as placement anchor.
+     */
+    anchor?: string;
+    /**
+     * Define the placement, either before or after the anchor element or at the end.
+     */
+    placement: Placement;
+};

@@ -3,8 +3,9 @@ import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column/version';
-import { Availability, EventHandler, HorizontalAlign, Placement, CustomTableColumn } from '../../src/column/types';
+import { Availability, HorizontalAlign, CustomTableColumn } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
+import { Placement } from '../../src/common/types';
 
 const testDir = join(__dirname, 'sample/column');
 

@@ -1,28 +1,4 @@
-import { CustomElement } from '../common/types';
-
-export enum Placement {
-    After = 'After',
-    Before = 'Before',
-    End = 'End'
-}
-
-export type Position = {
-    /**
-     * The key of another column to be used as placement anchor.
-     */
-    anchor?: string;
-    /**
-     * Define the placement, either before or after the anchor column.
-     */
-    placement: Placement;
-};
-
-export type Positionable = {
-    /**
-     *   Defines the position of the column relative to other columns.
-     */
-    position?: Position;
-};
+import { CustomElement, Position } from '../common/types';
 
 export enum Availability {
     'Default' = 'Default',
@@ -88,16 +64,6 @@ export interface CustomTableColumn extends CustomElement {
      */
     properties?: ColumnPropertiesType;
 }
-
-export type EventHandler = {
-    fileName: string;
-    predefinedMethod: string;
-};
-
-export type InternalPosition = {
-    anchor?: string;
-    placement?: Placement;
-};
 
 export interface InternalCustomTableColumn extends CustomTableColumn {
     /**

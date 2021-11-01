@@ -1,7 +1,7 @@
 import { validateVersion } from '../common/version';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
-import { CustomTableColumn, EventHandler, InternalCustomTableColumn } from './types';
+import { CustomTableColumn, InternalCustomTableColumn } from './types';
 import { join, dirname } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';

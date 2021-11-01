@@ -1,4 +1,4 @@
-import { CustomElement } from '../common/types';
+import { CustomElement, Position } from '../common/types';
 
 export enum ControlType {
     header = 'header',
@@ -19,10 +19,7 @@ export interface CustomAction extends CustomElement {
         text: string;
         visible?: string | true;
         enabled?: string | true;
-        position?: {
-            placement: 'Before' | 'After';
-            anchor: string;
-        };
+        position?: Position;
     };
 }
 
