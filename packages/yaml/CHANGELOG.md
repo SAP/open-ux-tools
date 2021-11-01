@@ -1,5 +1,17 @@
 # @sap-ux/yaml
 
+## 0.10.1
+
+### Patch Changes
+
+-   a7670a0: Update ui5 verison handling for ui5.yaml. Allow setting view name in basic template, enhancements to yaml lib.
+
+## 0.10.0
+
+### Minor Changes
+
+-   d37c8bd: Added support for selecting a custom view name for Fiori freestyle - Basic template
+
 ## 0.9.2
 
 ### Patch Changes

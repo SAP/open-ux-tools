@@ -1,7 +1,7 @@
 {
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "<%=app.id%>.view.App",
+			"viewName": "<%- app.id %>.view.App",
 			"type": "XML",
 			"async": true,
 			"id": "app"
@@ -19,7 +19,7 @@
 			"config": {
 				"routerClass": "sap.f.routing.Router",
 				"viewType": "XML",
-				"viewPath": "<%=app.id%>.view",
+				"viewPath": "<%- app.id %>.view",
 				"controlId": "layout",
 				"controlAggregation": "beginColumnPages",
 				"bypassed": {

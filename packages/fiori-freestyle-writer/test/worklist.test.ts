@@ -60,6 +60,9 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     client: '012',
                     destination: {
                         name: 'SIDCLNT012'
+                    },
+                    previewSettings:{
+                        scp: true
                     }
                 }
             }

@@ -2,12 +2,7 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import {
-    getFioriToolsProxyMiddlewareConfig,
-    getMockServerMiddlewareConfig,
-    addMiddlewareConfig,
-    getAppReloadMiddlewareConfig
-} from '@sap-ux/ui5-config';
+import { ProxyBackend, UI5Config } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 
 import { enhanceData } from './data';
@@ -66,22 +61,16 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     const manifestJsonExt = fs.read(join(extRoot, `manifest.json`));
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, data)));
 
-    // ui*.yaml
-    const proxyMiddleware = getFioriToolsProxyMiddlewareConfig(data);
-    const proxyLocalMiddleware = getFioriToolsProxyMiddlewareConfig(data, false);
-    const appReloadMiddleware = getAppReloadMiddlewareConfig();
     // ui5.yaml
-    await addMiddlewareConfig(fs, basePath, 'ui5.yaml', proxyMiddleware.config, proxyMiddleware.comments);
-    await addMiddlewareConfig(fs, basePath, 'ui5.yaml', appReloadMiddleware);
+    const ui5ConfigPath = join(basePath, 'ui5.yaml');
+    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+    ui5Config.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend], ui5: {} });
+    ui5Config.addFioriToolsAppReloadMiddleware();
 
     // ui5-local.yaml
-    await addMiddlewareConfig(
-        fs,
-        basePath,
-        'ui5-local.yaml',
-        proxyLocalMiddleware.config,
-        proxyLocalMiddleware.comments
-    );
+    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+    ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend] });
 
     // Add mockserver entries
     if (data.metadata) {
@@ -98,22 +87,31 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         packageJson.ui5.dependencies.push('@sap/ux-ui5-fe-mockserver-middleware');
         fs.writeJSON(packagePath, packageJson);
 
-        // yaml updates
-        const mockserverMiddleware = getMockServerMiddlewareConfig(data);
-        await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', mockserverMiddleware);
+        // ui5-mock.yaml
         fs.copyTpl(
             join(templateRoot, 'add', 'ui5-mock.yaml'),
             join(basePath, 'ui5-mock.yaml'),
             Object.assign(data, { appid })
         );
-        await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', proxyMiddleware.config, proxyMiddleware.comments);
-        await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', mockserverMiddleware);
-        await addMiddlewareConfig(fs, basePath, 'ui5-mock.yaml', appReloadMiddleware);
+        const ui5MockConfigPath = join(basePath, 'ui5-mock.yaml');
+        const ui5MockConfig = await UI5Config.newInstance(fs.read(ui5MockConfigPath));
+        ui5MockConfig.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend], ui5: {} });
+        ui5MockConfig.addMockServerMiddleware(data.path);
+        ui5MockConfig.addFioriToolsAppReloadMiddleware();
+        fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
+
+        // also add mockserver middleware to ui5-local.yaml
+        ui5LocalConfig.addMockServerMiddleware(data.path);
+
         // create local copy of metadata and annotations
         fs.write(join(basePath, 'webapp', 'localService', 'metadata.xml'), prettifyXml(data.metadata, { indent: 4 }));
     }
 
-    await addMiddlewareConfig(fs, basePath, 'ui5-local.yaml', appReloadMiddleware);
+    // also add the reload middleware
+    ui5LocalConfig.addFioriToolsAppReloadMiddleware();
+    // write yamls to disk
+    fs.write(ui5ConfigPath, ui5Config.toString());
+    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     if (data.annotations?.xml) {
         fs.write(

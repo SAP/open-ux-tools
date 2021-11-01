@@ -1,22 +1,11 @@
 import { initI18n, t } from './i18n';
-import yaml, { Document, isSeq, YAMLSeq } from 'yaml';
+import yaml, { Document, isMap, isSeq, Node, YAMLMap, YAMLSeq } from 'yaml';
 
-// From here: https://twitter.com/diegohaz/status/1309489079378219009
-// Explanation here: https://dev.to/phenomnominal/i-need-to-learn-about-typescript-template-literal-types-51po
-type PathImpl<T, Key extends keyof T> = Key extends string
-    ? T[Key] extends Record<string, any>
-        ?
-              | `${Key}.${PathImpl<T[Key], Exclude<keyof T[Key], keyof any[]>> & string}`
-              | `${Key}.${Exclude<keyof T[Key], keyof any[]> & string}`
-        : never
-    : never;
+import merge = require('lodash.merge');
 
-type PathImpl2<T> = PathImpl<T, keyof T> | keyof T;
-
-export type Path<T> = PathImpl2<T> extends string | keyof T ? PathImpl2<T> : keyof T;
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface NodeComment<T> {
-    path: Path<T>;
+    path: string;
     comment: string;
 }
 
@@ -206,6 +195,104 @@ export class YamlDocument {
     }
 
     /**
+     * Updates a node in a sequence in the document.
+     *
+     * @param path - hierarchical path where the node will be inserted/updated
+     * @param {string} path.path - the path object's path
+     * @param {Object} path.matcher - key/value pair identifying the object
+     * @param {Object} path.value - the path object's value
+     * @param path.matcher.key
+     * @param path.matcher.value
+     * @returns {YamlDocument} the YamlDocument instance
+     * @memberof YamlDocument
+     */
+    updateAt<T = unknown>({
+        path,
+        matcher,
+        value
+    }: {
+        path: string;
+        matcher: { key: string; value: string };
+        value: T;
+    }): YamlDocument {
+        const pathArray = this.toPathArray(path);
+        const seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
+        if (!seq) {
+            throw new Error(t('error.seqDoesNotExist', { path }));
+        }
+
+        const node = seq.items.find((node) => node.toJSON()[matcher.key] === matcher.value);
+        const newNode = this.document.createNode(merge(node!.toJSON(), value));
+        seq.items.splice(seq.items.indexOf(node!), 1, newNode);
+
+        return this;
+    }
+
+    /**
+     * @param root0
+     * @param root0.start
+     * @param root0.path
+     * @returns {unknown}
+     */
+    getNode({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): unknown {
+        if (start) {
+            if (!(isSeq(start) || isMap(start))) {
+                throw new Error(t('error.startNodeMustBeCollection'));
+            }
+        }
+        const pathArray = this.toPathArray(path);
+        const node = start || this.document;
+        const targetNode = node?.getIn(pathArray);
+        if (!targetNode) {
+            throw new Error(t('error.nodeNotFound', { path }));
+        } else {
+            return targetNode;
+        }
+    }
+
+    /**
+     * @param root0
+     * @param root0.start
+     * @param root0.path
+     * @returns {unknown}
+     */
+    getSequence({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLSeq {
+        const a = this.getNode({ start, path });
+        if (!isSeq(a)) {
+            throw new Error(t('error.seqDoesNotExist', { path }));
+        } else {
+            return a as YAMLSeq<Node>;
+        }
+    }
+
+    /**
+     * @param root0
+     * @param root0.start
+     * @param root0.path
+     * @returns {YAMLMap}
+     */
+    getMap({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLMap {
+        const a = this.getNode({ start, path });
+        if (!isMap(a)) {
+            throw new Error(t('error.nodeNotAMap', { path }));
+        } else {
+            return a as YAMLMap<Node>;
+        }
+    }
+
+    /**
+     * @param sequence
+     * @param predicate
+     * @returns {unknown}
+     */
+    findItem(sequence: YAMLSeq, predicate: (o: any) => boolean): unknown {
+        const toJson = (o: unknown) =>
+            (o !== undefined && typeof (o as any).toJSON === 'function' && (o as any).toJSON.call(o)) || {};
+
+        return sequence.items.find((item) => predicate(toJson(item)));
+    }
+
+    /**
      * Converts to a path object to an array.
      *
      * @private
@@ -214,7 +301,8 @@ export class YamlDocument {
      * @returns {string[]} - the path array
      * @memberof YamlDocument
      */
-    private toPathArray<T>(path: Path<T>): string[] {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    private toPathArray<T>(path: string): string[] {
         const result = path
             ?.toString()
             .split('.')

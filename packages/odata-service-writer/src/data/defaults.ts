@@ -21,4 +21,18 @@ export function enhanceData(data: OdataService): void {
     if (data.model === undefined) {
         data.model = ''; // Default UI5 model
     }
+    // enhance preview settings with service configuration
+    data.previewSettings = data.previewSettings || {};
+    data.previewSettings.path =
+        data.previewSettings.path || `/${data.path?.split('/').filter((s: string) => s !== '')[0] || ''}`;
+    data.previewSettings.url = data.previewSettings.url || data.url || 'http://localhost';
+    if (data.client && !data.previewSettings.client) {
+        data.previewSettings.client = data.client;
+    }
+    if (data.destination && !data.previewSettings.destination) {
+        data.previewSettings.destination = data.destination.name;
+        if (data.destination.instance) {
+            data.previewSettings.destinationInstance = data.destination.instance;
+        }
+    }
 }
