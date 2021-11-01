@@ -1,10 +1,11 @@
-import { validateVersion } from '../common/version';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { ControlType, CustomAction, CustomActionTarget, InternalCustomAction } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
-import { Manifest } from '../common/types';
+import { validateVersion } from '../common/version';
+import { InternalCustomElement, Manifest } from '../common/types';
+import { setCommonDefaults } from '../common/defaults';
 
 /**
  * Enhances the provided custom action configuration with default data.
@@ -13,16 +14,17 @@ import { Manifest } from '../common/types';
  * @param {Manifest} manifest - the application manifest
  * @returns enhanced configuration
  */
-function enhanceConfig(data: CustomAction, manifest: Manifest): InternalCustomAction {
+function enhanceConfig(data: CustomAction, manifestPath: string, manifest: Manifest): InternalCustomAction {
+    setCommonDefaults(data, manifestPath, manifest);
     // clone input data
-    const config: InternalCustomAction = {
-        id: data.id,
+    const config = {
+        ...data,
         target: { ...data.target },
-        controller: `${manifest['sap.app'].id}.ext.${data.id}`,
+        controller: `${(data as any as InternalCustomElement).ns}.${data.id}`,
         settings: {
             ...data.settings
         }
-    };
+    } as InternalCustomAction;
 
     // set default values for visibility and enabled
     config.settings.enabled = config.settings.enabled || true;
@@ -66,7 +68,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
-    const config = enhanceConfig(actionConfig, manifest);
+    const config = enhanceConfig(actionConfig, manifestPath, manifest);
 
     const root = join(__dirname, '../../templates/action');
 
@@ -79,7 +81,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)));
 
     // add controller extension
-    fs.copyTpl(join(root, 'ext/Controller.js'), join(basePath, 'webapp/ext', `${config.id}.controller.js`), config);
+    fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.id}.controller.js`), config);
 
     return fs;
 }

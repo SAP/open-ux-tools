@@ -58,6 +58,7 @@ describe('CustomAction', () => {
                 testDir,
                 {
                     id: 'MyCustomAction',
+                    folder: 'ext',
                     target: {
                         page: 'TestObjectPage',
                         control: ControlType.header

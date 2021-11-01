@@ -1,4 +1,4 @@
-import { CustomElement, Position } from '../common/types';
+import { CustomElement, InternalCustomElement, Position } from '../common/types';
 
 export enum ControlType {
     header = 'header',
@@ -23,6 +23,6 @@ export interface CustomAction extends CustomElement {
     };
 }
 
-export interface InternalCustomAction extends CustomAction {
+export interface InternalCustomAction extends CustomAction, InternalCustomElement {
     controller: string;
 }
