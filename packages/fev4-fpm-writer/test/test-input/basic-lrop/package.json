@@ -1,0 +1,24 @@
+{
+    "name": "basic-lrop",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "fiori run --open 'index.html'",
+        "build": "ui5 build -a --clean-dest --include-task=generateManifestBundle generateCachebusterInfo"
+    },
+    "devDependencies": {
+        "@ui5/cli": "^2.10.1",
+        "@ui5/fs": "^2.0.6",
+        "@ui5/logger": "^2.0.1",
+        "@sap/ux-ui5-tooling": "1",
+        "rimraf": "3.0.2",
+        "@sap/ux-specification": "latest",
+        "@sap/ux-ui5-fe-mockserver-middleware": "1.1.4"
+    },
+    "ui5": {
+        "dependencies": [
+            "@sap/ux-ui5-tooling",
+            "@sap/ux-ui5-fe-mockserver-middleware"
+        ]
+    }
+}
