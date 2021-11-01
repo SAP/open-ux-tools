@@ -19,6 +19,11 @@ export interface CustomElement {
     ui5Version?: number;
 }
 
+export interface InternalCustomElement extends CustomElement {
+    ns: string;
+    path: string;
+}
+
 /**
  * Enumeration with all values possible as position placement attribute
  */

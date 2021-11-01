@@ -1,4 +1,4 @@
-import { CustomElement } from '../common/types';
+import { CustomElement, InternalCustomElement } from '../common/types';
 
 export interface Ui5Route {
     name: string;
@@ -19,7 +19,4 @@ export interface CustomPage extends CustomElement {
     };
 }
 
-export interface CustomPageConfig extends CustomPage {
-    ns: string;
-    path: string;
-}
+export type InternalCustomPage = CustomPage & InternalCustomElement;

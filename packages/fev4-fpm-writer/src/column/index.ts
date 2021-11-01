@@ -5,7 +5,8 @@ import { CustomTableColumn, InternalCustomTableColumn } from './types';
 import { join, dirname } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';
-import { Manifest } from 'common/types';
+import { Manifest } from '../common/types';
+import { setCommonDefaults } from '../common/defaults';
 
 /**
  * Generate XML content for the column fragment.
@@ -46,16 +47,14 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
     // merge with defaults
-    const completeColumn = Object.assign(
+    const completeColumn = setCommonDefaults<InternalCustomTableColumn>(
         {
-            content: generateColumnContent(customColumn),
-            folder: 'ext'
-        } as Partial<InternalCustomTableColumn>,
-        customColumn
-    ) as InternalCustomTableColumn;
-    completeColumn.template = `${(manifest as any)['sap.app'].id}.${completeColumn.folder.replace(/\//g, '.')}.${
-        completeColumn.id
-    }`;
+            ...customColumn,
+            content: generateColumnContent(customColumn)
+        } as InternalCustomTableColumn,
+        manifestPath,
+        manifest
+    );
 
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.ui5Version);
@@ -64,7 +63,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
 
     // add fragment
     const extRoot = join(__dirname, '../../templates/column/ext');
-    const viewPath = join(dirname(manifestPath), completeColumn.folder, `${completeColumn.id}.fragment.xml`);
+    const viewPath = join(completeColumn.path, `${completeColumn.id}.fragment.xml`);
     fs.copyTpl(join(extRoot, 'CustomColumnFragment.xml'), viewPath, completeColumn);
 
     // add event handler if control type is button

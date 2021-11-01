@@ -1,42 +1,11 @@
-import { join, dirname } from 'path';
+import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
-import { CustomPage, CustomPageConfig, Ui5Route } from './types';
+import { enhanceData } from './defaults';
+import { CustomPage, InternalCustomPage, Ui5Route } from './types';
 import { getTemplateRoot } from './version';
-
-/**
- * Enhances the provided custom page configuration with default data.
- *
- * @param {CustomPage} data - a custom page configuration object
- * @param manifestPath - path to the application manifest
- * @param fs - mem-fs reference to be used for file access
- * @returns enhanced configuration
- */
-function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): CustomPageConfig {
-    const manifest: any = fs.readJSON(manifestPath);
-
-    // enforce naming conventions
-    const firstChar = data.id[0];
-    const nameForId = firstChar.toLocaleLowerCase() + data.id.substring(1);
-    data.id = firstChar.toUpperCase() + data.id.substring(1);
-
-    // set target folder if not provided
-    data.folder = data.folder || `ext/${nameForId}`;
-
-    const config: CustomPageConfig = {
-        ...data,
-        ns: `${manifest['sap.app'].id}.${data.folder.replace(/\//g, '.')}`,
-        path: join(dirname(manifestPath), data.folder)
-    };
-    if (config.view === undefined) {
-        config.view = {
-            title: config.id
-        };
-    }
-    return config;
-}
 
 /**
  * Add a new route to the provided route array, and update existing routes if necessary (e.g. if targets are defined as arrays for FCL).
@@ -44,7 +13,7 @@ function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): Custom
  * @param routes existing application routes (from the manifest)
  * @param config configuration object
  */
-function updateRoutes(routes: Ui5Route[], config: CustomPageConfig) {
+function updateRoutes(routes: Ui5Route[], config: InternalCustomPage) {
     const newRoute: Partial<Ui5Route> = {
         name: `${config.entity}${config.id}`
     };

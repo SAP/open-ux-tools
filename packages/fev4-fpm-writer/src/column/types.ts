@@ -1,4 +1,4 @@
-import { CustomElement, Position } from '../common/types';
+import { CustomElement, InternalCustomElement, Position } from '../common/types';
 
 export enum Availability {
     'Default' = 'Default',
@@ -66,11 +66,6 @@ export interface CustomTableColumn extends CustomElement {
     properties?: ColumnPropertiesType;
 }
 
-export interface InternalCustomTableColumn extends CustomTableColumn {
-    /**
-     * Relevant for extension columns; allows the definition of a target fragment.
-     */
-    template: string;
-    folder: string;
+export interface InternalCustomTableColumn extends CustomTableColumn, InternalCustomElement {
     content: string;
 }
