@@ -5,9 +5,9 @@
         },
         "routing": {
             "targets": {
-                "<%= entity %><%= name %>": {
-					"viewId": "<%= name %>View",
-					"viewName": "<%= id %>.<%= name %>",
+                "<%- entity %><%- id %>": {
+					"viewId": "<%- id %>View",
+					"viewName": "<%- ns %>.<%- id %>",
 					"options": {
 						"settings": {
 							"entitySet": "<%= entity %>",
@@ -21,7 +21,7 @@
                             "navigation": {
                                 "<%= navigation.navEntity %>": {
                                     "detail": {
-                                        "route": "<%= entity %><%= name %>"
+                                        "route": "<%- entity %><%- id %>"
                                     }
                                 }
                             }

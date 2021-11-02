@@ -1,7 +1,8 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
-import { CustomPage, generateCustomPage } from '../../src';
+import { create } from 'mem-fs-editor';
+import { generateCustomColumn, generateCustomPage } from '../../src';
+import { Placement } from '../../src/common/types';
 
 describe('use FPM with existing apps', () => {
     const testInput = join(__dirname, '../test-input');
@@ -27,7 +28,7 @@ describe('use FPM with existing apps', () => {
             generateCustomPage(
                 targetPath,
                 {
-                    name: 'MyCustomPage',
+                    id: 'MyCustomPage',
                     entity: 'Booking',
                     navigation: {
                         sourceEntity: 'Travel',
@@ -35,7 +36,29 @@ describe('use FPM with existing apps', () => {
                         navEntity: '_Booking'
                     }
                 },
-                undefined,
+                fs
+            );
+        });
+    });
+
+    describe('generateCustomColumn', () => {
+        test('add custom column to ListReport', () => {
+            const targetPath = join(testOutput, 'column/lrop');
+            fs.copy(join(testInput, 'basic-lrop'), targetPath);
+
+            generateCustomColumn(
+                targetPath,
+                {
+                    target: 'TravelList',
+                    targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
+                    id: 'NewCustomColumn',
+                    header: 'Custom Column',
+                    eventHandler: true,
+                    position: {
+                        placement: Placement.After,
+                        anchor: 'DataField::TravelID'
+                    }
+                },
                 fs
             );
         });

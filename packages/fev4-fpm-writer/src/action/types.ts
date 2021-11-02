@@ -1,3 +1,5 @@
+import { CustomElement, InternalCustomElement, Position } from '../common/types';
+
 export enum ControlType {
     header = 'header',
     footer = 'footer',
@@ -11,20 +13,16 @@ export interface CustomActionTarget {
     qualifier?: string;
 }
 
-export interface CustomAction {
-    name: string;
+export interface CustomAction extends CustomElement {
     target: CustomActionTarget;
     settings: {
         text: string;
         visible?: string | true;
         enabled?: string | true;
-        position?: {
-            placement: 'Before' | 'After';
-            anchor: string;
-        };
+        position?: Position;
     };
 }
 
-export interface InternalCustomAction extends CustomAction {
+export interface InternalCustomAction extends CustomAction, InternalCustomElement {
     controller: string;
 }

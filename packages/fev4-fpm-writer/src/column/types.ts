@@ -1,26 +1,4 @@
-export enum Placement {
-    After = 'After',
-    Before = 'Before',
-    End = 'End'
-}
-
-export type Position = {
-    /**
-     * The key of another column to be used as placement anchor.
-     */
-    anchor?: string;
-    /**
-     * Define the placement, either before or after the anchor column.
-     */
-    placement: Placement;
-};
-
-export type Positionable = {
-    /**
-     *   Defines the position of the column relative to other columns.
-     */
-    position?: Position;
-};
+import { CustomElement, InternalCustomElement, Position } from '../common/types';
 
 export enum Availability {
     'Default' = 'Default',
@@ -37,10 +15,11 @@ export enum HorizontalAlign {
 export type ColumnPropertiesType = string[];
 
 /**
- * Custom Column
+ * Custom Column.
+ *
  * @isViewNode true
  */
-export interface TableCustomColumn {
+export interface CustomTableColumn extends CustomElement {
     /**
      * Name of the routing target
      */
@@ -50,10 +29,6 @@ export interface TableCustomColumn {
      */
     targetEntity: string;
     /**
-     * Unique identifier for the column
-     */
-    id: string;
-    /**
      *   Defines the position of the column relative to other columns.
      */
     position: Position;
@@ -62,14 +37,18 @@ export interface TableCustomColumn {
      */
     header: string;
     /**
+     * If it is set to true then an additional event handler is generated.
+     */
+    eventHandler?: boolean;
+    /**
+     * Optional control XML that will be generated into the fragment of table column. If the property isn't provided then a sample control will be generated.
+     */
+    control?: string;
+    /**
      * A string type that represents CSS size values.
      * Refer to https://openui5.hana.ondemand.com/api/sap.ui.core.CSSSize.
      */
     width?: string;
-    /**
-     * Relevant for extension columns; allows the definition of a target fragment.
-     */
-    template: string;
     /**
      * Aligns the header as well as the content horizontally.
      */
@@ -87,12 +66,6 @@ export interface TableCustomColumn {
     properties?: ColumnPropertiesType;
 }
 
-export type EventHandler = {
-    fileName: string;
-    predefinedMethod: string;
-};
-
-export type InternalPosition = {
-    anchor: string | undefined;
-    placement: Placement | undefined;
-};
+export interface InternalCustomTableColumn extends CustomTableColumn, InternalCustomElement {
+    content: string;
+}

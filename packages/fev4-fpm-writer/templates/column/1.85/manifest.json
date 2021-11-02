@@ -21,7 +21,7 @@
                                                     "anchor": "<%= position.anchor %>" 
                                                 <% } %>
                                             },
-                                            "template": "<%= template %>"
+                                            "template": "<%= ns %>.<%- id %>"
                                             <% if (locals.availability) { %> 
                                                 , "availability": "<%= availability %>" 
                                             <% } %>
