@@ -3,7 +3,7 @@ import { CustomElement, InternalCustomElement, Position } from '../common/types'
 export enum ControlType {
     header = 'header',
     footer = 'footer',
-    facet = '@com.sap.vocabularies.UI.v1.FieldGroup',
+    section = '@com.sap.vocabularies.UI.v1.FieldGroup',
     table = '@com.sap.vocabularies.UI.v1.LineItem'
 }
 
