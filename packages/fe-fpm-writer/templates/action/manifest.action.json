@@ -1,6 +1,6 @@
 {
     "<%- name %>": {
-        "press": "<%- controller %>.onPress",
+        "press": "<%- controller.name %>.onPress",
         "visible": true,
         "enabled": true,
         "text": "{i18n>customHeaderAction}"<%if (settings.position) {%>,

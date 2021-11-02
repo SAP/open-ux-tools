@@ -15,22 +15,27 @@ import { setCommonDefaults } from '../common/defaults';
  * @returns enhanced configuration
  */
 function enhanceConfig(data: CustomAction, manifestPath: string, manifest: Manifest): InternalCustomAction {
-    setCommonDefaults(data, manifestPath, manifest);
-    // clone input data
-    const config = {
+    // clone input
+    const config: CustomAction & Partial<InternalCustomAction> = {
         ...data,
         target: { ...data.target },
-        controller: `${(data as any as InternalCustomElement).ns}.${data.name}`,
-        settings: {
-            ...data.settings
-        }
-    } as InternalCustomAction;
+        settings: { ...data.settings }
+    };
+    setCommonDefaults(config, manifestPath, manifest);
+    const baseController =
+        manifest['sap.ui5'].routing.targets[config.target.page].name === 'sap.fe.templates.ListReport'
+            ? 'ListReport.ListReportController'
+            : 'ObjectPage.ObjectPageController';
+    config.controller = {
+        base: `sap.fe.templates.${baseController}#${manifest['sap.app'].id}::${config.target.page}`,
+        name: `${config.ns}.${data.name}`
+    };
 
     // set default values for visibility and enabled
     config.settings.enabled = config.settings.enabled || true;
     config.settings.visible = config.settings.visible || true;
 
-    return config;
+    return config as InternalCustomAction;
 }
 
 export function getTargetElementReference(manifest: any, target: CustomActionTarget): any {
@@ -80,15 +85,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
         JSON.parse(render(fs.read(join(root, `manifest.action.json`)), config))
     );
     fs.writeJSON(manifestPath, manifest);
-    fs.extendJSON(
-        manifestPath,
-        JSON.parse(
-            render(fs.read(join(root, `manifest.json`)), {
-                ...config,
-                extension: `#${manifest['sap.app'].id}::${config.target.page}`
-            })
-        )
-    );
+    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)));
 
     // add controller extension
     fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.name}.controller.js`), config);

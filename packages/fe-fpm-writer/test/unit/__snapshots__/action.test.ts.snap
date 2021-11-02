@@ -14,7 +14,7 @@ Object {
     "extends": Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
-          "sap.fe.templates.ObjectPage.ObjectPageController#my.test.App::TestObjectPage": Object {
+          "sap.fe.templates.ListReport.ListReportController#my.test.App::TestObjectPage": Object {
             "controllerName": "my.test.App.ext.MyCustomAction",
           },
         },
@@ -23,6 +23,7 @@ Object {
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
           "options": Object {
             "content": Object {
               "header": Object {

@@ -25,5 +25,8 @@ export interface CustomAction extends CustomElement {
 }
 
 export interface InternalCustomAction extends CustomAction, InternalCustomElement {
-    controller: string;
+    controller: {
+        base: string;
+        name: string;
+    };
 }

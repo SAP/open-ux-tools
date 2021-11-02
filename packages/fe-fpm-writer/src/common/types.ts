@@ -47,6 +47,13 @@ export type Position = {
     placement: Placement;
 };
 
+export interface Ui5RoutingTarget<T extends any> {
+    type: string;
+    id: string;
+    name: string;
+    options?: T;
+}
+
 /**
  * Interface of an object generated from a UI5 manifest.json
  */
@@ -54,5 +61,11 @@ export interface Manifest {
     [key: string]: object;
     'sap.app': {
         id: string;
+    };
+    'sap.ui5': {
+        routing: {
+            routes: string[];
+            targets: { [key: string]: Ui5RoutingTarget<any> };
+        };
     };
 }

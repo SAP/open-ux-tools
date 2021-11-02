@@ -39,7 +39,7 @@ describe('CustomAction', () => {
                     },
                     routing: {
                         targets: {
-                            TestObjectPage: {}
+                            TestObjectPage: { name: 'sap.fe.templates.ListReport' }
                         }
                     }
                 }
