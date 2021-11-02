@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.4
+
+### Patch Changes
+
+-   b1af038: refactor to be more backward compatible with mem-fs-editor (and yeoman-environment ^2.10.0)
+
 ## 0.10.3
 
 ### Patch Changes
