@@ -8,7 +8,7 @@
                             "controlConfiguration": {
                                 "<%- targetEntity %>": {
                                     "columns": {
-                                        "<%- id %>": {
+                                        "<%- name %>": {
                                             "header": "<%- header %>",
                                     <% if (locals.width)  { %> "width": "<%- width %>",  <%
                                             } %>
@@ -20,7 +20,7 @@
                                             },
                                     <% if (locals.horizontalAlign) { %> "horizontalAlign": "<%- horizontalAlign %>", <%
                                             } %>
-                                    "template": "<%- ns %>.<%- id %>"
+                                    "template": "<%- ns %>.<%- name %>"
                                     <% if (locals.availability) { %> , "availability": "<%- availability %>" <%
                                             } %>
                                     <% if (locals.properties) { %> , "properties": [ 

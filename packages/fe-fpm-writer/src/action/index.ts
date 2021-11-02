@@ -20,7 +20,7 @@ function enhanceConfig(data: CustomAction, manifestPath: string, manifest: Manif
     const config = {
         ...data,
         target: { ...data.target },
-        controller: `${(data as any as InternalCustomElement).ns}.${data.id}`,
+        controller: `${(data as any as InternalCustomElement).ns}.${data.name}`,
         settings: {
             ...data.settings
         }
@@ -81,7 +81,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)));
 
     // add controller extension
-    fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.id}.controller.js`), config);
+    fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.name}.controller.js`), config);
 
     return fs;
 }

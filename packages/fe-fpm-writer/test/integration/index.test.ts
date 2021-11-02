@@ -28,7 +28,7 @@ describe('use FPM with existing apps', () => {
             generateCustomPage(
                 targetPath,
                 {
-                    id: 'MyCustomPage',
+                    name: 'MyCustomPage',
                     entity: 'Booking',
                     navigation: {
                         sourceEntity: 'Travel',
@@ -51,7 +51,7 @@ describe('use FPM with existing apps', () => {
                 {
                     target: 'TravelList',
                     targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
-                    id: 'NewCustomColumn',
+                    name: 'NewCustomColumn',
                     header: 'Custom Column',
                     eventHandler: true,
                     position: {

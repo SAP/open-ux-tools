@@ -15,7 +15,7 @@ import { getTemplateRoot } from './version';
  */
 function updateRoutes(routes: Ui5Route[], config: InternalCustomPage) {
     const newRoute: Partial<Ui5Route> = {
-        name: `${config.entity}${config.id}`
+        name: `${config.entity}${config.name}`
     };
     if (config.navigation) {
         const sourceRoute = routes.find((route) => route.name === config.navigation?.sourcePage);
@@ -93,8 +93,8 @@ export function generateCustomPage(basePath: string, data: CustomPage, fs?: Edit
     });
 
     // add extension content
-    fs.copyTpl(join(root, 'ext/View.xml'), join(config.path, `${config.id}.view.xml`), config);
-    fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.id}.controller.js`), config);
+    fs.copyTpl(join(root, 'ext/View.xml'), join(config.path, `${config.name}.view.xml`), config);
+    fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.name}.controller.js`), config);
 
     return fs;
 }

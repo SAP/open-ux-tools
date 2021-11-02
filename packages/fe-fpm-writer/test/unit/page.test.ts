@@ -52,7 +52,7 @@ describe('CustomPage', () => {
 
     describe('generateCustomPage: different versions or target folder', () => {
         const minimalInput: CustomPage = {
-            id: 'CustomPage',
+            name: 'CustomPage',
             entity: 'RootEnity'
         };
         test('latest version with minimal input', () => {
@@ -95,7 +95,7 @@ describe('CustomPage', () => {
 
     describe('generateCustomPage: different navigations', () => {
         const inputWithNavigation: CustomPage = {
-            id: 'CustomPage',
+            name: 'CustomPage',
             entity: 'ChildEntity',
             navigation: {
                 sourcePage: 'TestObjectPage',

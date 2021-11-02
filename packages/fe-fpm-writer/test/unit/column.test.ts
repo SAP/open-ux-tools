@@ -36,7 +36,7 @@ describe('CustomAction', () => {
         const customColumn: CustomTableColumn = {
             target: 'sample',
             targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
-            id: 'NewCustomColumn',
+            name: 'NewCustomColumn',
             header: 'col header',
             folder: 'extensions/custom',
             position: {
@@ -44,7 +44,7 @@ describe('CustomAction', () => {
                 anchor: 'DataField::BooleanProperty'
             }
         };
-        const expectedFragmentPath = join(testDir, 'webapp', customColumn.folder!, `${customColumn.id}.fragment.xml`);
+        const expectedFragmentPath = join(testDir, 'webapp', customColumn.folder!, `${customColumn.name}.fragment.xml`);
         const testVersions = [1.86, 1.85, 1.84];
         beforeEach(() => {
             fs = create(createStorage());

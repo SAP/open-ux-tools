@@ -19,7 +19,7 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
 
     if (config.view === undefined) {
         config.view = {
-            title: config.id
+            title: config.name
         };
     }
     return config;

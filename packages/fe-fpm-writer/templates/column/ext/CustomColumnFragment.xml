@@ -1,6 +1,6 @@
 <core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m"
 	xmlns:l="sap.ui.layout">
-	<l:VerticalLayout<%- locals.eventHandler ? ' core:require="{ handler: \'' + (ns + '.' + id).replace(/\./g, '/') + '\'}"' : '' %>>
+	<l:VerticalLayout<%- locals.eventHandler ? ' core:require="{ handler: \'' + (ns + '.' + name).replace(/\./g, '/') + '\'}"' : '' %>>
 		<%- content %>
 	</l:VerticalLayout>
 </core:FragmentDefinition>

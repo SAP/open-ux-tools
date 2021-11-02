@@ -57,7 +57,7 @@ describe('CustomAction', () => {
             generateCustomAction(
                 testDir,
                 {
-                    id: 'MyCustomAction',
+                    name: 'MyCustomAction',
                     folder: 'ext',
                     target: {
                         page: 'TestObjectPage',

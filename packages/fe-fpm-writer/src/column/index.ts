@@ -2,7 +2,7 @@ import { validateVersion } from '../common/version';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { CustomTableColumn, InternalCustomTableColumn } from './types';
-import { join, dirname } from 'path';
+import { join } from 'path';
 import { render } from 'ejs';
 import { getManifestRoot } from './version';
 import { Manifest } from '../common/types';
@@ -63,7 +63,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
 
     // add fragment
     const extRoot = join(__dirname, '../../templates/column/ext');
-    const viewPath = join(completeColumn.path, `${completeColumn.id}.fragment.xml`);
+    const viewPath = join(completeColumn.path, `${completeColumn.name}.fragment.xml`);
     fs.copyTpl(join(extRoot, 'CustomColumnFragment.xml'), viewPath, completeColumn);
 
     // add event handler if control type is button

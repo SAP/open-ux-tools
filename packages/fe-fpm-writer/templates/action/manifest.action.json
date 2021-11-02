@@ -1,5 +1,5 @@
 {
-    "<%- id %>": {
+    "<%- name %>": {
         "press": "<%- controller %>.onPress",
         "visible": true,
         "enabled": true,
