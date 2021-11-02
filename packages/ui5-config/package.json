@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-config",
     "description": "Library to UI5 configuration artifacts",
-    "version": "0.10.1",
+    "version": "0.10.2",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -21,8 +21,7 @@
         "dist"
     ],
     "dependencies": {
-        "@sap-ux/yaml": "workspace:*",
-        "typescript": "4.2.4"
+        "@sap-ux/yaml": "workspace:*"
     },
     "devDependencies": {
         "mem-fs": "2.1.0",

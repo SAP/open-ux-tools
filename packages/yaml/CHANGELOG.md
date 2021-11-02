@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.10.2
+
+### Patch Changes
+
+-   8de261b: Update npm dep and devDeps
+
 ## 0.10.1
 
 ### Patch Changes

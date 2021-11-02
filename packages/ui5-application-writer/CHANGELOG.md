@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.9.6
+
+### Patch Changes
+
+-   8de261b: Update npm dep and devDeps
+
 ## 0.9.5
 
 ### Patch Changes
