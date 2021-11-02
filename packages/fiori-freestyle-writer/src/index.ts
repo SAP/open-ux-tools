@@ -37,26 +37,11 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     fs.copyTpl(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp, undefined, {});
 
     if (ffApp.template.type === TemplateType.Basic) {
-        // Todo: need to find a way around the casts
-        const viewName = (ffApp.template.settings as unknown as BasicAppSettings).viewName;
+        const viewName = (ffApp.template.settings as BasicAppSettings).viewName;
         const viewTarget = join(basePath, 'webapp', 'view', `${viewName}.view.xml`);
-        const viewTmplName = 'View1.view.xml';
-        const controllerTmplName = 'View1.controller.js';
-        fs.copyTpl(
-            join(tmplPath, ffApp.template.type, 'addViewFiles', 'view', viewTmplName),
-            viewTarget,
-            ffApp,
-            undefined,
-            {}
-        );
-        const controllerTarget = join(basePath, 'webapp', 'controller', `${viewName}.controller.js`);
-        fs.copyTpl(
-            join(tmplPath, ffApp.template.type, 'addViewFiles', 'controller', controllerTmplName),
-            controllerTarget,
-            ffApp,
-            undefined,
-            {}
-        );
+        fs.copyTpl(join(tmplPath, ffApp.template.type, 'custom/View.xml'), viewTarget, ffApp);
+        const controllerTarget = join(basePath, `webapp/controller/${viewName}.controller.js`);
+        fs.copyTpl(join(tmplPath, ffApp.template.type, 'custom/Controller.js'), controllerTarget, ffApp);
     }
 
     // merge content into existing files
