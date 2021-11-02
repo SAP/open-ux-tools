@@ -13,13 +13,13 @@ import { setDefaults } from './defaults';
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
  *
- * @param basePath - the absolute target path where the applciation will be generated
+ * @param basePath - the absolute target path where the application will be generated
  * @param data - configuration to generate the freestyle application
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
-    // Clone rather than modifyng callers refs
+    // Clone rather than modifying callers refs
     const ffApp: FreestyleApp<T> = cloneDeep(data) as FreestyleApp<T>;
     // generate base UI5 project
     ffApp.app.baseComponent = ffApp.app.baseComponent || 'sap/ui/core/UIComponent';
@@ -34,15 +34,15 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // Common files
     fs.copyTpl(join(tmplPath, 'common', 'add', '**/*.*'), basePath, ffApp);
 
-    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp, undefined, {
-        processDestinationPath(path: string): string {
-            if (ffApp.template.type === TemplateType.Basic) {
-                return path.replace('View1', (ffApp.template.settings as unknown as BasicAppSettings).viewName!);
-            } else {
-                return path;
-            }
-        }
-    });
+    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp, undefined, {});
+
+    if (ffApp.template.type === TemplateType.Basic) {
+        const viewName = (ffApp.template.settings as BasicAppSettings).viewName;
+        const viewTarget = join(basePath, 'webapp', 'view', `${viewName}.view.xml`);
+        fs.copyTpl(join(tmplPath, ffApp.template.type, 'custom/View.xml'), viewTarget, ffApp);
+        const controllerTarget = join(basePath, `webapp/controller/${viewName}.controller.js`);
+        fs.copyTpl(join(tmplPath, ffApp.template.type, 'custom/Controller.js'), controllerTarget, ffApp);
+    }
 
     // merge content into existing files
     const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
