@@ -151,6 +151,26 @@ Object {
         "TestPage": Object {
           "options": Object {
             "controlConfiguration": Object {
+              "@com.sap.vocabularies.UI.v1.LineItem": Object {
+                "actions": Object {},
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction getTargetElementReference get reference for different control types 6`] = `
+Object {
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "TestPage": Object {
+          "options": Object {
+            "controlConfiguration": Object {
               "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
                 "actions": Object {},
               },

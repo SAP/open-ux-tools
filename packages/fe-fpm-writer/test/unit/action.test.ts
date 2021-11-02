@@ -10,8 +10,8 @@ describe('CustomAction', () => {
         const testInput = [
             { control: ControlType.header },
             { control: ControlType.footer },
-            { control: ControlType.facet },
-            { control: ControlType.facet, qualifier: 'FacetCustomAction' },
+            { control: ControlType.section },
+            { control: ControlType.section, qualifier: 'FacetCustomAction' },
             { control: ControlType.table },
             { control: ControlType.table, navProperty: 'items' }
         ];
