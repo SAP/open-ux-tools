@@ -36,8 +36,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     fs.copyTpl(join(tmplPath, ffApp.template.type, 'add', `**/*.*`), basePath, ffApp, undefined, {});
 
-    const viewName = (ffApp.template.settings as unknown as BasicAppSettings).viewName;
-    if (ffApp.template.type === TemplateType.Basic && viewName !== undefined) {
+    if (ffApp.template.type === TemplateType.Basic) {
+        // Todo: need to find a way around the casts
+        const viewName = (ffApp.template.settings as unknown as BasicAppSettings).viewName;
         const viewTarget = join(basePath, 'webapp', 'view', `${viewName}.view.xml`);
         const viewTmplName = 'View1.view.xml';
         const controllerTmplName = 'View1.controller.js';
