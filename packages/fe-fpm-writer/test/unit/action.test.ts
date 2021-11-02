@@ -12,11 +12,12 @@ describe('CustomAction', () => {
             { control: ControlType.footer },
             { control: ControlType.facet },
             { control: ControlType.facet, qualifier: 'FacetCustomAction' },
-            { control: ControlType.table }
+            { control: ControlType.table },
+            { control: ControlType.table, navProperty: 'items' }
         ];
-        test.each(testInput)('get reference for different control types', ({ control, qualifier }) => {
+        test.each(testInput)('get reference for different control types', (input) => {
             const manifest = { 'sap.ui5': { routing: { targets: { TestPage: {} } } } };
-            getTargetElementReference(manifest, { page: 'TestPage', control, qualifier });
+            getTargetElementReference(manifest, { page: 'TestPage', ...input });
             expect(manifest).toMatchSnapshot();
         });
     });

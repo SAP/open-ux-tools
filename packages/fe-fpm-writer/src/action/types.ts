@@ -4,12 +4,13 @@ export enum ControlType {
     header = 'header',
     footer = 'footer',
     facet = '@com.sap.vocabularies.UI.v1.FieldGroup',
-    table = 'items/@com.sap.vocabularies.UI.v1.LineItem'
+    table = '@com.sap.vocabularies.UI.v1.LineItem'
 }
 
 export interface CustomActionTarget {
     page: string;
     control: ControlType;
+    navProperty?: string;
     qualifier?: string;
 }
 

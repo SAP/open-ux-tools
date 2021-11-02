@@ -42,7 +42,9 @@ export function getTargetElementReference(manifest: any, target: CustomActionTar
         page.options.content[target.control].actions = page.options.content[target.control].actions || {};
         return page.options.content[target.control].actions;
     } else {
-        const controlId = `${target.control}${target.qualifier ? '#' + target.qualifier : ''}`;
+        const controlPrefix = target.navProperty ? target.navProperty + '/' : '';
+        const controlSuffix = target.qualifier ? '#' + target.qualifier : '';
+        const controlId = `${controlPrefix}${target.control}${controlSuffix}`;
         page.options.controlConfiguration = page.options.controlConfiguration || {};
         page.options.controlConfiguration[controlId] = page.options.controlConfiguration[controlId] || {};
         page.options.controlConfiguration[controlId].actions =
