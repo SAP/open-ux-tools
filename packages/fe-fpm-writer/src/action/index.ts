@@ -78,7 +78,15 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
         JSON.parse(render(fs.read(join(root, `manifest.action.json`)), config))
     );
     fs.writeJSON(manifestPath, manifest);
-    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)));
+    fs.extendJSON(
+        manifestPath,
+        JSON.parse(
+            render(fs.read(join(root, `manifest.json`)), {
+                ...config,
+                extension: `#${manifest['sap.app'].id}::${config.target.page}`
+            })
+        )
+    );
 
     // add controller extension
     fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.name}.controller.js`), config);

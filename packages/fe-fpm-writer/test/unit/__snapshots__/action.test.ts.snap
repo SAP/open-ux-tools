@@ -14,7 +14,7 @@ Object {
     "extends": Object {
       "extensions": Object {
         "sap.ui.controllerExtensions": Object {
-          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+          "sap.fe.templates.ObjectPage.ObjectPageController#my.test.App::TestObjectPage": Object {
             "controllerName": "my.test.App.ext.MyCustomAction",
           },
         },

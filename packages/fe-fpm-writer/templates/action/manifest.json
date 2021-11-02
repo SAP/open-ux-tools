@@ -3,7 +3,7 @@
 		"extends": {
 			"extensions": {
 				"sap.ui.controllerExtensions": {
-					"sap.fe.templates.ObjectPage.ObjectPageController": {
+					"sap.fe.templates.ObjectPage.ObjectPageController<%- extension %>": {
 						"controllerName": "<%- controller %>"
 					}
 				}
