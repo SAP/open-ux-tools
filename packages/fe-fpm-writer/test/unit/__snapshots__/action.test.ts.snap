@@ -11,15 +11,6 @@ Object {
         "sap.fe.templates": Object {},
       },
     },
-    "extends": Object {
-      "extensions": Object {
-        "sap.ui.controllerExtensions": Object {
-          "sap.fe.templates.ListReport.ListReportController#my.test.App::TestObjectPage": Object {
-            "controllerName": "my.test.App.ext.MyCustomAction",
-          },
-        },
-      },
-    },
     "routing": Object {
       "targets": Object {
         "TestObjectPage": Object {
@@ -48,22 +39,18 @@ Object {
 `;
 
 exports[`CustomAction generateCustomAction generateCustomAction 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"CustomAction handler invoked.\\");
+        }
+    };
+});
 "
-  
-sap.ui.define([
-    \\"sap/ui/core/mvc/ControllerExtension\\", 
-    \\"sap/m/MessageToast\\"], 
-    function(
-        ControllerExtension, 
-        MessageToast) {
-    \\"use strict\\";
-	return ControllerExtension.extend(\\"my.test.App.ext.MyCustomAction\\", {
-		// controller extensions can be used for handling manifest based custom action events
-		onPress: function(oContext) {
-			MessageToast.show(\\"Controller extension based action handler invoked.\\");
-		}
-	});
-});"
 `;
 
 exports[`CustomAction getTargetElementReference get reference for different control types 1`] = `

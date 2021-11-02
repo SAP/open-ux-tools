@@ -72,7 +72,7 @@ describe('CustomAction', () => {
             );
 
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.read(join(testDir, 'webapp/ext/MyCustomAction.controller.js'))).toMatchSnapshot();
+            expect(fs.read(join(testDir, 'webapp/ext/MyCustomAction.js'))).toMatchSnapshot();
         });
     });
 });

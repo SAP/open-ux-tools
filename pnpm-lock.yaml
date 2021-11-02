@@ -46,23 +46,17 @@ importers:
     packages/fe-fpm-writer:
         specifiers:
             '@types/ejs': 3.1.0
-            '@types/mem-fs': 1.1.2
-            '@types/mem-fs-editor': 7.0.1
             ejs: 3.1.6
             mem-fs: 2.1.0
-            mem-fs-editor: 9.0.0
-            typescript: 4.2.4
+            mem-fs-editor: 9.3.0
             xml-js: 1.6.11
         dependencies:
             ejs: 3.1.6
             mem-fs: 2.1.0
-            mem-fs-editor: 9.0.0_mem-fs@2.1.0
+            mem-fs-editor: 9.3.0_mem-fs@2.1.0
             xml-js: 1.6.11
         devDependencies:
             '@types/ejs': 3.1.0
-            '@types/mem-fs': 1.1.2
-            '@types/mem-fs-editor': 7.0.1
-            typescript: 4.2.4
 
     packages/fiori-freestyle-writer:
         specifiers:
@@ -2082,6 +2076,14 @@ packages:
             }
         engines: { node: '>=0.8' }
 
+    /binaryextensions/4.18.0:
+        resolution:
+            {
+                integrity: sha512-PQu3Kyv9dM4FnwB7XGj1+HucW+ShvJzJqjuw1JkKVs1mWdwOKVcRjOi+pV9X52A0tNvrPCsPkbFFQb+wE1EAXw==
+            }
+        engines: { node: '>=0.8' }
+        dev: false
+
     /boxen/1.3.0:
         resolution:
             {
@@ -3568,7 +3570,7 @@ packages:
             }
         engines: { node: '>= 6' }
         dependencies:
-            is-glob: 4.0.1
+            is-glob: 4.0.3
 
     /glob-parent/6.0.2:
         resolution:
@@ -4001,6 +4003,7 @@ packages:
         engines: { node: '>=0.10.0' }
         dependencies:
             is-extglob: 2.1.1
+        dev: true
 
     /is-glob/4.0.3:
         resolution:
@@ -4010,7 +4013,6 @@ packages:
         engines: { node: '>=0.10.0' }
         dependencies:
             is-extglob: 2.1.1
-        dev: true
 
     /is-negative-zero/2.0.1:
         resolution:
@@ -5184,6 +5186,31 @@ packages:
             multimatch: 5.0.0
             normalize-path: 3.0.0
             textextensions: 5.12.0
+
+    /mem-fs-editor/9.3.0_mem-fs@2.1.0:
+        resolution:
+            {
+                integrity: sha512-QKFbPwGCh1ypmc2H8BUYpbapwT/x2AOCYZQogzSui4rUNes7WVMagQXsirPIfp18EarX0SSY9Fpg426nSjew4Q==
+            }
+        engines: { node: '>=12.10.0' }
+        peerDependencies:
+            mem-fs: ^2.1.0
+        peerDependenciesMeta:
+            mem-fs:
+                optional: true
+        dependencies:
+            binaryextensions: 4.18.0
+            commondir: 1.0.1
+            deep-extend: 0.6.0
+            ejs: 3.1.6
+            globby: 11.0.4
+            isbinaryfile: 4.0.8
+            mem-fs: 2.1.0
+            minimatch: 3.0.4
+            multimatch: 5.0.0
+            normalize-path: 3.0.0
+            textextensions: 5.14.0
+        dev: false
 
     /mem-fs/2.1.0:
         resolution:
@@ -6563,6 +6590,14 @@ packages:
             }
         engines: { node: '>=0.8' }
 
+    /textextensions/5.14.0:
+        resolution:
+            {
+                integrity: sha512-4cAYwNFNYlIAHBUo7p6zw8POUvWbZor+/R0Tanv+rIhsauEyV9QSrEXL40pI+GfTQxKX8k6Tyw6CmdSDSmASrg==
+            }
+        engines: { node: '>=0.8' }
+        dev: false
+
     /throat/6.0.1:
         resolution:
             {
@@ -6820,15 +6855,6 @@ packages:
             }
         dependencies:
             is-typedarray: 1.0.0
-        dev: true
-
-    /typescript/4.2.4:
-        resolution:
-            {
-                integrity: sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
-            }
-        engines: { node: '>=4.2.0' }
-        hasBin: true
         dev: true
 
     /typescript/4.4.4:

@@ -1,6 +1,6 @@
 {
     "<%- name %>": {
-        "press": "<%- controller.name %>.onPress",
+        "press": "<%- ns %>.<%- name %>.onPress",
         "visible": true,
         "enabled": true,
         "text": "<%- settings.text %>"<%if (settings.position) {%>,

@@ -148,42 +148,34 @@ Object {
 }
 ",
   },
-  "webapp/ext/anotherCustomAction/AnotherCustomAction.controller.js": Object {
-    "contents": "
-  
-sap.ui.define([
-    \\"sap/ui/core/mvc/ControllerExtension\\", 
-    \\"sap/m/MessageToast\\"], 
-    function(
-        ControllerExtension, 
-        MessageToast) {
-    \\"use strict\\";
-	return ControllerExtension.extend(\\"v4travel.ext.anotherCustomAction.AnotherCustomAction\\", {
-		// controller extensions can be used for handling manifest based custom action events
-		onPress: function(oContext) {
-			MessageToast.show(\\"Controller extension based action handler invoked.\\");
-		}
-	});
-});",
+  "webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"CustomAction handler invoked.\\");
+        }
+    };
+});
+",
     "state": "modified",
   },
-  "webapp/ext/myCustomAction/MyCustomAction.controller.js": Object {
-    "contents": "
-  
-sap.ui.define([
-    \\"sap/ui/core/mvc/ControllerExtension\\", 
-    \\"sap/m/MessageToast\\"], 
-    function(
-        ControllerExtension, 
-        MessageToast) {
-    \\"use strict\\";
-	return ControllerExtension.extend(\\"v4travel.ext.myCustomAction.MyCustomAction\\", {
-		// controller extensions can be used for handling manifest based custom action events
-		onPress: function(oContext) {
-			MessageToast.show(\\"Controller extension based action handler invoked.\\");
-		}
-	});
-});",
+  "webapp/ext/myCustomAction/MyCustomAction.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"CustomAction handler invoked.\\");
+        }
+    };
+});
+",
     "state": "modified",
   },
   "webapp/ext/myCustomPage/MyCustomPage.controller.js": Object {
@@ -421,18 +413,6 @@ sap.ui.define([
     \\"contentDensities\\": {
       \\"compact\\": true,
       \\"cozy\\": true
-    },
-    \\"extends\\": {
-      \\"extensions\\": {
-        \\"sap.ui.controllerExtensions\\": {
-          \\"sap.fe.templates.ListReport.ListReportController#v4travel::TravelList\\": {
-            \\"controllerName\\": \\"v4travel.ext.myCustomAction.MyCustomAction\\"
-          },
-          \\"sap.fe.templates.ObjectPage.ObjectPageController#v4travel::TravelObjectPage\\": {
-            \\"controllerName\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction\\"
-          }
-        }
-      }
     }
   },
   \\"sap.platform.abap\\": {
