@@ -1,8 +1,5 @@
 {
     "sap.ui5": {
-        "dependencies": {
-            "minUI5Version": "1.94.0"
-        },
         "routing": {
             "targets": {
                 "<%- entity %><%- name %>": {

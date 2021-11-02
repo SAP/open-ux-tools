@@ -148,7 +148,6 @@ Object {
       "libs": Object {
         "sap.fe.templates": Object {},
       },
-      "minUI5Version": "1.94.0",
     },
     "routing": Object {
       "routes": Array [
@@ -246,7 +245,6 @@ Object {
       "libs": Object {
         "sap.fe.templates": Object {},
       },
-      "minUI5Version": "1.94.0",
     },
     "routing": Object {
       "routes": Array [
