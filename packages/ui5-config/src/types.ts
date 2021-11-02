@@ -30,6 +30,7 @@ export interface CustomMiddleware<C> {
 export interface FioriAppReloadConfig {
     port: number;
     path: string;
+    delay: number;
 }
 
 export interface FioriToolsProxyConfig {
