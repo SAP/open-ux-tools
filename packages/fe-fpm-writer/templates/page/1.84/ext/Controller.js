@@ -1,6 +1,6 @@
 sap.ui.define(
     [
-        'sap/ui/core/mvc/Controller' /** If UI5 version 1.94 or newer can be used, the change the base controller to sap/fe/core/PageController to get full FEv4 FPM supprot */
+        'sap/ui/core/mvc/Controller' /** If UI5 version 1.94 or newer can be used, the change the base controller to sap/fe/core/PageController to get full FEv4 FPM support */
     ],
     function(PageController) {
         'use strict';
