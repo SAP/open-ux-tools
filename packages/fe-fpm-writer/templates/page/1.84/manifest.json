@@ -10,16 +10,16 @@
 					"viewName": "<%- ns %>.<%- id %>",
 					"options": {
 						"settings": {
-							"entitySet": "<%= entity %>",
+							"entitySet": "<%- entity %>",
 							"navigation": { }
 						}
 					}
 				}<%if (locals.navigation) {%>,
-                "<%= navigation.sourcePage %>": {
+                "<%- navigation.sourcePage %>": {
                     "options": {
                         "settings": {
                             "navigation": {
-                                "<%= navigation.navEntity %>": {
+                                "<%- navigation.navEntity %>": {
                                     "detail": {
                                         "route": "<%- entity %><%- id %>"
                                     }

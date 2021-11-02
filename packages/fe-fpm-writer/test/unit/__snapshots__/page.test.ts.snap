@@ -402,7 +402,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
 exports[`CustomPage generateCustomPage: different versions or target folder with older but supported UI5 version 3`] = `
 "sap.ui.define(
     [
-        'sap/ui/core/mvc/Controller' /** If UI5 version 1.94 or newer can be used, the change the base controller to sap/fe/core/PageController to get full FEv4 FPM supprot */
+        'sap/ui/core/mvc/Controller' /** If UI5 version 1.94 or newer can be used, the change the base controller to sap/fe/core/PageController to get full FEv4 FPM support */
     ],
     function(PageController) {
         'use strict';

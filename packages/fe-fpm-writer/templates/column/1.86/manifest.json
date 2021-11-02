@@ -2,30 +2,30 @@
     "sap.ui5": {
         "routing": {
             "targets": {
-                "<%= target %>": {
+                "<%- target %>": {
                     "options": {
                         "settings": {
                             "controlConfiguration": {
-                                "<%= targetEntity %>": {
+                                "<%- targetEntity %>": {
                                     "columns": {
-                                        "<%= id %>": {
-                                            "header": "<%= header %>",
-                                    <% if (locals.width)  { %> "width": "<%= width %>",  <%
+                                        "<%- id %>": {
+                                            "header": "<%- header %>",
+                                    <% if (locals.width)  { %> "width": "<%- width %>",  <%
                                             } %>
                                     "position": {
-                                        <% if (position.placement) { %> "placement": "<%= position.placement %>", <%
+                                        <% if (position.placement) { %> "placement": "<%- position.placement %>", <%
                                                 } %>
-                                        <% if (position.anchor) { %> "anchor": "<%= position.anchor %>" <%
+                                        <% if (position.anchor) { %> "anchor": "<%- position.anchor %>" <%
                                                 } %>
                                             },
-                                    <% if (locals.horizontalAlign) { %> "horizontalAlign": "<%= horizontalAlign %>", <%
+                                    <% if (locals.horizontalAlign) { %> "horizontalAlign": "<%- horizontalAlign %>", <%
                                             } %>
                                     "template": "<%- ns %>.<%- id %>"
-                                    <% if (locals.availability) { %> , "availability": "<%= availability %>" <%
+                                    <% if (locals.availability) { %> , "availability": "<%- availability %>" <%
                                             } %>
                                     <% if (locals.properties) { %> , "properties": [ 
                                         <% for (var i =0; i < properties.length; i++) { %>
-                                            "<%= properties[i] %>"
+                                            "<%- properties[i] %>"
                                             <% if (i < properties.length - 1) { %>
                                                 ,
                                             <%

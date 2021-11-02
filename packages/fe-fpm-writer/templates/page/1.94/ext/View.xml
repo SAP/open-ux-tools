@@ -1,9 +1,9 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
-	xmlns:html="http://www.w3.org/1999/xhtml" controllerName="<%= ns %>.<%= id %>">
+	xmlns:html="http://www.w3.org/1999/xhtml" controllerName="<%- ns %>.<%- id %>">
 	
 	<App>
 		<pages>
-			<Page title="<%= view.title %>">
+			<Page title="<%- view.title %>">
 				<content></content>
 			</Page>
 		</pages>

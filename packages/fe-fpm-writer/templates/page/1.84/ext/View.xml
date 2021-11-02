@@ -3,7 +3,7 @@
 	
 	<App>
 		<pages>
-			<Page title="<%= view.title %>">
+			<Page title="<%- view.title %>">
 				<content></content>
 			</Page>
 		</pages>

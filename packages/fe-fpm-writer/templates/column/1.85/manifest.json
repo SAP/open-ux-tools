@@ -2,28 +2,28 @@
     "sap.ui5": {
         "routing": {
             "targets": {
-                "<%= target %>": {
+                "<%- target %>": {
                     "options": {
                         "settings": {
                             "controlConfiguration": {
-                                "<%= targetEntity %>": {
+                                "<%- targetEntity %>": {
                                     "columns": {
-                                        "<%= id %>": {
-                                            "header": "<%= header %>",
+                                        "<%- id %>": {
+                                            "header": "<%- header %>",
                                             <% if (locals.width)  { %> 
-                                                "width": "<%= width %>",  
+                                                "width": "<%- width %>",  
                                             <% } %>
                                             "position": {
                                                 <% if (position.placement) { %> 
-                                                    "placement": "<%= position.placement %>", 
+                                                    "placement": "<%- position.placement %>", 
                                                 <% } %>
                                                 <% if (position.anchor) { %> 
-                                                    "anchor": "<%= position.anchor %>" 
+                                                    "anchor": "<%- position.anchor %>" 
                                                 <% } %>
                                             },
-                                            "template": "<%= ns %>.<%- id %>"
+                                            "template": "<%- ns %>.<%- id %>"
                                             <% if (locals.availability) { %> 
-                                                , "availability": "<%= availability %>" 
+                                                , "availability": "<%- availability %>" 
                                             <% } %>
                                         }
                                     }
