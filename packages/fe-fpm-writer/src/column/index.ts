@@ -9,25 +9,37 @@ import { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 
 /**
- * Generate XML content for the column fragment.
+ * Enhances the provided custom table column configuration with default data.
  *
- * @param config configuration for the custom column
- * @returns XML snippet.
+ * @param {CustomTableColumn} data - a custom column configuration object
+ * @param {Manifest} manifest - the application manifest
+ * @returns enhanced configuration
  */
-function generateColumnContent(config: CustomTableColumn): string {
+function enhanceConfig(data: CustomTableColumn, manifestPath: string, manifest: Manifest): InternalCustomTableColumn {
+    // clone input and set defaults
+    const config: CustomTableColumn & Partial<InternalCustomTableColumn> = { ...data };
+    setCommonDefaults(config, manifestPath, manifest);
+
+    // generate column content
     if (config.control) {
-        return config.control;
+        config.content = config.control;
     } else {
         const content =
             config.properties && config.properties.length > 0
                 ? `{=%{${config.properties.join("} + ' ' + %{")}}}`
                 : 'Sample Text';
         if (config.eventHandler) {
-            return `<Button text="${content}" press="handler.onPress" />`;
+            config.content = `<Button ${
+                config.eventHandler
+                    ? ' core:require="{ handler: \'' + (config.ns + '.' + config.name).replace(/\./g, '/') + '\'}"'
+                    : ''
+            } text="${content}" press="handler.onPress" />`;
         } else {
-            return `<Text text="${content}" />`;
+            config.content = `<Text text="${content}" />`;
         }
     }
+
+    return config as InternalCustomTableColumn;
 }
 
 /**
@@ -47,14 +59,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
     // merge with defaults
-    const completeColumn = setCommonDefaults<InternalCustomTableColumn>(
-        {
-            ...customColumn,
-            content: generateColumnContent(customColumn)
-        } as InternalCustomTableColumn,
-        manifestPath,
-        manifest
-    );
+    const completeColumn = enhanceConfig(customColumn, manifestPath, manifest);
 
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.ui5Version);

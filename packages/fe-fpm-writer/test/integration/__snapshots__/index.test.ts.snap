@@ -209,19 +209,21 @@ Object {
   "webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\">
-		<Button text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
-	</l:VerticalLayout>
+		<Button  core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>
 ",
     "state": "modified",
   },
   "webapp/ext/newCustomColumn/NewCustomColumn.js": Object {
-    "contents": "sap.ui.define([], function() {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {}
+        onPress: function() {
+            MessageToast.show(\\"CustomColumn action handler invoked.\\");
+        }
     };
 });
 ",

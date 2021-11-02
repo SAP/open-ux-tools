@@ -1,7 +1,11 @@
-sap.ui.define([], function() {
+sap.ui.define([
+    "sap/m/MessageToast"
+], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {}
+        onPress: function() {
+            MessageToast.show("CustomColumn action handler invoked.");
+        }
     };
 });

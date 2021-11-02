@@ -44,9 +44,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout>
 		<Text text=\\"Sample Text\\" />
-	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
 `;
@@ -95,9 +93,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.85, no handler, no fs, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout>
 		<Text text=\\"Sample Text\\" />
-	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
 `;
@@ -152,19 +148,21 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
-		<Button text=\\"{=%{ID} + ' ' + %{TotalNetAmount} + ' ' + %{_CustomerPaymentTerms/CustomerPaymentTerms}}\\" press=\\"handler.onPress\\" />
-	</l:VerticalLayout>
+		<Button  core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\" text=\\"{=%{ID} + ' ' + %{TotalNetAmount} + ' ' + %{_CustomerPaymentTerms/CustomerPaymentTerms}}\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>
 "
 `;
 
 exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handler, all properties 3`] = `
-"sap.ui.define([], function() {
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {}
+        onPress: function() {
+            MessageToast.show(\\"CustomColumn action handler invoked.\\");
+        }
     };
 });
 "
@@ -212,9 +210,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn, custom control 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout>
 		<CustomXML text=\\"\\" />
-	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
 `;
@@ -261,9 +257,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout>
 		<Text text=\\"Sample Text\\" />
-	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
 `;
@@ -310,9 +304,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 4`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout>
 		<Text text=\\"Sample Text\\" />
-	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
 `;
@@ -359,9 +351,7 @@ Object {
 exports[`CustomAction generateCustomColumn generateCustomColumn, only mandatory properties 6`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-	<l:VerticalLayout>
 		<Text text=\\"Sample Text\\" />
-	</l:VerticalLayout>
 </core:FragmentDefinition>
 "
 `;
