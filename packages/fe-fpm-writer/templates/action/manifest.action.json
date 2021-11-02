@@ -3,10 +3,10 @@
         "press": "<%- controller.name %>.onPress",
         "visible": true,
         "enabled": true,
-        "text": "{i18n>customHeaderAction}"<%if (settings.position) {%>,
+        "text": "<%- settings.text %>"<%if (settings.position) {%>,
         "position": {
-            "placement": "Before",
-            "anchor": "anotherCustomHeaderAction"
+            "placement": "<%- settings.position.placement %>",
+            "anchor": "<%- settings.position.anchor %>"
         }<% } %>
     }
 }

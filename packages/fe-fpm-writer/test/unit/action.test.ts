@@ -3,17 +3,17 @@ import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomAction } from '../../src';
 import { getTargetElementReference } from '../../src/action';
-import { ControlType } from '../../src/action/types';
+import { TargetControl } from '../../src/action/types';
 
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
         const testInput = [
-            { control: ControlType.header },
-            { control: ControlType.footer },
-            { control: ControlType.section },
-            { control: ControlType.section, qualifier: 'FacetCustomAction' },
-            { control: ControlType.table },
-            { control: ControlType.table, navProperty: 'items' }
+            { control: TargetControl.header },
+            { control: TargetControl.footer },
+            { control: TargetControl.section },
+            { control: TargetControl.section, qualifier: 'FacetCustomAction' },
+            { control: TargetControl.table },
+            { control: TargetControl.table, navProperty: 'items' }
         ];
         test.each(testInput)('get reference for different control types', (input) => {
             const manifest = { 'sap.ui5': { routing: { targets: { TestPage: {} } } } };
@@ -62,7 +62,7 @@ describe('CustomAction', () => {
                     folder: 'ext',
                     target: {
                         page: 'TestObjectPage',
-                        control: ControlType.header
+                        control: TargetControl.header
                     },
                     settings: {
                         text: 'My custom action text'

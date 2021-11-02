@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`use FPM with existing apps extend Fiori elements for OData v4 ListReport ObjectPage generateCustomColumn in ListReport 1`] = `
+exports[`use FPM with existing apps extend Fiori elements for OData v4 ListReport ObjectPage generateCustomAction in ListReport and ObjectPage 1`] = `
 Object {
   "../../test-input/basic-lrop/webapp/manifest.json": Object {
     "contents": "{
@@ -147,6 +147,44 @@ Object {
     }
 }
 ",
+  },
+  "webapp/ext/anotherCustomAction/AnotherCustomAction.controller.js": Object {
+    "contents": "
+  
+sap.ui.define([
+    \\"sap/ui/core/mvc/ControllerExtension\\", 
+    \\"sap/m/MessageToast\\"], 
+    function(
+        ControllerExtension, 
+        MessageToast) {
+    \\"use strict\\";
+	return ControllerExtension.extend(\\"v4travel.ext.anotherCustomAction.AnotherCustomAction\\", {
+		// controller extensions can be used for handling manifest based custom action events
+		onPress: function(oContext) {
+			MessageToast.show(\\"Controller extension based action handler invoked.\\");
+		}
+	});
+});",
+    "state": "modified",
+  },
+  "webapp/ext/myCustomAction/MyCustomAction.controller.js": Object {
+    "contents": "
+  
+sap.ui.define([
+    \\"sap/ui/core/mvc/ControllerExtension\\", 
+    \\"sap/m/MessageToast\\"], 
+    function(
+        ControllerExtension, 
+        MessageToast) {
+    \\"use strict\\";
+	return ControllerExtension.extend(\\"v4travel.ext.myCustomAction.MyCustomAction\\", {
+		// controller extensions can be used for handling manifest based custom action events
+		onPress: function(oContext) {
+			MessageToast.show(\\"Controller extension based action handler invoked.\\");
+		}
+	});
+});",
+    "state": "modified",
   },
   "webapp/ext/myCustomPage/MyCustomPage.controller.js": Object {
     "contents": "sap.ui.define(
@@ -343,18 +381,12 @@ Object {
               },
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
-                  \\"columns\\": {
-                    \\"NewCustomColumn\\": {
-                      \\"header\\": \\"Custom Price and Currency\\",
-                      \\"position\\": {
-                        \\"placement\\": \\"After\\",
-                        \\"anchor\\": \\"DataField::TravelID\\"
-                      },
-                      \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
-                      \\"properties\\": [
-                        \\"TotalPrice\\",
-                        \\"CurrencyCode\\"
-                      ]
+                  \\"actions\\": {
+                    \\"MyCustomAction\\": {
+                      \\"press\\": \\"v4travel.ext.myCustomAction.MyCustomAction.onPress\\",
+                      \\"visible\\": true,
+                      \\"enabled\\": true,
+                      \\"text\\": \\"My Custom Action\\"
                     }
                   }
                 }
@@ -368,7 +400,19 @@ Object {
           \\"name\\": \\"sap.fe.templates.ObjectPage\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\"
+              \\"entitySet\\": \\"Travel\\",
+              \\"content\\": {
+                \\"header\\": {
+                  \\"actions\\": {
+                    \\"AnotherCustomAction\\": {
+                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onPress\\",
+                      \\"visible\\": true,
+                      \\"enabled\\": true,
+                      \\"text\\": \\"My other Action\\"
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -377,6 +421,18 @@ Object {
     \\"contentDensities\\": {
       \\"compact\\": true,
       \\"cozy\\": true
+    },
+    \\"extends\\": {
+      \\"extensions\\": {
+        \\"sap.ui.controllerExtensions\\": {
+          \\"sap.fe.templates.ListReport.ListReportController#v4travel::TravelList\\": {
+            \\"controllerName\\": \\"v4travel.ext.myCustomAction.MyCustomAction\\"
+          },
+          \\"sap.fe.templates.ObjectPage.ObjectPageController#v4travel::TravelObjectPage\\": {
+            \\"controllerName\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction\\"
+          }
+        }
+      }
     }
   },
   \\"sap.platform.abap\\": {

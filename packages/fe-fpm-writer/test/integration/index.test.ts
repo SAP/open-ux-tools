@@ -1,7 +1,7 @@
 import { join, relative } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { generateCustomColumn, generateCustomPage } from '../../src';
+import { generateCustomAction, generateCustomColumn, generateCustomPage, TargetControl } from '../../src';
 import { Placement } from '../../src/common/types';
 
 describe('use FPM with existing apps', () => {
@@ -59,10 +59,45 @@ describe('use FPM with existing apps', () => {
             );
         });
 
+        test('generateCustomAction in ListReport and ObjectPage', () => {
+            fs.copy(join(testInput, 'basic-lrop'), targetPath);
+
+            generateCustomAction(
+                targetPath,
+                {
+                    name: 'MyCustomAction',
+                    target: {
+                        page: 'TravelList',
+                        control: TargetControl.table
+                    },
+                    settings: {
+                        text: 'My Custom Action'
+                    }
+                },
+                fs
+            );
+            generateCustomAction(
+                targetPath,
+                {
+                    name: 'AnotherCustomAction',
+                    target: {
+                        page: 'TravelObjectPage',
+                        control: TargetControl.header
+                    },
+                    settings: {
+                        text: 'My other Action'
+                    }
+                },
+                fs
+            );
+        });
+
         afterAll(() => {
-            expect(
-                (fs as any).dump(relative(process.cwd(), targetPath), '**/webapp/{manifest.json,ext/**/*}')
-            ).toMatchSnapshot();
+            if (!debug) {
+                expect(
+                    (fs as any).dump(relative(process.cwd(), targetPath), '**/webapp/{manifest.json,ext/**/*}')
+                ).toMatchSnapshot();
+            }
         });
     });
 });

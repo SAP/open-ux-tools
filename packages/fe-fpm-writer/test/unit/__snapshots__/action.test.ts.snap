@@ -25,14 +25,16 @@ Object {
         "TestObjectPage": Object {
           "name": "sap.fe.templates.ListReport",
           "options": Object {
-            "content": Object {
-              "header": Object {
-                "actions": Object {
-                  "MyCustomAction": Object {
-                    "enabled": true,
-                    "press": "my.test.App.ext.MyCustomAction.onPress",
-                    "text": "{i18n>customHeaderAction}",
-                    "visible": true,
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "MyCustomAction": Object {
+                      "enabled": true,
+                      "press": "my.test.App.ext.MyCustomAction.onPress",
+                      "text": "My custom action text",
+                      "visible": true,
+                    },
                   },
                 },
               },
@@ -71,9 +73,11 @@ Object {
       "targets": Object {
         "TestPage": Object {
           "options": Object {
-            "content": Object {
-              "header": Object {
-                "actions": Object {},
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {},
+                },
               },
             },
           },
@@ -91,9 +95,11 @@ Object {
       "targets": Object {
         "TestPage": Object {
           "options": Object {
-            "content": Object {
-              "footer": Object {
-                "actions": Object {},
+            "settings": Object {
+              "content": Object {
+                "footer": Object {
+                  "actions": Object {},
+                },
               },
             },
           },
@@ -111,9 +117,11 @@ Object {
       "targets": Object {
         "TestPage": Object {
           "options": Object {
-            "controlConfiguration": Object {
-              "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
-                "actions": Object {},
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+                  "actions": Object {},
+                },
               },
             },
           },
@@ -131,9 +139,11 @@ Object {
       "targets": Object {
         "TestPage": Object {
           "options": Object {
-            "controlConfiguration": Object {
-              "@com.sap.vocabularies.UI.v1.FieldGroup#FacetCustomAction": Object {
-                "actions": Object {},
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.FieldGroup#FacetCustomAction": Object {
+                  "actions": Object {},
+                },
               },
             },
           },
@@ -151,9 +161,11 @@ Object {
       "targets": Object {
         "TestPage": Object {
           "options": Object {
-            "controlConfiguration": Object {
-              "@com.sap.vocabularies.UI.v1.LineItem": Object {
-                "actions": Object {},
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.LineItem": Object {
+                  "actions": Object {},
+                },
               },
             },
           },
@@ -171,9 +183,11 @@ Object {
       "targets": Object {
         "TestPage": Object {
           "options": Object {
-            "controlConfiguration": Object {
-              "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
-                "actions": Object {},
+            "settings": Object {
+              "controlConfiguration": Object {
+                "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+                  "actions": Object {},
+                },
               },
             },
           },

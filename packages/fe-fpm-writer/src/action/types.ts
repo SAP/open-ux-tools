@@ -1,6 +1,6 @@
 import { CustomElement, InternalCustomElement, Position } from '../common/types';
 
-export enum ControlType {
+export enum TargetControl {
     header = 'header',
     footer = 'footer',
     section = '@com.sap.vocabularies.UI.v1.FieldGroup',
@@ -9,7 +9,7 @@ export enum ControlType {
 
 export interface CustomActionTarget {
     page: string;
-    control: ControlType;
+    control: TargetControl;
     navProperty?: string;
     qualifier?: string;
 }

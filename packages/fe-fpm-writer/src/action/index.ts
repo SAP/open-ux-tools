@@ -1,10 +1,10 @@
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
-import { ControlType, CustomAction, CustomActionTarget, InternalCustomAction } from './types';
+import { TargetControl, CustomAction, CustomActionTarget, InternalCustomAction } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion } from '../common/version';
-import { InternalCustomElement, Manifest } from '../common/types';
+import { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 
 /**
@@ -41,20 +41,23 @@ function enhanceConfig(data: CustomAction, manifestPath: string, manifest: Manif
 export function getTargetElementReference(manifest: any, target: CustomActionTarget): any {
     const page = manifest['sap.ui5'].routing.targets[target.page];
     page.options = page.options || {};
-    if (target.control === ControlType.header || target.control === ControlType.footer) {
-        page.options.content = page.options.content || {};
-        page.options.content[target.control] = page.options.content[target.control] || {};
-        page.options.content[target.control].actions = page.options.content[target.control].actions || {};
-        return page.options.content[target.control].actions;
+    page.options.settings = page.options.settings || {};
+    if (target.control === TargetControl.header || target.control === TargetControl.footer) {
+        page.options.settings.content = page.options.settings.content || {};
+        page.options.settings.content[target.control] = page.options.settings.content[target.control] || {};
+        page.options.settings.content[target.control].actions =
+            page.options.settings.content[target.control].actions || {};
+        return page.options.settings.content[target.control].actions;
     } else {
         const controlPrefix = target.navProperty ? target.navProperty + '/' : '';
         const controlSuffix = target.qualifier ? '#' + target.qualifier : '';
         const controlId = `${controlPrefix}${target.control}${controlSuffix}`;
-        page.options.controlConfiguration = page.options.controlConfiguration || {};
-        page.options.controlConfiguration[controlId] = page.options.controlConfiguration[controlId] || {};
-        page.options.controlConfiguration[controlId].actions =
-            page.options.controlConfiguration[controlId].actions || {};
-        return page.options.controlConfiguration[controlId].actions;
+        page.options.settings.controlConfiguration = page.options.settings.controlConfiguration || {};
+        page.options.settings.controlConfiguration[controlId] =
+            page.options.settings.controlConfiguration[controlId] || {};
+        page.options.settings.controlConfiguration[controlId].actions =
+            page.options.settings.controlConfiguration[controlId].actions || {};
+        return page.options.settings.controlConfiguration[controlId].actions;
     }
 }
 
