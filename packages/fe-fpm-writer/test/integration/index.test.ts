@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, relative } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { generateCustomColumn, generateCustomPage } from '../../src';
@@ -20,11 +20,10 @@ describe('use FPM with existing apps', () => {
         }
     });
 
-    describe('generateCustomPage', () => {
-        test('add custom page to LROP navigating from ObjectPage', () => {
-            const targetPath = join(testOutput, 'page/lrop');
+    describe('extend Fiori elements for OData v4 ListReport ObjectPage', () => {
+        const targetPath = join(testOutput, 'lrop');
+        test('generateCustomPage with navigation from ObjectPage', () => {
             fs.copy(join(testInput, 'basic-lrop'), targetPath);
-
             generateCustomPage(
                 targetPath,
                 {
@@ -39,28 +38,31 @@ describe('use FPM with existing apps', () => {
                 fs
             );
         });
-    });
 
-    describe('generateCustomColumn', () => {
-        test('add custom column to ListReport', () => {
-            const targetPath = join(testOutput, 'column/lrop');
+        test('generateCustomColumn in ListReport', () => {
             fs.copy(join(testInput, 'basic-lrop'), targetPath);
-
             generateCustomColumn(
                 targetPath,
                 {
                     target: 'TravelList',
                     targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
                     name: 'NewCustomColumn',
-                    header: 'Custom Column',
+                    header: 'Custom Price and Currency',
                     eventHandler: true,
                     position: {
                         placement: Placement.After,
                         anchor: 'DataField::TravelID'
-                    }
+                    },
+                    properties: ['TotalPrice', 'CurrencyCode']
                 },
                 fs
             );
+        });
+
+        afterAll(() => {
+            expect(
+                (fs as any).dump(relative(process.cwd(), targetPath), '**/webapp/{manifest.json,ext/**/*}')
+            ).toMatchSnapshot();
         });
     });
 });

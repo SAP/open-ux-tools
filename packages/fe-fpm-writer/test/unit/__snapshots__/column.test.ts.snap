@@ -153,7 +153,7 @@ exports[`CustomAction generateCustomColumn generateCustomColumn 1.86, with handl
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
 	<l:VerticalLayout core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\">
-		<Button text=\\"{=%{ID} + \\" \\" + %{TotalNetAmount} + \\" \\" + %{_CustomerPaymentTerms/CustomerPaymentTerms}}\\" press=\\"handler.onPress\\" />
+		<Button text=\\"{=%{ID} + ' ' + %{TotalNetAmount} + ' ' + %{_CustomerPaymentTerms/CustomerPaymentTerms}}\\" press=\\"handler.onPress\\" />
 	</l:VerticalLayout>
 </core:FragmentDefinition>
 "

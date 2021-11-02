@@ -1,0 +1,398 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`use FPM with existing apps extend Fiori elements for OData v4 ListReport ObjectPage generateCustomColumn in ListReport 1`] = `
+Object {
+  "../../test-input/basic-lrop/webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"v4travel\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"annotations\\": [\\"annotation\\"],
+                    \\"odataVersion\\": \\"4.0\\",
+                    \\"localUri\\": \\"localService/metadata.xml\\"
+                }
+            },
+            \\"annotation\\": {
+                \\"type\\": \\"ODataAnnotation\\",
+                \\"uri\\": \\"annotations/annotation.xml\\",
+                \\"settings\\": {
+                    \\"localUri\\": \\"annotations/annotation.xml\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.76.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"TravelList\\",
+                    \\"target\\": \\"TravelList\\"
+                },
+                {
+                    \\"pattern\\": \\"Travel({key}):?query:\\",
+                    \\"name\\": \\"TravelObjectPage\\",
+                    \\"target\\": \\"TravelObjectPage\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"TravelList\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"TravelList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Travel\\",
+                            \\"variantManagement\\": \\"Page\\",
+                            \\"navigation\\": {
+                                \\"Travel\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"TravelObjectPage\\"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                \\"TravelObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"TravelObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Travel\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}
+",
+  },
+  "webapp/ext/myCustomPage/MyCustomPage.controller.js": Object {
+    "contents": "sap.ui.define(
+    [
+        'sap/fe/core/PageController'
+    ],
+    function(PageController) {
+        'use strict';
+
+        return PageController.extend('v4travel.ext.myCustomPage.MyCustomPage', {
+            /**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf v4travel.ext.myCustomPage.MyCustomPage
+             */
+            //	onInit: function () {
+            //
+            //	},
+
+            /**
+             * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
+             * (NOT before the first rendering! onInit() is used for that one!).
+             * @memberOf v4travel.ext.myCustomPage.MyCustomPage
+             */
+            //	onBeforeRendering: function() {
+            //
+            //	},
+
+            /**
+             * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
+             * This hook is the same one that SAPUI5 controls get after being rendered.
+             * @memberOf v4travel.ext.myCustomPage.MyCustomPage
+             */
+            //	onAfterRendering: function() {
+            //
+            //	},
+
+            /**
+             * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
+             * @memberOf v4travel.ext.myCustomPage.MyCustomPage
+             */
+            //	onExit: function() {
+            //
+            //	}
+        });
+    }
+);
+",
+    "state": "modified",
+  },
+  "webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+	xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
+	<Page title=\\"MyCustomPage\\">
+		<content></content>
+	</Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
+	xmlns:l=\\"sap.ui.layout\\">
+	<l:VerticalLayout core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\">
+		<Button text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
+	</l:VerticalLayout>
+</core:FragmentDefinition>
+",
+    "state": "modified",
+  },
+  "webapp/ext/newCustomColumn/NewCustomColumn.js": Object {
+    "contents": "sap.ui.define([], function() {
+    'use strict';
+
+    return {
+        onPress: function() {}
+    };
+});
+",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.32.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"v4travel\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"odataVersion\\": \\"4.0\\",
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    },
+    \\"offline\\": false,
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+      \\"version\\": \\"1.0.0\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.76.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {},
+        \\"sap.fe.templates\\": {}
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"synchronizationMode\\": \\"None\\",
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      }
+    },
+    \\"routing\\": {
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\":?query:\\",
+          \\"name\\": \\"TravelList\\",
+          \\"target\\": \\"TravelList\\"
+        },
+        {
+          \\"pattern\\": \\"Travel({key}):?query:\\",
+          \\"name\\": \\"TravelObjectPage\\",
+          \\"target\\": \\"TravelObjectPage\\"
+        }
+      ],
+      \\"targets\\": {
+        \\"TravelList\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelList\\",
+          \\"name\\": \\"sap.fe.templates.ListReport\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Travel\\",
+              \\"variantManagement\\": \\"Page\\",
+              \\"navigation\\": {
+                \\"Travel\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"TravelObjectPage\\"
+                  }
+                }
+              },
+              \\"controlConfiguration\\": {
+                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"columns\\": {
+                    \\"NewCustomColumn\\": {
+                      \\"header\\": \\"Custom Price and Currency\\",
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DataField::TravelID\\"
+                      },
+                      \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
+                      \\"properties\\": [
+                        \\"TotalPrice\\",
+                        \\"CurrencyCode\\"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"TravelObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Travel\\"
+            }
+          }
+        }
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;

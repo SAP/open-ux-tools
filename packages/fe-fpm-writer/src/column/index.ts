@@ -20,7 +20,7 @@ function generateColumnContent(config: CustomTableColumn): string {
     } else {
         const content =
             config.properties && config.properties.length > 0
-                ? `{=%{${config.properties.join('} + " " + %{')}}}`
+                ? `{=%{${config.properties.join("} + ' ' + %{")}}}`
                 : 'Sample Text';
         if (config.eventHandler) {
             return `<Button text="${content}" press="handler.onPress" />`;
