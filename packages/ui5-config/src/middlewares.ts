@@ -17,7 +17,8 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
         afterMiddleware: 'compression',
         configuration: {
             port: 35729,
-            path: 'webapp'
+            path: 'webapp',
+            delay: 300
         }
     };
 }
