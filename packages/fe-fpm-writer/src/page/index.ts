@@ -52,6 +52,14 @@ function updateRoutes(routes: Ui5Route[], config: InternalCustomPage) {
     routes.push(newRoute as Ui5Route);
 }
 
+/**
+ * Validate the input parameters for the execution of generateCustomAction.
+ *
+ * @param {string} basePath - the base path
+ * @param {CustomPage} config - the custom page configuration
+ * @param {Editor} [fs] - the memfs editor instance
+ * @returns {Promise<Editor>} the updated memfs editor instance
+ */
 export function validateCustomPageConfig(basePath: string, config: CustomPage, fs?: Editor): Editor {
     // common validators
     validateVersion(config.ui5Version);
