@@ -3,7 +3,7 @@ import { create, Editor } from 'mem-fs-editor';
 import { TargetControl, CustomAction, CustomActionTarget, InternalCustomAction } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
-import { validateVersion } from '../common/version';
+import { validateVersion, validateBasePath } from '../common/validate';
 import { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 
@@ -74,6 +74,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     if (!fs) {
         fs = create(createStorage());
     }
+    validateBasePath(basePath, fs);
 
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const manifest = fs.readJSON(manifestPath) as Manifest;

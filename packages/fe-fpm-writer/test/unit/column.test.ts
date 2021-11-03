@@ -2,7 +2,7 @@ import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomColumn } from '../../src';
-import { getManifestRoot } from '../../src/column/version';
+import { getManifestRoot } from '../../src/column';
 import { Availability, HorizontalAlign, CustomTableColumn } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
 import { Placement } from '../../src/common/types';

@@ -5,7 +5,21 @@ import { render } from 'ejs';
 
 import { enhanceData } from './defaults';
 import { CustomPage, InternalCustomPage, Ui5Route } from './types';
-import { getTemplateRoot } from './version';
+import { validateBasePath, validateVersion } from '../common/validate';
+
+/**
+ * Validate the UI5 version and if valid return the root folder for the templates to be used.
+ *
+ * @param ui5Version - optional minimum required UI5 version
+ * @returns root folder  containg the templates if the version is supported otherwise throws an error
+ */
+export function getTemplateRoot(ui5Version?: number): string {
+    if (ui5Version === undefined || ui5Version >= 1.94) {
+        return join(__dirname, '../../templates/page/1.94');
+    } else {
+        return join(__dirname, '../../templates/page/1.84');
+    }
+}
 
 /**
  * Add a new route to the provided route array, and update existing routes if necessary (e.g. if targets are defined as arrays for FCL).
@@ -38,33 +52,6 @@ function updateRoutes(routes: Ui5Route[], config: InternalCustomPage) {
 }
 
 /**
- * Validates the provided base path.
- *
- * @param {string} basePath - the base path
- * @param {Editor} fs - the memfs editor instance
- * @returns true if the path is valid, otherwise, throws and error
- */
-export function validateBasePath(basePath: string, fs?: Editor): boolean {
-    if (!fs) {
-        fs = create(createStorage());
-    }
-
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
-    if (!fs.exists(manifestPath)) {
-        throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
-    } else {
-        const manifest = fs.readJSON(manifestPath) as any;
-        if ((manifest['sap.ui5']?.dependencies?.libs?.['sap.fe.templates'] !== undefined) === false) {
-            throw new Error(
-                'Dependency sap.fe.templates is missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
-            );
-        }
-    }
-
-    return true;
-}
-
-/**
  * Add a custom page to an existing UI5 application.
  *
  * @param {string} basePath - the base path
@@ -73,6 +60,7 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 export function generateCustomPage(basePath: string, data: CustomPage, fs?: Editor): Editor {
+    validateVersion(data.ui5Version);
     if (!fs) {
         fs = create(createStorage());
     }

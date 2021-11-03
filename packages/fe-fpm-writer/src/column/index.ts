@@ -1,12 +1,27 @@
-import { validateVersion } from '../common/version';
+import { validateVersion, validateBasePath } from '../common/validate';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { CustomTableColumn, InternalCustomTableColumn } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
-import { getManifestRoot } from './version';
 import { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
+
+/**
+ * Get the template folder for the given UI5 version.
+ *
+ * @param ui5Version required UI5 version.
+ * @returns path to the template folder containing the manifest.json ejs template
+ */
+export function getManifestRoot(ui5Version?: number): string {
+    if (ui5Version === undefined || ui5Version >= 1.86) {
+        return join(__dirname, '../../templates/column/1.86');
+    } else if (ui5Version === 1.85) {
+        return join(__dirname, '../../templates/column/1.85');
+    } else {
+        return join(__dirname, '../../templates/column/1.84');
+    }
+}
 
 /**
  * Enhances the provided custom table column configuration with default data.
@@ -56,6 +71,8 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     if (!fs) {
         fs = create(createStorage());
     }
+    validateBasePath(basePath, fs);
+
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
