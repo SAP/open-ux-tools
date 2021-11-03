@@ -79,7 +79,7 @@ export function validateCustomPageConfig(basePath: string, config: CustomPage, f
         );
         if (!route || !route.pattern || !route.target) {
             throw new Error(
-                `Mising or invalid existing routing configuration for navigation source ${config.navigation.sourcePage}!`
+                `Missing or invalid routing configuration for navigation source ${config.navigation.sourcePage}!`
             );
         }
     }
