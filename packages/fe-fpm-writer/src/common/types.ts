@@ -54,6 +54,12 @@ export interface Ui5RoutingTarget<T> {
     options?: T;
 }
 
+export interface Ui5RoutingRoute {
+    pattern: string;
+    name: string;
+    target: string | string[];
+}
+
 /**
  * Interface of an object generated from a UI5 manifest.json
  */
@@ -64,7 +70,7 @@ export interface Manifest {
     };
     'sap.ui5': {
         routing: {
-            routes: string[];
+            routes: Ui5RoutingRoute[];
             targets: { [key: string]: Ui5RoutingTarget<any> };
         };
     };

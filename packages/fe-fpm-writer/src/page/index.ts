@@ -4,8 +4,9 @@ import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 
 import { enhanceData } from './defaults';
-import { CustomPage, InternalCustomPage, Ui5Route } from './types';
+import { CustomPage, InternalCustomPage } from './types';
 import { validateBasePath, validateVersion } from '../common/validate';
+import { Manifest, Ui5RoutingRoute as Ui5Route } from '../common/types';
 
 /**
  * Validate the UI5 version and if valid return the root folder for the templates to be used.
@@ -51,6 +52,33 @@ function updateRoutes(routes: Ui5Route[], config: InternalCustomPage) {
     routes.push(newRoute as Ui5Route);
 }
 
+export function validateCustomPageConfig(basePath: string, config: CustomPage, fs?: Editor): Editor {
+    // common validators
+    validateVersion(config.ui5Version);
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    validateBasePath(basePath, fs);
+
+    // validate config against the manifest
+    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as Partial<Manifest>;
+    if (config.navigation) {
+        if (!manifest['sap.ui5']?.routing?.targets[config.navigation.sourcePage]) {
+            throw new Error(`Could not find navigation source ${config.navigation.sourcePage}!`);
+        }
+        const route = manifest['sap.ui5'].routing.routes.find(
+            (route: Ui5Route) => route.name === config.navigation?.sourcePage
+        );
+        if (!route || !route.pattern || !route.target) {
+            throw new Error(
+                `Mising or invalid existing routing configuration for navigation source ${config.navigation.sourcePage}!`
+            );
+        }
+    }
+
+    return fs;
+}
+
 /**
  * Add a custom page to an existing UI5 application.
  *
@@ -60,11 +88,7 @@ function updateRoutes(routes: Ui5Route[], config: InternalCustomPage) {
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 export function generateCustomPage(basePath: string, data: CustomPage, fs?: Editor): Editor {
-    validateVersion(data.ui5Version);
-    if (!fs) {
-        fs = create(createStorage());
-    }
-    validateBasePath(basePath, fs);
+    fs = validateCustomPageConfig(basePath, data, fs);
 
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const config = enhanceData(data, manifestPath, fs);

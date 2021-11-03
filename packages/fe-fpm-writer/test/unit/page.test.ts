@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { generateCustomPage, validateBasePath, CustomPage } from '../../src';
-import { Ui5Route } from '../../src/page/types';
+import { Ui5RoutingRoute as Ui5Route } from '../../src/common/types';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -20,7 +20,13 @@ describe('CustomPage', () => {
                     }
                 },
                 routing: {
-                    routes: [] as Ui5Route[],
+                    routes: [
+                        {
+                            pattern: ':?query:',
+                            name: 'TestObjectPage',
+                            target: 'TestObjectPage'
+                        }
+                    ] as Ui5Route[],
                     targets: {
                         TestObjectPage: {}
                     }
@@ -113,11 +119,13 @@ describe('CustomPage', () => {
 
         test('inbound navigation defined as array (for FCL)', () => {
             const testManifestWithArray = JSON.parse(testAppManifest);
-            testManifestWithArray['sap.ui5'].routing.routes.push({
-                pattern: 'RootEntity({key}):?query:',
-                name: 'TestObjectPage',
-                target: ['TestObjectPage']
-            });
+            testManifestWithArray['sap.ui5'].routing.routes = [
+                {
+                    pattern: 'RootEntity({key}):?query:',
+                    name: 'TestObjectPage',
+                    target: ['TestObjectPage']
+                }
+            ];
             const target = join(testDir, 'target-as-array');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
             generateCustomPage(target, inputWithNavigation, fs);
@@ -126,11 +134,13 @@ describe('CustomPage', () => {
 
         test('inbound navigation defined as array with max nesting for FCL', () => {
             const testManifestWithArray = JSON.parse(testAppManifest);
-            testManifestWithArray['sap.ui5'].routing.routes.push({
-                pattern: 'RootEntity({key})/NestedEntiry({nestedKey}):?query:',
-                name: 'TestObjectPage',
-                target: ['TestList', 'TestNestedList', 'TestObjectPage']
-            });
+            testManifestWithArray['sap.ui5'].routing.routes = [
+                {
+                    pattern: 'RootEntity({key})/NestedEntiry({nestedKey}):?query:',
+                    name: 'TestObjectPage',
+                    target: ['TestList', 'TestNestedList', 'TestObjectPage']
+                }
+            ];
             const target = join(testDir, 'target-as-nested-array');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
             generateCustomPage(target, inputWithNavigation, fs);
