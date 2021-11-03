@@ -1,5 +1,21 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.5
+
+### Patch Changes
+
+-   b7ee596: port tool-suite change - add delay to appreload middleware
+-   Updated dependencies [b7ee596]
+    -   @sap-ux/odata-service-writer@0.9.7
+    -   @sap-ux/ui5-application-writer@0.9.7
+    -   @sap-ux/ui5-config@0.10.3
+
+## 0.10.4
+
+### Patch Changes
+
+-   b1af038: refactor to be more backward compatible with mem-fs-editor (and yeoman-environment ^2.10.0)
+
 ## 0.10.3
 
 ### Patch Changes

@@ -225,5 +225,6 @@ exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
       configuration:
         port: 35729
         path: webapp
+        delay: 300
 "
 `;

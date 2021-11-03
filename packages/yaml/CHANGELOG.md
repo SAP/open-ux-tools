@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.10.3
+
+### Patch Changes
+
+-   b7ee596: port tool-suite change - add delay to appreload middleware
+
 ## 0.10.2
 
 ### Patch Changes

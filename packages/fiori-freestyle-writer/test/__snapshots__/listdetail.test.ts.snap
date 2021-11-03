@@ -87,6 +87,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
 ",
     "state": "modified",
   },
@@ -124,6 +125,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
 ",
     "state": "modified",
   },
@@ -152,6 +154,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
 ",
     "state": "modified",
   },
@@ -861,7 +864,7 @@ server:
 
 		/**
 		 * Event handler for navigating back.
-		 * We navigate back in the browser historz
+		 * We navigate back in the browser history
 		 * @public
 		 */
 		onNavBack: function() {

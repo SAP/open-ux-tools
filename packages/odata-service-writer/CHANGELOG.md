@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.9.7
+
+### Patch Changes
+
+-   b7ee596: port tool-suite change - add delay to appreload middleware
+-   Updated dependencies [b7ee596]
+    -   @sap-ux/ui5-config@0.10.3
+
 ## 0.9.6
 
 ### Patch Changes
