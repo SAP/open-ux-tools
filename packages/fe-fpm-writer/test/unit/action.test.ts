@@ -2,7 +2,7 @@ import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomAction } from '../../src';
-import { getTargetElementReference } from '../../src/action';
+import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
 
 describe('CustomAction', () => {
@@ -17,7 +17,7 @@ describe('CustomAction', () => {
         ];
         test.each(testInput)('get reference for different control types', (input) => {
             const manifest = { 'sap.ui5': { routing: { targets: { TestPage: {} } } } };
-            getTargetElementReference(manifest, { page: 'TestPage', ...input });
+            enhanceManifestAndGetActionsElementReference(manifest, { page: 'TestPage', ...input });
             expect(manifest).toMatchSnapshot();
         });
     });

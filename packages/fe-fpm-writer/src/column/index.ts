@@ -12,6 +12,7 @@ import { setCommonDefaults } from '../common/defaults';
  * Enhances the provided custom table column configuration with default data.
  *
  * @param {CustomTableColumn} data - a custom column configuration object
+ * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
  * @returns enhanced configuration
  */

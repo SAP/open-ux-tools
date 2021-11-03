@@ -17,7 +17,6 @@ export type ColumnPropertiesType = string[];
 /**
  * Custom Column.
  *
- * @isViewNode true
  */
 export interface CustomTableColumn extends CustomElement {
     /**

@@ -11,6 +11,7 @@ import { setCommonDefaults } from '../common/defaults';
  * Enhances the provided custom action configuration with default data.
  *
  * @param {CustomAction} data - a custom action configuration object
+ * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
  * @returns enhanced configuration
  */
@@ -30,7 +31,14 @@ function enhanceConfig(data: CustomAction, manifestPath: string, manifest: Manif
     return config as InternalCustomAction;
 }
 
-export function getTargetElementReference(manifest: any, target: CustomActionTarget): any {
+/**
+ * Enhance the target object in the manifest with the required nested objects and return a reference to it.
+ *
+ * @param {Manifest} manifest - the application manifest
+ * @param {CustomActionTarget} target - target element
+ * @returns Actions object of the given target element.
+ */
+export function enhanceManifestAndGetActionsElementReference(manifest: any, target: CustomActionTarget): any {
     const page = manifest['sap.ui5'].routing.targets[target.page];
     page.options = page.options || {};
     page.options.settings = page.options.settings || {};
@@ -75,10 +83,8 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     const root = join(__dirname, '../../templates/action');
 
     // enhance manifest with action definition and controller reference
-    Object.assign(
-        getTargetElementReference(manifest, config.target),
-        JSON.parse(render(fs.read(join(root, `manifest.action.json`)), config))
-    );
+    const actions = enhanceManifestAndGetActionsElementReference(manifest, config.target);
+    Object.assign(actions, JSON.parse(render(fs.read(join(root, `manifest.action.json`)), config)));
     fs.writeJSON(manifestPath, manifest);
 
     // add event handler

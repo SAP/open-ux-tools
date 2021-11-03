@@ -47,7 +47,7 @@ export type Position = {
     placement: Placement;
 };
 
-export interface Ui5RoutingTarget<T extends any> {
+export interface Ui5RoutingTarget<T> {
     type: string;
     id: string;
     name: string;
