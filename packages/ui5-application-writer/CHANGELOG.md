@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.9.7
+
+### Patch Changes
+
+-   b7ee596: port tool-suite change - add delay to appreload middleware
+
 ## 0.9.6
 
 ### Patch Changes
