@@ -36,9 +36,10 @@ export interface CustomTableColumn extends CustomElement {
      */
     header: string;
     /**
-     * If it is set to true then an additional event handler is generated.
+     * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.
+     * If an existing event handler is to be used then its id needs to be provided as string.
      */
-    eventHandler?: boolean;
+    eventHandler?: string | true;
     /**
      * Optional control XML that will be generated into the fragment of table column. If the property isn't provided then a sample control will be generated.
      */

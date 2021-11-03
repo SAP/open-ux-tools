@@ -81,15 +81,18 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     const config = enhanceConfig(actionConfig, manifestPath, manifest);
 
-    const root = join(__dirname, '../../templates/action');
+    const root = join(__dirname, '../../templates');
+
+    // add event handler if requested
+    if (config.settings.eventHandler === true) {
+        fs.copyTpl(join(root, 'common/EventHandler.js'), join(config.path, `${config.name}.js`), config);
+        config.settings.eventHandler = `${config.ns}.${config.name}.onPress`;
+    }
 
     // enhance manifest with action definition and controller reference
     const actions = enhanceManifestAndGetActionsElementReference(manifest, config.target);
-    Object.assign(actions, JSON.parse(render(fs.read(join(root, `manifest.action.json`)), config)));
+    Object.assign(actions, JSON.parse(render(fs.read(join(root, `action/manifest.action.json`)), config)));
     fs.writeJSON(manifestPath, manifest);
-
-    // add event handler
-    fs.copyTpl(join(root, 'ext/EventHandler.js'), join(config.path, `${config.name}.js`), config);
 
     return fs;
 }

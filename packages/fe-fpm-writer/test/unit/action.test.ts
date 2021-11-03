@@ -1,7 +1,7 @@
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
-import { generateCustomAction } from '../../src';
+import { generateCustomAction, CustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
 
@@ -48,31 +48,79 @@ describe('CustomAction', () => {
             2
         );
 
+        // minimal config
+        const name = 'MyCustomAction';
+        const target = {
+            page: 'TestObjectPage',
+            control: TargetControl.header
+        };
+        const settings = {
+            text: 'My custom action text'
+        };
+
         beforeEach(() => {
             fs = create(createStorage());
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), testAppManifest);
         });
 
-        test('generateCustomAction', () => {
+        test('minimal settings (no eventhandler)', () => {
+            generateCustomAction(testDir, { name, target, settings }, fs);
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
+        });
+
+        test('use existing event handler', () => {
             generateCustomAction(
                 testDir,
                 {
-                    name: 'MyCustomAction',
-                    folder: 'ext',
-                    target: {
-                        page: 'TestObjectPage',
-                        control: TargetControl.header
-                    },
+                    name,
+                    target,
                     settings: {
-                        text: 'My custom action text'
+                        ...settings,
+                        eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction'
                     }
                 },
                 fs
             );
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
 
+        test('specific target folder and generated event handler', () => {
+            generateCustomAction(
+                testDir,
+                {
+                    name,
+                    folder: 'ext',
+                    target,
+                    settings: {
+                        ...settings,
+                        eventHandler: true
+                    }
+                },
+                fs
+            );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(testDir, 'webapp/ext/MyCustomAction.js'))).toMatchSnapshot();
+        });
+
+        test('specific control as target', () => {
+            generateCustomAction(
+                testDir,
+                {
+                    name,
+                    target: {
+                        page: target.page,
+                        control: TargetControl.table,
+                        qualifier: 'MyQualifier',
+                        navProperty: 'TestItems'
+                    },
+                    settings
+                },
+                fs
+            );
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
         });
     });
 });

@@ -36,6 +36,11 @@ function enhanceConfig(data: CustomTableColumn, manifestPath: string, manifest: 
     const config: CustomTableColumn & Partial<InternalCustomTableColumn> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
+    // set default event handler if it is to be created
+    if (config.eventHandler === true) {
+        config.eventHandler = `${config.ns}.${config.name}.onPress`;
+    }
+
     // generate column content
     if (config.control) {
         config.content = config.control;
@@ -45,11 +50,10 @@ function enhanceConfig(data: CustomTableColumn, manifestPath: string, manifest: 
                 ? `{=%{${config.properties.join("} + ' ' + %{")}}}`
                 : 'Sample Text';
         if (config.eventHandler) {
-            config.content = `<Button ${
-                config.eventHandler
-                    ? ' core:require="{ handler: \'' + (config.ns + '.' + config.name).replace(/\./g, '/') + '\'}"'
-                    : ''
-            } text="${content}" press="handler.onPress" />`;
+            const parts = (config.eventHandler as string).split('.');
+            const method = parts.pop();
+            const handler = parts.join('/');
+            config.content = `<Button core:require="{ handler: '${handler}'}" text="${content}" press="handler.${method}" />`;
         } else {
             config.content = `<Text text="${content}" />`;
         }
@@ -76,8 +80,19 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
+    const root = join(__dirname, '../../templates');
+
     // merge with defaults
     const completeColumn = enhanceConfig(customColumn, manifestPath, manifest);
+
+    // add event handler if requested
+    if (completeColumn.eventHandler) {
+        fs.copyTpl(
+            join(root, 'common/EventHandler.js'),
+            join(completeColumn.path, `${completeColumn.name}.js`),
+            completeColumn
+        );
+    }
 
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.ui5Version);
@@ -85,14 +100,8 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment
-    const extRoot = join(__dirname, '../../templates/column/ext');
     const viewPath = join(completeColumn.path, `${completeColumn.name}.fragment.xml`);
-    fs.copyTpl(join(extRoot, 'CustomColumnFragment.xml'), viewPath, completeColumn);
-
-    // add event handler if control type is button
-    if (completeColumn.eventHandler) {
-        fs.copy(join(extRoot, 'EventHandler.js'), viewPath.replace('.fragment.xml', '.js'));
-    }
+    fs.copyTpl(join(root, 'column/ext/CustomColumnFragment.xml'), viewPath, completeColumn);
 
     return fs;
 }

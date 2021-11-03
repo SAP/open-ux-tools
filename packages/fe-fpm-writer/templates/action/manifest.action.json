@@ -1,8 +1,8 @@
 {
     "<%- name %>": {
-        "press": "<%- ns %>.<%- name %>.onPress",
-        "visible": true,
-        "enabled": true,
+        "press": "<%- settings.eventHandler %>",
+        "visible": <%- settings.visible -%>,
+        "enabled": <%- settings.enabled -%>,
         "text": "<%- settings.text %>"<%if (settings.position) {%>,
         "position": {
             "placement": "<%- settings.position.placement %>",

@@ -5,7 +5,7 @@ sap.ui.define([
 
     return {
         onPress: function() {
-            MessageToast.show("CustomAction handler invoked.");
+            MessageToast.show("Custom handler invoked.");
         }
     };
 });

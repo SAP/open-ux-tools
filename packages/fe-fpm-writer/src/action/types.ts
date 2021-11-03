@@ -21,6 +21,11 @@ export interface CustomAction extends CustomElement {
         visible?: string | true;
         enabled?: string | true;
         position?: Position;
+        /**
+         * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.
+         * If an existing event handler is to be used then its id needs to be provided as string.
+         */
+        eventHandler?: string | true;
     };
 }
 

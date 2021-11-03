@@ -71,7 +71,8 @@ describe('use FPM with existing apps', () => {
                         control: TargetControl.table
                     },
                     settings: {
-                        text: 'My Custom Action'
+                        text: 'My Custom Action',
+                        eventHandler: true
                     }
                 },
                 fs
@@ -85,7 +86,8 @@ describe('use FPM with existing apps', () => {
                         control: TargetControl.header
                     },
                     settings: {
-                        text: 'My other Action'
+                        text: 'My other Action',
+                        eventHandler: true
                     }
                 },
                 fs

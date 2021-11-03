@@ -156,7 +156,7 @@ Object {
 
     return {
         onPress: function() {
-            MessageToast.show(\\"CustomAction handler invoked.\\");
+            MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
 });
@@ -171,7 +171,7 @@ Object {
 
     return {
         onPress: function() {
-            MessageToast.show(\\"CustomAction handler invoked.\\");
+            MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
 });
@@ -239,7 +239,7 @@ Object {
   "webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
 	xmlns:l=\\"sap.ui.layout\\">
-		<Button  core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
+		<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>
 ",
     "state": "modified",
@@ -252,7 +252,7 @@ Object {
 
     return {
         onPress: function() {
-            MessageToast.show(\\"CustomColumn action handler invoked.\\");
+            MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
 });
