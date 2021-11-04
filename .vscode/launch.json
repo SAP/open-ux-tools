@@ -55,7 +55,7 @@
             "windows": {
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
-            "cwd": "${workspaceFolder}/packages/fev4-fpm-writer"
+            "cwd": "${workspaceFolder}/packages/fe-fpm-writer"
         }
     ]
 }
