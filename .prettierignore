@@ -3,5 +3,7 @@ dist/
 node_modules/
 typings/
 **/templates
+**/test-input
+**/test-output
 **/coverage
 **/__snapshots__

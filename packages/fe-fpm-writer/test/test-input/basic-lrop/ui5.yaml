@@ -1,0 +1,25 @@
+specVersion: '2.0'
+metadata:
+    name: 'v4-travel'
+type: application
+server:
+    customMiddleware:
+        - name: fiori-tools-proxy
+          afterMiddleware: compression
+          configuration:
+              ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+              ui5:
+                  path:
+                      - /resources
+                      - /test-resources
+                  url: https://ui5.sap.com
+                  version: # The UI5 version, for instance, 1.78.1. Empty means latest version
+        - name: sap-fe-mockserver
+          beforeMiddleware: fiori-tools-proxy
+          configuration:
+              service:
+                  urlBasePath: /sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001
+                  name: ''
+                  metadataXmlPath: ./webapp/localService/metadata.xml
+                  mockdataRootPath: ./webapp/localService/mockdata
+                  generateMockData: true
