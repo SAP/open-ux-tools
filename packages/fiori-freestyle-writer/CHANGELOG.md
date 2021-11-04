@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.6
+
+### Patch Changes
+
+-   33388ad: fiori-freestyle-writer invalid entry in i18n when optional entity not specified
+
 ## 0.10.5
 
 ### Patch Changes

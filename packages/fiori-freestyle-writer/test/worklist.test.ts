@@ -146,9 +146,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                         entity: {
                             name: 'Products',
                             key: 'ID',
-                            idProperty: 'ID',
-                            numberProperty: 'price',
-                            unitOfMeasureProperty: 'currency_code'
+                            idProperty: 'ID'
                         }
                     } as WorklistSettings
                 },

@@ -4543,8 +4543,10 @@ worklistTableTitleCount=Products ({0})
 #XTIT: The title of the column containing the ProductName of Products
 tableNameColumnTitle=ProductName
 
+
 #XTIT: The title of the column containing the UnitsInStock and the unit of measure
 tableUnitNumberColumnTitle=UnitsInStock
+
 
 #XBLI: text for a table with no data
 tableNoDataText=No Products are currently available
@@ -4580,7 +4582,6 @@ shareSendEmailObjectSubject=<Email subject including object identifier PLEASE RE
 
 #YMSG: Send E-Mail message
 shareSendEmailObjectMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0} (id: {1})\\\\r\\\\n{2}
-
 
 #~~~ Not Found View ~~~~~~~~~~~~~~~~~~~~~~~
 
