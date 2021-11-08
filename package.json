@@ -4,7 +4,7 @@
     "license": "Apache-2.0",
     "private": true,
     "devDependencies": {
-        "@changesets/cli": "2.17.0",
+        "@changesets/cli": "2.18.0",
         "@types/jest": "27.0.2",
         "@typescript-eslint/eslint-plugin": "5.2.0",
         "@typescript-eslint/parser": "5.2.0",
