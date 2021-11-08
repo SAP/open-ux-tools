@@ -1,30 +1,37 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: Feature Request
+about: Feature Request
+title: 'FEATURE - '
+labels: 'type:feature'
+assignees: ''
 
 ---
-### **Feature Request Description**
-A clear and concise description of what feature is missing.
-Is your feature request related to a problem? Please describe.
 
-### **Proposed Solution**
-A clear and concise description of the solution you would like to have.
+<!-- 🔎 Please search existing issues to avoid creating duplicates. -->
+<!-- Please describe the feature you'd like by filling the template below -->
 
-### **Proposed Alternatives**
-A clear and concise description of any alternative solutions or features you've considered.
+_As a **persona**,
+I want to **do something**,
+so that I **can achieve some benefit**_
 
-### **Additional Context**
-Add other context or screenshots related to the feature request here.
+### Description
 
-### **Priority**
-- [ ] Low
-- [x] Medium
-- [ ] High
-- [ ] Very High
+_What is the high level purpose and value of the feature?  The description should ensure that anyone reading understands what it is doing (at a high level) and most importantly why._
 
-A clear and concise description of the impact/urgency of the required feature.
+### Technical Design
+_What modules need to be created or enhanced?_ 
+_How would the functionality be exposed and how can it be consumed?_
 
-### **Stakeholder Info** (if applicable)
+### Acceptance Criteria
+GivenWhenThen format (https://martinfowler.com/bliki/GivenWhenThen.html)
 
-- Organization: {...}
-- Business impact: {...}
+**Given** I have a ...
+**when** I execute ...
+**then** ... will happen.
+
+### Notes
+
+### Tasks
+- [ ] <!--Add any tasks relevant to the current feature request -->
+- [ ] Unit Tests added
+- [ ] Test Cases defined 

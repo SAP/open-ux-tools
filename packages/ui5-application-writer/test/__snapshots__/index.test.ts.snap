@@ -63,6 +63,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
 ",
     "state": "modified",
   },
@@ -88,6 +89,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
 ",
     "state": "modified",
   },

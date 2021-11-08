@@ -1,5 +1,21 @@
 # @sap-ux/ui5-config
 
+## 0.10.3
+
+### Patch Changes
+
+-   b7ee596: port tool-suite change - add delay to appreload middleware
+-   Updated dependencies [b7ee596]
+    -   @sap-ux/yaml@0.10.3
+
+## 0.10.2
+
+### Patch Changes
+
+-   8de261b: Update npm dep and devDeps
+-   Updated dependencies [8de261b]
+    -   @sap-ux/yaml@0.10.2
+
 ## 0.10.1
 
 ### Patch Changes

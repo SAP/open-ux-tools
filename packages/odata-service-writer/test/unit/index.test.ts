@@ -129,27 +129,27 @@ describe('Test generate method with valid input', () => {
 
         // verify tha the optional properties are being added
         expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
-"server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
-        backend:
-          - apiHub: true
-            scp: false
-            pathPrefix: /~prefix
-            path: /sap
-            url: http://localhost
-            destination: test
-"
-`);
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                      version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+                    backend:
+                      - apiHub: true
+                        scp: false
+                        pathPrefix: /~prefix
+                        path: /sap
+                        url: http://localhost
+                        destination: test
+            "
+        `);
     });
 
     it('Valid service with neither metadata nor annotations and not starting with /sap', async () => {
@@ -179,50 +179,50 @@ describe('Test generate method with valid input', () => {
         let configCopy = cloneDeep(config);
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
-Object {
-  "model": "",
-  "name": "mainService",
-  "path": "/V2/Northwind/Northwind.svc/",
-  "previewSettings": Object {
-    "path": "/V2",
-    "url": "https://services.odata.org",
-  },
-  "url": "https://services.odata.org",
-  "version": "2",
-}
-`);
+            Object {
+              "model": "",
+              "name": "mainService",
+              "path": "/V2/Northwind/Northwind.svc/",
+              "previewSettings": Object {
+                "path": "/V2",
+                "url": "https://services.odata.org",
+              },
+              "url": "https://services.odata.org",
+              "version": "2",
+            }
+        `);
 
         configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
-Object {
-  "model": "modelName",
-  "name": "datasourceName",
-  "path": "/V2/Northwind/Northwind.svc/",
-  "previewSettings": Object {
-    "path": "/V2",
-    "url": "https://services.odata.org",
-  },
-  "url": "https://services.odata.org",
-  "version": "2",
-}
-`);
+            Object {
+              "model": "modelName",
+              "name": "datasourceName",
+              "path": "/V2/Northwind/Northwind.svc/",
+              "previewSettings": Object {
+                "path": "/V2",
+                "url": "https://services.odata.org",
+              },
+              "url": "https://services.odata.org",
+              "version": "2",
+            }
+        `);
 
         // Undefined path does not throw but sets valid path
         configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
         enhanceData(configCopy);
         expect(configCopy).toMatchInlineSnapshot(`
-Object {
-  "model": "",
-  "name": "mainService",
-  "path": "/",
-  "previewSettings": Object {
-    "path": "/",
-    "url": "https://services.odata.org",
-  },
-  "url": "https://services.odata.org",
-  "version": "2",
-}
-`);
+            Object {
+              "model": "",
+              "name": "mainService",
+              "path": "/",
+              "previewSettings": Object {
+                "path": "/",
+                "url": "https://services.odata.org",
+              },
+              "url": "https://services.odata.org",
+              "version": "2",
+            }
+        `);
     });
 });

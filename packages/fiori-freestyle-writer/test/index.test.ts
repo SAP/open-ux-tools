@@ -69,6 +69,25 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
                     }
                 }
             } as FreestyleApp<any>
+        },
+        {
+            name: 'basic',
+            config: {
+                ...commonConfig,
+                service: northwindV2Metadata,
+                template: {
+                    type: TemplateType.Basic,
+                    settings: {
+                        entity: {
+                            name: 'Products',
+                            key: 'ProductID',
+                            idProperty: 'ProductName',
+                            numberProperty: 'UnitsInStock',
+                            unitOfMeasureProperty: 'QuantityPerUnit'
+                        }
+                    }
+                }
+            } as FreestyleApp<any>
         }
     ];
 

@@ -1,5 +1,43 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.6
+
+### Patch Changes
+
+-   33388ad: fiori-freestyle-writer invalid entry in i18n when optional entity not specified
+
+## 0.10.5
+
+### Patch Changes
+
+-   b7ee596: port tool-suite change - add delay to appreload middleware
+-   Updated dependencies [b7ee596]
+    -   @sap-ux/odata-service-writer@0.9.7
+    -   @sap-ux/ui5-application-writer@0.9.7
+    -   @sap-ux/ui5-config@0.10.3
+
+## 0.10.4
+
+### Patch Changes
+
+-   b1af038: refactor to be more backward compatible with mem-fs-editor (and yeoman-environment ^2.10.0)
+
+## 0.10.3
+
+### Patch Changes
+
+-   8de261b: Update npm dep and devDeps
+-   Updated dependencies [8de261b]
+    -   @sap-ux/odata-service-writer@0.9.6
+    -   @sap-ux/ui5-application-writer@0.9.6
+    -   @sap-ux/ui5-config@0.10.2
+
+## 0.10.2
+
+### Patch Changes
+
+-   3d7b9f6: Use exact versions of dependencies
+
 ## 0.10.1
 
 ### Patch Changes

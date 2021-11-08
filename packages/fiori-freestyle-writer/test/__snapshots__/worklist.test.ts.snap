@@ -77,6 +77,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -121,6 +122,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -158,6 +160,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
 ",
     "state": "modified",
   },
@@ -724,8 +727,7 @@ worklistTableTitleCount=SalesOrderItem ({0})
 #XTIT: The title of the column containing the PurchaseOrderByCustomer of SalesOrderItem
 tableNameColumnTitle=PurchaseOrderByCustomer
 
-#XTIT: The title of the column containing the  and the unit of measure
-tableUnitNumberColumnTitle=
+
 
 #XBLI: text for a table with no data
 tableNoDataText=No SalesOrderItem are currently available
@@ -758,7 +760,6 @@ shareSendEmailObjectSubject=<Email subject including object identifier PLEASE RE
 
 #YMSG: Send E-Mail message
 shareSendEmailObjectMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0} (id: {1})\\\\r\\\\n{2}
-
 
 #~~~ Not Found View ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -6734,6 +6735,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6784,6 +6786,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -6824,6 +6827,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
 ",
     "state": "modified",
   },
@@ -7390,8 +7394,10 @@ worklistTableTitleCount=SEPMRA_C_PD_Product ({0})
 #XTIT: The title of the column containing the Name of SEPMRA_C_PD_Product
 tableNameColumnTitle=Name
 
+
 #XTIT: The title of the column containing the Price and the unit of measure
 tableUnitNumberColumnTitle=Price
+
 
 #XBLI: text for a table with no data
 tableNoDataText=No SEPMRA_C_PD_Product are currently available
@@ -7427,7 +7433,6 @@ shareSendEmailObjectSubject=<Email subject including object identifier PLEASE RE
 
 #YMSG: Send E-Mail message
 shareSendEmailObjectMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0} (id: {1})\\\\r\\\\n{2}
-
 
 #~~~ Not Found View ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -9997,6 +10002,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -10041,6 +10047,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -10078,6 +10085,7 @@ server:
       configuration:
         port: 35729
         path: webapp
+        delay: 300
 ",
     "state": "modified",
   },
@@ -10644,8 +10652,7 @@ worklistTableTitleCount=Products ({0})
 #XTIT: The title of the column containing the ID of Products
 tableNameColumnTitle=ID
 
-#XTIT: The title of the column containing the price and the unit of measure
-tableUnitNumberColumnTitle=price
+
 
 #XBLI: text for a table with no data
 tableNoDataText=No Products are currently available
@@ -10664,9 +10671,6 @@ objectTitle=Products
 IDLabel=ID
 
 
-#XTIT: Label for the price
-priceLabel=price
-
 
 #~~~ Share Menu Options ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -10681,7 +10685,6 @@ shareSendEmailObjectSubject=<Email subject including object identifier PLEASE RE
 
 #YMSG: Send E-Mail message
 shareSendEmailObjectMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0} (id: {1})\\\\r\\\\n{2}
-
 
 #~~~ Not Found View ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -12639,12 +12642,7 @@ sap.registerComponentDependencyPaths(manifestUri);
 		</semantic:titleHeading>
 
 		<semantic:headerContent>
-			<ObjectNumber
-				number=\\"{
-					path: 'price',
-					formatter: '.formatter.numberUnit'
-				}\\"
-				unit=\\"{currency_code}\\" />
+			<ObjectNumber />
 		</semantic:headerContent>
 
 		<semantic:sendEmailAction>
@@ -12747,12 +12745,7 @@ sap.registerComponentDependencyPaths(manifestUri);
 						<cells>
 							<ObjectIdentifier
 								title=\\"{ID}\\"/>
-							<ObjectNumber
-								number=\\"{
-									path: 'price',
-									formatter: '.formatter.numberUnit'
-								}\\"
-								unit=\\"{currency_code}\\" />
+							<ObjectNumber />
 						</cells>
 					</ColumnListItem>
 				</items>

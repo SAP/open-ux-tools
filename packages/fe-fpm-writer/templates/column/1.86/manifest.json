@@ -1,0 +1,48 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- target %>": {
+                    "options": {
+                        "settings": {
+                            "controlConfiguration": {
+                                "<%- targetEntity %>": {
+                                    "columns": {
+                                        "<%- name %>": {
+                                            "header": "<%- header %>",
+                                    <% if (locals.width)  { %> "width": "<%- width %>",  <%
+                                            } %>
+                                    "position": {
+                                        <% if (position.placement) { %> "placement": "<%- position.placement %>", <%
+                                                } %>
+                                        <% if (position.anchor) { %> "anchor": "<%- position.anchor %>" <%
+                                                } %>
+                                            },
+                                    <% if (locals.horizontalAlign) { %> "horizontalAlign": "<%- horizontalAlign %>", <%
+                                            } %>
+                                    "template": "<%- ns %>.<%- name %>"
+                                    <% if (locals.availability) { %> , "availability": "<%- availability %>" <%
+                                            } %>
+                                    <% if (locals.properties) { %> , "properties": [ 
+                                        <% for (var i =0; i < properties.length; i++) { %>
+                                            "<%- properties[i] %>"
+                                            <% if (i < properties.length - 1) { %>
+                                                ,
+                                            <%
+                                                        } %>
+                                        <%
+                                                    } %>
+                                                ]
+                                    <%
+                                            } %>
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
