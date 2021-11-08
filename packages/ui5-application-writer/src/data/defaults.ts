@@ -75,8 +75,8 @@ export function mergeUi5(ui5?: UI5): UI5 {
             merged.version === UI5_DEFAULT.DEFAULT_UI5_VERSION
                 ? UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION
                 : merged.framework === 'SAPUI5'
-                    ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION
-                    : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION; // minimum version available as local libs
+                ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION
+                : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION; // minimum version available as local libs
         if (parseFloat(merged.version!) > parseFloat(merged.localVersion)) {
             merged.localVersion = merged.version!;
         }
