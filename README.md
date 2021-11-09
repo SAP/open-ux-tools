@@ -3,7 +3,7 @@
 
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/open-ux-tools)](https://api.reuse.software/info/github.com/SAP/open-ux-tools)
 
-The Open UX tools project aims to provide open source modules that make the development of SAP Fiori applications more efficient. The project is governed by the same team that is responsible for SAP Fiori tools (https://help.sap.com/viewer/product/SAP_FIORI_tools) and driven by the SAP community. The main goal of this project is to collaborate with the community to create transparency and therefore increase the adoption of our tools.
+The Open UX tools project aims to provide open source modules that make the development of SAP Fiori applications more efficient. The project is maintained by the same team that is responsible for SAP Fiori tools (https://help.sap.com/viewer/product/SAP_FIORI_tools) and driven by the SAP community. The main goal of this project is to collaborate with the community to create transparency and therefore increase the adoption of our tools.
 
 **Collaboration**: SAP has a great and active development community that is eager to help improve SAP products. With SAP Fiori tools, we have collaborated with stakeholders using roundtables, surveys, and usability testing. We have even collaborated using SAP's incident management systems, connecting with users that did not just report issues but also debugged and identified the root cause. With Open UX tools, we want to take this collaboration to the next level by empowering users to contribute findings, fixes, and improvements to the project.
 
