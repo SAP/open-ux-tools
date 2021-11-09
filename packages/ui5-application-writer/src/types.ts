@@ -20,8 +20,10 @@ export interface App {
     localStartFile?: string;
 }
 
+export type UI5Framework = 'SAPUI5' | 'OpenUI5';
+
 export interface UI5 {
-    framework: 'SAPUI5' | 'OpenUI5';
+    framework: UI5Framework;
     frameworkUrl: string;
     minUI5Version: string;
     version: string;
