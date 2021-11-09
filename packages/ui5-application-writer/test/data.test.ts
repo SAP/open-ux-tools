@@ -2,9 +2,9 @@ import { UI5_DEFAULT, mergeUi5 } from '../src/data/defaults';
 import type { UI5 } from '../src/types';
 
 describe('Setting defaults', () => {
-
-        const testData: { input: UI5; expected: UI5 }[][] = [
-            [{
+    const testData: { input: UI5; expected: UI5 }[][] = [
+        [
+            {
                 input: {},
                 expected: {
                     framework: 'SAPUI5',
@@ -16,8 +16,10 @@ describe('Setting defaults', () => {
                     typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                     ui5Theme: 'sap_fiori_3'
                 }
-            }],
-            [{
+            }
+        ],
+        [
+            {
                 input: { framework: 'OpenUI5' },
                 expected: {
                     framework: 'OpenUI5',
@@ -29,8 +31,10 @@ describe('Setting defaults', () => {
                     typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                     ui5Theme: 'sap_fiori_3'
                 }
-            }],
-            [{
+            }
+        ],
+        [
+            {
                 input: { framework: 'OpenUI5', version: '1.72.0' },
                 expected: {
                     framework: 'OpenUI5',
@@ -42,8 +46,10 @@ describe('Setting defaults', () => {
                     typesVersion: '1.71.18',
                     ui5Theme: 'sap_fiori_3'
                 }
-            }],
-            [{
+            }
+        ],
+        [
+            {
                 input: {
                     ui5Theme: 'sap_fiori_3_dark'
                 },
@@ -57,10 +63,11 @@ describe('Setting defaults', () => {
                     typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                     ui5Theme: 'sap_fiori_3_dark'
                 }
-            }]
-        ];
+            }
+        ]
+    ];
 
-        test.each(testData)(`mergeUi5 testData index %#`,(test) => {
-            expect(mergeUi5(test.input)).toEqual(test.expected);
-        });
+    test.each(testData)(`mergeUi5 testData index %#`, (test) => {
+        expect(mergeUi5(test.input)).toEqual(test.expected);
+    });
 });
