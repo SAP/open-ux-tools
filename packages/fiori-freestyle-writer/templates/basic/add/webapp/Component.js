@@ -1,8 +1,8 @@
 sap.ui.define([
-		"<%=app.baseComponent%>",
-		"sap/ui/Device",
-		"<%=app.id.replace(/\./g, '/')%>/model/models"
-	],
+        "<%=app.baseComponent%>",
+        "sap/ui/Device",
+        "<%=app.id.replace(/\./g, '/')%>/model/models"
+    ],
     function (UIComponent, Device, models) {
         "use strict";
 
@@ -23,8 +23,8 @@ sap.ui.define([
                 // enable routing
                 this.getRouter().initialize();
 
-				// set the device model
-				this.setModel(models.createDeviceModel(), "device");
+                // set the device model
+                this.setModel(models.createDeviceModel(), "device");
             }
         });
     }
