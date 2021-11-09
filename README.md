@@ -100,7 +100,7 @@ All modules are published under the `@sap-ux` scope. Publishing packages to npmj
 
 1. The version job bumps versions of all packages for which changes are detected in the changeset configuration files and also updates changelog files. This job is run when a pull request branch is merged to the main branch and basically runs `changeset version` and commits and pushes the changes made to the `package.json`, changelog, and pnpm lock files.
 
-2. The release job is setup to run after the version merge commit has been pushed to the main branch in the version job. This job publishes the changed packages to npmjs.com
+2. The release job is configured to run after the version merge commit has been pushed to the main branch in the version job. This job publishes the changed packages to npmjs.com
 
 ### Licensing
 
