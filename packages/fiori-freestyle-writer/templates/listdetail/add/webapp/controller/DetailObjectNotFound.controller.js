@@ -1,7 +1,7 @@
 sap.ui.define([
-	"./BaseController"
+    "./BaseController"
 ], function (BaseController) {
-	"use strict";
+    "use strict";
 
-	return BaseController.extend("<%- app.id %>.controller.DetailObjectNotFound", {});
+    return BaseController.extend("<%- app.id %>.controller.DetailObjectNotFound", {});
 });
