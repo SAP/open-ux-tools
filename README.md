@@ -9,7 +9,7 @@ The Open UX tools project aims to provide open source modules that make the deve
 
 **Transparency**: Anyone can inspect the sources, check for inconsistencies or problems, or get inspired to enhance the tools for the SAP Fiori community. Transparency matters to us. It builds trust in our tools and promotes more open communication.
 
-**Adoption**: The first consumer of these modules is SAP Fiori tools but every module is designed to be reusable by anyone building any kind of tools to develop SAP Fiori applications. This may be other open source projects or very use case specific internal projects. With our initial set of modules, we want to enable generator/scaffolding projects to use building blocks to create a common project structure across the SAP ecosystem.
+**Adoption**: The first consumer of these modules is SAP Fiori tools but every module is designed to be reusable by anyone building any kind of tools to develop SAP Fiori applications. This may be other open source projects or internal projects with very specific use cases. With our initial set of modules, we want to enable generator/scaffolding projects to use building blocks to create a common project structure across the SAP ecosystem.
 
 ## Modules
 Our long-term vision is to completely transition our SAP Fiori tools to open source. This is not an easy endeavor due to the size of the code base and dependencies to other not-yet-open-sourced modules. If you would like to better understand where we started and how we are planning to move forward, please have a look at our blog post [History and vision of the Open UX tools.](https://blogs.sap.com/2021/11/09/the-open-ux-tools-journey/).
