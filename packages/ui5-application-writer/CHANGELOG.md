@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.9.8
+
+### Patch Changes
+
+-   4bef87c: Use consistent whitespace for indentation in templates
+
 ## 0.9.7
 
 ### Patch Changes
