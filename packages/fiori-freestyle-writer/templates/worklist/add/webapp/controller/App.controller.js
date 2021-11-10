@@ -1,14 +1,14 @@
 sap.ui.define([
-	"./BaseController"
+    "./BaseController"
 ], function (BaseController) {
-	"use strict";
+    "use strict";
 
-	return BaseController.extend("<%- app.id %>.controller.App", {
+    return BaseController.extend("<%- app.id %>.controller.App", {
 
-		onInit : function () {
-			// apply content density mode to root view
-			this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
-		}
-	});
+        onInit : function () {
+            // apply content density mode to root view
+            this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
+        }
+    });
 
 });

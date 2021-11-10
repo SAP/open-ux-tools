@@ -80,7 +80,7 @@ describe('Setting defaults', () => {
             }
         ];
 
-        test.each(testData)(`mergeUi5 testData index %#`,(test) => {
-            expect(mergeUi5(test.input)).toEqual(test.expected);
-        });
+    test.each(testData)(`mergeUi5 testData index %#`, (test) => {
+        expect(mergeUi5(test.input)).toEqual(test.expected);
+    });
 });

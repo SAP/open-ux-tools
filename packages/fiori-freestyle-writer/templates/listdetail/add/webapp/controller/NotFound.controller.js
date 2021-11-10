@@ -1,16 +1,16 @@
 sap.ui.define([
-	"./BaseController"
+    "./BaseController"
 ], function (BaseController) {
-	"use strict";
+    "use strict";
 
-	return BaseController.extend("<%- app.id %>.controller.NotFound", {
+    return BaseController.extend("<%- app.id %>.controller.NotFound", {
 
-		onInit: function () {
-			this.getRouter().getTarget("notFound").attachDisplay(this._onNotFoundDisplayed, this);
-		},
+        onInit: function () {
+            this.getRouter().getTarget("notFound").attachDisplay(this._onNotFoundDisplayed, this);
+        },
 
-		_onNotFoundDisplayed : function () {
-			this.getModel("appView").setProperty("/layout", "OneColumn");
-		}
-	});
+        _onNotFoundDisplayed : function () {
+            this.getModel("appView").setProperty("/layout", "OneColumn");
+        }
+    });
 });

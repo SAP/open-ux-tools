@@ -1,67 +1,67 @@
 {
-	"sap.ui5": {
-		"rootView": {
-			"viewName": "<%- app.id %>.view.App",
-			"type": "XML",
-			"async": true,
-			"id": "app"
-		},
+    "sap.ui5": {
+        "rootView": {
+            "viewName": "<%- app.id %>.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "app"
+        },
 
-		"dependencies": {
-			"libs": {
-				"sap.ui.core": {},
-				"sap.m": {},
-				"sap.f": {}
-			}
-		},
+        "dependencies": {
+            "libs": {
+                "sap.ui.core": {},
+                "sap.m": {},
+                "sap.f": {}
+            }
+        },
 
-		"routing": {
-			"config": {
-				"routerClass": "sap.m.routing.Router",
-				"viewType": "XML",
-				"viewPath": "<%- app.id %>.view",
-				"controlId": "app",
-				"controlAggregation": "pages",
-				"bypassed": {
-					"target": ["notFound"]
-				},
-				"async": true
-			},
-			"routes": [
-				{
-					"pattern": "",
-					"name": "worklist",
-					"target": ["worklist"]
-				},
-				{
-					"pattern": "<%=template.settings.entity.name%>/{objectId}",
-					"name": "object",
-					"target": ["object"]
-				}
-			],
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "viewPath": "<%- app.id %>.view",
+                "controlId": "app",
+                "controlAggregation": "pages",
+                "bypassed": {
+                    "target": ["notFound"]
+                },
+                "async": true
+            },
+            "routes": [
+                {
+                    "pattern": "",
+                    "name": "worklist",
+                    "target": ["worklist"]
+                },
+                {
+                    "pattern": "<%=template.settings.entity.name%>/{objectId}",
+                    "name": "object",
+                    "target": ["object"]
+                }
+            ],
 
-			"targets": {
-				"worklist": {
-					"viewName": "Worklist",
-					"viewId": "worklist",
-					"viewLevel": 1,
-					"title": "{i18n>worklistViewTitle}"
-				},
-				"object": {
-					"viewName": "Object",
-					"viewId": "object",
-					"viewLevel": 2,
-					"title": "{i18n>objectViewTitle}"
-				},
-				"objectNotFound": {
-					"viewName": "ObjectNotFound",
-					"viewId": "objectNotFound"
-				},
-				"notFound": {
-					"viewName": "NotFound",
-					"viewId": "notFound"
-				}
-			}
-		}
-	}
+            "targets": {
+                "worklist": {
+                    "viewName": "Worklist",
+                    "viewId": "worklist",
+                    "viewLevel": 1,
+                    "title": "{i18n>worklistViewTitle}"
+                },
+                "object": {
+                    "viewName": "Object",
+                    "viewId": "object",
+                    "viewLevel": 2,
+                    "title": "{i18n>objectViewTitle}"
+                },
+                "objectNotFound": {
+                    "viewName": "ObjectNotFound",
+                    "viewId": "objectNotFound"
+                },
+                "notFound": {
+                    "viewName": "NotFound",
+                    "viewId": "notFound"
+                }
+            }
+        }
+    }
 }

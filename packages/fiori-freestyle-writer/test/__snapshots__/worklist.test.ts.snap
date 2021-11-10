@@ -166,378 +166,378 @@ server:
   },
   "webapp/Component.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/core/UIComponent\\",
-	\\"sap/ui/Device\\",
-	\\"./model/models\\",
-	\\"./controller/ErrorHandler\\"
+    \\"sap/ui/core/UIComponent\\",
+    \\"sap/ui/Device\\",
+    \\"./model/models\\",
+    \\"./controller/ErrorHandler\\"
 ], function (UIComponent, Device, models, ErrorHandler) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return UIComponent.extend(\\"wrk1.Component\\", {
+    return UIComponent.extend(\\"wrk1.Component\\", {
 
-		metadata : {
-			manifest: \\"json\\"
-		},
+        metadata : {
+            manifest: \\"json\\"
+        },
 
-		/**
-		 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-		 * In this function, the device models are set and the router is initialized.
-		 * @public
-		 * @override
-		 */
-		init : function () {
-			// call the base component's init function
-			UIComponent.prototype.init.apply(this, arguments);
+        /**
+         * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+         * In this function, the device models are set and the router is initialized.
+         * @public
+         * @override
+         */
+        init : function () {
+            // call the base component's init function
+            UIComponent.prototype.init.apply(this, arguments);
 
-			// initialize the error handler with the component
-			this._oErrorHandler = new ErrorHandler(this);
+            // initialize the error handler with the component
+            this._oErrorHandler = new ErrorHandler(this);
 
-			// set the device model
-			this.setModel(models.createDeviceModel(), \\"device\\");
+            // set the device model
+            this.setModel(models.createDeviceModel(), \\"device\\");
 
-			// create the views based on the url/hash
-			this.getRouter().initialize();
-		},
+            // create the views based on the url/hash
+            this.getRouter().initialize();
+        },
 
-		/**
-		 * The component is destroyed by UI5 automatically.
-		 * In this method, the ErrorHandler is destroyed.
-		 * @public
-		 * @override
-		 */
-		destroy : function () {
-			this._oErrorHandler.destroy();
-			// call the base component's destroy function
-			UIComponent.prototype.destroy.apply(this, arguments);
-		},
+        /**
+         * The component is destroyed by UI5 automatically.
+         * In this method, the ErrorHandler is destroyed.
+         * @public
+         * @override
+         */
+        destroy : function () {
+            this._oErrorHandler.destroy();
+            // call the base component's destroy function
+            UIComponent.prototype.destroy.apply(this, arguments);
+        },
 
-		/**
-		 * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
-		 * design mode class should be set, which influences the size appearance of some controls.
-		 * @public
-		 * @return {string} css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
-		 */
-		getContentDensityClass : function() {
-			if (this._sContentDensityClass === undefined) {
-				// check whether FLP has already set the content density class; do nothing in this case
-				// eslint-disable-next-line sap-no-proprietary-browser-api
-				if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
-					this._sContentDensityClass = \\"\\";
-				} else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
-					this._sContentDensityClass = \\"sapUiSizeCompact\\";
-				} else {
-					// \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
-					this._sContentDensityClass = \\"sapUiSizeCozy\\";
-				}
-			}
-			return this._sContentDensityClass;
-		}
+        /**
+         * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
+         * design mode class should be set, which influences the size appearance of some controls.
+         * @public
+         * @return {string} css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
+         */
+        getContentDensityClass : function() {
+            if (this._sContentDensityClass === undefined) {
+                // check whether FLP has already set the content density class; do nothing in this case
+                // eslint-disable-next-line sap-no-proprietary-browser-api
+                if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
+                    this._sContentDensityClass = \\"\\";
+                } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
+                    this._sContentDensityClass = \\"sapUiSizeCompact\\";
+                } else {
+                    // \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
+                    this._sContentDensityClass = \\"sapUiSizeCozy\\";
+                }
+            }
+            return this._sContentDensityClass;
+        }
 
-	});
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/App.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\"
+    \\"./BaseController\\"
 ], function (BaseController) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.App\\", {
+    return BaseController.extend(\\"wrk1.controller.App\\", {
 
-		onInit : function () {
-			// apply content density mode to root view
-			this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
-		}
-	});
+        onInit : function () {
+            // apply content density mode to root view
+            this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
+        }
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/BaseController.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/core/mvc/Controller\\",
-	\\"sap/ui/core/UIComponent\\",
-	\\"sap/m/library\\"
+    \\"sap/ui/core/mvc/Controller\\",
+    \\"sap/ui/core/UIComponent\\",
+    \\"sap/m/library\\"
 ], function (Controller, UIComponent, mobileLibrary) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	// shortcut for sap.m.URLHelper
-	var URLHelper = mobileLibrary.URLHelper;
+    // shortcut for sap.m.URLHelper
+    var URLHelper = mobileLibrary.URLHelper;
 
-	return Controller.extend(\\"wrk1.controller.BaseController\\", {
-		/**
-		 * Convenience method for accessing the router.
-		 * @public
-		 * @returns {sap.ui.core.routing.Router} the router for this component
-		 */
-		getRouter : function () {
-			return UIComponent.getRouterFor(this);
-		},
+    return Controller.extend(\\"wrk1.controller.BaseController\\", {
+        /**
+         * Convenience method for accessing the router.
+         * @public
+         * @returns {sap.ui.core.routing.Router} the router for this component
+         */
+        getRouter : function () {
+            return UIComponent.getRouterFor(this);
+        },
 
-		/**
-		 * Convenience method for getting the view model by name.
-		 * @public
-		 * @param {string} [sName] the model name
-		 * @returns {sap.ui.model.Model} the model instance
-		 */
-		getModel : function (sName) {
-			return this.getView().getModel(sName);
-		},
+        /**
+         * Convenience method for getting the view model by name.
+         * @public
+         * @param {string} [sName] the model name
+         * @returns {sap.ui.model.Model} the model instance
+         */
+        getModel : function (sName) {
+            return this.getView().getModel(sName);
+        },
 
-		/**
-		 * Convenience method for setting the view model.
-		 * @public
-		 * @param {sap.ui.model.Model} oModel the model instance
-		 * @param {string} sName the model name
-		 * @returns {sap.ui.mvc.View} the view instance
-		 */
-		setModel : function (oModel, sName) {
-			return this.getView().setModel(oModel, sName);
-		},
+        /**
+         * Convenience method for setting the view model.
+         * @public
+         * @param {sap.ui.model.Model} oModel the model instance
+         * @param {string} sName the model name
+         * @returns {sap.ui.mvc.View} the view instance
+         */
+        setModel : function (oModel, sName) {
+            return this.getView().setModel(oModel, sName);
+        },
 
-		/**
-		 * Getter for the resource bundle.
-		 * @public
-		 * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
-		 */
-		getResourceBundle : function () {
-			return this.getOwnerComponent().getModel(\\"i18n\\").getResourceBundle();
-		},
+        /**
+         * Getter for the resource bundle.
+         * @public
+         * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
+         */
+        getResourceBundle : function () {
+            return this.getOwnerComponent().getModel(\\"i18n\\").getResourceBundle();
+        },
 
-		/**
-		 * Event handler when the share by E-Mail button has been clicked
-		 * @public
-		 */
-		onShareEmailPress : function () {
-			var oViewModel = (this.getModel(\\"objectView\\") || this.getModel(\\"worklistView\\"));
-			URLHelper.triggerEmail(
-				null,
-				oViewModel.getProperty(\\"/shareSendEmailSubject\\"),
-				oViewModel.getProperty(\\"/shareSendEmailMessage\\")
-			);
-		}
-	});
+        /**
+         * Event handler when the share by E-Mail button has been clicked
+         * @public
+         */
+        onShareEmailPress : function () {
+            var oViewModel = (this.getModel(\\"objectView\\") || this.getModel(\\"worklistView\\"));
+            URLHelper.triggerEmail(
+                null,
+                oViewModel.getProperty(\\"/shareSendEmailSubject\\"),
+                oViewModel.getProperty(\\"/shareSendEmailMessage\\")
+            );
+        }
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/ErrorHandler.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/base/Object\\",
-	\\"sap/m/MessageBox\\",
-	\\"sap/ui/model/Filter\\",
-	\\"sap/ui/model/FilterOperator\\"
+    \\"sap/ui/base/Object\\",
+    \\"sap/m/MessageBox\\",
+    \\"sap/ui/model/Filter\\",
+    \\"sap/ui/model/FilterOperator\\"
 ], function (UI5Object, MessageBox, Filter, FilterOperator) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return UI5Object.extend(\\"wrk1.controller.ErrorHandler\\", {
+    return UI5Object.extend(\\"wrk1.controller.ErrorHandler\\", {
 
-		/**
-		 * Handles application errors by automatically attaching to the model events and displaying errors when needed.
-		 * @class
-		 * @param {sap.ui.core.UIComponent} oComponent reference to the app's component
-		 * @public
-		 * @alias wrk1.controller.ErrorHandler
-		 */
-		constructor : function (oComponent) {
-			var	oMessageManager = sap.ui.getCore().getMessageManager(),
-				oMessageModel = oMessageManager.getMessageModel(),
-				oResourceBundle = oComponent.getModel(\\"i18n\\").getResourceBundle(),
-				sErrorText = oResourceBundle.getText(\\"errorText\\"),
-				sMultipleErrors = oResourceBundle.getText(\\"multipleErrorsText\\");
+        /**
+         * Handles application errors by automatically attaching to the model events and displaying errors when needed.
+         * @class
+         * @param {sap.ui.core.UIComponent} oComponent reference to the app's component
+         * @public
+         * @alias wrk1.controller.ErrorHandler
+         */
+        constructor : function (oComponent) {
+            var oMessageManager = sap.ui.getCore().getMessageManager(),
+                oMessageModel = oMessageManager.getMessageModel(),
+                oResourceBundle = oComponent.getModel(\\"i18n\\").getResourceBundle(),
+                sErrorText = oResourceBundle.getText(\\"errorText\\"),
+                sMultipleErrors = oResourceBundle.getText(\\"multipleErrorsText\\");
 
-			this._oComponent = oComponent;
-			this._bMessageOpen = false;
+            this._oComponent = oComponent;
+            this._bMessageOpen = false;
 
-			this.oMessageModelBinding = oMessageModel.bindList(\\"/\\", undefined,
-				[], new Filter(\\"technical\\", FilterOperator.EQ, true));
+            this.oMessageModelBinding = oMessageModel.bindList(\\"/\\", undefined,
+                [], new Filter(\\"technical\\", FilterOperator.EQ, true));
 
-			this.oMessageModelBinding.attachChange(function (oEvent) {
-				var aContexts = oEvent.getSource().getContexts(),
-					aMessages = [],
-					sErrorTitle;
+            this.oMessageModelBinding.attachChange(function (oEvent) {
+                var aContexts = oEvent.getSource().getContexts(),
+                    aMessages = [],
+                    sErrorTitle;
 
-				if (this._bMessageOpen || !aContexts.length) {
-					return;
-				}
+                if (this._bMessageOpen || !aContexts.length) {
+                    return;
+                }
 
-				// Extract and remove the technical messages
-				aContexts.forEach(function (oContext) {
-					aMessages.push(oContext.getObject());
-				});
-				oMessageManager.removeMessages(aMessages);
+                // Extract and remove the technical messages
+                aContexts.forEach(function (oContext) {
+                    aMessages.push(oContext.getObject());
+                });
+                oMessageManager.removeMessages(aMessages);
 
-				// Due to batching there can be more than one technical message. However the UX
-				// guidelines say \\"display a single message in a message box\\" assuming that there
-				// will be only one at a time.
-				sErrorTitle = aMessages.length === 1 ? sErrorText : sMultipleErrors;
-				this._showServiceError(sErrorTitle, aMessages[0].message);
-			}, this);
-		},
+                // Due to batching there can be more than one technical message. However the UX
+                // guidelines say \\"display a single message in a message box\\" assuming that there
+                // will be only one at a time.
+                sErrorTitle = aMessages.length === 1 ? sErrorText : sMultipleErrors;
+                this._showServiceError(sErrorTitle, aMessages[0].message);
+            }, this);
+        },
 
-		/**
-		 * Shows a {@link sap.m.MessageBox} when a service call has failed.
-		 * Only the first error message will be displayed.
-		 * @param {string} sErrorTitle A title for the error message
-		 * @param {string} sDetails A technical error to be displayed on request
-		 * @private
-		 */
-		_showServiceError : function (sErrorTitle, sDetails) {
-			this._bMessageOpen = true;
-			MessageBox.error(
-				sErrorTitle,
-				{
-					id : \\"serviceErrorMessageBox\\",
-					details: sDetails,
-					styleClass: this._oComponent.getContentDensityClass(),
-					actions: [MessageBox.Action.CLOSE],
-					onClose: function () {
-						this._bMessageOpen = false;
-					}.bind(this)
-				}
-			);
-		}
-	});
+        /**
+         * Shows a {@link sap.m.MessageBox} when a service call has failed.
+         * Only the first error message will be displayed.
+         * @param {string} sErrorTitle A title for the error message
+         * @param {string} sDetails A technical error to be displayed on request
+         * @private
+         */
+        _showServiceError : function (sErrorTitle, sDetails) {
+            this._bMessageOpen = true;
+            MessageBox.error(
+                sErrorTitle,
+                {
+                    id : \\"serviceErrorMessageBox\\",
+                    details: sDetails,
+                    styleClass: this._oComponent.getContentDensityClass(),
+                    actions: [MessageBox.Action.CLOSE],
+                    onClose: function () {
+                        this._bMessageOpen = false;
+                    }.bind(this)
+                }
+            );
+        }
+    });
 });",
     "state": "modified",
   },
   "webapp/controller/NotFound.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\"
+    \\"./BaseController\\"
 ], function (BaseController) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.NotFound\\", {
+    return BaseController.extend(\\"wrk1.controller.NotFound\\", {
 
-		/**
-		 * Navigates to the worklist when the link is pressed
-		 * @public
-		 */
-		onLinkPressed : function () {
-			this.getRouter().navTo(\\"worklist\\");
-		}
+        /**
+         * Navigates to the worklist when the link is pressed
+         * @public
+         */
+        onLinkPressed : function () {
+            this.getRouter().navTo(\\"worklist\\");
+        }
 
-	});
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/Object.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\",
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"sap/ui/core/routing/History\\",
-	\\"../model/formatter\\"
+    \\"./BaseController\\",
+    \\"sap/ui/model/json/JSONModel\\",
+    \\"sap/ui/core/routing/History\\",
+    \\"../model/formatter\\"
 ], function (BaseController, JSONModel, History, formatter) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.Object\\", {
+    return BaseController.extend(\\"wrk1.controller.Object\\", {
 
-		formatter: formatter,
+        formatter: formatter,
 
-		/* =========================================================== */
-		/* lifecycle methods                                           */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* lifecycle methods                                           */
+        /* =========================================================== */
 
-		/**
-		 * Called when the worklist controller is instantiated.
-		 * @public
-		 */
-		onInit : function () {
-			// Model used to manipulate control states. The chosen values make sure,
-			// detail page shows busy indication immediately so there is no break in
-			// between the busy indication for loading the view's meta data
-			var oViewModel = new JSONModel({
-					busy : true,
-					delay : 0
-				});
-			this.getRouter().getRoute(\\"object\\").attachPatternMatched(this._onObjectMatched, this);
-			this.setModel(oViewModel, \\"objectView\\");
-		},
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
+        /**
+         * Called when the worklist controller is instantiated.
+         * @public
+         */
+        onInit : function () {
+            // Model used to manipulate control states. The chosen values make sure,
+            // detail page shows busy indication immediately so there is no break in
+            // between the busy indication for loading the view's meta data
+            var oViewModel = new JSONModel({
+                    busy : true,
+                    delay : 0
+                });
+            this.getRouter().getRoute(\\"object\\").attachPatternMatched(this._onObjectMatched, this);
+            this.setModel(oViewModel, \\"objectView\\");
+        },
+        /* =========================================================== */
+        /* event handlers                                              */
+        /* =========================================================== */
 
 
-		/**
-		 * Event handler  for navigating back.
-		 * It there is a history entry we go one step back in the browser history
-		 * If not, it will replace the current entry of the browser history with the worklist route.
-		 * @public
-		 */
-		onNavBack : function() {
-			var sPreviousHash = History.getInstance().getPreviousHash();
-			if (sPreviousHash !== undefined) {
-				// eslint-disable-next-line sap-no-history-manipulation
-				history.go(-1);
-			} else {
-				this.getRouter().navTo(\\"worklist\\", {}, true);
-			}
-		},
+        /**
+         * Event handler  for navigating back.
+         * It there is a history entry we go one step back in the browser history
+         * If not, it will replace the current entry of the browser history with the worklist route.
+         * @public
+         */
+        onNavBack : function() {
+            var sPreviousHash = History.getInstance().getPreviousHash();
+            if (sPreviousHash !== undefined) {
+                // eslint-disable-next-line sap-no-history-manipulation
+                history.go(-1);
+            } else {
+                this.getRouter().navTo(\\"worklist\\", {}, true);
+            }
+        },
 
-		/* =========================================================== */
-		/* internal methods                                            */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* internal methods                                            */
+        /* =========================================================== */
 
-		/**
-		 * Binds the view to the object path.
-		 * @function
-		 * @param {sap.ui.base.Event} oEvent pattern match event in route 'object'
-		 * @private
-		 */
-		_onObjectMatched : function (oEvent) {
-			var sObjectId =  oEvent.getParameter(\\"arguments\\").objectId;
-			this._bindView(\\"/SalesOrderItem\\" + sObjectId);
-		},
+        /**
+         * Binds the view to the object path.
+         * @function
+         * @param {sap.ui.base.Event} oEvent pattern match event in route 'object'
+         * @private
+         */
+        _onObjectMatched : function (oEvent) {
+            var sObjectId =  oEvent.getParameter(\\"arguments\\").objectId;
+            this._bindView(\\"/SalesOrderItem\\" + sObjectId);
+        },
 
-		/**
-		 * Binds the view to the object path.
-		 * @function
-		 * @param {string} sObjectPath path to the object to be bound
-		 * @private
-		 */
-		_bindView : function (sObjectPath) {
-			var oViewModel = this.getModel(\\"objectView\\");
+        /**
+         * Binds the view to the object path.
+         * @function
+         * @param {string} sObjectPath path to the object to be bound
+         * @private
+         */
+        _bindView : function (sObjectPath) {
+            var oViewModel = this.getModel(\\"objectView\\");
 
-			this.getView().bindElement({
-				path: sObjectPath,
-				events: {
-					change: this._onBindingChange.bind(this),
-					dataRequested: function () {
-						oViewModel.setProperty(\\"/busy\\", true);
-					},
-					dataReceived: function () {
-						oViewModel.setProperty(\\"/busy\\", false);
-					}
-				}
-			});
-		},
+            this.getView().bindElement({
+                path: sObjectPath,
+                events: {
+                    change: this._onBindingChange.bind(this),
+                    dataRequested: function () {
+                        oViewModel.setProperty(\\"/busy\\", true);
+                    },
+                    dataReceived: function () {
+                        oViewModel.setProperty(\\"/busy\\", false);
+                    }
+                }
+            });
+        },
 
-		_onBindingChange : function () {
-			var oView = this.getView(),
-				oViewModel = this.getModel(\\"objectView\\"),
-				oElementBinding = oView.getElementBinding();
+        _onBindingChange : function () {
+            var oView = this.getView(),
+                oViewModel = this.getModel(\\"objectView\\"),
+                oElementBinding = oView.getElementBinding();
 
-			// No data for the binding
-			if (!oElementBinding.getBoundContext()) {
-				this.getRouter().getTargets().display(\\"objectNotFound\\");
-				return;
-			}
+            // No data for the binding
+            if (!oElementBinding.getBoundContext()) {
+                this.getRouter().getTargets().display(\\"objectNotFound\\");
+                return;
+            }
 
-			var oResourceBundle = this.getResourceBundle(),
-				oObject = oView.getBindingContext().getObject(),
-				sObjectId = oObject.PurchaseOrderByCustomer,
-				sObjectName = oObject.SalesOrderItem;
+            var oResourceBundle = this.getResourceBundle(),
+                oObject = oView.getBindingContext().getObject(),
+                sObjectId = oObject.PurchaseOrderByCustomer,
+                sObjectName = oObject.SalesOrderItem;
 
-				oViewModel.setProperty(\\"/busy\\", false);
-				oViewModel.setProperty(\\"/shareSendEmailSubject\\",
-					oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
-				oViewModel.setProperty(\\"/shareSendEmailMessage\\",
-					oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
-		}
-	});
+                oViewModel.setProperty(\\"/busy\\", false);
+                oViewModel.setProperty(\\"/shareSendEmailSubject\\",
+                    oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
+                oViewModel.setProperty(\\"/shareSendEmailMessage\\",
+                    oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
+        }
+    });
 
 });
 ",
@@ -545,152 +545,152 @@ server:
   },
   "webapp/controller/Worklist.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\",
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"../model/formatter\\",
-	\\"sap/ui/model/Filter\\",
-	\\"sap/ui/model/FilterOperator\\"
+    \\"./BaseController\\",
+    \\"sap/ui/model/json/JSONModel\\",
+    \\"../model/formatter\\",
+    \\"sap/ui/model/Filter\\",
+    \\"sap/ui/model/FilterOperator\\"
 ], function (BaseController, JSONModel, formatter, Filter, FilterOperator) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.Worklist\\", {
+    return BaseController.extend(\\"wrk1.controller.Worklist\\", {
 
-		formatter: formatter,
+        formatter: formatter,
 
-		/* =========================================================== */
-		/* lifecycle methods                                           */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* lifecycle methods                                           */
+        /* =========================================================== */
 
-		/**
-		 * Called when the worklist controller is instantiated.
-		 * @public
-		 */
-		onInit : function () {
-			var oViewModel;
+        /**
+         * Called when the worklist controller is instantiated.
+         * @public
+         */
+        onInit : function () {
+            var oViewModel;
 
-			// keeps the search state
-			this._aTableSearchState = [];
+            // keeps the search state
+            this._aTableSearchState = [];
 
-			// Model used to manipulate control states
-			oViewModel = new JSONModel({
-				worklistTableTitle : this.getResourceBundle().getText(\\"worklistTableTitle\\"),
-				shareSendEmailSubject: this.getResourceBundle().getText(\\"shareSendEmailWorklistSubject\\"),
-				shareSendEmailMessage: this.getResourceBundle().getText(\\"shareSendEmailWorklistMessage\\", [location.href]),
-				tableNoDataText : this.getResourceBundle().getText(\\"tableNoDataText\\")
-			});
-			this.setModel(oViewModel, \\"worklistView\\");
+            // Model used to manipulate control states
+            oViewModel = new JSONModel({
+                worklistTableTitle : this.getResourceBundle().getText(\\"worklistTableTitle\\"),
+                shareSendEmailSubject: this.getResourceBundle().getText(\\"shareSendEmailWorklistSubject\\"),
+                shareSendEmailMessage: this.getResourceBundle().getText(\\"shareSendEmailWorklistMessage\\", [location.href]),
+                tableNoDataText : this.getResourceBundle().getText(\\"tableNoDataText\\")
+            });
+            this.setModel(oViewModel, \\"worklistView\\");
 
-		},
+        },
 
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* event handlers                                              */
+        /* =========================================================== */
 
-		/**
-		 * Triggered by the table's 'updateFinished' event: after new table
-		 * data is available, this handler method updates the table counter.
-		 * This should only happen if the update was successful, which is
-		 * why this handler is attached to 'updateFinished' and not to the
-		 * table's list binding's 'dataReceived' method.
-		 * @param {sap.ui.base.Event} oEvent the update finished event
-		 * @public
-		 */
-		onUpdateFinished : function (oEvent) {
-			// update the worklist's object counter after the table update
-			var sTitle,
-				oTable = oEvent.getSource(),
-				iTotalItems = oEvent.getParameter(\\"total\\");
-			// only update the counter if the length is final and
-			// the table is not empty
-			if (iTotalItems && oTable.getBinding(\\"items\\").isLengthFinal()) {
-				sTitle = this.getResourceBundle().getText(\\"worklistTableTitleCount\\", [iTotalItems]);
-			} else {
-				sTitle = this.getResourceBundle().getText(\\"worklistTableTitle\\");
-			}
-			this.getModel(\\"worklistView\\").setProperty(\\"/worklistTableTitle\\", sTitle);
-		},
+        /**
+         * Triggered by the table's 'updateFinished' event: after new table
+         * data is available, this handler method updates the table counter.
+         * This should only happen if the update was successful, which is
+         * why this handler is attached to 'updateFinished' and not to the
+         * table's list binding's 'dataReceived' method.
+         * @param {sap.ui.base.Event} oEvent the update finished event
+         * @public
+         */
+        onUpdateFinished : function (oEvent) {
+            // update the worklist's object counter after the table update
+            var sTitle,
+                oTable = oEvent.getSource(),
+                iTotalItems = oEvent.getParameter(\\"total\\");
+            // only update the counter if the length is final and
+            // the table is not empty
+            if (iTotalItems && oTable.getBinding(\\"items\\").isLengthFinal()) {
+                sTitle = this.getResourceBundle().getText(\\"worklistTableTitleCount\\", [iTotalItems]);
+            } else {
+                sTitle = this.getResourceBundle().getText(\\"worklistTableTitle\\");
+            }
+            this.getModel(\\"worklistView\\").setProperty(\\"/worklistTableTitle\\", sTitle);
+        },
 
-		/**
-		 * Event handler when a table item gets pressed
-		 * @param {sap.ui.base.Event} oEvent the table selectionChange event
-		 * @public
-		 */
-		onPress : function (oEvent) {
-			// The source is the list item that got pressed
-			this._showObject(oEvent.getSource());
-		},
+        /**
+         * Event handler when a table item gets pressed
+         * @param {sap.ui.base.Event} oEvent the table selectionChange event
+         * @public
+         */
+        onPress : function (oEvent) {
+            // The source is the list item that got pressed
+            this._showObject(oEvent.getSource());
+        },
 
-		/**
-		 * Event handler for navigating back.
-		 * Navigate back in the browser history
-		 * @public
-		 */
-		onNavBack : function() {
-			// eslint-disable-next-line sap-no-history-manipulation
-			history.go(-1);
-		},
+        /**
+         * Event handler for navigating back.
+         * Navigate back in the browser history
+         * @public
+         */
+        onNavBack : function() {
+            // eslint-disable-next-line sap-no-history-manipulation
+            history.go(-1);
+        },
 
 
-		onSearch : function (oEvent) {
-			if (oEvent.getParameters().refreshButtonPressed) {
-				// Search field's 'refresh' button has been pressed.
-				// This is visible if you select any main list item.
-				// In this case no new search is triggered, we only
-				// refresh the list binding.
-				this.onRefresh();
-			} else {
-				var aTableSearchState = [];
-				var sQuery = oEvent.getParameter(\\"query\\");
+        onSearch : function (oEvent) {
+            if (oEvent.getParameters().refreshButtonPressed) {
+                // Search field's 'refresh' button has been pressed.
+                // This is visible if you select any main list item.
+                // In this case no new search is triggered, we only
+                // refresh the list binding.
+                this.onRefresh();
+            } else {
+                var aTableSearchState = [];
+                var sQuery = oEvent.getParameter(\\"query\\");
 
-				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"PurchaseOrderByCustomer\\", FilterOperator.Contains, sQuery)];
-				}
-				this._applySearch(aTableSearchState);
-			}
+                if (sQuery && sQuery.length > 0) {
+                    aTableSearchState = [new Filter(\\"PurchaseOrderByCustomer\\", FilterOperator.Contains, sQuery)];
+                }
+                this._applySearch(aTableSearchState);
+            }
 
-		},
+        },
 
-		/**
-		 * Event handler for refresh event. Keeps filter, sort
-		 * and group settings and refreshes the list binding.
-		 * @public
-		 */
-		onRefresh : function () {
-			var oTable = this.byId(\\"table\\");
-			oTable.getBinding(\\"items\\").refresh();
-		},
+        /**
+         * Event handler for refresh event. Keeps filter, sort
+         * and group settings and refreshes the list binding.
+         * @public
+         */
+        onRefresh : function () {
+            var oTable = this.byId(\\"table\\");
+            oTable.getBinding(\\"items\\").refresh();
+        },
 
-		/* =========================================================== */
-		/* internal methods                                            */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* internal methods                                            */
+        /* =========================================================== */
 
-		/**
-		 * Shows the selected item on the object page
-		 * @param {sap.m.ObjectListItem} oItem selected Item
-		 * @private
-		 */
-		_showObject : function (oItem) {
-			this.getRouter().navTo(\\"object\\", {
-				objectId: oItem.getBindingContext().getPath().substring(\\"/SalesOrderItem\\".length)
-			});
-		},
+        /**
+         * Shows the selected item on the object page
+         * @param {sap.m.ObjectListItem} oItem selected Item
+         * @private
+         */
+        _showObject : function (oItem) {
+            this.getRouter().navTo(\\"object\\", {
+                objectId: oItem.getBindingContext().getPath().substring(\\"/SalesOrderItem\\".length)
+            });
+        },
 
-		/**
-		 * Internal helper method to apply both filter and search state together on the list binding
-		 * @param {sap.ui.model.Filter[]} aTableSearchState An array of filters for the search
-		 * @private
-		 */
-		_applySearch: function(aTableSearchState) {
-			var oTable = this.byId(\\"table\\"),
-				oViewModel = this.getModel(\\"worklistView\\");
-			oTable.getBinding(\\"items\\").filter(aTableSearchState, \\"Application\\");
-			// changes the noDataText of the list in case there are no filter results
-			if (aTableSearchState.length !== 0) {
-				oViewModel.setProperty(\\"/tableNoDataText\\", this.getResourceBundle().getText(\\"worklistNoDataWithSearchText\\"));
-			}
-		}
+        /**
+         * Internal helper method to apply both filter and search state together on the list binding
+         * @param {sap.ui.model.Filter[]} aTableSearchState An array of filters for the search
+         * @private
+         */
+        _applySearch: function(aTableSearchState) {
+            var oTable = this.byId(\\"table\\"),
+                oViewModel = this.getModel(\\"worklistView\\");
+            oTable.getBinding(\\"items\\").filter(aTableSearchState, \\"Application\\");
+            // changes the noDataText of the list in case there are no filter results
+            if (aTableSearchState.length !== 0) {
+                oViewModel.setProperty(\\"/tableNoDataText\\", this.getResourceBundle().getText(\\"worklistNoDataWithSearchText\\"));
+            }
+        }
 
-	});
+    });
 });
 ",
     "state": "modified",
@@ -6182,42 +6182,42 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/model/formatter.js": Object {
     "contents": "sap.ui.define([], function () {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return {
+    return {
 
-		/**
-		 * Rounds the number unit value to 2 digits
-		 * @public
-		 * @param {string} sValue the number string to be rounded
-		 * @returns {string} sValue with 2 digits rounded
-		 */
-		numberUnit : function (sValue) {
-			if (!sValue) {
-				return \\"\\";
-			}
-			return parseFloat(sValue).toFixed(2);
-		}
+        /**
+         * Rounds the number unit value to 2 digits
+         * @public
+         * @param {string} sValue the number string to be rounded
+         * @returns {string} sValue with 2 digits rounded
+         */
+        numberUnit : function (sValue) {
+            if (!sValue) {
+                return \\"\\";
+            }
+            return parseFloat(sValue).toFixed(2);
+        }
 
-	};
+    };
 
 });",
     "state": "modified",
   },
   "webapp/model/models.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"sap/ui/Device\\"
+    \\"sap/ui/model/json/JSONModel\\",
+    \\"sap/ui/Device\\"
 ], function (JSONModel, Device) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return {
-		createDeviceModel : function () {
-			var oModel = new JSONModel(Device);
-			oModel.setDefaultBindingMode(\\"OneWay\\");
-			return oModel;
-		}
-	};
+    return {
+        createDeviceModel : function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
+        }
+    };
 });",
     "state": "modified",
   },
@@ -6226,73 +6226,73 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 <html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
-	<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-	<title>{{appTitle}}</title>
+    <title>{{appTitle}}</title>
 
-	<!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
 
-		 The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
 
-		 The fiori2 renderer will render the shell header allowing, for instance,
-		 testing of additional application setting buttons.
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
 
-		 The navigation target resolution service is configured in a way that the empty URL hash is
-		 resolved to our own application.
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
 
-		 This example uses relative path references for the SAPUI5 resources and test-resources;
-		 it might be necessary to adapt them depending on the target runtime platform.
-		 The sandbox platform is restricted to development or demo use cases and must NOT be used
-		 for productive scenarios.
-	-->
-	<script type=\\"text/javascript\\">
-		window[\\"sap-ushell-config\\"] = {
-			defaultRenderer: \\"fiori2\\",
-			bootstrapPlugins: {
-				\\"RuntimeAuthoringPlugin\\": {
-					component: \\"sap.ushell.plugins.rta\\",
-					config: {
-						validateAppVersion: false
-					}
-				}
-			},
-			renderers: {
-				fiori2: {
-					componentData: {
-						config: {
-							search: \\"hidden\\"
-						}
-					}
-				}
-			},
-			applications: {
-				\\"wrk1-tile\\": {
-					title: \\"App Title\\",
-					description: \\"A Fiori application.\\",
-					additionalInformation: \\"SAPUI5.Component=wrk1\\",
-					applicationType: \\"URL\\",
-					url: \\"../\\"
-				}
-			}
-		};
-	</script>
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\"
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"wrk1-tile\\": {
+                    title: \\"App Title\\",
+                    description: \\"A Fiori application.\\",
+                    additionalInformation: \\"SAPUI5.Component=wrk1\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
 
-	<script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-	<!-- Bootstrap the UI5 core library -->
-	<script id=\\"sap-ui-bootstrap\\"
-		src=\\"../resources/sap-ui-core.js\\"
-		data-sap-ui-libs=\\"sap.f,sap.m,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.core,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
-		data-sap-ui-async=\\"true\\"
-		data-sap-ui-preload=\\"async\\"
-		data-sap-ui-theme=\\"sap_belize\\"
-		data-sap-ui-compatVersion=\\"edge\\"
-		data-sap-ui-language=\\"en\\"
-		data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
-		data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-		</script>
-		<script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-		</script>
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.f,sap.m,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.core,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        </script>
+        <script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        </script>
 </head>
 
 <!-- UI Content -->
@@ -6480,177 +6480,177 @@ sap.registerComponentDependencyPaths(manifestUri);
   },
   "webapp/view/App.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.App\\"
-	displayBlock=\\"true\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\">
+    controllerName=\\"wrk1.controller.App\\"
+    displayBlock=\\"true\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
 
-	<Shell>
-		<App
-			id=\\"app\\"
-			busy=\\"{appView>/busy}\\"
-			busyIndicatorDelay=\\"{appView>/delay}\\"/>
-	</Shell>
+    <Shell>
+        <App
+            id=\\"app\\"
+            busy=\\"{appView>/busy}\\"
+            busyIndicatorDelay=\\"{appView>/delay}\\"/>
+    </Shell>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/NotFound.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.NotFound\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\">
+    controllerName=\\"wrk1.controller.NotFound\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
 
-	<MessagePage
-		title=\\"{i18n>notFoundTitle}\\"
-		text=\\"{i18n>notFoundText}\\"
-		icon=\\"sap-icon://document\\"
-		id=\\"page\\"
-		description=\\"\\">
-		<customDescription>
-			<Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\"/>
-		</customDescription>
-	</MessagePage>
+    <MessagePage
+        title=\\"{i18n>notFoundTitle}\\"
+        text=\\"{i18n>notFoundText}\\"
+        icon=\\"sap-icon://document\\"
+        id=\\"page\\"
+        description=\\"\\">
+        <customDescription>
+            <Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\"/>
+        </customDescription>
+    </MessagePage>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/Object.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.Object\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\"
-	xmlns:semantic=\\"sap.f.semantic\\">
+    controllerName=\\"wrk1.controller.Object\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\"
+    xmlns:semantic=\\"sap.f.semantic\\">
 
-	<semantic:SemanticPage
-		id=\\"page\\"
-		headerPinnable=\\"false\\"
-		toggleHeaderOnTitleClick=\\"false\\"
-		busy=\\"{objectView>/busy}\\"
-		busyIndicatorDelay=\\"{objectView>/delay}\\">
+    <semantic:SemanticPage
+        id=\\"page\\"
+        headerPinnable=\\"false\\"
+        toggleHeaderOnTitleClick=\\"false\\"
+        busy=\\"{objectView>/busy}\\"
+        busyIndicatorDelay=\\"{objectView>/delay}\\">
 
-		<semantic:titleHeading>
-			<Title
-				text=\\"{PurchaseOrderByCustomer}\\"
-				level=\\"H2\\"/>
-		</semantic:titleHeading>
+        <semantic:titleHeading>
+            <Title
+                text=\\"{PurchaseOrderByCustomer}\\"
+                level=\\"H2\\"/>
+        </semantic:titleHeading>
 
-		<semantic:headerContent>
-			<ObjectNumber />
-		</semantic:headerContent>
+        <semantic:headerContent>
+            <ObjectNumber />
+        </semantic:headerContent>
 
-		<semantic:sendEmailAction>
-			<semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
-		</semantic:sendEmailAction>
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
+        </semantic:sendEmailAction>
 
-	</semantic:SemanticPage>
+    </semantic:SemanticPage>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/ObjectNotFound.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.NotFound\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\">
+    controllerName=\\"wrk1.controller.NotFound\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
 
-	<MessagePage
-		title=\\"{i18n>objectTitle}\\"
-		text=\\"{i18n>noObjectFoundText}\\"
-		icon=\\"sap-icon://product\\"
-		description=\\"\\"
-		id=\\"page\\">
-		<customDescription>
-			<Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\" />
-		</customDescription>
-	</MessagePage>
+    <MessagePage
+        title=\\"{i18n>objectTitle}\\"
+        text=\\"{i18n>noObjectFoundText}\\"
+        icon=\\"sap-icon://product\\"
+        description=\\"\\"
+        id=\\"page\\">
+        <customDescription>
+            <Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\" />
+        </customDescription>
+    </MessagePage>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/Worklist.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.Worklist\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\"
-	xmlns:semantic=\\"sap.f.semantic\\">
+    controllerName=\\"wrk1.controller.Worklist\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\"
+    xmlns:semantic=\\"sap.f.semantic\\">
 
-	<semantic:SemanticPage
-		id=\\"page\\"
-		headerPinnable=\\"false\\"
-		toggleHeaderOnTitleClick=\\"false\\">
+    <semantic:SemanticPage
+        id=\\"page\\"
+        headerPinnable=\\"false\\"
+        toggleHeaderOnTitleClick=\\"false\\">
 
-		<semantic:titleHeading>
-			<Title
-				text=\\"{i18n>worklistTitle}\\"
-				level=\\"H2\\"/>
-		</semantic:titleHeading>
+        <semantic:titleHeading>
+            <Title
+                text=\\"{i18n>worklistTitle}\\"
+                level=\\"H2\\"/>
+        </semantic:titleHeading>
 
-		<semantic:content>
-			<Table
-				id=\\"table\\"
-				width=\\"auto\\"
-				items=\\"{
-					path: '/SalesOrderItem',
-					sorter: {
-						path: 'PurchaseOrderByCustomer',
-						descending: false
-					}
-				}\\"
-				noDataText=\\"{worklistView>/tableNoDataText}\\"
-				busyIndicatorDelay=\\"{worklistView>/tableBusyDelay}\\"
-				growing=\\"true\\"
-				growingScrollToLoad=\\"true\\"
-				updateFinished=\\".onUpdateFinished\\">
+        <semantic:content>
+            <Table
+                id=\\"table\\"
+                width=\\"auto\\"
+                items=\\"{
+                    path: '/SalesOrderItem',
+                    sorter: {
+                        path: 'PurchaseOrderByCustomer',
+                        descending: false
+                    }
+                }\\"
+                noDataText=\\"{worklistView>/tableNoDataText}\\"
+                busyIndicatorDelay=\\"{worklistView>/tableBusyDelay}\\"
+                growing=\\"true\\"
+                growingScrollToLoad=\\"true\\"
+                updateFinished=\\".onUpdateFinished\\">
 
-				<headerToolbar>
-					<OverflowToolbar>
-						<Title
-							id=\\"tableHeader\\"
-							text=\\"{worklistView>/worklistTableTitle}\\"
-							level=\\"H3\\"/>
-						<ToolbarSpacer />
-						<SearchField
-							id=\\"searchField\\"
-							tooltip=\\"{i18n>worklistSearchTooltip}\\"
-							search=\\".onSearch\\">
-							<layoutData>
-								<OverflowToolbarLayoutData
-									maxWidth=\\"200px\\"
-									priority=\\"NeverOverflow\\"/>
-							</layoutData>
-						</SearchField>
-					</OverflowToolbar>
-				</headerToolbar>
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title
+                            id=\\"tableHeader\\"
+                            text=\\"{worklistView>/worklistTableTitle}\\"
+                            level=\\"H3\\"/>
+                        <ToolbarSpacer />
+                        <SearchField
+                            id=\\"searchField\\"
+                            tooltip=\\"{i18n>worklistSearchTooltip}\\"
+                            search=\\".onSearch\\">
+                            <layoutData>
+                                <OverflowToolbarLayoutData
+                                    maxWidth=\\"200px\\"
+                                    priority=\\"NeverOverflow\\"/>
+                            </layoutData>
+                        </SearchField>
+                    </OverflowToolbar>
+                </headerToolbar>
 
-				<columns>
-					<Column id=\\"nameColumn\\">
-						<Text text=\\"{i18n>tableNameColumnTitle}\\" id=\\"nameColumnTitle\\"/>
-					</Column>
-					<Column id=\\"unitNumberColumn\\" hAlign=\\"End\\">
-						<Text text=\\"{i18n>tableUnitNumberColumnTitle}\\" id=\\"unitNumberColumnTitle\\"/>
-					</Column>
-				</columns>
+                <columns>
+                    <Column id=\\"nameColumn\\">
+                        <Text text=\\"{i18n>tableNameColumnTitle}\\" id=\\"nameColumnTitle\\"/>
+                    </Column>
+                    <Column id=\\"unitNumberColumn\\" hAlign=\\"End\\">
+                        <Text text=\\"{i18n>tableUnitNumberColumnTitle}\\" id=\\"unitNumberColumnTitle\\"/>
+                    </Column>
+                </columns>
 
-				<items>
-					<ColumnListItem
-						type=\\"Navigation\\"
-						press=\\".onPress\\">
-						<cells>
-							<ObjectIdentifier
-								title=\\"{PurchaseOrderByCustomer}\\"/>
-							<ObjectNumber />
-						</cells>
-					</ColumnListItem>
-				</items>
-			</Table>
-		</semantic:content>
+                <items>
+                    <ColumnListItem
+                        type=\\"Navigation\\"
+                        press=\\".onPress\\">
+                        <cells>
+                            <ObjectIdentifier
+                                title=\\"{PurchaseOrderByCustomer}\\"/>
+                            <ObjectNumber />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </semantic:content>
 
-		<semantic:sendEmailAction>
-			<semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
-		</semantic:sendEmailAction>
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
+        </semantic:sendEmailAction>
 
-	</semantic:SemanticPage>
+    </semantic:SemanticPage>
 
 </mvc:View>",
     "state": "modified",
@@ -6833,378 +6833,378 @@ server:
   },
   "webapp/Component.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/core/UIComponent\\",
-	\\"sap/ui/Device\\",
-	\\"./model/models\\",
-	\\"./controller/ErrorHandler\\"
+    \\"sap/ui/core/UIComponent\\",
+    \\"sap/ui/Device\\",
+    \\"./model/models\\",
+    \\"./controller/ErrorHandler\\"
 ], function (UIComponent, Device, models, ErrorHandler) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return UIComponent.extend(\\"wrk1.Component\\", {
+    return UIComponent.extend(\\"wrk1.Component\\", {
 
-		metadata : {
-			manifest: \\"json\\"
-		},
+        metadata : {
+            manifest: \\"json\\"
+        },
 
-		/**
-		 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-		 * In this function, the device models are set and the router is initialized.
-		 * @public
-		 * @override
-		 */
-		init : function () {
-			// call the base component's init function
-			UIComponent.prototype.init.apply(this, arguments);
+        /**
+         * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+         * In this function, the device models are set and the router is initialized.
+         * @public
+         * @override
+         */
+        init : function () {
+            // call the base component's init function
+            UIComponent.prototype.init.apply(this, arguments);
 
-			// initialize the error handler with the component
-			this._oErrorHandler = new ErrorHandler(this);
+            // initialize the error handler with the component
+            this._oErrorHandler = new ErrorHandler(this);
 
-			// set the device model
-			this.setModel(models.createDeviceModel(), \\"device\\");
+            // set the device model
+            this.setModel(models.createDeviceModel(), \\"device\\");
 
-			// create the views based on the url/hash
-			this.getRouter().initialize();
-		},
+            // create the views based on the url/hash
+            this.getRouter().initialize();
+        },
 
-		/**
-		 * The component is destroyed by UI5 automatically.
-		 * In this method, the ErrorHandler is destroyed.
-		 * @public
-		 * @override
-		 */
-		destroy : function () {
-			this._oErrorHandler.destroy();
-			// call the base component's destroy function
-			UIComponent.prototype.destroy.apply(this, arguments);
-		},
+        /**
+         * The component is destroyed by UI5 automatically.
+         * In this method, the ErrorHandler is destroyed.
+         * @public
+         * @override
+         */
+        destroy : function () {
+            this._oErrorHandler.destroy();
+            // call the base component's destroy function
+            UIComponent.prototype.destroy.apply(this, arguments);
+        },
 
-		/**
-		 * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
-		 * design mode class should be set, which influences the size appearance of some controls.
-		 * @public
-		 * @return {string} css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
-		 */
-		getContentDensityClass : function() {
-			if (this._sContentDensityClass === undefined) {
-				// check whether FLP has already set the content density class; do nothing in this case
-				// eslint-disable-next-line sap-no-proprietary-browser-api
-				if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
-					this._sContentDensityClass = \\"\\";
-				} else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
-					this._sContentDensityClass = \\"sapUiSizeCompact\\";
-				} else {
-					// \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
-					this._sContentDensityClass = \\"sapUiSizeCozy\\";
-				}
-			}
-			return this._sContentDensityClass;
-		}
+        /**
+         * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
+         * design mode class should be set, which influences the size appearance of some controls.
+         * @public
+         * @return {string} css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
+         */
+        getContentDensityClass : function() {
+            if (this._sContentDensityClass === undefined) {
+                // check whether FLP has already set the content density class; do nothing in this case
+                // eslint-disable-next-line sap-no-proprietary-browser-api
+                if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
+                    this._sContentDensityClass = \\"\\";
+                } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
+                    this._sContentDensityClass = \\"sapUiSizeCompact\\";
+                } else {
+                    // \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
+                    this._sContentDensityClass = \\"sapUiSizeCozy\\";
+                }
+            }
+            return this._sContentDensityClass;
+        }
 
-	});
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/App.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\"
+    \\"./BaseController\\"
 ], function (BaseController) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.App\\", {
+    return BaseController.extend(\\"wrk1.controller.App\\", {
 
-		onInit : function () {
-			// apply content density mode to root view
-			this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
-		}
-	});
+        onInit : function () {
+            // apply content density mode to root view
+            this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
+        }
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/BaseController.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/core/mvc/Controller\\",
-	\\"sap/ui/core/UIComponent\\",
-	\\"sap/m/library\\"
+    \\"sap/ui/core/mvc/Controller\\",
+    \\"sap/ui/core/UIComponent\\",
+    \\"sap/m/library\\"
 ], function (Controller, UIComponent, mobileLibrary) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	// shortcut for sap.m.URLHelper
-	var URLHelper = mobileLibrary.URLHelper;
+    // shortcut for sap.m.URLHelper
+    var URLHelper = mobileLibrary.URLHelper;
 
-	return Controller.extend(\\"wrk1.controller.BaseController\\", {
-		/**
-		 * Convenience method for accessing the router.
-		 * @public
-		 * @returns {sap.ui.core.routing.Router} the router for this component
-		 */
-		getRouter : function () {
-			return UIComponent.getRouterFor(this);
-		},
+    return Controller.extend(\\"wrk1.controller.BaseController\\", {
+        /**
+         * Convenience method for accessing the router.
+         * @public
+         * @returns {sap.ui.core.routing.Router} the router for this component
+         */
+        getRouter : function () {
+            return UIComponent.getRouterFor(this);
+        },
 
-		/**
-		 * Convenience method for getting the view model by name.
-		 * @public
-		 * @param {string} [sName] the model name
-		 * @returns {sap.ui.model.Model} the model instance
-		 */
-		getModel : function (sName) {
-			return this.getView().getModel(sName);
-		},
+        /**
+         * Convenience method for getting the view model by name.
+         * @public
+         * @param {string} [sName] the model name
+         * @returns {sap.ui.model.Model} the model instance
+         */
+        getModel : function (sName) {
+            return this.getView().getModel(sName);
+        },
 
-		/**
-		 * Convenience method for setting the view model.
-		 * @public
-		 * @param {sap.ui.model.Model} oModel the model instance
-		 * @param {string} sName the model name
-		 * @returns {sap.ui.mvc.View} the view instance
-		 */
-		setModel : function (oModel, sName) {
-			return this.getView().setModel(oModel, sName);
-		},
+        /**
+         * Convenience method for setting the view model.
+         * @public
+         * @param {sap.ui.model.Model} oModel the model instance
+         * @param {string} sName the model name
+         * @returns {sap.ui.mvc.View} the view instance
+         */
+        setModel : function (oModel, sName) {
+            return this.getView().setModel(oModel, sName);
+        },
 
-		/**
-		 * Getter for the resource bundle.
-		 * @public
-		 * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
-		 */
-		getResourceBundle : function () {
-			return this.getOwnerComponent().getModel(\\"i18n\\").getResourceBundle();
-		},
+        /**
+         * Getter for the resource bundle.
+         * @public
+         * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
+         */
+        getResourceBundle : function () {
+            return this.getOwnerComponent().getModel(\\"i18n\\").getResourceBundle();
+        },
 
-		/**
-		 * Event handler when the share by E-Mail button has been clicked
-		 * @public
-		 */
-		onShareEmailPress : function () {
-			var oViewModel = (this.getModel(\\"objectView\\") || this.getModel(\\"worklistView\\"));
-			URLHelper.triggerEmail(
-				null,
-				oViewModel.getProperty(\\"/shareSendEmailSubject\\"),
-				oViewModel.getProperty(\\"/shareSendEmailMessage\\")
-			);
-		}
-	});
+        /**
+         * Event handler when the share by E-Mail button has been clicked
+         * @public
+         */
+        onShareEmailPress : function () {
+            var oViewModel = (this.getModel(\\"objectView\\") || this.getModel(\\"worklistView\\"));
+            URLHelper.triggerEmail(
+                null,
+                oViewModel.getProperty(\\"/shareSendEmailSubject\\"),
+                oViewModel.getProperty(\\"/shareSendEmailMessage\\")
+            );
+        }
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/ErrorHandler.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/base/Object\\",
-	\\"sap/m/MessageBox\\",
-	\\"sap/ui/model/Filter\\",
-	\\"sap/ui/model/FilterOperator\\"
+    \\"sap/ui/base/Object\\",
+    \\"sap/m/MessageBox\\",
+    \\"sap/ui/model/Filter\\",
+    \\"sap/ui/model/FilterOperator\\"
 ], function (UI5Object, MessageBox, Filter, FilterOperator) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return UI5Object.extend(\\"wrk1.controller.ErrorHandler\\", {
+    return UI5Object.extend(\\"wrk1.controller.ErrorHandler\\", {
 
-		/**
-		 * Handles application errors by automatically attaching to the model events and displaying errors when needed.
-		 * @class
-		 * @param {sap.ui.core.UIComponent} oComponent reference to the app's component
-		 * @public
-		 * @alias wrk1.controller.ErrorHandler
-		 */
-		constructor : function (oComponent) {
-			var	oMessageManager = sap.ui.getCore().getMessageManager(),
-				oMessageModel = oMessageManager.getMessageModel(),
-				oResourceBundle = oComponent.getModel(\\"i18n\\").getResourceBundle(),
-				sErrorText = oResourceBundle.getText(\\"errorText\\"),
-				sMultipleErrors = oResourceBundle.getText(\\"multipleErrorsText\\");
+        /**
+         * Handles application errors by automatically attaching to the model events and displaying errors when needed.
+         * @class
+         * @param {sap.ui.core.UIComponent} oComponent reference to the app's component
+         * @public
+         * @alias wrk1.controller.ErrorHandler
+         */
+        constructor : function (oComponent) {
+            var oMessageManager = sap.ui.getCore().getMessageManager(),
+                oMessageModel = oMessageManager.getMessageModel(),
+                oResourceBundle = oComponent.getModel(\\"i18n\\").getResourceBundle(),
+                sErrorText = oResourceBundle.getText(\\"errorText\\"),
+                sMultipleErrors = oResourceBundle.getText(\\"multipleErrorsText\\");
 
-			this._oComponent = oComponent;
-			this._bMessageOpen = false;
+            this._oComponent = oComponent;
+            this._bMessageOpen = false;
 
-			this.oMessageModelBinding = oMessageModel.bindList(\\"/\\", undefined,
-				[], new Filter(\\"technical\\", FilterOperator.EQ, true));
+            this.oMessageModelBinding = oMessageModel.bindList(\\"/\\", undefined,
+                [], new Filter(\\"technical\\", FilterOperator.EQ, true));
 
-			this.oMessageModelBinding.attachChange(function (oEvent) {
-				var aContexts = oEvent.getSource().getContexts(),
-					aMessages = [],
-					sErrorTitle;
+            this.oMessageModelBinding.attachChange(function (oEvent) {
+                var aContexts = oEvent.getSource().getContexts(),
+                    aMessages = [],
+                    sErrorTitle;
 
-				if (this._bMessageOpen || !aContexts.length) {
-					return;
-				}
+                if (this._bMessageOpen || !aContexts.length) {
+                    return;
+                }
 
-				// Extract and remove the technical messages
-				aContexts.forEach(function (oContext) {
-					aMessages.push(oContext.getObject());
-				});
-				oMessageManager.removeMessages(aMessages);
+                // Extract and remove the technical messages
+                aContexts.forEach(function (oContext) {
+                    aMessages.push(oContext.getObject());
+                });
+                oMessageManager.removeMessages(aMessages);
 
-				// Due to batching there can be more than one technical message. However the UX
-				// guidelines say \\"display a single message in a message box\\" assuming that there
-				// will be only one at a time.
-				sErrorTitle = aMessages.length === 1 ? sErrorText : sMultipleErrors;
-				this._showServiceError(sErrorTitle, aMessages[0].message);
-			}, this);
-		},
+                // Due to batching there can be more than one technical message. However the UX
+                // guidelines say \\"display a single message in a message box\\" assuming that there
+                // will be only one at a time.
+                sErrorTitle = aMessages.length === 1 ? sErrorText : sMultipleErrors;
+                this._showServiceError(sErrorTitle, aMessages[0].message);
+            }, this);
+        },
 
-		/**
-		 * Shows a {@link sap.m.MessageBox} when a service call has failed.
-		 * Only the first error message will be displayed.
-		 * @param {string} sErrorTitle A title for the error message
-		 * @param {string} sDetails A technical error to be displayed on request
-		 * @private
-		 */
-		_showServiceError : function (sErrorTitle, sDetails) {
-			this._bMessageOpen = true;
-			MessageBox.error(
-				sErrorTitle,
-				{
-					id : \\"serviceErrorMessageBox\\",
-					details: sDetails,
-					styleClass: this._oComponent.getContentDensityClass(),
-					actions: [MessageBox.Action.CLOSE],
-					onClose: function () {
-						this._bMessageOpen = false;
-					}.bind(this)
-				}
-			);
-		}
-	});
+        /**
+         * Shows a {@link sap.m.MessageBox} when a service call has failed.
+         * Only the first error message will be displayed.
+         * @param {string} sErrorTitle A title for the error message
+         * @param {string} sDetails A technical error to be displayed on request
+         * @private
+         */
+        _showServiceError : function (sErrorTitle, sDetails) {
+            this._bMessageOpen = true;
+            MessageBox.error(
+                sErrorTitle,
+                {
+                    id : \\"serviceErrorMessageBox\\",
+                    details: sDetails,
+                    styleClass: this._oComponent.getContentDensityClass(),
+                    actions: [MessageBox.Action.CLOSE],
+                    onClose: function () {
+                        this._bMessageOpen = false;
+                    }.bind(this)
+                }
+            );
+        }
+    });
 });",
     "state": "modified",
   },
   "webapp/controller/NotFound.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\"
+    \\"./BaseController\\"
 ], function (BaseController) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.NotFound\\", {
+    return BaseController.extend(\\"wrk1.controller.NotFound\\", {
 
-		/**
-		 * Navigates to the worklist when the link is pressed
-		 * @public
-		 */
-		onLinkPressed : function () {
-			this.getRouter().navTo(\\"worklist\\");
-		}
+        /**
+         * Navigates to the worklist when the link is pressed
+         * @public
+         */
+        onLinkPressed : function () {
+            this.getRouter().navTo(\\"worklist\\");
+        }
 
-	});
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/Object.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\",
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"sap/ui/core/routing/History\\",
-	\\"../model/formatter\\"
+    \\"./BaseController\\",
+    \\"sap/ui/model/json/JSONModel\\",
+    \\"sap/ui/core/routing/History\\",
+    \\"../model/formatter\\"
 ], function (BaseController, JSONModel, History, formatter) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.Object\\", {
+    return BaseController.extend(\\"wrk1.controller.Object\\", {
 
-		formatter: formatter,
+        formatter: formatter,
 
-		/* =========================================================== */
-		/* lifecycle methods                                           */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* lifecycle methods                                           */
+        /* =========================================================== */
 
-		/**
-		 * Called when the worklist controller is instantiated.
-		 * @public
-		 */
-		onInit : function () {
-			// Model used to manipulate control states. The chosen values make sure,
-			// detail page shows busy indication immediately so there is no break in
-			// between the busy indication for loading the view's meta data
-			var oViewModel = new JSONModel({
-					busy : true,
-					delay : 0
-				});
-			this.getRouter().getRoute(\\"object\\").attachPatternMatched(this._onObjectMatched, this);
-			this.setModel(oViewModel, \\"objectView\\");
-		},
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
+        /**
+         * Called when the worklist controller is instantiated.
+         * @public
+         */
+        onInit : function () {
+            // Model used to manipulate control states. The chosen values make sure,
+            // detail page shows busy indication immediately so there is no break in
+            // between the busy indication for loading the view's meta data
+            var oViewModel = new JSONModel({
+                    busy : true,
+                    delay : 0
+                });
+            this.getRouter().getRoute(\\"object\\").attachPatternMatched(this._onObjectMatched, this);
+            this.setModel(oViewModel, \\"objectView\\");
+        },
+        /* =========================================================== */
+        /* event handlers                                              */
+        /* =========================================================== */
 
 
-		/**
-		 * Event handler  for navigating back.
-		 * It there is a history entry we go one step back in the browser history
-		 * If not, it will replace the current entry of the browser history with the worklist route.
-		 * @public
-		 */
-		onNavBack : function() {
-			var sPreviousHash = History.getInstance().getPreviousHash();
-			if (sPreviousHash !== undefined) {
-				// eslint-disable-next-line sap-no-history-manipulation
-				history.go(-1);
-			} else {
-				this.getRouter().navTo(\\"worklist\\", {}, true);
-			}
-		},
+        /**
+         * Event handler  for navigating back.
+         * It there is a history entry we go one step back in the browser history
+         * If not, it will replace the current entry of the browser history with the worklist route.
+         * @public
+         */
+        onNavBack : function() {
+            var sPreviousHash = History.getInstance().getPreviousHash();
+            if (sPreviousHash !== undefined) {
+                // eslint-disable-next-line sap-no-history-manipulation
+                history.go(-1);
+            } else {
+                this.getRouter().navTo(\\"worklist\\", {}, true);
+            }
+        },
 
-		/* =========================================================== */
-		/* internal methods                                            */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* internal methods                                            */
+        /* =========================================================== */
 
-		/**
-		 * Binds the view to the object path.
-		 * @function
-		 * @param {sap.ui.base.Event} oEvent pattern match event in route 'object'
-		 * @private
-		 */
-		_onObjectMatched : function (oEvent) {
-			var sObjectId =  oEvent.getParameter(\\"arguments\\").objectId;
-			this._bindView(\\"/SEPMRA_C_PD_Product\\" + sObjectId);
-		},
+        /**
+         * Binds the view to the object path.
+         * @function
+         * @param {sap.ui.base.Event} oEvent pattern match event in route 'object'
+         * @private
+         */
+        _onObjectMatched : function (oEvent) {
+            var sObjectId =  oEvent.getParameter(\\"arguments\\").objectId;
+            this._bindView(\\"/SEPMRA_C_PD_Product\\" + sObjectId);
+        },
 
-		/**
-		 * Binds the view to the object path.
-		 * @function
-		 * @param {string} sObjectPath path to the object to be bound
-		 * @private
-		 */
-		_bindView : function (sObjectPath) {
-			var oViewModel = this.getModel(\\"objectView\\");
+        /**
+         * Binds the view to the object path.
+         * @function
+         * @param {string} sObjectPath path to the object to be bound
+         * @private
+         */
+        _bindView : function (sObjectPath) {
+            var oViewModel = this.getModel(\\"objectView\\");
 
-			this.getView().bindElement({
-				path: sObjectPath,
-				events: {
-					change: this._onBindingChange.bind(this),
-					dataRequested: function () {
-						oViewModel.setProperty(\\"/busy\\", true);
-					},
-					dataReceived: function () {
-						oViewModel.setProperty(\\"/busy\\", false);
-					}
-				}
-			});
-		},
+            this.getView().bindElement({
+                path: sObjectPath,
+                events: {
+                    change: this._onBindingChange.bind(this),
+                    dataRequested: function () {
+                        oViewModel.setProperty(\\"/busy\\", true);
+                    },
+                    dataReceived: function () {
+                        oViewModel.setProperty(\\"/busy\\", false);
+                    }
+                }
+            });
+        },
 
-		_onBindingChange : function () {
-			var oView = this.getView(),
-				oViewModel = this.getModel(\\"objectView\\"),
-				oElementBinding = oView.getElementBinding();
+        _onBindingChange : function () {
+            var oView = this.getView(),
+                oViewModel = this.getModel(\\"objectView\\"),
+                oElementBinding = oView.getElementBinding();
 
-			// No data for the binding
-			if (!oElementBinding.getBoundContext()) {
-				this.getRouter().getTargets().display(\\"objectNotFound\\");
-				return;
-			}
+            // No data for the binding
+            if (!oElementBinding.getBoundContext()) {
+                this.getRouter().getTargets().display(\\"objectNotFound\\");
+                return;
+            }
 
-			var oResourceBundle = this.getResourceBundle(),
-				oObject = oView.getBindingContext().getObject(),
-				sObjectId = oObject.Name,
-				sObjectName = oObject.SEPMRA_C_PD_Product;
+            var oResourceBundle = this.getResourceBundle(),
+                oObject = oView.getBindingContext().getObject(),
+                sObjectId = oObject.Name,
+                sObjectName = oObject.SEPMRA_C_PD_Product;
 
-				oViewModel.setProperty(\\"/busy\\", false);
-				oViewModel.setProperty(\\"/shareSendEmailSubject\\",
-					oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
-				oViewModel.setProperty(\\"/shareSendEmailMessage\\",
-					oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
-		}
-	});
+                oViewModel.setProperty(\\"/busy\\", false);
+                oViewModel.setProperty(\\"/shareSendEmailSubject\\",
+                    oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
+                oViewModel.setProperty(\\"/shareSendEmailMessage\\",
+                    oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
+        }
+    });
 
 });
 ",
@@ -7212,152 +7212,152 @@ server:
   },
   "webapp/controller/Worklist.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\",
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"../model/formatter\\",
-	\\"sap/ui/model/Filter\\",
-	\\"sap/ui/model/FilterOperator\\"
+    \\"./BaseController\\",
+    \\"sap/ui/model/json/JSONModel\\",
+    \\"../model/formatter\\",
+    \\"sap/ui/model/Filter\\",
+    \\"sap/ui/model/FilterOperator\\"
 ], function (BaseController, JSONModel, formatter, Filter, FilterOperator) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.Worklist\\", {
+    return BaseController.extend(\\"wrk1.controller.Worklist\\", {
 
-		formatter: formatter,
+        formatter: formatter,
 
-		/* =========================================================== */
-		/* lifecycle methods                                           */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* lifecycle methods                                           */
+        /* =========================================================== */
 
-		/**
-		 * Called when the worklist controller is instantiated.
-		 * @public
-		 */
-		onInit : function () {
-			var oViewModel;
+        /**
+         * Called when the worklist controller is instantiated.
+         * @public
+         */
+        onInit : function () {
+            var oViewModel;
 
-			// keeps the search state
-			this._aTableSearchState = [];
+            // keeps the search state
+            this._aTableSearchState = [];
 
-			// Model used to manipulate control states
-			oViewModel = new JSONModel({
-				worklistTableTitle : this.getResourceBundle().getText(\\"worklistTableTitle\\"),
-				shareSendEmailSubject: this.getResourceBundle().getText(\\"shareSendEmailWorklistSubject\\"),
-				shareSendEmailMessage: this.getResourceBundle().getText(\\"shareSendEmailWorklistMessage\\", [location.href]),
-				tableNoDataText : this.getResourceBundle().getText(\\"tableNoDataText\\")
-			});
-			this.setModel(oViewModel, \\"worklistView\\");
+            // Model used to manipulate control states
+            oViewModel = new JSONModel({
+                worklistTableTitle : this.getResourceBundle().getText(\\"worklistTableTitle\\"),
+                shareSendEmailSubject: this.getResourceBundle().getText(\\"shareSendEmailWorklistSubject\\"),
+                shareSendEmailMessage: this.getResourceBundle().getText(\\"shareSendEmailWorklistMessage\\", [location.href]),
+                tableNoDataText : this.getResourceBundle().getText(\\"tableNoDataText\\")
+            });
+            this.setModel(oViewModel, \\"worklistView\\");
 
-		},
+        },
 
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* event handlers                                              */
+        /* =========================================================== */
 
-		/**
-		 * Triggered by the table's 'updateFinished' event: after new table
-		 * data is available, this handler method updates the table counter.
-		 * This should only happen if the update was successful, which is
-		 * why this handler is attached to 'updateFinished' and not to the
-		 * table's list binding's 'dataReceived' method.
-		 * @param {sap.ui.base.Event} oEvent the update finished event
-		 * @public
-		 */
-		onUpdateFinished : function (oEvent) {
-			// update the worklist's object counter after the table update
-			var sTitle,
-				oTable = oEvent.getSource(),
-				iTotalItems = oEvent.getParameter(\\"total\\");
-			// only update the counter if the length is final and
-			// the table is not empty
-			if (iTotalItems && oTable.getBinding(\\"items\\").isLengthFinal()) {
-				sTitle = this.getResourceBundle().getText(\\"worklistTableTitleCount\\", [iTotalItems]);
-			} else {
-				sTitle = this.getResourceBundle().getText(\\"worklistTableTitle\\");
-			}
-			this.getModel(\\"worklistView\\").setProperty(\\"/worklistTableTitle\\", sTitle);
-		},
+        /**
+         * Triggered by the table's 'updateFinished' event: after new table
+         * data is available, this handler method updates the table counter.
+         * This should only happen if the update was successful, which is
+         * why this handler is attached to 'updateFinished' and not to the
+         * table's list binding's 'dataReceived' method.
+         * @param {sap.ui.base.Event} oEvent the update finished event
+         * @public
+         */
+        onUpdateFinished : function (oEvent) {
+            // update the worklist's object counter after the table update
+            var sTitle,
+                oTable = oEvent.getSource(),
+                iTotalItems = oEvent.getParameter(\\"total\\");
+            // only update the counter if the length is final and
+            // the table is not empty
+            if (iTotalItems && oTable.getBinding(\\"items\\").isLengthFinal()) {
+                sTitle = this.getResourceBundle().getText(\\"worklistTableTitleCount\\", [iTotalItems]);
+            } else {
+                sTitle = this.getResourceBundle().getText(\\"worklistTableTitle\\");
+            }
+            this.getModel(\\"worklistView\\").setProperty(\\"/worklistTableTitle\\", sTitle);
+        },
 
-		/**
-		 * Event handler when a table item gets pressed
-		 * @param {sap.ui.base.Event} oEvent the table selectionChange event
-		 * @public
-		 */
-		onPress : function (oEvent) {
-			// The source is the list item that got pressed
-			this._showObject(oEvent.getSource());
-		},
+        /**
+         * Event handler when a table item gets pressed
+         * @param {sap.ui.base.Event} oEvent the table selectionChange event
+         * @public
+         */
+        onPress : function (oEvent) {
+            // The source is the list item that got pressed
+            this._showObject(oEvent.getSource());
+        },
 
-		/**
-		 * Event handler for navigating back.
-		 * Navigate back in the browser history
-		 * @public
-		 */
-		onNavBack : function() {
-			// eslint-disable-next-line sap-no-history-manipulation
-			history.go(-1);
-		},
+        /**
+         * Event handler for navigating back.
+         * Navigate back in the browser history
+         * @public
+         */
+        onNavBack : function() {
+            // eslint-disable-next-line sap-no-history-manipulation
+            history.go(-1);
+        },
 
 
-		onSearch : function (oEvent) {
-			if (oEvent.getParameters().refreshButtonPressed) {
-				// Search field's 'refresh' button has been pressed.
-				// This is visible if you select any main list item.
-				// In this case no new search is triggered, we only
-				// refresh the list binding.
-				this.onRefresh();
-			} else {
-				var aTableSearchState = [];
-				var sQuery = oEvent.getParameter(\\"query\\");
+        onSearch : function (oEvent) {
+            if (oEvent.getParameters().refreshButtonPressed) {
+                // Search field's 'refresh' button has been pressed.
+                // This is visible if you select any main list item.
+                // In this case no new search is triggered, we only
+                // refresh the list binding.
+                this.onRefresh();
+            } else {
+                var aTableSearchState = [];
+                var sQuery = oEvent.getParameter(\\"query\\");
 
-				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"Name\\", FilterOperator.Contains, sQuery)];
-				}
-				this._applySearch(aTableSearchState);
-			}
+                if (sQuery && sQuery.length > 0) {
+                    aTableSearchState = [new Filter(\\"Name\\", FilterOperator.Contains, sQuery)];
+                }
+                this._applySearch(aTableSearchState);
+            }
 
-		},
+        },
 
-		/**
-		 * Event handler for refresh event. Keeps filter, sort
-		 * and group settings and refreshes the list binding.
-		 * @public
-		 */
-		onRefresh : function () {
-			var oTable = this.byId(\\"table\\");
-			oTable.getBinding(\\"items\\").refresh();
-		},
+        /**
+         * Event handler for refresh event. Keeps filter, sort
+         * and group settings and refreshes the list binding.
+         * @public
+         */
+        onRefresh : function () {
+            var oTable = this.byId(\\"table\\");
+            oTable.getBinding(\\"items\\").refresh();
+        },
 
-		/* =========================================================== */
-		/* internal methods                                            */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* internal methods                                            */
+        /* =========================================================== */
 
-		/**
-		 * Shows the selected item on the object page
-		 * @param {sap.m.ObjectListItem} oItem selected Item
-		 * @private
-		 */
-		_showObject : function (oItem) {
-			this.getRouter().navTo(\\"object\\", {
-				objectId: oItem.getBindingContext().getPath().substring(\\"/SEPMRA_C_PD_Product\\".length)
-			});
-		},
+        /**
+         * Shows the selected item on the object page
+         * @param {sap.m.ObjectListItem} oItem selected Item
+         * @private
+         */
+        _showObject : function (oItem) {
+            this.getRouter().navTo(\\"object\\", {
+                objectId: oItem.getBindingContext().getPath().substring(\\"/SEPMRA_C_PD_Product\\".length)
+            });
+        },
 
-		/**
-		 * Internal helper method to apply both filter and search state together on the list binding
-		 * @param {sap.ui.model.Filter[]} aTableSearchState An array of filters for the search
-		 * @private
-		 */
-		_applySearch: function(aTableSearchState) {
-			var oTable = this.byId(\\"table\\"),
-				oViewModel = this.getModel(\\"worklistView\\");
-			oTable.getBinding(\\"items\\").filter(aTableSearchState, \\"Application\\");
-			// changes the noDataText of the list in case there are no filter results
-			if (aTableSearchState.length !== 0) {
-				oViewModel.setProperty(\\"/tableNoDataText\\", this.getResourceBundle().getText(\\"worklistNoDataWithSearchText\\"));
-			}
-		}
+        /**
+         * Internal helper method to apply both filter and search state together on the list binding
+         * @param {sap.ui.model.Filter[]} aTableSearchState An array of filters for the search
+         * @private
+         */
+        _applySearch: function(aTableSearchState) {
+            var oTable = this.byId(\\"table\\"),
+                oViewModel = this.getModel(\\"worklistView\\");
+            oTable.getBinding(\\"items\\").filter(aTableSearchState, \\"Application\\");
+            // changes the noDataText of the list in case there are no filter results
+            if (aTableSearchState.length !== 0) {
+                oViewModel.setProperty(\\"/tableNoDataText\\", this.getResourceBundle().getText(\\"worklistNoDataWithSearchText\\"));
+            }
+        }
 
-	});
+    });
 });
 ",
     "state": "modified",
@@ -9439,42 +9439,42 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/model/formatter.js": Object {
     "contents": "sap.ui.define([], function () {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return {
+    return {
 
-		/**
-		 * Rounds the number unit value to 2 digits
-		 * @public
-		 * @param {string} sValue the number string to be rounded
-		 * @returns {string} sValue with 2 digits rounded
-		 */
-		numberUnit : function (sValue) {
-			if (!sValue) {
-				return \\"\\";
-			}
-			return parseFloat(sValue).toFixed(2);
-		}
+        /**
+         * Rounds the number unit value to 2 digits
+         * @public
+         * @param {string} sValue the number string to be rounded
+         * @returns {string} sValue with 2 digits rounded
+         */
+        numberUnit : function (sValue) {
+            if (!sValue) {
+                return \\"\\";
+            }
+            return parseFloat(sValue).toFixed(2);
+        }
 
-	};
+    };
 
 });",
     "state": "modified",
   },
   "webapp/model/models.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"sap/ui/Device\\"
+    \\"sap/ui/model/json/JSONModel\\",
+    \\"sap/ui/Device\\"
 ], function (JSONModel, Device) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return {
-		createDeviceModel : function () {
-			var oModel = new JSONModel(Device);
-			oModel.setDefaultBindingMode(\\"OneWay\\");
-			return oModel;
-		}
-	};
+    return {
+        createDeviceModel : function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
+        }
+    };
 });",
     "state": "modified",
   },
@@ -9483,73 +9483,73 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 <html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
-	<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-	<title>{{appTitle}}</title>
+    <title>{{appTitle}}</title>
 
-	<!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
 
-		 The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
 
-		 The fiori2 renderer will render the shell header allowing, for instance,
-		 testing of additional application setting buttons.
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
 
-		 The navigation target resolution service is configured in a way that the empty URL hash is
-		 resolved to our own application.
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
 
-		 This example uses relative path references for the SAPUI5 resources and test-resources;
-		 it might be necessary to adapt them depending on the target runtime platform.
-		 The sandbox platform is restricted to development or demo use cases and must NOT be used
-		 for productive scenarios.
-	-->
-	<script type=\\"text/javascript\\">
-		window[\\"sap-ushell-config\\"] = {
-			defaultRenderer: \\"fiori2\\",
-			bootstrapPlugins: {
-				\\"RuntimeAuthoringPlugin\\": {
-					component: \\"sap.ushell.plugins.rta\\",
-					config: {
-						validateAppVersion: false
-					}
-				}
-			},
-			renderers: {
-				fiori2: {
-					componentData: {
-						config: {
-							search: \\"hidden\\"
-						}
-					}
-				}
-			},
-			applications: {
-				\\"wrk1-tile\\": {
-					title: \\"App Title\\",
-					description: \\"A Fiori application.\\",
-					additionalInformation: \\"SAPUI5.Component=wrk1\\",
-					applicationType: \\"URL\\",
-					url: \\"../\\"
-				}
-			}
-		};
-	</script>
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\"
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"wrk1-tile\\": {
+                    title: \\"App Title\\",
+                    description: \\"A Fiori application.\\",
+                    additionalInformation: \\"SAPUI5.Component=wrk1\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
 
-	<script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-	<!-- Bootstrap the UI5 core library -->
-	<script id=\\"sap-ui-bootstrap\\"
-		src=\\"../resources/sap-ui-core.js\\"
-		data-sap-ui-libs=\\"sap.f,sap.m,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.core,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
-		data-sap-ui-async=\\"true\\"
-		data-sap-ui-preload=\\"async\\"
-		data-sap-ui-theme=\\"sap_belize\\"
-		data-sap-ui-compatVersion=\\"edge\\"
-		data-sap-ui-language=\\"en\\"
-		data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
-		data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-		</script>
-		<script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-		</script>
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.f,sap.m,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.core,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        </script>
+        <script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        </script>
 </head>
 
 <!-- UI Content -->
@@ -9737,187 +9737,187 @@ sap.registerComponentDependencyPaths(manifestUri);
   },
   "webapp/view/App.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.App\\"
-	displayBlock=\\"true\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\">
+    controllerName=\\"wrk1.controller.App\\"
+    displayBlock=\\"true\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
 
-	<Shell>
-		<App
-			id=\\"app\\"
-			busy=\\"{appView>/busy}\\"
-			busyIndicatorDelay=\\"{appView>/delay}\\"/>
-	</Shell>
+    <Shell>
+        <App
+            id=\\"app\\"
+            busy=\\"{appView>/busy}\\"
+            busyIndicatorDelay=\\"{appView>/delay}\\"/>
+    </Shell>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/NotFound.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.NotFound\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\">
+    controllerName=\\"wrk1.controller.NotFound\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
 
-	<MessagePage
-		title=\\"{i18n>notFoundTitle}\\"
-		text=\\"{i18n>notFoundText}\\"
-		icon=\\"sap-icon://document\\"
-		id=\\"page\\"
-		description=\\"\\">
-		<customDescription>
-			<Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\"/>
-		</customDescription>
-	</MessagePage>
+    <MessagePage
+        title=\\"{i18n>notFoundTitle}\\"
+        text=\\"{i18n>notFoundText}\\"
+        icon=\\"sap-icon://document\\"
+        id=\\"page\\"
+        description=\\"\\">
+        <customDescription>
+            <Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\"/>
+        </customDescription>
+    </MessagePage>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/Object.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.Object\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\"
-	xmlns:semantic=\\"sap.f.semantic\\">
+    controllerName=\\"wrk1.controller.Object\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\"
+    xmlns:semantic=\\"sap.f.semantic\\">
 
-	<semantic:SemanticPage
-		id=\\"page\\"
-		headerPinnable=\\"false\\"
-		toggleHeaderOnTitleClick=\\"false\\"
-		busy=\\"{objectView>/busy}\\"
-		busyIndicatorDelay=\\"{objectView>/delay}\\">
+    <semantic:SemanticPage
+        id=\\"page\\"
+        headerPinnable=\\"false\\"
+        toggleHeaderOnTitleClick=\\"false\\"
+        busy=\\"{objectView>/busy}\\"
+        busyIndicatorDelay=\\"{objectView>/delay}\\">
 
-		<semantic:titleHeading>
-			<Title
-				text=\\"{Name}\\"
-				level=\\"H2\\"/>
-		</semantic:titleHeading>
+        <semantic:titleHeading>
+            <Title
+                text=\\"{Name}\\"
+                level=\\"H2\\"/>
+        </semantic:titleHeading>
 
-		<semantic:headerContent>
-			<ObjectNumber
-				number=\\"{
-					path: 'Price',
-					formatter: '.formatter.numberUnit'
-				}\\"
-				unit=\\"{Currency}\\" />
-		</semantic:headerContent>
+        <semantic:headerContent>
+            <ObjectNumber
+                number=\\"{
+                    path: 'Price',
+                    formatter: '.formatter.numberUnit'
+                }\\"
+                unit=\\"{Currency}\\" />
+        </semantic:headerContent>
 
-		<semantic:sendEmailAction>
-			<semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
-		</semantic:sendEmailAction>
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
+        </semantic:sendEmailAction>
 
-	</semantic:SemanticPage>
+    </semantic:SemanticPage>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/ObjectNotFound.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.NotFound\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\">
+    controllerName=\\"wrk1.controller.NotFound\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
 
-	<MessagePage
-		title=\\"{i18n>objectTitle}\\"
-		text=\\"{i18n>noObjectFoundText}\\"
-		icon=\\"sap-icon://product\\"
-		description=\\"\\"
-		id=\\"page\\">
-		<customDescription>
-			<Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\" />
-		</customDescription>
-	</MessagePage>
+    <MessagePage
+        title=\\"{i18n>objectTitle}\\"
+        text=\\"{i18n>noObjectFoundText}\\"
+        icon=\\"sap-icon://product\\"
+        description=\\"\\"
+        id=\\"page\\">
+        <customDescription>
+            <Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\" />
+        </customDescription>
+    </MessagePage>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/Worklist.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.Worklist\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\"
-	xmlns:semantic=\\"sap.f.semantic\\">
+    controllerName=\\"wrk1.controller.Worklist\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\"
+    xmlns:semantic=\\"sap.f.semantic\\">
 
-	<semantic:SemanticPage
-		id=\\"page\\"
-		headerPinnable=\\"false\\"
-		toggleHeaderOnTitleClick=\\"false\\">
+    <semantic:SemanticPage
+        id=\\"page\\"
+        headerPinnable=\\"false\\"
+        toggleHeaderOnTitleClick=\\"false\\">
 
-		<semantic:titleHeading>
-			<Title
-				text=\\"{i18n>worklistTitle}\\"
-				level=\\"H2\\"/>
-		</semantic:titleHeading>
+        <semantic:titleHeading>
+            <Title
+                text=\\"{i18n>worklistTitle}\\"
+                level=\\"H2\\"/>
+        </semantic:titleHeading>
 
-		<semantic:content>
-			<Table
-				id=\\"table\\"
-				width=\\"auto\\"
-				items=\\"{
-					path: '/SEPMRA_C_PD_Product',
-					sorter: {
-						path: 'Name',
-						descending: false
-					}
-				}\\"
-				noDataText=\\"{worklistView>/tableNoDataText}\\"
-				busyIndicatorDelay=\\"{worklistView>/tableBusyDelay}\\"
-				growing=\\"true\\"
-				growingScrollToLoad=\\"true\\"
-				updateFinished=\\".onUpdateFinished\\">
+        <semantic:content>
+            <Table
+                id=\\"table\\"
+                width=\\"auto\\"
+                items=\\"{
+                    path: '/SEPMRA_C_PD_Product',
+                    sorter: {
+                        path: 'Name',
+                        descending: false
+                    }
+                }\\"
+                noDataText=\\"{worklistView>/tableNoDataText}\\"
+                busyIndicatorDelay=\\"{worklistView>/tableBusyDelay}\\"
+                growing=\\"true\\"
+                growingScrollToLoad=\\"true\\"
+                updateFinished=\\".onUpdateFinished\\">
 
-				<headerToolbar>
-					<OverflowToolbar>
-						<Title
-							id=\\"tableHeader\\"
-							text=\\"{worklistView>/worklistTableTitle}\\"
-							level=\\"H3\\"/>
-						<ToolbarSpacer />
-						<SearchField
-							id=\\"searchField\\"
-							tooltip=\\"{i18n>worklistSearchTooltip}\\"
-							search=\\".onSearch\\">
-							<layoutData>
-								<OverflowToolbarLayoutData
-									maxWidth=\\"200px\\"
-									priority=\\"NeverOverflow\\"/>
-							</layoutData>
-						</SearchField>
-					</OverflowToolbar>
-				</headerToolbar>
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title
+                            id=\\"tableHeader\\"
+                            text=\\"{worklistView>/worklistTableTitle}\\"
+                            level=\\"H3\\"/>
+                        <ToolbarSpacer />
+                        <SearchField
+                            id=\\"searchField\\"
+                            tooltip=\\"{i18n>worklistSearchTooltip}\\"
+                            search=\\".onSearch\\">
+                            <layoutData>
+                                <OverflowToolbarLayoutData
+                                    maxWidth=\\"200px\\"
+                                    priority=\\"NeverOverflow\\"/>
+                            </layoutData>
+                        </SearchField>
+                    </OverflowToolbar>
+                </headerToolbar>
 
-				<columns>
-					<Column id=\\"nameColumn\\">
-						<Text text=\\"{i18n>tableNameColumnTitle}\\" id=\\"nameColumnTitle\\"/>
-					</Column>
-					<Column id=\\"unitNumberColumn\\" hAlign=\\"End\\">
-						<Text text=\\"{i18n>tableUnitNumberColumnTitle}\\" id=\\"unitNumberColumnTitle\\"/>
-					</Column>
-				</columns>
+                <columns>
+                    <Column id=\\"nameColumn\\">
+                        <Text text=\\"{i18n>tableNameColumnTitle}\\" id=\\"nameColumnTitle\\"/>
+                    </Column>
+                    <Column id=\\"unitNumberColumn\\" hAlign=\\"End\\">
+                        <Text text=\\"{i18n>tableUnitNumberColumnTitle}\\" id=\\"unitNumberColumnTitle\\"/>
+                    </Column>
+                </columns>
 
-				<items>
-					<ColumnListItem
-						type=\\"Navigation\\"
-						press=\\".onPress\\">
-						<cells>
-							<ObjectIdentifier
-								title=\\"{Name}\\"/>
-							<ObjectNumber
-								number=\\"{
-									path: 'Price',
-									formatter: '.formatter.numberUnit'
-								}\\"
-								unit=\\"{Currency}\\" />
-						</cells>
-					</ColumnListItem>
-				</items>
-			</Table>
-		</semantic:content>
+                <items>
+                    <ColumnListItem
+                        type=\\"Navigation\\"
+                        press=\\".onPress\\">
+                        <cells>
+                            <ObjectIdentifier
+                                title=\\"{Name}\\"/>
+                            <ObjectNumber
+                                number=\\"{
+                                    path: 'Price',
+                                    formatter: '.formatter.numberUnit'
+                                }\\"
+                                unit=\\"{Currency}\\" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </semantic:content>
 
-		<semantic:sendEmailAction>
-			<semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
-		</semantic:sendEmailAction>
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
+        </semantic:sendEmailAction>
 
-	</semantic:SemanticPage>
+    </semantic:SemanticPage>
 
 </mvc:View>",
     "state": "modified",
@@ -10091,378 +10091,378 @@ server:
   },
   "webapp/Component.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/core/UIComponent\\",
-	\\"sap/ui/Device\\",
-	\\"./model/models\\",
-	\\"./controller/ErrorHandler\\"
+    \\"sap/ui/core/UIComponent\\",
+    \\"sap/ui/Device\\",
+    \\"./model/models\\",
+    \\"./controller/ErrorHandler\\"
 ], function (UIComponent, Device, models, ErrorHandler) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return UIComponent.extend(\\"wrk1.Component\\", {
+    return UIComponent.extend(\\"wrk1.Component\\", {
 
-		metadata : {
-			manifest: \\"json\\"
-		},
+        metadata : {
+            manifest: \\"json\\"
+        },
 
-		/**
-		 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-		 * In this function, the device models are set and the router is initialized.
-		 * @public
-		 * @override
-		 */
-		init : function () {
-			// call the base component's init function
-			UIComponent.prototype.init.apply(this, arguments);
+        /**
+         * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+         * In this function, the device models are set and the router is initialized.
+         * @public
+         * @override
+         */
+        init : function () {
+            // call the base component's init function
+            UIComponent.prototype.init.apply(this, arguments);
 
-			// initialize the error handler with the component
-			this._oErrorHandler = new ErrorHandler(this);
+            // initialize the error handler with the component
+            this._oErrorHandler = new ErrorHandler(this);
 
-			// set the device model
-			this.setModel(models.createDeviceModel(), \\"device\\");
+            // set the device model
+            this.setModel(models.createDeviceModel(), \\"device\\");
 
-			// create the views based on the url/hash
-			this.getRouter().initialize();
-		},
+            // create the views based on the url/hash
+            this.getRouter().initialize();
+        },
 
-		/**
-		 * The component is destroyed by UI5 automatically.
-		 * In this method, the ErrorHandler is destroyed.
-		 * @public
-		 * @override
-		 */
-		destroy : function () {
-			this._oErrorHandler.destroy();
-			// call the base component's destroy function
-			UIComponent.prototype.destroy.apply(this, arguments);
-		},
+        /**
+         * The component is destroyed by UI5 automatically.
+         * In this method, the ErrorHandler is destroyed.
+         * @public
+         * @override
+         */
+        destroy : function () {
+            this._oErrorHandler.destroy();
+            // call the base component's destroy function
+            UIComponent.prototype.destroy.apply(this, arguments);
+        },
 
-		/**
-		 * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
-		 * design mode class should be set, which influences the size appearance of some controls.
-		 * @public
-		 * @return {string} css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
-		 */
-		getContentDensityClass : function() {
-			if (this._sContentDensityClass === undefined) {
-				// check whether FLP has already set the content density class; do nothing in this case
-				// eslint-disable-next-line sap-no-proprietary-browser-api
-				if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
-					this._sContentDensityClass = \\"\\";
-				} else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
-					this._sContentDensityClass = \\"sapUiSizeCompact\\";
-				} else {
-					// \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
-					this._sContentDensityClass = \\"sapUiSizeCozy\\";
-				}
-			}
-			return this._sContentDensityClass;
-		}
+        /**
+         * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
+         * design mode class should be set, which influences the size appearance of some controls.
+         * @public
+         * @return {string} css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
+         */
+        getContentDensityClass : function() {
+            if (this._sContentDensityClass === undefined) {
+                // check whether FLP has already set the content density class; do nothing in this case
+                // eslint-disable-next-line sap-no-proprietary-browser-api
+                if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
+                    this._sContentDensityClass = \\"\\";
+                } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
+                    this._sContentDensityClass = \\"sapUiSizeCompact\\";
+                } else {
+                    // \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
+                    this._sContentDensityClass = \\"sapUiSizeCozy\\";
+                }
+            }
+            return this._sContentDensityClass;
+        }
 
-	});
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/App.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\"
+    \\"./BaseController\\"
 ], function (BaseController) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.App\\", {
+    return BaseController.extend(\\"wrk1.controller.App\\", {
 
-		onInit : function () {
-			// apply content density mode to root view
-			this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
-		}
-	});
+        onInit : function () {
+            // apply content density mode to root view
+            this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
+        }
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/BaseController.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/core/mvc/Controller\\",
-	\\"sap/ui/core/UIComponent\\",
-	\\"sap/m/library\\"
+    \\"sap/ui/core/mvc/Controller\\",
+    \\"sap/ui/core/UIComponent\\",
+    \\"sap/m/library\\"
 ], function (Controller, UIComponent, mobileLibrary) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	// shortcut for sap.m.URLHelper
-	var URLHelper = mobileLibrary.URLHelper;
+    // shortcut for sap.m.URLHelper
+    var URLHelper = mobileLibrary.URLHelper;
 
-	return Controller.extend(\\"wrk1.controller.BaseController\\", {
-		/**
-		 * Convenience method for accessing the router.
-		 * @public
-		 * @returns {sap.ui.core.routing.Router} the router for this component
-		 */
-		getRouter : function () {
-			return UIComponent.getRouterFor(this);
-		},
+    return Controller.extend(\\"wrk1.controller.BaseController\\", {
+        /**
+         * Convenience method for accessing the router.
+         * @public
+         * @returns {sap.ui.core.routing.Router} the router for this component
+         */
+        getRouter : function () {
+            return UIComponent.getRouterFor(this);
+        },
 
-		/**
-		 * Convenience method for getting the view model by name.
-		 * @public
-		 * @param {string} [sName] the model name
-		 * @returns {sap.ui.model.Model} the model instance
-		 */
-		getModel : function (sName) {
-			return this.getView().getModel(sName);
-		},
+        /**
+         * Convenience method for getting the view model by name.
+         * @public
+         * @param {string} [sName] the model name
+         * @returns {sap.ui.model.Model} the model instance
+         */
+        getModel : function (sName) {
+            return this.getView().getModel(sName);
+        },
 
-		/**
-		 * Convenience method for setting the view model.
-		 * @public
-		 * @param {sap.ui.model.Model} oModel the model instance
-		 * @param {string} sName the model name
-		 * @returns {sap.ui.mvc.View} the view instance
-		 */
-		setModel : function (oModel, sName) {
-			return this.getView().setModel(oModel, sName);
-		},
+        /**
+         * Convenience method for setting the view model.
+         * @public
+         * @param {sap.ui.model.Model} oModel the model instance
+         * @param {string} sName the model name
+         * @returns {sap.ui.mvc.View} the view instance
+         */
+        setModel : function (oModel, sName) {
+            return this.getView().setModel(oModel, sName);
+        },
 
-		/**
-		 * Getter for the resource bundle.
-		 * @public
-		 * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
-		 */
-		getResourceBundle : function () {
-			return this.getOwnerComponent().getModel(\\"i18n\\").getResourceBundle();
-		},
+        /**
+         * Getter for the resource bundle.
+         * @public
+         * @returns {sap.ui.model.resource.ResourceModel} the resourceModel of the component
+         */
+        getResourceBundle : function () {
+            return this.getOwnerComponent().getModel(\\"i18n\\").getResourceBundle();
+        },
 
-		/**
-		 * Event handler when the share by E-Mail button has been clicked
-		 * @public
-		 */
-		onShareEmailPress : function () {
-			var oViewModel = (this.getModel(\\"objectView\\") || this.getModel(\\"worklistView\\"));
-			URLHelper.triggerEmail(
-				null,
-				oViewModel.getProperty(\\"/shareSendEmailSubject\\"),
-				oViewModel.getProperty(\\"/shareSendEmailMessage\\")
-			);
-		}
-	});
+        /**
+         * Event handler when the share by E-Mail button has been clicked
+         * @public
+         */
+        onShareEmailPress : function () {
+            var oViewModel = (this.getModel(\\"objectView\\") || this.getModel(\\"worklistView\\"));
+            URLHelper.triggerEmail(
+                null,
+                oViewModel.getProperty(\\"/shareSendEmailSubject\\"),
+                oViewModel.getProperty(\\"/shareSendEmailMessage\\")
+            );
+        }
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/ErrorHandler.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/base/Object\\",
-	\\"sap/m/MessageBox\\",
-	\\"sap/ui/model/Filter\\",
-	\\"sap/ui/model/FilterOperator\\"
+    \\"sap/ui/base/Object\\",
+    \\"sap/m/MessageBox\\",
+    \\"sap/ui/model/Filter\\",
+    \\"sap/ui/model/FilterOperator\\"
 ], function (UI5Object, MessageBox, Filter, FilterOperator) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return UI5Object.extend(\\"wrk1.controller.ErrorHandler\\", {
+    return UI5Object.extend(\\"wrk1.controller.ErrorHandler\\", {
 
-		/**
-		 * Handles application errors by automatically attaching to the model events and displaying errors when needed.
-		 * @class
-		 * @param {sap.ui.core.UIComponent} oComponent reference to the app's component
-		 * @public
-		 * @alias wrk1.controller.ErrorHandler
-		 */
-		constructor : function (oComponent) {
-			var	oMessageManager = sap.ui.getCore().getMessageManager(),
-				oMessageModel = oMessageManager.getMessageModel(),
-				oResourceBundle = oComponent.getModel(\\"i18n\\").getResourceBundle(),
-				sErrorText = oResourceBundle.getText(\\"errorText\\"),
-				sMultipleErrors = oResourceBundle.getText(\\"multipleErrorsText\\");
+        /**
+         * Handles application errors by automatically attaching to the model events and displaying errors when needed.
+         * @class
+         * @param {sap.ui.core.UIComponent} oComponent reference to the app's component
+         * @public
+         * @alias wrk1.controller.ErrorHandler
+         */
+        constructor : function (oComponent) {
+            var oMessageManager = sap.ui.getCore().getMessageManager(),
+                oMessageModel = oMessageManager.getMessageModel(),
+                oResourceBundle = oComponent.getModel(\\"i18n\\").getResourceBundle(),
+                sErrorText = oResourceBundle.getText(\\"errorText\\"),
+                sMultipleErrors = oResourceBundle.getText(\\"multipleErrorsText\\");
 
-			this._oComponent = oComponent;
-			this._bMessageOpen = false;
+            this._oComponent = oComponent;
+            this._bMessageOpen = false;
 
-			this.oMessageModelBinding = oMessageModel.bindList(\\"/\\", undefined,
-				[], new Filter(\\"technical\\", FilterOperator.EQ, true));
+            this.oMessageModelBinding = oMessageModel.bindList(\\"/\\", undefined,
+                [], new Filter(\\"technical\\", FilterOperator.EQ, true));
 
-			this.oMessageModelBinding.attachChange(function (oEvent) {
-				var aContexts = oEvent.getSource().getContexts(),
-					aMessages = [],
-					sErrorTitle;
+            this.oMessageModelBinding.attachChange(function (oEvent) {
+                var aContexts = oEvent.getSource().getContexts(),
+                    aMessages = [],
+                    sErrorTitle;
 
-				if (this._bMessageOpen || !aContexts.length) {
-					return;
-				}
+                if (this._bMessageOpen || !aContexts.length) {
+                    return;
+                }
 
-				// Extract and remove the technical messages
-				aContexts.forEach(function (oContext) {
-					aMessages.push(oContext.getObject());
-				});
-				oMessageManager.removeMessages(aMessages);
+                // Extract and remove the technical messages
+                aContexts.forEach(function (oContext) {
+                    aMessages.push(oContext.getObject());
+                });
+                oMessageManager.removeMessages(aMessages);
 
-				// Due to batching there can be more than one technical message. However the UX
-				// guidelines say \\"display a single message in a message box\\" assuming that there
-				// will be only one at a time.
-				sErrorTitle = aMessages.length === 1 ? sErrorText : sMultipleErrors;
-				this._showServiceError(sErrorTitle, aMessages[0].message);
-			}, this);
-		},
+                // Due to batching there can be more than one technical message. However the UX
+                // guidelines say \\"display a single message in a message box\\" assuming that there
+                // will be only one at a time.
+                sErrorTitle = aMessages.length === 1 ? sErrorText : sMultipleErrors;
+                this._showServiceError(sErrorTitle, aMessages[0].message);
+            }, this);
+        },
 
-		/**
-		 * Shows a {@link sap.m.MessageBox} when a service call has failed.
-		 * Only the first error message will be displayed.
-		 * @param {string} sErrorTitle A title for the error message
-		 * @param {string} sDetails A technical error to be displayed on request
-		 * @private
-		 */
-		_showServiceError : function (sErrorTitle, sDetails) {
-			this._bMessageOpen = true;
-			MessageBox.error(
-				sErrorTitle,
-				{
-					id : \\"serviceErrorMessageBox\\",
-					details: sDetails,
-					styleClass: this._oComponent.getContentDensityClass(),
-					actions: [MessageBox.Action.CLOSE],
-					onClose: function () {
-						this._bMessageOpen = false;
-					}.bind(this)
-				}
-			);
-		}
-	});
+        /**
+         * Shows a {@link sap.m.MessageBox} when a service call has failed.
+         * Only the first error message will be displayed.
+         * @param {string} sErrorTitle A title for the error message
+         * @param {string} sDetails A technical error to be displayed on request
+         * @private
+         */
+        _showServiceError : function (sErrorTitle, sDetails) {
+            this._bMessageOpen = true;
+            MessageBox.error(
+                sErrorTitle,
+                {
+                    id : \\"serviceErrorMessageBox\\",
+                    details: sDetails,
+                    styleClass: this._oComponent.getContentDensityClass(),
+                    actions: [MessageBox.Action.CLOSE],
+                    onClose: function () {
+                        this._bMessageOpen = false;
+                    }.bind(this)
+                }
+            );
+        }
+    });
 });",
     "state": "modified",
   },
   "webapp/controller/NotFound.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\"
+    \\"./BaseController\\"
 ], function (BaseController) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.NotFound\\", {
+    return BaseController.extend(\\"wrk1.controller.NotFound\\", {
 
-		/**
-		 * Navigates to the worklist when the link is pressed
-		 * @public
-		 */
-		onLinkPressed : function () {
-			this.getRouter().navTo(\\"worklist\\");
-		}
+        /**
+         * Navigates to the worklist when the link is pressed
+         * @public
+         */
+        onLinkPressed : function () {
+            this.getRouter().navTo(\\"worklist\\");
+        }
 
-	});
+    });
 
 });",
     "state": "modified",
   },
   "webapp/controller/Object.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\",
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"sap/ui/core/routing/History\\",
-	\\"../model/formatter\\"
+    \\"./BaseController\\",
+    \\"sap/ui/model/json/JSONModel\\",
+    \\"sap/ui/core/routing/History\\",
+    \\"../model/formatter\\"
 ], function (BaseController, JSONModel, History, formatter) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.Object\\", {
+    return BaseController.extend(\\"wrk1.controller.Object\\", {
 
-		formatter: formatter,
+        formatter: formatter,
 
-		/* =========================================================== */
-		/* lifecycle methods                                           */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* lifecycle methods                                           */
+        /* =========================================================== */
 
-		/**
-		 * Called when the worklist controller is instantiated.
-		 * @public
-		 */
-		onInit : function () {
-			// Model used to manipulate control states. The chosen values make sure,
-			// detail page shows busy indication immediately so there is no break in
-			// between the busy indication for loading the view's meta data
-			var oViewModel = new JSONModel({
-					busy : true,
-					delay : 0
-				});
-			this.getRouter().getRoute(\\"object\\").attachPatternMatched(this._onObjectMatched, this);
-			this.setModel(oViewModel, \\"objectView\\");
-		},
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
+        /**
+         * Called when the worklist controller is instantiated.
+         * @public
+         */
+        onInit : function () {
+            // Model used to manipulate control states. The chosen values make sure,
+            // detail page shows busy indication immediately so there is no break in
+            // between the busy indication for loading the view's meta data
+            var oViewModel = new JSONModel({
+                    busy : true,
+                    delay : 0
+                });
+            this.getRouter().getRoute(\\"object\\").attachPatternMatched(this._onObjectMatched, this);
+            this.setModel(oViewModel, \\"objectView\\");
+        },
+        /* =========================================================== */
+        /* event handlers                                              */
+        /* =========================================================== */
 
 
-		/**
-		 * Event handler  for navigating back.
-		 * It there is a history entry we go one step back in the browser history
-		 * If not, it will replace the current entry of the browser history with the worklist route.
-		 * @public
-		 */
-		onNavBack : function() {
-			var sPreviousHash = History.getInstance().getPreviousHash();
-			if (sPreviousHash !== undefined) {
-				// eslint-disable-next-line sap-no-history-manipulation
-				history.go(-1);
-			} else {
-				this.getRouter().navTo(\\"worklist\\", {}, true);
-			}
-		},
+        /**
+         * Event handler  for navigating back.
+         * It there is a history entry we go one step back in the browser history
+         * If not, it will replace the current entry of the browser history with the worklist route.
+         * @public
+         */
+        onNavBack : function() {
+            var sPreviousHash = History.getInstance().getPreviousHash();
+            if (sPreviousHash !== undefined) {
+                // eslint-disable-next-line sap-no-history-manipulation
+                history.go(-1);
+            } else {
+                this.getRouter().navTo(\\"worklist\\", {}, true);
+            }
+        },
 
-		/* =========================================================== */
-		/* internal methods                                            */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* internal methods                                            */
+        /* =========================================================== */
 
-		/**
-		 * Binds the view to the object path.
-		 * @function
-		 * @param {sap.ui.base.Event} oEvent pattern match event in route 'object'
-		 * @private
-		 */
-		_onObjectMatched : function (oEvent) {
-			var sObjectId =  oEvent.getParameter(\\"arguments\\").objectId;
-			this._bindView(\\"/Products\\" + sObjectId);
-		},
+        /**
+         * Binds the view to the object path.
+         * @function
+         * @param {sap.ui.base.Event} oEvent pattern match event in route 'object'
+         * @private
+         */
+        _onObjectMatched : function (oEvent) {
+            var sObjectId =  oEvent.getParameter(\\"arguments\\").objectId;
+            this._bindView(\\"/Products\\" + sObjectId);
+        },
 
-		/**
-		 * Binds the view to the object path.
-		 * @function
-		 * @param {string} sObjectPath path to the object to be bound
-		 * @private
-		 */
-		_bindView : function (sObjectPath) {
-			var oViewModel = this.getModel(\\"objectView\\");
+        /**
+         * Binds the view to the object path.
+         * @function
+         * @param {string} sObjectPath path to the object to be bound
+         * @private
+         */
+        _bindView : function (sObjectPath) {
+            var oViewModel = this.getModel(\\"objectView\\");
 
-			this.getView().bindElement({
-				path: sObjectPath,
-				events: {
-					change: this._onBindingChange.bind(this),
-					dataRequested: function () {
-						oViewModel.setProperty(\\"/busy\\", true);
-					},
-					dataReceived: function () {
-						oViewModel.setProperty(\\"/busy\\", false);
-					}
-				}
-			});
-		},
+            this.getView().bindElement({
+                path: sObjectPath,
+                events: {
+                    change: this._onBindingChange.bind(this),
+                    dataRequested: function () {
+                        oViewModel.setProperty(\\"/busy\\", true);
+                    },
+                    dataReceived: function () {
+                        oViewModel.setProperty(\\"/busy\\", false);
+                    }
+                }
+            });
+        },
 
-		_onBindingChange : function () {
-			var oView = this.getView(),
-				oViewModel = this.getModel(\\"objectView\\"),
-				oElementBinding = oView.getElementBinding();
+        _onBindingChange : function () {
+            var oView = this.getView(),
+                oViewModel = this.getModel(\\"objectView\\"),
+                oElementBinding = oView.getElementBinding();
 
-			// No data for the binding
-			if (!oElementBinding.getBoundContext()) {
-				this.getRouter().getTargets().display(\\"objectNotFound\\");
-				return;
-			}
+            // No data for the binding
+            if (!oElementBinding.getBoundContext()) {
+                this.getRouter().getTargets().display(\\"objectNotFound\\");
+                return;
+            }
 
-			var oResourceBundle = this.getResourceBundle(),
-				oObject = oView.getBindingContext().getObject(),
-				sObjectId = oObject.ID,
-				sObjectName = oObject.Products;
+            var oResourceBundle = this.getResourceBundle(),
+                oObject = oView.getBindingContext().getObject(),
+                sObjectId = oObject.ID,
+                sObjectName = oObject.Products;
 
-				oViewModel.setProperty(\\"/busy\\", false);
-				oViewModel.setProperty(\\"/shareSendEmailSubject\\",
-					oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
-				oViewModel.setProperty(\\"/shareSendEmailMessage\\",
-					oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
-		}
-	});
+                oViewModel.setProperty(\\"/busy\\", false);
+                oViewModel.setProperty(\\"/shareSendEmailSubject\\",
+                    oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
+                oViewModel.setProperty(\\"/shareSendEmailMessage\\",
+                    oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
+        }
+    });
 
 });
 ",
@@ -10470,152 +10470,152 @@ server:
   },
   "webapp/controller/Worklist.controller.js": Object {
     "contents": "sap.ui.define([
-	\\"./BaseController\\",
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"../model/formatter\\",
-	\\"sap/ui/model/Filter\\",
-	\\"sap/ui/model/FilterOperator\\"
+    \\"./BaseController\\",
+    \\"sap/ui/model/json/JSONModel\\",
+    \\"../model/formatter\\",
+    \\"sap/ui/model/Filter\\",
+    \\"sap/ui/model/FilterOperator\\"
 ], function (BaseController, JSONModel, formatter, Filter, FilterOperator) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return BaseController.extend(\\"wrk1.controller.Worklist\\", {
+    return BaseController.extend(\\"wrk1.controller.Worklist\\", {
 
-		formatter: formatter,
+        formatter: formatter,
 
-		/* =========================================================== */
-		/* lifecycle methods                                           */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* lifecycle methods                                           */
+        /* =========================================================== */
 
-		/**
-		 * Called when the worklist controller is instantiated.
-		 * @public
-		 */
-		onInit : function () {
-			var oViewModel;
+        /**
+         * Called when the worklist controller is instantiated.
+         * @public
+         */
+        onInit : function () {
+            var oViewModel;
 
-			// keeps the search state
-			this._aTableSearchState = [];
+            // keeps the search state
+            this._aTableSearchState = [];
 
-			// Model used to manipulate control states
-			oViewModel = new JSONModel({
-				worklistTableTitle : this.getResourceBundle().getText(\\"worklistTableTitle\\"),
-				shareSendEmailSubject: this.getResourceBundle().getText(\\"shareSendEmailWorklistSubject\\"),
-				shareSendEmailMessage: this.getResourceBundle().getText(\\"shareSendEmailWorklistMessage\\", [location.href]),
-				tableNoDataText : this.getResourceBundle().getText(\\"tableNoDataText\\")
-			});
-			this.setModel(oViewModel, \\"worklistView\\");
+            // Model used to manipulate control states
+            oViewModel = new JSONModel({
+                worklistTableTitle : this.getResourceBundle().getText(\\"worklistTableTitle\\"),
+                shareSendEmailSubject: this.getResourceBundle().getText(\\"shareSendEmailWorklistSubject\\"),
+                shareSendEmailMessage: this.getResourceBundle().getText(\\"shareSendEmailWorklistMessage\\", [location.href]),
+                tableNoDataText : this.getResourceBundle().getText(\\"tableNoDataText\\")
+            });
+            this.setModel(oViewModel, \\"worklistView\\");
 
-		},
+        },
 
-		/* =========================================================== */
-		/* event handlers                                              */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* event handlers                                              */
+        /* =========================================================== */
 
-		/**
-		 * Triggered by the table's 'updateFinished' event: after new table
-		 * data is available, this handler method updates the table counter.
-		 * This should only happen if the update was successful, which is
-		 * why this handler is attached to 'updateFinished' and not to the
-		 * table's list binding's 'dataReceived' method.
-		 * @param {sap.ui.base.Event} oEvent the update finished event
-		 * @public
-		 */
-		onUpdateFinished : function (oEvent) {
-			// update the worklist's object counter after the table update
-			var sTitle,
-				oTable = oEvent.getSource(),
-				iTotalItems = oEvent.getParameter(\\"total\\");
-			// only update the counter if the length is final and
-			// the table is not empty
-			if (iTotalItems && oTable.getBinding(\\"items\\").isLengthFinal()) {
-				sTitle = this.getResourceBundle().getText(\\"worklistTableTitleCount\\", [iTotalItems]);
-			} else {
-				sTitle = this.getResourceBundle().getText(\\"worklistTableTitle\\");
-			}
-			this.getModel(\\"worklistView\\").setProperty(\\"/worklistTableTitle\\", sTitle);
-		},
+        /**
+         * Triggered by the table's 'updateFinished' event: after new table
+         * data is available, this handler method updates the table counter.
+         * This should only happen if the update was successful, which is
+         * why this handler is attached to 'updateFinished' and not to the
+         * table's list binding's 'dataReceived' method.
+         * @param {sap.ui.base.Event} oEvent the update finished event
+         * @public
+         */
+        onUpdateFinished : function (oEvent) {
+            // update the worklist's object counter after the table update
+            var sTitle,
+                oTable = oEvent.getSource(),
+                iTotalItems = oEvent.getParameter(\\"total\\");
+            // only update the counter if the length is final and
+            // the table is not empty
+            if (iTotalItems && oTable.getBinding(\\"items\\").isLengthFinal()) {
+                sTitle = this.getResourceBundle().getText(\\"worklistTableTitleCount\\", [iTotalItems]);
+            } else {
+                sTitle = this.getResourceBundle().getText(\\"worklistTableTitle\\");
+            }
+            this.getModel(\\"worklistView\\").setProperty(\\"/worklistTableTitle\\", sTitle);
+        },
 
-		/**
-		 * Event handler when a table item gets pressed
-		 * @param {sap.ui.base.Event} oEvent the table selectionChange event
-		 * @public
-		 */
-		onPress : function (oEvent) {
-			// The source is the list item that got pressed
-			this._showObject(oEvent.getSource());
-		},
+        /**
+         * Event handler when a table item gets pressed
+         * @param {sap.ui.base.Event} oEvent the table selectionChange event
+         * @public
+         */
+        onPress : function (oEvent) {
+            // The source is the list item that got pressed
+            this._showObject(oEvent.getSource());
+        },
 
-		/**
-		 * Event handler for navigating back.
-		 * Navigate back in the browser history
-		 * @public
-		 */
-		onNavBack : function() {
-			// eslint-disable-next-line sap-no-history-manipulation
-			history.go(-1);
-		},
+        /**
+         * Event handler for navigating back.
+         * Navigate back in the browser history
+         * @public
+         */
+        onNavBack : function() {
+            // eslint-disable-next-line sap-no-history-manipulation
+            history.go(-1);
+        },
 
 
-		onSearch : function (oEvent) {
-			if (oEvent.getParameters().refreshButtonPressed) {
-				// Search field's 'refresh' button has been pressed.
-				// This is visible if you select any main list item.
-				// In this case no new search is triggered, we only
-				// refresh the list binding.
-				this.onRefresh();
-			} else {
-				var aTableSearchState = [];
-				var sQuery = oEvent.getParameter(\\"query\\");
+        onSearch : function (oEvent) {
+            if (oEvent.getParameters().refreshButtonPressed) {
+                // Search field's 'refresh' button has been pressed.
+                // This is visible if you select any main list item.
+                // In this case no new search is triggered, we only
+                // refresh the list binding.
+                this.onRefresh();
+            } else {
+                var aTableSearchState = [];
+                var sQuery = oEvent.getParameter(\\"query\\");
 
-				if (sQuery && sQuery.length > 0) {
-					aTableSearchState = [new Filter(\\"ID\\", FilterOperator.Contains, sQuery)];
-				}
-				this._applySearch(aTableSearchState);
-			}
+                if (sQuery && sQuery.length > 0) {
+                    aTableSearchState = [new Filter(\\"ID\\", FilterOperator.Contains, sQuery)];
+                }
+                this._applySearch(aTableSearchState);
+            }
 
-		},
+        },
 
-		/**
-		 * Event handler for refresh event. Keeps filter, sort
-		 * and group settings and refreshes the list binding.
-		 * @public
-		 */
-		onRefresh : function () {
-			var oTable = this.byId(\\"table\\");
-			oTable.getBinding(\\"items\\").refresh();
-		},
+        /**
+         * Event handler for refresh event. Keeps filter, sort
+         * and group settings and refreshes the list binding.
+         * @public
+         */
+        onRefresh : function () {
+            var oTable = this.byId(\\"table\\");
+            oTable.getBinding(\\"items\\").refresh();
+        },
 
-		/* =========================================================== */
-		/* internal methods                                            */
-		/* =========================================================== */
+        /* =========================================================== */
+        /* internal methods                                            */
+        /* =========================================================== */
 
-		/**
-		 * Shows the selected item on the object page
-		 * @param {sap.m.ObjectListItem} oItem selected Item
-		 * @private
-		 */
-		_showObject : function (oItem) {
-			this.getRouter().navTo(\\"object\\", {
-				objectId: oItem.getBindingContext().getPath().substring(\\"/Products\\".length)
-			});
-		},
+        /**
+         * Shows the selected item on the object page
+         * @param {sap.m.ObjectListItem} oItem selected Item
+         * @private
+         */
+        _showObject : function (oItem) {
+            this.getRouter().navTo(\\"object\\", {
+                objectId: oItem.getBindingContext().getPath().substring(\\"/Products\\".length)
+            });
+        },
 
-		/**
-		 * Internal helper method to apply both filter and search state together on the list binding
-		 * @param {sap.ui.model.Filter[]} aTableSearchState An array of filters for the search
-		 * @private
-		 */
-		_applySearch: function(aTableSearchState) {
-			var oTable = this.byId(\\"table\\"),
-				oViewModel = this.getModel(\\"worklistView\\");
-			oTable.getBinding(\\"items\\").filter(aTableSearchState, \\"Application\\");
-			// changes the noDataText of the list in case there are no filter results
-			if (aTableSearchState.length !== 0) {
-				oViewModel.setProperty(\\"/tableNoDataText\\", this.getResourceBundle().getText(\\"worklistNoDataWithSearchText\\"));
-			}
-		}
+        /**
+         * Internal helper method to apply both filter and search state together on the list binding
+         * @param {sap.ui.model.Filter[]} aTableSearchState An array of filters for the search
+         * @private
+         */
+        _applySearch: function(aTableSearchState) {
+            var oTable = this.byId(\\"table\\"),
+                oViewModel = this.getModel(\\"worklistView\\");
+            oTable.getBinding(\\"items\\").filter(aTableSearchState, \\"Application\\");
+            // changes the noDataText of the list in case there are no filter results
+            if (aTableSearchState.length !== 0) {
+                oViewModel.setProperty(\\"/tableNoDataText\\", this.getResourceBundle().getText(\\"worklistNoDataWithSearchText\\"));
+            }
+        }
 
-	});
+    });
 });
 ",
     "state": "modified",
@@ -12288,42 +12288,42 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/model/formatter.js": Object {
     "contents": "sap.ui.define([], function () {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return {
+    return {
 
-		/**
-		 * Rounds the number unit value to 2 digits
-		 * @public
-		 * @param {string} sValue the number string to be rounded
-		 * @returns {string} sValue with 2 digits rounded
-		 */
-		numberUnit : function (sValue) {
-			if (!sValue) {
-				return \\"\\";
-			}
-			return parseFloat(sValue).toFixed(2);
-		}
+        /**
+         * Rounds the number unit value to 2 digits
+         * @public
+         * @param {string} sValue the number string to be rounded
+         * @returns {string} sValue with 2 digits rounded
+         */
+        numberUnit : function (sValue) {
+            if (!sValue) {
+                return \\"\\";
+            }
+            return parseFloat(sValue).toFixed(2);
+        }
 
-	};
+    };
 
 });",
     "state": "modified",
   },
   "webapp/model/models.js": Object {
     "contents": "sap.ui.define([
-	\\"sap/ui/model/json/JSONModel\\",
-	\\"sap/ui/Device\\"
+    \\"sap/ui/model/json/JSONModel\\",
+    \\"sap/ui/Device\\"
 ], function (JSONModel, Device) {
-	\\"use strict\\";
+    \\"use strict\\";
 
-	return {
-		createDeviceModel : function () {
-			var oModel = new JSONModel(Device);
-			oModel.setDefaultBindingMode(\\"OneWay\\");
-			return oModel;
-		}
-	};
+    return {
+        createDeviceModel : function () {
+            var oModel = new JSONModel(Device);
+            oModel.setDefaultBindingMode(\\"OneWay\\");
+            return oModel;
+        }
+    };
 });",
     "state": "modified",
   },
@@ -12332,73 +12332,73 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 <html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
-	<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-	<title>{{appTitle}}</title>
+    <title>{{appTitle}}</title>
 
-	<!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
 
-		 The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
 
-		 The fiori2 renderer will render the shell header allowing, for instance,
-		 testing of additional application setting buttons.
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
 
-		 The navigation target resolution service is configured in a way that the empty URL hash is
-		 resolved to our own application.
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
 
-		 This example uses relative path references for the SAPUI5 resources and test-resources;
-		 it might be necessary to adapt them depending on the target runtime platform.
-		 The sandbox platform is restricted to development or demo use cases and must NOT be used
-		 for productive scenarios.
-	-->
-	<script type=\\"text/javascript\\">
-		window[\\"sap-ushell-config\\"] = {
-			defaultRenderer: \\"fiori2\\",
-			bootstrapPlugins: {
-				\\"RuntimeAuthoringPlugin\\": {
-					component: \\"sap.ushell.plugins.rta\\",
-					config: {
-						validateAppVersion: false
-					}
-				}
-			},
-			renderers: {
-				fiori2: {
-					componentData: {
-						config: {
-							search: \\"hidden\\"
-						}
-					}
-				}
-			},
-			applications: {
-				\\"wrk1-tile\\": {
-					title: \\"App Title\\",
-					description: \\"A Fiori application.\\",
-					additionalInformation: \\"SAPUI5.Component=wrk1\\",
-					applicationType: \\"URL\\",
-					url: \\"../\\"
-				}
-			}
-		};
-	</script>
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\"
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"wrk1-tile\\": {
+                    title: \\"App Title\\",
+                    description: \\"A Fiori application.\\",
+                    additionalInformation: \\"SAPUI5.Component=wrk1\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
 
-	<script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-	<!-- Bootstrap the UI5 core library -->
-	<script id=\\"sap-ui-bootstrap\\"
-		src=\\"../resources/sap-ui-core.js\\"
-		data-sap-ui-libs=\\"sap.f,sap.m,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.core,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
-		data-sap-ui-async=\\"true\\"
-		data-sap-ui-preload=\\"async\\"
-		data-sap-ui-theme=\\"sap_fiori_3_dark\\"
-		data-sap-ui-compatVersion=\\"edge\\"
-		data-sap-ui-language=\\"en\\"
-		data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
-		data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-		</script>
-		<script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-		</script>
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.f,sap.m,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.core,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_fiori_3_dark\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        </script>
+        <script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        </script>
 </head>
 
 <!-- UI Content -->
@@ -12586,177 +12586,177 @@ sap.registerComponentDependencyPaths(manifestUri);
   },
   "webapp/view/App.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.App\\"
-	displayBlock=\\"true\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\">
+    controllerName=\\"wrk1.controller.App\\"
+    displayBlock=\\"true\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
 
-	<Shell>
-		<App
-			id=\\"app\\"
-			busy=\\"{appView>/busy}\\"
-			busyIndicatorDelay=\\"{appView>/delay}\\"/>
-	</Shell>
+    <Shell>
+        <App
+            id=\\"app\\"
+            busy=\\"{appView>/busy}\\"
+            busyIndicatorDelay=\\"{appView>/delay}\\"/>
+    </Shell>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/NotFound.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.NotFound\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\">
+    controllerName=\\"wrk1.controller.NotFound\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
 
-	<MessagePage
-		title=\\"{i18n>notFoundTitle}\\"
-		text=\\"{i18n>notFoundText}\\"
-		icon=\\"sap-icon://document\\"
-		id=\\"page\\"
-		description=\\"\\">
-		<customDescription>
-			<Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\"/>
-		</customDescription>
-	</MessagePage>
+    <MessagePage
+        title=\\"{i18n>notFoundTitle}\\"
+        text=\\"{i18n>notFoundText}\\"
+        icon=\\"sap-icon://document\\"
+        id=\\"page\\"
+        description=\\"\\">
+        <customDescription>
+            <Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\"/>
+        </customDescription>
+    </MessagePage>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/Object.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.Object\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\"
-	xmlns:semantic=\\"sap.f.semantic\\">
+    controllerName=\\"wrk1.controller.Object\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\"
+    xmlns:semantic=\\"sap.f.semantic\\">
 
-	<semantic:SemanticPage
-		id=\\"page\\"
-		headerPinnable=\\"false\\"
-		toggleHeaderOnTitleClick=\\"false\\"
-		busy=\\"{objectView>/busy}\\"
-		busyIndicatorDelay=\\"{objectView>/delay}\\">
+    <semantic:SemanticPage
+        id=\\"page\\"
+        headerPinnable=\\"false\\"
+        toggleHeaderOnTitleClick=\\"false\\"
+        busy=\\"{objectView>/busy}\\"
+        busyIndicatorDelay=\\"{objectView>/delay}\\">
 
-		<semantic:titleHeading>
-			<Title
-				text=\\"{ID}\\"
-				level=\\"H2\\"/>
-		</semantic:titleHeading>
+        <semantic:titleHeading>
+            <Title
+                text=\\"{ID}\\"
+                level=\\"H2\\"/>
+        </semantic:titleHeading>
 
-		<semantic:headerContent>
-			<ObjectNumber />
-		</semantic:headerContent>
+        <semantic:headerContent>
+            <ObjectNumber />
+        </semantic:headerContent>
 
-		<semantic:sendEmailAction>
-			<semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
-		</semantic:sendEmailAction>
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
+        </semantic:sendEmailAction>
 
-	</semantic:SemanticPage>
+    </semantic:SemanticPage>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/ObjectNotFound.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.NotFound\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\">
+    controllerName=\\"wrk1.controller.NotFound\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
 
-	<MessagePage
-		title=\\"{i18n>objectTitle}\\"
-		text=\\"{i18n>noObjectFoundText}\\"
-		icon=\\"sap-icon://product\\"
-		description=\\"\\"
-		id=\\"page\\">
-		<customDescription>
-			<Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\" />
-		</customDescription>
-	</MessagePage>
+    <MessagePage
+        title=\\"{i18n>objectTitle}\\"
+        text=\\"{i18n>noObjectFoundText}\\"
+        icon=\\"sap-icon://product\\"
+        description=\\"\\"
+        id=\\"page\\">
+        <customDescription>
+            <Link id=\\"link\\" text=\\"{i18n>backToWorklist}\\" press=\\".onLinkPressed\\" />
+        </customDescription>
+    </MessagePage>
 
 </mvc:View>",
     "state": "modified",
   },
   "webapp/view/Worklist.view.xml": Object {
     "contents": "<mvc:View
-	controllerName=\\"wrk1.controller.Worklist\\"
-	xmlns=\\"sap.m\\"
-	xmlns:mvc=\\"sap.ui.core.mvc\\"
-	xmlns:semantic=\\"sap.f.semantic\\">
+    controllerName=\\"wrk1.controller.Worklist\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\"
+    xmlns:semantic=\\"sap.f.semantic\\">
 
-	<semantic:SemanticPage
-		id=\\"page\\"
-		headerPinnable=\\"false\\"
-		toggleHeaderOnTitleClick=\\"false\\">
+    <semantic:SemanticPage
+        id=\\"page\\"
+        headerPinnable=\\"false\\"
+        toggleHeaderOnTitleClick=\\"false\\">
 
-		<semantic:titleHeading>
-			<Title
-				text=\\"{i18n>worklistTitle}\\"
-				level=\\"H2\\"/>
-		</semantic:titleHeading>
+        <semantic:titleHeading>
+            <Title
+                text=\\"{i18n>worklistTitle}\\"
+                level=\\"H2\\"/>
+        </semantic:titleHeading>
 
-		<semantic:content>
-			<Table
-				id=\\"table\\"
-				width=\\"auto\\"
-				items=\\"{
-					path: '/Products',
-					sorter: {
-						path: 'ID',
-						descending: false
-					}
-				}\\"
-				noDataText=\\"{worklistView>/tableNoDataText}\\"
-				busyIndicatorDelay=\\"{worklistView>/tableBusyDelay}\\"
-				growing=\\"true\\"
-				growingScrollToLoad=\\"true\\"
-				updateFinished=\\".onUpdateFinished\\">
+        <semantic:content>
+            <Table
+                id=\\"table\\"
+                width=\\"auto\\"
+                items=\\"{
+                    path: '/Products',
+                    sorter: {
+                        path: 'ID',
+                        descending: false
+                    }
+                }\\"
+                noDataText=\\"{worklistView>/tableNoDataText}\\"
+                busyIndicatorDelay=\\"{worklistView>/tableBusyDelay}\\"
+                growing=\\"true\\"
+                growingScrollToLoad=\\"true\\"
+                updateFinished=\\".onUpdateFinished\\">
 
-				<headerToolbar>
-					<OverflowToolbar>
-						<Title
-							id=\\"tableHeader\\"
-							text=\\"{worklistView>/worklistTableTitle}\\"
-							level=\\"H3\\"/>
-						<ToolbarSpacer />
-						<SearchField
-							id=\\"searchField\\"
-							tooltip=\\"{i18n>worklistSearchTooltip}\\"
-							search=\\".onSearch\\">
-							<layoutData>
-								<OverflowToolbarLayoutData
-									maxWidth=\\"200px\\"
-									priority=\\"NeverOverflow\\"/>
-							</layoutData>
-						</SearchField>
-					</OverflowToolbar>
-				</headerToolbar>
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title
+                            id=\\"tableHeader\\"
+                            text=\\"{worklistView>/worklistTableTitle}\\"
+                            level=\\"H3\\"/>
+                        <ToolbarSpacer />
+                        <SearchField
+                            id=\\"searchField\\"
+                            tooltip=\\"{i18n>worklistSearchTooltip}\\"
+                            search=\\".onSearch\\">
+                            <layoutData>
+                                <OverflowToolbarLayoutData
+                                    maxWidth=\\"200px\\"
+                                    priority=\\"NeverOverflow\\"/>
+                            </layoutData>
+                        </SearchField>
+                    </OverflowToolbar>
+                </headerToolbar>
 
-				<columns>
-					<Column id=\\"nameColumn\\">
-						<Text text=\\"{i18n>tableNameColumnTitle}\\" id=\\"nameColumnTitle\\"/>
-					</Column>
-					<Column id=\\"unitNumberColumn\\" hAlign=\\"End\\">
-						<Text text=\\"{i18n>tableUnitNumberColumnTitle}\\" id=\\"unitNumberColumnTitle\\"/>
-					</Column>
-				</columns>
+                <columns>
+                    <Column id=\\"nameColumn\\">
+                        <Text text=\\"{i18n>tableNameColumnTitle}\\" id=\\"nameColumnTitle\\"/>
+                    </Column>
+                    <Column id=\\"unitNumberColumn\\" hAlign=\\"End\\">
+                        <Text text=\\"{i18n>tableUnitNumberColumnTitle}\\" id=\\"unitNumberColumnTitle\\"/>
+                    </Column>
+                </columns>
 
-				<items>
-					<ColumnListItem
-						type=\\"Navigation\\"
-						press=\\".onPress\\">
-						<cells>
-							<ObjectIdentifier
-								title=\\"{ID}\\"/>
-							<ObjectNumber />
-						</cells>
-					</ColumnListItem>
-				</items>
-			</Table>
-		</semantic:content>
+                <items>
+                    <ColumnListItem
+                        type=\\"Navigation\\"
+                        press=\\".onPress\\">
+                        <cells>
+                            <ObjectIdentifier
+                                title=\\"{ID}\\"/>
+                            <ObjectNumber />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </semantic:content>
 
-		<semantic:sendEmailAction>
-			<semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
-		</semantic:sendEmailAction>
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction id=\\"shareEmail\\" press=\\".onShareEmailPress\\"/>
+        </semantic:sendEmailAction>
 
-	</semantic:SemanticPage>
+    </semantic:SemanticPage>
 
 </mvc:View>",
     "state": "modified",
