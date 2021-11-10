@@ -20,7 +20,7 @@ The image below gives an overview of the currently included modules and their de
 
 ![Open UX tools modules](docs/images/building-blocks-today.svg)
 
-The repository contains no private modules i.e. all modules are published to https://www.npmjs.com/search?q=%40sap-ux[npmjs.com] under the scope `@sap-ux`. The name of the published modules (without scope) matches the folder name in `packages` e.g. `./packages/fiori-freestyle-writer` is published as `@sap-ux/fiori-freestyle-writer`.
+The repository contains no private modules i.e. all modules are published to [npmjs.com](https://www.npmjs.com/search?q=%40sap-ux) under the scope `@sap-ux`. The name of the published modules (without scope) matches the folder name in `packages` e.g. `./packages/fiori-freestyle-writer` is published as `@sap-ux/fiori-freestyle-writer`.
 
 ## Development Setup
 
