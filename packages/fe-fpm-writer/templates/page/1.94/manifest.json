@@ -3,17 +3,17 @@
         "routing": {
             "targets": {
                 "<%- entity %><%- name %>": {
-					"type": "Component",
-					"id": "<%- entity %><%- name %>",
-					"name": "sap.fe.core.fpm",
-					"options": {
-						"settings": {
-							"viewName": "<%- ns %>.<%- name %>",
-							"entitySet": "<%- entity %>",
-							"navigation": { }
-						}
-					}
-				}<%if (locals.navigation) {%>,
+                    "type": "Component",
+                    "id": "<%- entity %><%- name %>",
+                    "name": "sap.fe.core.fpm",
+                    "options": {
+                        "settings": {
+                            "viewName": "<%- ns %>.<%- name %>",
+                            "entitySet": "<%- entity %>",
+                            "navigation": { }
+                        }
+                    }
+                }<%if (locals.navigation) {%>,
                 "<%- navigation.sourcePage %>": {
                     "options": {
                         "settings": {

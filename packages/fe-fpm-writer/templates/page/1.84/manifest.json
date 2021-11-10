@@ -3,15 +3,15 @@
         "routing": {
             "targets": {
                 "<%- entity %><%- name %>": {
-					"viewId": "<%- name %>View",
-					"viewName": "<%- ns %>.<%- name %>",
-					"options": {
-						"settings": {
-							"entitySet": "<%- entity %>",
-							"navigation": { }
-						}
-					}
-				}<%if (locals.navigation) {%>,
+                    "viewId": "<%- name %>View",
+                    "viewName": "<%- ns %>.<%- name %>",
+                    "options": {
+                        "settings": {
+                            "entitySet": "<%- entity %>",
+                            "navigation": { }
+                        }
+                    }
+                }<%if (locals.navigation) {%>,
                 "<%- navigation.sourcePage %>": {
                     "options": {
                         "settings": {
