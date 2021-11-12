@@ -1,4 +1,4 @@
-import { AbapApp, AbapTarget, FioriToolsProxyConfig, ProxyBackend, ProxyUIConfig } from './types';
+import { AbapApp, AbapTarget, CustomTask, FioriToolsProxyConfig, ProxyBackend, ProxyUIConfig } from './types';
 import { YamlDocument, NodeComment, YAMLMap } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
@@ -60,16 +60,34 @@ export class UI5Config {
     }
 
     /**
+     * Adds a list of custom tasks to the config.
+     *
+     * @param {CustomTask<unknown>[]} tasks - the list of custom tasks
+     * @param {NodeComment<MiddlewareConfig>[]} [comments] - a list of comments
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public addCustomTasks(
+        tasks: CustomTask<unknown>[],
+        comments?: NodeComment<CustomMiddleware<unknown>>[]
+    ): UI5Config {
+        for (const task of tasks) {
+            this.document.appendTo({ path: 'builder.customTasks', value: task, comments });
+        }
+        return this;
+    }
+
+    /**
      * Adds a list of custom middlewares to the config.
      *
-     * @param {CustomMiddleware<any>[]} middlewares - the list of custom middlewares
+     * @param {CustomMiddleware<unknown>[]} middlewares - the list of custom middlewares
      * @param {NodeComment<MiddlewareConfig>[]} [comments] - a list of comments
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
     public addCustomMiddleware(
-        middlewares: CustomMiddleware<any>[],
-        comments?: NodeComment<CustomMiddleware<any>>[]
+        middlewares: CustomMiddleware<unknown>[],
+        comments?: NodeComment<CustomMiddleware<unknown>>[]
     ): UI5Config {
         for (const mw of middlewares) {
             this.document.appendTo({ path: 'server.customMiddleware', value: mw, comments });

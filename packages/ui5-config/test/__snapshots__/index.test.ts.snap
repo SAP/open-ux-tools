@@ -77,6 +77,16 @@ exports[`UI5Config addCustomMiddleware 1`] = `
 "
 `;
 
+exports[`UI5Config addCustomTask 1`] = `
+"builder:
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: my-archive
+"
+`;
+
 exports[`UI5Config addFioriToolsProxydMiddleware add backend with flexible parameters (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:

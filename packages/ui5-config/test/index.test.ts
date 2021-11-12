@@ -119,6 +119,19 @@ describe('UI5Config', () => {
         expect(ui5Config.toString()).toMatchSnapshot();
     });
 
+    test('addCustomTask', () => {
+        ui5Config.addCustomTasks([
+            {
+                name: 'ui5-task-zipper',
+                afterTask: 'generateCachebusterInfo',
+                configuration: {
+                    archiveName: 'my-archive'
+                }
+            }
+        ]);
+        expect(ui5Config.toString()).toMatchSnapshot();
+    });
+
     describe('addAbapDeployTask', () => {
         const app: AbapApp = {
             name: '~name',
