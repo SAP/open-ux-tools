@@ -1,4 +1,4 @@
-import { FioriToolsProxyConfig, ProxyBackend, ProxyUIConfig } from './types';
+import { AbapApp, AbapTarget, FioriToolsProxyConfig, ProxyBackend, ProxyUIConfig } from './types';
 import { YamlDocument, NodeComment, YAMLMap } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
@@ -174,6 +174,44 @@ export class UI5Config {
             path: 'server.customMiddleware',
             value: getMockServerMiddlewareConfig(path)
         });
+        return this;
+    }
+
+    /**
+     * Adds the ABAP deployment task to the config.
+     *
+     * @param target system that this app is to be deployed to
+     * @param app application configuration for the deployment to ABAP
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public addAbapDeployTask(target: AbapTarget, app: AbapApp): UI5Config {
+        this.document.appendTo({
+            path: 'builder.resources',
+            value: {
+                excludes: ['/test/**', '/localService/**']
+            }
+        });
+        this.document.appendTo({
+            path: 'builder.customTasks',
+            value: {
+                name: 'deploy-to-abap',
+                afterTask: 'generateCachebusterInfo',
+                configuration: { target, app }
+            }
+        });
+        return this;
+    }
+
+    /**
+     * Delete a node form the UI5 config.
+     *
+     * @param path path in the document using `.` as separator
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public deleteNode(path: string): UI5Config {
+        // TODO: implement deletion
         return this;
     }
 

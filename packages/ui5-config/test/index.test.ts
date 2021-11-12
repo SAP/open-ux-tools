@@ -1,4 +1,5 @@
 import { getFioriToolsProxyMiddlewareConfig } from '../src/middlewares';
+import { AbapApp } from '../src/types';
 import { UI5Config } from '../src/ui5-config';
 
 describe('UI5Config', () => {
@@ -115,6 +116,38 @@ describe('UI5Config', () => {
     test('addCustomMiddleware', () => {
         const { config, comments } = getFioriToolsProxyMiddlewareConfig([], {});
         ui5Config.addCustomMiddleware([config], comments);
+        expect(ui5Config.toString()).toMatchSnapshot();
+    });
+
+    describe('addAbapDeployTask', () => {
+        const app: AbapApp = {
+            name: '~name',
+            desription: '~description',
+            package: '~package',
+            transport: '~transport'
+        };
+
+        test('local settings', () => {
+            ui5Config.addAbapDeployTask({ url, client }, app);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('AppStudio + Steampunk settings', () => {
+            ui5Config.addAbapDeployTask(
+                {
+                    destination,
+                    scp: true
+                },
+                app
+            );
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    test('deleteNode', () => {
+        const { config, comments } = getFioriToolsProxyMiddlewareConfig([], {});
+        ui5Config.addFioriToolsAppReloadMiddleware();
+        ui5Config.deleteNode('server.customMiddleware');
         expect(ui5Config.toString()).toMatchSnapshot();
     });
 });

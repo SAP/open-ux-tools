@@ -1,5 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
+"builder:
+  resources:
+    - excludes:
+        - /test/**
+        - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: ~destination~
+          scp: true
+        app:
+          name: ~name
+          desription: ~description
+          package: ~package
+          transport: ~transport
+"
+`;
+
+exports[`UI5Config addAbapDeployTask local settings 1`] = `
+"builder:
+  resources:
+    - excludes:
+        - /test/**
+        - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://localhost:8080
+          client: \\"012\\"
+        app:
+          name: ~name
+          desription: ~description
+          package: ~package
+          transport: ~transport
+"
+`;
+
 exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out backend first and then call add backend 1`] = `
 "server:
   customMiddleware:
@@ -214,6 +256,11 @@ exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
   libraries:
     - name: sap.m
     - name: themelib_sap_fiori_3
+"
+`;
+
+exports[`UI5Config deleteNode 1`] = `
+"server:
 "
 `;
 
