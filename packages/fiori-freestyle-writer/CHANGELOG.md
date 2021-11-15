@@ -1,5 +1,14 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.8
+
+### Patch Changes
+
+-   ccff534: Add inline schema in ui5\*.yaml files for yaml-language-server
+-   Updated dependencies [ccff534]
+    -   @sap-ux/odata-service-writer@0.9.8
+    -   @sap-ux/ui5-application-writer@0.9.9
+
 ## 0.10.7
 
 ### Patch Changes
