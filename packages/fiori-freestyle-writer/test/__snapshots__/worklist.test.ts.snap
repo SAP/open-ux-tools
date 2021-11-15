@@ -53,7 +53,9 @@ archive.zip
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -98,7 +100,9 @@ server:
     "state": "modified",
   },
   "ui5-mock.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -136,7 +140,9 @@ server:
     "state": "modified",
   },
   "ui5.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -6711,7 +6717,9 @@ archive.zip
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -6759,7 +6767,9 @@ server:
     "state": "modified",
   },
   "ui5-mock.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -6800,7 +6810,9 @@ server:
     "state": "modified",
   },
   "ui5.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -9978,7 +9990,9 @@ archive.zip
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -10023,7 +10037,9 @@ server:
     "state": "modified",
   },
   "ui5-mock.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -10061,7 +10077,9 @@ server:
     "state": "modified",
   },
   "ui5.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application

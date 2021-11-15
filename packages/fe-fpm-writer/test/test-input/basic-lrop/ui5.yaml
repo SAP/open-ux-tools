@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
 specVersion: '2.0'
 metadata:
     name: 'v4-travel'

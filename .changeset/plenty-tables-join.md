@@ -1,5 +1,5 @@
 ---
-'@sap-ux/fiori-freestyle-writer': minor
+'@sap-ux/fiori-freestyle-writer': patch
 '@sap-ux/odata-service-writer': minor
 '@sap-ux/ui5-application-writer': minor
 ---
