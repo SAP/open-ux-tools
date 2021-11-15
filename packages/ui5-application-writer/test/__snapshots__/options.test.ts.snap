@@ -86,7 +86,9 @@ archive.zip
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: testAppId
 type: application
@@ -94,7 +96,9 @@ type: application
     "state": "modified",
   },
   "ui5.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: testAppId
 type: application
