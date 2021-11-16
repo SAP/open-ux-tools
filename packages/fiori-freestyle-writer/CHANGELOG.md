@@ -1,5 +1,14 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.9
+
+### Patch Changes
+
+-   a9ef807: Reorganized how different middlewares are added to the ui5\*.yaml files
+-   Updated dependencies [a9ef807]
+    -   @sap-ux/odata-service-writer@0.10.0
+    -   @sap-ux/ui5-application-writer@0.10.0
+
 ## 0.10.8
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.10.0
+
+### Minor Changes
+
+-   a9ef807: Reorganized how different middlewares are added to the ui5\*.yaml files
+
 ## 0.9.9
 
 ### Patch Changes
