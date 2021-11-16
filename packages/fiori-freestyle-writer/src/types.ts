@@ -1,4 +1,4 @@
-import { Ui5App } from '@sap-ux/ui5-application-writer';
+import { Ui5App, App } from '@sap-ux/ui5-application-writer';
 import { OdataService } from '@sap-ux/odata-service-writer';
 
 export enum TemplateType {
@@ -32,9 +32,13 @@ export interface Template<T = {}> {
     settings: T;
 }
 
+export interface FioriApp extends App {
+    flpAppId?: string;
+}
 export interface FreestyleApp<T> extends Ui5App {
     template: Template<T>;
     service?: OdataService;
+    app: FioriApp;
 }
 
 // We need this for the service version

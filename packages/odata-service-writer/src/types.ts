@@ -1,8 +1,10 @@
 import { ProxyBackend } from '@sap-ux/ui5-config';
+
 export enum OdataVersion {
     v2 = '2',
     v4 = '4'
 }
+
 export interface OdataService {
     url?: string;
     client?: string;

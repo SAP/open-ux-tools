@@ -32,6 +32,9 @@ describe('UI5 templates', () => {
                 title: 'Test App Title',
                 description: 'Test App Description'
             },
+            ui5: {
+                framework: 'OpenUI5'
+            },
             package: {
                 name: 'testPackageName'
             }

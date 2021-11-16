@@ -34,10 +34,10 @@ archive.zip
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open 'test/flpSandbox.html#nods1-tile'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#nods1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#nods1-tile'\\",
     \\"start-noflp\\": \\"fiori run --open 'index.html'\\"
   },
   \\"ui5\\": {
@@ -61,16 +61,22 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -78,12 +84,6 @@ server:
         backend:
           - path: /sap
             url: http://localhost
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
 ",
     "state": "modified",
   },
@@ -100,15 +100,15 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /sap
-            url: http://localhost
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '1.78.16' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
+        backend:
+          - path: /sap
+            url: http://localhost
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -672,10 +672,10 @@ archive.zip
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open 'test/flpSandbox.html#nods1-tile'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#nods1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#nods1-tile'\\",
     \\"start-noflp\\": \\"fiori run --open 'index.html'\\"
   },
   \\"ui5\\": {
@@ -699,16 +699,22 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -716,12 +722,6 @@ server:
         backend:
           - path: /sap
             url: http://localhost
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
 ",
     "state": "modified",
   },
@@ -738,15 +738,15 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /sap
-            url: http://localhost
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '1.78.16' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
+        backend:
+          - path: /sap
+            url: http://localhost
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

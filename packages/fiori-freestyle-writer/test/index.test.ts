@@ -10,8 +10,7 @@ const TEST_NAME = 'allTemplate';
 
 describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
-
-    const commonConfig = {
+    const commonConfig: Partial<FreestyleApp<any>> = {
         app: {
             id: 'test.me',
             title: 'My Test App',
@@ -50,7 +49,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
                         lineItem: { name: 'Products' }
                     }
                 }
-            }
+            } as FreestyleApp<any>
         },
         {
             name: 'worklist',
@@ -69,7 +68,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
                         }
                     }
                 }
-            }
+            } as FreestyleApp<any>
         },
         {
             name: 'basic',
@@ -88,7 +87,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
                         }
                     }
                 }
-            }
+            } as FreestyleApp<any>
         }
     ];
 

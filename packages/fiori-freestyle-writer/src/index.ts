@@ -3,9 +3,7 @@ import { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { generate as generateUi5Project, Package } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
-import { UI5Config } from '@sap-ux/ui5-config';
 import { getPackageJsonTasks } from './packageConfig';
-import { getUI5Libs } from './data/ui5Libs';
 import cloneDeep from 'lodash/cloneDeep';
 import { BasicAppSettings, FreestyleApp, TemplateType } from './types';
 import { setDefaults } from './defaults';
@@ -75,33 +73,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     fs.writeJSON(packagePath, packageJson);
 
-    // ui5-local.yaml
-    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addUI5Framework(
-        'SAPUI5',
-        ffApp.ui5!.localVersion!,
-        getUI5Libs(ffApp?.ui5?.ui5Libs),
-        ffApp.ui5!.ui5Theme
-    );
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
-    }
-    // Temp fix to set ui5 version be removed as part of PR #144
-    // ui5.yaml
-    if (ffApp.ui5) {
-        const ui5ConfigPath = join(basePath, 'ui5.yaml');
-        const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-
-        ui5Config.addUi5ToFioriToolsProxydMiddleware({
-            version: ffApp.ui5?.version,
-            url: ffApp.ui5?.frameworkUrl,
-            directLoad: ffApp.ui5.directLoad
-        });
-        fs.write(ui5ConfigPath, ui5Config.toString());
     }
 
     return fs;

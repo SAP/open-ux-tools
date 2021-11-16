@@ -64,8 +64,7 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend], ui5: {} });
-    ui5Config.addFioriToolsAppReloadMiddleware();
+    ui5Config.addBackendToFioriToolsProxydMiddleware(data.previewSettings as ProxyBackend);
 
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
@@ -87,17 +86,9 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         packageJson.ui5.dependencies.push('@sap/ux-ui5-fe-mockserver-middleware');
         fs.writeJSON(packagePath, packageJson);
 
-        // ui5-mock.yaml
-        fs.copyTpl(
-            join(templateRoot, 'add', 'ui5-mock.yaml'),
-            join(basePath, 'ui5-mock.yaml'),
-            Object.assign(data, { appid })
-        );
-        const ui5MockConfigPath = join(basePath, 'ui5-mock.yaml');
-        const ui5MockConfig = await UI5Config.newInstance(fs.read(ui5MockConfigPath));
-        ui5MockConfig.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend], ui5: {} });
+        // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
+        const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
         ui5MockConfig.addMockServerMiddleware(data.path);
-        ui5MockConfig.addFioriToolsAppReloadMiddleware();
         fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
 
         // also add mockserver middleware to ui5-local.yaml
@@ -107,8 +98,6 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
         fs.write(join(basePath, 'webapp', 'localService', 'metadata.xml'), prettifyXml(data.metadata, { indent: 4 }));
     }
 
-    // also add the reload middleware
-    ui5LocalConfig.addFioriToolsAppReloadMiddleware();
     // write yamls to disk
     fs.write(ui5ConfigPath, ui5Config.toString());
     fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
