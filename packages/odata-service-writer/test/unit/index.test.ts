@@ -118,6 +118,7 @@ describe('Test generate method with valid input', () => {
             destination: {
                 name: 'test'
             },
+            client: '013',
             previewSettings: {
                 apiHub: true,
                 scp: false,
@@ -147,6 +148,7 @@ describe('Test generate method with valid input', () => {
                         pathPrefix: /~prefix
                         path: /sap
                         url: http://localhost
+                        client: \\"013\\"
                         destination: test
             "
         `);
