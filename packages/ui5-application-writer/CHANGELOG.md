@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.9.9
+
+### Patch Changes
+
+-   ccff534: Add inline schema in ui5\*.yaml files for yaml-language-server
+
 ## 0.9.8
 
 ### Patch Changes
