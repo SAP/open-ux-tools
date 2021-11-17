@@ -17,6 +17,8 @@ jobs:
         steps:
             - name: Checkout code repository
               uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.0.1
               with:
@@ -43,6 +45,11 @@ jobs:
               run: pnpm recursive run lint
             - name: Run unit tests
               run: pnpm recursive run test
+            - name: Run SonarCloud scan
+              uses: sonarsource/sonarcloud-github-action@master
+              env:
+                  GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     version:
         # Run version job only on pushes to the main branch. The job depends on completion of the build job.
