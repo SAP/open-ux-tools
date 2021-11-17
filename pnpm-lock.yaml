@@ -1,5 +1,9 @@
 lockfileVersion: 5.3
 
+overrides:
+  ansi-regex: ^5.0.1
+  tmpl: ^1.0.5
+
 importers:
 
   .:
@@ -1405,16 +1409,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       type-fest: 0.21.3
-    dev: true
-
-  /ansi-regex/3.0.0:
-    resolution: {integrity: sha1-7QMXwyIGT3lGbAKWa922Bas32Zg=}
-    engines: {node: '>=4'}
-    dev: true
-
-  /ansi-regex/5.0.0:
-    resolution: {integrity: sha512-bY6fj56OUQ0hU1KjFNDQuJFezqKdrAyFdIevADiqrWHwSlbmBNMHp5ak2f40Pm8JTFyM2mqxkG6ngkHO11f/lg==}
-    engines: {node: '>=8'}
     dev: true
 
   /ansi-regex/5.0.1:
@@ -3741,7 +3735,7 @@ packages:
       json-ptr: 2.2.0
       jsonpath: 1.1.1
       lodash.range: 3.2.0
-      vm2: 3.9.3
+      vm2: 3.9.5
     dev: false
 
   /json-parse-even-better-errors/2.3.1:
@@ -3910,7 +3904,7 @@ packages:
   /makeerror/1.0.11:
     resolution: {integrity: sha1-4BpckQnyr3lmDk6LlYd5AYT1qWw=}
     dependencies:
-      tmpl: 1.0.4
+      tmpl: 1.0.5
     dev: true
 
   /map-obj/1.0.1:
@@ -4408,7 +4402,7 @@ packages:
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     dependencies:
       '@jest/types': 27.1.1
-      ansi-regex: 5.0.0
+      ansi-regex: 5.0.1
       ansi-styles: 5.2.0
       react-is: 17.0.2
     dev: true
@@ -4826,7 +4820,7 @@ packages:
     resolution: {integrity: sha1-qEeQIusaw2iocTibY1JixQXuNo8=}
     engines: {node: '>=4'}
     dependencies:
-      ansi-regex: 3.0.0
+      ansi-regex: 5.0.1
     dev: true
 
   /strip-ansi/6.0.1:
@@ -4972,8 +4966,8 @@ packages:
       os-tmpdir: 1.0.2
     dev: true
 
-  /tmpl/1.0.4:
-    resolution: {integrity: sha1-I2QN17QtAEM5ERQIIOXPRA5SHdE=}
+  /tmpl/1.0.5:
+    resolution: {integrity: sha512-3f0uOEAQwIqGuWW2MVzYg8fV/QNnc/IpuJNG837rLuczAaLVHslWHZQj4IGiEl5Hs3kkbhwL9Ab7Hrsmuj+Smw==}
     dev: true
 
   /to-fast-properties/2.0.0:
@@ -5235,8 +5229,8 @@ packages:
       remove-trailing-separator: 1.1.0
       replace-ext: 1.0.1
 
-  /vm2/3.9.3:
-    resolution: {integrity: sha512-smLS+18RjXYMl9joyJxMNI9l4w7biW8ilSDaVRvFBDwOH8P0BK1ognFQTpg0wyQ6wIKLTblHJvROW692L/E53Q==}
+  /vm2/3.9.5:
+    resolution: {integrity: sha512-LuCAHZN75H9tdrAiLFf030oW7nJV5xwNMuk1ymOZwopmuK3d2H4L1Kv4+GFHgarKiLfXXLFU+7LDABHnwOkWng==}
     engines: {node: '>=6.0'}
     hasBin: true
     dev: false
