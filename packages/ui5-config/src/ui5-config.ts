@@ -222,14 +222,17 @@ export class UI5Config {
     }
 
     /**
-     * Delete a node form the UI5 config.
+     * Remove a middleware form the UI5 config.
      *
      * @param path path in the document using `.` as separator
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public deleteNode(path: string): UI5Config {
-        // TODO: implement deletion
+    public removeMiddleware(name: string): UI5Config {
+        this.document.deleteAt({
+            path: 'server.customMiddleware',
+            matcher: { key: 'name', value: name }
+        });
         return this;
     }
 

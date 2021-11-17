@@ -269,11 +269,6 @@ exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
 "
 `;
 
-exports[`UI5Config deleteNode 1`] = `
-"server:
-"
-`;
-
 exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
 "server:
   customMiddleware:
@@ -283,5 +278,11 @@ exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
         port: 35729
         path: webapp
         delay: 300
+"
+`;
+
+exports[`UI5Config removeMiddleware 1`] = `
+"server:
+  customMiddleware: []
 "
 `;

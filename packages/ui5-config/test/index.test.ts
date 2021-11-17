@@ -1,6 +1,5 @@
 import { getFioriToolsProxyMiddlewareConfig } from '../src/middlewares';
-import { AbapApp } from '../src/types';
-import { UI5Config } from '../src/ui5-config';
+import { UI5Config, AbapApp } from '../src';
 
 describe('UI5Config', () => {
     // values for testing
@@ -157,10 +156,10 @@ describe('UI5Config', () => {
         });
     });
 
-    test('deleteNode', () => {
+    test('removeMiddleware', () => {
         const { config, comments } = getFioriToolsProxyMiddlewareConfig([], {});
         ui5Config.addFioriToolsAppReloadMiddleware();
-        ui5Config.deleteNode('server.customMiddleware');
+        ui5Config.removeMiddleware('fiori-tools-appreload');
         expect(ui5Config.toString()).toMatchSnapshot();
     });
 });
