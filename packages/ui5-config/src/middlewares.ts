@@ -9,7 +9,9 @@ import type {
 import type { NodeComment } from '@sap-ux/yaml';
 
 /**
- * @returns {FioriAppReloadConfig}
+ * Get the configuration for the AppReload middleware.
+ *
+ * @returns {CustomMiddleware<FioriAppReloadConfig>} the configuration
  */
 export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadConfig> {
     return {
@@ -24,9 +26,11 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
 }
 
 /**
- * @param backends
- * @param ui5
- * @returns {{config, comments}}
+ * Get the configuration for the Fiori tools middleware.
+ *
+ * @param backends configuration of backends
+ * @param ui5 UI5 configuration
+ * @returns {{config, comments}} configuration and comments
  */
 export function getFioriToolsProxyMiddlewareConfig(
     backends?: ProxyBackend[],

@@ -62,15 +62,12 @@ export class UI5Config {
     /**
      * Adds a list of custom tasks to the config.
      *
-     * @param {CustomTask<unknown>[]} tasks - the list of custom tasks
-     * @param {NodeComment<MiddlewareConfig>[]} [comments] - a list of comments
+     * @param {CustomTask<any>[]} tasks - the list of custom tasks
+     * @param {NodeComment<CustomMiddleware<any>>[]} comments - a list of comments
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addCustomTasks(
-        tasks: CustomTask<unknown>[],
-        comments?: NodeComment<CustomMiddleware<unknown>>[]
-    ): UI5Config {
+    public addCustomTasks(tasks: CustomTask<any>[], comments?: NodeComment<CustomMiddleware<any>>[]): UI5Config {
         for (const task of tasks) {
             this.document.appendTo({ path: 'builder.customTasks', value: task, comments });
         }
@@ -80,8 +77,8 @@ export class UI5Config {
     /**
      * Adds a list of custom middlewares to the config.
      *
-     * @param {CustomMiddleware<unknown>[]} middlewares - the list of custom middlewares
-     * @param {NodeComment<MiddlewareConfig>[]} [comments] - a list of comments
+     * @param {CustomMiddleware<any>[]} middlewares - the list of custom middlewares
+     * @param {NodeComment<CustomMiddleware<any>>[]} comments - a list of comments
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
@@ -224,7 +221,7 @@ export class UI5Config {
     /**
      * Remove a middleware form the UI5 config.
      *
-     * @param path path in the document using `.` as separator
+     * @param name name of the middleware that is to be removed
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */

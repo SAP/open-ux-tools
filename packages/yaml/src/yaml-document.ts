@@ -234,6 +234,8 @@ export class YamlDocument {
      * @param path - hierarchical path where the node will be deleted
      * @param {string} path.path - the path object's path
      * @param {Object} path.matcher - key/value pair identifying the object
+     * @param {string} path.matcher.key - the key
+     * @param {string} path.matcher.value - the value
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
      */
