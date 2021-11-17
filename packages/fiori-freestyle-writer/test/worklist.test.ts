@@ -61,7 +61,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     destination: {
                         name: 'SIDCLNT012'
                     },
-                    previewSettings:{
+                    previewSettings: {
                         scp: true
                     }
                 }

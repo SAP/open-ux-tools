@@ -21,6 +21,7 @@ export function enhanceData(data: OdataService): void {
     if (data.model === undefined) {
         data.model = ''; // Default UI5 model
     }
+    
     // enhance preview settings with service configuration
     data.previewSettings = data.previewSettings || {};
     data.previewSettings.path =

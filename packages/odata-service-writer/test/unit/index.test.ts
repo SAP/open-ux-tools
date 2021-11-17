@@ -27,10 +27,11 @@ describe('Test generate method with invalid location', () => {
 
 describe('Test generate method with valid input', () => {
     let fs: Editor;
-    beforeEach(() => {
+    beforeEach(async () => {
+        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
         // generate required files
         fs = create(createStorage());
-        fs.write(join(testDir, 'ui5.yaml'), '');
+        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
         fs.write(join(testDir, 'ui5-local.yaml'), '');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
         fs.write(
@@ -80,6 +81,8 @@ describe('Test generate method with valid input', () => {
         expect(fs.read(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBe(config.metadata);
         // verify that no destination is added to the ui5.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('destination: ');
+        // verify that client is set
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('client: ');
     });
 
     it('Valid OData service with destination and no optional parameters', async () => {
@@ -133,6 +136,12 @@ describe('Test generate method with valid input', () => {
                   afterMiddleware: compression
                   configuration:
                     ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                      version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
                     backend:
                       - apiHub: true
                         scp: false
@@ -141,18 +150,6 @@ describe('Test generate method with valid input', () => {
                         url: http://localhost
                         client: \\"013\\"
                         destination: test
-                    ui5:
-                      path:
-                        - /resources
-                        - /test-resources
-                      url: https://ui5.sap.com
-                      version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
-                - name: fiori-tools-appreload
-                  afterMiddleware: compression
-                  configuration:
-                    port: 35729
-                    path: webapp
-                    delay: 300
             "
         `);
     });
@@ -171,7 +168,7 @@ describe('Test generate method with valid input', () => {
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
         expect(manifest['sap.app'].dataSources.mainService.settings.annotations).toStrictEqual([]);
         // verify that the path is correct in ui5.yaml
-        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /V2');
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('path: /V2');
     });
 
     it('Enhance unspecified input data with defaults', async () => {

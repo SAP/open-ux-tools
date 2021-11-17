@@ -35,10 +35,10 @@ archive.zip
   },
   \\"scripts\\": {
     \\"start\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\\\\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#wrk1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#wrk1-tile'\\",
     \\"start-noflp\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\\\\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html#wrk1-tile'\\"
   },
@@ -53,7 +53,9 @@ archive.zip
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -62,16 +64,22 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -88,17 +96,13 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
 ",
     "state": "modified",
   },
   "ui5-mock.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -108,15 +112,21 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /here
-            url: http://localhost
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
+        backend:
+          - path: /here
+            url: http://localhost
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -126,17 +136,13 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
 ",
     "state": "modified",
   },
   "ui5.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -146,15 +152,15 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /here
-            url: http://localhost
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '1.78.16' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
+        backend:
+          - path: /here
+            url: http://localhost
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -6693,10 +6699,10 @@ archive.zip
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\",
     \\"start-noflp\\": \\"fiori run --open 'index.html?sap-client=012'\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?sap-client=012#wrk1-tile'\\"
   },
@@ -6711,7 +6717,9 @@ archive.zip
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -6720,16 +6728,22 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_belize
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6749,17 +6763,13 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
 ",
     "state": "modified",
   },
   "ui5-mock.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -6769,18 +6779,24 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - scp: true
             path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -6790,17 +6806,13 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
 ",
     "state": "modified",
   },
   "ui5.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -6810,18 +6822,18 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - scp: true
             path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
             client: \\"012\\"
             destination: SIDCLNT012
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-          version: '1.78.16' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -9960,10 +9972,10 @@ archive.zip
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open 'test/flpSandbox.html#wrk1-tile'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#wrk1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#wrk1-tile'\\",
     \\"start-noflp\\": \\"fiori run --open 'index.html'\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html#wrk1-tile'\\"
   },
@@ -9978,7 +9990,9 @@ archive.zip
     "state": "modified",
   },
   "ui5-local.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -9987,16 +10001,22 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
-    - name: sap.ushell
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
     - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
+    - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -10013,17 +10033,13 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
 ",
     "state": "modified",
   },
   "ui5-mock.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -10033,15 +10049,21 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /catalog-admin-noauth
-            url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
+        backend:
+          - path: /catalog-admin-noauth
+            url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
       configuration:
@@ -10051,17 +10073,13 @@ server:
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
 ",
     "state": "modified",
   },
   "ui5.yaml": Object {
-    "contents": "specVersion: \\"2.5\\"
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
 metadata:
   name: wrk1
 type: application
@@ -10071,15 +10089,15 @@ server:
       afterMiddleware: compression
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /catalog-admin-noauth
-            url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '1.78.16' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
+        backend:
+          - path: /catalog-admin-noauth
+            url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

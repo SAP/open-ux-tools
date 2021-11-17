@@ -3,7 +3,7 @@ import { Ui5App } from '../types';
 /**
  * Validates the specified app id to ensure we do not create malformed documents.
  *
- * @param appId
+ * @param appId SAP application id (manifest.json>sap.app>id)
  * @throws Error with validation message, if the app id is not valid
  * @returns true, if app id is validated
  */
@@ -21,7 +21,7 @@ export function validateAppId(appId: string): boolean {
 /**
  * Validates the specified ui5App.
  *
- * @param ui5App
+ * @param ui5App configuration object given to the generate method conataining everything required to generate a UI5 application
  * @returns true, if the ui5App is valid
  * @throws Error with validation message, if the ui5App is not valid
  */
