@@ -27,7 +27,7 @@ The repository contains no private modules i.e. all modules are published to [np
 Everything is released as node modules requiring node with a version matching `">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"`.
 
 ## Contributing
-Please check the [Development Conventions and Guidelines](./docs/Guidelines.md) document as well as the **Development Setup** section in this document.
+Please check the [Development Conventions and Guidelines](./docs/Guidelines.md) document as well as the [Development Setup](#development-setup) section in this document.
 
 ## Development Setup
 
