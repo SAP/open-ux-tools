@@ -4,6 +4,7 @@
 [![Build status](https://github.com/SAP/open-ux-tools/actions/workflows/pipeline.yml/badge.svg?branch=main)](https://github.com/SAP/open-ux-tools/actions/workflows/pipeline.yml?query=branch%3Amain)
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/open-ux-tools)](https://api.reuse.software/info/github.com/SAP/open-ux-tools)
 
+## Description
 The Open UX tools project aims to provide open source modules that make the development of SAP Fiori applications more efficient. The project is maintained by the same team that is responsible for SAP Fiori tools (https://help.sap.com/viewer/product/SAP_FIORI_tools) and driven by the SAP community. The main goal of this project is to collaborate with the community to create transparency and therefore increase the adoption of our tools.
 
 **Collaboration**: SAP has a great and active development community that is eager to help improve SAP products. With SAP Fiori tools, we have collaborated with stakeholders using roundtables, surveys, and usability testing. We have even collaborated using SAP's incident management systems, connecting with users that did not just report issues but also debugged and identified the root cause. With Open UX tools, we want to take this collaboration to the next level by empowering users to contribute findings, fixes, and improvements to the project.
@@ -22,6 +23,12 @@ The image below gives an overview of the currently included modules and their de
 ![Open UX tools modules](docs/images/building-blocks-today.svg)
 
 The repository contains no private modules i.e. all modules are published to [npmjs.com](https://www.npmjs.com/search?q=%40sap-ux) under the scope `@sap-ux`. The name of the published modules (without scope) matches the folder name in `packages` e.g. `./packages/fiori-freestyle-writer` is published as `@sap-ux/fiori-freestyle-writer`.
+
+## Requirements
+TBD
+
+## Contributing
+TBD
 
 ## Development Setup
 
@@ -103,6 +110,8 @@ All modules are published under the `@sap-ux` scope. Publishing packages to npmj
 
 2. The release job is configured to run after the version merge commit has been pushed to the main branch in the version job. This job publishes the changed packages to npmjs.com
 
-### Licensing
+## Code of Conduct
+
+## Licensing
 
 Copyright (2021) SAP SE and `open-ux-tools` contributors. Please see our [LICENSE](./LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available via the [REUSE tool](https://api.reuse.software/info/github.com/SAP/open-ux-tools).
