@@ -24,7 +24,7 @@ The image below gives an overview of the currently included modules and their de
 The repository contains no private modules i.e. all modules are published to [npmjs.com](https://www.npmjs.com/search?q=%40sap-ux) under the scope `@sap-ux`. The name of the published modules (without scope) matches the folder name in `packages` e.g. `./packages/fiori-freestyle-writer` is published as `@sap-ux/fiori-freestyle-writer`.
 
 ## Requirements
-Everything is released as node module requiring node with version in the range `">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"`.
+Everything is released as node modules requiring node with a version matching `">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"`.
 
 ## Contributing
 Please check the [Development Conventions and Guidelines](./docs/Guidelines.md) document as well as the **Development Setup** section in this document.
