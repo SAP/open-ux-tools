@@ -1,4 +1,3 @@
-import { getFioriToolsProxyMiddlewareConfig } from '../src/middlewares';
 import { UI5Config, AbapApp } from '../src';
 
 describe('UI5Config', () => {
@@ -112,10 +111,25 @@ describe('UI5Config', () => {
         expect(ui5Config.toString()).toMatchSnapshot();
     });
 
-    test('addCustomMiddleware', () => {
-        const { config, comments } = getFioriToolsProxyMiddlewareConfig([], {});
-        ui5Config.addCustomMiddleware([config], comments);
-        expect(ui5Config.toString()).toMatchSnapshot();
+    describe('add/removeCustomMiddleware', () => {
+        const customMiddleware = {
+            name: 'custom-middleware',
+            afterMiddleware: '~otherMiddleware',
+            configuration: {
+                param1: 35729,
+                other: 'webapp'
+            }
+        };
+        test('addCustomMiddleware', () => {
+            ui5Config.addCustomMiddleware([customMiddleware]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('removeMiddleware', () => {
+            ui5Config.addCustomMiddleware([customMiddleware]);
+            ui5Config.removeCustomMiddleware('custom-middleware');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
     });
 
     test('addCustomTask', () => {
@@ -154,12 +168,5 @@ describe('UI5Config', () => {
             );
             expect(ui5Config.toString()).toMatchSnapshot();
         });
-    });
-
-    test('removeMiddleware', () => {
-        const { config, comments } = getFioriToolsProxyMiddlewareConfig([], {});
-        ui5Config.addFioriToolsAppReloadMiddleware();
-        ui5Config.removeMiddleware('fiori-tools-appreload');
-        expect(ui5Config.toString()).toMatchSnapshot();
     });
 });

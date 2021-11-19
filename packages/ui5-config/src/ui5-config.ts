@@ -225,7 +225,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeMiddleware(name: string): UI5Config {
+    public removeCustomMiddleware(name: string): UI5Config {
         this.document.deleteAt({
             path: 'server.customMiddleware',
             matcher: { key: 'name', value: name }

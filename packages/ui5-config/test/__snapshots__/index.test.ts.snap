@@ -1,5 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UI5Config add/removeCustomMiddleware addCustomMiddleware 1`] = `
+"server:
+  customMiddleware:
+    - name: custom-middleware
+      afterMiddleware: ~otherMiddleware
+      configuration:
+        param1: 35729
+        other: webapp
+"
+`;
+
+exports[`UI5Config add/removeCustomMiddleware removeMiddleware 1`] = `
+"server:
+  customMiddleware: []
+"
+`;
+
 exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
 "builder:
   resources:
@@ -58,22 +75,6 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out 
         backend:
           - url: http://localhost:8080
             path: /~testpath~
-"
-`;
-
-exports[`UI5Config addCustomMiddleware 1`] = `
-"server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -278,11 +279,5 @@ exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
         port: 35729
         path: webapp
         delay: 300
-"
-`;
-
-exports[`UI5Config removeMiddleware 1`] = `
-"server:
-  customMiddleware: []
 "
 `;
