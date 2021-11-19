@@ -242,7 +242,7 @@ export class YamlDocument {
     deleteAt({ path, matcher }: { path: string; matcher: { key: string; value: string } }): YamlDocument {
         const pathArray = this.toPathArray(path);
         const seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
-        if (!seq) {
+        if (!seq || !seq.items) {
             throw new Error(t('error.seqDoesNotExist', { path }));
         }
 
@@ -254,6 +254,7 @@ export class YamlDocument {
                 return false;
             }
         });
+
         if (!deletedNode) {
             throw new Error(t('error.propertyNotFound', { path }));
         }
