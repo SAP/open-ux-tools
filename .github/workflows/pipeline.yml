@@ -46,6 +46,7 @@ jobs:
             - name: Run unit tests
               run: pnpm recursive run test
             - name: Run SonarCloud scan
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '12.x'
               uses: sonarsource/sonarcloud-github-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
