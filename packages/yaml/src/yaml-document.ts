@@ -246,7 +246,7 @@ export class YamlDocument {
             throw new Error(t('error.seqDoesNotExist', { path }));
         }
 
-        seq.items.find((node, index) => {
+        const deletedNode = seq.items.find((node, index) => {
             if (node.toJSON()[matcher.key] === matcher.value) {
                 seq.items.splice(index, 1);
                 return true;
@@ -254,6 +254,9 @@ export class YamlDocument {
                 return false;
             }
         });
+        if (!deletedNode) {
+            throw new Error(t('error.propertyNotFound', { path }));
+        }
 
         return this;
     }
