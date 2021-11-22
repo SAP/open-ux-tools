@@ -23,6 +23,12 @@ The image below gives an overview of the currently included modules and their de
 
 The repository contains no private modules i.e. all modules are published to [npmjs.com](https://www.npmjs.com/search?q=%40sap-ux) under the scope `@sap-ux`. The name of the published modules (without scope) matches the folder name in `packages` e.g. `./packages/fiori-freestyle-writer` is published as `@sap-ux/fiori-freestyle-writer`.
 
+## Requirements
+Everything is released as node modules requiring node with a version matching `">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"`.
+
+## Contributing
+Please check the [Development Conventions and Guidelines](./docs/Guidelines.md) document as well as the [Development Setup](#development-setup) section in this document.
+
 ## Development Setup
 
 ### Install `pnpm` globally
@@ -103,6 +109,9 @@ All modules are published under the `@sap-ux` scope. Publishing packages to npmj
 
 2. The release job is configured to run after the version merge commit has been pushed to the main branch in the version job. This job publishes the changed packages to npmjs.com
 
-### Licensing
+## Code of Conduct
+Everyone participating in this joint project is welcome as long as our [Code of Conduct](./docs/CODE_OF_CONDUCT.md) is being adhered to.
+
+## Licensing
 
 Copyright (2021) SAP SE and `open-ux-tools` contributors. Please see our [LICENSE](./LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available via the [REUSE tool](https://api.reuse.software/info/github.com/SAP/open-ux-tools).
