@@ -1,8 +1,9 @@
 import nock from 'nock';
 import fs from 'fs';
 import { DevNullLogger } from '@sap-ux/logger';
+import { Ui5AbapRepositoryService, createForAbap } from '../../src';
 
-import { AbapServiceProvider, Ui5AbapRepositoryService } from '../../src';
+nock.disableNetConnect();
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://example.com';
@@ -12,7 +13,7 @@ describe('Ui5AbapRepositoryService', () => {
         Name: validApp,
         Package: 'my_package'
     };
-    const service = AbapServiceProvider.create(server).ui5AbapRepository();
+    const service = createForAbap({ baseURL: server }).ui5AbapRepository();
     service.log = new DevNullLogger();
 
     beforeAll(() => {

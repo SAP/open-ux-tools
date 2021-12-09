@@ -1,12 +1,9 @@
-import { AxiosRequestConfig } from 'axios';
-import { ServiceProvider, ServiceConfiguration } from '../base/service-provider';
+import { ServiceProvider } from '../base/service-provider';
 import { ODataVersion } from '../types';
 import { CatalogService, V2CatalogService, V4CatalogService } from './catalog';
 
 import { ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
-import { ServiceInfo } from 'auth/service-info';
-import { attachUaaAuthInterceptor } from '../auth';
 import { AppIndexService } from './app-index-service';
 
 export interface AbapServiceProviderExtension {
@@ -67,17 +64,5 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             );
         }
         return this.services[AppIndexService.PATH] as AppIndexService;
-    }
-
-    public static create(config: string | (AxiosRequestConfig & Partial<ServiceConfiguration>)): AbapServiceProvider {
-        return ServiceProvider.createInstance<AbapServiceProvider>(AbapServiceProvider, config);
-    }
-
-    public static createForAbapOnBtp(service: ServiceInfo, refreshToken?: string): AbapServiceProvider {
-        const provider = ServiceProvider.createInstance<AbapServiceProvider>(AbapServiceProvider, {
-            baseURL: service.url
-        });
-        attachUaaAuthInterceptor(provider, service, refreshToken);
-        return provider;
     }
 }

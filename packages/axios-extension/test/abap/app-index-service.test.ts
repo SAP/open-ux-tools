@@ -1,15 +1,14 @@
-import { AbapServiceProvider, AppIndexService, AppIndex } from '../../src';
+import { AbapServiceProvider, AppIndexService, createForAbap } from '../../src';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
 
-nock.restore();
+nock.disableNetConnect();
 
 describe('AppIndexService', () => {
     const server = 'https://example.com';
     const config = {
         baseURL: server
     };
-    nock.activate();
 
     beforeAll(() => {
         nock(server)
@@ -37,7 +36,7 @@ describe('AppIndexService', () => {
     });
 
     describe('search', () => {
-        const provider = AbapServiceProvider.create(config);
+        const provider = createForAbap(config);
         const service: AppIndexService = provider.appIndex();
 
         test('no filter', async () => {

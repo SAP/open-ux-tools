@@ -1,5 +1,11 @@
-import { getAppStudioProxyURL, isAppStudio, getDestinationUrlForAppStudio } from '../src';
-import { ENV } from '../src/app-studio';
+import { getAppStudioProxyURL, isAppStudio, getDestinationUrlForAppStudio, Destination } from '../src';
+import { ENV, isAbapSystem } from '../src/app-studio';
+import destinationList from './mockResponses/destinations.json';
+
+const destinations: { [key: string]: Destination } = {};
+destinationList.forEach((dest) => {
+    destinations[dest.Name] = dest;
+});
 
 const mockInstanceSettings = {
     clientid: 'CLIENT_ID',
@@ -50,41 +56,40 @@ describe('App Studio Utils', () => {
         });
     });
 
+    describe('isAbapSystem', () => {
+        it('check different destinations', () => {
+            expect(isAbapSystem(destinations['ON_PREM_NO_CLIENT'])).toBe(true);
+            expect(isAbapSystem(destinations['ABAP_ON_BTP'])).toBe(true);
+            expect(isAbapSystem(destinations['NOT_AN_ABAP_SYSTEM'])).toBe(false);
+        });
+    });
+
     describe('getDestinationUrlForAppStudio', () => {
-        const url = 'http://example.com/my/service';
-        const destination = 'example_dest';
+        const destination: Destination = destinations['ON_PREM_NO_CLIENT'];
         const encodedInstanceSettings = Buffer.from(
             `${mockInstanceSettings.clientid}:${mockInstanceSettings.clientsecret}`
         ).toString('base64');
 
-        it('No destination provider - url stays unchanged', async () => {
-            expect(getDestinationUrlForAppStudio(url)).resolves.toBe(url);
-        });
-
-        it('Destination provided - host changes, path stays unchanged', async () => {
-            const newUrl = await getDestinationUrlForAppStudio(url, destination);
-            expect(newUrl).not.toBe(url);
-            expect(new URL(newUrl).pathname).toBe(new URL(url).pathname);
-            expect(new URL(newUrl).origin).toBe(`https://${destination}.dest`);
+        it('Destination - host changes, path stays unchanged', async () => {
+            const newUrl = await getDestinationUrlForAppStudio(destination);
+            expect(new URL(newUrl).origin).toBe(`https://${destination.Name.toLocaleLowerCase()}.dest`);
+            expect(new URL(newUrl).pathname).toBe(new URL(destination.Host).pathname);
         });
 
         it('Destination instance provided - service has uaa config', async () => {
-            const newUrl = await getDestinationUrlForAppStudio(url, destination, 'instance_has_uaa');
-            expect(newUrl).not.toBe(url);
+            const newUrl = await getDestinationUrlForAppStudio(destination, 'instance_has_uaa');
             expect(new URL(newUrl).pathname).toBe('/');
             expect(newUrl.includes(encodedInstanceSettings)).toBe(true);
         });
 
         it('Destination instance provided - service has no uaa but its own id/secret', async () => {
-            const newUrl = await getDestinationUrlForAppStudio(url, destination, 'instance');
-            expect(newUrl).not.toBe(url);
+            const newUrl = await getDestinationUrlForAppStudio(destination, 'instance');
             expect(new URL(newUrl).pathname).toBe('/');
-            console.log(newUrl);
             expect(newUrl.includes(encodedInstanceSettings)).toBe(true);
         });
 
         it('Destination instance provided - but is invalid', async () => {
-            expect(getDestinationUrlForAppStudio(url, destination, 'invalid')).resolves.toThrowError();
+            expect(getDestinationUrlForAppStudio(destination, 'invalid')).resolves.toThrowError();
         });
     });
 });

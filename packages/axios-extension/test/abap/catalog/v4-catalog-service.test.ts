@@ -1,9 +1,8 @@
 import { join } from 'path';
 import nock from 'nock';
+import { createForAbap, ODataVersion, V4CatalogService } from '../../../src';
 
-import { AbapServiceProvider, ODataVersion, V4CatalogService } from '../../../src';
-
-nock.restore();
+nock.disableNetConnect();
 
 const mockRespPath = join(__dirname, '../mockResponses');
 
@@ -16,28 +15,12 @@ describe('V4CatalogService', () => {
             password: 'SECRET'
         }
     };
-    nock.activate();
 
     describe('listServices', () => {
         const reqPath = `${V4CatalogService.PATH}/ServiceGroups`;
 
-        beforeAll(() => {
-            // configure a mocked catalog service for v4
-            /*
-            
-            // mock response for paging
-            for (let index = 1; index <= 4; index++) {
-                nock(server)
-                .get((path) => path.startsWith(path))
-                .replyWithFile(200, join(mockRespPath, `v4ServiceGroupsPage-${index}.json`)).persist();
-                nock(server)
-                .get((path) => path.startsWith(path))
-                .replyWithFile(200, join(mockRespPath, `v4RecommendedServiceGroupsPage-${index}.json`)).persist();
-            }*/
-        });
-
         test('service groups', async () => {
-            const provider = AbapServiceProvider.create(config);
+            const provider = createForAbap(config);
             provider.s4Cloud = false;
             const catalog = await provider.catalog(ODataVersion.v4);
 
@@ -56,7 +39,7 @@ describe('V4CatalogService', () => {
         });
 
         test('service groups with paging', async () => {
-            const provider = AbapServiceProvider.create(config);
+            const provider = createForAbap(config);
             provider.s4Cloud = false;
             const catalog = await provider.catalog(ODataVersion.v4);
 
@@ -77,7 +60,7 @@ describe('V4CatalogService', () => {
         });
 
         test('recommended service groups with paging', async () => {
-            const provider = AbapServiceProvider.create(config);
+            const provider = createForAbap(config);
             provider.s4Cloud = false;
             const catalog = await provider.catalog(ODataVersion.v4);
 

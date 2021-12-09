@@ -3,6 +3,7 @@ import { AbapServiceProvider } from '../abap/abap-service-provider';
 import { ServiceInfo } from './service-info';
 import { Uaa } from './uaa';
 
+export * from './service-info';
 export * from './cookies';
 
 export function attachBasicAuthInterceptor(provider: Axios): void {

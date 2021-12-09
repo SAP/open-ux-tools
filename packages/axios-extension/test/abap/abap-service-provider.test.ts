@@ -1,9 +1,8 @@
 import { join } from 'path';
 import nock from 'nock';
+import { createForAbap, V2CatalogService, ODataVersion } from '../../src';
 
-import { AbapServiceProvider, V2CatalogService, ODataVersion } from '../../src';
-
-nock.restore();
+nock.disableNetConnect();
 
 describe('AbapServiceProvider', () => {
     const server = 'https://iccsrm.sap.com:44300';
@@ -14,11 +13,10 @@ describe('AbapServiceProvider', () => {
             password: 'SECRET'
         }
     };
-    nock.activate();
 
     describe('isS4Cloud', () => {
         test('S/4Cloud system', async () => {
-            const s4Provider = AbapServiceProvider.create(config);
+            const s4Provider = createForAbap(config);
 
             nock(server)
                 .get('/sap/bc/adt/ato/settings')
@@ -32,11 +30,11 @@ describe('AbapServiceProvider', () => {
             nock(server)
                 .get('/sap/bc/adt/ato/settings')
                 .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsNotS4C.xml'));
-            expect(await AbapServiceProvider.create(config).isS4Cloud()).toBe(false);
+            expect(await createForAbap(config).isS4Cloud()).toBe(false);
         });
 
         test('No request if known', async () => {
-            const provider = AbapServiceProvider.create(config);
+            const provider = createForAbap(config);
             provider.s4Cloud = false;
             expect(await provider.isS4Cloud()).toBe(false);
         });
@@ -44,7 +42,7 @@ describe('AbapServiceProvider', () => {
 
     describe('catalog', () => {
         test('V2', async () => {
-            const provider = AbapServiceProvider.create(config);
+            const provider = createForAbap(config);
             provider.s4Cloud = false;
 
             const catalog = await provider.catalog(ODataVersion.v2);

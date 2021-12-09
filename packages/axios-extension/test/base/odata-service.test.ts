@@ -1,10 +1,9 @@
 import nock from 'nock';
 import { join } from 'path';
 
-import { ServiceProvider } from '../../src';
+import { createServiceForUrl } from '../../src';
 
-nock.restore();
-
+nock.disableNetConnect();
 describe('ODataService', () => {
     const server = 'https://example.com';
     const servicePathV2 = '/v2/myservice';
@@ -13,7 +12,6 @@ describe('ODataService', () => {
     const expectedMetadata = '<METADATA>';
 
     beforeAll(() => {
-        nock.activate();
         nock(server).get(`${servicePathV2}${metadataPath}`).reply(200, expectedMetadata).persist(true);
         nock(server).get(`${servicePathV4}${metadataPath}`).reply(200, expectedMetadata).persist(true);
         nock(server)
@@ -27,7 +25,7 @@ describe('ODataService', () => {
     });
 
     describe('v2', () => {
-        const v2Service = ServiceProvider.createServiceForUrl(`${server}${servicePathV2}`);
+        const v2Service = createServiceForUrl(`${server}${servicePathV2}`);
         test('metadata', async () => {
             const metadata = await v2Service.metadata();
             expect(metadata).toBeDefined();
@@ -42,7 +40,7 @@ describe('ODataService', () => {
     });
 
     describe('v4', () => {
-        const v4Service = ServiceProvider.createServiceForUrl(`${server}${servicePathV4}`);
+        const v4Service = createServiceForUrl(`${server}${servicePathV4}`);
         test('metadata', async () => {
             const metadata = await v4Service.metadata();
             expect(metadata).toBeDefined();

@@ -1,8 +1,8 @@
-import { AbapServiceProvider, ODataVersion, V2CatalogService } from '../../../src';
+import { createForAbap, ODataVersion, V2CatalogService } from '../../../src';
 import { join } from 'path';
 import nock from 'nock';
 
-nock.restore();
+nock.disableNetConnect();
 
 describe('V2CatalogService', () => {
     const server = 'https://example.com';
@@ -13,11 +13,10 @@ describe('V2CatalogService', () => {
             password: 'SECRET'
         }
     };
-    nock.activate();
 
     describe('listServices', () => {
         test('classic', async () => {
-            const provider = AbapServiceProvider.create(config);
+            const provider = createForAbap(config);
             provider.s4Cloud = false;
 
             const catalog = await provider.catalog(ODataVersion.v2);

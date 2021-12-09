@@ -1,4 +1,5 @@
 import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
+import { Destination } from './types';
 /**
  * Enumeration of environment variables used in AppStudio
  */
@@ -16,6 +17,19 @@ export function getAppStudioProxyURL(): string | undefined {
 }
 
 /**
+ * Checks whether the provided destination is configured to point to an ABAP system.
+ * @param destination destination info
+ * @returns true of the destination is configured for an ABAP system
+ */
+export function isAbapSystem(destination: Destination): boolean {
+    return (
+        !!destination.WebIDEUsage?.includes('abap') ||
+        !!destination['sap-client'] ||
+        destination['sap-platform'] === 'ABAP'
+    );
+}
+
+/**
  * Creates a URL to be used when doing requests against instance based destinations
  *
  * @param destination name of the destination
@@ -27,8 +41,8 @@ async function getUrlForInstanceBasedDest(destination: string, destinationInstan
         console.log(serviceInfo);
         const clientId = serviceInfo.uaa?.clientid || serviceInfo.clientid;
         const clientSecret = serviceInfo.uaa?.clientsecret || serviceInfo.clientsecret;
-        const base64Host = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
-        return `https://${base64Host}@${destination}.dest`;
+        const base64Client = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        return `https://${base64Client}@${destination}.dest`;
     } catch (error) {
         console.log(error);
         throw new Error(
@@ -43,18 +57,10 @@ async function getUrlForInstanceBasedDest(destination: string, destinationInstan
  * @param destinationName name of the destination
  * @param destinationInstance name of the destination instance as provided in the mta.yaml
  */
-export async function getDestinationUrlForAppStudio(
-    url: string,
-    destinationName?: string,
-    destinationInstance?: string
-): Promise<string> {
-    if (destinationName) {
-        if (destinationInstance) {
-            return getUrlForInstanceBasedDest(destinationName, destinationInstance);
-        } else {
-            return new URL(new URL(url).pathname, `https://${destinationName}.dest`).toString();
-        }
+export async function getDestinationUrlForAppStudio(destination: Destination, instance?: string): Promise<string> {
+    if (instance) {
+        return getUrlForInstanceBasedDest(destination.Name, instance);
     } else {
-        return url;
+        return new URL(new URL(destination.Host).pathname, `https://${destination.Name}.dest`).toString();
     }
 }
