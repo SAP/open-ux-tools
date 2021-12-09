@@ -1,0 +1,19 @@
+{
+    "results": [
+        {
+            "sap.app/id": "ExampleApp1",
+            "sap.app/type": "application",
+            "url": "/sap/bc/ui5_ui5/sap/example_app_1"
+        },
+        {
+            "sap.app/id": "ExampleApp2",
+            "sap.app/type": "application",
+            "url": "/sap/bc/ui5_ui5/sap/example_app_1"
+        },
+        {
+            "sap.app/id": "ExampleApp2Card",
+            "sap.app/type": "card",
+            "url": "/sap/bc/ui5_ui5/sap/example_app_2/cards/mycard"
+        }
+    ]
+}

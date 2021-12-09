@@ -1,0 +1,47 @@
+# Axios Extension
+
+The `@sap-ux/axios-extension` module is an extension of the [axios](https://github.com/axios/axios) framework adding convenience methods to interact with OData service especially services exposed by SAP systems.
+
+## Features
+
+### Service Providers
+The module offers service provider modules that represent a target system that is exposing OData services. 
+
+#### OData Service Provider
+The base service provider extends the class `Axios` abstracting whether it is executed in SAP Business Application Studio or locally. Furthermore, it offers convenience methods to simplify the handling of different versions of S/4 HANA systems as well as different authentication methods especially in the SAP ecosystem. Lastly, it exposes the `service(path)` function creating a new Axios instance specificially for the requested service reusing the authentication and cookies from the provider. 
+
+#### ABAP OData Service Provider
+Another extension of the base provider is handling specifics for ABAP based backend systems. It offers simplified access to the catalog services as the the UI5 ABAP repository service.
+
+### Services
+The generic OData service simplifies the access to the service metadata as well as the access to response data. It is used as base class for 
+
+#### Catalog Service
+Simplified consumption of catalog service useful for fetching annotations.
+
+#### ABAP UI5 Respository Service
+Allows deployment of applications to the UI5 ABAP Repository as well as checking deployed applications.
+
+## Installation
+Npm
+`npm install --save @sap-ux/axios-extensionr`
+
+Yarn
+`yarn add @sap-ux/axios-extension`
+
+Pnpm
+`pnpm add @sap-ux/axios-extension`
+
+## Usage
+```Typescript
+import { ODataServiceProvider } from '@sap-ux/axios-extension';
+
+const provider = ODataServiceProvider.create({ 
+    baseURL: 'https://example.com',
+    params: { 'sap-client': client }
+});
+const service = provider.service('/ns/my_service');
+const metadata = await service.metadata();
+
+```
+See more examples in [`/test/odata-service-provider.test.ts`](./test/odata-service-provider.test.ts)

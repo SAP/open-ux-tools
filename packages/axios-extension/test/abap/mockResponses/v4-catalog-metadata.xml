@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+    xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+    xmlns="http://docs.oasis-open.org/odata/ns/edm">
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Measures.V1" Alias="SAP__measures"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Core.V1" Alias="SAP__core"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="SAP__capabilities"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="SAP__aggregation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Validation.V1" Alias="SAP__validation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="SAP__UI"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HTML5',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.HTML5.v1" Alias="SAP__HTML5"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="com.sap.gateway.default.iwfnd.catalog.v0002" Alias="SAP__self">
+            <Annotation Term="SAP__core.SchemaVersion" String="2.0.0"/>
+            <EntityType Name="Service">
+                <Key>
+                    <PropertyRef Name="RepositoryId"/>
+                    <PropertyRef Name="ServiceId"/>
+                    <PropertyRef Name="ServiceVersion"/>
+                    <PropertyRef Name="ServiceAlias"/>
+                </Key>
+                <Property Name="RepositoryId" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="ServiceId" Type="Edm.String" Nullable="false" MaxLength="36"/>
+                <Property Name="ServiceVersion" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="ServiceAlias" Type="Edm.String" Nullable="false"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false"/>
+                <Property Name="ServiceUrl" Type="Edm.String" Nullable="false"/>
+            </EntityType>
+            <EntityType Name="ServiceGroup">
+                <Key>
+                    <PropertyRef Name="GroupId"/>
+                </Key>
+                <Property Name="GroupId" Type="Edm.String" Nullable="false" MaxLength="36"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false"/>
+                <NavigationProperty Name="DefaultSystem" Type="com.sap.gateway.default.iwfnd.catalog.v0002.System" Nullable="false" ContainsTarget="true"/>
+                <NavigationProperty Name="Systems" Type="Collection(com.sap.gateway.default.iwfnd.catalog.v0002.System)" ContainsTarget="true"/>
+            </EntityType>
+            <EntityType Name="System">
+                <Key>
+                    <PropertyRef Name="SystemAlias"/>
+                </Key>
+                <Property Name="SystemAlias" Type="Edm.String" Nullable="false" MaxLength="16"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false"/>
+                <NavigationProperty Name="RecommendedServices" Type="Collection(com.sap.gateway.default.iwfnd.catalog.v0002.Service)" ContainsTarget="true"/>
+                <NavigationProperty Name="Services" Type="Collection(com.sap.gateway.default.iwfnd.catalog.v0002.Service)" ContainsTarget="true"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="ServiceGroups" EntityType="com.sap.gateway.default.iwfnd.catalog.v0002.ServiceGroup"/>
+            </EntityContainer>
+            <Annotations Target="SAP__self.Container">
+                <Annotation Term="SAP__capabilities.FilterFunctions">
+                    <Collection>
+                        <String>eq</String>
+                        <String>ne</String>
+                        <String>gt</String>
+                        <String>ge</String>
+                        <String>lt</String>
+                        <String>le</String>
+                        <String>and</String>
+                        <String>or</String>
+                        <String>contains</String>
+                        <String>startswith</String>
+                        <String>endswith</String>
+                        <String>any</String>
+                        <String>all</String>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.Container/ServiceGroups">
+                <Annotation Term="SAP__capabilities.UpdateRestrictions">
+                    <Record>
+                        <PropertyValue Property="QueryOptions">
+                            <Record>
+                                <PropertyValue Property="SelectSupported" Bool="true"/>
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
