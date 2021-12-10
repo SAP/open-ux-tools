@@ -33,10 +33,10 @@ function enhanceConfig(data: CustomSection, manifestPath: string, manifest: Mani
 /**
  * Add a custom section to an existing UI5 application.
  *
- * @returns {Promise<Editor>} the updated mem-fs editor instance
  * @param {string} basePath - the base path
  * @param {CustomSection} customSection - the custom section configuration
  * @param {Editor} [fs] - the mem-fs editor instance
+ * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
 export function generateCustomSection(basePath: string, customSection: CustomSection, fs?: Editor): Editor {
     validateVersion(customSection.ui5Version);
@@ -68,7 +68,7 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
 
     // add fragment
     const viewPath = join(completeSection.path, `${completeSection.name}.fragment.xml`);
-    fs.copyTpl(join(root, 'section/ext/CustomSectionFragment.xml'), viewPath, completeSection);
+    fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeSection);
 
     return fs;
 }

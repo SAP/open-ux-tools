@@ -90,7 +90,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
 
     // add fragment
     const viewPath = join(completeColumn.path, `${completeColumn.name}.fragment.xml`);
-    fs.copyTpl(join(root, 'column/ext/CustomColumnFragment.xml'), viewPath, completeColumn);
+    fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeColumn);
 
     return fs;
 }
