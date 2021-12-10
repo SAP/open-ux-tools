@@ -3,7 +3,7 @@ import axios from 'axios';
 import nock from 'nock';
 import { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } from '../src';
 
-const server = 'https://example.com';
+const server = 'https://sap.example';
 const servicePath = '/ns/myservice';
 const metadataPath = '/$metadata';
 const client = '010';

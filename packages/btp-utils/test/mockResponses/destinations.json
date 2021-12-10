@@ -7,7 +7,7 @@
         "Description": "On-premise system with no sap-client defined.",
         "WebIDEEnabled": "true",
         "WebIDEUsage": "odata_abap",
-        "Host": "https://no-client.example.com"
+        "Host": "https://no-client.sap.example"
     },
     {
         "Name": "ON_PREM_WITH_CLIENT",
@@ -18,7 +18,7 @@
         "WebIDEEnabled": "true",
         "sap-client": "010",
         "WebIDEUsage": "odata_abap,dev_abap",
-        "Host": "https://with-client.example.com"
+        "Host": "https://with-client.sap.example"
     },
     {
         "Name": "NOT_AN_ABAP_SYSTEM",
@@ -27,7 +27,7 @@
         "ProxyType": "OnPremise",
         "Description": "Not an ABAP sytem",
         "WebIDEEnabled": "true",
-        "Host": "http://no-abap.example.com"
+        "Host": "http://no-abap.sap.example"
     },
     {
         "Name": "ABAP_ON_BTP",

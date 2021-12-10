@@ -5,7 +5,7 @@ import appIndexMock from './mockResponses/appIndex.json';
 nock.disableNetConnect();
 
 describe('AppIndexService', () => {
-    const server = 'https://example.com';
+    const server = 'https://sap.example';
     const config = {
         baseURL: server
     };

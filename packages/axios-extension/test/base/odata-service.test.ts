@@ -5,7 +5,7 @@ import { createServiceForUrl } from '../../src';
 
 nock.disableNetConnect();
 describe('ODataService', () => {
-    const server = 'https://example.com';
+    const server = 'https://sap.example';
     const servicePathV2 = '/v2/myservice';
     const servicePathV4 = '/v4/myservice';
     const metadataPath = '/$metadata';

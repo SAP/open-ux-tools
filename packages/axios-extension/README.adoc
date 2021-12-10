@@ -37,7 +37,7 @@ Pnpm
 import { ODataServiceProvider } from '@sap-ux/axios-extension';
 
 const provider = ODataServiceProvider.create({ 
-    baseURL: 'https://example.com',
+    baseURL: 'https://sap.example',
     params: { 'sap-client': client }
 });
 const service = provider.service('/ns/my_service');

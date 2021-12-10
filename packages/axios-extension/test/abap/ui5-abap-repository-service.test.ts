@@ -6,7 +6,7 @@ import { Ui5AbapRepositoryService, createForAbap } from '../../src';
 nock.disableNetConnect();
 
 describe('Ui5AbapRepositoryService', () => {
-    const server = 'http://example.com';
+    const server = 'http://sap.example';
     const validApp = 'VALID_APP';
     const notExistingApp = 'NOT_EXISTING_APP';
     const validAppInfo = {

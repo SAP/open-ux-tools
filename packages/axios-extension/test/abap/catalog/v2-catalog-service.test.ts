@@ -5,7 +5,7 @@ import nock from 'nock';
 nock.disableNetConnect();
 
 describe('V2CatalogService', () => {
-    const server = 'https://example.com';
+    const server = 'https://sap.example';
     const config = {
         baseURL: server,
         auth: {

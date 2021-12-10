@@ -30,7 +30,6 @@
     },
     "files": [
         "dist",
-        "static",
         "LICENSE"
     ],
     "engines": {
