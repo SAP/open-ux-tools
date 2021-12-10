@@ -36,7 +36,7 @@ export interface CustomSection extends CustomElement {
     eventHandler?: string | true;
 
     /**
-     * Optional control XML that will be generated into the fragment of table column. If the property isn't provided then a sample control will be generated.
+     * Optional control XML that will be generated into the fragment of section. If the property isn't provided then a sample control will be generated.
      */
     control?: string;
 }

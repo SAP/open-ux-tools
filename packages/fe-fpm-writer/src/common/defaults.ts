@@ -29,12 +29,12 @@ export function setCommonDefaults<T extends CustomElement & Partial<InternalCust
 }
 
 /**
- * Method to generate default content for fragment.
+ * Method to generate default content for xml fragment.
  *
- * @param {string} text - visible text of button or label
+ * @param {string} text - text of button or label
  * @param {string} [eventHandler] - event handler path
- *      if value is passed then "Button" with 'press' event would be used
- *      if value is not passed then "Text" would be used
+ *      if value is passed then "Button" control with 'press' event would be generated
+ *      if value is not passed then "Text" control would be generated
  * @returns default content for fragment
  */
 export function getDefaultFragmentContent(text: string, eventHandler?: string): string {

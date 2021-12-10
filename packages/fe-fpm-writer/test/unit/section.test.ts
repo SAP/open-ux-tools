@@ -62,7 +62,7 @@ describe('CustomSection', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
-        test('generateCustomColumn, custom control', () => {
+        test('generateCustomSection, custom control', () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 control: '<CustomXML text="" />'
@@ -76,7 +76,7 @@ describe('CustomSection', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
-        test('generateCustomColumn, no handler, no fs, all properties', () => {
+        test('generateCustomSection, no handler, no fs, all properties', () => {
             const testCustomSection: CustomSection = {
                 ...customSection
             };
