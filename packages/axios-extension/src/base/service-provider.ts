@@ -19,7 +19,6 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
     service<T extends Service = ODataService>(path: string): T {
         if (!this.services[path]) {
             this.services[path] = this.createService<T>(path, ODataService);
-            this.services[path].log = this.log;
         }
         return this.services[path] as T;
     }
@@ -35,6 +34,7 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
 
     protected createService<T extends Service>(path: string, serviceClass: any): T {
         const service = new serviceClass(this.generateServiceConfig(path));
+        service.log = this.log;
         service.interceptors = this.interceptors;
         return service;
     }
