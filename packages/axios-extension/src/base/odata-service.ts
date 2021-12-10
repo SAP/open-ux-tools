@@ -59,7 +59,7 @@ export class ODataService extends Axios implements ODataServiceExtension {
 
     public async metadata(): Promise<string> {
         if (!this.metadataDoc) {
-            const response = await super.get('/$metadata', { headers: { Accept: 'application/xml' } });
+            const response = await this.get('/$metadata', { headers: { Accept: 'application/xml' } });
             this.metadataDoc = response.data;
         }
         return this.metadataDoc;
@@ -67,15 +67,17 @@ export class ODataService extends Axios implements ODataServiceExtension {
 
     public async get<T = any, R = ODataResponse<T>, D = any>(
         url: string,
-        config: AxiosRequestConfig<D> = { params: {} }
+        config: AxiosRequestConfig<D> = {}
     ): Promise<R> {
-        if (config.params['$format'] === undefined) {
+        // request json if not otherwise specified
+        if (config.params?.['$format'] === undefined && !config.headers?.Accept) {
+            config.params = config.params ?? {};
             config.params['$format'] = 'json';
             config.headers = config.headers ?? {};
             config.headers.Accept = 'application/json';
         }
         const response = await super.get<T, ODataResponse<T>>(url, config);
-        if (response.data && config.params['$format'] === 'json') {
+        if (response.data && config.params?.['$format'] === 'json') {
             response.odata = parseODataResponse.bind(response);
         }
         return response as any;

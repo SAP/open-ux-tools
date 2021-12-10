@@ -1,4 +1,5 @@
 import { Axios, AxiosResponse, AxiosRequestConfig } from 'axios';
+import { ConnectionError } from './error';
 /**
  * Helper class for managing cookies.
  */
@@ -44,6 +45,16 @@ export class Cookies {
 
 export function attachCookieInterceptor(provider: Axios) {
     const cookies = new Cookies();
+
+    let oneTimeInterceptorId: number;
+    oneTimeInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
+        if (response.status >= 400) {
+            throw new ConnectionError(response.statusText, response);
+        } else {
+            provider.interceptors.response.eject(oneTimeInterceptorId);
+            return response;
+        }
+    });
     provider.interceptors.request.use((request: AxiosRequestConfig) => {
         request.headers = request.headers ?? {};
         request.headers.cookie = cookies.toString();
