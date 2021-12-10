@@ -16,7 +16,7 @@ importers:
             eslint-plugin-promise: 5.1.1
             husky: 7.0.4
             jest: 27.3.1
-            jest-sonar-reporter: 2.0.0
+            jest-sonar: 0.2.12
             prettier: 2.4.1
             pretty-quick: 3.1.1
             rimraf: 3.0.2
@@ -37,7 +37,7 @@ importers:
             eslint-plugin-promise: 5.1.1_eslint@8.2.0
             husky: 7.0.4
             jest: 27.3.1_ts-node@10.4.0
-            jest-sonar-reporter: 2.0.0
+            jest-sonar: 0.2.12
             prettier: 2.4.1
             pretty-quick: 3.1.1_prettier@2.4.1
             rimraf: 3.0.2
@@ -2765,6 +2765,13 @@ packages:
             ansi-colors: 4.1.1
         dev: true
 
+    /entities/2.2.0:
+        resolution:
+            {
+                integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
+            }
+        dev: true
+
     /error-ex/1.3.2:
         resolution:
             {
@@ -4724,14 +4731,14 @@ packages:
             - supports-color
         dev: true
 
-    /jest-sonar-reporter/2.0.0:
+    /jest-sonar/0.2.12:
         resolution:
             {
-                integrity: sha512-ZervDCgEX5gdUbdtWsjdipLN3bKJwpxbvhkYNXTAYvAckCihobSLr9OT/IuyNIRT1EZMDDwR6DroWtrq+IL64w==
+                integrity: sha512-8hZO3rhxVobJkMhyuEgsZxfj0QQucCa+dkXVJ3ckz+Gi180F2ET12GwEGP/j4z1owc08Z2JgIt2Qlgl06+3asQ==
             }
-        engines: { node: '>=8.0.0' }
         dependencies:
-            xml: 1.0.1
+            entities: 2.2.0
+            strip-ansi: 6.0.1
         dev: true
 
     /jest-util/27.2.0:
@@ -7200,10 +7207,6 @@ packages:
             {
                 integrity: sha512-A5CUptxDsvxKJEU3yO6DuWBSJz/qizqzJKOMIfUJHETbBw/sFaDxgd6fxm1ewUaM0jZ444Fc5vC5ROYurg/4Pw==
             }
-        dev: true
-
-    /xml/1.0.1:
-        resolution: { integrity: sha1-eLpyAgApxbyHuKgaPPzXS0ovweU= }
         dev: true
 
     /xmlchars/2.2.0:
