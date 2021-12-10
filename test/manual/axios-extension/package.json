@@ -1,0 +1,31 @@
+{
+    "name": "@sap-ux/testing-axios-extension",
+    "version": "0.9.0",
+    "description": "Extension of the Axios module adding convinience methods to interact with OData service especially services exposed by SAP systems.",
+    "license": "SEE LICENSE IN LICENSE",
+    "private": true,
+    "main": "dist/index.js",
+    "scripts": {
+        "test:abap": "node -r ts-node/register src/index.ts abap",
+        "build": "pnpm clean && tsc",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist coverage",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix"
+    },
+    "dependencies": {
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
+        "axios": "0.24.0",
+        "dotenv": "10.0.0"
+    },
+    "files": [
+        "dist",
+        "LICENSE"
+    ],
+    "engines": {
+        "pnpm": ">=6.0.2",
+        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+    }
+}
