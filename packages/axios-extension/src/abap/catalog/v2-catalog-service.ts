@@ -23,7 +23,7 @@ export class V2CatalogService extends CatalogService {
             entitySet = V2_RECOMMENDED_ENTITYSET;
         } else {
             entitySet = V2_CLASSIC_ENTITYSET;
-            if (this.s4cloud) {
+            if (await this.isS4Cloud) {
                 params['$filter'] = V2_S4CLOUD_FILTER;
             }
         }

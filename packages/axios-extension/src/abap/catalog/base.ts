@@ -3,10 +3,11 @@ import { ODataService } from '../../base/odata-service';
 export interface Service {}
 
 export abstract class CatalogService extends ODataService {
-    s4cloud: boolean;
     useRecommendedServices: boolean;
 
     services: Service[];
+
+    public isS4Cloud: Promise<boolean>;
 
     protected abstract fetchServices(): Promise<Service[]>;
 

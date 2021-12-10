@@ -8,7 +8,7 @@ import { AppIndexService } from './app-index-service';
 
 export interface AbapServiceProviderExtension {
     s4Cloud: boolean | undefined;
-    catalog(oDataVersion: ODataVersion): Promise<CatalogService>;
+    catalog(oDataVersion: ODataVersion): CatalogService;
     ui5AbapRepository(): Ui5AbapRepositoryService;
 }
 
@@ -17,19 +17,24 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
 
     public async isS4Cloud(): Promise<boolean> {
         if (this.s4Cloud === undefined) {
-            const response = await this.get(ATO_CATALOG_URL_PATH);
-            const settings = parseAtoResponse(response.data);
-            this.s4Cloud =
-                settings.tenantType === TenantType.Customer &&
-                settings.operationsType === 'C' &&
-                settings.isExtensibilityDevelopmentSystem === true &&
-                settings.developmentPrefix !== '' &&
-                settings.developmentPackage !== '';
+            try {
+                const response = await this.get(ATO_CATALOG_URL_PATH);
+                const settings = parseAtoResponse(response.data);
+                this.s4Cloud =
+                    settings.tenantType === TenantType.Customer &&
+                    settings.operationsType === 'C' &&
+                    settings.isExtensibilityDevelopmentSystem === true &&
+                    settings.developmentPrefix !== '' &&
+                    settings.developmentPackage !== '';
+            } catch (error) {
+                this.log.warn('Failed to detect whether this is an SAP S/4HANA Cloud system.');
+                this.s4Cloud = false;
+            }
         }
         return this.s4Cloud;
     }
 
-    public async catalog(version: ODataVersion): Promise<CatalogService> {
+    public catalog(version: ODataVersion): CatalogService {
         let service: CatalogService;
         if (version === ODataVersion.v2) {
             service =
@@ -42,7 +47,9 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
         } else {
             throw new Error('not implemented yet');
         }
-        service.s4cloud = await this.isS4Cloud();
+        Object.defineProperty(service, 'isS4Cloud', {
+            get: this.isS4Cloud.bind(this)
+        });
         return service;
     }
 

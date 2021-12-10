@@ -15,11 +15,16 @@ describe('V2CatalogService', () => {
     };
 
     describe('listServices', () => {
+        nock(server)
+            .get('/sap/bc/adt/ato/settings')
+            .replyWithFile(200, join(__dirname, '../mockResponses/atoSettingsNotS4C.xml'))
+            .persist();
+
         test('classic', async () => {
             const provider = createForAbap(config);
             provider.s4Cloud = false;
 
-            const catalog = await provider.catalog(ODataVersion.v2);
+            const catalog = provider.catalog(ODataVersion.v2);
 
             nock(server)
                 .get(`${V2CatalogService.PATH}/?$format=json`)

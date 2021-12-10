@@ -22,7 +22,7 @@ describe('V4CatalogService', () => {
         test('service groups', async () => {
             const provider = createForAbap(config);
             provider.s4Cloud = false;
-            const catalog = await provider.catalog(ODataVersion.v4);
+            const catalog = provider.catalog(ODataVersion.v4);
 
             nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADTA />'));
             nock(server)
@@ -41,7 +41,7 @@ describe('V4CatalogService', () => {
         test('service groups with paging', async () => {
             const provider = createForAbap(config);
             provider.s4Cloud = false;
-            const catalog = await provider.catalog(ODataVersion.v4);
+            const catalog = provider.catalog(ODataVersion.v4);
 
             // mock response for paging
             nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADTA />'));
@@ -62,7 +62,7 @@ describe('V4CatalogService', () => {
         test('recommended service groups with paging', async () => {
             const provider = createForAbap(config);
             provider.s4Cloud = false;
-            const catalog = await provider.catalog(ODataVersion.v4);
+            const catalog = provider.catalog(ODataVersion.v4);
 
             nock(server)
                 .get(`${V4CatalogService.PATH}/$metadata`)
