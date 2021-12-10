@@ -27,7 +27,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
                     settings.developmentPrefix !== '' &&
                     settings.developmentPackage !== '';
             } catch (error) {
-                this.log.warn('Failed to detect whether this is an SAP S/4HANA Cloud system.');
+                this.log.warn('Failed to detect whether this is an SAP S/4HANA Cloud system or not.');
                 this.s4Cloud = false;
             }
         }

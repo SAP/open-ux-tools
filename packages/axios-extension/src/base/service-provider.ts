@@ -1,8 +1,8 @@
 import { Axios, AxiosRequestConfig } from 'axios';
-import { Logger } from '@sap-ux/logger';
+import { DevNullLogger, Logger } from '@sap-ux/logger';
 import { ODataService } from './odata-service';
 
-export type Service = Axios;
+export type Service = Axios & { log: Logger };
 
 export interface ServiceConfiguration {
     ignoreCertErrors: boolean;
@@ -13,12 +13,13 @@ export interface ServiceProviderExtension {
 }
 
 export class ServiceProvider extends Axios implements ServiceProviderExtension {
-    public log: Logger;
+    public log: Logger = new DevNullLogger();
     protected readonly services: { [path: string]: Service } = {};
 
     service<T extends Service = ODataService>(path: string): T {
         if (!this.services[path]) {
             this.services[path] = this.createService<T>(path, ODataService);
+            this.services[path].log = this.log;
         }
         return this.services[path] as T;
     }

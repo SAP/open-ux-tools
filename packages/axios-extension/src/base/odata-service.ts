@@ -1,5 +1,5 @@
 import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Logger } from '@sap-ux/logger';
+import { DevNullLogger, Logger } from '@sap-ux/logger';
 
 export interface ODataServiceExtension {
     document(): Promise<ServiceDocument>;

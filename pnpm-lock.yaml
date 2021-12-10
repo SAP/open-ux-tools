@@ -209,6 +209,18 @@ importers:
             '@types/i18next-fs-backend': 1.0.0
             '@types/lodash.merge': 4.6.6
 
+    test/manual/axios-extension:
+        specifiers:
+            '@sap-ux/axios-extension': workspace:*
+            '@sap-ux/btp-utils': workspace:*
+            axios: 0.24.0
+            dotenv: 10.0.0
+        dependencies:
+            '@sap-ux/axios-extension': link:../../../packages/axios-extension
+            '@sap-ux/btp-utils': link:../../../packages/btp-utils
+            axios: 0.24.0
+            dotenv: 10.0.0
+
 packages:
     /@babel/code-frame/7.14.5:
         resolution:
@@ -2899,6 +2911,14 @@ packages:
         dependencies:
             webidl-conversions: 5.0.0
         dev: true
+
+    /dotenv/10.0.0:
+        resolution:
+            {
+                integrity: sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
+            }
+        engines: { node: '>=10' }
+        dev: false
 
     /ee-first/1.1.1:
         resolution: { integrity: sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0= }

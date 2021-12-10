@@ -1,0 +1,18 @@
+# Manual Testing: Axios Extension
+
+This project contains scripts to manually test the `@sap-ux/axios-extension` module with real environments.
+
+## Usage
+
+### Local Test With SAP System
+Create a `.env` in this project. Define the test url and optionally test user and password in the `.env` file, e.g.
+```
+TEST_SYSTEM=https://my-test-system.example
+TEST_USER=MY_TEST_USER
+TEST_PASSWORD=MY_SECRET
+```
+
+
+```
+pnpm test:abap
+```

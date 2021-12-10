@@ -1,5 +1,6 @@
 import { Service } from '../base/service-provider';
 import { Axios } from 'axios';
+import { Logger } from '@sap-ux/logger';
 
 export interface App {
     'sap.app/id': string;
@@ -10,6 +11,8 @@ export type AppIndex = Partial<App>[];
 
 export abstract class AppIndexService extends Axios implements Service {
     public static readonly PATH = '/sap/bc/ui2/app_index';
+
+    public log: Logger;
 
     /**
      * Returns list of applications matching the search query from the catalog service.

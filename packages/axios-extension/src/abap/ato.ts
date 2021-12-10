@@ -28,5 +28,6 @@ export function parseAtoResponse(xml: string): AtoSettings {
         parseAttributeValue: true
     };
     const obj = XmlParser.getTraversalObj(xml, options);
-    return XmlParser.convertToJson(obj, options).settings as AtoSettings;
+    const parsed = XmlParser.convertToJson(obj, options);
+    return parsed.settings ? (parsed.settings as AtoSettings) : {};
 }
