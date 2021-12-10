@@ -1,7 +1,14 @@
 import { join, relative } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { generateCustomAction, generateCustomColumn, generateCustomPage, TargetControl } from '../../src';
+import {
+    generateCustomAction,
+    generateCustomColumn,
+    generateCustomPage,
+    TargetControl,
+    generateCustomSection,
+    CustomSectionType
+} from '../../src';
 import { Placement } from '../../src/common/types';
 
 describe('use FPM with existing apps', () => {
@@ -22,8 +29,11 @@ describe('use FPM with existing apps', () => {
 
     describe('extend Fiori elements for OData v4 ListReport ObjectPage', () => {
         const targetPath = join(testOutput, 'lrop');
-        test('generateCustomPage with navigation from ObjectPage', () => {
+        beforeAll(() => {
             fs.copy(join(testInput, 'basic-lrop'), targetPath);
+        });
+
+        test('generateCustomPage with navigation from ObjectPage', () => {
             generateCustomPage(
                 targetPath,
                 {
@@ -40,7 +50,6 @@ describe('use FPM with existing apps', () => {
         });
 
         test('generateCustomColumn in ListReport', () => {
-            fs.copy(join(testInput, 'basic-lrop'), targetPath);
             generateCustomColumn(
                 targetPath,
                 {
@@ -60,8 +69,6 @@ describe('use FPM with existing apps', () => {
         });
 
         test('generateCustomAction in ListReport and ObjectPage', () => {
-            fs.copy(join(testInput, 'basic-lrop'), targetPath);
-
             generateCustomAction(
                 targetPath,
                 {
@@ -89,6 +96,24 @@ describe('use FPM with existing apps', () => {
                         text: 'My other Action',
                         eventHandler: true
                     }
+                },
+                fs
+            );
+        });
+
+        test('generateCustomSection in ObjectPage', () => {
+            generateCustomSection(
+                targetPath,
+                {
+                    name: 'MyCustomSection',
+                    target: 'TravelObjectPage',
+                    title: 'My Custom Section',
+                    type: CustomSectionType.XMLFragment,
+                    position: {
+                        placement: Placement.After,
+                        anchor: 'DummyFacet'
+                    },
+                    eventHandler: true
                 },
                 fs
             );
