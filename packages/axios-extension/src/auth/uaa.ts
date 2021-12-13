@@ -132,7 +132,7 @@ export class Uaa {
         };
     }
 
-    private async getAuthCode(timeout?: number): Promise<{ authCode: string; redirect: Redirect }> {
+    private async getAuthCode(timeout: number = defaultTimeout): Promise<{ authCode: string; redirect: Redirect }> {
         return new Promise((resolve, reject) => {
             const app = express();
             const server = http.createServer(app);
