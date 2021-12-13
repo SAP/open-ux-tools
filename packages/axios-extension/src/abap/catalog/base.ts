@@ -5,20 +5,19 @@ import { ODataService } from '../../base/odata-service';
  * Structure representing a service, this is non odata version specific currently
  */
 export interface Service {
-    /*
     ID: string;
-    Description: string;
-    Title: string; // v2
-    MetadataUrl: string;
+    //Description: string;
+    //Title: string; // v2
+    //MetadataUrl: string;
     ServiceUrl: string;
     TechnicalName: string;
     TechnicalServiceName: string; // v2
     Version: string;
-    TechnicalServiceVersion: number; // v2
-    ServiceId: string; // v4
-    ServiceVersion: string; // v4
-    GroupId: string; // v4, qualifies v4 ServiceId which is not unique
-    ServiceAlias: string; // v4*/
+    //TechnicalServiceVersion: number; // v2
+    //ServiceId: string; // v4
+    //ServiceVersion: string; // v4
+    //GroupId: string; // v4, qualifies v4 ServiceId which is not unique
+    //ServiceAlias: string; // v4*/
 }
 
 /**
@@ -41,7 +40,7 @@ export interface FilterOptions {
 }
 
 export abstract class CatalogService extends ODataService {
-    useRecommendedServices: boolean;
+    entitySet: string;
 
     services: Service[];
 

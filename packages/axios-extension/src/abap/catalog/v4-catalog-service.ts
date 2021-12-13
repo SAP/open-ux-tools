@@ -32,26 +32,31 @@ export class V4CatalogService extends CatalogService {
         const services: Service[] = [];
         groups.forEach((group) => {
             services.push(
-                ...(group.DefaultSystem[entitySet] as V4Service[]).map((service) =>
-                    Object.assign(service, { GroupId: group.GroupId })
-                )
+                ...(group.DefaultSystem[entitySet] as V4Service[]).map((service) => {
+                    return {
+                        ID: service.ServiceId /* + group.GroupId */,
+                        ServiceUrl: service.ServiceUrl,
+                        Version: service.ServiceVersion,
+                        TechnicalName: '',
+                        TechnicalServiceName: ''
+                    };
+                })
             );
         });
-
         return services;
     }
 
     protected async fetchServices(): Promise<Service[]> {
-        if (this.useRecommendedServices === undefined) {
+        if (this.entitySet === undefined) {
             const metadata = await this.metadata();
-            this.useRecommendedServices = metadata.includes('Name="RecommendedServices"');
+            this.entitySet = metadata.includes('Name="RecommendedServices"')
+                ? V4_RECOMMENDED_ENTITYSET
+                : V4_CLASSIC_ENTITYSET;
         }
-
-        const entitySet = this.useRecommendedServices ? V4_RECOMMENDED_ENTITYSET : V4_CLASSIC_ENTITYSET;
 
         const params: { [key: string]: string | boolean } = {
             $count: true,
-            $expand: `DefaultSystem($expand=${entitySet})`
+            $expand: `DefaultSystem($expand=${this.entitySet})`
         };
 
         let response = await this.get<ServiceGroup[]>('/ServiceGroups', { params });
@@ -63,7 +68,7 @@ export class V4CatalogService extends CatalogService {
             response = await super.get('/ServiceGroups', { params: { ...params, ...nextLink.searchParams } });
             serviceGroups.push(...response.odata());
         }
-        return this.extractServices(serviceGroups, entitySet);
+        return this.extractServices(serviceGroups, this.entitySet);
     }
 
     /**
