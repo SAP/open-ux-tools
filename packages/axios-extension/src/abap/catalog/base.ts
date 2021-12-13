@@ -1,6 +1,44 @@
 import { ODataService } from '../../base/odata-service';
 
-export interface Service {}
+/**
+ * TODO: cleanup required
+ * Structure representing a service, this is non odata version specific currently
+ */
+export interface Service {
+    /*
+    ID: string;
+    Description: string;
+    Title: string; // v2
+    MetadataUrl: string;
+    ServiceUrl: string;
+    TechnicalName: string;
+    TechnicalServiceName: string; // v2
+    Version: string;
+    TechnicalServiceVersion: number; // v2
+    ServiceId: string; // v4
+    ServiceVersion: string; // v4
+    GroupId: string; // v4, qualifies v4 ServiceId which is not unique
+    ServiceAlias: string; // v4*/
+}
+
+/**
+ * Structure representing annotations (including their definitions)
+ */
+export interface Annotations {
+    TechnicalName: string;
+    Version: string;
+    Definitions: string;
+    Uri: string;
+}
+
+/**
+ * Filter options to search for annotations
+ */
+export interface FilterOptions {
+    id?: string;
+    title?: string;
+    path?: string;
+}
 
 export abstract class CatalogService extends ODataService {
     useRecommendedServices: boolean;
@@ -23,5 +61,5 @@ export abstract class CatalogService extends ODataService {
         return this.services;
     }
 
-    //abstract getAnnotations({ id, title, path }: any): Promise<any[]>;
+    abstract getAnnotations({ id, title, path }: FilterOptions): Promise<Annotations[]>;
 }

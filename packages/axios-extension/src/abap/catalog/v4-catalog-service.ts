@@ -1,4 +1,4 @@
-import { CatalogService, Service } from './base';
+import { CatalogService, Service, Annotations } from './base';
 
 const V4_RECOMMENDED_ENTITYSET = 'RecommendedServices';
 const V4_CLASSIC_ENTITYSET = 'Services';
@@ -64,5 +64,12 @@ export class V4CatalogService extends CatalogService {
             serviceGroups.push(...response.odata());
         }
         return this.extractServices(serviceGroups, entitySet);
+    }
+
+    /**
+     * For OData v4, all annotations are already included in the metadata and no additional request is required.
+     */
+    public async getAnnotations(): Promise<Annotations[]> {
+        return Promise.resolve([]);
     }
 }
