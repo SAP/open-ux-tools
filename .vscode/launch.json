@@ -1,5 +1,14 @@
 {
     "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "axiosExtensionTest",
+            "description": "Enter the test you want to debug",
+            "type": "pickString",
+            "options": ["abap", "btp"],
+            "default": "abap"
+        }
+    ],
     "configurations": [
         {
             "type": "node",
@@ -35,7 +44,7 @@
             "windows": {
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
-            "cwd": "${workspaceFolder}/packages/templates/odata-service"
+            "cwd": "${workspaceFolder}/packages/odata-service-writer"
         },
         {
             "type": "node",
@@ -50,6 +59,17 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/fe-fpm-writer"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "axios-extension: Manual test",
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": ["test", "--", "${input:axiosExtensionTest}"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "cwd": "${workspaceFolder}/test/manual/axios-extension"
         }
     ]
 }
