@@ -1,8 +1,5 @@
 import { CustomElement, InternalCustomElement, Position } from '../common/types';
 
-/**
- * Target section file format - currently only xml fragment is supported.
- */
 export const CUSTOM_SECTION_XML_FRAGMENT = 'XMLFragment';
 
 export interface CustomSection extends CustomElement {
@@ -35,5 +32,6 @@ export interface CustomSection extends CustomElement {
 
 export interface InternalCustomSection extends CustomSection, InternalCustomElement {
     content: string;
+    // Target section file format - currently only xml fragment is supported.
     type: typeof CUSTOM_SECTION_XML_FRAGMENT;
 }
