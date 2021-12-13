@@ -1,5 +1,12 @@
 import { Axios, AxiosResponse, AxiosRequestConfig } from 'axios';
 import { ConnectionError } from './error';
+
+export enum CSRF {
+    requestHeaderName = 'X-Csrf-Token',
+    requestHeaderValue = 'Fetch',
+    responseHeaderName = 'x-csrf-token'
+}
+
 /**
  * Helper class for managing cookies.
  */
@@ -46,21 +53,38 @@ export class Cookies {
 export function attachCookieInterceptor(provider: Axios) {
     const cookies = new Cookies();
 
-    let oneTimeInterceptorId: number;
-    oneTimeInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
+    // fetch xsrf token with the first request
+    let oneTimeReqInterceptorId: number;
+    oneTimeReqInterceptorId = provider.interceptors.request.use((request: AxiosRequestConfig) => {
+        request.headers = request.headers ?? {};
+        request.headers[CSRF.requestHeaderName] = CSRF.requestHeaderValue;
+        provider.interceptors.request.eject(oneTimeReqInterceptorId);
+        return request;
+    });
+
+    // throw error on connection issues and remove interceptor if successfully connected
+    let oneTimeRespInterceptorId: number;
+    oneTimeRespInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
         if (response.status >= 400) {
             throw new ConnectionError(response.statusText, response);
         } else {
-            provider.interceptors.response.eject(oneTimeInterceptorId);
+            // remember xsrf token
+            if (response.headers?.[CSRF.responseHeaderName]) {
+                provider.defaults.headers.common[CSRF.requestHeaderName] = response.headers[CSRF.responseHeaderName];
+            }
+            provider.interceptors.response.eject(oneTimeRespInterceptorId);
             return response;
         }
     });
+
+    // always add cookies to outgoing requests
     provider.interceptors.request.use((request: AxiosRequestConfig) => {
         request.headers = request.headers ?? {};
         request.headers.cookie = cookies.toString();
         return request;
     });
 
+    // remember new cookies from each new response
     provider.interceptors.response.use((response: AxiosResponse) => {
         cookies.setCookies(response);
         return response;
