@@ -1,2 +1,2 @@
-export { getAppStudioProxyURL, isAppStudio, isAbapSystem, getDestinationUrlForAppStudio } from './app-studio';
-export * from './types';
+export { getAppStudioProxyURL, isAppStudio, getDestinationUrlForAppStudio } from './app-studio';
+export * from './destination';

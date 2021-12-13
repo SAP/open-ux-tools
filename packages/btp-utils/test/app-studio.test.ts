@@ -1,5 +1,5 @@
 import { getAppStudioProxyURL, isAppStudio, getDestinationUrlForAppStudio, Destination } from '../src';
-import { ENV, isAbapSystem } from '../src/app-studio';
+import { ENV } from '../src/app-studio';
 import destinationList from './mockResponses/destinations.json';
 
 const destinations: { [key: string]: Destination } = {};
@@ -56,14 +56,6 @@ describe('App Studio Utils', () => {
         });
     });
 
-    describe('isAbapSystem', () => {
-        it('check different destinations', () => {
-            expect(isAbapSystem(destinations['ON_PREM_NO_CLIENT'])).toBe(true);
-            expect(isAbapSystem(destinations['ABAP_ON_BTP'])).toBe(true);
-            expect(isAbapSystem(destinations['NOT_AN_ABAP_SYSTEM'])).toBe(false);
-        });
-    });
-
     describe('getDestinationUrlForAppStudio', () => {
         const destination: Destination = destinations['ON_PREM_NO_CLIENT'];
         const encodedInstanceSettings = Buffer.from(
@@ -89,7 +81,7 @@ describe('App Studio Utils', () => {
         });
 
         it('Destination instance provided - but is invalid', async () => {
-            expect(getDestinationUrlForAppStudio(destination, 'invalid')).resolves.toThrowError();
+            expect(getDestinationUrlForAppStudio(destination, 'invalid')).rejects.toThrowError();
         });
     });
 });
