@@ -1,4 +1,4 @@
-import { Destination, getDestinationUrlForAppStudio } from '@sap-ux/btp-utils/src';
+import { Destination, getDestinationUrlForAppStudio, WebIDEUsage } from '@sap-ux/btp-utils/src';
 import axios from 'axios';
 import nock from 'nock';
 import { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } from '../src';
@@ -58,22 +58,34 @@ describe('createForDestination', () => {
     };
 
     test('Not an ABAP system', async () => {
-        const provider = await createForDestination(destination);
+        const provider = await createForDestination({}, destination);
         expect(provider).toBeDefined();
         expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination));
         expect(provider).toBeInstanceOf(ServiceProvider);
     });
 
     test('ABAP system', async () => {
-        const provider = await createForDestination({ ...destination, WebIDEUsage: 'odata_abap' });
+        const provider = await createForDestination({}, { ...destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP });
         expect(provider).toBeDefined();
         expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination));
         expect(provider).toBeInstanceOf(AbapServiceProvider);
     });
 
+    test('ABAP system with additional credentials', async () => {
+        const auth = {
+            username: 'MY_USER',
+            password: 'MY_SECRET'
+        };
+        const provider = await createForDestination({ auth }, { ...destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP });
+        expect(provider).toBeDefined();
+        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination));
+        expect(provider.defaults.auth).toEqual(auth);
+        expect(provider).toBeInstanceOf(AbapServiceProvider);
+    });
+
     test.skip('System from destination service', async () => {
         // TODO: mock calls to cf-tools (or btp-utils)
-        const provider = await createForDestination(destination);
+        const provider = await createForDestination({}, destination);
         expect(provider).toBeDefined();
         expect(provider.defaults.baseURL).toBe(
             await getDestinationUrlForAppStudio(destination, '~destServiceInstanceId')

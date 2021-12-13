@@ -58,14 +58,18 @@ export function createForAbapOnBtp(service: ServiceInfo, refreshToken?: string):
 }
 
 export async function createForDestination(
+    config: AxiosRequestConfig,
     destination: Destination,
     destinationServiceInstance?: string
 ): Promise<ServiceProvider> {
-    const config = { baseURL: await getDestinationUrlForAppStudio(destination, destinationServiceInstance) };
+    const providerConfig = {
+        ...config,
+        baseURL: await getDestinationUrlForAppStudio(destination, destinationServiceInstance)
+    };
     if (isAbapSystem(destination)) {
-        return createInstance(AbapServiceProvider, config);
+        return createInstance(AbapServiceProvider, providerConfig);
     } else {
-        return createInstance(ServiceProvider, config);
+        return createInstance(ServiceProvider, providerConfig);
     }
 }
 
