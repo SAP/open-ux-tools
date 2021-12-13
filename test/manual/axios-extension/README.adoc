@@ -13,7 +13,7 @@ TEST_USER=MY_TEST_USER
 TEST_PASSWORD=MY_SECRET
 ```
 
-And, then run `pnpm test:abap`.
+And, then run `pnpm test -- abap`.
 
 
 ### Local Test with ABAP Environment on SAP BTP

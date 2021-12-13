@@ -7,7 +7,6 @@
     "main": "dist/index.js",
     "scripts": {
         "test": "node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=./.env/env.properties",
-        "test:abap": "node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=./.env/env.properties abap",
         "build": "pnpm clean && tsc",
         "watch": "tsc --watch",
         "clean": "rimraf dist coverage",
