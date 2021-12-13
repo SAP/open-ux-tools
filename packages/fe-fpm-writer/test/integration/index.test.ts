@@ -6,8 +6,7 @@ import {
     generateCustomColumn,
     generateCustomPage,
     TargetControl,
-    generateCustomSection,
-    CustomSectionType
+    generateCustomSection
 } from '../../src';
 import { Placement } from '../../src/common/types';
 
@@ -108,7 +107,6 @@ describe('use FPM with existing apps', () => {
                     name: 'MyCustomSection',
                     target: 'TravelObjectPage',
                     title: 'My Custom Section',
-                    type: CustomSectionType.XMLFragment,
                     position: {
                         placement: Placement.After,
                         anchor: 'DummyFacet'

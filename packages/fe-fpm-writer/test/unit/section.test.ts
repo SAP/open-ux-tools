@@ -1,9 +1,8 @@
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
-import { generateCustomAction, CustomAction } from '../../src';
 import { generateCustomSection } from '../../src/section';
-import { CustomSection, CustomSectionType } from '../../src/section/types';
+import { CustomSection } from '../../src/section/types';
 import { Placement } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
 
@@ -17,7 +16,6 @@ describe('CustomSection', () => {
             name: 'NewCustomSection',
             folder: 'extensions/custom',
             title: 'New Custom Section',
-            type: CustomSectionType.XMLFragment,
             position: {
                 placement: Placement.After,
                 anchor: 'DummyFacet'
@@ -96,7 +94,6 @@ describe('CustomSection', () => {
                 name: 'DummySection',
                 folder: 'extensions/custom',
                 title: 'Dummy Section',
-                type: CustomSectionType.XMLFragment,
                 position: {
                     placement: Placement.Before,
                     anchor: 'NewDummyFacet'

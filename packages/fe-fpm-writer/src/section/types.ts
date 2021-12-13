@@ -1,23 +1,15 @@
 import { CustomElement, InternalCustomElement, Position } from '../common/types';
 
 /**
- * Enumeration with all values possible for custom section type
- * Currently only xml fragment is supported.
+ * Target section file format - currently only xml fragment is supported.
  */
-export enum CustomSectionType {
-    XMLFragment = 'XMLFragment'
-}
+export const CUSTOM_SECTION_XML_FRAGMENT = 'XMLFragment';
 
 export interface CustomSection extends CustomElement {
     /**
      * Name of the routing target
      */
     target: string;
-
-    /**
-     * Extension file type. Currently only xml fragment is supported.
-     */
-    type: CustomSectionType;
 
     /**
      * The header is shown on the section as header, as well as in tab item.
@@ -43,4 +35,5 @@ export interface CustomSection extends CustomElement {
 
 export interface InternalCustomSection extends CustomSection, InternalCustomElement {
     content: string;
+    type: typeof CUSTOM_SECTION_XML_FRAGMENT;
 }
