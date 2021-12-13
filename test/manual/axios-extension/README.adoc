@@ -13,7 +13,10 @@ TEST_USER=MY_TEST_USER
 TEST_PASSWORD=MY_SECRET
 ```
 
-And, then run `pnpm test -- abap`.
+And, then run 
+```bash
+pnpm test -- abap
+```
 
 
 ### Local Test with ABAP Environment on SAP BTP
@@ -22,4 +25,7 @@ Copy the service key of your ABAP environment on SAP BTP to the `.env` folder an
 TEST_SERVICE_INFO_PATH=./.env/XYZ_KEYS.json
 ```
 
-And, then run `pnpm test -- btp`.
+And, then run 
+```bash
+pnpm test -- btp
+```
