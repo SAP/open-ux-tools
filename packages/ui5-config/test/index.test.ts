@@ -1,5 +1,4 @@
-import { getFioriToolsProxyMiddlewareConfig } from '../src/middlewares';
-import { UI5Config } from '../src/ui5-config';
+import { UI5Config, AbapApp } from '../src';
 
 describe('UI5Config', () => {
     // values for testing
@@ -112,9 +111,62 @@ describe('UI5Config', () => {
         expect(ui5Config.toString()).toMatchSnapshot();
     });
 
-    test('addCustomMiddleware', () => {
-        const { config, comments } = getFioriToolsProxyMiddlewareConfig([], {});
-        ui5Config.addCustomMiddleware([config], comments);
+    describe('add/removeCustomMiddleware', () => {
+        const customMiddleware = {
+            name: 'custom-middleware',
+            afterMiddleware: '~otherMiddleware',
+            configuration: {
+                param1: 35729,
+                other: 'webapp'
+            }
+        };
+        test('addCustomMiddleware', () => {
+            ui5Config.addCustomMiddleware([customMiddleware]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('removeMiddleware', () => {
+            ui5Config.addCustomMiddleware([customMiddleware]);
+            ui5Config.removeCustomMiddleware('custom-middleware');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    test('addCustomTask', () => {
+        ui5Config.addCustomTasks([
+            {
+                name: 'ui5-task-zipper',
+                afterTask: 'generateCachebusterInfo',
+                configuration: {
+                    archiveName: 'my-archive'
+                }
+            }
+        ]);
         expect(ui5Config.toString()).toMatchSnapshot();
+    });
+
+    describe('addAbapDeployTask', () => {
+        const app: AbapApp = {
+            name: '~name',
+            desription: '~description',
+            package: '~package',
+            transport: '~transport'
+        };
+
+        test('local settings', () => {
+            ui5Config.addAbapDeployTask({ url, client }, app);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('AppStudio + Steampunk settings', () => {
+            ui5Config.addAbapDeployTask(
+                {
+                    destination,
+                    scp: true
+                },
+                app
+            );
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
     });
 });

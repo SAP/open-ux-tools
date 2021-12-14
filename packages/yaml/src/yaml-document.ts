@@ -229,6 +229,40 @@ export class YamlDocument {
     }
 
     /**
+     * Deletes a node in a sequence in the document.
+     *
+     * @param path - hierarchical path where the node will be deleted
+     * @param {string} path.path - the path object's path
+     * @param {Object} path.matcher - key/value pair identifying the object
+     * @param {string} path.matcher.key - the key
+     * @param {string} path.matcher.value - the value
+     * @returns {YamlDocument} the YamlDocument instance
+     * @memberof YamlDocument
+     */
+    deleteAt({ path, matcher }: { path: string; matcher: { key: string; value: string } }): YamlDocument {
+        const pathArray = this.toPathArray(path);
+        const seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
+        if (!seq || !seq.items) {
+            throw new Error(t('error.seqDoesNotExist', { path }));
+        }
+
+        const deletedNode = seq.items.find((node, index) => {
+            if (node.toJSON()[matcher.key] === matcher.value) {
+                seq.items.splice(index, 1);
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        if (!deletedNode) {
+            throw new Error(t('error.propertyNotFound', { path }));
+        }
+
+        return this;
+    }
+
+    /**
      * @param root0
      * @param root0.start
      * @param root0.path
