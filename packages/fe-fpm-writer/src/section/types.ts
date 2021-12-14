@@ -1,7 +1,5 @@
 import { CustomElement, InternalCustomElement, Position } from '../common/types';
 
-export const CUSTOM_SECTION_XML_FRAGMENT = 'XMLFragment';
-
 export interface CustomSection extends CustomElement {
     /**
      * Name of the routing target
@@ -32,6 +30,4 @@ export interface CustomSection extends CustomElement {
 
 export interface InternalCustomSection extends CustomSection, InternalCustomElement {
     content: string;
-    // Target section file format - currently only xml fragment is supported.
-    type: typeof CUSTOM_SECTION_XML_FRAGMENT;
 }

@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
-import { CustomSection, InternalCustomSection, CUSTOM_SECTION_XML_FRAGMENT } from './types';
+import { CustomSection, InternalCustomSection } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
@@ -26,7 +26,6 @@ function enhanceConfig(data: CustomSection, manifestPath: string, manifest: Mani
 
     // generate section content
     config.content = config.control || getDefaultFragmentContent(config.name, config.eventHandler);
-    config.type = CUSTOM_SECTION_XML_FRAGMENT;
 
     return config as InternalCustomSection;
 }

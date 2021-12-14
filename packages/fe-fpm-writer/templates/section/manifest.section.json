@@ -18,7 +18,6 @@
                                                     "anchor": "<%- position.anchor %>" 
                                                 <% } %>
                                             },
-                                            "type": "<%- type %>",
                                             "title": "<%- title %>"
                                         }
                                     }

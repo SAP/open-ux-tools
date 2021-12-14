@@ -457,7 +457,6 @@ Object {
                         \\"placement\\": \\"After\\",
                         \\"anchor\\": \\"DummyFacet\\"
                       },
-                      \\"type\\": \\"XMLFragment\\",
                       \\"title\\": \\"My Custom Section\\"
                     }
                   }
