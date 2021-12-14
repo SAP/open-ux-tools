@@ -30,19 +30,21 @@ export class V4CatalogService extends CatalogService {
 
     protected extractServices(groups: ServiceGroup[], entitySet: string): Service[] {
         const services: Service[] = [];
-        groups.forEach((group) => {
-            services.push(
-                ...(group.DefaultSystem[entitySet] as V4Service[]).map((service) => {
-                    return {
-                        ID: service.ServiceId /* + group.GroupId */,
-                        ServiceUrl: service.ServiceUrl,
-                        Version: service.ServiceVersion,
-                        TechnicalName: '',
-                        TechnicalServiceName: ''
-                    };
-                })
-            );
-        });
+        groups
+            .filter((group) => group?.DefaultSystem?.[entitySet]?.length > 0)
+            .forEach((group) => {
+                services.push(
+                    ...(group.DefaultSystem[entitySet] as V4Service[]).map((service) => {
+                        return {
+                            ID: service.ServiceId /* + group.GroupId */,
+                            ServiceUrl: service.ServiceUrl,
+                            Version: service.ServiceVersion,
+                            TechnicalName: '',
+                            TechnicalServiceName: ''
+                        };
+                    })
+                );
+            });
         return services;
     }
 
