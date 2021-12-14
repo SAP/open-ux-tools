@@ -12,7 +12,7 @@ export function packageDefaults(version?: string, description?: string): Partial
         version: version || '0.0.1',
         description: description || '',
         devDependencies: {
-            '@ui5/cli': '^2.12.0',
+            '@ui5/cli': '^2.14.1',
             '@sap/ux-ui5-tooling': '1'
         },
         scripts: {
