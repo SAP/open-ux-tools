@@ -1,4 +1,4 @@
-import { FioriToolsProxyConfig, ProxyBackend, ProxyUIConfig } from './types';
+import { AbapApp, AbapTarget, CustomTask, FioriToolsProxyConfig, ProxyBackend, ProxyUIConfig } from './types';
 import { YamlDocument, NodeComment, YAMLMap } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
@@ -60,16 +60,31 @@ export class UI5Config {
     }
 
     /**
+     * Adds a list of custom tasks to the config.
+     *
+     * @param {CustomTask<any>[]} tasks - the list of custom tasks
+     * @param {NodeComment<CustomMiddleware<any>>[]} comments - a list of comments
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public addCustomTasks(tasks: CustomTask<any>[], comments?: NodeComment<CustomMiddleware<any>>[]): UI5Config {
+        for (const task of tasks) {
+            this.document.appendTo({ path: 'builder.customTasks', value: task, comments });
+        }
+        return this;
+    }
+
+    /**
      * Adds a list of custom middlewares to the config.
      *
      * @param {CustomMiddleware<any>[]} middlewares - the list of custom middlewares
-     * @param {NodeComment<MiddlewareConfig>[]} [comments] - a list of comments
+     * @param {NodeComment<CustomMiddleware<any>>[]} comments - a list of comments
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
     public addCustomMiddleware(
-        middlewares: CustomMiddleware<any>[],
-        comments?: NodeComment<CustomMiddleware<any>>[]
+        middlewares: CustomMiddleware<unknown>[],
+        comments?: NodeComment<CustomMiddleware<unknown>>[]
     ): UI5Config {
         for (const mw of middlewares) {
             this.document.appendTo({ path: 'server.customMiddleware', value: mw, comments });
@@ -173,6 +188,47 @@ export class UI5Config {
         this.document.appendTo({
             path: 'server.customMiddleware',
             value: getMockServerMiddlewareConfig(path)
+        });
+        return this;
+    }
+
+    /**
+     * Adds the ABAP deployment task to the config.
+     *
+     * @param target system that this app is to be deployed to
+     * @param app application configuration for the deployment to ABAP
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public addAbapDeployTask(target: AbapTarget, app: AbapApp): UI5Config {
+        this.document.appendTo({
+            path: 'builder.resources',
+            value: {
+                excludes: ['/test/**', '/localService/**']
+            }
+        });
+        this.document.appendTo({
+            path: 'builder.customTasks',
+            value: {
+                name: 'deploy-to-abap',
+                afterTask: 'generateCachebusterInfo',
+                configuration: { target, app }
+            }
+        });
+        return this;
+    }
+
+    /**
+     * Remove a middleware form the UI5 config.
+     *
+     * @param name name of the middleware that is to be removed
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public removeCustomMiddleware(name: string): UI5Config {
+        this.document.deleteAt({
+            path: 'server.customMiddleware',
+            matcher: { key: 'name', value: name }
         });
         return this;
     }
