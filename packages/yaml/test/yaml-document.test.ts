@@ -1,5 +1,5 @@
 import { initI18n, t } from '../src/i18n';
-import { YamlDocument } from '../src/yaml-document';
+import { YamlDocument } from '../src';
 
 describe('YamlDocument', () => {
     beforeAll(async () => {
@@ -229,7 +229,7 @@ key1: 42
     });
 
     describe('updateAt', () => {
-        it('appends scalar to existing empty sequence, at root', async () => {
+        it('update scalar in existing empty sequence', async () => {
             const serializedYaml = `key1: 42
 seq1:
   - name: name1
@@ -248,6 +248,41 @@ seq1:
   - name: name2
 `;
             expect(doc.toString()).toEqual(expectedValue);
+        });
+    });
+
+    describe('deleteAt', () => {
+        const serializedYaml = `key1: 42
+seq1:
+  - name: name1
+    config:
+      prop1: a
+  - name: name2
+`;
+        it('delete node in existing empty sequence', async () => {
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.deleteAt({ path: 'seq1', matcher: { key: 'name', value: 'name1' } });
+            expect(doc.toString()).toMatchInlineSnapshot(`
+            "key1: 42
+            seq1:
+              - name: name2
+            "
+        `);
+        });
+
+        it('try deleting a not existing node', async () => {
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() => {
+                doc.deleteAt({ path: 'seq1', matcher: { key: 'name', value: 'unknown' } });
+            }).toThrowError();
+            expect(doc.toString()).toBe(serializedYaml);
+        });
+        it('try deleting from a node that is not a sequence', async () => {
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() => {
+                doc.deleteAt({ path: 'key1', matcher: { key: 'name', value: 'name1' } });
+            }).toThrowError();
+            expect(doc.toString()).toBe(serializedYaml);
         });
     });
 

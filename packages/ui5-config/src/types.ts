@@ -27,6 +27,33 @@ export interface CustomMiddleware<C> {
     configuration: C;
 }
 
+export interface CustomTask<C> {
+    name: string;
+    beforeTask?: string;
+    afterTask?: string;
+    configuration: C;
+}
+
+export interface AbapApp {
+    name: string;
+    desription: string;
+    package: string;
+    transport: string;
+}
+
+export interface AbapTarget {
+    [key: string]: string | boolean | undefined;
+    url?: string;
+    client?: string;
+    destination?: string;
+    scp?: boolean;
+}
+
+export interface AbapDeployConfig {
+    target: AbapTarget;
+    app: AbapApp;
+}
+
 export interface FioriAppReloadConfig {
     port: number;
     path: string;
