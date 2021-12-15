@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.3.0
+
+### Minor Changes
+
+-   c50f4e0: Custom Section support for fe-fpm-writer
+
 ## 0.2.1
 
 ### Patch Changes
