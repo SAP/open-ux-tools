@@ -60,14 +60,14 @@ describe('createForDestination', () => {
     test('Not an ABAP system', async () => {
         const provider = await createForDestination({}, destination);
         expect(provider).toBeDefined();
-        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination));
+        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination.Name));
         expect(provider).toBeInstanceOf(ServiceProvider);
     });
 
     test('ABAP system', async () => {
         const provider = await createForDestination({}, { ...destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP });
         expect(provider).toBeDefined();
-        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination));
+        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination.Name));
         expect(provider).toBeInstanceOf(AbapServiceProvider);
     });
 
@@ -78,7 +78,7 @@ describe('createForDestination', () => {
         };
         const provider = await createForDestination({ auth }, { ...destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP });
         expect(provider).toBeDefined();
-        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination));
+        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination.Name));
         expect(provider.defaults.auth).toEqual(auth);
         expect(provider).toBeInstanceOf(AbapServiceProvider);
     });
@@ -88,7 +88,7 @@ describe('createForDestination', () => {
         const provider = await createForDestination({}, destination);
         expect(provider).toBeDefined();
         expect(provider.defaults.baseURL).toBe(
-            await getDestinationUrlForAppStudio(destination, '~destServiceInstanceId')
+            await getDestinationUrlForAppStudio(destination.Name, '~destServiceInstanceId')
         );
     });
 });

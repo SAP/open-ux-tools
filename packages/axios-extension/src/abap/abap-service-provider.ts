@@ -8,12 +8,17 @@ import { AppIndexService } from './app-index-service';
 
 export interface AbapServiceProviderExtension {
     s4Cloud: boolean | undefined;
+    user(): Promise<string>;
     catalog(oDataVersion: ODataVersion): CatalogService;
     ui5AbapRepository(): Ui5AbapRepositoryService;
 }
 
 export class AbapServiceProvider extends ServiceProvider implements AbapServiceProviderExtension {
     public s4Cloud: boolean | undefined;
+
+    public user(): Promise<string> {
+        return Promise.resolve(this.defaults.auth?.username);
+    }
 
     public async isS4Cloud(): Promise<boolean> {
         if (this.s4Cloud === undefined) {

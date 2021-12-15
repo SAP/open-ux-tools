@@ -18,7 +18,8 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "@sap/cf-tools": "2.1.1"
+        "@sap/cf-tools": "2.1.1",
+        "axios": "0.24.0"
     },
     "devDependencies": {},
     "files": [

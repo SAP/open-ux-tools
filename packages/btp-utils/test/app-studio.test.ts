@@ -57,31 +57,34 @@ describe('App Studio Utils', () => {
     });
 
     describe('getDestinationUrlForAppStudio', () => {
-        const destination: Destination = destinations['ON_PREM_NO_CLIENT'];
-        const encodedInstanceSettings = Buffer.from(
-            `${mockInstanceSettings.clientid}:${mockInstanceSettings.clientsecret}`
-        ).toString('base64');
+        const destination: Destination = destinations['ON_PREM_WITH_PATH'];
+        const path = new URL(destination.Host).pathname;
+        const encodedInstanceSettings = encodeURIComponent(
+            Buffer.from(`${mockInstanceSettings.clientid}:${mockInstanceSettings.clientsecret}`).toString('base64')
+        );
 
         it('Destination - host changes, path stays unchanged', async () => {
-            const newUrl = await getDestinationUrlForAppStudio(destination);
+            const newUrl = await getDestinationUrlForAppStudio(destination.Name, undefined, path);
             expect(new URL(newUrl).origin).toBe(`https://${destination.Name.toLocaleLowerCase()}.dest`);
-            expect(new URL(newUrl).pathname).toBe(new URL(destination.Host).pathname);
+            expect(new URL(newUrl).pathname).toBe(path);
         });
 
-        it('Destination instance provided - service has uaa config', async () => {
-            const newUrl = await getDestinationUrlForAppStudio(destination, 'instance_has_uaa');
-            expect(new URL(newUrl).pathname).toBe('/');
+        it('Destination instance provided - service has uaa config, path stays unchanged', async () => {
+            const newUrl = await getDestinationUrlForAppStudio(destination.Name, 'instance_has_uaa', path);
+            console.log(newUrl);
+            console.log(encodedInstanceSettings);
+            expect(new URL(newUrl).pathname).toBe(path);
             expect(newUrl.includes(encodedInstanceSettings)).toBe(true);
         });
 
         it('Destination instance provided - service has no uaa but its own id/secret', async () => {
-            const newUrl = await getDestinationUrlForAppStudio(destination, 'instance');
+            const newUrl = await getDestinationUrlForAppStudio(destination.Name, 'instance');
             expect(new URL(newUrl).pathname).toBe('/');
             expect(newUrl.includes(encodedInstanceSettings)).toBe(true);
         });
 
         it('Destination instance provided - but is invalid', async () => {
-            expect(getDestinationUrlForAppStudio(destination, 'invalid')).rejects.toThrowError();
+            expect(getDestinationUrlForAppStudio(destination.Name, 'invalid')).rejects.toThrowError();
         });
     });
 });

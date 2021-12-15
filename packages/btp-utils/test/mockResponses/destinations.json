@@ -21,6 +21,17 @@
         "Host": "https://with-client.sap.example"
     },
     {
+        "Name": "ON_PREM_WITH_PATH",
+        "Type": "HTTP",
+        "Authentication": "NoAuthentication",
+        "ProxyType": "OnPremise",
+        "Description": "On-premise system with a path in the host property.",
+        "WebIDEEnabled": "true",
+        "sap-client": "010",
+        "WebIDEUsage": "odata_abap,dev_abap",
+        "Host": "https://with-client.sap.example/example/path"
+    },
+    {
         "Name": "NOT_AN_ABAP_SYSTEM",
         "Type": "HTTP",
         "Authentication": "NoAuthentication",

@@ -71,8 +71,10 @@ importers:
     packages/btp-utils:
         specifiers:
             '@sap/cf-tools': 2.1.1
+            axios: 0.24.0
         dependencies:
             '@sap/cf-tools': 2.1.1
+            axios: 0.24.0
 
     packages/fe-fpm-writer:
         specifiers:

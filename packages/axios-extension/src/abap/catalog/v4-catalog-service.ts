@@ -76,7 +76,7 @@ export class V4CatalogService extends CatalogService {
     /**
      * For OData v4, all annotations are already included in the metadata and no additional request is required.
      */
-    public async getAnnotations(): Promise<Annotations[]> {
+    public getAnnotations(): Promise<Annotations[]> {
         return Promise.resolve([]);
     }
 }

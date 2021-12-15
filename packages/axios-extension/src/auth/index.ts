@@ -1,10 +1,11 @@
 import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { AbapServiceProvider } from '../abap/abap-service-provider';
+import { AbapServiceProvider } from '../abap';
 import { ServiceInfo } from './service-info';
-import { Uaa } from './uaa';
+import { RefreshTokenChanged, Uaa } from './uaa';
 
-export * from './service-info';
-export * from './cookies';
+export * from './connection';
+
+export { ServiceInfo, RefreshTokenChanged, Uaa };
 
 export function attachBasicAuthInterceptor(provider: Axios): void {
     let oneTimeInterceptorId: number;
@@ -18,14 +19,23 @@ export function attachBasicAuthInterceptor(provider: Axios): void {
 export function attachUaaAuthInterceptor(
     provider: AbapServiceProvider,
     service: ServiceInfo,
-    refreshToken?: string
+    refreshToken?: string,
+    refreshTokenUpdateCb?: RefreshTokenChanged
 ): void {
+    const uaa = new Uaa(service, provider.log);
+    let token: string;
+    // provide function to fetch user infos from UAA if needed
+    provider.user = async () => {
+        token = token ?? (await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
+        return uaa.getUserInfo(token);
+    };
     let oneTimeInterceptorId: number;
     oneTimeInterceptorId = provider.interceptors.request.use(async (request: AxiosRequestConfig) => {
-        const uaa = new Uaa(service, provider.log);
-        const token = await uaa.getAccessToken(refreshToken);
+        token = token ?? (await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
+        // add token as auth header
         request.headers = request.headers ?? {};
         request.headers.authorization = `bearer ${token}`;
+        // remove this interceptor since it is not needed anymore
         provider.interceptors.request.eject(oneTimeInterceptorId);
         return request;
     });

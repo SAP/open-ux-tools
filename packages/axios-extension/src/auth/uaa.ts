@@ -15,8 +15,10 @@ import { redirectSuccessHtml } from './static';
 /** Connection timeout. Should be made configurable */
 export const defaultTimeout = 60 * 1000; // 1 minute
 
+export type RefreshTokenChanged = (refreshToken?: string) => void | Promise<void>;
+
 export class Uaa {
-    private readonly serviceInfo: ServiceInfo;
+    protected readonly serviceInfo: ServiceInfo;
 
     constructor(serviceInfo: ServiceInfo, protected log: Logger) {
         this.validatePropertyExists(serviceInfo.uaa.clientid, 'Client ID missing');
@@ -25,30 +27,22 @@ export class Uaa {
         this.serviceInfo = serviceInfo;
     }
 
-    private validatePropertyExists(property: string, errMsg: string): void {
+    protected validatePropertyExists(property: string, errMsg: string): void {
         if (!property) {
             throw Error(errMsg);
         }
     }
 
-    private get url(): string {
+    protected get url(): string {
         return this.serviceInfo.uaa.url;
     }
 
-    private get clientid(): string {
+    protected get clientid(): string {
         return this.serviceInfo.uaa.clientid;
     }
 
-    private get clientsecret(): string {
+    protected get clientsecret(): string {
         return this.serviceInfo.uaa.clientsecret;
-    }
-
-    private get username(): string {
-        return this.serviceInfo.uaa.username;
-    }
-
-    private get password(): string {
-        return this.serviceInfo.uaa.password;
     }
 
     get logoutUrl(): string {
@@ -59,7 +53,7 @@ export class Uaa {
         return this.serviceInfo.systemid;
     }
 
-    public getAuthCodeUrl({ redirectUri }): string {
+    protected getAuthCodeUrl({ redirectUri }): string {
         return (
             this.url +
             '/oauth/authorize?' +
@@ -71,7 +65,7 @@ export class Uaa {
         );
     }
 
-    public getTokenRequestForAuthCode({ redirectUri, authCode }): AxiosRequestConfig {
+    protected getTokenRequestForAuthCode({ redirectUri, authCode }): AxiosRequestConfig {
         return {
             url: this.url + '/oauth/token',
             auth: { username: this.clientid, password: this.clientsecret },
@@ -89,24 +83,7 @@ export class Uaa {
         };
     }
 
-    public getAccessTokenRequestUsingClientCredential(): AxiosRequestConfig {
-        return {
-            url: this.url,
-            method: 'POST',
-            data: qs.stringify({
-                grant_type: 'password',
-                username: this.username,
-                password: this.password
-            }),
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Accept: 'application/json',
-                Authorization: `Basic ${Buffer.from(this.clientid + ':' + this.clientsecret).toString('base64')}`
-            }
-        };
-    }
-
-    public getTokenRequestForRefreshToken(refreshToken): AxiosRequestConfig {
+    protected getTokenRequestForRefreshToken(refreshToken): AxiosRequestConfig {
         return {
             url: this.url + '/oauth/token',
             auth: { username: this.clientid, password: this.clientsecret },
@@ -122,17 +99,19 @@ export class Uaa {
         };
     }
 
-    public getUserinfoRequest(accessToken: string): AxiosRequestConfig {
-        return {
+    public async getUserInfo(accessToken: string): Promise<string | undefined> {
+        const userInfoResp = await axios.request({
             url: this.url + '/userinfo',
             method: 'GET',
             headers: {
                 authorization: `bearer ${accessToken}`
             }
-        };
+        });
+        const userDisplayName = userInfoResp?.data?.email || userInfoResp?.data?.name;
+        return userDisplayName;
     }
 
-    private async getAuthCode(timeout: number = defaultTimeout): Promise<{ authCode: string; redirect: Redirect }> {
+    protected async getAuthCode(timeout: number = defaultTimeout): Promise<{ authCode: string; redirect: Redirect }> {
         return new Promise((resolve, reject) => {
             const app = express();
             const server = http.createServer(app);
@@ -162,7 +141,7 @@ export class Uaa {
         });
     }
 
-    public async getAccessToken(refreshToken?: string): Promise<string> {
+    public async getAccessToken(refreshToken?: string, refreshTokenChangedCb?: RefreshTokenChanged): Promise<string> {
         let response: AxiosResponse;
         let startFreshLogin = false;
         let newRefreshToken: string;
@@ -195,8 +174,13 @@ export class Uaa {
                 authCode
             });
             response = await axios.request(tokenRequest);
-            this.log.info('Storing refresh token');
+            this.log.info('Refresh token issued');
             newRefreshToken = response.data.refresh_token;
+        }
+
+        if (newRefreshToken && refreshTokenChangedCb) {
+            this.log.info('Sending notification that refresh token changed');
+            refreshTokenChangedCb(newRefreshToken);
         }
 
         this.log.info('Got access token successfully');

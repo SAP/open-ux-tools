@@ -1,4 +1,4 @@
-import { Axios, AxiosResponse, AxiosRequestConfig } from 'axios';
+import { Axios, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import { ConnectionError } from './error';
 
 export enum CSRF {
@@ -50,7 +50,36 @@ export class Cookies {
     }
 }
 
-export function attachCookieInterceptor(provider: Axios) {
+function isSamlLogonNeeded(response: AxiosResponse): boolean {
+    return (
+        response?.status === 200 &&
+        response.headers['content-type']?.toLowerCase().startsWith('text/html') &&
+        typeof response.data === 'string' &&
+        !!response?.data.match(/saml/i)
+    );
+}
+
+/**
+ * SAP systems can choose to respond with a 200 and an HTML login page that the module cannot handle, therefore, convert it into a 401
+ */
+function throwIfHtmlLoginForm(response: AxiosResponse): void {
+    if (
+        response?.status === 200 &&
+        response.headers['content-type']?.toLowerCase().startsWith('text/html') &&
+        (response['sap-err-id'] === 'ICFLOGONREQUIRED' ||
+            (typeof response.data === 'string' && !!response?.data.match(/login/i)))
+    ) {
+        const err = new Error() as AxiosError;
+        err.response = { status: 401 } as AxiosResponse;
+        err.isAxiosError = true;
+        err.toJSON = (): object => {
+            return { status: 401 };
+        };
+        throw err;
+    }
+}
+
+export function attachConnectionHandler(provider: Axios) {
     const cookies = new Cookies();
 
     // fetch xsrf token with the first request
@@ -68,12 +97,21 @@ export function attachCookieInterceptor(provider: Axios) {
         if (response.status >= 400) {
             throw new ConnectionError(response.statusText, response);
         } else {
-            // remember xsrf token
-            if (response.headers?.[CSRF.responseHeaderName]) {
-                provider.defaults.headers.common[CSRF.requestHeaderName] = response.headers[CSRF.responseHeaderName];
+            // if a redirect to a SAML login page happened try again with disable saml param
+            if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
+                provider.defaults.params = provider.defaults.params ?? {};
+                provider.defaults.params.saml2 = 'disabled';
+                return provider.request(response.config);
+            } else {
+                throwIfHtmlLoginForm(response);
+                // remember xsrf token
+                if (response.headers?.[CSRF.responseHeaderName]) {
+                    provider.defaults.headers.common[CSRF.requestHeaderName] =
+                        response.headers[CSRF.responseHeaderName];
+                }
+                provider.interceptors.response.eject(oneTimeRespInterceptorId);
+                return response;
             }
-            provider.interceptors.response.eject(oneTimeRespInterceptorId);
-            return response;
         }
     });
 

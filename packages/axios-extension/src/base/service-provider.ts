@@ -4,7 +4,10 @@ import { ODataService } from './odata-service';
 
 export type Service = Axios & { log: Logger };
 
-export interface ServiceConfiguration {
+export interface ProviderConfiguration {
+    /**
+     * Ignore certificate verification errors
+     */
     ignoreCertErrors: boolean;
 }
 

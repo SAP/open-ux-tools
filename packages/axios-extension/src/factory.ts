@@ -2,8 +2,14 @@ import { AxiosRequestConfig } from 'axios';
 import cloneDeep from 'lodash.clonedeep';
 import { Destination, getDestinationUrlForAppStudio, isAbapSystem } from '@sap-ux/btp-utils';
 import { Agent as HttpsAgent } from 'https';
-import { attachCookieInterceptor, attachBasicAuthInterceptor, ServiceInfo, attachUaaAuthInterceptor } from './auth';
-import { ServiceConfiguration, ServiceProvider } from './base/service-provider';
+import {
+    attachConnectionHandler,
+    attachBasicAuthInterceptor,
+    ServiceInfo,
+    attachUaaAuthInterceptor,
+    RefreshTokenChanged
+} from './auth';
+import { ProviderConfiguration, ServiceProvider } from './base/service-provider';
 import { ODataService } from './base/odata-service';
 import { AbapServiceProvider } from './abap';
 
@@ -11,23 +17,19 @@ type Class<T> = new (...args: any[]) => T;
 
 function createInstance<T extends ServiceProvider>(
     providerType: Class<T>,
-    config: AxiosRequestConfig & Partial<ServiceConfiguration>
+    config: AxiosRequestConfig & Partial<ProviderConfiguration>
 ): T {
-    let providerConfig: AxiosRequestConfig & Partial<ServiceConfiguration>;
-    if (typeof config === 'string') {
-        providerConfig = {
-            baseURL: config
-        };
-    } else {
-        providerConfig = cloneDeep(config);
-        providerConfig.httpsAgent = new HttpsAgent({
-            rejectUnauthorized: !providerConfig.ignoreCertErrors
-        });
-        delete providerConfig.ignoreCertErrors;
-        providerConfig.withCredentials = providerConfig?.auth && Object.keys(providerConfig.auth).length > 0;
-    }
+    let providerConfig: AxiosRequestConfig & Partial<ProviderConfiguration>;
+
+    providerConfig = cloneDeep(config);
+    providerConfig.httpsAgent = new HttpsAgent({
+        rejectUnauthorized: !providerConfig.ignoreCertErrors
+    });
+    delete providerConfig.ignoreCertErrors;
+    providerConfig.withCredentials = providerConfig?.auth && Object.keys(providerConfig.auth).length > 0;
+
     const instance = new providerType(providerConfig);
-    attachCookieInterceptor(instance);
+    attachConnectionHandler(instance);
     if (providerConfig.auth?.password) {
         attachBasicAuthInterceptor(instance);
     }
@@ -35,7 +37,7 @@ function createInstance<T extends ServiceProvider>(
     return instance;
 }
 
-export function create(config: string | (AxiosRequestConfig & Partial<ServiceConfiguration>)): ServiceProvider {
+export function create(config: string | (AxiosRequestConfig & Partial<ProviderConfiguration>)): ServiceProvider {
     if (typeof config === 'string') {
         return createInstance(ServiceProvider, {
             baseURL: config
@@ -45,15 +47,19 @@ export function create(config: string | (AxiosRequestConfig & Partial<ServiceCon
     }
 }
 
-export function createForAbap(config: AxiosRequestConfig & Partial<ServiceConfiguration>): AbapServiceProvider {
+export function createForAbap(config: AxiosRequestConfig & Partial<ProviderConfiguration>): AbapServiceProvider {
     return createInstance(AbapServiceProvider, config);
 }
 
-export function createForAbapOnBtp(service: ServiceInfo, refreshToken?: string): AbapServiceProvider {
+export function createForAbapOnBtp(
+    service: ServiceInfo,
+    refreshToken?: string,
+    refreshTokenChangedCb?: RefreshTokenChanged
+): AbapServiceProvider {
     const provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
         baseURL: service.url
     });
-    attachUaaAuthInterceptor(provider, service, refreshToken);
+    attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
     return provider;
 }
 
@@ -64,8 +70,17 @@ export async function createForDestination(
 ): Promise<ServiceProvider> {
     const providerConfig = {
         ...config,
-        baseURL: await getDestinationUrlForAppStudio(destination, destinationServiceInstance)
+        baseURL: await getDestinationUrlForAppStudio(
+            destination.Name,
+            destinationServiceInstance,
+            new URL(destination.Host).pathname
+        )
     };
+
+    // SAML in AppStudio is not yet supported
+    providerConfig.params = providerConfig.params ?? {};
+    providerConfig.params.saml2 = 'disabled';
+
     if (isAbapSystem(destination)) {
         return createInstance(AbapServiceProvider, providerConfig);
     } else {
@@ -75,7 +90,7 @@ export async function createForDestination(
 
 export function createServiceForUrl(
     url: string,
-    config: AxiosRequestConfig & Partial<ServiceConfiguration> = {}
+    config: AxiosRequestConfig & Partial<ProviderConfiguration> = {}
 ): ODataService {
     const urlObject = new URL(url);
     config.baseURL = urlObject.origin;
