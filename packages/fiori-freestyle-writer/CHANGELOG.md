@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.12
+
+### Patch Changes
+
+-   dbc8b1b: update eslint ignorePatterns in generated apps
+-   Updated dependencies [dbc8b1b]
+    -   @sap-ux/ui5-application-writer@0.10.3
+
 ## 0.10.11
 
 ### Patch Changes

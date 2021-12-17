@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.10.3
+
+### Patch Changes
+
+-   dbc8b1b: update eslint ignorePatterns in generated apps
+
 ## 0.10.2
 
 ### Patch Changes
