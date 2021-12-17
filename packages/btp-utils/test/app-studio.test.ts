@@ -71,8 +71,6 @@ describe('App Studio Utils', () => {
 
         it('Destination instance provided - service has uaa config, path stays unchanged', async () => {
             const newUrl = await getDestinationUrlForAppStudio(destination.Name, 'instance_has_uaa', path);
-            console.log(newUrl);
-            console.log(encodedInstanceSettings);
             expect(new URL(newUrl).pathname).toBe(path);
             expect(newUrl.includes(encodedInstanceSettings)).toBe(true);
         });

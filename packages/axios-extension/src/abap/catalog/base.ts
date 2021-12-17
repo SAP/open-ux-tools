@@ -4,7 +4,7 @@ import { ODataService } from '../../base/odata-service';
  * TODO: cleanup required
  * Structure representing a service, this is non odata version specific currently
  */
-export interface Service {
+export interface ServiceConfig {
     ID: string;
     //Description: string;
     //Title: string; // v2
@@ -42,18 +42,18 @@ export interface FilterOptions {
 export abstract class CatalogService extends ODataService {
     entitySet: string;
 
-    services: Service[];
+    services: ServiceConfig[];
 
     public isS4Cloud: Promise<boolean>;
 
-    protected abstract fetchServices(): Promise<Service[]>;
+    protected abstract fetchServices(): Promise<ServiceConfig[]>;
 
     /**
      * Returns list of services from the catalog service.
      *
      * @returns list of services
      */
-    async listServices(): Promise<Service[]> {
+    async listServices(): Promise<ServiceConfig[]> {
         if (!this.services) {
             this.services = await this.fetchServices();
         }

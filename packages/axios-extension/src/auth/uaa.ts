@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import open = require('open');
-import http from 'http';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import express from 'express';
+import http from 'http';
+import { AddressInfo } from 'net';
 import qs from 'qs';
 import { Logger } from '@sap-ux/logger';
-import { AddressInfo } from 'net';
-import { ServiceInfo } from './service-info';
+import { ServiceInfo } from '@sap-ux/btp-utils';
 import { Redirect } from './redirect';
 import { prettyPrintTimeInMs } from '../abap/message';
 import { UAATimeoutError } from './error';

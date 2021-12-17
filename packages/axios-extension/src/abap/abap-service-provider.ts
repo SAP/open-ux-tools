@@ -1,10 +1,10 @@
 import { ServiceProvider } from '../base/service-provider';
-import { ODataVersion } from '../types';
 import { CatalogService, V2CatalogService, V4CatalogService } from './catalog';
 
 import { ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
+import { ODataVersion } from '../base/odata-service';
 
 export interface AbapServiceProviderExtension {
     s4Cloud: boolean | undefined;

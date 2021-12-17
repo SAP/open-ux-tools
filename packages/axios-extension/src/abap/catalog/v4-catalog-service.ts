@@ -1,4 +1,4 @@
-import { CatalogService, Service, Annotations } from './base';
+import { CatalogService, ServiceConfig, Annotations } from './base';
 
 const V4_RECOMMENDED_ENTITYSET = 'RecommendedServices';
 const V4_CLASSIC_ENTITYSET = 'Services';
@@ -28,8 +28,8 @@ export interface ServiceGroup {
 export class V4CatalogService extends CatalogService {
     public static readonly PATH = '/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002';
 
-    protected extractServices(groups: ServiceGroup[], entitySet: string): Service[] {
-        const services: Service[] = [];
+    protected extractServices(groups: ServiceGroup[], entitySet: string): ServiceConfig[] {
+        const services: ServiceConfig[] = [];
         groups
             .filter((group) => group?.DefaultSystem?.[entitySet]?.length > 0)
             .forEach((group) => {
@@ -48,7 +48,7 @@ export class V4CatalogService extends CatalogService {
         return services;
     }
 
-    protected async fetchServices(): Promise<Service[]> {
+    protected async fetchServices(): Promise<ServiceConfig[]> {
         if (this.entitySet === undefined) {
             const metadata = await this.metadata();
             this.entitySet = metadata.includes('Name="RecommendedServices"')

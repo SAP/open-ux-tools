@@ -1,5 +1,13 @@
 import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { DevNullLogger, Logger } from '@sap-ux/logger';
+import { Logger } from '@sap-ux/logger';
+
+/**
+ * OData versions supported by Fiori elements
+ */
+export enum ODataVersion {
+    v2 = '2',
+    v4 = '4'
+}
 
 export interface ODataServiceExtension {
     document(): Promise<ServiceDocument>;

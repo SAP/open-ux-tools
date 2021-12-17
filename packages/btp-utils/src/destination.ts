@@ -67,7 +67,7 @@ export function isAbapEnvironmentOnBtp(destination: Destination): boolean {
  * @param destination destination info
  * @returns true, if this destination has the the 'odata_gen', and not the 'odata_abap' attribute set
  */
-export function isGenericODataDest(destination: Destination): boolean {
+export function isGenericODataDestination(destination: Destination): boolean {
     return (
         !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_GENERIC) &&
         !destination.WebIDEUsage.includes(WebIDEUsage.ODATA_ABAP)
@@ -80,8 +80,8 @@ export function isGenericODataDest(destination: Destination): boolean {
  * @param destination destination info
  * @returns true, if this destination is generic odata and 'full_url' attribute is not set
  */
-export function isPartialUrlDest(destination: Destination): boolean {
-    return !destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDest(destination);
+export function isPartialUrlDestination(destination: Destination): boolean {
+    return !destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination);
 }
 
 /**
@@ -90,6 +90,6 @@ export function isPartialUrlDest(destination: Destination): boolean {
  * @param destination destination info
  * @returns true, if this destination has the generic odata and 'full_url' attribute is set
  */
-export function isFullUrlDest(destination: Destination): boolean {
-    return !!destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDest(destination);
+export function isFullUrlDestination(destination: Destination): boolean {
+    return !!destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination);
 }

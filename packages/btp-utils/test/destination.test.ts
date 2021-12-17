@@ -3,9 +3,9 @@ import {
     isAbapSystem,
     isAbapEnvironmentOnBtp,
     WebIDEUsage,
-    isGenericODataDest,
-    isPartialUrlDest,
-    isFullUrlDest
+    isGenericODataDestination,
+    isPartialUrlDestination,
+    isFullUrlDestination
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 
@@ -52,12 +52,12 @@ describe('destination', () => {
 
     describe('isGenericODataDest', () => {
         it('WebIDEUsage set to odata_generic', () => {
-            expect(isGenericODataDest({ ...destination, WebIDEUsage: WebIDEUsage.ODATA_GENERIC })).toBe(true);
+            expect(isGenericODataDestination({ ...destination, WebIDEUsage: WebIDEUsage.ODATA_GENERIC })).toBe(true);
         });
 
         it('WebIDEUsage contains both odata_generic & odata_abap', () => {
             expect(
-                isGenericODataDest({
+                isGenericODataDestination({
                     ...destination,
                     WebIDEUsage: [WebIDEUsage.ODATA_ABAP, WebIDEUsage.ODATA_GENERIC].join(',')
                 })
@@ -65,26 +65,26 @@ describe('destination', () => {
         });
 
         it('not a generic OData destination', () => {
-            expect(isGenericODataDest(destination)).toBe(false);
-            expect(isGenericODataDest({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
+            expect(isGenericODataDestination(destination)).toBe(false);
+            expect(isGenericODataDestination({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
         });
     });
 
     describe('isPartialUrlDest', () => {
         it('WebIDEUsage set to full_url', () => {
-            expect(isPartialUrlDest({ ...destination, WebIDEUsage: WebIDEUsage.ODATA_GENERIC })).toBe(true);
+            expect(isPartialUrlDestination({ ...destination, WebIDEUsage: WebIDEUsage.ODATA_GENERIC })).toBe(true);
         });
 
         it('not a generic OData destination', () => {
-            expect(isPartialUrlDest(destination)).toBe(false);
-            expect(isPartialUrlDest({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
+            expect(isPartialUrlDestination(destination)).toBe(false);
+            expect(isPartialUrlDestination({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
         });
     });
 
     describe('isFullUrlDest', () => {
         it('WebIDEUsage set to full_url', () => {
             expect(
-                isFullUrlDest({
+                isFullUrlDestination({
                     ...destination,
                     WebIDEUsage: [WebIDEUsage.ODATA_GENERIC, WebIDEUsage.FULL_URL].join(',')
                 })
@@ -92,8 +92,8 @@ describe('destination', () => {
         });
 
         it('not a generic OData destination', () => {
-            expect(isFullUrlDest(destination)).toBe(false);
-            expect(isFullUrlDest({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
+            expect(isFullUrlDestination(destination)).toBe(false);
+            expect(isFullUrlDestination({ ...destination, WebIDEUsage: 'anything' })).toBe(false);
         });
     });
 });

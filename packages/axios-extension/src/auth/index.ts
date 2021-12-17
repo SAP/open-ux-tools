@@ -1,6 +1,6 @@
+import { ServiceInfo } from '@sap-ux/btp-utils';
 import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { AbapServiceProvider } from '../abap';
-import { ServiceInfo } from './service-info';
 import { RefreshTokenChanged, Uaa } from './uaa';
 
 export * from './connection';
