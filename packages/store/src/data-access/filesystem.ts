@@ -1,9 +1,8 @@
 import { join } from 'path';
 import { readFileSync, writeFileSync, mkdirSync, FSWatcher, watch, existsSync } from 'fs';
 import { plural } from 'pluralize';
-import { getFioriToolsDirectory } from '@sap-ux/common-utils';
 import { DataAccess, DataAccessConstructor } from '.';
-import { errorInstance, Logger } from '../utils';
+import { errorInstance, getFioriToolsDirectory, Logger } from '../utils';
 import { Entity } from '..';
 
 export const basedir = getFioriToolsDirectory;

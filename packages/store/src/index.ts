@@ -1,4 +1,4 @@
-import { Logger } from '@sap-ux/common-utils';
+import { Logger } from '@sap-ux/logger';
 import { Entity } from './contants';
 import { initI18n, text } from './i18n';
 import { Service } from './services';

@@ -1,4 +1,4 @@
-import * as commonUtils from '@sap-ux/common-utils';
+import * as appStudioUtils from '../../../src/utils/app-studio';
 import { getSecureStore } from '../../../src';
 import { DummyStore } from '../../../src/secure-store/dummy-store';
 import { KeytarStore } from '../../../src/secure-store/keytar-store';
@@ -7,7 +7,7 @@ describe('getSecureStore', () => {
     beforeEach(() => jest.resetAllMocks());
 
     it('returns an instance of DummyStore on App Studio', () => {
-        jest.spyOn(commonUtils, 'isAppStudio').mockReturnValueOnce(true);
+        jest.spyOn(appStudioUtils, 'isAppStudio').mockReturnValueOnce(true);
         expect(getSecureStore(console)).toBeInstanceOf(DummyStore);
     });
 
@@ -16,7 +16,7 @@ describe('getSecureStore', () => {
             jest.resetModules();
             jest.restoreAllMocks();
             jest.resetAllMocks();
-            jest.spyOn(commonUtils, 'isAppStudio').mockReturnValue(false);
+            jest.spyOn(appStudioUtils, 'isAppStudio').mockReturnValue(false);
         });
         it('returns KeytarStore if keytar can be required with no errors', () => {
             jest.mock('keytar', () => {});

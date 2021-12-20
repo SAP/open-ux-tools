@@ -1,5 +1,5 @@
 import { SecureStore } from './types';
-import { Logger } from '@sap-ux/common-utils';
+import { Logger } from '@sap-ux/logger';
 
 export class DummyStore implements SecureStore {
     private readonly log: Logger;

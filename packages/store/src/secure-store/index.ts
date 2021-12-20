@@ -1,9 +1,9 @@
 import * as Keytar from 'keytar';
-import { isAppStudio, Logger } from '@sap-ux/common-utils';
+import { Logger } from '@sap-ux/logger';
+import { isAppStudio, errorString } from '../utils';
 import { DummyStore } from './dummy-store';
 import { KeytarStore } from './keytar-store';
 import { SecureStore } from './types';
-import { errorString } from '../utils';
 
 function getKeytar(log: Logger): typeof Keytar | undefined {
     try {

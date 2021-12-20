@@ -1,5 +1,7 @@
 import { debug as d } from 'debug';
-import { Logger as CommonLogger } from '@sap-ux/common-utils';
+import { Logger as CommonLogger } from '@sap-ux/logger';
+import { homedir } from 'os';
+import path from 'path';
 
 export const STORE_NAMESPACE = 'ft:store';
 export const MIGRATION_NAMESPACE = STORE_NAMESPACE + ':migrate';
@@ -49,3 +51,13 @@ export function errorInstance(e: Error | unknown): NodeJS.ErrnoException {
 export function errorString(e: Error | unknown): string {
     return e instanceof Error ? e.message : String(e);
 }
+
+export enum FioriToolsSettings {
+    dir = '.fioritools'
+}
+
+export const getFioriToolsDirectory = (): string => {
+    return path.join(homedir(), FioriToolsSettings.dir);
+};
+
+export * from './app-studio';
