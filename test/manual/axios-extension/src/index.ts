@@ -1,13 +1,30 @@
 import { AbapServiceProvider, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-extension';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const outDir = join(process.cwd(), '.tmp');
+if (!existsSync(outDir)) {
+    mkdirSync(outDir);
+}
 
 async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
     const catalog = await provider.catalog(ODataVersion.v2);
 
-    const metadata = await catalog.metadata();
-
     const services = await catalog.listServices();
-    console.log(services);
+    writeFileSync(join(outDir, 'v2-catalog.json'), JSON.stringify(services, null, 4));
+
+    const serviceInfo = services.find((service) => service.name.includes('SEPMRA_PROD_MAN'));
+
+    if (serviceInfo) {
+        const service = provider.service(serviceInfo.path);
+        const metadata = await service.metadata();
+        writeFileSync(join(outDir, 'metadata.xml'), metadata);
+
+        const annotations = await catalog.getAnnotations(serviceInfo);
+        annotations.forEach((anno) => {
+            writeFileSync(join(outDir, `${anno.TechnicalName}.xml`), anno.Definitions);
+        });
+    }
 }
 
 async function checkAbapSystem(env: { TEST_URL: string; TEST_USER: string; TEST_PASSWORD: string }): Promise<void> {

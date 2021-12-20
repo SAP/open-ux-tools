@@ -1,4 +1,4 @@
-import { Axios, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import { Axios, AxiosResponse, AxiosRequestConfig, AxiosError, HeadersDefaults } from 'axios';
 import { ConnectionError } from './error';
 
 export enum CSRF {
@@ -106,6 +106,15 @@ export function attachConnectionHandler(provider: Axios) {
                 throwIfHtmlLoginForm(response);
                 // remember xsrf token
                 if (response.headers?.[CSRF.responseHeaderName]) {
+                    provider.defaults.headers = provider.defaults.headers ?? {
+                        common: {},
+                        delete: {},
+                        put: {},
+                        get: {},
+                        post: {},
+                        head: {},
+                        patch: {}
+                    };
                     provider.defaults.headers.common[CSRF.requestHeaderName] =
                         response.headers[CSRF.responseHeaderName];
                 }

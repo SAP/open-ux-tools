@@ -1,4 +1,5 @@
-import { CatalogService, ServiceConfig, Annotations } from './base';
+import { CatalogService, Annotations, ODataServiceInfo } from './base';
+import { ODataVersion } from '../../base/odata-service';
 
 const V4_RECOMMENDED_ENTITYSET = 'RecommendedServices';
 const V4_CLASSIC_ENTITYSET = 'Services';
@@ -28,19 +29,20 @@ export interface ServiceGroup {
 export class V4CatalogService extends CatalogService {
     public static readonly PATH = '/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002';
 
-    protected extractServices(groups: ServiceGroup[], entitySet: string): ServiceConfig[] {
-        const services: ServiceConfig[] = [];
+    protected mapServices(groups: ServiceGroup[], entitySet: string): ODataServiceInfo[] {
+        const services: ODataServiceInfo[] = [];
         groups
             .filter((group) => group?.DefaultSystem?.[entitySet]?.length > 0)
             .forEach((group) => {
                 services.push(
                     ...(group.DefaultSystem[entitySet] as V4Service[]).map((service) => {
                         return {
-                            ID: service.ServiceId /* + group.GroupId */,
-                            ServiceUrl: service.ServiceUrl,
-                            Version: service.ServiceVersion,
-                            TechnicalName: '',
-                            TechnicalServiceName: ''
+                            id: service.ServiceId,
+                            group: group.GroupId,
+                            path: service.ServiceUrl.split('?').shift(),
+                            name: `${group.GroupId} > ${service.ServiceAlias || service.ServiceId}`,
+                            serviceVersion: service.ServiceVersion,
+                            odataVersion: ODataVersion.v4
                         };
                     })
                 );
@@ -48,7 +50,7 @@ export class V4CatalogService extends CatalogService {
         return services;
     }
 
-    protected async fetchServices(): Promise<ServiceConfig[]> {
+    protected async fetchServices(): Promise<ODataServiceInfo[]> {
         if (this.entitySet === undefined) {
             const metadata = await this.metadata();
             this.entitySet = metadata.includes('Name="RecommendedServices"')
@@ -70,7 +72,7 @@ export class V4CatalogService extends CatalogService {
             response = await super.get('/ServiceGroups', { params: { ...params, ...nextLink.searchParams } });
             serviceGroups.push(...response.odata());
         }
-        return this.extractServices(serviceGroups, this.entitySet);
+        return this.mapServices(serviceGroups, this.entitySet);
     }
 
     /**

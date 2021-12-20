@@ -4,6 +4,7 @@ import { AbapServiceProvider } from '../abap';
 import { RefreshTokenChanged, Uaa } from './uaa';
 
 export * from './connection';
+export * from './error';
 
 export { ServiceInfo, RefreshTokenChanged, Uaa };
 

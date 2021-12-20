@@ -1,14 +1,43 @@
-import { CatalogService, ServiceConfig, Annotations, FilterOptions } from './base';
+import { CatalogService, ODataServiceInfo, Annotations, FilterOptions } from './base';
+import { ODataVersion } from '../../base/odata-service';
 
 const V2_CLASSIC_ENTITYSET = 'ServiceCollection';
 const V2_RECOMMENDED_ENTITYSET = 'RecommendedServiceCollection';
 const V2_S4CLOUD_FILTER =
     '((IsSapService%20eq%20true)and(ReleaseStatus%20eq%20%27RELEASED%27))or((IsSapService%20eq%20false))';
 
+/**
+ * TODO: cleanup required
+ * Structure representing a service, this is non odata version specific currently
+ */
+export interface ODataServiceV2Info {
+    ID: string;
+    Description: string;
+    Title: string;
+    MetadataUrl: string;
+    ServiceUrl: string;
+    TechnicalName: string;
+    TechnicalServiceName: string;
+    Version: string;
+    TechnicalServiceVersion: number;
+}
+
 export class V2CatalogService extends CatalogService {
     public static readonly PATH = '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2';
 
-    protected async fetchServices(): Promise<ServiceConfig[]> {
+    protected mapServices(services: ODataServiceV2Info[]): ODataServiceInfo[] {
+        return services.map((service) => {
+            return {
+                id: service.ID,
+                name: service.TechnicalServiceName,
+                path: new URL(service.ServiceUrl).pathname,
+                serviceVersion: service.TechnicalServiceVersion + '',
+                odataVersion: ODataVersion.v2
+            };
+        });
+    }
+
+    protected async fetchServices(): Promise<ODataServiceInfo[]> {
         const params = {
             $format: 'json'
         };
@@ -23,15 +52,15 @@ export class V2CatalogService extends CatalogService {
         if (this.entitySet === V2_CLASSIC_ENTITYSET && (await this.isS4Cloud)) {
             params['$filter'] = V2_S4CLOUD_FILTER;
         }
-        const response = await this.get<ServiceConfig[]>(`/${this.entitySet}`, { params });
-        return response.odata();
+        const response = await this.get<ODataServiceV2Info[]>(`/${this.entitySet}`, { params });
+        return this.mapServices(response.odata());
     }
 
     /**
      * Find a specific service by title
      * @param title service title
      */
-    protected async findService({ title, path }: FilterOptions): Promise<ServiceConfig> {
+    protected async findService({ title, path }: FilterOptions): Promise<ODataServiceV2Info> {
         if (!title) {
             title = path.replace(/\/$/, '').split('/').pop().toUpperCase();
             if (!title) {
@@ -45,7 +74,7 @@ export class V2CatalogService extends CatalogService {
             $format: 'json',
             $filter: `Title%20eq%20%27${title}%27`
         };
-        const response = await this.get<ServiceConfig[]>(`/${this.entitySet}`, { params });
+        const response = await this.get<ODataServiceV2Info[]>(`/${this.entitySet}`, { params });
         const services = response.odata();
 
         if (services.length > 1) {
@@ -63,7 +92,7 @@ export class V2CatalogService extends CatalogService {
         return services.length > 0 ? services[0] : undefined;
     }
 
-    protected async getServiceAnnotations({ id, title, path }: FilterOptions): Promise<ServiceConfig[]> {
+    protected async getServiceAnnotations({ id, title, path }: FilterOptions): Promise<ODataServiceV2Info[]> {
         if (!id) {
             const ServiceConfig = await this.findService({ title, path });
             if (ServiceConfig) {
@@ -71,7 +100,7 @@ export class V2CatalogService extends CatalogService {
             }
         }
         if (id) {
-            const response = await this.get<ServiceConfig[]>(
+            const response = await this.get<ODataServiceV2Info[]>(
                 `/${this.entitySet}('${encodeURIComponent(id)}')/Annotations`,
                 {
                     params: { $format: 'json' }
@@ -79,7 +108,7 @@ export class V2CatalogService extends CatalogService {
             );
             return response.odata();
         } else {
-            return undefined;
+            return [];
         }
     }
 
@@ -96,26 +125,27 @@ export class V2CatalogService extends CatalogService {
 
         const serviceAnnotations = await this.getServiceAnnotations({ id, title, path });
         const annotations: Annotations[] = [];
-        if (serviceAnnotations) {
-            for (const service of serviceAnnotations) {
-                const _path = `/Annotations(TechnicalName='${encodeURIComponent(service.TechnicalName)}',Version='${
-                    service.Version
-                }')/$value/`;
+        for (const service of serviceAnnotations) {
+            const _path = `/Annotations(TechnicalName='${encodeURIComponent(service.TechnicalName)}',Version='${
+                service.Version
+            }')/$value/`;
 
-                const response = await this.get<string>(_path);
-                const annotDefs = response.odata();
-                if (annotDefs) {
-                    annotations.push({
-                        TechnicalName: service.TechnicalName,
-                        Version: service.Version,
-                        Definitions: annotDefs,
-                        Uri: this.defaults.baseURL + _path
-                    });
-                } else {
-                    this.log.warn(
-                        `No annotations found for TechnicalName=${service.TechnicalName}, Version=${service.Version}`
-                    );
+            const response = await this.get<string>(_path, {
+                headers: {
+                    Accept: 'application/xml'
                 }
+            });
+            if (response.data) {
+                annotations.push({
+                    TechnicalName: service.TechnicalName,
+                    Version: service.Version,
+                    Definitions: response.data,
+                    Uri: this.defaults.baseURL + _path
+                });
+            } else {
+                this.log.warn(
+                    `No annotations found for TechnicalName=${service.TechnicalName}, Version=${service.Version}`
+                );
             }
         }
         return annotations;

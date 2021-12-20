@@ -1,23 +1,12 @@
-import { ODataService } from '../../base/odata-service';
+import { ODataService, ODataVersion } from '../../base/odata-service';
 
-/**
- * TODO: cleanup required
- * Structure representing a service, this is non odata version specific currently
- */
-export interface ServiceConfig {
-    ID: string;
-    //Description: string;
-    //Title: string; // v2
-    //MetadataUrl: string;
-    ServiceUrl: string;
-    TechnicalName: string;
-    TechnicalServiceName: string; // v2
-    Version: string;
-    //TechnicalServiceVersion: number; // v2
-    //ServiceId: string; // v4
-    //ServiceVersion: string; // v4
-    //GroupId: string; // v4, qualifies v4 ServiceId which is not unique
-    //ServiceAlias: string; // v4*/
+export interface ODataServiceInfo {
+    id: string;
+    name: string;
+    group?: string;
+    path: string;
+    odataVersion: ODataVersion;
+    serviceVersion: string;
 }
 
 /**
@@ -42,18 +31,18 @@ export interface FilterOptions {
 export abstract class CatalogService extends ODataService {
     entitySet: string;
 
-    services: ServiceConfig[];
+    services: ODataServiceInfo[];
 
     public isS4Cloud: Promise<boolean>;
 
-    protected abstract fetchServices(): Promise<ServiceConfig[]>;
+    protected abstract fetchServices(): Promise<ODataServiceInfo[]>;
 
     /**
      * Returns list of services from the catalog service.
      *
      * @returns list of services
      */
-    async listServices(): Promise<ServiceConfig[]> {
+    async listServices(): Promise<ODataServiceInfo[]> {
         if (!this.services) {
             this.services = await this.fetchServices();
         }
