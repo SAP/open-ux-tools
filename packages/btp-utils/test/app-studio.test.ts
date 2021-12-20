@@ -1,5 +1,13 @@
-import { getAppStudioProxyURL, isAppStudio, getDestinationUrlForAppStudio, Destination } from '../src';
-import { ENV } from '../src/app-studio';
+import nock from 'nock';
+import { join } from 'path';
+import {
+    getAppStudioProxyURL,
+    isAppStudio,
+    getDestinationUrlForAppStudio,
+    Destination,
+    listDestinations
+} from '../src';
+import { ENV } from '../src/app-studio.env';
 import destinationList from './mockResponses/destinations.json';
 
 const destinations: { [key: string]: Destination } = {};
@@ -83,6 +91,32 @@ describe('App Studio Utils', () => {
 
         it('Destination instance provided - but is invalid', async () => {
             expect(getDestinationUrlForAppStudio(destination.Name, 'invalid')).rejects.toThrowError();
+        });
+    });
+
+    describe('listDestinations', () => {
+        const server = 'https://destinations.example';
+
+        beforeAll(() => {
+            nock(server).get('/reload').reply(200).persist();
+            process.env[ENV.H2O_URL] = server;
+            process.env[ENV.PROXY_URL] = server;
+        });
+
+        test('only destinations for development returned', async () => {
+            nock(server)
+                .get('/api/listDestinations')
+                .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
+            const actualDestinations = await listDestinations();
+            destinationList.forEach((destination) => {
+                expect(!!actualDestinations[destination.Name]).toBe(destination.WebIDEEnabled === 'true');
+            });
+        });
+
+        test('nothing returned', async () => {
+            nock(server).get('/api/listDestinations').reply(200);
+            const actualDestinations = await listDestinations();
+            expect(Object.values(actualDestinations).length).toBe(0);
         });
     });
 });

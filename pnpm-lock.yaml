@@ -62,19 +62,22 @@ importers:
             express: 4.17.1
             fast-xml-parser: 3.12.20
             lodash.clonedeep: 4.5.0
-            nock: 13.2.1
             open: 7.0.3
             qs: 6.7.0
         devDependencies:
             '@types/lodash.clonedeep': 4.5.6
+            nock: 13.2.1
 
     packages/btp-utils:
         specifiers:
             '@sap/cf-tools': 2.1.1
             axios: 0.24.0
+            nock: 13.2.1
         dependencies:
             '@sap/cf-tools': 2.1.1
             axios: 0.24.0
+        devDependencies:
+            nock: 13.2.1
 
     packages/fe-fpm-writer:
         specifiers:
@@ -5339,7 +5342,7 @@ packages:
 
     /json-stringify-safe/5.0.1:
         resolution: { integrity: sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus= }
-        dev: false
+        dev: true
 
     /json5/1.0.1:
         resolution:
@@ -5496,7 +5499,7 @@ packages:
 
     /lodash.set/4.3.2:
         resolution: { integrity: sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM= }
-        dev: false
+        dev: true
 
     /lodash.startcase/4.4.0:
         resolution: { integrity: sha1-lDbjTtJgk+1/+uGTYUQ1CRXZrdg= }
@@ -5865,7 +5868,7 @@ packages:
             propagate: 2.0.1
         transitivePeerDependencies:
             - supports-color
-        dev: false
+        dev: true
 
     /node-int64/0.4.0:
         resolution: { integrity: sha1-h6kGXNs1XTGC2PlM4RGIuCXGijs= }
@@ -6400,7 +6403,7 @@ packages:
                 integrity: sha512-vGrhOavPSTz4QVNuBNdcNXePNdNMaO1xj9yBeH1ScQPjk/rhg9sSlCXPhMkFuaNNW/syTvYqsnbIJxMBfRbbag==
             }
         engines: { node: '>= 8' }
-        dev: false
+        dev: true
 
     /properties-reader/2.2.0:
         resolution:

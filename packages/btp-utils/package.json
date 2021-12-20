@@ -21,7 +21,9 @@
         "@sap/cf-tools": "2.1.1",
         "axios": "0.24.0"
     },
-    "devDependencies": {},
+    "devDependencies": {
+        "nock": "13.2.1"
+    },
     "files": [
         "dist",
         "LICENSE"

@@ -1,14 +1,7 @@
-import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
 import axios from 'axios';
+import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
+import { ENV } from './app-studio.env';
 import { Destination } from './destination';
-
-/**
- * Enumeration of environment variables used in AppStudio
- */
-export enum ENV {
-    PROXY_URL = 'HTTP_PROXY',
-    H2O_URL = 'H2O_URL'
-}
 
 export function isAppStudio(): boolean {
     return !!process.env[ENV.H2O_URL];
@@ -59,7 +52,8 @@ export async function listDestinations(): Promise<Destinations> {
     const destinations: Destinations = {};
     await axios.get('/reload', { baseURL: process.env[ENV.PROXY_URL] });
     const response = await axios.get<Destination[]>('/api/listDestinations', { baseURL: process.env[ENV.H2O_URL] });
-    response?.data?.forEach((destination) => {
+    const list = Array.isArray(response.data) ? response.data : [];
+    list.forEach((destination) => {
         if (destination.WebIDEEnabled) {
             destinations[destination.Name] = destination;
         }
