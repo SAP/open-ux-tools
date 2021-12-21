@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/btp-utils",
-    "version": "1.4.1",
+    "version": "0.8.0",
     "description": "Module with utils common in Fiori tools",
     "license": "SEE LICENSE IN LICENSE",
     "private": false,
