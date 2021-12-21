@@ -1,5 +1,16 @@
 # @sap-ux/ui5-config
 
+## 0.11.0
+
+### Minor Changes
+
+-   3783887: Enhance ui5-config module allowing to add the abap-deploy-task and remove any middleware
+
+### Patch Changes
+
+-   Updated dependencies [3783887]
+    -   @sap-ux/yaml@0.11.0
+
 ## 0.10.3
 
 ### Patch Changes

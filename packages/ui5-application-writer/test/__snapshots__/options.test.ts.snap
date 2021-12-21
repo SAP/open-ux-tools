@@ -15,7 +15,8 @@ Object {
   ],
   \\"ignorePatterns\\": [
     \\"webapp/localservice/**\\",
-    \\"webapp/test/**\\"
+    \\"webapp/test/**\\",
+    \\"dist/**\\"
   ]
 }
 ",
