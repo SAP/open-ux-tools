@@ -22,9 +22,15 @@ export interface ODataServiceV2Info {
     TechnicalServiceVersion: number;
 }
 
+/**
+ *
+ */
 export class V2CatalogService extends CatalogService {
     public static readonly PATH = '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2';
 
+    /**
+     * @param services
+     */
     protected mapServices(services: ODataServiceV2Info[]): ODataServiceInfo[] {
         return services.map((service) => {
             return {
@@ -37,6 +43,9 @@ export class V2CatalogService extends CatalogService {
         });
     }
 
+    /**
+     *
+     */
     protected async fetchServices(): Promise<ODataServiceInfo[]> {
         const params = {
             $format: 'json'
@@ -58,7 +67,10 @@ export class V2CatalogService extends CatalogService {
 
     /**
      * Find a specific service by title
+     *
+     * @param title.title
      * @param title service title
+     * @param title.path
      */
     protected async findService({ title, path }: FilterOptions): Promise<ODataServiceV2Info> {
         if (!title) {
@@ -92,6 +104,12 @@ export class V2CatalogService extends CatalogService {
         return services.length > 0 ? services[0] : undefined;
     }
 
+    /**
+     * @param root0
+     * @param root0.id
+     * @param root0.title
+     * @param root0.path
+     */
     protected async getServiceAnnotations({ id, title, path }: FilterOptions): Promise<ODataServiceV2Info[]> {
         if (!id) {
             const ServiceConfig = await this.findService({ title, path });
@@ -114,9 +132,13 @@ export class V2CatalogService extends CatalogService {
 
     /**
      * Get all annotations available for the service matching one of the below filter options
+     *
+     * @param id.id
      * @param id service id
      * @param title sevice title
      * @param path service path
+     * @param id.title
+     * @param id.path
      */
     public async getAnnotations({ id, title, path }: FilterOptions): Promise<Annotations[]> {
         if (!id && !title && !path) {

@@ -38,6 +38,7 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Get information about a deployed application. Returns undefined if the application cannot be found.
+     *
      * @param app application id (BSP application name)
      */
     public async getInfo(app: string): Promise<AppInfo> {
@@ -51,6 +52,7 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Deploy the given archive either by creating a new BSP or updating an existing one
+     *
      * @param archivePath path to a zip archive containing the application files
      * @param app application configuration
      * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
@@ -85,6 +87,10 @@ export class Ui5AbapRepositoryService extends ODataService {
         }
     }
 
+    /**
+     * @param app
+     * @param testMode
+     */
     public async undeploy(app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
         const config = this.createConfig(app.transport, testMode);
 
@@ -115,6 +121,7 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Internal helper method to generate a request configuration (headers, parameters)
+     *
      * @param transport optional transport request id
      * @param testMode test mode enabled or not
      */
@@ -141,6 +148,7 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Create the request payload for a deploy request
+     *
      * @param archive archive file path
      * @param name application name
      * @param description description for the deployed app
@@ -253,6 +261,7 @@ export class Ui5AbapRepositoryService extends ODataService {
 
     /**
      * Log errors more user friendly if it is a standard Gateway error
+     *
      * @param e error thrown by Axios after sending a request
      */
     protected logError(e: AxiosError): void {

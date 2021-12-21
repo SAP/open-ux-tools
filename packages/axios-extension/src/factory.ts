@@ -15,20 +15,25 @@ import { AbapServiceProvider } from './abap';
 
 type Class<T> = new (...args: any[]) => T;
 
+/**
+ * Create a new instance of given type and set default configuration merged with the given config.
+ *
+ * @param ProviderType class that will be instantiated
+ * @param config axios config with additional extension specific properties
+ * @returns instance of the provided class
+ */
 function createInstance<T extends ServiceProvider>(
-    providerType: Class<T>,
+    ProviderType: Class<T>,
     config: AxiosRequestConfig & Partial<ProviderConfiguration>
 ): T {
-    let providerConfig: AxiosRequestConfig & Partial<ProviderConfiguration>;
-
-    providerConfig = cloneDeep(config);
+    const providerConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = cloneDeep(config);
     providerConfig.httpsAgent = new HttpsAgent({
         rejectUnauthorized: !providerConfig.ignoreCertErrors
     });
     delete providerConfig.ignoreCertErrors;
     providerConfig.withCredentials = providerConfig?.auth && Object.keys(providerConfig.auth).length > 0;
 
-    const instance = new providerType(providerConfig);
+    const instance = new ProviderType(providerConfig);
     attachConnectionHandler(instance);
     if (providerConfig.auth?.password) {
         attachBasicAuthInterceptor(instance);
@@ -37,6 +42,12 @@ function createInstance<T extends ServiceProvider>(
     return instance;
 }
 
+/**
+ * Create an instance of a basic service provider.
+ *
+ * @param config axios config with additional extension specific properties
+ * @returns instance of the basic service provider
+ */
 export function create(config: string | (AxiosRequestConfig & Partial<ProviderConfiguration>)): ServiceProvider {
     if (typeof config === 'string') {
         return createInstance(ServiceProvider, {
@@ -47,10 +58,24 @@ export function create(config: string | (AxiosRequestConfig & Partial<ProviderCo
     }
 }
 
+/**
+ * Create an instance of an ABAP service provider.
+ *
+ * @param config axios config with additional extension specific properties
+ * @returns instance of an ABAP service provider
+ */
 export function createForAbap(config: AxiosRequestConfig & Partial<ProviderConfiguration>): AbapServiceProvider {
     return createInstance(AbapServiceProvider, config);
 }
 
+/**
+ * Create an instance of an ABAP service provider for an ABAP environment on SAP BTP.
+ *
+ * @param service ABAP environment service
+ * @param refreshToken optional refresh token
+ * @param refreshTokenChangedCb option callback for refresh token updates
+ * @returns instance of an ABAP service provider
+ */
 export function createForAbapOnBtp(
     service: ServiceInfo,
     refreshToken?: string,
@@ -63,6 +88,14 @@ export function createForAbapOnBtp(
     return provider;
 }
 
+/**
+ * Create an instance of a service provider for the given destination.
+ *
+ * @param config axios config with additional extension specific properties
+ * @param destination destination config
+ * @param destinationServiceInstance optional id of a destination service instance providing the destination
+ * @returns instance of a service provider
+ */
 export async function createForDestination(
     config: AxiosRequestConfig,
     destination: Destination,
@@ -88,6 +121,13 @@ export async function createForDestination(
     }
 }
 
+/**
+ * Create an instance of a basic service provider and then generate an extension for a service based on the given url.
+ *
+ * @param url full url pointing to a service
+ * @param config axios config with additional extension specific properties
+ * @returns instance of a service
+ */
 export function createServiceForUrl(
     url: string,
     config: AxiosRequestConfig & Partial<ProviderConfiguration> = {}

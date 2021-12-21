@@ -28,6 +28,9 @@ export interface FilterOptions {
     path?: string;
 }
 
+/**
+ *
+ */
 export abstract class CatalogService extends ODataService {
     entitySet: string;
 

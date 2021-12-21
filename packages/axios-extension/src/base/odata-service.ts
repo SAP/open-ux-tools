@@ -9,11 +9,20 @@ export enum ODataVersion {
     v4 = '4'
 }
 
+export interface ServiceDocument {
+    EntitySets: string[];
+}
+
 export interface ODataServiceExtension {
     document(): Promise<ServiceDocument>;
     metadata(): Promise<string>;
 }
 
+/**
+ * Parse a JSON based OData response and extract the content from the OData structure.
+ *
+ * @returns an object of the provided type
+ */
 function parseODataResponse<T>(): T {
     const data = this.data ? JSON.parse(this.data) : {};
     if (data.d) {
@@ -36,20 +45,24 @@ function parseODataResponse<T>(): T {
     return data as T;
 }
 
-export interface ServiceDocument {
-    EntitySets: string[];
-}
-
 export interface ODataResponse<T> extends AxiosResponse {
     odata(): T;
 }
 
+/**
+ * Class extending Axios representing an OData service.
+ */
 export class ODataService extends Axios implements ODataServiceExtension {
     public log: Logger;
 
     protected doc: ServiceDocument;
     protected metadataDoc: string;
 
+    /**
+     * Get the service description document.
+     *
+     * @returns a service description containing all exposed entities
+     */
     public async document(): Promise<ServiceDocument> {
         if (!this.doc) {
             const response = await this.get<ServiceDocument | { name: string; url: string }[]>('/');
@@ -65,6 +78,11 @@ export class ODataService extends Axios implements ODataServiceExtension {
         return this.doc;
     }
 
+    /**
+     * Get the metadata of the service.
+     *
+     * @returns service metadata
+     */
     public async metadata(): Promise<string> {
         if (!this.metadataDoc) {
             const response = await this.get('/$metadata', { headers: { Accept: 'application/xml' } });
@@ -73,6 +91,13 @@ export class ODataService extends Axios implements ODataServiceExtension {
         return this.metadataDoc;
     }
 
+    /**
+     * Send a get request to the OData service with some preset always used parameters.
+     *
+     * @param url relative url to the service
+     * @param config additional axios request config
+     * @returns a response enhanced with an OData parse method
+     */
     public async get<T = any, R = ODataResponse<T>, D = any>(
         url: string,
         config: AxiosRequestConfig<D> = {}

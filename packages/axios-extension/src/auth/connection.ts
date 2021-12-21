@@ -1,4 +1,4 @@
-import { Axios, AxiosResponse, AxiosRequestConfig, AxiosError, HeadersDefaults } from 'axios';
+import { Axios, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import { ConnectionError } from './error';
 
 export enum CSRF {
@@ -14,6 +14,7 @@ export class Cookies {
     private readonly cookies: { [key: string]: string } = {};
     /**
      * Update the cookies based on 'set-cookie' headers of a response.
+     *
      * @param response http response containing a headers object
      */
     public setCookies(response: AxiosResponse): Cookies {
@@ -24,7 +25,8 @@ export class Cookies {
     }
 
     /**
-     * Update cookies based on a string representing a cookie
+     * Update cookies based on a string representing a cookie.
+     *
      * @param cookieString string representing a cookie
      */
     public addCookie(cookieString: string): Cookies {
@@ -32,8 +34,8 @@ export class Cookies {
         const [, key, value] = cookie[0].match(/(.*?)=(.*)/);
         if (cookieString.indexOf('Max-Age=0') >= 0) {
             delete this.cookies[key];
-        } else {
-            if (key && value) this.cookies[key] = value;
+        } else if (key && value) {
+            this.cookies[key] = value;
         }
         return this;
     }
@@ -50,6 +52,9 @@ export class Cookies {
     }
 }
 
+/**
+ * @param response
+ */
 function isSamlLogonNeeded(response: AxiosResponse): boolean {
     return (
         response?.status === 200 &&
@@ -60,7 +65,9 @@ function isSamlLogonNeeded(response: AxiosResponse): boolean {
 }
 
 /**
- * SAP systems can choose to respond with a 200 and an HTML login page that the module cannot handle, therefore, convert it into a 401
+ * SAP systems can choose to respond with a 200 and an HTML login page that the module cannot handle, therefore, convert it into a 401.
+ *
+ * @param response
  */
 function throwIfHtmlLoginForm(response: AxiosResponse): void {
     if (
@@ -79,12 +86,14 @@ function throwIfHtmlLoginForm(response: AxiosResponse): void {
     }
 }
 
+/**
+ * @param provider
+ */
 export function attachConnectionHandler(provider: Axios) {
     const cookies = new Cookies();
 
     // fetch xsrf token with the first request
-    let oneTimeReqInterceptorId: number;
-    oneTimeReqInterceptorId = provider.interceptors.request.use((request: AxiosRequestConfig) => {
+    const oneTimeReqInterceptorId = provider.interceptors.request.use((request: AxiosRequestConfig) => {
         request.headers = request.headers ?? {};
         request.headers[CSRF.requestHeaderName] = CSRF.requestHeaderValue;
         provider.interceptors.request.eject(oneTimeReqInterceptorId);
@@ -92,8 +101,7 @@ export function attachConnectionHandler(provider: Axios) {
     });
 
     // throw error on connection issues and remove interceptor if successfully connected
-    let oneTimeRespInterceptorId: number;
-    oneTimeRespInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
+    const oneTimeRespInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
         if (response.status >= 400) {
             throw new ConnectionError(response.statusText, response);
         } else {

@@ -8,15 +8,23 @@ export * from './error';
 
 export { ServiceInfo, RefreshTokenChanged, Uaa };
 
+/**
+ * @param provider
+ */
 export function attachBasicAuthInterceptor(provider: Axios): void {
-    let oneTimeInterceptorId: number;
-    oneTimeInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
+    const oneTimeInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
         delete provider.defaults.auth;
         provider.interceptors.response.eject(oneTimeInterceptorId);
         return response;
     });
 }
 
+/**
+ * @param provider
+ * @param service
+ * @param refreshToken
+ * @param refreshTokenUpdateCb
+ */
 export function attachUaaAuthInterceptor(
     provider: AbapServiceProvider,
     service: ServiceInfo,

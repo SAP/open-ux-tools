@@ -36,7 +36,8 @@ export interface ErrorMessage {
 }
 
 /**
- * Log a Gateway response
+ * Log a Gateway response.
+ *
  * @param msg message returned from gateway
  * @param log logger to be used
  */
@@ -50,8 +51,9 @@ export function prettyPrintMessage(msg: SuccessMessage, log: Logger): void {
 }
 
 /**
- * Log a Gateway error
- * @param msg error message returned from gateway
+ * Log a Gateway error.
+ *
+ * @param error error message returned from gateway
  * @param log logger to be used
  */
 export function prettyPrintError(error: ErrorMessage, log: Logger): void {
@@ -60,7 +62,9 @@ export function prettyPrintError(error: ErrorMessage, log: Logger): void {
         if (error.innererror) {
             if (error.innererror.errordetails) {
                 error.innererror.errordetails.forEach((entry) => {
-                    if (!entry.message.startsWith('<![CDATA')) log.error(entry.message);
+                    if (!entry.message.startsWith('<![CDATA')) {
+                        log.error(entry.message);
+                    }
                 });
             }
             if (error.innererror.Error_Resolution) {
@@ -73,7 +77,8 @@ export function prettyPrintError(error: ErrorMessage, log: Logger): void {
 }
 
 /**
- * Print a user friendly time string/
+ * Print a user friendly time string.
+ *
  * @param ms time in ms
  * @returns user friendly string
  */

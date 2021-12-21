@@ -19,8 +19,16 @@ export interface AtoSettings {
     isTransportRequestRequired?: boolean;
 }
 
+/**
+ * Parse an XML document for ATO (Adaptation Transport Organizer) settings.
+ *
+ * @param xml xml document containing ATO settings
+ * @returns parsed ATO settings
+ */
 export function parseAtoResponse(xml: string): AtoSettings {
-    if (XmlParser.validate(xml) !== true) return {};
+    if (XmlParser.validate(xml) !== true) {
+        return {};
+    }
     const options = {
         attributeNamePrefix: '',
         ignoreAttributes: false,

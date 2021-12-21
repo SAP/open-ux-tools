@@ -26,9 +26,16 @@ export interface ServiceGroup {
     };
 }
 
+/**
+ *
+ */
 export class V4CatalogService extends CatalogService {
     public static readonly PATH = '/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002';
 
+    /**
+     * @param groups
+     * @param entitySet
+     */
     protected mapServices(groups: ServiceGroup[], entitySet: string): ODataServiceInfo[] {
         const services: ODataServiceInfo[] = [];
         groups
@@ -50,6 +57,9 @@ export class V4CatalogService extends CatalogService {
         return services;
     }
 
+    /**
+     *
+     */
     protected async fetchServices(): Promise<ODataServiceInfo[]> {
         if (this.entitySet === undefined) {
             const metadata = await this.metadata();

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import open = require('open');
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import express from 'express';
@@ -17,9 +16,16 @@ export const defaultTimeout = 60 * 1000; // 1 minute
 
 export type RefreshTokenChanged = (refreshToken?: string) => void | Promise<void>;
 
+/**
+ * A class representing interactions with an SAP BTP UAA service
+ */
 export class Uaa {
     protected readonly serviceInfo: ServiceInfo;
 
+    /**
+     * @param serviceInfo
+     * @param log
+     */
     constructor(serviceInfo: ServiceInfo, protected log: Logger) {
         this.validatePropertyExists(serviceInfo.uaa.clientid, 'Client ID missing');
         this.validatePropertyExists(serviceInfo.uaa.clientsecret, 'Client Secret missing');
@@ -27,32 +33,55 @@ export class Uaa {
         this.serviceInfo = serviceInfo;
     }
 
+    /**
+     * @param property
+     * @param errMsg
+     */
     protected validatePropertyExists(property: string, errMsg: string): void {
         if (!property) {
             throw Error(errMsg);
         }
     }
 
+    /**
+     *
+     */
     protected get url(): string {
         return this.serviceInfo.uaa.url;
     }
 
+    /**
+     *
+     */
     protected get clientid(): string {
         return this.serviceInfo.uaa.clientid;
     }
 
+    /**
+     *
+     */
     protected get clientsecret(): string {
         return this.serviceInfo.uaa.clientsecret;
     }
 
+    /**
+     *
+     */
     get logoutUrl(): string {
         return this.url + '/logout.do';
     }
 
+    /**
+     *
+     */
     get systemId(): string {
         return this.serviceInfo.systemid;
     }
 
+    /**
+     * @param root0
+     * @param root0.redirectUri
+     */
     protected getAuthCodeUrl({ redirectUri }): string {
         return (
             this.url +
@@ -65,6 +94,11 @@ export class Uaa {
         );
     }
 
+    /**
+     * @param root0
+     * @param root0.redirectUri
+     * @param root0.authCode
+     */
     protected getTokenRequestForAuthCode({ redirectUri, authCode }): AxiosRequestConfig {
         return {
             url: this.url + '/oauth/token',
@@ -83,6 +117,9 @@ export class Uaa {
         };
     }
 
+    /**
+     * @param refreshToken
+     */
     protected getTokenRequestForRefreshToken(refreshToken): AxiosRequestConfig {
         return {
             url: this.url + '/oauth/token',
@@ -99,6 +136,9 @@ export class Uaa {
         };
     }
 
+    /**
+     * @param accessToken
+     */
     public async getUserInfo(accessToken: string): Promise<string | undefined> {
         const userInfoResp = await axios.request({
             url: this.url + '/userinfo',
@@ -111,6 +151,9 @@ export class Uaa {
         return userDisplayName;
     }
 
+    /**
+     * @param timeout
+     */
     protected async getAuthCode(timeout: number = defaultTimeout): Promise<{ authCode: string; redirect: Redirect }> {
         return new Promise((resolve, reject) => {
             const app = express();
@@ -141,6 +184,10 @@ export class Uaa {
         });
     }
 
+    /**
+     * @param refreshToken
+     * @param refreshTokenChangedCb
+     */
     public async getAccessToken(refreshToken?: string, refreshTokenChangedCb?: RefreshTokenChanged): Promise<string> {
         let response: AxiosResponse;
         let startFreshLogin = false;
@@ -156,11 +203,9 @@ export class Uaa {
                 if (response.status === 401 || response.data.error === 'invalid_token') {
                     startFreshLogin = true;
                     this.log.warn('Cannot use stored refresh token. Starting fresh request');
-                } else {
-                    if (refreshToken !== response.data.refresh_token) {
-                        this.log.info('New refresh token issued');
-                        newRefreshToken = response.data.refresh_token;
-                    }
+                } else if (refreshToken !== response.data.refresh_token) {
+                    this.log.info('New refresh token issued');
+                    newRefreshToken = response.data.refresh_token;
                 }
             } catch (e) {
                 startFreshLogin = true;
