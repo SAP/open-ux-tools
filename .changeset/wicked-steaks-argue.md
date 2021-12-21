@@ -3,4 +3,4 @@
 '@sap-ux/btp-utils': minor
 ---
 
-Inital release of reusable modules for system access.
+Initial release of reusable modules for system access.
