@@ -1,3 +1,4 @@
+import { ServiceOptions } from '../types';
 import { Logger } from '../utils';
 
 export interface DataAccess<Entity> {
@@ -15,7 +16,7 @@ export interface DataAccess<Entity> {
 }
 
 export interface DataAccessConstructor<Entity> {
-    new (logger: Logger): DataAccess<Entity>;
+    new (logger: Logger, options?: ServiceOptions): DataAccess<Entity>;
 }
 
 export { getFilesystemWatcherFor } from './filesystem';

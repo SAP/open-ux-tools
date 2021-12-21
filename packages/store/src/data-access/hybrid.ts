@@ -3,6 +3,7 @@ import { pick, Logger } from '../utils';
 import { getSecureStore, SecureStore } from '../secure-store';
 import { getSensitiveDataProperties, getSerializableProperties } from '../decorators';
 import { DataAccess, DataAccessConstructor } from '.';
+import { ServiceOptions } from '../types';
 
 function getFullyQualifiedServiceName(name: string): string {
     return 'fiori/v2/' + name;
@@ -20,9 +21,9 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
     private readonly filesystem: DataAccess<object>;
     private readonly secureStore: SecureStore;
 
-    constructor(logger: Logger) {
+	constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
-        this.filesystem = new FilesystemStore(this.logger);
+        this.filesystem = new FilesystemStore(this.logger, options);
         this.secureStore = getSecureStore(this.logger);
     }
 

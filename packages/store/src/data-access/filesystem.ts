@@ -1,17 +1,31 @@
-import { join } from 'path';
-import { readFileSync, writeFileSync, mkdirSync, FSWatcher, watch, existsSync } from 'fs';
+import path from 'path';
+import fs, { readFileSync, writeFileSync, mkdirSync, FSWatcher, existsSync } from 'fs';
 import { plural } from 'pluralize';
 import { DataAccess, DataAccessConstructor } from '.';
 import { errorInstance, getFioriToolsDirectory, Logger } from '../utils';
 import { Entity } from '..';
+import { ServiceOptions } from '../types';
+import os from 'os';
 
-export const basedir = getFioriToolsDirectory;
+export const basedir = ({ baseDirectory }: { baseDirectory?: string } = {}): string => {
+    if (!baseDirectory) {
+        return getFioriToolsDirectory();
+    } else {
+        if (path.isAbsolute(baseDirectory)) {
+            return baseDirectory;
+        } else {
+            return path.join(os.homedir(), baseDirectory);
+        }
+    }
+};
 
 export const FilesystemStore: DataAccessConstructor<object> = class implements DataAccess<object> {
     private readonly logger: Logger;
+    private readonly storeDirectory: string;
 
-    constructor(logger: Logger) {
+    constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
+        this.storeDirectory = basedir(options);
     }
 
     public async read<Entity extends object>({
@@ -146,7 +160,7 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
     ): { entities?: { [key: string]: E }; error?: Error & { code?: string } } {
         let rawContents: string;
         try {
-            rawContents = readFileSync(join(basedir(), `${entityName}.json`))
+            rawContents = readFileSync(path.join(this.storeDirectory, `${entityName}.json`))
                 ?.toString()
                 .trim();
         } catch (e) {
@@ -170,17 +184,16 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
     }
 
     private writeToFile<Entity extends object>(entityName: string, entities: { [key: string]: Entity }): void {
-        const base = basedir();
         const data = JSON.stringify({ [entityName]: entities }, null, 2);
         const filename = getEntityFileName(entityName);
         try {
-            writeFileSync(join(base, filename), data);
+            writeFileSync(path.join(this.storeDirectory, filename), data);
         } catch (e) {
             const err = errorInstance(e);
             if (err?.code === 'ENOENT') {
-                this.logger.debug(`Base directory [${base}] does not exist, trying to create it`);
-                mkdirSync(base, { recursive: true });
-                writeFileSync(join(base, filename), data);
+                this.logger.debug(`Base directory [${this.storeDirectory}] does not exist, trying to create it`);
+                mkdirSync(this.storeDirectory, { recursive: true });
+                writeFileSync(path.join(this.storeDirectory, filename), data);
             } else {
                 throw e;
             }
@@ -206,15 +219,15 @@ function getEntityFileName(entityName: string): string {
  */
 export function getFilesystemWatcherFor(
     entityName: Entity,
-    callback: (entityName: string) => void
+    callback: (entityName: string) => void,
+    options: ServiceOptions = {}
 ): FSWatcher | undefined {
-    const watchPath = join(basedir(), getEntityFileName(entityName));
+    const watchPath = path.join(basedir(options), getEntityFileName(entityName));
     if (existsSync(watchPath)) {
-        return watch(watchPath, undefined, () => {
+        return fs.watch(watchPath, undefined, () => {
             callback(entityName);
         });
     } else {
-        // this.logger is only valid in the constructed class
         console.warn(`File Not Found: ${watchPath}`);
     }
 }

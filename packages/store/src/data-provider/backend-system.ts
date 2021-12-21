@@ -1,3 +1,4 @@
+import { ServiceOptions } from '../types';
 import { DataProvider, DataProviderConstructor } from '.';
 import { DataAccess } from '../data-access';
 import { HybridStore } from '../data-access/hybrid';
@@ -12,9 +13,9 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
     private readonly entityName = Entities.BackendSystem;
     private readonly logger: Logger;
 
-    constructor(logger: Logger) {
+	constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
-        this.dataAccessor = new HybridStore(this.logger) as DataAccess<BackendSystem>;
+        this.dataAccessor = new HybridStore(this.logger, options) as DataAccess<BackendSystem>;
     }
 
     public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {

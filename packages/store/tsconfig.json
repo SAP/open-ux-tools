@@ -5,7 +5,11 @@
         "outDir": "dist",
         "sourceMap": true,
         "baseUrl": "./src",
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "paths": {
+            "types/*": ["types/*"],
+            "utils/*": ["utils/*"]
+        }
     },
     "extends": "../../tsconfig.json"
 }

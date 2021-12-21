@@ -1,5 +1,6 @@
 import { Logger } from '../utils';
 import { EntityKey } from '../entities';
+import { ServiceOptions } from '../types';
 
 export interface DataProvider<E, K extends EntityKey<E>> {
     read(key: K): Promise<E | undefined>;
@@ -9,5 +10,5 @@ export interface DataProvider<E, K extends EntityKey<E>> {
 }
 
 export interface DataProviderConstructor<E, K extends EntityKey<K>> {
-    new (logger: Logger): DataProvider<E, K>;
+    new (logger: Logger, options?: ServiceOptions): DataProvider<E, K>;
 }

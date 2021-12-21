@@ -5,15 +5,15 @@ import { DataProvider } from '../data-provider';
 import { SystemDataProvider } from '../data-provider/backend-system';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import { text } from '../i18n';
+import { ServiceOptions } from '../types';
 
 export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     private readonly dataProvider: DataProvider<BackendSystem, BackendSystemKey>;
     private readonly logger: Logger;
-    private migrationDone = false;
 
-    constructor(logger: CommonLogger) {
+    constructor(logger: CommonLogger, options: ServiceOptions = {}) {
         this.logger = getExtendedLogger(logger);
-        this.dataProvider = new SystemDataProvider(this.logger);
+        this.dataProvider = new SystemDataProvider(this.logger, options);
     }
     public async partialUpdate(
         key: BackendSystemKey,
@@ -62,6 +62,6 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     }
 }
 
-export function getInstance(logger: CommonLogger): SystemService {
-    return new SystemService(logger);
+export function getInstance(logger: CommonLogger, options: ServiceOptions = {}): SystemService {
+    return new SystemService(logger, options);
 }
