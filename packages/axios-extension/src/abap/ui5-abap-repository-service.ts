@@ -71,13 +71,15 @@ export class Ui5AbapRepositoryService extends ODataService {
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
             if (response?.headers?.['sap-message']) {
                 const message = JSON.parse(response.headers['sap-message']);
-                prettyPrintMessage(message, this.log);
+                const frontendUrl = this.getAbapFrontendUrl(this.defaults.baseURL);
+                prettyPrintMessage(message, this.log, frontendUrl);
 
                 // log url of created/updated app
                 const path = '/sap/bc/ui5_ui5' + (!app.name.startsWith('/') ? '/sap/' : '') + app.name.toLowerCase();
-                // TODO
-                //const frontendUrl = this.getAbapFrontendUrl(this.system.originalUrl || this.system.url);
-                //this.log.info(`App available at ${frontendUrl}${path}${query}`);
+                const query = this.defaults.params['sap-client']
+                    ? '?sap-client=' + this.defaults.params['sap-client']
+                    : '';
+                this.log.info(`App available at ${frontendUrl}${path}${query}`);
             }
 
             return response;

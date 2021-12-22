@@ -15,6 +15,7 @@ export interface MessageDetail {
 export interface SuccessMessage {
     code: string;
     message: string;
+    longtext_url?: string;
     details: MessageDetail[];
 }
 
@@ -40,9 +41,15 @@ export interface ErrorMessage {
  *
  * @param msg message returned from gateway
  * @param log logger to be used
+ * @param url optional url that should logged as clickable url
  */
-export function prettyPrintMessage(msg: SuccessMessage, log: Logger): void {
+export function prettyPrintMessage(msg: SuccessMessage, log: Logger, url?: string): void {
     log.info(msg.message);
+    if (msg['longtext_url'] && url) {
+        let fullLongTextUrl = url.concat(msg['longtext_url']);
+        fullLongTextUrl = fullLongTextUrl.replace(/'/g, '%27'); // to make entire link clickable
+        log.info(fullLongTextUrl);
+    }
     if (msg.details) {
         msg.details.forEach((entry) => {
             log.info(entry.message);
