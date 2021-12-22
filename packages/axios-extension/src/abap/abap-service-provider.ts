@@ -1,7 +1,7 @@
 import { ServiceProvider } from '../base/service-provider';
 import { CatalogService, V2CatalogService, V4CatalogService } from './catalog';
 
-import { ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
+import { AtoSettings, ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
@@ -19,6 +19,8 @@ export interface AbapServiceProviderExtension {
 export class AbapServiceProvider extends ServiceProvider implements AbapServiceProviderExtension {
     public s4Cloud: boolean | undefined;
 
+    protected atoSettings: AtoSettings;
+
     /**
      * Get the username that is currently logged in. This is the basic implementation that could be overwritten by subclasses.
      *
@@ -26,6 +28,23 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      */
     public user(): Promise<string> {
         return Promise.resolve(this.defaults.auth?.username);
+    }
+
+    public setAtoInfo(atoSettings: AtoSettings): void {
+        this.atoSettings = atoSettings;
+    }
+
+    public async getAtoInfo(): Promise<AtoSettings> {
+        if (!this.atoSettings) {
+            try {
+                const response = await this.get(ATO_CATALOG_URL_PATH);
+                this.atoSettings = parseAtoResponse(response.data);
+            } catch (error) {
+                this.atoSettings = {};
+                throw error;
+            }
+        }
+        return this.atoSettings;
     }
 
     /**
@@ -36,8 +55,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     public async isS4Cloud(): Promise<boolean> {
         if (this.s4Cloud === undefined) {
             try {
-                const response = await this.get(ATO_CATALOG_URL_PATH);
-                const settings = parseAtoResponse(response.data);
+                const settings = await this.getAtoInfo();
                 this.s4Cloud =
                     settings.tenantType === TenantType.Customer &&
                     settings.operationsType === 'C' &&
