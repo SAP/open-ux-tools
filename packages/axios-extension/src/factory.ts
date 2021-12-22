@@ -1,6 +1,11 @@
 import { AxiosRequestConfig } from 'axios';
 import cloneDeep from 'lodash.clonedeep';
-import { Destination, getDestinationUrlForAppStudio, isAbapSystem } from '@sap-ux/btp-utils';
+import {
+    Destination,
+    getDestinationUrlForAppStudio,
+    getUserForDestinationService,
+    isAbapSystem
+} from '@sap-ux/btp-utils';
 import { Agent as HttpsAgent } from 'https';
 import {
     attachConnectionHandler,
@@ -96,29 +101,39 @@ export function createForAbapOnBtp(
  * @param destinationServiceInstance optional id of a destination service instance providing the destination
  * @returns instance of a service provider
  */
-export async function createForDestination(
+export function createForDestination(
     config: AxiosRequestConfig,
     destination: Destination,
     destinationServiceInstance?: string
-): Promise<ServiceProvider> {
-    const providerConfig = {
+): ServiceProvider {
+    const providerConfig: AxiosRequestConfig = {
         ...config,
-        baseURL: await getDestinationUrlForAppStudio(
-            destination.Name,
-            destinationServiceInstance,
-            new URL(destination.Host).pathname
-        )
+        baseURL: getDestinationUrlForAppStudio(destination.Name, new URL(destination.Host).pathname)
     };
 
     // SAML in AppStudio is not yet supported
     providerConfig.params = providerConfig.params ?? {};
     providerConfig.params.saml2 = 'disabled';
 
+    let provider: ServiceProvider;
     if (isAbapSystem(destination)) {
-        return createInstance(AbapServiceProvider, providerConfig);
+        provider = createInstance(AbapServiceProvider, providerConfig);
     } else {
-        return createInstance(ServiceProvider, providerConfig);
+        provider = createInstance(ServiceProvider, providerConfig);
     }
+
+    // resolve destination service user on first request if required
+    if (destinationServiceInstance) {
+        const oneTimeReqInterceptorId = provider.interceptors.request.use(async (request: AxiosRequestConfig) => {
+            const url = new URL(provider.defaults.baseURL);
+            url.username = await getUserForDestinationService(destinationServiceInstance);
+            request.baseURL = provider.defaults.baseURL = url.toString();
+            provider.interceptors.request.eject(oneTimeReqInterceptorId);
+            return request;
+        });
+    }
+
+    return provider;
 }
 
 /**

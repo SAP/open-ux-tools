@@ -1,4 +1,4 @@
-import { Destination, getDestinationUrlForAppStudio, WebIDEUsage } from '@sap-ux/btp-utils/src';
+import { Destination, getDestinationUrlForAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
 import axios from 'axios';
 import nock from 'nock';
 import { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } from '../src';
@@ -8,6 +8,17 @@ const servicePath = '/ns/myservice';
 const metadataPath = '/$metadata';
 const client = '010';
 const expectedMetadata = '<METADATA>';
+const destinationServiceUser = 'EXAMPLE_BASE64';
+
+jest.mock('@sap-ux/btp-utils', () => {
+    const original = jest.requireActual('@sap-ux/btp-utils');
+    return {
+        ...original,
+        getUserForDestinationService: jest.fn(() => {
+            return destinationServiceUser;
+        })
+    };
+});
 
 nock.disableNetConnect();
 
@@ -49,25 +60,25 @@ test('createForServiceUrl', async () => {
 
 describe('createForDestination', () => {
     const destination: Destination = {
-        Name: '~name',
+        Name: 'name',
         Type: 'HTTP',
         Authentication: 'NoAuthentication',
         ProxyType: 'OnPremise',
         Host: server,
-        Description: '~description'
+        Description: 'description'
     };
 
-    test('Not an ABAP system', async () => {
-        const provider = await createForDestination({}, destination);
+    test('Not an ABAP system', () => {
+        const provider = createForDestination({}, destination);
         expect(provider).toBeDefined();
-        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination.Name));
+        expect(provider.defaults.baseURL).toBe(getDestinationUrlForAppStudio(destination.Name));
         expect(provider).toBeInstanceOf(ServiceProvider);
     });
 
-    test('ABAP system', async () => {
-        const provider = await createForDestination({}, { ...destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP });
+    test('ABAP system', () => {
+        const provider = createForDestination({}, { ...destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP });
         expect(provider).toBeDefined();
-        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination.Name));
+        expect(provider.defaults.baseURL).toBe(getDestinationUrlForAppStudio(destination.Name));
         expect(provider).toBeInstanceOf(AbapServiceProvider);
     });
 
@@ -76,19 +87,21 @@ describe('createForDestination', () => {
             username: 'MY_USER',
             password: 'MY_SECRET'
         };
-        const provider = await createForDestination({ auth }, { ...destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP });
+        const provider = createForDestination({ auth }, { ...destination, WebIDEUsage: WebIDEUsage.ODATA_ABAP });
         expect(provider).toBeDefined();
-        expect(provider.defaults.baseURL).toBe(await getDestinationUrlForAppStudio(destination.Name));
+        expect(provider.defaults.baseURL).toBe(getDestinationUrlForAppStudio(destination.Name));
         expect(provider.defaults.auth).toEqual(auth);
         expect(provider).toBeInstanceOf(AbapServiceProvider);
     });
 
-    test.skip('System from destination service', async () => {
-        // TODO: mock calls to cf-tools (or btp-utils)
-        const provider = await createForDestination({}, destination);
+    test('System from destination service', async () => {
+        const provider = createForDestination({}, destination, 'destServiceInstanceId');
         expect(provider).toBeDefined();
-        expect(provider.defaults.baseURL).toBe(
-            await getDestinationUrlForAppStudio(destination.Name, '~destServiceInstanceId')
-        );
+        expect(provider.defaults.baseURL).toBe(getDestinationUrlForAppStudio(destination.Name));
+        // trigger a first request to fetch the destination service user
+        nock(`https://${destination.Name}.dest`).get(/.*/).reply(200);
+        await provider.get('/');
+        expect(provider.defaults.baseURL).toContain(destination.Name);
+        expect(provider.defaults.baseURL).toContain(destinationServiceUser);
     });
 });

@@ -16,7 +16,7 @@ export function getAppStudioProxyURL(): string | undefined {
  *
  * @param instance name/id of the destination service instance
  */
-async function getUserForDestinationService(instance: string): Promise<string> {
+export async function getUserForDestinationService(instance: string): Promise<string> {
     try {
         const serviceInfo = await cfGetInstanceKeyParameters(instance);
         const clientId = serviceInfo.uaa?.clientid || serviceInfo.clientid;
@@ -32,15 +32,11 @@ async function getUserForDestinationService(instance: string): Promise<string> {
  * Returns a url for AppStudio for the given url with the given destination
  *
  * @param name name of the destination
- * @param instance optional name of the destination service instance exposing the destination
  * @param path optional path
  */
-export async function getDestinationUrlForAppStudio(name: string, instance?: string, path?: string): Promise<string> {
-    const url = new URL(path && path.length > 1 ? path : '', `https://${name}.dest`);
-    if (instance) {
-        url.username = await getUserForDestinationService(instance);
-    }
-    return url.toString();
+export function getDestinationUrlForAppStudio(name: string, path?: string): string {
+    const origin = `https://${name}.dest`;
+    return path && path.length > 1 ? new URL(path, origin).toString() : origin;
 }
 
 export type Destinations = { [name: string]: Destination };
