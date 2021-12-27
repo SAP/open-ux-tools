@@ -9,7 +9,7 @@
                                 "body": {
                                     "sections": {
                                         "<%- name %>": {
-                                            "name": "<%- ns %>.<%- name %>",
+                                            "template": "<%- ns %>.<%- name %>",
                                             "position": {
                                                 <% if (position.placement) { %> 
                                                     "placement": "<%- position.placement %>", 

@@ -9,11 +9,11 @@ Object {
           "body": Object {
             "sections": Object {
               "DummySection": Object {
-                "name": "sapux.fe.fpm.writer.test.extensions.custom.DummySection",
                 "position": Object {
                   "anchor": "NewDummyFacet",
                   "placement": "Before",
                 },
+                "template": "sapux.fe.fpm.writer.test.extensions.custom.DummySection",
                 "title": "Dummy Section",
               },
             },
@@ -71,11 +71,11 @@ Object {
         "type": "XMLFragment",
       },
       "NewCustomSection": Object {
-        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -103,11 +103,11 @@ Object {
         "type": "XMLFragment",
       },
       "NewCustomSection": Object {
-        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -135,11 +135,11 @@ Object {
         "type": "XMLFragment",
       },
       "NewCustomSection": Object {
-        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "title": "New Custom Section",
       },
     },
@@ -167,11 +167,11 @@ Object {
         "type": "XMLFragment",
       },
       "NewCustomSection": Object {
-        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "title": "New Custom Section",
       },
     },
