@@ -10,6 +10,7 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 /**
  * Get the template folder for the given UI5 version.
  *
+ * @param root root path to templates folder.
  * @param ui5Version required UI5 version.
  * @returns path to the template folder containing the manifest.json ejs template
  */
