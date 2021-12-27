@@ -1,7 +1,7 @@
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
-import { generateCustomSection } from '../../src/section';
+import { generateCustomSection, getManifestRoot } from '../../src/section';
 import { CustomSection } from '../../src/section/types';
 import { Placement } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
@@ -9,6 +9,28 @@ import * as manifest from './sample/section/webapp/manifest.json';
 const testDir = join(__dirname, 'sample/section');
 
 describe('CustomSection', () => {
+    describe('getTemplateRoot', () => {
+        const root = join(__dirname, '../../templates');
+        const testInput = [
+            { version: 1.9, expected: join(root, 'section', '1.86') },
+            { version: 1.96, expected: join(root, 'section', '1.86') },
+            { version: 1.84, expected: join(root, 'section', '1.85') },
+            { version: undefined, expected: join(root, 'section', '1.86') },
+            { version: 1.85, expected: join(root, 'section', '1.85') },
+            { version: 1.86, expected: join(root, 'section', '1.86') }
+        ];
+        test.each(testInput)('get root path of template', ({ version, expected }) => {
+            expect(getManifestRoot(root, version)).toEqual(expected);
+        });
+        test('invalid version', () => {
+            try {
+                getManifestRoot(root, 1.8);
+                expect(true).toBeFalsy();
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+    });
     describe('generateCustomSection', () => {
         let fs: Editor;
         const customSection: CustomSection = {
@@ -113,5 +135,24 @@ describe('CustomSection', () => {
 
             expect(fs.read(fragmentPath)).toMatchSnapshot();
         });
+
+        const testVersions = [1.9, 1.86, 1.85, 1.84];
+        for (const testVersion of testVersions) {
+            test(`Versions ${testVersion}, with handler, all properties`, () => {
+                const testCustomSection: CustomSection = {
+                    ...customSection,
+                    eventHandler: true,
+                    ui5Version: testVersion
+                };
+                generateCustomSection(testDir, { ...testCustomSection }, fs);
+                const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+
+                const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+                expect(settings.content).toMatchSnapshot();
+
+                expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+                expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            });
+        }
     });
 });
