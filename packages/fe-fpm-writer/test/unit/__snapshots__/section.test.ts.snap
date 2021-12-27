@@ -61,12 +61,13 @@ Object {
         "type": "XMLFragment",
       },
       "NewCustomSection": Object {
+        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "title": "New Custom Section",
+        "type": "XMLFragment",
       },
     },
   },
@@ -108,12 +109,13 @@ Object {
         "type": "XMLFragment",
       },
       "NewCustomSection": Object {
+        "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
         },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "title": "New Custom Section",
+        "type": "XMLFragment",
       },
     },
   },

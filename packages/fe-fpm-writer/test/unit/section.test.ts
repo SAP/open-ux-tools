@@ -137,12 +137,12 @@ describe('CustomSection', () => {
         });
 
         const testVersions = [1.9, 1.86, 1.85, 1.84];
-        for (const testVersion of testVersions) {
-            test(`Versions ${testVersion}, with handler, all properties`, () => {
+        for (const ui5Version of testVersions) {
+            test(`Versions ${ui5Version}, with handler, all properties`, () => {
                 const testCustomSection: CustomSection = {
                     ...customSection,
                     eventHandler: true,
-                    ui5Version: testVersion
+                    ui5Version
                 };
                 generateCustomSection(testDir, { ...testCustomSection }, fs);
                 const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
