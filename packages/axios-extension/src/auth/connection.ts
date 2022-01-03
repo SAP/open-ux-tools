@@ -1,4 +1,5 @@
-import { Axios, AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import { ServiceProvider } from '../base/service-provider';
 import { ConnectionError } from './error';
 
 export enum CSRF {
@@ -89,9 +90,7 @@ function throwIfHtmlLoginForm(response: AxiosResponse): void {
 /**
  * @param provider
  */
-export function attachConnectionHandler(provider: Axios) {
-    const cookies = new Cookies();
-
+export function attachConnectionHandler(provider: ServiceProvider) {
     // fetch xsrf token with the first request
     const oneTimeReqInterceptorId = provider.interceptors.request.use((request: AxiosRequestConfig) => {
         request.headers = request.headers ?? {};
@@ -135,13 +134,13 @@ export function attachConnectionHandler(provider: Axios) {
     // always add cookies to outgoing requests
     provider.interceptors.request.use((request: AxiosRequestConfig) => {
         request.headers = request.headers ?? {};
-        request.headers.cookie = cookies.toString();
+        request.headers.cookie = provider.cookies.toString();
         return request;
     });
 
     // remember new cookies from each new response
     provider.interceptors.response.use((response: AxiosResponse) => {
-        cookies.setCookies(response);
+        provider.cookies.setCookies(response);
         return response;
     });
 }
