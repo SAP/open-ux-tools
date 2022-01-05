@@ -66,12 +66,11 @@
                                 "body": {
                                     "sections": {
                                         "ExistingCustomSection": {
-                                            "name": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+                                            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
                                             "position": {
                                                 "anchor": "IncidentOverviewFacet",
                                                 "placement": "Before"
                                             },
-                                            "type": "XMLFragment",
                                             "title": "Custom Title"
                                         }
                                     }
