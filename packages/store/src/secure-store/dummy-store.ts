@@ -8,7 +8,7 @@ export class DummyStore implements SecureStore {
         this.log = log;
     }
 
-    public async save<T>(service: string, key: string, value: T): Promise<boolean> {
+    public async save<T>(service: string, key: string, _value: T): Promise<boolean> {
         this.log.warn(`Dummy store. Trying to save for service: ${service}, key: ${key}`);
         return Promise.resolve(true);
     }

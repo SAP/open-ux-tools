@@ -125,7 +125,7 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
         return entity;
     }
 
-    public async del<Entity extends object>({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
+    public async del({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
         const deletedinFs = await this.filesystem.del({ entityName, id });
         this.logger.debug(`hybrid/del - delete result for id [${id}] on the filesystem: ${deletedinFs}`);
 

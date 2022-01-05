@@ -7,8 +7,7 @@ import { Logger } from '../utils';
 import { Entities } from './constants';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class
-    implements DataProvider<BackendSystem, BackendSystemKey>
-{
+    implements DataProvider<BackendSystem, BackendSystemKey> {
     private readonly dataAccessor: DataAccess<BackendSystem>;
     private readonly entityName = Entities.BackendSystem;
     private readonly logger: Logger;

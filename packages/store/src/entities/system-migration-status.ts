@@ -24,7 +24,7 @@ export class SystemMigrationStatus {
     }
 }
 
-export class SystemMigrationStatusKey implements EntityKey<SystemMigrationStatus> {
+export class SystemMigrationStatusKey implements EntityKey {
     public getId(): string {
         return 'systemMigration'; // A singleton
     }

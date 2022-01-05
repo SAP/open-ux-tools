@@ -8,24 +8,6 @@ export enum AuthenticationType {
     OAuth2ClientCredential = 'oauth2ClientCredential'
 }
 
-export class BackendSystemKey implements EntityKey<BackendSystem> {
-    private url: string;
-    private client?: string;
-
-    public static from(system: BackendSystem): EntityKey<BackendSystem> {
-        return new BackendSystemKey({ url: system.url, client: system.client });
-    }
-
-    constructor({ url, client }: { url: string; client?: string }) {
-        this.url = url.trim().replace(/\/$/, '');
-        this.client = client?.trim();
-    }
-
-    public getId(): string {
-        return this.url + `${this.client ? '/' + this.client : ''}`;
-    }
-}
-
 export class BackendSystem {
     @serializable public readonly name: string;
     @serializable public readonly url: string;
@@ -67,5 +49,22 @@ export class BackendSystem {
         this.password = password;
         this.userDisplayName = userDisplayName;
         this.authenticationType = authenticationType;
+    }
+}
+export class BackendSystemKey implements EntityKey {
+    private url: string;
+    private client?: string;
+
+    public static from(system: BackendSystem): EntityKey {
+        return new BackendSystemKey({ url: system.url, client: system.client });
+    }
+
+    constructor({ url, client }: { url: string; client?: string }) {
+        this.url = url.trim().replace(/\/$/, '');
+        this.client = client?.trim();
+    }
+
+    public getId(): string {
+        return this.url + `${this.client ? '/' + this.client : ''}`;
     }
 }

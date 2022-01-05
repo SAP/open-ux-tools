@@ -10,12 +10,10 @@ import os from 'os';
 export const basedir = ({ baseDirectory }: { baseDirectory?: string } = {}): string => {
     if (!baseDirectory) {
         return getFioriToolsDirectory();
+    } else if (path.isAbsolute(baseDirectory)) {
+        return baseDirectory;
     } else {
-        if (path.isAbsolute(baseDirectory)) {
-            return baseDirectory;
-        } else {
-            return path.join(os.homedir(), baseDirectory);
-        }
+        return path.join(os.homedir(), baseDirectory);
     }
 };
 
@@ -173,7 +171,7 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
             return { entities: undefined };
         }
 
-        let entities: { [key: string]: E } | undefined = undefined;
+        let entities: { [key: string]: E } | undefined;
         try {
             entities = JSON.parse(rawContents)?.[entityName];
         } catch (e) {
@@ -229,5 +227,6 @@ export function getFilesystemWatcherFor(
         });
     } else {
         console.warn(`File Not Found: ${watchPath}`);
+        return undefined;
     }
 }

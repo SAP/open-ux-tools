@@ -1,3 +1,3 @@
-export interface EntityKey<T> {
+export interface EntityKey {
     getId: () => string;
 }
