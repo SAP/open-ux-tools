@@ -12,8 +12,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --colors",
-        "test-u": "jest --ci --forceExit --colors -u",
+        "test": "jest --ci --forceExit --colors --detectOpenHandles",
+        "test-u": "jest --ci --forceExit --colors -u --detectOpenHandles",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },

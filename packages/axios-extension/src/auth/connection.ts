@@ -32,7 +32,7 @@ export class Cookies {
      */
     public addCookie(cookieString: string): Cookies {
         const cookie = cookieString.split(';');
-        const [, key, value] = cookie[0].match(/(.*?)=(.*)/);
+        const [, key, value] = cookie[0].trim().match(/^(.*?)=(.*)$/);
         if (cookieString.indexOf('Max-Age=0') >= 0) {
             delete this.cookies[key];
         } else if (key && value) {

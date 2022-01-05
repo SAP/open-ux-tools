@@ -26,8 +26,8 @@ export interface ApplicationConfig {
 
 export const abapUrlReplaceMap = new Map([
     [/\.abap\./, '.abap-web.'],
-    [/-api.s4hana.ondemand.com/, '.s4hana.ondemand.com'],
-    [/-api.saps4hanacloud.cn/, '.saps4hanacloud.cn']
+    [/-api\.s4hana\.ondemand\.com/, '.s4hana.ondemand.com'],
+    [/-api\.saps4hanacloud\.cn/, '.saps4hanacloud.cn']
 ]);
 
 /**
