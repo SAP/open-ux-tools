@@ -32,8 +32,9 @@ export class Cookies {
      */
     public addCookie(cookieString: string): Cookies {
         const cookie = cookieString.split(';');
-        const [, key, value] = cookie[0].trim().match(/^(.*?)=(.*)$/);
-        if (cookieString.indexOf('Max-Age=0') >= 0) {
+        const [key, ...values] = cookie[0]?.split('=');
+        const value = values?.join('='); // Account for embedded '=' in the value
+        if (key && cookieString.indexOf('Max-Age=0') >= 0) {
             delete this.cookies[key];
         } else if (key && value) {
             this.cookies[key] = value;

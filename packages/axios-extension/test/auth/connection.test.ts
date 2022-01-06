@@ -14,7 +14,7 @@ describe('Cookies', () => {
         };
     };
 
-    it('ignore invalid=false', () => {
+    it('ignore immeditely expiring cookies (max-age = 0)', () => {
         const response = newAxiosResponseWithCookies(['valid=true;Max-Age=1234', 'invalid=false;Max-Age=0']);
 
         const cookies = new Cookies();
