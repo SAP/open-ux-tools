@@ -129,13 +129,13 @@ importers:
             '@types/mem-fs-editor': 7.0.0
             ejs: 3.1.6
             fs-extra: 10.0.0
-            json-merger: 1.1.6
+            json-merger: 1.1.7
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0
         dependencies:
             '@sap-ux/ui5-config': link:../ui5-config
             ejs: 3.1.6
-            json-merger: 1.1.6
+            json-merger: 1.1.7
             mem-fs: 2.1.0
             mem-fs-editor: 9.0.0_mem-fs@2.1.0
         devDependencies:
@@ -4902,17 +4902,17 @@ packages:
         hasBin: true
         dev: true
 
-    /json-merger/1.1.6:
+    /json-merger/1.1.7:
         resolution:
             {
-                integrity: sha512-XYlwB/py/cahU+HJ/W/NdwEZbChP1cLD6Fycrcg4yeitE+eN8BoApngJZi869yleA1Ej2CWqgMm3a2CJgDyTyQ==
+                integrity: sha512-B0k+roIIiZ/vkKkhQQlDf986fFJN5nYn+G6o+zAy7NtRtkFud2GlqsTHl88RA7v4eGKgVQ2sjowSCKbKlCWEKA==
             }
         hasBin: true
         dependencies:
             commander: 7.2.0
             fs-extra: 9.1.0
             js-yaml: 4.1.0
-            json-ptr: 2.2.0
+            json-ptr: 3.0.1
             jsonpath: 1.1.1
             lodash.range: 3.2.0
             vm2: 3.9.5
@@ -4925,13 +4925,11 @@ packages:
             }
         dev: true
 
-    /json-ptr/2.2.0:
+    /json-ptr/3.0.1:
         resolution:
             {
-                integrity: sha512-w9f6/zhz4kykltXMG7MLJWMajxiPj0q+uzQPR1cggNAE/sXoq/C5vjUb/7QNcC3rJsVIIKy37ALTXy1O+3c8QQ==
+                integrity: sha512-hrZ4tElT8huJUH3OwOK+d7F8PRqw09QnGM3Mm3GmqKWDyCCPCG8lGHxXOwQAj0VOxzLirOds07Kz10B5F8M8EA==
             }
-        dependencies:
-            tslib: 2.3.1
         dev: false
 
     /json-schema-traverse/0.4.1:
@@ -6741,13 +6739,6 @@ packages:
                 integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
             }
         dev: true
-
-    /tslib/2.3.1:
-        resolution:
-            {
-                integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
-            }
-        dev: false
 
     /tsutils/3.21.0_typescript@4.4.4:
         resolution:
