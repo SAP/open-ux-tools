@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.13
+
+### Patch Changes
+
+-   213845f: Improve stability of bootstrap code
+
 ## 0.10.12
 
 ### Patch Changes
