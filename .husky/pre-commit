@@ -1,1 +1,2 @@
+pnpm audit
 pnpm pretty-quick --staged --ignore-path .prettierignore

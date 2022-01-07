@@ -1,7 +1,6 @@
 lockfileVersion: 5.3
 
 overrides:
-    ansi-regex: ^5.0.1
     tmpl: ^1.0.5
 
 importers:
@@ -1832,6 +1831,11 @@ packages:
         engines: { node: '>=8' }
         dependencies:
             type-fest: 0.21.3
+        dev: true
+
+    /ansi-regex/3.0.0:
+        resolution: { integrity: sha1-7QMXwyIGT3lGbAKWa922Bas32Zg= }
+        engines: { node: '>=4' }
         dev: true
 
     /ansi-regex/5.0.1:
@@ -6404,7 +6408,7 @@ packages:
         resolution: { integrity: sha1-qEeQIusaw2iocTibY1JixQXuNo8= }
         engines: { node: '>=4' }
         dependencies:
-            ansi-regex: 5.0.1
+            ansi-regex: 3.0.0
         dev: true
 
     /strip-ansi/6.0.1:
