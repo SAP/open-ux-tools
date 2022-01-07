@@ -6297,7 +6297,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
         </script>
-        <script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
 </head>
 
@@ -9563,7 +9563,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
         </script>
-        <script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
 </head>
 
@@ -12421,7 +12421,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
         </script>
-        <script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
 </head>
 
