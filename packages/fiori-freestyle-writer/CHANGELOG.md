@@ -1,5 +1,30 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.12
+
+### Patch Changes
+
+-   dbc8b1b: update eslint ignorePatterns in generated apps
+-   Updated dependencies [dbc8b1b]
+    -   @sap-ux/ui5-application-writer@0.10.3
+
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [3783887]
+    -   @sap-ux/ui5-config@0.11.0
+    -   @sap-ux/odata-service-writer@0.10.1
+    -   @sap-ux/ui5-application-writer@0.10.2
+
+## 0.10.10
+
+### Patch Changes
+
+-   7cfdd9f: Update @ui5/cli@^2.14.1 to support SAPUI5 1.97.0+
+-   Updated dependencies [7cfdd9f]
+    -   @sap-ux/ui5-application-writer@0.10.1
+
 ## 0.10.9
 
 ### Patch Changes

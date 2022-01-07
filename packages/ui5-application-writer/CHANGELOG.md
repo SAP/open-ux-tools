@@ -1,5 +1,24 @@
 # @sap-ux/ui5-application-writer
 
+## 0.10.3
+
+### Patch Changes
+
+-   dbc8b1b: update eslint ignorePatterns in generated apps
+
+## 0.10.2
+
+### Patch Changes
+
+-   Updated dependencies [3783887]
+    -   @sap-ux/ui5-config@0.11.0
+
+## 0.10.1
+
+### Patch Changes
+
+-   7cfdd9f: Update @ui5/cli@^2.14.1 to support SAPUI5 1.97.0+
+
 ## 0.10.0
 
 ### Minor Changes

@@ -15,7 +15,8 @@ Object {
   ],
   \\"ignorePatterns\\": [
     \\"webapp/localservice/**\\",
-    \\"webapp/test/**\\"
+    \\"webapp/test/**\\",
+    \\"dist/**\\"
   ]
 }
 ",
@@ -48,7 +49,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.12.0\\",
+    \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
