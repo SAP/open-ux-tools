@@ -18,10 +18,15 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "debug": "4.3.2"
+        "debug": "4.3.2",
+        "lodash": "4.17.21",
+        "winston": "3.3.3",
+        "winston-transport": "4.4.1"
     },
     "devDependencies": {
-        "@types/debug": "4.1.7"
+        "@types/debug": "4.1.7",
+        "@types/lodash": "4.14.176",
+        "@types/vscode": "1.63.1"
     },
     "files": [
         "dist",
