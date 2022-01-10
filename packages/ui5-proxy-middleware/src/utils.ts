@@ -13,8 +13,10 @@ export const proxyResponseHandler = (proxyRes: IncomingMessage, etag: string): v
 };
 
 /**
- * Return the effective corporate proxy
+ * Get user's proxy configuration.
+ *
  * @param yamlProxyServer - proxy server config from yaml file
+ * @returns User's proxy configuration or undefined
  */
 export const getCorporateProxyServer = (yamlProxyServer: string | undefined): string | undefined => {
     return (

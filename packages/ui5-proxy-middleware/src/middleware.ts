@@ -1,5 +1,5 @@
 import express, { RequestHandler } from 'express';
-import { MiddlewareParameters, ProxyConfig, UI5Config } from './types';
+import { MiddlewareParameters, ProxyConfig } from './types';
 import { ui5Proxy } from './proxy';
 import { getCorporateProxyServer, isHostExcludedFromProxy, logger } from 'utils';
 import { Options } from 'http-proxy-middleware';
