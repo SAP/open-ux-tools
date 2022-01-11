@@ -1,6 +1,6 @@
 # `@sap-ux/logger`
 
-This is a simple logging library. It uses [Winston](https://github.com/winstonjs/winston) underneath to do the heavy-lifting. The API is agnostic to an particular logging library. Don't depend on any Winston-specific implemenation as the underlying library may change in the future.
+This is a simple logging library. It uses [Winston](https://github.com/winstonjs/winston) underneath to do the heavy-lifting. The API is agnostic to any particular logging library. Don't depend on any Winston-specific implemenation as the underlying library may change in the future.
 
 ### Quick Usage
 Add the package `@sap-ux/logger` to your project using your preferred package manager.
@@ -68,5 +68,8 @@ Please refer to the debugging section in the project root [README](../../README.
 The following options are not supported yet. There are no definite plans to add them in the future. They will be considered on a need-basis.
 
 * Child loggers
-* Custom formatters - the `VSCodeTransport` prints timestamped lines while the other transports log JSON
+* Custom formatters
+    - `VSCodeTransport` logs timestamped lines
+    -  `FileTransport` logs in JSON
+    -  `ConsoleTransport` logs colored and timestamped lines (piping will remove color encoding though)
 * File rotation - the file transport appends to an existing file or creates a new one if missing
