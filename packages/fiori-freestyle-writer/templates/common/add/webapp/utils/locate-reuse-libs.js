@@ -3,7 +3,7 @@
   var fioriToolsGetManifestLibs = function (manifestPath) {
     var url = manifestPath;
     var result = "";
-    // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+    // SAPUI5 delivered namespaces from https://sapui5.hana.ondemand.com/#/api/sap
     var ui5Libs = [
       "sap.apf",
       "sap.base",

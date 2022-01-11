@@ -50,7 +50,7 @@ export enum UI5_DEFAULT {
     MIN_UI5_VERSION = '1.60',
     MIN_LOCAL_SAPUI5_VERSION = '1.76.0',
     MIN_LOCAL_OPENUI5_VERSION = '1.52.5',
-    SAPUI5_CDN = 'https://ui5.sap.com',
+    SAPUI5_CDN = 'https://sapui5.hana.ondemand.com',
     OPENUI5_CDN = 'https://openui5.hana.ondemand.com'
 }
 

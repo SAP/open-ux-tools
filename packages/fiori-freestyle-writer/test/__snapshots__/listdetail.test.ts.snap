@@ -110,7 +110,7 @@ server:
           path:
             - /resources
             - /test-resources
-          url: https://ui5.sap.com
+          url: https://sapui5.hana.ondemand.com
           version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
@@ -150,7 +150,7 @@ server:
           path:
             - /resources
             - /test-resources
-          url: https://ui5.sap.com
+          url: https://sapui5.hana.ondemand.com
           version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
@@ -2038,7 +2038,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   var fioriToolsGetManifestLibs = function (manifestPath) {
     var url = manifestPath;
     var result = \\"\\";
-    // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+    // SAPUI5 delivered namespaces from https://sapui5.hana.ondemand.com/#/api/sap
     var ui5Libs = [
       \\"sap.apf\\",
       \\"sap.base\\",

@@ -64,7 +64,7 @@ export function getFioriToolsProxyMiddlewareConfig(
     if (ui5 !== undefined) {
         fioriToolsProxy.configuration['ui5'] = {
             path: ['/resources', '/test-resources'],
-            url: ui5.url || 'https://ui5.sap.com',
+            url: ui5.url || 'https://sapui5.hana.ondemand.com',
             version: ui5.version || ''
         };
         if (ui5.directLoad) {
