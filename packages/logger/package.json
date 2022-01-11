@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/logger",
-    "version": "0.8.0",
-    "description": "Module with utils common in Fiori tools",
+    "version": "0.1.0",
+    "description": "A simple logging module",
     "license": "SEE LICENSE IN LICENSE",
     "private": false,
     "main": "dist/index.js",
