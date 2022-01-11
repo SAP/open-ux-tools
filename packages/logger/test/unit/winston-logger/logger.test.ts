@@ -19,8 +19,6 @@ jest.mock(
     { virtual: true }
 );
 
-jest.mock('../../../src/utils');
-
 describe('Winston logger', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
