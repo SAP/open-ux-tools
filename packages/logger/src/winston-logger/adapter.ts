@@ -13,12 +13,17 @@ export function toWinstonTransport(transport: Transport): WinstonTransport {
     if (transport instanceof NullTransport) {
         return new WinstonNullTransport();
     } else if (transport instanceof ConsoleTransport) {
+        const { logLevel, ...opts } = transport.options;
+        // const options = Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) });
+        // return new winston.transports.Console(options);
         return new winston.transports.Console();
     } else if (transport instanceof FileTransport) {
-        const options = Object.assign({}, transport.options, { level: toWinstonLogLevel(transport.options.level) });
+        const { logLevel, ...opts } = transport.options;
+        const options = Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) });
         return new winston.transports.File(options);
     } else if (transport instanceof VSCodeTransport) {
-        const options = Object.assign({}, transport.options, { level: toWinstonLogLevel(transport.options.level) });
+        const { logLevel, ...opts } = transport.options;
+        const options = Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) });
         return new WinstonVSCodeTransport(options);
     } else {
         throw new Error('Unrecognized transport type');

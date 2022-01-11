@@ -3,7 +3,7 @@ import { ConsoleTransport, FileTransport, NullTransport } from '../../src/transp
 
 function main() {
     const logger = new ToolsLogger({
-        logLevel: LogLevel.Info,
+        logLevel: LogLevel.Debug,
         transports: [new ConsoleTransport(), new ConsoleTransport(), new NullTransport()]
     });
     logger.add(new ConsoleTransport());
@@ -20,7 +20,7 @@ function main() {
     logger.error('Error line 3');
     logger.warn('Warning line 3');
     logger.debug('Debug line 3');
-    logger.debug('Debug line 4');
+    logger.debug({ a: 42, b: 'something' });
 
     logger.remove(new ConsoleTransport());
     logger.info('We should not see this');
@@ -33,7 +33,7 @@ function main() {
         console.log('Error removing console transport');
     }
     logger.info('We should not see this');
-    logger.add(new FileTransport({ filename: 'bar.log', level: LogLevel.Info }));
+    logger.add(new FileTransport({ filename: 'bar.log', logLevel: LogLevel.Info }));
     logger.info('We should see logs in the file');
 }
 

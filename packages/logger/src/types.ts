@@ -49,7 +49,7 @@ export enum LogLevel {
 }
 
 export interface TransportOptions {
-    level?: LogLevel;
+    logLevel?: LogLevel;
 }
 export class Transport {
     /**
