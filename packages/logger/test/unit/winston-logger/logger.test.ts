@@ -19,6 +19,8 @@ jest.mock(
     { virtual: true }
 );
 
+jest.mock('../../../src/utils');
+
 describe('Winston logger', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
@@ -89,7 +91,7 @@ describe('Winston logger', () => {
         expect(() => logger.remove(new NullTransport())).toThrow(/cannot remove non-existent transport/i);
     });
 
-    it('Calls log method all of transports', () => {
+    it.only('Calls log method all of transports', () => {
         const consoleLog = jest.spyOn(winston.transports.Console.prototype, 'log').mockImplementation(() => 0);
         const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log').mockClear();
         const vscodeLog = jest.spyOn(WinstonVSCodeTransport.prototype, 'log').mockClear();

@@ -1,17 +1,16 @@
 import { ConsoleTransport } from '../transports';
-import { Logger, LogLevel, Transport } from '../types';
+import { getDefaultLogLevel, Logger, LogLevel, Transport } from '../types';
 import winston from 'winston';
 import { toWinstonLogLevel, toWinstonTransport } from './adapter';
 import WinstonTransport from 'winston-transport';
 import { format } from 'logform';
 
 export interface LoggerOptions {
-    logLevel: LogLevel;
-    transports: Transport[];
+    logLevel?: LogLevel;
+    transports?: Transport[];
 }
 
 const defaultLoggerOptions: LoggerOptions = {
-    logLevel: LogLevel.Info,
     transports: [new ConsoleTransport()]
 };
 
@@ -19,9 +18,11 @@ export class WinstonLogger implements Logger {
     private _logger;
     private transportMap: Map<Transport, WinstonTransport> = new Map();
     constructor({ logLevel, transports }: LoggerOptions = defaultLoggerOptions) {
-        transports.forEach((t) => this.addToMap(t));
+        (transports || []).forEach((t) => this.addToMap(t));
+        const level = toWinstonLogLevel(logLevel || getDefaultLogLevel());
+
         this._logger = winston.createLogger({
-            level: toWinstonLogLevel(logLevel),
+            level,
             transports: Array.from(this.transportMap.values()),
             format: format.combine(format.timestamp(), winston.format.json())
         });

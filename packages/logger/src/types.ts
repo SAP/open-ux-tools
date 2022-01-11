@@ -1,5 +1,6 @@
 import { Debugger } from 'debug';
 import cloneDeep from 'lodash.clonedeep';
+import { getEnvVar } from './utils';
 
 /**
  * Definition of log method signature.
@@ -61,3 +62,21 @@ export class Transport {
         return Object.freeze(cloneDeep(obj)) as unknown as T;
     }
 }
+
+const toTitleCase = (s?: string): string | undefined => {
+    if (!s) {
+        return undefined;
+    } else {
+        const t = s.trim();
+        return t.charAt(0).toUpperCase() + t.substring(1).toLowerCase();
+    }
+};
+
+export const getDefaultLogLevel = (): LogLevel => {
+    let envLogLevel: LogLevel | undefined = undefined;
+    const envVarValue = getEnvVar('LOG_LEVEL');
+    if (typeof envVarValue === 'string') {
+        envLogLevel = LogLevel[toTitleCase(envVarValue) as keyof typeof LogLevel];
+    }
+    return envLogLevel || LogLevel.Info;
+};
