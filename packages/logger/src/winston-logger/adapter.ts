@@ -5,8 +5,8 @@ import { ConsoleTransport, FileTransport, NullTransport, VSCodeTransport } from 
 import { NullTransport as WinstonNullTransport } from './null-transport';
 import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-channel-transport';
 
-export function toWinstonLogLevel(logLevel?: LogLevel): string {
-    return logLevel !== undefined ? LogLevel[logLevel].toLowerCase() : winston.level;
+export function toWinstonLogLevel(logLevel?: LogLevel): string | undefined {
+    return logLevel === undefined ? undefined : LogLevel[logLevel].toLowerCase();
 }
 
 export function toWinstonTransport(transport: Transport): WinstonTransport {
@@ -14,9 +14,8 @@ export function toWinstonTransport(transport: Transport): WinstonTransport {
         return new WinstonNullTransport();
     } else if (transport instanceof ConsoleTransport) {
         const { logLevel, ...opts } = transport.options;
-        // const options = Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) });
-        // return new winston.transports.Console(options);
-        return new winston.transports.Console();
+        const options = Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) });
+        return new winston.transports.Console(options);
     } else if (transport instanceof FileTransport) {
         const { logLevel, ...opts } = transport.options;
         const options = Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) });

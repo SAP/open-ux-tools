@@ -1,12 +1,12 @@
-import { LogLevel, Transport, TransportOptions } from '../types';
+import { Transport, TransportOptions } from '../types';
 
-export interface NullTransportOptions extends TransportOptions {}
+export type NullTransportOptions = TransportOptions;
 
 export class ConsoleTransport extends Transport {
     private static singletonInstance: ConsoleTransport;
     public readonly options: NullTransportOptions;
 
-    constructor(opts: NullTransportOptions = { logLevel: LogLevel.Info }) {
+    constructor(opts: NullTransportOptions = {}) {
         super();
         if (!ConsoleTransport.singletonInstance) {
             ConsoleTransport.singletonInstance = this;

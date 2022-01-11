@@ -20,8 +20,8 @@ jest.mock(
 );
 
 describe('toWinstonLogLevel', () => {
-    it('defaults to info', () => {
-        expect(toWinstonLogLevel()).toStrictEqual('info');
+    it('defaults to undefined', () => {
+        expect(toWinstonLogLevel()).toBeUndefined;
     });
     test.each([
         [LogLevel.Debug, 'debug'],
