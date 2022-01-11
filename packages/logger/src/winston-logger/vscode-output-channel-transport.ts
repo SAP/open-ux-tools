@@ -1,5 +1,5 @@
 import Transport from 'winston-transport';
-import { window, OutputChannel } from 'vscode';
+// import { window, OutputChannel } from 'vscode';
 
 /**
  * Interface for function arguments that get passed into the
@@ -15,14 +15,14 @@ interface DataLog {
  * Winston transport for output to VSCode channel
  */
 export class VSCodeTransport extends Transport {
-    private readonly channel: OutputChannel;
+    private readonly channel: any;
     public constructor(
         options: Transport.TransportStreamOptions & {
             channelName: string;
         }
     ) {
         super(options);
-        this.channel = window.createOutputChannel(options.channelName);
+        this.channel = getVSCodeInstance().window.createOutputChannel(options.channelName);
     }
     public log(data: DataLog, callback: () => void): void {
         setImmediate(() => {
@@ -30,4 +30,8 @@ export class VSCodeTransport extends Transport {
         });
         callback();
     }
+}
+
+function getVSCodeInstance(): any {
+    return require('vscode');
 }

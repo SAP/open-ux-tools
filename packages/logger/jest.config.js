@@ -3,6 +3,12 @@ module.exports = {
         '^.+\\.ts$': 'ts-jest'
     },
     collectCoverage: true,
+    setupFilesAfterEnv: ['jest-extended/all'],
     coverageReporters: ['text', 'html'],
-    collectCoverageFrom: ['src/**/*.ts']
+    collectCoverageFrom: ['src/**/*.ts'],
+    globals: {
+        'ts-jest': {
+            tsconfig: 'test/tsconfig.json'
+        }
+    }
 };

@@ -1,11 +1,27 @@
-import { LogLevel, Transport } from '../types';
+import { Transport, TransportOptions } from '../types';
 
-export interface TransportOptions {
-    level?: LogLevel;
+export class ConsoleTransport extends Transport {
+    private static singletonInstance: ConsoleTransport;
+
+    constructor() {
+        super();
+        if (!ConsoleTransport.singletonInstance) {
+            ConsoleTransport.singletonInstance = this;
+        }
+        return ConsoleTransport.singletonInstance;
+    }
 }
+export class NullTransport extends Transport {
+    private static singletonInstance: NullTransport;
 
-export class ConsoleTransport extends Transport {}
-export class NullTransport extends Transport {}
+    constructor() {
+        super();
+        if (!NullTransport.singletonInstance) {
+            NullTransport.singletonInstance = this;
+        }
+        return NullTransport.singletonInstance;
+    }
+}
 
 export interface FileTransportOptions extends TransportOptions {
     filename: string;
@@ -31,10 +47,18 @@ export interface VSCodeTransportOptions extends TransportOptions {
 }
 
 export class VSCodeTransport extends Transport {
+    private static instances: Map<string, VSCodeTransport> = new Map();
     public readonly options: VSCodeTransportOptions;
 
     constructor(opts: VSCodeTransportOptions) {
         super();
-        this.options = this.copy<VSCodeTransportOptions>(opts);
+        const instance = VSCodeTransport.instances.get(opts.channelName);
+        if (!instance) {
+            this.options = this.copy<VSCodeTransportOptions>(opts);
+            VSCodeTransport.instances.set(opts.channelName, this);
+            return this;
+        } else {
+            return instance;
+        }
     }
 }

@@ -47,6 +47,10 @@ export enum LogLevel {
     Debug = 4,
     Silly = 5
 }
+
+export interface TransportOptions {
+    level?: LogLevel;
+}
 export class Transport {
     /**
      *
