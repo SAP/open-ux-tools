@@ -452,7 +452,7 @@ Object {
                 \\"body\\": {
                   \\"sections\\": {
                     \\"MyCustomSection\\": {
-                      \\"name\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
+                      \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
                       \\"position\\": {
                         \\"placement\\": \\"After\\",
                         \\"anchor\\": \\"DummyFacet\\"

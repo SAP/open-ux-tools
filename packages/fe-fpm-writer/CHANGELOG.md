@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.3.1
+
+### Patch Changes
+
+-   b0f69fe: Custom Section. Fix to support old(<1.86) and new(>=1.86) manifest.json syntaxes
+
 ## 0.3.0
 
 ### Minor Changes

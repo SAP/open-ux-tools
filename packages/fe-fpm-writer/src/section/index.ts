@@ -8,6 +8,22 @@ import { Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 
 /**
+ * Get the template folder for the given UI5 version.
+ *
+ * @param root root path to templates folder.
+ * @param ui5Version required UI5 version.
+ * @returns path to the template folder containing the manifest.json ejs template
+ */
+export function getManifestRoot(root: string, ui5Version?: number): string {
+    let subFolder = '1.86';
+    if (ui5Version !== undefined && ui5Version < 1.86) {
+        // Old
+        subFolder = '1.85';
+    }
+    return join(root, 'section', subFolder);
+}
+
+/**
  * Enhances the provided custom section configuration with additonal data.
  *
  * @param {CustomSection} data - a custom section configuration object
@@ -63,7 +79,8 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
     }
 
     // enhance manifest with section definition
-    const filledTemplate = render(fs.read(join(root, `section/manifest.section.json`)), completeSection);
+    const manifestRoot = getManifestRoot(root, customSection.ui5Version);
+    const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeSection);
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment

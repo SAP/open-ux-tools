@@ -1034,7 +1034,7 @@ title=My Test App",
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
         </script>
-        <script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
 </head>
 
@@ -1163,7 +1163,10 @@ title=My Test App",
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
 var scripts = document.getElementsByTagName(\\"script\\");
-var currentScript = scripts[scripts.length - 1];
+var currentScript = document.getElementById('locate-reuse-libs');
+if(!currentScript){
+    currentScript = document.currentScript;
+};
 var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
 var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
 var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
@@ -3343,7 +3346,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
         </script>
-        <script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
 </head>
 
@@ -3472,7 +3475,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
 var scripts = document.getElementsByTagName(\\"script\\");
-var currentScript = scripts[scripts.length - 1];
+var currentScript = document.getElementById('locate-reuse-libs');
+if(!currentScript){
+    currentScript = document.currentScript;
+};
 var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
 var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
 var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
@@ -5464,7 +5470,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
         </script>
-        <script src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
 </head>
 
@@ -5593,7 +5599,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
 var scripts = document.getElementsByTagName(\\"script\\");
-var currentScript = scripts[scripts.length - 1];
+var currentScript = document.getElementById('locate-reuse-libs');
+if(!currentScript){
+    currentScript = document.currentScript;
+};
 var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
 var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
 var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
