@@ -1,6 +1,6 @@
 import 'jest-extended';
 import { LogLevel, ToolsLogger, Transport } from '../../../src';
-import { ConsoleTransport, NullTransport, VSCodeTransport } from '../../../src/transports';
+import { ConsoleTransport, NullTransport, UI5ToolingTransport, VSCodeTransport } from '../../../src/transports';
 import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport';
 import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport';
 import winston from 'winston';
@@ -59,12 +59,22 @@ describe('Winston logger', () => {
         expect(logger.transports()).toIncludeSameMembers([new VSCodeTransport({ channelName: 'sampleChannel' })]);
     });
 
-    it('Singleton transports (null, console, vscode) are only added once', () => {
+    it('UI5 Tooling transport is only added once per channel', () => {
+        const logger = new ToolsLogger({
+            transports: Array.from({ length: 500 }, () => new UI5ToolingTransport({ moduleName: 'test:module' })),
+            logLevel: LogLevel.Info
+        });
+        expect(logger.transports()).toIncludeSameMembers([new UI5ToolingTransport({ moduleName: 'test:module' })]);
+    });
+
+    it('Singleton transports (null, console, vscode, ui5Tooling) are only added once', () => {
         const transports = Array.from({ length: 500 }, (_, i) => {
             if (i % 10 === 0) {
                 return new VSCodeTransport({ channelName: 'channel10' });
             } else if (i % 5 === 0) {
                 return new VSCodeTransport({ channelName: 'channel5' });
+            } else if (i % 3 === 0) {
+                return new UI5ToolingTransport({ moduleName: 'test:module' });
             } else if (i % 2 === 0) {
                 return new ConsoleTransport();
             } else {
@@ -80,7 +90,8 @@ describe('Winston logger', () => {
             new NullTransport(),
             new ConsoleTransport(),
             new VSCodeTransport({ channelName: 'channel5' }),
-            new VSCodeTransport({ channelName: 'channel10' })
+            new VSCodeTransport({ channelName: 'channel10' }),
+            new UI5ToolingTransport({ moduleName: 'test:module' })
         ]);
     });
 
