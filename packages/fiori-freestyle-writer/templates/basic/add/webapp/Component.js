@@ -1,8 +1,15 @@
+/**
+ * eslint-disable @sap/ui5-jsdocs/no-jsdoc
+ */
 sap.ui.define([
         "<%=app.baseComponent%>",
         "sap/ui/Device",
         "<%=app.id.replace(/\./g, '/')%>/model/models"
     ],
+    /**
+     * @param {typeof sap.ui.core.UIComponent} UIComponent
+     * @param {typeof sap.ui.Device} Device
+     */
     function (UIComponent, Device, models) {
         "use strict";
 
