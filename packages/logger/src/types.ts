@@ -1,4 +1,3 @@
-import { Debugger } from 'debug';
 import cloneDeep from 'lodash.clonedeep';
 
 /**
