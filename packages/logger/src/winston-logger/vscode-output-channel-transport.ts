@@ -1,5 +1,4 @@
 import Transport from 'winston-transport';
-// import { window, OutputChannel } from 'vscode';
 
 /**
  * Interface for function arguments that get passed into the

@@ -45,13 +45,6 @@ export interface Logger {
 }
 
 /**
- * Extended logger interface also supporting debug logs.
- */
-export interface ExtendedLogger extends Logger {
-    debug: Debugger;
-}
-
-/**
  * Follows severity ordering specificed in RFC 5424: https://datatracker.ietf.org/doc/html/rfc5424
  */
 export enum LogLevel {
