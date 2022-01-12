@@ -1,18 +1,9 @@
 import { ConsoleTransport } from '../transports';
-import { Logger, LogLevel, Transport } from '../types';
+import { Logger, LoggerOptions, LogLevel, Transport } from '../types';
 import winston from 'winston';
 import { toWinstonLogLevel, toWinstonTransport } from './adapter';
 import WinstonTransport from 'winston-transport';
 import { format } from 'logform';
-
-export interface LoggerOptions {
-    /**
-     * Log only if severity is equal to or greater than this log level.
-     * Defaults to `LogLevel.Info`. Transports can optionally have their own log levels
-     */
-    logLevel?: LogLevel;
-    transports?: Transport[];
-}
 
 const defaultLoggerOptions: LoggerOptions = {
     transports: [new ConsoleTransport()]

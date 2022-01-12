@@ -65,3 +65,12 @@ export abstract class Transport {
         return Object.freeze(cloneDeep(obj)) as unknown as T;
     }
 }
+
+export interface LoggerOptions {
+    /**
+     * Log only if severity is equal to or greater than this log level.
+     * Defaults to `LogLevel.Info`. Transports can optionally have their own log levels
+     */
+    logLevel?: LogLevel;
+    transports?: Transport[];
+}
