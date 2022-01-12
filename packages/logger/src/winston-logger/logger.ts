@@ -19,7 +19,7 @@ export class WinstonLogger implements Logger {
     private transportMap: Map<Transport, WinstonTransport> = new Map();
     constructor({ logLevel, transports }: LoggerOptions = defaultLoggerOptions) {
         (transports || []).forEach((t) => this.addToMap(t));
-        const level = toWinstonLogLevel(logLevel || LogLevel.Info);
+        const level = toWinstonLogLevel(logLevel ?? LogLevel.Info);
 
         this._logger = winston.createLogger({
             level,

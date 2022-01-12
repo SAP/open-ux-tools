@@ -89,25 +89,24 @@ describe('Winston logger', () => {
         expect(() => logger.remove(new NullTransport())).toThrow(/cannot remove non-existent transport/i);
     });
 
-    it.only('Calls log method all of transports', () => {
+    it('Calls log method all of transports', () => {
         const consoleLog = jest.spyOn(winston.transports.Console.prototype, 'log').mockImplementation(() => 0);
         const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log').mockClear();
         const vscodeLog = jest.spyOn(WinstonVSCodeTransport.prototype, 'log').mockClear();
         const logger = new ToolsLogger({
-            logLevel: LogLevel.Info,
             transports: [new ConsoleTransport(), new NullTransport(), new VSCodeTransport({ channelName: 'random' })]
         });
         logger.info('info message');
         expect(consoleLog).toBeCalledWith(
-            expect.objectContaining({ level: 'info', message: 'info message' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
         expect(nullLog).toBeCalledWith(
-            expect.objectContaining({ level: 'info', message: 'info message' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
         expect(vscodeLog).toBeCalledWith(
-            expect.objectContaining({ level: 'info', message: 'info message' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
     });
@@ -128,18 +127,18 @@ describe('Winston logger', () => {
         expect(consoleLog).toBeCalledTimes(2);
         expect(consoleLog).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ level: 'warn', message: 'warning1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning1' }),
             expect.any(Function)
         );
         expect(consoleLog).toHaveBeenNthCalledWith(
             2,
-            expect.objectContaining({ level: 'error', message: 'error1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
             expect.any(Function)
         );
         expect(nullLog).toBeCalledTimes(1);
         expect(nullLog).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ level: 'error', message: 'error1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
             expect.any(Function)
         );
     });
@@ -161,24 +160,24 @@ describe('Winston logger', () => {
         expect(consoleLog).toBeCalledTimes(2);
         expect(consoleLog).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ level: 'warn', message: 'warning1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning1' }),
             expect.any(Function)
         );
         expect(consoleLog).toHaveBeenNthCalledWith(
             2,
-            expect.objectContaining({ level: 'debug', message: 'debug1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'debug', message: 'debug1' }),
             expect.any(Function)
         );
         expect(nullLog).toBeCalledTimes(1);
         expect(nullLog).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ level: 'warn', message: 'warning1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning1' }),
             expect.any(Function)
         );
     });
 
     it('Does not call log method of transport if severity level is too low', () => {
-        const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log');
+        const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log').mockImplementation(() => 0);
         const logger = new ToolsLogger({
             logLevel: LogLevel.Error,
             transports: [new NullTransport()]
@@ -190,7 +189,7 @@ describe('Winston logger', () => {
 
         expect(nullLog).toBeCalledTimes(1);
         expect(nullLog).toHaveBeenCalledWith(
-            expect.objectContaining({ level: 'error', message: 'error1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
             expect.any(Function)
         );
     });
