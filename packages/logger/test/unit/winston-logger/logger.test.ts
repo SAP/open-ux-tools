@@ -19,7 +19,7 @@ jest.mock(
     { virtual: true }
 );
 
-describe('Winston logger', () => {
+describe('Default (Winston) logger', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
         jest.clearAllMocks();
@@ -203,5 +203,47 @@ describe('Winston logger', () => {
             expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
             expect.any(Function)
         );
+    });
+    describe('log()', () => {
+        it('uses the default level if a string is passed in', () => {
+            const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log');
+            const logger = new ToolsLogger({
+                logLevel: LogLevel.Warn,
+                transports: [new NullTransport()]
+            });
+            logger.log('warning');
+            logger.error('error');
+            expect(nullLog).toBeCalledTimes(2);
+            expect(nullLog).toHaveBeenNthCalledWith(
+                1,
+                expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning' }),
+                expect.any(Function)
+            );
+            expect(nullLog).toHaveBeenNthCalledWith(
+                2,
+                expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error' }),
+                expect.any(Function)
+            );
+        });
+        it('uses the level passed in when a Log object is used', () => {
+            const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log');
+            const logger = new ToolsLogger({
+                transports: [new NullTransport()]
+            });
+            logger.log({ level: LogLevel.Error, message: 'error1' });
+            logger.error('error2');
+            logger.log({ level: LogLevel.Silly, message: 'not silly' });
+            expect(nullLog).toBeCalledTimes(2);
+            expect(nullLog).toHaveBeenNthCalledWith(
+                1,
+                expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
+                expect.any(Function)
+            );
+            expect(nullLog).toHaveBeenNthCalledWith(
+                2,
+                expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error2' }),
+                expect.any(Function)
+            );
+        });
     });
 });

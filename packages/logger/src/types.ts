@@ -7,6 +7,14 @@ import cloneDeep from 'lodash.clonedeep';
 export type LogMethod = (message: string | object) => void;
 
 /**
+ *  This represents an instance of a message to log
+ */
+export interface Log {
+    level: LogLevel;
+    message: string | object;
+}
+
+/**
  * Generic logger interface supported e.g. by console and @ui5/logger
  */
 export interface Logger {
@@ -14,6 +22,13 @@ export interface Logger {
     warn: LogMethod;
     error: LogMethod;
     debug: LogMethod;
+
+    /**
+     *
+     * @param {string | Log} data - the information to log. If a string is passed in, the logger's default log level is used.
+     * Otherwise the level passed in is used
+     */
+    log(data: string | Log): void;
     /**
      * Add a given transport. Whether the logger using multiple transports or the added transport
      *  replaces an existing one is up to the implementation

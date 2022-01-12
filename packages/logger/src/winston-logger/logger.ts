@@ -1,5 +1,5 @@
 import { ConsoleTransport } from '../transports';
-import { Logger, LoggerOptions, LogLevel, Transport } from '../types';
+import { Log, Logger, LoggerOptions, LogLevel, Transport } from '../types';
 import winston from 'winston';
 import { toWinstonLogLevel, toWinstonTransport } from './adapter';
 import WinstonTransport from 'winston-transport';
@@ -14,6 +14,7 @@ const defaultLoggerOptions: LoggerOptions = {
  */
 export class WinstonLogger implements Logger {
     private _logger;
+    private readonly winstonLevel: string;
     // Maintain of map of transports. This is useful for adding/removing transports
     private transportMap: Map<Transport, WinstonTransport> = new Map();
     constructor({ logLevel, transports }: LoggerOptions = defaultLoggerOptions) {
@@ -25,6 +26,7 @@ export class WinstonLogger implements Logger {
             transports: Array.from(this.transportMap.values()),
             format: format.combine(format.timestamp(), winston.format.json())
         });
+        this.winstonLevel = level ?? this._logger.level;
     }
 
     info(message: string | object): void {
@@ -39,6 +41,18 @@ export class WinstonLogger implements Logger {
     debug(message: string | object): void {
         this.transportMap.size && this._logger.debug(message);
     }
+    log(data: string | Log): void {
+        if (!this.transportMap.size) {
+            // Nothing to do
+            return;
+        }
+        if (typeof data === 'string') {
+            this._logger.log(this.winstonLevel, data);
+        } else {
+            this._logger.log(toWinstonLogLevel(data.level)!, data.message);
+        }
+    }
+
     private addToMap(transport: Transport): WinstonTransport | undefined {
         const winstonTransport = toWinstonTransport(transport);
         if (!this.transportMap.has(transport)) {

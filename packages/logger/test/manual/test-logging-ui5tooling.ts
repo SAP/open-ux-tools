@@ -24,6 +24,8 @@ function main() {
     logger.add(new FileTransport({ filename: 'bar.log', logLevel: LogLevel.Error }));
     logger.error(`Error: ${++error}`);
     logger.info(`Info: ${++info}`);
+    logger.log('More debug?');
+    logger.log({ level: LogLevel.Verbose, message: 'can we keep this short? no?' });
 }
 
 main();
