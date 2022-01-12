@@ -2,6 +2,9 @@ import { Transport, TransportOptions } from '../types';
 
 export type NullTransportOptions = TransportOptions;
 
+/**
+ *  This represents the console target
+ */
 export class ConsoleTransport extends Transport {
     private static singletonInstance: ConsoleTransport;
     public readonly options: NullTransportOptions;
@@ -15,6 +18,9 @@ export class ConsoleTransport extends Transport {
         return ConsoleTransport.singletonInstance;
     }
 }
+/**
+ *  Use this when you just want a sink for the logs
+ */
 export class NullTransport extends Transport {
     private static singletonInstance: NullTransport;
 
@@ -31,6 +37,9 @@ export interface FileTransportOptions extends TransportOptions {
     filename: string;
 }
 
+/**
+ *  This represents a file target
+ */
 export class FileTransport extends Transport {
     public readonly options: FileTransportOptions;
 
@@ -40,6 +49,9 @@ export class FileTransport extends Transport {
     }
 }
 
+/**
+ *  This target is useful when the logs need to be accumulated in an array of strings
+ */
 export interface StringArrayTransportOptions extends TransportOptions {
     logs: string[];
 }
@@ -50,6 +62,10 @@ export interface VSCodeTransportOptions extends TransportOptions {
     channelName: string;
 }
 
+/**
+ *  This represents an output channel in VS Code
+ *  https://code.visualstudio.com/api/extension-capabilities/common-capabilities#output-channel
+ */
 export class VSCodeTransport extends Transport {
     private static instances: Map<string, VSCodeTransport> = new Map();
     public readonly options: VSCodeTransportOptions;

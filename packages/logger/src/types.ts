@@ -51,9 +51,13 @@ export enum LogLevel {
 export interface TransportOptions {
     logLevel?: LogLevel;
 }
-export class Transport {
+/**
+ *  This is the base abstract transport class. A transport is a destination for the logs.
+ *  Concrete classes are defined separately
+ */
+export abstract class Transport {
     /**
-     *
+     * A utility copy method to make immutable, deep copies of objects
      * @param obj
      * @returns  a frozen deep clone of `obj`
      */

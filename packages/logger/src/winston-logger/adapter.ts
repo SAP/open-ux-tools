@@ -7,10 +7,23 @@ import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-chann
 import { format } from 'logform';
 import { inspect } from 'util';
 
+/**
+ * Translate @type {LogLevel} to what Winston understands
+ *
+ * @param {LogLevel} logLevel - optional logLevel
+ * @returns log - level that Winston understands (https://github.com/winstonjs/winston#logging-levels)
+ */
 export function toWinstonLogLevel(logLevel?: LogLevel): string | undefined {
     return logLevel === undefined ? undefined : LogLevel[logLevel].toLowerCase();
 }
 
+/**
+ * Take a @type {Transport} and return the corresponding @type {WinstonTransport}
+ *  Will throw an error if the transport is not recognized
+ *
+ * @param transport
+ * @returns {WinstonTransport}
+ */
 export function toWinstonTransport(transport: Transport): WinstonTransport {
     if (transport instanceof NullTransport) {
         return new WinstonNullTransport();

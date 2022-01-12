@@ -14,8 +14,12 @@ const defaultLoggerOptions: LoggerOptions = {
     transports: [new ConsoleTransport()]
 };
 
+/**
+ *  Winston implementation of the @type {Logger} interface
+ */
 export class WinstonLogger implements Logger {
     private _logger;
+    // Maintain of map of transports. This is useful for adding/removing transports
     private transportMap: Map<Transport, WinstonTransport> = new Map();
     constructor({ logLevel, transports }: LoggerOptions = defaultLoggerOptions) {
         (transports || []).forEach((t) => this.addToMap(t));
