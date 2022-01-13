@@ -30,6 +30,8 @@ class BaseWinstonLogger implements Logger {
     protected metadataOverride?: Metadata;
     // Maintain of map of transports. This is useful for adding/removing transports
     protected transportMap: Map<Transport, WinstonTransport>;
+    // Cache child loggers by logPrefix. Use weak references to avoid causing memory leaks
+    protected childMap: Map<string, WeakRef<Logger>> = new Map();
     protected initialize({ logger, transportMap, metadataOverride, winstonLevel, logPrefix }: BaseLoggerOptions): void {
         this._logger = logger;
         this.transportMap = transportMap;
@@ -39,16 +41,16 @@ class BaseWinstonLogger implements Logger {
     }
 
     info(message: string | object): void {
-        this.transportMap.size && this.winstonLog({ level: 'info', message, metadata: this.metadataOverride });
+        this.log({ level: LogLevel.Info, message });
     }
     warn(message: string | object): void {
-        this.transportMap.size && this.winstonLog({ level: 'warn', message, metadata: this.metadataOverride });
+        this.log({ level: LogLevel.Warn, message });
     }
     error(message: string | object): void {
-        this.transportMap.size && this.winstonLog({ level: 'error', message, metadata: this.metadataOverride });
+        this.log({ level: LogLevel.Error, message });
     }
     debug(message: string | object): void {
-        this.transportMap.size && this.winstonLog({ level: 'debug', message, metadata: this.metadataOverride });
+        this.log({ level: LogLevel.Debug, message });
     }
     log(data: string | Log): void {
         if (!this.transportMap.size) {
@@ -85,7 +87,6 @@ class BaseWinstonLogger implements Logger {
         }
         return undefined;
     }
-
     add(transport: Transport) {
         const winstonTransport = this.addToMap(this.transportMap, transport);
 
@@ -108,9 +109,28 @@ class BaseWinstonLogger implements Logger {
         return Array.from(this.transportMap.keys());
     }
     child({ logPrefix }: ChildLoggerOptions): Logger {
-        const childLogPrefix = `${this.logPrefix}.${logPrefix}`;
-        const metadataOverride = { label: childLogPrefix, labelColor: nextColor() };
-        const childWinstonLogger = this._logger.child(metadataOverride);
+        let childInstance = this.childMap.get(logPrefix)?.deref();
+        if (childInstance) {
+            return childInstance;
+        } else {
+            const childLogPrefix = `${this.logPrefix}.${logPrefix}`;
+            const metadataOverride = { label: childLogPrefix, labelColor: nextColor() };
+            const childWinstonLogger = this._logger.child(metadataOverride);
+            childInstance = this.newChildInstance({ childWinstonLogger, childLogPrefix, metadataOverride });
+            this.childMap.set(logPrefix, new WeakRef(childInstance));
+            return childInstance;
+        }
+    }
+
+    private newChildInstance({
+        childWinstonLogger,
+        childLogPrefix,
+        metadataOverride
+    }: {
+        childWinstonLogger: winston.Logger;
+        childLogPrefix: string;
+        metadataOverride: { label: string; labelColor: string | void };
+    }) {
         const childLogger = new BaseWinstonLogger();
         childLogger.initialize({
             logger: childWinstonLogger,
@@ -127,8 +147,6 @@ class BaseWinstonLogger implements Logger {
  *  Winston implementation of the @type {Logger} interface
  */
 export class WinstonLogger extends BaseWinstonLogger {
-    private childMap: Map<string, BaseWinstonLogger>;
-
     constructor({
         logLevel = LogLevel.Info,
         transports = [],

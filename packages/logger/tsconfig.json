@@ -5,7 +5,8 @@
         "outDir": "dist",
         "sourceMap": true,
         "baseUrl": "./src",
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "lib": ["ESNext"]
     },
     "extends": "../../tsconfig.json"
 }
