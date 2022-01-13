@@ -1,4 +1,4 @@
-import { createProxyMiddleware, Options } from 'http-proxy-middleware';
+import { createProxyMiddleware, Filter, Options } from 'http-proxy-middleware';
 import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { UI5Config } from './types';
 import { proxyRequestHandler, proxyResponseHandler } from './utils';
@@ -10,9 +10,10 @@ import { UI5ToolingTransport } from '@sap-ux/logger/dist/transports';
  *
  * @param config - proxy configuration
  * @param options - additional configuration options
+ * @param filter - custom filter function which will be applied to all requests
  * @returns Proxy function to use
  */
-export const ui5Proxy = (config: UI5Config, options?: Options) => {
+export const ui5Proxy = (config: UI5Config, options?: Options, filter?: Filter) => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
@@ -31,5 +32,22 @@ export const ui5Proxy = (config: UI5Config, options?: Options) => {
     };
     Object.assign(proxyConfig, options);
 
-    return createProxyMiddleware(proxyConfig);
+    // Avoid ERR_CONTENT_DECODING_FAILED on http request for gzip'd html files
+    // e.g. /test-resources/sap/ui/qunit/testrunner.html?testpage=%2Ftest%2Ftestsuite.qunit.html&autostart=true
+    let proxyFilter: Filter = (_pathname: string, req: IncomingMessage): boolean => {
+        const acceptHeader = req.headers['accept'] || '';
+        if (
+            req.headers['accept-encoding'] &&
+            (acceptHeader.includes('text/html') || acceptHeader.includes('application/xhtml+xml'))
+        ) {
+            delete req.headers['accept-encoding']; // Don't accept compressed html files from ui5 CDN
+        }
+        return true;
+    };
+
+    if (filter) {
+        proxyFilter = filter;
+    }
+
+    return createProxyMiddleware(proxyFilter, proxyConfig);
 };
