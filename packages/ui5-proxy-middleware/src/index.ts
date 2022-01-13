@@ -1,1 +1,1 @@
-export { ui5Proxy } from './proxy';
+export { ui5Proxy } from './base/proxy';

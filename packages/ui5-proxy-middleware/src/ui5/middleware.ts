@@ -1,11 +1,16 @@
 import express, { RequestHandler } from 'express';
-import { MiddlewareParameters, ProxyConfig } from './types';
-import { ui5Proxy } from './proxy';
-import { getCorporateProxyServer, isHostExcludedFromProxy, logger } from 'utils';
+import { MiddlewareParameters, ProxyConfig } from '../base/types';
+import { ui5Proxy } from '../base/proxy';
+import { getCorporateProxyServer, isHostExcludedFromProxy } from '../base/utils';
 import { Options } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
+import { ToolsLogger } from '@sap-ux/logger';
+import { UI5ToolingTransport } from '@sap-ux/logger/dist/transports';
 
 module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandler => {
+    const logger = new ToolsLogger({
+        transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
+    });
     const router = express.Router();
     const config = options.configuration;
     const secure = !!config.secure;
@@ -17,7 +22,10 @@ module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandle
         : corporateProxyServer;
     const proxyOptions: Options = {
         secure,
-        logLevel: debug ? 'debug' : 'silent'
+        logLevel: debug ? 'debug' : 'info',
+        logProvider: () => {
+            return logger;
+        }
     };
 
     logger.info(
@@ -27,7 +35,6 @@ module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandle
     );
 
     for (const ui5Config of config.ui5) {
-        logger.info(`ui5: ${JSON.stringify(ui5Config)}`);
         if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
             proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
         }

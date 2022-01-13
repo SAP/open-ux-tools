@@ -15,10 +15,11 @@
     },
     "files": [
         "LICENSE",
-        "dist"
+        "dist",
+        "ui5.yaml"
     ],
     "dependencies": {
-        "@ui5/logger": "2.0.1",
+        "@sap-ux/logger": "workspace:*",
         "express": "4.17.2",
         "http-proxy-middleware": "2.0.1",
         "https-proxy-agent": "5.0.0"
