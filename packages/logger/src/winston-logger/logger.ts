@@ -5,42 +5,50 @@ import { toWinstonLogLevel, toWinstonTransport } from './adapter';
 import WinstonTransport from 'winston-transport';
 import { format } from 'logform';
 import { nextColor } from './utils';
+import { inspect } from 'util';
 
 const defaultLoggerOptions: LoggerOptions = {
     transports: [new ConsoleTransport()]
 };
 
+type Metadata = {
+    [key: string]: unknown;
+};
 interface BaseLoggerOptions {
     logger: winston.Logger;
     transportMap: Map<Transport, WinstonTransport>;
     winstonLevel: string;
     logPrefix: string;
+    metadataOverride?: Metadata;
 }
 
 class BaseWinstonLogger implements Logger {
     protected _logger: winston.Logger;
     protected logPrefix: string;
+    protected logPrefixColor: string;
     protected winstonLevel: string;
+    protected metadataOverride?: Metadata;
     // Maintain of map of transports. This is useful for adding/removing transports
     protected transportMap: Map<Transport, WinstonTransport>;
-    protected initialize({ logger, transportMap, winstonLevel, logPrefix }: BaseLoggerOptions): void {
+    protected initialize({ logger, transportMap, metadataOverride, winstonLevel, logPrefix }: BaseLoggerOptions): void {
         this._logger = logger;
         this.transportMap = transportMap;
         this.winstonLevel = winstonLevel;
         this.logPrefix = logPrefix;
+        this.metadataOverride = metadataOverride;
     }
 
     info(message: string | object): void {
-        this.transportMap.size && this._logger.info(message);
+        this.transportMap.size && this.winstonLog({ level: 'info', message, metadata: this.metadataOverride });
     }
     warn(message: string | object): void {
-        this.transportMap.size && this._logger.warn(message);
+        this.transportMap.size && this.winstonLog({ level: 'warn', message, metadata: this.metadataOverride });
     }
     error(message: string | object): void {
-        this.transportMap.size && this._logger.error(message);
+        this.transportMap.size && this.winstonLog({ level: 'error', message, metadata: this.metadataOverride });
     }
     debug(message: string | object): void {
-        this.transportMap.size && this._logger.debug(message);
+        this.transportMap.size && this.winstonLog({ level: 'debug', message, metadata: this.metadataOverride });
     }
     log(data: string | Log): void {
         if (!this.transportMap.size) {
@@ -48,12 +56,24 @@ class BaseWinstonLogger implements Logger {
             return;
         }
         if (typeof data === 'string') {
-            this._logger.log(this.winstonLevel, data);
+            this.winstonLog({ level: this.winstonLevel, message: data, metadata: this.metadataOverride });
         } else {
-            this._logger.log(toWinstonLogLevel(data.level)!, data.message);
+            const level = toWinstonLogLevel(data.level) ?? this._logger.level;
+            this.winstonLog({ level, message: data.message, metadata: this.metadataOverride });
         }
     }
-
+    private winstonLog({
+        level,
+        message,
+        metadata
+    }: {
+        level: string;
+        message: string | object;
+        metadata?: Metadata;
+    }): void {
+        const msg = typeof message === 'string' ? message : inspect(message);
+        this._logger.log(level, msg, metadata);
+    }
     protected addToMap(
         transportMap: Map<Transport, WinstonTransport>,
         transport: Transport
@@ -89,13 +109,15 @@ class BaseWinstonLogger implements Logger {
     }
     child({ logPrefix }: ChildLoggerOptions): Logger {
         const childLogPrefix = `${this.logPrefix}.${logPrefix}`;
-        const childWinstonLogger = this._logger.child({ label: childLogPrefix, labelColor: nextColor() });
+        const metadataOverride = { label: childLogPrefix, labelColor: nextColor() };
+        const childWinstonLogger = this._logger.child(metadataOverride);
         const childLogger = new BaseWinstonLogger();
         childLogger.initialize({
             logger: childWinstonLogger,
             transportMap: this.transportMap,
             winstonLevel: this.winstonLevel,
-            logPrefix: childLogPrefix
+            logPrefix: childLogPrefix,
+            metadataOverride
         });
         return childLogger;
     }

@@ -53,11 +53,11 @@ const toWinstonTransportOptions = <OPT>(transportOptions: TransportOptions): OPT
 };
 
 const consoleFormat = format.combine(
-    process.stdout.isTTY ? format.colorize() : format.uncolorize(),
     format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     format.printf(({ timestamp, level, message, label, labelColor, ...meta }) => {
         const msg = typeof message === 'string' ? message : inspect(message);
-        return `${timestamp} ${level} \t${decorateLabel(label, labelColor)}: ${msg} ${
+        const lvl = decorateLevel(level);
+        return `${timestamp} ${lvl} ${decorateLabel(label, labelColor)}: ${msg} ${
             Object.keys(meta).length ? inspect(meta) : ''
         }`;
     })
@@ -73,13 +73,42 @@ const consoleFormat = format.combine(
 const decorateLabel = (label?: string, labelColor?: string): string => {
     let l = label ?? '';
     if (process.stdout.isTTY && label && typeof labelColor === 'string') {
-        const colorFn = chalk.keyword(labelColor);
-        if (colorFn) {
-            l = colorFn(label);
+        const decorator = colorFn(labelColor);
+        if (decorator) {
+            l = decorator(label);
         }
     }
     return l;
 };
+
+const levelColor: { [level: string]: string } = {
+    info: 'green',
+    warn: 'yellow',
+    error: 'red',
+    verbose: 'blue',
+    silly: 'magenta',
+    debug: 'cyan'
+};
+
+const decorateLevel = (level: string) => {
+    const padded = level.padEnd(7);
+    if (process.stdout.isTTY) {
+        const decorator = colorFn(levelColor[level]);
+        if (decorator) {
+            return decorator(padded);
+        }
+    }
+    return padded;
+};
+
+const colorFn = (color: string) => {
+    try {
+        return color ? chalk.keyword(color) : undefined;
+    } catch {
+        return undefined;
+    }
+};
+
 const ui5ToolingFormat = (moduleName: string): Format =>
     format.combine(
         format.colorize(),
