@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.10.4
+
+### Patch Changes
+
+-   3fb2f48: Updated dependency to json-merge to remove nested vulnerable dependency of json-ptr
+
 ## 0.10.3
 
 ### Patch Changes
