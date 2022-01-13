@@ -66,7 +66,8 @@ const ui5ToolingFormat = (moduleName: string): Format =>
         format.colorize(),
         format.label({ label: moduleName }),
         format.printf(({ level, message, label }) => {
-            const msg = typeof message === 'string' ? message : inspect(message);
+            let msg = typeof message === 'string' ? message : inspect(message);
+            msg.split(/\r?\n/).join(`\n${level} ${chalk.magenta(label)} `);
             return `${level} ${chalk.magenta(label)} ${msg}`;
         })
     );
