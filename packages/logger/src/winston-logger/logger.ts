@@ -1,0 +1,86 @@
+import { ConsoleTransport } from '../transports';
+import { Log, Logger, LoggerOptions, LogLevel, Transport } from '../types';
+import winston from 'winston';
+import { toWinstonLogLevel, toWinstonTransport } from './adapter';
+import WinstonTransport from 'winston-transport';
+import { format } from 'logform';
+
+const defaultLoggerOptions: LoggerOptions = {
+    transports: [new ConsoleTransport()]
+};
+
+/**
+ *  Winston implementation of the @type {Logger} interface
+ */
+export class WinstonLogger implements Logger {
+    private _logger;
+    private readonly winstonLevel: string;
+    // Maintain of map of transports. This is useful for adding/removing transports
+    private transportMap: Map<Transport, WinstonTransport> = new Map();
+    constructor({ logLevel, transports }: LoggerOptions = defaultLoggerOptions) {
+        (transports || []).forEach((t) => this.addToMap(t));
+        const level = toWinstonLogLevel(logLevel ?? LogLevel.Info);
+
+        this._logger = winston.createLogger({
+            level,
+            transports: Array.from(this.transportMap.values()),
+            format: format.combine(format.timestamp(), winston.format.json())
+        });
+        this.winstonLevel = level ?? this._logger.level;
+    }
+
+    info(message: string | object): void {
+        this.transportMap.size && this._logger.info(message);
+    }
+    warn(message: string | object): void {
+        this.transportMap.size && this._logger.warn(message);
+    }
+    error(message: string | object): void {
+        this.transportMap.size && this._logger.error(message);
+    }
+    debug(message: string | object): void {
+        this.transportMap.size && this._logger.debug(message);
+    }
+    log(data: string | Log): void {
+        if (!this.transportMap.size) {
+            // Nothing to do
+            return;
+        }
+        if (typeof data === 'string') {
+            this._logger.log(this.winstonLevel, data);
+        } else {
+            this._logger.log(toWinstonLogLevel(data.level)!, data.message);
+        }
+    }
+
+    private addToMap(transport: Transport): WinstonTransport | undefined {
+        const winstonTransport = toWinstonTransport(transport);
+        if (!this.transportMap.has(transport)) {
+            this.transportMap.set(transport, winstonTransport);
+            return winstonTransport;
+        }
+        return undefined;
+    }
+
+    add(transport: Transport) {
+        const winstonTransport = this.addToMap(transport);
+
+        if (winstonTransport) {
+            this._logger.add(winstonTransport);
+        }
+        return this;
+    }
+    remove(transport: Transport) {
+        const winstonTransport = this.transportMap.get(transport);
+        if (winstonTransport) {
+            this._logger.remove(winstonTransport);
+            this.transportMap.delete(transport);
+            return this;
+        } else {
+            throw new Error('Cannot remove non-existent transport');
+        }
+    }
+    transports(): Transport[] {
+        return Array.from(this.transportMap.keys());
+    }
+}
