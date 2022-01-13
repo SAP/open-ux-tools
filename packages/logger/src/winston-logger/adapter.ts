@@ -55,12 +55,31 @@ const toWinstonTransportOptions = <OPT>(transportOptions: TransportOptions): OPT
 const consoleFormat = format.combine(
     process.stdout.isTTY ? format.colorize() : format.uncolorize(),
     format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    format.printf(({ timestamp, level, message, ...meta }) => {
+    format.printf(({ timestamp, level, message, label, labelColor, ...meta }) => {
         const msg = typeof message === 'string' ? message : inspect(message);
-        return `${timestamp} ${level}: \t${msg} ${Object.keys(meta).length ? inspect(meta) : ''}`;
+        return `${timestamp} ${level} \t${decorateLabel(label, labelColor)}: ${msg} ${
+            Object.keys(meta).length ? inspect(meta) : ''
+        }`;
     })
 );
 
+/**
+ * Return a colored label if label and color are specified, _if_ we running on a TTY.
+ * Else return `''`
+ * @param label
+ * @param labelColor
+ * @returns {string} decorated label
+ */
+const decorateLabel = (label?: string, labelColor?: string): string => {
+    let l = label ?? '';
+    if (process.stdout.isTTY && label && typeof labelColor === 'string') {
+        const colorFn = chalk.keyword(labelColor);
+        if (colorFn) {
+            l = colorFn(label);
+        }
+    }
+    return l;
+};
 const ui5ToolingFormat = (moduleName: string): Format =>
     format.combine(
         format.colorize(),
