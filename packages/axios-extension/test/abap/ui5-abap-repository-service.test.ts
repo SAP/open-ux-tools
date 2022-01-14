@@ -1,6 +1,5 @@
 import nock from 'nock';
 import fs from 'fs';
-import { DevNullLogger } from '@sap-ux/logger';
 import { Ui5AbapRepositoryService, createForAbap } from '../../src';
 
 nock.disableNetConnect();
@@ -14,7 +13,6 @@ describe('Ui5AbapRepositoryService', () => {
         Package: 'my_package'
     };
     const service = createForAbap({ baseURL: server }).ui5AbapRepository();
-    service.log = new DevNullLogger();
 
     beforeAll(() => {
         // mock an existing and not existing app

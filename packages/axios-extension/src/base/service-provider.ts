@@ -1,5 +1,5 @@
 import { Axios, AxiosRequestConfig } from 'axios';
-import { DevNullLogger, Logger } from '@sap-ux/logger';
+import { ToolsLogger, Logger } from '@sap-ux/logger';
 import { ODataService } from './odata-service';
 import { Cookies } from '../auth';
 
@@ -20,7 +20,7 @@ export interface ServiceProviderExtension {
  * Basic service provider class containing generic functionality to create and keep service instances as well as logging
  */
 export class ServiceProvider extends Axios implements ServiceProviderExtension {
-    public log: Logger = new DevNullLogger();
+    public readonly log: Logger = new ToolsLogger();
 
     public readonly cookies: Cookies = new Cookies();
 
