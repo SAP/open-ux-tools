@@ -1,3 +1,0 @@
-= Logger
-TODO: content needed!
-
