@@ -95,7 +95,7 @@ describe('Default (Winston) logger', () => {
         ]);
     });
 
-    it('Will throw an error when typing to remove non-existent transport', () => {
+    it('Will throw an error when trying to remove non-existent transport', () => {
         const logger = new ToolsLogger();
         expect(() => logger.remove(new NullTransport())).toThrow(/cannot remove non-existent transport/i);
     });
@@ -244,6 +244,26 @@ describe('Default (Winston) logger', () => {
                 expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error2' }),
                 expect.any(Function)
             );
+        });
+    });
+    describe('child loggers', () => {
+        it('are cached by logPrefix value', () => {
+            const logger = new ToolsLogger({
+                transports: [new NullTransport()]
+            });
+            const childLogger1 = logger.child({ logPrefix: 'child1' });
+            const childLogger2 = logger.child({ logPrefix: 'child1' });
+            expect(childLogger1).toBe(childLogger2);
+        });
+        it('have access to the same transports as the parent', () => {
+            const nullTransport = new NullTransport();
+            const logger = new ToolsLogger({
+                transports: [nullTransport]
+            });
+            const childLogger1 = logger.child({ logPrefix: 'child1' });
+            childLogger1.remove(nullTransport);
+            expect(childLogger1.transports()).toBeEmpty();
+            expect(logger.transports()).toBeEmpty();
         });
     });
 });
