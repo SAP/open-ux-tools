@@ -98,23 +98,23 @@ importers:
     packages/logger:
         specifiers:
             '@types/debug': 4.1.7
-            '@types/lodash.clonedeep': 4.5.6
+            '@types/lodash': 4.14.176
             '@types/vscode': 1.63.1
             chalk: 4.1.2
             jest-extended: 1.2.0
-            lodash.clonedeep: 4.5.0
+            lodash: 4.17.21
             logform: 2.3.2
             winston: 3.3.3
             winston-transport: 4.4.1
         dependencies:
             chalk: 4.1.2
-            lodash.clonedeep: 4.5.0
+            lodash: 4.17.21
             logform: 2.3.2
             winston: 3.3.3
             winston-transport: 4.4.1
         devDependencies:
             '@types/debug': 4.1.7
-            '@types/lodash.clonedeep': 4.5.6
+            '@types/lodash': 4.14.176
             '@types/vscode': 1.63.1
             jest-extended: 1.2.0
 
@@ -1503,15 +1503,6 @@ packages:
 
     /@types/json5/0.0.29:
         resolution: { integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4= }
-        dev: true
-
-    /@types/lodash.clonedeep/4.5.6:
-        resolution:
-            {
-                integrity: sha512-cE1jYr2dEg1wBImvXlNtp0xDoS79rfEdGozQVgliDZj1uERH4k+rmEMTudP9b4VQ8O6nRb5gPqft0QzEQGMQgA==
-            }
-        dependencies:
-            '@types/lodash': 4.14.176
         dev: true
 
     /@types/lodash.merge/4.6.6:
@@ -5369,10 +5360,6 @@ packages:
         dependencies:
             p-locate: 5.0.0
         dev: true
-
-    /lodash.clonedeep/4.5.0:
-        resolution: { integrity: sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8= }
-        dev: false
 
     /lodash.memoize/4.1.2:
         resolution: { integrity: sha1-vMbEmkKihA7Zl/Mj6tpezRguC/4= }
