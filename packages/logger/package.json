@@ -18,6 +18,7 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
+        "chalk": "4.1.2",
         "lodash.clonedeep": "4.5.0",
         "logform": "2.3.2",
         "winston": "3.3.3",

@@ -1,6 +1,6 @@
 import 'jest-extended';
 import { LogLevel, ToolsLogger, Transport } from '../../../src';
-import { ConsoleTransport, NullTransport, VSCodeTransport } from '../../../src/transports';
+import { ConsoleTransport, NullTransport, UI5ToolingTransport, VSCodeTransport } from '../../../src/transports';
 import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport';
 import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport';
 import winston from 'winston';
@@ -19,7 +19,7 @@ jest.mock(
     { virtual: true }
 );
 
-describe('Winston logger', () => {
+describe('Default (Winston) logger', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
         jest.clearAllMocks();
@@ -59,12 +59,22 @@ describe('Winston logger', () => {
         expect(logger.transports()).toIncludeSameMembers([new VSCodeTransport({ channelName: 'sampleChannel' })]);
     });
 
-    it('Singleton transports (null, console, vscode) are only added once', () => {
+    it('UI5 Tooling transport is only added once per channel', () => {
+        const logger = new ToolsLogger({
+            transports: Array.from({ length: 500 }, () => new UI5ToolingTransport({ moduleName: 'test:module' })),
+            logLevel: LogLevel.Info
+        });
+        expect(logger.transports()).toIncludeSameMembers([new UI5ToolingTransport({ moduleName: 'test:module' })]);
+    });
+
+    it('Singleton transports (null, console, vscode, ui5Tooling) are only added once', () => {
         const transports = Array.from({ length: 500 }, (_, i) => {
             if (i % 10 === 0) {
                 return new VSCodeTransport({ channelName: 'channel10' });
             } else if (i % 5 === 0) {
                 return new VSCodeTransport({ channelName: 'channel5' });
+            } else if (i % 3 === 0) {
+                return new UI5ToolingTransport({ moduleName: 'test:module' });
             } else if (i % 2 === 0) {
                 return new ConsoleTransport();
             } else {
@@ -80,11 +90,12 @@ describe('Winston logger', () => {
             new NullTransport(),
             new ConsoleTransport(),
             new VSCodeTransport({ channelName: 'channel5' }),
-            new VSCodeTransport({ channelName: 'channel10' })
+            new VSCodeTransport({ channelName: 'channel10' }),
+            new UI5ToolingTransport({ moduleName: 'test:module' })
         ]);
     });
 
-    it('Will throw an error when typing to remove non-existent transport', () => {
+    it('Will throw an error when trying to remove non-existent transport', () => {
         const logger = new ToolsLogger();
         expect(() => logger.remove(new NullTransport())).toThrow(/cannot remove non-existent transport/i);
     });
@@ -94,20 +105,19 @@ describe('Winston logger', () => {
         const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log').mockClear();
         const vscodeLog = jest.spyOn(WinstonVSCodeTransport.prototype, 'log').mockClear();
         const logger = new ToolsLogger({
-            logLevel: LogLevel.Info,
             transports: [new ConsoleTransport(), new NullTransport(), new VSCodeTransport({ channelName: 'random' })]
         });
         logger.info('info message');
         expect(consoleLog).toBeCalledWith(
-            expect.objectContaining({ level: 'info', message: 'info message' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
         expect(nullLog).toBeCalledWith(
-            expect.objectContaining({ level: 'info', message: 'info message' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
         expect(vscodeLog).toBeCalledWith(
-            expect.objectContaining({ level: 'info', message: 'info message' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
     });
@@ -128,18 +138,18 @@ describe('Winston logger', () => {
         expect(consoleLog).toBeCalledTimes(2);
         expect(consoleLog).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ level: 'warn', message: 'warning1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning1' }),
             expect.any(Function)
         );
         expect(consoleLog).toHaveBeenNthCalledWith(
             2,
-            expect.objectContaining({ level: 'error', message: 'error1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
             expect.any(Function)
         );
         expect(nullLog).toBeCalledTimes(1);
         expect(nullLog).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ level: 'error', message: 'error1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
             expect.any(Function)
         );
     });
@@ -161,24 +171,24 @@ describe('Winston logger', () => {
         expect(consoleLog).toBeCalledTimes(2);
         expect(consoleLog).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ level: 'warn', message: 'warning1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning1' }),
             expect.any(Function)
         );
         expect(consoleLog).toHaveBeenNthCalledWith(
             2,
-            expect.objectContaining({ level: 'debug', message: 'debug1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'debug', message: 'debug1' }),
             expect.any(Function)
         );
         expect(nullLog).toBeCalledTimes(1);
         expect(nullLog).toHaveBeenNthCalledWith(
             1,
-            expect.objectContaining({ level: 'warn', message: 'warning1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning1' }),
             expect.any(Function)
         );
     });
 
     it('Does not call log method of transport if severity level is too low', () => {
-        const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log');
+        const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log').mockImplementation(() => 0);
         const logger = new ToolsLogger({
             logLevel: LogLevel.Error,
             transports: [new NullTransport()]
@@ -190,8 +200,70 @@ describe('Winston logger', () => {
 
         expect(nullLog).toBeCalledTimes(1);
         expect(nullLog).toHaveBeenCalledWith(
-            expect.objectContaining({ level: 'error', message: 'error1' }),
+            expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
             expect.any(Function)
         );
+    });
+    describe('log()', () => {
+        it('uses the default level if a string is passed in', () => {
+            const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log');
+            const logger = new ToolsLogger({
+                logLevel: LogLevel.Warn,
+                transports: [new NullTransport()]
+            });
+            logger.log('warning');
+            logger.error('error');
+            expect(nullLog).toBeCalledTimes(2);
+            expect(nullLog).toHaveBeenNthCalledWith(
+                1,
+                expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning' }),
+                expect.any(Function)
+            );
+            expect(nullLog).toHaveBeenNthCalledWith(
+                2,
+                expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error' }),
+                expect.any(Function)
+            );
+        });
+        it('uses the level passed in when a Log object is used', () => {
+            const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log');
+            const logger = new ToolsLogger({
+                transports: [new NullTransport()]
+            });
+            logger.log({ level: LogLevel.Error, message: 'error1' });
+            logger.error('error2');
+            logger.log({ level: LogLevel.Silly, message: 'not silly' });
+            expect(nullLog).toBeCalledTimes(2);
+            expect(nullLog).toHaveBeenNthCalledWith(
+                1,
+                expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
+                expect.any(Function)
+            );
+            expect(nullLog).toHaveBeenNthCalledWith(
+                2,
+                expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error2' }),
+                expect.any(Function)
+            );
+        });
+    });
+    describe('child loggers', () => {
+        it('are cached by logPrefix value', () => {
+            const logger = new ToolsLogger({
+                transports: [new NullTransport()]
+            });
+            const childLogger1 = logger.child({ logPrefix: 'child1' });
+            const childLogger2 = logger.child({ logPrefix: 'child1' });
+            expect(childLogger1).toBe(childLogger2);
+        });
+        it('have access to the same transports as the parent', () => {
+            const nullTransport = new NullTransport();
+            const logger = new ToolsLogger({
+                transports: [nullTransport]
+            });
+            const childLogger1 = logger.child({ logPrefix: 'child1' });
+            childLogger1.remove(nullTransport);
+            expect(childLogger1.transports()).toBeEmpty();
+            expect(logger.transports()).toBeEmpty();
+        });
     });
 });
