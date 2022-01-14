@@ -339,25 +339,6 @@ title=App Title",
 ",
     "state": "modified",
   },
-  "webapp/model/models.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/model/json/JSONModel\\",
-    \\"sap/ui/Device\\"
-], function (JSONModel, Device) {
-    \\"use strict\\";
-
-    return {
-
-        createDeviceModel: function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
-        }
-
-    };
-});",
-    "state": "modified",
-  },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
 <html>
@@ -978,25 +959,6 @@ title=App Title",
   }
 }
 ",
-    "state": "modified",
-  },
-  "webapp/model/models.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/model/json/JSONModel\\",
-    \\"sap/ui/Device\\"
-], function (JSONModel, Device) {
-    \\"use strict\\";
-
-    return {
-
-        createDeviceModel: function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
-        }
-
-    };
-});",
     "state": "modified",
   },
   "webapp/test/flpSandbox.html": Object {

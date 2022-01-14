@@ -6210,23 +6210,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 });",
     "state": "modified",
   },
-  "webapp/model/models.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/model/json/JSONModel\\",
-    \\"sap/ui/Device\\"
-], function (JSONModel, Device) {
-    \\"use strict\\";
-
-    return {
-        createDeviceModel : function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
-        }
-    };
-});",
-    "state": "modified",
-  },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
 <html>
@@ -9476,23 +9459,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 });",
     "state": "modified",
   },
-  "webapp/model/models.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/model/json/JSONModel\\",
-    \\"sap/ui/Device\\"
-], function (JSONModel, Device) {
-    \\"use strict\\";
-
-    return {
-        createDeviceModel : function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
-        }
-    };
-});",
-    "state": "modified",
-  },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
 <html>
@@ -12331,23 +12297,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 
     };
 
-});",
-    "state": "modified",
-  },
-  "webapp/model/models.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/ui/model/json/JSONModel\\",
-    \\"sap/ui/Device\\"
-], function (JSONModel, Device) {
-    \\"use strict\\";
-
-    return {
-        createDeviceModel : function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
-        }
-    };
 });",
     "state": "modified",
   },
