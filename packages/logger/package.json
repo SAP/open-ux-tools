@@ -13,7 +13,6 @@
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --maxWorkers=1 --colors",
-        "test-u": "jest --maxWorkers=1 --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },

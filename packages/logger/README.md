@@ -67,7 +67,6 @@ Please refer to the debugging section in the project root [README](../../README.
 ### Not supported
 The following options are not supported yet. There are no definite plans to add them in the future. They will be considered on a need-basis.
 
-* Child loggers
 * Custom formatters
     - `VSCodeTransport` logs timestamped lines
     -  `FileTransport` logs in JSON
