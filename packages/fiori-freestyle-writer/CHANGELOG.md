@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.15
+
+### Patch Changes
+
+-   3c5c6d0: docs(jsdoc): add to consolidated models.js
+
 ## 0.10.14
 
 ### Patch Changes
