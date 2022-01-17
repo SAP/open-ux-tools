@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.11.1
+
+### Patch Changes
+
+-   04e4f35: chore(yaml) - update yaml dependency
+-   Updated dependencies [04e4f35]
+    -   @sap-ux/yaml@0.11.1
+
 ## 0.11.0
 
 ### Minor Changes
