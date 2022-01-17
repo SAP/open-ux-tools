@@ -27,9 +27,9 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
     }
 }
 
-async function checkAbapSystem(env: { TEST_URL: string; TEST_USER: string; TEST_PASSWORD: string }): Promise<void> {
+async function checkAbapSystem(env: { TEST_SYSTEM: string; TEST_USER: string; TEST_PASSWORD: string }): Promise<void> {
     const provider = createForAbap({
-        baseURL: env.TEST_URL,
+        baseURL: env.TEST_SYSTEM,
         auth: {
             username: env.TEST_USER,
             password: env.TEST_PASSWORD
