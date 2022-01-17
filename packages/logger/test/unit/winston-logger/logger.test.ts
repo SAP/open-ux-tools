@@ -247,13 +247,13 @@ describe('Default (Winston) logger', () => {
         });
     });
     describe('child loggers', () => {
-        it('are cached by logPrefix value', () => {
+        it('new instances are returned per call', () => {
             const logger = new ToolsLogger({
                 transports: [new NullTransport()]
             });
             const childLogger1 = logger.child({ logPrefix: 'child1' });
             const childLogger2 = logger.child({ logPrefix: 'child1' });
-            expect(childLogger1).toBe(childLogger2);
+            expect(childLogger1).not.toBe(childLogger2);
         });
         it('have access to the same transports as the parent', () => {
             const nullTransport = new NullTransport();

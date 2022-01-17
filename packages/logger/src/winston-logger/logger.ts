@@ -30,8 +30,6 @@ class BaseWinstonLogger implements Logger {
     protected metadataOverride?: Metadata;
     // Maintain of map of transports. This is useful for adding/removing transports
     protected transportMap: Map<Transport, WinstonTransport>;
-    // Cache child loggers by logPrefix. Use weak references to avoid causing memory leaks
-    protected childMap: Map<string, WeakRef<Logger>> = new Map();
     protected initialize({ logger, transportMap, metadataOverride, winstonLevel, logPrefix }: BaseLoggerOptions): void {
         this._logger = logger;
         this.transportMap = transportMap;
@@ -109,28 +107,9 @@ class BaseWinstonLogger implements Logger {
         return Array.from(this.transportMap.keys());
     }
     child({ logPrefix }: ChildLoggerOptions): Logger {
-        let childInstance = this.childMap.get(logPrefix)?.deref();
-        if (childInstance) {
-            return childInstance;
-        } else {
-            const childLogPrefix = `${this.logPrefix}.${logPrefix}`;
-            const metadataOverride = { label: childLogPrefix, labelColor: nextColor() };
-            const childWinstonLogger = this._logger.child(metadataOverride);
-            childInstance = this.newChildInstance({ childWinstonLogger, childLogPrefix, metadataOverride });
-            this.childMap.set(logPrefix, new WeakRef(childInstance));
-            return childInstance;
-        }
-    }
-
-    private newChildInstance({
-        childWinstonLogger,
-        childLogPrefix,
-        metadataOverride
-    }: {
-        childWinstonLogger: winston.Logger;
-        childLogPrefix: string;
-        metadataOverride: { label: string; labelColor: string | void };
-    }) {
+        const childLogPrefix = `${this.logPrefix}.${logPrefix}`;
+        const metadataOverride = { label: childLogPrefix, labelColor: nextColor() };
+        const childWinstonLogger = this._logger.child(metadataOverride);
         const childLogger = new BaseWinstonLogger();
         childLogger.initialize({
             logger: childWinstonLogger,
