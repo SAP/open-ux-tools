@@ -50,7 +50,7 @@ exports[`UI5Config addAbapDeployTask local settings 1`] = `
       configuration:
         target:
           url: http://localhost:8080
-          client: \\"012\\"
+          client: '012'
         app:
           name: ~name
           desription: ~description
@@ -119,7 +119,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without destination
         backend:
           - url: http://localhost:8080
             path: /~testpath~
-            client: \\"012\\"
+            client: '012'
         ui5:
           path:
             - /resources

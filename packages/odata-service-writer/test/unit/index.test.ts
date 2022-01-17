@@ -148,7 +148,7 @@ describe('Test generate method with valid input', () => {
                         pathPrefix: /~prefix
                         path: /sap
                         url: http://localhost
-                        client: \\"013\\"
+                        client: '013'
                         destination: test
             "
         `);
