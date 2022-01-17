@@ -19,22 +19,33 @@ describe('V2CatalogService', () => {
             .get('/sap/bc/adt/ato/settings')
             .replyWithFile(200, join(__dirname, '../mockResponses/atoSettingsNotS4C.xml'))
             .persist();
-        nock(server)
-            .get(`${V2CatalogService.PATH}/?$format=json`)
-            .replyWithFile(200, join(__dirname, '../mockResponses/v2CatalogDocument.json'))
-            .persist();
     });
 
     describe('listServices', () => {
+        const provider = createForAbap(config);
+
         test('classic', async () => {
-            const provider = createForAbap(config);
-            provider.s4Cloud = false;
-
-            const catalog = provider.catalog(ODataVersion.v2);
-
+            nock(server)
+                .get(`${V2CatalogService.PATH}/?$format=json`)
+                .reply(200, { d: { EntitySets: ['ServiceCollection'] } });
             nock(server)
                 .get((path) => path.startsWith(`${V2CatalogService.PATH}/ServiceCollection?`))
                 .replyWithFile(200, join(__dirname, '../mockResponses/v2ServiceCollection.json'));
+
+            const catalog = provider.catalog(ODataVersion.v2);
+            const services = await catalog.listServices();
+            expect(services).toBeDefined();
+        });
+
+        test('cloud', async () => {
+            nock(server)
+                .get(`${V2CatalogService.PATH}/?$format=json`)
+                .reply(200, { d: { EntitySets: ['RecommendedServiceCollection'] } });
+            nock(server)
+                .get((path) => path.startsWith(`${V2CatalogService.PATH}/RecommendedServiceCollection?`))
+                .replyWithFile(200, join(__dirname, '../mockResponses/v2RecommendedServiceCollection.json'));
+
+            const catalog = provider.catalog(ODataVersion.v2);
             const services = await catalog.listServices();
             expect(services).toBeDefined();
         });
@@ -53,6 +64,10 @@ describe('V2CatalogService', () => {
         const catalog = provider.catalog(ODataVersion.v2);
 
         beforeAll(() => {
+            nock(server)
+                .get(`${V2CatalogService.PATH}/?$format=json`)
+                .replyWithFile(200, join(__dirname, '../mockResponses/v2CatalogDocument.json'))
+                .persist();
             nock(server)
                 .get((path) => path.startsWith(`${V2CatalogService.PATH}/ServiceCollection(%27${id}%27)/Annotations`))
                 .replyWithFile(200, join(__dirname, '../mockResponses/v2ServiceAnnotations.json'))
