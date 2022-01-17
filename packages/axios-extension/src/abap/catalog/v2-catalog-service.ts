@@ -7,8 +7,7 @@ const V2_S4CLOUD_FILTER =
     '((IsSapService%20eq%20true)and(ReleaseStatus%20eq%20%27RELEASED%27))or((IsSapService%20eq%20false))';
 
 /**
- * TODO: cleanup required
- * Structure representing a service, this is non odata version specific currently
+ * Structure representing a V2 service
  */
 export interface ODataServiceV2Info {
     ID: string;
@@ -27,6 +26,13 @@ export interface ODataServiceV2Info {
  */
 export class V2CatalogService extends CatalogService {
     public static readonly PATH = '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2';
+
+    protected async determineEntitySet() {
+        const doc = await this.document();
+        this.entitySet = doc.EntitySets.includes(V2_RECOMMENDED_ENTITYSET)
+            ? V2_RECOMMENDED_ENTITYSET
+            : V2_CLASSIC_ENTITYSET;
+    }
 
     /**
      * @param services
@@ -51,11 +57,8 @@ export class V2CatalogService extends CatalogService {
             $format: 'json'
         };
 
-        if (this.entitySet === undefined) {
-            const doc = await this.document();
-            this.entitySet = doc.EntitySets.includes(V2_RECOMMENDED_ENTITYSET)
-                ? V2_RECOMMENDED_ENTITYSET
-                : V2_CLASSIC_ENTITYSET;
+        if (!this.entitySet) {
+            await this.determineEntitySet();
         }
 
         if (this.entitySet === V2_CLASSIC_ENTITYSET && (await this.isS4Cloud)) {
@@ -92,7 +95,7 @@ export class V2CatalogService extends CatalogService {
         if (services.length > 1) {
             // #14793: Fix for user created multi namespaces for the same service
             const servicesWithSameNameSpace = services.filter((service) =>
-                service.ServiceUrl?.toUpperCase().includes(path.toUpperCase())
+                service.ServiceUrl?.toUpperCase().includes((path || title).toUpperCase())
             );
             if (servicesWithSameNameSpace.length > 1) {
                 this.log.warn('Service filter was not sufficient to identify one service.');
@@ -111,6 +114,9 @@ export class V2CatalogService extends CatalogService {
      * @param root0.path
      */
     protected async getServiceAnnotations({ id, title, path }: FilterOptions): Promise<ODataServiceV2Info[]> {
+        if (!this.entitySet) {
+            await this.determineEntitySet();
+        }
         if (!id) {
             const ServiceConfig = await this.findService({ title, path });
             if (ServiceConfig) {

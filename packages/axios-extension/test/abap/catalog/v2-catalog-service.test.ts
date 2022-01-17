@@ -14,12 +14,18 @@ describe('V2CatalogService', () => {
         }
     };
 
-    describe('listServices', () => {
+    beforeAll(() => {
         nock(server)
             .get('/sap/bc/adt/ato/settings')
             .replyWithFile(200, join(__dirname, '../mockResponses/atoSettingsNotS4C.xml'))
             .persist();
+        nock(server)
+            .get(`${V2CatalogService.PATH}/?$format=json`)
+            .replyWithFile(200, join(__dirname, '../mockResponses/v2CatalogDocument.json'))
+            .persist();
+    });
 
+    describe('listServices', () => {
         test('classic', async () => {
             const provider = createForAbap(config);
             provider.s4Cloud = false;
@@ -27,14 +33,78 @@ describe('V2CatalogService', () => {
             const catalog = provider.catalog(ODataVersion.v2);
 
             nock(server)
-                .get(`${V2CatalogService.PATH}/?$format=json`)
-                .replyWithFile(200, join(__dirname, '../mockResponses/v2CatalogDocument.json'));
-
-            nock(server)
                 .get((path) => path.startsWith(`${V2CatalogService.PATH}/ServiceCollection?`))
                 .replyWithFile(200, join(__dirname, '../mockResponses/v2ServiceCollection.json'));
             const services = await catalog.listServices();
             expect(services).toBeDefined();
+        });
+    });
+
+    describe('getAnnotations', () => {
+        // test service properties
+        const id = 'TEST_SERVICE';
+        const title = 'TEST_SERVICE';
+        const path = `/TEST/${title}`;
+        const anno = 'TEST_SERVICE_ANNO';
+
+        // create a catalog for testing
+        const provider = createForAbap(config);
+        provider.s4Cloud = false;
+        const catalog = provider.catalog(ODataVersion.v2);
+
+        beforeAll(() => {
+            nock(server)
+                .get((path) => path.startsWith(`${V2CatalogService.PATH}/ServiceCollection(%27${id}%27)/Annotations`))
+                .replyWithFile(200, join(__dirname, '../mockResponses/v2ServiceAnnotations.json'))
+                .persist();
+            nock(server)
+                .get((path) =>
+                    path.startsWith(
+                        `${V2CatalogService.PATH}/Annotations(TechnicalName=%27${anno}%27,Version=%270001%27)`
+                    )
+                )
+                .replyWithFile(200, join(__dirname, '../mockResponses/v2Annotations.xml'))
+                .persist();
+        });
+
+        test('invalid parameters', () => {
+            expect(catalog.getAnnotations({})).rejects.toThrowError();
+            expect(catalog.getAnnotations({ path: '/' })).rejects.toThrowError();
+        });
+
+        test('find by id', async () => {
+            const annotations = await catalog.getAnnotations({ id });
+            expect(annotations).toBeDefined();
+            expect(annotations.length).toBe(1);
+            expect(annotations[0].Definitions).toBeDefined();
+        });
+
+        test('find by path or title', async () => {
+            nock(server)
+                .get((path) =>
+                    path.startsWith(
+                        `${V2CatalogService.PATH}/ServiceCollection?$format=json&$filter=Title%2520eq%2520%2527${title}%2527`
+                    )
+                )
+                .reply(200, {
+                    d: {
+                        results: [
+                            {
+                                ID: id,
+                                ServiceUrl: path
+                            },
+                            {}
+                        ]
+                    }
+                })
+                .persist();
+
+            const annotations = await catalog.getAnnotations({ path });
+            expect(annotations).toBeDefined();
+            expect(annotations.length).toBe(1);
+            expect(annotations[0].Definitions).toBeDefined();
+            const annotationsByTitle = await catalog.getAnnotations({ title });
+            expect(annotationsByTitle[0].Definitions).toBe(annotations[0].Definitions);
         });
     });
 });
