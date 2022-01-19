@@ -113,7 +113,10 @@
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
 var scripts = document.getElementsByTagName("script");
-var currentScript = scripts[scripts.length - 1];
+var currentScript = document.getElementById('locate-reuse-libs');
+if(!currentScript){
+    currentScript = document.currentScript;
+};
 var manifestUri = currentScript.getAttribute("data-sap-ui-manifest-uri");
 var componentName = currentScript.getAttribute("data-sap-ui-componentName");
 var useMockserver = currentScript.getAttribute("data-sap-ui-use-mockserver");

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`use FPM with existing apps extend Fiori elements for OData v4 ListReport ObjectPage generateCustomAction in ListReport and ObjectPage 1`] = `
+exports[`use FPM with existing apps extend Fiori elements for OData v4 ListReport ObjectPage generateCustomSection in ObjectPage 1`] = `
 Object {
   "../../test-input/basic-lrop/webapp/manifest.json": Object {
     "contents": "{
@@ -236,12 +236,31 @@ Object {
 </mvc:View>",
     "state": "modified",
   },
-  "webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
-    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\"
-    xmlns:l=\\"sap.ui.layout\\">
-        <Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
-</core:FragmentDefinition>
+  "webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "webapp/ext/myCustomSection/MyCustomSection.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
 ",
+    "state": "modified",
+  },
+  "webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
     "state": "modified",
   },
   "webapp/ext/newCustomColumn/NewCustomColumn.js": Object {
@@ -353,6 +372,11 @@ Object {
           \\"pattern\\": \\"Travel({key}):?query:\\",
           \\"name\\": \\"TravelObjectPage\\",
           \\"target\\": \\"TravelObjectPage\\"
+        },
+        {
+          \\"name\\": \\"BookingMyCustomPage\\",
+          \\"pattern\\": \\"Travel({key})/_Booking({_BookingKey}):?query:\\",
+          \\"target\\": \\"BookingMyCustomPage\\"
         }
       ],
       \\"targets\\": {
@@ -373,6 +397,20 @@ Object {
               },
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"columns\\": {
+                    \\"NewCustomColumn\\": {
+                      \\"header\\": \\"Custom Price and Currency\\",
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DataField::TravelID\\"
+                      },
+                      \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
+                      \\"properties\\": [
+                        \\"TotalPrice\\",
+                        \\"CurrencyCode\\"
+                      ]
+                    }
+                  },
                   \\"actions\\": {
                     \\"MyCustomAction\\": {
                       \\"press\\": \\"v4travel.ext.myCustomAction.MyCustomAction.onPress\\",
@@ -393,6 +431,13 @@ Object {
           \\"options\\": {
             \\"settings\\": {
               \\"entitySet\\": \\"Travel\\",
+              \\"navigation\\": {
+                \\"_Booking\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"BookingMyCustomPage\\"
+                  }
+                }
+              },
               \\"content\\": {
                 \\"header\\": {
                   \\"actions\\": {
@@ -403,8 +448,32 @@ Object {
                       \\"text\\": \\"My other Action\\"
                     }
                   }
+                },
+                \\"body\\": {
+                  \\"sections\\": {
+                    \\"MyCustomSection\\": {
+                      \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyFacet\\"
+                      },
+                      \\"title\\": \\"My Custom Section\\"
+                    }
+                  }
                 }
               }
+            }
+          }
+        },
+        \\"BookingMyCustomPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"BookingMyCustomPage\\",
+          \\"name\\": \\"sap.fe.core.fpm\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\",
+              \\"entitySet\\": \\"Booking\\",
+              \\"navigation\\": {}
             }
           }
         }

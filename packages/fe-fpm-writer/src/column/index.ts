@@ -5,7 +5,7 @@ import { CustomTableColumn, InternalCustomTableColumn } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { Manifest } from '../common/types';
-import { setCommonDefaults } from '../common/defaults';
+import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -42,22 +42,11 @@ function enhanceConfig(data: CustomTableColumn, manifestPath: string, manifest: 
     }
 
     // generate column content
-    if (config.control) {
-        config.content = config.control;
-    } else {
-        const content =
-            config.properties && config.properties.length > 0
-                ? `{=%{${config.properties.join("} + ' ' + %{")}}}`
-                : 'Sample Text';
-        if (config.eventHandler) {
-            const parts = (config.eventHandler as string).split('.');
-            const method = parts.pop();
-            const handler = parts.join('/');
-            config.content = `<Button core:require="{ handler: '${handler}'}" text="${content}" press="handler.${method}" />`;
-        } else {
-            config.content = `<Text text="${content}" />`;
-        }
-    }
+    const content =
+        config.properties && config.properties.length > 0
+            ? `{=%{${config.properties.join("} + ' ' + %{")}}}`
+            : 'Sample Text';
+    config.content = config.control || getDefaultFragmentContent(content, config.eventHandler);
 
     return config as InternalCustomTableColumn;
 }
@@ -101,7 +90,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
 
     // add fragment
     const viewPath = join(completeColumn.path, `${completeColumn.name}.fragment.xml`);
-    fs.copyTpl(join(root, 'column/ext/CustomColumnFragment.xml'), viewPath, completeColumn);
+    fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeColumn);
 
     return fs;
 }

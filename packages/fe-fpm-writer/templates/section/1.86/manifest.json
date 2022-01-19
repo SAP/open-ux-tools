@@ -1,0 +1,32 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- target %>": {
+                    "options": {
+                        "settings": {
+                            "content": {
+                                "body": {
+                                    "sections": {
+                                        "<%- name %>": {
+                                            "template": "<%- ns %>.<%- name %>",
+                                            "position": {
+                                                <% if (position.placement) { %> 
+                                                    "placement": "<%- position.placement %>", 
+                                                <% } %>
+                                                <% if (position.anchor) { %> 
+                                                    "anchor": "<%- position.anchor %>" 
+                                                <% } %>
+                                            },
+                                            "title": "<%- title %>"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

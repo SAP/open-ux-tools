@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/yaml",
     "description": "Library to manipulate YAML file contents",
-    "version": "0.10.3",
+    "version": "0.11.1",
     "main": "dist/index.js",
     "scripts": {
         "build": "pnpm clean && tsc",
@@ -22,7 +22,7 @@
         "i18next": "20.3.2",
         "i18next-fs-backend": "1.1.1",
         "lodash.merge": "4.6.2",
-        "yaml": "2.0.0-6"
+        "yaml": "2.0.0-10"
     },
     "devDependencies": {
         "@types/i18next-fs-backend": "1.0.0",

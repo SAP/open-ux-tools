@@ -1,5 +1,17 @@
 # @sap-ux/yaml
 
+## 0.11.1
+
+### Patch Changes
+
+-   04e4f35: chore(yaml) - update yaml dependency
+
+## 0.11.0
+
+### Minor Changes
+
+-   3783887: Enhance ui5-config module allowing to add the abap-deploy-task and remove any middleware
+
 ## 0.10.3
 
 ### Patch Changes

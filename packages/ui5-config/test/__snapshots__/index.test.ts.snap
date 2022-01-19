@@ -1,5 +1,64 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UI5Config add/removeCustomMiddleware addCustomMiddleware 1`] = `
+"server:
+  customMiddleware:
+    - name: custom-middleware
+      afterMiddleware: ~otherMiddleware
+      configuration:
+        param1: 35729
+        other: webapp
+"
+`;
+
+exports[`UI5Config add/removeCustomMiddleware removeMiddleware 1`] = `
+"server:
+  customMiddleware: []
+"
+`;
+
+exports[`UI5Config addAbapDeployTask AppStudio + Steampunk settings 1`] = `
+"builder:
+  resources:
+    - excludes:
+        - /test/**
+        - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: ~destination~
+          scp: true
+        app:
+          name: ~name
+          desription: ~description
+          package: ~package
+          transport: ~transport
+"
+`;
+
+exports[`UI5Config addAbapDeployTask local settings 1`] = `
+"builder:
+  resources:
+    - excludes:
+        - /test/**
+        - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: http://localhost:8080
+          client: '012'
+        app:
+          name: ~name
+          desription: ~description
+          package: ~package
+          transport: ~transport
+"
+`;
+
 exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out backend first and then call add backend 1`] = `
 "server:
   customMiddleware:
@@ -19,19 +78,13 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out 
 "
 `;
 
-exports[`UI5Config addCustomMiddleware 1`] = `
-"server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
+exports[`UI5Config addCustomTask 1`] = `
+"builder:
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
+        archiveName: my-archive
 "
 `;
 
@@ -66,7 +119,7 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without destination
         backend:
           - url: http://localhost:8080
             path: /~testpath~
-            client: \\"012\\"
+            client: '012'
         ui5:
           path:
             - /resources
