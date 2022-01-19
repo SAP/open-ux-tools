@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash/cloneDeep';
 
 /**
  * Definition of log method signature.
@@ -11,6 +11,10 @@ export type LogMethod = (message: string | object) => void;
 export interface Log {
     level: LogLevel;
     message: string | object;
+}
+
+export interface ChildLoggerOptions {
+    logPrefix: string;
 }
 
 /**
@@ -41,6 +45,11 @@ export interface Logger {
      * Returns a list of current transport instances
      */
     transports(): Transport[];
+    /**
+     * Create a child logger
+     * @param options
+     */
+    child(options: ChildLoggerOptions): Logger;
 }
 
 /**
@@ -79,5 +88,12 @@ export interface LoggerOptions {
      * Defaults to `LogLevel.Info`. Transports can optionally have their own log levels
      */
     logLevel?: LogLevel;
+    /**
+     * Array of transports @type {Transport[]} or destinations for the logs
+     */
     transports?: Transport[];
+    /**
+     * Prefix for the logs. Defaults to `main` if not supplied
+     */
+    logPrefix?: string;
 }

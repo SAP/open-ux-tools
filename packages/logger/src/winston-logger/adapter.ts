@@ -18,6 +18,78 @@ export function toWinstonLogLevel(logLevel?: LogLevel): string | undefined {
     return logLevel === undefined ? undefined : LogLevel[logLevel].toLowerCase();
 }
 
+const toWinstonTransportOptions = <OPT>(transportOptions: TransportOptions): OPT & { level?: string } => {
+    const { logLevel, ...opts } = transportOptions;
+    return Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) }) as OPT & { level?: string };
+};
+
+const levelColor: { [level: string]: string } = {
+    info: 'green',
+    warn: 'yellow',
+    error: 'red',
+    verbose: 'blue',
+    silly: 'magenta',
+    debug: 'cyan'
+};
+
+const hasColorSupport = () => process.stdout.isTTY;
+
+const colorFn = (color: string) => {
+    try {
+        return color ? chalk.keyword(color) : undefined;
+    } catch {
+        return undefined;
+    }
+};
+
+const ui5ToolingFormat = (moduleName: string): Format =>
+    format.combine(
+        format.colorize(),
+        format.label({ label: moduleName }),
+        format.printf(({ level, message, label }) => {
+            let msg = typeof message === 'string' ? message : inspect(message);
+            msg = msg.split(/\r?\n/).join(`\n${level} ${chalk.magenta(label)} `);
+            return `${level} ${chalk.magenta(label)} ${msg}`;
+        })
+    );
+const decorateLevel = (level: string) => {
+    const padded = level.padEnd(7);
+    if (hasColorSupport()) {
+        const decorator = colorFn(levelColor[level]);
+        if (decorator) {
+            return decorator(padded);
+        }
+    }
+    return padded;
+};
+/**
+ * Return a colored label if label and color are specified, _if_ we running on a TTY.
+ * Else return `''`
+ * @param label
+ * @param labelColor
+ * @returns {string} decorated label
+ */
+const decorateLabel = (label?: string, labelColor?: string): string => {
+    let l = label ?? '';
+    if (hasColorSupport() && label && typeof labelColor === 'string') {
+        const decorator = colorFn(labelColor);
+        if (decorator) {
+            l = decorator(label);
+        }
+    }
+    return l;
+};
+const consoleFormat = format.combine(
+    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    format.printf(({ timestamp, level, message, label, labelColor, ...meta }) => {
+        const msg = typeof message === 'string' ? message : inspect(message);
+        const lvl = decorateLevel(level);
+        return `${timestamp} ${lvl} ${decorateLabel(label, labelColor)}: ${msg} ${
+            Object.keys(meta).length ? inspect(meta) : ''
+        }`;
+    })
+);
+
 /**
  * Take a @type {Transport} and return the corresponding @type {WinstonTransport}
  *  Will throw an error if the transport is not recognized
@@ -46,28 +118,3 @@ export function toWinstonTransport(transport: Transport): WinstonTransport {
         throw new Error('Unrecognized transport type');
     }
 }
-
-const toWinstonTransportOptions = <OPT>(transportOptions: TransportOptions): OPT & { level?: string } => {
-    const { logLevel, ...opts } = transportOptions;
-    return Object.assign({}, opts, { level: toWinstonLogLevel(logLevel) }) as OPT & { level?: string };
-};
-
-const consoleFormat = format.combine(
-    process.stdout.isTTY ? format.colorize() : format.uncolorize(),
-    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    format.printf(({ timestamp, level, message, ...meta }) => {
-        const msg = typeof message === 'string' ? message : inspect(message);
-        return `${timestamp} ${level}: \t${msg} ${Object.keys(meta).length ? inspect(meta) : ''}`;
-    })
-);
-
-const ui5ToolingFormat = (moduleName: string): Format =>
-    format.combine(
-        format.colorize(),
-        format.label({ label: moduleName }),
-        format.printf(({ level, message, label }) => {
-            let msg = typeof message === 'string' ? message : inspect(message);
-            msg = msg.split(/\r?\n/).join(`\n${level} ${chalk.magenta(label)} `);
-            return `${level} ${chalk.magenta(label)} ${msg}`;
-        })
-    );

@@ -6214,14 +6214,23 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-], function (JSONModel, Device) {
-    \\"use strict\\";
+], 
+    /**
+     * provide app-view type models (as in the first \\"V\\" in MVVC)
+     * 
+     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+     * @param {typeof sap.ui.Device} Device
+     * 
+     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
+     */
+    function (JSONModel, Device) {
+        \\"use strict\\";
 
-    return {
-        createDeviceModel : function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
+        return {
+            createDeviceModel: function () {
+                var oModel = new JSONModel(Device);
+                oModel.setDefaultBindingMode(\\"OneWay\\");
+                return oModel;
         }
     };
 });",
@@ -6755,7 +6764,7 @@ server:
           - scp: true
             path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
-            client: \\"012\\"
+            client: '012'
             destination: SIDCLNT012
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
@@ -6792,7 +6801,7 @@ server:
           - scp: true
             path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
-            client: \\"012\\"
+            client: '012'
             destination: SIDCLNT012
     - name: fiori-tools-appreload
       afterMiddleware: compression
@@ -6835,7 +6844,7 @@ server:
           - scp: true
             path: /sap
             url: https://v2-products-review-exercise-beta2.cfapps.us10.hana.ondemand.com
-            client: \\"012\\"
+            client: '012'
             destination: SIDCLNT012
     - name: fiori-tools-appreload
       afterMiddleware: compression
@@ -9480,14 +9489,23 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-], function (JSONModel, Device) {
-    \\"use strict\\";
+], 
+    /**
+     * provide app-view type models (as in the first \\"V\\" in MVVC)
+     * 
+     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+     * @param {typeof sap.ui.Device} Device
+     * 
+     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
+     */
+    function (JSONModel, Device) {
+        \\"use strict\\";
 
-    return {
-        createDeviceModel : function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
+        return {
+            createDeviceModel: function () {
+                var oModel = new JSONModel(Device);
+                oModel.setDefaultBindingMode(\\"OneWay\\");
+                return oModel;
         }
     };
 });",
@@ -12338,14 +12356,23 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-], function (JSONModel, Device) {
-    \\"use strict\\";
+], 
+    /**
+     * provide app-view type models (as in the first \\"V\\" in MVVC)
+     * 
+     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+     * @param {typeof sap.ui.Device} Device
+     * 
+     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
+     */
+    function (JSONModel, Device) {
+        \\"use strict\\";
 
-    return {
-        createDeviceModel : function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
+        return {
+            createDeviceModel: function () {
+                var oModel = new JSONModel(Device);
+                oModel.setDefaultBindingMode(\\"OneWay\\");
+                return oModel;
         }
     };
 });",
