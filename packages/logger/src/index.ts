@@ -1,3 +1,3 @@
 export * from './types';
-export * from './extend';
+export * from './transports';
 export { WinstonLogger as ToolsLogger } from './winston-logger';

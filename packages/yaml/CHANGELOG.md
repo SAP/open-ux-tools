@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.11.1
+
+### Patch Changes
+
+-   04e4f35: chore(yaml) - update yaml dependency
+
 ## 0.11.0
 
 ### Minor Changes

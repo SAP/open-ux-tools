@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/logger",
-    "version": "0.8.0",
-    "description": "Module with utils common in Fiori tools",
+    "version": "0.1.1",
+    "description": "A simple logging module",
     "license": "SEE LICENSE IN LICENSE",
     "private": false,
     "main": "dist/index.js",
@@ -12,21 +12,22 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "jest --maxWorkers=1 --colors",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "debug": "4.3.2",
+        "chalk": "4.1.2",
         "lodash": "4.17.21",
+        "logform": "2.3.2",
         "winston": "3.3.3",
         "winston-transport": "4.4.1"
     },
     "devDependencies": {
         "@types/debug": "4.1.7",
         "@types/lodash": "4.14.176",
-        "@types/vscode": "1.63.1"
+        "@types/vscode": "1.63.1",
+        "jest-extended": "1.2.0"
     },
     "files": [
         "dist",
