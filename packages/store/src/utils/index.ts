@@ -1,11 +1,8 @@
-import { debug as d } from 'debug';
 import { homedir } from 'os';
 import path from 'path';
 
 export const STORE_NAMESPACE = 'ft:store';
 export const MIGRATION_NAMESPACE = STORE_NAMESPACE + ':migrate';
-export const newDebugLogger = (namespace = STORE_NAMESPACE): debug.Debugger => d(namespace);
-export const enableDebugLogger = (namespace: string): void => d.enable(namespace);
 
 /** Pick the properties listed and return a new object with a shallow-copy */
 export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undefined => {

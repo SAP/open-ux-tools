@@ -84,7 +84,3 @@ interface EntityKey<T> {
     getId: () => string;
 }
 ```
-## Debugging
-Get more debugging logs by setting the environment variable `DEBUG` to `ft:store`.
-
-For example, on the command line on a *nix: `DEBUG=ft:store \<command\> ...`

@@ -19,7 +19,6 @@
     },
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "debug": "4.3.2",
         "i18next": "20.3.2",
         "i18next-fs-backend": "1.1.1",
         "pluralize": "8.0.0",
@@ -29,7 +28,6 @@
         "keytar": "7.7.0"
     },
     "devDependencies": {
-        "@types/debug": "4.1.7",
         "@types/i18next-fs-backend": "1.0.0",
         "@types/pluralize": "0.0.29",
         "@types/qs": "6.9.1",

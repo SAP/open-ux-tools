@@ -1,5 +1,4 @@
-import { debug } from 'debug';
-import { enableDebugLogger, pick } from '../../../src/utils';
+import { pick } from '../../../src/utils';
 
 describe('pick', () => {
     it('returns undefined when called on undefined target', () => {
@@ -25,16 +24,5 @@ describe('pick', () => {
     it('non-existent props get an undefined value', () => {
         const o: { a: number; b?: string; c: number; d?: string } = { a: 1, b: undefined, c: 3 };
         expect(pick(o, 'a', 'd', 'b')).toEqual({ a: 1, b: undefined, d: undefined });
-    });
-});
-
-describe('enableDebugLogger', () => {
-    it('enables debug logging for the correct namespace', () => {
-        const mockDebugLogger = jest.spyOn(debug, 'enable');
-        const namespace = 'some_random_namespace';
-
-        enableDebugLogger(namespace);
-
-        expect(mockDebugLogger).toBeCalledWith(namespace);
     });
 });
