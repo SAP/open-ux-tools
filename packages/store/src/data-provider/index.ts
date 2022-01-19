@@ -1,4 +1,4 @@
-import { Logger } from '../utils';
+import { Logger } from '@sap-ux/logger';
 import { EntityKey } from '../entities';
 import { ServiceOptions } from '../types';
 

@@ -3,16 +3,17 @@ import { DataProvider, DataProviderConstructor } from '.';
 import { DataAccess } from '../data-access';
 import { HybridStore } from '../data-access/hybrid';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
-import { Logger } from '../utils';
+import { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class
-    implements DataProvider<BackendSystem, BackendSystemKey> {
+    implements DataProvider<BackendSystem, BackendSystemKey>
+{
     private readonly dataAccessor: DataAccess<BackendSystem>;
     private readonly entityName = Entities.BackendSystem;
     private readonly logger: Logger;
 
-	constructor(logger: Logger, options: ServiceOptions = {}) {
+    constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
         this.dataAccessor = new HybridStore(this.logger, options) as DataAccess<BackendSystem>;
     }

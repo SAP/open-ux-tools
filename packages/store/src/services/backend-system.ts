@@ -1,5 +1,4 @@
-import { Logger, getExtendedLogger } from '../utils';
-import { Logger as CommonLogger } from '@sap-ux/logger';
+import { Logger } from '@sap-ux/logger';
 import { Service } from '.';
 import { DataProvider } from '../data-provider';
 import { SystemDataProvider } from '../data-provider/backend-system';
@@ -11,8 +10,8 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     private readonly dataProvider: DataProvider<BackendSystem, BackendSystemKey>;
     private readonly logger: Logger;
 
-    constructor(logger: CommonLogger, options: ServiceOptions = {}) {
-        this.logger = getExtendedLogger(logger);
+    constructor(logger: Logger, options: ServiceOptions = {}) {
+        this.logger = logger;
         this.dataProvider = new SystemDataProvider(this.logger, options);
     }
     public async partialUpdate(
@@ -62,6 +61,6 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     }
 }
 
-export function getInstance(logger: CommonLogger, options: ServiceOptions = {}): SystemService {
+export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
     return new SystemService(logger, options);
 }

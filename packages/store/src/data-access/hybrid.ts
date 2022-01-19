@@ -1,9 +1,11 @@
 import { FilesystemStore } from './filesystem';
-import { pick, Logger } from '../utils';
+import { pick } from '../utils';
+import { Logger } from '@sap-ux/logger';
 import { getSecureStore, SecureStore } from '../secure-store';
 import { getSensitiveDataProperties, getSerializableProperties } from '../decorators';
 import { DataAccess, DataAccessConstructor } from '.';
 import { ServiceOptions } from '../types';
+import { inspect } from 'util';
 
 function getFullyQualifiedServiceName(name: string): string {
     return 'fiori/v2/' + name;
@@ -21,7 +23,7 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
     private readonly filesystem: DataAccess<object>;
     private readonly secureStore: SecureStore;
 
-	constructor(logger: Logger, options: ServiceOptions = {}) {
+    constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
         this.filesystem = new FilesystemStore(this.logger, options);
         this.secureStore = getSecureStore(this.logger);
@@ -38,7 +40,7 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
         if (!serialized) {
             this.logger.debug(`hybrid/read - id: [${id}], nothing on the filesystem`);
         } else {
-            this.logger.debug('hybrid/read - id: [%s], filesystem: %O', id, serialized);
+            this.logger.debug(`hybrid/read - id: [${id}], filesystem: ${inspect(serialized)}`);
         }
 
         const sensitiveData: Partial<Entity> | undefined = await this.secureStore.retrieve(
@@ -108,10 +110,10 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
         const serializable = pick(entity, ...serializableProps);
 
         if (serializable) {
-            this.logger.debug('hybrid/write - writing serializable properties: %O', serializable);
+            this.logger.debug(`hybrid/write - writing serializable properties: ${inspect(serializable)}`);
             await this.filesystem.write({ entityName, id, entity: serializable });
         } else {
-            this.logger.debug('hybrid/write - no serializable properties found in %O', serializable);
+            this.logger.debug(`hybrid/write - no serializable properties found in ${inspect(serializable)}`);
         }
 
         const sensitiveData = pick(entity, ...sensitiveProps);
@@ -119,7 +121,7 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
             this.logger.debug(`hybrid/write - writing sensitive properties to secure store. ID: [${id}]`);
             await this.secureStore.save(getFullyQualifiedServiceName(entityName), id, sensitiveData);
         } else {
-            this.logger.debug('hybrid/write - no sensitive properties found in %O', entity);
+            this.logger.debug(`hybrid/write - no sensitive properties found in ${inspect(entity)}`);
         }
 
         return entity;

@@ -1,5 +1,5 @@
 import { ServiceOptions } from '../types';
-import { Logger } from '../utils';
+import { Logger } from '@sap-ux/logger';
 
 export interface DataAccess<Entity> {
     read(options: { entityName: string; id: string }): Promise<undefined | Entity>;

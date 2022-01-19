@@ -1,11 +1,11 @@
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { FilesystemStore } from '../../../src/data-access/filesystem';
 import { Entities } from '../../../src/data-provider/constants';
 import { SystemMigrationStatusDataProvider } from '../../../src/data-provider/system-migration';
 import { SystemMigrationStatus, SystemMigrationStatusKey } from '../../../src/entities/system-migration-status';
-import { getExtendedLogger } from '../../../src/utils';
 
 describe('System migration data provider', () => {
-    const logger = getExtendedLogger(console);
+    const logger = new ToolsLogger({ transports: [new NullTransport()] });
 
     beforeEach(() => {
         jest.resetAllMocks();

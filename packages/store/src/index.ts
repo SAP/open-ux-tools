@@ -4,6 +4,7 @@ import { Entity } from './contants';
 import { initI18n, text } from './i18n';
 import { Service } from './services';
 import { getInstance as getSystemService } from './services/backend-system';
+import { getDefaultLogger } from './defaults';
 
 const services: {
     [entityName: string]: (logger: Logger, options: ServiceOptions) => Service<unknown, unknown>;
@@ -12,7 +13,7 @@ const services: {
 };
 
 export async function getService<Entity, Key>({
-    logger = console,
+    logger = getDefaultLogger(),
     entityName,
     options = {}
 }: {

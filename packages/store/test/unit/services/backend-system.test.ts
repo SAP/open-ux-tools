@@ -1,8 +1,8 @@
 import { SystemService } from '../../../src/services/backend-system';
-import { getExtendedLogger } from '../../../src/utils';
 import { BackendSystem, BackendSystemKey } from '../../../src';
 import { SystemDataProvider } from '../../../src/data-provider/backend-system';
 import { initI18n, text } from '../../../src/i18n';
+import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 
 jest.mock('../../../src/data-provider/backend-system');
 
@@ -15,7 +15,7 @@ describe('BackendSystem service', () => {
         jest.resetAllMocks();
     });
 
-    const logger = getExtendedLogger(console);
+    const logger = new ToolsLogger({ transports: [new NullTransport()] });
 
     describe('delete', () => {
         it('delegates to data provider', async () => {

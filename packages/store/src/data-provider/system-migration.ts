@@ -2,7 +2,7 @@ import { DataProvider, DataProviderConstructor } from '.';
 import { DataAccess } from '../data-access';
 import { FilesystemStore } from '../data-access/filesystem';
 import { SystemMigrationStatus, SystemMigrationStatusKey } from '../entities/system-migration-status';
-import { Logger } from '../utils';
+import { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
 
 export const SystemMigrationStatusDataProvider: DataProviderConstructor<

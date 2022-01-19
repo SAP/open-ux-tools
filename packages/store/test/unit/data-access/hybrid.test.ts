@@ -4,7 +4,7 @@ import { FilesystemStore } from '../../../src/data-access/filesystem';
 import { mocked } from 'ts-jest/utils';
 import { getSecureStore } from '../../../src/secure-store';
 import { HybridStore } from '../../../src/data-access/hybrid';
-import { getExtendedLogger } from '../../../src/utils';
+import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 
 jest.mock('../../../src/data-access/filesystem');
 const mockFileSystemAccess = mocked(FilesystemStore);
@@ -109,7 +109,7 @@ class HasSerializableAndSensitiveDataPropsWithDupes {
 }
 
 describe('hybrid store', () => {
-    const logger = getExtendedLogger(console);
+    const logger = new ToolsLogger({ transports: [new NullTransport()] });
 
     describe('read', () => {
         beforeEach(() => {

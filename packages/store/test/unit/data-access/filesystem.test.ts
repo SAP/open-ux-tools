@@ -4,8 +4,8 @@ import { basedir, FilesystemStore, getFilesystemWatcherFor } from '../../../src/
 import path from 'path';
 import fs, { FSWatcher } from 'fs';
 import { mocked } from 'ts-jest/utils';
-import { getExtendedLogger } from '../../../src/utils';
 import { Entity } from '../../../src';
+import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 
 jest.mock('fs', () => {
     return require('memfs');
@@ -19,7 +19,7 @@ jest.mock('os', () => {
 });
 
 describe('data-access/filesystem', () => {
-    const logger = getExtendedLogger(console);
+    const logger = new ToolsLogger({ transports: [new NullTransport()] });
 
     describe('read', () => {
         beforeEach(() => {

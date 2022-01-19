@@ -1,5 +1,4 @@
 import { debug as d } from 'debug';
-import { Logger as CommonLogger } from '@sap-ux/logger';
 import { homedir } from 'os';
 import path from 'path';
 
@@ -20,21 +19,6 @@ export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undef
         undefined
     );
 };
-
-export interface Logger extends CommonLogger {
-    debug: debug.Debugger;
-}
-
-/**
- * Extend the logger to add a debug method
- * @param l
- */
-export function getExtendedLogger(l: CommonLogger): Logger {
-    return {
-        ...l,
-        debug: newDebugLogger()
-    };
-}
 
 /** Given an `Error` or any other object thrown, returns an `Error` instance */
 export function errorInstance(e: Error | unknown): NodeJS.ErrnoException {

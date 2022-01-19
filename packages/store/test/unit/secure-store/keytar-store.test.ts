@@ -3,12 +3,13 @@ import { mocked } from 'ts-jest/utils';
 import { getSecureStore } from '../../../src/secure-store';
 import { KeytarStore } from '../../../src/secure-store/keytar-store';
 import fc from 'fast-check';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 jest.mock('keytar');
 const mockedKeytar = mocked(keytar, true);
 
 describe('KeytarStore', () => {
-    const store = getSecureStore(console);
+    const store = getSecureStore(new ToolsLogger({ transports: [new NullTransport()] }));
     const service = 'com/sap/dummy';
 
     beforeEach(() => {
@@ -65,13 +66,14 @@ describe('KeytarStore', () => {
             jest.clearAllMocks();
         });
 
+        const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
         test('Save returns false', async () => {
             mockedKeytar.setPassword.mockImplementation(() => {
                 throw new Error();
             });
             await fc.assert(
                 fc.asyncProperty(fc.string(), fc.string(), fc.anything(), async (service, key, value) => {
-                    (await new KeytarStore(console, mockedKeytar).save(service, key, value)) === false;
+                    (await new KeytarStore(nullLogger, mockedKeytar).save(service, key, value)) === false;
                 })
             );
         });
@@ -82,7 +84,7 @@ describe('KeytarStore', () => {
             });
             await fc.assert(
                 fc.asyncProperty(fc.string(), fc.string(), async (service, key) => {
-                    (await new KeytarStore(console, mockedKeytar).retrieve(service, key)) === undefined;
+                    (await new KeytarStore(nullLogger, mockedKeytar).retrieve(service, key)) === undefined;
                 })
             );
         });
@@ -93,7 +95,7 @@ describe('KeytarStore', () => {
             });
             await fc.assert(
                 fc.asyncProperty(fc.string(), fc.string(), async (service, key) => {
-                    (await new KeytarStore(console, mockedKeytar).delete(service, key)) === false;
+                    (await new KeytarStore(nullLogger, mockedKeytar).delete(service, key)) === false;
                 })
             );
         });
@@ -104,7 +106,7 @@ describe('KeytarStore', () => {
             });
             await fc.assert(
                 fc.asyncProperty(fc.string(), async (service) => {
-                    Object.keys(await new KeytarStore(console, mockedKeytar).getAll(service)).length === 0;
+                    Object.keys(await new KeytarStore(nullLogger, mockedKeytar).getAll(service)).length === 0;
                 })
             );
         });
