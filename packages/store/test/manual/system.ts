@@ -1,16 +1,17 @@
 import { getService, BackendSystem, BackendSystemKey, ServiceOptions } from '../../src';
 import os from 'os';
 import path from 'path';
+import { ConsoleTransport, ToolsLogger } from '@sap-ux/logger';
 
 async function main(action: string, basedir?: string): Promise<void> {
-    let opt: ServiceOptions;
+    let opt: ServiceOptions = {};
     if (basedir == 'br') {
         opt = { baseDirectory: 'foo' };
     } else if (basedir === 'ba') {
         opt = { baseDirectory: path.join(os.homedir(), 'foo', 'bar') };
     }
     const systemService = await getService<BackendSystem, BackendSystemKey>({
-        logger: console,
+        logger: new ToolsLogger({ transports: [new ConsoleTransport()] }),
         entityName: 'system',
         options: opt
     });
