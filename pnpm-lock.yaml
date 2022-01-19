@@ -225,12 +225,12 @@ importers:
             i18next: 20.3.2
             i18next-fs-backend: 1.1.1
             lodash.merge: 4.6.2
-            yaml: 2.0.0-6
+            yaml: 2.0.0-10
         dependencies:
             i18next: 20.3.2
             i18next-fs-backend: 1.1.1
             lodash.merge: 4.6.2
-            yaml: 2.0.0-6
+            yaml: 2.0.0-10
         devDependencies:
             '@types/i18next-fs-backend': 1.0.0
             '@types/lodash.merge': 4.6.6
@@ -8254,10 +8254,10 @@ packages:
             }
         dev: true
 
-    /yaml/2.0.0-6:
+    /yaml/2.0.0-10:
         resolution:
             {
-                integrity: sha512-YPUm0Z0sei53zauT7HWkkxyIBJhb9Gnf5jv4w4ahw5/v3PjFGhZOt4paXH6g9hzcMJqmNxZwoGfF1JzE2jvSgg==
+                integrity: sha512-FHV8s5ODFFQXX/enJEU2EkanNl1UDBUz8oa4k5Qo/sR+Iq7VmhCDkRMb0/mjJCNeAWQ31W8WV6PYStDE4d9EIw==
             }
         engines: { node: '>= 12' }
         dev: false
