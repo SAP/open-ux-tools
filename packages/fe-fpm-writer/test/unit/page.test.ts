@@ -97,6 +97,22 @@ describe('CustomPage', () => {
             expect(fs.read(join(target, `webapp/${folder}/CustomPage.view.xml`))).toMatchSnapshot();
             expect(fs.read(join(target, `webapp/${folder}/CustomPage.controller.js`))).toMatchSnapshot();
         });
+        test('with existing target files', () => {
+            const target = join(testDir, 'different-folder');
+            const folder = 'ext/different';
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            const viewPath = join(target, `webapp/${folder}/CustomPage.view.xml`);
+            fs.write(viewPath, 'viewContent');
+            const controllerPath = join(target, `webapp/${folder}/CustomPage.controller.js`);
+            fs.write(controllerPath, 'controllerContent');
+            //sut
+            generateCustomPage(target, { ...minimalInput, folder }, fs);
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(controllerPath)).toBe(true);
+            expect(fs.read(controllerPath)).toEqual('controllerContent');
+            expect(fs.exists(viewPath)).toBe(true);
+            expect(fs.read(viewPath)).toEqual('viewContent');
+        });
     });
 
     describe('generateCustomPage: different navigations', () => {

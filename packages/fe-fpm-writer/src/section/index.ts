@@ -70,12 +70,11 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
     const completeSection = enhanceConfig(customSection, manifestPath, manifest);
 
     // add event handler if requested
-    if (completeSection.eventHandler) {
-        fs.copyTpl(
-            join(root, 'common/EventHandler.js'),
-            join(completeSection.path, `${completeSection.name}.js`),
-            completeSection
-        );
+    const controllerPath = join(completeSection.path, `${completeSection.name}.js`);
+    if (!fs.exists(controllerPath)) {
+        if (completeSection.eventHandler) {
+            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, completeSection);
+        }
     }
 
     // enhance manifest with section definition
@@ -85,7 +84,9 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
 
     // add fragment
     const viewPath = join(completeSection.path, `${completeSection.name}.fragment.xml`);
-    fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeSection);
+    if (!fs.exists(viewPath)) {
+        fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeSection);
+    }
 
     return fs;
 }

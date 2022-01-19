@@ -51,7 +51,8 @@ describe('CustomAction', () => {
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
         });
-        test.each(testVersions)('generateCustomColumn, only mandatory properties', (ui5Version) => {
+
+        test.each(testVersions)('only mandatory properties', (ui5Version) => {
             //sut
             generateCustomColumn(testDir, { ...customColumn, ui5Version }, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
@@ -62,7 +63,8 @@ describe('CustomAction', () => {
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
-        test('generateCustomColumn 1.86, with handler, all properties', () => {
+
+        test('version 1.86, with new handler, all properties', () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 eventHandler: true,
@@ -80,7 +82,27 @@ describe('CustomAction', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
             expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
         });
-        test('generateCustomColumn 1.85, no handler, all properties', () => {
+        test('version 1.86, with existing handler, all properties', () => {
+            const controllerPath = 'my.test.App.ext.ExistingHandler.onCustomAction';
+            fs.write(controllerPath, 'dummyContent');
+            const testCustomColumn: CustomTableColumn = {
+                ...customColumn,
+                eventHandler: controllerPath,
+                availability: Availability.Adaptation,
+                horizontalAlign: HorizontalAlign.Center,
+                width: '150px',
+                properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
+            };
+            generateCustomColumn(testDir, { ...testCustomColumn, ui5Version: 1.86 }, fs);
+            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.controlConfiguration).toMatchSnapshot();
+
+            expect(fs.exists(controllerPath)).toBe(true);
+            expect(fs.read(controllerPath)).toEqual('dummyContent');
+        });
+        test('version 1.85, no handler, all properties', () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 availability: Availability.Adaptation,
@@ -95,7 +117,7 @@ describe('CustomAction', () => {
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
-        test('generateCustomColumn, custom control', () => {
+        test('with custom control passed in interface', () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 control: '<CustomXML text="" />'
@@ -108,7 +130,7 @@ describe('CustomAction', () => {
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
-        test('generateCustomColumn 1.85, no handler, no fs, all properties', () => {
+        test('version 1.85, no handler, no fs, all properties', () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 availability: Availability.Adaptation,
