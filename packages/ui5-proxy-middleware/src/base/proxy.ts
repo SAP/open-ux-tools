@@ -8,6 +8,7 @@ import { NextFunction } from 'express';
 /**
  * Function for proxying UI5 sources.
  *
+ * @param next - function for passing the request to the next available middleware
  * @param config - proxy configuration
  * @param options - additional configuration options
  * @param filter - custom filter function which will be applied to all requests
@@ -28,11 +29,7 @@ export const ui5Proxy = (next: NextFunction, config: UI5Config, options?: Option
         },
         pathRewrite: { [config.path]: ui5Ver + config.path },
         onProxyRes: responseInterceptor(
-            async (
-                responseBuffer: Buffer,
-                proxyRes: IncomingMessage,
-                req: IncomingMessage
-            ): Promise<string | Buffer> => {
+            async (responseBuffer: Buffer, proxyRes: IncomingMessage): Promise<string | Buffer> => {
                 return proxyResponseHandler(responseBuffer, proxyRes, next, etag);
             }
         )

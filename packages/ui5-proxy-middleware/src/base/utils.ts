@@ -6,8 +6,11 @@ import { NextFunction } from 'express';
  * Handler for the proxy response event.
  * Sets an Etag which will be used for re-validation of the cached UI5 sources.
  *
+ * @param responseBuffer - response data as buffer
  * @param proxyRes - proxy response object
+ * @param next - function for passing the request to the next available middleware
  * @param etag - ETag for the cached sources, normally the UI5 version
+ * @returns Response data
  */
 export const proxyResponseHandler = (
     responseBuffer: Buffer,
