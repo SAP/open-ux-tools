@@ -8,7 +8,7 @@ describe('ui5Proxy', () => {
         jest.clearAllMocks();
     });
 
-    test('ui5Proxy: default params', () => {
+    test('ui5Proxy: default params', async () => {
         const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const proxyResponseHandlerSpy = jest.spyOn(utils, 'proxyResponseHandler').mockImplementation(jest.fn());
         const proxyRequestHandlerSpy = jest.spyOn(utils, 'proxyRequestHandler').mockImplementation(jest.fn());
@@ -17,28 +17,21 @@ describe('ui5Proxy', () => {
             url: 'https://example.example',
             version: '1.0.0'
         };
-        const proxyRes = { headers: {} as any };
-        const proxyReq = {
-            getHeader: () => {
-                return 'W/"1.0.0"';
-            }
-        };
+
         const req = {
             headers: {
                 accept: 'text/html',
                 'accept-encoding': 'gzip'
             }
         };
-        const res = {
-            statusCode: undefined,
-            end: jest.fn()
-        };
-        ui5Proxy(config);
+
+        ui5Proxy(jest.fn(), config);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
         const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
         expect(defaultFilterFn).toEqual(expect.any(Function));
         const expectedOptions = createProxyMiddlewareSpy.mock.calls[0][1];
         expect(expectedOptions?.changeOrigin).toBeTruthy();
+        expect(expectedOptions?.selfHandleResponse).toBeTruthy();
         expect(expectedOptions?.target).toEqual('https://example.example');
         expect(expectedOptions?.onProxyReq).toEqual(expect.any(Function));
         expect(expectedOptions?.onProxyRes).toEqual(expect.any(Function));
@@ -47,12 +40,6 @@ describe('ui5Proxy', () => {
         if (typeof defaultFilterFn === 'function') {
             defaultFilterFn('', req as any);
             expect(req.headers['accept-encoding']).toBeUndefined();
-        }
-
-        if (typeof expectedOptions?.onProxyRes === 'function') {
-            expectedOptions.onProxyRes({} as any, {} as any, {} as any);
-            expect(proxyResponseHandlerSpy).toHaveBeenCalledTimes(1);
-            expect(proxyResponseHandlerSpy).toHaveBeenCalledWith({}, 'W/"1.0.0"');
         }
 
         if (typeof expectedOptions?.onProxyReq === 'function') {
@@ -79,7 +66,7 @@ describe('ui5Proxy', () => {
                 'accept-encoding': 'gzip'
             }
         };
-        ui5Proxy(config, options);
+        ui5Proxy(jest.fn(), config, options);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
         const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
         expect(defaultFilterFn).toEqual(expect.any(Function));
@@ -106,7 +93,7 @@ describe('ui5Proxy', () => {
             return true;
         };
 
-        ui5Proxy(config, {}, customFilterFn);
+        ui5Proxy(jest.fn(), config, {}, customFilterFn);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
         const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
         expect(defaultFilterFn).toEqual(customFilterFn);

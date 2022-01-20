@@ -1,9 +1,9 @@
-import { createProxyMiddleware, Filter, Options } from 'http-proxy-middleware';
+import { createProxyMiddleware, Filter, Options, responseInterceptor } from 'http-proxy-middleware';
 import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { UI5Config } from './types';
 import { proxyRequestHandler, proxyResponseHandler } from './utils';
-import { ToolsLogger } from '@sap-ux/logger';
-import { UI5ToolingTransport } from '@sap-ux/logger/dist/transports';
+import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { NextFunction } from 'express';
 
 /**
  * Function for proxying UI5 sources.
@@ -13,7 +13,7 @@ import { UI5ToolingTransport } from '@sap-ux/logger/dist/transports';
  * @param filter - custom filter function which will be applied to all requests
  * @returns Proxy function to use
  */
-export const ui5Proxy = (config: UI5Config, options?: Options, filter?: Filter) => {
+export const ui5Proxy = (next: NextFunction, config: UI5Config, options?: Options, filter?: Filter) => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
@@ -22,13 +22,20 @@ export const ui5Proxy = (config: UI5Config, options?: Options, filter?: Filter) 
     const proxyConfig: Options = {
         target: config.url,
         changeOrigin: true,
+        selfHandleResponse: true,
         onProxyReq: (proxyReq: ClientRequest, req: IncomingMessage, res: ServerResponse): void => {
             proxyRequestHandler(proxyReq, res, etag, logger);
         },
         pathRewrite: { [config.path]: ui5Ver + config.path },
-        onProxyRes: (proxyRes: IncomingMessage): void => {
-            proxyResponseHandler(proxyRes, etag);
-        }
+        onProxyRes: responseInterceptor(
+            async (
+                responseBuffer: Buffer,
+                proxyRes: IncomingMessage,
+                req: IncomingMessage
+            ): Promise<string | Buffer> => {
+                return proxyResponseHandler(responseBuffer, proxyRes, next, etag);
+            }
+        )
     };
     Object.assign(proxyConfig, options);
 

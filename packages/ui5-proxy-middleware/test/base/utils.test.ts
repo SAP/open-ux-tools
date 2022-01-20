@@ -15,7 +15,7 @@ describe('Utils', () => {
             headers: {} as any
         };
         const etag = 'W/MyEtag';
-        proxyResponseHandler(proxyRes as any, etag);
+        proxyResponseHandler({} as any, proxyRes as any, jest.fn(), etag);
         expect(proxyRes.headers['Etag']).toEqual(etag);
         expect(proxyRes.headers['cache-control']).toEqual('no-cache');
     });

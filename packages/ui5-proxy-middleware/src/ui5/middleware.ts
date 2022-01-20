@@ -1,4 +1,4 @@
-import express, { RequestHandler } from 'express';
+import express, { RequestHandler, NextFunction, Request, Response } from 'express';
 import { MiddlewareParameters, ProxyConfig } from '../base/types';
 import { ui5Proxy } from '../base/proxy';
 import { getCorporateProxyServer, isHostExcludedFromProxy } from '../base/utils';
@@ -16,6 +16,7 @@ module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandle
     const debug = !!config.debug;
     const noProxyVal = process.env.no_proxy || process.env.npm_config_noproxy;
     const corporateProxyServer = getCorporateProxyServer(config.proxy);
+    // hide user and pass from proxy configuration for displaying it in the terminal
     const proxyInfo = corporateProxyServer
         ? corporateProxyServer.replace(/\/\/(.*:{0,1}.*@)/, '//***:***@')
         : corporateProxyServer;
@@ -37,7 +38,9 @@ module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandle
         if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
             proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
         }
-        router.use(ui5Config.path, ui5Proxy(ui5Config, proxyOptions));
+        router.use(ui5Config.path, (req: Request, res: Response, next: NextFunction) => {
+            ui5Proxy(next, ui5Config, proxyOptions);
+        });
     }
 
     return router;

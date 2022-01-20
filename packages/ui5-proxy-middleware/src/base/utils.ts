@@ -1,5 +1,6 @@
 import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { ToolsLogger } from '@sap-ux/logger';
+import { NextFunction } from 'express';
 
 /**
  * Handler for the proxy response event.
@@ -8,9 +9,28 @@ import { ToolsLogger } from '@sap-ux/logger';
  * @param proxyRes - proxy response object
  * @param etag - ETag for the cached sources, normally the UI5 version
  */
-export const proxyResponseHandler = (proxyRes: IncomingMessage, etag: string): void => {
-    proxyRes.headers['Etag'] = etag;
-    proxyRes.headers['cache-control'] = 'no-cache';
+export const proxyResponseHandler = (
+    responseBuffer: Buffer,
+    proxyRes: IncomingMessage,
+    next: NextFunction,
+    etag: string
+): Promise<string | Buffer> => {
+    return new Promise((resolve) => {
+        /*
+         Forward the request to the next available middleware in case of 404
+        */
+        if (proxyRes.statusCode === 404) {
+            next();
+        } else {
+            /*
+             Enables re-validation of cached ui5 source.
+             The re-validation is performed by an ETag, which is normally the UI5 version.
+            */
+            proxyRes.headers['Etag'] = etag;
+            proxyRes.headers['cache-control'] = 'no-cache';
+            resolve(responseBuffer);
+        }
+    });
 };
 
 /**
