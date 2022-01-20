@@ -70,9 +70,9 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
     const completeSection = enhanceConfig(customSection, manifestPath, manifest);
 
     // add event handler if requested
-    const controllerPath = join(completeSection.path, `${completeSection.name}.js`);
-    if (!fs.exists(controllerPath)) {
-        if (completeSection.eventHandler) {
+    if (completeSection.eventHandler) {
+        const controllerPath = join(completeSection.path, `${completeSection.name}.js`);
+        if (!fs.exists(controllerPath)) {
             fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, completeSection);
         }
     }

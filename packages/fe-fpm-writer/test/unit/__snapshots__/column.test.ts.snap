@@ -229,25 +229,17 @@ exports[`CustomAction generateCustomColumn version 1.85, no handler, no fs, all 
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn version 1.86, with existing handler, all properties 1`] = `
+exports[`CustomAction generateCustomColumn version 1.86, with existing handler 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
       "NewCustomColumn": Object {
-        "availability": "Adaptation",
         "header": "col header",
-        "horizontalAlign": "Center",
         "position": Object {
           "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
-        "properties": Array [
-          "ID",
-          "TotalNetAmount",
-          "_CustomerPaymentTerms/CustomerPaymentTerms",
-        ],
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
-        "width": "150px",
       },
     },
   },

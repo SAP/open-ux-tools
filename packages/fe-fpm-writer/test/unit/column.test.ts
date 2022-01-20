@@ -82,16 +82,12 @@ describe('CustomAction', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
             expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
         });
-        test('version 1.86, with existing handler, all properties', () => {
+        test('version 1.86, with existing handler', () => {
             const controllerPath = 'my.test.App.ext.ExistingHandler.onCustomAction';
             fs.write(controllerPath, 'dummyContent');
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
-                eventHandler: controllerPath,
-                availability: Availability.Adaptation,
-                horizontalAlign: HorizontalAlign.Center,
-                width: '150px',
-                properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
+                eventHandler: controllerPath
             };
             generateCustomColumn(testDir, { ...testCustomColumn, ui5Version: 1.86 }, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
