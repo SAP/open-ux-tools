@@ -4,8 +4,7 @@ import { ui5Proxy } from '../base/proxy';
 import { getCorporateProxyServer, isHostExcludedFromProxy } from '../base/utils';
 import { Options } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import { ToolsLogger } from '@sap-ux/logger';
-import { UI5ToolingTransport } from '@sap-ux/logger/dist/transports';
+import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 
 module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandler => {
     const logger = new ToolsLogger({

@@ -14,7 +14,7 @@ describe('ui5Proxy', () => {
         const proxyRequestHandlerSpy = jest.spyOn(utils, 'proxyRequestHandler').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
-            url: 'https://example.com',
+            url: 'https://example.example',
             version: '1.0.0'
         };
         const proxyRes = { headers: {} as any };
@@ -39,7 +39,7 @@ describe('ui5Proxy', () => {
         expect(defaultFilterFn).toEqual(expect.any(Function));
         const expectedOptions = createProxyMiddlewareSpy.mock.calls[0][1];
         expect(expectedOptions?.changeOrigin).toBeTruthy();
-        expect(expectedOptions?.target).toEqual('https://example.com');
+        expect(expectedOptions?.target).toEqual('https://example.example');
         expect(expectedOptions?.onProxyReq).toEqual(expect.any(Function));
         expect(expectedOptions?.onProxyRes).toEqual(expect.any(Function));
         expect(expectedOptions?.pathRewrite).toEqual({ '/mypath': '/1.0.0/mypath' });
@@ -66,7 +66,7 @@ describe('ui5Proxy', () => {
         const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
-            url: 'https://example.com',
+            url: 'https://example.example',
             version: ''
         };
         const options: hpm.Options = {
@@ -98,7 +98,7 @@ describe('ui5Proxy', () => {
         const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
-            url: 'https://example.com',
+            url: 'https://example.example',
             version: ''
         };
         const customFilterFn: hpm.Filter = (_pathname, _req) => {

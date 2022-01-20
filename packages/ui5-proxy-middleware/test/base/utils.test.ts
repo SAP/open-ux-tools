@@ -53,8 +53,8 @@ describe('Utils', () => {
     });
 
     test('isHostExcludedFromProxy', () => {
-        const noProxyConfig = 'example.com';
-        const host = 'http://www.example.com';
+        const noProxyConfig = 'example.example';
+        const host = 'http://www.example.example';
         expect(isHostExcludedFromProxy(noProxyConfig, host)).toBeTruthy();
         expect(isHostExcludedFromProxy(undefined, host)).toBeFalsy();
     });
