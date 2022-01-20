@@ -29,7 +29,7 @@ export function getPackageJsonTasks({
     localStartFile?: string;
 }): { start: string; 'start-local': string; 'start-noflp': string; 'start-mock'?: string } {
     const sapClientParam = sapClient ? `?sap-client=${sapClient}` : '';
-    let urlParam = [sapClientParam, 'data-sap-ui-xx-viewCache=false'].filter((param) => !!param).join('&');
+    let urlParam = [sapClientParam, 'sap-ui-xx-viewCache=false'].filter((param) => !!param).join('&');
     urlParam = urlParam ? `?${urlParam}` : '';
     const params = `${urlParam}${flpAppId ? `#${flpAppId}` : ''}`;
     const startCommand = localOnly
