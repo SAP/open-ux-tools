@@ -29,7 +29,9 @@ export function getPackageJsonTasks({
     localStartFile?: string;
 }): { start: string; 'start-local': string; 'start-noflp': string; 'start-mock'?: string } {
     const sapClientParam = sapClient ? `?sap-client=${sapClient}` : '';
-    const params = `${sapClientParam ?? ''}${flpAppId ? `#${flpAppId}` : ''}`;
+    let urlParam = [sapClientParam, 'data-sap-ui-xx-viewCache=false'].filter((param) => !!param).join('&');
+    urlParam = urlParam ? `?${urlParam}` : '';
+    const params = `${urlParam}${flpAppId ? `#${flpAppId}` : ''}`;
     const startCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
         : `fiori run --open '${startFile || 'test/flpSandbox.html'}${params}'`;
@@ -38,7 +40,7 @@ export function getPackageJsonTasks({
     }${params}'`;
     const startNoFlpCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : `fiori run --open '${'index.html'}${sapClientParam}'`;
+        : `fiori run --open '${'index.html'}${urlParam}'`;
 
     const mockTask = `fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html${params}'`;
     return Object.assign(

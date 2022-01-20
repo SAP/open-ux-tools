@@ -34,13 +34,13 @@ archive.zip
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open 'test/flpSandbox.html#testme-app'\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#testme-app'\\",
+    \\"start\\": \\"fiori run --open 'test/flpSandbox.html?data-sap-ui-xx-viewCache=false#testme-app'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?data-sap-ui-xx-viewCache=false#testme-app'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open 'index.html'\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html#testme-app'\\"
+    \\"start-noflp\\": \\"fiori run --open 'index.html?data-sap-ui-xx-viewCache=false'\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?data-sap-ui-xx-viewCache=false#testme-app'\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
