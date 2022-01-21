@@ -1,6 +1,18 @@
 import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { ToolsLogger } from '@sap-ux/logger';
-import { NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { UI5Config } from './types';
+import { existsSync, promises } from 'fs';
+import { parseDocument } from 'yaml';
+import { join } from 'path';
+import {
+    BOOTSTRAP_LINK,
+    BOOTSTRAP_REGEX,
+    BOOTSTRAP_REPLACE_REGEX,
+    SANDBOX_LINK,
+    SANDBOX_REGEX,
+    SANDBOX_REPLACE_REGEX
+} from './constants';
 
 /**
  * Handler for the proxy response event.
@@ -91,4 +103,126 @@ export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, host:
         return host.includes(entry);
     });
     return !!found;
+};
+
+/**
+ * Returns the name of html file, which is used to preview the application, from the URL
+ *
+ * @param url html request url
+ */
+export const getHtmlFile = (url: string): string => {
+    let html = url;
+    if (html.indexOf('?') !== -1) {
+        html = html.split('?')[0].replace(/["']/g, '');
+    } else if (html.indexOf('#') !== -1) {
+        html = html.split('#')[0].replace(/["']/g, '');
+    } else {
+        html = html.replace(/["']/g, '');
+    }
+
+    return html;
+};
+
+/**
+ * Returns the name of the yaml file, which is used to for the server configuration, from the runtime arguments
+ *
+ * @param args runtime arguments
+ */
+export const getYamlFile = (args: string[]): string => {
+    let yaml = 'ui5.yaml';
+    const index = args.indexOf('--config') !== -1 ? args.indexOf('--config') : args.indexOf('-c');
+
+    if (index !== -1) {
+        yaml = args[index + 1];
+    }
+
+    return yaml;
+};
+
+/**
+ * Gets the path to the webapp folder from the YAML file
+ *
+ * @param ui5YamlPath path to the yaml file
+ */
+export const getWebAppFolderFromYaml = async (ui5YamlPath: string): Promise<string> => {
+    let webAppFolder = 'webapp';
+
+    if (existsSync(ui5YamlPath)) {
+        const ui5Yaml = parseDocument(await promises.readFile(ui5YamlPath, { encoding: 'utf8' })).toJSON();
+
+        if (ui5Yaml.resources?.configuration?.paths?.webapp) {
+            webAppFolder = ui5Yaml.resources.configuration.paths.webapp;
+        }
+    }
+
+    return webAppFolder;
+};
+
+/**
+ * Sends HTML content as a response
+ *
+ * @param res The http response object
+ * @param html The HTML content
+ */
+export const setHtmlResponse = (res: any, html: string): void => {
+    if (res['_livereload']) {
+        res.write(html);
+        res.end();
+    } else {
+        res.status(200).contentType('html').send(html);
+    }
+};
+
+export const injectUI5Url = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    ui5Configs: UI5Config[]
+): Promise<void> => {
+    try {
+        const projectRoot = process.cwd();
+        const args = process.argv;
+        const htmlFileName = getHtmlFile(req.baseUrl);
+        const yamlFileName = getYamlFile(args);
+        const ui5YamlPath = join(projectRoot, yamlFileName);
+        const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
+        const htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
+
+        if (existsSync(htmlFilePath)) {
+            let html = await promises.readFile(htmlFilePath, { encoding: 'utf8' });
+            for (const ui5Config of ui5Configs) {
+                const ui5Host = ui5Config.url.replace(/\/$/, '');
+                const ui5Version = ui5Config.version ? ui5Config.version : '';
+
+                if (ui5Config.path === '/resources') {
+                    const bootstrap = html.match(BOOTSTRAP_REGEX);
+                    const resourcesUrl = ui5Version
+                        ? `src="${ui5Host}/${ui5Version}/${BOOTSTRAP_LINK}"`
+                        : `src="${ui5Host}/${BOOTSTRAP_LINK}"`;
+                    if (bootstrap) {
+                        const oldBoostrap = bootstrap[1];
+                        const newBootstrap = oldBoostrap.replace(BOOTSTRAP_REPLACE_REGEX, resourcesUrl);
+                        html = html.replace(oldBoostrap, newBootstrap);
+                    }
+                }
+
+                if (ui5Config.path === '/test-resources') {
+                    const sandbox = html.match(SANDBOX_REGEX);
+                    const testResourcesUrl = ui5Version
+                        ? `src="${ui5Host}/${ui5Version}/${SANDBOX_LINK}"`
+                        : `src="${ui5Host}/${SANDBOX_LINK}"`;
+                    if (sandbox) {
+                        const oldSandbox = sandbox[1];
+                        const newSandbox = oldSandbox.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
+                        html = html.replace(oldSandbox, newSandbox);
+                    }
+                }
+            }
+            setHtmlResponse(res, html);
+        } else {
+            next();
+        }
+    } catch (error) {
+        next(error);
+    }
 };

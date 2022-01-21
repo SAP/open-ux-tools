@@ -1,10 +1,16 @@
 import express, { RequestHandler, NextFunction, Request, Response } from 'express';
-import { MiddlewareParameters, ProxyConfig } from '../base/types';
-import { ui5Proxy } from '../base/proxy';
-import { getCorporateProxyServer, isHostExcludedFromProxy } from '../base/utils';
 import { Options } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import {
+    getCorporateProxyServer,
+    HTML_MOUNT_PATHS,
+    injectUI5Url,
+    isHostExcludedFromProxy,
+    MiddlewareParameters,
+    ProxyConfig,
+    ui5Proxy
+} from '../base';
 
 module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandler => {
     const logger = new ToolsLogger({
@@ -14,6 +20,7 @@ module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandle
     const config = options.configuration;
     const secure = !!config.secure;
     const debug = !!config.debug;
+    const directLoad = !!config.directLoad;
     const noProxyVal = process.env.no_proxy || process.env.npm_config_noproxy;
     const corporateProxyServer = getCorporateProxyServer(config.proxy);
     // hide user and pass from proxy configuration for displaying it in the terminal
@@ -40,6 +47,12 @@ module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandle
         }
         router.use(ui5Config.path, (req: Request, res: Response, next: NextFunction) => {
             ui5Proxy(next, ui5Config, proxyOptions);
+        });
+    }
+
+    if (directLoad) {
+        router.use(HTML_MOUNT_PATHS, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+            await injectUI5Url(req, res, next, config.ui5);
         });
     }
 

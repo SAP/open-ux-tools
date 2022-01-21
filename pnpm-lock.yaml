@@ -188,11 +188,13 @@ importers:
             express: 4.17.2
             http-proxy-middleware: 2.0.1
             https-proxy-agent: 5.0.0
+            yaml: 2.0.0-10
         dependencies:
             '@sap-ux/logger': link:../logger
             express: 4.17.2
             http-proxy-middleware: 2.0.1
             https-proxy-agent: 5.0.0
+            yaml: 2.0.0-10
         devDependencies:
             '@types/express': 4.17.13
 
