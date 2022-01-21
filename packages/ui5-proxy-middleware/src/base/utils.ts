@@ -106,9 +106,10 @@ export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, host:
 };
 
 /**
- * Returns the name of html file, which is used to preview the application, from the URL
+ * Returns the name of html file, which is used to preview the application, from the URL.
  *
- * @param url html request url
+ * @param url - html request url
+ * @returns Name of the html file
  */
 export const getHtmlFile = (url: string): string => {
     let html = url;
@@ -124,9 +125,10 @@ export const getHtmlFile = (url: string): string => {
 };
 
 /**
- * Returns the name of the yaml file, which is used to for the server configuration, from the runtime arguments
+ * Returns the name of the yaml file, which is used to for the server configuration, from the runtime arguments.
  *
- * @param args runtime arguments
+ * @param args - runtime arguments
+ * @returns Name of the YAML file
  */
 export const getYamlFile = (args: string[]): string => {
     let yaml = 'ui5.yaml';
@@ -140,9 +142,10 @@ export const getYamlFile = (args: string[]): string => {
 };
 
 /**
- * Gets the path to the webapp folder from the YAML file
+ * Gets the path to the webapp folder from the YAML file.
  *
- * @param ui5YamlPath path to the yaml file
+ * @param ui5YamlPath - path to the yaml file
+ * @returns Path to the webapp folder
  */
 export const getWebAppFolderFromYaml = async (ui5YamlPath: string): Promise<string> => {
     let webAppFolder = 'webapp';
@@ -159,10 +162,10 @@ export const getWebAppFolderFromYaml = async (ui5YamlPath: string): Promise<stri
 };
 
 /**
- * Sends HTML content as a response
+ * Sends HTML content as a response.
  *
- * @param res The http response object
- * @param html The HTML content
+ * @param res - The http response object
+ * @param html - The HTML content
  */
 export const setHtmlResponse = (res: any, html: string): void => {
     if (res['_livereload']) {
@@ -173,6 +176,14 @@ export const setHtmlResponse = (res: any, html: string): void => {
     }
 };
 
+/**
+ * Injects the absolute UI5 urls into the html file, which is used to preview the application.
+ *
+ * @param req - the http request object
+ * @param res - the http response object
+ * @param next - the next function, used to forward the request to the next available handler
+ * @param ui5Configs - the UI5 configuration of the ui5-proxy-middleware
+ */
 export const injectUI5Url = async (
     req: Request,
     res: Response,
