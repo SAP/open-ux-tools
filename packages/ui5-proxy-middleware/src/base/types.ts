@@ -1,3 +1,6 @@
+import { NextFunction } from 'express';
+import { IncomingMessage } from 'http';
+
 export interface UI5Config {
     path: string;
     url: string;
@@ -19,3 +22,8 @@ export interface MiddlewareParameters<T> {
         configuration: T;
     };
 }
+
+export interface UI5ProxyRequest {
+    next?: NextFunction;
+}
+export type ProxyRequest = IncomingMessage & UI5ProxyRequest;

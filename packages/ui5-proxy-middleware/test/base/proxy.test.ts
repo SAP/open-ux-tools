@@ -10,7 +10,6 @@ describe('ui5Proxy', () => {
 
     test('ui5Proxy: default params', () => {
         const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
-        const proxyResponseHandlerSpy = jest.spyOn(utils, 'proxyResponseHandler').mockImplementation(jest.fn());
         const proxyRequestHandlerSpy = jest.spyOn(utils, 'proxyRequestHandler').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
@@ -40,12 +39,6 @@ describe('ui5Proxy', () => {
         if (typeof defaultFilterFn === 'function') {
             defaultFilterFn('', req as any);
             expect(req.headers['accept-encoding']).toBeUndefined();
-        }
-
-        if (typeof expectedOptions?.onProxyRes === 'function') {
-            expectedOptions.onProxyRes({} as any, {} as any, {} as any);
-            expect(proxyResponseHandlerSpy).toHaveBeenCalledTimes(1);
-            expect(proxyResponseHandlerSpy).toHaveBeenCalledWith({}, 'W/"1.0.0"');
         }
 
         if (typeof expectedOptions?.onProxyReq === 'function') {

@@ -1,7 +1,7 @@
 import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { ToolsLogger } from '@sap-ux/logger';
 import { NextFunction, Request, Response } from 'express';
-import { UI5Config } from './types';
+import { UI5Config, ProxyRequest } from './types';
 import { existsSync, promises } from 'fs';
 import { parseDocument } from 'yaml';
 import { join } from 'path';
@@ -20,14 +20,14 @@ import {
  *
  * @param responseBuffer - response data as buffer
  * @param proxyRes - proxy response object
- * @param next - function for passing the request to the next available middleware
+ * @param req - function for passing the request to the next available middleware
  * @param etag - ETag for the cached sources, normally the UI5 version
  * @returns Response data
  */
 export const proxyResponseHandler = (
     responseBuffer: Buffer,
     proxyRes: IncomingMessage,
-    req: any,
+    req: ProxyRequest,
     etag: string
 ): Promise<string | Buffer> => {
     return new Promise((resolve) => {
@@ -35,7 +35,11 @@ export const proxyResponseHandler = (
          Forward the request to the next available middleware in case of 404
         */
         if (proxyRes.statusCode === 404) {
-            req.next();
+            if (req.next) {
+                req.next();
+            } else {
+                resolve(responseBuffer);
+            }
         } else {
             /*
              Enables re-validation of cached ui5 source.

@@ -183,7 +183,7 @@ importers:
 
     packages/ui5-proxy-middleware:
         specifiers:
-            '@sap-ux/logger': 0.1.1
+            '@sap-ux/logger': workspace:*
             '@types/express': 4.17.13
             express: 4.17.2
             http-proxy-middleware: 2.0.1

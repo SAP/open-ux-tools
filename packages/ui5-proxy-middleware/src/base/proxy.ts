@@ -7,7 +7,6 @@ import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 /**
  * Function for proxying UI5 sources.
  *
- * @param next - function for passing the request to the next available middleware
  * @param config - proxy configuration
  * @param options - additional configuration options
  * @param filter - custom filter function which will be applied to all requests
