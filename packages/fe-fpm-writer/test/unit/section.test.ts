@@ -152,7 +152,7 @@ describe('CustomSection', () => {
             expect(fs.read(fragmentPath)).toMatchSnapshot();
         });
 
-        const testVersions = [1.9, 1.85, 1.84, 1.86, 1.9];
+        const testVersions = [1.9, 1.85, 1.84, 1.86, 1.98];
         for (const ui5Version of testVersions) {
             test(`Versions ${ui5Version}, with handler, all properties`, () => {
                 const testCustomSection: CustomSection = {

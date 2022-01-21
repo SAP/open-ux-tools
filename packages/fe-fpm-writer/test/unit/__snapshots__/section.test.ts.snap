@@ -46,52 +46,6 @@ exports[`CustomSection generateCustomSection Versions 1.9, with handler, all pro
 "
 `;
 
-exports[`CustomSection generateCustomSection Versions 1.9, with handler, all properties 4`] = `
-Object {
-  "body": Object {
-    "sections": Object {
-      "ExistingCustomSection": Object {
-        "position": Object {
-          "anchor": "IncidentOverviewFacet",
-          "placement": "Before",
-        },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
-        "title": "Custom Title",
-      },
-      "NewCustomSection": Object {
-        "position": Object {
-          "anchor": "DummyFacet",
-          "placement": "After",
-        },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
-        "title": "New Custom Section",
-      },
-    },
-  },
-}
-`;
-
-exports[`CustomSection generateCustomSection Versions 1.9, with handler, all properties 5`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomSection generateCustomSection Versions 1.9, with handler, all properties 6`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function() {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
 exports[`CustomSection generateCustomSection Versions 1.84, with handler, all properties 1`] = `
 Object {
   "body": Object {
@@ -218,6 +172,52 @@ exports[`CustomSection generateCustomSection Versions 1.86, with handler, all pr
 `;
 
 exports[`CustomSection generateCustomSection Versions 1.86, with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomSection generateCustomSection Versions 1.98, with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingCustomSection": Object {
+        "position": Object {
+          "anchor": "IncidentOverviewFacet",
+          "placement": "Before",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+        "title": "Custom Title",
+      },
+      "NewCustomSection": Object {
+        "position": Object {
+          "anchor": "DummyFacet",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "title": "New Custom Section",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomSection generateCustomSection Versions 1.98, with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomSection generateCustomSection Versions 1.98, with handler, all properties 3`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
