@@ -27,7 +27,7 @@ import {
 export const proxyResponseHandler = (
     responseBuffer: Buffer,
     proxyRes: IncomingMessage,
-    next: NextFunction,
+    req: any,
     etag: string
 ): Promise<string | Buffer> => {
     return new Promise((resolve) => {
@@ -35,7 +35,7 @@ export const proxyResponseHandler = (
          Forward the request to the next available middleware in case of 404
         */
         if (proxyRes.statusCode === 404) {
-            next();
+            req.next();
         } else {
             /*
              Enables re-validation of cached ui5 source.

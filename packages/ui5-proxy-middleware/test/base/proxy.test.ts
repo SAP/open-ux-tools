@@ -8,7 +8,7 @@ describe('ui5Proxy', () => {
         jest.clearAllMocks();
     });
 
-    test('ui5Proxy: default params', async () => {
+    test('ui5Proxy: default params', () => {
         const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const proxyResponseHandlerSpy = jest.spyOn(utils, 'proxyResponseHandler').mockImplementation(jest.fn());
         const proxyRequestHandlerSpy = jest.spyOn(utils, 'proxyRequestHandler').mockImplementation(jest.fn());
@@ -25,7 +25,7 @@ describe('ui5Proxy', () => {
             }
         };
 
-        ui5Proxy(jest.fn(), config);
+        ui5Proxy(config);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
         const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
         expect(defaultFilterFn).toEqual(expect.any(Function));
@@ -40,6 +40,12 @@ describe('ui5Proxy', () => {
         if (typeof defaultFilterFn === 'function') {
             defaultFilterFn('', req as any);
             expect(req.headers['accept-encoding']).toBeUndefined();
+        }
+
+        if (typeof expectedOptions?.onProxyRes === 'function') {
+            expectedOptions.onProxyRes({} as any, {} as any, {} as any);
+            expect(proxyResponseHandlerSpy).toHaveBeenCalledTimes(1);
+            expect(proxyResponseHandlerSpy).toHaveBeenCalledWith({}, 'W/"1.0.0"');
         }
 
         if (typeof expectedOptions?.onProxyReq === 'function') {
@@ -66,7 +72,7 @@ describe('ui5Proxy', () => {
                 'accept-encoding': 'gzip'
             }
         };
-        ui5Proxy(jest.fn(), config, options);
+        ui5Proxy(config, options);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
         const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
         expect(defaultFilterFn).toEqual(expect.any(Function));
@@ -93,7 +99,7 @@ describe('ui5Proxy', () => {
             return true;
         };
 
-        ui5Proxy(jest.fn(), config, {}, customFilterFn);
+        ui5Proxy(config, {}, customFilterFn);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
         const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
         expect(defaultFilterFn).toEqual(customFilterFn);

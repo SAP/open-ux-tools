@@ -45,9 +45,7 @@ module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandle
         if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
             proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
         }
-        router.use(ui5Config.path, (req: Request, res: Response, next: NextFunction) => {
-            ui5Proxy(next, ui5Config, proxyOptions);
-        });
+        router.use(ui5Config.path, ui5Proxy(ui5Config, proxyOptions));
     }
 
     if (directLoad) {
