@@ -953,11 +953,7 @@ title=My Test App",
     "state": "modified",
   },
   "webapp/model/models.js": Object {
-    "contents": "
-/**
- * eslint-disable @sap/ui5-jsdocs/no-jsdoc
- */
-sap.ui.define([
+    "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
 ], 
