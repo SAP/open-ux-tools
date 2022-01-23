@@ -33,12 +33,12 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open 'test/flpSandbox.html#nods1-tile'\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#nods1-tile'\\",
+    \\"start\\": \\"fiori run --open 'test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open 'index.html'\\"
+    \\"start-noflp\\": \\"fiori run --open 'index.html?sap-ui-xx-viewCache=false'\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
@@ -354,22 +354,24 @@ title=App Title",
 sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-],
-/**
- * @param {typeof sap.ui.model.json.JSONModel} JSONModel 
- * @param {typeof sap.ui.Device} Device 
- */
-function (JSONModel, Device) {
-    \\"use strict\\";
+], 
+    /**
+     * provide app-view type models (as in the first \\"V\\" in MVVC)
+     * 
+     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+     * @param {typeof sap.ui.Device} Device
+     * 
+     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
+     */
+    function (JSONModel, Device) {
+        \\"use strict\\";
 
-    return {
-
-        createDeviceModel: function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
+        return {
+            createDeviceModel: function () {
+                var oModel = new JSONModel(Device);
+                oModel.setDefaultBindingMode(\\"OneWay\\");
+                return oModel;
         }
-
     };
 });",
     "state": "modified",
@@ -690,12 +692,12 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open 'test/flpSandbox.html#nods1-tile'\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html#nods1-tile'\\",
+    \\"start\\": \\"fiori run --open 'test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile'\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile'\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open 'index.html'\\"
+    \\"start-noflp\\": \\"fiori run --open 'index.html?sap-ui-xx-viewCache=false'\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
@@ -1011,22 +1013,24 @@ title=App Title",
 sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-],
-/**
- * @param {typeof sap.ui.model.json.JSONModel} JSONModel 
- * @param {typeof sap.ui.Device} Device 
- */
-function (JSONModel, Device) {
-    \\"use strict\\";
+], 
+    /**
+     * provide app-view type models (as in the first \\"V\\" in MVVC)
+     * 
+     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+     * @param {typeof sap.ui.Device} Device
+     * 
+     * @returns {Function} createDeviceModel() for providing runtime info for the device the UI5 app is running on
+     */
+    function (JSONModel, Device) {
+        \\"use strict\\";
 
-    return {
-
-        createDeviceModel: function () {
-            var oModel = new JSONModel(Device);
-            oModel.setDefaultBindingMode(\\"OneWay\\");
-            return oModel;
+        return {
+            createDeviceModel: function () {
+                var oModel = new JSONModel(Device);
+                oModel.setDefaultBindingMode(\\"OneWay\\");
+                return oModel;
         }
-
     };
 });",
     "state": "modified",

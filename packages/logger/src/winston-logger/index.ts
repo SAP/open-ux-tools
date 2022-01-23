@@ -1,0 +1,1 @@
+export { WinstonLogger } from './logger';
