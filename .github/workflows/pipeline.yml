@@ -40,7 +40,7 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
-              run: pnpm recursive run build
+              run: pnpm run build
             - name: Run linting
               run: pnpm recursive run lint
             - name: Run unit tests
@@ -132,7 +132,7 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
-              run: pnpm recursive run build
+              run: pnpm run build
             - name: Setup npmrc with npmjs.com token
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
