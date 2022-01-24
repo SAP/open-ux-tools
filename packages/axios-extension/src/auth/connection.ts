@@ -126,6 +126,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                 if (response.headers?.[CSRF.responseHeaderName]) {
                     provider.defaults.headers = provider.defaults.headers ?? {
                         common: {},
+                        // eslint-disable-next-line quote-props
                         delete: {},
                         put: {},
                         get: {},
