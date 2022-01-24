@@ -18,6 +18,11 @@ export const basedir = ({ baseDirectory }: { baseDirectory?: string } = {}): str
     }
 };
 
+/**
+ * Filesystem store. The entity is stored in JSON format (don't depend on the format, this could change).
+ * The entity is stored in a file named with the plural form of the entity name in the base directory. Again, this is an
+ * implementation detail, please don't depend on it.
+ */
 export const FilesystemStore: DataAccessConstructor<object> = class implements DataAccess<object> {
     private readonly logger: Logger;
     private readonly storeDirectory: string;

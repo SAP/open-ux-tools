@@ -61,7 +61,7 @@ This stores information on the filesystem and the system's secure store.
 
 ## Add an entity
 
-Entity classes are simple. They don't do much other than list the properties that will be serialized. `@serilizable` and `@sensitive` are two annotations that are understood by the hybrid store.
+Entity classes are simple. They don't do much other than list the properties that will be serialized. `@serializable` and `@sensitiveData` are two annotations that are understood by the hybrid store.
 
 The system entity for example looks like this:
 ```typescript

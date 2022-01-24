@@ -1,9 +1,6 @@
 import { homedir } from 'os';
 import path from 'path';
 
-export const STORE_NAMESPACE = 'ft:store';
-export const MIGRATION_NAMESPACE = STORE_NAMESPACE + ':migrate';
-
 /** Pick the properties listed and return a new object with a shallow-copy */
 export const pick = <T>(target: T, ...props: Array<keyof T>): Partial<T> | undefined => {
     return (

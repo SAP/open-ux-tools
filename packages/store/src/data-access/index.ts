@@ -1,6 +1,10 @@
 import { ServiceOptions } from '../types';
 import { Logger } from '@sap-ux/logger';
 
+/**
+ * This interface represents the target the data gets written to/read from. It abstracts implementation details
+ * related to the medium used (locking, buffering, etc)
+ */
 export interface DataAccess<Entity> {
     read(options: { entityName: string; id: string }): Promise<undefined | Entity>;
 
