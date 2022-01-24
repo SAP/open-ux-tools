@@ -42,9 +42,9 @@ jobs:
             - name: Run build
               run: pnpm run build
             - name: Run linting
-              run: pnpm recursive run lint
+              run: pnpm run lint
             - name: Run unit tests
-              run: pnpm recursive run test
+              run: pnpm run test
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '12.x'
               uses: sonarsource/sonarcloud-github-action@master
