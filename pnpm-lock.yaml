@@ -21,8 +21,9 @@ importers:
             eslint-plugin-promise: 5.1.1
             husky: 7.0.4
             jest: 27.4.7
+            jest-sonar: 0.2.12
             prettier: 2.4.1
-            pretty-quick: 3.1.1
+            pretty-quick: 3.1.3
             rimraf: 3.0.2
             ts-jest: 27.1.2
             ts-node: 10.4.0
@@ -42,8 +43,9 @@ importers:
             eslint-plugin-promise: 5.1.1_eslint@8.2.0
             husky: 7.0.4
             jest: 27.4.7_ts-node@10.4.0
+            jest-sonar: 0.2.12
             prettier: 2.4.1
-            pretty-quick: 3.1.1_prettier@2.4.1
+            pretty-quick: 3.1.3_prettier@2.4.1
             rimraf: 3.0.2
             ts-jest: 27.1.2_66384c16d2d04e63ecb486a305451023
             ts-node: 10.4.0_c9167331686e25b8faa6dc85ef71467d
@@ -175,7 +177,7 @@ importers:
             '@types/qs': 6.9.1
             fast-check: 2.19.0
             jest-extended: 0.11.5
-            jest-mock-extended: 2.0.4
+            jest-mock-extended: 2.0.4_jest@27.4.7+typescript@4.4.4
             memfs: 3.3.0
             unionfs: 4.4.0
 
@@ -3278,6 +3280,13 @@ packages:
             ansi-colors: 4.1.1
         dev: true
 
+    /entities/2.2.0:
+        resolution:
+            {
+                integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
+            }
+        dev: true
+
     /error-ex/1.3.2:
         resolution:
             {
@@ -5536,7 +5545,7 @@ packages:
             stack-utils: 2.0.5
         dev: true
 
-    /jest-mock-extended/2.0.4:
+    /jest-mock-extended/2.0.4_jest@27.4.7+typescript@4.4.4:
         resolution:
             {
                 integrity: sha512-MgL3B3GjURQFjjPGqbCANydA5BFNPygv0mYp4Tjfxohh9MWwxxX8Eq2p6ncCt/Vt+RAnaLlDaI7gwrDRD7Pt9A==
@@ -5545,7 +5554,9 @@ packages:
             jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0
             typescript: ^3.0.0 || ^4.0.0
         dependencies:
-            ts-essentials: 7.0.3
+            jest: 27.4.7_ts-node@10.4.0
+            ts-essentials: 7.0.3_typescript@4.4.4
+            typescript: 4.4.4
         dev: true
 
     /jest-mock/27.4.6:
@@ -5742,6 +5753,16 @@ packages:
             semver: 7.3.5
         transitivePeerDependencies:
             - supports-color
+        dev: true
+
+    /jest-sonar/0.2.12:
+        resolution:
+            {
+                integrity: sha512-8hZO3rhxVobJkMhyuEgsZxfj0QQucCa+dkXVJ3ckz+Gi180F2ET12GwEGP/j4z1owc08Z2JgIt2Qlgl06+3asQ==
+            }
+        dependencies:
+            entities: 2.2.0
+            strip-ansi: 6.0.1
         dev: true
 
     /jest-util/27.4.2:
@@ -7162,10 +7183,10 @@ packages:
             react-is: 17.0.2
         dev: true
 
-    /pretty-quick/3.1.1_prettier@2.4.1:
+    /pretty-quick/3.1.3_prettier@2.4.1:
         resolution:
             {
-                integrity: sha512-ZYLGiMoV2jcaas3vTJrLvKAYsxDoXQBUn8OSTxkl67Fyov9lyXivJTl0+2WVh+y6EovGcw7Lm5ThYpH+Sh3XxQ==
+                integrity: sha512-kOCi2FJabvuh1as9enxYmrnBC6tVMoVOenMaBqRfsvBHB0cbpYHjdQEpSglpASDFEXVwplpcGR4CLEaisYAFcA==
             }
         engines: { node: '>=10.13' }
         hasBin: true
@@ -8326,13 +8347,15 @@ packages:
             }
         dev: false
 
-    /ts-essentials/7.0.3:
+    /ts-essentials/7.0.3_typescript@4.4.4:
         resolution:
             {
                 integrity: sha512-8+gr5+lqO3G84KdiTSMRLtuyJ+nTBVRKuCrK4lidMPdVeEp0uqC875uE5NMcaA7YYMN7XsNiFQuMvasF8HT/xQ==
             }
         peerDependencies:
             typescript: '>=3.7.0'
+        dependencies:
+            typescript: 4.4.4
         dev: true
 
     /ts-jest/27.1.2_66384c16d2d04e63ecb486a305451023:

@@ -3,8 +3,17 @@ module.exports = {
         '^.+\\.ts$': 'ts-jest'
     },
     collectCoverage: true,
-    coverageReporters: ['text', 'html'],
     collectCoverageFrom: ['src/**/*.ts'],
+    reporters: [
+        'default',
+        [
+            'jest-sonar',
+            {
+                reportedFilePath: 'relative',
+                relativeRootDir: '<rootDir>/../../../'
+            }
+        ]
+    ],
     modulePathIgnorePatterns: ['<rootDir>/dist'],
     verbose: true
 };
