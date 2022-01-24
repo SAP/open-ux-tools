@@ -8,7 +8,7 @@ if (!existsSync(outDir)) {
 }
 
 async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
-    const catalog = await provider.catalog(ODataVersion.v2);
+    const catalog = provider.catalog(ODataVersion.v2);
 
     const services = await catalog.listServices();
     writeFileSync(join(outDir, 'v2-catalog.json'), JSON.stringify(services, null, 4));
@@ -48,13 +48,13 @@ async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Prom
 
 const args = process.argv.slice(3);
 const test = args.length > 0 ? args[0] : undefined;
-const env = process.env as any;
+const processEnv = process.env as any;
 switch (test) {
     case 'abap':
-        checkAbapSystem(env);
+        checkAbapSystem(processEnv);
         break;
     case 'btp':
-        checkAbapBtpSystem(env);
+        checkAbapBtpSystem(processEnv);
         break;
     case undefined:
         console.log(`Test name missing, try 'pnpm test -- abap'`);

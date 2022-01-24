@@ -169,8 +169,7 @@ export class Uaa {
                 authorization: `bearer ${accessToken}`
             }
         });
-        const userDisplayName = userInfoResp?.data?.email || userInfoResp?.data?.name;
-        return userDisplayName;
+        return userInfoResp?.data?.email || userInfoResp?.data?.name;
     }
 
     /**

@@ -6,9 +6,11 @@ export enum TenantType {
     SAP = 'SAP',
     Customer = 'CUSTOMER'
 }
-export type OperationsType =
-    | 'C' // Cloud
-    | 'P'; // On-premise;
+
+/**
+ * Possible values for operations type property: (C)loud and on-(P)remise.
+ */
+export type OperationsType = 'C' | 'P';
 
 export interface AtoSettings {
     developmentPackage?: string;

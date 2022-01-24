@@ -89,8 +89,6 @@ export class V2CatalogService extends CatalogService {
             }
         }
 
-        // TODO: use ServiceUrl instead of title extraction
-        // filter += '$filter=' + encodeURIComponent(`ServiceUrl eq "${encodeURIComponent(this.system.url + path)}"`);
         const params = {
             $format: 'json',
             $filter: `Title%20eq%20%27${title}%27`
