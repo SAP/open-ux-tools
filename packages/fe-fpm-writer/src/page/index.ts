@@ -113,8 +113,14 @@ export function generateCustomPage(basePath: string, data: CustomPage, fs?: Edit
     });
 
     // add extension content
-    fs.copyTpl(join(root, 'ext/View.xml'), join(config.path, `${config.name}.view.xml`), config);
-    fs.copyTpl(join(root, 'ext/Controller.js'), join(config.path, `${config.name}.controller.js`), config);
+    const viewPath = join(config.path, `${config.name}.view.xml`);
+    if (!fs.exists(viewPath)) {
+        fs.copyTpl(join(root, 'ext/View.xml'), viewPath, config);
+    }
+    const controllerPath = join(config.path, `${config.name}.controller.js`);
+    if (!fs.exists(controllerPath)) {
+        fs.copyTpl(join(root, 'ext/Controller.js'), controllerPath, config);
+    }
 
     return fs;
 }
