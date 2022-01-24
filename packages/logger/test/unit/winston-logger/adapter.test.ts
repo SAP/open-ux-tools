@@ -19,6 +19,17 @@ jest.mock(
     { virtual: true }
 );
 
+jest.mock('winston', () => {
+    const original = jest.requireActual('winston');
+    return {
+        ...original,
+        transports: {
+            ...original.transports,
+            File: class {}
+        }
+    };
+});
+
 describe('toWinstonLogLevel', () => {
     it('defaults to undefined', () => {
         expect(toWinstonLogLevel()).toBeUndefined;
