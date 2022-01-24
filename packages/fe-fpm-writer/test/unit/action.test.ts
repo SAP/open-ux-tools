@@ -70,7 +70,7 @@ describe('CustomAction', () => {
             expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
         });
 
-        test('use existing event handler', () => {
+        test('with new event handler as string', () => {
             generateCustomAction(
                 testDir,
                 {
@@ -86,7 +86,27 @@ describe('CustomAction', () => {
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
-        test('specific target folder and generated event handler', () => {
+        test('with existing event handler as string', () => {
+            const controllerPath = 'my.test.App.ext.ExistingHandler.onCustomAction';
+            fs.write(controllerPath, 'dummyContent');
+            generateCustomAction(
+                testDir,
+                {
+                    name,
+                    target,
+                    settings: {
+                        ...settings,
+                        eventHandler: controllerPath
+                    }
+                },
+                fs
+            );
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(controllerPath)).toBe(true);
+            expect(fs.read(controllerPath)).toEqual('dummyContent');
+        });
+
+        test('specific target folder, event handler as boolean', () => {
             generateCustomAction(
                 testDir,
                 {
