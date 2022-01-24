@@ -347,6 +347,50 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
 "
 `;
 
+exports[`CustomPage generateCustomPage: different versions or target folder with existing target files 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "TestObjectPage",
+          "pattern": ":?query:",
+          "target": "TestObjectPage",
+        },
+        Object {
+          "name": "RootEnityCustomPage",
+          "pattern": "RootEnity({key}):?query:",
+          "target": "RootEnityCustomPage",
+        },
+      ],
+      "targets": Object {
+        "RootEnityCustomPage": Object {
+          "id": "RootEnityCustomPage",
+          "name": "sap.fe.core.fpm",
+          "options": Object {
+            "settings": Object {
+              "entitySet": "RootEnity",
+              "navigation": Object {},
+              "viewName": "my.test.App.ext.different.CustomPage",
+            },
+          },
+          "type": "Component",
+        },
+        "TestObjectPage": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomPage generateCustomPage: different versions or target folder with older but supported UI5 version 1`] = `
 Object {
   "sap.app": Object {
