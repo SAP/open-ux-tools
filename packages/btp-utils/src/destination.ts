@@ -85,7 +85,7 @@ export function isPartialUrlDestination(destination: Destination): boolean {
 }
 
 /**
- * A destination configured as generic odata WITH the 'full_url' attribute are considered full url destinations
+ * A destination configured as generic odata WITH the 'full_url' attribute are considered full url destinations.
  *
  * @param destination destination info
  * @returns true, if this destination has the generic odata and 'full_url' attribute is set

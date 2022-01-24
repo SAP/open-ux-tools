@@ -22,7 +22,7 @@ export interface ODataServiceV2Info {
 }
 
 /**
- *
+ * OData V2 specific implmentation of SAP's catalog service
  */
 export class V2CatalogService extends CatalogService {
     public static readonly PATH = '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2';
@@ -35,7 +35,10 @@ export class V2CatalogService extends CatalogService {
     }
 
     /**
-     * @param services
+     * Map the V2 service information to a version independent structure.
+     *
+     * @param services v2 services information
+     * @returns version independent information
      */
     protected mapServices(services: ODataServiceV2Info[]): ODataServiceInfo[] {
         return services.map((service) => {
@@ -50,7 +53,9 @@ export class V2CatalogService extends CatalogService {
     }
 
     /**
+     * Fetch all services from the backend.
      *
+     * @returns version independent service information
      */
     protected async fetchServices(): Promise<ODataServiceInfo[]> {
         const params = {
@@ -69,11 +74,12 @@ export class V2CatalogService extends CatalogService {
     }
 
     /**
-     * Find a specific service by title
+     * Find a specific service by title.
      *
-     * @param title.title
-     * @param title service title
-     * @param title.path
+     * @param filter filter options
+     * @param filter.title filter by title
+     * @param filter.path filter by path
+     * @returns service information matching the given filter
      */
     protected async findService({ title, path }: FilterOptions): Promise<ODataServiceV2Info> {
         if (!title) {
@@ -108,10 +114,13 @@ export class V2CatalogService extends CatalogService {
     }
 
     /**
-     * @param root0
-     * @param root0.id
-     * @param root0.title
-     * @param root0.path
+     * Get service annotations for the service matching the given filter.
+     *
+     * @param filter filter options
+     * @param filter.id filter by id
+     * @param filter.title filter by title
+     * @param filter.path filter by path
+     * @returns service annotations
      */
     protected async getServiceAnnotations({ id, title, path }: FilterOptions): Promise<ODataServiceV2Info[]> {
         if (!this.entitySet) {
@@ -137,14 +146,13 @@ export class V2CatalogService extends CatalogService {
     }
 
     /**
-     * Get all annotations available for the service matching one of the below filter options
+     * Get all annotations available for the service matching one of the below filter options.
      *
-     * @param id.id
-     * @param id service id
-     * @param title sevice title
-     * @param path service path
-     * @param id.title
-     * @param id.path
+     * @param filter filter options
+     * @param filter.id filter by id
+     * @param filter.title filter by title
+     * @param filter.path filter by path
+     * @returns annotations
      */
     public async getAnnotations({ id, title, path }: FilterOptions): Promise<Annotations[]> {
         if (!id && !title && !path) {

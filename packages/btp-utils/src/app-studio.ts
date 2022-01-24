@@ -3,18 +3,29 @@ import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
 import { ENV } from './app-studio.env';
 import { Destination } from './destination';
 
+/**
+ * Check if this is exectued in SAP Business Application Studio.
+ *
+ * @returns true if yes
+ */
 export function isAppStudio(): boolean {
     return !!process.env[ENV.H2O_URL];
 }
 
+/**
+ * Read and return the BAS proxy url.
+ *
+ * @returns the proxy url or undefined if called outside of BAS.
+ */
 export function getAppStudioProxyURL(): string | undefined {
     return process.env[ENV.PROXY_URL];
 }
 
 /**
- * Creates a base64 encoded user for the given destination service instance based on the client information fetched from BTP.
+ * Asynchronously creates a base64 encoded user for the given destination service instance based on the client information fetched from BTP.
  *
  * @param instance name/id of the destination service instance
+ * @returns the base64 encoded user
  */
 export async function getUserForDestinationService(instance: string): Promise<string> {
     try {
@@ -28,11 +39,13 @@ export async function getUserForDestinationService(instance: string): Promise<st
         );
     }
 }
+
 /**
- * Returns a url for AppStudio for the given url with the given destination
+ * Returns a url for AppStudio for the given url with the given destination.
  *
  * @param name name of the destination
  * @param path optional path
+ * @returns destination url working in BAS
  */
 export function getDestinationUrlForAppStudio(name: string, path?: string): string {
     const origin = `https://${name}.dest`;
@@ -42,7 +55,9 @@ export function getDestinationUrlForAppStudio(name: string, path?: string): stri
 export type Destinations = { [name: string]: Destination };
 
 /**
- * Get a list of available destinations in SAP Business Application Studio
+ * Get a list of available destinations in SAP Business Application Studio.
+ *
+ * @returns the list of destinations
  */
 export async function listDestinations(): Promise<Destinations> {
     const destinations: Destinations = {};

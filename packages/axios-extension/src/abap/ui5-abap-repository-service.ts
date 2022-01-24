@@ -40,6 +40,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * Get information about a deployed application. Returns undefined if the application cannot be found.
      *
      * @param app application id (BSP application name)
+     * @returns application information or undefined
      */
     public async getInfo(app: string): Promise<AppInfo> {
         try {
@@ -51,11 +52,12 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Deploy the given archive either by creating a new BSP or updating an existing one
+     * Deploy the given archive either by creating a new BSP or updating an existing one.
      *
      * @param archivePath path to a zip archive containing the application files
      * @param app application configuration
      * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     * @returns the Axios response object for futher processing
      */
     public async deploy(archivePath: string, app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
         const info: AppInfo = await this.getInfo(app.name);
@@ -90,8 +92,11 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * @param app
-     * @param testMode
+     * Undeploy an existing app.
+     *
+     * @param app application configuration
+     * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     * @returns the Axios response object for futher processing
      */
     public async undeploy(app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
         const config = this.createConfig(app.transport, testMode);
@@ -110,9 +115,10 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Translate the technical ABAP on BTP URL to the frontend URL
+     * Translate the technical ABAP on BTP URL to the frontend URL.
      *
      * @param technicalUrl Technical URL of the ABAP system from service keys
+     * @returns url to be used in the browser.
      */
     protected getAbapFrontendUrl(technicalUrl: string): string {
         abapUrlReplaceMap.forEach((value, key) => {
@@ -122,10 +128,11 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Internal helper method to generate a request configuration (headers, parameters)
+     * Internal helper method to generate a request configuration (headers, parameters).
      *
      * @param transport optional transport request id
      * @param testMode test mode enabled or not
+     * @returns the Axios response object for futher processing
      */
     protected createConfig(transport?: string, testMode?: boolean): AxiosRequestConfig {
         const headers = {
@@ -149,12 +156,13 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Create the request payload for a deploy request
+     * Create the request payload for a deploy request.
      *
      * @param archive archive file path
      * @param name application name
      * @param description description for the deployed app
      * @param abapPackage ABAP package containing the app
+     * @returns XML based request payload
      */
     protected createPayload(archive: string, name: string, description: string, abapPackage: string): string {
         const base64Data = readFileSync(archive, { encoding: 'base64' });
@@ -183,15 +191,14 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Sometimes a repo request fails with a known timeout issue
+     * Send a request to the backed to create or update an application.
      *
-     * @param isExisting - app has already been deployed
-     * @param appName
-     * @param httpClient
-     * @param payload
-     * @param config
-     * @param tryCount
-     * @protected
+     * @param isExisting app has already been deployed
+     * @param appName application name
+     * @param payload request payload
+     * @param config additional request config
+     * @param tryCount number of attempted deploys (sometimes a repo request fails with a known timeout issue, so we retry)
+     * @returns the Axios response object for futher processing
      */
     protected async updateRepoRequest(
         isExisting: boolean,
@@ -199,7 +206,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         payload: string,
         config: AxiosRequestConfig,
         tryCount = 1
-    ): Promise<AxiosResponse> {
+    ): Promise<AxiosResponse | undefined> {
         try {
             // Was the app deployed after the first failed attempt?
             if (tryCount === 2) {
@@ -210,11 +217,12 @@ export class Ui5AbapRepositoryService extends ODataService {
             // If its already deployed, then dont try to create it again
             if (tryCount !== 1 && !isExisting && (await this.getInfo(appName)) !== undefined) {
                 // We've nothing to return as we dont want to show the exception to the user!
-                return;
+                return Promise.resolve(undefined);
+            } else {
+                return isExisting
+                    ? this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
+                    : this.post('/Repositories', payload, config);
             }
-            return isExisting
-                ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
-                : await this.post('/Repositories', payload, config);
         } catch (error) {
             if (error?.response?.status === 504) {
                 // Kill the flow after three attempts
@@ -229,14 +237,12 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Sometimes a repo request fails with a known 400 bad request issue,
-     * but succeeds in the retry
+     * Send a request to the backed to delete an application.
      *
-     * @param appName
-     * @param httpClient
-     * @param config
-     * @param tryCount
-     * @protected
+     * @param appName application name
+     * @param config additional request config
+     * @param tryCount number of attempted deploys (sometimes a repo request fails with a known timeout issue, so we retry)
+     * @returns the Axios response object for futher processing
      */
     protected async deleteRepoRequest(
         appName: string,
@@ -262,7 +268,7 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Log errors more user friendly if it is a standard Gateway error
+     * Log errors more user friendly if it is a standard Gateway error.
      *
      * @param e error thrown by Axios after sending a request
      */

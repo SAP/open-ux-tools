@@ -27,14 +27,17 @@ export interface ServiceGroup {
 }
 
 /**
- *
+ * OData V4 specific implmentation of SAP's catalog service
  */
 export class V4CatalogService extends CatalogService {
     public static readonly PATH = '/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002';
 
     /**
-     * @param groups
-     * @param entitySet
+     * Map the V4 service information to a version independent structure.
+     *
+     * @param groups v4 service groups
+     * @param entitySet entity set used for service selection
+     * @returns version independent information
      */
     protected mapServices(groups: ServiceGroup[], entitySet: string): ODataServiceInfo[] {
         const services: ODataServiceInfo[] = [];
@@ -58,7 +61,9 @@ export class V4CatalogService extends CatalogService {
     }
 
     /**
+     * Fetch all services from the backend.
      *
+     * @returns version independent service information
      */
     protected async fetchServices(): Promise<ODataServiceInfo[]> {
         if (this.entitySet === undefined) {
@@ -87,6 +92,8 @@ export class V4CatalogService extends CatalogService {
 
     /**
      * For OData v4, all annotations are already included in the metadata and no additional request is required.
+     *
+     * @returns an empty array
      */
     public getAnnotations(): Promise<Annotations[]> {
         return Promise.resolve([]);

@@ -17,6 +17,7 @@ export class Cookies {
      * Update the cookies based on 'set-cookie' headers of a response.
      *
      * @param response http response containing a headers object
+     * @returns cookies object
      */
     public setCookies(response: AxiosResponse): Cookies {
         if (response.headers && response.headers['set-cookie']) {
@@ -29,6 +30,7 @@ export class Cookies {
      * Update cookies based on a string representing a cookie.
      *
      * @param cookieString string representing a cookie
+     * @returns cookies object
      */
     public addCookie(cookieString: string): Cookies {
         const cookie = cookieString.split(';');
@@ -44,6 +46,8 @@ export class Cookies {
 
     /**
      * Serialize all cookies as string formatted for the 'Cookie' header.
+     *
+     * @returns serialized cookies
      */
     public toString(): string {
         const cookies: string[] = [];
@@ -55,7 +59,10 @@ export class Cookies {
 }
 
 /**
- * @param response
+ * Check the response if SAML is required.
+ *
+ * @param response response from the backend
+ * @returns true if SAML is required
  */
 function isSamlLogonNeeded(response: AxiosResponse): boolean {
     return (
@@ -69,9 +76,10 @@ function isSamlLogonNeeded(response: AxiosResponse): boolean {
 /**
  * SAP systems can choose to respond with a 200 and an HTML login page that the module cannot handle, therefore, convert it into a 401.
  *
- * @param response
+ * @param response response from the backend
+ * @throws an error with status 401 if an HTML form is returned
  */
-function throwIfHtmlLoginForm(response: AxiosResponse): void {
+function throwIfHtmlLoginForm(response: AxiosResponse) {
     if (
         response?.status === 200 &&
         response.headers['content-type']?.toLowerCase().startsWith('text/html') &&
@@ -89,7 +97,9 @@ function throwIfHtmlLoginForm(response: AxiosResponse): void {
 }
 
 /**
- * @param provider
+ * Attach a connection handler to the given service provider.
+ *
+ * @param provider any service provider
  */
 export function attachConnectionHandler(provider: ServiceProvider) {
     // fetch xsrf token with the first request

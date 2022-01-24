@@ -44,43 +44,56 @@ export class Uaa {
     }
 
     /**
+     * Getter for uaa url.
      *
+     * @returns uaa url
      */
     protected get url(): string {
         return this.serviceInfo.uaa.url;
     }
 
     /**
+     * Getter for client id.
      *
+     * @returns client id
      */
     protected get clientid(): string {
         return this.serviceInfo.uaa.clientid;
     }
 
     /**
+     * Getter for client secret.
      *
+     * @returns client secret
      */
     protected get clientsecret(): string {
         return this.serviceInfo.uaa.clientsecret;
     }
 
     /**
+     * Getter for logout url.
      *
+     * @returns logout url
      */
     get logoutUrl(): string {
         return this.url + '/logout.do';
     }
 
     /**
+     * Getter for system id.
      *
+     * @returns system id
      */
     get systemId(): string {
         return this.serviceInfo.systemid;
     }
 
     /**
-     * @param root0
-     * @param root0.redirectUri
+     * Generates a request url based on the provided redirect url.
+     *
+     * @param params config parameters
+     * @param params.redirectUri redirect url
+     * @returns authentication code request url
      */
     protected getAuthCodeUrl({ redirectUri }): string {
         return (
@@ -95,9 +108,12 @@ export class Uaa {
     }
 
     /**
-     * @param root0
-     * @param root0.redirectUri
-     * @param root0.authCode
+     * Generate an Axios token request configuration for fetching a token.
+     *
+     * @param params config parameters
+     * @param params.redirectUri redirect url
+     * @param params.authCode authentication code
+     * @returns an axios request config
      */
     protected getTokenRequestForAuthCode({ redirectUri, authCode }): AxiosRequestConfig {
         return {
@@ -118,7 +134,10 @@ export class Uaa {
     }
 
     /**
-     * @param refreshToken
+     * Generate an Axios token request configuration for fetching a token.
+     *
+     * @param refreshToken existing refresh token
+     * @returns an axios request config
      */
     protected getTokenRequestForRefreshToken(refreshToken): AxiosRequestConfig {
         return {
@@ -137,7 +156,10 @@ export class Uaa {
     }
 
     /**
-     * @param accessToken
+     * Get user information.
+     *
+     * @param accessToken valid access token
+     * @returns user name or undefined
      */
     public async getUserInfo(accessToken: string): Promise<string | undefined> {
         const userInfoResp = await axios.request({
@@ -152,7 +174,10 @@ export class Uaa {
     }
 
     /**
+     * Get an authentication code.
+     *
      * @param timeout
+     * @returns an object containing an authentication code and a redirect object
      */
     protected async getAuthCode(timeout: number = defaultTimeout): Promise<{ authCode: string; redirect: Redirect }> {
         return new Promise((resolve, reject) => {
@@ -187,6 +212,7 @@ export class Uaa {
     /**
      * @param refreshToken
      * @param refreshTokenChangedCb
+     * @returns an access token.
      */
     public async getAccessToken(refreshToken?: string, refreshTokenChangedCb?: RefreshTokenChanged): Promise<string> {
         let response: AxiosResponse;

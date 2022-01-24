@@ -30,10 +30,20 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
         return Promise.resolve(this.defaults.auth?.username);
     }
 
-    public setAtoInfo(atoSettings: AtoSettings): void {
+    /**
+     * Set the ATO settings for the provider so that it does not try to fetch them with the first request.
+     *
+     * @param atoSettings ABAP Transport Organizer settings
+     */
+    public setAtoInfo(atoSettings: AtoSettings) {
         this.atoSettings = atoSettings;
     }
 
+    /**
+     * Get the ATO settings either locally or from the server if not yet available.
+     *
+     * @returns ABAP Transport Organizer settings
+     */
     public async getAtoInfo(): Promise<AtoSettings> {
         if (!this.atoSettings) {
             try {
