@@ -67,17 +67,13 @@ export function prettyPrintError(error: ErrorMessage, log: Logger): void {
     if (error) {
         log.error(error.message?.value);
         if (error.innererror) {
-            if (error.innererror.errordetails) {
-                error.innererror.errordetails.forEach((entry) => {
-                    if (!entry.message.startsWith('<![CDATA')) {
-                        log.error(entry.message);
-                    }
-                });
-            }
-            if (error.innererror.Error_Resolution) {
-                for (const key in error.innererror.Error_Resolution) {
-                    log.error(`${key}: ${error.innererror.Error_Resolution[key]}`);
+            (error.innererror.errordetails || []).forEach((entry) => {
+                if (!entry.message.startsWith('<![CDATA')) {
+                    log.error(entry.message);
                 }
+            });
+            for (const key in error.innererror.Error_Resolution || {}) {
+                log.error(`${key}: ${error.innererror.Error_Resolution[key]}`);
             }
         }
     }
