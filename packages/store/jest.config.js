@@ -10,5 +10,15 @@ module.exports = {
         'ts-jest': {
             tsconfig: './test/tsconfig.json'
         }
-    }
+    },
+    reporters: [
+        'default',
+        [
+            'jest-sonar',
+            {
+                reportedFilePath: 'relative',
+                relativeRootDir: '<rootDir>/../../../'
+            }
+        ]
+    ]
 };
