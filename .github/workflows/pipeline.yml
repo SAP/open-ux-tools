@@ -22,7 +22,7 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.0.1
               with:
-                  version: 6.0.2
+                  version: 6.26.1
                   run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v2
@@ -40,11 +40,11 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
-              run: pnpm recursive run build
+              run: pnpm run build
             - name: Run linting
-              run: pnpm recursive run lint
+              run: pnpm run lint
             - name: Run unit tests
-              run: pnpm recursive run test
+              run: pnpm run test
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '12.x'
               uses: sonarsource/sonarcloud-github-action@master
@@ -68,7 +68,7 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.0.1
               with:
-                  version: 6.0.2
+                  version: 6.26.1
                   run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v2
@@ -114,7 +114,7 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.0.1
               with:
-                  version: 6.0.2
+                  version: 6.26.1
                   run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v2
@@ -132,7 +132,7 @@ jobs:
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
-              run: pnpm recursive run build
+              run: pnpm run build
             - name: Setup npmrc with npmjs.com token
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
