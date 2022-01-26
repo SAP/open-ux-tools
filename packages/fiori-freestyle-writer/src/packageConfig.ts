@@ -38,9 +38,9 @@ export function getPackageJsonTasks({
     let searchParam = new URLSearchParams(searchParamList).toString();
     searchParam = searchParam ? `?${searchParam}` : '';
     // Build fragment identifier part of url
-    const harshFragment = flpAppId ? `#${flpAppId}` : '';
+    const hashFragment = flpAppId ? `#${flpAppId}` : '';
     // Full parameter section composed by search param and fragment identifier
-    const params = `${searchParam}${harshFragment}`;
+    const params = `${searchParam}${hashFragment}`;
 
     const startCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
