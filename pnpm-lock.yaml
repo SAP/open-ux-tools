@@ -58,6 +58,7 @@ importers:
             '@sap-ux/logger': workspace:*
             '@types/lodash.clonedeep': 4.5.6
             axios: 0.24.0
+            detect-content-type: 1.2.0
             express: 4.17.1
             fast-xml-parser: 3.12.20
             lodash.clonedeep: 4.5.0
@@ -68,6 +69,7 @@ importers:
             '@sap-ux/btp-utils': link:../btp-utils
             '@sap-ux/logger': link:../logger
             axios: 0.24.0
+            detect-content-type: 1.2.0
             express: 4.17.1
             fast-xml-parser: 3.12.20
             lodash.clonedeep: 4.5.0
@@ -2943,6 +2945,13 @@ packages:
 
     /destroy/1.0.4:
         resolution: { integrity: sha1-l4hXRCxEdJ5CBmE+N5RiBYJqvYA= }
+        dev: false
+
+    /detect-content-type/1.2.0:
+        resolution:
+            {
+                integrity: sha512-YCBxuqJLY9rMxV44Ict2kNgjYFN3v1dnsn6sJvd6sUwwU1TWP3D+K2dr/S9AF/fio2/RsAKYdRiEOtNoRbmiag==
+            }
         dev: false
 
     /detect-indent/6.1.0:

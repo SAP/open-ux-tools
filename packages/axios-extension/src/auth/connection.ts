@@ -1,6 +1,7 @@
 import { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import { ServiceProvider } from '../base/service-provider';
 import { ConnectionError } from './error';
+import detectContentType from 'detect-content-type';
 
 export enum CSRF {
     requestHeaderName = 'X-Csrf-Token',
@@ -67,9 +68,9 @@ export class Cookies {
 function isSamlLogonNeeded(response: AxiosResponse): boolean {
     return (
         response?.status === 200 &&
-        response.headers['content-type']?.toLowerCase().startsWith('text/html') &&
+        isHtmlResponse(response) &&
         typeof response.data === 'string' &&
-        !!response?.data.match(/saml/i)
+        !!response.data.match(/saml/i)
     );
 }
 
@@ -79,13 +80,11 @@ function isSamlLogonNeeded(response: AxiosResponse): boolean {
  * @param response response from the backend
  * @throws an error with status 401 if an HTML form is returned
  */
-function throwIfHtmlLoginForm(response: AxiosResponse) {
-    if (
-        response?.status === 200 &&
-        response.headers['content-type']?.toLowerCase().startsWith('text/html') &&
-        (response['sap-err-id'] === 'ICFLOGONREQUIRED' ||
-            (typeof response.data === 'string' && !!response?.data.match(/login/i)))
-    ) {
+function throwIfHtmlLoginForm(response: AxiosResponse): void {
+    if (response?.status !== 200) {
+        return;
+    }
+    if (response.headers['sap-err-id'] === 'ICFLOGONREQUIRED' || isHtmlLoginForm(response)) {
         const err = new Error() as AxiosError;
         err.response = { status: 401 } as AxiosResponse;
         err.isAxiosError = true;
@@ -93,6 +92,29 @@ function throwIfHtmlLoginForm(response: AxiosResponse) {
             return { status: 401 };
         };
         throw err;
+    }
+}
+
+function isHtmlResponse(response: AxiosResponse): boolean {
+    return getContentType(response.headers['content-type'], response.data).startsWith('text/html');
+}
+
+function isHtmlLoginForm(response: AxiosResponse): boolean {
+    return isHtmlResponse(response) && typeof response.data === 'string' && !!response.data.match(/log[io]n/i);
+}
+
+/**
+ * Given a possibly missing content-type header and response data,
+ * either return the content-type value or try to detect the content type
+ */
+function getContentType(contentTypeHeader: string | undefined, responseData: any): string {
+    if (contentTypeHeader) {
+        return contentTypeHeader.toLowerCase();
+    } else if (typeof responseData === 'string') {
+        // Try to infer it from the data
+        return detectContentType(Buffer.from(responseData))?.toLowerCase() ?? '';
+    } else {
+        return '';
     }
 }
 
