@@ -30,10 +30,11 @@ export function getPackageJsonTasks({
 }): { start: string; 'start-local': string; 'start-noflp': string; 'start-mock'?: string } {
     // Build search param part of preview launch url
     const searchParamList = [];
-    searchParamList.push(['sap-ui-xx-viewCache', 'false']);
     if (sapClient) {
         searchParamList.push([`sap-client`, `${sapClient}`]);
     }
+    searchParamList.push(['sap-ui-xx-viewCache', 'false']);
+
     let searchParam = new URLSearchParams(searchParamList).toString();
     searchParam = searchParam ? `?${searchParam}` : '';
     // Build fragment identifier part of url
