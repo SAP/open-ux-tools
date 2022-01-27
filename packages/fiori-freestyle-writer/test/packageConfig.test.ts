@@ -12,10 +12,10 @@ describe('Test common utils', () => {
                 })
             ).toMatchInlineSnapshot(`
                 Object {
-                  "start": "fiori run --open 'test/flpSandbox.html??sap-client=100&sap-ui-xx-viewCache=false#testApp-tile'",
-                  "start-local": "fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html??sap-client=100&sap-ui-xx-viewCache=false#testApp-tile'",
-                  "start-mock": "fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html??sap-client=100&sap-ui-xx-viewCache=false#testApp-tile'",
-                  "start-noflp": "fiori run --open 'index.html??sap-client=100&sap-ui-xx-viewCache=false'",
+                  "start": "fiori run --open 'test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile'",
+                  "start-local": "fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile'",
+                  "start-mock": "fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile'",
+                  "start-noflp": "fiori run --open 'index.html?sap-client=100&sap-ui-xx-viewCache=false'",
                 }
             `);
         });
