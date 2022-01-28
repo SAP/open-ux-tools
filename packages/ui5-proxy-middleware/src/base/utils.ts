@@ -13,6 +13,8 @@ import {
     SANDBOX_REGEX,
     SANDBOX_REPLACE_REGEX
 } from './constants';
+import { Manifest } from './manifest';
+import { t } from '../i18n';
 
 /**
  * Handler for the proxy response event.
@@ -241,3 +243,60 @@ export const injectUI5Url = async (
         next(error);
     }
 };
+
+/**
+ * Gets the manifest.json for a given application
+ *
+ * @param args list of runtime arguments
+ */
+export const getManifest = async (args: string[]): Promise<Manifest> => {
+    const projectRoot = process.cwd();
+    const yamlFileName = getYamlFile(args);
+    const ui5YamlPath = join(projectRoot, yamlFileName);
+    const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
+    const manifestPath = join(projectRoot, webAppFolder, 'manifest.json');
+    const manifest: Manifest = JSON.parse(await promises.readFile(manifestPath, { encoding: 'utf8' }));
+
+    return manifest;
+};
+
+/**
+ * Gets the minUI5Version from the manifest.json
+ *
+ * @param args list of runtime args
+ */
+export async function getUI5VersionFromManifest(args: string[]): Promise<string | undefined> {
+    const manifest: Manifest = await getManifest(args);
+    return manifest['sap.ui5']?.dependencies?.minUI5Version;
+}
+
+/**
+ * Determines which UI5 version to use when previewing the application
+ *
+ * @param version ui5 version as defined in the yaml or via cli argument
+ * @param log logger for outputing information from where ui5 version config is coming
+ */
+export async function setUI5Version(version: string | undefined, log?: ToolsLogger): Promise<string> {
+    let ui5Version: string = '';
+    let ui5VersionInfo: string;
+    let ui5VersionLocation: string = 'manifest.json';
+
+    if (version !== undefined) {
+        ui5Version = version ? version : '';
+        ui5VersionLocation =
+            process.env.FIORI_TOOLS_UI5_VERSION || process.env.FIORI_TOOLS_UI5_VERSION === ''
+                ? 'CLI arguments / Run configuration'
+                : getYamlFile(process.argv);
+    } else {
+        const minUI5Version = await getUI5VersionFromManifest(process.argv);
+        if (minUI5Version) {
+            ui5Version = isNaN(parseFloat(minUI5Version)) ? '' : minUI5Version;
+        }
+    }
+
+    if (log) {
+        ui5VersionInfo = ui5Version ? ui5Version : 'latest';
+        log.info(t('info.ui5VersionSource', { version: ui5VersionInfo, source: ui5VersionLocation }));
+    }
+    return ui5Version;
+}

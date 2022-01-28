@@ -9,15 +9,17 @@ import {
     isHostExcludedFromProxy,
     MiddlewareParameters,
     ProxyConfig,
-    ui5Proxy
+    ui5Proxy,
+    setUI5Version
 } from '../base';
 
-module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandler => {
+module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
     const router = express.Router();
     const config = options.configuration;
+    const ui5Version = await setUI5Version(config.version, logger);
     const secure = !!config.secure;
     const debug = !!config.debug;
     const directLoad = !!config.directLoad;
@@ -42,6 +44,7 @@ module.exports = ({ options }: MiddlewareParameters<ProxyConfig>): RequestHandle
     );
 
     for (const ui5Config of config.ui5) {
+        ui5Config.version = ui5Version;
         if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
             proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
         }
