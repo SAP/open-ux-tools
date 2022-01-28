@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/logger",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "A simple logging module",
     "license": "SEE LICENSE IN LICENSE",
     "private": false,
@@ -34,7 +34,7 @@
         "LICENSE"
     ],
     "engines": {
-        "pnpm": ">=6.0.2",
+        "pnpm": ">=6.26.1",
         "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"
     }
 }

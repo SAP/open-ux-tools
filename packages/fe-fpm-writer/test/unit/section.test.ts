@@ -54,7 +54,7 @@ describe('CustomSection', () => {
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
         });
-        test('generateCustomSection, with handler, all properties', () => {
+        test('with handler, all properties', () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 eventHandler: true
@@ -68,8 +68,24 @@ describe('CustomSection', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
             expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
         });
+        test('with existing handler, all properties', () => {
+            const testCustomSection: CustomSection = {
+                ...customSection,
+                eventHandler: true
+            };
+            fs.write(expectedFragmentPath, 'dummyContent');
 
-        test('generateCustomSection, no handler, all properties', () => {
+            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.content).toMatchSnapshot();
+
+            expect(fs.exists(expectedFragmentPath)).toBe(true);
+            expect(fs.read(expectedFragmentPath)).toEqual('dummyContent');
+        });
+
+        test('no handler, all properties', () => {
             const testCustomSection: CustomSection = {
                 ...customSection
             };
@@ -82,7 +98,7 @@ describe('CustomSection', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
-        test('generateCustomSection, custom control', () => {
+        test('custom control', () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 control: '<CustomXML text="" />'
@@ -96,7 +112,7 @@ describe('CustomSection', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
-        test('generateCustomSection, no handler, no fs, all properties', () => {
+        test('no handler, no fs, all properties', () => {
             const testCustomSection: CustomSection = {
                 ...customSection
             };
@@ -110,7 +126,7 @@ describe('CustomSection', () => {
             expect(testFS.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
-        test('generateCustomSection - different data and unexisting target', () => {
+        test('different data and not existing target', () => {
             const testCustomSection: CustomSection = {
                 target: 'dummy',
                 name: 'DummySection',
@@ -136,7 +152,7 @@ describe('CustomSection', () => {
             expect(fs.read(fragmentPath)).toMatchSnapshot();
         });
 
-        const testVersions = [1.9, 1.85, 1.84,  1.86, 1.90];
+        const testVersions = [1.9, 1.85, 1.84, 1.86, 1.98];
         for (const ui5Version of testVersions) {
             test(`Versions ${ui5Version}, with handler, all properties`, () => {
                 const testCustomSection: CustomSection = {

@@ -76,7 +76,7 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomAction specific target folder and generated event handler 1`] = `
+exports[`CustomAction generateCustomAction specific target folder, event handler as boolean 1`] = `
 Object {
   "sap.app": Object {
     "id": "my.test.App",
@@ -114,7 +114,7 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomAction specific target folder and generated event handler 2`] = `
+exports[`CustomAction generateCustomAction specific target folder, event handler as boolean 2`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -129,7 +129,45 @@ exports[`CustomAction generateCustomAction specific target folder and generated 
 "
 `;
 
-exports[`CustomAction generateCustomAction use existing event handler 1`] = `
+exports[`CustomAction generateCustomAction with existing event handler as string 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
+                  "actions": Object {
+                    "MyCustomAction": Object {
+                      "enabled": true,
+                      "press": "my.test.App.ext.ExistingHandler.onCustomAction",
+                      "text": "My custom action text",
+                      "visible": true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomAction with new event handler as string 1`] = `
 Object {
   "sap.app": Object {
     "id": "my.test.App",

@@ -85,7 +85,10 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     // add event handler if requested
     if (config.settings.eventHandler === true) {
-        fs.copyTpl(join(root, 'common/EventHandler.js'), join(config.path, `${config.name}.js`), config);
+        const controllerPath = join(config.path, `${config.name}.js`);
+        if (!fs.exists(controllerPath)) {
+            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, config);
+        }
         config.settings.eventHandler = `${config.ns}.${config.name}.onPress`;
     }
 

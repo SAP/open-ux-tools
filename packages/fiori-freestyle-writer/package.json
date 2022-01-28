@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
-    "version": "0.10.17",
+    "version": "0.10.18",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -37,7 +37,7 @@
         "fs-extra": "10.0.0"
     },
     "engines": {
-        "pnpm": ">=6.0.2",
+        "pnpm": ">=6.26.1",
         "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"
     }
 }
