@@ -12,7 +12,7 @@ export function getAnnotationNamespaces(service: Partial<OdataService>): Namespa
     // enhance service with annotations namespaces
     const schemaNamespaces = service.metadata ? getNamespaces(service.metadata) : [];
 
-    const namespaces = schemaNamespaces.map((schema: NamespaceAlias) => {
+    return schemaNamespaces.map((schema: NamespaceAlias) => {
         // Check if alias exists in backend annotation file, if so use it
         if (service.annotations) {
             const annotationAlias =
@@ -25,7 +25,6 @@ export function getAnnotationNamespaces(service: Partial<OdataService>): Namespa
         }
         return schema;
     });
-    return namespaces;
 }
 
 /**
