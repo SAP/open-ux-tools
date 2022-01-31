@@ -32,19 +32,4 @@ describe('metadata parsing', () => {
             getAnnotationNamespaces({ metadata, annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotations } })
         ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' }]);
     });
-
-    it('getAnnotationNamespaces: generate correct annotation references entries in manifest.json', () => {
-        expect(
-            getAnnotationNamespaces({
-                metadata: multischemaMetadata,
-                annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotations }
-            })
-        ).toEqual([
-            { namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' },
-            { namespace: 'SEPMRA_PROD_MAN_1', alias: '' }
-        ]);
-        expect(
-            getAnnotationNamespaces({ metadata, annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotations } })
-        ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' }]);
-    });
 });
