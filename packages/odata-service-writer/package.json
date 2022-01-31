@@ -27,7 +27,8 @@
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.0.0",
         "@sap-ux/ui5-config": "workspace:*",
-        "prettify-xml": "1.2.0"
+        "prettify-xml": "1.2.0",
+        "fast-xml-parser": "4.0.1"
     },
     "devDependencies": {
         "@types/ejs": "3.1.0",

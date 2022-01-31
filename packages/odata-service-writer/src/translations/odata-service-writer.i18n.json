@@ -1,6 +1,7 @@
 {
     "error": {
         "requiredProjectFileNotFound": "Invalid project structure. Cannot find required file {{-path}}",
-        "requiredProjectPropertyNotFound": "Required project property: {{-property}} was not found in file: {{-path}}"
+        "requiredProjectPropertyNotFound": "Required project property: {{-property}} was not found in file: {{-path}}",
+        "invalidXML": "Invalid XML was specified"
     }
 }
