@@ -6,7 +6,7 @@ import { ProxyBackend, UI5Config } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
-import { OdataService, OdataVersion, NamespaceAlias } from './types';
+import { OdataService, OdataVersion } from './types';
 
 /**
  * Validates the provided base path.
@@ -101,9 +101,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         );
 
         // Adds local annotations to datasources section of manifest.json and writes the annotations file
-        let namespaces: NamespaceAlias[] = [];
         if (service.localAnnotationsName) {
-            namespaces = getAnnotationNamespaces(service);
+            const namespaces = getAnnotationNamespaces(service);
             fs.copyTpl(
                 join(templateRoot, 'add', 'annotation.xml'),
                 join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
