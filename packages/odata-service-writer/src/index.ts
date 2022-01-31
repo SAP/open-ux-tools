@@ -100,7 +100,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
             prettifyXml(service.metadata, { indent: 4 })
         );
 
-        // Adds local annotations to datasources section of manifest.json and writer the annotations file
+        // Adds local annotations to datasources section of manifest.json and writes the annotations file
         let namespaces: NamespaceAlias[] = [];
         if (service.localAnnotationsName) {
             namespaces = getAnnotationNamespaces(service);
