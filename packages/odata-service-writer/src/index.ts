@@ -58,7 +58,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         );
     }
 
-    // Adds local annotations to datasources section of manifest.json∂
+    // Adds local annotations to datasources section of manifest.json
     let namespaces: NamespaceAlias[] = [];
     if (service.localAnnotationsName) {
         namespaces = getAnnotationNamespaces(service);
