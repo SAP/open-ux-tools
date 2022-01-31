@@ -58,12 +58,6 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         );
     }
 
-    // Adds local annotations to datasources section of manifest.json
-    let namespaces: NamespaceAlias[] = [];
-    if (service.localAnnotationsName) {
-        namespaces = getAnnotationNamespaces(service);
-    }
-
     const manifestJsonExt = fs.read(join(extRoot, `manifest.json`));
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, service)));
 
@@ -106,7 +100,10 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
             prettifyXml(service.metadata, { indent: 4 })
         );
 
+        // Adds local annotations to datasources section of manifest.json and writer the annotations file
+        let namespaces: NamespaceAlias[] = [];
         if (service.localAnnotationsName) {
+            namespaces = getAnnotationNamespaces(service);
             fs.copyTpl(
                 join(templateRoot, 'add', 'annotation.xml'),
                 join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
