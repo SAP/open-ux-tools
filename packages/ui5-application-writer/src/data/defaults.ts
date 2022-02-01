@@ -61,29 +61,35 @@ export enum UI5_DEFAULT {
  * @returns {UI5} the updated copy of UI5 instance (does not change `ui5`)
  */
 export function mergeUi5(ui5: Partial<UI5>): UI5 {
-    const version = ui5.version || UI5_DEFAULT.DEFAULT_UI5_VERSION; // no version indicates the latest available should be used
-    const framework = ui5.framework || 'SAPUI5';
-
+    const version = ui5.version ?? UI5_DEFAULT.DEFAULT_UI5_VERSION; // no version indicates the latest available should be used
+    const framework = ui5.framework ?? 'SAPUI5';
+    const defaultFrameworkUrl = framework === 'SAPUI5' ? UI5_DEFAULT.SAPUI5_CDN : UI5_DEFAULT.OPENUI5_CDN;
     const merged: Partial<UI5> & Pick<UI5, 'minUI5Version' | 'localVersion' | 'version'> = {
-        minUI5Version: ui5.minUI5Version || UI5_DEFAULT.MIN_UI5_VERSION,
+        minUI5Version: ui5.minUI5Version ?? UI5_DEFAULT.MIN_UI5_VERSION,
         localVersion: getLocalVersion({ framework, version, localVersion: ui5.localVersion }),
         version,
-        framework
+        framework,
+        frameworkUrl: ui5.frameworkUrl ?? defaultFrameworkUrl
     };
-
-    merged.frameworkUrl =
-        ui5.frameworkUrl || merged.framework === 'SAPUI5' ? UI5_DEFAULT.SAPUI5_CDN : UI5_DEFAULT.OPENUI5_CDN;
+    const typesVersion = parseFloat(merged.localVersion) >= 1.76 ? merged.localVersion : '1.71.18';
 
     merged.descriptorVersion =
-        ui5.descriptorVersion || (mappings as Record<string, string>)[merged.minUI5Version] || '1.12.0';
-    merged.typesVersion = ui5.typesVersion || parseFloat(merged.localVersion) >= 1.76 ? merged.localVersion : '1.71.18';
-    merged.ui5Theme = ui5?.ui5Theme || 'sap_fiori_3';
-    merged.ui5Libs = ui5?.ui5Libs || [];
+        ui5.descriptorVersion ?? (mappings as Record<string, string>)[merged.minUI5Version] ?? '1.12.0';
+    merged.typesVersion = ui5.typesVersion ?? typesVersion;
+    merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
+    merged.ui5Libs = ui5.ui5Libs ?? [];
 
     return Object.assign({}, ui5, merged) as UI5;
 }
 
 // if a specific local version is provided, use it, otherwise, sync with version but keep minimum versions in mind
+/**
+ * @param root0 input object
+ * @param root0.framework UI framework
+ * @param root0.version UI version
+ * @param root0.localVersion local UI version
+ * @returns {string} of the local UI5 version
+ */
 function getLocalVersion({
     framework,
     version,
