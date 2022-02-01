@@ -6,18 +6,20 @@ import { NamespaceAlias, OdataService } from '../types';
  * Updates the passed odata service with the namespaces parsed from the specified metadata and annotations.
  *
  * @param {Partial<OdataService>} service - an odata service where at least metadata and annotations properties are defined
+ * @param {string} service.metadata - OData service metadata xml
+ * @param {string} service.annotations - OData service annotations xml
  * @returns A reference to the namspaces array
  */
-export function getAnnotationNamespaces(service: Partial<OdataService>): NamespaceAlias[] {
+export function getAnnotationNamespaces({ metadata, annotations }: Partial<OdataService>): NamespaceAlias[] {
     // enhance service with annotations namespaces
-    const schemaNamespaces = service.metadata ? getNamespaces(service.metadata) : [];
+    const schemaNamespaces = metadata ? getNamespaces(metadata) : [];
 
     return schemaNamespaces.map((schema: NamespaceAlias) => {
         // Check if alias exists in backend annotation file, if so use it
-        if (service.annotations) {
+        if (annotations) {
             const annotationAlias =
-                service.annotations.xml && schema.namespace
-                    ? getAliasFromAnnotation(service.annotations.xml, schema.namespace)
+                annotations.xml && schema.namespace
+                    ? getAliasFromAnnotation(annotations.xml, schema.namespace)
                     : '';
             if (annotationAlias) {
                 schema.alias = annotationAlias;
