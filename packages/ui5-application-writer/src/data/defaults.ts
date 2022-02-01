@@ -84,10 +84,10 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
 
 // if a specific local version is provided, use it, otherwise, sync with version but keep minimum versions in mind
 /**
- * @param root0 input object
- * @param root0.framework UI framework
- * @param root0.version UI version
- * @param root0.localVersion local UI version
+ * @param inputObj input object
+ * @param inputObj.framework UI framework
+ * @param inputObj.version UI version
+ * @param inputObj.localVersion local UI version
  * @returns {string} of the local UI5 version
  */
 function getLocalVersion({
