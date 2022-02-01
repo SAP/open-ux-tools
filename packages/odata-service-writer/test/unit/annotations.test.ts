@@ -13,7 +13,9 @@ const missingSchema = readFileSync(join(testDataPath, 'missing_schema.xml')).toS
 
 describe('metadata parsing', () => {
     it('getAnnotationNamespaces: metadata parsing', () => {
-        expect(() => { getAnnotationNamespaces({ metadata: invalidEdmx })}).toThrow(t('error.invalidXML'));
+        expect(() => {
+            getAnnotationNamespaces({ metadata: invalidEdmx });
+        }).toThrow(t('error.invalidXML'));
         expect(getAnnotationNamespaces({ metadata: missingSchema })).toEqual([]);
 
         expect(getAnnotationNamespaces({ metadata: multischemaMetadata })).toEqual([
@@ -29,19 +31,21 @@ describe('metadata parsing', () => {
                 metadata: metadata,
                 annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef }
             })
-        ).toEqual([
-            { namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' }
-        ]);
+        ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' }]);
         expect(
             getAnnotationNamespaces({
                 metadata: metadata,
                 annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotationSingleRef }
             })
-        ).toEqual([
-            { namespace: 'SEPMRA_PROD_MAN', alias: 'SAP_Products' }
-        ]);
+        ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP_Products' }]);
         expect(
-            getAnnotationNamespaces({ metadata, annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef } })
-        ).toEqual([{ namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' }]);
+            getAnnotationNamespaces({
+                metadata: multischemaMetadata,
+                annotations: { technicalName: 'TEST_ANNOTATIONS', xml: annotationsMultipleRef }
+            })
+        ).toEqual([
+            { namespace: 'SEPMRA_PROD_MAN', alias: 'SAP' },
+            { namespace: 'SEPMRA_PROD_MAN_1', alias: '' }
+        ]);
     });
 });
