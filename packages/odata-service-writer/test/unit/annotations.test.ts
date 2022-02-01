@@ -1,21 +1,31 @@
-import { readFileSync } from 'fs-extra';
+import { readFile } from 'fs-extra';
 import { join } from 'path';
 import { getAnnotationNamespaces } from '../../src/data/annotations';
 import { t } from '../../src/i18n';
 
-const testDataPath = join(__dirname, '../test-data/annotations-test');
-const metadata = readFileSync(join(testDataPath, 'metadata.xml')).toString();
-const annotationsMultipleRef = readFileSync(join(testDataPath, 'annotations_multiple_refs.xml')).toString();
-const annotationSingleRef = readFileSync(join(testDataPath, 'annotations_single_ref.xml')).toString();
-const multischemaMetadata = readFileSync(join(testDataPath, 'multiple_schemas.xml')).toString();
-const invalidEdmx = readFileSync(join(testDataPath, 'bad_metadata.xml')).toString();
-const missingSchema = readFileSync(join(testDataPath, 'missing_schema.xml')).toString();
-
 describe('metadata parsing', () => {
+    let testDataPath,
+        metadata,
+        annotationsMultipleRef,
+        annotationSingleRef,
+        multischemaMetadata,
+        invalidEdmx,
+        missingSchema;
+
+    beforeAll(async () => {
+        testDataPath = join(__dirname, '../test-data/annotations-test');
+        metadata = await readFile(join(testDataPath, 'metadata.xml'), 'utf-8');
+        annotationsMultipleRef = await readFile(join(testDataPath, 'annotations_multiple_refs.xml'), 'utf-8');
+        annotationSingleRef = await readFile(join(testDataPath, 'annotations_single_ref.xml'), 'utf-8');
+        multischemaMetadata = await readFile(join(testDataPath, 'multiple_schemas.xml'), 'utf-8');
+        invalidEdmx = await readFile(join(testDataPath, 'bad_metadata.xml'), 'utf-8');
+        missingSchema = await readFile(join(testDataPath, 'missing_schema.xml'), 'utf-8');
+    });
+
     it('getAnnotationNamespaces: metadata parsing', () => {
         expect(() => {
             getAnnotationNamespaces({ metadata: invalidEdmx });
-        }).toThrow(t('error.invalidXML'));
+        }).toThrow(t('error.unparseableXML'));
         expect(getAnnotationNamespaces({ metadata: missingSchema })).toEqual([]);
 
         expect(getAnnotationNamespaces({ metadata: multischemaMetadata })).toEqual([

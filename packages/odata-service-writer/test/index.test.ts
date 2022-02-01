@@ -4,7 +4,7 @@ import { generate } from '../src';
 import { join } from 'path';
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { readFileSync, removeSync } from 'fs-extra';
+import { readFile, removeSync } from 'fs-extra';
 import { UI5Config } from '@sap-ux/ui5-config';
 
 describe('ODataService templates', () => {
@@ -79,10 +79,10 @@ describe('ODataService templates', () => {
             url: 'http://localhost',
             path: '/sap/odata/testme',
             version: OdataVersion.v2,
-            metadata: readFileSync(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `metadata.xml`), 'utf-8'),
+            metadata: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `metadata.xml`), 'utf-8'),
             annotations: {
                 technicalName: 'sepmra_annotations_tech_name',
-                xml: readFileSync(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `annotations.xml`), 'utf-8')
+                xml: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `annotations.xml`), 'utf-8')
             },
             localAnnotationsName: 'annotations_test'
         };

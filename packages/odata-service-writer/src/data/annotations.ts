@@ -1,10 +1,10 @@
-import { XMLParser, XMLValidator } from 'fast-xml-parser';
+import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
 import { NamespaceAlias, OdataService } from '../types';
 
 /**
  * Updates the passed odata service with the namespaces parsed from the specified metadata and annotations.
- * 
+ *
  * @param {Partial<OdataService>} service - an odata service where at least metadata and annotations properties are defined
  * @returns A reference to the namspaces array
  */
@@ -34,17 +34,19 @@ export function getAnnotationNamespaces(service: Partial<OdataService>): Namespa
  * @returns parsed object representation of passed XML
  */
 function xmlToJson(xml: string): any | void {
-    if (XMLValidator.validate(xml) !== true) {
-        throw new Error(t('error.invalidXML'));
-    }
     const options = {
         attributeNamePrefix: '',
         ignoreAttributes: false,
         ignoreNameSpace: true,
         parseAttributeValue: true
     };
-    const parser = new XMLParser(options);
-    return parser.parse(xml);
+
+    try {
+        const parser = new XMLParser(options);
+        return parser.parse(xml, true);
+    } catch (error) {
+        throw new Error(t('error.unparseableXML', { error }));
+    }
 }
 
 /**
