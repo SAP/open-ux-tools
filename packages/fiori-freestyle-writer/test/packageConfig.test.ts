@@ -12,10 +12,10 @@ describe('Test common utils', () => {
                 })
             ).toMatchInlineSnapshot(`
                 Object {
-                  "start": "fiori run --open 'test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile'",
-                  "start-local": "fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile'",
-                  "start-mock": "fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile'",
-                  "start-noflp": "fiori run --open 'index.html?sap-client=100&sap-ui-xx-viewCache=false'",
+                  "start": "fiori run --open \\\\\\"test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile\\\\\\"",
+                  "start-local": "fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile\\\\\\"",
+                  "start-mock": "fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=100&sap-ui-xx-viewCache=false#testApp-tile\\\\\\"",
+                  "start-noflp": "fiori run --open \\\\\\"index.html?sap-client=100&sap-ui-xx-viewCache=false\\\\\\"",
                 }
             `);
         });
@@ -23,10 +23,10 @@ describe('Test common utils', () => {
         test('addMock: true, sap-client not specified', () => {
             expect(getPackageJsonTasks({ localOnly: false, addMock: true })).toMatchInlineSnapshot(`
                 Object {
-                  "start": "fiori run --open 'test/flpSandbox.html?sap-ui-xx-viewCache=false'",
-                  "start-local": "fiori run --config ./ui5-local.yaml --open 'test/flpSandbox.html?sap-ui-xx-viewCache=false'",
-                  "start-mock": "fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html?sap-ui-xx-viewCache=false'",
-                  "start-noflp": "fiori run --open 'index.html?sap-ui-xx-viewCache=false'",
+                  "start": "fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false\\\\\\"",
+                  "start-local": "fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false\\\\\\"",
+                  "start-mock": "fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false\\\\\\"",
+                  "start-noflp": "fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"",
                 }
             `);
         });
@@ -40,12 +40,12 @@ describe('Test common utils', () => {
                     localStartFile: 'testLocalStart.html'
                 })
             ).toMatchInlineSnapshot(`
-                            Object {
-                              "start": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
-                              "start-local": "fiori run --config ./ui5-local.yaml --open 'testLocalStart.html?sap-ui-xx-viewCache=false#testApp-tile'",
-                              "start-noflp": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
-                            }
-                    `);
+                Object {
+                  "start": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
+                  "start-local": "fiori run --config ./ui5-local.yaml --open \\\\\\"testLocalStart.html?sap-ui-xx-viewCache=false#testApp-tile\\\\\\"",
+                  "start-noflp": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
+                }
+            `);
         });
     });
 });

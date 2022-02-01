@@ -44,15 +44,15 @@ export function getPackageJsonTasks({
 
     const startCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : `fiori run --open '${startFile || 'test/flpSandbox.html'}${params}'`;
-    const startLocalCommand = `fiori run --config ./ui5-local.yaml --open '${
+        : `fiori run --open \\"${startFile || 'test/flpSandbox.html'}${params}\\"`;
+    const startLocalCommand = `fiori run --config ./ui5-local.yaml --open \\"${
         localStartFile || 'test/flpSandbox.html'
-    }${params}'`;
+    }${params}\\"`;
     const startNoFlpCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : `fiori run --open '${'index.html'}${searchParam}'`;
+        : `fiori run --open \\"${'index.html'}${searchParam}\\"`;
 
-    const mockTask = `fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html${params}'`;
+    const mockTask = `fiori run --config ./ui5-mock.yaml --open \\"test/flpSandbox.html${params}\\"`;
     return Object.assign(
         {
             start: startCommand,
