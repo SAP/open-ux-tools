@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
-    "version": "0.10.17",
+    "version": "0.10.18",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {

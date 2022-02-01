@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.18
+
+### Patch Changes
+
+-   074e3e0: Fix for double delim '??' in url in package.json scripts when sap-client param is present
+
 ## 0.10.17
 
 ### Patch Changes
