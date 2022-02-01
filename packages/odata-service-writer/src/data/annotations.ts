@@ -55,27 +55,23 @@ function xmlToJson(xml: string): any | void {
  */
 function getNamespaces(metadata: string): NamespaceAlias[] {
     const jsonMetadata: any = xmlToJson(metadata);
-    const schema = jsonMetadata['edmx:Edmx']?.['edmx:DataServices']?.['Schema'];
+    let schema = jsonMetadata['edmx:Edmx']?.['edmx:DataServices']?.['Schema'];
 
     if (!schema) {
         return [];
     }
 
-    if (Array.isArray(schema)) {
-        return schema.map((item) => {
-            return {
-                namespace: item.Namespace,
-                alias: item.Alias || ''
-            };
-        });
-    } else {
-        return [
-            {
-                namespace: schema.Namespace,
-                alias: schema.Alias || ''
-            }
-        ];
+    // Can be array or single item
+    if (!Array.isArray(schema)) {
+        schema = [schema];
     }
+
+    return schema.map((item) => {
+        return {
+            namespace: item.Namespace,
+            alias: item.Alias || ''
+        };
+    });
 }
 
 /**
@@ -87,20 +83,15 @@ function getNamespaces(metadata: string): NamespaceAlias[] {
  */
 function getAliasFromAnnotation(annotationsXml: string, namespace: string): string {
     const annoJson: any = xmlToJson(annotationsXml);
+    let references = annoJson['edmx:Edmx']?.['edmx:Reference'];
 
-    if (!annoJson) {
-        return '';
+    // Can be array or single item
+    if (!Array.isArray(references)) {
+        references = [references];
     }
 
-    const references = annoJson['edmx:Edmx']?.['edmx:Reference'];
-    if (Array.isArray(references)) {
-        const annoNamespace = references.find(
-            (ref) => ref['edmx:Include']?.['Namespace'] === namespace && ref['edmx:Include']?.['Alias']
-        );
-        return annoNamespace ? annoNamespace['edmx:Include']?.['Alias'] : '';
-    } else {
-        return references['edmx:Include']?.['Namespace'] === namespace && references['edmx:Include']?.['Alias']
-            ? references['edmx:Include']?.['Alias']
-            : '';
-    }
+    const annoNamespace = references.find(
+        (ref) => ref['edmx:Include']?.['Namespace'] === namespace && ref['edmx:Include']?.['Alias']
+    );
+    return annoNamespace ? annoNamespace['edmx:Include']?.['Alias'] : '';
 }
