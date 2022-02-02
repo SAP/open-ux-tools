@@ -67,8 +67,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
                     // Extend or add
                     if (!fs?.exists(outPath)) {
                         fs?.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
-                            globOptions: { dot: true },
-                            processDestinationPath: (filePath: string) => filePath.replace(/eslint.tmpl/g, '.eslintrc')
+                            globOptions: { dot: true }
                         });
                     } else {
                         const add = JSON.parse(render(fs?.read(optTmplFilePath), ui5App));
