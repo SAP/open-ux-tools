@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.10.6
+
+### Patch Changes
+
+-   2038af1: use correct frameworkURL
+
 ## 0.10.5
 
 ### Patch Changes
