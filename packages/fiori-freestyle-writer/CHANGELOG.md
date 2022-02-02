@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.20
+
+### Patch Changes
+
+-   b122d37: use double quotes for files in start commands
+
 ## 0.10.19
 
 ### Patch Changes
