@@ -2,7 +2,20 @@
 
 exports[`UI5 templates generates options 1`] = `
 Object {
-  ".eslintrc": Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "eslintrc.tmpl": Object {
     "contents": "{
   \\"plugins\\": [
     \\"@sap/ui5-jsdocs\\",
@@ -20,19 +33,6 @@ Object {
   ]
 }
 ",
-    "state": "modified",
-  },
-  ".gitignore": Object {
-    "contents": "node_modules/
-dist/
-.scp/
-.env
-Makefile*.mta
-mta_archives
-mta-*
-resources
-archive.zip
-.*_mta_build_tmp",
     "state": "modified",
   },
   "package.json": Object {
