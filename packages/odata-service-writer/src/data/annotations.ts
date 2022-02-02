@@ -83,7 +83,7 @@ function getNamespaces(metadata: string): NamespaceAlias[] {
 /**
  * Gets namespace aliases from the specified annotations xml.
  *
- * @param annotationsJson - annotations definition as json
+ * @param annotations - annotations definition as json
  * @param namespace - the namespace to search
  * @returns An alias for the specified namespace or empty string
  */
