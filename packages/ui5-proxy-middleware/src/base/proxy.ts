@@ -16,7 +16,8 @@ export const ui5Proxy = (config: UI5Config, options?: Options, filter?: Filter) 
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
-    const etag = `W/"${config.version || 'ui5-latest'}"`;
+    const today = new Date();
+    const etag = `W/"${config.version || 'ui5-latest-' + today.getDate() + today.getMonth() + today.getFullYear()}"`;
     const ui5Ver = config.version ? `/${config.version}` : '';
     const proxyConfig: Options = {
         target: config.url,
