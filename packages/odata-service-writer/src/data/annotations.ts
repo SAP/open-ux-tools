@@ -3,7 +3,7 @@ import { t } from '../i18n';
 import { NamespaceAlias, OdataService } from '../types';
 
 /**
- * Updates the passed odata service with the namespaces parsed from the specified metadata and annotations.
+ * Returns the namespaces parsed from the specified metadata and annotations.
  *
  * @param {Partial<OdataService>} service - an odata service where at least metadata and annotations properties are defined
  * @param {string} service.metadata - OData service metadata xml
