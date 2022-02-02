@@ -6,7 +6,8 @@
                 "type": "OData",
                 "settings": {
                     "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
-                       "<%- annotations.technicalName %>"<% } %>
+                        "<%- annotations.technicalName %>"<% if (locals.localAnnotationsName) {%>,<%}%><% } %><% if (locals.localAnnotationsName) { %>
+                        "<%- localAnnotationsName %>"<% } %>
                     ],
                     "localUri": "localService/metadata.xml"<%if (version === '4') {%>,
                     "odataVersion": "4.0"<% } %><%if (version === '2') {%>,
@@ -19,7 +20,14 @@
                 "settings": {
                     "localUri": "localService/<%- annotations.technicalName %>.xml"
                 }
-            }<% } %>
+            }<% } %><% if (locals.localAnnotationsName) { %>,
+            "<%- localAnnotationsName %>": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/<%- localAnnotationsName %>.xml",
+                "settings": {
+                    "localUri": "annotations/<%- localAnnotationsName %>.xml"
+                }
+            } <% } %>
         }
     },
     "sap.ui5": {
