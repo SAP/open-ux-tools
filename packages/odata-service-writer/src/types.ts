@@ -5,6 +5,11 @@ export enum OdataVersion {
     v4 = '4'
 }
 
+export interface NamespaceAlias {
+    namespace: string;
+    alias: string;
+}
+
 export interface OdataService {
     url?: string;
     client?: string;
@@ -21,5 +26,6 @@ export interface OdataService {
         technicalName: string;
         xml: string;
     };
+    localAnnotationsName?: string; // The name used in the manifest.json and as the filename for local annotations
     previewSettings?: Partial<ProxyBackend>;
 }

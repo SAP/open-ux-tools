@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.11.0
+
+### Minor Changes
+
+-   d56ea73: Adds local annotations support
+
 ## 0.10.2
 
 ### Patch Changes
