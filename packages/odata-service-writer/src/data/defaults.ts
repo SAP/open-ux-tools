@@ -5,35 +5,35 @@ import { DEFAULT_DATASOURCE_NAME } from './constants';
  * Enhances the provided OData service object with path, name and model information.
  * Directly modifies the passed object reference.
  *
- * @param {OdataService} data - the OData service object
+ * @param {OdataService} service - the OData service object
  */
-export function enhanceData(data: OdataService): void {
+export function enhanceData(service: OdataService): void {
     // Set default path
-    if (data.path === undefined) {
-        data.path = '/';
-    } else if (data.path.substring(data.path.length - 1) !== '/') {
-        data.path = data.path + '/';
+    if (service.path === undefined) {
+        service.path = '/';
+    } else if (service.path.substring(service.path.length - 1) !== '/') {
+        service.path = service.path + '/';
     }
 
-    if (data.name === undefined) {
-        data.name = DEFAULT_DATASOURCE_NAME;
+    if (service.name === undefined) {
+        service.name = DEFAULT_DATASOURCE_NAME;
     }
-    if (data.model === undefined) {
-        data.model = ''; // Default UI5 model
+    if (service.model === undefined) {
+        service.model = ''; // Default UI5 model
     }
-    
+
     // enhance preview settings with service configuration
-    data.previewSettings = data.previewSettings || {};
-    data.previewSettings.path =
-        data.previewSettings.path || `/${data.path?.split('/').filter((s: string) => s !== '')[0] || ''}`;
-    data.previewSettings.url = data.previewSettings.url || data.url || 'http://localhost';
-    if (data.client && !data.previewSettings.client) {
-        data.previewSettings.client = data.client;
+    service.previewSettings = service.previewSettings || {};
+    service.previewSettings.path =
+        service.previewSettings.path || `/${service.path?.split('/').filter((s: string) => s !== '')[0] || ''}`;
+    service.previewSettings.url = service.previewSettings.url || service.url || 'http://localhost';
+    if (service.client && !service.previewSettings.client) {
+        service.previewSettings.client = service.client;
     }
-    if (data.destination && !data.previewSettings.destination) {
-        data.previewSettings.destination = data.destination.name;
-        if (data.destination.instance) {
-            data.previewSettings.destinationInstance = data.destination.instance;
+    if (service.destination && !service.previewSettings.destination) {
+        service.previewSettings.destination = service.destination.name;
+        if (service.destination.instance) {
+            service.previewSettings.destinationInstance = service.destination.instance;
         }
     }
 }
