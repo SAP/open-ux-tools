@@ -100,15 +100,27 @@ export const getCorporateProxyServer = (yamlProxyServer: string | undefined): st
  * Checks if a host is excluded from user's corporate proxy.
  *
  * @param noProxyConfig - user's no_proxy configuration
- * @param host - host to be checked
+ * @param url - url to be checked
  * @returns true if host is excluded from user's corporate server, false otherwise
  */
-export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, host: string): boolean => {
+export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, url: string): boolean => {
+    if (noProxyConfig === '*') {
+        return true;
+    }
+    let isExcluded = false;
+    const host = new URL(url).host;
     const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
-    const found = noProxyList.find((entry) => {
-        return host.includes(entry);
-    });
-    return !!found;
+
+    for (let i = 0; i < noProxyList.length; i++) {
+        const entry = noProxyList[i];
+
+        if (entry.startsWith('.') && host.endsWith(entry)) {
+            isExcluded = true;
+        } else if (`.${host}`.endsWith(`.${entry}`)) {
+            isExcluded = true;
+        }
+    }
+    return isExcluded;
 };
 
 /**
@@ -245,9 +257,10 @@ export const injectUI5Url = async (
 };
 
 /**
- * Gets the manifest.json for a given application
+ * Gets the manifest.json for a given application.
  *
  * @param args list of runtime arguments
+ * @returns The content of the manifest.json
  */
 export const getManifest = async (args: string[]): Promise<SAPJSONSchemaForWebApplicationManifestFile> => {
     const projectRoot = process.cwd();
@@ -263,9 +276,10 @@ export const getManifest = async (args: string[]): Promise<SAPJSONSchemaForWebAp
 };
 
 /**
- * Gets the minUI5Version from the manifest.json
+ * Gets the minUI5Version from the manifest.json.
  *
  * @param args list of runtime args
+ * @returns The minUI5Version from manifest.json or undefined otherwise
  */
 export async function getUI5VersionFromManifest(args: string[]): Promise<string | undefined> {
     const manifest: SAPJSONSchemaForWebApplicationManifestFile = await getManifest(args);
@@ -273,10 +287,11 @@ export async function getUI5VersionFromManifest(args: string[]): Promise<string 
 }
 
 /**
- * Determines which UI5 version to use when previewing the application
+ * Determines which UI5 version to use when previewing the application.
  *
  * @param version ui5 version as defined in the yaml or via cli argument
  * @param log logger for outputing information from where ui5 version config is coming
+ * @returns The UI5 version with which the application will be started
  */
 export async function setUI5Version(version: string | undefined, log?: ToolsLogger): Promise<string> {
     let ui5Version: string = '';
