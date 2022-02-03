@@ -27,7 +27,7 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
     const corporateProxyServer = getCorporateProxyServer(config.proxy);
     // hide user and pass from proxy configuration for displaying it in the terminal
     const proxyInfo = corporateProxyServer
-        ? corporateProxyServer.replace(/\/\/(.*:{0,1}.*@)/, '//***:***@')
+        ? corporateProxyServer.replace(/\/\/(.*:?.*@)/, '//***:***@')
         : corporateProxyServer;
     const proxyOptions: Options = {
         secure,

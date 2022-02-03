@@ -5,14 +5,7 @@ import { UI5Config, ProxyRequest } from './types';
 import { existsSync, promises } from 'fs';
 import { parseDocument } from 'yaml';
 import { join } from 'path';
-import {
-    BOOTSTRAP_LINK,
-    BOOTSTRAP_REGEX,
-    BOOTSTRAP_REPLACE_REGEX,
-    SANDBOX_LINK,
-    SANDBOX_REGEX,
-    SANDBOX_REPLACE_REGEX
-} from './constants';
+import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 import { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
 import { t } from '../i18n';
 
@@ -111,13 +104,13 @@ export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, url: 
     const host = new URL(url).host;
     const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
 
-    for (let i = 0; i < noProxyList.length; i++) {
-        const entry = noProxyList[i];
-
+    for (const entry of noProxyList) {
         if (entry.startsWith('.') && host.endsWith(entry)) {
             isExcluded = true;
-        } else if (`.${host}`.endsWith(`.${entry}`)) {
-            isExcluded = true;
+        } else {
+            if (`.${host}`.endsWith(`.${entry}`)) {
+                isExcluded = true;
+            }
         }
     }
     return isExcluded;
@@ -224,27 +217,17 @@ export const injectUI5Url = async (
                 const ui5Version = ui5Config.version ? ui5Config.version : '';
 
                 if (ui5Config.path === '/resources') {
-                    const bootstrap = html.match(BOOTSTRAP_REGEX);
                     const resourcesUrl = ui5Version
                         ? `src="${ui5Host}/${ui5Version}/${BOOTSTRAP_LINK}"`
                         : `src="${ui5Host}/${BOOTSTRAP_LINK}"`;
-                    if (bootstrap) {
-                        const oldBoostrap = bootstrap[1];
-                        const newBootstrap = oldBoostrap.replace(BOOTSTRAP_REPLACE_REGEX, resourcesUrl);
-                        html = html.replace(oldBoostrap, newBootstrap);
-                    }
+                    html = html.replace(BOOTSTRAP_REPLACE_REGEX, resourcesUrl);
                 }
 
                 if (ui5Config.path === '/test-resources') {
-                    const sandbox = html.match(SANDBOX_REGEX);
                     const testResourcesUrl = ui5Version
                         ? `src="${ui5Host}/${ui5Version}/${SANDBOX_LINK}"`
                         : `src="${ui5Host}/${SANDBOX_LINK}"`;
-                    if (sandbox) {
-                        const oldSandbox = sandbox[1];
-                        const newSandbox = oldSandbox.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
-                        html = html.replace(oldSandbox, newSandbox);
-                    }
+                    html = html.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
                 }
             }
             setHtmlResponse(res, html);
