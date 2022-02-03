@@ -26,7 +26,10 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
 
     const tmplPath = join(__dirname, '..', 'templates');
 
-    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, { globOptions: { dot: true } });
+    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
+        globOptions: { dot: true },
+        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+    });
 
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
@@ -63,7 +66,9 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
                     const outPath = join(basePath, relPath);
                     // Extend or add
                     if (!fs?.exists(outPath)) {
-                        fs?.copyTpl(optTmplFilePath, outPath, ui5App, undefined, { globOptions: { dot: true } });
+                        fs?.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
+                            globOptions: { dot: true }
+                        });
                     } else {
                         const add = JSON.parse(render(fs?.read(optTmplFilePath), ui5App));
                         const existingFile = JSON.parse(fs?.read(outPath));

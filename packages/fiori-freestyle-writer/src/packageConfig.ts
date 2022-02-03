@@ -28,21 +28,31 @@ export function getPackageJsonTasks({
     startFile?: string;
     localStartFile?: string;
 }): { start: string; 'start-local': string; 'start-noflp': string; 'start-mock'?: string } {
-    const sapClientParam = sapClient ? `?sap-client=${sapClient}` : '';
-    let urlParam = [sapClientParam, 'sap-ui-xx-viewCache=false'].filter((param) => !!param).join('&');
-    urlParam = urlParam ? `?${urlParam}` : '';
-    const params = `${urlParam}${flpAppId ? `#${flpAppId}` : ''}`;
+    // Build search param part of preview launch url
+    const searchParamList = [];
+    if (sapClient) {
+        searchParamList.push([`sap-client`, `${sapClient}`]);
+    }
+    searchParamList.push(['sap-ui-xx-viewCache', 'false']);
+
+    let searchParam = new URLSearchParams(searchParamList).toString();
+    searchParam = searchParam ? `?${searchParam}` : '';
+    // Build fragment identifier part of url
+    const hashFragment = flpAppId ? `#${flpAppId}` : '';
+    // Full parameter section composed by search param and fragment identifier
+    const params = `${searchParam}${hashFragment}`;
+
     const startCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : `fiori run --open '${startFile || 'test/flpSandbox.html'}${params}'`;
-    const startLocalCommand = `fiori run --config ./ui5-local.yaml --open '${
+        : `fiori run --open "${startFile || 'test/flpSandbox.html'}${params}"`;
+    const startLocalCommand = `fiori run --config ./ui5-local.yaml --open "${
         localStartFile || 'test/flpSandbox.html'
-    }${params}'`;
+    }${params}"`;
     const startNoFlpCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : `fiori run --open '${'index.html'}${urlParam}'`;
+        : `fiori run --open "${'index.html'}${searchParam}"`;
 
-    const mockTask = `fiori run --config ./ui5-mock.yaml --open 'test/flpSandbox.html${params}'`;
+    const mockTask = `fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html${params}"`;
     return Object.assign(
         {
             start: startCommand,

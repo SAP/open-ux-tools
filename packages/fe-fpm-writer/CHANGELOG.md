@@ -1,5 +1,12 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.4.0
+
+### Minor Changes
+
+-   85c75f2: For all extension types, prevent overwiting existing files.
+    Files only will be created and filled with default values if they do not exist yet.
+
 ## 0.3.1
 
 ### Patch Changes

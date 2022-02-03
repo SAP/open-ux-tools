@@ -4,7 +4,7 @@ import { generate } from '../src';
 import { join } from 'path';
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { removeSync } from 'fs-extra';
+import { readFile, removeSync } from 'fs-extra';
 import { UI5Config } from '@sap-ux/ui5-config';
 
 describe('ODataService templates', () => {
@@ -38,7 +38,7 @@ describe('ODataService templates', () => {
         }
     });
 
-    it('generate: invalide project with faulty manifest.json', async () => {
+    it('generate: invalid project with faulty manifest.json', async () => {
         const testDir = join(outputDir, 'invalid-project');
 
         const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
@@ -71,6 +71,43 @@ describe('ODataService templates', () => {
         );
 
         const fsEditor = await generate(testDir, validServiceConfig as OdataService, fs);
+        expect((fsEditor as any).dump(testDir)).toMatchSnapshot();
+    });
+
+    it('generate: project with local annotations', async () => {
+        const serviceConfigWithAnnotations: OdataService = {
+            url: 'http://localhost',
+            path: '/sap/odata/testme',
+            version: OdataVersion.v2,
+            metadata: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `metadata.xml`), 'utf-8'),
+            annotations: {
+                technicalName: 'sepmra_annotations_tech_name',
+                xml: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `annotations.xml`), 'utf-8')
+            },
+            localAnnotationsName: 'annotations_test'
+        };
+
+        const testDir = join(outputDir, 'local-annotations');
+        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
+
+        const fs = create(createStorage());
+        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
+        fs.write(join(testDir, 'ui5-local.yaml'), '');
+        fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
+        fs.write(
+            join(testDir, 'webapp', 'manifest.json'),
+            JSON.stringify({
+                'sap.app': {
+                    id: 'testappid'
+                }
+            })
+        );
+
+        const fsEditor = await generate(
+            testDir,
+            Object.assign(serviceConfigWithAnnotations, { version: OdataVersion.v4 }),
+            fs
+        );
         expect((fsEditor as any).dump(testDir)).toMatchSnapshot();
     });
 });

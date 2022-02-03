@@ -1,0 +1,48 @@
+{
+    "name": "@sap-ux/store",
+    "version": "0.0.2",
+    "description": "NPM module for storing persistent data",
+    "license": "SEE LICENSE IN LICENSE",
+    "private": false,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "pnpm clean && tsc",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist coverage",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --silent",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "dependencies": {
+        "@sap-ux/logger": "workspace:*",
+        "i18next": "20.3.2",
+        "i18next-fs-backend": "1.1.1",
+        "pluralize": "8.0.0",
+        "reflect-metadata": "0.1.13"
+    },
+    "optionalDependencies": {
+        "keytar": "7.7.0"
+    },
+    "devDependencies": {
+        "@types/i18next-fs-backend": "1.0.0",
+        "@types/pluralize": "0.0.29",
+        "@types/qs": "6.9.1",
+        "fast-check": "2.19.0",
+        "jest-extended": "0.11.5",
+        "jest-mock-extended": "2.0.4",
+        "memfs": "3.3.0",
+        "unionfs": "4.4.0"
+    },
+    "files": [
+        "dist",
+        "LICENSE"
+    ],
+    "engines": {
+        "pnpm": ">=6.0.2",
+        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+    }
+}
