@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.10.8
+
+### Patch Changes
+
+-   507b3de: change eslint template file
+
 ## 0.10.7
 
 ### Patch Changes
