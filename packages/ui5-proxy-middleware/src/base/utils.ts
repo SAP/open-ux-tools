@@ -13,7 +13,7 @@ import {
     SANDBOX_REGEX,
     SANDBOX_REPLACE_REGEX
 } from './constants';
-import { Manifest } from './manifest';
+import { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
 import { t } from '../i18n';
 
 /**
@@ -249,13 +249,15 @@ export const injectUI5Url = async (
  *
  * @param args list of runtime arguments
  */
-export const getManifest = async (args: string[]): Promise<Manifest> => {
+export const getManifest = async (args: string[]): Promise<SAPJSONSchemaForWebApplicationManifestFile> => {
     const projectRoot = process.cwd();
     const yamlFileName = getYamlFile(args);
     const ui5YamlPath = join(projectRoot, yamlFileName);
     const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
     const manifestPath = join(projectRoot, webAppFolder, 'manifest.json');
-    const manifest: Manifest = JSON.parse(await promises.readFile(manifestPath, { encoding: 'utf8' }));
+    const manifest: SAPJSONSchemaForWebApplicationManifestFile = JSON.parse(
+        await promises.readFile(manifestPath, { encoding: 'utf8' })
+    );
 
     return manifest;
 };
@@ -266,7 +268,7 @@ export const getManifest = async (args: string[]): Promise<Manifest> => {
  * @param args list of runtime args
  */
 export async function getUI5VersionFromManifest(args: string[]): Promise<string | undefined> {
-    const manifest: Manifest = await getManifest(args);
+    const manifest: SAPJSONSchemaForWebApplicationManifestFile = await getManifest(args);
     return manifest['sap.ui5']?.dependencies?.minUI5Version;
 }
 
