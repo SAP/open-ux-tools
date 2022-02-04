@@ -193,7 +193,6 @@
         ],
         "camelcase": 1,
         "consistent-this": [1, "that"],
-        "linebreak-style": 1,
         "max-nested-callbacks": [1, 3],
         "new-cap": 1,
         "new-parens": 2,
