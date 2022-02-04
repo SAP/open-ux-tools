@@ -81,7 +81,7 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
         ui5.descriptorVersion ?? (mappings as Record<string, string>)[merged.minUI5Version] ?? '1.12.0';
     merged.typesVersion = ui5.typesVersion ?? typesVersion;
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
-    merged.ui5Libs = getUI5Libs(ui5.ui5Libs) ?? [];
+    merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
     return Object.assign({}, ui5, merged) as UI5;
 }
