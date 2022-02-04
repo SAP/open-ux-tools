@@ -1,6 +1,5 @@
 import { join } from 'path';
 import { mergeWithDefaults } from './data';
-import { getUI5Libs } from './data/ui5Libs';
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { mergeObjects } from 'json-merger';
@@ -49,7 +48,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     ui5LocalConfig.addUI5Framework(
         ui5App.ui5.framework,
         ui5App.ui5.localVersion,
-        getUI5Libs(ui5App.ui5.ui5Libs),
+        ui5App.ui5.ui5Libs as string[],
         ui5App.ui5.ui5Theme
     );
     ui5LocalConfig.addFioriToolsAppReloadMiddleware();

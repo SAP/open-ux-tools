@@ -1,5 +1,6 @@
 import { App, Package, UI5, UI5Framework } from '../types';
 import mappings from './version-to-descriptor-mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
+import { getUI5Libs } from './ui5Libs';
 /**
  * Returns a package instance with default properties.
  *
@@ -54,6 +55,9 @@ export enum UI5_DEFAULT {
     OPENUI5_CDN = 'https://openui5.hana.ondemand.com'
 }
 
+// Required default libs
+export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
+
 /**
  * Merges version properties with the provided UI5 instance.
  *
@@ -77,7 +81,7 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
         ui5.descriptorVersion ?? (mappings as Record<string, string>)[merged.minUI5Version] ?? '1.12.0';
     merged.typesVersion = ui5.typesVersion ?? typesVersion;
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
-    merged.ui5Libs = ui5.ui5Libs ?? [];
+    merged.ui5Libs = getUI5Libs(ui5.ui5Libs) ?? [];
 
     return Object.assign({}, ui5, merged) as UI5;
 }

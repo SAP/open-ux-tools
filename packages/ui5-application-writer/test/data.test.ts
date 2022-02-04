@@ -1,4 +1,4 @@
-import { UI5_DEFAULT, mergeUi5 } from '../src/data/defaults';
+import { UI5_DEFAULT, mergeUi5, defaultUI5Libs } from '../src/data/defaults';
 import type { UI5 } from '../src/types';
 
 describe('Setting defaults', () => {
@@ -14,7 +14,7 @@ describe('Setting defaults', () => {
                 descriptorVersion: '1.12.0',
                 typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 ui5Theme: 'sap_fiori_3',
-                ui5Libs: []
+                ui5Libs: defaultUI5Libs
             }
         },
         {
@@ -28,7 +28,7 @@ describe('Setting defaults', () => {
                 descriptorVersion: '1.12.0',
                 typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 ui5Theme: 'sap_fiori_3',
-                ui5Libs: []
+                ui5Libs: defaultUI5Libs
             }
         },
         {
@@ -42,7 +42,7 @@ describe('Setting defaults', () => {
                 descriptorVersion: '1.12.0',
                 typesVersion: '1.71.18',
                 ui5Theme: 'sap_fiori_3',
-                ui5Libs: []
+                ui5Libs: defaultUI5Libs
             }
         },
         {
@@ -58,7 +58,7 @@ describe('Setting defaults', () => {
                 descriptorVersion: '1.12.0',
                 typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 ui5Theme: 'sap_fiori_3_dark',
-                ui5Libs: []
+                ui5Libs: defaultUI5Libs
             }
         },
         {
@@ -79,7 +79,7 @@ describe('Setting defaults', () => {
                 descriptorVersion: '1.12.1',
                 typesVersion: '1.95.5',
                 ui5Theme: 'sap_fiori_3',
-                ui5Libs: ['sap.m', 'sap.fe']
+                ui5Libs: defaultUI5Libs.concat('sap.fe')
             }
         },
         {
@@ -95,7 +95,7 @@ describe('Setting defaults', () => {
                 descriptorVersion: '1.12.0',
                 typesVersion: '1.95.0',
                 ui5Theme: 'sap_fiori_3',
-                ui5Libs: []
+                ui5Libs: defaultUI5Libs
             }
         },
         {
@@ -111,7 +111,7 @@ describe('Setting defaults', () => {
                 descriptorVersion: '1.12.0',
                 typesVersion: '1.80',
                 ui5Theme: 'sap_fiori_3',
-                ui5Libs: []
+                ui5Libs: defaultUI5Libs
             }
         }
     ];
