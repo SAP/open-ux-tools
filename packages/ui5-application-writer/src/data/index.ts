@@ -1,5 +1,5 @@
 import { App, UI5, AppOptions, Package, Ui5App } from '../types';
-import { mergeApp, packageDefaults, mergeUi5 } from './defaults';
+import { mergeApp, packageDefaults, mergeUi5 } from './defaultSettings';
 import { validate } from './validators';
 
 /**
