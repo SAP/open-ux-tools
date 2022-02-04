@@ -1,5 +1,40 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.23
+
+### Patch Changes
+
+-   507b3de: change eslint template file
+-   Updated dependencies [507b3de]
+    -   @sap-ux/ui5-application-writer@0.10.8
+
+## 0.10.22
+
+### Patch Changes
+
+-   Updated dependencies [f47b932]
+    -   @sap-ux/ui5-application-writer@0.10.7
+
+## 0.10.21
+
+### Patch Changes
+
+-   Updated dependencies [d56ea73]
+    -   @sap-ux/odata-service-writer@0.11.0
+
+## 0.10.20
+
+### Patch Changes
+
+-   b122d37: use double quotes for files in start commands
+
+## 0.10.19
+
+### Patch Changes
+
+-   Updated dependencies [2038af1]
+    -   @sap-ux/ui5-application-writer@0.10.6
+
 ## 0.10.18
 
 ### Patch Changes

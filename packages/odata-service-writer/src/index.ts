@@ -4,8 +4,7 @@ import { create, Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { ProxyBackend, UI5Config } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
-
-import { enhanceData } from './data';
+import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
 import { OdataService, OdataVersion } from './types';
 
@@ -29,17 +28,18 @@ function validateBasePath(basePath: string, fs: Editor) {
  *
  *
  * @param {string} basePath - the root path of an existing UI5 application
- * @param {OdataService} data - the OData service instance
+ * @param {OdataService} service - the OData service instance
  * @param {Editor} [fs] - the memfs editor instance
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function generate(basePath: string, data: OdataService, fs?: Editor): Promise<Editor> {
+async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+
     if (!fs) {
         fs = create(createStorage());
     }
     validateBasePath(basePath, fs);
-    enhanceData(data);
+    enhanceData(service);
 
     // merge content into existing files
     const templateRoot = join(__dirname, '..', 'templates');
@@ -59,20 +59,20 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
     }
 
     const manifestJsonExt = fs.read(join(extRoot, `manifest.json`));
-    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, data)));
+    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, service)));
 
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addBackendToFioriToolsProxydMiddleware(data.previewSettings as ProxyBackend);
+    ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
 
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
     const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [data.previewSettings as ProxyBackend] });
+    ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
 
     // Add mockserver entries
-    if (data.metadata) {
+    if (service.metadata) {
         // package.json updates
         const mockDevDeps = {
             devDependencies: {
@@ -88,26 +88,40 @@ async function generate(basePath: string, data: OdataService, fs?: Editor): Prom
 
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
         const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
-        ui5MockConfig.addMockServerMiddleware(data.path);
+        ui5MockConfig.addMockServerMiddleware(service.path);
         fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
 
         // also add mockserver middleware to ui5-local.yaml
-        ui5LocalConfig.addMockServerMiddleware(data.path);
+        ui5LocalConfig.addMockServerMiddleware(service.path);
 
         // create local copy of metadata and annotations
-        fs.write(join(basePath, 'webapp', 'localService', 'metadata.xml'), prettifyXml(data.metadata, { indent: 4 }));
+        fs.write(
+            join(basePath, 'webapp', 'localService', 'metadata.xml'),
+            prettifyXml(service.metadata, { indent: 4 })
+        );
+
+        // Adds local annotations to datasources section of manifest.json and writes the annotations file
+        if (service.localAnnotationsName) {
+            const namespaces = getAnnotationNamespaces(service);
+            fs.copyTpl(
+                join(templateRoot, 'add', 'annotation.xml'),
+                join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
+                { ...service, namespaces }
+            );
+        }
     }
 
     // write yamls to disk
     fs.write(ui5ConfigPath, ui5Config.toString());
     fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
-    if (data.annotations?.xml) {
+    if (service.annotations?.xml) {
         fs.write(
-            join(basePath, 'webapp', 'localService', `${data.annotations.technicalName}.xml`),
-            prettifyXml(data.annotations.xml, { indent: 4 })
+            join(basePath, 'webapp', 'localService', `${service.annotations.technicalName}.xml`),
+            prettifyXml(service.annotations.xml, { indent: 4 })
         );
     }
+
     return fs;
 }
 
