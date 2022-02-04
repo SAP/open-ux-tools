@@ -10,7 +10,7 @@ module.exports = {
             'jest-sonar',
             {
                 reportedFilePath: 'relative',
-                relativeRootDir: '<rootDir>/../../../'
+                relativeRootDir: '<rootDir>'
             }
         ]
     ],
