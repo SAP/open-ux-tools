@@ -1,5 +1,5 @@
 import { App, Package, UI5, UI5Framework } from '../types';
-import mappings from './version-to-descriptor-mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
+import { versionToDescMap } from './version-to-descriptor-mapping'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 /**
  * Returns a package instance with default properties.
@@ -78,7 +78,7 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
     const typesVersion = parseFloat(merged.localVersion) >= 1.76 ? merged.localVersion : '1.71.18';
 
     merged.descriptorVersion =
-        ui5.descriptorVersion ?? (mappings as Record<string, string>)[merged.minUI5Version] ?? '1.12.0';
+        ui5.descriptorVersion ?? (versionToDescMap as Record<string, string>)[merged.minUI5Version] ?? '1.12.0';
     merged.typesVersion = ui5.typesVersion ?? typesVersion;
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);

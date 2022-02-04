@@ -5,8 +5,7 @@
         "outDir": "dist",
         "sourceMap": true,
         "baseUrl": "./src",
-        "resolveJsonModule": true,
-        "target": "ES6"
+        "resolveJsonModule": true
     },
     "extends": "../../tsconfig.json"
 }
