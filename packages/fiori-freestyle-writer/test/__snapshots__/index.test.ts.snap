@@ -168,13 +168,17 @@ server:
     "contents": "/**
  * eslint-disable @sap/ui5-jsdocs/no-jsdoc
  */
+
 sap.ui.define([
         \\"sap/ui/core/UIComponent\\",
         \\"sap/ui/Device\\",
         \\"test/me/model/models\\"
     ],
     /**
-     * @param {typeof sap.ui.core.UIComponent} UIComponent
+     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+     * @param {typeof sap.ui.Device} Device
+     */ /**
+     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
      * @param {typeof sap.ui.Device} Device
      */
     function (UIComponent, Device, models) {
@@ -4028,18 +4032,12 @@ server:
     "state": "modified",
   },
   "webapp/Component.js": Object {
-    "contents": "
-sap.ui.define([
+    "contents": "sap.ui.define([
     \\"sap/ui/core/UIComponent\\",
     \\"sap/ui/Device\\",
     \\"./model/models\\",
     \\"./controller/ErrorHandler\\"
-], 
-    /**
-     * @param {typeof sap.ui.core.UIComponent} UIComponent
-     * @param {typeof sap.ui.Device} Device
-     */
-    function (UIComponent, Device, models, ErrorHandler) {
+], function (UIComponent, Device, models, ErrorHandler) {
     \\"use strict\\";
 
     return UIComponent.extend(\\"test.me.Component\\", {
@@ -4079,7 +4077,7 @@ sap.ui.define([
             // call the base component's destroy function
             UIComponent.prototype.destroy.apply(this, arguments);
         },
-        
+
         /**
          * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
          * design mode class should be set, which influences the size appearance of some controls.
