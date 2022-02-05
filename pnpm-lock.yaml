@@ -161,7 +161,7 @@ importers:
       i18next-fs-backend: 1.1.1
       jest-extended: 0.11.5
       jest-mock-extended: 2.0.4
-      keytar: 7.7.0
+      keytar: 7.8.0
       memfs: 3.3.0
       pluralize: 8.0.0
       reflect-metadata: 0.1.13
@@ -173,7 +173,7 @@ importers:
       pluralize: 8.0.0
       reflect-metadata: 0.1.13
     optionalDependencies:
-      keytar: 7.7.0
+      keytar: 7.8.0
     devDependencies:
       '@types/i18next-fs-backend': 1.0.0
       '@types/pluralize': 0.0.29
@@ -2297,11 +2297,11 @@ packages:
     engines: {node: '>=0.10'}
     dev: true
 
-  /decompress-response/4.2.1:
-    resolution: {integrity: sha512-jOSne2qbyE+/r8G1VU+G/82LBs2Fs4LAsTiLSHOCOMZQl2OKZ6i8i4IyHemTe+/yIXOtTcRQMzPcgyhoFlqPkw==}
-    engines: {node: '>=8'}
+  /decompress-response/6.0.0:
+    resolution: {integrity: sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==}
+    engines: {node: '>=10'}
     dependencies:
-      mimic-response: 2.1.0
+      mimic-response: 3.1.0
     dev: false
     optional: true
 
@@ -2371,10 +2371,9 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /detect-libc/1.0.3:
-    resolution: {integrity: sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=}
-    engines: {node: '>=0.10'}
-    hasBin: true
+  /detect-libc/2.0.0:
+    resolution: {integrity: sha512-S55LzUl8HUav8l9E2PBTlC5PAJrHK7tkM+XXFGD+fbsbkTzhCpG6K05LxJcUOEWzMa4v6ptcMZ9s3fOdJDu0Zw==}
+    engines: {node: '>=8'}
     dev: false
     optional: true
 
@@ -4566,12 +4565,12 @@ packages:
       underscore: 1.12.1
     dev: false
 
-  /keytar/7.7.0:
-    resolution: {integrity: sha512-YEY9HWqThQc5q5xbXbRwsZTh2PJ36OSYRjSv3NN2xf5s5dpLTjEZnC2YikR29OaVybf9nQ0dJ/80i40RS97t/A==}
+  /keytar/7.8.0:
+    resolution: {integrity: sha512-mR+BqtAOIW8j+T5FtLVyckCbvROWQD+4FzPeFMuk5njEZkXLpVPCGF26Y3mTyxMAAL1XCfswR7S6kIf+THSRFA==}
     requiresBuild: true
     dependencies:
-      node-addon-api: 3.2.1
-      prebuild-install: 6.1.4
+      node-addon-api: 4.3.0
+      prebuild-install: 7.0.1
     dev: false
     optional: true
 
@@ -4704,7 +4703,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
-    dev: true
 
   /make-dir/3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
@@ -4869,9 +4867,9 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /mimic-response/2.1.0:
-    resolution: {integrity: sha512-wXqjST+SLt7R009ySCglWBCFpjUygmCIfD790/kVbiGmUgfYGuB14PiTd5DwVxSV4NcYHjzMkoj5LjQZwTQLEA==}
-    engines: {node: '>=8'}
+  /mimic-response/3.1.0:
+    resolution: {integrity: sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==}
+    engines: {node: '>=10'}
     dev: false
     optional: true
 
@@ -4978,15 +4976,16 @@ packages:
     resolution: {integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=}
     dev: true
 
-  /node-abi/2.30.1:
-    resolution: {integrity: sha512-/2D0wOQPgaUWzVSVgRMx+trKJRC2UG4SUc4oCJoXx9Uxjtp0Vy3/kt7zcbxHF8+Z/pK3UloLWzBISg72brfy1w==}
+  /node-abi/3.8.0:
+    resolution: {integrity: sha512-tzua9qWWi7iW4I42vUPKM+SfaF0vQSLAm4yO5J83mSwB7GeoWrDKC/K+8YCnYNwqP5duwazbw2X9l4m8SC2cUw==}
+    engines: {node: '>=10'}
     dependencies:
-      semver: 5.7.1
+      semver: 7.3.5
     dev: false
     optional: true
 
-  /node-addon-api/3.2.1:
-    resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
+  /node-addon-api/4.3.0:
+    resolution: {integrity: sha512-73sE9+3UaLYYFmDsFZnqCInzPyh3MqIwZO9cw58yIqAZhONrrabrYyYe3TuIqtIiOuTXVhsGau8hcrhhwSsDIQ==}
     dev: false
     optional: true
 
@@ -5302,22 +5301,22 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /prebuild-install/6.1.4:
-    resolution: {integrity: sha512-Z4vpywnK1lBg+zdPCVCsKq0xO66eEV9rWo2zrROGGiRS4JtueBOdlB1FnY8lcy7JsUud/Q3ijUxyWN26Ika0vQ==}
-    engines: {node: '>=6'}
+  /prebuild-install/7.0.1:
+    resolution: {integrity: sha512-QBSab31WqkyxpnMWQxubYAHR5S9B2+r81ucocew34Fkl98FhvKIF50jIJnNOBmAZfyNV7vE5T6gd3hTVWgY6tg==}
+    engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      detect-libc: 1.0.3
+      detect-libc: 2.0.0
       expand-template: 2.0.3
       github-from-package: 0.0.0
       minimist: 1.2.5
       mkdirp-classic: 0.5.3
       napi-build-utils: 1.0.2
-      node-abi: 2.30.1
+      node-abi: 3.8.0
       npmlog: 4.1.2
       pump: 3.0.0
       rc: 1.2.8
-      simple-get: 3.1.0
+      simple-get: 4.0.1
       tar-fs: 2.1.1
       tunnel-agent: 0.6.0
     dev: false
@@ -5684,6 +5683,7 @@ packages:
   /semver/5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
     hasBin: true
+    dev: true
 
   /semver/6.3.0:
     resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}
@@ -5696,7 +5696,6 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
-    dev: true
 
   /set-blocking/2.0.0:
     resolution: {integrity: sha1-BF+XgtARrppoA93TgrJDkrPYkPc=}
@@ -5751,10 +5750,10 @@ packages:
     dev: false
     optional: true
 
-  /simple-get/3.1.0:
-    resolution: {integrity: sha512-bCR6cP+aTdScaQCnQKbPKtJOKDp/hj9EDLJo3Nw4y1QksqaovlW/bnptB6/c1e+qmNIDHRK+oXFDdEqBT8WzUA==}
+  /simple-get/4.0.1:
+    resolution: {integrity: sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA==}
     dependencies:
-      decompress-response: 4.2.1
+      decompress-response: 6.0.0
       once: 1.4.0
       simple-concat: 1.0.1
     dev: false
@@ -6707,7 +6706,6 @@ packages:
 
   /yallist/4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
-    dev: true
 
   /yaml/2.0.0-10:
     resolution: {integrity: sha512-FHV8s5ODFFQXX/enJEU2EkanNl1UDBUz8oa4k5Qo/sR+Iq7VmhCDkRMb0/mjJCNeAWQ31W8WV6PYStDE4d9EIw==}
