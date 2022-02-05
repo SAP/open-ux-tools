@@ -7,13 +7,6 @@ sap.ui.define([
         "sap/ui/Device",
         "<%=app.id.replace(/\./g, '/')%>/model/models"
     ],
-    /**
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     */ /**
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     */
     function (UIComponent, Device, models) {
         "use strict";
 

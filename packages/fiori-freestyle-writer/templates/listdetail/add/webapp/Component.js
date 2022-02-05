@@ -4,11 +4,15 @@ sap.ui.define([
     "./model/models",
     "./controller/ListSelector",
     "./controller/ErrorHandler"
-], function (UIComponent, Device, models, ListSelector, ErrorHandler) {
+], 
+function (UIComponent, Device, models, ListSelector, ErrorHandler) {
     "use strict";
 
     return UIComponent.extend("<%- app.id %>.Component", {
-
+        /**
+         * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+         * @param {typeof sap.ui.Device} Device
+         */ 
         metadata : {
             manifest : "json"
         },

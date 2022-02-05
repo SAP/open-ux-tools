@@ -171,11 +171,15 @@ server:
     \\"./model/models\\",
     \\"./controller/ListSelector\\",
     \\"./controller/ErrorHandler\\"
-], function (UIComponent, Device, models, ListSelector, ErrorHandler) {
+], 
+function (UIComponent, Device, models, ListSelector, ErrorHandler) {
     \\"use strict\\";
 
     return UIComponent.extend(\\"test.me.Component\\", {
-
+        /**
+         * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+         * @param {typeof sap.ui.Device} Device
+         */ 
         metadata : {
             manifest : \\"json\\"
         },
@@ -2680,11 +2684,15 @@ server:
     \\"./model/models\\",
     \\"./controller/ListSelector\\",
     \\"./controller/ErrorHandler\\"
-], function (UIComponent, Device, models, ListSelector, ErrorHandler) {
+], 
+function (UIComponent, Device, models, ListSelector, ErrorHandler) {
     \\"use strict\\";
 
     return UIComponent.extend(\\"test.me.Component\\", {
-
+        /**
+         * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+         * @param {typeof sap.ui.Device} Device
+         */ 
         metadata : {
             manifest : \\"json\\"
         },

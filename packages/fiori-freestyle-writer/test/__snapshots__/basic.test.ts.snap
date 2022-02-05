@@ -128,13 +128,6 @@ sap.ui.define([
         \\"sap/ui/Device\\",
         \\"nods1/model/models\\"
     ],
-    /**
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     */ /**
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     */
     function (UIComponent, Device, models) {
         \\"use strict\\";
 
@@ -787,13 +780,6 @@ sap.ui.define([
         \\"sap/ui/Device\\",
         \\"nods1/model/models\\"
     ],
-    /**
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     */ /**
-     * @param {typeof sap.ui.model.json.JSONModel} JSONModel
-     * @param {typeof sap.ui.Device} Device
-     */
     function (UIComponent, Device, models) {
         \\"use strict\\";
 
