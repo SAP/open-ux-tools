@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.23
+
+### Patch Changes
+
+-   507b3de: change eslint template file
+-   Updated dependencies [507b3de]
+    -   @sap-ux/ui5-application-writer@0.10.8
+
 ## 0.10.22
 
 ### Patch Changes
