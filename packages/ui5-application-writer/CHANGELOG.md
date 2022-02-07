@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.10.9
+
+### Patch Changes
+
+-   11909e1: Write dependencies to manifest.json
+
 ## 0.10.8
 
 ### Patch Changes
