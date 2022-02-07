@@ -221,7 +221,7 @@ export class YamlDocument {
             throw new Error(t('error.seqDoesNotExist', { path }));
         }
 
-        const node = seq.items.find((node) => node.toJSON()[matcher.key] === matcher.value);
+        const node = seq.items.find((nodeInput) => nodeInput.toJSON()[matcher.key] === matcher.value);
         const newNode = this.document.createNode(merge(node!.toJSON(), value));
         seq.items.splice(seq.items.indexOf(node!), 1, newNode);
 

@@ -12,7 +12,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --maxWorkers=1 --colors",
+        "test": "jest --maxWorkers=1 --colors --silent",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
