@@ -5,12 +5,13 @@ import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
-    injectUI5Url,
+    injectScripts,
     isHostExcludedFromProxy,
     MiddlewareParameters,
     ProxyConfig,
     ui5Proxy,
-    setUI5Version
+    setUI5Version,
+    hideProxyCredentials
 } from '../base';
 
 module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise<RequestHandler> => {
@@ -26,9 +27,7 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
     const noProxyVal = process.env.no_proxy || process.env.npm_config_noproxy;
     const corporateProxyServer = getCorporateProxyServer(config.proxy);
     // hide user and pass from proxy configuration for displaying it in the terminal
-    const proxyInfo = corporateProxyServer
-        ? corporateProxyServer.replace(/\/\/(.*:?.*@)/, '//***:***@')
-        : corporateProxyServer;
+    const proxyInfo = hideProxyCredentials(corporateProxyServer);
     const proxyOptions: Options = {
         secure,
         logLevel: debug ? 'debug' : 'info',
@@ -53,7 +52,7 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
 
     if (directLoad) {
         router.use(HTML_MOUNT_PATHS, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-            await injectUI5Url(req, res, next, config.ui5);
+            await injectScripts(req, res, next, config.ui5);
         });
     }
 

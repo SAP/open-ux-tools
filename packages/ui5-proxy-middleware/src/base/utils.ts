@@ -90,6 +90,25 @@ export const getCorporateProxyServer = (yamlProxyServer: string | undefined): st
 };
 
 /**
+ * Hides the proxy credentials for displaying the proxy configuration in the console.
+ *
+ * @param proxy - user's proxy server
+ * @returns proxy with hidden credentials for displaying in the console
+ */
+export const hideProxyCredentials = (proxy: string | undefined): string | undefined => {
+    if (proxy) {
+        const forwardSlashIndex = proxy.indexOf('//');
+        const atIndex = proxy.indexOf('@');
+
+        if (forwardSlashIndex !== -1 && atIndex !== -1) {
+            proxy = proxy.replace(proxy.slice(forwardSlashIndex + 2, atIndex), '***:***');
+        }
+    }
+
+    return proxy;
+};
+
+/**
  * Checks if a host is excluded from user's corporate proxy.
  *
  * @param noProxyConfig - user's no_proxy configuration
@@ -188,58 +207,6 @@ export const setHtmlResponse = (res: any, html: string): void => {
 };
 
 /**
- * Injects the absolute UI5 urls into the html file, which is used to preview the application.
- *
- * @param req - the http request object
- * @param res - the http response object
- * @param next - the next function, used to forward the request to the next available handler
- * @param ui5Configs - the UI5 configuration of the ui5-proxy-middleware
- */
-export const injectUI5Url = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-    ui5Configs: UI5Config[]
-): Promise<void> => {
-    try {
-        const projectRoot = process.cwd();
-        const args = process.argv;
-        const htmlFileName = getHtmlFile(req.baseUrl);
-        const yamlFileName = getYamlFile(args);
-        const ui5YamlPath = join(projectRoot, yamlFileName);
-        const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
-        const htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
-
-        if (existsSync(htmlFilePath)) {
-            let html = await promises.readFile(htmlFilePath, { encoding: 'utf8' });
-            for (const ui5Config of ui5Configs) {
-                const ui5Host = ui5Config.url.replace(/\/$/, '');
-                const ui5Version = ui5Config.version ? ui5Config.version : '';
-
-                if (ui5Config.path === '/resources') {
-                    const resourcesUrl = ui5Version
-                        ? `src="${ui5Host}/${ui5Version}/${BOOTSTRAP_LINK}"`
-                        : `src="${ui5Host}/${BOOTSTRAP_LINK}"`;
-                    html = html.replace(BOOTSTRAP_REPLACE_REGEX, resourcesUrl);
-                }
-
-                if (ui5Config.path === '/test-resources') {
-                    const testResourcesUrl = ui5Version
-                        ? `src="${ui5Host}/${ui5Version}/${SANDBOX_LINK}"`
-                        : `src="${ui5Host}/${SANDBOX_LINK}"`;
-                    html = html.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
-                }
-            }
-            setHtmlResponse(res, html);
-        } else {
-            next();
-        }
-    } catch (error) {
-        next(error);
-    }
-};
-
-/**
  * Gets the manifest.json for a given application.
  *
  * @param args list of runtime arguments
@@ -300,3 +267,67 @@ export async function setUI5Version(version: string | undefined, log?: ToolsLogg
     }
     return ui5Version;
 }
+
+/**
+ * Injects the absolute UI5 urls into the html file, which is used to preview the application.
+ *
+ * @param htmlFilePath - path to the html file which is used for previwing the application
+ * @param ui5Configs - the configuration of the ui5-proxy-middleware
+ * @returns The modified html file content
+ */
+export const injectUI5Url = async (htmlFilePath: string, ui5Configs: UI5Config[]): Promise<string | undefined> => {
+    if (existsSync(htmlFilePath)) {
+        let html = await promises.readFile(htmlFilePath, { encoding: 'utf8' });
+        for (const ui5Config of ui5Configs) {
+            const ui5Host = ui5Config.url.replace(/\/$/, '');
+            const ui5Url = ui5Config.version ? `${ui5Host}/${ui5Config.version}` : ui5Host;
+
+            if (ui5Config.path === '/resources') {
+                const resourcesUrl = `src="${ui5Url}/${BOOTSTRAP_LINK}"`;
+                html = html.replace(BOOTSTRAP_REPLACE_REGEX, resourcesUrl);
+            }
+
+            if (ui5Config.path === '/test-resources') {
+                const testResourcesUrl = `src="${ui5Url}/${SANDBOX_LINK}"`;
+                html = html.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
+            }
+        }
+
+        return html;
+    }
+    return undefined;
+};
+
+/**
+ * Injects scripts into the html file, which is used to preview the application.
+ *
+ * @param req - the http request object
+ * @param res - the http response object
+ * @param next - the next function, used to forward the request to the next available handler
+ * @param ui5Configs - the UI5 configuration of the ui5-proxy-middleware
+ */
+export const injectScripts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    ui5Configs: UI5Config[]
+): Promise<void> => {
+    try {
+        const projectRoot = process.cwd();
+        const args = process.argv;
+        const htmlFileName = getHtmlFile(req.baseUrl);
+        const yamlFileName = getYamlFile(args);
+        const ui5YamlPath = join(projectRoot, yamlFileName);
+        const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
+        const htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
+        const html = await injectUI5Url(htmlFilePath, ui5Configs);
+
+        if (html) {
+            setHtmlResponse(res, html);
+        } else {
+            next();
+        }
+    } catch (error) {
+        next(error);
+    }
+};
