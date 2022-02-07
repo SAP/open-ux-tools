@@ -1,4 +1,4 @@
-import { UI5_DEFAULT, mergeUi5, defaultUI5Libs } from '../src/data/defaultSettings';
+import { UI5_DEFAULT, mergeUi5, defaultUI5Libs } from '../src/data/defaults';
 import type { UI5 } from '../src/types';
 
 describe('Setting defaults', () => {

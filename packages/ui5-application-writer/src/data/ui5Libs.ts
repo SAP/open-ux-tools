@@ -1,4 +1,4 @@
-import { defaultUI5Libs } from "./defaultSettings";
+import { defaultUI5Libs } from "./defaults";
 
 /**
  * Merges the specified ui5 libs with the defaults.
