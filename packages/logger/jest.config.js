@@ -15,6 +15,7 @@ module.exports = {
             }
         ]
     ],
+    coverageReporters: [['lcov', { projectRoot: '../../' }]],
     modulePathIgnorePatterns: ['<rootDir>/dist', '<rootDir>/test/test-output'],
     globals: {
         'ts-jest': {

@@ -78,7 +78,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
             }
         });
     }
-    return fs as Editor;
+    return fs;
 }
 
 export { Ui5App, generate };
