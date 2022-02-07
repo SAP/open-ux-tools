@@ -19,5 +19,6 @@ module.exports = {
                 relativeRootDir: '<rootDir>/../../../'
             }
         ]
-    ]
+    ],
+    coverageReporters: [['lcov', { projectRoot: '../../' }]]
 };

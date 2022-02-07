@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-writer
 
+## 0.10.8
+
+### Patch Changes
+
+-   507b3de: change eslint template file
+
+## 0.10.7
+
+### Patch Changes
+
+-   f47b932: fix packaging of module with dot files due to bug in pnpm
+
 ## 0.10.6
 
 ### Patch Changes

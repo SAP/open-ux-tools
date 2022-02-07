@@ -1,6 +1,6 @@
 {
     "include": ["src"],
-    "exclude": ["dist"],
+    "exclude": ["dist", "templates", "coverage"],
     "compilerOptions": {
         "declaration": true,
         "outDir": "dist",
