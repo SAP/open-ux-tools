@@ -84,7 +84,7 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
     const localSemVer = semVer.valid((semVer.coerce(merged.localVersion)))!;
     const typesVersion = semVer.gte(localSemVer, '1.76.0') ? localSemVer : '1.71.18';
 
-    merged.descriptorVersion = getManifestVersion(ui5.descriptorVersion, merged.minUI5Version);
+    merged.descriptorVersion = getManifestVersion(merged.minUI5Version, ui5.descriptorVersion);
     merged.typesVersion = ui5.typesVersion ?? typesVersion;
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
@@ -96,11 +96,11 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
  * Get the manifest descriptor version from the specified miminum UI5 version.
  * Snapshots are handled by coercion to proper versions.
  * 
- * @param manifestVersion - the manifest descriptor version to be used if provided
  * @param minUI5Version - the ui5 version to be used to map to the manifest descriptor version
+ * @param manifestVersion - optional manifest descriptor version to be used if provided
  * @returns - the manifest descriptor version
  */
-function getManifestVersion(manifestVersion: string | undefined, minUI5Version: string): string {
+function getManifestVersion(minUI5Version: string, manifestVersion?: string): string {
 
     const minUI5SemVer = semVer.coerce(minUI5Version)!;
     return (
