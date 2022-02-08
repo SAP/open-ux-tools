@@ -54,6 +54,7 @@ export enum UI5_DEFAULT {
     MIN_UI5_VERSION = '1.60.0',
     MIN_LOCAL_SAPUI5_VERSION = '1.76.0',
     MIN_LOCAL_OPENUI5_VERSION = '1.52.5',
+    UI5_VERSION_SNAPSHOT_PREFIX = 'snapshot-',
     SAPUI5_CDN = 'https://ui5.sap.com',
     OPENUI5_CDN = 'https://openui5.hana.ondemand.com'
 }
@@ -69,7 +70,7 @@ export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
  * @returns {UI5} the updated copy of UI5 instance (does not change `ui5`)
  */
 export function mergeUi5(ui5: Partial<UI5>): UI5 {
-    const version = semVer.valid(semVer.coerce(ui5.version)) ?? UI5_DEFAULT.DEFAULT_UI5_VERSION; // Unparseable version or empty string indicates the latest available should be used
+    const version = ui5.version ?? UI5_DEFAULT.DEFAULT_UI5_VERSION; // Unparseable version or empty string indicates the latest available should be used
     const framework = ui5.framework ?? 'SAPUI5';
     const defaultFrameworkUrl = framework === 'SAPUI5' ? UI5_DEFAULT.SAPUI5_CDN : UI5_DEFAULT.OPENUI5_CDN;
     const merged: Partial<UI5> & Pick<UI5, 'minUI5Version' | 'localVersion' | 'version'> = {
@@ -79,14 +80,11 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
         framework,
         frameworkUrl: ui5.frameworkUrl ?? defaultFrameworkUrl
     };
-    const typesVersion = parseFloat(merged.localVersion) >= 1.76 ? merged.localVersion : '1.71.18';
+    // typesVersion must be a valid npm semantic version, we know they cannot be null as already validated
+    const localSemVer = semVer.valid((semVer.coerce(merged.localVersion)))!;
+    const typesVersion = semVer.gte(localSemVer, '1.76.0') ? localSemVer : '1.71.18';
 
-    merged.descriptorVersion =
-        ui5.descriptorVersion ??
-        (versionToManifestDescMapping as Record<string, string>)[
-            `${semVer.major(merged.minUI5Version)}.${semVer.minor(merged.minUI5Version)}`
-        ] ??
-        '1.12.0';
+    merged.descriptorVersion = getManifestVersion(ui5.descriptorVersion, merged.minUI5Version);
     merged.typesVersion = ui5.typesVersion ?? typesVersion;
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
@@ -94,8 +92,29 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
     return Object.assign({}, ui5, merged) as UI5;
 }
 
-// if a specific local version is provided, use it, otherwise, sync with version but keep minimum versions in mind
 /**
+ * Get the manifest descriptor version from the specified miminum UI5 version.
+ * Snapshots are handled by coercion to proper versions.
+ * 
+ * @param manifestVersion - the manifest descriptor version to be used if provided
+ * @param minUI5Version - the ui5 version to be used to map to the manifest descriptor version
+ * @returns - the manifest descriptor version
+ */
+function getManifestVersion(manifestVersion: string | undefined, minUI5Version: string): string {
+
+    const minUI5SemVer = semVer.coerce(minUI5Version)!;
+    return (
+        manifestVersion ??
+        (versionToManifestDescMapping as Record<string, string>)[
+            `${semVer.major(minUI5SemVer)}.${semVer.minor(minUI5SemVer)}`
+        ] ??
+        '1.12.0'
+    );
+}
+
+/**
+ * If a specific local version is provided, use it, otherwise, sync with version but keep minimum versions in mind.
+ * 
  * @param inputObj input object
  * @param inputObj.framework UI framework
  * @param inputObj.version UI version
@@ -122,8 +141,12 @@ function getLocalVersion({
                 framework === 'SAPUI5' ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION; // minimum version available as local libs
         }
 
-        if (version !== UI5_DEFAULT.DEFAULT_UI5_VERSION && semVer.gt(version, result)) {
-            result = version;
+        if (version !== UI5_DEFAULT.DEFAULT_UI5_VERSION) {
+
+            // Update to a valid coerced version string e.g. 1.80 -> 1.80.0. Cannot be null as previously validated.
+            if (semVer.gt(semVer.coerce(version)!, semVer.coerce(result)!)) {
+                result = version;
+            }
         }
     }
     return result;

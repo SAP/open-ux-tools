@@ -23,9 +23,10 @@ export function validateAppId(appId: string): boolean {
 }
 
 /**
- * Validates by throwing if the specified version does not have a coercible semantic version. 
+ * Validates by throwing if the specified version does not have a coercible semantic version.
  * Currently we have special handling for empty string and undefined otherwise see: https://github.com/npm/node-semver#coercion.
- * 
+ * Example: 'snapshot-1.2.4' can be coerced to '1.2.4' and so is considered valid.
+ *
  * @param version - the UI5 version string to validate
  * @returns - true if the specified UI5 version is considered valid
  */

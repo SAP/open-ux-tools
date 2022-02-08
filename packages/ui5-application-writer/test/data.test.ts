@@ -113,6 +113,42 @@ describe('Setting defaults', () => {
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
+        },
+        {
+            input: {
+                version: 'snapshot-1.80',
+                frameworkUrl: 'https://ui5.unreleased.sap.com'
+            },
+            expected: {
+                framework: 'SAPUI5',
+                frameworkUrl: 'https://ui5.unreleased.sap.com',
+                version: 'snapshot-1.80',
+                localVersion: 'snapshot-1.80',
+                minUI5Version: '1.60.0',
+                descriptorVersion: '1.12.0',
+                typesVersion: '1.80.0',
+                ui5Theme: 'sap_fiori_3',
+                ui5Libs: defaultUI5Libs
+            }
+        },
+        {
+            input: {
+                version: 'snapshot-1.80',
+                localVersion: 'snapshot-1.98',
+                minUI5Version: 'snapshot-1.78.6',
+                frameworkUrl: 'https://ui5.unreleased.sap.com'
+            },
+            expected: {
+                framework: 'SAPUI5',
+                frameworkUrl: 'https://ui5.unreleased.sap.com',
+                version: 'snapshot-1.80',
+                localVersion: 'snapshot-1.98',
+                minUI5Version: 'snapshot-1.78.6',
+                descriptorVersion: '1.22.0',
+                typesVersion: '1.98.0',
+                ui5Theme: 'sap_fiori_3',
+                ui5Libs: defaultUI5Libs
+            }
         }
     ];
 
