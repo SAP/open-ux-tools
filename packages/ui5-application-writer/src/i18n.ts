@@ -1,7 +1,7 @@
 import i18next, { TOptions } from 'i18next';
 import translations from './translations/ui5-application-writer.i18n.json';
 
-const NS = 'fiori-freestyle-writer';
+const NS = 'ui5-application-writer';
 
 /**
  * Initialize i18next with the translations for this module.
