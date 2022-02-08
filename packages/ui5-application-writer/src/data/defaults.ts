@@ -70,7 +70,7 @@ export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
  * @returns {UI5} the updated copy of UI5 instance (does not change `ui5`)
  */
 export function mergeUi5(ui5: Partial<UI5>): UI5 {
-    const version = ui5.version ?? UI5_DEFAULT.DEFAULT_UI5_VERSION; // Unparseable version or empty string indicates the latest available should be used
+    const version = ui5.version ?? UI5_DEFAULT.DEFAULT_UI5_VERSION; // Undefined or null indicates the latest available should be used
     const framework = ui5.framework ?? 'SAPUI5';
     const defaultFrameworkUrl = framework === 'SAPUI5' ? UI5_DEFAULT.SAPUI5_CDN : UI5_DEFAULT.OPENUI5_CDN;
     const merged: Partial<UI5> & Pick<UI5, 'minUI5Version' | 'localVersion' | 'version'> = {
