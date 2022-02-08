@@ -10,7 +10,7 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://ui5.sap.com',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
-                minUI5Version: '1.60',
+                minUI5Version: '1.60.0',
                 descriptorVersion: '1.12.0',
                 typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 ui5Theme: 'sap_fiori_3',
@@ -24,7 +24,7 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://openui5.hana.ondemand.com',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
-                minUI5Version: '1.60',
+                minUI5Version: '1.60.0',
                 descriptorVersion: '1.12.0',
                 typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 ui5Theme: 'sap_fiori_3',
@@ -38,7 +38,7 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://openui5.hana.ondemand.com',
                 version: '1.72.0',
                 localVersion: '1.72.0',
-                minUI5Version: '1.60',
+                minUI5Version: '1.60.0',
                 descriptorVersion: '1.12.0',
                 typesVersion: '1.71.18',
                 ui5Theme: 'sap_fiori_3',
@@ -54,7 +54,7 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://ui5.sap.com',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
-                minUI5Version: '1.60',
+                minUI5Version: '1.60.0',
                 descriptorVersion: '1.12.0',
                 typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 ui5Theme: 'sap_fiori_3_dark',
@@ -67,7 +67,7 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://sapui5.hana.ondemand.com/',
                 descriptorVersion: '1.12.1',
                 typesVersion: '1.95.5',
-                minUI5Version: '1.80',
+                minUI5Version: '1.80.0',
                 localVersion: '1.95.6'
             },
             expected: {
@@ -75,7 +75,7 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://sapui5.hana.ondemand.com/',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: '1.95.6',
-                minUI5Version: '1.80',
+                minUI5Version: '1.80.0',
                 descriptorVersion: '1.12.1',
                 typesVersion: '1.95.5',
                 ui5Theme: 'sap_fiori_3',
@@ -92,7 +92,7 @@ describe('Setting defaults', () => {
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: '1.95.0',
                 minUI5Version: '1.80.1',
-                descriptorVersion: '1.12.0',
+                descriptorVersion: '1.24.0',
                 typesVersion: '1.95.0',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
@@ -100,23 +100,23 @@ describe('Setting defaults', () => {
         },
         {
             input: {
-                version: '1.80'
+                version: '1.80.0'
             },
             expected: {
                 framework: 'SAPUI5',
                 frameworkUrl: 'https://ui5.sap.com',
-                version: '1.80',
-                localVersion: '1.80',
-                minUI5Version: '1.60',
+                version: '1.80.0',
+                localVersion: '1.80.0',
+                minUI5Version: '1.60.0',
                 descriptorVersion: '1.12.0',
-                typesVersion: '1.80',
+                typesVersion: '1.80.0',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
         }
     ];
 
-    test.each(testData)(`mergeUi5 testData index %#`, (test) => {
+    test.each(testData)(`mergeUi5 testData index: $#`, (test) => {
         expect(mergeUi5(test.input)).toEqual(test.expected);
     });
 });

@@ -4,7 +4,7 @@ import { validate } from './validators';
 
 /**
  * Merges Ui5App instance with default properties.
- * Replaces undefined mandatory properties with defaul values.
+ * Replaces undefined mandatory properties with default values.
  *
  * @param {Ui5App} ui5App - the Ui5App instance
  * @returns {Ui5App} - a new Ui5App instance with all required defaults set

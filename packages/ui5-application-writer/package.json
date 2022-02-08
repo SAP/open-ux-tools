@@ -25,7 +25,9 @@
         "ejs": "3.1.6",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.0.0",
-        "json-merger": "1.1.7"
+        "json-merger": "1.1.7",
+        "semver": "7.3.5",
+        "i18next": "21.6.11"
     },
     "devDependencies": {
         "@types/ejs": "3.1.0",

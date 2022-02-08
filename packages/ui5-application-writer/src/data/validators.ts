@@ -1,3 +1,5 @@
+import semVer from 'semver';
+import { t } from '../i18n';
 import { Ui5App } from '../types';
 
 /**
@@ -9,11 +11,27 @@ import { Ui5App } from '../types';
  */
 export function validateAppId(appId: string): boolean {
     if (!appId) {
-        throw new Error('The property: app.id must have a value'); // todo: add localised parameterised message
+        throw new Error(t('error.missingRequiredProperty', { propertyName: 'app.id' }));
     }
     const match = appId.match(/["]/);
     if (match) {
-        throw new Error(`The property: appId.id contains disallowed characters: ${match?.join()}`); // todo: Add localised message
+        throw new Error(
+            t('error.disallowedCharacters', { propertyName: 'app.id', disallowedChars: `${match?.join()}` })
+        );
+    }
+    return true;
+}
+
+/**
+ * Validates by throwing if the specified version does not have a coercible semantic version. 
+ * Currently we have special handling for empty string and undefined otherwise see: https://github.com/npm/node-semver#coercion.
+ * 
+ * @param version - the UI5 version string to validate
+ * @returns - true if the specified UI5 version is considered valid
+ */
+export function validateUI5Version(version: string | undefined): boolean {
+    if (version && semVer.coerce(version) === null) {
+        throw new Error(t('error.invalidUI5Version', { version }));
     }
     return true;
 }
@@ -26,5 +44,10 @@ export function validateAppId(appId: string): boolean {
  * @throws Error with validation message, if the ui5App is not valid
  */
 export function validate(ui5App: Ui5App): boolean {
-    return validateAppId(ui5App.app.id);
+    return (
+        validateAppId(ui5App.app.id) &&
+        validateUI5Version(ui5App.ui5?.version) &&
+        validateUI5Version(ui5App.ui5?.localVersion) &&
+        validateUI5Version(ui5App.ui5?.minUI5Version)
+    );
 }
