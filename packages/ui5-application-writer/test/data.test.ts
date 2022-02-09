@@ -1,7 +1,7 @@
 import { UI5_DEFAULT, mergeUi5, defaultUI5Libs } from '../src/data/defaults';
 import type { UI5 } from '../src/types';
 
-describe.only('Setting defaults', () => {
+describe('Setting defaults', () => {
     const testData: { input: Partial<UI5>; expected: UI5 }[] = [
         // 0
         {
