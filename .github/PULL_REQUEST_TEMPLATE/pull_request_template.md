@@ -16,7 +16,3 @@ _FILL IN DETAILS HERE_
 - [ ] The code has **unit tests** where applicable and is easily unit-testable.
 - [ ] This PR is associated with a discrete task (smaller discrete tasks can be more efficiently reviewed).
 - [ ] This branch is appropriately named for the associated issue.
-
-## Suggestions
-
-- Before asking for a review, make sure you have ticked all the boxes above.
