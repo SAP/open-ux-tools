@@ -59,7 +59,7 @@ describe('UI5 templates', () => {
                     name: 'testPackageName'
                 }
             })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: appId.id contains disallowed characters: \\""`);
+        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id contains disallowed characters: \\""`);
 
         // Ensure undefined, null or '' cannot be used
         await expect(
