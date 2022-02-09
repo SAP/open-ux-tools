@@ -1,8 +1,9 @@
 import { UI5_DEFAULT, mergeUi5, defaultUI5Libs } from '../src/data/defaults';
 import type { UI5 } from '../src/types';
 
-describe('Setting defaults', () => {
+describe.only('Setting defaults', () => {
     const testData: { input: Partial<UI5>; expected: UI5 }[] = [
+        // 0
         {
             input: {},
             expected: {
@@ -17,6 +18,7 @@ describe('Setting defaults', () => {
                 ui5Libs: defaultUI5Libs
             }
         },
+        // 1
         {
             input: { framework: 'OpenUI5' },
             expected: {
@@ -31,6 +33,7 @@ describe('Setting defaults', () => {
                 ui5Libs: defaultUI5Libs
             }
         },
+        // 2
         {
             input: { framework: 'OpenUI5', version: '1.72.0' },
             expected: {
@@ -38,13 +41,14 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://openui5.hana.ondemand.com',
                 version: '1.72.0',
                 localVersion: '1.72.0',
-                minUI5Version: '1.60.0',
-                descriptorVersion: '1.12.0',
+                minUI5Version: '1.72.0',
+                descriptorVersion: '1.17.0',
                 typesVersion: '1.71.18',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
         },
+        // 3
         {
             input: {
                 ui5Theme: 'sap_fiori_3_dark'
@@ -61,6 +65,7 @@ describe('Setting defaults', () => {
                 ui5Libs: defaultUI5Libs
             }
         },
+        // 4
         {
             input: {
                 ui5Libs: ['sap.m', 'sap.fe'],
@@ -82,6 +87,7 @@ describe('Setting defaults', () => {
                 ui5Libs: defaultUI5Libs.concat('sap.fe')
             }
         },
+        // 5
         {
             input: {
                 minUI5Version: '1.80.1'
@@ -98,6 +104,7 @@ describe('Setting defaults', () => {
                 ui5Libs: defaultUI5Libs
             }
         },
+        // 6
         {
             input: {
                 version: '1.80.0'
@@ -107,13 +114,14 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://ui5.sap.com',
                 version: '1.80.0',
                 localVersion: '1.80.0',
-                minUI5Version: '1.60.0',
-                descriptorVersion: '1.12.0',
+                minUI5Version: '1.80.0',
+                descriptorVersion: '1.24.0',
                 typesVersion: '1.80.0',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
         },
+        // 7 - Test defaults are set from specified `version` and correctly coerced for local version
         {
             input: {
                 version: 'snapshot-1.80',
@@ -123,14 +131,15 @@ describe('Setting defaults', () => {
                 framework: 'SAPUI5',
                 frameworkUrl: 'https://ui5.unreleased.sap.com',
                 version: 'snapshot-1.80',
-                localVersion: 'snapshot-1.80',
-                minUI5Version: '1.60.0',
-                descriptorVersion: '1.12.0',
+                localVersion: '1.80.0',
+                minUI5Version: 'snapshot-1.80',
+                descriptorVersion: '1.24.0',
                 typesVersion: '1.80.0',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
         },
+        // 8 - Test that inputs are taken as is and not coerced to valid semvers
         {
             input: {
                 version: 'snapshot-1.80',
