@@ -1,4 +1,4 @@
-import { createProxyMiddleware, Filter, Options, responseInterceptor } from 'http-proxy-middleware';
+import { createProxyMiddleware, Filter, Options } from 'http-proxy-middleware';
 import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { UI5Config } from './types';
 import { proxyRequestHandler, proxyResponseHandler } from './utils';
@@ -22,20 +22,13 @@ export const ui5Proxy = (config: UI5Config, options?: Options, filter?: Filter) 
     const proxyConfig: Options = {
         target: config.url,
         changeOrigin: true,
-        selfHandleResponse: true,
         onProxyReq: (proxyReq: ClientRequest, req: IncomingMessage, res: ServerResponse): void => {
             proxyRequestHandler(proxyReq, res, etag, logger);
         },
         pathRewrite: { [config.path]: ui5Ver + config.path },
-        onProxyRes: responseInterceptor(
-            async (
-                responseBuffer: Buffer,
-                proxyRes: IncomingMessage,
-                req: IncomingMessage
-            ): Promise<string | Buffer> => {
-                return proxyResponseHandler(responseBuffer, proxyRes, req, etag);
-            }
-        )
+        onProxyRes: (proxyRes: IncomingMessage): void => {
+            proxyResponseHandler(proxyRes, etag);
+        }
     };
     Object.assign(proxyConfig, options);
 

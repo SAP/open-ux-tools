@@ -16,21 +16,18 @@ describe('ui5Proxy', () => {
             url: 'https://example.example',
             version: '1.0.0'
         };
-
         const req = {
             headers: {
                 accept: 'text/html',
                 'accept-encoding': 'gzip'
             }
         };
-
         ui5Proxy(config);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
         const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
         expect(defaultFilterFn).toEqual(expect.any(Function));
         const expectedOptions = createProxyMiddlewareSpy.mock.calls[0][1];
         expect(expectedOptions?.changeOrigin).toBeTruthy();
-        expect(expectedOptions?.selfHandleResponse).toBeTruthy();
         expect(expectedOptions?.target).toEqual('https://example.example');
         expect(expectedOptions?.onProxyReq).toEqual(expect.any(Function));
         expect(expectedOptions?.onProxyRes).toEqual(expect.any(Function));

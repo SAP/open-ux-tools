@@ -1,7 +1,7 @@
 import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { ToolsLogger } from '@sap-ux/logger';
 import { NextFunction, Request, Response } from 'express';
-import { UI5Config, ProxyRequest } from './types';
+import { UI5Config } from './types';
 import { existsSync, promises } from 'fs';
 import { parseDocument } from 'yaml';
 import { join } from 'path';
@@ -13,38 +13,12 @@ import { t } from '../i18n';
  * Handler for the proxy response event.
  * Sets an Etag which will be used for re-validation of the cached UI5 sources.
  *
- * @param responseBuffer - response data as buffer
  * @param proxyRes - proxy response object
- * @param req - function for passing the request to the next available middleware
  * @param etag - ETag for the cached sources, normally the UI5 version
- * @returns Response data
  */
-export const proxyResponseHandler = (
-    responseBuffer: Buffer,
-    proxyRes: IncomingMessage,
-    req: ProxyRequest,
-    etag: string
-): Promise<string | Buffer> => {
-    return new Promise((resolve) => {
-        /*
-         Forward the request to the next available middleware in case of 404
-        */
-        if (proxyRes.statusCode === 404) {
-            if (req.next) {
-                req.next();
-            } else {
-                resolve(responseBuffer);
-            }
-        } else {
-            /*
-             Enables re-validation of cached ui5 source.
-             The re-validation is performed by an ETag, which is normally the UI5 version.
-            */
-            proxyRes.headers['Etag'] = etag;
-            proxyRes.headers['cache-control'] = 'no-cache';
-            resolve(responseBuffer);
-        }
-    });
+export const proxyResponseHandler = (proxyRes: IncomingMessage, etag: string): void => {
+    proxyRes.headers['Etag'] = etag;
+    proxyRes.headers['cache-control'] = 'no-cache';
 };
 
 /**
