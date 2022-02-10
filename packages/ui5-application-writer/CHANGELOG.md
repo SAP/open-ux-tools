@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-writer
 
+## 0.10.10
+
+### Patch Changes
+
+-   282b6af: Fixes invalid semantic versions being written to generated application
+
+## 0.10.9
+
+### Patch Changes
+
+-   11909e1: Write dependencies to manifest.json
+
 ## 0.10.8
 
 ### Patch Changes

@@ -61,10 +61,10 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
+    - name: sap.ui.core
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
-    - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
     - name: sap.ushell
@@ -239,6 +239,7 @@ title=App Title",
     },
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata/\\",
@@ -270,9 +271,16 @@ title=App Title",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60\\",
+      \\"minUI5Version\\": \\"1.78.16\\",
       \\"libs\\": {
-        \\"sap.ui.core\\": {}
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.f\\": {},
+        \\"sap.suite.ui.generic.template\\": {},
+        \\"sap.ui.comp\\": {},
+        \\"sap.ui.generic.app\\": {},
+        \\"sap.ui.table\\": {},
+        \\"sap.ushell\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -426,7 +434,7 @@ title=App Title",
     <!-- Bootstrap the UI5 core library -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.f,sap.m,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.core,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"
@@ -709,10 +717,10 @@ framework:
   version: 1.86.3
   libraries:
     - name: sap.m
+    - name: sap.ui.core
     - name: sap.f
     - name: sap.suite.ui.generic.template
     - name: sap.ui.comp
-    - name: sap.ui.core
     - name: sap.ui.generic.app
     - name: sap.ui.table
     - name: sap.ushell
@@ -887,6 +895,7 @@ title=App Title",
     },
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata/\\",
@@ -918,9 +927,16 @@ title=App Title",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60\\",
+      \\"minUI5Version\\": \\"1.78.16\\",
       \\"libs\\": {
-        \\"sap.ui.core\\": {}
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.f\\": {},
+        \\"sap.suite.ui.generic.template\\": {},
+        \\"sap.ui.comp\\": {},
+        \\"sap.ui.generic.app\\": {},
+        \\"sap.ui.table\\": {},
+        \\"sap.ushell\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -1074,7 +1090,7 @@ title=App Title",
     <!-- Bootstrap the UI5 core library -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.f,sap.m,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.core,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"

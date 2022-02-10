@@ -58,6 +58,7 @@ framework:
   version: 1.95.0
   libraries:
     - name: sap.m
+    - name: sap.ui.core
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -187,7 +188,8 @@ appDescription=Test App Description",
         \\"version\\": \\"0.0.1\\"
       },
       \\"title\\": \\"{{appTitle}}\\",
-      \\"description\\": \\"{{appDescription}}\\"
+      \\"description\\": \\"{{appDescription}}\\",
+      \\"resources\\": \\"resources.json\\"
     },
     \\"sap.ui\\": {
       \\"technology\\": \\"UI5\\",
@@ -208,8 +210,9 @@ appDescription=Test App Description",
     \\"sap.ui5\\": {
       \\"flexEnabled\\": true,
       \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.60\\",
+        \\"minUI5Version\\": \\"1.60.0\\",
         \\"libs\\": {
+          \\"sap.m\\": {},
           \\"sap.ui.core\\": {}
         }
       },

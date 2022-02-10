@@ -64,6 +64,7 @@ framework:
   version: 1.90.0
   libraries:
     - name: sap.m
+    - name: sap.ui.core
     - name: sap.ushell
     - name: themelib_sap_fiori_3
 server:
@@ -1788,6 +1789,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     },
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",
@@ -1819,10 +1821,11 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60\\",
+      \\"minUI5Version\\": \\"1.60.0\\",
       \\"libs\\": {
-        \\"sap.ui.core\\": {},
         \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.ushell\\": {},
         \\"sap.f\\": {}
       }
     },
@@ -2019,7 +2022,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <!-- Bootstrap the UI5 core library -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ushell\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
