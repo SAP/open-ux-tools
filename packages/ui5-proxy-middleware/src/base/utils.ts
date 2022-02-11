@@ -305,3 +305,23 @@ export const injectScripts = async (
         next(error);
     }
 };
+
+/**
+ * Filters comressed html files from UI5 CDN.
+ * Avoid ERR_CONTENT_DECODING_FAILED on http request for gzip'd html files.
+ * e.g. /test-resources/sap/ui/qunit/testrunner.html?testpage=%2Ftest%2Ftestsuite.qunit.html&autostart=true.
+ *
+ * @param _pathname - the request path
+ * @param req - the http request object
+ * @returns True, indicating that the request should be proxied
+ */
+export const filterCompressedHtmlFiles = (_pathname: string, req: IncomingMessage): boolean => {
+    const acceptHeader = req.headers['accept'] || '';
+    if (
+        req.headers['accept-encoding'] &&
+        (acceptHeader.includes('text/html') || acceptHeader.includes('application/xhtml+xml'))
+    ) {
+        delete req.headers['accept-encoding']; // Don't accept compressed html files from ui5 CDN
+    }
+    return true;
+};

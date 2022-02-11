@@ -1,4 +1,5 @@
 import {
+    filterCompressedHtmlFiles,
     getCorporateProxyServer,
     getHtmlFile,
     getManifest,
@@ -543,5 +544,35 @@ describe('Utils', () => {
         await baseUtils.injectScripts({} as any, {} as any, nextMock, []);
         expect(nextMock).toHaveBeenCalled();
         expect(nextMock).toBeCalledWith(expect.any(Error));
+    });
+
+    test('filterCompressedHtmlFiles: returns true if accept header is not set', () => {
+        const req = {
+            headers: {}
+        };
+        const result = filterCompressedHtmlFiles('my/req/path', req as any);
+        expect(result).toBeTruthy();
+    });
+
+    test('filterCompressedHtmlFiles: deletes accept-encoding header if accept header is text/html', () => {
+        const req = {
+            headers: {} as any
+        };
+        req.headers['accept'] = 'text/html';
+        req.headers['accept-encoding'] = 'gzip';
+        const result = filterCompressedHtmlFiles('my/req/path', req as any);
+        expect(result).toBeTruthy();
+        expect(req.headers['accept-encoding']).toBeUndefined();
+    });
+
+    test('filterCompressedHtmlFiles: deletes accept-encoding header if accept header is application/xhtml+xml', () => {
+        const req = {
+            headers: {} as any
+        };
+        req.headers['accept'] = 'application/xhtml+xml';
+        req.headers['accept-encoding'] = 'gzip';
+        const result = filterCompressedHtmlFiles('my/req/path', req as any);
+        expect(result).toBeTruthy();
+        expect(req.headers['accept-encoding']).toBeUndefined();
     });
 });

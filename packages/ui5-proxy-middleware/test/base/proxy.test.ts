@@ -8,82 +8,66 @@ describe('ui5Proxy', () => {
         jest.clearAllMocks();
     });
 
-    test('ui5Proxy: default params', () => {
+    test('ui5Proxy: creates an ui5 proxy middleware, default params', () => {
         const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
-        const proxyRequestHandlerSpy = jest.spyOn(utils, 'proxyRequestHandler').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
             url: 'https://example.example',
             version: '1.0.0'
         };
-        const req = {
-            headers: {
-                accept: 'text/html',
-                'accept-encoding': 'gzip'
-            }
-        };
+
         ui5Proxy(config);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
-        expect(defaultFilterFn).toEqual(expect.any(Function));
-        const expectedOptions = createProxyMiddlewareSpy.mock.calls[0][1];
-        expect(expectedOptions?.changeOrigin).toBeTruthy();
-        expect(expectedOptions?.target).toEqual('https://example.example');
-        expect(expectedOptions?.onProxyReq).toEqual(expect.any(Function));
-        expect(expectedOptions?.onProxyRes).toEqual(expect.any(Function));
-        expect(expectedOptions?.pathRewrite).toEqual({ '/mypath': '/1.0.0/mypath' });
-
-        if (typeof defaultFilterFn === 'function') {
-            defaultFilterFn('', req as any);
-            expect(req.headers['accept-encoding']).toBeUndefined();
-        }
-
-        if (typeof expectedOptions?.onProxyReq === 'function') {
-            expectedOptions?.onProxyReq({} as any, {} as any, {} as any, {});
-            expect(proxyRequestHandlerSpy).toHaveBeenCalledTimes(1);
-            expect(proxyRequestHandlerSpy).toHaveBeenCalledWith({}, {}, 'W/"1.0.0"', expect.any(ToolsLogger));
-        }
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.objectContaining({
+                changeOrigin: true,
+                target: 'https://example.example',
+                onProxyReq: expect.any(Function),
+                onProxyRes: expect.any(Function),
+                pathRewrite: { '/mypath': '/1.0.0/mypath' }
+            })
+        );
     });
 
-    test('ui5Proxy: additional options', () => {
+    test('ui5Proxy: creates an ui5 proxy middleware, additional params', () => {
         const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
             url: 'https://example.example',
             version: ''
         };
+
         const options: hpm.Options = {
             secure: true,
             logLevel: 'debug',
             changeOrigin: false
         };
-        const req = {
-            headers: {
-                'accept-encoding': 'gzip'
-            }
-        };
+
         ui5Proxy(config, options);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
-        expect(defaultFilterFn).toEqual(expect.any(Function));
-        const expectedOptions = createProxyMiddlewareSpy.mock.calls[0][1];
-        expect(expectedOptions?.changeOrigin).toBeFalsy();
-        expect(expectedOptions?.secure).toBeTruthy();
-        expect(expectedOptions?.pathRewrite).toEqual({ '/mypath': '/mypath' });
-
-        if (typeof defaultFilterFn === 'function') {
-            defaultFilterFn('', req as any);
-            expect(req.headers['accept-encoding']).toEqual('gzip');
-        }
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.objectContaining({
+                changeOrigin: false,
+                secure: true,
+                logLevel: 'debug',
+                target: 'https://example.example',
+                onProxyReq: expect.any(Function),
+                onProxyRes: expect.any(Function),
+                pathRewrite: { '/mypath': '/mypath' }
+            })
+        );
     });
 
-    test('ui5Proxy: custom filter', () => {
+    test('ui5Proxy: creates an ui5 proxy middleware, custom filter function', () => {
         const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
             url: 'https://example.example',
             version: ''
         };
+
         const customFilterFn: hpm.Filter = (_pathname, _req) => {
             console.log('This is my custom filter function');
             return true;
@@ -91,7 +75,42 @@ describe('ui5Proxy', () => {
 
         ui5Proxy(config, {}, customFilterFn);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
-        const defaultFilterFn = createProxyMiddlewareSpy.mock.calls[0][0];
-        expect(defaultFilterFn).toEqual(customFilterFn);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(customFilterFn, expect.any(Object));
+    });
+
+    test('ui5Proxy: calling onProxyReq calls proxyRequestHandler', () => {
+        const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
+        const proxyRequestHandlerSpy = jest.spyOn(utils, 'proxyRequestHandler').mockImplementation(jest.fn());
+        const config = {
+            path: '/mypath',
+            url: 'https://example.example',
+            version: '1.0.0'
+        };
+
+        ui5Proxy(config);
+        const proxyConfig = createProxyMiddlewareSpy.mock.calls[0][1];
+        if (typeof proxyConfig?.onProxyReq === 'function') {
+            proxyConfig?.onProxyReq({} as any, {} as any, {} as any, {});
+            expect(proxyRequestHandlerSpy).toHaveBeenCalledTimes(1);
+            expect(proxyRequestHandlerSpy).toHaveBeenCalledWith({}, {}, 'W/"1.0.0"', expect.any(ToolsLogger));
+        }
+    });
+
+    test('ui5Proxy: calling onProxyRes calls proxyResponseHandler', () => {
+        const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
+        const proxyResponseHandlerSpy = jest.spyOn(utils, 'proxyResponseHandler').mockImplementation(jest.fn());
+        const config = {
+            path: '/mypath',
+            url: 'https://example.example',
+            version: '1.0.0'
+        };
+
+        ui5Proxy(config);
+        const proxyConfig = createProxyMiddlewareSpy.mock.calls[0][1];
+        if (typeof proxyConfig?.onProxyRes === 'function') {
+            proxyConfig?.onProxyRes({} as any, {} as any, {} as any);
+            expect(proxyResponseHandlerSpy).toHaveBeenCalledTimes(1);
+            expect(proxyResponseHandlerSpy).toHaveBeenCalledWith({}, 'W/"1.0.0"');
+        }
     });
 });
