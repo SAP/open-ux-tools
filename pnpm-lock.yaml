@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 overrides:
     ansi-regex: ^5.0.1
     tmpl: ^1.0.5
-    follow-redirects: '>=1.14.7'
+    follow-redirects: '>=1.14.8'
 
 importers:
     .:
@@ -2170,7 +2170,7 @@ packages:
                 integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
             }
         dependencies:
-            follow-redirects: 1.14.7
+            follow-redirects: 1.14.8
         transitivePeerDependencies:
             - debug
         dev: false
@@ -3870,10 +3870,10 @@ packages:
             }
         dev: false
 
-    /follow-redirects/1.14.7:
+    /follow-redirects/1.14.8:
         resolution:
             {
-                integrity: sha512-+hbxoLbFMbRKDwohX8GkTataGqO6Jb7jGwpAlwgy2bIz25XtRm7KEzJM76R1WiNT5SwZkX4Y75SwBolkpmE7iQ==
+                integrity: sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==
             }
         engines: { node: '>=4.0' }
         peerDependencies:
