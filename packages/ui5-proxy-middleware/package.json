@@ -27,7 +27,15 @@
         "yaml": "2.0.0-10"
     },
     "devDependencies": {
-        "@types/express": "4.17.13"
+        "@types/express": "4.17.13",
+        "@ui5/server": "2.4.0",
+        "@ui5/project": "2.6.0",
+        "mock-http-server": "1.4.5",
+        "request": "2.88.2",
+        "request-promise": "4.2.6"
+    },
+    "ui5": {
+        "dependencies": []
     },
     "engines": {
         "pnpm": ">=6.0.2",

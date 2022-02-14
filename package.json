@@ -49,6 +49,7 @@
     "pnpm": {
         "overrides": {
             "ansi-regex": "^5.0.1",
+            "klaw": "^3.0.0",
             "tmpl": "^1.0.5"
         }
     }
