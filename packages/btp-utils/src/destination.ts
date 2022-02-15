@@ -40,7 +40,7 @@ export interface Destination extends Partial<AdditionalDestinationProperties> {
  */
 export function isAbapSystem(destination: Destination): boolean {
     return (
-        WebIDEUsage.ODATA_ABAP === destination.WebIDEUsage ||
+        !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) ||
         !!destination['sap-client'] ||
         destination['sap-platform']?.toLocaleLowerCase() === 'abap'
     );
