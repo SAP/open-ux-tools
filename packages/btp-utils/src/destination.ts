@@ -39,10 +39,10 @@ export interface Destination extends Partial<AdditionalDestinationProperties> {
  * @returns true of the destination is configured for an ABAP system
  */
 export function isAbapSystem(destination: Destination): boolean {
-    return (
-        !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) ||
-        !!destination['sap-client'] ||
-        destination['sap-platform']?.toLocaleLowerCase() === 'abap'
+    return Boolean(
+        destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP) ||
+            destination['sap-client'] ||
+            destination['sap-platform']?.toLocaleLowerCase() === 'abap'
     );
 }
 
@@ -53,9 +53,9 @@ export function isAbapSystem(destination: Destination): boolean {
  * @returns true of the destination is configured for a steampunk system
  */
 export function isAbapEnvironmentOnBtp(destination: Destination): boolean {
-    return (
-        !!destination.WebIDEUsage?.includes(WebIDEUsage.ABAP_CLOUD) ||
-        destination['sap-platform']?.toLocaleLowerCase() === 'abap'
+    return Boolean(
+        destination.WebIDEUsage?.includes(WebIDEUsage.ABAP_CLOUD) ||
+            destination['sap-platform']?.toLocaleLowerCase() === 'abap'
     );
 }
 
@@ -68,9 +68,9 @@ export function isAbapEnvironmentOnBtp(destination: Destination): boolean {
  * @returns true, if this destination has the the 'odata_gen', and not the 'odata_abap' attribute set
  */
 export function isGenericODataDestination(destination: Destination): boolean {
-    return (
-        !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_GENERIC) &&
-        !destination.WebIDEUsage.includes(WebIDEUsage.ODATA_ABAP)
+    return Boolean(
+        destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_GENERIC) &&
+            !destination.WebIDEUsage.includes(WebIDEUsage.ODATA_ABAP)
     );
 }
 
@@ -81,7 +81,9 @@ export function isGenericODataDestination(destination: Destination): boolean {
  * @returns true, if this destination is generic odata and 'full_url' attribute is not set
  */
 export function isPartialUrlDestination(destination: Destination): boolean {
-    return !destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination);
+    return Boolean(
+        !destination.WebIDEAdditionalData?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination)
+    );
 }
 
 /**
@@ -91,5 +93,7 @@ export function isPartialUrlDestination(destination: Destination): boolean {
  * @returns true, if this destination has the generic odata and 'full_url' attribute is set
  */
 export function isFullUrlDestination(destination: Destination): boolean {
-    return !!destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination);
+    return Boolean(
+        destination.WebIDEAdditionalData?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination)
+    );
 }
