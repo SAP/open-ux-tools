@@ -22,10 +22,10 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // generate base UI5 project
     ffApp.app.baseComponent = ffApp.app.baseComponent || 'sap/ui/core/UIComponent';
 
-    fs = await generateUi5Project(basePath, ffApp, fs);
-
     // set additional defaults
     setDefaults(ffApp);
+
+    fs = await generateUi5Project(basePath, ffApp, fs);
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
