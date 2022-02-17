@@ -64,16 +64,11 @@ export function getFioriToolsProxyMiddlewareConfig(
     if (ui5 !== undefined) {
         fioriToolsProxy.configuration['ui5'] = {
             path: ['/resources', '/test-resources'],
-            url: ui5.url || 'https://ui5.sap.com',
-            version: ui5.version || ''
+            url: ui5.url || 'https://ui5.sap.com'
         };
         if (ui5.directLoad) {
             fioriToolsProxy.configuration['ui5'].directLoad = true;
         }
-        comments.push({
-            path: 'configuration.ui5.version',
-            comment: ' The UI5 version, for instance, 1.78.1. Empty string means latest version'
-        });
     }
 
     return { config: fioriToolsProxy, comments };

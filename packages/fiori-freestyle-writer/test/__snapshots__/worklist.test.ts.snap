@@ -117,7 +117,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /here
             url: http://localhost
@@ -157,7 +156,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /here
             url: http://localhost
@@ -6802,7 +6800,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - scp: true
             path: /sap
@@ -6845,7 +6842,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - scp: true
             path: /sap
@@ -10090,7 +10086,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
@@ -10130,7 +10125,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
