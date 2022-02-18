@@ -162,9 +162,6 @@ export class UI5Config {
                     start: proxyMiddleware as YAMLMap,
                     path: 'configuration.ui5'
                 });
-                if (ui5.version) {
-                    configurationUi5Doc.set('version', ui5.version);
-                }
                 if (ui5.url) {
                     configurationUi5Doc.set('url', ui5.url);
                 }

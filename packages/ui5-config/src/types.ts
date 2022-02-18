@@ -15,7 +15,6 @@ export interface ProxyUIConfig {
     [key: string]: unknown | undefined;
     path?: string[];
     url?: string;
-    version?: string;
     directLoad?: boolean;
 }
 

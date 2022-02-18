@@ -141,7 +141,6 @@ describe('Test generate method with valid input', () => {
                         - /resources
                         - /test-resources
                       url: https://ui5.sap.com
-                      version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
                     backend:
                       - apiHub: true
                         scp: false
