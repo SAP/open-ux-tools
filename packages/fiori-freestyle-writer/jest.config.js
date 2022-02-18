@@ -2,7 +2,7 @@ module.exports = {
     transform: {
         '^.+\\.ts$': 'ts-jest'
     },
-    collectCoverage: false,
+    collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
     reporters: [
         'default',
