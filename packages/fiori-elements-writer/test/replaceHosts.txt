@@ -1,4 +1,0 @@
-https://sap-ux-mock-services-v4-alp.cfapps.us10.hana.ondemand.com http://example.alp.v4
-https://sap-ux-mock-services-v2-alp.cfapps.us10.hana.ondemand.com http://example.alp.v2
-https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com http://example.feop.v4
-https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com http://example.lrop.v4
