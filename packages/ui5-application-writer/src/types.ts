@@ -39,6 +39,7 @@ export interface AppOptions {
     codeAssist: boolean; // Enables code assist
     eslint: boolean; // Enables Fiori linting
     sapux: boolean; // Enables Fiori Tools Suite integration
+    loadReuseLibs: boolean; // Enables loading of re-use libs
 }
 
 export interface Ui5App {

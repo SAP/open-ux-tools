@@ -66,9 +66,9 @@
         data-sap-ui-language="en"
         data-sap-ui-resourceroots='{"<%- app.id  %>": "../"}'
         data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
-        </script>
+        </script><% if (appOptions.loadReuseLibs) { %>
         <script id="locate-reuse-libs" src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
-        </script>
+        </script><% } %>
 </head>
 
 <!-- UI Content -->
