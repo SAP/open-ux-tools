@@ -30,7 +30,7 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     setAppDefaults(ffApp.app);
 
     // Add template information
-    if (!ffApp.app.sourceTemplate?.version || !ffApp.app.sourceTemplate?.version) {
+    if (!ffApp.app.sourceTemplate?.version || !ffApp.app.sourceTemplate?.id) {
         const packageInfo = readPkgUp.sync({ cwd: __dirname });
         ffApp.app.sourceTemplate = {
             id: `${packageInfo?.packageJson.name}:${ffApp.template.type}`,

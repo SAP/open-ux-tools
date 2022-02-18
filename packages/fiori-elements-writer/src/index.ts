@@ -22,7 +22,7 @@ import semVer from 'semver';
  */
 async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
     // Clone rather than modifying callers refs
-    const feApp: FioriElementsApp<T> = cloneDeep(data) as FioriElementsApp<T>;
+    const feApp: FioriElementsApp<T> = cloneDeep(data);
 
     setAppDefaults(feApp);
 

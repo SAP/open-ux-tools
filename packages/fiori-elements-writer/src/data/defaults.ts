@@ -22,7 +22,7 @@ export function setDefaultTemplateSettings<T>(template: Template<T>): T {
             smartVariantManagement: alpSettings.smartVariantManagement ?? false
         });
     }
-    return templateSettings as T;
+    return templateSettings;
 }
 
 /**
@@ -33,7 +33,7 @@ export function setDefaultTemplateSettings<T>(template: Template<T>): T {
  */
 export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<T> {
     // Add template information
-    if (!feApp.app.sourceTemplate?.version || !feApp.app.sourceTemplate?.version) {
+    if (!feApp.app.sourceTemplate?.version || !feApp.app.sourceTemplate?.id) {
         const packageInfo = readPkgUp.sync({ cwd: __dirname });
         feApp.app.sourceTemplate = {
             id: `${packageInfo?.packageJson.name}:${feApp.template.type}`,
