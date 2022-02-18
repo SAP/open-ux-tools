@@ -112,7 +112,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -152,7 +151,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -1373,7 +1371,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -1413,7 +1410,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -3981,7 +3977,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -4021,7 +4016,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org

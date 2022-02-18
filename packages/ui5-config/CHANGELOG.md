@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.12.0
+
+### Minor Changes
+
+-   2b12f4f: UI5 version removal from ui5.yaml and ui5-mock.yaml
+
 ## 0.11.1
 
 ### Patch Changes

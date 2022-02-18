@@ -89,7 +89,6 @@ server:
             - /resources
             - /test-resources
           url: https://openui5.hana.ondemand.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
