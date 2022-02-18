@@ -242,6 +242,10 @@ title=App Title",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata/\\",
@@ -900,6 +904,10 @@ title=App Title",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata/\\",
@@ -1555,6 +1563,10 @@ title=App Title",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata/\\",

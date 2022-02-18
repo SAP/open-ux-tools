@@ -31,7 +31,6 @@ export interface Template<T = {}> {
     type: TemplateType;
     settings: T;
 }
-
 export interface FioriApp extends App {
     flpAppId?: string;
 }
