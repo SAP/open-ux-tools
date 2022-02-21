@@ -92,7 +92,7 @@ export const v4Service: OdataService = {
 
 export const v2Service: OdataService = {
     path: '/sap/opu/odata/sap/SEPMRA_PROD_MAN',
-    url: 'http://example.lrop.v4',
+    url: 'http://example.lrop.v2',
     version: OdataVersion.v2,
     metadata: getTestData('sepmra_prod_man_v2', 'metadata'),
     annotations: {
