@@ -1,5 +1,23 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.10.27
+
+### Patch Changes
+
+-   0e72d5b: Fixes reuse libs loading from index.html. Adds optional support for reuse libs loading to ui5-application-writer.
+-   Updated dependencies [0e72d5b]
+    -   @sap-ux/ui5-application-writer@0.11.1
+
+## 0.10.26
+
+### Patch Changes
+
+-   Updated dependencies [2b12f4f]
+-   Updated dependencies [2b12f4f]
+    -   @sap-ux/ui5-config@0.12.0
+    -   @sap-ux/ui5-application-writer@0.11.0
+    -   @sap-ux/odata-service-writer@0.11.1
+
 ## 0.10.25
 
 ### Patch Changes

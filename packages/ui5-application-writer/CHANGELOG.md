@@ -1,5 +1,22 @@
 # @sap-ux/ui5-application-writer
 
+## 0.11.1
+
+### Patch Changes
+
+-   0e72d5b: Fixes reuse libs loading from index.html. Adds optional support for reuse libs loading to ui5-application-writer.
+
+## 0.11.0
+
+### Minor Changes
+
+-   2b12f4f: Remove UI5 version from ui5-application-writer
+
+### Patch Changes
+
+-   Updated dependencies [2b12f4f]
+    -   @sap-ux/ui5-config@0.12.0
+
 ## 0.10.10
 
 ### Patch Changes

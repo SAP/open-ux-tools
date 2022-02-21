@@ -28,4 +28,6 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     if (ffApp.template.type === TemplateType.Basic) {
         setBasicTemplateDefaults(ffApp.template.settings as BasicAppSettings);
     }
+    // All fiori-freestyle apps should use load reuse libs, unless explicitly overridden
+    ffApp.appOptions = Object.assign({ loadReuseLibs: true }, ffApp.appOptions);
 }

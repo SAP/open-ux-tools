@@ -61,6 +61,14 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             settings: {
                 viewName: 'CustomViewName'
             }
+        },
+        {
+            name: 'basic_without_reuse_libs',
+            config: { 
+                ...commonConfig,
+                appOptions: { loadReuseLibs: false } 
+            },
+            settings: {}
         }
     ];
 
