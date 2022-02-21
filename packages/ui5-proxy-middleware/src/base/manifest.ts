@@ -1936,69 +1936,7 @@ export interface PagesMap {
     /**
      * Represent reuse components that should be appended at the end of the template component
      */
-    embeddedComponents?: {
-        /**
-         * This interface was referenced by `undefined`'s JSON-Schema definition
-         * via the `patternProperty` "^[a-zA-Z0-9_.:-]+$".
-         *
-         * This interface was referenced by `undefined`'s JSON-Schema definition
-         * via the `patternProperty` "^[a-zA-Z0-9_.:-]+$".
-         */
-        [k: string]: {
-            /**
-             * Represents an unique id for the instance of the reuse component inside of the object page
-             */
-            id: string;
-            /**
-             * Represents the title for the content of the reuse component
-             */
-            title: string;
-            /**
-             * Represents an optional element binding  for the ComponentContainer that hosts the reuse component
-             */
-            binding?: string;
-            /**
-             * Represents a map to populate the API of the reuse component
-             */
-            settings?: {
-                [k: string]: unknown;
-            };
-            /**
-             * Flag, whether the embedded component should be hidden by default
-             */
-            hiddenByDefault?: {
-                [k: string]: unknown;
-            };
-            /**
-             * Represents group title of reuse components
-             */
-            groupTitle?: string;
-            /**
-             * Represents a section that behaves a leading section for the group
-             */
-            leadingSectionIdOrPath?: string;
-            [k: string]: unknown;
-        } & (
-            | {
-                  /**
-                   * Represents the name of the reuse component
-                   */
-                  componentName: string;
-                  [k: string]: unknown;
-              }
-            | {
-                  /**
-                   * Represents the reference to the name of the componentUsages defined in sap.ui5/componentUsages
-                   */
-                  componentUsage: string;
-                  [k: string]: unknown;
-              }
-            | {
-                  embeddedComponents: EmbeddedComponent;
-                  [k: string]: unknown;
-              }
-        );
-    };
+    embeddedComponents?: EmbeddedComponent;
     /**
      * Represents the routing specification
      */

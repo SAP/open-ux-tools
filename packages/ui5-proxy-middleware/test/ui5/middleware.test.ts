@@ -260,7 +260,6 @@ describe('Test start of server with middleware: proxy configuration', () => {
 
 describe('Test start of server with middleware', () => {
     let serverResponse: any;
-    let httpServer: any;
     const hostname = 'http://localhost';
     let port = 8080;
     const cwd = process.cwd();
