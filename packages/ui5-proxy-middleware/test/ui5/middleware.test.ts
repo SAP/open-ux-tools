@@ -212,7 +212,18 @@ describe('Test start of server with middleware: proxy configuration', () => {
                 afterMiddleware: 'compression',
                 configuration: {
                     proxy: 'my.proxy.example:12345',
-                    ui5: []
+                    ui5: [
+                        {
+                            path: '/resources',
+                            url: 'http://localhost:3333',
+                            version: '1.90.0'
+                        },
+                        {
+                            path: '/test-resources',
+                            url: 'http://localhost:3333',
+                            version: '1.90.0'
+                        }
+                    ]
                 }
             }
         ];
