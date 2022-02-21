@@ -4,19 +4,19 @@
 /packages/store @SAP/ux-tools-store
 
 # Module: fe-fpm-writer
-/packages/fe-fpm-writer/ @SAP/ux-tools-fpm-writer
+/packages/fe-fpm-writer/ @SAP/ux-tools-fe-fpm-writer
 
 # Module: fiori-freestyle-writer
-/packages/fiori-freestyle-writer/ @SAP/ux-tools-freestyle-writer
+/packages/fiori-freestyle-writer/ @SAP/ux-tools-fiori-freestyle-writer
 
 # Module: logger
 /packages/logger/ @SAP/ux-tools-logger
 
 # Module: odata-service-writer
-/packages/odata-service-writer/ @SAP/ux-tools-service-writer
+/packages/odata-service-writer/ @SAP/ux-tools-odata-service-writer
 
 # Module: ui5-application-writer
-/packages/ui5-application-writer/ @SAP/ux-tools-ui5-app-writer
+/packages/ui5-application-writer/ @SAP/ux-tools-ui5-application-writer
 
 # Module: ui5-config
 /packages/ui5-config/ @SAP/ux-tools-ui5-config
