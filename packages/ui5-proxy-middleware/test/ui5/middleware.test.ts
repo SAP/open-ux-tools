@@ -25,6 +25,7 @@ const baseTree = {
     dependencies: [],
     server: {}
 };
+jest.setTimeout(15000);
 
 describe('Test start of server with middleware', () => {
     let serverResponse: any;
