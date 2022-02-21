@@ -51,7 +51,7 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
                 path: ui5Path,
                 url: config.ui5.url,
                 version: ui5Version
-            }
+            };
             ui5Configs.push(ui5Config);
         }
     }
