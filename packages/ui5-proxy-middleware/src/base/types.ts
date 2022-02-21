@@ -7,8 +7,13 @@ export interface UI5Config {
     version?: string;
 }
 
+export interface UI5ConfigObject {
+    path: string[];
+    url: string;
+    version?: string;
+}
 export interface ProxyConfig {
-    ui5: UI5Config[];
+    ui5: UI5Config[] | UI5ConfigObject;
     proxy?: string;
     debug?: boolean;
     secure?: boolean;

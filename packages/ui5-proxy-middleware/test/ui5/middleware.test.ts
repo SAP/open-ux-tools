@@ -130,6 +130,103 @@ describe('Test start of server with middleware', () => {
         }
     });
 });
+describe('Test start of server with middleware: old configuration', () => {
+    let serverResponse: any;
+    let httpServer: any;
+    const hostname = 'http://localhost';
+    let port = 8080;
+    const cwd = process.cwd();
+
+    beforeAll(async () => {
+        httpServer = new mockServer({ host: 'localhost', port: 3333 }, {});
+        httpServer.start(() => {
+            console.log('Http Mock Server started');
+        });
+
+        const projectTree = await projectPreprocessor.processTree(baseTree);
+        projectTree.server.customMiddleware = [
+            {
+                name: 'ui5-proxy-middleware',
+                afterMiddleware: 'compression',
+                configuration: {
+                    version: '1.90.0',
+                    ui5: {
+                        path: ['/resources', '/test-resources'],
+                        url: 'http://localhost:3333'
+                    }
+                }
+            }
+        ];
+        const serverOptions = {
+            port: 8080,
+            changePortIfInUse: true
+        };
+        try {
+            process.chdir(projectPath);
+            serverResponse = await server.serve(projectTree, serverOptions);
+            port = serverResponse.port;
+            console.log('Server started on port ' + port);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    });
+
+    afterAll(async () => {
+        process.chdir(cwd);
+        try {
+            await stopUI5Server(serverResponse);
+            console.log('Server stopped on port ' + serverResponse.port);
+        } catch (e) {
+            console.log(e);
+        }
+        try {
+            await stopMockServer(httpServer);
+        } catch (e) {
+            console.log(e);
+        }
+    });
+
+    test('test request ui5 resources', async () => {
+        httpServer.on({
+            method: 'GET',
+            path: '/1.90.0/resources',
+            reply: {
+                status: 200,
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ ui5: true })
+            }
+        });
+        try {
+            const body = await requestPromise(hostname + ':' + port + '/resources');
+            const json = JSON.parse(body);
+            expect(json.ui5).toBe(true);
+        } catch (error) {
+            console.error(error);
+            expect(true).toBe(false);
+        }
+    });
+
+    test('test request ui5 test-resources', async () => {
+        httpServer.on({
+            method: 'GET',
+            path: '/1.90.0/test-resources',
+            reply: {
+                status: 200,
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ ui5test: true })
+            }
+        });
+        try {
+            const body = await requestPromise(hostname + ':' + port + '/test-resources');
+            const json = JSON.parse(body);
+            expect(json.ui5test).toBe(true);
+        } catch (error) {
+            console.error(error);
+            expect(true).toBe(false);
+        }
+    });
+});
 
 describe('Test start of server with middleware: secure=true, debug=true', () => {
     let serverResponse: any;

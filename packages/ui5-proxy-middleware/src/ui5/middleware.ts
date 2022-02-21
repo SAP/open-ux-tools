@@ -11,7 +11,8 @@ import {
     ProxyConfig,
     ui5Proxy,
     setUI5Version,
-    hideProxyCredentials
+    hideProxyCredentials,
+    UI5Config
 } from '../base';
 
 module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise<RequestHandler> => {
@@ -41,8 +42,21 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
             secure ? 'true' : 'false'
         }'\ndebug: '${debug ? 'true' : 'false'}'`
     );
+    let ui5Configs: UI5Config[] = [];
+    if (Array.isArray(config.ui5)) {
+        ui5Configs = config.ui5;
+    } else {
+        for (const ui5Path of config.ui5.path) {
+            const ui5Config: UI5Config = {
+                path: ui5Path,
+                url: config.ui5.url,
+                version: ui5Version
+            }
+            ui5Configs.push(ui5Config);
+        }
+    }
 
-    for (const ui5Config of config.ui5) {
+    for (const ui5Config of ui5Configs) {
         ui5Config.version = ui5Version;
         if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
             proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
@@ -52,7 +66,7 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
 
     if (directLoad) {
         router.use(HTML_MOUNT_PATHS, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-            await injectScripts(req, res, next, config.ui5);
+            await injectScripts(req, res, next, ui5Configs);
         });
     }
 
