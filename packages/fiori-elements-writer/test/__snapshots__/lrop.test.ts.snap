@@ -87,7 +87,7 @@ server:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
-            url: http://example.lrop.v4
+            url: http://example.lrop.v2
             client: '012'
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
@@ -121,7 +121,7 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /sap
-            url: http://example.lrop.v4
+            url: http://example.lrop.v2
             client: '012'
     - name: fiori-tools-appreload
       afterMiddleware: compression
@@ -161,7 +161,7 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /sap
-            url: http://example.lrop.v4
+            url: http://example.lrop.v2
             client: '012'
     - name: fiori-tools-appreload
       afterMiddleware: compression
@@ -3661,7 +3661,7 @@ server:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
-            url: http://example.lrop.v4
+            url: http://example.lrop.v2
             client: '012'
     - name: sap-fe-mockserver
       beforeMiddleware: fiori-tools-proxy
@@ -3695,7 +3695,7 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /sap
-            url: http://example.lrop.v4
+            url: http://example.lrop.v2
             client: '012'
     - name: fiori-tools-appreload
       afterMiddleware: compression
@@ -3735,7 +3735,7 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /sap
-            url: http://example.lrop.v4
+            url: http://example.lrop.v2
             client: '012'
     - name: fiori-tools-appreload
       afterMiddleware: compression
