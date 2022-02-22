@@ -49,7 +49,7 @@ export const feBaseConfig = (appId: string): Partial<FioriElementsApp<LROPSettin
     return {
         app: {
             id: appId,
-            title: 'App Title',
+            title: 'App "Title"',
             description: 'A Fiori application.',
             flpAppId: `${appId}-tile`,
             sourceTemplate: {

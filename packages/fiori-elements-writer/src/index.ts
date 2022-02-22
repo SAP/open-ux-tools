@@ -8,7 +8,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { FioriElementsApp } from './types';
 import { validateApp } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
-import { changesPreviewToVersion, TemplateOptions } from './data/templateAttributes';
+import { changesPreviewToVersion, escapeDoubleQuotes, TemplateOptions } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 
@@ -49,7 +49,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
-    fs.copyTpl(join(rootTemplatesPath, 'common', 'add', '**/*.*'), basePath, { ...feApp, options });
+    fs.copyTpl(join(rootTemplatesPath, 'common', 'add', '**/*.*'), basePath, { ...feApp, options, escapeDoubleQuotes });
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');

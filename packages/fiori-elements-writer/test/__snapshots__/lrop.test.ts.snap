@@ -227,7 +227,7 @@ server:
 #Texts for manifest.json
 
 #XTIT: Application name
-appTitle=App Title
+appTitle=App \\"Title\\"
 
 #YDES: Application description
 appDescription=A Fiori application.",
@@ -240,7 +240,7 @@ appDescription=A Fiori application.",
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <title>App Title</title>
+    <title>App &#34;Title&#34;</title>
     <style>
         html, body, body > div, #container, #container-uiarea {
             height: 100%;
@@ -3360,7 +3360,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             },
             applications: {
                 \\"felrop2-tile\\": {
-                    title: \\"App Title\\",
+                    title: \\"App \\\\\\"Title\\\\\\"\\",
                     description: \\"A Fiori application.\\",
                     additionalInformation: \\"SAPUI5.Component=felrop2\\",
                     applicationType: \\"URL\\",
@@ -3801,7 +3801,7 @@ server:
 #Texts for manifest.json
 
 #XTIT: Application name
-appTitle=App Title
+appTitle=App \\"Title\\"
 
 #YDES: Application description
 appDescription=A Fiori application.",
@@ -3814,7 +3814,7 @@ appDescription=A Fiori application.",
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <title>App Title</title>
+    <title>App &#34;Title&#34;</title>
     <style>
         html, body, body > div, #container, #container-uiarea {
             height: 100%;
@@ -6932,7 +6932,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             },
             applications: {
                 \\"felrop2-tile\\": {
-                    title: \\"App Title\\",
+                    title: \\"App \\\\\\"Title\\\\\\"\\",
                     description: \\"A Fiori application.\\",
                     additionalInformation: \\"SAPUI5.Component=felrop2\\",
                     applicationType: \\"URL\\",
@@ -7372,7 +7372,7 @@ server:
 #Texts for manifest.json
 
 #XTIT: Application name
-appTitle=App Title
+appTitle=App \\"Title\\"
 
 #YDES: Application description
 appDescription=A Fiori application.",
@@ -7385,7 +7385,7 @@ appDescription=A Fiori application.",
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <title>App Title</title>
+    <title>App &#34;Title&#34;</title>
     <style>
         html, body, body > div, #container, #container-uiarea {
             height: 100%;
@@ -10548,7 +10548,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             },
             applications: {
                 \\"felrop1-tile\\": {
-                    title: \\"App Title\\",
+                    title: \\"App \\\\\\"Title\\\\\\"\\",
                     description: \\"A Fiori application.\\",
                     additionalInformation: \\"SAPUI5.Component=felrop1\\",
                     applicationType: \\"URL\\",
