@@ -44,8 +44,8 @@
             },
             applications: {
                 "<%- app.flpAppId %>": {
-                    title: "<%- app.title %>",
-                    description: "<%- app.description %>",
+                    title: "<%- app.title.replace(/(")/g, '\\$&') %>",
+                    description: "<%- app.description.replace(/(")/g, '\\$&') %>",
                     additionalInformation: "SAPUI5.Component=<%- app.id  %>",
                     applicationType: "URL",
                     url: "../"
