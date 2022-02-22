@@ -9,7 +9,7 @@ export type TemplateOptions = {
 };
 
 // Specific quote escaping is required by FLP config in flpSandbox.html template file
-export const escapeDoubleQuotes = (s: string): string => s.replace(/(")/g, '\\$&');
+export const escapeDoubleQuotes = (s: string): string => s.replace(/\\/g, '\\\\').replace(/(")/g, '\\$&');
 
 const appComponentLibGeneric = 'sap/suite/ui/generic/template/lib/AppComponent';
 const appComponentLibOVP = 'sap/ovp/app/Component';
