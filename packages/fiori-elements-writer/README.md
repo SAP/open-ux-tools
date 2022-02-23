@@ -49,6 +49,11 @@ const exampleWriter = async () => {
           entityConfig: {
             mainEntity: {
               entityName: 'Suppliers'
+            },
+            navigationEntity: {
+              EntitySet: 'Products',
+              Name: 'Products',
+              Role: ''
             }
           }
         }
