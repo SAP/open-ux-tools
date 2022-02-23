@@ -217,7 +217,7 @@ export async function getUI5VersionFromManifest(args: string[]): Promise<string 
  * @param log logger for outputing information from where ui5 version config is coming
  * @returns The UI5 version with which the application will be started
  */
-export async function setUI5Version(version: string | undefined, log?: ToolsLogger): Promise<string> {
+export async function resolveUI5Version(version: string | undefined, log?: ToolsLogger): Promise<string> {
     let ui5Version: string = '';
     let ui5VersionInfo: string;
     let ui5VersionLocation: string = 'manifest.json';

@@ -10,7 +10,7 @@ import {
     MiddlewareParameters,
     ProxyConfig,
     ui5Proxy,
-    setUI5Version,
+    resolveUI5Version,
     hideProxyCredentials,
     UI5Config
 } from '../base';
@@ -21,7 +21,7 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
     });
     const router = express.Router();
     const config = options.configuration;
-    const ui5Version = await setUI5Version(config.version, logger);
+    const ui5Version = await resolveUI5Version(config.version, logger);
     const secure = !!config.secure;
     const debug = !!config.debug;
     const directLoad = !!config.directLoad;
@@ -40,7 +40,7 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
     logger.info(
         `Starting ui5-proxy-middleware using following configuration:\nproxy: '${proxyInfo}'\nsecure: '${
             secure ? 'true' : 'false'
-        }'\ndebug: '${debug ? 'true' : 'false'}'`
+        }'\ndebug: '${debug ? 'true' : 'false'}''\ndebug: '${directLoad ? 'true' : 'false'}'`
     );
     let ui5Configs: UI5Config[] = [];
     if (Array.isArray(config.ui5)) {

@@ -334,7 +334,7 @@ describe('Utils', () => {
         const log: any = {
             info: jest.fn()
         };
-        const result = await baseUtils.setUI5Version(version, log);
+        const result = await baseUtils.resolveUI5Version(version, log);
         expect(result).toEqual(version);
         expect(log.info).toBeCalledTimes(1);
         expect(log.info).toHaveBeenCalledWith('Using UI5 version 1.90.0 based on ui5.yaml');
@@ -346,7 +346,7 @@ describe('Utils', () => {
         const log: any = {
             info: jest.fn()
         };
-        const result = await baseUtils.setUI5Version(version, log);
+        const result = await baseUtils.resolveUI5Version(version, log);
         delete process.env.FIORI_TOOLS_UI5_VERSION;
         expect(result).toEqual(version);
         expect(log.info).toBeCalledTimes(1);
@@ -365,7 +365,7 @@ describe('Utils', () => {
         jest.spyOn(baseUtils, 'getManifest').mockImplementation(async () => {
             return Promise.resolve(manifest);
         });
-        const result = await baseUtils.setUI5Version(undefined, log);
+        const result = await baseUtils.resolveUI5Version(undefined, log);
         expect(result).toEqual('1.96.0');
         expect(log.info).toBeCalledTimes(1);
         expect(log.info).toHaveBeenCalledWith('Using UI5 version 1.96.0 based on manifest.json');
@@ -383,7 +383,7 @@ describe('Utils', () => {
         jest.spyOn(baseUtils, 'getManifest').mockImplementation(async () => {
             return Promise.resolve(manifest);
         });
-        const result = await baseUtils.setUI5Version(undefined, log);
+        const result = await baseUtils.resolveUI5Version(undefined, log);
         expect(result).toEqual('');
         expect(log.info).toBeCalledTimes(1);
         expect(log.info).toHaveBeenCalledWith('Using UI5 version latest based on manifest.json');
