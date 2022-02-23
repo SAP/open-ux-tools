@@ -6,8 +6,7 @@
         "outDir": "dist",
         "sourceMap": true,
         "baseUrl": "./src",
-        "resolveJsonModule": true,
-        "noImplicitAny": false
+        "resolveJsonModule": true
     },
     "extends": "../../tsconfig.json"
 }

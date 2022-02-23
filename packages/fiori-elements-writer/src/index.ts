@@ -6,7 +6,7 @@ import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
 import { FioriElementsApp } from './types';
-import { validateApp } from './validate';
+import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
 import { changesPreviewToVersion, escapeFLPText, TemplateOptions } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
@@ -23,6 +23,8 @@ import semVer from 'semver';
 async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
     // Clone rather than modifying callers refs
     const feApp: FioriElementsApp<T> = cloneDeep(data);
+    // Ensure input data contains at least the manadatory properties required for app genertation
+    validateRequiredProperties(feApp);
 
     setAppDefaults(feApp);
 
@@ -33,13 +35,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     // This is done after `generateUi5Project` since defaults are set if values are not provided
     validateApp(feApp);
 
-    // Add service to the project if provided
-    if (feApp.service) {
-        if (!feApp.service.localAnnotationsName) {
-            feApp.service.localAnnotationsName = 'annotation';
-        }
-        await addOdataService(basePath, feApp.service, fs);
-    }
+    await addOdataService(basePath, feApp.service, fs);
 
     const options: TemplateOptions = {
         changesPreview: semVer.lt(semVer.coerce(feApp.ui5?.version)!, changesPreviewToVersion),
