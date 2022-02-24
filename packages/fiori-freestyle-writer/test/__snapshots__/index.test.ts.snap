@@ -86,8 +86,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -125,8 +124,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -1349,8 +1347,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -1388,8 +1385,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -3959,8 +3955,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -3998,8 +3993,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true

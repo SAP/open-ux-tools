@@ -65,17 +65,7 @@ export const feBaseConfig = (appId: string): Partial<FioriElementsApp<LROPSettin
             version: '1.92.0',
             minUI5Version: '1.90.0',
             descriptorVersion: '1.37.0',
-            ui5Libs: [
-                'sap.f',
-                'sap.m',
-                'sap.suite.ui.generic.template',
-                'sap.ui.comp',
-                'sap.ui.core',
-                'sap.ui.generic.app',
-                'sap.ui.table',
-                'sap.ushell',
-                'sap.fe.templates'
-            ],
+            ui5Libs: [],
             ui5Theme: 'sap_belize',
             localVersion: '1.86.3'
         }

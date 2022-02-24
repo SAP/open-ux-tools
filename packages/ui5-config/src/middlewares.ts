@@ -75,14 +75,12 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<MockserverConfig> => {
-    const pathSegments = path?.split('/') || [];
     return {
         name: 'sap-fe-mockserver',
         beforeMiddleware: 'fiori-tools-proxy',
         configuration: {
             service: {
-                urlBasePath: pathSegments.slice(0, -1).join('/'),
-                name: pathSegments[pathSegments.length - 1],
+                urlPath: path || '',
                 metadataXmlPath: './webapp/localService/metadata.xml',
                 mockdataRootPath: './webapp/localService/data',
                 generateMockData: true

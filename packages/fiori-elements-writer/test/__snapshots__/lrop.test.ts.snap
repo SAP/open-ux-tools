@@ -70,8 +70,6 @@ framework:
     - name: sap.ui.comp
     - name: sap.ui.generic.app
     - name: sap.suite.ui.generic.template
-    - name: sap.ui.table
-    - name: sap.fe.templates
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -93,8 +91,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -133,8 +130,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -2959,9 +2955,7 @@ appDescription=A Fiori application.",
         \\"sap.f\\": {},
         \\"sap.ui.comp\\": {},
         \\"sap.ui.generic.app\\": {},
-        \\"sap.suite.ui.generic.template\\": {},
-        \\"sap.ui.table\\": {},
-        \\"sap.fe.templates\\": {}
+        \\"sap.suite.ui.generic.template\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -3374,7 +3368,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     <!-- Bootstrap the UI5 core library -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ui.table,sap.fe.templates\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"
@@ -3667,8 +3661,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -3707,8 +3700,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -7215,11 +7207,6 @@ framework:
     - name: sap.ui.core
     - name: sap.ushell
     - name: sap.fe.templates
-    - name: sap.f
-    - name: sap.suite.ui.generic.template
-    - name: sap.ui.comp
-    - name: sap.ui.generic.app
-    - name: sap.ui.table
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -7240,8 +7227,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-          name: ''
+          urlPath: sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -7279,8 +7265,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-          name: ''
+          urlPath: sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -10389,12 +10374,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
         \\"sap.ushell\\": {},
-        \\"sap.fe.templates\\": {},
-        \\"sap.f\\": {},
-        \\"sap.suite.ui.generic.template\\": {},
-        \\"sap.ui.comp\\": {},
-        \\"sap.ui.generic.app\\": {},
-        \\"sap.ui.table\\": {}
+        \\"sap.fe.templates\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -10562,7 +10542,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     <!-- Bootstrap the UI5 core library -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"

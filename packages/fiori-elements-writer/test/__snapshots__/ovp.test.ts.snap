@@ -95,8 +95,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -135,8 +134,7 @@ server:
       beforeMiddleware: fiori-tools-proxy
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
