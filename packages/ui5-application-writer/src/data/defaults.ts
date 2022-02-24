@@ -3,6 +3,7 @@ import versionToManifestDescMapping from './version-to-descriptor-mapping.json';
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
 import { t } from '../i18n';
+import { mergeObjects } from 'json-merger';
 
 /**
  * Returns a package instance with default properties.
@@ -28,6 +29,26 @@ export function packageDefaults(version?: string, description?: string): Partial
             dependencies: ['@sap/ux-ui5-tooling']
         }
     };
+}
+
+/**
+ * Merges 2 package definitions. All properties from A and from B will be present.
+ * Overlapping properties will be replaced from B. Arrays will be concatenated.
+ * `ui5.dependencies` will be de-duped.
+ *
+ * @param packageA - a partial package definition
+ * @param packageB - a partial package definition
+ * @returns - a merged package defintion
+ */
+export function mergePackages(packageA: Partial<Package>, packageB: Partial<Package>): Package {
+    const mergedPackage = mergeObjects([packageA, packageB], {
+        defaultArrayMergeOperation: 'concat'
+    });
+    // de-dup package.ui5.dependencies
+    if (mergedPackage.ui5?.dependencies) {
+        mergedPackage.ui5.dependencies = Array.from(new Set(mergedPackage.ui5.dependencies));
+    }
+    return mergedPackage;
 }
 /**
  * Returns an app instance with default properties. Every property must have a value for templating to succeed.
