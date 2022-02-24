@@ -13,7 +13,7 @@ import {
 } from '../src/types';
 import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 
-export const testOutputDir = join(__dirname, '/test-output');
+export const testOutputDir = join(__dirname, 'test-output');
 
 export const debug = prepareDebug();
 

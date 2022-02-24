@@ -3619,7 +3619,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.9
+  version: 1.77.2
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -6492,7 +6492,7 @@ appDescription=A Fiori application.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.77.9\\",
+      \\"minUI5Version\\": \\"1.77.2\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},

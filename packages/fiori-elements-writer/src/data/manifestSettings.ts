@@ -19,7 +19,7 @@ export function extendManifestJson<T>(
     targetPath: string,
     rootTemplatesPath: string,
     feApp: FioriElementsApp<T>
-) {
+): void {
     let templatePath = feApp.template.type;
     // FEOP and ALP v4 are variants of LROP and so we use the same template
     if (
