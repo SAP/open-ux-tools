@@ -180,7 +180,8 @@ describe('Setting defaults', () => {
                 },
                 devDependencies: {
                     devDepA: '6.7.8',
-                    devDepB: '9.10.11'
+                    devDepB: '9.10.11',
+                    '@ui5/cli': '3.0.0'
                 },
                 scripts: {
                     doTaskA: 'echo "Doing task A"',
@@ -199,7 +200,7 @@ describe('Setting defaults', () => {
             },
             description: 'Should be default package description',
             devDependencies: {
-                '@ui5/cli': '^2.14.1',
+                '@ui5/cli': '3.0.0',
                 '@sap/ux-ui5-tooling': '1',
                 devDepA: '6.7.8',
                 devDepB: '9.10.11'
