@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.11.2
+
+### Patch Changes
+
+-   893c924: Fix for: https://github.com/SAP/open-ux-tools/issues/345
+
 ## 0.11.1
 
 ### Patch Changes
