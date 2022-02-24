@@ -51,7 +51,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     },
                     ui5: {
                         ...feBaseConfig('felrop2'),
-                        version: '1.77.9' // flex changes preview should be included with this version
+                        version: '1.77.2' // flex changes preview should be included with this version
                     }
                 }),
                 service: v2Service

@@ -3363,6 +3363,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop2\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop2/test/changes_loader\\", \\"custom\\":true}]'
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
@@ -6920,9 +6921,12 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop2\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop2/test/changes_loader\\", \\"custom\\":true}]'
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
+    <!-- relevant for version < 1.78.0 only -->
+	<script src=\\"changes_preview.js\\"></script>
 </head>
 
 <!-- UI Content -->

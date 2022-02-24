@@ -3375,6 +3375,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"fewrk1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"fewrk1/test/changes_loader\\", \\"custom\\":true}]'
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
