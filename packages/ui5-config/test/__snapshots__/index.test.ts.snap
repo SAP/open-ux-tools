@@ -209,7 +209,7 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /~testpath~
@@ -223,7 +223,7 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: ''

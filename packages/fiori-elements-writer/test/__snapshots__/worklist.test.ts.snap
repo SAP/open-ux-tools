@@ -90,7 +90,7 @@ server:
             url: http://example.lrop.v2
             client: '012'
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
@@ -129,7 +129,7 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
@@ -173,25 +173,12 @@ server:
   "webapp/Component.js": Object {
     "contents": "sap.ui.define(
     [\\"sap/ovp/app/Component\\"],
-    function (UIComponent) {
+    function (Component) {
         \\"use strict\\";
 
-        return UIComponent.extend(\\"fewrk1.Component\\", {
+        return Component.extend(\\"fewrk1.Component\\", {
             metadata: {
                 manifest: \\"json\\"
-            },
-
-            /**
-             * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-             * @public
-             * @override
-             */
-            init: function () {
-                // call the base component's init function
-                UIComponent.prototype.init.apply(this, arguments);
-
-                // enable routing
-                this.getRouter().initialize();
             }
         });
     }

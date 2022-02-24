@@ -27,7 +27,7 @@ Object {
           - path: /sap
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/odata/testme
@@ -53,7 +53,7 @@ Object {
           - path: /sap
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/odata/testme
@@ -2796,7 +2796,7 @@ Object {
           - path: /sap
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/odata/testme
@@ -2822,7 +2822,7 @@ Object {
           - path: /sap
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/odata/testme

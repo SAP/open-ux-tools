@@ -88,7 +88,7 @@ server:
           - path: /here
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /here/goes/your/serviceurl
@@ -126,7 +126,7 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /here/goes/your/serviceurl
@@ -6776,7 +6776,7 @@ server:
             client: '012'
             destination: SIDCLNT012
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
@@ -6817,7 +6817,7 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
@@ -10067,7 +10067,7 @@ server:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /catalog-admin-noauth
@@ -10105,7 +10105,7 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /catalog-admin-noauth

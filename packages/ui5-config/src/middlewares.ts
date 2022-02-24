@@ -75,9 +75,10 @@ export function getFioriToolsProxyMiddlewareConfig(
 }
 
 export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<MockserverConfig> => {
+    path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
     return {
         name: 'sap-fe-mockserver',
-        beforeMiddleware: 'fiori-tools-proxy',
+        beforeMiddleware: 'csp',
         configuration: {
             service: {
                 urlPath: path || '',

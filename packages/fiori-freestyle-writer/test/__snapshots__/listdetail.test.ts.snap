@@ -83,7 +83,7 @@ server:
           - path: /V2
             url: https://services.odata.org
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /V2/Northwind/Northwind.svc
@@ -121,7 +121,7 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /V2/Northwind/Northwind.svc

@@ -87,7 +87,7 @@ server:
           - path: /sap
             url: http://example.alp.v2
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV
@@ -125,7 +125,7 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV
@@ -168,25 +168,12 @@ server:
   "webapp/Component.js": Object {
     "contents": "sap.ui.define(
     [\\"sap/suite/ui/generic/template/lib/AppComponent\\"],
-    function (UIComponent) {
+    function (Component) {
         \\"use strict\\";
 
-        return UIComponent.extend(\\"alp2.Component\\", {
+        return Component.extend(\\"alp2.Component\\", {
             metadata: {
                 manifest: \\"json\\"
-            },
-
-            /**
-             * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-             * @public
-             * @override
-             */
-            init: function () {
-                // call the base component's init function
-                UIComponent.prototype.init.apply(this, arguments);
-
-                // enable routing
-                this.getRouter().initialize();
             }
         });
     }
@@ -6014,7 +6001,7 @@ server:
           - path: /sap
             url: http://example.alp.v4
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
@@ -6052,7 +6039,7 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
           urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
@@ -6095,25 +6082,12 @@ server:
   "webapp/Component.js": Object {
     "contents": "sap.ui.define(
     [\\"sap/fe/core/AppComponent\\"],
-    function (UIComponent) {
+    function (Component) {
         \\"use strict\\";
 
-        return UIComponent.extend(\\"alp1.Component\\", {
+        return Component.extend(\\"alp1.Component\\", {
             metadata: {
                 manifest: \\"json\\"
-            },
-
-            /**
-             * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-             * @public
-             * @override
-             */
-            init: function () {
-                // call the base component's init function
-                UIComponent.prototype.init.apply(this, arguments);
-
-                // enable routing
-                this.getRouter().initialize();
             }
         });
     }
