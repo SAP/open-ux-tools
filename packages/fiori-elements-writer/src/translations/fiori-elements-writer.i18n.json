@@ -9,6 +9,8 @@
         "unsupportedUI5Version" :
             "Specified UI5 property '{{ versionProperty }}': {{ ui5Version }}, is not supported by the template type: {{ templateType }}",
         "invalidUI5Version" :
-            "Specified UI5 property '{{ versionProperty }}': {{ ui5Version }}, is not a valid semantic version"
+            "Specified UI5 property '{{ versionProperty }}': {{ ui5Version }}, is not a valid semantic version",
+        "missingRequiredProperty" : 
+            "A property required for application generation is not specified: '{{ propertyName }}'."
     }
 }

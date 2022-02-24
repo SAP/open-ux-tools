@@ -53,6 +53,10 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
 
     // All fiori-elements apps should use load reuse libs, unless explicitly overridden
     feApp.appOptions = Object.assign({ loadReuseLibs: true }, feApp.appOptions);
+ 
+    if (!feApp.service.localAnnotationsName) {
+        feApp.service.localAnnotationsName = 'annotation';
+    }
 
     return feApp;
 }

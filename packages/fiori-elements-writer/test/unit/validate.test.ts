@@ -1,7 +1,7 @@
 import { FioriElementsApp, LROPSettings, OdataVersion, TemplateType } from '../../src';
 import { t } from '../../src/i18n';
 import { ALPSettings } from '../../src/types';
-import { validateApp } from '../../src/validate';
+import { validateApp, validateRequiredProperties } from '../../src/validate';
 import { feBaseConfig, v4TemplateSettings } from '../common';
 
 describe('Validate', () => {
@@ -131,6 +131,30 @@ describe('Validate', () => {
                 versionProperty: 'minUI5Version',
                 ui5Version: feApp.ui5?.minUI5Version,
                 templateType: feApp.template.type
+            })
+        );
+    });
+
+    test('Missing required property', () => {
+        // Missing property: `FioriElementsApp.service`
+        const feApp: FioriElementsApp<ALPSettings> = {
+            ...Object.assign(feBaseConfig('felrop1'), {
+                    ui5: {
+                        version: '1.92.0',
+                        minUI5Version: '1.60.0'
+                    }
+                },
+                {
+                    template: {
+                        type: TemplateType.AnalyticalListPage,
+                        settings: {}
+                }
+            })
+        } as FioriElementsApp<ALPSettings>;
+
+        expect(() => validateRequiredProperties(feApp)).toThrowError(
+            t('error.missingRequiredProperty', {
+                propertyName: 'FioriElementsApp.service'
             })
         );
     });

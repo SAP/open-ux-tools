@@ -1,7 +1,7 @@
-import { FioriElementsApp, ValidationError } from './types';
+import semVer, { SemVer } from 'semver';
 import { TemplateTypeAttributes } from './data/templateAttributes';
 import { t } from './i18n';
-import semVer, { SemVer } from 'semver';
+import { FioriElementsApp, ValidationError } from './types';
 
 /**
  * Validates a selection of specified app settings.
@@ -22,7 +22,7 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
         );
     }
 
-    // Validate ui5 versions
+    // Validate ui5 versions if present (defaults will apply otherwise)
     let ui5Version: SemVer | null;
 
     if (feApp.ui5?.version) {
@@ -36,7 +36,7 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
 
     let minUI5Version: SemVer | null;
 
-    if (feApp.ui5?.version) {
+    if (feApp.ui5?.minUI5Version) {
         minUI5Version = semVer.coerce(feApp.ui5?.minUI5Version);
         if (!minUI5Version) {
             throw new ValidationError(
@@ -63,6 +63,22 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
                 versionProperty: 'minUI5Version',
                 ui5Version: feApp.ui5?.minUI5Version,
                 templateType: feApp.template.type
+            })
+        );
+    }
+}
+
+/**
+ * Validates the specified FioriElementsApp contains the required properties.
+ *
+ * @param feApp - Fiori elements application configuration
+ */
+export function validateRequiredProperties<T>(feApp: FioriElementsApp<T>): void {
+    // Service is mandatory for generation of Fiori Elements apps
+    if (!feApp.service) {
+        throw new ValidationError(
+            t('error.missingRequiredProperty', {
+                propertyName: 'FioriElementsApp.service'
             })
         );
     }
