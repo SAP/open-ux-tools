@@ -28,6 +28,32 @@ server:
         url: https://ui5.sap.com
 ```
 
+Alternatively you can use the following syntax if all paths should be proxied to the same url.
+
+```Yaml
+server:
+  customMiddleware:
+  - name: ui5-proxy-middleware
+    afterMiddleware: compression
+    configuration:
+      ui5:
+        path: 
+        - /resources
+        - /test-resources
+        url: https://ui5.sap.com
+```
+**NOTE: You can't mix both syntaxes!**
+
+Finally don't forget to add the following in your `package.json`.
+
+```JSON
+"ui5": {
+    "dependencies": [
+        "@sap/ux-ui5-tooling"
+    ]
+}
+```
+
 ## Examples
 ### Loading a specific UI5 version
 To load a specific a UI5 version in your application you can use the `version` parameter, e.g.
