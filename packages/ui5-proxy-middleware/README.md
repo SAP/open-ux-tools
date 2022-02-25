@@ -49,7 +49,7 @@ Finally don't forget to add the following in your `package.json`.
 ```JSON
 "ui5": {
     "dependencies": [
-        "@sap/ux-ui5-tooling"
+        "@sap-ux/ui5-proxy-middleware"
     ]
 }
 ```
