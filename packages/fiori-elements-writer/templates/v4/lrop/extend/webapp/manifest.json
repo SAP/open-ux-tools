@@ -1,0 +1,107 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "routes": [<% if (type === 'lrop' || type === 'alp') { %>
+                {
+                    "pattern": ":?query:",
+                    "name": "<%- entityConfig.mainEntity.entityName %>List",
+                    "target": "<%- entityConfig.mainEntity.entityName %>List"
+                },<% } %>
+                {
+                    "pattern": "<%- entityConfig.mainEntity.entityName %>({key}):?query:",
+                    "name": "<%- entityConfig.mainEntity.entityName %>ObjectPage",
+                    "target": "<%- entityConfig.mainEntity.entityName %>ObjectPage"
+                }<% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>,
+                    {
+                        "pattern": "<%- entityConfig.mainEntity.entityName %>({key})/<%- entityConfig.navigationEntity.Name %>({key2}):?query:",
+                        "name": "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage",
+                        "target": "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage"
+                    }<%
+                } %>
+            ],
+            "targets": {<% if (type === 'lrop' || type === 'alp') { %>
+                "<%- entityConfig.mainEntity.entityName %>List": {
+                    "type": "Component",
+                    "id": "<%- entityConfig.mainEntity.entityName %>List",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "entitySet": "<%- entityConfig.mainEntity.entityName %>",
+                            "variantManagement": "Page",
+                            "navigation": {
+                                "<%- entityConfig.mainEntity.entityName %>": {
+                                    "detail": {
+                                        "route": "<%- entityConfig.mainEntity.entityName %>ObjectPage"
+                                    }
+                                }
+                            }<% if (type === 'alp') { %>,
+                            "controlConfiguration": {
+                                "@com.sap.vocabularies.UI.v1.LineItem": {
+                                    "tableSettings": {
+                                        "type": "<%- tableType %>",
+                                        "selectionMode": "<%- selectionMode %>"
+                                    }
+                                }
+                            },
+                            "views": {
+                                "paths": [{
+                                    "primary": [
+                                        {
+                                            "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant"
+                                        }
+                                    ],
+                                    "secondary": [
+                                        {
+                                            "annotationPath": "com.sap.vocabularies.UI.v1.LineItem"
+                                        }
+                                    ],
+                                    "defaultPath": "both"
+                                }]
+                            } <% } %>
+                        }
+                    }
+                },<% } %>
+                "<%- entityConfig.mainEntity.entityName %>ObjectPage": {
+                    "type": "Component",
+                    "id": "<%- entityConfig.mainEntity.entityName %>ObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "editableHeaderContent": false,
+                            "entitySet": "<%- entityConfig.mainEntity.entityName %>"<% if (type === 'feop') { %>,
+                            "content": {
+                                "header": {
+                                    "visible": false,
+                                    "anchorBarVisible": false
+                                }
+                            }<% } %><% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>,
+                            "navigation": {
+                                "<%- entityConfig.navigationEntity.Name %>": {
+                                    "detail": {
+                                        "route": "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage"
+                                    }
+                                }
+                            }<% } %>
+                        }
+                    }
+                }<% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>,
+                    "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage": {
+                        "type": "Component",
+                        "id": "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage",
+                        "name": "sap.fe.templates.ObjectPage",
+                        "options": {
+                            "settings": {
+                                "editableHeaderContent": false,
+                                "entitySet": "<%- entityConfig.navigationEntity.EntitySet %>"
+                            }
+                        }
+                    }<%
+                } %>
+            }
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "<%- (type === 'alp') ? 'analytical' : 'transactional'%>"
+    }
+}

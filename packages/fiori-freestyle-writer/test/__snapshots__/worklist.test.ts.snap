@@ -88,11 +88,10 @@ server:
           - path: /here
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /here/goes/your/serviceurl
-          name: ''
+          urlPath: /here/goes/your/serviceurl
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -127,11 +126,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /here/goes/your/serviceurl
-          name: ''
+          urlPath: /here/goes/your/serviceurl
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -6060,6 +6058,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/here/goes/your/serviceurl/\\",
@@ -6774,11 +6776,10 @@ server:
             client: '012'
             destination: SIDCLNT012
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -6816,11 +6817,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -9348,6 +9348,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
@@ -10063,11 +10067,10 @@ server:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /catalog-admin-noauth
-          name: ''
+          urlPath: /catalog-admin-noauth
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -10102,11 +10105,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /catalog-admin-noauth
-          name: ''
+          urlPath: /catalog-admin-noauth
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -12216,6 +12218,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/catalog-admin-noauth/\\",

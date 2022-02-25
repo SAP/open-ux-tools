@@ -19,10 +19,7 @@ import { setDefaults } from './defaults';
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
     // Clone rather than modifying callers refs
     const ffApp: FreestyleApp<T> = cloneDeep(data) as FreestyleApp<T>;
-    // generate base UI5 project
-    ffApp.app.baseComponent = ffApp.app.baseComponent || 'sap/ui/core/UIComponent';
-
-    // set additional defaults
+    // set defaults
     setDefaults(ffApp);
 
     fs = await generateUi5Project(basePath, ffApp, fs);
@@ -42,11 +39,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         fs.copyTpl(join(tmplPath, ffApp.template.type, 'custom/Controller.js'), controllerTarget, ffApp);
     }
 
-    // merge content into existing files
-    const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
-
-    // manifest.json
+    // Add template specific manifest settings
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
+    const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')), ffApp)));
 
     // i18n.properties
