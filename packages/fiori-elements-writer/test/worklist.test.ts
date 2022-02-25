@@ -14,7 +14,11 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             id: 'fewrk1',
             title: 'App Title',
             description: 'A Fiori application.',
-            flpAppId: 'fewrk1-tile'
+            flpAppId: 'fewrk1-tile',
+            sourceTemplate: {
+                version: '1.2.3-test',
+                id: 'test-fe-template'
+            }
         },
         package: {
             name: 'fewrk1',
