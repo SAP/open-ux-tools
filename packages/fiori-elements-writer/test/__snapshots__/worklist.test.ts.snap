@@ -2885,8 +2885,8 @@ appDescription=A Fiori application.",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
     \\"sourceTemplate\\": {
-      \\"id\\": \\"@sap-ux/fiori-elements-writer:worklist\\",
-      \\"version\\": \\"0.0.1\\"
+      \\"id\\": \\"test-fe-template\\",
+      \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
       \\"mainService\\": {
