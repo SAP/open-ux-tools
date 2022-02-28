@@ -83,11 +83,10 @@ server:
           - path: /V2
             url: https://services.odata.org
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -122,11 +121,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -848,6 +846,10 @@ title=My Test App",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",
@@ -1342,11 +1344,10 @@ server:
           - path: /V2
             url: https://services.odata.org
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -1381,11 +1382,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -3130,6 +3130,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",
@@ -3948,11 +3952,10 @@ server:
           - path: /V2
             url: https://services.odata.org
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -3987,11 +3990,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -5265,6 +5267,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",

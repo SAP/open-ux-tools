@@ -57,13 +57,16 @@ export function mergePackages(packageA: Partial<Package>, packageB: Partial<Pack
  * @returns {Partial<App>} the App instance
  */
 export function mergeApp(app: App): App {
-    // Return merged, does not update passed ref
     return Object.assign(
         {
             version: '0.0.1',
             title: t('text.defaultAppTitle', { id: app.id }),
             description: t('text.defaultAppDescription', { id: app.id }),
-            baseComponent: 'sap/ui/core/UIComponent'
+            baseComponent: 'sap/ui/core/UIComponent',
+            sourceTemplate: {
+                id: app.sourceTemplate?.id || '',
+                version: app.sourceTemplate?.version || ''
+            }
         },
         app
     ) as App;

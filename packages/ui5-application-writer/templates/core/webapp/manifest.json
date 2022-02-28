@@ -9,7 +9,11 @@
       },
       "title": "{{appTitle}}",
       "description": "{{appDescription}}",
-      "resources": "resources.json"
+      "resources": "resources.json",
+      "sourceTemplate": {
+          "id": "<%= app.sourceTemplate.id %>",
+          "version": "<%= app.sourceTemplate.version %>"
+      }
     },
     "sap.ui": {
       "technology": "UI5",

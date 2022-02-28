@@ -30,7 +30,11 @@ describe('UI5 templates', () => {
             app: {
                 id: 'testAppId',
                 title: 'Test App Title',
-                description: 'Test App Description'
+                description: 'Test App Description',
+                sourceTemplate: {
+                    version: '1.2.3-test',
+                    id: '@sap/test-ui5-template-id'
+                }
             },
             ui5: {
                 framework: 'OpenUI5'

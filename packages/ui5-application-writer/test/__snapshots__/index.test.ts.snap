@@ -188,7 +188,11 @@ appDescription=Test App Description",
       },
       \\"title\\": \\"{{appTitle}}\\",
       \\"description\\": \\"{{appDescription}}\\",
-      \\"resources\\": \\"resources.json\\"
+      \\"resources\\": \\"resources.json\\",
+      \\"sourceTemplate\\": {
+          \\"id\\": \\"@sap/test-ui5-template-id\\",
+          \\"version\\": \\"1.2.3-test\\"
+      }
     },
     \\"sap.ui\\": {
       \\"technology\\": \\"UI5\\",

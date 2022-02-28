@@ -15,7 +15,11 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             id: 'nods1',
             title: 'App Title',
             description: 'A Fiori application.',
-            flpAppId: 'nods1-tile'
+            flpAppId: 'nods1-tile',
+            sourceTemplate: {
+                version: '1.2.3-test',
+                id: 'test-template'
+            }
         },
         package: {
             name: 'nods1',
@@ -64,9 +68,9 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         },
         {
             name: 'basic_without_reuse_libs',
-            config: { 
+            config: {
                 ...commonConfig,
-                appOptions: { loadReuseLibs: false } 
+                appOptions: { loadReuseLibs: false }
             },
             settings: {}
         }
