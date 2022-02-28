@@ -1,0 +1,53 @@
+{
+    "sap.ui.generic.app": {
+        "pages": {
+            "AnalyticalListPage|<%- entityConfig.mainEntity.entityName %>": {
+                "entitySet": "<%- entityConfig.mainEntity.entityName %>",
+                "component": {
+                    "name": "sap.suite.ui.generic.template.AnalyticalListPage",
+                    "list": true,
+                    "settings": {
+                        "condensedTableLayout": true,
+                        "showGoButtonOnFilterBar": true,
+                        <% if (locals.tableType) { %>
+                        "tableType": "<%- tableType %>",<% } %>
+                        <% if (locals.qualifier) { %>
+                        "qualifier": "<%- qualifier %>",<% } %>
+                        <% if (locals.autoHide) { %>
+                        "autoHide": "<%- autoHide %>",<% } %>
+                        <% if (locals.smartVariantManagement) { %>
+                        "smartVariantManagement": "<%- smartVariantManagement %>",<% } %>
+                        "tableSettings": {<% if (locals.multiSelect) { %>
+                            "multiSelect": "<%- multiSelect %>"<% } %>
+                        },
+                        "keyPerformanceIndicators": {}
+                    }
+                },
+                "pages": {
+                    "ObjectPage|<%- entityConfig.mainEntity.entityName %>": {
+                        "entitySet": "<%- entityConfig.mainEntity.entityName %>",
+                        "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+                        "component": {
+                            "name": "sap.suite.ui.generic.template.ObjectPage"
+                        }
+                        <% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>,
+                        "pages": {
+                          "ObjectPage|<%- entityConfig.navigationEntity.Name %>":{
+                            "navigationProperty": "<%- entityConfig.navigationEntity.Name %>",
+                            "entitySet": "<%- entityConfig.navigationEntity.EntitySet %>",
+                            "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+                            "component": {
+                              "name": "sap.suite.ui.generic.template.ObjectPage"
+                            }
+                          }
+                        }<% } %>
+                    }
+                }
+            }
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "analytical"
+    }
+}

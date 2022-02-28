@@ -229,7 +229,11 @@ appDescription=Test App Description",
       },
       \\"title\\": \\"{{appTitle}}\\",
       \\"description\\": \\"{{appDescription}}\\",
-      \\"resources\\": \\"resources.json\\"
+      \\"resources\\": \\"resources.json\\",
+      \\"sourceTemplate\\": {
+          \\"id\\": \\"\\",
+          \\"version\\": \\"\\"
+      }
     },
     \\"sap.ui\\": {
       \\"technology\\": \\"UI5\\",
@@ -475,7 +479,11 @@ appDescription=Test App Description",
       },
       \\"title\\": \\"{{appTitle}}\\",
       \\"description\\": \\"{{appDescription}}\\",
-      \\"resources\\": \\"resources.json\\"
+      \\"resources\\": \\"resources.json\\",
+      \\"sourceTemplate\\": {
+          \\"id\\": \\"\\",
+          \\"version\\": \\"\\"
+      }
     },
     \\"sap.ui\\": {
       \\"technology\\": \\"UI5\\",

@@ -15,7 +15,11 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
             id: 'test.me',
             title: 'My Test App',
             description: 'Test App Description',
-            flpAppId: 'testme-app'
+            flpAppId: 'testme-app',
+            sourceTemplate: {
+                version: '1.2.3-test',
+                id: 'test-template'
+            }
         },
         package: {
             name: 'test.me'

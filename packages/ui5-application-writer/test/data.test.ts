@@ -1,5 +1,6 @@
 import { UI5_DEFAULT, mergeUi5, defaultUI5Libs } from '../src/data/defaults';
-import type { UI5 } from '../src/types';
+import { mergeWithDefaults } from '../src/data/index';
+import type { UI5, Ui5App } from '../src/types';
 
 describe('Setting defaults', () => {
     const testData: { input: Partial<UI5>; expected: UI5 }[] = [
@@ -163,5 +164,61 @@ describe('Setting defaults', () => {
 
     test.each(testData)(`mergeUi5 testData index: $#`, (test) => {
         expect(mergeUi5(test.input)).toEqual(test.expected);
+    });
+
+    it('merge Ui5App.package settings with defaults', async () => {
+        const input: Ui5App = {
+            app: {
+                id: 'test_appId',
+                description: 'Should be default package description'
+            },
+            package: {
+                name: 'test-package-name',
+                dependencies: {
+                    depA: '1.2.3',
+                    depB: '3.4.5'
+                },
+                devDependencies: {
+                    devDepA: '6.7.8',
+                    devDepB: '9.10.11',
+                    '@ui5/cli': '3.0.0'
+                },
+                scripts: {
+                    doTaskA: 'echo "Doing task A"',
+                    doTaskB: 'echo "Doing task B"'
+                },
+                ui5: {
+                    dependencies: ['@some/other-dep', '@sap/ux-ui5-tooling']
+                }
+            }
+        };
+
+        const expectedPackage = {
+            dependencies: {
+                depA: '1.2.3',
+                depB: '3.4.5'
+            },
+            description: 'Should be default package description',
+            devDependencies: {
+                '@ui5/cli': '3.0.0',
+                '@sap/ux-ui5-tooling': '1',
+                devDepA: '6.7.8',
+                devDepB: '9.10.11'
+            },
+            name: 'test-package-name',
+            scripts: {
+                start: 'ui5 serve --config=ui5.yaml --open index.html',
+                'start-local': 'ui5 serve --config=ui5-local.yaml --open index.html',
+                build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist',
+                doTaskA: 'echo "Doing task A"',
+                doTaskB: 'echo "Doing task B"'
+            },
+            ui5: {
+                dependencies: ['@sap/ux-ui5-tooling', '@some/other-dep']
+            },
+            version: '0.0.1'
+        };
+
+        expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
     });
 });

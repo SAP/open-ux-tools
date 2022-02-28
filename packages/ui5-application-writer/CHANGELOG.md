@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-writer
 
+## 0.12.0
+
+### Minor Changes
+
+-   574bf78: New module @sap-ux/fiori-elements-writer. Bug fix and extended api to add template info to manifest.json @sap-ux/ui5-application-writer. Add template info to manifest.json @sap-ux/fiori-freestyle-writer.
+
+## 0.11.2
+
+### Patch Changes
+
+-   893c924: Fix for: https://github.com/SAP/open-ux-tools/issues/345
+
 ## 0.11.1
 
 ### Patch Changes

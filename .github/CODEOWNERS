@@ -1,3 +1,48 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
-* @ux-tools-team-tools @ux-tools-team-elements
+# Module: store
+/packages/store @SAP/ux-tools-store
+
+# Module: fe-fpm-writer
+/packages/fe-fpm-writer/ @SAP/ux-tools-fe-fpm-writer
+
+# Module: fiori-freestyle-writer
+/packages/fiori-freestyle-writer/ @SAP/ux-tools-fiori-freestyle-writer
+
+# Module: logger
+/packages/logger/ @SAP/ux-tools-logger
+
+# Module: odata-service-writer
+/packages/odata-service-writer/ @SAP/ux-tools-odata-service-writer
+
+# Module: ui5-application-writer
+/packages/ui5-application-writer/ @SAP/ux-tools-ui5-application-writer
+
+# Module: ui5-config
+/packages/ui5-config/ @SAP/ux-tools-ui5-config
+
+# Module: yaml
+/packages/yaml/ @SAP/ux-tools-yaml
+
+# Admin
+/.github/ @SAP/ux-tools-admin
+/.LICENSES/ @SAP/ux-tools-admin
+/.well-known/ @SAP/ux-tools-admin
+/.husky/ @SAP/ux-tools-admin
+/.reuse/ @SAP/ux-tools-admin
+/.eslintrc @SAP/ux-tools-admin
+/.gitignore @SAP/ux-tools-admin
+/.npmrc @SAP/ux-tools-admin
+/.prettierignore @SAP/ux-tools-admin
+/.prettierrc.js @SAP/ux-tools-admin
+/LICENSE @SAP/ux-tools-admin
+/lerna.json @SAP/ux-tools-admin
+/package.json @SAP/ux-tools-admin
+/sonar-project.properties @SAP/ux-tools-admin
+/tsconfig.json @SAP/ux-tools-admin
+
+# Docs
+/docs/ @SAP/ux-tools-team
+/CONTRIBUTING.md @SAP/ux-tools-team
+/README.md @SAP/ux-tools-team
+

@@ -1,0 +1,55 @@
+{
+    "sap.ui.generic.app": {
+        "pages": {
+            "ListReport|<%- entityConfig.mainEntity.entityName %>": {
+                "entitySet": "<%- entityConfig.mainEntity.entityName %>",
+                "component": {
+                    "name": "sap.suite.ui.generic.template.ListReport",
+                    "list": true,
+                    "settings": {
+                        "smartVariantManagement": "true",
+                        "isWorklist": true,
+                        "filterSettings": {
+                            "dateSettings": {
+                                "useDateRange": true
+                            }
+                        },
+                        "tableSettings": {
+                            "multiSelect": "true"
+                        }
+                    }
+                },
+                "pages": {<% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>
+                    "ObjectPage|<%- entityConfig.mainEntity.entityName %>": {
+                            "entitySet": "<%- entityConfig.mainEntity.entityName %>",
+                            "component": {
+                                "name": "sap.suite.ui.generic.template.ObjectPage",
+                                "settings": {
+                                    "gridTable": true,
+                                    "sections": {
+                                        "<%- entityConfig.navigationEntity.Name %>::com.sap.vocabularies.UI.v1.LineItem": {
+                                            "condensedTableLayout": false
+                                        }
+                                    }
+                                }
+                            },
+                            "pages": {
+                                "ObjectPage|<%- entityConfig.navigationEntity.Name %>": {
+                                    "navigationProperty": "<%- entityConfig.navigationEntity.Name %>",
+                                    "entitySet": "<%- entityConfig.navigationEntity.EntitySet %>",
+                                    "component": {
+                                        "name": "sap.suite.ui.generic.template.ObjectPage"
+                                    }
+                                }
+                            }
+                        }<%
+                    } %>
+                }
+            }
+        }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    }
+}
