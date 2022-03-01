@@ -26,7 +26,7 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Override:           | >=3.9.6 |
 |:--------------------| :-------------|
 |                     | |
-│ **critical**        │ Sandbox bypass in vm2                             │
+| **critical**        | Sandbox bypass in vm2 |
 | Package             | vm2 |
 | Vulnerable versions | <3.9.6 |
 | Patched versions    | >=3.9.6 |
