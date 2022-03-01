@@ -12,12 +12,7 @@
                                             "header": "<%- header %>",
                                     <% if (locals.width)  { %> "width": "<%- width %>",  <%
                                             } %>
-                                    "position": {
-                                        <% if (position.placement) { %> "placement": "<%- position.placement %>", <%
-                                                } %>
-                                        <% if (position.anchor) { %> "anchor": "<%- position.anchor %>" <%
-                                                } %>
-                                            },
+                                            "position": <%- JSON.stringify(position) %>,
                                     <% if (locals.horizontalAlign) { %> "horizontalAlign": "<%- horizontalAlign %>", <%
                                             } %>
                                     "template": "<%- ns %>.<%- name %>"
