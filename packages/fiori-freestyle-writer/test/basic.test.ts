@@ -68,9 +68,9 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         },
         {
             name: 'basic_without_reuse_libs',
-            config: {
+            config: { 
                 ...commonConfig,
-                appOptions: { loadReuseLibs: false }
+                appOptions: { loadReuseLibs: false } 
             },
             settings: {}
         }

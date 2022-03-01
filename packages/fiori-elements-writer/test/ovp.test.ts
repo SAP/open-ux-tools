@@ -21,7 +21,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         },
         model: 'mainModel',
         client: '012'
-    };
+    }
 
     const ovpBaseConfig: FioriElementsApp<OVPSettings> = {
         app: {
@@ -72,6 +72,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         },
         service: v2Service
     };
+
+
 
     const configuration: Array<{ name: string; config: FioriElementsApp<OVPSettings> }> = [
         {

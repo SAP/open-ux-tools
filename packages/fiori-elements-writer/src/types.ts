@@ -13,9 +13,9 @@ export enum TemplateType {
  * General validation error thrown if app config options contain invalid combinations
  */
 export class ValidationError extends Error {
-    /**
+    /** 
      * ValidationError constructor.
-     *
+     * 
      * @param message - the error message
      */
     constructor(message: string) {

@@ -58,7 +58,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         service: v2Service
     };
 
-    /*     const v2Service: OdataService = {
+/*     const v2Service: OdataService = {
         path: '/sap/opu/odata/sap/SEPMRA_PROD_MAN',
         url: 'http://example.lrop.v4',
         version: OdataVersion.v2,

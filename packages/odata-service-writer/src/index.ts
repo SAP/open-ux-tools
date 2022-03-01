@@ -34,6 +34,7 @@ function validateBasePath(basePath: string, fs: Editor) {
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+
     if (!fs) {
         fs = create(createStorage());
     }

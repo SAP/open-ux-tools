@@ -22,7 +22,7 @@ function setBasicTemplateDefaults(settings: BasicAppSettings): void {
 
 /**
  * Set defaults for missing parameters on the given instance of the overal config.
- * Adds source template info.
+ * Adds source template info. 
  *
  * @param ffApp full config object used by the generate method
  */
