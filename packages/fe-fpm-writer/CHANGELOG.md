@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.4.1
+
+### Patch Changes
+
+-   f989e61: Fix: incorrect json generated if optional paramater is missing
+
 ## 0.4.0
 
 ### Minor Changes
