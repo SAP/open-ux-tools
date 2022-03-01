@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 overrides:
   ansi-regex: ^5.0.1
   tmpl: ^1.0.5
+  vm2@<3.9.6: ^3.9.6
 
 importers:
 
@@ -1593,7 +1594,6 @@ packages:
   /acorn-walk/8.2.0:
     resolution: {integrity: sha512-k+iyHEuPgSw6SbuDpGQM+06HQUa04DZ3o+F6CSzXMvvI5KMvnaEqXe+YVe555R9nn6GPt404fos4wcgpw12SDA==}
     engines: {node: '>=0.4.0'}
-    dev: true
 
   /acorn/7.4.1:
     resolution: {integrity: sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==}
@@ -1605,7 +1605,6 @@ packages:
     resolution: {integrity: sha512-V/LGr1APy+PXIwKebEWrkZPwoeoF+w1jiOBUmuxuiUIaOHtob8Qc9BTrYo7VuI5fR8tqsy+buA2WFooR5olqvQ==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-    dev: true
 
   /agent-base/6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -4545,7 +4544,7 @@ packages:
       json-ptr: 3.0.1
       jsonpath: 1.1.1
       lodash.range: 3.2.0
-      vm2: 3.9.5
+      vm2: 3.9.9
     dev: false
 
   /json-parse-even-better-errors/2.3.1:
@@ -6514,10 +6513,13 @@ packages:
       remove-trailing-separator: 1.1.0
       replace-ext: 1.0.1
 
-  /vm2/3.9.5:
-    resolution: {integrity: sha512-LuCAHZN75H9tdrAiLFf030oW7nJV5xwNMuk1ymOZwopmuK3d2H4L1Kv4+GFHgarKiLfXXLFU+7LDABHnwOkWng==}
+  /vm2/3.9.9:
+    resolution: {integrity: sha512-xwTm7NLh/uOjARRBs8/95H0e8fT3Ukw5D/JJWhxMbhKzNh1Nu981jQKvkep9iKYNxzlVrdzD0mlBGkDKZWprlw==}
     engines: {node: '>=6.0'}
     hasBin: true
+    dependencies:
+      acorn: 8.7.0
+      acorn-walk: 8.2.0
     dev: false
 
   /w3c-hr-time/1.0.2:

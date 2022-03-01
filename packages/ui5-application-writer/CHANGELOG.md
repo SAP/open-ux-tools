@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.12.1
+
+### Patch Changes
+
+-   f989e61: Fix: incorrect json generated if optional paramater is missing
+
 ## 0.12.0
 
 ### Minor Changes
