@@ -5,9 +5,10 @@ import { TelemetrySetting, TelemetrySettingKey } from '../entities/telemetry-set
 import { Entities } from './constants';
 import { Logger } from '@sap-ux/logger';
 
-export const TelemetryDataProvider: DataProviderConstructor<TelemetrySetting, TelemetrySettingKey> = class
-    implements DataProvider<TelemetrySetting, TelemetrySettingKey>
-{
+export const TelemetryDataProvider: DataProviderConstructor<
+    TelemetrySetting,
+    TelemetrySettingKey
+> = class implements DataProvider< TelemetrySetting, TelemetrySettingKey> {
     private readonly dataAccessor: DataAccess<TelemetrySetting>;
     private readonly entityName = Entities.TelemetrySetting;
     private readonly logger: Logger;
