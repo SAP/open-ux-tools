@@ -3,7 +3,7 @@ lockfileVersion: 5.3
 overrides:
     ansi-regex: ^5.0.1
     tmpl: ^1.0.5
-    vm2: '>=3.9.6'
+    vm2@<3.9.6: ^3.9.6
 
 importers:
     .:

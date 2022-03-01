@@ -23,7 +23,7 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | More info           | https://github.com/advisories/GHSA-jgrx-mgxx-jf9v |
 
 ## vm2
-| Override:           | >=3.9.6 |
+| Override:           | ^3.9.6 |
 |:--------------------| :-------------|
 |                     | |
 | **critical**        | Sandbox bypass in vm2 |
