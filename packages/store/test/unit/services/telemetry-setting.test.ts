@@ -23,7 +23,7 @@ describe('TelemetrySetting service', () => {
 
     describe('partialUpdate', () => {
         it('partial update not implemented', async () => {
-            await expect(getInstance(logger).partialUpdate(undefined, undefined)).rejects.toThrow('NOT IMPLEMENTED');
+            await expect(getInstance(logger).partialUpdate()).rejects.toThrow('NOT IMPLEMENTED');
         });
     });
 
