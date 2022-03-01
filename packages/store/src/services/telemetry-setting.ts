@@ -13,7 +13,7 @@ export class TelemetrySettingService implements Service<TelemetrySetting, Teleme
         this.dataProvider = new TelemetryDataProvider(this.logger);
     }
 
-    public async partialUpdate(key: TelemetrySettingKey, entity: Partial<TelemetrySetting>): Promise<TelemetrySetting> {
+    public async partialUpdate(): Promise<TelemetrySetting> {
         throw new Error('NOT IMPLEMENTED');
     }
 
