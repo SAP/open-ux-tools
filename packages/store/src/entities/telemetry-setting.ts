@@ -1,8 +1,9 @@
 import { EntityKey } from '.';
 import { serializable } from '../decorators';
 
-/** This represents the migration status of the systems from pure secure store
- * the hybrid filesystem/secure store
+/**
+ * Central telemetry settings data to be accessed by
+ * the filesystem store
  */
 export class TelemetrySetting {
     @serializable public readonly enableTelemetry: boolean;
