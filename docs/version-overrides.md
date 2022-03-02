@@ -39,4 +39,4 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | **no risk**         | Overriden in order to support Node 12. `klaw` is used by the `@ui5/project` |
 | Package             | klaw |
 | Patched versions    | >=4.0.0 |
-| More info           | Newer packages of klaw does not support Node 12. We can remove this override once we do not need to support Node 12 anymore |
+| More info           | Newer packages of klaw do not support Node 12. We can remove this override once we do not need to support Node 12 anymore |
