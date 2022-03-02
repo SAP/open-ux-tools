@@ -1,5 +1,5 @@
 import readPkgUp from 'read-pkg-up';
-import { TemplateType, TableType, Template, TableSelectionMode, ALPSettingsV2, FioriElementsApp } from '../types';
+import { TemplateType, TableType, Template, TableSelectionMode, ALPSettingsV2, FioriElementsApp, ALPSettingsV4 } from '../types';
 import { getBaseComponent, getUi5Libs } from './templateAttributes';
 
 /**
@@ -11,8 +11,10 @@ import { getBaseComponent, getUi5Libs } from './templateAttributes';
 export function setDefaultTemplateSettings<T>(template: Template<T>): T {
     const templateSettings = template.settings;
     if (template.type === TemplateType.AnalyticalListPage) {
-        const alpSettings = template.settings as Partial<ALPSettingsV2>;
+        const alpSettings = template.settings as Partial<ALPSettingsV2 & ALPSettingsV4>;
 
+        // Assign defaults for properties of all ALP settings interfaces.
+        // Since only referenced properties are written by templates this has no side-effects.
         Object.assign(templateSettings, {
             tableType: alpSettings.tableType || TableType.ANALYTICAL,
             multiSelect: alpSettings.multiSelect ?? false,

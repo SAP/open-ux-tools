@@ -69,13 +69,16 @@ export interface OVPSettings {
 export interface ALPSettings {
     entityConfig: EntityConfig;
     tableType?: TableType;
-    selectionMode?: TableSelectionMode;
 }
 export interface ALPSettingsV2 extends ALPSettings {
     smartVariantManagement?: boolean;
     multiSelect?: boolean;
     qualifier?: string;
     autoHide?: boolean;
+}
+
+export interface ALPSettingsV4 extends ALPSettings {
+    selectionMode?: TableSelectionMode;
 }
 
 export interface Template<T = {}> {
