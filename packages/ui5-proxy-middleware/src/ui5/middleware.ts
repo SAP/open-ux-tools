@@ -1,5 +1,5 @@
 import express, { RequestHandler, NextFunction, Request, Response } from 'express';
-import { Options } from 'http-proxy-middleware';
+import type { Options } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import {

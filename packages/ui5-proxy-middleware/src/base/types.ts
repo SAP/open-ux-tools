@@ -1,5 +1,5 @@
-import { NextFunction } from 'express';
-import { IncomingMessage } from 'http';
+import type { NextFunction } from 'express';
+import type { IncomingMessage } from 'http';
 
 export interface UI5Config {
     path: string;

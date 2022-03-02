@@ -1,6 +1,6 @@
-import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
-import { ToolsLogger } from '@sap-ux/logger';
-import { NextFunction, Request, Response } from 'express';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { NextFunction, Request, Response } from 'express';
 import { UI5Config } from './types';
 import { existsSync, promises } from 'fs';
 import { parseDocument } from 'yaml';
