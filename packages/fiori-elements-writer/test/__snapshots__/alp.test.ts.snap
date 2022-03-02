@@ -5340,20 +5340,19 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   },
   \\"sap.ui.generic.app\\": {
     \\"pages\\": {
-      \\"ListReport|SEPMRA_C_ALP_SlsOrdItemCubeALPResults\\": {
+      \\"AnalyticalListPage|SEPMRA_C_ALP_SlsOrdItemCubeALPResults\\": {
         \\"entitySet\\": \\"SEPMRA_C_ALP_SlsOrdItemCubeALPResults\\",
         \\"component\\": {
-          \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+          \\"name\\": \\"sap.suite.ui.generic.template.AnalyticalListPage\\",
           \\"list\\": true,
           \\"settings\\": {
             \\"condensedTableLayout\\": true,
-            \\"smartVariantManagement\\": true,
-            \\"enableTableFilterInPageVariant\\": true,
-            \\"filterSettings\\": {
-              \\"dateSettings\\": {
-                \\"useDateRange\\": true
-              }
-            }
+            \\"showGoButtonOnFilterBar\\": true,
+            \\"tableType\\": \\"ResponsiveTable\\",
+            \\"qualifier\\": \\"DefaultVariant\\",
+            \\"autoHide\\": \\"true\\",
+            \\"tableSettings\\": {},
+            \\"keyPerformanceIndicators\\": {}
           }
         },
         \\"pages\\": {
@@ -5387,7 +5386,7 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   },
   \\"sap.fiori\\": {
     \\"registrationIds\\": [],
-    \\"archeType\\": \\"transactional\\"
+    \\"archeType\\": \\"analytical\\"
   }
 }
 ",

@@ -45,7 +45,11 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
-    fs.copyTpl(join(rootTemplatesPath, 'common', 'add', '**/*.*'), basePath, { ...feApp, templateOptions, escapeFLPText });
+    fs.copyTpl(join(rootTemplatesPath, 'common', 'add', '**/*.*'), basePath, {
+        ...feApp,
+        templateOptions,
+        escapeFLPText
+    });
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');

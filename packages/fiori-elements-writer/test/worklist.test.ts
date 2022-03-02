@@ -58,19 +58,6 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         service: v2Service
     };
 
-/*     const v2Service: OdataService = {
-        path: '/sap/opu/odata/sap/SEPMRA_PROD_MAN',
-        url: 'http://example.lrop.v4',
-        version: OdataVersion.v2,
-        metadata: getTestData('sepmra_prod_man_v2', 'metadata'),
-        annotations: {
-            technicalName: 'SEPMRA_PROD_MAN_ANNO_MDL',
-            xml: getTestData('sepmra_prod_man_v2', 'annotations')
-        },
-        model: '',
-        client: '012'
-    } */
-
     const configuration: Array<{ name: string; config: FioriElementsApp<WorklistSettings> }> = [
         {
             name: 'worklistV2',

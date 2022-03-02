@@ -15,7 +15,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         path: '/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/',
         url: 'http://example.alp.v4',
         version: OdataVersion.v4,
-        metadata: getTestData('sales_order_manage_v4', 'metadata'),
+        metadata: getTestData('sales_order_manage_v4', 'metadata')
     };
 
     const v2Service: OdataService = {
@@ -58,7 +58,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             config: {
                 ...Object.assign(feBaseConfig('alp2'), {
                     template: {
-                        type: TemplateType.ListReportObjectPage,
+                        type: TemplateType.AnalyticalListPage,
                         settings: {
                             entityConfig: {
                                 mainEntity: {
