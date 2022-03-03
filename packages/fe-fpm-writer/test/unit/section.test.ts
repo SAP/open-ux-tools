@@ -170,5 +170,23 @@ describe('CustomSection', () => {
                 expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             });
         }
+
+        const folderVariants = ['extensions/custom', 'extensions\\custom'];
+        for (const folderVariant of folderVariants) {
+            test(`Existing folder variations - ${folderVariant}`, () => {
+                const testCustomSection = JSON.parse(JSON.stringify(customSection));
+                testCustomSection.folder = folderVariant;
+                generateCustomSection(testDir, { ...testCustomSection }, fs);
+                const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+
+                const section =
+                    updatedManifest['sap.ui5']['routing']['targets'][testCustomSection.target]['options']['settings'][
+                        'content'
+                    ]['body']['sections'][testCustomSection.name];
+                expect(section.template).toEqual(
+                    `sapux.fe.fpm.writer.test.extensions.custom.${testCustomSection.name}`
+                );
+            });
+        }
     });
 });
