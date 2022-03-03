@@ -21,3 +21,22 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Vulnerable versions | <1.0.5 |
 | Patched versions    | >=1.0.5 |
 | More info           | https://github.com/advisories/GHSA-jgrx-mgxx-jf9v |
+
+## vm2
+| Override:           | ^3.9.6 |
+|:--------------------| :-------------|
+|                     | |
+| **critical**        | Sandbox bypass in vm2 |
+| Package             | vm2 |
+| Vulnerable versions | <3.9.6 |
+| Patched versions    | >=3.9.6 |
+| More info           | https://github.com/advisories/GHSA-6pw2-5hjv-9pf7 |
+
+## klaw
+| Override:           | ^4.0.0 |
+|:--------------------| :-------------|
+|                     | |
+| **no risk**         | Overriden in order to support Node 12. `klaw` is used by the `@ui5/project` |
+| Package             | klaw |
+| Patched versions    | >=4.0.0 |
+| More info           | Newer packages of klaw do not support Node 12. We can remove this override once we do not need to support Node 12 anymore |
