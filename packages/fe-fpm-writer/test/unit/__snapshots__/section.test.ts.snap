@@ -12,7 +12,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
@@ -58,7 +58,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
@@ -105,7 +105,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
         "position": Object {
           "anchor": "DummyFacet",
@@ -152,7 +152,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
@@ -198,7 +198,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
@@ -244,7 +244,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
@@ -271,7 +271,7 @@ Object {
         "content": Object {
           "body": Object {
             "sections": Object {
-              "DummySection": Object {
+              "sectionId": Object {
                 "position": Object {
                   "anchor": "NewDummyFacet",
                   "placement": "Before",
@@ -331,7 +331,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
@@ -362,7 +362,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
@@ -393,7 +393,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",
@@ -418,7 +418,7 @@ Object {
         "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
         "title": "Custom Title",
       },
-      "NewCustomSection": Object {
+      "sectionId": Object {
         "position": Object {
           "anchor": "DummyFacet",
           "placement": "After",

@@ -2,6 +2,11 @@ import { CustomElement, InternalCustomElement, Position } from '../common/types'
 
 export interface CustomSection extends CustomElement {
     /**
+     * Unique section identifier
+     */
+    id: string;
+
+    /**
      * Name of the routing target
      */
     target: string;

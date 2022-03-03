@@ -8,7 +8,7 @@
                             "content": {
                                 "body": {
                                     "sections": {
-                                        "<%- name %>": {
+                                        "<%- id %>": {
                                             "name": "<%- ns %>.<%- name %>",
                                             "type": "XMLFragment",
                                             "position": {

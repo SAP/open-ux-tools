@@ -8,7 +8,7 @@
                             "content": {
                                 "body": {
                                     "sections": {
-                                        "<%- name %>": {
+                                        "<%- id %>": {
                                             "template": "<%- ns %>.<%- name %>",
                                             "position": {
                                                 <% if (position.placement) { %> 

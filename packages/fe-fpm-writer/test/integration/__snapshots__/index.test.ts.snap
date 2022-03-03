@@ -451,7 +451,7 @@ Object {
                 },
                 \\"body\\": {
                   \\"sections\\": {
-                    \\"MyCustomSection\\": {
+                    \\"sectionId\\": {
                       \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
                       \\"position\\": {
                         \\"placement\\": \\"After\\",

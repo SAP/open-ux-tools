@@ -34,6 +34,7 @@ describe('CustomSection', () => {
     describe('generateCustomSection', () => {
         let fs: Editor;
         const customSection: CustomSection = {
+            id: 'sectionId',
             target: 'sample',
             name: 'NewCustomSection',
             folder: 'extensions/custom',
@@ -128,6 +129,7 @@ describe('CustomSection', () => {
 
         test('different data and not existing target', () => {
             const testCustomSection: CustomSection = {
+                id: 'sectionId',
                 target: 'dummy',
                 name: 'DummySection',
                 folder: 'extensions/custom',

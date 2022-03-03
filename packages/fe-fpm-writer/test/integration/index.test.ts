@@ -104,6 +104,7 @@ describe('use FPM with existing apps', () => {
             generateCustomSection(
                 targetPath,
                 {
+                    id: 'sectionId',
                     name: 'MyCustomSection',
                     target: 'TravelObjectPage',
                     title: 'My Custom Section',
