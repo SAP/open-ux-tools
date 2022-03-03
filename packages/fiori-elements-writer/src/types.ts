@@ -13,9 +13,9 @@ export enum TemplateType {
  * General validation error thrown if app config options contain invalid combinations
  */
 export class ValidationError extends Error {
-    /** 
+    /**
      * ValidationError constructor.
-     * 
+     *
      * @param message - the error message
      */
     constructor(message: string) {
@@ -68,14 +68,17 @@ export interface OVPSettings {
 
 export interface ALPSettings {
     entityConfig: EntityConfig;
-    tableType?: TableType;
-    selectionMode?: TableSelectionMode;
+    tableType?: TableType; // Defaults to 'Analytical'
 }
 export interface ALPSettingsV2 extends ALPSettings {
-    smartVariantManagement?: boolean;
-    multiSelect?: boolean;
-    qualifier?: string;
-    autoHide?: boolean;
+    smartVariantManagement?: boolean; // Not set by default
+    multiSelect?: boolean; // Not set by default
+    qualifier?: string; // Not set by default
+    autoHide?: boolean; // Not set by default
+}
+
+export interface ALPSettingsV4 extends ALPSettings {
+    selectionMode?: TableSelectionMode; // Defaults to 'None'
 }
 
 export interface Template<T = {}> {

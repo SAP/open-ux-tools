@@ -3,7 +3,14 @@ import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, getTestData, feBaseConfig } from './common';
 import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
-import { ALPSettings, ALPSettingsV2, TableSelectionMode, TableType, WorklistSettings } from '../src/types';
+import {
+    ALPSettings,
+    ALPSettingsV2,
+    ALPSettingsV4,
+    TableSelectionMode,
+    TableType,
+    WorklistSettings
+} from '../src/types';
 
 const TEST_NAME = 'alpTemplates';
 
@@ -15,7 +22,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         path: '/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/',
         url: 'http://example.alp.v4',
         version: OdataVersion.v4,
-        metadata: getTestData('sales_order_manage_v4', 'metadata'),
+        metadata: getTestData('sales_order_manage_v4', 'metadata')
     };
 
     const v2Service: OdataService = {
@@ -47,7 +54,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                                 }
                             },
                             tableType: TableType.RESPONSIVE
-                        } as ALPSettings
+                        } as ALPSettingsV4
                     }
                 }),
                 service: v4Service
@@ -58,7 +65,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             config: {
                 ...Object.assign(feBaseConfig('alp2'), {
                     template: {
-                        type: TemplateType.ListReportObjectPage,
+                        type: TemplateType.AnalyticalListPage,
                         settings: {
                             entityConfig: {
                                 mainEntity: {
@@ -70,7 +77,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                                 }
                             },
                             tableType: TableType.RESPONSIVE,
-                            qualifier: 'DefaultVariant'
+                            qualifier: 'DefaultVariant',
+                            multiSelect: true
                         } as ALPSettingsV2
                     }
                 }),

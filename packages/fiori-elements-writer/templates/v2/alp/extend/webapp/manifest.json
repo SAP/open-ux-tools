@@ -13,12 +13,12 @@
                         "tableType": "<%- tableType %>",<% } %>
                         <% if (locals.qualifier) { %>
                         "qualifier": "<%- qualifier %>",<% } %>
-                        <% if (locals.autoHide) { %>
-                        "autoHide": "<%- autoHide %>",<% } %>
-                        <% if (locals.smartVariantManagement) { %>
-                        "smartVariantManagement": "<%- smartVariantManagement %>",<% } %>
-                        "tableSettings": {<% if (locals.multiSelect) { %>
-                            "multiSelect": "<%- multiSelect %>"<% } %>
+                        <% if (locals.autoHide !== undefined) { %>
+                        "autoHide": <%- autoHide %>,<% } %>
+                        <% if (locals.smartVariantManagement !== undefined) { %>
+                        "smartVariantManagement": <%- smartVariantManagement %>,<% } %>
+                        "tableSettings": {<% if (locals.multiSelect !== undefined) { %>
+                            "multiSelect": <%- multiSelect %><% } %>
                         },
                         "keyPerformanceIndicators": {}
                     }
