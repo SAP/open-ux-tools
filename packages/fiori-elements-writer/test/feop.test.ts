@@ -14,7 +14,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         {
             name: 'fefeop1',
             config: {
-                ...Object.assign(feBaseConfig('fefeop1'), { 
+                ...Object.assign(feBaseConfig('fefeop1'), {
                     template: {
                         type: TemplateType.FormEntryObjectPage,
                         settings: v4TemplateSettings
