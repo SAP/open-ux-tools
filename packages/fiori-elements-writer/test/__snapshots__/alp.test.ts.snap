@@ -11511,7 +11511,7 @@ appDescription=A Fiori application.",
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
                   \\"tableSettings\\": {
                     \\"type\\": \\"ResponsiveTable\\",
-                    \\"selectionMode\\": \\"ResponsiveTable\\"
+                    \\"selectionMode\\": \\"None\\"
                   }
                 }
               },

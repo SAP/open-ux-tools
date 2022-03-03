@@ -71,7 +71,7 @@ export interface ALPSettings {
     tableType?: TableType; // Defaults to 'Analytical'
 }
 export interface ALPSettingsV2 extends ALPSettings {
-    smartVariantManagement?: boolean; // Not set by default 
+    smartVariantManagement?: boolean; // Not set by default
     multiSelect?: boolean; // Not set by default
     qualifier?: string; // Not set by default
     autoHide?: boolean; // Not set by default
