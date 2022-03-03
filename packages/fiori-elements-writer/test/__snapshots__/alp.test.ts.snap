@@ -5350,8 +5350,6 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             \\"showGoButtonOnFilterBar\\": true,
             \\"tableType\\": \\"ResponsiveTable\\",
             \\"qualifier\\": \\"DefaultVariant\\",
-            \\"autoHide\\": true,
-            \\"smartVariantManagement\\": false,
             \\"tableSettings\\": {
               \\"multiSelect\\": true
             },
@@ -11513,7 +11511,7 @@ appDescription=A Fiori application.",
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
                   \\"tableSettings\\": {
                     \\"type\\": \\"ResponsiveTable\\",
-                    \\"selectionMode\\": \\"None\\"
+                    \\"selectionMode\\": \\"ResponsiveTable\\"
                   }
                 }
               },

@@ -1,5 +1,14 @@
 import readPkgUp from 'read-pkg-up';
-import { TemplateType, TableType, Template, TableSelectionMode, ALPSettingsV2, FioriElementsApp, ALPSettingsV4 } from '../types';
+import {
+    ALPSettings,
+    ALPSettingsV2,
+    ALPSettingsV4,
+    FioriElementsApp,
+    TableSelectionMode,
+    TableType,
+    Template,
+    TemplateType
+} from '../types';
 import { getBaseComponent, getUi5Libs } from './templateAttributes';
 
 /**
@@ -11,18 +20,34 @@ import { getBaseComponent, getUi5Libs } from './templateAttributes';
 export function setDefaultTemplateSettings<T>(template: Template<T>): T {
     const templateSettings = template.settings;
     if (template.type === TemplateType.AnalyticalListPage) {
-        const alpSettings = template.settings as Partial<ALPSettingsV2 & ALPSettingsV4>;
+        const alpSettings: ALPSettings = template.settings as unknown as ALPSettings;
 
-        // Assign defaults for properties of all ALP settings interfaces.
-        // Since only referenced properties are written by templates this has no side-effects.
         Object.assign(templateSettings, {
-            tableType: alpSettings.tableType || TableType.ANALYTICAL,
-            multiSelect: alpSettings.multiSelect ?? false,
-            selectionMode: alpSettings.selectionMode || TableSelectionMode.NONE,
-            qualifier: alpSettings.qualifier,
-            autoHide: alpSettings.autoHide ?? true,
-            smartVariantManagement: alpSettings.smartVariantManagement ?? false
+            selectionMode: alpSettings.tableType || TableType.ANALYTICAL // Overrides the UI5 default: ''
         });
+
+        // Infer settings type from properties
+        if ((template.settings as unknown as ALPSettingsV4).selectionMode) {
+            const alpV4Settings: ALPSettingsV4 = template.settings as unknown as ALPSettingsV4;
+            Object.assign(templateSettings, {
+                selectionMode: alpV4Settings.selectionMode || TableSelectionMode.NONE
+            });
+        }
+
+        const alpSettingsv2: ALPSettingsV2 = template.settings as unknown as ALPSettingsV2;
+        if (
+            alpSettingsv2.multiSelect ||
+            alpSettingsv2.qualifier ||
+            alpSettingsv2.smartVariantManagement ||
+            alpSettingsv2.autoHide
+        ) {
+            Object.assign(templateSettings, {
+                multiSelect: alpSettingsv2.multiSelect,
+                qualifier: alpSettingsv2.qualifier,
+                autoHide: alpSettingsv2.autoHide,
+                smartVariantManagement: alpSettingsv2.smartVariantManagement
+            });
+        }
     }
     return templateSettings;
 }
