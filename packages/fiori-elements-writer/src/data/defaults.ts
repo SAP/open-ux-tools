@@ -32,6 +32,7 @@ export function setDefaultTemplateSettings<T>(template: Template<T>): T {
             Object.assign(templateSettings, {
                 selectionMode: alpV4Settings.selectionMode || TableSelectionMode.NONE
             });
+            return templateSettings;
         }
 
         const alpSettingsv2: ALPSettingsV2 = template.settings as unknown as ALPSettingsV2;
@@ -47,6 +48,7 @@ export function setDefaultTemplateSettings<T>(template: Template<T>): T {
                 autoHide: alpSettingsv2.autoHide,
                 smartVariantManagement: alpSettingsv2.smartVariantManagement
             });
+            return templateSettings;
         }
     }
     return templateSettings;
