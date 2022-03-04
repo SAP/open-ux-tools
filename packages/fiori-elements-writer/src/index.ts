@@ -30,7 +30,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
 
     fs = await generateUi5Project(basePath, feApp, fs);
 
-    feApp.template.settings = setDefaultTemplateSettings(feApp.template);
+    feApp.template.settings = setDefaultTemplateSettings(feApp.template, feApp.service.version);
 
     // This is done after `generateUi5Project` since defaults are set if values are not provided
     validateApp(feApp);
@@ -45,7 +45,11 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
-    fs.copyTpl(join(rootTemplatesPath, 'common', 'add', '**/*.*'), basePath, { ...feApp, templateOptions, escapeFLPText });
+    fs.copyTpl(join(rootTemplatesPath, 'common', 'add', '**/*.*'), basePath, {
+        ...feApp,
+        templateOptions,
+        escapeFLPText
+    });
 
     // Extend common files
     const packagePath = join(basePath, 'package.json');

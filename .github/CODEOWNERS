@@ -36,7 +36,6 @@
 /.prettierignore @SAP/ux-tools-admin
 /.prettierrc.js @SAP/ux-tools-admin
 /LICENSE @SAP/ux-tools-admin
-/lerna.json @SAP/ux-tools-admin
 /package.json @SAP/ux-tools-admin
 /sonar-project.properties @SAP/ux-tools-admin
 /tsconfig.json @SAP/ux-tools-admin
