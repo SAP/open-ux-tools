@@ -4,9 +4,9 @@ import { ConnectionError } from './error';
 import detectContentType from 'detect-content-type';
 
 export enum CSRF {
-    requestHeaderName = 'X-Csrf-Token',
-    requestHeaderValue = 'Fetch',
-    responseHeaderName = 'x-csrf-token'
+    RequestHeaderName = 'X-Csrf-Token',
+    RequestHeaderValue = 'Fetch',
+    ResponseHeaderName = 'x-csrf-token'
 }
 
 /**
@@ -127,7 +127,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
     // fetch xsrf token with the first request
     const oneTimeReqInterceptorId = provider.interceptors.request.use((request: AxiosRequestConfig) => {
         request.headers = request.headers ?? {};
-        request.headers[CSRF.requestHeaderName] = CSRF.requestHeaderValue;
+        request.headers[CSRF.RequestHeaderName] = CSRF.RequestHeaderValue;
         provider.interceptors.request.eject(oneTimeReqInterceptorId);
         return request;
     });
@@ -145,7 +145,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
             } else {
                 throwIfHtmlLoginForm(response);
                 // remember xsrf token
-                if (response.headers?.[CSRF.responseHeaderName]) {
+                if (response.headers?.[CSRF.ResponseHeaderName]) {
                     provider.defaults.headers = provider.defaults.headers ?? {
                         common: {},
                         // eslint-disable-next-line quote-props
@@ -156,8 +156,8 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                         head: {},
                         patch: {}
                     };
-                    provider.defaults.headers.common[CSRF.requestHeaderName] =
-                        response.headers[CSRF.responseHeaderName];
+                    provider.defaults.headers.common[CSRF.RequestHeaderName] =
+                        response.headers[CSRF.ResponseHeaderName];
                 }
                 provider.interceptors.response.eject(oneTimeRespInterceptorId);
                 return response;
