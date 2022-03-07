@@ -18,10 +18,10 @@ export interface App {
     baseComponent?: string; // UI5 Component `required` by Component.js
     startFile?: string;
     localStartFile?: string;
-    sourceTemplate?: { 
+    sourceTemplate?: {
         id?: string;
         version?: string;
-    }
+    };
 }
 
 export type UI5Framework = 'SAPUI5' | 'OpenUI5';

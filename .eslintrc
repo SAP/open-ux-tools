@@ -4,7 +4,7 @@
         "es6": true
     },
     "plugins": ["promise", "prettier", "jsdoc", "@typescript-eslint", "import"],
-    "extends": ["plugin:jsdoc/recommended"],
+    "extends": ["plugin:jsdoc/recommended", "plugin:prettier/recommended"],
     "overrides": [
         {
             "parser": "@typescript-eslint/parser",
@@ -200,13 +200,6 @@
             }
         ],
         "no-use-before-define": "off",
-        "brace-style": [
-            "error",
-            "1tbs",
-            {
-                "allowSingleLine": true
-            }
-        ],
         "camelcase": "warn",
         "consistent-this": ["warn", "that"],
         "max-nested-callbacks": ["warn", 3],
@@ -258,7 +251,8 @@
         ],
         //		"sap-no-jquery": 2
         // turn on errors for missing imports
-        "import/no-unresolved": "error"
+        "import/no-unresolved": "error",
+        "prettier/prettier": "error"
     },
     "settings": {
         "jsdoc": {
