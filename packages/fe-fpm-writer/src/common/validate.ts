@@ -1,6 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 
 /**
  * Validate that the UI5 version requirement is valid.

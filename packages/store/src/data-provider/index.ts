@@ -1,6 +1,6 @@
-import { Logger } from '@sap-ux/logger';
-import { EntityKey } from '../entities';
-import { ServiceOptions } from '../types';
+import type { Logger } from '@sap-ux/logger';
+import type { EntityKey } from '../entities';
+import type { ServiceOptions } from '../types';
 
 /**
  * Data provider for an entity. It is responsible for reading

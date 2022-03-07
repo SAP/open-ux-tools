@@ -1,10 +1,11 @@
 import { FilesystemStore } from './filesystem';
 import { pick } from '../utils';
-import { Logger } from '@sap-ux/logger';
-import { getSecureStore, SecureStore } from '../secure-store';
+import type { Logger } from '@sap-ux/logger';
+import type { SecureStore } from '../secure-store';
+import { getSecureStore } from '../secure-store';
 import { getSensitiveDataProperties, getSerializableProperties } from '../decorators';
-import { DataAccess, DataAccessConstructor } from '.';
-import { ServiceOptions } from '../types';
+import type { DataAccess, DataAccessConstructor } from '.';
+import type { ServiceOptions } from '../types';
 import { inspect } from 'util';
 
 function getFullyQualifiedServiceName(name: string): string {

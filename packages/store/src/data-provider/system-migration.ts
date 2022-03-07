@@ -1,8 +1,9 @@
-import { DataProvider, DataProviderConstructor } from '.';
-import { DataAccess } from '../data-access';
+import type { DataProvider, DataProviderConstructor } from '.';
+import type { DataAccess } from '../data-access';
 import { FilesystemStore } from '../data-access/filesystem';
-import { SystemMigrationStatus, SystemMigrationStatusKey } from '../entities/system-migration-status';
-import { Logger } from '@sap-ux/logger';
+import type { SystemMigrationStatus } from '../entities/system-migration-status';
+import { SystemMigrationStatusKey } from '../entities/system-migration-status';
+import type { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
 
 export const SystemMigrationStatusDataProvider: DataProviderConstructor<

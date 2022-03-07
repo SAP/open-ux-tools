@@ -1,5 +1,6 @@
 import readPkgUp from 'read-pkg-up';
-import { BasicAppSettings, FioriApp, FreestyleApp, TemplateType } from './types';
+import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
+import { TemplateType } from './types';
 
 /**
  * Set defaults for missing parameters on the given Fiori/UI5 app instance.
@@ -22,7 +23,7 @@ function setBasicTemplateDefaults(settings: BasicAppSettings): void {
 
 /**
  * Set defaults for missing parameters on the given instance of the overal config.
- * Adds source template info. 
+ * Adds source template info.
  *
  * @param ffApp full config object used by the generate method
  */

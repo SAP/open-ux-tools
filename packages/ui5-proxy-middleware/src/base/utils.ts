@@ -1,12 +1,12 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { NextFunction, Request, Response } from 'express';
-import { UI5Config } from './types';
+import type { UI5Config } from './types';
 import { existsSync, promises } from 'fs';
 import { parseDocument } from 'yaml';
 import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
-import { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
+import type { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
 import { t } from '../i18n';
 
 /**
@@ -100,10 +100,8 @@ export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, url: 
     for (const entry of noProxyList) {
         if (entry.startsWith('.') && host.endsWith(entry)) {
             isExcluded = true;
-        } else {
-            if (`.${host}`.endsWith(`.${entry}`)) {
-                isExcluded = true;
-            }
+        } else if (`.${host}`.endsWith(`.${entry}`)) {
+            isExcluded = true;
         }
     }
     return isExcluded;

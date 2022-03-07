@@ -1,8 +1,8 @@
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import { ServiceOptions } from './types';
 import { Entity } from './contants';
 import { initI18n, text } from './i18n';
-import { Service } from './services';
+import type { Service } from './services';
 import { getInstance as getSystemService } from './services/backend-system';
 import { getDefaultLogger } from './defaults';
 

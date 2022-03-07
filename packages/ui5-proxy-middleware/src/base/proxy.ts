@@ -1,6 +1,7 @@
-import { createProxyMiddleware, Filter, Options } from 'http-proxy-middleware';
+import type { Filter, Options } from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
-import { UI5Config } from './types';
+import type { UI5Config } from './types';
 import { proxyRequestHandler, proxyResponseHandler, filterCompressedHtmlFiles } from './utils';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 

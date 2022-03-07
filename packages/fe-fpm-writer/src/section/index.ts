@@ -1,10 +1,11 @@
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
-import { CustomSection, InternalCustomSection } from './types';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import type { CustomSection, InternalCustomSection } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
-import { Manifest } from '../common/types';
+import type { Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 
 /**

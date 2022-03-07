@@ -8,6 +8,7 @@
         "clean": "rimraf dist test/test-output coverage",
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "test:local": "node -r ts-node/register test/index.ts",

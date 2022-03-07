@@ -1,4 +1,5 @@
-import i18next, { TOptions } from 'i18next';
+import type { TOptions } from 'i18next';
+import i18next from 'i18next';
 import translations from './translations/odata-service-writer.i18n.json';
 
 const NS = 'odata-service-writer';

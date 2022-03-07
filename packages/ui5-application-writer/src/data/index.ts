@@ -1,4 +1,4 @@
-import { App, UI5, AppOptions, Package, Ui5App } from '../types';
+import type { App, UI5, AppOptions, Package, Ui5App } from '../types';
 import { mergeApp, packageDefaults, mergeUi5, mergePackages } from './defaults';
 import { validate } from './validators';
 
