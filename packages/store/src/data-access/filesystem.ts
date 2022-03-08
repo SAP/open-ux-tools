@@ -28,14 +28,14 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         this.storeDirectory = basedir(options);
     }
 
-    public async read<E>({ entityName, id }: { entityName: string; id: string }): Promise<undefined | E> {
+    public async read({ entityName, id }: { entityName: string; id: string }): Promise<undefined | E> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('read: Entity Type is falsy - ' + entityName);
             return Promise.resolve(undefined);
         }
 
-        const { entities, error } = this._readAll<E>(name);
+        const { entities, error } = this._readAll(name);
         if (error) {
             if (error.code === 'ENOENT') {
                 return Promise.resolve(undefined);
@@ -50,14 +50,14 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return Promise.resolve(entities[id]);
     }
 
-    public async getAll<E>({ entityName }: { entityName: string }): Promise<E[] | []> {
+    public async getAll({ entityName }: { entityName: string }): Promise<E[] | []> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('read: Entity Type is falsy - ' + entityName);
             return Promise.resolve([]);
         }
 
-        const { entities, error } = this._readAll<E>(name);
+        const { entities, error } = this._readAll(name);
         if (error) {
             if (error.code === 'ENOENT') {
                 return Promise.resolve([]);
@@ -72,14 +72,14 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return Promise.resolve(Object.values(entities));
     }
 
-    public async readAll<E>({ entityName }: { entityName: string }): Promise<{ [key: string]: E }> {
+    public async readAll({ entityName }: { entityName: string }): Promise<{ [key: string]: E }> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('read: Entity Type is falsy - ' + entityName);
             return Promise.resolve({});
         }
 
-        const { entities, error } = this._readAll<E>(name);
+        const { entities, error } = this._readAll(name);
         if (error) {
             if (error.code === 'ENOENT') {
                 return Promise.resolve({});
@@ -94,7 +94,7 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return Promise.resolve(entities);
     }
 
-    public async write<E>({
+    public async write({
         entityName,
         id,
         entity
@@ -109,7 +109,7 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
             return Promise.resolve(undefined);
         }
 
-        const { entities = {}, error } = this._readAll<E>(name);
+        const { entities = {}, error } = this._readAll(name);
         if (error && error.code !== 'ENOENT') {
             throw error;
         }
@@ -119,14 +119,14 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return Promise.resolve(entity);
     }
 
-    async del<E>({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
+    async del({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('delete: Entity is falsy - ' + name);
             return Promise.resolve(false);
         }
 
-        const { entities = {}, error } = this._readAll<E>(name);
+        const { entities = {}, error } = this._readAll(name);
         if (error) {
             if (error.code !== 'ENOENT') {
                 throw error;
@@ -145,7 +145,7 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         }
     }
 
-    private _readAll<E>(entityName: string): { entities?: { [key: string]: E }; error?: Error & { code?: string } } {
+    private _readAll(entityName: string): { entities?: { [key: string]: E }; error?: Error & { code?: string } } {
         let rawContents: string;
         try {
             rawContents = readFileSync(path.join(this.storeDirectory, `${entityName}.json`))
@@ -171,7 +171,7 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return { entities };
     }
 
-    private writeToFile<E>(entityName: string, entities: { [key: string]: E }): void {
+    private writeToFile(entityName: string, entities: { [key: string]: E }): void {
         const data = JSON.stringify({ [entityName]: entities }, null, 2);
         const filename = getEntityFileName(entityName);
         try {
