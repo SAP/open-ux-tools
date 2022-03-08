@@ -1,13 +1,13 @@
 import 'jest-extended';
 import { sensitiveData, serializable } from '../../../src/decorators';
-import { FilesystemStore } from '../../../src/data-access/filesystem';
+import { getFilesystemStore } from '../../../src/data-access/filesystem';
 import { mocked } from 'ts-jest/utils';
 import { getSecureStore } from '../../../src/secure-store';
-import { HybridStore } from '../../../src/data-access/hybrid';
+import { getHybridStore } from '../../../src/data-access/hybrid';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 
 jest.mock('../../../src/data-access/filesystem');
-const mockFileSystemAccess = mocked(FilesystemStore);
+const mockFileSystemAccess = mocked(getFilesystemStore);
 const mockFilesystemStore = {
     write: jest.fn(),
     read: jest.fn(),
@@ -121,7 +121,7 @@ describe('hybrid store', () => {
             mockFilesystemStore.read.mockResolvedValueOnce(propsInFS);
             mockSecureStore.retrieve = jest.fn().mockResolvedValueOnce(undefined);
 
-            await expect(new HybridStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toEqual(propsInFS);
+            await expect(getHybridStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toEqual(propsInFS);
         });
 
         it('returns sensitive data from secure store', async () => {
@@ -129,7 +129,7 @@ describe('hybrid store', () => {
             mockFilesystemStore.read.mockResolvedValueOnce(undefined);
             mockSecureStore.retrieve = jest.fn().mockResolvedValueOnce(sensitiveProps);
 
-            await expect(new HybridStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toEqual(
+            await expect(getHybridStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toEqual(
                 sensitiveProps
             );
         });
@@ -138,7 +138,7 @@ describe('hybrid store', () => {
             mockFilesystemStore.read.mockResolvedValueOnce(undefined);
             mockSecureStore.retrieve = jest.fn().mockResolvedValueOnce(undefined);
 
-            await expect(new HybridStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
+            await expect(getHybridStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
         });
 
         it('combines data from filesystem and secure store', async () => {
@@ -147,7 +147,7 @@ describe('hybrid store', () => {
             const sensitiveProps = { prop3: 42, prop4: '13' };
             mockSecureStore.retrieve = jest.fn().mockResolvedValueOnce(sensitiveProps);
 
-            await expect(new HybridStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toEqual({
+            await expect(getHybridStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toEqual({
                 ...sensitiveProps,
                 ...propsInFS
             });
@@ -168,7 +168,7 @@ describe('hybrid store', () => {
                 mockFilesystemStore.readAll.mockResolvedValueOnce(fsEntities);
                 mockSecureStore.getAll.mockResolvedValueOnce(undefined);
 
-                await expect(new HybridStore(logger).getAll({ entityName: 'dummy' })).resolves.toIncludeSameMembers(
+                await expect(getHybridStore(logger).getAll({ entityName: 'dummy' })).resolves.toIncludeSameMembers(
                     Object.values(fsEntities)
                 );
             });
@@ -181,7 +181,7 @@ describe('hybrid store', () => {
                 mockFilesystemStore.readAll.mockResolvedValueOnce({});
                 mockSecureStore.getAll.mockResolvedValueOnce(entitiesInSecureStore);
 
-                await expect(new HybridStore(logger).getAll({ entityName: 'dummy' })).resolves.toIncludeSameMembers(
+                await expect(getHybridStore(logger).getAll({ entityName: 'dummy' })).resolves.toIncludeSameMembers(
                     Object.values(entitiesInSecureStore)
                 );
             });
@@ -190,7 +190,7 @@ describe('hybrid store', () => {
                 mockFilesystemStore.readAll.mockResolvedValueOnce(undefined);
                 mockSecureStore.getAll.mockResolvedValueOnce(undefined);
 
-                await expect(new HybridStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
+                await expect(getHybridStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
             });
 
             it('combines data from filesystem and secure store (secure properties override if conflict)', async () => {
@@ -207,7 +207,7 @@ describe('hybrid store', () => {
                 mockFilesystemStore.readAll.mockResolvedValueOnce(fsEntities);
                 mockSecureStore.getAll.mockResolvedValueOnce(entitiesInSecureStore);
 
-                await expect(new HybridStore(logger).getAll({ entityName: 'dummy' })).resolves.toIncludeSameMembers([
+                await expect(getHybridStore(logger).getAll({ entityName: 'dummy' })).resolves.toIncludeSameMembers([
                     /* 42 */ { prop1: 42, prop2: '13', prop3: 42 },
                     /* 13 */ { prop1: 'sensitive', prop2: 'b', prop3: 'b' },
                     /* onlyfs */ { prop1: 1 },
@@ -225,7 +225,7 @@ describe('hybrid store', () => {
         it('writes serializable properties to file system', async () => {
             mockSecureStore.save = jest.fn();
 
-            await new HybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasOnlyOrdinaryProps() });
+            await getHybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasOnlyOrdinaryProps() });
             expect(mockSecureStore.save).not.toBeCalled();
             expect(mockFilesystemStore.write).not.toBeCalled();
         });
@@ -233,7 +233,7 @@ describe('hybrid store', () => {
         it('writes serializable properties to file system', async () => {
             mockSecureStore.save = jest.fn();
 
-            await new HybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasSerializableProps() });
+            await getHybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasSerializableProps() });
             expect(mockSecureStore.save).not.toBeCalled();
             expect(mockFilesystemStore.write).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -248,7 +248,7 @@ describe('hybrid store', () => {
         it('writes sensitive data to secure store', async () => {
             mockSecureStore.save = jest.fn();
 
-            await new HybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasSensitiveDataProps() });
+            await getHybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasSensitiveDataProps() });
             expect(mockFilesystemStore.write).not.toBeCalled();
             expect(mockSecureStore.save).toHaveBeenCalledWith(expect.anything(), expect.anything(), {
                 sensitiveDataProperty1: '1',
@@ -259,7 +259,7 @@ describe('hybrid store', () => {
         it('writes serilizable props to filesystem & sensitive data to secure store', async () => {
             mockSecureStore.save = jest.fn();
 
-            await new HybridStore(logger).write({
+            await getHybridStore(logger).write({
                 entityName: 'dummy',
                 id: '42',
                 entity: new HasSerializableAndSensitiveDataProps()
@@ -281,7 +281,7 @@ describe('hybrid store', () => {
         it('sensitive information is only stored in secure store (even if marked serialized)', async () => {
             mockSecureStore.save = jest.fn();
 
-            await new HybridStore(logger).write({
+            await getHybridStore(logger).write({
                 entityName: 'dummy',
                 id: '42',
                 entity: new HasSerializableAndSensitiveDataPropsWithDupes()
@@ -310,26 +310,26 @@ describe('hybrid store', () => {
             mockFilesystemStore.del.mockResolvedValueOnce(true);
             mockSecureStore.delete = jest.fn().mockResolvedValueOnce(false);
 
-            await expect(new HybridStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeTrue();
+            await expect(getHybridStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeTrue();
         });
 
         it('deletes sensitive data from secure store', async () => {
             mockFilesystemStore.del.mockResolvedValueOnce(false);
             mockSecureStore.delete = jest.fn().mockResolvedValueOnce(true);
 
-            await expect(new HybridStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeTrue();
+            await expect(getHybridStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeTrue();
         });
 
         it('deletes data from filesystem and secure store', async () => {
             mockFilesystemStore.del.mockResolvedValueOnce(true);
             mockSecureStore.delete = jest.fn().mockResolvedValueOnce(true);
-            await expect(new HybridStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeTrue();
+            await expect(getHybridStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeTrue();
         });
 
         it('returns false if there is nothing to delete', async () => {
             mockFilesystemStore.del.mockResolvedValueOnce(false);
             mockSecureStore.delete = jest.fn().mockResolvedValueOnce(false);
-            await expect(new HybridStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalse();
+            await expect(getHybridStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalse();
         });
     });
 });
