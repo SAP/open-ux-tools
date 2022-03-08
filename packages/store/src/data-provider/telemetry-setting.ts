@@ -1,6 +1,6 @@
 import { DataProvider, DataProviderConstructor } from '.';
 import { DataAccess } from '../data-access';
-import { FilesystemStore } from '../data-access/filesystem';
+import { getFilesystemStore } from '../data-access/filesystem';
 import { TelemetrySetting, TelemetrySettingKey } from '../entities/telemetry-setting';
 import { Entities } from './constants';
 import { Logger } from '@sap-ux/logger';
@@ -15,7 +15,7 @@ export const TelemetryDataProvider: DataProviderConstructor<
 
     constructor(logger: Logger) {
         this.logger = logger;
-        this.dataAccessor = new FilesystemStore(this.logger) as DataAccess<TelemetrySetting>;
+		this.dataAccessor = getFilesystemStore(this.logger);
     }
 
     public read(key: TelemetrySettingKey): Promise<TelemetrySetting | undefined> {
