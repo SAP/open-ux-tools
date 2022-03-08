@@ -1,4 +1,4 @@
-import { EntityKey } from '.';
+import type { EntityKey } from '.';
 import { serializable } from '../decorators';
 
 /**
