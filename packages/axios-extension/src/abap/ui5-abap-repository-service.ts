@@ -68,13 +68,13 @@ export class Ui5AbapRepositoryService extends ODataService {
             info ? info.Package : app.package
         );
         const config = this.createConfig(app.transport, testMode);
+        const frontendUrl = this.getAbapFrontendUrl(this.defaults.baseURL);
         try {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, app.name, payload, config);
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
             if (response?.headers?.['sap-message']) {
                 const message = JSON.parse(response.headers['sap-message']);
-                const frontendUrl = this.getAbapFrontendUrl(this.defaults.baseURL);
-                prettyPrintMessage(message, this.log, frontendUrl);
+                prettyPrintMessage({ msg: message, log: this.log, host: frontendUrl });
 
                 // log url of created/updated app
                 const path = '/sap/bc/ui5_ui5' + (!app.name.startsWith('/') ? '/sap/' : '') + app.name.toLowerCase();
@@ -86,7 +86,7 @@ export class Ui5AbapRepositoryService extends ODataService {
 
             return response;
         } catch (error) {
-            this.logError(error);
+            this.logError({ error, host: frontendUrl });
             throw error;
         }
     }
@@ -100,16 +100,16 @@ export class Ui5AbapRepositoryService extends ODataService {
      */
     public async undeploy(app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
         const config = this.createConfig(app.transport, testMode);
-
+        const host = this.getAbapFrontendUrl(this.defaults.baseURL);
         try {
             const response = await this.deleteRepoRequest(app.name, config);
             if (response?.headers?.['sap-message']) {
                 const message = JSON.parse(response.headers['sap-message']);
-                prettyPrintMessage(message, this.log);
+                prettyPrintMessage({ msg: message, log: this.log, host });
             }
             return response;
         } catch (error) {
-            this.logError(error);
+            this.logError({ error, host });
             throw error;
         }
     }
@@ -272,10 +272,10 @@ export class Ui5AbapRepositoryService extends ODataService {
      *
      * @param e error thrown by Axios after sending a request
      */
-    protected logError(e: AxiosError): void {
-        this.log.error(e.message);
-        if (e.isAxiosError && e.response?.data?.['error']) {
-            prettyPrintError(e.response.data['error'], this.log);
+    protected logError({ error, host }: { error: AxiosError; host?: string }): void {
+        this.log.error(error.message);
+        if (error.isAxiosError && error.response?.data?.['error']) {
+            prettyPrintError({ error: error.response.data['error'], host, log: this.log });
         }
     }
 }

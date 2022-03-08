@@ -1,4 +1,5 @@
 import { Logger } from '@sap-ux/logger';
+import { URL } from 'url';
 
 /**
  * Message detail object
@@ -41,19 +42,23 @@ export interface ErrorMessage {
  *
  * @param msg message returned from gateway
  * @param log logger to be used
- * @param url optional url that should logged as clickable url
+ * @param host optional url that should logged as clickable url
  */
-export function prettyPrintMessage(msg: SuccessMessage, log: Logger, url?: string): void {
+export function prettyPrintMessage({ msg, log, host }: { msg: SuccessMessage; log: Logger; host?: string }): void {
     log.info(msg.message);
-    if (msg['longtext_url'] && url) {
-        let fullLongTextUrl = url.concat(msg['longtext_url']);
-        fullLongTextUrl = fullLongTextUrl.replace(/'/g, '%27'); // to make entire link clickable
-        log.info(fullLongTextUrl);
-    }
+    logFullURL({ host, path: msg['longtext_url'], log });
     if (msg.details) {
         msg.details.forEach((entry) => {
             log.info(entry.message);
         });
+    }
+}
+
+/** Log if both host and path are provided */
+function logFullURL({ host, path, log }: { host: string; path?: string; log: Logger }): void {
+    if (host && path) {
+        const base = new URL(host).origin; // We only care for the origin value
+        log.info(new URL(path, base).href);
     }
 }
 
@@ -63,7 +68,7 @@ export function prettyPrintMessage(msg: SuccessMessage, log: Logger, url?: strin
  * @param error error message returned from gateway
  * @param log logger to be used
  */
-export function prettyPrintError(error: ErrorMessage, log: Logger): void {
+export function prettyPrintError({ error, log, host }: { error: ErrorMessage; log: Logger; host?: string }): void {
     if (error) {
         log.error(error.message?.value);
         if (error.innererror) {
@@ -71,6 +76,7 @@ export function prettyPrintError(error: ErrorMessage, log: Logger): void {
                 if (!entry.message.startsWith('<![CDATA')) {
                     log.error(entry.message);
                 }
+                logFullURL({ host, path: error['longtext_url'], log });
             });
             for (const key in error.innererror.Error_Resolution || {}) {
                 log.error(`${key}: ${error.innererror.Error_Resolution[key]}`);
