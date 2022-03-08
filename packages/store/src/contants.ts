@@ -1,3 +1,4 @@
 export enum Entity {
-    BackendSystem = 'system'
+    BackendSystem = 'system',
+    TelemetrySetting = 'telemetrySetting'
 }

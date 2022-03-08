@@ -1,4 +1,5 @@
 export enum Entities {
     BackendSystem = 'system',
-    SystemMigrationStatus = 'systemMigrationStatus'
+    SystemMigrationStatus = 'systemMigrationStatus',
+    TelemetrySetting = 'telemetrySetting'
 }
