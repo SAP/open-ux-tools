@@ -18,3 +18,8 @@ updates:
       interval: "weekly"
     allow:
       - dependency-type: "direct"
+    ignore:
+      - dependency-name: "typescript"
+        versions: ["4.x"]
+      - dependency-name: "@types/node"
+        versions: ["13.x", "14.x", "15.x", "16.x", "17.x"]
