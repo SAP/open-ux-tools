@@ -1,14 +1,16 @@
 import { join } from 'path';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { generate as generateUi5Project, Package } from '@sap-ux/ui5-application-writer';
+import type { Package } from '@sap-ux/ui5-application-writer';
+import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
 import { FioriElementsApp } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
-import { changesPreviewToVersion, escapeFLPText, TemplateOptions } from './data/templateAttributes';
+import type { TemplateOptions } from './data/templateAttributes';
+import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 

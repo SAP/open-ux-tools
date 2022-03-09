@@ -1,6 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
-import { NamespaceAlias, OdataService } from '../types';
+import type { NamespaceAlias, OdataService } from '../types';
 
 /**
  * Returns the namespaces parsed from the specified metadata and annotations.

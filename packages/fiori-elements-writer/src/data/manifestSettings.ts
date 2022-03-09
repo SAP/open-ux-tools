@@ -1,6 +1,7 @@
-import { FioriElementsApp, TemplateType } from '../types';
+import type { FioriElementsApp } from '../types';
+import { TemplateType } from '../types';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { render } from 'ejs';
 

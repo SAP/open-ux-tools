@@ -1,7 +1,9 @@
-import semVer, { SemVer } from 'semver';
+import type { SemVer } from 'semver';
+import { default as semVer } from 'semver';
 import { TemplateTypeAttributes } from './data/templateAttributes';
 import { t } from './i18n';
-import { FioriElementsApp, ValidationError } from './types';
+import { ValidationError } from './types';
+import type { FioriElementsApp } from './types';
 
 /**
  * Validates a selection of specified app settings.

@@ -1,18 +1,17 @@
-import express, { RequestHandler, NextFunction, Request, Response } from 'express';
+import type { RequestHandler, NextFunction, Request, Response } from 'express';
+import express from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import type { MiddlewareParameters, ProxyConfig, UI5Config } from '../base';
 import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
     injectScripts,
     isHostExcludedFromProxy,
-    MiddlewareParameters,
-    ProxyConfig,
     ui5Proxy,
     resolveUI5Version,
-    hideProxyCredentials,
-    UI5Config
+    hideProxyCredentials
 } from '../base';
 
 module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise<RequestHandler> => {

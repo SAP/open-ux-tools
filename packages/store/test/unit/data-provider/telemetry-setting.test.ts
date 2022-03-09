@@ -1,20 +1,29 @@
 import { TelemetrySetting, TelemetrySettingKey } from '../../../src';
-import { FilesystemStore } from '../../../src/data-access/filesystem';
+import * as dataAccessFilesystem from '../../../src/data-access/filesystem';
 import { TelemetryDataProvider } from '../../../src/data-provider/telemetry-setting';
 import { Entities } from '../../../src/data-provider/constants';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 describe('TelemetrySetting data provider', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
+    const mockGetFilesystemStore = jest.spyOn(dataAccessFilesystem, 'getFilesystemStore');
+    const mockFsStore = {
+        write: jest.fn(),
+        read: jest.fn(),
+        del: jest.fn(),
+        getAll: jest.fn(),
+        readAll: jest.fn()
+    };
     beforeEach(() => {
         jest.resetAllMocks();
+        mockGetFilesystemStore.mockReturnValue(mockFsStore);
     });
 
     it('read delegates to the data accessor', () => {
         const expectedTelemetrySetting: TelemetrySetting = {
             enableTelemetry: true
         };
-        jest.spyOn(FilesystemStore.prototype, 'read').mockResolvedValueOnce(expectedTelemetrySetting);
+        mockFsStore.read.mockResolvedValueOnce(expectedTelemetrySetting);
         expect(new TelemetryDataProvider(logger).read(new TelemetrySettingKey())).resolves.toBe(
             expectedTelemetrySetting
         );
@@ -24,13 +33,11 @@ describe('TelemetrySetting data provider', () => {
         const expectedTelemetrySetting: TelemetrySetting = {
             enableTelemetry: true
         };
-        const mockStore = jest
-            .spyOn(FilesystemStore.prototype, 'write')
-            .mockResolvedValueOnce(expectedTelemetrySetting);
+        mockFsStore.write.mockResolvedValueOnce(expectedTelemetrySetting);
         expect(new TelemetryDataProvider(logger).write(new TelemetrySetting(expectedTelemetrySetting))).resolves.toBe(
             expectedTelemetrySetting
         );
-        expect(mockStore).toBeCalledWith({
+        expect(mockFsStore.write).toBeCalledWith({
             entityName: Entities.TelemetrySetting,
             id: new TelemetrySettingKey().getId(),
             entity: expectedTelemetrySetting
@@ -41,11 +48,11 @@ describe('TelemetrySetting data provider', () => {
         const expectedTelemetrySetting: TelemetrySetting = {
             enableTelemetry: true
         };
-        const mockStore = jest.spyOn(FilesystemStore.prototype, 'del').mockResolvedValueOnce(expectedTelemetrySetting);
+        mockFsStore.del.mockResolvedValueOnce(expectedTelemetrySetting);
         expect(new TelemetryDataProvider(logger).delete(new TelemetrySetting(expectedTelemetrySetting))).resolves.toBe(
             expectedTelemetrySetting
         );
-        expect(mockStore).toBeCalledWith({
+        expect(mockFsStore.del).toBeCalledWith({
             entityName: Entities.TelemetrySetting,
             id: new TelemetrySettingKey().getId()
         });
@@ -55,11 +62,9 @@ describe('TelemetrySetting data provider', () => {
         const expectedTelemetrySetting: TelemetrySetting = {
             enableTelemetry: true
         };
-        const mockStore = jest
-            .spyOn(FilesystemStore.prototype, 'getAll')
-            .mockResolvedValueOnce(expectedTelemetrySetting);
+        mockFsStore.getAll.mockResolvedValueOnce(expectedTelemetrySetting);
         expect(new TelemetryDataProvider(logger).getAll()).resolves.toBe(expectedTelemetrySetting);
-        expect(mockStore).toBeCalledWith({
+        expect(mockFsStore.getAll).toBeCalledWith({
             entityName: Entities.TelemetrySetting
         });
     });

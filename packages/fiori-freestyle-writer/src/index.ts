@@ -1,11 +1,13 @@
 import { join } from 'path';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { generate as generateUi5Project, Package } from '@sap-ux/ui5-application-writer';
+import type { Package } from '@sap-ux/ui5-application-writer';
+import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import { BasicAppSettings, FreestyleApp, TemplateType } from './types';
+import type { BasicAppSettings } from './types';
+import { FreestyleApp, TemplateType } from './types';
 import { setDefaults } from './defaults';
 
 /**

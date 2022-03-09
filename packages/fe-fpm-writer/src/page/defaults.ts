@@ -1,6 +1,6 @@
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 
-import { CustomPage, InternalCustomPage } from './types';
+import type { CustomPage, InternalCustomPage } from './types';
 import { setCommonDefaults } from '../common/defaults';
 
 /**

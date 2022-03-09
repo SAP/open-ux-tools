@@ -1,4 +1,5 @@
-import { ConsoleTransport, Logger, ToolsLogger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
+import { ConsoleTransport, ToolsLogger } from '@sap-ux/logger';
 
 /**
  * @returns {Logger} console logger

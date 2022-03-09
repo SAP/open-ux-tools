@@ -1,5 +1,6 @@
 import { initI18n, t } from './i18n';
-import yaml, { Document, isMap, isSeq, Node, YAMLMap, YAMLSeq } from 'yaml';
+import type { Document, Node, YAMLMap } from 'yaml';
+import yaml, { isMap, isSeq, YAMLSeq } from 'yaml';
 
 import merge = require('lodash.merge');
 

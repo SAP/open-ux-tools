@@ -1,9 +1,10 @@
-import { DataProvider, DataProviderConstructor } from '.';
-import { DataAccess } from '../data-access';
-import { FilesystemStore } from '../data-access/filesystem';
-import { SystemMigrationStatus, SystemMigrationStatusKey } from '../entities/system-migration-status';
-import { Logger } from '@sap-ux/logger';
+import type { DataProvider, DataProviderConstructor } from '.';
+import type { DataAccess } from '../data-access';
+import type { SystemMigrationStatus } from '../entities/system-migration-status';
+import { SystemMigrationStatusKey } from '../entities/system-migration-status';
+import type { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
+import { getFilesystemStore } from '../data-access/filesystem';
 
 export const SystemMigrationStatusDataProvider: DataProviderConstructor<
     SystemMigrationStatus,
@@ -15,7 +16,7 @@ export const SystemMigrationStatusDataProvider: DataProviderConstructor<
 
     constructor(logger: Logger) {
         this.logger = logger;
-        this.dataAccessor = new FilesystemStore(this.logger) as DataAccess<SystemMigrationStatus>;
+        this.dataAccessor = getFilesystemStore(this.logger);
     }
 
     public read(key: SystemMigrationStatusKey): Promise<SystemMigrationStatus | undefined> {

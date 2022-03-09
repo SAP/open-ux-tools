@@ -1,4 +1,4 @@
-import { CustomElement, InternalCustomElement, Manifest } from './types';
+import type { CustomElement, InternalCustomElement, Manifest } from './types';
 import { join, dirname } from 'path';
 
 /**

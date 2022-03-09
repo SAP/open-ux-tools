@@ -1,4 +1,4 @@
-import { App, Package, UI5, UI5Framework } from '../types';
+import type { App, Package, UI5, UI5Framework } from '../types';
 import versionToManifestDescMapping from './version-to-descriptor-mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';

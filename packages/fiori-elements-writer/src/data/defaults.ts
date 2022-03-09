@@ -1,15 +1,7 @@
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import readPkgUp from 'read-pkg-up';
-import {
-    ALPSettings,
-    ALPSettingsV2,
-    ALPSettingsV4,
-    FioriElementsApp,
-    TableSelectionMode,
-    TableType,
-    Template,
-    TemplateType
-} from '../types';
+import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, FioriElementsApp, Template } from '../types';
+import { TableSelectionMode, TableType, TemplateType } from '../types';
 import { getBaseComponent, getUi5Libs } from './templateAttributes';
 
 /**
