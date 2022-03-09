@@ -7,7 +7,7 @@ import type { Logger } from '@sap-ux/logger';
 import { errorInstance, getFioriToolsDirectory } from '../utils';
 import type { ServiceOptions } from '../types';
 import os from 'os';
-import type { Entity } from 'contants';
+import type { Entity } from '../constants';
 
 export const basedir = ({ baseDirectory }: { baseDirectory?: string } = {}): string => {
     if (!baseDirectory) {
