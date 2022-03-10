@@ -82,9 +82,9 @@ describe('V2CatalogService', () => {
                 .persist();
         });
 
-        test('invalid parameters', () => {
-            expect(catalog.getAnnotations({})).rejects.toThrowError();
-            expect(catalog.getAnnotations({ path: '/' })).rejects.toThrowError();
+        test('invalid parameters', async () => {
+            await expect(catalog.getAnnotations({})).rejects.toThrowError();
+            await expect(catalog.getAnnotations({ path: '/' })).rejects.toThrowError();
         });
 
         test('find by id', async () => {

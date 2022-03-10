@@ -79,14 +79,14 @@ describe('Ui5AbapRepositoryService', () => {
             expect(response.data).toBeDefined();
         });
 
-        test('deployment failed', () => {
+        test('deployment failed', async () => {
             nock(server)
                 .put(
                     `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?CodePage='UTF8'&CondenseMessagesInHttpResponseHeader=X&format=json`,
                     (body) => body.indexOf(testData) !== -1
                 )
                 .replyWithError('Deployment failed');
-            expect(service.deploy(archivePath, { name: validApp })).rejects.toThrowError();
+            await expect(service.deploy(archivePath, { name: validApp })).rejects.toThrowError();
         });
 
         test.skip('retry deployment on 504', async () => {
@@ -98,7 +98,7 @@ describe('Ui5AbapRepositoryService', () => {
                 }
             });
             badService.put = mockPut;
-            expect(badService.deploy(archivePath, { name: validApp })).rejects.toThrowError();
+            await expect(badService.deploy(archivePath, { name: validApp })).rejects.toThrowError();
             expect(mockPut).toHaveBeenCalled();
         });
 
