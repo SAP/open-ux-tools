@@ -1,7 +1,7 @@
 {
     "sap.ui5": {
         "models": {
-            "": {
+            "<%- defaultModel %>": {
                 "settings": {
                     "defaultBindingMode": "TwoWay",
                     "defaultCountMode": "Inline",
@@ -12,7 +12,7 @@
                 }
             }
         }
-    },
+    }<% if (type !== 'ovp') { %>,
     "sap.ui.generic.app": {
         "_version": "1.3.0",
         "settings": {
@@ -21,5 +21,5 @@
             "considerAnalyticalParameters": true,
             "showDraftToggle": false
         }
-    }
+    }<% } %>
 }

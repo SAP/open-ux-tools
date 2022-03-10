@@ -35,7 +35,7 @@ export function extendManifestJson<T>(
     // Enhance template settings
     const templateSettings = {
         ...feApp.template.settings,
-        filterModel: feApp.service?.model,
+        defaultModel: feApp.service?.model,
         type: feApp.template.type
     };
 

@@ -71,7 +71,6 @@ framework:
     - name: sap.ui.generic.app
     - name: sap.suite.ui.generic.template
     - name: sap.collaboration
-    - name: sap.ui.table
     - name: themelib_sap_belize
 server:
   customMiddleware:
@@ -172,7 +171,7 @@ server:
   },
   "webapp/Component.js": Object {
     "contents": "sap.ui.define(
-    [\\"sap/ovp/app/Component\\"],
+    [\\"sap/suite/ui/generic/template/lib/AppComponent\\"],
     function (Component) {
         \\"use strict\\";
 
@@ -212,7 +211,7 @@ server:
 #Texts for manifest.json
 
 #XTIT: Application name
-appTitle=App Title
+appTitle=App \\"Title\\" \\\\\\"
 
 #YDES: Application description
 appDescription=A Fiori application.",
@@ -225,7 +224,7 @@ appDescription=A Fiori application.",
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <title>App Title</title>
+    <title>App &#34;Title&#34; \\\\&#34;</title>
     <style>
         html, body, body > div, #container, #container-uiarea {
             height: 100%;
@@ -2873,7 +2872,7 @@ appDescription=A Fiori application.",
   },
   "webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.38.0\\",
+  \\"_version\\": \\"1.37.0\\",
   \\"sap.app\\": {
     \\"id\\": \\"fewrk1\\",
     \\"type\\": \\"application\\",
@@ -2936,7 +2935,7 @@ appDescription=A Fiori application.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.98\\",
+      \\"minUI5Version\\": \\"1.90.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -2945,8 +2944,7 @@ appDescription=A Fiori application.",
         \\"sap.ui.comp\\": {},
         \\"sap.ui.generic.app\\": {},
         \\"sap.suite.ui.generic.template\\": {},
-        \\"sap.collaboration\\": {},
-        \\"sap.ui.table\\": {}
+        \\"sap.collaboration\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -2984,13 +2982,13 @@ appDescription=A Fiori application.",
   },
   \\"sap.ui.generic.app\\": {
     \\"pages\\": {
-      \\"ListReport|Artists\\": {
-        \\"entitySet\\": \\"Artists\\",
+      \\"ListReport|SEPMRA_C_PD_Product\\": {
+        \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
         \\"component\\": {
           \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
           \\"list\\": true,
           \\"settings\\": {
-            \\"smartVariantManagement\\": \\"true\\",
+            \\"smartVariantManagement\\": true,
             \\"isWorklist\\": true,
             \\"filterSettings\\": {
               \\"dateSettings\\": {
@@ -2998,28 +2996,28 @@ appDescription=A Fiori application.",
               }
             },
             \\"tableSettings\\": {
-              \\"multiSelect\\": \\"true\\"
+              \\"multiSelect\\": true
             }
           }
         },
         \\"pages\\": {
-          \\"ObjectPage|Artists\\": {
-            \\"entitySet\\": \\"Artists\\",
+          \\"ObjectPage|SEPMRA_C_PD_Product\\": {
+            \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
             \\"component\\": {
               \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\",
               \\"settings\\": {
                 \\"gridTable\\": true,
                 \\"sections\\": {
-                  \\"_Publication::com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"to_ProductSalesData::com.sap.vocabularies.UI.v1.LineItem\\": {
                     \\"condensedTableLayout\\": false
                   }
                 }
               }
             },
             \\"pages\\": {
-              \\"ObjectPage|_Publication\\": {
-                \\"navigationProperty\\": \\"_Publication\\",
-                \\"entitySet\\": \\"Publications\\",
+              \\"ObjectPage|to_ProductSalesData\\": {
+                \\"navigationProperty\\": \\"to_ProductSalesData\\",
+                \\"entitySet\\": \\"SEPMRA_C_PD_ProductSalesData\\",
                 \\"component\\": {
                   \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
                 }
@@ -3353,7 +3351,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             },
             applications: {
                 \\"fewrk1-tile\\": {
-                    title: \\"App Title\\",
+                    title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
                     description: \\"A Fiori application.\\",
                     additionalInformation: \\"SAPUI5.Component=fewrk1\\",
                     applicationType: \\"URL\\",
@@ -3367,7 +3365,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     <!-- Bootstrap the UI5 core library -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.collaboration,sap.ui.table\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.collaboration\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_belize\\"

@@ -7,7 +7,7 @@
                     "name": "sap.suite.ui.generic.template.ListReport",
                     "list": true,
                     "settings": {
-                        "smartVariantManagement": "true",
+                        "smartVariantManagement": true,
                         "isWorklist": true,
                         "filterSettings": {
                             "dateSettings": {
@@ -15,7 +15,7 @@
                             }
                         },
                         "tableSettings": {
-                            "multiSelect": "true"
+                            "multiSelect": true
                         }
                     }
                 },
