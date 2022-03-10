@@ -220,8 +220,8 @@ export class Ui5AbapRepositoryService extends ODataService {
                 return Promise.resolve(undefined);
             } else {
                 return isExisting
-                    ? this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
-                    : this.post('/Repositories', payload, config);
+                    ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
+                    : await this.post('/Repositories', payload, config);
             }
         } catch (error) {
             if (error?.response?.status === 504) {

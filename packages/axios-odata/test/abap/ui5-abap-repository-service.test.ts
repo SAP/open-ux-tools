@@ -89,8 +89,7 @@ describe('Ui5AbapRepositoryService', () => {
             await expect(service.deploy(archivePath, { name: validApp })).rejects.toThrowError();
         });
 
-        test.skip('retry deployment on 504', async () => {
-            // TODO: something is wrong with this test
+        test('retry deployment on 504', async () => {
             const badService = createForAbap({ baseURL: server }).ui5AbapRepository();
             const mockPut = jest.fn().mockRejectedValue({
                 response: {
@@ -98,8 +97,14 @@ describe('Ui5AbapRepositoryService', () => {
                 }
             });
             badService.put = mockPut;
-            await expect(badService.deploy(archivePath, { name: validApp })).rejects.toThrowError();
-            expect(mockPut).toHaveBeenCalled();
+            try {
+                await badService.deploy(archivePath, { name: validApp });
+                fail('Function should have thrown an error');
+            } catch (error) {
+                expect(error.response?.status).toBe(504);
+                // in case of 504 we retry 2 times
+                expect(mockPut).toHaveBeenCalledTimes(3);
+            }
         });
 
         test('testMode', async () => {
