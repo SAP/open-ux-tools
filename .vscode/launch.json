@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "inputs": [
         {
-            "id": "axiosExtensionTest",
+            "id": "axiosODataExample",
             "description": "Enter the test you want to debug",
             "type": "pickString",
             "options": ["abap", "btp"],
@@ -63,13 +63,13 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "axios-extension: Manual test",
+            "name": "axios-odata: Example CLI",
             "runtimeExecutable": "pnpm",
-            "runtimeArgs": ["test", "--", "${input:axiosExtensionTest}"],
+            "runtimeArgs": ["start", "--", "${input:axiosODataExample}"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,
-            "cwd": "${workspaceFolder}/test/manual/axios-extension"
+            "cwd": "${workspaceFolder}/examples/axios-odata"
         }
     ]
 }

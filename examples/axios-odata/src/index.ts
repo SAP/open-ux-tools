@@ -1,4 +1,4 @@
-import { AbapServiceProvider, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-odata';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 

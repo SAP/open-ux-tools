@@ -1,6 +1,6 @@
-# Axios Extension
+# Axios OData
 
-The `@sap-ux/axios-extension` module is an extension of the [axios](https://github.com/axios/axios) framework adding convenience methods to interact with OData services, especially those exposed by SAP systems.
+The `@sap-ux/axios-odata` module is an extension of the [axios](https://github.com/axios/axios) framework adding convenience methods to interact with OData services, especially those exposed by SAP systems.
 
 ## Features
 

@@ -1,12 +1,12 @@
 {
-    "name": "@sap-ux/testing-axios-extension",
-    "version": "0.9.0",
-    "description": "Extension of the Axios module adding convinience methods to interact with OData service especially services exposed by SAP systems.",
+    "name": "@sap-ux/axios-odata-example",
+    "version": "0.8.0",
+    "description": "Simple example CLI uing the @sap-ux/axios-odata module to fetch metadata and annotations from an SAP system.",
     "license": "SEE LICENSE IN LICENSE",
     "private": true,
     "main": "dist/index.js",
     "scripts": {
-        "test": "node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=./.env/env.properties",
+        "start": "node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=./.env/env.properties",
         "build": "pnpm clean && tsc",
         "watch": "tsc --watch",
         "clean": "rimraf dist coverage",
@@ -15,7 +15,7 @@
         "lint:fix": "eslint . --ext .ts --fix"
     },
     "dependencies": {
-        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/axios-odata": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "axios": "0.24.0",
         "dotenv": "10.0.0"

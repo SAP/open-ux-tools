@@ -1,5 +1,5 @@
 {
-    "name": "@sap-ux/axios-extension",
+    "name": "@sap-ux/axios-odata",
     "version": "0.8.0",
     "description": "Extension of the Axios module adding convinience methods to interact with OData service especially services exposed by SAP systems.",
     "license": "SEE LICENSE IN LICENSE",

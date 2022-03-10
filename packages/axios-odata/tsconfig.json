@@ -8,5 +8,5 @@
         "baseUrl": "./src",
         "resolveJsonModule": true
     },
-    "extends": "../../../tsconfig.json"
+    "extends": "../../tsconfig.json"
 }
