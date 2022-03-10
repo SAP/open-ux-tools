@@ -106,3 +106,13 @@ The app descriptor version should be calculated based on the minimal supported U
 
 Fixes #42
 ```
+
+## Versioning
+To establish and increase versions for modules in this repository, we follow [Semantic Versioning (semver)](https://semver.org/). In essence, this means:
+
+> Given a version number MAJOR.MINOR.PATCH, increment the:
+> 1. MAJOR version when you make incompatible API changes,
+> 1. MINOR version when you add functionality in a backwards compatible manner, and
+> 1. PATCH version when you make backwards compatible bug fixes.
+>
+> https://semver.org/#summary

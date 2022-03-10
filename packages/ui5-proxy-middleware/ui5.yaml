@@ -1,0 +1,7 @@
+specVersion: '2.6'
+metadata:
+    name: ui5-proxy-middleware
+kind: extension
+type: server-middleware
+middleware:
+    path: dist/ui5/middleware.js

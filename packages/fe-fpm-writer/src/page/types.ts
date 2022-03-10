@@ -1,4 +1,4 @@
-import { CustomElement, InternalCustomElement } from '../common/types';
+import type { CustomElement, InternalCustomElement } from '../common/types';
 
 export interface CustomPage extends CustomElement {
     entity: string;

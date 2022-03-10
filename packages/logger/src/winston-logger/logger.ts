@@ -1,8 +1,9 @@
 import { ConsoleTransport } from '../transports';
-import { ChildLoggerOptions, Log, Logger, LoggerOptions, LogLevel, Transport } from '../types';
+import type { ChildLoggerOptions, Log, Logger, LoggerOptions, Transport } from '../types';
+import { LogLevel } from '../types';
 import winston from 'winston';
 import { toWinstonLogLevel, toWinstonTransport } from './adapter';
-import WinstonTransport from 'winston-transport';
+import type WinstonTransport from 'winston-transport';
 import { format } from 'logform';
 import { nextColor } from './utils';
 import { inspect } from 'util';

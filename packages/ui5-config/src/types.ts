@@ -15,7 +15,6 @@ export interface ProxyUIConfig {
     [key: string]: unknown | undefined;
     path?: string[];
     url?: string;
-    version?: string;
     directLoad?: boolean;
 }
 
@@ -72,8 +71,7 @@ export interface MockserverConfig {
         urlPath: string;
     };
     service?: {
-        urlBasePath: string;
-        name: string;
+        urlPath: string;
         metadataXmlPath: string;
         mockdataRootPath?: string;
         generateMockData?: boolean;

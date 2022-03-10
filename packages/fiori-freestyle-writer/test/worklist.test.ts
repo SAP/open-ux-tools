@@ -10,35 +10,43 @@ const TEST_NAME = 'worklistTemplate';
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
+    const commonConfig = {
+        app: {
+            id: 'wrk1',
+            title: 'App Title',
+            description: 'A Fiori application.',
+            sourceTemplate: {
+                version: '1.2.3-test',
+                id: 'test-template'
+            }
+        },
+        package: {
+            name: 'nods1',
+            description: 'A Fiori application.'
+        },
+        ui5: {
+            version: '1.78.16',
+            descriptorVersion: '1.22.0',
+            ui5Libs: [
+                'sap.f',
+                'sap.m',
+                'sap.suite.ui.generic.template',
+                'sap.ui.comp',
+                'sap.ui.core',
+                'sap.ui.generic.app',
+                'sap.ui.table',
+                'sap.ushell'
+            ],
+            localVersion: '1.86.3',
+            ui5Theme: 'sap_belize'
+        }
+    };
+
     const configuration: Array<{ name: string; config: FreestyleApp<unknown> }> = [
         {
             name: 'worklist_service_url_v2',
             config: {
-                app: {
-                    id: 'wrk1',
-                    title: 'App Title',
-                    description: 'A Fiori application.'
-                },
-                package: {
-                    name: 'nods1',
-                    description: 'A Fiori application.'
-                },
-                ui5: {
-                    version: '1.78.16',
-                    descriptorVersion: '1.22.0',
-                    ui5Libs: [
-                        'sap.f',
-                        'sap.m',
-                        'sap.suite.ui.generic.template',
-                        'sap.ui.comp',
-                        'sap.ui.core',
-                        'sap.ui.generic.app',
-                        'sap.ui.table',
-                        'sap.ushell'
-                    ],
-                    ui5Theme: 'sap_belize',
-                    localVersion: '1.86.3'
-                },
+                ...commonConfig,
                 template: {
                     type: TemplateType.Worklist,
                     settings: {
@@ -70,31 +78,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         {
             name: 'worklist_metadata_v4',
             config: {
-                app: {
-                    id: 'wrk1',
-                    title: 'App Title',
-                    description: 'A Fiori application.'
-                },
-                package: {
-                    name: 'nods1',
-                    description: 'A Fiori application.'
-                },
-                ui5: {
-                    version: '1.78.16',
-                    descriptorVersion: '1.22.0',
-                    ui5Libs: [
-                        'sap.f',
-                        'sap.m',
-                        'sap.suite.ui.generic.template',
-                        'sap.ui.comp',
-                        'sap.ui.core',
-                        'sap.ui.generic.app',
-                        'sap.ui.table',
-                        'sap.ushell'
-                    ],
-                    ui5Theme: 'sap_belize',
-                    localVersion: '1.86.3'
-                },
+                ...commonConfig,
                 template: {
                     type: TemplateType.Worklist,
                     settings: {
@@ -115,30 +99,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         {
             name: 'worklist_service_url_v4',
             config: {
-                app: {
-                    id: 'wrk1',
-                    title: 'App Title',
-                    description: 'A Fiori application.'
-                },
-                package: {
-                    name: 'nods1',
-                    description: 'A Fiori application.'
-                },
+                ...commonConfig,
                 ui5: {
-                    version: '1.78.16',
-                    descriptorVersion: '1.22.0',
-                    ui5Libs: [
-                        'sap.f',
-                        'sap.m',
-                        'sap.suite.ui.generic.template',
-                        'sap.ui.comp',
-                        'sap.ui.core',
-                        'sap.ui.generic.app',
-                        'sap.ui.table',
-                        'sap.ushell'
-                    ],
-                    ui5Theme: 'sap_fiori_3_dark',
-                    localVersion: '1.86.3'
+                    ...commonConfig.ui5,
+                    ui5Theme: 'sap_fiori_3_dark'
                 },
                 template: {
                     type: TemplateType.Worklist,

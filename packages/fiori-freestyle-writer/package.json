@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
-    "version": "0.10.17",
+    "version": "0.11.1",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -8,6 +8,7 @@
         "clean": "rimraf dist test/test-output coverage",
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "test:local": "node -r ts-node/register test/index.ts",
@@ -27,7 +28,8 @@
         "i18next": "20.3.2",
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.0.0"
+        "mem-fs-editor": "9.0.0",
+        "read-pkg-up": "7.0.1"
     },
     "devDependencies": {
         "@types/ejs": "3.1.0",

@@ -162,3 +162,6 @@ dist
 {"mode":"full","isActive":false}
 
 **/test-output/**
+
+# Output of 'npm pack'
+*.tgz

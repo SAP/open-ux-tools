@@ -1,5 +1,18 @@
 # @sap-ux/odata-service-writer
 
+## 0.11.1
+
+### Patch Changes
+
+-   Updated dependencies [2b12f4f]
+    -   @sap-ux/ui5-config@0.12.0
+
+## 0.11.0
+
+### Minor Changes
+
+-   d56ea73: Adds local annotations support
+
 ## 0.10.2
 
 ### Patch Changes

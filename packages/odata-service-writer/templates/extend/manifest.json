@@ -6,7 +6,8 @@
                 "type": "OData",
                 "settings": {
                     "annotations": [<%if (locals.annotations && annotations.technicalName) {%>
-                       "<%- annotations.technicalName %>"<% } %>
+                        "<%- annotations.technicalName %>"<% if (locals.localAnnotationsName) {%>,<%}%><% } %><% if (locals.localAnnotationsName) { %>
+                        "<%- localAnnotationsName %>"<% } %>
                     ],
                     "localUri": "localService/metadata.xml"<%if (version === '4') {%>,
                     "odataVersion": "4.0"<% } %><%if (version === '2') {%>,
@@ -14,12 +15,19 @@
                 }
             }<%if (locals.annotations && annotations.technicalName) {%>,
             "<%- annotations.technicalName %>": {
-                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- annotations.technicalName %>',Version='0001')/$value/",
+                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='<%- encodeURIComponent(annotations.technicalName) %>',Version='0001')/$value/",
                 "type": "ODataAnnotation",
                 "settings": {
                     "localUri": "localService/<%- annotations.technicalName %>.xml"
                 }
-            }<% } %>
+            }<% } %><% if (locals.localAnnotationsName) { %>,
+            "<%- localAnnotationsName %>": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/<%- localAnnotationsName %>.xml",
+                "settings": {
+                    "localUri": "annotations/<%- localAnnotationsName %>.xml"
+                }
+            } <% } %>
         }
     },
     "sap.ui5": {

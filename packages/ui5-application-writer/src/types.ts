@@ -18,6 +18,10 @@ export interface App {
     baseComponent?: string; // UI5 Component `required` by Component.js
     startFile?: string;
     localStartFile?: string;
+    sourceTemplate?: {
+        id?: string;
+        version?: string;
+    };
 }
 
 export type UI5Framework = 'SAPUI5' | 'OpenUI5';
@@ -39,6 +43,7 @@ export interface AppOptions {
     codeAssist: boolean; // Enables code assist
     eslint: boolean; // Enables Fiori linting
     sapux: boolean; // Enables Fiori Tools Suite integration
+    loadReuseLibs: boolean; // Enables loading of re-use libs
 }
 
 export interface Ui5App {

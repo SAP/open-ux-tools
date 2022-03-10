@@ -1,10 +1,12 @@
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
-import { TargetControl, CustomAction, CustomActionTarget, InternalCustomAction } from './types';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import type { CustomAction, CustomActionTarget, InternalCustomAction } from './types';
+import { TargetControl } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
-import { Manifest } from '../common/types';
+import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 
 /**

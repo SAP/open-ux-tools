@@ -1,0 +1,19 @@
+{
+    "error": {
+        "unsupportedEntity": "Unsupported entity - {{entityName}}",
+        "systemDoesNotExist": "System does not exist. URL: [{{system.url}}], client: [{{system.client}}]",
+        "parsingStore": "Cannot parse store for {{entityName}}",
+        "noPropertiesSpecified": "No properties specified for update",
+        "systemMigrationFailed": "Migrating systems from secure store failed",
+        "systemAlreadyExistsInHybridStore": "System with ID: [{{systemId}}] already exists in hybrid store. Not migrating",
+        "couldNotDeleteRefreshToken": "Could not delete refresh token for [{{- url}}]"
+    },
+    "info": {
+        "foundRefreshToken": "Found refresh token for {{- systemId}}",
+        "tryingToUpdateAuthType": "Trying to update authentication type for {{- systemId}}",
+        "authTypeDetermined": "Authentication type [{{- authenticationType }}] determined for {{- systemId }}",
+        "authTypeNotDetermined": "Authentication type could not be determined for {{- systemId }}",
+        "updatingRefreshTokenInNewStore": "Update refresh token in new store for {{- systemId}}",
+        "deletingRefreshTokenFromOldStore": "Deleting refresh token in old store for {{- systemId}}"
+    }
+}

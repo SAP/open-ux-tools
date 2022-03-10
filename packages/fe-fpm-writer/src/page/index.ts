@@ -1,12 +1,13 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 
 import { enhanceData } from './defaults';
-import { CustomPage, InternalCustomPage } from './types';
+import type { CustomPage, InternalCustomPage } from './types';
 import { validateBasePath, validateVersion } from '../common/validate';
-import { Manifest, Ui5RoutingRoute as Ui5Route } from '../common/types';
+import type { Manifest, Ui5RoutingRoute as Ui5Route } from '../common/types';
 
 /**
  * Validate the UI5 version and if valid return the root folder for the templates to be used.

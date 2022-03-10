@@ -22,7 +22,11 @@ export const commonConfig = {
     app: {
         id: 'test.me',
         title: 'My Test App',
-        flpAppId: 'testme-app'
+        flpAppId: 'testme-app',
+        sourceTemplate: {
+            version: '1.2.3-test',
+            id: 'test-template'
+        }
     },
     package: {
         name: 'test.me'
