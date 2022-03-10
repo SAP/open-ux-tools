@@ -1,4 +1,4 @@
-import { AbapServiceProvider, AppIndexService, createForAbap } from '../../src';
+import { AppIndexService, createForAbap } from '../../src';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
 
