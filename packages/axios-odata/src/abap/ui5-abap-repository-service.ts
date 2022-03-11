@@ -75,14 +75,13 @@ export class Ui5AbapRepositoryService extends ODataService {
             if (response?.headers?.['sap-message']) {
                 const message = JSON.parse(response.headers['sap-message']);
                 prettyPrintMessage({ msg: message, log: this.log, host: frontendUrl });
-
-                // log url of created/updated app
-                const path = '/sap/bc/ui5_ui5' + (!app.name.startsWith('/') ? '/sap/' : '') + app.name.toLowerCase();
-                const query = this.defaults.params['sap-client']
-                    ? '?sap-client=' + this.defaults.params['sap-client']
-                    : '';
-                this.log.info(`App available at ${frontendUrl}${path}${query}`);
             }
+            // log url of created/updated app
+            const path = '/sap/bc/ui5_ui5' + (!app.name.startsWith('/') ? '/sap/' : '') + app.name.toLowerCase();
+            const query = this.defaults.params?.['sap-client']
+                ? '?sap-client=' + this.defaults.params['sap-client']
+                : '';
+            this.log.info(`App available at ${frontendUrl}${path}${query}`);
 
             return response;
         } catch (error) {
