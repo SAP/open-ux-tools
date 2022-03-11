@@ -29,6 +29,7 @@ export interface ErrorMessage {
         lang?: string;
         value: string;
     };
+    longtext_url?: string;
     innererror: {
         transactionid: string;
         timestamp: string;
@@ -70,7 +71,7 @@ function logFullURL({ host, path, log }: { host: string; path?: string; log: Log
  */
 export function prettyPrintError({ error, log, host }: { error: ErrorMessage; log: Logger; host?: string }): void {
     if (error) {
-        log.error(error.message?.value);
+        log.error(error.message?.value || 'An unknown error occurred.');
         if (error.innererror) {
             (error.innererror.errordetails || []).forEach((entry) => {
                 if (!entry.message.startsWith('<![CDATA')) {
@@ -92,7 +93,7 @@ export function prettyPrintError({ error, log, host }: { error: ErrorMessage; lo
  * @returns user friendly string
  */
 export const prettyPrintTimeInMs = (ms: number): string => {
-    const min = ms / 60 / 1000;
+    const min = (ms / 60 / 1000) | 0;
     if (min > 1) {
         return `${min} minutes`;
     } else if (min === 1) {
