@@ -1,7 +1,9 @@
 import { ServiceProvider } from '../base/service-provider';
-import { CatalogService, V2CatalogService, V4CatalogService } from './catalog';
+import type { CatalogService } from './catalog';
+import { V2CatalogService, V4CatalogService } from './catalog';
 
-import { AtoSettings, ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
+import type { AtoSettings } from './ato';
+import { ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';

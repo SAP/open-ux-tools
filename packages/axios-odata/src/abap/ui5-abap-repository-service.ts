@@ -1,4 +1,4 @@
-import { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import { readFileSync } from 'fs';
 import { prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
@@ -270,6 +270,8 @@ export class Ui5AbapRepositoryService extends ODataService {
      * Log errors more user friendly if it is a standard Gateway error.
      *
      * @param e error thrown by Axios after sending a request
+     * @param e.error
+     * @param e.host
      */
     protected logError({ error, host }: { error: AxiosError; host?: string }): void {
         this.log.error(error.message);

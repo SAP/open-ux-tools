@@ -1,4 +1,4 @@
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import { URL } from 'url';
 
 /**
@@ -41,9 +41,10 @@ export interface ErrorMessage {
 /**
  * Log a Gateway response.
  *
- * @param msg message returned from gateway
- * @param log logger to be used
- * @param host optional url that should logged as clickable url
+ * @param options
+ * @param options.msg message returned from gateway
+ * @param options.log logger to be used
+ * @param options.host optional url that should logged as clickable url
  */
 export function prettyPrintMessage({ msg, log, host }: { msg: SuccessMessage; log: Logger; host?: string }): void {
     log.info(msg.message);
@@ -55,7 +56,12 @@ export function prettyPrintMessage({ msg, log, host }: { msg: SuccessMessage; lo
     }
 }
 
-/** Log if both host and path are provided */
+/**
+ * @param root0
+ * @param root0.host
+ * @param root0.path
+ * @param root0.log
+ */
 function logFullURL({ host, path, log }: { host: string; path?: string; log: Logger }): void {
     if (host && path) {
         const base = new URL(host).origin; // We only care for the origin value
@@ -66,8 +72,10 @@ function logFullURL({ host, path, log }: { host: string; path?: string; log: Log
 /**
  * Log a Gateway error.
  *
- * @param error error message returned from gateway
- * @param log logger to be used
+ * @param  options
+ * @param options.error error message returned from gateway
+ * @param options.log logger to be used
+ * @param options.host optional host name to pretty print links
  */
 export function prettyPrintError({ error, log, host }: { error: ErrorMessage; log: Logger; host?: string }): void {
     if (error) {

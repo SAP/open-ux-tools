@@ -1,21 +1,13 @@
-import { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 import cloneDeep from 'lodash.clonedeep';
-import {
-    Destination,
-    getDestinationUrlForAppStudio,
-    getUserForDestinationService,
-    isAbapSystem
-} from '@sap-ux/btp-utils';
+import type { Destination } from '@sap-ux/btp-utils';
+import { getDestinationUrlForAppStudio, getUserForDestinationService, isAbapSystem } from '@sap-ux/btp-utils';
 import { Agent as HttpsAgent } from 'https';
-import {
-    attachConnectionHandler,
-    attachBasicAuthInterceptor,
-    ServiceInfo,
-    attachUaaAuthInterceptor,
-    RefreshTokenChanged
-} from './auth';
-import { ProviderConfiguration, ServiceProvider } from './base/service-provider';
-import { ODataService } from './base/odata-service';
+import type { ServiceInfo, RefreshTokenChanged } from './auth';
+import { attachConnectionHandler, attachBasicAuthInterceptor, attachUaaAuthInterceptor } from './auth';
+import type { ProviderConfiguration } from './base/service-provider';
+import { ServiceProvider } from './base/service-provider';
+import type { ODataService } from './base/odata-service';
 import { AbapServiceProvider } from './abap';
 
 type Class<T> = new (...args: any[]) => T;

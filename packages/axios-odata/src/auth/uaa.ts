@@ -1,11 +1,12 @@
 import open = require('open');
-import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
+import type { AxiosResponse, AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import express from 'express';
 import http from 'http';
-import { AddressInfo } from 'net';
+import type { AddressInfo } from 'net';
 import qs from 'qs';
-import { Logger } from '@sap-ux/logger';
-import { ServiceInfo } from '@sap-ux/btp-utils';
+import type { Logger } from '@sap-ux/logger';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { Redirect } from './redirect';
 import { prettyPrintTimeInMs } from '../abap/message';
 import { UAATimeoutError } from './error';

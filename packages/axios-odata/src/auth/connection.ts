@@ -1,5 +1,5 @@
-import { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import { ServiceProvider } from '../base/service-provider';
+import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import type { ServiceProvider } from '../base/service-provider';
 import { ConnectionError } from './error';
 import detectContentType from 'detect-content-type';
 
@@ -95,17 +95,26 @@ function throwIfHtmlLoginForm(response: AxiosResponse): void {
     }
 }
 
+/**
+ * @param response
+ * @returns true if the contents are determined to be HTML
+ */
 function isHtmlResponse(response: AxiosResponse): boolean {
     return getContentType(response.headers['content-type'], response.data).startsWith('text/html');
 }
 
+/**
+ * @param response
+ * @returns true if we get an HTML login form
+ */
 function isHtmlLoginForm(response: AxiosResponse): boolean {
     return isHtmlResponse(response) && typeof response.data === 'string' && !!response.data.match(/log[io]n/i);
 }
 
 /**
- * Given a possibly missing content-type header and response data,
- * either return the content-type value or try to detect the content type
+ * @param contentTypeHeader
+ * @param responseData
+ * @returns content type
  */
 function getContentType(contentTypeHeader: string | undefined, responseData: any): string {
     if (contentTypeHeader) {

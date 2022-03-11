@@ -1,4 +1,5 @@
-import { ODataService, ODataVersion } from '../../base/odata-service';
+import type { ODataVersion } from '../../base/odata-service';
+import { ODataService } from '../../base/odata-service';
 
 export interface ODataServiceInfo {
     id: string;

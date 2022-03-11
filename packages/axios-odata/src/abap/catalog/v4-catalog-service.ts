@@ -1,4 +1,5 @@
-import { CatalogService, Annotations, ODataServiceInfo } from './base';
+import type { Annotations, ODataServiceInfo } from './base';
+import { CatalogService } from './base';
 import { ODataVersion } from '../../base/odata-service';
 
 const V4_RECOMMENDED_ENTITYSET = 'RecommendedServices';

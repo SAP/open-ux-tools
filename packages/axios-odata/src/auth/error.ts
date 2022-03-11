@@ -1,4 +1,4 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 
 /** Wraps `Error`. Used as base class for other specific errors */
 export abstract class BaseError<T> extends Error {
