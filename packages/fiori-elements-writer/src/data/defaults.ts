@@ -80,7 +80,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
 
     // OVP must use a named default model
     if (feApp.template.type === TemplateType.OverviewPage) {
-        (feApp.service as OdataService).model = (feApp.service as OdataService).model || defaultModelName;
+        (feApp.service as OdataService).model = defaultModelName;
     }
 
     return feApp;
