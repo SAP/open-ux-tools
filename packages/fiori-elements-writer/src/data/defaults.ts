@@ -1,4 +1,5 @@
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { OdataService } from '@sap-ux/odata-service-writer';
 import readPkgUp from 'read-pkg-up';
 import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, FioriElementsApp, Template } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
@@ -79,7 +80,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
 
     // OVP must use a named default model
     if (feApp.template.type === TemplateType.OverviewPage) {
-        feApp.service.model = feApp.service.model || defaultModelName;
+        (feApp.service as OdataService).model = (feApp.service as OdataService).model || defaultModelName;
     }
 
     return feApp;

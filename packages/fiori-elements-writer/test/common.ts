@@ -81,7 +81,6 @@ export const v2Service: OdataService = {
         technicalName: 'SEPMRA_PROD_MAN_ANNO_MDL',
         xml: getTestData('sepmra_prod_man_v2', 'annotations')
     },
-    model: '',
     client: '012'
 };
 
