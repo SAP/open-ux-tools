@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
 import { ENV } from './app-studio.env';
-import { Destination } from './destination';
+import type { Destination } from './destination';
 
 /**
  * Check if this is exectued in SAP Business Application Studio.
