@@ -1,9 +1,11 @@
 {
     "sap.ui5": {
-        "@i18n": {
-            "type": "sap.ui.model.resource.ResourceModel",
-            "settings": {
-                "uri": "i18n/i18n.properties"
+        "models": {
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "uri": "i18n/i18n.properties"
+                }
             }
         }
     }

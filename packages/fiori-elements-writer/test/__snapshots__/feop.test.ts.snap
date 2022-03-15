@@ -3256,6 +3256,12 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"earlyRequests\\": true,
           \\"groupId\\": \\"$direct\\"
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"uri\\": \\"i18n/i18n.properties\\"
+        }
       }
     },
     \\"resources\\": {

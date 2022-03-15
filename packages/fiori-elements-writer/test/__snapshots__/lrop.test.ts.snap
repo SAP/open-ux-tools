@@ -2967,6 +2967,12 @@ appDescription=A Fiori application.",
             \\"sap-value-list\\": \\"none\\"
           }
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"uri\\": \\"i18n/i18n.properties\\"
+        }
       }
     },
     \\"resources\\": {
@@ -6524,6 +6530,12 @@ appDescription=A Fiori application.",
           \\"metadataUrlParams\\": {
             \\"sap-value-list\\": \\"none\\"
           }
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"uri\\": \\"i18n/i18n.properties\\"
         }
       }
     },
@@ -10362,6 +10374,12 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true,
           \\"groupId\\": \\"$direct\\"
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"uri\\": \\"i18n/i18n.properties\\"
         }
       }
     },

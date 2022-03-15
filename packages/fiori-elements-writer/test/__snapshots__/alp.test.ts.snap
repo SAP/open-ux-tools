@@ -5327,6 +5327,12 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             \\"sap-value-list\\": \\"none\\"
           }
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"uri\\": \\"i18n/i18n.properties\\"
+        }
       }
     },
     \\"resources\\": {
@@ -11466,6 +11472,12 @@ appDescription=A Fiori application.",
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true,
           \\"groupId\\": \\"$direct\\"
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"uri\\": \\"i18n/i18n.properties\\"
         }
       }
     },

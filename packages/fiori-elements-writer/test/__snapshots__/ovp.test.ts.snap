@@ -1079,6 +1079,12 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
             \\"sap-value-list\\": \\"none\\"
           }
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"uri\\": \\"i18n/i18n.properties\\"
+        }
       }
     },
     \\"resources\\": {
