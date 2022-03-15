@@ -1,4 +1,5 @@
-import { AbapServiceProvider, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-odata';
+import type { AbapServiceProvider } from '@sap-ux/axios-odata';
+import { createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-odata';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
@@ -7,6 +8,9 @@ if (!existsSync(outDir)) {
     mkdirSync(outDir);
 }
 
+/**
+ * @param provider
+ */
 async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
     const catalog = provider.catalog(ODataVersion.v2);
 
@@ -27,6 +31,13 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
     }
 }
 
+/**
+ * @param env
+ * @param env.TEST_SYSTEM
+ * @param env.TEST_USER
+ * @param env.TEST_PASSWORD
+ * @returns Promise<void>
+ */
 async function checkAbapSystem(env: { TEST_SYSTEM: string; TEST_USER: string; TEST_PASSWORD: string }): Promise<void> {
     const provider = createForAbap({
         baseURL: env.TEST_SYSTEM,
@@ -38,6 +49,11 @@ async function checkAbapSystem(env: { TEST_SYSTEM: string; TEST_USER: string; TE
     return callAFewAbapServices(provider);
 }
 
+/**
+ * @param env
+ * @param env.TEST_SERVICE_INFO_PATH
+ * @returns Promise<void>
+ */
 async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Promise<void> {
     const serviceInfo = JSON.parse(readFileSync(env.TEST_SERVICE_INFO_PATH, 'utf-8'));
     const provider = createForAbapOnBtp(serviceInfo, undefined, (newToken: string) => {
