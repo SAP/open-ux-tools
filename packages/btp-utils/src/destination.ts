@@ -82,7 +82,7 @@ export function isGenericODataDestination(destination: Destination): boolean {
  */
 export function isPartialUrlDestination(destination: Destination): boolean {
     return Boolean(
-        !destination.WebIDEAdditionalData?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination)
+        !destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination)
     );
 }
 
@@ -94,6 +94,6 @@ export function isPartialUrlDestination(destination: Destination): boolean {
  */
 export function isFullUrlDestination(destination: Destination): boolean {
     return Boolean(
-        destination.WebIDEAdditionalData?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination)
+        destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination)
     );
 }
