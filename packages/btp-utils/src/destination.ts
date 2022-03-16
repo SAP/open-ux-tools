@@ -81,9 +81,7 @@ export function isGenericODataDestination(destination: Destination): boolean {
  * @returns true, if this destination is generic odata and 'full_url' attribute is not set
  */
 export function isPartialUrlDestination(destination: Destination): boolean {
-    return Boolean(
-        !destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination)
-    );
+    return Boolean(!destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination));
 }
 
 /**
@@ -93,7 +91,5 @@ export function isPartialUrlDestination(destination: Destination): boolean {
  * @returns true, if this destination has the generic odata and 'full_url' attribute is set
  */
 export function isFullUrlDestination(destination: Destination): boolean {
-    return Boolean(
-        destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination)
-    );
+    return Boolean(destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination));
 }
