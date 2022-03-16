@@ -2970,9 +2970,7 @@ appDescription=A Fiori application.",
       },
       \\"@i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"settings\\": {
-          \\"uri\\": \\"i18n/i18n.properties\\"
-        }
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -6534,9 +6532,7 @@ appDescription=A Fiori application.",
       },
       \\"@i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"settings\\": {
-          \\"uri\\": \\"i18n/i18n.properties\\"
-        }
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -10378,9 +10374,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       },
       \\"@i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"settings\\": {
-          \\"uri\\": \\"i18n/i18n.properties\\"
-        }
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {

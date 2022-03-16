@@ -1082,9 +1082,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
       },
       \\"@i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"settings\\": {
-          \\"uri\\": \\"i18n/i18n.properties\\"
-        }
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
