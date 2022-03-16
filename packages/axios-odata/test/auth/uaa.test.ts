@@ -44,10 +44,25 @@ describe('UAA', () => {
             { response: { data: { email: 'email' } }, expectedUserInfo: 'email' },
             { response: { data: { name: 'name' } }, expectedUserInfo: 'name' },
             { response: { data: { email: 'email', name: 'name' } }, expectedUserInfo: 'email' }
-        ])('Returns email/user if available', async ({ response, expectedUserInfo }) => {
+        ])('response: $response, returns: $expectedUserInfo', async ({ response, expectedUserInfo }) => {
             jest.spyOn(axios, 'request').mockResolvedValueOnce(response);
 
             await expect(uaaInstance().getUserInfo('someToken')).resolves.toEqual(expectedUserInfo);
+        });
+    });
+
+    describe('getAccessToken', () => {
+        it('returns an access token given a refresh token', async () => {
+            const accessToken = 'accessToken';
+            const refreshToken = 'refreshToken';
+            jest.spyOn(axios, 'request').mockResolvedValueOnce({
+                data: {
+                    access_token: accessToken,
+                    refresh_token: refreshToken
+                }
+            });
+
+            await expect(uaaInstance().getAccessToken(refreshToken)).resolves.toEqual(accessToken);
         });
     });
 });
