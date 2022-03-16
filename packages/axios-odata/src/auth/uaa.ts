@@ -76,7 +76,7 @@ export class Uaa {
      *
      * @returns logout url
      */
-    get logoutUrl(): string {
+    protected get logoutUrl(): string {
         return this.url + '/logout.do';
     }
 
@@ -85,7 +85,7 @@ export class Uaa {
      *
      * @returns system id
      */
-    get systemId(): string {
+    protected get systemId(): string {
         return this.serviceInfo.systemid;
     }
 
