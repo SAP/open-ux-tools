@@ -12,14 +12,5 @@
                 }
             }
         }
-    }<% if (type !== 'ovp') { %>,
-    "sap.ui.generic.app": {
-        "_version": "1.3.0",
-        "settings": {
-            "forceGlobalRefresh": false,
-            "objectPageHeaderType": "Dynamic",
-            "considerAnalyticalParameters": true,
-            "showDraftToggle": false
-        }
-    }<% } %>
+    }
 }

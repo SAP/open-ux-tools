@@ -2983,6 +2983,13 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"considerAnalyticalParameters\\": true,
+      \\"showDraftToggle\\": false
+    },
     \\"pages\\": {
       \\"ListReport|SEPMRA_C_PD_Product\\": {
         \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
@@ -3020,13 +3027,6 @@ appDescription=A Fiori application.",
           }
         }
       }
-    },
-    \\"_version\\": \\"1.3.0\\",
-    \\"settings\\": {
-      \\"forceGlobalRefresh\\": false,
-      \\"objectPageHeaderType\\": \\"Dynamic\\",
-      \\"considerAnalyticalParameters\\": true,
-      \\"showDraftToggle\\": false
     }
   },
   \\"sap.fiori\\": {
@@ -6545,6 +6545,13 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"considerAnalyticalParameters\\": true,
+      \\"showDraftToggle\\": false
+    },
     \\"pages\\": {
       \\"ListReport|SEPMRA_C_PD_Product\\": {
         \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
@@ -6582,13 +6589,6 @@ appDescription=A Fiori application.",
           }
         }
       }
-    },
-    \\"_version\\": \\"1.3.0\\",
-    \\"settings\\": {
-      \\"forceGlobalRefresh\\": false,
-      \\"objectPageHeaderType\\": \\"Dynamic\\",
-      \\"considerAnalyticalParameters\\": true,
-      \\"showDraftToggle\\": false
     }
   },
   \\"sap.fiori\\": {
