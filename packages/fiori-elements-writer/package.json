@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/fiori-elements-writer",
-    "description": "Writing module for Fiori elements templates.",
+    "description": "SAP Fiori elements application writer",
     "version": "0.1.2",
     "repository": {
         "type": "git",
