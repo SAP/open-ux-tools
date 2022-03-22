@@ -1,8 +1,11 @@
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { OdataService } from '@sap-ux/odata-service-writer';
 import readPkgUp from 'read-pkg-up';
 import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, FioriElementsApp, Template } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
 import { getBaseComponent, getUi5Libs } from './templateAttributes';
+
+const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
 
 /**
  * Updates the template settings to defaults if not provided.
@@ -73,6 +76,11 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
 
     if (!feApp.service.localAnnotationsName) {
         feApp.service.localAnnotationsName = 'annotation';
+    }
+
+    // OVP must use a named default model
+    if (feApp.template.type === TemplateType.OverviewPage) {
+        (feApp.service as OdataService).model = defaultModelName;
     }
 
     return feApp;

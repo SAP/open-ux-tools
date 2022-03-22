@@ -5327,6 +5327,10 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
             \\"sap-value-list\\": \\"none\\"
           }
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -5339,6 +5343,13 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     }
   },
   \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"considerAnalyticalParameters\\": true,
+      \\"showDraftToggle\\": false
+    },
     \\"pages\\": {
       \\"AnalyticalListPage|SEPMRA_C_ALP_SlsOrdItemCubeALPResults\\": {
         \\"entitySet\\": \\"SEPMRA_C_ALP_SlsOrdItemCubeALPResults\\",
@@ -5376,13 +5387,6 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
           }
         }
       }
-    },
-    \\"_version\\": \\"1.3.0\\",
-    \\"settings\\": {
-      \\"forceGlobalRefresh\\": false,
-      \\"objectPageHeaderType\\": \\"Dynamic\\",
-      \\"considerAnalyticalParameters\\": true,
-      \\"showDraftToggle\\": false
     }
   },
   \\"sap.fiori\\": {
@@ -11467,6 +11471,10 @@ appDescription=A Fiori application.",
           \\"earlyRequests\\": true,
           \\"groupId\\": \\"$direct\\"
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
