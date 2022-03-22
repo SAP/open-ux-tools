@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.11.2
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+-   Updated dependencies [7107fbc]
+    -   @sap-ux/ui5-config@0.12.1
+
 ## 0.11.1
 
 ### Patch Changes

@@ -12,7 +12,7 @@ import { default as requestPromise } from 'request-promise';
 import * as utils from '../../src/base/utils';
 
 const middlewaresPath = join(__dirname, '..', '..', 'src', 'ui5');
-const projectPath = join(__dirname, '..', '..', 'test', 'test-project');
+const projectPath = join(__dirname, '..', '..', 'test', 'test-input');
 middlewareRepository.addMiddleware({
     name: 'ui5-proxy-middleware',
     specVersion: '1.0',

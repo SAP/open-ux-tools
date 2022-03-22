@@ -1,5 +1,13 @@
 # @sap-ux/store
 
+## 0.1.1
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+-   Updated dependencies [7107fbc]
+    -   @sap-ux/logger@0.1.3
+
 ## 0.1.0
 
 ### Minor Changes
