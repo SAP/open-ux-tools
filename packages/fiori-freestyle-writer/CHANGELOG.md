@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.11.2
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+-   Updated dependencies [7107fbc]
+    -   @sap-ux/odata-service-writer@0.11.2
+    -   @sap-ux/ui5-application-writer@0.12.2
+    -   @sap-ux/ui5-config@0.12.1
+
 ## 0.11.1
 
 ### Patch Changes
