@@ -14,6 +14,6 @@ module.exports = {
             }
         ]
     ],
-    modulePathIgnorePatterns: ['<rootDir>/dist'],
+    modulePathIgnorePatterns: ['<rootDir>/dist', '<rootDir>/test/abap/mockResponses/'],
     verbose: true
 };
