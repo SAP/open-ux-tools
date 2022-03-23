@@ -25,10 +25,11 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
 
     /**
      * Get the username that is currently logged in. This is the basic implementation that could be overwritten by subclasses.
+     * The function returns a promise because it may be required to fetch the information from the backend
      *
      * @returns the username
      */
-    public user(): Promise<string> {
+    public user(): Promise<string | undefined> {
         return Promise.resolve(this.defaults.auth?.username);
     }
 
