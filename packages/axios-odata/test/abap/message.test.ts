@@ -17,8 +17,8 @@ describe('message helpers', () => {
         };
         const infoMock = (log.info = jest.fn());
         prettyPrintMessage({ msg, log, host });
-        // log message, url, and each detail
-        expect(infoMock).toBeCalledTimes(2 + msg.details.length);
+        // log main message, two messages for the full url, and each detail
+        expect(infoMock).toBeCalledTimes(1 + 2 + msg.details.length);
     });
 
     test('prettyPrintError', () => {
