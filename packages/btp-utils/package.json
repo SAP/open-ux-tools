@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/btp-utils",
     "version": "0.8.0",
-    "description": "Module with utils common in Fiori tools",
+    "description": "Library to simplify working with SAP BTP specific features especially in SAP Business Application",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",

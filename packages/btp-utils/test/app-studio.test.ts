@@ -35,7 +35,7 @@ jest.mock('@sap/cf-tools', () => {
     };
 });
 
-describe('App Studio Utils', () => {
+describe('App Studio', () => {
     describe('isAppStudio', () => {
         it('returns true when env variable is truthy', () => {
             process.env[ENV.H2O_URL] = '1';
