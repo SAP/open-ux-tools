@@ -24,8 +24,8 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     protected atoSettings: AtoSettings;
 
     /**
-     * Get the username that is currently logged in. This is the basic implementation that could be overwritten by subclasses.
-     * The function returns a promise because it may be required to fetch the information from the backend
+     * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
+     * The function returns a promise because it may be required to fetch the information from the backend.
      *
      * @returns the username
      */
