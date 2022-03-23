@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-proxy-middleware",
     "description": "UI5 proxy middleware",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {

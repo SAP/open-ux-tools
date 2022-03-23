@@ -2967,6 +2967,10 @@ appDescription=A Fiori application.",
             \\"sap-value-list\\": \\"none\\"
           }
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -2979,6 +2983,13 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"considerAnalyticalParameters\\": true,
+      \\"showDraftToggle\\": false
+    },
     \\"pages\\": {
       \\"ListReport|SEPMRA_C_PD_Product\\": {
         \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
@@ -3016,13 +3027,6 @@ appDescription=A Fiori application.",
           }
         }
       }
-    },
-    \\"_version\\": \\"1.3.0\\",
-    \\"settings\\": {
-      \\"forceGlobalRefresh\\": false,
-      \\"objectPageHeaderType\\": \\"Dynamic\\",
-      \\"considerAnalyticalParameters\\": true,
-      \\"showDraftToggle\\": false
     }
   },
   \\"sap.fiori\\": {
@@ -6525,6 +6529,10 @@ appDescription=A Fiori application.",
             \\"sap-value-list\\": \\"none\\"
           }
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -6537,6 +6545,13 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"considerAnalyticalParameters\\": true,
+      \\"showDraftToggle\\": false
+    },
     \\"pages\\": {
       \\"ListReport|SEPMRA_C_PD_Product\\": {
         \\"entitySet\\": \\"SEPMRA_C_PD_Product\\",
@@ -6574,13 +6589,6 @@ appDescription=A Fiori application.",
           }
         }
       }
-    },
-    \\"_version\\": \\"1.3.0\\",
-    \\"settings\\": {
-      \\"forceGlobalRefresh\\": false,
-      \\"objectPageHeaderType\\": \\"Dynamic\\",
-      \\"considerAnalyticalParameters\\": true,
-      \\"showDraftToggle\\": false
     }
   },
   \\"sap.fiori\\": {
@@ -10363,6 +10371,10 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"earlyRequests\\": true,
           \\"groupId\\": \\"$direct\\"
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {

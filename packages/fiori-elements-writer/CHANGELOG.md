@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.1.3
+
+### Patch Changes
+
+-   a8e68f8: Multiple bug fixes see https://github.com/SAP/open-ux-tools/issues/384
+-   7107fbc: chore - use import type in TS code.
+-   Updated dependencies [7107fbc]
+    -   @sap-ux/odata-service-writer@0.11.2
+    -   @sap-ux/ui5-application-writer@0.12.2
+    -   @sap-ux/ui5-config@0.12.1
+
 ## 0.1.2
 
 ### Patch Changes
