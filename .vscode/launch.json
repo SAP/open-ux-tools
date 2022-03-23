@@ -63,13 +63,13 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "axios-odata: Example CLI",
+            "name": "examples: OData CLI",
             "runtimeExecutable": "pnpm",
             "runtimeArgs": ["start", "--", "${input:axiosODataExample}"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,
-            "cwd": "${workspaceFolder}/examples/axios-odata"
+            "cwd": "${workspaceFolder}/examples/odata-cli"
         }
     ]
 }

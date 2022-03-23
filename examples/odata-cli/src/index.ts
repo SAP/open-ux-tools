@@ -1,5 +1,6 @@
-import type { AbapServiceProvider } from '@sap-ux/axios-odata';
+import { AbapServiceProvider, createForDestination } from '@sap-ux/axios-odata';
 import { createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-odata';
+import { isAppStudio, listDestinations, isAbapSystem } from '@sap-ux/btp-utils';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
@@ -62,20 +63,54 @@ async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Prom
     return callAFewAbapServices(provider);
 }
 
+/**
+ * @param env
+ * @param env.TEST_DESTINATION
+ * @returns Promise<void>
+ */
+async function checkDestination(env: {
+    TEST_DESTINATION: string;
+    TEST_USER?: string;
+    TEST_PASSWORD?: string;
+}): Promise<void> {
+    const destinations = await listDestinations();
+    if (destinations[env.TEST_DESTINATION] && isAbapSystem(destinations[env.TEST_DESTINATION])) {
+        const provider = createForDestination(
+            env.TEST_USER
+                ? {
+                      auth: {
+                          username: env.TEST_USER,
+                          password: env.TEST_PASSWORD
+                      }
+                  }
+                : {},
+            destinations[env.TEST_DESTINATION]
+        ) as AbapServiceProvider;
+        return callAFewAbapServices(provider);
+    } else {
+        console.log(`Invalid destination ${env.TEST_DESTINATION}`);
+    }
+}
+
 const args = process.argv.slice(3);
 const test = args.length > 0 ? args[0] : undefined;
 const processEnv = process.env as any;
-switch (test) {
-    case 'abap':
-        checkAbapSystem(processEnv);
-        break;
-    case 'btp':
-        checkAbapBtpSystem(processEnv);
-        break;
-    case undefined:
-        console.log(`Test name missing, try 'pnpm test -- abap'`);
-        break;
-    default:
-        console.log(`Unknown manual test ${test}`);
-        break;
+
+if (isAppStudio()) {
+    checkDestination(processEnv);
+} else {
+    switch (test) {
+        case 'abap':
+            checkAbapSystem(processEnv);
+            break;
+        case 'btp':
+            checkAbapBtpSystem(processEnv);
+            break;
+        case undefined:
+            console.log(`Test name missing, try 'pnpm test -- abap'`);
+            break;
+        default:
+            console.log(`Unknown manual test ${test}`);
+            break;
+    }
 }
