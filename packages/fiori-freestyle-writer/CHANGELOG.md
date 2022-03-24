@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.11.3
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+-   Updated dependencies [0837ac1]
+    -   @sap-ux/odata-service-writer@0.11.3
+    -   @sap-ux/ui5-application-writer@0.12.3
+    -   @sap-ux/ui5-config@0.12.2
+
 ## 0.11.2
 
 ### Patch Changes
