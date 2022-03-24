@@ -1,5 +1,13 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.0.2
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+-   Updated dependencies [0837ac1]
+    -   @sap-ux/logger@0.1.4
+
 ## 1.0.1
 
 ### Patch Changes

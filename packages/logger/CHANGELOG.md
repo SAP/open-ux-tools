@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.1.4
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+
 ## 0.1.3
 
 ### Patch Changes

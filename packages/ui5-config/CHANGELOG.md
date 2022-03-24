@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.12.2
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+-   Updated dependencies [0837ac1]
+    -   @sap-ux/yaml@0.11.3
+
 ## 0.12.1
 
 ### Patch Changes
