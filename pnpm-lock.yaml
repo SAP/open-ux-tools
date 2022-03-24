@@ -59,10 +59,12 @@ importers:
         specifiers:
             '@sap-ux/axios-odata': workspace:*
             '@sap-ux/btp-utils': workspace:*
+            '@sap-ux/logger': workspace:*
             dotenv: 10.0.0
         dependencies:
             '@sap-ux/axios-odata': link:../../packages/axios-odata
             '@sap-ux/btp-utils': link:../../packages/btp-utils
+            '@sap-ux/logger': link:../../packages/logger
             dotenv: 10.0.0
 
     packages/axios-odata:

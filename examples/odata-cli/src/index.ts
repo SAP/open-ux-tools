@@ -1,16 +1,46 @@
-import { AbapServiceProvider, createForDestination } from '@sap-ux/axios-odata';
-import { createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-odata';
+import type { AbapServiceProvider } from '@sap-ux/axios-odata';
+import { createForDestination, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-odata';
 import { isAppStudio, listDestinations, isAbapSystem } from '@sap-ux/btp-utils';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { ToolsLogger } from '@sap-ux/logger';
 
+// read CLI arguments as well as environment variables
+const args = process.argv.slice(3);
+const test = args.length > 0 ? args[0] : undefined;
+const processEnv = process.env as any;
+
+// create a temp folder for output
 const outDir = join(process.cwd(), '.tmp');
 if (!existsSync(outDir)) {
     mkdirSync(outDir);
 }
+const logger = new ToolsLogger();
+
+// execute different scripts depending on the environment
+if (isAppStudio()) {
+    checkDestination(processEnv);
+} else {
+    switch (test) {
+        case 'abap':
+            checkAbapSystem(processEnv);
+            break;
+        case 'btp':
+            checkAbapBtpSystem(processEnv);
+            break;
+        case undefined:
+            logger.info(`Test name missing, try 'pnpm test -- abap'`);
+            break;
+        default:
+            logger.info(`Unknown manual test ${test}`);
+            break;
+    }
+}
 
 /**
- * @param provider
+ * Execute a sequence of test calls using the given provider.
+ *
+ * @param provider instance of a service provider
  */
 async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
     const catalog = provider.catalog(ODataVersion.v2);
@@ -33,13 +63,19 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
 }
 
 /**
- * @param env
- * @param env.TEST_SYSTEM
- * @param env.TEST_USER
- * @param env.TEST_PASSWORD
+ * Read the required values for connecting to an on-premise SAP system from the env variable, create a provider instance and execute the system agnostic example script.
+ *
+ * @param env object reprensenting the content of the .env file.
+ * @param env.TEST_SYSTEM base url of the test system
+ * @param env.TEST_USER optional username
+ * @param env.TEST_PASSWORD optional password
  * @returns Promise<void>
  */
-async function checkAbapSystem(env: { TEST_SYSTEM: string; TEST_USER: string; TEST_PASSWORD: string }): Promise<void> {
+async function checkAbapSystem(env: {
+    TEST_SYSTEM: string;
+    TEST_USER?: string;
+    TEST_PASSWORD?: string;
+}): Promise<void> {
     const provider = createForAbap({
         baseURL: env.TEST_SYSTEM,
         auth: {
@@ -51,21 +87,27 @@ async function checkAbapSystem(env: { TEST_SYSTEM: string; TEST_USER: string; TE
 }
 
 /**
- * @param env
- * @param env.TEST_SERVICE_INFO_PATH
+ * Read the required values for connecting to an ABAP environment on BTP from the env variable, create a provider instance and execute the system agnostic example script.
+ *
+ * @param env object reprensenting the content of the .env file.
+ * @param env.TEST_SERVICE_INFO_PATH path to a local copy of the service configuration file
  * @returns Promise<void>
  */
 async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Promise<void> {
     const serviceInfo = JSON.parse(readFileSync(env.TEST_SERVICE_INFO_PATH, 'utf-8'));
     const provider = createForAbapOnBtp(serviceInfo, undefined, (newToken: string) => {
-        console.log(`New refresh token issued ${newToken}`);
+        logger.info(`New refresh token issued ${newToken}`);
     });
     return callAFewAbapServices(provider);
 }
 
 /**
- * @param env
- * @param env.TEST_DESTINATION
+ * Read the required values for connecting to a destination from the env variable, create a provider instance and execute the system agnostic example script.
+ *
+ * @param env object reprensenting the content of the .env file.
+ * @param env.TEST_DESTINATION name of destination
+ * @param env.TEST_USER optional username
+ * @param env.TEST_PASSWORD optional password
  * @returns Promise<void>
  */
 async function checkDestination(env: {
@@ -86,31 +128,8 @@ async function checkDestination(env: {
                 : {},
             destinations[env.TEST_DESTINATION]
         ) as AbapServiceProvider;
-        return callAFewAbapServices(provider);
+        await callAFewAbapServices(provider);
     } else {
-        console.log(`Invalid destination ${env.TEST_DESTINATION}`);
-    }
-}
-
-const args = process.argv.slice(3);
-const test = args.length > 0 ? args[0] : undefined;
-const processEnv = process.env as any;
-
-if (isAppStudio()) {
-    checkDestination(processEnv);
-} else {
-    switch (test) {
-        case 'abap':
-            checkAbapSystem(processEnv);
-            break;
-        case 'btp':
-            checkAbapBtpSystem(processEnv);
-            break;
-        case undefined:
-            console.log(`Test name missing, try 'pnpm test -- abap'`);
-            break;
-        default:
-            console.log(`Unknown manual test ${test}`);
-            break;
+        logger.info(`Invalid destination ${env.TEST_DESTINATION}`);
     }
 }

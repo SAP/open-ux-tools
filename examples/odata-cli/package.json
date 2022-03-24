@@ -17,6 +17,7 @@
     "dependencies": {
         "@sap-ux/axios-odata": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
         "dotenv": "10.0.0"
     },
     "files": [
