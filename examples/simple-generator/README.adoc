@@ -1,5 +1,20 @@
 # Example: Simple Yeoman Generator For Fiori Elements
+This is a simple example of how to integrate the `@sap-ux/fiori-elements-writer` into a Yeoman generator.
 
-
+## Prerequisite
+Before you can use the generator, you need to globally install `yo` and build the generator
+```
+npm install -g yo
+pnpm build
+```
 
 ## Usage
+To start the generator execute `pnpm start`.
+When prompted, enter the request values e.g.
+```
+? Application name myapp
+? Service url http://test.example.com/my/service/path
+? Main entity MyEntity
+```
+
+The project will be generated in subfolder of `.tmp`.

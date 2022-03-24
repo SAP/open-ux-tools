@@ -1,4 +1,5 @@
 import { hello } from '../extension';
+import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { FioriElementsApp, LROPSettings, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
 import { generate } from '@sap-ux/fiori-elements-writer';
@@ -6,24 +7,16 @@ import { generate } from '@sap-ux/fiori-elements-writer';
 interface Answers {
     name: string;
     entity: string;
+    service: string;
 }
 
 export default class extends Generator {
-    private appConfig: Partial<FioriElementsApp<LROPSettings>> = {};
+    private appConfig!: FioriElementsApp<LROPSettings>;
 
     initializing(): void {
         this.log(
             'Example of a simple Fiori elements for OData v4 generator that only creates listreport objectpage applications.'
         );
-        this.appConfig.template = {
-            type: TemplateType.ListReportObjectPage,
-            settings: {
-                entityConfig: {}
-            }
-        };
-        this.appConfig.service = {
-            version: OdataVersion.v4
-        };
     }
 
     async prompting(): Promise<void> {
@@ -31,24 +24,59 @@ export default class extends Generator {
             {
                 type: 'input',
                 name: 'name',
-                message: 'Application name'
+                message: 'Application name',
+                validate: (answer) => !!answer
+            },
+            {
+                type: 'input',
+                name: 'service',
+                message: 'Service url',
+                validate: (answer) => !!answer
             },
             {
                 type: 'input',
                 name: 'entity',
-                message: 'Main entity'
+                message: 'Main entity',
+                validate: (answer) => !!answer
             }
         ]);
 
-        this.appConfig.template.settings.entityConfig.mainEntity = {
-            entityName: answers.entity
+        const service = new URL(answers.service);
+
+        this.appConfig = {
+            app: {
+                id: answers.name
+            },
+            template: {
+                type: TemplateType.ListReportObjectPage,
+                settings: {
+                    entityConfig: {
+                        mainEntity: {
+                            entityName: answers.entity
+                        }
+                    }
+                }
+            },
+            package: {
+                name: answers.name
+            },
+            service: {
+                version: OdataVersion.v4,
+                url: service.origin,
+                path: service.pathname
+            }
         };
-        this.appConfig.app = {
-            id: answers.name
+        // TODO: remove once #408 is fixed
+        this.appConfig.appOptions = {
+            loadReuseLibs: false
+        };
+        // TODO: remove once #409 is fixed
+        this.appConfig.ui5 = {
+            version: '1.94'
         };
     }
 
     async writing(): Promise<void> {
-        generate('./.tmp', this.appConfig as FioriElementsApp<unknown>, this.fs);
+        generate(join('.tmp', this.appConfig.package.name), this.appConfig, this.fs);
     }
 }
