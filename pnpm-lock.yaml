@@ -58,6 +58,8 @@ importers:
         specifiers:
             '@sap-ux/fiori-elements-writer': workspace:*
             '@sap-ux/logger': workspace:*
+            '@types/yeoman-environment': 2.10.6
+            '@types/yeoman-generator': 5.2.9
             dotenv: 10.0.0
             yeoman-generator: 5.6.1
         dependencies:
@@ -65,6 +67,9 @@ importers:
             '@sap-ux/logger': link:../../packages/logger
             dotenv: 10.0.0
             yeoman-generator: 5.6.1
+        devDependencies:
+            '@types/yeoman-environment': 2.10.6
+            '@types/yeoman-generator': 5.2.9
 
     packages/fe-fpm-writer:
         specifiers:
@@ -1727,6 +1732,13 @@ packages:
             '@types/ms': 0.7.31
         dev: true
 
+    /@types/diff/5.0.2:
+        resolution:
+            {
+                integrity: sha512-uw8eYMIReOwstQ0QKF0sICefSy8cNO/v7gOTiIy9SbwuHyEecJUm7qlgueOO5S1udZ5I/irVydHVwMchgzbKTg==
+            }
+        dev: true
+
     /@types/ejs/3.1.0:
         resolution:
             {
@@ -1808,6 +1820,16 @@ packages:
             }
         dependencies:
             i18next: 19.9.2
+        dev: true
+
+    /@types/inquirer/8.2.0:
+        resolution:
+            {
+                integrity: sha512-BNoMetRf3gmkpAlV5we+kxyZTle7YibdOntIZbU5pyIfMdcwy784KfeZDAcuyMznkh5OLa17RVXZOGA5LTlkgQ==
+            }
+        dependencies:
+            '@types/through': 0.0.30
+            rxjs: 7.5.5
         dev: true
 
     /@types/is-ci/3.0.0:
@@ -2086,6 +2108,22 @@ packages:
             }
         dev: true
 
+    /@types/text-table/0.2.2:
+        resolution:
+            {
+                integrity: sha512-dGoI5Af7To0R2XE8wJuc6vwlavWARsCh3UKJPjWs1YEqGUqfgBI/j/4GX0yf19/DsDPPf0YAXWAp8psNeIehLg==
+            }
+        dev: true
+
+    /@types/through/0.0.30:
+        resolution:
+            {
+                integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==
+            }
+        dependencies:
+            '@types/node': 17.0.9
+        dev: true
+
     /@types/vinyl/2.0.6:
         resolution:
             {
@@ -2135,6 +2173,38 @@ packages:
             }
         dependencies:
             '@types/yargs-parser': 20.2.1
+        dev: true
+
+    /@types/yeoman-environment/2.10.6:
+        resolution:
+            {
+                integrity: sha512-LxouMcULWzEr919MQ82g0qPc7JypnldWA1IVMFUcnqn8nWKt2jjxK8RyxUohxzVDG2ou9EH1upt2jGqprhcnNA==
+            }
+        dependencies:
+            '@types/diff': 5.0.2
+            '@types/inquirer': 8.2.0
+            '@types/mem-fs': 1.1.2
+            '@types/text-table': 0.2.2
+            '@types/vinyl': 2.0.6
+            '@types/yeoman-generator': 5.2.9
+            chalk: 4.1.2
+            commander: 9.1.0
+            execa: 5.1.1
+            rxjs: 6.6.7
+        dev: true
+
+    /@types/yeoman-generator/5.2.9:
+        resolution:
+            {
+                integrity: sha512-nLcJvIoq83s/FBjTgSjtwPEUk6U8nVzVZ4fBOh9Untdgu00MjjQOFORob8kzlTSJIh0MC9mPnNuV2ErD/NlabQ==
+            }
+        dependencies:
+            '@types/debug': 4.1.7
+            '@types/ejs': 3.1.0
+            '@types/inquirer': 8.2.0
+            '@types/mem-fs-editor': 7.0.1
+            '@types/yeoman-environment': 2.10.6
+            rxjs: 6.6.7
         dev: true
 
     /@typescript-eslint/eslint-plugin/5.10.1_0f442f6b60390429061d5d9b6bcaaba6:
@@ -3542,6 +3612,14 @@ packages:
             }
         engines: { node: '>= 10' }
         dev: false
+
+    /commander/9.1.0:
+        resolution:
+            {
+                integrity: sha512-i0/MaqBtdbnJ4XQs4Pmyb+oFQl+q0lsAmokVUH92SlSw4fkeAcG3bVon+Qt7hmtF+u3Het6o4VgrcY3qAoEB6w==
+            }
+        engines: { node: ^12.20.0 || >=14 }
+        dev: true
 
     /comment-parser/1.3.0:
         resolution:
@@ -9870,6 +9948,25 @@ packages:
         resolution: { integrity: sha1-6Eg5bwV9Ij8kOGkkYY4laUFh7Ec= }
         dependencies:
             aproba: 1.2.0
+        dev: true
+
+    /rxjs/6.6.7:
+        resolution:
+            {
+                integrity: sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
+            }
+        engines: { npm: '>=2.0.0' }
+        dependencies:
+            tslib: 1.14.1
+        dev: true
+
+    /rxjs/7.5.5:
+        resolution:
+            {
+                integrity: sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==
+            }
+        dependencies:
+            tslib: 2.3.1
         dev: true
 
     /safe-buffer/5.1.2:
