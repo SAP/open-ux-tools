@@ -1,7 +1,7 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { Package } from '@sap-ux/ui5-application-writer';
+import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
@@ -91,5 +91,5 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     return fs;
 }
 
-export { generate, FioriElementsApp };
+export { generate, FioriElementsApp, App };
 export * from './types';

@@ -57,7 +57,7 @@ const templateLibs: TemplateLibs = {
             ui5Libs: [...commonUi5Libs[OdataVersion.v2], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
         },
         [TemplateType.Worklist]: {
-            baseComponent: appComponentLibOVP,
+            baseComponent: appComponentLibGeneric,
             ui5Libs: [...commonUi5Libs[OdataVersion.v2], 'sap.collaboration']
         }
     },

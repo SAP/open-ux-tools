@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.12.1
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+-   Updated dependencies [7107fbc]
+    -   @sap-ux/yaml@0.11.2
+
 ## 0.12.0
 
 ### Minor Changes

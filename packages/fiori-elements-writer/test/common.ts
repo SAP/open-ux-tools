@@ -1,17 +1,9 @@
-import { join } from 'path';
+import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFileSync } from 'fs';
 import { create as createStore } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import {
-    FEOPSettings,
-    FioriElementsApp,
-    LROPSettings,
-    OVPSettings,
-    Template,
-    TemplateType,
-    WorklistSettings
-} from '../src/types';
-import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
+import { join } from 'path';
+import { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
 
 export const testOutputDir = join(__dirname, 'test-output');
 
@@ -89,7 +81,6 @@ export const v2Service: OdataService = {
         technicalName: 'SEPMRA_PROD_MAN_ANNO_MDL',
         xml: getTestData('sepmra_prod_man_v2', 'annotations')
     },
-    model: '',
     client: '012'
 };
 
@@ -106,7 +97,7 @@ export const v4TemplateSettings: LROPSettings | FEOPSettings | WorklistSettings 
     }
 };
 
-export const v2TemplateSettings: LROPSettings | WorklistSettings | OVPSettings = {
+export const v2TemplateSettings: LROPSettings | WorklistSettings = {
     entityConfig: {
         mainEntity: {
             entityName: 'SEPMRA_C_PD_Product'

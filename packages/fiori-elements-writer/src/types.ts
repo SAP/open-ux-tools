@@ -91,7 +91,7 @@ export interface FioriApp extends App {
 }
 export interface FioriElementsApp<T> extends Ui5App {
     template: Template<T>;
-    service: OdataService;
+    service: Omit<OdataService, 'model'>; // Model name will use defaults
     app: FioriApp;
 }
 

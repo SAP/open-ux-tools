@@ -1,6 +1,7 @@
 import type { FioriElementsApp } from '../types';
 import { TemplateType } from '../types';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { render } from 'ejs';
@@ -35,12 +36,13 @@ export function extendManifestJson<T>(
     // Enhance template settings
     const templateSettings = {
         ...feApp.template.settings,
-        filterModel: feApp.service?.model,
+        defaultModel: (feApp.service as OdataService).model,
         type: feApp.template.type
     };
 
     // Manifest paths to be extended
     const extendTemplatePaths = [
+        join(rootTemplatesPath, 'common', 'extend', 'webapp'),
         join(rootTemplatesPath, `v${feApp.service.version}`, templatePath, 'extend', 'webapp'),
         join(rootTemplatesPath, `v${feApp.service.version}`, 'common', 'extend', 'webapp')
     ];

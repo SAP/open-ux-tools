@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.11.2
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+
 ## 0.11.1
 
 ### Patch Changes

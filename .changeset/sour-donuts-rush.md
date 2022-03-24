@@ -8,8 +8,7 @@
 '@sap-ux/ui5-application-writer': patch
 '@sap-ux/ui5-config': patch
 '@sap-ux/ui5-proxy-middleware': patch
-'test-project': patch
 '@sap-ux/yaml': patch
 ---
 
-chore - use import type in TS code.
+Add missing information to package.json and enforced use of higher version of minimist
