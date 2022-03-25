@@ -25,15 +25,10 @@ export class ValidationError extends Error {
 }
 
 export interface EntityConfig {
-    mainEntity?: {
-        entityName: string;
-        type?: any;
-    };
-    filterEntityType?: string;
+    mainEntityName: string; // Defines the main list page entity
     navigationEntity?: {
-        EntitySet: string;
-        Name: string;
-        Role?: string;
+        EntitySet: string; // Defines the entity set for object page navigation
+        Name: string; // Defines the entity name for object page navigation
     };
 }
 
@@ -63,7 +58,7 @@ export interface FEOPSettings {
 }
 
 export interface OVPSettings {
-    entityConfig: EntityConfig;
+    filterEntityType: string; // Filters the `globalFilterModel` data displayed in OVP cards
 }
 
 export interface ALPSettings {

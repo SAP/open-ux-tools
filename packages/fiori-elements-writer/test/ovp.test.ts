@@ -29,9 +29,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     template: {
                         type: TemplateType.OverviewPage,
                         settings: {
-                            entityConfig: {
-                                filterEntityType: 'GlobalFilters'
-                            }
+                            filterEntityType: 'GlobalFilters'
                         }
                     }
                 }),
