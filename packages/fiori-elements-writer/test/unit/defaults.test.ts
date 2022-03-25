@@ -10,20 +10,26 @@ describe('Defaults', () => {
         const template: Template<ALPSettings> = {
             type: TemplateType.AnalyticalListPage,
             settings: {
-                entityConfig: {}
+                entityConfig: {
+                    mainEntityName: ''
+                }
             }
         };
 
         expect(setDefaultTemplateSettings(cloneDeep(template))).toMatchInlineSnapshot(`
             Object {
-              "entityConfig": Object {},
+              "entityConfig": Object {
+                "mainEntityName": "",
+              },
               "tableType": "AnalyticalTable",
             }
         `);
 
         expect(setDefaultTemplateSettings(cloneDeep(template), OdataVersion.v4)).toMatchInlineSnapshot(`
             Object {
-              "entityConfig": Object {},
+              "entityConfig": Object {
+                "mainEntityName": "",
+              },
               "selectionMode": "None",
               "tableType": "AnalyticalTable",
             }
@@ -32,7 +38,9 @@ describe('Defaults', () => {
         expect(setDefaultTemplateSettings(cloneDeep(template), OdataVersion.v2)).toMatchInlineSnapshot(`
             Object {
               "autoHide": undefined,
-              "entityConfig": Object {},
+              "entityConfig": Object {
+                "mainEntityName": "",
+              },
               "multiSelect": undefined,
               "qualifier": undefined,
               "smartVariantManagement": undefined,
@@ -45,7 +53,9 @@ describe('Defaults', () => {
         const templateALPv2: Template<ALPSettingsV2> = {
             type: TemplateType.AnalyticalListPage,
             settings: {
-                entityConfig: {},
+                entityConfig: {
+                    mainEntityName: ''
+                },
                 autoHide: false,
                 multiSelect: true,
                 tableType: TableType.GRID
@@ -55,7 +65,9 @@ describe('Defaults', () => {
         expect(setDefaultTemplateSettings(cloneDeep(templateALPv2), OdataVersion.v2)).toMatchInlineSnapshot(`
             Object {
               "autoHide": false,
-              "entityConfig": Object {},
+              "entityConfig": Object {
+                "mainEntityName": "",
+              },
               "multiSelect": true,
               "qualifier": undefined,
               "smartVariantManagement": undefined,
@@ -66,14 +78,18 @@ describe('Defaults', () => {
         const templateALPv4: Template<ALPSettingsV4> = {
             type: TemplateType.AnalyticalListPage,
             settings: {
-                entityConfig: {},
+                entityConfig: {
+                    mainEntityName: ''
+                },
                 selectionMode: TableSelectionMode.MULTI
             }
         };
 
         expect(setDefaultTemplateSettings(cloneDeep(templateALPv4), OdataVersion.v4)).toMatchInlineSnapshot(`
             Object {
-              "entityConfig": Object {},
+              "entityConfig": Object {
+                "mainEntityName": "",
+              },
               "selectionMode": "Multi",
               "tableType": "AnalyticalTable",
             }
@@ -82,13 +98,17 @@ describe('Defaults', () => {
         const templateLROP: Template<LROPSettings> = {
             type: TemplateType.ListReportObjectPage,
             settings: {
-                entityConfig: {}
+                entityConfig: {
+                    mainEntityName: ''
+                }
             }
         };
 
         expect(setDefaultTemplateSettings(cloneDeep(templateLROP))).toMatchInlineSnapshot(`
             Object {
-              "entityConfig": Object {},
+              "entityConfig": Object {
+                "mainEntityName": "",
+              },
             }
         `);
     });

@@ -52,6 +52,9 @@ export const feBaseConfig = (
                 id: 'test-fe-template'
             }
         },
+        appOptions: {
+            loadReuseLibs: true
+        },
         package: {
             name: appId,
             description: 'A Fiori application.'
@@ -94,26 +97,20 @@ export const v2Service: OdataService = {
 
 export const v4TemplateSettings: LROPSettings | FEOPSettings | WorklistSettings = {
     entityConfig: {
-        mainEntity: {
-            entityName: 'Travel'
-        },
+        mainEntityName: 'Travel',
         navigationEntity: {
             EntitySet: 'Booking',
-            Name: '_Booking',
-            Role: ''
+            Name: '_Booking'
         }
     }
 };
 
 export const v2TemplateSettings: LROPSettings | WorklistSettings = {
     entityConfig: {
-        mainEntity: {
-            entityName: 'SEPMRA_C_PD_Product'
-        },
+        mainEntityName: 'SEPMRA_C_PD_Product',
         navigationEntity: {
             EntitySet: 'SEPMRA_C_PD_ProductSalesData',
-            Name: 'to_ProductSalesData',
-            Role: ''
+            Name: 'to_ProductSalesData'
         }
     }
 };
