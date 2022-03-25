@@ -1,5 +1,21 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.1.5
+
+### Patch Changes
+
+-   e8e8246: Fixes #407 #408 - entity config type updates, reuse libs off by default
+
+## 0.1.4
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+-   Updated dependencies [0837ac1]
+    -   @sap-ux/odata-service-writer@0.11.3
+    -   @sap-ux/ui5-application-writer@0.12.3
+    -   @sap-ux/ui5-config@0.12.2
+
 ## 0.1.3
 
 ### Patch Changes

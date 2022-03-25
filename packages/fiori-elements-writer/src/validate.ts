@@ -47,24 +47,26 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
         }
     }
 
-    const minRequiredUi5Version = TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
+    const minRequiredUI5Version = TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
 
-    if (semVer.lt(ui5Version!, minRequiredUi5Version)) {
+    if (semVer.lt(ui5Version!, minRequiredUI5Version)) {
         throw new ValidationError(
             t('error.unsupportedUI5Version', {
                 versionProperty: 'version',
                 ui5Version: feApp.ui5?.version,
-                templateType: feApp.template.type
+                templateType: feApp.template.type,
+                minRequiredUI5Version
             })
         );
     }
 
-    if (semVer.lt(minUI5Version!, minRequiredUi5Version)) {
+    if (semVer.lt(minUI5Version!, minRequiredUI5Version)) {
         throw new ValidationError(
             t('error.unsupportedUI5Version', {
                 versionProperty: 'minUI5Version',
                 ui5Version: feApp.ui5?.minUI5Version,
-                templateType: feApp.template.type
+                templateType: feApp.template.type,
+                minRequiredUI5Version
             })
         );
     }

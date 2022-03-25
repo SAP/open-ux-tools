@@ -1,7 +1,15 @@
 {
     "name": "@sap-ux/store",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "NPM module for storing persistent data",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/store"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Astore"
+    },
     "license": "SEE LICENSE IN LICENSE",
     "private": false,
     "main": "dist/index.js",

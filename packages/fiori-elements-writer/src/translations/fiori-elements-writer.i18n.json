@@ -7,7 +7,7 @@
         "unsupportedOdataVersion" :
             "OData Version of the specified service: {{ serviceVersion }}, is not supported by the template type: {{ templateType }}",
         "unsupportedUI5Version" :
-            "Specified UI5 property '{{ versionProperty }}': {{ ui5Version }}, is not supported by the template type: {{ templateType }}",
+            "Specified UI5 property '{{ versionProperty }}': {{ ui5Version }}, is not supported by the template type: {{ templateType }}. Please specify {{minRequiredUI5Version}} or above.",
         "invalidUI5Version" :
             "Specified UI5 property '{{ versionProperty }}': {{ ui5Version }}, is not a valid semantic version",
         "missingRequiredProperty" : 
