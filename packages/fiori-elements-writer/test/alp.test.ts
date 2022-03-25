@@ -45,9 +45,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         type: TemplateType.AnalyticalListPage,
                         settings: {
                             entityConfig: {
-                                mainEntity: {
-                                    entityName: 'SalesOrderItem'
-                                },
+                                mainEntityName: 'SalesOrderItem',
                                 navigationEntity: {
                                     EntitySet: 'MaterialDetails',
                                     Name: '_MaterialDetails'
@@ -68,9 +66,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         type: TemplateType.AnalyticalListPage,
                         settings: {
                             entityConfig: {
-                                mainEntity: {
-                                    entityName: 'SEPMRA_C_ALP_SlsOrdItemCubeALPResults'
-                                },
+                                mainEntityName: 'SEPMRA_C_ALP_SlsOrdItemCubeALPResults',
                                 navigationEntity: {
                                     EntitySet: 'SEPMRA_C_ALP_SalesOrderItem',
                                     Name: 'to_SalesOrderItem'
