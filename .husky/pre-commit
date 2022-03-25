@@ -1,0 +1,3 @@
+#!/bin/sh
+pnpm pretty-quick --staged --ignore-path .prettierignore
+pnpm audit
