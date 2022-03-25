@@ -3,7 +3,7 @@
     "compilerOptions": {
         "strict": false,
         "declaration": true,
-        "outDir": "generators",
+        "outDir": "generators/app",
         "sourceMap": true,
         "baseUrl": "./src",
         "resolveJsonModule": true

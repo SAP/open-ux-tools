@@ -1,4 +1,3 @@
-import { hello } from '../extension';
 import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { FioriElementsApp, LROPSettings, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
@@ -66,7 +65,21 @@ export default class extends Generator {
         };
     }
 
+    configuring() {
+        this.sourceRoot(join(__dirname, '..', '..', 'templates'));
+        this.destinationRoot(join('.tmp', this.appConfig.package.name));
+    }
+
     async writing(): Promise<void> {
-        generate(join('.tmp', this.appConfig.package.name), this.appConfig, this.fs);
+        // generating Fiori elements project
+        generate(this.destinationRoot(), this.appConfig, this.fs);
+
+        // adding husky config that is checking for security issues before each commit
+        this.copyTemplate(this.templatePath('husky'), this.destinationPath('.husky'));
+        this.fs.extendJSON(this.destinationPath('package.json'), {
+            devDependencies: {
+                husky: '7.0.4'
+            }
+        });
     }
 }
