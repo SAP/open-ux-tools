@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.1.6
+
+### Patch Changes
+
+-   dd6850a: Making ui5 configuration optional as defined in the API
+
 ## 0.1.5
 
 ### Patch Changes
