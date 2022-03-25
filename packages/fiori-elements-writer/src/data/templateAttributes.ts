@@ -1,7 +1,7 @@
 import { OdataVersion, TemplateType } from '../types';
 
-// https://ui5.sap.com/versionoverview.html
-export const oldestSupportedUI5Version = '1.38.0';
+// first version with SAP Fiori 3 theme
+export const oldestSupportedUI5Version = '1.65.0';
 
 export const changesPreviewToVersion = '1.78.0';
 
