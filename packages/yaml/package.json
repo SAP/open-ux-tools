@@ -1,7 +1,15 @@
 {
     "name": "@sap-ux/yaml",
     "description": "Library to manipulate YAML file contents",
-    "version": "0.11.2",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/yaml"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Ayaml"
+    },
+    "version": "0.11.3",
     "main": "dist/index.js",
     "scripts": {
         "build": "pnpm clean && tsc",

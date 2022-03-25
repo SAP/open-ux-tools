@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.5.2
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+
 ## 0.5.1
 
 ### Patch Changes

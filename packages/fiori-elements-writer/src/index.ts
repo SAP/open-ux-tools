@@ -40,7 +40,9 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     await addOdataService(basePath, feApp.service, fs);
 
     const templateOptions: TemplateOptions = {
-        changesPreview: semVer.lt(semVer.coerce(feApp.ui5?.version)!, changesPreviewToVersion),
+        changesPreview: feApp.ui5?.version
+            ? semVer.lt(semVer.coerce(feApp.ui5?.version)!, changesPreviewToVersion)
+            : false,
         changesLoader: feApp.service.version === OdataVersion.v2
     };
 
@@ -59,7 +61,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     // Extend package.json
     fs.extendJSON(
         packagePath,
-        JSON.parse(render(fs.read(join(join(rootTemplatesPath, 'common', 'extend'), 'package.json')), feApp))
+        JSON.parse(render(fs.read(join(rootTemplatesPath, 'common', 'extend', 'package.json')), feApp))
     );
 
     const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
