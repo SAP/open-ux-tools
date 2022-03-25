@@ -2,7 +2,7 @@
 This is a simple example of how to integrate the `@sap-ux/fiori-elements-writer` into a Yeoman generator.
 
 ## Example
-This example project contains a generator that asks two simple questions and then using the `@sap-ux/fiori-elemenets-writer` to generate a LROP application for Odata v4. Additionally, it generates a husky config to the project that checks the used dependencies for security issues before each commit.
+This example project contains a generator that asks a few simple questions and then using the `@sap-ux/fiori-elemenets-writer` to generate a LROP application for Odata v4. Additionally, it generates a husky config to the project that checks the used dependencies for security issues before each commit.
 
 ## Prerequisite
 Before you can use the generator, you need to globally install `yo` and build the generator
