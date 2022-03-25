@@ -40,7 +40,9 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     await addOdataService(basePath, feApp.service, fs);
 
     const templateOptions: TemplateOptions = {
-        changesPreview: semVer.lt(semVer.coerce(feApp.ui5?.version)!, changesPreviewToVersion),
+        changesPreview: feApp.ui5?.version
+            ? semVer.lt(semVer.coerce(feApp.ui5?.version)!, changesPreviewToVersion)
+            : false,
         changesLoader: feApp.service.version === OdataVersion.v2
     };
 

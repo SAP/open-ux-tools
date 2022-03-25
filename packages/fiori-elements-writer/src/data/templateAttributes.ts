@@ -1,5 +1,8 @@
 import { OdataVersion, TemplateType } from '../types';
 
+// first version with SAP Fiori 3 theme
+export const oldestSupportedUI5Version = '1.65.0';
+
 export const changesPreviewToVersion = '1.78.0';
 
 // Internal template generation options
@@ -113,27 +116,27 @@ export const TemplateTypeAttributes: TemplateAttributes = {
     [TemplateType.Worklist]: {
         supportedODataVersions: [OdataVersion.v2],
         minimumUi5Version: {
-            [OdataVersion.v2]: '1.0.0'
+            [OdataVersion.v2]: oldestSupportedUI5Version
         }
     },
     [TemplateType.ListReportObjectPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: '1.0.0',
-            [OdataVersion.v4]: '1.0.0'
+            [OdataVersion.v2]: oldestSupportedUI5Version,
+            [OdataVersion.v4]: '1.84.0'
         }
     },
     [TemplateType.AnalyticalListPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: '1.0.0',
+            [OdataVersion.v2]: oldestSupportedUI5Version,
             [OdataVersion.v4]: '1.90.0'
         }
     },
     [TemplateType.OverviewPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: '1.0.0'
+            [OdataVersion.v2]: oldestSupportedUI5Version
             //[OdataVersion.v4]: 1.97 //TBD
         }
     },

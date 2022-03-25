@@ -37,8 +37,11 @@ export const getTestData = (serviceName: string, serviceType: 'metadata' | 'anno
 /**
  * List Report Object Page test settings
  */
-export const feBaseConfig = (appId: string): Partial<FioriElementsApp<LROPSettings | FEOPSettings>> => {
-    return {
+export const feBaseConfig = (
+    appId: string,
+    addUi5Config: boolean = true
+): Partial<FioriElementsApp<LROPSettings | FEOPSettings>> => {
+    const config: Partial<FioriElementsApp<LROPSettings | FEOPSettings>> = {
         app: {
             id: appId,
             title: 'App "Title" \\"',
@@ -55,16 +58,21 @@ export const feBaseConfig = (appId: string): Partial<FioriElementsApp<LROPSettin
         package: {
             name: appId,
             description: 'A Fiori application.'
-        },
-        ui5: {
+        }
+    };
+
+    if (addUi5Config) {
+        config.ui5 = {
             version: '1.92.0',
             minUI5Version: '1.90.0',
             descriptorVersion: '1.37.0',
             ui5Libs: [],
             ui5Theme: 'sap_belize',
             localVersion: '1.86.3'
-        }
-    };
+        };
+    }
+
+    return config;
 };
 
 export const v4Service: OdataService = {

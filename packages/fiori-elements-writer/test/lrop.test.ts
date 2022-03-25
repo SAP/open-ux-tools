@@ -30,6 +30,18 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lropV4noUi5Version',
+            config: {
+                ...Object.assign(feBaseConfig('felropui5', false), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    }
+                }),
+                service: v4Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lropV2',
             config: {
                 ...Object.assign(feBaseConfig('felrop2'), {
