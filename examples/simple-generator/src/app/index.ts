@@ -51,9 +51,7 @@ export default class extends Generator {
                 type: TemplateType.ListReportObjectPage,
                 settings: {
                     entityConfig: {
-                        mainEntity: {
-                            entityName: answers.entity
-                        }
+                        mainEntityName: answers.entity
                     }
                 }
             },
@@ -65,14 +63,6 @@ export default class extends Generator {
                 url: service.origin,
                 path: service.pathname
             }
-        };
-        // TODO: remove once #408 is fixed
-        this.appConfig.appOptions = {
-            loadReuseLibs: false
-        };
-        // TODO: remove once #409 is fixed
-        this.appConfig.ui5 = {
-            version: '1.94'
         };
     }
 
