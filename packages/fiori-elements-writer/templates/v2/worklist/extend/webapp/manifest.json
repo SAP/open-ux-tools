@@ -8,8 +8,8 @@
             "showDraftToggle": false
         },
         "pages": {
-            "ListReport|<%- entityConfig.mainEntity.entityName %>": {
-                "entitySet": "<%- entityConfig.mainEntity.entityName %>",
+            "ListReport|<%- entityConfig.mainEntityName %>": {
+                "entitySet": "<%- entityConfig.mainEntityName %>",
                 "component": {
                     "name": "sap.suite.ui.generic.template.ListReport",
                     "list": true,
@@ -27,8 +27,8 @@
                     }
                 },
                 "pages": {<% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>
-                    "ObjectPage|<%- entityConfig.mainEntity.entityName %>": {
-                            "entitySet": "<%- entityConfig.mainEntity.entityName %>",
+                    "ObjectPage|<%- entityConfig.mainEntityName %>": {
+                            "entitySet": "<%- entityConfig.mainEntityName %>",
                             "component": {
                                 "name": "sap.suite.ui.generic.template.ObjectPage",
                                 "settings": {

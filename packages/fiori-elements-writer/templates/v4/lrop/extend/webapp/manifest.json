@@ -4,34 +4,34 @@
             "routes": [<% if (type === 'lrop' || type === 'alp') { %>
                 {
                     "pattern": ":?query:",
-                    "name": "<%- entityConfig.mainEntity.entityName %>List",
-                    "target": "<%- entityConfig.mainEntity.entityName %>List"
+                    "name": "<%- entityConfig.mainEntityName %>List",
+                    "target": "<%- entityConfig.mainEntityName %>List"
                 },<% } %>
                 {
-                    "pattern": "<%- entityConfig.mainEntity.entityName %>({key}):?query:",
-                    "name": "<%- entityConfig.mainEntity.entityName %>ObjectPage",
-                    "target": "<%- entityConfig.mainEntity.entityName %>ObjectPage"
+                    "pattern": "<%- entityConfig.mainEntityName %>({key}):?query:",
+                    "name": "<%- entityConfig.mainEntityName %>ObjectPage",
+                    "target": "<%- entityConfig.mainEntityName %>ObjectPage"
                 }<% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>,
                     {
-                        "pattern": "<%- entityConfig.mainEntity.entityName %>({key})/<%- entityConfig.navigationEntity.Name %>({key2}):?query:",
+                        "pattern": "<%- entityConfig.mainEntityName %>({key})/<%- entityConfig.navigationEntity.Name %>({key2}):?query:",
                         "name": "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage",
                         "target": "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage"
                     }<%
                 } %>
             ],
             "targets": {<% if (type === 'lrop' || type === 'alp') { %>
-                "<%- entityConfig.mainEntity.entityName %>List": {
+                "<%- entityConfig.mainEntityName %>List": {
                     "type": "Component",
-                    "id": "<%- entityConfig.mainEntity.entityName %>List",
+                    "id": "<%- entityConfig.mainEntityName %>List",
                     "name": "sap.fe.templates.ListReport",
                     "options": {
                         "settings": {
-                            "entitySet": "<%- entityConfig.mainEntity.entityName %>",
+                            "entitySet": "<%- entityConfig.mainEntityName %>",
                             "variantManagement": "Page",
                             "navigation": {
-                                "<%- entityConfig.mainEntity.entityName %>": {
+                                "<%- entityConfig.mainEntityName %>": {
                                     "detail": {
-                                        "route": "<%- entityConfig.mainEntity.entityName %>ObjectPage"
+                                        "route": "<%- entityConfig.mainEntityName %>ObjectPage"
                                     }
                                 }
                             }<% if (type === 'alp') { %>,
@@ -61,14 +61,14 @@
                         }
                     }
                 },<% } %>
-                "<%- entityConfig.mainEntity.entityName %>ObjectPage": {
+                "<%- entityConfig.mainEntityName %>ObjectPage": {
                     "type": "Component",
-                    "id": "<%- entityConfig.mainEntity.entityName %>ObjectPage",
+                    "id": "<%- entityConfig.mainEntityName %>ObjectPage",
                     "name": "sap.fe.templates.ObjectPage",
                     "options": {
                         "settings": {
                             "editableHeaderContent": false,
-                            "entitySet": "<%- entityConfig.mainEntity.entityName %>"<% if (type === 'feop') { %>,
+                            "entitySet": "<%- entityConfig.mainEntityName %>"<% if (type === 'feop') { %>,
                             "content": {
                                 "header": {
                                     "visible": false,

@@ -30,6 +30,18 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lropV4noUi5Version',
+            config: {
+                ...Object.assign(feBaseConfig('felropui5', false), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    }
+                }),
+                service: v4Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lropV2',
             config: {
                 ...Object.assign(feBaseConfig('felrop2'), {
@@ -44,14 +56,33 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         {
             name: 'lropV2_flex_changes',
             config: {
-                ...Object.assign(feBaseConfig('felrop2'), {
+                ...Object.assign(feBaseConfig('felrop3'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
                     },
                     ui5: {
-                        ...feBaseConfig('felrop2'),
+                        ...feBaseConfig('felrop3'),
                         version: '1.77.2' // flex changes preview should be included with this version
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_omit_reuse_libs',
+            config: {
+                ...Object.assign(feBaseConfig('felrop4'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        ...feBaseConfig('felrop4'),
+                        version: '1.77.2' // flex changes preview should be included with this version
+                    },
+                    appOptions: {
+                        loadReuseLibs: false
                     }
                 }),
                 service: v2Service

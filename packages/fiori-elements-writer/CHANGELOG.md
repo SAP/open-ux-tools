@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.1.6
+
+### Patch Changes
+
+-   dd6850a: Making ui5 configuration optional as defined in the API
+
+## 0.1.5
+
+### Patch Changes
+
+-   e8e8246: Fixes #407 #408 - entity config type updates, reuse libs off by default
+
 ## 0.1.4
 
 ### Patch Changes
