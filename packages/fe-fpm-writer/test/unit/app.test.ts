@@ -1,0 +1,3 @@
+describe('CustomApp', () => {
+    test('enableFPM');
+});
