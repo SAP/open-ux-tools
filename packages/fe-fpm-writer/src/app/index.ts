@@ -26,12 +26,11 @@ export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor)
     const manifest = fs.readJSON(manifestPath) as any as Manifest;
 
     // add FE libs is not yet added
-    if (!manifest['sap.ui5']?.dependencies?.libs?.['sap.fe']) {
+    if (!manifest['sap.ui5']?.dependencies?.libs?.['sap.fe.templates']) {
         fs.extendJSON(manifestPath, {
             'sap.ui5': {
                 dependencies: {
                     libs: {
-                        'sap.fe': {},
                         'sap.fe.templates': {}
                     }
                 }
