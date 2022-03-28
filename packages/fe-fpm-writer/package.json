@@ -30,7 +30,8 @@
         "ejs": "3.1.6",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.3.0",
-        "xml-js": "1.6.11"
+        "xml-js": "1.6.11",
+        "semver": "7.3.5"
     },
     "devDependencies": {
         "@types/ejs": "3.1.0"
