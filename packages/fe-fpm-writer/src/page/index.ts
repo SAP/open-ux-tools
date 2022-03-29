@@ -8,7 +8,7 @@ import { enhanceData } from './defaults';
 import type { CustomPage, InternalCustomPage } from './types';
 import { validateBasePath, validateVersion } from '../common/validate';
 import type { Manifest, Ui5RoutingRoute as Ui5Route } from '../common/types';
-import { RouteTargetObject, RouteWithoutName } from 'common/manifest';
+import type { RouteTargetObject, RouteWithoutName } from '../common/manifest';
 
 /**
  * Validate the UI5 version and if valid return the root folder for the templates to be used.

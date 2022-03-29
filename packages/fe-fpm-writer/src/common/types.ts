@@ -1,4 +1,4 @@
-import { SAPJSONSchemaForWebApplicationManifestFile, Route, Target } from './manifest';
+import type { SAPJSONSchemaForWebApplicationManifestFile, Route, Target } from './manifest';
 
 export interface Manifest extends SAPJSONSchemaForWebApplicationManifestFile {
     [key: string]: unknown;
