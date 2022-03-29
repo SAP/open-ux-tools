@@ -163,4 +163,33 @@ describe('CustomPage', () => {
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
         });
     });
+
+    describe('generateCustomPage: only page, no others', () => {
+        const input: CustomPage = {
+            name: 'CustomPage',
+            entity: 'MainEntity'
+        };
+        const testManifestWithNoRouting = JSON.parse(testAppManifest);
+        delete testManifestWithNoRouting['sap.ui5'].routing;
+
+        test('FCL enabled single page app', () => {
+            testManifestWithNoRouting['sap.ui5'].routing = {
+                config: {
+                    routerClass: 'sap.f.routing.Router'
+                }
+            };
+            const target = join(testDir, 'single-page-fcl');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+            generateCustomPage(target, input, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('No FCL single page app', () => {
+            delete testManifestWithNoRouting['sap.ui5'].routing;
+            const target = join(testDir, 'single-page-no-fcl');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+            generateCustomPage(target, input, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+        });
+    });
 });
