@@ -1,5 +1,14 @@
 # @sap-ux/store
 
+## 0.1.3
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [a34d058]
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/logger@0.1.5
+
 ## 0.1.2
 
 ### Patch Changes

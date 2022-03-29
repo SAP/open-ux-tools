@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.5.3
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+
 ## 0.5.2
 
 ### Patch Changes
