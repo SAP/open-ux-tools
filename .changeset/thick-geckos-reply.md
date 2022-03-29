@@ -8,7 +8,6 @@
 '@sap-ux/ui5-application-writer': patch
 '@sap-ux/ui5-config': patch
 '@sap-ux/ui5-proxy-middleware': patch
-'test-project': patch
 '@sap-ux/yaml': patch
 ---
 
