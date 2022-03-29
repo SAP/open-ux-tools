@@ -45,11 +45,11 @@ function updateRoutes(routes: Ui5Route[], config: InternalCustomPage) {
             newRoute.target =
                 pages.length > 2 ? [newRoute.name] : ([...pages, newRoute.name] as [string | RouteTargetObject]);
         } else {
-            newRoute.target = newRoute.name;
+            newRoute.target = config.fcl ? [newRoute.name] : newRoute.name;
         }
     } else {
         newRoute.pattern = `${config.entity}({key}):?query:`;
-        newRoute.target = newRoute.name;
+        newRoute.target = config.fcl ? [newRoute.name] : newRoute.name;
     }
     routes.push(newRoute);
 }
@@ -115,8 +115,15 @@ export function generateCustomPage(basePath: string, data: CustomPage, fs?: Edit
 
     // enhance manifest.json
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(root, `manifest.json`)), config)), (key, value) => {
-        if (key === 'routes') {
-            updateRoutes(value as Ui5Route[], config);
+        switch (key) {
+            case 'routing':
+                value.routes = value.routes ?? [];
+                break;
+            case 'routes':
+                updateRoutes(value as Ui5Route[], config);
+                break;
+            default:
+                break;
         }
         return value;
     });
