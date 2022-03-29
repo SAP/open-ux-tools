@@ -1,3 +1,11 @@
+import { SAPJSONSchemaForWebApplicationManifestFile, Route, Target } from './manifest';
+
+export interface Manifest extends SAPJSONSchemaForWebApplicationManifestFile {
+    [key: string]: unknown;
+}
+
+export type Ui5RoutingRoute = Route;
+
 /**
  * Common properties for any custom element of the flexible programming model.
  */
@@ -47,31 +55,6 @@ export type Position = {
     placement: Placement;
 };
 
-export interface Ui5RoutingTarget<T> {
-    type: string;
-    id: string;
-    name: string;
+export interface Ui5RoutingTarget<T> extends Target {
     options?: T;
-}
-
-export interface Ui5RoutingRoute {
-    pattern: string;
-    name: string;
-    target: string | string[];
-}
-
-/**
- * Interface of an object generated from a UI5 manifest.json
- */
-export interface Manifest {
-    [key: string]: object;
-    'sap.app': {
-        id: string;
-    };
-    'sap.ui5': {
-        routing: {
-            routes: Ui5RoutingRoute[];
-            targets: { [key: string]: Ui5RoutingTarget<any> };
-        };
-    };
 }

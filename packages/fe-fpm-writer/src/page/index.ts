@@ -8,6 +8,7 @@ import { enhanceData } from './defaults';
 import type { CustomPage, InternalCustomPage } from './types';
 import { validateBasePath, validateVersion } from '../common/validate';
 import type { Manifest, Ui5RoutingRoute as Ui5Route } from '../common/types';
+import { RouteTargetObject, RouteWithoutName } from 'common/manifest';
 
 /**
  * Validate the UI5 version and if valid return the root folder for the templates to be used.
@@ -30,19 +31,19 @@ export function getTemplateRoot(ui5Version?: number): string {
  * @param config configuration object
  */
 function updateRoutes(routes: Ui5Route[], config: InternalCustomPage) {
-    const newRoute: Partial<Ui5Route> = {
+    const newRoute: Ui5Route = {
         name: `${config.entity}${config.name}`
     };
     if (config.navigation) {
         const sourceRoute = routes.find((route) => route.name === config.navigation?.sourcePage);
-        newRoute.pattern = `${sourceRoute?.pattern.replace(':?query:', '')}/${config.navigation.navEntity}({${
+        newRoute.pattern = `${sourceRoute?.pattern?.replace(':?query:', '')}/${config.navigation.navEntity}({${
             config.navigation.navEntity
         }Key}):?query:`;
-        if (sourceRoute?.target.constructor === Array) {
+        if (sourceRoute?.target?.constructor === Array) {
             const pages = sourceRoute.target;
             // FCL only supports 3 columns, therefore, show the page in fullscreen if it is the 4th level of navigation
             newRoute.target =
-                pages.length > 2 ? [(newRoute as Ui5Route).name] : [...pages, (newRoute as Ui5Route).name];
+                pages.length > 2 ? [newRoute.name] : ([...pages, newRoute.name] as [string | RouteTargetObject]);
         } else {
             newRoute.target = newRoute.name;
         }
@@ -50,7 +51,7 @@ function updateRoutes(routes: Ui5Route[], config: InternalCustomPage) {
         newRoute.pattern = `${config.entity}({key}):?query:`;
         newRoute.target = newRoute.name;
     }
-    routes.push(newRoute as Ui5Route);
+    routes.push(newRoute);
 }
 
 /**
@@ -70,14 +71,21 @@ export function validateCustomPageConfig(basePath: string, config: CustomPage, f
     validateBasePath(basePath, fs);
 
     // validate config against the manifest
-    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as Partial<Manifest>;
+    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as Manifest;
     if (config.navigation) {
-        if (!manifest['sap.ui5']?.routing?.targets[config.navigation.sourcePage]) {
+        if (!manifest['sap.ui5']?.routing?.targets?.[config.navigation.sourcePage]) {
             throw new Error(`Could not find navigation source ${config.navigation.sourcePage}!`);
         }
-        const route = manifest['sap.ui5'].routing.routes.find(
-            (route: Ui5Route) => route.name === config.navigation?.sourcePage
-        );
+        const routes: { [k: string]: RouteWithoutName } = {};
+        if (manifest['sap.ui5']?.routing?.routes?.constructor === Array) {
+            manifest['sap.ui5'].routing.routes.forEach((routeWithName) => {
+                routes[routeWithName.name] = routeWithName;
+            });
+        } else {
+            Object.assign(routes, manifest['sap.ui5']?.routing?.routes ?? {});
+        }
+
+        const route = routes[config.navigation?.sourcePage];
         if (!route || !route.pattern || !route.target) {
             throw new Error(
                 `Missing or invalid routing configuration for navigation source ${config.navigation.sourcePage}!`
