@@ -1,4 +1,12 @@
-import type { AbapApp, AbapTarget, CustomTask, FioriToolsProxyConfig, ProxyBackend, ProxyUIConfig } from './types';
+import type {
+    AbapApp,
+    AbapTarget,
+    CustomMiddleware,
+    CustomTask,
+    FioriToolsProxyConfig,
+    ProxyBackend,
+    ProxyUIConfig
+} from './types';
 import type { NodeComment, YAMLMap } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 import {
@@ -6,7 +14,6 @@ import {
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig
 } from './middlewares';
-import type { CustomMiddleware } from 'index';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.

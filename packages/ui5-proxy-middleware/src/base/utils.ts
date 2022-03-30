@@ -1,12 +1,13 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
 import type { UI5Config } from './types';
 import { existsSync, promises } from 'fs';
 import { parseDocument } from 'yaml';
 import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
-import type { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
+
 import { t } from '../i18n';
 
 /**
@@ -184,15 +185,13 @@ export const setHtmlResponse = (res: any, html: string): void => {
  * @param args list of runtime arguments
  * @returns The content of the manifest.json
  */
-export const getManifest = async (args: string[]): Promise<SAPJSONSchemaForWebApplicationManifestFile> => {
+export const getManifest = async (args: string[]): Promise<Manifest> => {
     const projectRoot = process.cwd();
     const yamlFileName = getYamlFile(args);
     const ui5YamlPath = join(projectRoot, yamlFileName);
     const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
     const manifestPath = join(projectRoot, webAppFolder, 'manifest.json');
-    const manifest: SAPJSONSchemaForWebApplicationManifestFile = JSON.parse(
-        await promises.readFile(manifestPath, { encoding: 'utf8' })
-    );
+    const manifest: Manifest = JSON.parse(await promises.readFile(manifestPath, { encoding: 'utf8' }));
 
     return manifest;
 };
@@ -204,7 +203,7 @@ export const getManifest = async (args: string[]): Promise<SAPJSONSchemaForWebAp
  * @returns The minUI5Version from manifest.json or undefined otherwise
  */
 export async function getUI5VersionFromManifest(args: string[]): Promise<string | undefined> {
-    const manifest: SAPJSONSchemaForWebApplicationManifestFile = await getManifest(args);
+    const manifest = await getManifest(args);
     return manifest['sap.ui5']?.dependencies?.minUI5Version;
 }
 

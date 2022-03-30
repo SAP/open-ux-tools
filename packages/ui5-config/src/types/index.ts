@@ -1,3 +1,7 @@
+import type { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
+
+export type Manifest = SAPJSONSchemaForWebApplicationManifestFile;
+
 export interface ProxyBackend {
     path?: string;
     url: string;
