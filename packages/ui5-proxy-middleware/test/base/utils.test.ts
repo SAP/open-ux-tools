@@ -15,7 +15,7 @@ import {
 import YAML from 'yaml';
 import fs, { promises } from 'fs';
 import * as baseUtils from '../../src/base/utils';
-import { UI5Config } from '../../src/base/types';
+import { UI5ProxyConfig } from '../../src/base/types';
 
 describe('Utils', () => {
     beforeEach(() => {
@@ -419,7 +419,7 @@ describe('Utils', () => {
         jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => {
             return true;
         });
-        const ui5Configs: UI5Config[] = [
+        const ui5Configs: UI5ProxyConfig[] = [
             {
                 path: '/resources',
                 url: 'https://ui5.sap.com',
@@ -460,7 +460,7 @@ describe('Utils', () => {
         jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => {
             return true;
         });
-        const ui5Configs: UI5Config[] = [
+        const ui5Configs: UI5ProxyConfig[] = [
             {
                 path: '/resources',
                 url: 'https://ui5.sap.com',

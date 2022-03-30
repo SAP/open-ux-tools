@@ -1,19 +1,19 @@
 import type { NextFunction } from 'express';
 import type { IncomingMessage } from 'http';
 
-export interface UI5Config {
+export interface UI5ProxyConfig {
     path: string;
     url: string;
     version?: string;
 }
 
 export interface UI5ConfigObject {
-    path: string[];
+    path: string | string[];
     url: string;
-    version?: string;
 }
+
 export interface ProxyConfig {
-    ui5: UI5Config[] | UI5ConfigObject;
+    ui5: UI5ConfigObject | UI5ConfigObject[];
     proxy?: string;
     debug?: boolean;
     secure?: boolean;

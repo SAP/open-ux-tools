@@ -2,7 +2,7 @@ import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
-import type { UI5Config } from './types';
+import type { UI5ProxyConfig } from './types';
 import { existsSync, promises } from 'fs';
 import { parseDocument } from 'yaml';
 import { join } from 'path';
@@ -240,7 +240,7 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger): Pr
  * @param ui5Configs - the configuration of the ui5-proxy-middleware
  * @returns The modified html file content
  */
-export const injectUI5Url = async (htmlFilePath: string, ui5Configs: UI5Config[]): Promise<string | undefined> => {
+export const injectUI5Url = async (htmlFilePath: string, ui5Configs: UI5ProxyConfig[]): Promise<string | undefined> => {
     if (existsSync(htmlFilePath)) {
         let html = await promises.readFile(htmlFilePath, { encoding: 'utf8' });
         for (const ui5Config of ui5Configs) {
@@ -275,7 +275,7 @@ export const injectScripts = async (
     req: Request,
     res: Response,
     next: NextFunction,
-    ui5Configs: UI5Config[]
+    ui5Configs: UI5ProxyConfig[]
 ): Promise<void> => {
     try {
         const projectRoot = process.cwd();

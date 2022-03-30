@@ -3,7 +3,7 @@ import express from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { MiddlewareParameters, ProxyConfig, UI5Config } from '../base';
+import type { MiddlewareParameters, ProxyConfig, UI5ProxyConfig, UI5ConfigObject } from '../base';
 import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
@@ -41,26 +41,23 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
             secure ? 'true' : 'false'
         }'\ndebug: '${debug ? 'true' : 'false'}''\ndebug: '${directLoad ? 'true' : 'false'}'`
     );
-    let ui5Configs: UI5Config[] = [];
-    if (Array.isArray(config.ui5)) {
-        ui5Configs = config.ui5;
-    } else {
-        for (const ui5Path of config.ui5.path) {
-            const ui5Config: UI5Config = {
+
+    const configs = Array.isArray(config.ui5) ? config.ui5 : [config.ui5];
+    const ui5Configs: UI5ProxyConfig[] = [];
+    for (const ui5 of configs) {
+        const paths = Array.isArray(ui5.path) ? ui5.path : [ui5.path];
+        for (const ui5Path of paths) {
+            const ui5Config: UI5ProxyConfig = {
                 path: ui5Path,
-                url: config.ui5.url,
+                url: ui5.url,
                 version: ui5Version
             };
+            if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
+                proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
+            }
+            router.use(ui5Config.path, ui5Proxy(ui5Config, proxyOptions));
             ui5Configs.push(ui5Config);
         }
-    }
-
-    for (const ui5Config of ui5Configs) {
-        ui5Config.version = ui5Version;
-        if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
-            proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
-        }
-        router.use(ui5Config.path, ui5Proxy(ui5Config, proxyOptions));
     }
 
     if (directLoad) {

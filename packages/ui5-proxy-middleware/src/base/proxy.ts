@@ -1,7 +1,7 @@
 import type { Filter, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
-import type { UI5Config } from './types';
+import type { UI5ProxyConfig } from './types';
 import { proxyRequestHandler, proxyResponseHandler, filterCompressedHtmlFiles } from './utils';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 
@@ -13,7 +13,7 @@ import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
  * @param filter - custom filter function which will be applied to all requests
  * @returns Proxy function to use
  */
-export const ui5Proxy = (config: UI5Config, options?: Options, filter?: Filter) => {
+export const ui5Proxy = (config: UI5ProxyConfig, options?: Options, filter?: Filter) => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
