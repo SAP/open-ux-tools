@@ -67,7 +67,6 @@ function logFullURL({ host, path, log }: { host: string; path?: string; log: Log
         const base = new URL(host).origin; // We only care for the origin value
         // Add this instruction to the user because of this bug in VS Code: https://github.com/microsoft/vscode/issues/144898
         // It undoes the encoding of special characters in the URL sent to the browser
-        // @todo: use i18n texts
         log.info('Please copy/paste this URL in a browser for more details:');
         log.info(new URL(path, base).href);
     }
