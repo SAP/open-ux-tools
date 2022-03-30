@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.12.3
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/yaml@0.11.4
+
 ## 0.12.2
 
 ### Patch Changes

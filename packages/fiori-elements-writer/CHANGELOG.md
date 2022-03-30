@@ -1,5 +1,27 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.1.7
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/odata-service-writer@0.11.4
+    -   @sap-ux/ui5-application-writer@0.12.4
+    -   @sap-ux/ui5-config@0.12.3
+
+## 0.1.6
+
+### Patch Changes
+
+-   dd6850a: Making ui5 configuration optional as defined in the API
+
+## 0.1.5
+
+### Patch Changes
+
+-   e8e8246: Fixes #407 #408 - entity config type updates, reuse libs off by default
+
 ## 0.1.4
 
 ### Patch Changes

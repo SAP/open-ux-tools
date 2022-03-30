@@ -1,10 +1,9 @@
 import { ConsoleTransport } from '../transports';
 import type { ChildLoggerOptions, Log, Logger, LoggerOptions, Transport } from '../types';
 import { LogLevel } from '../types';
-import winston from 'winston';
+import winston, { format } from 'winston';
 import { toWinstonLogLevel, toWinstonTransport } from './adapter';
 import type WinstonTransport from 'winston-transport';
-import { format } from 'logform';
 import { nextColor } from './utils';
 import { inspect } from 'util';
 
@@ -140,7 +139,7 @@ export class WinstonLogger extends BaseWinstonLogger {
         const logger = winston.createLogger({
             level,
             transports: Array.from(transportMap.values()),
-            format: format.combine(format.timestamp(), winston.format.json()),
+            format: format.combine(format.timestamp(), format.json()),
             defaultMeta: { label: logPrefix, labelColor: nextColor() }
         });
         const winstonLevel = level ?? logger.level;

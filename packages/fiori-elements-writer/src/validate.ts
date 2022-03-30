@@ -25,7 +25,7 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
     }
 
     // Validate ui5 versions if present (defaults will apply otherwise)
-    let ui5Version: SemVer | null;
+    let ui5Version: SemVer | null = null;
 
     if (feApp.ui5?.version) {
         ui5Version = semVer.coerce(feApp.ui5?.version);
@@ -38,6 +38,8 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
 
     let minUI5Version: SemVer | null;
 
+    const minRequiredUI5Version = TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
+
     if (feApp.ui5?.minUI5Version) {
         minUI5Version = semVer.coerce(feApp.ui5?.minUI5Version);
         if (!minUI5Version) {
@@ -45,26 +47,28 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
                 t('error.invalidUI5Version', { versionProperty: 'minUI5Version', ui5Version: feApp.ui5?.minUI5Version })
             );
         }
+    } else {
+        minUI5Version = semVer.coerce(minRequiredUI5Version);
     }
 
-    const minRequiredUi5Version = TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
-
-    if (semVer.lt(ui5Version!, minRequiredUi5Version)) {
+    if (ui5Version && semVer.lt(ui5Version, minRequiredUI5Version)) {
         throw new ValidationError(
             t('error.unsupportedUI5Version', {
                 versionProperty: 'version',
                 ui5Version: feApp.ui5?.version,
-                templateType: feApp.template.type
+                templateType: feApp.template.type,
+                minRequiredUI5Version
             })
         );
     }
 
-    if (semVer.lt(minUI5Version!, minRequiredUi5Version)) {
+    if (semVer.lt(minUI5Version!, minRequiredUI5Version)) {
         throw new ValidationError(
             t('error.unsupportedUI5Version', {
                 versionProperty: 'minUI5Version',
                 ui5Version: feApp.ui5?.minUI5Version,
-                templateType: feApp.template.type
+                templateType: feApp.template.type,
+                minRequiredUI5Version
             })
         );
     }
