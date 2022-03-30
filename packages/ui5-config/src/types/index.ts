@@ -1,21 +1,7 @@
 import type { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
 
 export type Manifest = SAPJSONSchemaForWebApplicationManifestFile;
-/*
-export interface UI5ProxyConfigTarget {
-    path: string | string[];
-    url: string;
-}
 
-export interface UI5ProxyConfig {
-    ui5: UI5ProxyConfigTarget | UI5ProxyConfigTarget[];
-    proxy?: string;
-    debug?: boolean;
-    secure?: boolean;
-    directLoad?: boolean;
-    version?: string;
-}
-*/
 export interface FioriToolsProxyConfigBackend {
     path?: string;
     url: string;
