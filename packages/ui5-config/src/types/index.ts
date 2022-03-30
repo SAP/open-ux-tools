@@ -1,8 +1,22 @@
 import type { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
 
 export type Manifest = SAPJSONSchemaForWebApplicationManifestFile;
+/*
+export interface UI5ProxyConfigTarget {
+    path: string | string[];
+    url: string;
+}
 
-export interface ProxyBackend {
+export interface UI5ProxyConfig {
+    ui5: UI5ProxyConfigTarget | UI5ProxyConfigTarget[];
+    proxy?: string;
+    debug?: boolean;
+    secure?: boolean;
+    directLoad?: boolean;
+    version?: string;
+}
+*/
+export interface FioriToolsProxyConfigBackend {
     path?: string;
     url: string;
     client?: string;
@@ -15,11 +29,17 @@ export interface ProxyBackend {
     xfwd?: boolean;
 }
 
-export interface ProxyUIConfig {
-    [key: string]: unknown | undefined;
-    path?: string[];
-    url?: string;
+export interface FioriToolsProxyConfigUI5 {
+    path: string[];
+    url: string;
+    version?: string;
     directLoad?: boolean;
+}
+
+export interface FioriToolsProxyConfig {
+    backend?: FioriToolsProxyConfigBackend[];
+    ui5?: Partial<FioriToolsProxyConfigUI5>;
+    ignoreCertError?: boolean;
 }
 
 export interface CustomMiddleware<C> {
@@ -61,12 +81,6 @@ export interface FioriAppReloadConfig {
     port: number;
     path: string;
     delay: number;
-}
-
-export interface FioriToolsProxyConfig {
-    backend?: ProxyBackend[];
-    ui5?: ProxyUIConfig;
-    ignoreCertError?: boolean;
 }
 
 export interface MockserverConfig {

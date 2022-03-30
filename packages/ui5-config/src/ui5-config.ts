@@ -4,8 +4,8 @@ import type {
     CustomMiddleware,
     CustomTask,
     FioriToolsProxyConfig,
-    ProxyBackend,
-    ProxyUIConfig
+    FioriToolsProxyConfigBackend,
+    FioriToolsProxyConfigUI5
 } from './types';
 import type { NodeComment, YAMLMap } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -138,7 +138,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addBackendToFioriToolsProxydMiddleware(backend: ProxyBackend): UI5Config {
+    public addBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): UI5Config {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
         const proxyMiddleware = this.document.findItem(
             middlewareList,
@@ -158,7 +158,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addUi5ToFioriToolsProxydMiddleware(ui5: ProxyUIConfig): UI5Config {
+    public addUi5ToFioriToolsProxydMiddleware(ui5: FioriToolsProxyConfigUI5): UI5Config {
         try {
             const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
             const proxyMiddleware = this.document.findItem(
@@ -172,6 +172,9 @@ export class UI5Config {
                 });
                 if (ui5.url) {
                     configurationUi5Doc.set('url', ui5.url);
+                }
+                if (ui5.version) {
+                    configurationUi5Doc.set('version', ui5.version);
                 }
                 if (ui5.directLoad) {
                     configurationUi5Doc.set('directLoad', ui5.directLoad);

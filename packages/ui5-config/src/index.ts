@@ -4,7 +4,7 @@ export {
     CustomMiddleware,
     FioriAppReloadConfig,
     FioriToolsProxyConfig,
-    ProxyBackend,
-    ProxyUIConfig,
+    FioriToolsProxyConfigBackend,
+    FioriToolsProxyConfigUI5,
     AbapApp
 } from './types';

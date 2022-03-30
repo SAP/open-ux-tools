@@ -198,9 +198,10 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all 
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
-            - /resources
-            - /test-resources
+            - /~customResources
+            - /~other
           url: http://~url
+          version: 1.23.3
           directLoad: true
 "
 `;
