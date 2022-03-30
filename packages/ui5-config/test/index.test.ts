@@ -1,4 +1,4 @@
-import { UI5Config, AbapApp } from '../src';
+import { UI5Config, AbapApp, UI5ProxyConfig } from '../src';
 
 describe('UI5Config', () => {
     // values for testing
@@ -116,9 +116,13 @@ describe('UI5Config', () => {
             name: 'custom-middleware',
             afterMiddleware: '~otherMiddleware',
             configuration: {
-                param1: 35729,
-                other: 'webapp'
-            }
+                ui5: {
+                    path: ['/resources', '/test-resources'],
+                    url: 'http://ui5.example'
+                },
+                version: '1.95.1',
+                debug: true
+            } as UI5ProxyConfig
         };
         test('addCustomMiddleware', () => {
             ui5Config.addCustomMiddleware([customMiddleware]);

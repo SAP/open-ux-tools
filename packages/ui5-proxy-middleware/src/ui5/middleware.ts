@@ -3,7 +3,7 @@ import express from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { MiddlewareParameters, ProxyConfig, UI5ProxyConfig, UI5ConfigObject } from '../base';
+import type { MiddlewareParameters, Ui5MiddlewareConfig, ProxyConfig } from '../base';
 import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
@@ -14,7 +14,7 @@ import {
     hideProxyCredentials
 } from '../base';
 
-module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise<RequestHandler> => {
+module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
@@ -43,11 +43,11 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
     );
 
     const configs = Array.isArray(config.ui5) ? config.ui5 : [config.ui5];
-    const ui5Configs: UI5ProxyConfig[] = [];
+    const ui5Configs: ProxyConfig[] = [];
     for (const ui5 of configs) {
         const paths = Array.isArray(ui5.path) ? ui5.path : [ui5.path];
         for (const ui5Path of paths) {
-            const ui5Config: UI5ProxyConfig = {
+            const ui5Config: ProxyConfig = {
                 path: ui5Path,
                 url: ui5.url,
                 version: ui5Version

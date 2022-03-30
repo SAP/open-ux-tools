@@ -2,7 +2,7 @@ import * as utils from '../../src/base/utils';
 import * as proxy from '../../src/base/proxy';
 import * as ui5ProxyMiddleware from '../../src/ui5/middleware';
 
-import { ProxyConfig } from '../../src/base';
+import { Ui5MiddlewareConfig } from '../../src/base';
 import express from 'express';
 import supertest from 'supertest';
 import nock from 'nock';
@@ -14,7 +14,7 @@ const injectScriptsMock = jest.spyOn(utils, 'injectScripts').mockImplementation(
 });
 
 // middleware function wrapper for testing to simplify tests
-async function getTestServer(configuration: ProxyConfig): Promise<any> {
+async function getTestServer(configuration: Ui5MiddlewareConfig): Promise<any> {
     const router = await (ui5ProxyMiddleware as any).default({
         options: { configuration }
     });
