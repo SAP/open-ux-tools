@@ -93,19 +93,13 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, url: string): boolean => {
     if (noProxyConfig === '*') {
         return true;
+    } else {
+        const host = new URL(url).host;
+        const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
+        return !!noProxyList.find((entry) =>
+            entry.startsWith('.') ? host.endsWith(entry) : host.endsWith(`.${entry}`)
+        );
     }
-    let isExcluded = false;
-    const host = new URL(url).host;
-    const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
-
-    for (const entry of noProxyList) {
-        if (entry.startsWith('.') && host.endsWith(entry)) {
-            isExcluded = true;
-        } else if (`.${host}`.endsWith(`.${entry}`)) {
-            isExcluded = true;
-        }
-    }
-    return isExcluded;
 };
 
 /**
@@ -214,7 +208,7 @@ export async function getUI5VersionFromManifest(args: string[]): Promise<string 
  * @param log logger for outputing information from where ui5 version config is coming
  * @returns The UI5 version with which the application will be started
  */
-export async function resolveUI5Version(version: string | undefined, log?: ToolsLogger): Promise<string> {
+export async function resolveUI5Version(version?: string, log?: ToolsLogger): Promise<string> {
     let ui5Version: string = '';
     let ui5VersionInfo: string;
     let ui5VersionLocation: string = 'manifest.json';
