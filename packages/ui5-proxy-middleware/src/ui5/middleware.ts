@@ -31,15 +31,11 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
     const proxyOptions: Options = {
         secure,
         logLevel: debug ? 'debug' : 'info',
-        logProvider: () => {
-            return logger;
-        }
+        logProvider: () => logger
     };
 
     logger.info(
-        `Starting ui5-proxy-middleware using following configuration:\nproxy: '${proxyInfo}'\nsecure: '${
-            secure ? 'true' : 'false'
-        }'\ndebug: '${debug ? 'true' : 'false'}''\ndebug: '${directLoad ? 'true' : 'false'}'`
+        `Starting ui5-proxy-middleware using following configuration:\nproxy: '${proxyInfo}'\nsecure: '${secure}'\ndebug: '${debug}''\ndirectLoad: '${directLoad}'`
     );
 
     const configs = Array.isArray(config.ui5) ? config.ui5 : [config.ui5];
