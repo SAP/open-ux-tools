@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { ProxyBackend } from '@sap-ux/ui5-config';
+import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
