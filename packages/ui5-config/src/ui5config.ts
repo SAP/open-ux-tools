@@ -1,11 +1,13 @@
 import type {
     AbapApp,
     AbapTarget,
+    Configuration,
     CustomMiddleware,
     CustomTask,
     FioriToolsProxyConfig,
     FioriToolsProxyConfigBackend,
-    FioriToolsProxyConfigUI5
+    FioriToolsProxyConfigUI5,
+    Resources
 } from './types';
 import type { NodeComment, YAMLMap } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -35,6 +37,24 @@ export class UI5Config {
         const instance = new UI5Config();
         instance.document = await YamlDocument.newInstance(serializedYaml);
         return instance;
+    }
+
+    public getConfiguration(): Configuration {
+        let resources: Resources;
+        try {
+            resources = this.document.getMap({ path: 'resources' }).toJSON();
+        } catch (error) {
+            resources = {};
+        }
+        return resources.configuration ?? {};
+    }
+
+    public setConfiguration(config: Configuration): UI5Config {
+        this.document.setIn({
+            path: 'resources',
+            value: { configuration: config }
+        });
+        return this;
     }
 
     /**

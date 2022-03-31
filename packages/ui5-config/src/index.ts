@@ -1,6 +1,8 @@
-export { UI5Config } from './ui5-config';
+export { UI5Config } from './ui5config';
 export {
+    Configuration,
     Manifest,
+    CustomTask,
     CustomMiddleware,
     FioriAppReloadConfig,
     FioriToolsProxyConfig,

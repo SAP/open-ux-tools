@@ -6,8 +6,13 @@ exports[`UI5Config add/removeCustomMiddleware addCustomMiddleware 1`] = `
     - name: custom-middleware
       afterMiddleware: ~otherMiddleware
       configuration:
-        param1: 35729
-        other: webapp
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: http://ui5.example
+        version: 1.95.1
+        debug: true
 "
 `;
 

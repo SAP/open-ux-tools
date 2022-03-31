@@ -14,6 +14,39 @@ describe('UI5Config', () => {
         ui5Config = await UI5Config.newInstance('');
     });
 
+    describe('get/setConfiguration', () => {
+        test('get empty configuration', () => {
+            expect(ui5Config.getConfiguration()).toMatchObject({});
+        });
+
+        test('set first time', () => {
+            const config = {
+                paths: {
+                    webapp: '~/my/webapp'
+                }
+            };
+            ui5Config.setConfiguration(config);
+            expect(ui5Config.getConfiguration()).toMatchObject(config);
+        });
+
+        test('replace existing', () => {
+            ui5Config.setConfiguration({
+                propertiesFileSourceEncoding: 'ISO-8859-1',
+                paths: {
+                    webapp: '~/old/webapp',
+                    src: '~/src'
+                }
+            });
+            const config = {
+                paths: {
+                    webapp: '~/my/webapp'
+                }
+            };
+            ui5Config.setConfiguration(config);
+            expect(ui5Config.getConfiguration()).toMatchObject(config);
+        });
+    });
+
     describe('addUI5Framework', () => {
         test('Minimal set of inputs', () => {
             ui5Config.addUI5Framework('SAPUI5', '1.64.0', []);
