@@ -146,9 +146,8 @@ export const getYamlFile = (args: string[]): string => {
  */
 export const getWebAppFolderFromYaml = async (ui5YamlPath: string): Promise<string> => {
     if (existsSync(ui5YamlPath)) {
-        const test = readFileSync(ui5YamlPath, { encoding: 'utf8' });
-        const yaml = await UI5Config.newInstance(test);
-        return yaml.getConfiguration().paths?.webapp ?? 'webapp';
+        const ui5Config = await UI5Config.newInstance(readFileSync(ui5YamlPath, { encoding: 'utf8' }));
+        return ui5Config.getConfiguration().paths?.webapp ?? 'webapp';
     } else {
         return 'webapp';
     }
