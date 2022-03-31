@@ -127,6 +127,17 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('addUi5ToFioriToolsProxydMiddleware', () => {
+        test('add ui5 config to empty tools middleware config', () => {
+            ui5Config.addFioriToolsProxydMiddleware({});
+            ui5Config.addUi5ToFioriToolsProxydMiddleware({
+                path: ['/~customResources', '/~other'],
+                url: 'http://~url'
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
     describe('addMockServerMiddleware', () => {
         test('add with given path', () => {
             ui5Config.addMockServerMiddleware(path);

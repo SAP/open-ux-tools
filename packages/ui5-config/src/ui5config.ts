@@ -192,32 +192,19 @@ export class UI5Config {
      * @memberof UI5Config
      */
     public addUi5ToFioriToolsProxydMiddleware(ui5: FioriToolsProxyConfigUI5): UI5Config {
-        try {
-            const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
-            const proxyMiddleware = this.document.findItem(
-                middlewareList,
-                (item: any) => item.name === 'fiori-tools-proxy'
-            );
-            if (proxyMiddleware && ui5 !== undefined) {
-                const configurationUi5Doc = this.document.getMap({
-                    start: proxyMiddleware as YAMLMap,
-                    path: 'configuration.ui5'
-                });
-                if (ui5.url) {
-                    configurationUi5Doc.set('url', ui5.url);
-                }
-                if (ui5.version) {
-                    configurationUi5Doc.set('version', ui5.version);
-                }
-                if (ui5.directLoad) {
-                    configurationUi5Doc.set('directLoad', ui5.directLoad);
-                }
-            }
-        } catch (e) {
-            // Ignore
+        const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+        const proxyMiddleware = this.document.findItem(
+            middlewareList,
+            (item: any) => item.name === 'fiori-tools-proxy'
+        );
+        if (!proxyMiddleware) {
+            throw new Error('Could not find fiori-tools-proxy');
         }
+
+        this.document.getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' }).set('ui5', [ui5]);
         return this;
     }
+
     /**
      * Adds a instance of the mockserver middleware to the config.
      *
