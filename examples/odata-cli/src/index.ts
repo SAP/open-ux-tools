@@ -1,9 +1,9 @@
-import type { AbapServiceProvider } from '@sap-ux/axios-odata';
-import { createForDestination, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-odata';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { createForDestination, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio, listDestinations, isAbapSystem } from '@sap-ux/btp-utils';
+import { ToolsLogger } from '@sap-ux/logger';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
-import { ToolsLogger } from '@sap-ux/logger';
 
 // read CLI arguments as well as environment variables
 const args = process.argv.slice(3);

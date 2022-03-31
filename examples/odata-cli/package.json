@@ -15,7 +15,7 @@
         "lint:fix": "eslint . --ext .ts --fix"
     },
     "dependencies": {
-        "@sap-ux/axios-odata": "workspace:*",
+        "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "dotenv": "10.0.0"

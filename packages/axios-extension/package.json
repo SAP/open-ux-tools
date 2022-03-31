@@ -1,7 +1,7 @@
 {
-    "name": "@sap-ux/axios-odata",
-    "version": "0.8.0",
-    "description": "Extension of the Axios module adding convinience methods to interact with OData service especially services exposed by SAP systems.",
+    "name": "@sap-ux/axios-extension",
+    "version": "0.3.0",
+    "description": "Extension of the Axios module adding convinience methods to interact with SAP systems especially with OData services.",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",

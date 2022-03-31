@@ -55,17 +55,17 @@ importers:
 
     examples/odata-cli:
         specifiers:
-            '@sap-ux/axios-odata': workspace:*
+            '@sap-ux/axios-extension': workspace:*
             '@sap-ux/btp-utils': workspace:*
             '@sap-ux/logger': workspace:*
             dotenv: 10.0.0
         dependencies:
-            '@sap-ux/axios-odata': link:../../packages/axios-odata
+            '@sap-ux/axios-extension': link:../../packages/axios-extension
             '@sap-ux/btp-utils': link:../../packages/btp-utils
             '@sap-ux/logger': link:../../packages/logger
             dotenv: 10.0.0
 
-    packages/axios-odata:
+    packages/axios-extension:
         specifiers:
             '@sap-ux/btp-utils': workspace:*
             '@sap-ux/logger': workspace:*
@@ -8590,7 +8590,7 @@ packages:
             }
         engines: { node: '>= 10.13' }
         dependencies:
-            debug: 4.3.3
+            debug: 4.3.4
             json-stringify-safe: 5.0.1
             lodash.set: 4.3.2
             propagate: 2.0.1
