@@ -27,7 +27,7 @@ export interface Resources {
     configuration?: Configuration;
 }
 
-export interface Ui5Document<T> {
+export interface Ui5Document {
     specVersion?: string;
     type: 'application' | 'library' | 'theme-library' | 'module';
     metadata: {

@@ -39,6 +39,12 @@ export class UI5Config {
         return instance;
     }
 
+    /**
+     * Tries reading the resources/configuration object from the config.
+     *
+     * @returns resources/configuration object from config or an empty object
+     * @memberof UI5Config
+     */
     public getConfiguration(): Configuration {
         let resources: Resources;
         try {
@@ -49,6 +55,13 @@ export class UI5Config {
         return resources.configuration ?? {};
     }
 
+    /**
+     * Adds or replaces the resources/configuration object in the config.
+     *
+     * @param config configuration object that is to be written to the config
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
     public setConfiguration(config: Configuration): UI5Config {
         this.document.setIn({
             path: 'resources',

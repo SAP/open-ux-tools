@@ -1,10 +1,10 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/ui5-config';
+import { UI5Config } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
 import type { ProxyConfig } from './types';
-import { existsSync, promises } from 'fs';
-import { parseDocument } from 'yaml';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 
@@ -145,17 +145,13 @@ export const getYamlFile = (args: string[]): string => {
  * @returns Path to the webapp folder
  */
 export const getWebAppFolderFromYaml = async (ui5YamlPath: string): Promise<string> => {
-    let webAppFolder = 'webapp';
-
     if (existsSync(ui5YamlPath)) {
-        const ui5Yaml = parseDocument(await promises.readFile(ui5YamlPath, { encoding: 'utf8' })).toJSON();
-
-        if (ui5Yaml.resources?.configuration?.paths?.webapp) {
-            webAppFolder = ui5Yaml.resources.configuration.paths.webapp;
-        }
+        const test = readFileSync(ui5YamlPath, { encoding: 'utf8' });
+        const yaml = await UI5Config.newInstance(test);
+        return yaml.getConfiguration().paths?.webapp ?? 'webapp';
+    } else {
+        return 'webapp';
     }
-
-    return webAppFolder;
 };
 
 /**
@@ -185,7 +181,7 @@ export const getManifest = async (args: string[]): Promise<Manifest> => {
     const ui5YamlPath = join(projectRoot, yamlFileName);
     const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
     const manifestPath = join(projectRoot, webAppFolder, 'manifest.json');
-    const manifest: Manifest = JSON.parse(await promises.readFile(manifestPath, { encoding: 'utf8' }));
+    const manifest: Manifest = JSON.parse(readFileSync(manifestPath, { encoding: 'utf8' }));
 
     return manifest;
 };
@@ -242,7 +238,7 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger): Pr
  */
 export const injectUI5Url = async (htmlFilePath: string, ui5Configs: ProxyConfig[]): Promise<string | undefined> => {
     if (existsSync(htmlFilePath)) {
-        let html = await promises.readFile(htmlFilePath, { encoding: 'utf8' });
+        let html = readFileSync(htmlFilePath, { encoding: 'utf8' });
         for (const ui5Config of ui5Configs) {
             const ui5Host = ui5Config.url.replace(/\/$/, '');
             const ui5Url = ui5Config.version ? `${ui5Host}/${ui5Config.version}` : ui5Host;
@@ -257,10 +253,10 @@ export const injectUI5Url = async (htmlFilePath: string, ui5Configs: ProxyConfig
                 html = html.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
             }
         }
-
         return html;
+    } else {
+        return undefined;
     }
-    return undefined;
 };
 
 /**
