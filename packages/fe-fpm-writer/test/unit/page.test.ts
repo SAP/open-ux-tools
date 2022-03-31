@@ -1,8 +1,8 @@
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
+import { ManifestNamespace } from '@sap-ux/ui5-config';
 import { generateCustomPage, validateBasePath, CustomPage } from '../../src';
-import { Ui5RoutingRoute as Ui5Route } from '../../src/common/types';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -26,7 +26,7 @@ describe('CustomPage', () => {
                             name: 'TestObjectPage',
                             target: 'TestObjectPage'
                         }
-                    ] as Ui5Route[],
+                    ] as ManifestNamespace.Route[],
                     targets: {
                         TestObjectPage: {}
                     }

@@ -1,10 +1,6 @@
-import type { SAPJSONSchemaForWebApplicationManifestFile, Route, Target } from './manifest';
+import type { ManifestNamespace } from '@sap-ux/ui5-config';
 
-export interface Manifest extends SAPJSONSchemaForWebApplicationManifestFile {
-    [key: string]: unknown;
-}
-
-export type Ui5RoutingRoute = Route;
+export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 
 /**
  * Common properties for any custom element of the flexible programming model.
@@ -55,6 +51,6 @@ export type Position = {
     placement: Placement;
 };
 
-export interface Ui5RoutingTarget<T> extends Target {
+export interface Ui5RoutingTarget<T> extends ManifestNamespace.Target {
     options?: T;
 }
