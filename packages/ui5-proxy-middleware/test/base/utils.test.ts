@@ -366,20 +366,20 @@ describe('Utils', () => {
     });
 
     describe('injectUI5Url', () => {
-        test('return undefined if html file does not exists', async () => {
+        test('return undefined if html file does not exists', () => {
             existsMock.mockReturnValueOnce(false);
-            const result = await injectUI5Url('example.html', []);
+            const result = injectUI5Url('example.html', []);
             expect(result).toBeUndefined();
         });
 
-        test('return unmodified html, if no ui5 config', async () => {
+        test('return unmodified html, if no ui5 config', () => {
             const html = '<html></html>';
             readFileMock.mockReturnValueOnce(html);
-            const result = await injectUI5Url('example.html', []);
+            const result = injectUI5Url('example.html', []);
             expect(result).toEqual(html);
         });
 
-        test('injects UI5 URL in html', async () => {
+        test('injects UI5 URL in html', () => {
             const ui5Configs: ProxyConfig[] = [
                 {
                     path: '/resources',
@@ -411,7 +411,7 @@ describe('Utils', () => {
             </html>`;
 
             readFileMock.mockReturnValueOnce(html);
-            const result = await injectUI5Url('example.html', ui5Configs);
+            const result = injectUI5Url('example.html', ui5Configs);
             expect(result).toMatchSnapshot();
         });
 
@@ -445,7 +445,7 @@ describe('Utils', () => {
             </head>
             </html>`;
             readFileMock.mockReturnValueOnce(html);
-            const result = await injectUI5Url('example.html', ui5Configs);
+            const result = injectUI5Url('example.html', ui5Configs);
             expect(result).toMatchSnapshot();
         });
     });

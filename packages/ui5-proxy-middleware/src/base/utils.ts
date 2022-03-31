@@ -235,7 +235,7 @@ export async function resolveUI5Version(version?: string, log?: ToolsLogger): Pr
  * @param ui5Configs - the configuration of the ui5-proxy-middleware
  * @returns The modified html file content
  */
-export const injectUI5Url = async (htmlFilePath: string, ui5Configs: ProxyConfig[]): Promise<string | undefined> => {
+export function injectUI5Url(htmlFilePath: string, ui5Configs: ProxyConfig[]): string | undefined {
     if (existsSync(htmlFilePath)) {
         let html = readFileSync(htmlFilePath, { encoding: 'utf8' });
         for (const ui5Config of ui5Configs) {
@@ -256,7 +256,7 @@ export const injectUI5Url = async (htmlFilePath: string, ui5Configs: ProxyConfig
     } else {
         return undefined;
     }
-};
+}
 
 /**
  * Injects scripts into the html file, which is used to preview the application.
@@ -280,7 +280,7 @@ export const injectScripts = async (
         const ui5YamlPath = join(projectRoot, yamlFileName);
         const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
         const htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
-        const html = await injectUI5Url(htmlFilePath, ui5Configs);
+        const html = injectUI5Url(htmlFilePath, ui5Configs);
 
         if (html) {
             setHtmlResponse(res, html);
