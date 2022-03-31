@@ -1,4 +1,14 @@
-import type { AbapApp, AbapTarget, CustomTask, FioriToolsProxyConfig, ProxyBackend, ProxyUIConfig } from './types';
+import type {
+    AbapApp,
+    AbapTarget,
+    Configuration,
+    CustomMiddleware,
+    CustomTask,
+    FioriToolsProxyConfig,
+    FioriToolsProxyConfigBackend,
+    FioriToolsProxyConfigUI5,
+    Resources
+} from './types';
 import type { NodeComment, YAMLMap } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 import {
@@ -6,7 +16,6 @@ import {
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig
 } from './middlewares';
-import type { CustomMiddleware } from 'index';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.
@@ -28,6 +37,37 @@ export class UI5Config {
         const instance = new UI5Config();
         instance.document = await YamlDocument.newInstance(serializedYaml);
         return instance;
+    }
+
+    /**
+     * Tries reading the resources/configuration object from the config.
+     *
+     * @returns resources/configuration object from config or an empty object
+     * @memberof UI5Config
+     */
+    public getConfiguration(): Configuration {
+        let resources: Resources;
+        try {
+            resources = this.document.getMap({ path: 'resources' }).toJSON();
+        } catch (error) {
+            resources = {};
+        }
+        return resources.configuration ?? {};
+    }
+
+    /**
+     * Adds or replaces the resources/configuration object in the config.
+     *
+     * @param config configuration object that is to be written to the config
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public setConfiguration(config: Configuration): UI5Config {
+        this.document.setIn({
+            path: 'resources',
+            value: { configuration: config }
+        });
+        return this;
     }
 
     /**
@@ -131,7 +171,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addBackendToFioriToolsProxydMiddleware(backend: ProxyBackend): UI5Config {
+    public addBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): UI5Config {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
         const proxyMiddleware = this.document.findItem(
             middlewareList,
@@ -151,30 +191,20 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addUi5ToFioriToolsProxydMiddleware(ui5: ProxyUIConfig): UI5Config {
-        try {
-            const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
-            const proxyMiddleware = this.document.findItem(
-                middlewareList,
-                (item: any) => item.name === 'fiori-tools-proxy'
-            );
-            if (proxyMiddleware && ui5 !== undefined) {
-                const configurationUi5Doc = this.document.getMap({
-                    start: proxyMiddleware as YAMLMap,
-                    path: 'configuration.ui5'
-                });
-                if (ui5.url) {
-                    configurationUi5Doc.set('url', ui5.url);
-                }
-                if (ui5.directLoad) {
-                    configurationUi5Doc.set('directLoad', ui5.directLoad);
-                }
-            }
-        } catch (e) {
-            // Ignore
+    public addUi5ToFioriToolsProxydMiddleware(ui5: FioriToolsProxyConfigUI5): UI5Config {
+        const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+        const proxyMiddleware = this.document.findItem(
+            middlewareList,
+            (item: any) => item.name === 'fiori-tools-proxy'
+        );
+        if (!proxyMiddleware) {
+            throw new Error('Could not find fiori-tools-proxy');
         }
+
+        this.document.getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' }).set('ui5', [ui5]);
         return this;
     }
+
     /**
      * Adds a instance of the mockserver middleware to the config.
      *

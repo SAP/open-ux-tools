@@ -1,12 +1,13 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/ui5-config';
+import { UI5Config } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
-import type { UI5Config } from './types';
-import { existsSync, promises } from 'fs';
-import { parseDocument } from 'yaml';
+import type { ProxyConfig } from './types';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
-import type { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
+
 import { t } from '../i18n';
 
 /**
@@ -92,19 +93,13 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, url: string): boolean => {
     if (noProxyConfig === '*') {
         return true;
+    } else {
+        const host = new URL(url).host;
+        const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
+        return !!noProxyList.find((entry) =>
+            entry.startsWith('.') ? host.endsWith(entry) : host.endsWith(`.${entry}`)
+        );
     }
-    let isExcluded = false;
-    const host = new URL(url).host;
-    const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
-
-    for (const entry of noProxyList) {
-        if (entry.startsWith('.') && host.endsWith(entry)) {
-            isExcluded = true;
-        } else if (`.${host}`.endsWith(`.${entry}`)) {
-            isExcluded = true;
-        }
-    }
-    return isExcluded;
 };
 
 /**
@@ -150,17 +145,12 @@ export const getYamlFile = (args: string[]): string => {
  * @returns Path to the webapp folder
  */
 export const getWebAppFolderFromYaml = async (ui5YamlPath: string): Promise<string> => {
-    let webAppFolder = 'webapp';
-
     if (existsSync(ui5YamlPath)) {
-        const ui5Yaml = parseDocument(await promises.readFile(ui5YamlPath, { encoding: 'utf8' })).toJSON();
-
-        if (ui5Yaml.resources?.configuration?.paths?.webapp) {
-            webAppFolder = ui5Yaml.resources.configuration.paths.webapp;
-        }
+        const ui5Config = await UI5Config.newInstance(readFileSync(ui5YamlPath, { encoding: 'utf8' }));
+        return ui5Config.getConfiguration().paths?.webapp ?? 'webapp';
+    } else {
+        return 'webapp';
     }
-
-    return webAppFolder;
 };
 
 /**
@@ -184,15 +174,13 @@ export const setHtmlResponse = (res: any, html: string): void => {
  * @param args list of runtime arguments
  * @returns The content of the manifest.json
  */
-export const getManifest = async (args: string[]): Promise<SAPJSONSchemaForWebApplicationManifestFile> => {
+export const getManifest = async (args: string[]): Promise<Manifest> => {
     const projectRoot = process.cwd();
     const yamlFileName = getYamlFile(args);
     const ui5YamlPath = join(projectRoot, yamlFileName);
     const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
     const manifestPath = join(projectRoot, webAppFolder, 'manifest.json');
-    const manifest: SAPJSONSchemaForWebApplicationManifestFile = JSON.parse(
-        await promises.readFile(manifestPath, { encoding: 'utf8' })
-    );
+    const manifest: Manifest = JSON.parse(readFileSync(manifestPath, { encoding: 'utf8' }));
 
     return manifest;
 };
@@ -204,7 +192,7 @@ export const getManifest = async (args: string[]): Promise<SAPJSONSchemaForWebAp
  * @returns The minUI5Version from manifest.json or undefined otherwise
  */
 export async function getUI5VersionFromManifest(args: string[]): Promise<string | undefined> {
-    const manifest: SAPJSONSchemaForWebApplicationManifestFile = await getManifest(args);
+    const manifest = await getManifest(args);
     return manifest['sap.ui5']?.dependencies?.minUI5Version;
 }
 
@@ -215,7 +203,7 @@ export async function getUI5VersionFromManifest(args: string[]): Promise<string 
  * @param log logger for outputing information from where ui5 version config is coming
  * @returns The UI5 version with which the application will be started
  */
-export async function resolveUI5Version(version: string | undefined, log?: ToolsLogger): Promise<string> {
+export async function resolveUI5Version(version?: string, log?: ToolsLogger): Promise<string> {
     let ui5Version: string = '';
     let ui5VersionInfo: string;
     let ui5VersionLocation: string = 'manifest.json';
@@ -247,9 +235,9 @@ export async function resolveUI5Version(version: string | undefined, log?: Tools
  * @param ui5Configs - the configuration of the ui5-proxy-middleware
  * @returns The modified html file content
  */
-export const injectUI5Url = async (htmlFilePath: string, ui5Configs: UI5Config[]): Promise<string | undefined> => {
+export function injectUI5Url(htmlFilePath: string, ui5Configs: ProxyConfig[]): string | undefined {
     if (existsSync(htmlFilePath)) {
-        let html = await promises.readFile(htmlFilePath, { encoding: 'utf8' });
+        let html = readFileSync(htmlFilePath, { encoding: 'utf8' });
         for (const ui5Config of ui5Configs) {
             const ui5Host = ui5Config.url.replace(/\/$/, '');
             const ui5Url = ui5Config.version ? `${ui5Host}/${ui5Config.version}` : ui5Host;
@@ -264,11 +252,11 @@ export const injectUI5Url = async (htmlFilePath: string, ui5Configs: UI5Config[]
                 html = html.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
             }
         }
-
         return html;
+    } else {
+        return undefined;
     }
-    return undefined;
-};
+}
 
 /**
  * Injects scripts into the html file, which is used to preview the application.
@@ -282,7 +270,7 @@ export const injectScripts = async (
     req: Request,
     res: Response,
     next: NextFunction,
-    ui5Configs: UI5Config[]
+    ui5Configs: ProxyConfig[]
 ): Promise<void> => {
     try {
         const projectRoot = process.cwd();
@@ -292,7 +280,7 @@ export const injectScripts = async (
         const ui5YamlPath = join(projectRoot, yamlFileName);
         const webAppFolder = await getWebAppFolderFromYaml(ui5YamlPath);
         const htmlFilePath = join(projectRoot, webAppFolder, htmlFileName);
-        const html = await injectUI5Url(htmlFilePath, ui5Configs);
+        const html = injectUI5Url(htmlFilePath, ui5Configs);
 
         if (html) {
             setHtmlResponse(res, html);

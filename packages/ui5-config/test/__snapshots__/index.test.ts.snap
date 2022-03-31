@@ -6,8 +6,13 @@ exports[`UI5Config add/removeCustomMiddleware addCustomMiddleware 1`] = `
     - name: custom-middleware
       afterMiddleware: ~otherMiddleware
       configuration:
-        param1: 35729
-        other: webapp
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: http://ui5.example
+        version: 1.95.1
+        debug: true
 "
 `;
 
@@ -198,9 +203,10 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all 
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
-            - /resources
-            - /test-resources
+            - /~customResources
+            - /~other
           url: http://~url
+          version: 1.23.3
           directLoad: true
 "
 `;
@@ -259,6 +265,21 @@ exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
   libraries:
     - name: sap.m
     - name: themelib_sap_fiori_3
+"
+`;
+
+exports[`UI5Config addUi5ToFioriToolsProxydMiddleware add ui5 config to empty tools middleware config 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          - path:
+              - /~customResources
+              - /~other
+            url: http://~url
 "
 `;
 
