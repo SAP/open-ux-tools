@@ -5,10 +5,10 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/axios-odata"
+        "directory": "packages/axios-extension"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aaxios-odata"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aaxios-extension"
     },
     "license": "Apache-2.0",
     "private": false,
