@@ -12,15 +12,18 @@ import {
     proxyResponseHandler,
     setHtmlResponse
 } from '../../src/base/utils';
+import type { Response } from 'express';
 import YAML from 'yaml';
-import fs, { promises } from 'fs';
+import fs from 'fs';
 import * as baseUtils from '../../src/base/utils';
-import { UI5Config } from '../../src/base/types';
+import { ProxyConfig } from '../../src/base/types';
 
 describe('Utils', () => {
+    const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+    const readFileMock = jest.spyOn(fs, 'readFileSync').mockReturnValue('');
+
     beforeEach(() => {
         jest.clearAllMocks();
-        jest.restoreAllMocks();
     });
 
     test('proxyResponseHandler: sets Etag and cache-control headers to response', () => {
@@ -65,27 +68,35 @@ describe('Utils', () => {
         process.env.npm_config_https_proxy = envProxy;
     });
 
-    test('isHostExcludedFromProxy: no_proxy config does not exist', () => {
-        const host = 'http://www.example.example';
-        expect(isHostExcludedFromProxy(undefined, host)).toBeFalsy();
-    });
+    describe('isHostExcludedFromProxy', () => {
+        const host = 'http://www.host.example';
 
-    test('isHostExcludedFromProxy: host is excluded via no_proxy config', () => {
-        const noProxyConfig = 'example.example';
-        const host = 'http://www.example.example';
-        expect(isHostExcludedFromProxy(noProxyConfig, host)).toBeTruthy();
-    });
+        test('no_proxy config does not exist', () => {
+            expect(isHostExcludedFromProxy(undefined, host)).toBeFalsy();
+        });
 
-    test('isHostExcludedFromProxy. host is excluded via no_proxy config, bit with leading .', () => {
-        const noProxyConfig = '.example.example';
-        const host = 'http://www.example.example';
-        expect(isHostExcludedFromProxy(noProxyConfig, host)).toBeTruthy();
-    });
+        test('host is not excluded via no_proxy config', () => {
+            expect(isHostExcludedFromProxy('host,www', host)).toBeFalsy();
+        });
 
-    test('isHostExcludedFromProxy: all hosts are excluded from proxy', () => {
-        const noProxyConfig = '*';
-        const host = 'http://www.example.example';
-        expect(isHostExcludedFromProxy(noProxyConfig, host)).toBeTruthy();
+        test('host is not excluded via no_proxy config but has similar ending', () => {
+            expect(isHostExcludedFromProxy('ample', host)).toBeFalsy();
+            expect(isHostExcludedFromProxy('ost.example', host)).toBeFalsy();
+        });
+
+        test('host is excluded via no_proxy config', () => {
+            expect(isHostExcludedFromProxy('host.example', host)).toBeTruthy();
+            expect(isHostExcludedFromProxy('example', host)).toBeTruthy();
+        });
+
+        test('host is excluded via no_proxy config, bit with leading .', () => {
+            expect(isHostExcludedFromProxy('.host.example', host)).toBeTruthy();
+            expect(isHostExcludedFromProxy('.example', host)).toBeTruthy();
+        });
+
+        test('all hosts are excluded from proxy', () => {
+            expect(isHostExcludedFromProxy('*', host)).toBeTruthy();
+        });
     });
 
     test('hideProxyCredentials: return undefined if no corporate proxy', () => {
@@ -135,83 +146,68 @@ describe('Utils', () => {
         expect(result).toEqual('test.yaml');
     });
 
-    test('getWebAppFolderFromYaml: returns webapp as default', async () => {
-        const result = await getWebAppFolderFromYaml('');
-        expect(result).toEqual('webapp');
-    });
-
-    test('getWebAppFolderFromYaml: returns webapp as default', async () => {
-        const yamlMock = {
+    describe('getWebAppFolderFromYaml', () => {
+        const baseYamlConfig = {
             specVersion: '1.0',
             metadata: { name: 'testapp' },
             type: 'application'
         };
-        const readFile = promises.readFile;
-        const readFileMock = (promises.readFile = jest.fn());
-        readFileMock.mockResolvedValue(YAML.stringify(yamlMock));
-        const result = await getWebAppFolderFromYaml('ui5.yaml');
-        expect(result).toEqual('webapp');
-        promises.readFile = readFile;
-    });
 
-    test('getWebAppFolderFromYaml: yaml file with empty resources section', async () => {
-        const yamlMock = {
-            specVersion: '1.0',
-            metadata: { name: 'testapp' },
-            type: 'application',
-            resources: {}
-        };
-        const readFile = promises.readFile;
-        const readFileMock = (promises.readFile = jest.fn());
-        readFileMock.mockResolvedValue(YAML.stringify(yamlMock));
-        const result = await getWebAppFolderFromYaml('ui5.yaml');
-        expect(result).toEqual('webapp');
-        promises.readFile = readFile;
-    });
+        test('return webapp as default if no yaml is found', async () => {
+            existsMock.mockReturnValueOnce(false);
+            const result = await getWebAppFolderFromYaml('no-ui5.yaml');
+            expect(result).toBe('webapp');
+        });
 
-    test('getWebAppFolderFromYaml: yaml file with empty configuration section', async () => {
-        const yamlMock = {
-            specVersion: '1.0',
-            metadata: { name: 'testapp' },
-            type: 'application',
-            resources: { configuration: {} }
-        };
-        const readFile = promises.readFile;
-        const readFileMock = (promises.readFile = jest.fn());
-        readFileMock.mockResolvedValue(YAML.stringify(yamlMock));
-        const result = await getWebAppFolderFromYaml('ui5.yaml');
-        expect(result).toEqual('webapp');
-        promises.readFile = readFile;
-    });
+        test('return webapp as default if yaml file has no resources section', async () => {
+            readFileMock.mockReturnValueOnce(YAML.stringify(baseYamlConfig));
+            const result = await getWebAppFolderFromYaml('ui5.yaml');
+            expect(result).toBe('webapp');
+        });
 
-    test('getWebAppFolderFromYaml: yaml file with empty paths', async () => {
-        const yamlMock = {
-            specVersion: '1.0',
-            metadata: { name: 'testapp' },
-            type: 'application',
-            resources: { configuration: { paths: {} } }
-        };
-        const readFile = promises.readFile;
-        const readFileMock = (promises.readFile = jest.fn());
-        readFileMock.mockResolvedValue(YAML.stringify(yamlMock));
-        const result = await getWebAppFolderFromYaml('ui5.yaml');
-        expect(result).toEqual('webapp');
-        promises.readFile = readFile;
-    });
+        test('return webapp as default if yaml file with empty resources section', async () => {
+            readFileMock.mockReturnValueOnce(
+                YAML.stringify({
+                    ...baseYamlConfig,
+                    resources: {}
+                })
+            );
+            const result = await getWebAppFolderFromYaml('ui5.yaml');
+            expect(result).toBe('webapp');
+        });
 
-    test('getWebAppFolderFromYaml: yaml file with webapp path', async () => {
-        const yamlMock = {
-            specVersion: '1.0',
-            metadata: { name: 'testapp' },
-            type: 'application',
-            resources: { configuration: { paths: { webapp: 'dist' } } }
-        };
-        const readFile = promises.readFile;
-        const readFileMock = (promises.readFile = jest.fn());
-        readFileMock.mockResolvedValue(YAML.stringify(yamlMock));
-        const result = await getWebAppFolderFromYaml('ui5.yaml');
-        expect(result).toEqual('dist');
-        promises.readFile = readFile;
+        test('return webapp as default if yaml file with empty configuration section', async () => {
+            readFileMock.mockReturnValueOnce(
+                YAML.stringify({
+                    ...baseYamlConfig,
+                    resources: { configuration: {} }
+                })
+            );
+            const result = await getWebAppFolderFromYaml('ui5.yaml');
+            expect(result).toBe('webapp');
+        });
+
+        test('return webapp as default if yaml file with empty paths', async () => {
+            readFileMock.mockReturnValueOnce(
+                YAML.stringify({
+                    ...baseYamlConfig,
+                    resources: { configuration: { paths: {} } }
+                })
+            );
+            const result = await getWebAppFolderFromYaml('ui5.yaml');
+            expect(result).toBe('webapp');
+        });
+
+        test('return path from the yaml file', async () => {
+            readFileMock.mockReturnValueOnce(
+                YAML.stringify({
+                    ...baseYamlConfig,
+                    resources: { configuration: { paths: { webapp: 'dist' } } }
+                })
+            );
+            const result = await getWebAppFolderFromYaml('ui5.yaml');
+            expect(result).toBe('dist');
+        });
     });
 
     test('setHtmlResponse: use livereload write if present', () => {
@@ -257,35 +253,20 @@ describe('Utils', () => {
         const manifest = {
             _version: '1.32.0'
         };
-        const yamlMock = {
-            specVersion: '1.0',
-            metadata: { name: 'testapp' },
-            type: 'application'
-        };
-        const readFile = promises.readFile;
-        const readFileMock = (promises.readFile = jest.fn());
-        readFileMock.mockImplementation((path: string) => {
-            if (path.indexOf('ui5.yaml') !== -1) {
-                return Promise.resolve(YAML.stringify(yamlMock));
-            }
-
-            if (path.indexOf('manifest.json') !== -1) {
-                return Promise.resolve(JSON.stringify(manifest));
-            }
-        });
+        readFileMock.mockImplementation((path) =>
+            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
+        );
         const result = await getManifest([]);
         expect(result).toEqual(manifest);
-        promises.readFile = readFile;
     });
 
     test('getUI5VersionFromManifest: return undefined if sap.ui5 section is missing in manifest.json', async () => {
         const manifest = {
             _version: '1.32.0'
         };
-        //@ts-ignore
-        jest.spyOn(baseUtils, 'getManifest').mockImplementation(() => {
-            return Promise.resolve(manifest);
-        });
+        readFileMock.mockImplementation((path) =>
+            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
+        );
         const result = await baseUtils.getUI5VersionFromManifest([]);
         expect(result).toBeUndefined();
     });
@@ -295,10 +276,9 @@ describe('Utils', () => {
             _version: '1.32.0',
             'sap.ui5': {}
         };
-        //@ts-ignore
-        jest.spyOn(baseUtils, 'getManifest').mockImplementation(async () => {
-            return Promise.resolve(manifest);
-        });
+        readFileMock.mockImplementation((path) =>
+            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
+        );
         const result = await baseUtils.getUI5VersionFromManifest([]);
         expect(result).toBeUndefined();
     });
@@ -308,10 +288,9 @@ describe('Utils', () => {
             _version: '1.32.0',
             'sap.ui5': { dependencies: {} }
         };
-        //@ts-ignore
-        jest.spyOn(baseUtils, 'getManifest').mockImplementation(async () => {
-            return Promise.resolve(manifest);
-        });
+        readFileMock.mockImplementation((path) =>
+            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
+        );
         const result = await baseUtils.getUI5VersionFromManifest([]);
         expect(result).toBeUndefined();
     });
@@ -321,12 +300,11 @@ describe('Utils', () => {
             _version: '1.32.0',
             'sap.ui5': { dependencies: { minUI5Version: '1.86.4' } }
         };
-        //@ts-ignore
-        jest.spyOn(baseUtils, 'getManifest').mockImplementation(async () => {
-            return Promise.resolve(manifest);
-        });
+        readFileMock.mockImplementation((path) =>
+            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
+        );
         const result = await baseUtils.getUI5VersionFromManifest([]);
-        expect(result).toEqual('1.86.4');
+        expect(result).toBe('1.86.4');
     });
 
     test('setUI5Version: take version from YAML', async () => {
@@ -361,10 +339,9 @@ describe('Utils', () => {
             _version: '1.32.0',
             'sap.ui5': { dependencies: { minUI5Version: '1.96.0' } }
         };
-        //@ts-ignore
-        jest.spyOn(baseUtils, 'getManifest').mockImplementation(async () => {
-            return Promise.resolve(manifest);
-        });
+        readFileMock.mockImplementation((path) =>
+            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
+        );
         const result = await baseUtils.resolveUI5Version(undefined, log);
         expect(result).toEqual('1.96.0');
         expect(log.info).toBeCalledTimes(1);
@@ -379,171 +356,130 @@ describe('Utils', () => {
             _version: '1.32.0',
             'sap.ui5': { dependencies: { minUI5Version: '${ui5Version}' } }
         };
-        //@ts-ignore
-        jest.spyOn(baseUtils, 'getManifest').mockImplementation(async () => {
-            return Promise.resolve(manifest);
-        });
+        readFileMock.mockImplementation((path) =>
+            (path as string).endsWith('manifest.json') ? JSON.stringify(manifest) : ''
+        );
         const result = await baseUtils.resolveUI5Version(undefined, log);
         expect(result).toEqual('');
         expect(log.info).toBeCalledTimes(1);
         expect(log.info).toHaveBeenCalledWith('Using UI5 version latest based on manifest.json');
     });
 
-    test('injectUI5Url: return undefined if html file does not exists', async () => {
-        const result = await injectUI5Url('example.html', []);
-        expect(result).toBeUndefined();
+    describe('injectUI5Url', () => {
+        test('return undefined if html file does not exists', () => {
+            existsMock.mockReturnValueOnce(false);
+            const result = injectUI5Url('example.html', []);
+            expect(result).toBeUndefined();
+        });
+
+        test('return unmodified html, if no ui5 config', () => {
+            const html = '<html></html>';
+            readFileMock.mockReturnValueOnce(html);
+            const result = injectUI5Url('example.html', []);
+            expect(result).toEqual(html);
+        });
+
+        test('injects UI5 URL in html', () => {
+            const ui5Configs: ProxyConfig[] = [
+                {
+                    path: '/resources',
+                    url: 'https://ui5.sap.com',
+                    version: '1.86.4'
+                },
+                {
+                    path: '/test-resources',
+                    url: 'https://ui5.example',
+                    version: '1.23.4'
+                }
+            ];
+            const html = `
+            <html>
+            <head>
+                <script src="/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
+                <script id="sap-ui-bootstrap"
+                src="/resources/sap-ui-core.js"
+                data-sap-ui-libs="sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app"
+                data-sap-ui-async="true"
+                data-sap-ui-preload="async"
+                data-sap-ui-theme="sap_fiori_3"
+                data-sap-ui-compatVersion="edge"
+                data-sap-ui-language="en"
+                data-sap-ui-resourceroots='{"project": "../"}'
+                data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
+                </script>
+            </head>
+            </html>`;
+
+            readFileMock.mockReturnValueOnce(html);
+            const result = injectUI5Url('example.html', ui5Configs);
+            expect(result).toMatchSnapshot();
+        });
+
+        test('injects UI5 URL in html, latest ui5 version', async () => {
+            const ui5Configs: ProxyConfig[] = [
+                {
+                    path: '/resources',
+                    url: 'https://ui5.sap.com',
+                    version: ''
+                },
+                {
+                    path: '/test-resources',
+                    url: 'https://ui5.example'
+                }
+            ];
+            const html = `
+            <html>
+            <head>
+                <script src="/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
+                <script id="sap-ui-bootstrap"
+                src="/resources/sap-ui-core.js"
+                data-sap-ui-libs="sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app"
+                data-sap-ui-async="true"
+                data-sap-ui-preload="async"
+                data-sap-ui-theme="sap_fiori_3"
+                data-sap-ui-compatVersion="edge"
+                data-sap-ui-language="en"
+                data-sap-ui-resourceroots='{"project": "../"}'
+                data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
+                </script>
+            </head>
+            </html>`;
+            readFileMock.mockReturnValueOnce(html);
+            const result = injectUI5Url('example.html', ui5Configs);
+            expect(result).toMatchSnapshot();
+        });
     });
 
-    test('injectUI5Url: return unmodified html, if no ui5 config', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => {
-            return true;
-        });
-        const html = '<html></html>';
-        const readFile = promises.readFile;
-        const readFileMock = (promises.readFile = jest.fn());
-        readFileMock.mockResolvedValue(html);
-        const result = await injectUI5Url('example.html', []);
-        expect(result).toEqual(html);
-        promises.readFile = readFile;
-    });
-
-    test('injectUI5Url: injects UI5 URL in html', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => {
-            return true;
-        });
-        const ui5Configs: UI5Config[] = [
-            {
-                path: '/resources',
-                url: 'https://ui5.sap.com',
-                version: '1.86.4'
-            },
-            {
-                path: '/test-resources',
-                url: 'https://ui5.sap.com',
-                version: '1.86.4'
-            }
-        ];
-        const html = `
-        <html>
-        <head>
-            <script src="/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
-            <script id="sap-ui-bootstrap"
-            src="/resources/sap-ui-core.js"
-            data-sap-ui-libs="sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app"
-            data-sap-ui-async="true"
-            data-sap-ui-preload="async"
-            data-sap-ui-theme="sap_fiori_3"
-            data-sap-ui-compatVersion="edge"
-            data-sap-ui-language="en"
-            data-sap-ui-resourceroots='{"project": "../"}'
-            data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
-            </script>
-        </head>
-        </html>`;
-        const readFile = promises.readFile;
-        const readFileMock = (promises.readFile = jest.fn());
-        readFileMock.mockResolvedValue(html);
-        const result = await injectUI5Url('example.html', ui5Configs);
-        expect(result).toMatchSnapshot();
-        promises.readFile = readFile;
-    });
-
-    test('injectUI5Url: injects UI5 URL in html, latest ui5 version', async () => {
-        jest.spyOn(fs, 'existsSync').mockImplementationOnce(() => {
-            return true;
-        });
-        const ui5Configs: UI5Config[] = [
-            {
-                path: '/resources',
-                url: 'https://ui5.sap.com',
-                version: ''
-            },
-            {
-                path: '/test-resources',
-                url: 'https://ui5.sap.com',
-                version: ''
-            }
-        ];
-        const html = `
-        <html>
-        <head>
-            <script src="/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
-            <script id="sap-ui-bootstrap"
-            src="/resources/sap-ui-core.js"
-            data-sap-ui-libs="sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app"
-            data-sap-ui-async="true"
-            data-sap-ui-preload="async"
-            data-sap-ui-theme="sap_fiori_3"
-            data-sap-ui-compatVersion="edge"
-            data-sap-ui-language="en"
-            data-sap-ui-resourceroots='{"project": "../"}'
-            data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
-            </script>
-        </head>
-        </html>`;
-        const readFile = promises.readFile;
-        const readFileMock = (promises.readFile = jest.fn());
-        readFileMock.mockResolvedValue(html);
-        const result = await injectUI5Url('example.html', ui5Configs);
-        expect(result).toMatchSnapshot();
-        promises.readFile = readFile;
-    });
-
-    test('injectScripts: injectUI5Url is called and HTML is modified', async () => {
-        const getHtmlFileMock = jest.spyOn(baseUtils, 'getHtmlFile').mockImplementation(() => {
-            return 'index.html';
-        });
-        const getYamlFileMock = jest.spyOn(baseUtils, 'getYamlFile').mockImplementation(() => {
-            return 'ui5.yaml';
-        });
-        const getWebAppFolderFromYamlMock = jest
-            .spyOn(baseUtils, 'getWebAppFolderFromYaml')
-            .mockImplementation(async () => {
-                return Promise.resolve('webapp');
-            });
-        const injectUI5UrlMock = jest.spyOn(baseUtils, 'injectUI5Url').mockImplementation(async () => {
-            return Promise.resolve('<html></html>');
-        });
-        const setHtmlResponseMock = jest.spyOn(baseUtils, 'setHtmlResponse').mockImplementation(jest.fn());
-        await baseUtils.injectScripts({} as any, {} as any, {} as any, []);
-        expect(getHtmlFileMock).toHaveBeenCalled();
-        expect(getYamlFileMock).toHaveBeenCalled();
-        expect(getWebAppFolderFromYamlMock).toHaveBeenCalled();
-        expect(setHtmlResponseMock).toHaveBeenCalled();
-        expect(injectUI5UrlMock).toHaveBeenCalled();
-    });
-
-    test('injectScripts: calls next() if no html file to modify', async () => {
-        const getHtmlFileMock = jest.spyOn(baseUtils, 'getHtmlFile').mockImplementation(() => {
-            return 'index.html';
-        });
-        const getYamlFileMock = jest.spyOn(baseUtils, 'getYamlFile').mockImplementation(() => {
-            return 'ui5.yaml';
-        });
-        const getWebAppFolderFromYamlMock = jest
-            .spyOn(baseUtils, 'getWebAppFolderFromYaml')
-            .mockImplementation(async () => {
-                return Promise.resolve('webapp');
-            });
-        const injectUI5UrlMock = jest.spyOn(baseUtils, 'injectUI5Url').mockImplementation(async () => {
-            return Promise.resolve(undefined);
-        });
-        const setHtmlResponseMock = jest.spyOn(baseUtils, 'setHtmlResponse').mockImplementation(jest.fn());
+    describe('injectScripts', () => {
         const nextMock = jest.fn();
-        await baseUtils.injectScripts({} as any, {} as any, nextMock, []);
-        expect(getHtmlFileMock).toHaveBeenCalled();
-        expect(getYamlFileMock).toHaveBeenCalled();
-        expect(getWebAppFolderFromYamlMock).toHaveBeenCalled();
-        expect(setHtmlResponseMock).not.toHaveBeenCalled();
-        expect(injectUI5UrlMock).toHaveBeenCalled();
-        expect(nextMock).toHaveBeenCalled();
-    });
+        const respMock: Response = {} as Partial<Response> as Response;
+        respMock.status = jest.fn().mockReturnValue(respMock);
+        respMock.contentType = jest.fn().mockReturnValue(respMock);
+        respMock.send = jest.fn().mockReturnValue(respMock);
 
-    test('injectScripts: calls next(error) in case of exception', async () => {
-        const nextMock = jest.fn();
-        await baseUtils.injectScripts({} as any, {} as any, nextMock, []);
-        expect(nextMock).toHaveBeenCalled();
-        expect(nextMock).toBeCalledWith(expect.any(Error));
+        beforeEach(() => {
+            nextMock.mockReset();
+        });
+
+        test('HTML is modified and response is sent', async () => {
+            readFileMock.mockReturnValue('<html></html>');
+            await baseUtils.injectScripts({ baseUrl: 'index.html' } as any, respMock, nextMock, []);
+            expect(respMock.status).toHaveBeenCalledWith(200);
+            expect(respMock.contentType).toHaveBeenCalledWith('html');
+            expect(respMock.send).toHaveBeenCalled();
+            expect(nextMock).not.toHaveBeenCalled();
+        });
+
+        test('calls next() if no html file to modify', async () => {
+            readFileMock.mockReturnValue('');
+            await baseUtils.injectScripts({ baseUrl: 'index.html' } as any, respMock, nextMock, []);
+            expect(nextMock).toHaveBeenCalled();
+        });
+
+        test('calls next(error) in case of exception', async () => {
+            await baseUtils.injectScripts(null as any, null as any, nextMock, []);
+            expect(nextMock).toBeCalledWith(expect.any(Error));
+        });
     });
 
     test('filterCompressedHtmlFiles: returns true if accept header is not set', () => {

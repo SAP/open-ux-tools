@@ -42,15 +42,6 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Patched versions    | >=3.9.6 |
 | More info           | https://github.com/advisories/GHSA-6pw2-5hjv-9pf7 |
 
-## klaw
-| Override:           | ^4.0.0 |
-|:--------------------| :-------------|
-|                     | |
-| **no risk**         | Overriden in order to support Node 12. `klaw` is used by the `@ui5/project` |
-| Package             | klaw |
-| Patched versions    | >=4.0.0 |
-| More info           | Newer packages of klaw do not support Node 12. We can remove this override once we do not need to support Node 12 anymore |
-
 ## minimist
 | Override:           | ^1.2.6 |
 |:--------------------| :-------------|

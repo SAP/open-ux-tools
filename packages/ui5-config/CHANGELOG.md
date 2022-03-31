@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.13.0
+
+### Minor Changes
+
+-   56409d0: Consolidated ui5 configuration types and enhanced API
+
 ## 0.12.3
 
 ### Patch Changes
