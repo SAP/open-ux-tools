@@ -11,6 +11,7 @@ export interface CustomPage extends CustomElement {
         title?: string;
         path?: string;
     };
+    list?: boolean;
 }
 
 export type InternalCustomPage = CustomPage &

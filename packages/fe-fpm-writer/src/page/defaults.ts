@@ -2,9 +2,8 @@ import type { Editor } from 'mem-fs-editor';
 
 import type { CustomPage, InternalCustomPage } from './types';
 import type { Manifest } from '../common/types';
-import { setCommonDefaults } from '../common/defaults';
+import { FCL_ROUTER, setCommonDefaults } from '../common/defaults';
 
-const FCL_ROUTER = 'sap.f.routing.Router';
 /**
  * Enhances the provided custom page configuration with default data.
  *

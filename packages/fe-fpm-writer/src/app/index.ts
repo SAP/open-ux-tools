@@ -2,12 +2,15 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { satisfies } from 'semver';
+import { satisfies, lt } from 'semver';
+import { FCL_ROUTER } from '../common/defaults';
 import type { SAPJSONSchemaForWebApplicationManifestFile as Manifest } from '../common/manifest';
 
 export interface FPMConfig {
     fcl?: boolean;
 }
+
+export const MIN_VERSION = '1.94.0';
 
 /**
  * Enable the flexible programming model for an application.
@@ -41,12 +44,12 @@ export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor)
     // if a minUI5Version is set and it is smaller than the minimum required, increase it
     if (
         manifest['sap.ui5']?.dependencies.minUI5Version &&
-        !satisfies(manifest['sap.ui5']?.dependencies.minUI5Version, '>=1.86')
+        lt(manifest['sap.ui5']?.dependencies.minUI5Version, MIN_VERSION)
     ) {
         fs.extendJSON(manifestPath, {
             'sap.ui5': {
                 dependencies: {
-                    minUI5Version: '1.86.0'
+                    minUI5Version: MIN_VERSION
                 }
             }
         });
@@ -63,7 +66,7 @@ export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor)
                 },
                 routing: {
                     config: {
-                        routerClass: 'sap.f.routing.Router'
+                        routerClass: FCL_ROUTER
                     }
                 }
             }

@@ -499,7 +499,7 @@ Object {
   "routes": Array [
     Object {
       "name": "MainEntityCustomPage",
-      "pattern": "MainEntity({key}):?query:",
+      "pattern": ":?query:",
       "target": Array [
         "MainEntityCustomPage",
       ],

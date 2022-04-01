@@ -235,7 +235,7 @@ describe('CustomPage', () => {
             };
             const target = join(testDir, 'single-page-fcl');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
-            generateCustomPage(target, input, fs);
+            generateCustomPage(target, { ...input, list: true }, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
         });
 
