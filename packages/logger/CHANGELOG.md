@@ -1,5 +1,12 @@
 # @sap-ux/logger
 
+## 0.1.5
+
+### Patch Changes
+
+-   a34d058: Fix version incompatibility in yarn due to logform import
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+
 ## 0.1.4
 
 ### Patch Changes

@@ -1,23 +1,13 @@
 import type { NextFunction } from 'express';
 import type { IncomingMessage } from 'http';
 
-export interface UI5Config {
+import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
+
+export type Ui5MiddlewareConfig = UI5ProxyConfig;
+
+export interface ProxyConfig {
     path: string;
     url: string;
-    version?: string;
-}
-
-export interface UI5ConfigObject {
-    path: string[];
-    url: string;
-    version?: string;
-}
-export interface ProxyConfig {
-    ui5: UI5Config[] | UI5ConfigObject;
-    proxy?: string;
-    debug?: boolean;
-    secure?: boolean;
-    directLoad?: boolean;
     version?: string;
 }
 

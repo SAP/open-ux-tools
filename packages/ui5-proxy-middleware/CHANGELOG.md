@@ -1,5 +1,22 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.0.4
+
+### Patch Changes
+
+-   56409d0: Consolidated ui5 configuration types and enhanced API
+-   Updated dependencies [56409d0]
+    -   @sap-ux/ui5-config@0.13.0
+
+## 1.0.3
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [a34d058]
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/logger@0.1.5
+
 ## 1.0.2
 
 ### Patch Changes
