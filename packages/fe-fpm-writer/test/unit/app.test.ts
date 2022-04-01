@@ -36,7 +36,7 @@ describe('CustomApp', () => {
     });
 
     describe('enableFPM', () => {
-        test('valid app with minimum version', async () => {
+        test('valid app with no minimum version', async () => {
             const target = join(testDir, 'minimal-input');
             fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest());
             await enableFPM(target, {}, fs);
@@ -44,11 +44,18 @@ describe('CustomApp', () => {
         });
 
         test('valid app with a too low minimum version', async () => {
-            const target = join(testDir, 'minimal-input');
+            const target = join(testDir, 'minimal-input-low-version');
             fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest({ minVersion: '1.23.4' }));
             await enableFPM(target, {}, fs);
             const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
             expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(MIN_VERSION);
+        });
+
+        test('enable FCL', async () => {
+            const target = join(testDir, 'fcl-enabled');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest());
+            await enableFPM(target, { fcl: true }, fs);
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
     });
 });

@@ -5,7 +5,8 @@
                 "<%- entity %><%- name %>": {
                     "type": "Component",
                     "id": "<%- entity %><%- name %>",
-                    "name": "sap.fe.core.fpm",
+                    "name": "sap.fe.core.fpm",<%if (locals.controlAggregation) {%>
+                    "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
                         "settings": {
                             "viewName": "<%- ns %>.<%- name %>",

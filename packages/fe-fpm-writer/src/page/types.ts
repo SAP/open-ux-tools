@@ -17,4 +17,5 @@ export interface CustomPage extends CustomElement {
 export type InternalCustomPage = CustomPage &
     InternalCustomElement & {
         fcl: boolean;
+        controlAggregation?: 'beginColumnPages' | 'midColumnPages' | 'endColumnPages';
     };
