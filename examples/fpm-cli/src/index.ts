@@ -33,10 +33,23 @@ const createFPMExample = async function (appId: string): Promise<void> {
         basePath,
         {
             name: 'Main',
-            entity: 'RootEntity'
+            entity: 'RootEntity',
+            list: true
         },
         fs
     );
+
+    // add some hello world content
+    const viewPath = join(basePath, 'webapp/ext/main/Main.view.xml');
+    const view = fs.read(viewPath);
+    fs.write(viewPath, view.replace('<content></content>', '<content><Text text="Hello World"/></content>'));
+
+    // replace start script with mock config
+    fs.extendJSON(join(basePath, 'package.json'), {
+        scripts: {
+            start: 'ui5 serve --config=ui5-mock.yaml --open index.html'
+        }
+    });
 
     return new Promise((resolve) => {
         fs.commit(() => {
