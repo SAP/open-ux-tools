@@ -490,3 +490,60 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
 );
 "
 `;
+
+exports[`CustomPage generateCustomPage: only page, no others FCL enabled single page app 1`] = `
+Object {
+  "config": Object {
+    "routerClass": "sap.f.routing.Router",
+  },
+  "routes": Array [
+    Object {
+      "name": "MainEntityCustomPage",
+      "pattern": "MainEntity({key}):?query:",
+      "target": Array [
+        "MainEntityCustomPage",
+      ],
+    },
+  ],
+  "targets": Object {
+    "MainEntityCustomPage": Object {
+      "id": "MainEntityCustomPage",
+      "name": "sap.fe.core.fpm",
+      "options": Object {
+        "settings": Object {
+          "entitySet": "MainEntity",
+          "navigation": Object {},
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+      },
+      "type": "Component",
+    },
+  },
+}
+`;
+
+exports[`CustomPage generateCustomPage: only page, no others No FCL single page app 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "MainEntityCustomPage",
+      "pattern": "MainEntity({key}):?query:",
+      "target": "MainEntityCustomPage",
+    },
+  ],
+  "targets": Object {
+    "MainEntityCustomPage": Object {
+      "id": "MainEntityCustomPage",
+      "name": "sap.fe.core.fpm",
+      "options": Object {
+        "settings": Object {
+          "entitySet": "MainEntity",
+          "navigation": Object {},
+          "viewName": "my.test.App.ext.customPage.CustomPage",
+        },
+      },
+      "type": "Component",
+    },
+  },
+}
+`;
