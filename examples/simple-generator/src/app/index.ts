@@ -46,6 +46,9 @@ export default class extends Generator {
             app: {
                 id: answers.name
             },
+            appOptions: {
+                loadReuseLibs: true
+            },
             template: {
                 type: TemplateType.ListReportObjectPage,
                 settings: {
