@@ -57,5 +57,18 @@ describe('CustomApp', () => {
             await enableFPM(target, { fcl: true }, fs);
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
+
+        test('replace component', async () => {
+            const target = join(testDir, 'replace-component');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest());
+            const component = '// Empty';
+            fs.write(join(target, 'webapp/Component.js'), component);
+
+            await enableFPM(target, {}, fs);
+            expect(fs.read(join(target, 'webapp/Component.js'))).toBe(component);
+
+            await enableFPM(target, { replaceAppComponent: true }, fs);
+            expect(fs.read(join(target, 'webapp/Component.js'))).not.toBe(component);
+        });
     });
 });

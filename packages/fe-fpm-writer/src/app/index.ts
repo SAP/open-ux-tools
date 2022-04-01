@@ -7,6 +7,7 @@ import { FCL_ROUTER } from '../common/defaults';
 import type { SAPJSONSchemaForWebApplicationManifestFile as Manifest } from '../common/manifest';
 
 export interface FPMConfig {
+    replaceAppComponent?: boolean;
     fcl?: boolean;
 }
 
@@ -74,8 +75,10 @@ export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor)
     }
 
     // replace Component.js
-    const componentTemplate = join(__dirname, '../../templates/app/Component.js');
-    fs.copyTpl(componentTemplate, join(basePath, 'webapp/Component.js'), manifest['sap.app']);
+    if (config.replaceAppComponent) {
+        const componentTemplate = join(__dirname, '../../templates/app/Component.js');
+        fs.copyTpl(componentTemplate, join(basePath, 'webapp/Component.js'), manifest['sap.app']);
+    }
 
     return fs;
 }
