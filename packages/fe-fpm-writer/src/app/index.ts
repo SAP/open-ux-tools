@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { satisfies, lt } from 'semver';
+import { lt } from 'semver';
 import { FCL_ROUTER } from '../common/defaults';
 import type { SAPJSONSchemaForWebApplicationManifestFile as Manifest } from '../common/manifest';
 
@@ -16,7 +16,7 @@ export const MIN_VERSION = '1.94.0';
  * Enable the flexible programming model for an application.
  *
  * @param {string} basePath - the base path
- * @param {CustomTableColumn} config - the custom column configuration
+ * @param {FPMConfig} config - the FPM configuration
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */

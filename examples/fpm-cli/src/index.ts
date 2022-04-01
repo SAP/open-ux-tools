@@ -3,13 +3,14 @@ import { generate as generateApp } from '@sap-ux/ui5-application-writer';
 import { generate as generateService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { generateCustomPage, enableFPM } from '@sap-ux/fe-fpm-writer';
 
-const createFPMExample = async function (appId: string): Promise<void> {
+async function createFPMExample(appId: string): Promise<void> {
     const basePath = join('.tmp', appId);
 
     const fs = await generateApp(basePath, {
         app: {
             id: appId
         },
+        // eslint-disable-next-line quote-props
         package: {
             name: appId
         }
@@ -55,6 +56,6 @@ const createFPMExample = async function (appId: string): Promise<void> {
             resolve();
         });
     });
-};
+}
 
 createFPMExample('MyApp');
