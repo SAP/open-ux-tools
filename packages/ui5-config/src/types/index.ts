@@ -1,5 +1,6 @@
-import type { SAPJSONSchemaForWebApplicationManifestFile } from './manifest';
-export type Manifest = SAPJSONSchemaForWebApplicationManifestFile;
+import type * as ManifestNamespace from './manifest';
+export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
+export { ManifestNamespace };
 
 export * from './ui5yaml';
 export * from './middlewares';
