@@ -104,6 +104,7 @@ importers:
 
     packages/fe-fpm-writer:
         specifiers:
+            '@sap-ux/ui5-config': workspace:*
             '@types/ejs': 3.1.0
             ejs: 3.1.6
             mem-fs: 2.1.0
@@ -115,6 +116,7 @@ importers:
             mem-fs-editor: 9.3.0_mem-fs@2.1.0
             xml-js: 1.6.11
         devDependencies:
+            '@sap-ux/ui5-config': link:../ui5-config
             '@types/ejs': 3.1.0
 
     packages/fiori-elements-writer:

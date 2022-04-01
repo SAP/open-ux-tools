@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.13.1
+
+### Patch Changes
+
+-   5b5355c: Fix: adding a custom page to an empty FE FPM application with FCL enabled
+
 ## 0.13.0
 
 ### Minor Changes

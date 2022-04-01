@@ -1,8 +1,11 @@
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
+import { ManifestNamespace } from '@sap-ux/ui5-config';
 import { generateCustomPage, validateBasePath, CustomPage } from '../../src';
-import { Ui5RoutingRoute as Ui5Route } from '../../src/common/types';
+import { validateCustomPageConfig } from '../../src/page';
+import { fail } from 'assert';
+import { Manifest } from '../../src/common/types';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -26,7 +29,7 @@ describe('CustomPage', () => {
                             name: 'TestObjectPage',
                             target: 'TestObjectPage'
                         }
-                    ] as Ui5Route[],
+                    ] as ManifestNamespace.Route[],
                     targets: {
                         TestObjectPage: {}
                     }
@@ -54,6 +57,58 @@ describe('CustomPage', () => {
         delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
         fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
         expect(() => validateBasePath(target, fs)).toThrowError();
+    });
+
+    describe('validateCustomPageConfig', () => {
+        const config: CustomPage = {
+            name: 'CustomPage',
+            entity: 'ChildEntity',
+            navigation: {
+                sourcePage: 'TestObjectPage',
+                sourceEntity: 'RootEntity',
+                navEntity: 'navToChildEntity'
+            }
+        };
+
+        test('provided navigation config is valid for existing manifest', async () => {
+            const target = join(testDir, 'validateNavigation');
+            const manifest = JSON.parse(testAppManifest) as Manifest;
+
+            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
+            expect(() => validateCustomPageConfig(target, config, fs)).not.toThrowError();
+        });
+
+        test('provided navigation config is not valid for existing manifest', () => {
+            const target = join(testDir, 'invalidateNavigation');
+
+            let manifest = JSON.parse(testAppManifest) as Manifest;
+
+            manifest['sap.ui5']!.routing!.routes = [];
+            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
+            expect(() => validateCustomPageConfig(target, config, fs)).toThrowError();
+
+            delete manifest['sap.ui5']!.routing!.routes;
+            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
+            expect(() => validateCustomPageConfig(target, config, fs)).toThrowError();
+
+            manifest = JSON.parse(testAppManifest) as Manifest;
+
+            delete manifest['sap.ui5']!.routing!.targets!['TestObjectPage'];
+            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
+            expect(() => validateCustomPageConfig(target, config, fs)).toThrowError();
+
+            delete manifest['sap.ui5']!.routing!.targets;
+            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
+            expect(() => validateCustomPageConfig(target, config, fs)).toThrowError();
+
+            delete manifest['sap.ui5']!.routing;
+            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
+            expect(() => validateCustomPageConfig(target, config, fs)).toThrowError();
+
+            delete manifest['sap.ui5'];
+            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
+            expect(() => validateCustomPageConfig(target, config, fs)).toThrowError();
+        });
     });
 
     describe('generateCustomPage: different versions or target folder', () => {
@@ -160,6 +215,35 @@ describe('CustomPage', () => {
             const target = join(testDir, 'target-as-nested-array');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
             generateCustomPage(target, inputWithNavigation, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+        });
+    });
+
+    describe('generateCustomPage: only page, no others', () => {
+        const input: CustomPage = {
+            name: 'CustomPage',
+            entity: 'MainEntity'
+        };
+        const testManifestWithNoRouting = JSON.parse(testAppManifest);
+        delete testManifestWithNoRouting['sap.ui5'].routing;
+
+        test('FCL enabled single page app', () => {
+            testManifestWithNoRouting['sap.ui5'].routing = {
+                config: {
+                    routerClass: 'sap.f.routing.Router'
+                }
+            };
+            const target = join(testDir, 'single-page-fcl');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+            generateCustomPage(target, input, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('No FCL single page app', () => {
+            delete testManifestWithNoRouting['sap.ui5'].routing;
+            const target = join(testDir, 'single-page-no-fcl');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+            generateCustomPage(target, input, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
         });
     });

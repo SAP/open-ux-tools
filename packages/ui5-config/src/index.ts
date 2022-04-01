@@ -2,6 +2,7 @@ export { UI5Config } from './ui5config';
 export {
     Configuration,
     Manifest,
+    ManifestNamespace,
     CustomTask,
     CustomMiddleware,
     FioriAppReloadConfig,

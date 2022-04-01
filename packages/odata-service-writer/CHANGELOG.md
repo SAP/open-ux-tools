@@ -1,5 +1,12 @@
 # @sap-ux/odata-service-writer
 
+## 0.11.6
+
+### Patch Changes
+
+-   Updated dependencies [5b5355c]
+    -   @sap-ux/ui5-config@0.13.1
+
 ## 0.11.5
 
 ### Patch Changes
