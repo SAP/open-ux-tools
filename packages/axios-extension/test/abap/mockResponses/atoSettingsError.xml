@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<exc:exception xmlns:exc="http://www.sap.com/abapxml/types/communicationframework">
+    <namespace id="com.sap.adt"/>
+    <type id="ExceptionResourceNoAuthorization"/>
+    <message lang="EN">No authorization to access the resource  /sap/bc/adt/ato/settings.</message>
+    <localizedMessage lang="EN">No authorization to access the resource  /sap/bc/adt/ato/settings.</localizedMessage>
+    <properties/>
+</exc:exception>
