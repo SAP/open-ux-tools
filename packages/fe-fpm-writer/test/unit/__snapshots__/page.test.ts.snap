@@ -171,7 +171,7 @@ Object {
         },
         Object {
           "name": "RootEnityCustomPage",
-          "pattern": "RootEnity({key}):?query:",
+          "pattern": "RootEnity:?query:",
           "target": "RootEnityCustomPage",
         },
       ],
@@ -273,7 +273,7 @@ Object {
         },
         Object {
           "name": "RootEnityCustomPage",
-          "pattern": "RootEnity({key}):?query:",
+          "pattern": "RootEnity:?query:",
           "target": "RootEnityCustomPage",
         },
       ],
@@ -375,7 +375,7 @@ Object {
         },
         Object {
           "name": "RootEnityCustomPage",
-          "pattern": "RootEnity({key}):?query:",
+          "pattern": "RootEnity:?query:",
           "target": "RootEnityCustomPage",
         },
       ],
@@ -419,7 +419,7 @@ Object {
         },
         Object {
           "name": "RootEnityCustomPage",
-          "pattern": "RootEnity({key}):?query:",
+          "pattern": "RootEnity:?query:",
           "target": "RootEnityCustomPage",
         },
       ],
@@ -507,7 +507,7 @@ Object {
   "routes": Array [
     Object {
       "name": "MainEntityCustomPage",
-      "pattern": ":?query:",
+      "pattern": "MainEntity:?query:",
       "target": Array [
         "MainEntityCustomPage",
       ],
@@ -536,7 +536,7 @@ Object {
   "routes": Array [
     Object {
       "name": "MainEntityCustomPage",
-      "pattern": "MainEntity({key}):?query:",
+      "pattern": "MainEntity:?query:",
       "target": "MainEntityCustomPage",
     },
   ],

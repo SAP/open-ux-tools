@@ -66,7 +66,8 @@ describe('CustomPage', () => {
             navigation: {
                 sourcePage: 'TestObjectPage',
                 sourceEntity: 'RootEntity',
-                navEntity: 'navToChildEntity'
+                navEntity: 'navToChildEntity',
+                navKey: true
             }
         };
 
@@ -177,7 +178,8 @@ describe('CustomPage', () => {
             navigation: {
                 sourcePage: 'TestObjectPage',
                 sourceEntity: 'RootEntity',
-                navEntity: 'navToChildEntity'
+                navEntity: 'navToChildEntity',
+                navKey: true
             }
         };
 
@@ -241,7 +243,7 @@ describe('CustomPage', () => {
             };
             const target = join(testDir, 'single-page-fcl');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
-            generateCustomPage(target, { ...input, list: true }, fs);
+            generateCustomPage(target, { ...input }, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
         });
 

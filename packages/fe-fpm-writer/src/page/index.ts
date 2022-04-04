@@ -38,7 +38,7 @@ function updateRoutes(routes: ManifestNamespace.Route[], config: InternalCustomP
         const pattern = {
             base: sourceRoute?.pattern?.replace(':?query:', ''),
             navEntity: config.navigation.navEntity,
-            navKey: config.list ? '' : `({${config.navigation.navEntity}Key})`
+            navKey: config.navigation.navKey ? `({${config.navigation.navEntity}Key})` : ''
         };
         newRoute.pattern = `${pattern.base}/${pattern.navEntity}${pattern.navKey}:?query:`;
         if (sourceRoute?.target?.constructor === Array) {
@@ -52,7 +52,7 @@ function updateRoutes(routes: ManifestNamespace.Route[], config: InternalCustomP
             newRoute.target = config.fcl ? [newRoute.name] : newRoute.name;
         }
     } else {
-        newRoute.pattern = config.list ? ':?query:' : `${config.entity}({key}):?query:`;
+        newRoute.pattern = `${config.entity}:?query:`;
         newRoute.target = config.fcl ? [newRoute.name] : newRoute.name;
     }
     routes.push(newRoute);

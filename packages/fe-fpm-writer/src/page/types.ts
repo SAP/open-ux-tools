@@ -13,9 +13,25 @@ export interface CustomPage extends CustomElement {
      * Optional incoming navigation configuration. If provided then a navigation configuration is added to an existing page navigating to this custom page.
      */
     navigation?: {
+        /**
+         * Source of the navigation to the custom page
+         */
         sourcePage: string;
+
+        /**
+         * Source entity that is use as the base part of the route
+         */
         sourceEntity: string;
+
+        /**
+         * Name of the navigation entity
+         */
         navEntity: string;
+
+        /**
+         * If set to true, then the generated route will point to a specific entity, otherwise, it will point to a list of the entities.
+         */
+        navKey?: boolean;
     };
 
     /**
@@ -27,11 +43,6 @@ export interface CustomPage extends CustomElement {
          */
         title?: string;
     };
-
-    /**
-     * If set to true, then the generated route will point to a list of the entities, otherwise, it will point to a specific entity.
-     */
-    list?: boolean;
 }
 
 /**
