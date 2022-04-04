@@ -52,16 +52,6 @@ importers:
             ts-jest: 27.1.3_b609d5045b94269f02d0e78b0bc7c704
             typescript: 4.0.8
 
-    examples/fpm-cli:
-        specifiers:
-            '@sap-ux/fe-fpm-writer': workspace:*
-            '@sap-ux/odata-service-writer': workspace:*
-            '@sap-ux/ui5-application-writer': workspace:*
-        dependencies:
-            '@sap-ux/fe-fpm-writer': link:../../packages/fe-fpm-writer
-            '@sap-ux/odata-service-writer': link:../../packages/odata-service-writer
-            '@sap-ux/ui5-application-writer': link:../../packages/ui5-application-writer
-
     examples/odata-cli:
         specifiers:
             '@sap-ux/axios-extension': workspace:*
