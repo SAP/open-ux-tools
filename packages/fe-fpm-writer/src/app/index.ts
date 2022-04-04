@@ -6,8 +6,20 @@ import { lt } from 'semver';
 import { FCL_ROUTER } from '../common/defaults';
 import type { SAPJSONSchemaForWebApplicationManifestFile as Manifest } from '../common/manifest';
 
+/**
+ * Configurable options when enabling the Flexible Programming Model in a UI5 application.
+ *
+ */
 export interface FPMConfig {
+    /**
+     * If set to true, then the Component.js file will be replaced with the default FPM Component.js, otherwise, the existing Component.js stays as-is.
+     */
     replaceAppComponent?: boolean;
+
+    /**
+     * If set to true, then FCL will be enabled.
+     * (Note: if set to false, nothing will be done i.e. FCL is not disabled)
+     */
     fcl?: boolean;
 }
 
