@@ -507,7 +507,7 @@ Object {
   "routes": Array [
     Object {
       "name": "MainEntityCustomPage",
-      "pattern": "MainEntity:?query:",
+      "pattern": ":?query:",
       "target": Array [
         "MainEntityCustomPage",
       ],
@@ -536,7 +536,7 @@ Object {
   "routes": Array [
     Object {
       "name": "MainEntityCustomPage",
-      "pattern": "MainEntity:?query:",
+      "pattern": ":?query:",
       "target": "MainEntityCustomPage",
     },
   ],

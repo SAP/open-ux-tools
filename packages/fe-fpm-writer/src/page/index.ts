@@ -52,7 +52,7 @@ function updateRoutes(routes: ManifestNamespace.Route[], config: InternalCustomP
             newRoute.target = config.fcl ? [newRoute.name] : newRoute.name;
         }
     } else {
-        newRoute.pattern = `${config.entity}:?query:`;
+        newRoute.pattern = routes.length > 0 ? `${config.entity}:?query:` : ':?query:';
         newRoute.target = config.fcl ? [newRoute.name] : newRoute.name;
     }
     routes.push(newRoute);
