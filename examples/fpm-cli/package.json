@@ -7,7 +7,6 @@
     "main": "dist/index.js",
     "scripts": {
         "start": "node dist/index.js",
-        "start:server": "ui5 serve --confg ./server/ui5.yaml",
         "build": "pnpm clean && tsc",
         "watch": "tsc --watch",
         "clean": "rimraf dist coverage .tmp",
@@ -19,10 +18,6 @@
         "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/ui5-application-writer": "workspace:*"
-    },
-    "devDependencies": {
-        "@sap/ux-ui5-fe-mockserver-middleware": "1",
-        "@ui5/cli": "2"
     },
     "files": [
         "dist",
