@@ -36,6 +36,16 @@ describe('CustomApp', () => {
     });
 
     describe('enableFPM', () => {
+        test('invalid base path', async () => {
+            const target = join(testDir, 'does-not-exist');
+            try {
+                await enableFPM(target, {});
+                fail('the call should have failed with an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
+        });
+
         test('valid app with no minimum version', async () => {
             const target = join(testDir, 'minimal-input');
             fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest());

@@ -3,8 +3,8 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { lt } from 'semver';
+import type { Manifest } from '@sap-ux/ui5-config';
 import { FCL_ROUTER } from '../common/defaults';
-import type { SAPJSONSchemaForWebApplicationManifestFile as Manifest } from '../common/manifest';
 
 /**
  * Configurable options when enabling the Flexible Programming Model in a UI5 application.
@@ -39,6 +39,9 @@ export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor)
     }
 
     const manifestPath = join(basePath, 'webapp/manifest.json');
+    if (!fs.exists(manifestPath)) {
+        throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
+    }
     const manifest = fs.readJSON(manifestPath) as any as Manifest;
 
     // add FE libs is not yet added
