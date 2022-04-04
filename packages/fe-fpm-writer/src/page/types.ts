@@ -23,7 +23,6 @@ export interface CustomPage extends CustomElement {
      */
     view?: {
         title?: string;
-        path?: string;
     };
 
     /**
