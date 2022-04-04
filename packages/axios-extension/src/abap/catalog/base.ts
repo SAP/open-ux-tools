@@ -30,7 +30,7 @@ export interface FilterOptions {
 }
 
 /**
- *
+ * OData version independent abstract base class of SAP's catalog service
  */
 export abstract class CatalogService extends ODataService {
     entitySet: string;
