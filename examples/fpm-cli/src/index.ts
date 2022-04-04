@@ -40,8 +40,7 @@ async function createFPMExample(appId: string): Promise<void> {
         basePath,
         {
             name: 'Main',
-            entity: 'RootEntity',
-            list: true
+            entity: 'RootEntity'
         },
         fs
     );
