@@ -1,6 +1,7 @@
 # IDE and OS temporary files
 
 .idea
+.tmp
 .project
 .DS_Store
 

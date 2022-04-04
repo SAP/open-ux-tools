@@ -1,4 +1,4 @@
-import type { ProxyBackend } from '@sap-ux/ui5-config';
+import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 
 export enum OdataVersion {
     v2 = '2',

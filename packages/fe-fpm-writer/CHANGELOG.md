@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.5.4
+
+### Patch Changes
+
+-   5b5355c: Fix: adding a custom page to an empty FE FPM application with FCL enabled
+
+## 0.5.3
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+
 ## 0.5.2
 
 ### Patch Changes

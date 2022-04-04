@@ -1,5 +1,28 @@
 # @sap-ux/odata-service-writer
 
+## 0.11.6
+
+### Patch Changes
+
+-   Updated dependencies [5b5355c]
+    -   @sap-ux/ui5-config@0.13.1
+
+## 0.11.5
+
+### Patch Changes
+
+-   56409d0: Consolidated ui5 configuration types and enhanced API
+-   Updated dependencies [56409d0]
+    -   @sap-ux/ui5-config@0.13.0
+
+## 0.11.4
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/ui5-config@0.12.3
+
 ## 0.11.3
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @sap-ux/ui5-config
 
+## 0.13.1
+
+### Patch Changes
+
+-   5b5355c: Fix: adding a custom page to an empty FE FPM application with FCL enabled
+
+## 0.13.0
+
+### Minor Changes
+
+-   56409d0: Consolidated ui5 configuration types and enhanced API
+
+## 0.12.3
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/yaml@0.11.4
+
 ## 0.12.2
 
 ### Patch Changes

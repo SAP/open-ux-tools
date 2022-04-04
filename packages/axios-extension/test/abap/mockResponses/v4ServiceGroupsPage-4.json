@@ -1,0 +1,25 @@
+{
+    "@odata.context": "$metadata#ServiceGroups(DefaultSystem(Services()))",
+    "@odata.metadataEtag": "W/\"20200826064327\"",
+    "@odata.count": 16,
+    "value": [
+        {
+            "GroupId": "/IWNGW/NOTIFICATION1",
+            "Description": "R3TR G4BA /IWNGW/NOTIFICATION1",
+            "DefaultSystem": {
+                "SystemAlias": "LOCAL",
+                "Description": "Local System Alias",
+                "Services": [
+                    {
+                        "RepositoryId": "DEFAULT",
+                        "ServiceId": "/IWNGW/NOTIFICATION_SRV1",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "",
+                        "Description": "Notification Gateway OData V4 Service1",
+                        "ServiceUrl": "/sap/opu/odata4/iwngw/notification/default/iwngw/notification_srv1/0001/?sap-client=100"
+                    }
+                ]
+            }
+        }
+    ]
+}
