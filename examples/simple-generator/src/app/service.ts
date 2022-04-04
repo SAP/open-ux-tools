@@ -59,7 +59,7 @@ export async function getMetadata(generator: Generator, service: ODataService): 
             metadata = await service.metadata();
         } catch (error) {
             generator.log.error(error.cause.statusText);
-            generator.log.info(error.cause);
+            generator.log.info(error.cause.config);
             if (error.cause.status) {
                 const { username, password } = await generator.prompt([
                     {
@@ -69,7 +69,7 @@ export async function getMetadata(generator: Generator, service: ODataService): 
                         validate: (answer) => !!answer
                     },
                     {
-                        type: 'input',
+                        type: 'password',
                         name: 'password',
                         message: 'Password',
                         validate: (answer) => !!answer
