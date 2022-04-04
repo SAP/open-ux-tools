@@ -22,6 +22,9 @@ export interface CustomPage extends CustomElement {
      * Optional custom configuration for the generated view of the page.
      */
     view?: {
+        /**
+         * Optional page title for the new page.
+         */
         title?: string;
     };
 
