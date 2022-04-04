@@ -1,5 +1,5 @@
 # Example: Simple Yeoman Generator For Fiori Elements
-This is a simple example of how to integrate the `@sap-ux/fiori-elements-writer` into a Yeoman generator.
+A simplified example illustrating how to create a yeoman generator using the `fiori-elements-writer` and the the `axios-extension`.
 
 ## Example
 This example project contains a generator that asks a few simple questions and then using the `@sap-ux/fiori-elemenets-writer` to generate a LROP application for Odata v4. Additionally, it generates a husky config to the project that checks the used dependencies for security issues before each commit.
@@ -13,11 +13,13 @@ pnpm build
 
 ## Usage
 To start the generator execute `pnpm start`.
-When prompted, enter the request values e.g.
+On your local machine, when prompted, enter the request values e.g.
 ```
 ? Application name myapp
-? Service url http://test.example.com/my/service/path
-? Main entity MyEntity
+? Service url https://sapes5.sapdevcenter.com/sap/opu/odata/sap/SEPMRA_PROD_MAN
+? Username YOUR_USER
+? Password *******
+? Main entity SEPMRA_C_PD_Product
 ```
 
-The project will be generated in subfolder of `.tmp`.
+The project will be generated in a subfolder of `.tmp`.

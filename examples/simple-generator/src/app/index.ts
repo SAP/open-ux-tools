@@ -1,13 +1,10 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
-import { FioriElementsApp, LROPSettings, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
-import { generate } from '@sap-ux/fiori-elements-writer';
-
-interface Answers {
-    name: string;
-    entity: string;
-    service: string;
-}
+import type { FioriElementsApp, LROPSettings } from '@sap-ux/fiori-elements-writer';
+import { generate, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { getServiceInfo, getServiceInfoInBAS } from './service';
+import type { ServiceInfo } from './service';
 
 export default class extends Generator {
     private appConfig!: FioriElementsApp<LROPSettings>;
@@ -19,32 +16,30 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        const answers = await this.prompt<Answers>([
-            {
-                type: 'input',
-                name: 'name',
-                message: 'Application name',
-                validate: (answer) => !!answer
-            },
-            {
-                type: 'input',
-                name: 'service',
-                message: 'Service url',
-                validate: (answer) => !!answer
-            },
-            {
-                type: 'input',
-                name: 'entity',
-                message: 'Main entity',
-                validate: (answer) => !!answer
-            }
-        ]);
+        const { name } = await this.prompt({
+            type: 'input',
+            name: 'name',
+            message: 'Application name',
+            validate: (answer) => !!answer
+        });
 
-        const service = new URL(answers.service);
+        let service: ServiceInfo;
+        if (isAppStudio()) {
+            service = await getServiceInfoInBAS(this);
+        } else {
+            service = await getServiceInfo(this);
+        }
+
+        const { entity } = await this.prompt({
+            type: 'input',
+            name: 'entity',
+            message: 'Main entity',
+            validate: (answer) => !!answer
+        });
 
         this.appConfig = {
             app: {
-                id: answers.name
+                id: name
             },
             appOptions: {
                 loadReuseLibs: true
@@ -53,17 +48,21 @@ export default class extends Generator {
                 type: TemplateType.ListReportObjectPage,
                 settings: {
                     entityConfig: {
-                        mainEntityName: answers.entity
+                        mainEntityName: entity
                     }
                 }
             },
             package: {
-                name: answers.name
+                name
             },
             service: {
                 version: OdataVersion.v4,
-                url: service.origin,
-                path: service.pathname
+                url: service.url,
+                path: service.path,
+                destination: {
+                    name: service.destination
+                },
+                metadata: service.metadata
             }
         };
     }

@@ -66,16 +66,18 @@ importers:
 
     examples/simple-generator:
         specifiers:
+            '@sap-ux/axios-extension': workspace:*
+            '@sap-ux/btp-utils': workspace:*
             '@sap-ux/fiori-elements-writer': workspace:*
             '@sap-ux/logger': workspace:*
             '@types/yeoman-environment': 2.10.6
             '@types/yeoman-generator': 5.2.9
-            dotenv: 10.0.0
             yeoman-generator: 5.6.1
         dependencies:
+            '@sap-ux/axios-extension': link:../../packages/axios-extension
+            '@sap-ux/btp-utils': link:../../packages/btp-utils
             '@sap-ux/fiori-elements-writer': link:../../packages/fiori-elements-writer
             '@sap-ux/logger': link:../../packages/logger
-            dotenv: 10.0.0
             yeoman-generator: 5.6.1
         devDependencies:
             '@types/yeoman-environment': 2.10.6

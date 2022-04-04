@@ -78,6 +78,7 @@ async function checkAbapSystem(env: {
 }): Promise<void> {
     const provider = createForAbap({
         baseURL: env.TEST_SYSTEM,
+        ignoreCertErrors: true,
         auth: {
             username: env.TEST_USER,
             password: env.TEST_PASSWORD
