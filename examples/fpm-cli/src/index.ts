@@ -27,7 +27,14 @@ async function createFPMExample(appId: string): Promise<void> {
         fs
     );
 
-    enableFPM(basePath, { fcl: true }, fs);
+    enableFPM(
+        basePath,
+        {
+            fcl: true,
+            replaceAppComponent: true
+        },
+        fs
+    );
 
     generateCustomPage(
         basePath,
