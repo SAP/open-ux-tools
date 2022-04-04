@@ -1,0 +1,12 @@
+{
+    "d": {
+        "EntitySets": [
+            "Annotations",
+            "Vocabularies",
+            "ServiceCollection",
+            "TagCollection",
+            "EntitySetCollection",
+            "CatalogCollection"
+        ]
+    }
+}

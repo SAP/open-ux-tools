@@ -4,22 +4,22 @@
 
 version: 2
 updates:
-  # --- GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
+    # --- GitHub Actions
+    - package-ecosystem: 'github-actions'
+      directory: '/'
+      schedule:
+          interval: 'daily'
 
-  - package-ecosystem: "npm"
-    directory: "/"
-    open-pull-requests-limit: 20
-    rebase-strategy: "auto"
-    schedule:
-      interval: "weekly"
-    allow:
-      - dependency-type: "direct"
-    ignore:
-      - dependency-name: "typescript"
-        versions: ["4.x"]
-      - dependency-name: "@types/node"
-        versions: ["13.x", "14.x", "15.x", "16.x", "17.x"]
+    - package-ecosystem: 'npm'
+      directory: '/'
+      open-pull-requests-limit: 20
+      rebase-strategy: 'auto'
+      schedule:
+          interval: 'weekly'
+      allow:
+          - dependency-type: 'direct'
+      ignore:
+          - dependency-name: 'typescript'
+            versions: ['4.x']
+          - dependency-name: '@types/node'
+            versions: ['13.x', '14.x', '15.x', '16.x', '17.x']
