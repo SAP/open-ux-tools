@@ -39,7 +39,8 @@ export default class extends Generator {
 
         this.appConfig = {
             app: {
-                id: name
+                id: name,
+                flpAppId: 'app-preview'
             },
             appOptions: {
                 loadReuseLibs: true
@@ -56,7 +57,7 @@ export default class extends Generator {
                 name
             },
             service: {
-                version: OdataVersion.v4,
+                version: OdataVersion.v2,
                 url: service.url,
                 path: service.path,
                 destination: {

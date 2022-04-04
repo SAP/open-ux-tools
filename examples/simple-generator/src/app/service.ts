@@ -8,6 +8,12 @@ export interface ServiceInfo {
     metadata: string;
 }
 
+/**
+ * Prompts the user for a service url and tries connecting to it to fetch metadata.
+ *
+ * @param generator an instance of a yeoman generator
+ * @returns a service configuration
+ */
 export async function getServiceInfo(generator: Generator): Promise<ServiceInfo> {
     const { url } = await generator.prompt({
         type: 'input',
@@ -28,6 +34,12 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
     };
 }
 
+/**
+ * Prompts the user for a destination and tries connecting to it to fetch metadata.
+ *
+ * @param generator an instance of a yeoman generator
+ * @returns a service configuration
+ */
 export async function getServiceInfoInBAS(generator: Generator): Promise<ServiceInfo> {
     const { destination, path } = await generator.prompt([
         {
@@ -52,15 +64,23 @@ export async function getServiceInfoInBAS(generator: Generator): Promise<Service
     };
 }
 
+/**
+ * Tries fetching metadata from the given service and prompts for user/password if a 401 is returned.
+ *
+ * @param generator an instance of a yeoman generator
+ * @param service
+ * @returns service metadata
+ */
 export async function getMetadata(generator: Generator, service: ODataService): Promise<string> {
     let metadata: string;
     while (!metadata) {
         try {
             metadata = await service.metadata();
         } catch (error) {
-            generator.log.error(error.cause.statusText);
-            generator.log.info(error.cause.config);
-            if (error.cause.status) {
+            if (service.defaults?.auth?.username) {
+                generator.log.error(error.cause.statusText);
+            }
+            if (error.cause.status === 401) {
                 const { username, password } = await generator.prompt([
                     {
                         type: 'input',
