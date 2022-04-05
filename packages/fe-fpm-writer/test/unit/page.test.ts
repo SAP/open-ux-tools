@@ -4,8 +4,8 @@ import { join } from 'path';
 import { ManifestNamespace } from '@sap-ux/ui5-config';
 import { generateCustomPage, validateBasePath, CustomPage } from '../../src';
 import { validateCustomPageConfig } from '../../src/page';
-import { fail } from 'assert';
 import { Manifest } from '../../src/common/types';
+import { FCL_ROUTER } from '../../src/common/defaults';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -66,7 +66,8 @@ describe('CustomPage', () => {
             navigation: {
                 sourcePage: 'TestObjectPage',
                 sourceEntity: 'RootEntity',
-                navEntity: 'navToChildEntity'
+                navEntity: 'navToChildEntity',
+                navKey: true
             }
         };
 
@@ -177,7 +178,8 @@ describe('CustomPage', () => {
             navigation: {
                 sourcePage: 'TestObjectPage',
                 sourceEntity: 'RootEntity',
-                navEntity: 'navToChildEntity'
+                navEntity: 'navToChildEntity',
+                navKey: true
             }
         };
 
@@ -190,6 +192,9 @@ describe('CustomPage', () => {
 
         test('inbound navigation defined as array (for FCL)', () => {
             const testManifestWithArray = JSON.parse(testAppManifest);
+            testManifestWithArray['sap.ui5'].routing.config = {
+                routerClass: FCL_ROUTER
+            };
             testManifestWithArray['sap.ui5'].routing.routes = [
                 {
                     pattern: 'RootEntity({key}):?query:',
@@ -205,6 +210,9 @@ describe('CustomPage', () => {
 
         test('inbound navigation defined as array with max nesting for FCL', () => {
             const testManifestWithArray = JSON.parse(testAppManifest);
+            testManifestWithArray['sap.ui5'].routing.config = {
+                routerClass: FCL_ROUTER
+            };
             testManifestWithArray['sap.ui5'].routing.routes = [
                 {
                     pattern: 'RootEntity({key})/NestedEntiry({nestedKey}):?query:',
@@ -235,7 +243,7 @@ describe('CustomPage', () => {
             };
             const target = join(testDir, 'single-page-fcl');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
-            generateCustomPage(target, input, fs);
+            generateCustomPage(target, { ...input }, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
         });
 
