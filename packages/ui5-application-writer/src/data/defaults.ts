@@ -132,7 +132,7 @@ function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
 }
 
 /**
- * Get the manifest descriptor version from the specified miminum UI5 version.
+ * Get the manifest descriptor version from the specified UI5 version.
  * Snapshots are handled by coercion to proper versions. If the version does not exist as an exact match
  * the nearest version lower will be used.
  *
