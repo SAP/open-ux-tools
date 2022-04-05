@@ -5,7 +5,7 @@ import type { UI5, Ui5App } from '../src/types';
 describe('Setting defaults', () => {
     const testData: { input: Partial<UI5>; expected: UI5 }[] = [
         // 0
-       {
+        {
             input: {},
             expected: {
                 framework: 'SAPUI5',
@@ -160,7 +160,7 @@ describe('Setting defaults', () => {
                 ui5Libs: defaultUI5Libs
             }
         },
-        // 9 - Test that ui5 versions >= 1.100 are handled correctly
+        // 9 - Test that ui5 versions >= 1.100 resolve to the correct manifest version
         {
             input: {
                 version: '1.199.0'
@@ -173,6 +173,40 @@ describe('Setting defaults', () => {
                 minUI5Version: '1.199.0',
                 descriptorVersion: '1.40.0',
                 typesVersion: '1.199.0',
+                ui5Theme: 'sap_fiori_3',
+                ui5Libs: defaultUI5Libs
+            }
+        },
+        // 10 - Test that non-matching ui5 versions return the closest manifest version
+        {
+            input: {
+                version: '1.97.2'
+            },
+            expected: {
+                framework: 'SAPUI5',
+                frameworkUrl: 'https://ui5.sap.com',
+                version: '1.97.2',
+                localVersion: '1.97.2',
+                minUI5Version: '1.97.2',
+                descriptorVersion: '1.37.0',
+                typesVersion: '1.97.2',
+                ui5Theme: 'sap_fiori_3',
+                ui5Libs: defaultUI5Libs
+            }
+        },
+        // 11 - Test that non-matching ui5 versions return the default manifest version if outside range
+        {
+            input: {
+                version: '1.28.0'
+            },
+            expected: {
+                framework: 'SAPUI5',
+                frameworkUrl: 'https://ui5.sap.com',
+                version: '1.28.0',
+                localVersion: '1.76.0',
+                minUI5Version: '1.28.0',
+                descriptorVersion: '1.12.0',
+                typesVersion: '1.76.0',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
