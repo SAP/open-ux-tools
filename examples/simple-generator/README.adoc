@@ -15,11 +15,12 @@ pnpm build
 To start the generator execute `pnpm start`.
 On your local machine, when prompted, enter the request values e.g.
 ```
-? Application name myapp
-? Service url https://sapes5.sapdevcenter.com/sap/opu/odata/sap/SEPMRA_PROD_MAN
-? Username YOUR_USER
-? Password *******
-? Main entity SEPMRA_C_PD_Product
+? **Application** name myapp
+? **Template** List Report
+? **Service url** https://sapes5.sapdevcenter.com/sap/opu/odata/sap/SEPMRA_PROD_MAN
+? **Username** YOUR_USER
+? **Password** *******
+? **Main entity** SEPMRA_C_PD_Product
 ```
 
 The project will be generated in a subfolder of `.tmp`.

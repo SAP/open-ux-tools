@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@sap-ux/fiori-elements-writer": "workspace:*",
+        "@sap-ux/fiori-freestyle-writer": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
@@ -24,7 +25,9 @@
     },
     "devDependencies": {
         "@types/yeoman-environment": "2.10.6",
-        "@types/yeoman-generator": "5.2.9"
+        "@types/yeoman-generator": "5.2.9",
+        "@sap-ux/ui5-application-writer": "workspace:*",
+        "@sap-ux/odata-service-writer": "workspace:*"
     },
     "files": [
         "generators",

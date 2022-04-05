@@ -69,7 +69,10 @@ importers:
             '@sap-ux/axios-extension': workspace:*
             '@sap-ux/btp-utils': workspace:*
             '@sap-ux/fiori-elements-writer': workspace:*
+            '@sap-ux/fiori-freestyle-writer': workspace:*
             '@sap-ux/logger': workspace:*
+            '@sap-ux/odata-service-writer': workspace:*
+            '@sap-ux/ui5-application-writer': workspace:*
             '@types/yeoman-environment': 2.10.6
             '@types/yeoman-generator': 5.2.9
             yeoman-generator: 5.6.1
@@ -77,9 +80,12 @@ importers:
             '@sap-ux/axios-extension': link:../../packages/axios-extension
             '@sap-ux/btp-utils': link:../../packages/btp-utils
             '@sap-ux/fiori-elements-writer': link:../../packages/fiori-elements-writer
+            '@sap-ux/fiori-freestyle-writer': link:../../packages/fiori-freestyle-writer
             '@sap-ux/logger': link:../../packages/logger
             yeoman-generator: 5.6.1
         devDependencies:
+            '@sap-ux/odata-service-writer': link:../../packages/odata-service-writer
+            '@sap-ux/ui5-application-writer': link:../../packages/ui5-application-writer
             '@types/yeoman-environment': 2.10.6
             '@types/yeoman-generator': 5.2.9
 

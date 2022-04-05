@@ -1,13 +1,23 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
-import type { FioriElementsApp, LROPSettings } from '@sap-ux/fiori-elements-writer';
-import { generate, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
+
+import type { Template, LROPSettings, OVPSettings } from '@sap-ux/fiori-elements-writer';
+import { generate as generateFE, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
+import type { OdataService } from '@sap-ux/odata-service-writer';
+import type { Template as FreestyleTemplate } from '@sap-ux/fiori-freestyle-writer';
+import { generate as generateUI5, TemplateType as FreestyleTemplateType } from '@sap-ux/fiori-freestyle-writer';
+import type { Ui5App } from '@sap-ux/ui5-application-writer';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { getServiceInfo, getServiceInfoInBAS } from './service';
 import type { ServiceInfo } from './service';
+import { getServiceInfo, getServiceInfoInBAS } from './service';
 
 export default class extends Generator {
-    private appConfig!: FioriElementsApp<LROPSettings>;
+    private app!: Ui5App & { app: { flpAppId: string } };
+    private service!: OdataService;
+    private template: {
+        type: TemplateType | FreestyleTemplateType.Basic;
+        settings?: LROPSettings | OVPSettings | {};
+    };
 
     initializing(): void {
         this.log(
@@ -16,12 +26,24 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        const { name } = await this.prompt({
-            type: 'input',
-            name: 'name',
-            message: 'Application name',
-            validate: (answer) => !!answer
-        });
+        const { name, template } = await this.prompt([
+            {
+                type: 'input',
+                name: 'name',
+                message: 'Application name',
+                validate: (answer) => !!answer
+            },
+            {
+                type: 'list',
+                name: 'template',
+                message: 'Template',
+                choices: [
+                    { value: TemplateType.ListReportObjectPage, name: 'List Report' },
+                    { value: TemplateType.OverviewPage, name: 'Overview Page' },
+                    { value: FreestyleTemplateType.Basic, name: 'Freestyle App' }
+                ]
+            }
+        ]);
 
         let service: ServiceInfo;
         if (isAppStudio()) {
@@ -37,7 +59,16 @@ export default class extends Generator {
             validate: (answer) => !!answer
         });
 
-        this.appConfig = {
+        this.service = {
+            version: OdataVersion.v2,
+            url: service.url,
+            path: service.path,
+            destination: {
+                name: service.destination
+            },
+            metadata: service.metadata
+        };
+        this.app = {
             app: {
                 id: name,
                 flpAppId: 'app-preview'
@@ -45,37 +76,64 @@ export default class extends Generator {
             appOptions: {
                 loadReuseLibs: true
             },
-            template: {
-                type: TemplateType.ListReportObjectPage,
-                settings: {
+            package: {
+                name
+            }
+        };
+        this.template = {
+            type: template
+        };
+        switch (template) {
+            case TemplateType.OverviewPage:
+                this.template.settings = {
+                    filterEntityType: entity
+                } as OVPSettings;
+                break;
+            case TemplateType.ListReportObjectPage:
+                this.template.settings = {
                     entityConfig: {
                         mainEntityName: entity
                     }
-                }
-            },
-            package: {
-                name
-            },
-            service: {
-                version: OdataVersion.v2,
-                url: service.url,
-                path: service.path,
-                destination: {
-                    name: service.destination
-                },
-                metadata: service.metadata
-            }
-        };
+                } as LROPSettings;
+                break;
+            default:
+                this.template.settings = {};
+                break;
+        }
     }
 
     configuring() {
         this.sourceRoot(join(__dirname, '..', '..', 'templates'));
-        this.destinationRoot(join('.tmp', this.appConfig.package.name));
+        this.destinationRoot(join('.tmp', this.app.package.name));
     }
 
     async writing(): Promise<void> {
-        // generating Fiori elements project
-        generate(this.destinationRoot(), this.appConfig, this.fs);
+        if (this.template.type === FreestyleTemplateType.Basic) {
+            // generate a plain UI5 application
+            await generateUI5(
+                this.destinationRoot(),
+                {
+                    ...this.app,
+                    service: this.service,
+                    ui5: {
+                        minUI5Version: '1.99.0'
+                    },
+                    template: this.template as FreestyleTemplate
+                },
+                this.fs
+            );
+        } else {
+            // generate Fiori elements project
+            await generateFE(
+                this.destinationRoot(),
+                {
+                    ...this.app,
+                    service: this.service,
+                    template: this.template as Template
+                },
+                this.fs
+            );
+        }
 
         // adding husky config that is checking for security issues before each commit
         this.copyTemplate(this.templatePath('husky'), this.destinationPath('.husky'));

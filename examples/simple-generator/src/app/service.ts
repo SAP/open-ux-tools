@@ -19,6 +19,7 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
         type: 'input',
         name: 'url',
         message: 'Service url',
+        default: 'https://sapes5.sapdevcenter.com/sap/opu/odata/sap/SEPMRA_PROD_MAN',
         validate: (answer) => !!answer
     });
 
