@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.6.0
+
+### Minor Changes
+
+-   29a3ebe: Feature: enable FPM in an existing UI5 application
+
 ## 0.5.4
 
 ### Patch Changes

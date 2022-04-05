@@ -375,7 +375,7 @@ Object {
         },
         {
           \\"name\\": \\"BookingMyCustomPage\\",
-          \\"pattern\\": \\"Travel({key})/_Booking({_BookingKey}):?query:\\",
+          \\"pattern\\": \\"Travel({key})/_Booking:?query:\\",
           \\"target\\": \\"BookingMyCustomPage\\"
         }
       ],

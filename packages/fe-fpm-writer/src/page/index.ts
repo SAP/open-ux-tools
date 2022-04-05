@@ -35,9 +35,12 @@ function updateRoutes(routes: ManifestNamespace.Route[], config: InternalCustomP
     };
     if (config.navigation) {
         const sourceRoute = routes.find((route) => route.name === config.navigation?.sourcePage);
-        newRoute.pattern = `${sourceRoute?.pattern?.replace(':?query:', '')}/${config.navigation.navEntity}({${
-            config.navigation.navEntity
-        }Key}):?query:`;
+        const pattern = {
+            base: sourceRoute?.pattern?.replace(':?query:', ''),
+            navEntity: config.navigation.navEntity,
+            navKey: config.navigation.navKey ? `({${config.navigation.navEntity}Key})` : ''
+        };
+        newRoute.pattern = `${pattern.base}/${pattern.navEntity}${pattern.navKey}:?query:`;
         if (sourceRoute?.target?.constructor === Array) {
             const pages = sourceRoute.target;
             // FCL only supports 3 columns, therefore, show the page in fullscreen if it is the 4th level of navigation
@@ -49,7 +52,7 @@ function updateRoutes(routes: ManifestNamespace.Route[], config: InternalCustomP
             newRoute.target = config.fcl ? [newRoute.name] : newRoute.name;
         }
     } else {
-        newRoute.pattern = `${config.entity}({key}):?query:`;
+        newRoute.pattern = routes.length > 0 ? `${config.entity}:?query:` : ':?query:';
         newRoute.target = config.fcl ? [newRoute.name] : newRoute.name;
     }
     routes.push(newRoute);

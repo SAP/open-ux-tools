@@ -2,6 +2,9 @@
 
 exports[`CustomPage generateCustomPage: different navigations inbound navigation defined as array (for FCL) 1`] = `
 Object {
+  "config": Object {
+    "routerClass": "sap.f.routing.Router",
+  },
   "routes": Array [
     Object {
       "name": "TestObjectPage",
@@ -21,6 +24,7 @@ Object {
   ],
   "targets": Object {
     "ChildEntityCustomPage": Object {
+      "controlAggregation": "midColumnPages",
       "id": "ChildEntityCustomPage",
       "name": "sap.fe.core.fpm",
       "options": Object {
@@ -51,6 +55,9 @@ Object {
 
 exports[`CustomPage generateCustomPage: different navigations inbound navigation defined as array with max nesting for FCL 1`] = `
 Object {
+  "config": Object {
+    "routerClass": "sap.f.routing.Router",
+  },
   "routes": Array [
     Object {
       "name": "TestObjectPage",
@@ -71,6 +78,7 @@ Object {
   ],
   "targets": Object {
     "ChildEntityCustomPage": Object {
+      "controlAggregation": "endColumnPages",
       "id": "ChildEntityCustomPage",
       "name": "sap.fe.core.fpm",
       "options": Object {
@@ -163,7 +171,7 @@ Object {
         },
         Object {
           "name": "RootEnityCustomPage",
-          "pattern": "RootEnity({key}):?query:",
+          "pattern": "RootEnity:?query:",
           "target": "RootEnityCustomPage",
         },
       ],
@@ -265,7 +273,7 @@ Object {
         },
         Object {
           "name": "RootEnityCustomPage",
-          "pattern": "RootEnity({key}):?query:",
+          "pattern": "RootEnity:?query:",
           "target": "RootEnityCustomPage",
         },
       ],
@@ -367,7 +375,7 @@ Object {
         },
         Object {
           "name": "RootEnityCustomPage",
-          "pattern": "RootEnity({key}):?query:",
+          "pattern": "RootEnity:?query:",
           "target": "RootEnityCustomPage",
         },
       ],
@@ -411,7 +419,7 @@ Object {
         },
         Object {
           "name": "RootEnityCustomPage",
-          "pattern": "RootEnity({key}):?query:",
+          "pattern": "RootEnity:?query:",
           "target": "RootEnityCustomPage",
         },
       ],
@@ -499,7 +507,7 @@ Object {
   "routes": Array [
     Object {
       "name": "MainEntityCustomPage",
-      "pattern": "MainEntity({key}):?query:",
+      "pattern": ":?query:",
       "target": Array [
         "MainEntityCustomPage",
       ],
@@ -507,6 +515,7 @@ Object {
   ],
   "targets": Object {
     "MainEntityCustomPage": Object {
+      "controlAggregation": "beginColumnPages",
       "id": "MainEntityCustomPage",
       "name": "sap.fe.core.fpm",
       "options": Object {
@@ -527,7 +536,7 @@ Object {
   "routes": Array [
     Object {
       "name": "MainEntityCustomPage",
-      "pattern": "MainEntity({key}):?query:",
+      "pattern": ":?query:",
       "target": "MainEntityCustomPage",
     },
   ],

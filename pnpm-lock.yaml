@@ -128,11 +128,13 @@ importers:
             ejs: 3.1.6
             mem-fs: 2.1.0
             mem-fs-editor: 9.3.0
+            semver: 7.3.5
             xml-js: 1.6.11
         dependencies:
             ejs: 3.1.6
             mem-fs: 2.1.0
             mem-fs-editor: 9.3.0_mem-fs@2.1.0
+            semver: 7.3.5
             xml-js: 1.6.11
         devDependencies:
             '@sap-ux/ui5-config': link:../ui5-config
