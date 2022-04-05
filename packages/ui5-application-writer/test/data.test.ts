@@ -5,7 +5,7 @@ import type { UI5, Ui5App } from '../src/types';
 describe('Setting defaults', () => {
     const testData: { input: Partial<UI5>; expected: UI5 }[] = [
         // 0
-        {
+       {
             input: {},
             expected: {
                 framework: 'SAPUI5',
@@ -156,6 +156,23 @@ describe('Setting defaults', () => {
                 minUI5Version: 'snapshot-1.78.6',
                 descriptorVersion: '1.22.0',
                 typesVersion: '1.98.0',
+                ui5Theme: 'sap_fiori_3',
+                ui5Libs: defaultUI5Libs
+            }
+        },
+        // 9 - Test that ui5 versions > 1.98 are handled correctly
+        {
+            input: {
+                version: '1.199.0'
+            },
+            expected: {
+                framework: 'SAPUI5',
+                frameworkUrl: 'https://ui5.sap.com',
+                version: '1.199.0',
+                localVersion: '1.199.0',
+                minUI5Version: '1.199.0',
+                descriptorVersion: '1.40.0',
+                typesVersion: '1.199.0',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }

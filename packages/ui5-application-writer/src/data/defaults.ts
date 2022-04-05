@@ -135,20 +135,26 @@ function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
  * Get the manifest descriptor version from the specified miminum UI5 version.
  * Snapshots are handled by coercion to proper versions.
  *
- * @param minUI5Version - the ui5 version to be used to map to the manifest descriptor version
+ * @param ui5Version - the ui5 version to be used to map to the manifest descriptor version
  * @param manifestVersion - optional manifest descriptor version to be used if provided
  * @returns - the manifest descriptor version
  */
-function getManifestVersion(minUI5Version: string, manifestVersion?: string): string {
-    const minUI5SemVer = semVer.coerce(minUI5Version)!;
-    return (
-        manifestVersion ??
-        (minUI5Version &&
-            (versionToManifestDescMapping as Record<string, string>)[
-                `${semVer.major(minUI5SemVer)}.${semVer.minor(minUI5SemVer)}`
-            ]) ??
-        UI5_DEFAULT.MANIFEST_VERSION
-    );
+function getManifestVersion(ui5Version: string, manifestVersion?: string): string {
+    const ui5SemVer = semVer.coerce(ui5Version)!;
+
+    const getClosestVersion = (ui5SemVer: semVer.SemVer) => {
+        const verToManifestVer = versionToManifestDescMapping as Record<string, string>;
+
+        let matchVersion = verToManifestVer[`${semVer.major(ui5SemVer)}.${semVer.minor(ui5SemVer)}`];
+        if (!matchVersion) {
+            const latestUI5Ver = Object.keys(verToManifestVer).sort()[0];
+            if (semVer.gt(ui5SemVer, semVer.coerce(latestUI5Ver)!)) {
+                matchVersion = verToManifestVer[latestUI5Ver];
+            }
+        }
+        return matchVersion;
+    };
+    return manifestVersion ?? (ui5SemVer && getClosestVersion(ui5SemVer)) ?? UI5_DEFAULT.MANIFEST_VERSION;
 }
 
 /**
