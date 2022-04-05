@@ -160,7 +160,7 @@ describe('Setting defaults', () => {
                 ui5Libs: defaultUI5Libs
             }
         },
-        // 9 - Test that ui5 versions > 1.98 are handled correctly
+        // 9 - Test that ui5 versions >= 1.100 are handled correctly
         {
             input: {
                 version: '1.199.0'
