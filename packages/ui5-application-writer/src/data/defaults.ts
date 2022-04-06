@@ -148,18 +148,15 @@ function getManifestVersion(ui5Version: string, manifestVersion?: string): strin
      * Finds the closest manifest version for the specified ui5 version. This is determined
      * by finding the closest lower ui5 version and returning its corresponding manifest version.
      *
-     * @example
-     *
-     * For a version to manifest json containing :
+     * @example For a version to manifest json containing :
+     * ```
      * ...
      * "1.90": "1.33.0",
      * "1.88": "1.32.0"
      * ...
-     *
-     * Specifiying version as '1.89.0' will return manifest version '1.32.0'
-     *
-     *
-     * @param version - the ui5 version used to determine the closest manifest version
+     * ```
+     * Specifiying version as `1.89.0` will return manifest version `1.32.0`
+     * @param version the ui5 version used to determine the closest manifest version
      * @returns closest matching manifest version or undefined, if none found (below lowest value)
      */
     const getClosestManifestVersion = (version: SemVer) => {
