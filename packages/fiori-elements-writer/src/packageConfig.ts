@@ -7,7 +7,7 @@ import { t } from './i18n';
  * @param options.localOnly no server available
  * @param options.addMock add a script for using the mockserver
  * @param options.sapClient SAP client required for connecting to the backend
- * @param options.flpAppId local FLP id
+ * @param options.intent intent to be used for local preview
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be opend with the start-local script
  * @description Generates the package.json scripts

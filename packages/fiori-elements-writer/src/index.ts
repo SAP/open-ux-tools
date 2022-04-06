@@ -6,7 +6,7 @@ import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import { FioriElementsApp, InternalFioriElementsApp } from './types';
+import type { FioriElementsApp, InternalFioriElementsApp } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
 import type { TemplateOptions } from './data/templateAttributes';
