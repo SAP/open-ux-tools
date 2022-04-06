@@ -81,13 +81,16 @@ export interface Template<T = {}> {
     settings: T;
 }
 
-export interface FioriApp extends App {
-    flpAppId?: string;
-}
 export interface FioriElementsApp<T> extends Ui5App {
     template: Template<T>;
     service: Omit<OdataService, 'model'>; // Model name will use defaults
-    app: FioriApp;
+    app: App;
+}
+
+export interface InternalFioriElementsApp<T> extends FioriElementsApp<T> {
+    app: App & {
+        previewIntent: string;
+    };
 }
 
 // We need this for the service version

@@ -4,6 +4,7 @@ import readPkgUp from 'read-pkg-up';
 import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, FioriElementsApp, Template } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';
 import { getBaseComponent, getUi5Libs, TemplateTypeAttributes } from './templateAttributes';
+import { InternalFioriElementsApp } from 'index';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
 
@@ -48,10 +49,14 @@ export function setDefaultTemplateSettings<T>(template: Template<T>, odataVersio
 /**
  * Sets defaults for the specified Fiori elements application.
  *
- * @param feApp - Fiori elements application config
+ * @param config - Fiori elements application config
  * @returns Fiori elements app config with updated defaults for unspecified properties
  */
-export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<T> {
+export function setAppDefaults<T>(config: FioriElementsApp<T>): InternalFioriElementsApp<T> {
+    // set additional internal property
+    const feApp: InternalFioriElementsApp<T> = config as InternalFioriElementsApp<T>;
+    feApp.app.previewIntent = `${feApp.app.id}-preview`;
+
     // Add template information
     if (!feApp.app.sourceTemplate?.version || !feApp.app.sourceTemplate?.id) {
         const packageInfo = readPkgUp.sync({ cwd: __dirname });

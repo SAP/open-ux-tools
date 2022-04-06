@@ -6,7 +6,7 @@ import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import { FioriElementsApp } from './types';
+import { FioriElementsApp, InternalFioriElementsApp } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
 import type { TemplateOptions } from './data/templateAttributes';
@@ -23,12 +23,11 @@ import semVer from 'semver';
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
-    // Clone rather than modifying callers refs
-    const feApp: FioriElementsApp<T> = cloneDeep(data);
     // Ensure input data contains at least the manadatory properties required for app genertation
-    validateRequiredProperties(feApp);
+    validateRequiredProperties(data);
 
-    setAppDefaults(feApp);
+    // Clone rather than modifying callers refs
+    const feApp: InternalFioriElementsApp<T> = setAppDefaults(cloneDeep(data));
 
     fs = await generateUi5Project(basePath, feApp, fs);
 
@@ -82,7 +81,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
             localOnly: !feApp.service?.url,
             addMock: !!feApp.service?.metadata,
             sapClient: feApp.service?.client,
-            flpAppId: feApp.app.flpAppId,
+            intent: feApp.app.previewIntent,
             startFile: data?.app?.startFile,
             localStartFile: data?.app?.localStartFile
         })

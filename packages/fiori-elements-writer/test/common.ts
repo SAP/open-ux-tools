@@ -46,7 +46,6 @@ export const feBaseConfig = (
             id: appId,
             title: 'App "Title" \\"',
             description: 'A Fiori application.',
-            flpAppId: `${appId}-tile`,
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-fe-template'

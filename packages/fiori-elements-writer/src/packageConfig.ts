@@ -17,14 +17,14 @@ export function getPackageJsonTasks({
     localOnly,
     addMock = true,
     sapClient,
-    flpAppId = '',
+    intent,
     startFile,
     localStartFile
 }: {
     localOnly: boolean;
     addMock: boolean;
     sapClient?: string;
-    flpAppId?: string;
+    intent: string;
     startFile?: string;
     localStartFile?: string;
 }): { start: string; 'start-local': string; 'start-noflp': string; 'start-mock'?: string } {
@@ -37,10 +37,8 @@ export function getPackageJsonTasks({
 
     let searchParam = new URLSearchParams(searchParamList).toString();
     searchParam = searchParam ? `?${searchParam}` : '';
-    // Build fragment identifier part of url
-    const hashFragment = flpAppId ? `#${flpAppId}` : '';
     // Full parameter section composed by search param and fragment identifier
-    const params = `${searchParam}${hashFragment}`;
+    const params = `${searchParam}#${intent}`;
 
     const startCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
