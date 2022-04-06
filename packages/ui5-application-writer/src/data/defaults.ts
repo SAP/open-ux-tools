@@ -2,6 +2,7 @@ import type { App, Package, UI5, UI5Framework } from '../types';
 import versionToManifestDescMapping from './version-to-descriptor-mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
+import type { SemVer } from 'semver';
 import { t } from '../i18n';
 import { mergeObjects } from 'json-merger';
 
@@ -143,10 +144,28 @@ function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
 function getManifestVersion(ui5Version: string, manifestVersion?: string): string {
     const ui5SemVer = semVer.coerce(ui5Version)!;
 
-    const getClosestVersion = (ui5SemVer: semVer.SemVer) => {
+    /**
+     * Finds the closest manifest version for the specified ui5 version. This is determined
+     * by finding the closest lower ui5 version and returning its corresponding manifest version.
+     *
+     * @example
+     *
+     * For a version to manifest json containing :
+     * ...
+     * "1.90": "1.33.0",
+     * "1.88": "1.32.0"
+     * ...
+     *
+     * Specifiying version as '1.89.0' will return manifest version '1.32.0'
+     *
+     *
+     * @param version - the ui5 version used to determine the closest manifest version
+     * @returns closest matching manifest version or undefined, if none found (below lowest value)
+     */
+    const getClosestManifestVersion = (version: SemVer) => {
         const verToManifestVer = versionToManifestDescMapping as Record<string, string>;
 
-        let matchVersion = verToManifestVer[`${semVer.major(ui5SemVer)}.${semVer.minor(ui5SemVer)}`];
+        let matchVersion = verToManifestVer[`${semVer.major(version)}.${semVer.minor(version)}`];
         if (!matchVersion) {
             const sortedSemVers = Object.keys(verToManifestVer)
                 .filter((ver) => ver !== 'latest')
@@ -155,12 +174,12 @@ function getManifestVersion(ui5Version: string, manifestVersion?: string): strin
 
             const latestUI5SemVer = sortedSemVers[0];
             // ui5 version is greater than the latest use the latest
-            if (semVer.gt(ui5SemVer, latestUI5SemVer!)) {
+            if (semVer.gt(version, latestUI5SemVer!)) {
                 matchVersion = verToManifestVer[`${latestUI5SemVer!.major}.${latestUI5SemVer!.minor}`];
             } else {
                 // Find the nearest lower
                 const nearest = sortedSemVers.find((mapVer) => {
-                    return semVer.gt(ui5SemVer, mapVer!);
+                    return semVer.gt(version, mapVer!);
                 });
                 if (nearest) {
                     matchVersion = verToManifestVer[`${nearest.major}.${nearest.minor}`];
@@ -169,7 +188,7 @@ function getManifestVersion(ui5Version: string, manifestVersion?: string): strin
         }
         return matchVersion;
     };
-    return manifestVersion ?? (ui5SemVer && getClosestVersion(ui5SemVer)) ?? UI5_DEFAULT.MANIFEST_VERSION;
+    return manifestVersion ?? (ui5SemVer && getClosestManifestVersion(ui5SemVer)) ?? UI5_DEFAULT.MANIFEST_VERSION;
 }
 
 /**
