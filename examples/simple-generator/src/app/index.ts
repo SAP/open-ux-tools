@@ -103,7 +103,7 @@ export default class extends Generator {
     }
 
     configuring() {
-        this.sourceRoot(join(__dirname, '..', '..', 'templates'));
+        this.sourceRoot(join(__dirname, '..', '..', 'templates', 'karma'));
         this.destinationRoot(join('.tmp', this.app.package.name));
     }
 
@@ -135,12 +135,8 @@ export default class extends Generator {
             );
         }
 
-        // adding husky config that is checking for security issues before each commit
-        this.copyTemplate(this.templatePath('husky'), this.destinationPath('.husky'));
-        this.fs.extendJSON(this.destinationPath('package.json'), {
-            devDependencies: {
-                husky: '7.0.4'
-            }
-        });
+        // adding karma configuration using the mockserver middleware
+        this.copyTemplate(this.templatePath('karma.conf.js'), this.destinationPath('karma.conf.js'));
+        this.fs.extendJSON(this.destinationPath('package.json'), this.fs.readJSON(this.templatePath('package.json')));
     }
 }
