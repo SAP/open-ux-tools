@@ -195,6 +195,23 @@ server:
 );",
     "state": "modified",
   },
+  "webapp/controller/App.controller.js": Object {
+    "contents": "sap.ui.define(
+    [
+        \\"sap/ui/core/mvc/Controller\\"
+    ],
+    function(BaseController) {
+      \\"use strict\\";
+  
+      return BaseController.extend(\\"test.me.controller.controller.App\\", {
+        onInit() {
+        }
+      });
+    }
+  );
+  ",
+    "state": "modified",
+  },
   "webapp/controller/View1.controller.js": Object {
     "contents": "sap.ui.define([
     \\"sap/ui/core/mvc/Controller\\"
@@ -942,10 +959,10 @@ title=My Test App",
       }
     },
     \\"rootView\\": {
-      \\"viewName\\": \\"test.me.view.View1\\",
+      \\"viewName\\": \\"test.me.view.App\\",
       \\"type\\": \\"XML\\",
       \\"async\\": true,
-      \\"id\\": \\"View1\\"
+      \\"id\\": \\"App\\"
     }
   }
 }
@@ -1238,22 +1255,24 @@ sap.registerComponentDependencyPaths(manifestUri);
 ",
     "state": "modified",
   },
+  "webapp/view/App.view.xml": Object {
+    "contents": "<mvc:View controllerName=\\"test.me.controller.App\\"
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\" displayBlock=\\"true\\"
+    xmlns=\\"sap.m\\">
+    <App id=\\"app\\">
+    </App>
+</mvc:View>
+",
+    "state": "modified",
+  },
   "webapp/view/View1.view.xml": Object {
-    "contents": "<mvc:View
-    controllerName=\\"test.me.controller.View1\\"
-    xmlns:mvc=\\"sap.ui.core.mvc\\"
-    displayBlock=\\"true\\"
-    xmlns=\\"sap.m\\"
->
-    <Shell id=\\"shell\\">
-        <App id=\\"app\\">
-            <pages>
-                <Page id=\\"page\\" title=\\"{i18n>title}\\">
-                    <content />
-                </Page>
-            </pages>
-        </App>
-    </Shell>
+    "contents": "<mvc:View controllerName=\\"test.me.controller.View1\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\" displayBlock=\\"true\\"
+    xmlns=\\"sap.m\\">
+    <Page id=\\"page\\" title=\\"{i18n>title}\\">
+        <content />
+    </Page>
 </mvc:View>
 ",
     "state": "modified",
