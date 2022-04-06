@@ -1,0 +1,720 @@
+{
+    "d": {
+        "results": [
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_30_60_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_30_60_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "EPM_VP_L_BT_30_60_SRV_0001",
+                "Description": "OIA Dashboard Open Days",
+                "Title": "EPM_VP_L_BT_30_60_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_BT_30_60_SRV/$metadata",
+                "TechnicalServiceName": "EPM_VP_L_BT_30_60_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_BT_30_60_SRV",
+                "UpdatedDate": "/Date(1401116146000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_30_60_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_30_60_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_30_60_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_60_90_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_60_90_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "EPM_VP_L_BT_60_90_SRV_0001",
+                "Description": "OIA Dashboard Open Days",
+                "Title": "EPM_VP_L_BT_60_90_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_BT_60_90_SRV/$metadata",
+                "TechnicalServiceName": "EPM_VP_L_BT_60_90_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_BT_60_90_SRV",
+                "UpdatedDate": "/Date(1401117266000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_60_90_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_60_90_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_BT_60_90_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_DUN_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_DUN_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "EPM_VP_L_DUN_SRV_0001",
+                "Description": "Dunning Level OIA on SAP Lumira",
+                "Title": "EPM_VP_L_DUN_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_DUN_SRV/$metadata",
+                "TechnicalServiceName": "EPM_VP_L_DUN_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_DUN_SRV",
+                "UpdatedDate": "/Date(1401101554000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_DUN_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_DUN_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_DUN_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_GT_90_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_GT_90_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "EPM_VP_L_GT_90_SRV_0001",
+                "Description": "OIA DashBoard Open Days",
+                "Title": "EPM_VP_L_GT_90_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_GT_90_SRV/$metadata",
+                "TechnicalServiceName": "EPM_VP_L_GT_90_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_GT_90_SRV",
+                "UpdatedDate": "/Date(1401117803000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_GT_90_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_GT_90_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_GT_90_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "EPM_VP_L_SRV_0001",
+                "Description": "OIA Dashboard on SAP Lumira",
+                "Title": "EPM_VP_L_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_SRV/$metadata",
+                "TechnicalServiceName": "EPM_VP_L_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_L_SRV",
+                "UpdatedDate": "/Date(1401097525000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_L_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('SEPMRA_I_SALESORDERTP_CDS_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('SEPMRA_I_SALESORDERTP_CDS_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "SEPMRA_I_SALESORDERTP_CDS_0001",
+                "Description": "SEPMRA_I_SALESORDERTP_CDS",
+                "Title": "SEPMRA_I_SALESORDERTP_CDS",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/SEPMRA_I_SALESORDERTP_CDS/$metadata",
+                "TechnicalServiceName": "SEPMRA_I_SALESORDERTP_CDS",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/SEPMRA_I_SALESORDERTP_CDS",
+                "UpdatedDate": "/Date(1470743022000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('SEPMRA_I_SALESORDERTP_CDS_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('SEPMRA_I_SALESORDERTP_CDS_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('SEPMRA_I_SALESORDERTP_CDS_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('WDR_ADAPT_UI_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('WDR_ADAPT_UI_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "WDR_ADAPT_UI_SRV_0001",
+                "Description": "Adapt Web Dynpro Applications in FLP",
+                "Title": "WDR_ADAPT_UI_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/WDR_ADAPT_UI_SRV/$metadata",
+                "TechnicalServiceName": "WDR_ADAPT_UI_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/WDR_ADAPT_UI_SRV",
+                "UpdatedDate": "/Date(1521793064000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('WDR_ADAPT_UI_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('WDR_ADAPT_UI_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('WDR_ADAPT_UI_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('ADT_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('ADT_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "ADT_0001",
+                "Description": "Gateway service for ADT",
+                "Title": "ADT_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/ADT_SRV/$metadata",
+                "TechnicalServiceName": "ADT",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/ADT_SRV",
+                "UpdatedDate": "/Date(1446046804000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('ADT_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('ADT_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('ADT_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_DATA_MODEL_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_DATA_MODEL_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "CA_DATA_MODEL_SRV_0001",
+                "Description": "Odata service for data model",
+                "Title": "CA_DATA_MODEL_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/CA_DATA_MODEL_SRV/$metadata",
+                "TechnicalServiceName": "CA_DATA_MODEL_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/CA_DATA_MODEL_SRV",
+                "UpdatedDate": "/Date(1459922967000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_DATA_MODEL_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_DATA_MODEL_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_DATA_MODEL_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_INFORMATION_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_INFORMATION_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "CA_INFORMATION_SRV_0001",
+                "Description": "Information Management",
+                "Title": "CA_INFORMATION_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/CA_INFORMATION_SRV/$metadata",
+                "TechnicalServiceName": "CA_INFORMATION_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/CA_INFORMATION_SRV",
+                "UpdatedDate": "/Date(1456148242000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_INFORMATION_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_INFORMATION_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('CA_INFORMATION_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_1_SRV_01_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_1_SRV_01_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "EPM_OIA_L_1_SRV_01_0001",
+                "Description": "OIA Service",
+                "Title": "EPM_OIA_L_1_SRV_01",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/EPM_OIA_L_1_SRV_01/$metadata",
+                "TechnicalServiceName": "EPM_OIA_L_1_SRV_01",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/EPM_OIA_L_1_SRV_01",
+                "UpdatedDate": "/Date(1399008741000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_1_SRV_01_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_1_SRV_01_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_1_SRV_01_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "EPM_OIA_L_SRV_0001",
+                "Description": "OIA using SAP Lumira",
+                "Title": "EPM_OIA_L_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/EPM_OIA_L_SRV/$metadata",
+                "TechnicalServiceName": "EPM_OIA_L_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/EPM_OIA_L_SRV",
+                "UpdatedDate": "/Date(1398947601000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_OIA_L_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_LT_30_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_LT_30_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "EPM_VP_LT_30_SRV_0001",
+                "Description": "OIA Dashboard Due Date",
+                "Title": "EPM_VP_LT_30_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_LT_30_SRV/$metadata",
+                "TechnicalServiceName": "EPM_VP_LT_30_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/sap/EPM_VP_LT_30_SRV",
+                "UpdatedDate": "/Date(1402997295000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_LT_30_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_LT_30_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('EPM_VP_LT_30_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FUSAGEEXTRACTOR_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FUSAGEEXTRACTOR_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "/IWFND/USAGEEXTRACTOR_0001",
+                "Description": "Metering Usage Extractor",
+                "Title": "USAGEEXTRACTOR",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/iwfnd/USAGEEXTRACTOR/$metadata",
+                "TechnicalServiceName": "/IWFND/USAGEEXTRACTOR",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/iwfnd/USAGEEXTRACTOR",
+                "UpdatedDate": "/Date(1611230363000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FUSAGEEXTRACTOR_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FUSAGEEXTRACTOR_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FUSAGEEXTRACTOR_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_USER_SERVICE_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_USER_SERVICE_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "/IWFND/SG_USER_SERVICE_0001",
+                "Description": "Information Worker - User Service",
+                "Title": "USERSERVICE",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/iwfnd/USERSERVICE/$metadata",
+                "TechnicalServiceName": "/IWFND/SG_USER_SERVICE",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/iwfnd/USERSERVICE",
+                "UpdatedDate": "/Date(1611150587000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_USER_SERVICE_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_USER_SERVICE_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_USER_SERVICE_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MGW_NOTIF_STORE_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MGW_NOTIF_STORE_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "/IWFND/SG_MGW_NOTIF_STORE_0001",
+                "Description": "ODATA Channel: Notification Store",
+                "Title": "NOTIFICATIONSTORE",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/iwfnd/NOTIFICATIONSTORE/$metadata",
+                "TechnicalServiceName": "/IWFND/SG_MGW_NOTIF_STORE",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/iwfnd/NOTIFICATIONSTORE",
+                "UpdatedDate": "/Date(1611232928000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MGW_NOTIF_STORE_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MGW_NOTIF_STORE_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MGW_NOTIF_STORE_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0002')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0002')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "/IWFND/SG_MED_CATALOG_0002",
+                "Description": "Catalog Service Version 2",
+                "Title": "CATALOGSERVICE",
+                "TechnicalServiceVersion": 2,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/iwfnd/CATALOGSERVICE;v=0002/$metadata",
+                "TechnicalServiceName": "/IWFND/SG_MED_CATALOG",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/iwfnd/CATALOGSERVICE;v=0002",
+                "UpdatedDate": "/Date(1362159766000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0002')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0002')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0002')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "/IWFND/SG_MED_CATALOG_0001",
+                "Description": "Catalog Service",
+                "Title": "CATALOGSERVICE",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/iwfnd/CATALOGSERVICE/$metadata",
+                "TechnicalServiceName": "/IWFND/SG_MED_CATALOG",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/iwfnd/CATALOGSERVICE",
+                "UpdatedDate": "/Date(1613473216000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": true,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FIWFND%2FSG_MED_CATALOG_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FSOMO%2FMA_ODATA_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FSOMO%2FMA_ODATA_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "/SOMO/MA_ODATA_SRV_0001",
+                "Description": "/SOMO/CL_MA_ODATA_DPC_EXT",
+                "Title": "MA_ODATA_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/somo/MA_ODATA_SRV/$metadata",
+                "TechnicalServiceName": "/SOMO/MA_ODATA_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/somo/MA_ODATA_SRV",
+                "UpdatedDate": "/Date(1511181280000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FSOMO%2FMA_ODATA_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FSOMO%2FMA_ODATA_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FSOMO%2FMA_ODATA_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREP_SUPPORT_FRAMEWORK_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREP_SUPPORT_FRAMEWORK_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "/UIF/LREP_SUPPORT_FRAMEWORK_SRV_0001",
+                "Description": "OData of the Support framework",
+                "Title": "LREP_SUPPORT_FRAMEWORK_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/uif/LREP_SUPPORT_FRAMEWORK_SRV/$metadata",
+                "TechnicalServiceName": "/UIF/LREP_SUPPORT_FRAMEWORK_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/uif/LREP_SUPPORT_FRAMEWORK_SRV",
+                "UpdatedDate": "/Date(1516199762000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREP_SUPPORT_FRAMEWORK_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREP_SUPPORT_FRAMEWORK_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREP_SUPPORT_FRAMEWORK_SRV_0001')/Annotations"
+                    }
+                }
+            },
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREPSUPPORT_FRAMEWORK_SRV_0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREPSUPPORT_FRAMEWORK_SRV_0001')",
+                    "type": "CATALOGSERVICE.Service"
+                },
+                "ID": "/UIF/LREPSUPPORT_FRAMEWORK_SRV_0001",
+                "Description": "OData Service of the Support Framework",
+                "Title": "LREPSUPPORT_FRAMEWORK_SRV",
+                "TechnicalServiceVersion": 1,
+                "MetadataUrl": "https://sap.example/sap/opu/odata/uif/LREPSUPPORT_FRAMEWORK_SRV/$metadata",
+                "TechnicalServiceName": "/UIF/LREPSUPPORT_FRAMEWORK_SRV",
+                "ImageUrl": "",
+                "ServiceUrl": "https://sap.example/sap/opu/odata/uif/LREPSUPPORT_FRAMEWORK_SRV",
+                "UpdatedDate": "/Date(1516190628000)/",
+                "ReleaseStatus": "",
+                "Category": "",
+                "IsSapService": false,
+                "EntitySets": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREPSUPPORT_FRAMEWORK_SRV_0001')/EntitySets"
+                    }
+                },
+                "TagCollection": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREPSUPPORT_FRAMEWORK_SRV_0001')/TagCollection"
+                    }
+                },
+                "Annotations": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection('%2FUIF%2FLREPSUPPORT_FRAMEWORK_SRV_0001')/Annotations"
+                    }
+                }
+            }
+        ]
+    }
+}

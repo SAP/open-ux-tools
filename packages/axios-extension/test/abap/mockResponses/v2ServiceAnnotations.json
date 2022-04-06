@@ -1,0 +1,24 @@
+{
+    "d": {
+        "results": [
+            {
+                "__metadata": {
+                    "id": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='TEST_SERVICE_ANNO',Version='0001')",
+                    "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='TEST_SERVICE_ANNO',Version='0001')",
+                    "type": "CATALOGSERVICE.Annotation",
+                    "content_type": "application/xml",
+                    "media_src": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='TEST_SERVICE_ANNO',Version='0001')/$value"
+                },
+                "TechnicalName": "TEST_SERVICE_ANNO",
+                "Version": "0001",
+                "Description": "Generic Annotation Provider",
+                "MediaType": "application/xml",
+                "Services": {
+                    "__deferred": {
+                        "uri": "https://sap.example/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='TEST_SERVICE_ANNO',Version='0001')/Services"
+                    }
+                }
+            }
+        ]
+    }
+}

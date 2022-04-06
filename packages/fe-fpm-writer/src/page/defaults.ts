@@ -1,7 +1,9 @@
 import type { Editor } from 'mem-fs-editor';
 
+import type { ManifestNamespace } from '@sap-ux/ui5-config';
 import type { CustomPage, InternalCustomPage } from './types';
-import { setCommonDefaults } from '../common/defaults';
+import type { Manifest } from '../common/types';
+import { FCL_ROUTER, setCommonDefaults } from '../common/defaults';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -12,10 +14,24 @@ import { setCommonDefaults } from '../common/defaults';
  * @returns enhanced configuration
  */
 export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): InternalCustomPage {
-    const manifest: any = fs.readJSON(manifestPath);
+    const manifest = fs.readJSON(manifestPath) as Manifest;
 
     // set common defaults
-    const config = setCommonDefaults<CustomPage>(data, manifestPath, manifest);
+    const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
+
+    // if FCL is enabled enhance the configuration
+    if (manifest['sap.ui5']?.routing?.config?.routerClass === FCL_ROUTER) {
+        config.fcl = true;
+        if (config.navigation) {
+            const sourceRoute = ((manifest['sap.ui5']?.routing?.routes as ManifestNamespace.Route[]) || []).find(
+                (route) => route.name === config.navigation?.sourcePage
+            );
+            config.controlAggregation =
+                ((sourceRoute?.target as string[]) ?? []).length > 1 ? 'endColumnPages' : 'midColumnPages';
+        } else {
+            config.controlAggregation = 'beginColumnPages';
+        }
+    }
 
     if (config.view === undefined) {
         config.view = {

@@ -1,6 +1,7 @@
 import type { CustomElement, InternalCustomElement, Manifest } from './types';
 import { join, dirname } from 'path';
 
+export const FCL_ROUTER = 'sap.f.routing.Router';
 /**
  * Sets the common default values for all custom elements.
  *

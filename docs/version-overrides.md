@@ -22,6 +22,16 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Patched versions    | >=1.0.5 |
 | More info           | https://github.com/advisories/GHSA-jgrx-mgxx-jf9v |
 
+## follow-redirects
+
+| Override:           | >=1.14.7 |
+|:--------------------| :-------------|
+|                     | |
+| **high**            | Exposure of sensitive information in follow-redirects |
+| Package             | follow-redirects |
+| Vulnerable versions | <1.14.7                                               |
+| More info           | https://github.com/advisories/GHSA-74fj-2j2h-c42q     |
+
 ## vm2
 | Override:           | ^3.9.6 |
 |:--------------------| :-------------|
@@ -32,11 +42,12 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Patched versions    | >=3.9.6 |
 | More info           | https://github.com/advisories/GHSA-6pw2-5hjv-9pf7 |
 
-## klaw
-| Override:           | ^4.0.0 |
+## minimist
+| Override:           | ^1.2.6 |
 |:--------------------| :-------------|
 |                     | |
-| **no risk**         | Overriden in order to support Node 12. `klaw` is used by the `@ui5/project` |
-| Package             | klaw |
-| Patched versions    | >=4.0.0 |
-| More info           | Newer packages of klaw do not support Node 12. We can remove this override once we do not need to support Node 12 anymore |
+| **high**        | Prototype Pollution in minimist |
+| Package             | vm2 |
+| Vulnerable versions | <=1.2.5 |
+| Patched versions    | >=1.2.6 |
+| More info           | https://github.com/advisories/GHSA-xvch-5gv4-984h |

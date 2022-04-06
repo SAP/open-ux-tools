@@ -1,4 +1,5 @@
 import { FioriElementsApp, LROPSettings, OdataVersion, TemplateType } from '../../src';
+import { TemplateTypeAttributes } from '../../src/data/templateAttributes';
 import { t } from '../../src/i18n';
 import { ALPSettings } from '../../src/types';
 import { validateApp, validateRequiredProperties } from '../../src/validate';
@@ -112,7 +113,9 @@ describe('Validate', () => {
             t('error.unsupportedUI5Version', {
                 versionProperty: 'version',
                 ui5Version: feApp.ui5?.version,
-                templateType: feApp.template.type
+                templateType: feApp.template.type,
+                minRequiredUI5Version:
+                    TemplateTypeAttributes[TemplateType.AnalyticalListPage].minimumUi5Version[OdataVersion.v4]
             })
         );
     });
@@ -143,7 +146,9 @@ describe('Validate', () => {
             t('error.unsupportedUI5Version', {
                 versionProperty: 'minUI5Version',
                 ui5Version: feApp.ui5?.minUI5Version,
-                templateType: feApp.template.type
+                templateType: feApp.template.type,
+                minRequiredUI5Version:
+                    TemplateTypeAttributes[TemplateType.AnalyticalListPage].minimumUi5Version[OdataVersion.v4]
             })
         );
     });

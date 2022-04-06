@@ -4,7 +4,8 @@
             "targets": {
                 "<%- entity %><%- name %>": {
                     "viewId": "<%- name %>View",
-                    "viewName": "<%- ns %>.<%- name %>",
+                    "viewName": "<%- ns %>.<%- name %>",<%if (locals.controlAggregation) {%>
+                    "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
                         "settings": {
                             "entitySet": "<%- entity %>",

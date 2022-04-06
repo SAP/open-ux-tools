@@ -1,10 +1,10 @@
 import type {
-    ProxyBackend,
+    FioriToolsProxyConfigBackend,
     CustomMiddleware,
     FioriAppReloadConfig,
     FioriToolsProxyConfig,
     MockserverConfig,
-    ProxyUIConfig
+    FioriToolsProxyConfigUI5
 } from './types';
 import type { NodeComment } from '@sap-ux/yaml';
 
@@ -33,8 +33,8 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
  * @returns {{config, comments}} configuration and comments
  */
 export function getFioriToolsProxyMiddlewareConfig(
-    backends?: ProxyBackend[],
-    ui5?: ProxyUIConfig
+    backends?: FioriToolsProxyConfigBackend[],
+    ui5?: Partial<FioriToolsProxyConfigUI5>
 ): {
     config: CustomMiddleware<FioriToolsProxyConfig>;
     comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[];
@@ -63,9 +63,12 @@ export function getFioriToolsProxyMiddlewareConfig(
 
     if (ui5 !== undefined) {
         fioriToolsProxy.configuration['ui5'] = {
-            path: ['/resources', '/test-resources'],
+            path: ui5.path || ['/resources', '/test-resources'],
             url: ui5.url || 'https://ui5.sap.com'
         };
+        if (ui5.version) {
+            fioriToolsProxy.configuration['ui5'].version = ui5.version;
+        }
         if (ui5.directLoad) {
             fioriToolsProxy.configuration['ui5'].directLoad = true;
         }

@@ -1,0 +1,138 @@
+{
+    "@odata.context": "$metadata#ServiceGroups(DefaultSystem(Services()))",
+    "@odata.metadataEtag": "W/\"20200826064327\"",
+    "@odata.count": 16,
+    "value": [
+        {
+            "GroupId": "/AIF/MSGMONITORING_API",
+            "Description": "R3TR G4BA /AIF/MSGMONITORING_API",
+            "DefaultSystem": {
+                "SystemAlias": "LOCAL",
+                "Description": "Local System Alias",
+                "Services": [
+                    {
+                        "RepositoryId": "DEFAULT",
+                        "ServiceId": "/AIF/MESSAGEHANDLING",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "",
+                        "Description": "AIF Monitoring service",
+                        "ServiceUrl": "/sap/opu/odata4/aif/msgmonitoring_api/default/aif/messagehandling/0001/?sap-client=100"
+                    },
+                    {
+                        "RepositoryId": "DEFAULT",
+                        "ServiceId": "/IWBEP/COMMON",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "",
+                        "Description": "V4 Common Service",
+                        "ServiceUrl": "/sap/opu/odata4/aif/msgmonitoring_api/default/iwbep/common/0001/?sap-client=100"
+                    }
+                ]
+            }
+        },
+        {
+            "GroupId": "/AIF/MSGMONITORING_CDS",
+            "Description": "R3TR G4BA /AIF/MSGMONITORING_CDS",
+            "DefaultSystem": {
+                "SystemAlias": "LOCAL",
+                "Description": "Local System Alias",
+                "Services": [
+                    {
+                        "RepositoryId": "DEFAULT",
+                        "ServiceId": "/IWBEP/COMMON",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "",
+                        "Description": "V4 Common Service",
+                        "ServiceUrl": "/sap/opu/odata4/aif/msgmonitoring_cds/default/iwbep/common/0001/?sap-client=100"
+                    },
+                    {
+                        "RepositoryId": "SRVD",
+                        "ServiceId": "/AIF/MESSAGEMONITOR",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "/AIF/MESSAGEMONITOR",
+                        "Description": "AIF Interface Monitor Service",
+                        "ServiceUrl": "/sap/opu/odata4/aif/msgmonitoring_cds/srvd/aif/messagemonitor/0001/?sap-client=100"
+                    }
+                ]
+            }
+        },
+        {
+            "GroupId": "/DMO/UI_TRAVEL_D_D_V4",
+            "Description": "R3TR G4BA /DMO/UI_TRAVEL_D_D_V4",
+            "DefaultSystem": {
+                "SystemAlias": "LOCAL",
+                "Description": "Local System Alias",
+                "Services": [
+                    {
+                        "RepositoryId": "DEFAULT",
+                        "ServiceId": "/IWBEP/COMMON",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "",
+                        "Description": "V4 Common Service",
+                        "ServiceUrl": "/sap/opu/odata4/dmo/ui_travel_d_d_v4/default/iwbep/common/0001/?sap-client=100"
+                    },
+                    {
+                        "RepositoryId": "SRVD",
+                        "ServiceId": "/DMO/UI_TRAVEL_D_D",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "/DMO/UI_TRAVEL_D_D",
+                        "Description": "Service Definition Travel Draft Scenario (draft projection)",
+                        "ServiceUrl": "/sap/opu/odata4/dmo/ui_travel_d_d_v4/srvd/dmo/ui_travel_d_d/0001/?sap-client=100"
+                    },
+                    {
+                        "RepositoryId": "SRVD",
+                        "ServiceId": "/DMO/UI_TRAVEL_D_D",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "/DMO/UI_TRAVEL_D_D",
+                        "Description": "Service Definition Travel Draft Scenario (draft projection)",
+                        "ServiceUrl": "/sap/opu/odata4/dmo/ui_travel_d_d_v4/srvd/dmo/ui_travel_d_d/0001/?sap-client=100"
+                    }
+                ]
+            }
+        },
+        {
+            "GroupId": "/IWFND/CONFIG",
+            "Description": "R3TR G4BA /IWFND/CONFIG",
+            "DefaultSystem": {
+                "SystemAlias": "LOCAL",
+                "Description": "Local System Alias",
+                "Services": [
+                    {
+                        "RepositoryId": "DEFAULT",
+                        "ServiceId": "/IWFND/CATALOG",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "",
+                        "Description": "Service Catalog",
+                        "ServiceUrl": "/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0001/?sap-client=100"
+                    },
+                    {
+                        "RepositoryId": "DEFAULT",
+                        "ServiceId": "/IWFND/CATALOG",
+                        "ServiceVersion": "0002",
+                        "ServiceAlias": "",
+                        "Description": "Service Catalog",
+                        "ServiceUrl": "/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/?sap-client=100"
+                    }
+                ]
+            }
+        },
+        {
+            "GroupId": "/IWNGW/NOTIFICATION",
+            "Description": "R3TR G4BA /IWNGW/NOTIFICATION",
+            "DefaultSystem": {
+                "SystemAlias": "LOCAL",
+                "Description": "Local System Alias",
+                "Services": [
+                    {
+                        "RepositoryId": "DEFAULT",
+                        "ServiceId": "/IWNGW/NOTIFICATION_SRV",
+                        "ServiceVersion": "0001",
+                        "ServiceAlias": "",
+                        "Description": "Notification Gateway OData V4 Service",
+                        "ServiceUrl": "/sap/opu/odata4/iwngw/notification/default/iwngw/notification_srv/0001/?sap-client=100"
+                    }
+                ]
+            }
+        }
+    ],
+    "@odata.nextLink": "/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)&$skiptoken=5"
+}
