@@ -65,18 +65,27 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
     public log: Logger;
 
     /**
-     * Check whether a variant with the given namespace already exists (status of the response is 200).
+     * Check whether a variant with the given namespace already exists.
      *
      * @param namespace either as string or as object
-     * @returns the Axios response object for futher processing
+     * @returns true if the variant exists
      */
-    public async check(namespace: Namespace): Promise<AxiosResponse> {
-        return this.get('/dta_folder', {
-            params: {
-                name: getNamespaceAsString(namespace),
-                layer: 'CUSTOMER_BASE' as Layer
+    public async check(namespace: Namespace): Promise<boolean> {
+        try {
+            await this.get('/dta_folder', {
+                params: {
+                    name: getNamespaceAsString(namespace),
+                    layer: 'CUSTOMER_BASE' as Layer
+                }
+            });
+            return true;
+        } catch (error) {
+            if (error.status === 404) {
+                return false;
+            } else {
+                throw error;
             }
-        });
+        }
     }
 
     /**
@@ -96,14 +105,14 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
      * Deploy the given archive either by creating a new folder in the layered repository or updating an existing one.
      *
      * @param archivePath path to a zip archive containing the adaptation project
-     * @param app application configuration
+     * @param config adataption project deployment configuration
      * @returns the Axios response object for futher processing
      */
     public async deploy(archivePath: string, config: AdaptationConfig): Promise<AxiosResponse> {
         const base64Data = readFileSync(archivePath, { encoding: 'base64' });
         try {
-            const checkResponse = await this.check(config.namespace);
             const tokenResponse = await this.getCsrfToken();
+            const appExists = await this.check(config.namespace);
             const params: object = {
                 name: getNamespaceAsString(config.namespace),
                 layer: 'CUSTOMER_BASE' as Layer
@@ -115,7 +124,7 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
                 }
             }
             const response = await this.request({
-                method: checkResponse.status === 200 ? 'PUT' : 'POST',
+                method: appExists ? 'PUT' : 'POST',
                 url: '/dta_folder',
                 data: base64Data,
                 params,
@@ -134,6 +143,7 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
                     break;
                 case 409:
                     this.log.error('The adapted app already exists.');
+                    break;
                 default:
                     this.log.error('An unknown error occured.');
                     break;

@@ -45,10 +45,10 @@ const provider = createForAbap({
     params: { 'sap-client': client }
 });
 const service = provider.layeredRepository();
-await service.deploy({
+await service.deploy('./dist/my-variant-webapp.zip', {
     namespace: 'apps/my.base.app/appVariants/customer.variant/',
-    package: 'MY_PACKAGE'
-    transport: 'ABC123';
+    package: 'MY_PACKAGE',
+    transport: 'ABC123'
 });
 ```
 
