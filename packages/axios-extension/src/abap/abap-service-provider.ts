@@ -7,7 +7,7 @@ import { ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
-import { DesigntimeAdaptationService } from './designtime-adaptation-service';
+import { LayeredRepositoryService } from './lrep-service';
 
 export interface AbapServiceProviderExtension {
     s4Cloud: boolean | undefined;
@@ -144,13 +144,13 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @returns an instance of the design time adaptation service.
      */
-    public designtimeAdaptation(): DesigntimeAdaptationService {
-        if (!this.services[DesigntimeAdaptationService.PATH]) {
-            this.services[DesigntimeAdaptationService.PATH] = this.createService<DesigntimeAdaptationService>(
-                DesigntimeAdaptationService.PATH,
-                DesigntimeAdaptationService
+    public layeredRepository(): LayeredRepositoryService {
+        if (!this.services[LayeredRepositoryService.PATH]) {
+            this.services[LayeredRepositoryService.PATH] = this.createService<LayeredRepositoryService>(
+                LayeredRepositoryService.PATH,
+                LayeredRepositoryService
             );
         }
-        return this.services[DesigntimeAdaptationService.PATH] as DesigntimeAdaptationService;
+        return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
     }
 }

@@ -33,7 +33,7 @@ Allows deployment of applications to the UI5 ABAP Repository as well as checking
 #### App Index Service
 A class respresenting the app index service allowing to search applications deployed on an ABAP system.
 
-#### Designtime Adapation Service
+#### Layered Repository Service
 Allows deployment of adaptation projects.
 
 Usage:
@@ -44,10 +44,9 @@ const provider = createForAbap({
     baseURL: 'https://sap.example',
     params: { 'sap-client': client }
 });
-const service = provider.designtimeAdaptation();
+const service = provider.layeredRepository();
 await service.deploy({
-    name: 'myproject'
-    layer: 'CUSTOMER_BASE',
+    namespace: 'apps/my.base.app/appVariants/customer.variant/',
     package: 'MY_PACKAGE'
     transport: 'ABC123';
 });
