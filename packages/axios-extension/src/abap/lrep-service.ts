@@ -68,24 +68,15 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
      * Check whether a variant with the given namespace already exists.
      *
      * @param namespace either as string or as object
-     * @returns true if the variant exists
+     * @returns the Axios response object for futher processing
      */
-    public async check(namespace: Namespace): Promise<boolean> {
-        try {
-            await this.get('/dta_folder', {
-                params: {
-                    name: getNamespaceAsString(namespace),
-                    layer: 'CUSTOMER_BASE' as Layer
-                }
-            });
-            return true;
-        } catch (error) {
-            if (error.status === 404) {
-                return false;
-            } else {
-                throw error;
+    public async check(namespace: Namespace): Promise<AxiosResponse> {
+        return this.get('/dta_folder/', {
+            params: {
+                name: getNamespaceAsString(namespace),
+                layer: 'CUSTOMER_BASE' as Layer
             }
-        }
+        });
     }
 
     /**
@@ -94,7 +85,7 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
      * @returns the Axios response object for futher processing
      */
     public async getCsrfToken(): Promise<AxiosResponse> {
-        return this.get('/actions/getcsrftoken', {
+        return this.get('/actions/getcsrftoken/', {
             headers: {
                 'X-Csrf-Token': 'Fetch'
             }
@@ -110,46 +101,50 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
      */
     public async deploy(archivePath: string, config: AdaptationConfig): Promise<AxiosResponse> {
         const base64Data = readFileSync(archivePath, { encoding: 'base64' });
-        try {
-            const tokenResponse = await this.getCsrfToken();
-            const appExists = await this.check(config.namespace);
-            const params: object = {
-                name: getNamespaceAsString(config.namespace),
-                layer: 'CUSTOMER_BASE' as Layer
-            };
-            if (config.package) {
-                params['package'] = config.package;
-                if (config.package.toLowerCase() !== '$tmp') {
-                    params['changeList'] = config.transport;
-                }
+
+        const tokenResponse = await this.getCsrfToken();
+        const checkResponse = await this.check(config.namespace);
+        const params: object = {
+            name: getNamespaceAsString(config.namespace),
+            layer: 'CUSTOMER_BASE' as Layer
+        };
+        if (config.package) {
+            params['package'] = config.package;
+            if (config.package.toLowerCase() !== '$tmp') {
+                params['changeList'] = config.transport;
             }
-            const response = await this.request({
-                method: appExists ? 'PUT' : 'POST',
-                url: '/dta_folder',
-                data: base64Data,
-                params,
-                headers: {
-                    'Content-Type': 'application/octet-stream',
-                    'X-Csrf-Token': tokenResponse.headers['x-csrf-token']
-                }
-            });
-            // TODO: read response
-            this.log.info('Deployment successful.');
-            return response;
-        } catch (error) {
-            switch (error.response?.status) {
-                case 400:
-                    // TODO: check the body for error details
-                    break;
-                case 409:
-                    this.log.error('The adapted app already exists.');
-                    break;
-                default:
-                    this.log.error('An unknown error occured.');
-                    break;
-            }
-            throw error;
         }
+        const response = await this.request({
+            method: checkResponse.status === 200 ? 'PUT' : 'POST',
+            url: '/dta_folder/',
+            data: base64Data,
+            params,
+            headers: {
+                'Content-Type': 'application/octet-stream',
+                'X-Csrf-Token': tokenResponse.headers['x-csrf-token']
+            }
+        });
+        switch (response?.status) {
+            case 200:
+                // TODO: read response
+                this.log.info(`Deployment successful: ${JSON.stringify(response.data)}`);
+                break;
+            case 400:
+                const result = JSON.parse(response.data).result;
+                this.log.error(result.text);
+                (result.details as string[]).forEach((detail) => {
+                    this.log.error(JSON.stringify(detail));
+                });
+                break;
+            case 409:
+                this.log.error('The adapted app already exists.');
+                break;
+            default:
+                this.log.error('An unknown error occured.');
+                break;
+        }
+
+        return response;
     }
 }
 /*
