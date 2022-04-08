@@ -1,6 +1,7 @@
 import type { Service } from '../base/service-provider';
 import type { AxiosResponse } from 'axios';
 import { Axios } from 'axios';
+import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
 
@@ -45,6 +46,17 @@ export interface AdaptationConfig {
  * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
  */
 type Layer = 'VENDOR' | 'CUSTOMER_BASE';
+
+/**
+ * Structure of the result message.
+ */
+interface Message {
+    severity: 'Success' | 'Warning' | 'Error';
+    text: string;
+    details?: string[];
+    id: string;
+    variables?: string[];
+}
 
 /**
  * Returns the namespace as string.
@@ -124,65 +136,30 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
                 'X-Csrf-Token': tokenResponse.headers['x-csrf-token']
             }
         });
-        switch (response?.status) {
-            case 200:
-                // TODO: read response
-                this.log.info(`Deployment successful: ${JSON.stringify(response.data)}`);
-                break;
-            case 400:
-                const result = JSON.parse(response.data).result;
-                this.log.error(result.text);
-                (result.details as string[]).forEach((detail) => {
-                    this.log.error(JSON.stringify(detail));
-                });
-                break;
-            case 409:
-                this.log.error('The adapted app already exists.');
-                break;
-            default:
-                this.log.error('An unknown error occured.');
-                break;
+
+        const info = JSON.parse(response.data);
+        if (info.result) {
+            this.logMessage(info.result);
+        }
+        if (info.messages) {
+            (info.messages ?? []).forEach((message) => {
+                this.logMessage(message);
+            });
         }
 
         return response;
     }
-}
-/*
-{
-    "result": {
-        "severity": "<Success|Warning|Error>",
-        "text": "<error text>",
-        "details": [
-            "<detailed description>",
-            "<if available>"
-        ],
-        "id": "<message type>:<message class>:<message number>",
-        "variables: [
-                "<message variable 1>",
-                ...
-            ]
-        },
-    },
-    "messages": [
-        {
-            "severity": "<Success|Info|Warning|Error>",
-            "text": "<error text>",
-            "details": [
-                "<detailed description>",
-                "<if available>"
-            ],
-            "id": "<message type>:<message class>:<message number>",
-            "variables: [
-                "<message variable>",
-                ...
-            ]
-        },
-        ...
-    ],
-    "backendExecution": {
-        "atTimeStamp": <time stamp backend execution>,
-        "forMs": <backend execution time in ms>
-   }
-}
 
-*/
+    /**
+     * Log a message from the backend.
+     *
+     * @param msg message to be logged
+     */
+    private logMessage(msg: Message) {
+        const level = msg.severity === 'Error' ? LogLevel.Error : LogLevel.Info;
+        this.log.log({ level, message: msg.text });
+        (msg.details ?? []).forEach((message) => {
+            this.log.log({ level, message });
+        });
+    }
+}
