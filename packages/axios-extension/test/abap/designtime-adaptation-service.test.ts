@@ -19,7 +19,6 @@ describe('DesigntimeAdaptationService', () => {
     describe('deploy', () => {
         const config: DTAConfig = {
             name: 'apps/mybaseapp/appVariants/myvariantid/',
-            layer: 'CUSTOMER_BASE',
             package: 'MY_PACKAGE',
             transport: 'MYTRANSPORT'
         };
@@ -27,9 +26,9 @@ describe('DesigntimeAdaptationService', () => {
         // mock an existing and not existing app
         nock(server)
             .post(
-                `${DesigntimeAdaptationService.PATH}?name=${encodeURIComponent(config.name)}&layer=${
-                    config.layer
-                }&package=${config.package}&changeList=${config.transport}`
+                `${DesigntimeAdaptationService.PATH}?name=${encodeURIComponent(
+                    config.name
+                )}&layer=CUSTOMER_BASE&package=${config.package}&changeList=${config.transport}`
             )
             .reply(200);
 

@@ -9,10 +9,15 @@ import { readFileSync } from 'fs';
  */
 export interface DTAConfig {
     name: string;
-    layer: 'VENDOR' | 'CUSTOMER_BASE';
     package: string;
     transport: string;
 }
+
+/**
+ * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
+ */
+type Layer = 'VENDOR' | 'CUSTOMER_BASE';
+
 /**
  * A class respresenting the design time adaptation service allowing to deploy adaptation projects to an ABAP system.
  */
@@ -34,7 +39,7 @@ export abstract class DesigntimeAdaptationService extends Axios implements Servi
             const response = await this.post('', base64Data, {
                 params: {
                     name: dta.name,
-                    layer: dta.layer,
+                    layer: 'CUSTOMER_BASE' as Layer,
                     package: dta.package,
                     changeList: dta.transport
                 }
