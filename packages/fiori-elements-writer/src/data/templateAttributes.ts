@@ -76,6 +76,10 @@ const templateLibs: TemplateLibs = {
         [TemplateType.AnalyticalListPage]: {
             baseComponent: appComponentLibFioriElements,
             ui5Libs: commonUi5Libs[OdataVersion.v4]
+        },
+        [TemplateType.Worklist]: {
+            baseComponent: appComponentLibFioriElements,
+            ui5Libs: commonUi5Libs[OdataVersion.v4]
         }
     }
 };

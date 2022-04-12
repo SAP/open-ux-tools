@@ -3637,6 +3637,8 @@ framework:
   libraries:
     - name: sap.m
     - name: sap.ui.core
+    - name: sap.ushell
+    - name: sap.fe.templates
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
@@ -3734,7 +3736,7 @@ server:
   },
   "webapp/Component.js": Object {
     "contents": "sap.ui.define(
-    [\\"\\"],
+    [\\"sap/fe/core/AppComponent\\"],
     function (Component) {
         \\"use strict\\";
 
@@ -6789,7 +6791,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"minUI5Version\\": \\"1.99.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
-        \\"sap.ui.core\\": {}
+        \\"sap.ui.core\\": {},
+        \\"sap.ushell\\": {},
+        \\"sap.fe.templates\\": {}
       }
     },
     \\"contentDensities\\": {
@@ -6962,7 +6966,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     <!-- Bootstrap the UI5 core library -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
