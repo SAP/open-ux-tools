@@ -26,9 +26,12 @@ export function extendManifestJson<T>(
     // FEOP and ALP v4 are variants of LROP and so we use the same template
     if (
         feApp.service.version === OdataVersion.v4 &&
-        [TemplateType.FormEntryObjectPage, TemplateType.AnalyticalListPage, TemplateType.ListReportObjectPage].includes(
-            feApp.template.type
-        )
+        [
+            TemplateType.FormEntryObjectPage,
+            TemplateType.AnalyticalListPage,
+            TemplateType.ListReportObjectPage,
+            TemplateType.Worklist
+        ].includes(feApp.template.type)
     ) {
         templatePath = TemplateType.ListReportObjectPage;
     }
