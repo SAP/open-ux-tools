@@ -14,6 +14,10 @@ module.exports = {
             }
         ]
     ],
-    modulePathIgnorePatterns: ['<rootDir>/dist'],
-    verbose: true
+    modulePathIgnorePatterns: [
+        '<rootDir>/dist',
+        '<rootDir>/test/test-output',
+        '<rootDir>/templates',
+        '<rootDir>/coverage'
+    ]
 };

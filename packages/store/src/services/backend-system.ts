@@ -1,10 +1,11 @@
-import { Logger } from '@sap-ux/logger';
-import { Service } from '.';
-import { DataProvider } from '../data-provider';
+import type { Logger } from '@sap-ux/logger';
+import type { Service } from '.';
+import type { DataProvider } from '../data-provider';
 import { SystemDataProvider } from '../data-provider/backend-system';
-import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
+import type { BackendSystemKey } from '../entities/backend-system';
+import { BackendSystem } from '../entities/backend-system';
 import { text } from '../i18n';
-import { ServiceOptions } from '../types';
+import type { ServiceOptions } from '../types';
 
 export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     private readonly dataProvider: DataProvider<BackendSystem, BackendSystemKey>;

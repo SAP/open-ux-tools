@@ -1,5 +1,5 @@
-import { Ui5App, App } from '@sap-ux/ui5-application-writer';
-import { OdataService } from '@sap-ux/odata-service-writer';
+import type { Ui5App, App } from '@sap-ux/ui5-application-writer';
+import type { OdataService } from '@sap-ux/odata-service-writer';
 
 export enum TemplateType {
     Basic = 'basic',
@@ -31,7 +31,6 @@ export interface Template<T = {}> {
     type: TemplateType;
     settings: T;
 }
-
 export interface FioriApp extends App {
     flpAppId?: string;
 }

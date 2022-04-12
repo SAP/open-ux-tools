@@ -1,14 +1,22 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { FilesystemStore } from '../../../src/data-access/filesystem';
+import * as dataAccessFilesystem from '../../../src/data-access/filesystem';
 import { Entities } from '../../../src/data-provider/constants';
 import { SystemMigrationStatusDataProvider } from '../../../src/data-provider/system-migration';
 import { SystemMigrationStatus, SystemMigrationStatusKey } from '../../../src/entities/system-migration-status';
 
 describe('System migration data provider', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
-
+    const mockGetFilesystemStore = jest.spyOn(dataAccessFilesystem, 'getFilesystemStore');
+    const mockFsStore = {
+        write: jest.fn(),
+        read: jest.fn(),
+        del: jest.fn(),
+        getAll: jest.fn(),
+        readAll: jest.fn()
+    };
     beforeEach(() => {
         jest.resetAllMocks();
+        mockGetFilesystemStore.mockReturnValue(mockFsStore);
     });
 
     it('read delegates to data accessor', () => {
@@ -18,11 +26,12 @@ describe('System migration data provider', () => {
             migrationLogs: ['line1', 'line2', 'line3']
         });
 
-        const mockFsStore = jest.spyOn(FilesystemStore.prototype, 'read').mockResolvedValueOnce(migrationStatus);
+        mockFsStore.read.mockResolvedValueOnce(migrationStatus);
+
         expect(new SystemMigrationStatusDataProvider(logger).read(new SystemMigrationStatusKey())).resolves.toBe(
             migrationStatus
         );
-        expect(mockFsStore).toBeCalledWith({
+        expect(mockFsStore.read).toBeCalledWith({
             entityName: Entities.SystemMigrationStatus,
             id: new SystemMigrationStatusKey().getId()
         });
@@ -35,11 +44,11 @@ describe('System migration data provider', () => {
             migrationLogs: ['line1', 'line2', 'line3']
         });
 
-        const mockFsStore = jest.spyOn(FilesystemStore.prototype, 'write').mockResolvedValueOnce(migrationStatus);
+        mockFsStore.write.mockResolvedValueOnce(migrationStatus);
         expect(
             new SystemMigrationStatusDataProvider(logger).write(new SystemMigrationStatus(migrationStatus))
         ).resolves.toBe(migrationStatus);
-        expect(mockFsStore).toBeCalledWith({
+        expect(mockFsStore.write).toBeCalledWith({
             entityName: Entities.SystemMigrationStatus,
             id: new SystemMigrationStatusKey().getId(),
             entity: new SystemMigrationStatus(migrationStatus)
@@ -53,11 +62,11 @@ describe('System migration data provider', () => {
             migrationLogs: ['line1', 'line2', 'line3']
         });
 
-        const mockFsStore = jest.spyOn(FilesystemStore.prototype, 'del').mockResolvedValueOnce(true);
+        mockFsStore.del.mockResolvedValueOnce(true);
         expect(
             new SystemMigrationStatusDataProvider(logger).delete(new SystemMigrationStatus(migrationStatus))
         ).resolves.toBeTrue();
-        expect(mockFsStore).toBeCalledWith({
+        expect(mockFsStore.del).toBeCalledWith({
             entityName: Entities.SystemMigrationStatus,
             id: new SystemMigrationStatusKey().getId()
         });
@@ -70,13 +79,11 @@ describe('System migration data provider', () => {
             migrationLogs: ['line1', 'line2', 'line3']
         });
 
-        const mockFsStore = jest
-            .spyOn(FilesystemStore.prototype, 'getAll')
-            .mockResolvedValueOnce([new SystemMigrationStatus(migrationStatus)]);
+        mockFsStore.getAll.mockResolvedValueOnce([new SystemMigrationStatus(migrationStatus)]);
         expect(new SystemMigrationStatusDataProvider(logger).getAll()).resolves.toEqual([
             new SystemMigrationStatus(migrationStatus)
         ]);
-        expect(mockFsStore).toBeCalledWith({
+        expect(mockFsStore.getAll).toBeCalledWith({
             entityName: Entities.SystemMigrationStatus
         });
     });

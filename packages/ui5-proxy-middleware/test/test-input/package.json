@@ -1,0 +1,20 @@
+{
+    "name": "test-project",
+    "version": "0.0.1",
+    "private": true,
+    "devDependencies": {
+        "@sap-ux/ui5-proxy-middleware": "workspace:*",
+        "@ui5/cli": "2.14.1"
+    },
+    "scripts": {
+        "build": "ui5 build",
+        "config": "fiori add deploy-config",
+        "start": "fiori run --open manifest.json",
+        "deploy": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateManifestBundle generateCachebusterInfo"
+    },
+    "ui5": {
+        "dependencies": [
+            "@sap-ux/ui5-proxy-middleware"
+        ]
+    }
+}

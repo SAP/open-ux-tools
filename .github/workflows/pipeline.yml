@@ -136,7 +136,7 @@ jobs:
             - name: Setup npmrc with npmjs.com token
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
-              uses: changesets/action@b98cec97583b917ff1dc6179dd4d230d3e439894
+              uses: changesets/action@v1.2.0
               with:
                   publish: pnpm ci:publish
               env:

@@ -8,7 +8,12 @@
         "version": "<%- app.version %>"
       },
       "title": "{{appTitle}}",
-      "description": "{{appDescription}}"
+      "description": "{{appDescription}}",
+      "resources": "resources.json",
+      "sourceTemplate": {
+          "id": "<%= app.sourceTemplate.id %>",
+          "version": "<%= app.sourceTemplate.version %>"
+      }
     },
     "sap.ui": {
       "technology": "UI5",
@@ -30,8 +35,8 @@
       "flexEnabled": true,
       "dependencies": {
         "minUI5Version": "<%- ui5.minUI5Version %>",
-        "libs": {
-          "sap.ui.core": {}
+        "libs": {<% ui5.ui5Libs.forEach((ui5Lib, idx, libs) => { %>
+          <%- `"${ui5Lib}": {}${idx+1 < libs.length ? ',' : ''}` %><% }); %>
         }
       },
       "contentDensities": {

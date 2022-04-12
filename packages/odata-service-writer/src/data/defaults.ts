@@ -1,4 +1,4 @@
-import { OdataService } from '../types';
+import type { OdataService } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 
 /**
@@ -21,7 +21,7 @@ export function enhanceData(service: OdataService): void {
     if (service.model === undefined) {
         service.model = ''; // Default UI5 model
     }
-    
+
     // enhance preview settings with service configuration
     service.previewSettings = service.previewSettings || {};
     service.previewSettings.path =

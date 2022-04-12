@@ -7,7 +7,6 @@ Object {
       "NewCustomColumn": Object {
         "header": "col header",
         "position": Object {
-          "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
@@ -52,7 +51,6 @@ Object {
       "NewCustomColumn": Object {
         "header": "col header",
         "position": Object {
-          "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
@@ -97,7 +95,6 @@ Object {
       "NewCustomColumn": Object {
         "header": "col header",
         "position": Object {
-          "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
@@ -143,7 +140,6 @@ Object {
         "availability": "Adaptation",
         "header": "col header",
         "position": Object {
-          "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
@@ -236,7 +232,6 @@ Object {
       "NewCustomColumn": Object {
         "header": "col header",
         "position": Object {
-          "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
@@ -277,7 +272,6 @@ Object {
         "header": "col header",
         "horizontalAlign": "Center",
         "position": Object {
-          "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
         "properties": Array [
@@ -343,7 +337,6 @@ Object {
       "NewCustomColumn": Object {
         "header": "col header",
         "position": Object {
-          "anchor": "DataField::BooleanProperty",
           "placement": "After",
         },
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",

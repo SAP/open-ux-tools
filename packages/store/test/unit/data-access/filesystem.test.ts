@@ -1,6 +1,6 @@
 import 'jest-extended';
 import { vol } from 'memfs';
-import { basedir, FilesystemStore, getFilesystemWatcherFor } from '../../../src/data-access/filesystem';
+import { basedir, getFilesystemStore, getFilesystemWatcherFor } from '../../../src/data-access/filesystem';
 import path from 'path';
 import fs, { FSWatcher } from 'fs';
 import { mocked } from 'ts-jest/utils';
@@ -29,12 +29,12 @@ describe('data-access/filesystem', () => {
         it.each(['', '  ', undefined])(
             'will return undefined when entity name is %p',
             async (entityName: string | undefined) => {
-                await expect(new FilesystemStore(logger).read({ entityName, id: '42' })).resolves.toBeUndefined();
+                await expect(getFilesystemStore(logger).read({ entityName, id: '42' })).resolves.toBeUndefined();
             }
         );
 
         it('will return undefined when fiori tools directory is missing', async () => {
-            await expect(new FilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
+            await expect(getFilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
         });
 
         it('will return undefined when entity file is missing', async () => {
@@ -42,7 +42,7 @@ describe('data-access/filesystem', () => {
                 [basedir()]: {}
             });
 
-            await expect(new FilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
+            await expect(getFilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
         });
 
         it('will return undefined when entity file has unexpected format', async () => {
@@ -50,7 +50,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ otherEntity: [] })
             });
 
-            await expect(new FilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
+            await expect(getFilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
         });
 
         it('will return undefined when entity file is empty', async () => {
@@ -58,7 +58,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: ''
             });
 
-            await expect(new FilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
+            await expect(getFilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
         });
 
         it('will throw an error when entity file is corrupt', async () => {
@@ -66,7 +66,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: '{'
             });
 
-            await expect(() => new FilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).rejects.toThrow();
+            await expect(() => getFilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).rejects.toThrow();
         });
 
         it('will return undefined when no entities exist', async () => {
@@ -74,7 +74,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ dummies: [] })
             });
 
-            await expect(new FilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
+            await expect(getFilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
         });
 
         it('will return undefined when no entities exist', async () => {
@@ -82,7 +82,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ dummies: undefined })
             });
 
-            await expect(new FilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
+            await expect(getFilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
         });
 
         it('will return undefined when no entities match', async () => {
@@ -95,7 +95,7 @@ describe('data-access/filesystem', () => {
                 })
             });
 
-            await expect(new FilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
+            await expect(getFilesystemStore(logger).read({ entityName: 'dummy', id: '42' })).resolves.toBeUndefined();
         });
     });
 
@@ -107,12 +107,12 @@ describe('data-access/filesystem', () => {
         it.each(['', '  ', undefined])(
             'will return [] when entity name is %p',
             async (entityName: string | undefined) => {
-                await expect(new FilesystemStore(logger).getAll({ entityName })).resolves.toEqual([]);
+                await expect(getFilesystemStore(logger).getAll({ entityName })).resolves.toEqual([]);
             }
         );
 
         it('will return [] when fiori tools directory is missing', async () => {
-            await expect(new FilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
+            await expect(getFilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
         });
 
         it('will return [] when entity file is missing', async () => {
@@ -120,7 +120,7 @@ describe('data-access/filesystem', () => {
                 [basedir()]: {}
             });
 
-            await expect(new FilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
+            await expect(getFilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
         });
 
         it('will return [] when entity file has unexpected format', async () => {
@@ -128,7 +128,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ otherEntity: [] })
             });
 
-            await expect(new FilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
+            await expect(getFilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
         });
 
         it('will return [] when entity file is empty', async () => {
@@ -136,7 +136,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: ''
             });
 
-            await expect(new FilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
+            await expect(getFilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
         });
 
         it('will throw an error when entity file is corrupt', async () => {
@@ -144,7 +144,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: '{'
             });
 
-            await expect(() => new FilesystemStore(logger).getAll({ entityName: 'dummy' })).rejects.toThrow();
+            await expect(() => getFilesystemStore(logger).getAll({ entityName: 'dummy' })).rejects.toThrow();
         });
 
         it('will return [] when no entities exist', async () => {
@@ -152,7 +152,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ dummies: [] })
             });
 
-            await expect(new FilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
+            await expect(getFilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
         });
 
         it('will return [] when no entities exist', async () => {
@@ -160,7 +160,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ dummies: undefined })
             });
 
-            await expect(new FilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
+            await expect(getFilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toEqual([]);
         });
 
         it('will return all the entities', async () => {
@@ -176,7 +176,7 @@ describe('data-access/filesystem', () => {
                 })
             });
 
-            await expect(new FilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toIncludeSameMembers(
+            await expect(getFilesystemStore(logger).getAll({ entityName: 'dummy' })).resolves.toIncludeSameMembers(
                 Object.values(existingEntities)
             );
         });
@@ -190,12 +190,12 @@ describe('data-access/filesystem', () => {
         it.each(['', '  ', undefined])(
             'will return [] when entity name is %p',
             async (entityName: string | undefined) => {
-                await expect(new FilesystemStore(logger).readAll({ entityName })).resolves.toEqual({});
+                await expect(getFilesystemStore(logger).readAll({ entityName })).resolves.toEqual({});
             }
         );
 
         it('will return {} when fiori tools directory is missing', async () => {
-            await expect(new FilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
+            await expect(getFilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
         });
 
         it('will return {} when entity file is missing', async () => {
@@ -203,7 +203,7 @@ describe('data-access/filesystem', () => {
                 [basedir()]: {}
             });
 
-            await expect(new FilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
+            await expect(getFilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
         });
 
         it('will return {} when entity file has unexpected format', async () => {
@@ -211,7 +211,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ otherEntity: {} })
             });
 
-            await expect(new FilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
+            await expect(getFilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
         });
 
         it('will return {} when entity file is empty', async () => {
@@ -219,7 +219,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: ''
             });
 
-            await expect(new FilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
+            await expect(getFilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
         });
 
         it('will throw an error when entity file is corrupt', async () => {
@@ -227,7 +227,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: '{'
             });
 
-            await expect(() => new FilesystemStore(logger).readAll({ entityName: 'dummy' })).rejects.toThrow();
+            await expect(() => getFilesystemStore(logger).readAll({ entityName: 'dummy' })).rejects.toThrow();
         });
 
         it('will return [] when no entities exist', async () => {
@@ -235,7 +235,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ dummies: {} })
             });
 
-            await expect(new FilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
+            await expect(getFilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
         });
 
         it('will return {} when no entities exist', async () => {
@@ -243,7 +243,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ dummies: undefined })
             });
 
-            await expect(new FilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
+            await expect(getFilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual({});
         });
 
         it('will return all the entities', async () => {
@@ -259,7 +259,7 @@ describe('data-access/filesystem', () => {
                 })
             });
 
-            await expect(new FilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual(
+            await expect(getFilesystemStore(logger).readAll({ entityName: 'dummy' })).resolves.toEqual(
                 existingEntities
             );
         });
@@ -275,7 +275,7 @@ describe('data-access/filesystem', () => {
             'will return undefined when entity name is %p',
             async (entityName: string | undefined) => {
                 await expect(
-                    new FilesystemStore(logger).write({ entityName, id: '42', entity: { prop1: 1, prop2: 2 } })
+                    getFilesystemStore(logger).write({ entityName, id: '42', entity: { prop1: 1, prop2: 2 } })
                 ).resolves.toBeUndefined();
             }
         );
@@ -283,7 +283,7 @@ describe('data-access/filesystem', () => {
         it('will create the full path if root dir missing', async () => {
             const entity = { prop1: 1, prop2: 2 };
             const id = '42';
-            await expect(new FilesystemStore(logger).write({ entityName: 'dummy', id, entity })).resolves.toEqual(
+            await expect(getFilesystemStore(logger).write({ entityName: 'dummy', id, entity })).resolves.toEqual(
                 entity
             );
 
@@ -301,7 +301,7 @@ describe('data-access/filesystem', () => {
             const entity = { prop1: 1, prop2: '2', prop3: undefined, prop4: 42 };
 
             await expect(() =>
-                new FilesystemStore(logger).write({ entityName: 'dummy', id: '42', entity })
+                getFilesystemStore(logger).write({ entityName: 'dummy', id: '42', entity })
             ).rejects.toThrow();
         });
 
@@ -314,7 +314,7 @@ describe('data-access/filesystem', () => {
             });
 
             await expect(() =>
-                new FilesystemStore(logger).write({ entityName: 'dummy', id: '42', entity })
+                getFilesystemStore(logger).write({ entityName: 'dummy', id: '42', entity })
             ).rejects.toThrow();
 
             mockFs.writeFileSync = originalFn;
@@ -327,7 +327,7 @@ describe('data-access/filesystem', () => {
             const entity = { prop1: 1, prop2: '2', prop3: undefined, prop4: 42 };
             const id = '42';
 
-            await expect(new FilesystemStore(logger).write({ entityName: 'dummy', id, entity })).resolves.toEqual(
+            await expect(getFilesystemStore(logger).write({ entityName: 'dummy', id, entity })).resolves.toEqual(
                 entity
             );
 
@@ -353,7 +353,7 @@ describe('data-access/filesystem', () => {
             const entity = { prop1: 1, prop2: 'prop2', prop3: 13 };
             const id = '42';
 
-            await expect(new FilesystemStore(logger).write({ entityName: 'dummy', id, entity })).resolves.toEqual(
+            await expect(getFilesystemStore(logger).write({ entityName: 'dummy', id, entity })).resolves.toEqual(
                 entity
             );
 
@@ -379,7 +379,7 @@ describe('data-access/filesystem', () => {
             const entity = { prop1: 42, prop2: '13', prop3: 13 };
             const id = '42';
 
-            await expect(new FilesystemStore(logger).write({ entityName: 'dummy', id, entity })).resolves.toEqual(
+            await expect(getFilesystemStore(logger).write({ entityName: 'dummy', id, entity })).resolves.toEqual(
                 entity
             );
 
@@ -407,12 +407,12 @@ describe('data-access/filesystem', () => {
         it.each(['', '  ', undefined])(
             'will return false when entity name is %p',
             async (entityName: string | undefined) => {
-                await expect(new FilesystemStore(logger).del({ entityName, id: '42' })).resolves.toBeFalsy();
+                await expect(getFilesystemStore(logger).del({ entityName, id: '42' })).resolves.toBeFalsy();
             }
         );
 
         it('will return false when fiori tools directory is missing', async () => {
-            await expect(new FilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalsy();
+            await expect(getFilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalsy();
         });
 
         it('will return false when entity file is missing', async () => {
@@ -420,7 +420,7 @@ describe('data-access/filesystem', () => {
                 [basedir()]: {}
             });
 
-            await expect(new FilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalsy();
+            await expect(getFilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalsy();
         });
 
         it('will throw an error when entity file is corrupt', async () => {
@@ -428,7 +428,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: '{'
             });
 
-            await expect(() => new FilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).rejects.toThrow();
+            await expect(() => getFilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).rejects.toThrow();
         });
 
         it('will return false when no entities exist', async () => {
@@ -436,7 +436,7 @@ describe('data-access/filesystem', () => {
                 [path.join(basedir(), 'dummies.json')]: JSON.stringify({ dummies: {} })
             });
 
-            await expect(new FilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalsy();
+            await expect(getFilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalsy();
         });
 
         it('will return false when no entities match', async () => {
@@ -449,7 +449,7 @@ describe('data-access/filesystem', () => {
                 })
             });
 
-            await expect(new FilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalsy();
+            await expect(getFilesystemStore(logger).del({ entityName: 'dummy', id: '42' })).resolves.toBeFalsy();
         });
 
         it('will delete an existing entity, if found', async () => {
@@ -466,7 +466,7 @@ describe('data-access/filesystem', () => {
             });
 
             const id = '42';
-            await expect(new FilesystemStore(logger).del({ entityName: 'dummy', id })).resolves.toBeTruthy();
+            await expect(getFilesystemStore(logger).del({ entityName: 'dummy', id })).resolves.toBeTruthy();
 
             const dataFileFullPath = path.join(basedir(), 'dummies.json');
             expect(fs.existsSync(dataFileFullPath)).toBeTruthy();

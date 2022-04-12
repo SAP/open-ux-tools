@@ -1,4 +1,4 @@
-import { UI5Config, AbapApp } from '../src';
+import { UI5Config, AbapApp, UI5ProxyConfig } from '../src';
 
 describe('UI5Config', () => {
     // values for testing
@@ -12,6 +12,39 @@ describe('UI5Config', () => {
     let ui5Config: UI5Config;
     beforeEach(async () => {
         ui5Config = await UI5Config.newInstance('');
+    });
+
+    describe('get/setConfiguration', () => {
+        test('get empty configuration', () => {
+            expect(ui5Config.getConfiguration()).toMatchObject({});
+        });
+
+        test('set first time', () => {
+            const config = {
+                paths: {
+                    webapp: '~/my/webapp'
+                }
+            };
+            ui5Config.setConfiguration(config);
+            expect(ui5Config.getConfiguration()).toMatchObject(config);
+        });
+
+        test('replace existing', () => {
+            ui5Config.setConfiguration({
+                propertiesFileSourceEncoding: 'ISO-8859-1',
+                paths: {
+                    webapp: '~/old/webapp',
+                    src: '~/src'
+                }
+            });
+            const config = {
+                paths: {
+                    webapp: '~/my/webapp'
+                }
+            };
+            ui5Config.setConfiguration(config);
+            expect(ui5Config.getConfiguration()).toMatchObject(config);
+        });
     });
 
     describe('addUI5Framework', () => {
@@ -94,6 +127,17 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('addUi5ToFioriToolsProxydMiddleware', () => {
+        test('add ui5 config to empty tools middleware config', () => {
+            ui5Config.addFioriToolsProxydMiddleware({});
+            ui5Config.addUi5ToFioriToolsProxydMiddleware({
+                path: ['/~customResources', '/~other'],
+                url: 'http://~url'
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
     describe('addMockServerMiddleware', () => {
         test('add with given path', () => {
             ui5Config.addMockServerMiddleware(path);
@@ -116,9 +160,13 @@ describe('UI5Config', () => {
             name: 'custom-middleware',
             afterMiddleware: '~otherMiddleware',
             configuration: {
-                param1: 35729,
-                other: 'webapp'
-            }
+                ui5: {
+                    path: ['/resources', '/test-resources'],
+                    url: 'http://ui5.example'
+                },
+                version: '1.95.1',
+                debug: true
+            } as UI5ProxyConfig
         };
         test('addCustomMiddleware', () => {
             ui5Config.addCustomMiddleware([customMiddleware]);

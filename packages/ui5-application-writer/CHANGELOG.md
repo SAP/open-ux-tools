@@ -1,5 +1,96 @@
 # @sap-ux/ui5-application-writer
 
+## 0.12.7
+
+### Patch Changes
+
+-   73d6a6b: Fix for #438 : Incorrect manifest version set for some ui5 versions
+
+## 0.12.6
+
+### Patch Changes
+
+-   Updated dependencies [5b5355c]
+    -   @sap-ux/ui5-config@0.13.1
+
+## 0.12.5
+
+### Patch Changes
+
+-   Updated dependencies [56409d0]
+    -   @sap-ux/ui5-config@0.13.0
+
+## 0.12.4
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/ui5-config@0.12.3
+
+## 0.12.3
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+-   Updated dependencies [0837ac1]
+    -   @sap-ux/ui5-config@0.12.2
+
+## 0.12.2
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+-   Updated dependencies [7107fbc]
+    -   @sap-ux/ui5-config@0.12.1
+
+## 0.12.1
+
+### Patch Changes
+
+-   f989e61: Fix: incorrect json generated if optional paramater is missing
+
+## 0.12.0
+
+### Minor Changes
+
+-   574bf78: New module @sap-ux/fiori-elements-writer. Bug fix and extended api to add template info to manifest.json @sap-ux/ui5-application-writer. Add template info to manifest.json @sap-ux/fiori-freestyle-writer.
+
+## 0.11.2
+
+### Patch Changes
+
+-   893c924: Fix for: https://github.com/SAP/open-ux-tools/issues/345
+
+## 0.11.1
+
+### Patch Changes
+
+-   0e72d5b: Fixes reuse libs loading from index.html. Adds optional support for reuse libs loading to ui5-application-writer.
+
+## 0.11.0
+
+### Minor Changes
+
+-   2b12f4f: Remove UI5 version from ui5-application-writer
+
+### Patch Changes
+
+-   Updated dependencies [2b12f4f]
+    -   @sap-ux/ui5-config@0.12.0
+
+## 0.10.10
+
+### Patch Changes
+
+-   282b6af: Fixes invalid semantic versions being written to generated application
+
+## 0.10.9
+
+### Patch Changes
+
+-   11909e1: Write dependencies to manifest.json
+
 ## 0.10.8
 
 ### Patch Changes

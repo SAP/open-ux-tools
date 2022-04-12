@@ -6,8 +6,13 @@ exports[`UI5Config add/removeCustomMiddleware addCustomMiddleware 1`] = `
     - name: custom-middleware
       afterMiddleware: ~otherMiddleware
       configuration:
-        param1: 35729
-        other: webapp
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: http://ui5.example
+        version: 1.95.1
+        debug: true
 "
 `;
 
@@ -71,7 +76,6 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out 
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - url: http://localhost:8080
             path: /~testpath~
@@ -105,7 +109,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend with flexible param
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -125,7 +128,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without destination
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -144,7 +146,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without path or des
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -165,7 +166,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add commonly configured backend
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -191,7 +191,6 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but UI5 
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
 "
 `;
 
@@ -204,10 +203,10 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all 
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
-            - /resources
-            - /test-resources
+            - /~customResources
+            - /~other
           url: http://~url
-          version: 1.23.3 # The UI5 version, for instance, 1.78.1. Empty string means latest version
+          version: 1.23.3
           directLoad: true
 "
 `;
@@ -216,11 +215,10 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: ''
-          name: ~testpath~
+          urlPath: /~testpath~
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -231,10 +229,10 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
 "server:
   customMiddleware:
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: ''
+          urlPath: ''
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -267,6 +265,21 @@ exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
   libraries:
     - name: sap.m
     - name: themelib_sap_fiori_3
+"
+`;
+
+exports[`UI5Config addUi5ToFioriToolsProxydMiddleware add ui5 config to empty tools middleware config 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          - path:
+              - /~customResources
+              - /~other
+            url: http://~url
 "
 `;
 

@@ -27,11 +27,10 @@ Object {
           - path: /sap
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /sap/odata/testme
-          name: ''
+          urlPath: /sap/odata/testme
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -50,16 +49,14 @@ Object {
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /sap
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /sap/odata/testme
-          name: ''
+          urlPath: /sap/odata/testme
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -78,7 +75,6 @@ Object {
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /sap
             url: http://localhost
@@ -2800,11 +2796,10 @@ Object {
           - path: /sap
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /sap/odata/testme
-          name: ''
+          urlPath: /sap/odata/testme
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -2823,16 +2818,14 @@ Object {
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /sap
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /sap/odata/testme
-          name: ''
+          urlPath: /sap/odata/testme
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -2851,14 +2844,13 @@ Object {
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /sap
             url: http://localhost
 ",
     "state": "modified",
   },
-  "webapp/localService/SEPM_XYZ.xml": Object {
+  "webapp/localService/SEPM_XYZ/SERVICE.xml": Object {
     "contents": "<HELLO>
     <ANNOTATION>
     </ANNOTATION>
@@ -2885,17 +2877,17 @@ Object {
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [
-            \\"SEPM_XYZ\\"
+            \\"/SEPM_XYZ/SERVICE\\"
           ],
           \\"localUri\\": \\"localService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
-      \\"SEPM_XYZ\\": {
-        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPM_XYZ',Version='0001')/$value/\\",
+      \\"/SEPM_XYZ/SERVICE\\": {
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPM_XYZ.xml\\"
+          \\"localUri\\": \\"localService//SEPM_XYZ/SERVICE.xml\\"
         }
       }
     }

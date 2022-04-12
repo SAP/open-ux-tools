@@ -1,6 +1,15 @@
 {
     "name": "@sap-ux/ui5-application-writer",
-    "version": "0.10.8",
+    "description": "Writer module allowing to create a the base UI5 project structure.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/ui5-application-writer"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-application-writer"
+    },
+    "version": "0.12.7",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -25,7 +34,9 @@
         "ejs": "3.1.6",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.0.0",
-        "json-merger": "1.1.7"
+        "json-merger": "1.1.7",
+        "semver": "7.3.5",
+        "i18next": "21.6.11"
     },
     "devDependencies": {
         "@types/ejs": "3.1.0",

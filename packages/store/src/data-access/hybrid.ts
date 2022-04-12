@@ -1,41 +1,29 @@
-import { FilesystemStore } from './filesystem';
+import { getFilesystemStore as dataAccessFilesystem } from './filesystem';
 import { pick } from '../utils';
-import { Logger } from '@sap-ux/logger';
-import { getSecureStore, SecureStore } from '../secure-store';
+import type { Logger } from '@sap-ux/logger';
+import type { SecureStore } from '../secure-store';
+import { getSecureStore } from '../secure-store';
 import { getSensitiveDataProperties, getSerializableProperties } from '../decorators';
-import { DataAccess, DataAccessConstructor } from '.';
-import { ServiceOptions } from '../types';
+import type { DataAccess } from '.';
+import type { ServiceOptions } from '../types';
 import { inspect } from 'util';
 
 function getFullyQualifiedServiceName(name: string): string {
     return 'fiori/v2/' + name;
 }
 
-/** A hybrid store
- * Stores serializable properties on the filesystem
- * The properties need to be decorated with `@serilizable` annotations
- *
- * Sensitive properties (decorated with `@sensitiveData`) will be stored
- * in the system's secure store
- */
-export const HybridStore: DataAccessConstructor<object> = class implements DataAccess<object> {
+class HybridStore<E extends object> implements DataAccess<E> {
     private readonly logger: Logger;
-    private readonly filesystem: DataAccess<object>;
+    private readonly filesystem: DataAccess<E>;
     private readonly secureStore: SecureStore;
 
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
-        this.filesystem = new FilesystemStore(this.logger, options);
+        this.filesystem = dataAccessFilesystem<E>(this.logger, options);
         this.secureStore = getSecureStore(this.logger);
     }
 
-    public async read<Entity extends object>({
-        entityName,
-        id
-    }: {
-        entityName: string;
-        id: string;
-    }): Promise<undefined | Partial<Entity>> {
+    public async read({ entityName, id }: { entityName: string; id: string }): Promise<undefined | E> {
         const serialized = await this.filesystem.read({ entityName, id });
         if (!serialized) {
             this.logger.debug(`hybrid/read - id: [${id}], nothing on the filesystem`);
@@ -43,7 +31,7 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
             this.logger.debug(`hybrid/read - id: [${id}], filesystem: ${inspect(serialized)}`);
         }
 
-        const sensitiveData: Partial<Entity> | undefined = await this.secureStore.retrieve(
+        const sensitiveData: E | undefined = await this.secureStore.retrieve(
             getFullyQualifiedServiceName(entityName),
             id
         );
@@ -55,46 +43,42 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
 
         if (serialized || sensitiveData) {
             // Make sure sensitive props override serialized ones
-            return { ...serialized, ...sensitiveData };
+            return { ...serialized, ...sensitiveData } as E;
         } else {
             return undefined;
         }
     }
 
-    public async getAll<Entity extends object>({
-        entityName
-    }: {
-        entityName: string;
-    }): Promise<[] | Partial<Entity>[]> {
-        return Object.values(await this.readAll({ entityName }));
+    public async getAll({ entityName }: { entityName: string }): Promise<[] | E[]> {
+        return Object.values(await this.readAll({ entityName })) as unknown as E[];
     }
 
-    async readAll<Entity extends object>({ entityName }: { entityName: string }): Promise<{ [key: string]: Entity }> {
-        const result: { [key: string]: Entity } = {};
+    async readAll({ entityName }: { entityName: string }): Promise<{ [key: string]: E }> {
+        const result: { [key: string]: E } = {};
 
         const entitiesFs = (await this.filesystem.readAll({ entityName })) || {};
         const entitiesInSecureStore =
-            (await this.secureStore.getAll<Entity>(getFullyQualifiedServiceName(entityName))) || {};
+            (await this.secureStore.getAll<E>(getFullyQualifiedServiceName(entityName))) || {};
 
         for (const key of new Set([...Object.keys(entitiesFs), ...Object.keys(entitiesInSecureStore)])) {
             // Make sure sensitive props override serialized ones
-            const entity: Entity = { ...entitiesFs[key], ...entitiesInSecureStore[key] };
+            const entity: E = { ...entitiesFs[key], ...entitiesInSecureStore[key] };
             result[key] = entity;
         }
         return result;
     }
 
-    public async write<Entity extends object>({
+    public async write({
         entityName,
         id,
         entity
     }: {
         entityName: string;
         id: string;
-        entity: Entity;
-    }): Promise<undefined | Partial<Entity>> {
-        const serializableProps = getSerializableProperties(entity);
-        const sensitiveProps = getSensitiveDataProperties(entity);
+        entity: E;
+    }): Promise<undefined | E> {
+        const serializableProps = getSerializableProperties<E>(entity);
+        const sensitiveProps = getSensitiveDataProperties<E>(entity);
 
         if (serializableProps.length > 0 && sensitiveProps.length > 0) {
             for (let i = 0; i < serializableProps.length; i = i + 1) {
@@ -107,7 +91,7 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
             }
         }
 
-        const serializable = pick(entity, ...serializableProps);
+        const serializable: E = pick(entity, ...serializableProps) as E;
 
         if (serializable) {
             this.logger.debug(`hybrid/write - writing serializable properties: ${inspect(serializable)}`);
@@ -136,4 +120,15 @@ export const HybridStore: DataAccessConstructor<object> = class implements DataA
 
         return deletedinFs || deletedInSecureStore;
     }
-};
+}
+
+/** A hybrid store
+ * Stores serializable properties on the filesystem
+ * The properties need to be decorated with `@serilizable` annotations
+ *
+ * Sensitive properties (decorated with `@sensitiveData`) will be stored
+ * in the system's secure store
+ */
+export function getHybridStore<E extends object>(logger: Logger, options?: ServiceOptions): DataAccess<E> {
+    return new HybridStore<E>(logger, options);
+}

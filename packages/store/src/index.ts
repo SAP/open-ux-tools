@@ -1,15 +1,17 @@
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import { ServiceOptions } from './types';
-import { Entity } from './contants';
+import { Entity } from './constants';
 import { initI18n, text } from './i18n';
-import { Service } from './services';
+import type { Service } from './services';
 import { getInstance as getSystemService } from './services/backend-system';
+import { getInstance as getTelemetrySettingService } from './services/telemetry-setting';
 import { getDefaultLogger } from './defaults';
 
 const services: {
     [entityName: string]: (logger: Logger, options: ServiceOptions) => Service<unknown, unknown>;
 } = {
-    system: getSystemService
+    system: getSystemService,
+    telemetrySetting: getTelemetrySettingService
 };
 
 export async function getService<Entity, Key>({
@@ -33,6 +35,7 @@ export async function getService<Entity, Key>({
 export * from './services';
 export * from './secure-store';
 export * from './entities/backend-system';
+export * from './entities/telemetry-setting';
 
 // @todo: change notification needs to be more generic and not tied to filesystems
 // Support any filesystem watchers

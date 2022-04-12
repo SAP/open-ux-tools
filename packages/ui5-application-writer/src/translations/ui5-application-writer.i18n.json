@@ -1,0 +1,14 @@
+{
+    "info": {
+        "mockOnlyWarning": "This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock"
+    },
+    "error": {
+        "missingRequiredProperty": "The property: {{ propertyName }} must have a value",
+        "disallowedCharacters": "The property: {{ propertyName }} contains disallowed characters: {{- disallowedChars }}",
+        "invalidUI5Version": "The specified UI5 version is invalid: {{ version }}"
+    },
+    "text": {
+        "defaultAppTitle": "Title of {{ id }}",
+        "defaultAppDescription": "Description of {{ id }}"
+    }
+}

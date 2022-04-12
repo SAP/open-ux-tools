@@ -1,20 +1,21 @@
-import { ServiceOptions } from '../types';
-import { DataProvider, DataProviderConstructor } from '.';
-import { DataAccess } from '../data-access';
-import { HybridStore } from '../data-access/hybrid';
+import type { ServiceOptions } from '../types';
+import type { DataProvider, DataProviderConstructor } from '.';
+import type { DataAccess } from '../data-access';
+import { getHybridStore } from '../data-access/hybrid';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class
-    implements DataProvider<BackendSystem, BackendSystemKey> {
+    implements DataProvider<BackendSystem, BackendSystemKey>
+{
     private readonly dataAccessor: DataAccess<BackendSystem>;
     private readonly entityName = Entities.BackendSystem;
     private readonly logger: Logger;
 
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
-        this.dataAccessor = new HybridStore(this.logger, options) as DataAccess<BackendSystem>;
+        this.dataAccessor = getHybridStore(this.logger, options);
     }
 
     public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {

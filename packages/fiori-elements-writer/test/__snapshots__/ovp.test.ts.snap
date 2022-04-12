@@ -1,0 +1,1636 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fiori Elements template: ovpTemplate Generate files for template: ovpV2 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"feovp1\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"A Fiori application.\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
+      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+    ]
+  }
+}
+",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: feovp1
+type: application
+framework:
+  name: SAPUI5
+  version: 1.86.3
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.ushell
+    - name: sap.f
+    - name: sap.ui.comp
+    - name: sap.ui.generic.app
+    - name: sap.suite.ui.generic.template
+    - name: sap.ovp
+    - name: sap.ui.rta
+    - name: sap.ui.layout
+    - name: themelib_sap_belize
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /sap
+            url: http://example.ovp.v2
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        service:
+          urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
+    "state": "modified",
+  },
+  "ui5-mock.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: feovp1
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://example.ovp.v2
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        service:
+          urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: feovp1
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: http://example.ovp.v2
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+",
+    "state": "modified",
+  },
+  "webapp/Component.js": Object {
+    "contents": "sap.ui.define(
+    [\\"sap/ovp/app/Component\\"],
+    function (Component) {
+        \\"use strict\\";
+
+        return Component.extend(\\"feovp1.Component\\", {
+            metadata: {
+                manifest: \\"json\\"
+            }
+        });
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/annotations/annotation.xml": Object {
+    "contents": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.Common.v1\\" Alias=\\"Common\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/sap/opu/odata/sap/GWSAMPLE_BASIC/$metadata\\">
+        <edmx:Include Namespace=\\"GWSAMPLE_BASIC\\" Alias=\\"Metadata\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"local\\">
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for feovp1
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=App \\"Title\\" \\\\\\"
+
+#YDES: Application description
+appDescription=A Fiori application.",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>App &#34;Title&#34; \\\\&#34;</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-resourceroots='{
+            \\"feovp1\\": \\"./\\"
+        }'
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
+        data-sap-ui-manifest-uri=\\"./manifest.json\\"
+        data-sap-ui-componentName=\\"feovp1\\">
+    </script> 
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"feovp1\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"feovp1\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/localService/GWSAMPLE_BASIC.xml": Object {
+    "contents": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2\\">
+        <edmx:Include Alias=\\"Common\\" Namespace=\\"com.sap.vocabularies.Common.v1\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"https://wiki.scn.sap.com/wiki/download/attachments/448470968/UI.xml?api=v2\\">
+        <edmx:Include Alias=\\"UI\\" Namespace=\\"com.sap.vocabularies.UI.v1\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/here/goes/your/serviceurl/$metadata\\">
+        <edmx:Include Alias=\\"Metadata\\" Namespace=\\"GWSAMPLE_BASIC\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"teched-ovp.annotations.annotations.GWSAMPLE_BASIC\\">
+            <Annotations Target=\\"GWSAMPLE_BASIC.GlobalFilters\\">
+                <Annotation Term=\\"UI.SelectionFields\\">
+                    <Collection>
+                        <PropertyPath>CountryCode</PropertyPath>
+                        <PropertyPath>SupplierName</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"GWSAMPLE_BASIC.GlobalFilters/CountryCode\\">
+                <Annotation Term=\\"Common.ValueList\\">
+                    <Record Type=\\"Common.ValueListType\\">
+                        <PropertyValue Property=\\"CollectionPath\\" String=\\"VH_CountrySet\\"/>
+                        <PropertyValue Property=\\"Parameters\\">
+                            <Collection>
+                                <Record Type=\\"Common.ValueListParameterInOut\\">
+                                    <PropertyValue Property=\\"LocalDataProperty\\" PropertyPath=\\"CountryCode\\"/>
+                                    <PropertyValue Property=\\"ValueListProperty\\" String=\\"CountryCode\\"/>
+                                </Record>
+                                <Record Type=\\"Common.ValueListParameterDisplayOnly\\">
+                                    <PropertyValue Property=\\"ValueListProperty\\" String=\\"CountryName\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"SearchSupported\\" Bool=\\"true\\"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"GWSAMPLE_BASIC.VH_Country/CountryCode\\">
+                <Annotation Term=\\"Common.Text\\" Path=\\"CountryName\\">
+                    <Annotation Term=\\"UI.TextArrangement\\" EnumMember=\\"UI.TextArrangementType/TextFirst\\"/>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"GWSAMPLE_BASIC.CustomerService\\">
+                <Annotation Term=\\"UI.DataPoint\\" Qualifier=\\"Priority\\">
+                    <Record Type=\\"UI.DataPointType\\">
+                        <PropertyValue Property=\\"Value\\" Path=\\"Priority\\"/>
+                        <PropertyValue Property=\\"Criticality\\" Path=\\"PriorityCriticality\\"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"UI.LineItem\\">
+                    <Collection>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" Path=\\"Complain\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"Complain\\"/>
+                        </Record>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" Path=\\"CustomerName\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"Customer Name\\"/>
+                        </Record>
+                        <Record Type=\\"UI.DataFieldForAnnotation\\">
+                            <PropertyValue Property=\\"Target\\" AnnotationPath=\\"@UI.DataPoint#Priority\\"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"Metadata.RunnersType\\">
+                <Annotation Term=\\"UI.Identification\\">
+                    <Collection/>
+                </Annotation>
+                <Annotation Term=\\"UI.DataPoint\\" Qualifier=\\"TotalRunners\\">
+                    <Record Type=\\"UI.DataPointType\\">
+                        <PropertyValue Property=\\"Value\\" Path=\\"TotalCount\\"/>
+                        <PropertyValue Property=\\"ValueFormat\\">
+                            <Record>
+                                <PropertyValue Property=\\"ScaleFactor\\" Decimal=\\"100000\\"/>
+                                <PropertyValue Property=\\"NumberOfFractionalDigits\\" Int=\\"2\\"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"Title\\" String=\\"Total Runners\\"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"UI.KPI\\" Qualifier=\\"RunnersByType\\">
+                    <Record Type=\\"UI.KPIType\\">
+                        <PropertyValue Property=\\"Detail\\">
+                            <Record Type=\\"UI.KPIDetailType\\">
+                                <PropertyValue Property=\\"DefaultPresentationVariant\\" Path=\\"@UI.PresentationVariant#RunnersByType\\"/>
+                                <PropertyValue Property=\\"AlternativePresentationVariants\\">
+                                    <Collection/>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"SelectionVariant\\">
+                            <Record>
+                                <PropertyValue Property=\\"SelectOptions\\">
+                                    <Collection/>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"DataPoint\\" Path=\\"@UI.DataPoint#TotalRunners\\"/>
+                        <PropertyValue Property=\\"ID\\" String=\\"RunnersByTypeKPI\\"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"UI.PresentationVariant\\" Qualifier=\\"RunnersByType\\">
+                    <Record>
+                        <PropertyValue Property=\\"MaxItems\\" Int=\\"5\\"/>
+                        <PropertyValue Property=\\"GroupBy\\">
+                            <Collection>
+                                <PropertyPath>CountryCode</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"SortOrder\\">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property=\\"Property\\" PropertyPath=\\"Type\\"/>
+                                    <PropertyValue Property=\\"Descending\\" Boolean=\\"true\\" Bool=\\"true\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"Visualizations\\">
+                            <Collection>
+                                <AnnotationPath>@UI.Chart#RunnersByType</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"UI.Chart\\" Qualifier=\\"RunnersByType\\">
+                    <Record Type=\\"UI.ChartDefinitionType\\">
+                        <PropertyValue Property=\\"Title\\" String=\\"By Category\\"/>
+                        <PropertyValue Property=\\"ChartType\\" EnumMember=\\"UI.ChartType/Donut\\"/>
+                        <PropertyValue Property=\\"Measures\\">
+                            <Collection>
+                                <PropertyPath>Count</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"Dimensions\\">
+                            <Collection>
+                                <PropertyPath>Type</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"MeasureAttributes\\">
+                            <Collection>
+                                <Record Type=\\"UI.ChartMeasureAttributeType\\">
+                                    <PropertyValue Property=\\"Measure\\" PropertyPath=\\"Count\\"/>
+                                    <PropertyValue Property=\\"Role\\" EnumMember=\\"UI.ChartMeasureRoleType/Axis1\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"DimensionAttributes\\">
+                            <Collection>
+                                <Record Type=\\"UI.ChartDimensionAttributeType\\">
+                                    <PropertyValue Property=\\"Dimension\\" PropertyPath=\\"Type\\"/>
+                                    <PropertyValue Property=\\"Role\\" EnumMember=\\"UI.ChartDimensionRoleType/Category\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"Metadata.ShoeSalesType\\">
+                <Annotation Term=\\"UI.Identification\\">
+                    <Collection/>
+                </Annotation>
+                <Annotation Term=\\"UI.PresentationVariant\\" Qualifier=\\"ShoesByRunners\\">
+                    <Record>
+                        <PropertyValue Property=\\"GroupBy\\">
+                            <Collection>
+                                <PropertyPath>CountryCode</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"SortOrder\\">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property=\\"Property\\" PropertyPath=\\"Type\\"/>
+                                    <PropertyValue Property=\\"Descending\\" Boolean=\\"true\\" Bool=\\"true\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"Visualizations\\">
+                            <Collection>
+                                <AnnotationPath>@UI.Chart#ShoesByRunners</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"UI.Chart\\" Qualifier=\\"ShoesByRunners\\">
+                    <Record Type=\\"UI.ChartDefinitionType\\">
+                        <PropertyValue Property=\\"Title\\" String=\\"Total figures this year\\"/>
+                        <PropertyValue Property=\\"ChartType\\" EnumMember=\\"UI.ChartType/ColumnStacked\\"/>
+                        <PropertyValue Property=\\"Measures\\">
+                            <Collection>
+                                <PropertyPath>Count</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"Dimensions\\">
+                            <Collection>
+                                <PropertyPath>Shoe</PropertyPath>
+                                <PropertyPath>Type</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"MeasureAttributes\\">
+                            <Collection>
+                                <Record Type=\\"UI.ChartMeasureAttributeType\\">
+                                    <PropertyValue Property=\\"Measure\\" PropertyPath=\\"Count\\"/>
+                                    <PropertyValue Property=\\"Role\\" EnumMember=\\"UI.ChartMeasureRoleType/Axis1\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"DimensionAttributes\\">
+                            <Collection>
+                                <Record Type=\\"UI.ChartDimensionAttributeType\\">
+                                    <PropertyValue Property=\\"Dimension\\" PropertyPath=\\"Shoe\\"/>
+                                    <PropertyValue Property=\\"Role\\" EnumMember=\\"UI.ChartDimensionRoleType/Category\\"/>
+                                </Record>
+                                <Record Type=\\"UI.ChartDimensionAttributeType\\">
+                                    <PropertyValue Property=\\"Dimension\\" PropertyPath=\\"Type\\"/>
+                                    <PropertyValue Property=\\"Role\\" EnumMember=\\"UI.ChartDimensionRoleType/Series\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"Metadata.InventoryType\\">
+                <Annotation Term=\\"UI.Identification\\">
+                    <Collection/>
+                </Annotation>
+                <Annotation Term=\\"UI.PresentationVariant\\" Qualifier=\\"InventoryByMonth\\">
+                    <Record>
+                        <PropertyValue Property=\\"SortOrder\\">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property=\\"Property\\" PropertyPath=\\"Month\\"/>
+                                    <PropertyValue Property=\\"Descending\\" Bool=\\"false\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"Visualizations\\">
+                            <Collection>
+                                <AnnotationPath>@UI.Chart#InventoryByMonth</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"UI.Chart\\" Qualifier=\\"InventoryByMonth\\">
+                    <Record Type=\\"UI.ChartDefinitionType\\">
+                        <PropertyValue Property=\\"Title\\" String=\\"Number of Items\\"/>
+                        <PropertyValue Property=\\"ChartType\\" EnumMember=\\"UI.ChartType/Line\\"/>
+                        <PropertyValue Property=\\"Measures\\">
+                            <Collection>
+                                <PropertyPath>Count</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"Dimensions\\">
+                            <Collection>
+                                <PropertyPath>Shoe</PropertyPath>
+                                <PropertyPath>Month</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"MeasureAttributes\\">
+                            <Collection>
+                                <Record Type=\\"UI.ChartMeasureAttributeType\\">
+                                    <PropertyValue Property=\\"Measure\\" PropertyPath=\\"Count\\"/>
+                                    <PropertyValue Property=\\"Role\\" EnumMember=\\"UI.ChartMeasureRoleType/Axis1\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property=\\"DimensionAttributes\\">
+                            <Collection>
+                                <Record Type=\\"UI.ChartDimensionAttributeType\\">
+                                    <PropertyValue Property=\\"Dimension\\" PropertyPath=\\"Shoe\\"/>
+                                    <PropertyValue Property=\\"Role\\" EnumMember=\\"UI.ChartDimensionRoleType/Series\\"/>
+                                </Record>
+                                <Record Type=\\"UI.ChartDimensionAttributeType\\">
+                                    <PropertyValue Property=\\"Dimension\\" PropertyPath=\\"Month\\"/>
+                                    <PropertyValue Property=\\"Role\\" EnumMember=\\"UI.ChartDimensionRoleType/Category\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/localService/metadata.xml": Object {
+    "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
+<edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\"
+xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
+<edmx:DataServices m:DataServiceVersion=\\"2.0\\">
+    <Schema Namespace=\\"GWSAMPLE_BASIC\\" xml:lang=\\"en\\" sap:schema-version=\\"0000\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
+        <EntityType Name=\\"GlobalParameters\\" sap:label=\\"Global Parameters\\" sap:semantics=\\"parameters\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"P_DisplayCurrency\\"/>
+            </Key>
+            <Property Name=\\"P_DisplayCurrency\\" Type=\\"Edm.String\\" MaxLength=\\"5\\" sap:label=\\"Display Currency\\" sap:parameter=\\"mandatory\\" DefaultValue=\\"EUR\\"
+            sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:semantics=\\"currency-code\\"/>
+            <NavigationProperty Name=\\"Results\\" Relationship=\\"GWSAMPLE_BASIC.Assoc_GlobalParameters_GlobalFilters\\"
+            FromRole=\\"FromRole_Assoc_GlobalParameters_GlobalFilters\\" ToRole=\\"ToRole_Assoc_GlobalParameters_GlobalFilters\\"/>
+        </EntityType>
+        <EntityType Name=\\"GlobalFilters\\" sap:label=\\"Global Filters\\" sap:semantics=\\"aggregate\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"CurrencyCode\\"/>
+            </Key>
+            <Property Name=\\"DeliveryDate\\" Type=\\"Edm.DateTime\\" sap:label=\\"Delivery Date\\" Precision=\\"0\\" sap:display-format=\\"Date\\"
+            sap:filter-restriction=\\"interval\\"/>
+            <Property Name=\\"OrderedAmount\\" Type=\\"Edm.Decimal\\" sap:label=\\"Ordered Amount\\" Precision=\\"13\\" Scale=\\"3\\"/>
+            <Property Name=\\"OverdueTime\\" Type=\\"Edm.Int32\\" sap:label=\\"Overdue Time\\"/>
+            <Property Name=\\"SupplierName\\" Type=\\"Edm.String\\" MaxLength=\\"35\\" sap:label=\\"Supplier\\"/>
+            <Property Name=\\"CityName\\" Type=\\"Edm.String\\" MaxLength=\\"35\\" sap:label=\\"City Name\\"/>
+            <Property Name=\\"CountryCode\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:label=\\"Country\\" sap:semantics=\\"country\\"/>
+            <Property Name=\\"CurrencyCode\\" Type=\\"Edm.String\\" MaxLength=\\"5\\" sap:label=\\"Sales Order Currency\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"
+            sap:semantics=\\"currency-code\\"/>
+            <Property Name=\\"NetAmount\\" Type=\\"Edm.Decimal\\" Precision=\\"16\\" Scale=\\"3\\" sap:unit=\\"CurrencyCode\\" sap:label=\\"Net Amt.\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\"/>
+            <Property Name=\\"MaterialName\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Material\\"/>
+            <Property Name=\\"MaterialGroup\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Material Group\\"/>
+            <Property Name=\\"PurchasingCategory\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Purchasing Category\\"/>
+            <Property Name=\\"PurchasingGroup\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Purchasing Group\\"/>
+            <Property Name=\\"PurchasingOrganization\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Purch. Organization\\"/>
+            <NavigationProperty Name=\\"ToContacts\\" Relationship=\\"GWSAMPLE_BASIC.Assoc_BusinessPartner_Contacts\\"
+            FromRole=\\"FromRole_Assoc_BusinessPartner_Contacts\\" ToRole=\\"ToRole_Assoc_BusinessPartner_Contacts\\"/>
+        </EntityType>
+        <EntityType Name=\\"BusinessPartner\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"BusinessPartnerID\\"/>
+            </Key>
+            <Property Name=\\"BusinessPartnerID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"10\\" sap:label=\\"Bus. Part. ID\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\"/>
+            <Property Name=\\"CompanyName\\" Type=\\"Edm.String\\" MaxLength=\\"80\\" sap:label=\\"Company Name\\"/>
+            <Property Name=\\"FullName\\" Type=\\"Edm.String\\" MaxLength=\\"80\\" sap:label=\\"Full Name\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"Title\\" Type=\\"Edm.String\\" MaxLength=\\"80\\" sap:label=\\"Title\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"WebAddress\\" Type=\\"Edm.String\\" sap:label=\\"Web Address\\" sap:sortable=\\"false\\" sap:filterable=\\"false\\" sap:semantics=\\"url\\"/>
+            <Property Name=\\"EmailAddress\\" Type=\\"Edm.String\\" MaxLength=\\"255\\" sap:label=\\"E-Mail Address\\" sap:semantics=\\"email\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"PhoneNumber\\" Type=\\"Edm.String\\" MaxLength=\\"30\\" sap:label=\\"Phone No.\\" sap:filterable=\\"false\\" sap:semantics=\\"tel\\"/>
+            <Property Name=\\"FaxNumber\\" Type=\\"Edm.String\\" MaxLength=\\"30\\" sap:filterable=\\"false\\" sap:label=\\"Fax Number\\"/>
+            <Property Name=\\"LegalForm\\" Type=\\"Edm.String\\" MaxLength=\\"10\\" sap:filterable=\\"false\\" sap:label=\\"Legal Form\\"/>
+            <Property Name=\\"CurrencyCode\\" Type=\\"Edm.String\\" MaxLength=\\"5\\" sap:filterable=\\"false\\" sap:label=\\"Currency\\" sap:semantics=\\"currency-code\\"/>
+            <Property Name=\\"BusinessPartnerRole\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:filterable=\\"false\\" sap:label=\\"Bus. Part. Role\\"/>
+            <Property Name=\\"CreatedAt\\" Type=\\"Edm.DateTime\\" Precision=\\"7\\" sap:filterable=\\"false\\" sap:label=\\"Time Stamp\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\"/>
+            <Property Name=\\"ChangedAt\\" Type=\\"Edm.DateTime\\" Precision=\\"7\\" sap:filterable=\\"false\\" ConcurrencyMode=\\"Fixed\\" sap:label=\\"Time Stamp\\"
+            sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <NavigationProperty Name=\\"ToContacts\\" Relationship=\\"GWSAMPLE_BASIC.Assoc_BusinessPartner_Contacts\\"
+            FromRole=\\"FromRole_Assoc_BusinessPartner_Contacts\\" ToRole=\\"ToRole_Assoc_BusinessPartner_Contacts\\"/>
+            <NavigationProperty Name=\\"ToProducts\\" Relationship=\\"GWSAMPLE_BASIC.Assoc_BusinessPartner_Products\\"
+            FromRole=\\"FromRole_Assoc_BusinessPartner_Products\\" ToRole=\\"ToRole_Assoc_BusinessPartner_Products\\"/>
+        </EntityType>
+        <EntityType Name=\\"CustomerService\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"CustomerServiceID\\"/>
+            </Key>
+            <Property Name=\\"CustomerServiceID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"10\\" sap:label=\\"Product ID\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"Priority\\" Type=\\"Edm.String\\" MaxLength=\\"2\\" sap:label=\\"Priority\\"/>
+            <Property Name=\\"PriorityCriticality\\" Type=\\"Edm.String\\" MaxLength=\\"2\\" sap:label=\\"Priority\\"/>
+            <Property Name=\\"CustomerName\\" Type=\\"Edm.String\\" MaxLength=\\"2\\" sap:label=\\"Name\\"/>
+            <Property Name=\\"Complain\\" Type=\\"Edm.String\\" MaxLength=\\"2\\" sap:label=\\"Complain\\"/>
+        </EntityType>
+        <EntityType Name=\\"Product\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"ProductID\\"/>
+            </Key>
+            <Property Name=\\"ProductID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"10\\" sap:label=\\"Product ID\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"TypeCode\\" Type=\\"Edm.String\\" MaxLength=\\"2\\" sap:label=\\"Prod. Type Code\\"/>
+            <Property Name=\\"Category\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Prod. Cat.\\"/>
+            <Property Name=\\"Availability_Status\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Availability Status\\"/>
+            <Property Name=\\"CountryCode\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:label=\\"Country\\" sap:semantics=\\"country\\"/>
+            <Property Name=\\"Name\\" Type=\\"Edm.String\\" MaxLength=\\"255\\" sap:label=\\"Product Name\\" sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"NameLanguage\\" Type=\\"Edm.String\\" MaxLength=\\"1\\" sap:label=\\"Language\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"
+            sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"Description\\" Type=\\"Edm.String\\" MaxLength=\\"255\\" sap:label=\\"Prod.Descrip.\\" sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"DescriptionLanguage\\" Type=\\"Edm.String\\" MaxLength=\\"1\\" sap:label=\\"Language\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"
+            sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"SupplierID\\" Type=\\"Edm.String\\" MaxLength=\\"10\\" sap:label=\\"Bus. Part. ID\\"/>
+            <Property Name=\\"SupplierName\\" Type=\\"Edm.String\\" MaxLength=\\"80\\" sap:label=\\"Company Name\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"TaxTarifCode\\" Type=\\"Edm.Byte\\" sap:label=\\"Prod. Tax Code\\"/>
+            <Property Name=\\"MeasureUnit\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:label=\\"Qty. Unit\\" sap:semantics=\\"unit-of-measure\\"/>
+            <Property Name=\\"WeightMeasure\\" Type=\\"Edm.Decimal\\" Precision=\\"13\\" Scale=\\"3\\" sap:unit=\\"WeightUnit\\" sap:label=\\"Wt. Measure\\"/>
+            <Property Name=\\"WeightUnit\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:label=\\"Qty. Unit\\" sap:semantics=\\"unit-of-measure\\"/>
+            <Property Name=\\"CurrencyCode\\" Type=\\"Edm.String\\" MaxLength=\\"5\\" sap:label=\\"Currency\\" sap:semantics=\\"currency-code\\"/>
+            <Property Name=\\"Price\\" Type=\\"Edm.Decimal\\" Precision=\\"16\\" Scale=\\"3\\" sap:unit=\\"CurrencyCode\\" sap:label=\\"Unit Price\\"/>
+            <Property Name=\\"Width\\" Type=\\"Edm.Decimal\\" Precision=\\"13\\" Scale=\\"3\\" sap:unit=\\"DimUnit\\" sap:label=\\"Dimensions\\"/>
+            <Property Name=\\"Depth\\" Type=\\"Edm.Decimal\\" Precision=\\"13\\" Scale=\\"3\\" sap:unit=\\"DimUnit\\" sap:label=\\"Dimensions\\"/>
+            <Property Name=\\"Height\\" Type=\\"Edm.Decimal\\" Precision=\\"13\\" Scale=\\"3\\" sap:unit=\\"DimUnit\\" sap:label=\\"Dimensions\\"/>
+            <Property Name=\\"DimUnit\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:label=\\"Dim. Unit\\" sap:semantics=\\"unit-of-measure\\"/>
+            <Property Name=\\"CreatedAt\\" Type=\\"Edm.DateTime\\" Precision=\\"7\\" sap:label=\\"Time Stamp\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"ChangedAt\\" Type=\\"Edm.DateTime\\" Precision=\\"7\\" ConcurrencyMode=\\"Fixed\\" sap:label=\\"Time Stamp\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\"/>
+        </EntityType>
+        <EntityType Name=\\"SalesOrder\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"SalesOrderID\\"/>
+            </Key>
+            <Property Name=\\"SalesOrderID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"10\\" sap:label=\\"Sa. Ord. ID\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\"/>
+            <Property Name=\\"SalesOrderGuid\\" Type=\\"Edm.Guid\\" Nullable=\\"false\\" sap:label=\\"SalesOrder GUID\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"Note\\" Type=\\"Edm.String\\" MaxLength=\\"255\\" sap:label=\\"Description\\" sap:updatable=\\"false\\" sap:sortable=\\"false\\"
+            sap:filterable=\\"false\\"/>
+            <Property Name=\\"NoteLanguage\\" Type=\\"Edm.String\\" MaxLength=\\"1\\" sap:label=\\"Language\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"
+            sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"CustomerID\\" Type=\\"Edm.String\\" MaxLength=\\"10\\" sap:label=\\"Bus. Part. ID\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"CustomerName\\" Type=\\"Edm.String\\" MaxLength=\\"80\\" sap:label=\\"Company Name\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"CountryCode\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:label=\\"Country\\" sap:semantics=\\"country\\"/>
+            <Property Name=\\"LegalFormName\\" Type=\\"Edm.String\\" MaxLength=\\"80\\" sap:label=\\"Legal Form Name\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"
+            sap:text=\\"ToBusinessPartner/LegalForm\\"/>
+            <Property Name=\\"Supplier_Name\\" Type=\\"Edm.String\\" MaxLength=\\"80\\" sap:label=\\"Supplier Name\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"CurrencyCode\\" Type=\\"Edm.String\\" MaxLength=\\"5\\" sap:label=\\"Currency\\" sap:updatable=\\"false\\" sap:semantics=\\"currency-code\\"/>
+            <Property Name=\\"GrossAmount\\" Type=\\"Edm.Decimal\\" Precision=\\"16\\" Scale=\\"3\\" sap:unit=\\"CurrencyCode\\" sap:label=\\"Gross Amt.\\"
+            sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"ContractAmount\\" Type=\\"Edm.Decimal\\" Scale=\\"3\\" sap:unit=\\"CurrencyCode\\" sap:label=\\"Net Amt.\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\"/>
+            <Property Name=\\"NetAmount\\" Type=\\"Edm.Decimal\\" Precision=\\"16\\" Scale=\\"3\\" sap:unit=\\"CurrencyCode\\" sap:label=\\"Net Amt.\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\"/>
+            <Property Name=\\"TaxAmount\\" Type=\\"Edm.Decimal\\" Precision=\\"16\\" sap:label=\\"Tax Amt.\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"LifecycleStatus\\" Type=\\"Edm.String\\" MaxLength=\\"1\\" sap:label=\\"PO Lifecycle\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"LifecycleStatusDescription\\" Type=\\"Edm.String\\" MaxLength=\\"60\\" sap:label=\\"Lifecycle Descript.\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\" sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"BillingStatus\\" Type=\\"Edm.String\\" MaxLength=\\"1\\" sap:label=\\"PO Confirmation\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"BillingStatusDescription\\" Type=\\"Edm.String\\" MaxLength=\\"60\\" sap:label=\\"Billing Description\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\" sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"DeliveryStatus\\" Type=\\"Edm.String\\" MaxLength=\\"1\\" sap:label=\\"PO Ordering\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"DeliveryStatusDescription\\" Type=\\"Edm.String\\" MaxLength=\\"60\\" sap:label=\\"Delivery Description\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\" sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"CreatedAt\\" Type=\\"Edm.DateTime\\" Precision=\\"7\\" sap:label=\\"Time Stamp\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"ChangedAt\\" Type=\\"Edm.DateTime\\" Precision=\\"7\\" sap:label=\\"Time Stamp\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"ValidFrom\\" Type=\\"Edm.DateTime\\" Precision=\\"7\\" sap:label=\\"Time Stamp\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"ValidTo\\" Type=\\"Edm.DateTime\\" Precision=\\"7\\" sap:label=\\"Time Stamp\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"ValidToDate\\" Type=\\"Edm.String\\" MaxLength=\\"1\\" sap:label=\\"PO Confirmation\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <NavigationProperty Name=\\"ToBusinessPartner\\" Relationship=\\"GWSAMPLE_BASIC.Assoc_BusinessPartner_SalesOrders\\"
+            FromRole=\\"ToRole_Assoc_BusinessPartner_SalesOrders\\" ToRole=\\"FromRole_Assoc_BusinessPartner_SalesOrders\\"/>
+        </EntityType>
+        <EntityType Name=\\"Contact\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"ContactGuid\\"/>
+            </Key>
+            <Property Name=\\"ContactGuid\\" Type=\\"Edm.Guid\\" Nullable=\\"false\\" sap:label=\\"Contact GUID\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"BusinessPartnerID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"10\\" sap:label=\\"Bus. Part. ID\\" sap:updatable=\\"false\\"/>
+            <Property Name=\\"Title\\" Type=\\"Edm.String\\" MaxLength=\\"10\\" sap:label=\\"Title\\"/>
+            <Property Name=\\"FirstName\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"First Name\\" sap:semantics=\\"givenname\\"/>
+            <Property Name=\\"MiddleName\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Middle Name\\" sap:semantics=\\"middlename\\"/>
+            <Property Name=\\"LastName\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Last Name\\" sap:semantics=\\"familyname\\"/>
+            <Property Name=\\"Nickname\\" Type=\\"Edm.String\\" MaxLength=\\"40\\" sap:label=\\"Nickname\\" sap:semantics=\\"nickname\\"/>
+            <Property Name=\\"Initials\\" Type=\\"Edm.String\\" MaxLength=\\"10\\" sap:label=\\"Initials\\"/>
+            <Property Name=\\"Sex\\" Type=\\"Edm.String\\" MaxLength=\\"1\\" sap:label=\\"Sex\\"/>
+            <Property Name=\\"PhoneNumber\\" Type=\\"Edm.String\\" MaxLength=\\"30\\" sap:label=\\"Phone No.\\" sap:semantics=\\"tel\\"/>
+            <Property Name=\\"FaxNumber\\" Type=\\"Edm.String\\" MaxLength=\\"30\\" sap:label=\\"Fax Number\\"/>
+            <Property Name=\\"EmailAddress\\" Type=\\"Edm.String\\" MaxLength=\\"255\\" sap:label=\\"E-Mail Address\\" sap:semantics=\\"email\\"/>
+            <Property Name=\\"Language\\" Type=\\"Edm.String\\" MaxLength=\\"1\\" sap:label=\\"Language Key\\"/>
+            <Property Name=\\"DateOfBirth\\" Type=\\"Edm.DateTime\\" Precision=\\"7\\" sap:label=\\"Date of Birth\\" sap:semantics=\\"bday\\"/>
+            <NavigationProperty Name=\\"ToBusinessPartner\\" Relationship=\\"GWSAMPLE_BASIC.Assoc_BusinessPartner_Contacts\\"
+            FromRole=\\"ToRole_Assoc_BusinessPartner_Contacts\\" ToRole=\\"FromRole_Assoc_BusinessPartner_Contacts\\"/>
+        </EntityType>
+        <EntityType Name=\\"VH_Country\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"CountryCode\\"/>
+            </Key>
+            <Property Name=\\"CountryCode\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"3\\" sap:label=\\"Country\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\" sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"Landx\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"15\\" sap:label=\\"Country ID\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"
+            sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"CountryName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"15\\" sap:label=\\"Country Name\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\" sap:sortable=\\"false\\"/>
+        </EntityType>
+        <EntityType Name=\\"RunnersType\\" sap:semantics=\\"aggregate\\">
+            <Key>
+                <PropertyRef Name=\\"ID\\"/>
+            </Key>
+            <Property Name=\\"ID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"2147483647\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"Type\\" Type=\\"Edm.String\\"  sap:label=\\"Type\\" sap:aggregation-role=\\"dimension\\"/>
+            <Property Name=\\"Count\\" Type=\\"Edm.Decimal\\" Precision=\\"34\\" sap:filterable=\\"false\\" sap:label=\\"Count\\" sap:aggregation-role=\\"measure\\" />
+            <Property Name=\\"TotalCount\\" Type=\\"Edm.Decimal\\" Precision=\\"34\\" sap:filterable=\\"false\\" sap:label=\\"Count\\" sap:aggregation-role=\\"measure\\" />
+        </EntityType>
+        <EntityType Name=\\"ShoeSalesType\\" sap:semantics=\\"aggregate\\">
+            <Key>
+                <PropertyRef Name=\\"ID\\"/>
+            </Key>
+            <Property Name=\\"ID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"2147483647\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"Type\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:label=\\"Type\\" sap:aggregation-role=\\"dimension\\"/>
+            <Property Name=\\"Shoe\\" Type=\\"Edm.String\\" sap:label=\\"Shoe\\" sap:aggregation-role=\\"dimension\\" sap:text=\\"ShoeName\\"/>
+            <Property Name=\\"ShoeName\\" Type=\\"Edm.String\\" sap:label=\\"Shoe\\" sap:aggregation-role=\\"dimension\\"/>
+            <Property Name=\\"Count\\" Type=\\"Edm.Decimal\\" Precision=\\"34\\" sap:filterable=\\"false\\" sap:label=\\"Count\\" sap:aggregation-role=\\"measure\\" />
+        </EntityType>
+        <EntityType Name=\\"InventoryType\\" sap:semantics=\\"aggregate\\">
+            <Key>
+                <PropertyRef Name=\\"ID\\"/>
+            </Key>
+            <Property Name=\\"ID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"2147483647\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"Month\\" Type=\\"Edm.Decimal\\" MaxLength=\\"3\\" sap:label=\\"Type\\" sap:aggregation-role=\\"dimension\\" sap:text=\\"MonthName\\" />
+            <Property Name=\\"MonthName\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:label=\\"Type\\" sap:aggregation-role=\\"dimension\\"/>
+            <Property Name=\\"Shoe\\" Type=\\"Edm.String\\" sap:label=\\"Shoe\\" sap:aggregation-role=\\"dimension\\" sap:text=\\"ShoeName\\"/>
+            <Property Name=\\"ShoeName\\" Type=\\"Edm.String\\" sap:label=\\"Shoe\\" sap:aggregation-role=\\"dimension\\"/>
+            <Property Name=\\"Count\\" Type=\\"Edm.Decimal\\" Precision=\\"34\\" sap:filterable=\\"false\\" sap:label=\\"Count\\" sap:aggregation-role=\\"measure\\" />
+        </EntityType>
+        <EntityType Name=\\"SalesShareType\\" sap:semantics=\\"aggregate\\">
+            <Key>
+                <PropertyRef Name=\\"ID\\"/>
+            </Key>
+            <Property Name=\\"ID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"2147483647\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"CountryCode\\" Type=\\"Edm.String\\" MaxLength=\\"3\\" sap:label=\\"Country\\" sap:aggregation-role=\\"dimension\\"/>
+            <Property Name=\\"Product\\" Type=\\"Edm.String\\" MaxLength=\\"1024\\" sap:label=\\"Product\\" sap:aggregation-role=\\"dimension\\"/>
+            <Property Name=\\"ProductId\\" Type=\\"Edm.String\\" MaxLength=\\"1024\\" sap:label=\\"Product\\" sap:aggregation-role=\\"dimension\\"/>
+            <Property Name=\\"TotalSales_CURRENCY\\" Type=\\"Edm.String\\" MaxLength=\\"5\\" sap:semantics=\\"currency-code\\"/>
+            <Property Name=\\"TotalSales\\" Type=\\"Edm.Decimal\\" Precision=\\"34\\" sap:filterable=\\"false\\" sap:label=\\"Total Sales\\" sap:aggregation-role=\\"measure\\"
+            sap:unit=\\"TotalSales_CURRENCY\\"/>
+            <Property Name=\\"TotalSalesForecast\\" Type=\\"Edm.Decimal\\" Precision=\\"34\\" sap:filterable=\\"false\\" sap:label=\\"Total Sales Forecast\\"
+            sap:aggregation-role=\\"measure\\" sap:unit=\\"TotalSalesForecast_CURRENCY\\"/>
+            <Property Name=\\"TotalSalesForecast_CURRENCY\\" Type=\\"Edm.String\\" MaxLength=\\"5\\" sap:semantics=\\"currency-code\\"/>
+            <Property Name=\\"OverallSales\\" Type=\\"Edm.Decimal\\" Precision=\\"34\\" sap:filterable=\\"false\\" sap:label=\\"Overall Sales\\"
+            sap:aggregation-role=\\"measure\\" sap:unit=\\"TotalSales_CURRENCY\\"/>
+        </EntityType>
+        <EntityType Name=\\"VH_BPRole\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"BpRole\\"/>
+            </Key>
+            <Property Name=\\"BpRole\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"3\\" sap:label=\\"Bus. Part. Role\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\" sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+            <Property Name=\\"Shorttext\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"60\\" sap:label=\\"Short Descript.\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\" sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+        </EntityType>
+        <EntityType Name=\\"VH_Currency\\" sap:content-version=\\"1\\">
+            <Key>
+                <PropertyRef Name=\\"Waers\\"/>
+            </Key>
+            <Property Name=\\"Waers\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"5\\" sap:label=\\"Currency\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"
+            sap:sortable=\\"false\\" sap:filterable=\\"false\\" sap:semantics=\\"currency-code\\"/>
+            <Property Name=\\"Ltext\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" sap:label=\\"Long Text\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\"
+            sap:sortable=\\"false\\" sap:filterable=\\"false\\"/>
+        </EntityType>
+        <Association Name=\\"Assoc_GlobalParameters_GlobalFilters\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.GlobalParameters\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_GlobalParameters_GlobalFilters\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.GlobalFilters\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_GlobalParameters_GlobalFilters\\"/>
+            <ReferentialConstraint>
+                <Principal Role=\\"FromRole_Assoc_GlobalParameters_GlobalFilters\\">
+                    <PropertyRef Name=\\"P_DisplayCurrency\\"/>
+                </Principal>
+                <Dependent Role=\\"ToRole_Assoc_GlobalParameters_GlobalFilters\\">
+                    <PropertyRef Name=\\"CurrencyCode\\"/>
+                </Dependent>
+            </ReferentialConstraint>
+        </Association>
+        <Association Name=\\"Assoc_VH_Country_Contacts\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.VH_Country\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_VH_Country_Contacts\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.Contact\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_VH_Country_Contacts\\"/>
+        </Association>
+        <Association Name=\\"Assoc_VH_Country_BusinessPartners\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.VH_Country\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_VH_Country_BusinessPartners\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.BusinessPartner\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_VH_Country_BusinessPartners\\"/>
+        </Association>
+        <Association Name=\\"Assoc_BusinessPartner_Contacts\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.BusinessPartner\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_BusinessPartner_Contacts\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.Contact\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_BusinessPartner_Contacts\\"/>
+            <ReferentialConstraint>
+                <Principal Role=\\"FromRole_Assoc_BusinessPartner_Contacts\\">
+                    <PropertyRef Name=\\"BusinessPartnerID\\"/>
+                </Principal>
+                <Dependent Role=\\"ToRole_Assoc_BusinessPartner_Contacts\\">
+                    <PropertyRef Name=\\"BusinessPartnerID\\"/>
+                </Dependent>
+            </ReferentialConstraint>
+        </Association>
+        <Association Name=\\"Assoc_BusinessPartner_Products\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.BusinessPartner\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_BusinessPartner_Products\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.Product\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_BusinessPartner_Products\\"/>
+            <ReferentialConstraint>
+                <Principal Role=\\"FromRole_Assoc_BusinessPartner_Products\\">
+                    <PropertyRef Name=\\"BusinessPartnerID\\"/>
+                </Principal>
+                <Dependent Role=\\"ToRole_Assoc_BusinessPartner_Products\\">
+                    <PropertyRef Name=\\"SupplierID\\"/>
+                </Dependent>
+            </ReferentialConstraint>
+        </Association>
+        <Association Name=\\"Assoc_BusinessPartner_SalesOrders\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.SalesOrder\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_BusinessPartner_SalesOrders\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.BusinessPartner\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_BusinessPartner_SalesOrders\\"/>
+            <ReferentialConstraint>
+                <Principal Role=\\"FromRole_Assoc_BusinessPartner_SalesOrders\\">
+                    <PropertyRef Name=\\"BusinessPartnerID\\"/>
+                </Principal>
+                <Dependent Role=\\"ToRole_Assoc_BusinessPartner_SalesOrders\\">
+                    <PropertyRef Name=\\"CustomerID\\"/>
+                </Dependent>
+            </ReferentialConstraint>
+        </Association>
+        <Association Name=\\"Assoc_VH_Currency_BusinessPartners\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.VH_Currency\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_VH_Currency_BusinessPartners\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.BusinessPartner\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_VH_Currency_BusinessPartners\\"/>
+            <ReferentialConstraint>
+                <Principal Role=\\"FromRole_Assoc_VH_Currency_BusinessPartners\\">
+                    <PropertyRef Name=\\"Waers\\"/>
+                </Principal>
+                <Dependent Role=\\"ToRole_Assoc_VH_Currency_BusinessPartners\\">
+                    <PropertyRef Name=\\"CurrencyCode\\"/>
+                </Dependent>
+            </ReferentialConstraint>
+        </Association>
+        <Association Name=\\"Assoc_VH_Currency_Products\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.VH_Currency\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_VH_Currency_Products\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.Product\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_VH_Currency_Products\\"/>
+            <ReferentialConstraint>
+                <Principal Role=\\"FromRole_Assoc_VH_Currency_Products\\">
+                    <PropertyRef Name=\\"Waers\\"/>
+                </Principal>
+                <Dependent Role=\\"ToRole_Assoc_VH_Currency_Products\\">
+                    <PropertyRef Name=\\"CurrencyCode\\"/>
+                </Dependent>
+            </ReferentialConstraint>
+        </Association>
+        <Association Name=\\"Assoc_VH_Currency_SalesOrders\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.VH_Currency\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_VH_Currency_SalesOrders\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.SalesOrder\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_VH_Currency_SalesOrders\\"/>
+            <ReferentialConstraint>
+                <Principal Role=\\"FromRole_Assoc_VH_Currency_SalesOrders\\">
+                    <PropertyRef Name=\\"Waers\\"/>
+                </Principal>
+                <Dependent Role=\\"ToRole_Assoc_VH_Currency_SalesOrders\\">
+                    <PropertyRef Name=\\"CurrencyCode\\"/>
+                </Dependent>
+            </ReferentialConstraint>
+        </Association>
+        <Association Name=\\"Assoc_VH_BPRole_BusinessPartners\\" sap:content-version=\\"1\\">
+            <End Type=\\"GWSAMPLE_BASIC.VH_BPRole\\" Multiplicity=\\"1\\" Role=\\"FromRole_Assoc_VH_BPRole_BusinessPartners\\"/>
+            <End Type=\\"GWSAMPLE_BASIC.BusinessPartner\\" Multiplicity=\\"*\\" Role=\\"ToRole_Assoc_VH_BPRole_BusinessPartners\\"/>
+            <ReferentialConstraint>
+                <Principal Role=\\"FromRole_Assoc_VH_BPRole_BusinessPartners\\">
+                    <PropertyRef Name=\\"BpRole\\"/>
+                </Principal>
+                <Dependent Role=\\"ToRole_Assoc_VH_BPRole_BusinessPartners\\">
+                    <PropertyRef Name=\\"BusinessPartnerRole\\"/>
+                </Dependent>
+            </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name=\\"GWSAMPLE_BASIC_Entities\\" m:IsDefaultEntityContainer=\\"true\\">
+            <EntitySet Name=\\"CustomerServiceSet\\" EntityType=\\"GWSAMPLE_BASIC.CustomerService\\" sap:content-version=\\"1\\"/>
+            <EntitySet Name=\\"BusinessPartnerSet\\" EntityType=\\"GWSAMPLE_BASIC.BusinessPartner\\" sap:content-version=\\"1\\"/>
+            <EntitySet Name=\\"GlobalParameters\\" EntityType=\\"GWSAMPLE_BASIC.GlobalParameters\\" sap:content-version=\\"1\\"/>
+            <EntitySet Name=\\"GlobalFilters\\" EntityType=\\"GWSAMPLE_BASIC.GlobalFilters\\" sap:content-version=\\"1\\"/>
+            <EntitySet Name=\\"SalesShare\\" EntityType=\\"GWSAMPLE_BASIC.SalesShareType\\"/>
+            <EntitySet Name=\\"Runners\\" EntityType=\\"GWSAMPLE_BASIC.RunnersType\\"/>
+            <EntitySet Name=\\"ShoeSales\\" EntityType=\\"GWSAMPLE_BASIC.ShoeSalesType\\"/>
+            <EntitySet Name=\\"Inventory\\" EntityType=\\"GWSAMPLE_BASIC.InventoryType\\"/>
+            <EntitySet Name=\\"ProductSet\\" EntityType=\\"GWSAMPLE_BASIC.Product\\" sap:content-version=\\"1\\"/>
+            <EntitySet Name=\\"SalesOrderSet\\" EntityType=\\"GWSAMPLE_BASIC.SalesOrder\\" sap:updatable=\\"false\\" sap:content-version=\\"1\\"/>
+            <EntitySet Name=\\"ContactSet\\" EntityType=\\"GWSAMPLE_BASIC.Contact\\" sap:content-version=\\"1\\"/>
+            <EntitySet Name=\\"VH_CountrySet\\" EntityType=\\"GWSAMPLE_BASIC.VH_Country\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\"
+            sap:pageable=\\"false\\" sap:content-version=\\"1\\"/>
+            <EntitySet Name=\\"VH_CurrencySet\\" EntityType=\\"GWSAMPLE_BASIC.VH_Currency\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\"
+            sap:pageable=\\"false\\" sap:content-version=\\"1\\"/>
+            <EntitySet Name=\\"VH_BPRoleSet\\" EntityType=\\"GWSAMPLE_BASIC.VH_BPRole\\" sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\"
+            sap:pageable=\\"false\\" sap:content-version=\\"1\\"/>
+            <AssociationSet Name=\\"Assoc_VH_Currency_Products_AssocSet\\" Association=\\"GWSAMPLE_BASIC.Assoc_VH_Currency_Products\\" sap:creatable=\\"false\\"
+            sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+            <End EntitySet=\\"VH_CurrencySet\\" Role=\\"FromRole_Assoc_VH_Currency_Products\\"/>
+            <End EntitySet=\\"ProductSet\\" Role=\\"ToRole_Assoc_VH_Currency_Products\\"/>
+        </AssociationSet>
+        <AssociationSet Name=\\"Assoc_VH_Country_Contacts_AssocSet\\" Association=\\"GWSAMPLE_BASIC.Assoc_VH_Country_Contacts\\" sap:creatable=\\"false\\"
+        sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+        <End EntitySet=\\"VH_CountrySet\\" Role=\\"FromRole_Assoc_VH_Country_Contacts\\"/>
+        <End EntitySet=\\"ContactSet\\" Role=\\"ToRole_Assoc_VH_Country_Contacts\\"/>
+    </AssociationSet>
+    <AssociationSet Name=\\"Assoc_VH_BPRole_BusinessPartners_AssocSe\\" Association=\\"GWSAMPLE_BASIC.Assoc_VH_BPRole_BusinessPartners\\"
+    sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+    <End EntitySet=\\"VH_BPRoleSet\\" Role=\\"FromRole_Assoc_VH_BPRole_BusinessPartners\\"/>
+    <End EntitySet=\\"BusinessPartnerSet\\" Role=\\"ToRole_Assoc_VH_BPRole_BusinessPartners\\"/>
+</AssociationSet>
+<AssociationSet Name=\\"Assoc_VH_Currency_BusinessPartners_Assoc\\" Association=\\"GWSAMPLE_BASIC.Assoc_VH_Currency_BusinessPartners\\"
+sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+<End EntitySet=\\"VH_CurrencySet\\" Role=\\"FromRole_Assoc_VH_Currency_BusinessPartners\\"/>
+<End EntitySet=\\"BusinessPartnerSet\\" Role=\\"ToRole_Assoc_VH_Currency_BusinessPartners\\"/>
+</AssociationSet>
+<AssociationSet Name=\\"Assoc_BusinessPartner_Products_AssocSet\\" Association=\\"GWSAMPLE_BASIC.Assoc_BusinessPartner_Products\\"
+sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+<End EntitySet=\\"BusinessPartnerSet\\" Role=\\"FromRole_Assoc_BusinessPartner_Products\\"/>
+<End EntitySet=\\"ProductSet\\" Role=\\"ToRole_Assoc_BusinessPartner_Products\\"/>
+</AssociationSet>
+<AssociationSet Name=\\"Assoc_VH_Country_BusinessPartners_AssocS\\" Association=\\"GWSAMPLE_BASIC.Assoc_VH_Country_BusinessPartners\\"
+sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+<End EntitySet=\\"VH_CountrySet\\" Role=\\"FromRole_Assoc_VH_Country_BusinessPartners\\"/>
+<End EntitySet=\\"BusinessPartnerSet\\" Role=\\"ToRole_Assoc_VH_Country_BusinessPartners\\"/>
+</AssociationSet>
+<AssociationSet Name=\\"Assoc_VH_Currency_SalesOrders_AssocSet\\" Association=\\"GWSAMPLE_BASIC.Assoc_VH_Currency_SalesOrders\\"
+sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+<End EntitySet=\\"VH_CurrencySet\\" Role=\\"FromRole_Assoc_VH_Currency_SalesOrders\\"/>
+<End EntitySet=\\"SalesOrderSet\\" Role=\\"ToRole_Assoc_VH_Currency_SalesOrders\\"/>
+</AssociationSet>
+<AssociationSet Name=\\"Assoc_BusinessPartner_SalesOrders_AssocS\\" Association=\\"GWSAMPLE_BASIC.Assoc_BusinessPartner_SalesOrders\\"
+sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+<End EntitySet=\\"BusinessPartnerSet\\" Role=\\"FromRole_Assoc_BusinessPartner_SalesOrders\\"/>
+<End EntitySet=\\"SalesOrderSet\\" Role=\\"ToRole_Assoc_BusinessPartner_SalesOrders\\"/>
+</AssociationSet>
+<AssociationSet Name=\\"Assoc_GlobalParameters_GlobalFilters_Set\\" Association=\\"GWSAMPLE_BASIC.Assoc_GlobalParameters_GlobalFilters\\"
+sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+<End EntitySet=\\"GlobalParameters\\" Role=\\"FromRole_Assoc_GlobalParameters_GlobalFilters\\"/>
+<End EntitySet=\\"GlobalFilters\\" Role=\\"ToRole_Assoc_GlobalParameters_GlobalFilters\\"/>
+</AssociationSet>
+<!--
+<AssociationSet Name=\\"Assoc_VH_Currency_SalesOrderLineItems_As\\" Association=\\"GWSAMPLE_BASIC.Assoc_VH_Currency_SalesOrderLineItems\\"
+sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+<End EntitySet=\\"VH_CurrencySet\\" Role=\\"FromRole_Assoc_VH_Currency_SalesOrderLineItems\\"/>
+<End EntitySet=\\"SalesOrderLineItemSet\\" Role=\\"ToRole_Assoc_VH_Currency_SalesOrderLineItems\\"/>
+</AssociationSet>
+-->
+<AssociationSet Name=\\"Assoc_BusinessPartner_Contacts_AssocSet\\" Association=\\"GWSAMPLE_BASIC.Assoc_BusinessPartner_Contacts\\"
+sap:creatable=\\"false\\" sap:updatable=\\"false\\" sap:deletable=\\"false\\" sap:content-version=\\"1\\">
+<End EntitySet=\\"BusinessPartnerSet\\" Role=\\"FromRole_Assoc_BusinessPartner_Contacts\\"/>
+<End EntitySet=\\"ContactSet\\" Role=\\"ToRole_Assoc_BusinessPartner_Contacts\\"/>
+</AssociationSet>
+</EntityContainer>
+<atom:link rel=\\"self\\" href=\\"http://dewdflhanaui5.emea.global.corp.sap:8001/sap/opu/odata/IWBEP/GWSAMPLE_BASIC/$metadata\\"
+xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
+<atom:link rel=\\"latest-version\\" href=\\"http://dewdflhanaui5.emea.global.corp.sap:8001/sap/opu/odata/IWBEP/GWSAMPLE_BASIC/$metadata\\"
+xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
+</Schema>
+</edmx:DataServices>
+</edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.37.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"feovp1\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-fe-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/GWSAMPLE_BASIC/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"GWSAMPLE_BASIC\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
+        }
+      },
+      \\"GWSAMPLE_BASIC\\": {
+        \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/\\",
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"localService/GWSAMPLE_BASIC.xml\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.ushell\\": {},
+        \\"sap.f\\": {},
+        \\"sap.ui.comp\\": {},
+        \\"sap.ui.generic.app\\": {},
+        \\"sap.suite.ui.generic.template\\": {},
+        \\"sap.ovp\\": {},
+        \\"sap.ui.rta\\": {},
+        \\"sap.ui.layout\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"feovp1.i18n.i18n\\"
+        }
+      },
+      \\"mainModel\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"defaultBindingMode\\": \\"TwoWay\\",
+          \\"defaultCountMode\\": \\"Inline\\",
+          \\"refreshAfterChange\\": false,
+          \\"metadataUrlParams\\": {
+            \\"sap-value-list\\": \\"none\\"
+          }
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": []
+    },
+    \\"routing\\": {
+      \\"config\\": {},
+      \\"routes\\": [],
+      \\"targets\\": {}
+    }
+  },
+  \\"sap.ovp\\": {
+    \\"globalFilterModel\\": \\"mainModel\\",
+    \\"globalFilterEntityType\\": \\"GlobalFilters\\",
+    \\"containerLayout\\": \\"resizable\\",
+    \\"enableLiveFilter\\": true,
+    \\"considerAnalyticalParameters\\": false,
+    \\"cards\\": {}
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"analytical\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/changes_loader.js": Object {
+    "contents": "//Loads and extends the openui5 FileListBaseConnector
+
+const parsedUI5Version = sap.ui.version.split('.');
+
+//For UI5 version >= 1.80, the location of the FileListBaseConnector is different
+const connectorPath =
+    parseInt(parsedUI5Version[0], 10) >= 1 && parseInt(parsedUI5Version[1], 10) >= 80
+        ? 'sap/ui/fl/write/api/connectors/FileListBaseConnector'
+        : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
+
+sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
+    var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
+    var url = new URL(window.location.toString());
+    var isValidHost = trustedHosts.some((host) => {
+        return host.test(url.hostname);
+    });
+    return merge({}, FileListBaseConnector, {
+        getFileList: function() {
+            return new Promise(function(resolve, reject) {
+                // If no changes found, maybe because the app was executed without doing a build.
+                // Check for changes folder and load the changes, if any.
+                if (!isValidHost) {
+                    reject('cannot load flex changes: invalid host');
+                }
+                $.ajax({
+                    url: url.origin + '/changes/',
+                    type: 'GET',
+                    cache: false
+                })
+                    .then(function(sChangesFolderContent) {
+                        var regex = /(\\\\/changes\\\\/[^\\"]*\\\\.[a-zA-Z]*)/g;
+                        var result = regex.exec(sChangesFolderContent);
+                        var aChanges = [];
+                        while (result !== null) {
+                            aChanges.push(result[1]);
+                            result = regex.exec(sChangesFolderContent);
+                        }
+                        resolve(aChanges);
+                    })
+                    .fail(function(obj) {
+                        // No changes folder, then just resolve
+                        resolve();
+                    });
+            });
+        }
+    });
+});
+",
+    "state": "modified",
+  },
+  "webapp/test/changes_preview.js": Object {
+    "contents": "//Load the fake lrep connector only if ui5 version < 1.78
+var version = sap.ui.version.split(\\".\\");
+if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
+    sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
+    sap.ui.require([\\"sap/ui/fl/FakeLrepConnector\\"], function (FakeLrepConnector) {
+        jQuery.extend(FakeLrepConnector.prototype, {
+            create: function (oChange) {
+                return Promise.resolve();
+            },
+            stringToAscii: function (sCodeAsString) {
+                if (!sCodeAsString || sCodeAsString.length === 0) {
+                    return \\"\\";
+                }
+                var sAsciiString = \\"\\";
+                for (var i = 0; i < sCodeAsString.length; i++) {
+                    sAsciiString += sCodeAsString.charCodeAt(i) + \\",\\";
+                }
+                if (
+                    sAsciiString !== null &&
+                    sAsciiString.length > 0 &&
+                    sAsciiString.charAt(sAsciiString.length - 1) === \\",\\"
+                ) {
+                    sAsciiString = sAsciiString.substring(0, sAsciiString.length - 1);
+                }
+                return sAsciiString;
+            },
+            /*
+             * Get the content of the sap-ui-cachebuster-info.json file
+             * to get the paths to the changes files
+             * and get their content
+             */
+            loadChanges: function () {
+                var oResult = {
+                    changes: [],
+                    settings: {
+                        isKeyUser: true,
+                        isAtoAvailable: false,
+                        isProductiveSystem: false
+                    }
+                };
+
+                //Get the content of the changes folder.
+                var aPromises = [];
+                var sCacheBusterFilePath = \\"/sap-ui-cachebuster-info.json\\";
+                var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
+                var url = new URL(window.location.toString());
+                var isValidHost = trustedHosts.some((host) => {
+                    return host.test(url.hostname);
+                });
+                return new Promise(function (resolve, reject) {
+                    if (!isValidHost) {
+                        reject(\\"cannot load flex changes: invalid host\\");
+                    }
+                    $.ajax({
+                        url: url.origin + sCacheBusterFilePath,
+                        type: \\"GET\\",
+                        cache: false
+                    })
+                        .then(function (oCachebusterContent) {
+                            //we are looking for only change files
+                            var aChangeFilesPaths = Object.keys(oCachebusterContent).filter(function (sPath) {
+                                return sPath.endsWith(\\".change\\");
+                            });
+                            $.each(aChangeFilesPaths, function (index, sFilePath) {
+                                //now as we support MTA projects we need to take only changes which are relevant for
+                                //the current HTML5 module
+                                //sap-ui-cachebuster-info.json for MTA doesn\\"t start with \\"webapp/changes\\" but from <MTA-HTML5-MODULE-NAME>
+                                //possible change file path patterns
+                                //webapp/changes/<change-file>
+                                //<MTA-HTML5-MODULE-NAME>/webapp/changes/<change-file>
+                                if (sFilePath.indexOf(\\"changes\\") === 0) {
+                                    /*eslint-disable no-param-reassign*/
+                                    if (!isValidHost) {
+                                        reject(\\"cannot load flex changes: invalid host\\");
+                                    }
+                                    aPromises.push(
+                                        $.ajax({
+                                            url: url.origin + \\"/\\" + sFilePath,
+                                            type: \\"GET\\",
+                                            cache: false
+                                        }).then(function (sChangeContent) {
+                                            return JSON.parse(sChangeContent);
+                                        })
+                                    );
+                                }
+                            });
+                        })
+                        .always(function () {
+                            return Promise.all(aPromises).then(function (aChanges) {
+                                return new Promise(function (resolveInner, rejectInner) {
+                                    // If no changes found, maybe because the app was executed without doing a build.
+                                    // Check for changes folder and load the changes, if any.
+                                    if (aChanges.length === 0) {
+                                        if (!isValidHost) {
+                                            rejectInner(\\"cannot load flex changes: invalid host\\");
+                                        }
+                                        $.ajax({
+                                            url: url.origin + \\"/changes/\\",
+                                            type: \\"GET\\",
+                                            cache: false
+                                        })
+                                            .then(function (sChangesFolderContent) {
+                                                var regex = /(\\\\/changes\\\\/[^\\"]*\\\\.[a-zA-Z]*)/g;
+                                                var result = regex.exec(sChangesFolderContent);
+
+                                                while (result !== null) {
+                                                    if (!isValidHost) {
+                                                        rejectInner(\\"cannot load flex changes: invalid host\\");
+                                                    }
+                                                    aPromises.push(
+                                                        $.ajax({
+                                                            url: url.origin + result[1],
+                                                            type: \\"GET\\",
+                                                            cache: false
+                                                        }).then(function (sChangeContent) {
+                                                            return JSON.parse(sChangeContent);
+                                                        })
+                                                    );
+                                                    result = regex.exec(sChangesFolderContent);
+                                                }
+                                                resolveInner(Promise.all(aPromises));
+                                            })
+                                            .fail(function (obj) {
+                                                // No changes folder, then just resolve
+                                                resolveInner(aChanges);
+                                            });
+                                    } else {
+                                        resolveInner(aChanges);
+                                    }
+                                }).then(function (aCheckChanges) {
+                                    var aChangePromises = [],
+                                        aProcessedChanges = [];
+                                    aCheckChanges.forEach(function (oChange) {
+                                        var sChangeType = oChange.changeType;
+                                        if (sChangeType === \\"addXML\\" || sChangeType === \\"codeExt\\") {
+                                            /*eslint-disable no-nested-ternary*/
+                                            var sPath =
+                                                sChangeType === \\"addXML\\"
+                                                    ? oChange.content.fragmentPath
+                                                    : sChangeType === \\"codeExt\\"
+                                                        ? oChange.content.codeRef
+                                                        : \\"\\";
+                                            var sWebappPath = sPath.match(/webapp(.*)/);
+                                            var sUrl = \\"/\\" + sWebappPath[0];
+                                            aChangePromises.push(
+                                                $.ajax({
+                                                    url: sUrl,
+                                                    type: \\"GET\\",
+                                                    cache: false
+                                                }).then(function (oFileDocument) {
+                                                    if (sChangeType === \\"addXML\\") {
+                                                        oChange.content.fragment = FakeLrepConnector.prototype.stringToAscii(
+                                                            oFileDocument.documentElement.outerHTML
+                                                        );
+                                                        oChange.content.selectedFragmentContent =
+                                                            oFileDocument.documentElement.outerHTML;
+                                                    } else if (sChangeType === \\"codeExt\\") {
+                                                        oChange.content.code = FakeLrepConnector.prototype.stringToAscii(
+                                                            oFileDocument
+                                                        );
+                                                        oChange.content.extensionControllerContent = oFileDocument;
+                                                    }
+                                                    return oChange;
+                                                })
+                                            );
+                                        } else {
+                                            aProcessedChanges.push(oChange);
+                                        }
+                                    });
+                                    // aChanges holds the content of all change files from the project (empty array if no such files)
+                                    // sort the array by the creation timestamp of the changes
+                                    if (aChangePromises.length > 0) {
+                                        return Promise.all(aChangePromises).then(function (aUpdatedChanges) {
+                                            aUpdatedChanges.forEach(function (oChange) {
+                                                aProcessedChanges.push(oChange);
+                                            });
+                                            aProcessedChanges.sort(function (change1, change2) {
+                                                return new Date(change1.creation) - new Date(change2.creation);
+                                            });
+                                            oResult.changes = aProcessedChanges;
+                                            var oLrepChange = {
+                                                changes: oResult,
+                                                componentClassName: \\"feovp1\\"
+                                            };
+                                            resolve(oLrepChange);
+                                        });
+                                    } else {
+                                        aProcessedChanges.sort(function (change1, change2) {
+                                            return new Date(change1.creation) - new Date(change2.creation);
+                                        });
+                                        oResult.changes = aProcessedChanges;
+                                        var oLrepChange = {
+                                            changes: oResult,
+                                            componentClassName: \\"feovp1\\"
+                                        };
+                                        resolve(oLrepChange);
+                                    }
+                                });
+                            });
+                        });
+                });
+            }
+        });
+        FakeLrepConnector.enableFakeConnector();
+    });
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/flpSandbox.html": Object {
+    "contents": "<!DOCTYPE HTML>
+<html>
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>{{appTitle}}</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\"
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"feovp1-tile\\": {
+                    title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
+                    description: \\"A Fiori application.\\",
+                    additionalInformation: \\"SAPUI5.Component=feovp1\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
+
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template,sap.ovp,sap.ui.rta,sap.ui.layout\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"feovp1\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"feovp1/test/changes_loader\\", \\"custom\\":true}]'
+        </script>
+        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        </script>
+</head>
+
+<!-- UI Content -->
+
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/utils/locate-reuse-libs.js": Object {
+    "contents": "/*eslint-disable semi, no-console*/
+(function (sap) {
+  var fioriToolsGetManifestLibs = function (manifestPath) {
+    var url = manifestPath;
+    var result = \\"\\";
+    // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+    var ui5Libs = [
+      \\"sap.apf\\",
+      \\"sap.base\\",
+      \\"sap.chart\\",
+      \\"sap.collaboration\\",
+      \\"sap.f\\",
+      \\"sap.fe\\",
+      \\"sap.fileviewer\\",
+      \\"sap.gantt\\",
+      \\"sap.landvisz\\",
+      \\"sap.m\\",
+      \\"sap.ndc\\",
+      \\"sap.ovp\\",
+      \\"sap.rules\\",
+      \\"sap.suite\\",
+      \\"sap.tnt\\",
+      \\"sap.ui\\",
+      \\"sap.uiext\\",
+      \\"sap.ushell\\",
+      \\"sap.uxap\\",
+      \\"sap.viz\\",
+      \\"sap.webanalytics\\",
+      \\"sap.zen\\"
+    ];
+    function getKeys(libOrComp,libOrCompKeysString) {
+      Object.keys(libOrComp).forEach(function (libOrCompKey) {
+        // ignore libs or Components that start with SAPUI5 delivered namespaces
+        if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
+          if (libOrCompKeysString.length > 0) {
+            libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
+          } else {
+            libOrCompKeysString = libOrCompKey;
+          }
+        }
+      });
+      return libOrCompKeysString;
+    }
+    return new Promise(function (resolve, reject) {
+      $.ajax(url)
+        .done(function (manifest) {
+          if (manifest) {
+            if (
+              manifest[\\"sap.ui5\\"] &&
+              manifest[\\"sap.ui5\\"].dependencies
+            ) {
+              if (manifest[\\"sap.ui5\\"].dependencies.libs){
+                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result)
+              }
+              if (manifest[\\"sap.ui5\\"].dependencies.components){
+                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result)
+              }
+            }
+            if (
+              manifest[\\"sap.ui5\\"] &&
+              manifest[\\"sap.ui5\\"].componentUsages
+            ) {
+              result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result)
+            }
+          }
+          resolve(result);
+        })
+        .fail(function (error) {
+          reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
+        });
+    });
+  };
+  /**
+   * Registers the module paths for dependencies of the given component.
+   * @param {string} manifestPath The the path to the app manifest path
+   * for which the dependencies should be registered.
+   * @returns {Promise} A promise which is resolved when the ajax request for
+   * the app-index was successful and the module paths were registered.
+   */
+  sap.registerComponentDependencyPaths = function (manifestPath) {
+    /*eslint-disable semi, consistent-return*/
+    return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
+      if (libs && libs.length > 0) {
+        var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+        var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
+        if (sapClient && sapClient.length === 3) {
+          url = url + \\"&sap-client=\\" + sapClient;
+        }
+        return $.ajax(url).done(function (data) {
+          if (data) {
+            Object.keys(data).forEach(function (moduleDefinitionKey) {
+              var moduleDefinition = data[moduleDefinitionKey];
+              if (moduleDefinition && moduleDefinition.dependencies) {
+                moduleDefinition.dependencies.forEach(function (dependency) {
+                  if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                    jQuery.sap.log.info(
+                      \\"Registering Library \\" +
+                      dependency.componentId +
+                      \\" from server \\" +
+                      dependency.url
+                    );
+                    jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  };
+})(sap);
+
+/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+var scripts = document.getElementsByTagName(\\"script\\");
+var currentScript = document.getElementById('locate-reuse-libs');
+if(!currentScript){
+    currentScript = document.currentScript;
+};
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+sap.registerComponentDependencyPaths(manifestUri)
+  .catch(function (error) {
+    jQuery.sap.log.error(error);
+  })
+  .finally(function () {
+
+    // setting the app title with internationalization
+    sap.ui.getCore().attachInit(function () {
+      jQuery.sap.require(\\"jquery.sap.resources\\");
+      var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+      var oBundle = jQuery.sap.resources({
+        url: \\"i18n/i18n.properties\\",
+        locale: sLocale
+      });
+      document.title = oBundle.getText(\\"appTitle\\");
+    });
+
+    if (componentName && componentName.length > 0) {
+      if (useMockserver && useMockserver === \\"true\\") {
+        sap.ui.getCore().attachInit(function () {
+          sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
+            // set up test service for local testing
+            server.init();
+            // initialize the ushell sandbox component
+            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+          });
+        });
+      } else {
+        // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
+        sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
+
+        // setting the app title with the i18n text
+        sap.ui.getCore().attachInit(function () {
+          jQuery.sap.require(\\"jquery.sap.resources\\");
+          var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+          var oBundle = jQuery.sap.resources({
+            url: \\"i18n/i18n.properties\\",
+            locale: sLocale
+          });
+          document.title = oBundle.getText(\\"appTitle\\");
+        });
+      }
+    } else {
+      sap.ui.getCore().attachInit(function () {
+        // initialize the ushell sandbox component
+        sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+      });
+    }
+  });
+
+sap.registerComponentDependencyPaths(manifestUri);
+",
+    "state": "modified",
+  },
+}
+`;

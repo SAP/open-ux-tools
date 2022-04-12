@@ -1,4 +1,4 @@
-import { CustomElement, InternalCustomElement, Position } from '../common/types';
+import type { CustomElement, InternalCustomElement, Position } from '../common/types';
 
 export interface CustomSection extends CustomElement {
     /**

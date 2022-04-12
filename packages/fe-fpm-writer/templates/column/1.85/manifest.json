@@ -13,14 +13,7 @@
                                             <% if (locals.width)  { %> 
                                                 "width": "<%- width %>",  
                                             <% } %>
-                                            "position": {
-                                                <% if (position.placement) { %> 
-                                                    "placement": "<%- position.placement %>", 
-                                                <% } %>
-                                                <% if (position.anchor) { %> 
-                                                    "anchor": "<%- position.anchor %>" 
-                                                <% } %>
-                                            },
+                                            "position": <%- JSON.stringify(position) %>,
                                             "template": "<%- ns %>.<%- name %>"
                                             <% if (locals.availability) { %> 
                                                 , "availability": "<%- availability %>" 

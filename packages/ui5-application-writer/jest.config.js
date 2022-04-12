@@ -1,5 +1,4 @@
 module.exports = {
-    roots: ['<rootDir>/src', '<rootDir>/test'],
     transform: {
         '^.+\\.ts$': 'ts-jest'
     },
@@ -15,5 +14,11 @@ module.exports = {
             }
         ]
     ],
-    modulePathIgnorePatterns: ['<rootDir>/dist', '<rootDir>/test/test-output']
+    coverageReporters: [['lcov', { projectRoot: '../../' }], 'text'],
+    modulePathIgnorePatterns: [
+        '<rootDir>/dist',
+        '<rootDir>/test/test-output',
+        '<rootDir>/templates',
+        '<rootDir>/coverage'
+    ]
 };

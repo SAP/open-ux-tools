@@ -1,4 +1,5 @@
-import i18next, { TOptions, TOptionsBase } from 'i18next';
+import type { TOptions, TOptionsBase } from 'i18next';
+import i18next from 'i18next';
 import FilesystemBackend from 'i18next-fs-backend';
 import path from 'path';
 
