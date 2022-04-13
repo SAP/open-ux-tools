@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.2.0
+
+### Minor Changes
+
+-   3b5385d: Odata V4 support in Worklist template
+
 ## 0.1.10
 
 ### Patch Changes
