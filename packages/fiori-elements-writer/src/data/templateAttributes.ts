@@ -76,6 +76,10 @@ const templateLibs: TemplateLibs = {
         [TemplateType.AnalyticalListPage]: {
             baseComponent: appComponentLibFioriElements,
             ui5Libs: commonUi5Libs[OdataVersion.v4]
+        },
+        [TemplateType.Worklist]: {
+            baseComponent: appComponentLibFioriElements,
+            ui5Libs: commonUi5Libs[OdataVersion.v4]
         }
     }
 };
@@ -114,9 +118,10 @@ type TemplateAttributes = {
 
 export const TemplateTypeAttributes: TemplateAttributes = {
     [TemplateType.Worklist]: {
-        supportedODataVersions: [OdataVersion.v2],
+        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: oldestSupportedUI5Version
+            [OdataVersion.v2]: oldestSupportedUI5Version,
+            [OdataVersion.v4]: '1.99.0'
         }
     },
     [TemplateType.ListReportObjectPage]: {

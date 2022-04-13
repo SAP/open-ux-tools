@@ -1,7 +1,15 @@
 import { FioriElementsApp, generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, v2Service, feBaseConfig, v2TemplateSettings } from './common';
+import {
+    testOutputDir,
+    debug,
+    v2Service,
+    feBaseConfig,
+    v2TemplateSettings,
+    v4TemplateSettings,
+    v4Service
+} from './common';
 import { WorklistSettings } from '../src/types';
 
 const TEST_NAME = 'worklistTemplate';
@@ -20,6 +28,22 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     }
                 }),
                 service: v2Service
+            } as FioriElementsApp<WorklistSettings>
+        },
+        {
+            name: 'worklistV4',
+            config: {
+                ...Object.assign(feBaseConfig('fewrk2'), {
+                    template: {
+                        type: TemplateType.Worklist,
+                        settings: v4TemplateSettings
+                    },
+                    ui5: {
+                        ...feBaseConfig('fewrk2', true),
+                        version: '1.99.0'
+                    }
+                }),
+                service: v4Service
             } as FioriElementsApp<WorklistSettings>
         }
     ];
