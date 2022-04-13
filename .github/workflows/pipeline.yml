@@ -16,7 +16,7 @@ jobs:
         timeout-minutes: 15
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   fetch-depth: 0
             - name: Setup pnpm
@@ -61,7 +61,7 @@ jobs:
             changes: ${{ steps.changesetVersion.outputs.changes }} # map step output to job output
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
@@ -110,7 +110,7 @@ jobs:
         needs: version
         steps:
             - name: Checkout code repository
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.0.1
               with:
