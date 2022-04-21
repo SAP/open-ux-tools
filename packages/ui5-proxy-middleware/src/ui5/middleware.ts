@@ -21,7 +21,7 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
     const router = express.Router();
     const config = options.configuration;
     const ui5Version = await resolveUI5Version(config.version, logger);
-    const secure = config.secure ? !!config.secure : true;
+    const secure = config.secure !== undefined ? !!config.secure : true;
     const debug = !!config.debug;
     const directLoad = !!config.directLoad;
     const noProxyVal = process.env.no_proxy || process.env.npm_config_noproxy;
