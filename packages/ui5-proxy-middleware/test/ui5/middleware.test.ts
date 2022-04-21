@@ -100,7 +100,7 @@ describe('Set optional properties', () => {
         await getTestServer(config);
         expect(ui5ProxySpy).toBeCalledWith(
             expect.objectContaining({}),
-            expect.objectContaining({ secure: false, logLevel: 'info' })
+            expect.objectContaining({ secure: true, logLevel: 'info' })
         );
     });
 
