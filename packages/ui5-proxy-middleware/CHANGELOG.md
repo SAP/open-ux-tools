@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.0.6
+
+### Patch Changes
+
+-   c3eee4e: Set true as default for the secure option
+
 ## 1.0.5
 
 ### Patch Changes
