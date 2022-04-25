@@ -146,7 +146,7 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v2]: oldestSupportedUI5Version,
-            [OdataVersion.v4]: '1.97.0'
+            [OdataVersion.v4]: '1.96.8'
         }
     },
     [TemplateType.FormEntryObjectPage]: {
