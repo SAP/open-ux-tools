@@ -2,7 +2,7 @@
 
 Template folders are organised to represent the composition of apps from template files and to ease the addition of new features by contributors by having a logical structure. Each folder name has a specific semantic based on the `TemplateType` or the service `OdataVersion`specified when calling the `generate` API. The folders are structured to represent the context in which the templates are applied.
 
-**_common_** - Templates that are applied to all template types regardless of odata version and template type. If appearing at the root `./templates` these are common to all apps regardless of `TemplateType` or `OdataVersion`. If under a specific `TemplateType` or `OdataVersion` folder will apply only to those specific cases respectively. i.e. The context in which a template is used is directly related to the folder path.
+**_common_** - Templates that are applied to all generated apps regardless of odata version or template type appear at the root `./templates`. If under a specific `TemplateType` or `OdataVersion` folder will apply only to those specific cases respectively. i.e. The context in which a template is used is directly related to the folder path.
 
 **_`TemplateType`_** - Template type folders can appear under `./templates` or under a specific `OdataVersion` folder `./templates/v2` or `./templates/v4`. `TemplateType` folders (e.g. `ovp`) at the root `./templates` folder are applied to the specified template type, regardless of odata version. If they appear under an `OdataVersion` folder they will only apply when the specific `OdataVersion` service is used.
 
