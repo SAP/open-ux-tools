@@ -124,6 +124,7 @@ importers:
 
   packages/fiori-elements-writer:
     specifiers:
+      '@sap-ux/fiori-elements-writer': ^0.2.0
       '@sap-ux/odata-service-writer': workspace:*
       '@sap-ux/ui5-application-writer': workspace:*
       '@sap-ux/ui5-config': workspace:*

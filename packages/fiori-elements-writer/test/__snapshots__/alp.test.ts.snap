@@ -11469,7 +11469,7 @@ appDescription=A Fiori application.",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true,
-          \\"groupId\\": \\"$direct\\"
+          \\"groupId\\": \\"$auto\\"
         }
       },
       \\"@i18n\\": {

@@ -80,6 +80,10 @@ const templateLibs: TemplateLibs = {
         [TemplateType.Worklist]: {
             baseComponent: appComponentLibFioriElements,
             ui5Libs: commonUi5Libs[OdataVersion.v4]
+        },
+        [TemplateType.OverviewPage]: {
+            baseComponent: appComponentLibOVP,
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
         }
     }
 };
@@ -141,8 +145,8 @@ export const TemplateTypeAttributes: TemplateAttributes = {
     [TemplateType.OverviewPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: oldestSupportedUI5Version
-            //[OdataVersion.v4]: 1.97 //TBD
+            [OdataVersion.v2]: oldestSupportedUI5Version,
+            [OdataVersion.v4]: '1.97.0'
         }
     },
     [TemplateType.FormEntryObjectPage]: {

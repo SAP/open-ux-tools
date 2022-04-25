@@ -46,6 +46,7 @@ export function extendManifestJson<T>(
     // Manifest paths to be extended
     const extendTemplatePaths = [
         join(rootTemplatesPath, 'common', 'extend', 'webapp'),
+        join(rootTemplatesPath, templatePath, 'extend', 'webapp'),
         join(rootTemplatesPath, `v${feApp.service.version}`, templatePath, 'extend', 'webapp'),
         join(rootTemplatesPath, `v${feApp.service.version}`, 'common', 'extend', 'webapp')
     ];
