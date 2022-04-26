@@ -13750,8 +13750,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"synchronizationMode\\": \\"None\\",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true,
-          \\"groupId\\": \\"$auto\\"
+          \\"earlyRequests\\": true
         }
       },
       \\"@i18n\\": {
@@ -17345,8 +17344,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"synchronizationMode\\": \\"None\\",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true,
-          \\"groupId\\": \\"$auto\\"
+          \\"earlyRequests\\": true
         }
       },
       \\"@i18n\\": {

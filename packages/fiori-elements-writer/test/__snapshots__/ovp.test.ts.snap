@@ -7187,8 +7187,7 @@ appDescription=A Fiori application.",
           \\"synchronizationMode\\": \\"None\\",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true,
-          \\"groupId\\": \\"$auto\\"
+          \\"earlyRequests\\": true
         }
       },
       \\"@i18n\\": {
