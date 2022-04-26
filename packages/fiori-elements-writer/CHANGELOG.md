@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.3.0
+
+### Minor Changes
+
+-   cfca196: Feature: Adds support for Overview Page floorplan with odata v4 services. Fix: Use batch mode by default for v4 services.
+
+### Patch Changes
+
+-   Updated dependencies [cfca196]
+    -   @sap-ux/odata-service-writer@0.12.0
+
 ## 0.2.0
 
 ### Minor Changes
