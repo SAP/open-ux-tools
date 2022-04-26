@@ -6123,8 +6123,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
           \\"synchronizationMode\\": \\"None\\",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true,
-          \\"groupId\\": \\"$direct\\"
+          \\"earlyRequests\\": true
         }
       }
     },
@@ -12283,8 +12282,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
           \\"synchronizationMode\\": \\"None\\",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true,
-          \\"groupId\\": \\"$direct\\"
+          \\"earlyRequests\\": true
         }
       }
     },
