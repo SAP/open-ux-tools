@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.13.2
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+
 ## 0.13.1
 
 ### Patch Changes

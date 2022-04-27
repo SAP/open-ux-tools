@@ -1,5 +1,15 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.3.1
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+-   Updated dependencies [b5ab868]
+    -   @sap-ux/odata-service-writer@0.12.1
+    -   @sap-ux/ui5-application-writer@0.12.8
+    -   @sap-ux/ui5-config@0.13.2
+
 ## 0.3.0
 
 ### Minor Changes

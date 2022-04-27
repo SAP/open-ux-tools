@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.6.1
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+
 ## 0.6.0
 
 ### Minor Changes
