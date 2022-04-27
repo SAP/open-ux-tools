@@ -1,5 +1,6 @@
-import Generator from 'yeoman-generator';
-import { ODataService, createServiceForUrl, createForDestination, AbapServiceProvider } from '@sap-ux/axios-extension';
+import type Generator from 'yeoman-generator';
+import type { ODataService, AbapServiceProvider } from '@sap-ux/axios-extension';
+import { createServiceForUrl, createForDestination } from '@sap-ux/axios-extension';
 
 export interface ServiceInfo {
     url?: string;
