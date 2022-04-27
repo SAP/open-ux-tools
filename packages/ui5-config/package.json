@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-config"
     },
-    "version": "0.13.1",
+    "version": "0.13.2",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -33,7 +33,7 @@
     },
     "devDependencies": {
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.0.0"
+        "mem-fs-editor": "9.4.0"
     },
     "engines": {
         "pnpm": ">=6.26.1",

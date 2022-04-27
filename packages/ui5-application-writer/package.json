@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-application-writer"
     },
-    "version": "0.12.7",
+    "version": "0.12.8",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -31,9 +31,9 @@
     ],
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
-        "ejs": "3.1.6",
+        "ejs": "3.1.7",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.0.0",
+        "mem-fs-editor": "9.4.0",
         "json-merger": "1.1.7",
         "semver": "7.3.5",
         "i18next": "21.6.11"
