@@ -33,7 +33,7 @@
     },
     "devDependencies": {
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.0.0"
+        "mem-fs-editor": "9.4.0"
     },
     "engines": {
         "pnpm": ">=6.26.1",

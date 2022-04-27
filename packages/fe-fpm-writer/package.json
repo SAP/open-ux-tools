@@ -27,9 +27,9 @@
         "templates"
     ],
     "dependencies": {
-        "ejs": "3.1.6",
+        "ejs": "3.1.7",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.3.0",
+        "mem-fs-editor": "9.4.0",
         "xml-js": "1.6.11",
         "semver": "7.3.5"
     },
