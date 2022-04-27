@@ -1,4 +1,4 @@
-import { FioriElementsApp, generate, TemplateType, LROPSettings, Template } from '../src';
+import { FioriElementsApp, generate, TemplateType, LROPSettings } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import {

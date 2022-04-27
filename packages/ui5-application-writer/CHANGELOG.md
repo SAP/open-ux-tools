@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.12.7
+
+### Patch Changes
+
+-   73d6a6b: Fix for #438 : Incorrect manifest version set for some ui5 versions
+
 ## 0.12.6
 
 ### Patch Changes

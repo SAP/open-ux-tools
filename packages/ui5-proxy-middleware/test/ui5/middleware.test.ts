@@ -100,7 +100,7 @@ describe('Set optional properties', () => {
         await getTestServer(config);
         expect(ui5ProxySpy).toBeCalledWith(
             expect.objectContaining({}),
-            expect.objectContaining({ secure: false, logLevel: 'info' })
+            expect.objectContaining({ secure: true, logLevel: 'info' })
         );
     });
 
@@ -129,6 +129,14 @@ describe('Set optional properties', () => {
             secure: true
         });
         expect(ui5ProxySpy).toBeCalledWith(expect.objectContaining({}), expect.objectContaining({ secure: true }));
+    });
+
+    test('secure', async () => {
+        await getTestServer({
+            ...config,
+            secure: false
+        });
+        expect(ui5ProxySpy).toBeCalledWith(expect.objectContaining({}), expect.objectContaining({ secure: false }));
     });
 
     test('directLoad', async () => {

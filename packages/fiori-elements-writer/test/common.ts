@@ -35,7 +35,7 @@ export const getTestData = (serviceName: string, serviceType: 'metadata' | 'anno
 };
 
 /**
- * List Report Object Page test settings
+ * Base FE app settings
  */
 export const feBaseConfig = (
     appId: string,
