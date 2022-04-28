@@ -112,7 +112,7 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
      * @returns the Axios response object for futher processing
      */
     public async deploy(archivePath: string, config: AdaptationConfig): Promise<AxiosResponse> {
-        const base64Data = readFileSync(archivePath, { encoding: 'base64' });
+        const archive = readFileSync(archivePath);
 
         const tokenResponse = await this.getCsrfToken();
         const checkResponse = await this.check(config.namespace);
@@ -129,7 +129,7 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
         const response = await this.request({
             method: checkResponse.status === 200 ? 'PUT' : 'POST',
             url: '/dta_folder/',
-            data: base64Data,
+            data: archive,
             params,
             headers: {
                 'Content-Type': 'application/octet-stream',
