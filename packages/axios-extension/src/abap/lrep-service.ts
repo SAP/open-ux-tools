@@ -43,20 +43,20 @@ export interface AdaptationConfig {
 }
 
 /**
- * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
- */
-type Layer = 'VENDOR' | 'CUSTOMER_BASE';
-
-/**
  * Structure of the result message.
  */
-interface Message {
+export interface Message {
     severity: 'Success' | 'Warning' | 'Error';
     text: string;
     details?: string[];
     id: string;
     variables?: string[];
 }
+
+/**
+ * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
+ */
+type Layer = 'VENDOR' | 'CUSTOMER_BASE';
 
 /**
  * Returns the namespace as string.
@@ -141,11 +141,9 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
         if (info.result) {
             this.logMessage(info.result);
         }
-        if (info.messages) {
-            (info.messages ?? []).forEach((message) => {
-                this.logMessage(message);
-            });
-        }
+        (info.messages ?? []).forEach((message) => {
+            this.logMessage(message);
+        });
 
         return response;
     }
