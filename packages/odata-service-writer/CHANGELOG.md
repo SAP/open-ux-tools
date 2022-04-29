@@ -1,5 +1,19 @@
 # @sap-ux/odata-service-writer
 
+## 0.12.1
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+-   Updated dependencies [b5ab868]
+    -   @sap-ux/ui5-config@0.13.2
+
+## 0.12.0
+
+### Minor Changes
+
+-   cfca196: Feature: Adds support for Overview Page floorplan with odata v4 services. Fix: Use batch mode by default for v4 services.
+
 ## 0.11.6
 
 ### Patch Changes

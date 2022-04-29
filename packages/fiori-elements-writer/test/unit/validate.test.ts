@@ -26,11 +26,11 @@ describe('Validate', () => {
         const feApp: FioriElementsApp<LROPSettings> = {
             ...Object.assign(feBaseConfig('felrop1'), {
                 template: {
-                    type: TemplateType.Worklist,
+                    type: TemplateType.FormEntryObjectPage,
                     settings: {}
                 },
                 service: {
-                    version: OdataVersion.v4 // Worklist does not support v4
+                    version: OdataVersion.v2 // Form Entry Object Page does not support v2
                 }
             })
         } as FioriElementsApp<LROPSettings>;

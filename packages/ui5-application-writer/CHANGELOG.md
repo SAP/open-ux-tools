@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 0.12.8
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+-   Updated dependencies [b5ab868]
+    -   @sap-ux/ui5-config@0.13.2
+
 ## 0.12.7
 
 ### Patch Changes
