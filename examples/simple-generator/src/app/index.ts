@@ -21,7 +21,7 @@ export default class extends Generator {
 
     initializing(): void {
         this.log(
-            'Example of a simple Fiori elements for OData v4 generator that only creates listreport objectpage applications.'
+            'Example of a simple Fiori generator allowing to create basic UI5 or Fiori elements for OData v2 applications.'
         );
     }
 
@@ -63,11 +63,13 @@ export default class extends Generator {
             version: OdataVersion.v2,
             url: service.url,
             path: service.path,
-            destination: {
-                name: service.destination
-            },
             metadata: service.metadata
         };
+        if (service.destination) {
+            this.service.destination = {
+                name: service.destination
+            };
+        }
         this.app = {
             app: {
                 id: name,
@@ -103,7 +105,9 @@ export default class extends Generator {
     }
 
     configuring() {
+        // configuring the source/template root folder to point to the folder containing the karma templates
         this.sourceRoot(join(__dirname, '..', '..', 'templates', 'karma'));
+        // hard-coded output folder just for testing, in a real generator the .tmp prefix is not needed
         this.destinationRoot(join('.tmp', this.app.package.name));
     }
 

@@ -1,8 +1,8 @@
 # Example: Simple Yeoman Generator For Fiori Elements
 A simplified example illustrating how to create a yeoman generator using the `fiori-elements-writer` and the `axios-extension`.
 
-## Example
-This example project contains a generator that asks a few simple questions and then uses the `@sap-ux/fiori-elements-writer` to generate a Fiori application. Additionally it generates a karma config for the project utilizing our new mockserver middleware.
+## Description
+This example project contains a generator that asks a few simple questions and then uses the `@sap-ux/fiori-elements-writer` to generate a Fiori application. Additionally it generates a karma config for the project utilizing the [new mockserver middleware](https://www.npmjs.com/package/@sap/ux-ui5-fe-mockserver-middleware).
 
 ## Prerequisite
 Before you can use the generator, you need to globally install `yo` and build the generator

@@ -70,15 +70,15 @@ export async function getServiceInfoInBAS(generator: Generator): Promise<Service
  * Tries fetching metadata from the given service and prompts for user/password if a 401 is returned.
  *
  * @param generator an instance of a yeoman generator
- * @param service
+ * @param service axios service abstraction
  * @returns service metadata
  */
 export async function getMetadata(generator: Generator, service: ODataService): Promise<string> {
-    let metadata: string;
+    let metadata: string | undefined;
     while (!metadata) {
         try {
             metadata = await service.metadata();
-        } catch (error) {
+        } catch (error: any) {
             if (service.defaults?.auth?.username) {
                 generator.log.error(error.cause.statusText);
             }

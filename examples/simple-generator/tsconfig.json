@@ -1,7 +1,7 @@
 {
     "include": ["src/**/*.ts"],
     "compilerOptions": {
-        "strict": false,
+        "strict": true,
         "declaration": true,
         "outDir": "generators/app",
         "sourceMap": true,
