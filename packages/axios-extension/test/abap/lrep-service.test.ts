@@ -27,17 +27,17 @@ describe('DesigntimeAdaptationService', () => {
 
         nock(server)
             .get(
-                `${LayeredRepositoryService.PATH}/dta_folder?name=${encodeURIComponent(
+                `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
                     config.namespace as string
                 )}&layer=CUSTOMER_BASE`
             )
             .reply(200);
-        nock(server).get(`${LayeredRepositoryService.PATH}/actions/getcsrftoken`).reply(200, undefined, {
+        nock(server).get(`${LayeredRepositoryService.PATH}/actions/getcsrftoken/`).reply(200, undefined, {
             'x-csrf-token': 'token'
         });
         nock(server)
             .put(
-                `${LayeredRepositoryService.PATH}/dta_folder?name=${encodeURIComponent(
+                `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
                     config.namespace as string
                 )}&layer=CUSTOMER_BASE&package=${config.package}&changeList=${config.transport}`
             )

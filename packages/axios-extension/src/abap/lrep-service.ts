@@ -137,7 +137,7 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
             }
         });
 
-        const info = JSON.parse(response.data);
+        const info = response.data ? JSON.parse(response.data) : {};
         if (info.result) {
             this.logMessage(info.result);
         }
