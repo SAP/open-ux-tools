@@ -6,7 +6,7 @@
     "private": true,
     "main": "dist/index.js",
     "scripts": {
-        "start": "node -r dotenv/config -r ts-node/register src/index.ts dotenv_config_path=./.env/env.properties",
+        "start": "node -r dotenv/config dist/index.js dotenv_config_path=./.env/env.properties",
         "build": "pnpm clean && tsc",
         "watch": "tsc --watch",
         "clean": "rimraf dist coverage",
