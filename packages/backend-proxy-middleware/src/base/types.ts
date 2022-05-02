@@ -23,6 +23,11 @@ export interface CommonConfig {
     noProxyList?: string;
     ignoreCertError?: boolean;
     debug?: boolean;
+
+    /**
+     * The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.
+     * In that case, we need to redirect the manifest.appdescr request to the local manifest.json in order to overwrite the deployed application with the local one.
+     */
     bsp?: string;
 }
 

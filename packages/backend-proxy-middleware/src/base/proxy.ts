@@ -228,7 +228,7 @@ export async function getBackendProxy(
 
     if (common.bsp) {
         const regex = new RegExp('(' + common.bsp + '/manifest\\.appdescr\\b)');
-        proxyConfig.router = (req): string => {
+        proxyConfig.router = (req): string | undefined => {
             // redirects the request for manifest.appdescr to localhost
             if (req.path.match(regex)) {
                 return req.protocol + '://' + req.headers.host;
