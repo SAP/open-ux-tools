@@ -1,5 +1,5 @@
 import HttpsProxyAgent from 'https-proxy-agent';
-import i18next from 'i18next';
+import i18n from 'i18next';
 import { IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
 import { createForAbapOnBtp } from '@sap-ux/axios-extension';
@@ -13,8 +13,8 @@ import {
 import type { Request } from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { createProxyMiddleware, RequestHandler } from 'http-proxy-middleware';
-import type { BackendConfig, CommonConfig } from './types';
-import translations from '../i18n.json';
+import type { BackendConfig, CommonConfig, DestinationBackendConfig } from './types';
+import translations from './i18n.json';
 
 import {
     ApiHubSettings,
@@ -92,7 +92,7 @@ const backendProxyReqPathResolver = (path: string, config: BackendConfig, log: L
 const proxyErrorHandler = (err: any, req: Request, _res: ServerResponse): void => {
     switch (err && err.code) {
         case 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY': {
-            const errMsg = i18next.t('SSL_PROXY_ERROR');
+            const errMsg = i18n.t('error.sslProxy');
             const error = new Error(errMsg);
             if (typeof req.next === 'function') {
                 req.next(error);
@@ -117,8 +117,8 @@ const proxyErrorHandler = (err: any, req: Request, _res: ServerResponse): void =
  * Initialize i18next with the translations for this module.
  */
 async function initI18n(): Promise<void> {
-    const ns = 'ui5-proxy-middleware';
-    await i18next.init({
+    const ns = 'backend-proxy-middleware';
+    await i18n.init({
         resources: {
             en: {
                 [ns]: translations
@@ -131,13 +131,43 @@ async function initI18n(): Promise<void> {
     });
 }
 
+export async function enhanceConfigsForDestination(
+    proxyOptions: Options,
+    backend: DestinationBackendConfig
+): Promise<boolean> {
+    let authNeeded = true;
+    if (backend.destinationInstance) {
+        const url = new URL(getDestinationUrlForAppStudio(backend.destination));
+        url.username = await getUserForDestinationService(backend.destinationInstance);
+        proxyOptions.target = url.toString();
+    } else {
+        const destinations = await listDestinations();
+        const destination = destinations[backend.destination];
+        if (destination) {
+            authNeeded = destination.Authentication === 'NoAuthentication';
+            proxyOptions.target = getDestinationUrlForAppStudio(backend.destination);
+            // in case of a full url destination remove the path defined in the destination from the forwarded call
+            if (isFullUrlDestination(destination)) {
+                const destPath = new URL(destination.Host).pathname.replace(/\/$/, '');
+                if (backend.path.startsWith(destPath) && !backend.pathPrefix) {
+                    backend.pathPrefix = backend.path.replace(destPath, '');
+                }
+            }
+        } else {
+            throw new Error();
+        }
+    }
+    return authNeeded;
+}
+
 export async function getBackendProxy(
     backend: BackendConfig,
     common: CommonConfig,
     logger: Logger
 ): Promise<RequestHandler> {
+    await initI18n();
     // base options
-    const proxyConfig: Options = {
+    const proxyOptions: Options = {
         secure: !common.ignoreCertError,
         changeOrigin: true,
         logLevel: common.debug ? 'debug' : 'silent',
@@ -148,9 +178,6 @@ export async function getBackendProxy(
                 proxyReq.setHeader('accept-encoding', 'br');
             }
         },
-        pathRewrite: (path: string): string => {
-            return backendProxyReqPathResolver(path, backend, logger, common.bsp);
-        },
         onError: proxyErrorHandler as any
     };
 
@@ -158,30 +185,10 @@ export async function getBackendProxy(
 
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
-        const destinationName = backend.destination || process.env.FIORI_TOOLS_DESTINATION;
-        if (destinationName) {
-            if (backend.destinationInstance) {
-                const url = new URL(getDestinationUrlForAppStudio(destinationName));
-                url.username = await getUserForDestinationService(backend.destinationInstance);
-                proxyConfig.target = url.toString();
-            } else {
-                const destinations = await listDestinations();
-                const destination = destinations[destinationName];
-                if (destination) {
-                    authNeeded = destination.Authentication === 'NoAuthentication';
-                    proxyConfig.target = getDestinationUrlForAppStudio(destinationName);
-                    // in case of a full url destination remove the path defined in the destination from the forwarded call
-                    if (isFullUrlDestination(destination)) {
-                        const destPath = new URL(destination.Host).pathname.replace(/\/$/, '');
-                        if (backend.path.startsWith(destPath) && !backend.pathPrefix) {
-                            backend.pathPrefix = backend.path.replace(destPath, '');
-                        }
-                    }
-                } else {
-                    throw new Error();
-                }
-            }
-            logger.info('Using destination: ' + destinationName);
+        backend.destination = backend.destination ?? process.env.FIORI_TOOLS_DESTINATION;
+        if (backend.destination) {
+            authNeeded = await enhanceConfigsForDestination(proxyOptions, backend);
+            logger.info('Using destination: ' + backend.destination);
         }
     } else {
         // check if system credentials are stored in the store
@@ -204,7 +211,7 @@ export async function getBackendProxy(
                     );
                     // sending a request to the backend to get cookies
                     await provider.getAtoInfo();
-                    proxyConfig.headers!['cookie'] = provider.cookies.toString();
+                    proxyOptions.headers!['cookie'] = provider.cookies.toString();
                 } else {
                     throw new Error('');
                 }
@@ -214,9 +221,9 @@ export async function getBackendProxy(
                 //cookies = connection.cookies;
             } else {
                 if (system?.username && system?.password) {
-                    proxyConfig.auth = system.username + ':' + system.password;
+                    proxyOptions.auth = system.username + ':' + system.password;
                 } else if (process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
-                    proxyConfig.auth = process.env.FIORI_TOOLS_USER + ':' + process.env.FIORI_TOOLS_PASSWORD;
+                    proxyOptions.auth = process.env.FIORI_TOOLS_USER + ':' + process.env.FIORI_TOOLS_PASSWORD;
                 }
                 // TODO: how can we do this cleanly
                 // monkey patch TLS to trust SAPs root CA
@@ -227,41 +234,47 @@ export async function getBackendProxy(
         }
     }
 
+    proxyOptions.pathRewrite = (path: string): string => {
+        return backendProxyReqPathResolver(path, backend, logger, common.bsp);
+    };
+
     if (backend.apiHub) {
         const apiHubKey = await getApiHubKey(logger);
         if (apiHubKey) {
-            proxyConfig.headers!['apikey'] = apiHubKey;
+            proxyOptions.headers!['apikey'] = apiHubKey;
         }
     }
 
     if (backend.ws) {
-        proxyConfig.ws = true;
+        proxyOptions.ws = true;
     }
 
     if (backend.xfwd) {
-        proxyConfig.xfwd = true;
+        proxyOptions.xfwd = true;
     }
 
     if (common.proxy && !isHostExcludedFromProxy(common.noProxyList, backend.url)) {
-        proxyConfig.agent = new (HttpsProxyAgent as any)(common.proxy);
+        proxyOptions.agent = new (HttpsProxyAgent as any)(common.proxy);
     }
 
     if (common.bsp) {
         const regex = new RegExp('(' + common.bsp + '/manifest\\.appdescr\\b)');
-        proxyConfig.router = (req): string | undefined => {
+        proxyOptions.router = (req): string | undefined => {
             // redirects the request for manifest.appdescr to localhost
             if (req.path.match(regex)) {
                 return req.protocol + '://' + req.headers.host;
             }
         };
 
-        if (!proxyConfig.auth && authNeeded) {
-            proxyConfig.auth = await promptUserPass(logger);
+        if (!proxyOptions.auth && authNeeded) {
+            proxyOptions.auth = await promptUserPass(logger);
         }
     }
 
     logger.info(
-        `Backend proxy created for ${proxyConfig.target ? proxyConfig.target : ''} ${backend.path ? backend.path : ''}`
+        `Backend proxy created for ${proxyOptions.target ? proxyOptions.target : ''} ${
+            backend.path ? backend.path : ''
+        }`
     );
-    return createProxyMiddleware(proxyConfig);
+    return createProxyMiddleware(proxyOptions);
 }

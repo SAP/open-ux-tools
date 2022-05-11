@@ -1,1 +1,3 @@
-export const hello = 'world';
+import { getBackendProxy } from './base/proxy';
+
+export { getBackendProxy };

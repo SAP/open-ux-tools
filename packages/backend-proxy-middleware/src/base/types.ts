@@ -5,18 +5,26 @@ import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 
 export type Ui5MiddlewareConfig = UI5ProxyConfig;
 
-export interface BackendConfig {
+export interface BaseBackendConfig {
     path: string;
-    url: string;
-    client?: string;
-    destination?: string;
-    destinationInstance?: string;
     pathPrefix?: string;
     scp?: boolean;
     apiHub?: boolean;
     ws?: boolean;
     xfwd?: boolean;
 }
+
+export interface DestinationBackendConfig extends BaseBackendConfig {
+    destination: string;
+    destinationInstance?: string;
+}
+
+export interface LocalBackendConfig extends BaseBackendConfig {
+    url: string;
+    client?: string;
+}
+
+export type BackendConfig = LocalBackendConfig & DestinationBackendConfig;
 
 export interface CommonConfig {
     proxy?: string;
