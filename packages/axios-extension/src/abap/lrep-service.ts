@@ -82,13 +82,16 @@ export class LayeredRepositoryService extends Axios implements Service {
      * @param namespace either as string or as object
      * @returns the Axios response object for futher processing
      */
-    public async check(namespace: Namespace): Promise<AxiosResponse> {
-        return this.get('/dta_folder/', {
+    public async isExistingVariant(namespace: Namespace): Promise<AxiosResponse> {
+        const response = await this.get('/dta_folder/', {
             params: {
                 name: getNamespaceAsString(namespace),
                 layer: 'CUSTOMER_BASE' as Layer
             }
         });
+        this.tryLogResponse(response);
+
+        return response;
     }
 
     /**
@@ -101,7 +104,7 @@ export class LayeredRepositoryService extends Axios implements Service {
     public async deploy(archivePath: string, config: AdaptationConfig): Promise<AxiosResponse> {
         const archive = readFileSync(archivePath);
 
-        const checkResponse = await this.check(config.namespace);
+        const checkResponse = await this.isExistingVariant(config.namespace);
         const params: object = {
             name: getNamespaceAsString(config.namespace),
             layer: 'CUSTOMER_BASE' as Layer
@@ -121,7 +124,18 @@ export class LayeredRepositoryService extends Axios implements Service {
                 'Content-Type': 'application/octet-stream'
             }
         });
+        this.tryLogResponse(response, 'Deployment successful.');
 
+        return response;
+    }
+
+    /**
+     * Try parsing the response and log the result. If the parsing fails and an alternative is provided, log it instead.
+     *
+     * @param response axios response from the LREP service
+     * @param alternativeMessage optional alternative message if the response cannot be parsed
+     */
+    private tryLogResponse(response, alternativeMessage?: string) {
         try {
             const info = response.data ? JSON.parse(response.data) : {};
             if (info.result) {
@@ -131,11 +145,11 @@ export class LayeredRepositoryService extends Axios implements Service {
                 this.logMessage(message);
             });
         } catch (error) {
-            this.log.info('Deployment successful.');
+            if (alternativeMessage) {
+                this.log.info(alternativeMessage);
+            }
             this.log.warn('Could not parse returned messages.');
         }
-
-        return response;
     }
 
     /**
