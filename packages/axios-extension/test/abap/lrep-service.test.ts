@@ -8,6 +8,11 @@ nock.disableNetConnect();
 describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';
     const service = createForAbap({ baseURL: server }).layeredRepository();
+    const config: AdaptationConfig = {
+        namespace: 'apps/my.base.app/appVariants/customer.variant/',
+        package: 'MY_PACKAGE',
+        transport: 'MYTRANSPORT'
+    };
 
     beforeEach(() => {
         jest.resetModules();
@@ -18,11 +23,6 @@ describe('LayeredRepositoryService', () => {
     });
 
     describe('deploy', () => {
-        const config: AdaptationConfig = {
-            namespace: 'apps/my.base.app/appVariants/customer.variant/',
-            package: 'MY_PACKAGE',
-            transport: 'MYTRANSPORT'
-        };
         const archivePath = './dist/my-app.zip';
         const testData = Buffer.from('TestData');
 
@@ -85,6 +85,49 @@ describe('LayeredRepositoryService', () => {
 
             const response = await service.deploy(archivePath, config);
             expect(response.status).toBe(200);
+        });
+    });
+
+    describe('undeploy', () => {
+        test('undeploy existing adapation project', async () => {
+            nock(server)
+                .get(
+                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                        config.namespace as string
+                    )}&layer=CUSTOMER_BASE`
+                )
+                .reply(200, undefined, {
+                    'x-csrf-token': 'token'
+                });
+            nock(server)
+                .delete(
+                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                        config.namespace as string
+                    )}&layer=CUSTOMER_BASE&changeList=${config.transport}`
+                )
+                .reply(200, 'Response that throws an error when given to JSON.parse');
+
+            const response = await service.undeploy(config);
+            expect(response.status).toBe(200);
+        });
+
+        test('try undeploying a not existing adapation project', async () => {
+            nock(server)
+                .get(
+                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                        config.namespace as string
+                    )}&layer=CUSTOMER_BASE`
+                )
+                .reply(404, undefined, {
+                    'x-csrf-token': 'token'
+                });
+
+            try {
+                await service.undeploy(config);
+                fail('The function should have thrown an error.');
+            } catch (error) {
+                expect(error).toBeDefined();
+            }
         });
     });
 });

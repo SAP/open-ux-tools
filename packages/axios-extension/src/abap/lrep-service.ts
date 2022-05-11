@@ -6,21 +6,24 @@ import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
 
 /**
- * Type representing a namespace. It is either a string or an object containing an id (variant id) and a reference (base application id).
+ * Object structure representing a namespace: containing an id (variant id) and a reference (base application id).
  */
-export type Namespace =
-    | string
-    | {
-          /**
-           * variant id
-           */
-          id: string;
+export type NamespaceObject = {
+    /**
+     * variant id
+     */
+    id: string;
 
-          /**
-           * base application id
-           */
-          reference: string;
-      };
+    /**
+     * base application id
+     */
+    reference: string;
+};
+
+/**
+ * Type representing a namespace. It is either a string or an object.
+ */
+export type Namespace = NamespaceObject | string;
 
 /**
  * Required configuration to deploy an adaptation project.
@@ -71,6 +74,11 @@ function getNamespaceAsString(namespace: Namespace): string {
 }
 
 /**
+ * Path suffix for all DTA actions.
+ */
+const DTA_PATH_SUFFIX = '/dta_folder/';
+
+/**
  * A class respresenting the design time adaptation service allowing to deploy adaptation projects to an ABAP system.
  */
 export class LayeredRepositoryService extends Axios implements Service {
@@ -85,7 +93,7 @@ export class LayeredRepositoryService extends Axios implements Service {
      * @returns the Axios response object for futher processing
      */
     public async isExistingVariant(namespace: Namespace): Promise<AxiosResponse> {
-        const response = await this.get('/dta_folder/', {
+        const response = await this.get(DTA_PATH_SUFFIX, {
             params: {
                 name: getNamespaceAsString(namespace),
                 layer: 'CUSTOMER_BASE' as Layer
@@ -119,7 +127,7 @@ export class LayeredRepositoryService extends Axios implements Service {
         }
         const response = await this.request({
             method: checkResponse.status === 200 ? 'PUT' : 'POST',
-            url: '/dta_folder/',
+            url: DTA_PATH_SUFFIX,
             data: archive,
             params,
             headers: {
@@ -127,6 +135,30 @@ export class LayeredRepositoryService extends Axios implements Service {
             }
         });
         this.tryLogResponse(response, 'Deployment successful.');
+
+        return response;
+    }
+
+    /**
+     * Undeploy the archive identified by the configuration.
+     *
+     * @param config adataption project deployment configuration
+     * @returns the Axios response object for futher processing
+     */
+    public async undeploy(config: AdaptationConfig): Promise<AxiosResponse> {
+        const checkResponse = await this.isExistingVariant(config.namespace);
+        if (checkResponse.status !== 200) {
+            throw new Error('Undeploy failed because the given project does not exist.');
+        }
+        const params: object = {
+            name: getNamespaceAsString(config.namespace),
+            layer: 'CUSTOMER_BASE' as Layer
+        };
+        if (config.transport) {
+            params['changeList'] = config.transport;
+        }
+        const response = await this.delete(DTA_PATH_SUFFIX, { params });
+        this.tryLogResponse(response, 'Undeployment successful.');
 
         return response;
     }
