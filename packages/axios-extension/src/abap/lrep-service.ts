@@ -71,7 +71,7 @@ function getNamespaceAsString(namespace: Namespace): string {
 /**
  * A class respresenting the design time adaptation service allowing to deploy adaptation projects to an ABAP system.
  */
-export abstract class LayeredRepositoryService extends Axios implements Service {
+export class LayeredRepositoryService extends Axios implements Service {
     public static readonly PATH = '/sap/bc/lrep';
 
     public log: Logger;
@@ -92,19 +92,6 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
     }
 
     /**
-     * Fetch a csrf token required for deployment. The token will be returned as header 'x-csrf-token'.
-     *
-     * @returns the Axios response object for futher processing
-     */
-    public async getCsrfToken(): Promise<AxiosResponse> {
-        return this.get('/actions/getcsrftoken/', {
-            headers: {
-                'X-Csrf-Token': 'Fetch'
-            }
-        });
-    }
-
-    /**
      * Deploy the given archive either by creating a new folder in the layered repository or updating an existing one.
      *
      * @param archivePath path to a zip archive containing the adaptation project
@@ -114,7 +101,6 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
     public async deploy(archivePath: string, config: AdaptationConfig): Promise<AxiosResponse> {
         const archive = readFileSync(archivePath);
 
-        const tokenResponse = await this.getCsrfToken();
         const checkResponse = await this.check(config.namespace);
         const params: object = {
             name: getNamespaceAsString(config.namespace),
@@ -132,18 +118,22 @@ export abstract class LayeredRepositoryService extends Axios implements Service 
             data: archive,
             params,
             headers: {
-                'Content-Type': 'application/octet-stream',
-                'X-Csrf-Token': tokenResponse.headers['x-csrf-token']
+                'Content-Type': 'application/octet-stream'
             }
         });
 
-        const info = response.data ? JSON.parse(response.data) : {};
-        if (info.result) {
-            this.logMessage(info.result);
+        try {
+            const info = response.data ? JSON.parse(response.data) : {};
+            if (info.result) {
+                this.logMessage(info.result);
+            }
+            (info.messages ?? []).forEach((message) => {
+                this.logMessage(message);
+            });
+        } catch (error) {
+            this.log.info('Deployment successful.');
+            this.log.warn('Could not parse returned messages.');
         }
-        (info.messages ?? []).forEach((message) => {
-            this.logMessage(message);
-        });
 
         return response;
     }

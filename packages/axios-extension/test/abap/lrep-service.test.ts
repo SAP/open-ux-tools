@@ -5,16 +5,9 @@ import { LayeredRepositoryService, createForAbap, AdaptationConfig } from '../..
 
 nock.disableNetConnect();
 
-describe('DesigntimeAdaptationService', () => {
+describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';
     const service = createForAbap({ baseURL: server }).layeredRepository();
-
-    nock(server)
-        .get(`${LayeredRepositoryService.PATH}/actions/getcsrftoken/`)
-        .reply(200, undefined, {
-            'x-csrf-token': 'token'
-        })
-        .persist();
 
     beforeEach(() => {
         jest.resetModules();
@@ -65,7 +58,9 @@ describe('DesigntimeAdaptationService', () => {
                         config.namespace as string
                     )}&layer=CUSTOMER_BASE`
                 )
-                .reply(200);
+                .reply(200, undefined, {
+                    'x-csrf-token': 'token'
+                });
 
             nock(server)
                 .put(
