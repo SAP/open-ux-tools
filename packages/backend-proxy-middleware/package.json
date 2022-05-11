@@ -32,14 +32,17 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "chalk": "4.1.2",
         "dotenv": "16.0.0",
         "express": "4.17.2",
         "http-proxy-middleware": "2.0.1",
         "https-proxy-agent": "5.0.0",
-        "i18next": "20.3.2"
+        "i18next": "20.3.2",
+        "prompts": "2.4.2"
     },
     "devDependencies": {
         "@types/express": "4.17.13",
+        "@types/prompts": "2.0.14",
         "nock": "13.2.4",
         "supertest": "6.2.2",
         "@types/supertest": "2.0.12",

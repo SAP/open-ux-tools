@@ -11,3 +11,4 @@ export interface Service<Entity, EntityKey> {
 }
 
 export { SystemService } from './backend-system';
+export { ApiHubSettingsService } from './api-hub';

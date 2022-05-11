@@ -1,4 +1,5 @@
 import HttpsProxyAgent from 'https-proxy-agent';
+import i18next from 'i18next';
 import { IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
 import { createForAbapOnBtp } from '@sap-ux/axios-extension';
@@ -13,10 +14,12 @@ import type { Request } from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { createProxyMiddleware, RequestHandler } from 'http-proxy-middleware';
 import type { BackendConfig, CommonConfig } from './types';
+import translations from '../i18n.json';
 
 import {
     ApiHubSettings,
     ApiHubSettingsKey,
+    ApiHubSettingsService,
     AuthenticationType,
     BackendSystem,
     BackendSystemKey,
@@ -33,7 +36,10 @@ import { isHostExcludedFromProxy, promptUserPass } from './config';
 async function getApiHubKey(logger: Logger): Promise<string | undefined> {
     let apiHubKey: string | undefined = process.env.API_HUB_API_KEY;
     if (!apiHubKey && !isAppStudio()) {
-        const apiHubStore = await getService<ApiHubSettings, ApiHubSettingsKey>({ logger, entityName: 'api-hub' });
+        const apiHubStore = (await getService<ApiHubSettings, ApiHubSettingsKey>({
+            logger,
+            entityName: 'api-hub'
+        })) as ApiHubSettingsService;
         const apiHubSettings = await apiHubStore.read();
         apiHubKey = apiHubSettings ? apiHubSettings.apiKey : undefined;
     }
@@ -42,14 +48,14 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
 
 const backendProxyUserResHeaderDecorator = (proxyRes: IncomingMessage): void => {
     // retrieve the set-cookie headers from the response and transform secure cookies to insecure ones
-    const setCookie = 'set-cookie';
-    if (proxyRes.headers[setCookie]) {
-        for (let i = proxyRes.headers[setCookie].length - 1; i >= 0; i--) {
-            const cookie = proxyRes.headers[setCookie][i].replace(
+    const header = proxyRes?.headers?.['set-cookie'];
+    if (header?.length) {
+        for (let i = header.length - 1; i >= 0; i--) {
+            const cookie = header[i].replace(
                 /\s{0,1}Domain=[^\s]*\s{0,1}|\s{0,1}SameSite=[^\s]*\s{0,1}|\s{0,1}Secure[^\s]*\s{0,1}/gi,
                 ''
             );
-            proxyRes.headers['set-cookie'][i] = cookie;
+            header[i] = cookie;
         }
     }
 };
@@ -107,6 +113,24 @@ const proxyErrorHandler = (err: any, req: Request, _res: ServerResponse): void =
     }
 };
 
+/**
+ * Initialize i18next with the translations for this module.
+ */
+async function initI18n(): Promise<void> {
+    const ns = 'ui5-proxy-middleware';
+    await i18next.init({
+        resources: {
+            en: {
+                [ns]: translations
+            }
+        },
+        lng: 'en',
+        fallbackLng: 'en',
+        defaultNS: ns,
+        ns: [ns]
+    });
+}
+
 export async function getBackendProxy(
     backend: BackendConfig,
     common: CommonConfig,
@@ -127,7 +151,7 @@ export async function getBackendProxy(
         pathRewrite: (path: string): string => {
             return backendProxyReqPathResolver(path, backend, logger, common.bsp);
         },
-        onError: proxyErrorHandler
+        onError: proxyErrorHandler as any
     };
 
     let authNeeded = true;
@@ -146,16 +170,12 @@ export async function getBackendProxy(
                 if (destination) {
                     authNeeded = destination.Authentication === 'NoAuthentication';
                     proxyConfig.target = getDestinationUrlForAppStudio(destinationName);
-                    // if the pathPrefix is maintained in the yaml file add it instead of the path to the service URI.
-                    // Needed in the case of re-use libs
-                    // TODO: need to understand this
+                    // in case of a full url destination remove the path defined in the destination from the forwarded call
                     if (isFullUrlDestination(destination)) {
-                        backend.pathPrefix = `${target.service ? target.service : ''}`;
-                        backend.path = target.destinationServiceUrl.replace(/\/$/, '');
-                    } else {
-                        backend.pathPrefix = `${target.service ? target.service : ''}${
-                            backendConfig.pathPrefix ? backendConfig.pathPrefix : backendConfig.path || ''
-                        }`;
+                        const destPath = new URL(destination.Host).pathname.replace(/\/$/, '');
+                        if (backend.path.startsWith(destPath) && !backend.pathPrefix) {
+                            backend.pathPrefix = backend.path.replace(destPath, '');
+                        }
                     }
                 } else {
                     throw new Error();
@@ -223,7 +243,7 @@ export async function getBackendProxy(
     }
 
     if (common.proxy && !isHostExcludedFromProxy(common.noProxyList, backend.url)) {
-        proxyConfig.agent = new HttpsProxyAgent(common.proxy);
+        proxyConfig.agent = new (HttpsProxyAgent as any)(common.proxy);
     }
 
     if (common.bsp) {

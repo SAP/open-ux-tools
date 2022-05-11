@@ -1,5 +1,8 @@
 import type { BackendConfig, ProxyConfig } from './types';
+import prompts from 'prompts';
+import { yellow, cyan } from 'chalk';
 import dotenv from 'dotenv';
+import i18n from 'i18next';
 import { Logger } from '@sap-ux/logger';
 
 /**
@@ -73,16 +76,16 @@ export function mergeConfigWithEnvVariables(config: ProxyConfig): ProxyConfig {
  */
 export async function promptUserPass(log: Logger): Promise<string> {
     console.log();
-    log.info(yellow(i18next.t('REQUIRE_CREDENTIAL_FLP')));
+    log.info(yellow(i18n.t('info.credentialsRequiredForFLP')));
     const { username, password } = await prompts(
         [
             {
                 type: 'text',
                 name: 'username',
-                message: `${cyan(i18next.t('USERNAME'))}\n\n`,
+                message: `${cyan(i18n.t('info.username'))}\n\n`,
                 validate: (value): boolean | string => {
                     if (!value || !value.trim()) {
-                        return `${i18next.t('ERROR_EMPTY_USERNAME')}`;
+                        return `${i18n.t('error.emptyUsername')}`;
                     } else {
                         return true;
                     }
@@ -91,10 +94,10 @@ export async function promptUserPass(log: Logger): Promise<string> {
             {
                 type: 'password',
                 name: 'password',
-                message: `${cyan(i18next.t('PASSWORD'))}\n\n`,
+                message: `${cyan(i18n.t('info.password'))}\n\n`,
                 validate: (value): boolean | string => {
                     if (!value || !value.trim()) {
-                        return `${i18next.t('ERROR_EMPTY_PASSWORD')}`;
+                        return `${i18n.t('error.emptyPassword')}`;
                     } else {
                         return true;
                     }
@@ -103,7 +106,7 @@ export async function promptUserPass(log: Logger): Promise<string> {
         ],
         {
             onCancel: () => {
-                log.info(yellow(i18next.t('OPERATION_ABORTED')));
+                log.info(yellow(i18n.t('info.operationAborted')));
                 return process.exit(1);
             }
         }

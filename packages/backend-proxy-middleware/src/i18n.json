@@ -1,0 +1,12 @@
+{
+    "info": {
+        "username": "Username",
+        "password": "Password",
+        "credentialsRequiredForFLP": "The FLP Embedded Preview requires credentials. Please enter your credentials below",
+        "operationAborted": "Operation aborted by the user."
+    },
+    "error": {
+        "emptyUsername": "Username can not be empty.",
+        "emptyPassword": "Password can not be empty."
+    }
+}
