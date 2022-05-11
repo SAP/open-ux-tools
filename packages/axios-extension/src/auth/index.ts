@@ -1,6 +1,7 @@
 import { ServiceInfo } from '@sap-ux/btp-utils';
 import type { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
 import type { AbapServiceProvider } from '../abap';
+import { getReentranceTicket } from './reentrance-ticket';
 import { RefreshTokenChanged, Uaa } from './uaa';
 
 export * from './connection';
@@ -44,6 +45,26 @@ export function attachUaaAuthInterceptor(
         // add token as auth header
         request.headers = request.headers ?? {};
         request.headers.authorization = `bearer ${token}`;
+        // remove this interceptor since it is not needed anymore
+        provider.interceptors.request.eject(oneTimeInterceptorId);
+        return request;
+    });
+}
+
+export function attachReentranceTicketAuthInterceptor({
+    provider,
+    service
+}: {
+    provider: AbapServiceProvider;
+    service: ServiceInfo;
+}): void {
+    let reentranceTicket: string;
+
+    const oneTimeInterceptorId = provider.interceptors.request.use(async (request: AxiosRequestConfig) => {
+        reentranceTicket =
+            reentranceTicket ?? (await getReentranceTicket({ backendUrl: service.url, logger: provider.log }));
+        request.headers = request.headers ?? {};
+        request.headers.MYSAPSSO2 = reentranceTicket;
         // remove this interceptor since it is not needed anymore
         provider.interceptors.request.eject(oneTimeInterceptorId);
         return request;

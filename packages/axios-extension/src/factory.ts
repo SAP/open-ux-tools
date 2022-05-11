@@ -3,7 +3,7 @@ import cloneDeep from 'lodash.clonedeep';
 import type { Destination } from '@sap-ux/btp-utils';
 import { getDestinationUrlForAppStudio, getUserForDestinationService, isAbapSystem } from '@sap-ux/btp-utils';
 import { Agent as HttpsAgent } from 'https';
-import type { ServiceInfo, RefreshTokenChanged } from './auth';
+import { ServiceInfo, RefreshTokenChanged, attachReentranceTicketAuthInterceptor } from './auth';
 import { attachConnectionHandler, attachBasicAuthInterceptor, attachUaaAuthInterceptor } from './auth';
 import type { ProviderConfiguration } from './base/service-provider';
 import { ServiceProvider } from './base/service-provider';
@@ -82,6 +82,22 @@ export function createForAbapOnBtp(
         baseURL: service.url
     });
     attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
+    return provider;
+}
+
+/**
+ * Create an instance of an ABAP service provider for an ABAP environment on SAP BTP.
+ *
+ * @param service ABAP environment service
+ * @param refreshToken optional refresh token
+ * @param refreshTokenChangedCb option callback for refresh token updates
+ * @returns instance of an ABAP service provider
+ */
+export function createForAbapOnCloud(service: ServiceInfo): AbapServiceProvider {
+    const provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
+        baseURL: service.url
+    });
+    attachReentranceTicketAuthInterceptor({ provider, service });
     return provider;
 }
 

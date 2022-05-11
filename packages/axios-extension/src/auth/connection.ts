@@ -8,6 +8,8 @@ export enum CSRF {
     RequestHeaderValue = 'Fetch',
     ResponseHeaderName = 'x-csrf-token'
 }
+/** Connection timeout. Should be made configurable */
+export const defaultTimeout = 60 * 1000; // 1 minute
 
 /**
  * Helper class for managing cookies.
