@@ -17,7 +17,7 @@ destinationList.forEach((dest) => {
 });
 
 const mockInstanceSettings = {
-    clientid: 'CLIENT_ID',
+    clientid: 'CLIENT_ID/WITH/STH/TO/ENCODE',
     clientsecret: 'CLIENT_SECRET'
 };
 
@@ -68,7 +68,9 @@ describe('App Studio', () => {
 
     describe('getUserForDestinationService', () => {
         const encodedInstanceSettings = Buffer.from(
-            `${mockInstanceSettings.clientid}:${mockInstanceSettings.clientsecret}`
+            `${encodeURIComponent(mockInstanceSettings.clientid)}:${encodeURIComponent(
+                mockInstanceSettings.clientsecret
+            )}`
         ).toString('base64');
 
         it('Service has uaa config', async () => {

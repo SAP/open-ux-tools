@@ -32,7 +32,7 @@ export async function getUserForDestinationService(instance: string): Promise<st
         const serviceInfo = await cfGetInstanceKeyParameters(instance);
         const clientId = serviceInfo.uaa?.clientid || serviceInfo.clientid;
         const clientSecret = serviceInfo.uaa?.clientsecret || serviceInfo.clientsecret;
-        return Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        return Buffer.from(`${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`).toString('base64');
     } catch (error) {
         throw new Error(
             `An error occurred while retrieving service key for the destination instance ${instance}: ${error}`
