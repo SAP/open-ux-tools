@@ -137,17 +137,16 @@ export async function enhanceConfigsForDestination(
     backend: DestinationBackendConfig
 ): Promise<boolean> {
     let authNeeded = true;
+    proxyOptions.target = getDestinationUrlForAppStudio(backend.destination);
     if (backend.destinationInstance) {
-        const url = new URL(getDestinationUrlForAppStudio(backend.destination));
-        url.username = await getUserForDestinationService(backend.destinationInstance);
-        proxyOptions.target = url.href.replace(/\/$/, '');
-        proxyOptions.headers!['bas-destination-instance-cred'] = url.username;
+        proxyOptions.headers!['bas-destination-instance-cred'] = await getUserForDestinationService(
+            backend.destinationInstance
+        );
     } else {
         const destinations = await listDestinations();
         const destination = destinations[backend.destination];
         if (destination) {
             authNeeded = destination.Authentication === 'NoAuthentication';
-            proxyOptions.target = getDestinationUrlForAppStudio(backend.destination);
             // in case of a full url destination remove the path defined in the destination from the forwarded call
             if (isFullUrlDestination(destination)) {
                 const destPath = new URL(destination.Host).pathname.replace(/\/$/, '');

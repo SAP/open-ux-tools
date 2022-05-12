@@ -98,7 +98,7 @@ describe('proxy', () => {
                 ...backend,
                 destinationInstance: '~destinationInstance'
             });
-            expect(proxyOptions.target).toBe(`https://${cred}@${backend.destination}.dest`);
+            expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(proxyOptions.headers!['bas-destination-instance-cred']).toBe(cred);
         });
     });
