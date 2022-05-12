@@ -4,6 +4,11 @@ import { ENV } from './app-studio.env';
 import type { Destination } from './destination';
 
 /**
+ * HTTP header that is to be used for encoded credentials when communicating with a destination service instance.
+ */
+export const BAS_DEST_INSTANCE_CRED_HEADER = 'bas-destination-instance-cred';
+
+/**
  * Check if this is exectued in SAP Business Application Studio.
  *
  * @returns true if yes
