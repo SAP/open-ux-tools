@@ -11,8 +11,7 @@ import {
     isFullUrlDestination
 } from '@sap-ux/btp-utils';
 import type { Request } from 'express';
-import type { Options } from 'http-proxy-middleware';
-import type { RequestHandler } from 'http-proxy-middleware';
+import type { Options, RequestHandler } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { BackendConfig, CommonConfig, DestinationBackendConfig } from './types';
 import translations from './i18n.json';
@@ -45,10 +44,7 @@ const backendProxyUserResHeaderDecorator = (proxyRes: IncomingMessage): void => 
     const header = proxyRes?.headers?.['set-cookie'];
     if (header?.length) {
         for (let i = header.length - 1; i >= 0; i--) {
-            const cookie = header[i].replace(
-                /\s{0,1}Domain=[^\s]*\s{0,1}|\s{0,1}SameSite=[^\s]*\s{0,1}|\s{0,1}Secure[^\s]*\s{0,1}/gi,
-                ''
-            );
+            const cookie = header[i].replace(/\s?Domain=[^\s]*\s?|\s?SameSite=[^\s]*\s?|\s?Secure[^\s]*\s?/gi, '');
             header[i] = cookie;
         }
     }
