@@ -22,12 +22,12 @@ export function getAppStudioProxyURL(): string | undefined {
 }
 
 /**
- * Asynchronously creates a base64 encoded user for the given destination service instance based on the client information fetched from BTP.
+ * Asynchronously creates a base64 encoded credentials for the given destination service instance based on the client information fetched from BTP.
  *
  * @param instance name/id of the destination service instance
  * @returns the base64 encoded user
  */
-export async function getUserForDestinationService(instance: string): Promise<string> {
+export async function getCredentialsForDestinationService(instance: string): Promise<string> {
     try {
         const serviceInfo = await cfGetInstanceKeyParameters(instance);
         const clientId = serviceInfo.uaa?.clientid || serviceInfo.clientid;

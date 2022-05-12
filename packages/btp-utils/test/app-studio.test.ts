@@ -6,7 +6,7 @@ import {
     getDestinationUrlForAppStudio,
     Destination,
     listDestinations,
-    getUserForDestinationService
+    getCredentialsForDestinationService
 } from '../src';
 import { ENV } from '../src/app-studio.env';
 import destinationList from './mockResponses/destinations.json';
@@ -66,7 +66,7 @@ describe('App Studio', () => {
         });
     });
 
-    describe('getUserForDestinationService', () => {
+    describe('getCredentialsForDestinationService', () => {
         const encodedInstanceSettings = Buffer.from(
             `${encodeURIComponent(mockInstanceSettings.clientid)}:${encodeURIComponent(
                 mockInstanceSettings.clientsecret
@@ -74,17 +74,17 @@ describe('App Studio', () => {
         ).toString('base64');
 
         it('Service has uaa config', async () => {
-            const user = await getUserForDestinationService('instance_has_uaa');
+            const user = await getCredentialsForDestinationService('instance_has_uaa');
             expect(user).toBe(encodedInstanceSettings);
         });
 
         it('Service has no uaa but its own id/secret', async () => {
-            const user = await getUserForDestinationService('instance');
+            const user = await getCredentialsForDestinationService('instance');
             expect(user).toBe(encodedInstanceSettings);
         });
 
         it('Invalid instance', async () => {
-            expect(getUserForDestinationService('invalid')).rejects.toThrowError();
+            expect(getCredentialsForDestinationService('invalid')).rejects.toThrowError();
         });
     });
 
