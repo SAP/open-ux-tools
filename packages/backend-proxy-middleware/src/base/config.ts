@@ -3,12 +3,13 @@ import prompts from 'prompts';
 import { yellow, cyan } from 'chalk';
 import dotenv from 'dotenv';
 import i18n from 'i18next';
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Get the effective proxy string from runtime args (highest priority), given config value or environment variables.
  *
- * @param proxyFromConfig - optional proxy string from configuraiton
+ * @param proxyFromConfig - optional proxy string from configuration
+ * @returns proxy server if required, otherwise undefined
  */
 export function getCorporateProxyServer(proxyFromConfig?: string): string | undefined {
     let proxyFromArgs: string | undefined;
@@ -53,6 +54,7 @@ export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, url: 
  * Get effective configuration. This merges input values and environment variables (process.env) into an effective configuration to work with.
  *
  * @param config - configuration provided as input (e.g. from ui5.yaml)
+ * @returns proxy configuration with merged values
  */
 export function mergeConfigWithEnvVariables(config: ProxyConfig): ProxyConfig {
     const mergedConfig = JSON.parse(JSON.stringify(config));
@@ -70,9 +72,10 @@ export function mergeConfigWithEnvVariables(config: ProxyConfig): ProxyConfig {
 }
 
 /**
- * Prompts the user for credentials
+ * Prompts the user for credentials.
  *
  * @param log - logger to report info to the user
+ * @returns prompted user and password serialized for a basic auth header
  */
 export async function promptUserPass(log: Logger): Promise<string> {
     console.log();

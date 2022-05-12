@@ -133,13 +133,13 @@ async function initI18n(): Promise<void> {
  * @returns true if the destination requires an authentication prompt in the CLI
  */
 export async function enhanceConfigsForDestination(
-    proxyOptions: Options,
+    proxyOptions: Options & { headers: object },
     backend: DestinationBackendConfig
 ): Promise<boolean> {
     let authNeeded = true;
     proxyOptions.target = getDestinationUrlForAppStudio(backend.destination);
     if (backend.destinationInstance) {
-        proxyOptions.headers!['bas-destination-instance-cred'] = await getUserForDestinationService(
+        proxyOptions.headers['bas-destination-instance-cred'] = await getUserForDestinationService(
             backend.destinationInstance
         );
     } else {
@@ -168,7 +168,7 @@ export async function getBackendProxy(
 ): Promise<RequestHandler> {
     await initI18n();
     // base options
-    const proxyOptions: Options = {
+    const proxyOptions: Options & { headers: object } = {
         secure: !common.ignoreCertError,
         changeOrigin: true,
         logLevel: common.debug ? 'debug' : 'silent',

@@ -31,13 +31,14 @@ describe('proxy', () => {
     });
 
     describe('enhanceConfigsForDestination', () => {
+        type OptionsWithHeaders = Options & { headers: object };
         const backend = {
             destination: '~destination',
             path: '/sap/xyz'
         };
         test('unknown destination', async () => {
             try {
-                await enhanceConfigsForDestination({}, backend);
+                await enhanceConfigsForDestination({ headers: {} }, backend);
                 fail('Unknown destination should have resulted in an error.');
             } catch (error) {
                 expect(error).toBeDefined();
@@ -48,7 +49,7 @@ describe('proxy', () => {
             mockListDestinations.mockResolvedValueOnce({
                 [backend.destination]: {}
             });
-            const proxyOptions: Options = {};
+            const proxyOptions: OptionsWithHeaders = { headers: {} };
 
             const authNeeded = await enhanceConfigsForDestination(proxyOptions, backend);
             expect(authNeeded).toBe(false);
@@ -61,9 +62,8 @@ describe('proxy', () => {
                     Authentication: 'NoAuthentication'
                 }
             });
-            const proxyOptions: Options = {};
 
-            const authNeeded = await enhanceConfigsForDestination(proxyOptions, backend);
+            const authNeeded = await enhanceConfigsForDestination({ headers: {} }, backend);
             expect(authNeeded).toBe(true);
         });
 
@@ -74,7 +74,7 @@ describe('proxy', () => {
                     WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC},${WebIDEUsage.FULL_URL}`
                 }
             });
-            const proxyOptions: Options = {};
+            const proxyOptions: OptionsWithHeaders = { headers: {} };
             const modifiedBackend: DestinationBackendConfig = { ...backend };
 
             await enhanceConfigsForDestination(proxyOptions, modifiedBackend);
@@ -90,9 +90,7 @@ describe('proxy', () => {
             });
             const cred = '~base64EncodedCredentials';
             mockGetUserForDestinationService.mockResolvedValue(cred);
-            const proxyOptions: Options = {
-                headers: {}
-            };
+            const proxyOptions: OptionsWithHeaders = { headers: {} };
 
             await enhanceConfigsForDestination(proxyOptions, {
                 ...backend,

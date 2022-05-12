@@ -2,16 +2,20 @@ import type { MiddlewareParameters, ProxyConfig } from './base/types';
 import { getBackendProxy } from './base/proxy';
 import { mergeConfigWithEnvVariables } from './base/config';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import express, { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
+import { Router as createRouter } from 'express';
 
 /**
- * Fiori tools proxy middleware
+ * UI5 middleware allowing to to proxy backends.
+ *
+ * @param params input parameters for UI5 middleware
+ * @param params.options configuration options
  */
 module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
     });
-    const router = express.Router();
+    const router = createRouter();
     const config = mergeConfigWithEnvVariables(options.configuration);
     const proxyInfo = config.proxy ? config.proxy.replace(/\/\/(.*:{0,1}.*@)/, '//***:***@') : config.proxy;
 
