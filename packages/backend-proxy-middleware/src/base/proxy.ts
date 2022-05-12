@@ -226,11 +226,6 @@ export async function getBackendProxy(
                 } else if (process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
                     proxyOptions.auth = process.env.FIORI_TOOLS_USER + ':' + process.env.FIORI_TOOLS_PASSWORD;
                 }
-                // TODO: how can we do this cleanly
-                // monkey patch TLS to trust SAPs root CA
-                //if (TlsPatch.isPatchRequired(backendConfig.url)) {
-                //    TlsPatch.apply();
-                //}
             }
         }
     }
