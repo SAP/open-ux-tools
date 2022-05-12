@@ -78,7 +78,6 @@ export function mergeConfigWithEnvVariables(config: ProxyConfig): ProxyConfig {
  * @returns prompted user and password serialized for a basic auth header
  */
 export async function promptUserPass(log: Logger): Promise<string> {
-    console.log();
     log.info(yellow(i18n.t('info.credentialsRequiredForFLP')));
     const { username, password } = await prompts(
         [

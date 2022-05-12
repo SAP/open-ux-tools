@@ -161,6 +161,50 @@ export async function enhanceConfigsForDestination(
     return authNeeded;
 }
 
+/**
+ * Enhance the proxy options with information read from the store.
+ *
+ * @param proxyOptions reference to a proxy options object that the function will enhance
+ * @param system backend system information (most likely) read from the store
+ * @param oAuthRequired if true then the OAuth flow is triggered to get cookies
+ * @param tokenChangedCallback function to call if a new refreshToken is available
+ */
+export async function enhanceConfigForSystem(
+    proxyOptions: Options & { headers: object },
+    system: BackendSystem,
+    oAuthRequired: boolean | undefined,
+    tokenChangedCallback: (refreshToken?: string) => void
+): Promise<void> {
+    if (oAuthRequired) {
+        if (system.serviceKeys) {
+            const provider = createForAbapOnBtp(
+                JSON.parse(system.serviceKeys as string),
+                system.refreshToken,
+                tokenChangedCallback
+            );
+            // sending a request to the backend to get cookies
+            await provider.getAtoInfo();
+            proxyOptions.headers!['cookie'] = provider.cookies.toString();
+        } else {
+            // TODO: similar to prompting user/password, should allow prompting for service keys here?
+            throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
+        }
+    } else if (system.authenticationType === AuthenticationType.ReentranceTicket) {
+        // TODO: @ullas needs to add the missing code to the axios-extension
+        //const connection = await (await system.getCatalog(ODataVersion.v2)).getConnection();
+        //cookies = connection.cookies;
+    } else {
+        if (
+            (system.username || process.env.FIORI_TOOLS_USER) &&
+            (system.password || process.env.FIORI_TOOLS_PASSWORD)
+        ) {
+            proxyOptions.auth = `${system.username || process.env.FIORI_TOOLS_USER}:${
+                system.password || process.env.FIORI_TOOLS_PASSWORD
+            }`;
+        }
+    }
+}
+
 export async function getBackendProxy(
     backend: BackendConfig,
     common: CommonConfig,
@@ -192,41 +236,17 @@ export async function getBackendProxy(
             logger.info('Using destination: ' + backend.destination);
         }
     } else {
+        proxyOptions.target = backend.url;
         // check if system credentials are stored in the store
         const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
         const system = await systemStore.read(new BackendSystemKey({ url: backend.url, client: backend.client }));
-
         if (system) {
-            // check if OAuth is required
-            if (backend.scp) {
-                if (system.serviceKeys) {
-                    const provider = createForAbapOnBtp(
-                        JSON.parse(system.serviceKeys as string),
-                        system.refreshToken,
-                        (refreshToken?: string) => {
-                            if (refreshToken) {
-                                logger.info('Updating refresh token for: ' + backend.url);
-                                systemStore.write({ ...system, refreshToken });
-                            }
-                        }
-                    );
-                    // sending a request to the backend to get cookies
-                    await provider.getAtoInfo();
-                    proxyOptions.headers!['cookie'] = provider.cookies.toString();
-                } else {
-                    throw new Error('');
+            await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
+                if (refreshToken) {
+                    logger.info('Updating refresh token for: ' + backend.url);
+                    systemStore.write({ ...system, refreshToken });
                 }
-            } else if (system.authenticationType === AuthenticationType.ReentranceTicket) {
-                // TODO: @ulla: do we need this or is this not required?
-                //const connection = await (await system.getCatalog(ODataVersion.v2)).getConnection();
-                //cookies = connection.cookies;
-            } else {
-                if (system?.username && system?.password) {
-                    proxyOptions.auth = system.username + ':' + system.password;
-                } else if (process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
-                    proxyOptions.auth = process.env.FIORI_TOOLS_USER + ':' + process.env.FIORI_TOOLS_PASSWORD;
-                }
-            }
+            });
         }
     }
 
@@ -237,7 +257,7 @@ export async function getBackendProxy(
     if (backend.apiHub) {
         const apiHubKey = await getApiHubKey(logger);
         if (apiHubKey) {
-            proxyOptions.headers!['apikey'] = apiHubKey;
+            proxyOptions.headers['apikey'] = apiHubKey;
         }
     }
 
