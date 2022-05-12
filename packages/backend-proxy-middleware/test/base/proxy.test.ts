@@ -90,13 +90,16 @@ describe('proxy', () => {
             });
             const cred = '~base64EncodedCredentials';
             mockGetUserForDestinationService.mockResolvedValue(cred);
-            const proxyOptions: Options = {};
+            const proxyOptions: Options = {
+                headers: {}
+            };
 
             await enhanceConfigsForDestination(proxyOptions, {
                 ...backend,
                 destinationInstance: '~destinationInstance'
             });
             expect(proxyOptions.target).toBe(`https://${cred}@${backend.destination}.dest`);
+            expect(proxyOptions.headers!['bas-destination-instance-cred']).toBe(cred);
         });
     });
 

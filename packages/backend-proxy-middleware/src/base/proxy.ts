@@ -141,6 +141,7 @@ export async function enhanceConfigsForDestination(
         const url = new URL(getDestinationUrlForAppStudio(backend.destination));
         url.username = await getUserForDestinationService(backend.destinationInstance);
         proxyOptions.target = url.href.replace(/\/$/, '');
+        proxyOptions.headers!['bas-destination-instance-cred'] = url.username;
     } else {
         const destinations = await listDestinations();
         const destination = destinations[backend.destination];
