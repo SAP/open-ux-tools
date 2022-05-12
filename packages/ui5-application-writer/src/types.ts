@@ -21,6 +21,7 @@ export interface App {
     sourceTemplate?: {
         id?: string;
         version?: string;
+        toolsId?: string;
     };
 }
 
