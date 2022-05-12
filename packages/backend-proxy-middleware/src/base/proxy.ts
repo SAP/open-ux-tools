@@ -1,6 +1,6 @@
 import HttpsProxyAgent from 'https-proxy-agent';
 import i18n from 'i18next';
-import { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
 import { createForAbapOnBtp } from '@sap-ux/axios-extension';
 import {
@@ -12,26 +12,20 @@ import {
 } from '@sap-ux/btp-utils';
 import type { Request } from 'express';
 import type { Options } from 'http-proxy-middleware';
-import { createProxyMiddleware, RequestHandler } from 'http-proxy-middleware';
+import type { RequestHandler } from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { BackendConfig, CommonConfig, DestinationBackendConfig } from './types';
 import translations from './i18n.json';
 
-import {
-    ApiHubSettings,
-    ApiHubSettingsKey,
-    ApiHubSettingsService,
-    AuthenticationType,
-    BackendSystem,
-    BackendSystemKey,
-    getService
-} from '@sap-ux/store';
+import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
+import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
 import { isHostExcludedFromProxy, promptUserPass } from './config';
 
 /**
  * Return the SAP API Hub key either provided as environment variable (including .env file) or from the secure store when not running in AppStudio.
  * not found or error while extracting the key.
  *
- * @param log - logger to report errors
+ * @param logger - logger to report errors
  */
 async function getApiHubKey(logger: Logger): Promise<string | undefined> {
     let apiHubKey: string | undefined = process.env.API_HUB_API_KEY;
@@ -131,6 +125,13 @@ async function initI18n(): Promise<void> {
     });
 }
 
+/**
+ * Enhance the proxy options and backend configurations for the usage of destinations in SAP Business Application Studio.
+ *
+ * @param proxyOptions reference to a proxy options object that the function will enhance
+ * @param backend reference to the backend configuration that the the function may enhance
+ * @returns true if the destination requires an authentication prompt in the CLI
+ */
 export async function enhanceConfigsForDestination(
     proxyOptions: Options,
     backend: DestinationBackendConfig
@@ -139,7 +140,7 @@ export async function enhanceConfigsForDestination(
     if (backend.destinationInstance) {
         const url = new URL(getDestinationUrlForAppStudio(backend.destination));
         url.username = await getUserForDestinationService(backend.destinationInstance);
-        proxyOptions.target = url.toString();
+        proxyOptions.target = url.href.replace(/\/$/, '');
     } else {
         const destinations = await listDestinations();
         const destination = destinations[backend.destination];
