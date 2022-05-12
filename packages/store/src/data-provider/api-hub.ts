@@ -4,7 +4,8 @@ import type { DataProvider, DataProviderConstructor } from '.';
 import type { DataAccess } from '../data-access';
 import { getHybridStore } from '../data-access/hybrid';
 import { Entities } from './constants';
-import { ApiHubSettings, ApiHubSettingsKey } from '../entities/api-hub';
+import type { ApiHubSettings } from '../entities/api-hub';
+import { ApiHubSettingsKey } from '../entities/api-hub';
 
 export const ApiHubSettingsProvider: DataProviderConstructor<ApiHubSettings, ApiHubSettingsKey> = class
     implements DataProvider<ApiHubSettings, ApiHubSettingsKey>
