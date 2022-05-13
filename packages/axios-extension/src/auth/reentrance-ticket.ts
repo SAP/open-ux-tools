@@ -10,7 +10,7 @@ import { defaultTimeout } from './connection';
 
 class ABAPSystem {
     /***
-     * Removes a `-api` suffix in the first label of the hostname, if any
+     * Removes any `-api` suffix in the first label of the hostname
      */
     static uiHostname(hostname: string): string {
         const [first, ...rest] = hostname.split('.');
@@ -25,6 +25,7 @@ class ABAPSystem {
         return !first.match(/.*-api$/) ? [first + '-api', ...rest].join('.') : hostname;
     }
 
+    // @todo: make sure this works
     static logoffUrl(hostname: string): string {
         return this.uiHostname(hostname) + '/sap/public/bc/icf/logoff';
     }
@@ -46,7 +47,7 @@ export async function getReentranceTicket({
     backendUrl: string;
     logger: Logger;
     timeout?: number;
-}): Promise<string> {
+}): Promise<{ reentranceTicket: string; apiUrl?: string }> {
     return new Promise((resolve, reject) => {
         // Start local server to listen to redirect call, with timeout
         const app = express();
@@ -75,7 +76,7 @@ export async function getReentranceTicket({
                 clearTimeout(timer);
             }
             server.close();
-            resolve(reentranceTicket);
+            resolve({ reentranceTicket, apiUrl: ABAPSystem.apiHostname(backendUrl) });
         });
 
         server.listen();

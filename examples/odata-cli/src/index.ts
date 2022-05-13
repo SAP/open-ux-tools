@@ -1,4 +1,4 @@
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { AbapServiceProvider, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import { createForDestination, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio, listDestinations, isAbapSystem } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
@@ -27,6 +27,9 @@ if (isAppStudio()) {
             break;
         case 'btp':
             checkAbapBtpSystem(processEnv);
+            break;
+        case 'cloud':
+            checkCloudAbapSystem(processEnv);
             break;
         case undefined:
             logger.info(`Test name missing, try 'pnpm test -- abap'`);
@@ -102,6 +105,21 @@ async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Prom
     const serviceInfo = JSON.parse(readFileSync(env.TEST_SERVICE_INFO_PATH, 'utf-8'));
     const provider = createForAbapOnBtp(serviceInfo, undefined, (newToken: string) => {
         logger.info(`New refresh token issued ${newToken}`);
+    });
+    return callAFewAbapServices(provider);
+}
+
+/**
+ * Read the required values for connecting to a Cloud ABAP environment from the env variable, create a provider instance and execute the system agnostic example script.
+ *
+ * @param env object reprensenting the content of the .env file.
+ * @param env.TEST_SERVICE_INFO_PATH path to a local copy of the service configuration file
+ * @returns Promise<void>
+ */
+async function checkCloudAbapSystem(env: { TEST_SYSTEM: string; TEST_IGNORE_CERT_ERRORS?: boolean }): Promise<void> {
+    const provider = createForAbapOnCloud({
+        url: env.TEST_SYSTEM,
+        ignoreCertErrors: env.TEST_IGNORE_CERT_ERRORS === 'true'
     });
     return callAFewAbapServices(provider);
 }

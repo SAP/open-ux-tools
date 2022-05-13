@@ -86,18 +86,21 @@ export function createForAbapOnBtp(
 }
 
 /**
- * Create an instance of an ABAP service provider for an ABAP environment on SAP BTP.
+ * Create an instance of an ABAP service provider for a Cloud ABAP system
  *
- * @param service ABAP environment service
- * @param refreshToken optional refresh token
- * @param refreshTokenChangedCb option callback for refresh token updates
+ * @params options
+ * @param options.url ABAP Service Instance URL
  * @returns instance of an ABAP service provider
  */
-export function createForAbapOnCloud(service: ServiceInfo): AbapServiceProvider {
+export function createForAbapOnCloud({
+    url,
+    ...config
+}: { url: string } & Partial<ProviderConfiguration>): AbapServiceProvider {
     const provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
-        baseURL: service.url
+        baseURL: url,
+        ...config
     });
-    attachReentranceTicketAuthInterceptor({ provider, service });
+    attachReentranceTicketAuthInterceptor({ provider });
     return provider;
 }
 

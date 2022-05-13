@@ -51,18 +51,25 @@ export function attachUaaAuthInterceptor(
     });
 }
 
-export function attachReentranceTicketAuthInterceptor({
-    provider,
-    service
-}: {
-    provider: AbapServiceProvider;
-    service: ServiceInfo;
-}): void {
-    let reentranceTicket: string;
-
+/**
+ * Get the reentrace ticket from the backend and add it to the header
+ * @param options
+ * @param options.provider an instance of an ABAP service provider
+ */
+export function attachReentranceTicketAuthInterceptor({ provider }: { provider: AbapServiceProvider }): void {
     const oneTimeInterceptorId = provider.interceptors.request.use(async (request: AxiosRequestConfig) => {
-        reentranceTicket =
-            reentranceTicket ?? (await getReentranceTicket({ backendUrl: service.url, logger: provider.log }));
+        const { reentranceTicket, apiUrl } = await getReentranceTicket({
+            backendUrl: provider.defaults.baseURL,
+            logger: provider.log
+        });
+        if (apiUrl && apiUrl != provider.defaults.baseURL) {
+            // Reentrance tickets work with API hostnames. If the original URL was not one, this will replace it
+            // with the API hostname returned
+            provider.log.warn(
+                `Replacing provider's default base URL (${provider.defaults.baseURL}) with API URL: ${apiUrl}`
+            );
+            provider.defaults.baseURL = apiUrl;
+        }
         request.headers = request.headers ?? {};
         request.headers.MYSAPSSO2 = reentranceTicket;
         // remove this interceptor since it is not needed anymore
