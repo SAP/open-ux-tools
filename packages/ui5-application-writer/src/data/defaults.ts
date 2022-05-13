@@ -58,8 +58,8 @@ export function mergePackages(packageA: Partial<Package>, packageB: Partial<Pack
  * @returns {Partial<App>} the App instance
  */
 export function mergeApp(app: App): App {
-    return mergeObjects([
-        {
+    return mergeObjects(
+        [{
             version: '0.0.1',
             title: t('text.defaultAppTitle', { id: app.id }),
             description: t('text.defaultAppDescription', { id: app.id }),
@@ -67,11 +67,11 @@ export function mergeApp(app: App): App {
             sourceTemplate: {
                 id: app.sourceTemplate?.id ?? '',
                 version: app.sourceTemplate?.version ?? '',
-                toolsId: app.sourceTemplate?.toolsId // Optional app descriptor property, wont be written if not provided
+                toolsId: app.sourceTemplate?.toolsId
             }
         },
-        app
-    ]) as App;
+        app]
+    ) as App;
 }
 
 export enum UI5_DEFAULT {
