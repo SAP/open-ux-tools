@@ -1,9 +1,5 @@
 import type { BackendConfig, ProxyConfig } from './types';
-import prompts from 'prompts';
-import { yellow, cyan } from 'chalk';
 import dotenv from 'dotenv';
-import i18n from 'i18next';
-import type { Logger } from '@sap-ux/logger';
 
 /**
  * Get the effective proxy string from runtime args (highest priority), given config value or environment variables.
@@ -71,50 +67,4 @@ export function mergeConfigWithEnvVariables(config: ProxyConfig): ProxyConfig {
     mergedConfig.secure = config.secure !== undefined ? !!config.secure : true;
 
     return mergedConfig;
-}
-
-/**
- * Prompts the user for credentials.
- *
- * @param log - logger to report info to the user
- * @returns prompted user and password serialized for a basic auth header
- */
-export async function promptUserPass(log: Logger): Promise<string> {
-    log.info(yellow(i18n.t('info.credentialsRequiredForFLP')));
-    const { username, password } = await prompts(
-        [
-            {
-                type: 'text',
-                name: 'username',
-                message: `${cyan(i18n.t('info.username'))}\n\n`,
-                validate: (value): boolean | string => {
-                    if (!value || !value.trim()) {
-                        return `${i18n.t('error.emptyUsername')}`;
-                    } else {
-                        return true;
-                    }
-                }
-            },
-            {
-                type: 'password',
-                name: 'password',
-                message: `${cyan(i18n.t('info.password'))}\n\n`,
-                validate: (value): boolean | string => {
-                    if (!value || !value.trim()) {
-                        return `${i18n.t('error.emptyPassword')}`;
-                    } else {
-                        return true;
-                    }
-                }
-            }
-        ],
-        {
-            onCancel: () => {
-                log.info(yellow(i18n.t('info.operationAborted')));
-                return process.exit(1);
-            }
-        }
-    );
-
-    return `${username}:${password}`;
 }

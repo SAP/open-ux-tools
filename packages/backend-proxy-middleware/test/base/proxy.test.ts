@@ -1,8 +1,7 @@
 import type { Options } from 'http-proxy-middleware';
-import * as hpm from 'http-proxy-middleware';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import {
-    getBackendProxy,
+    generateProxyMiddlewareOptions,
     enhanceConfigsForDestination,
     enhanceConfigForSystem,
     ProxyEventHandlers,
@@ -35,8 +34,6 @@ jest.mock('@sap-ux/btp-utils', () => ({
 const mockListDestinations = listDestinations as jest.Mock;
 const mockGetUserForDestinationService = getUserForDestinationService as jest.Mock;
 
-const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
-
 describe('proxy', () => {
     type OptionsWithHeaders = Options & { headers: object };
     const logger = new ToolsLogger({
@@ -48,7 +45,7 @@ describe('proxy', () => {
     });
 
     describe('PathRewriters', () => {
-        const { replacePrefix, convertAppDescriptorToManifest, replaceClient, getPathRewrite } = PathRewriters;
+        const { replacePrefix, replaceClient, getPathRewrite } = PathRewriters;
 
         test('replacePrefix', () => {
             const rewrite = replacePrefix('/old', '/my/new');
@@ -63,14 +60,6 @@ describe('proxy', () => {
             expect(rewrite('/test?sap-client=000')).toBe('/test?sap-client=012');
         });
 
-        test('convertAppDescriptorToManifest', () => {
-            const rewrite = convertAppDescriptorToManifest('/my/bsp');
-            expect(rewrite('/my/bsp/manifest.appdescr')).toBe('/manifest.json');
-            expect(rewrite('/another/manifest.appdescr')).toBe('/another/manifest.appdescr');
-            expect(rewrite('/my/bsp/test')).toBe('/my/bsp/test');
-            expect(rewrite('/test')).toBe('/test');
-        });
-
         test('getPathRewrite', () => {
             // no rewrite required
             expect(getPathRewrite({} as BackendConfig, logger)).toBeUndefined();
@@ -82,12 +71,10 @@ describe('proxy', () => {
                     path: '/old',
                     pathPrefix: '/my/new'
                 } as BackendConfig,
-                logger,
-                '/my/bsp'
+                logger
             );
             expect(writerChain).toBeDefined();
             expect(writerChain!('/old/my/bsp/test?sap-client=000')).toBe('/my/new/my/bsp/test?sap-client=012');
-            expect(writerChain!('/old/my/bsp/manifest.appdescr?sap-client=000')).toBe('/manifest.json');
             expect(writerChain!('/test')).toBe('/test?sap-client=012');
         });
     });
@@ -198,20 +185,8 @@ describe('proxy', () => {
             });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
-            const authNeeded = await enhanceConfigsForDestination(proxyOptions, backend);
-            expect(authNeeded).toBe(false);
+            await enhanceConfigsForDestination(proxyOptions, backend);
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
-        });
-
-        test('destination with authentication required', async () => {
-            mockListDestinations.mockResolvedValueOnce({
-                [backend.destination]: {
-                    Authentication: 'NoAuthentication'
-                }
-            });
-
-            const authNeeded = await enhanceConfigsForDestination({ headers: {} }, backend);
-            expect(authNeeded).toBe(true);
         });
 
         test('destination with full url', async () => {
@@ -325,13 +300,13 @@ describe('proxy', () => {
         });
     });
 
-    describe('getBackendProxy', () => {
-        test.skip('TBD', () => {
+    describe('generateProxyMiddlewareOptions', () => {
+        test.skip('TBD', async () => {
             const backend = {} as any;
             const common = {} as any;
 
-            getBackendProxy(backend, common, logger);
-            expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
+            const options = await generateProxyMiddlewareOptions(backend, common, logger);
+            expect(options).toBeDefined();
         });
     });
 });

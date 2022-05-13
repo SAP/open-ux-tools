@@ -1,9 +1,11 @@
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { MiddlewareParameters, ProxyConfig } from './base/types';
-import { getBackendProxy } from './base/proxy';
+import { generateProxyMiddlewareOptions } from './base/proxy';
 import { mergeConfigWithEnvVariables } from './base/config';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import { Router as createRouter } from 'express';
+import { addOptionsForEmbeddedBSP } from 'ext/bsp';
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.
@@ -47,7 +49,12 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
     if (config.backend) {
         for (const backend of config.backend) {
             try {
-                router.use(backend.path, await getBackendProxy(backend, config, logger));
+                const options = await generateProxyMiddlewareOptions(backend, config, logger);
+                // TODO: decide if this code should be removed
+                if (config.bsp) {
+                    addOptionsForEmbeddedBSP(config.bsp, options, logger);
+                }
+                router.use(backend.path, createProxyMiddleware(options));
             } catch (e) {
                 const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;
                 logger.error(message);

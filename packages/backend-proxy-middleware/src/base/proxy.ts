@@ -1,5 +1,7 @@
 import HttpsProxyAgent from 'https-proxy-agent';
 import type { ServerOptions } from 'http-proxy';
+import type { RequestHandler } from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
@@ -11,14 +13,13 @@ import {
     listDestinations,
     isFullUrlDestination
 } from '@sap-ux/btp-utils';
-import type { Options, RequestHandler } from 'http-proxy-middleware';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import type { Options } from 'http-proxy-middleware';
 import type { BackendConfig, CommonConfig, DestinationBackendConfig } from './types';
 import translations from './i18n.json';
 
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
-import { isHostExcludedFromProxy, promptUserPass } from './config';
+import { isHostExcludedFromProxy } from './config';
 import type { Url } from 'url';
 
 /**
@@ -138,34 +139,19 @@ export const PathRewriters = {
     },
 
     /**
-     * Replace calls to manifest.appdescr file if we are running the FLP embedded flow.
-     *
-     * @param bsp path of the BSP page
-     * @returns a path rewrite function
-     */
-    convertAppDescriptorToManifest(bsp: string): (path: string) => string {
-        const regex = new RegExp('(' + bsp + '/manifest\\.appdescr\\b)');
-        return (path: string) => (path.match(regex) ? '/manifest.json' : path);
-    },
-
-    /**
      * Create a chain of rewrite function calls based on the provided configuration.
      *
      * @param config backend configuration
      * @param log logger instance
-     * @param bsp (optional) BSP path in case it is the FLP embedded flow
      * @returns a path rewrite function
      */
-    getPathRewrite(config: BackendConfig, log: Logger, bsp?: string): ((path: string) => string) | undefined {
+    getPathRewrite(config: BackendConfig, log: Logger): ((path: string) => string) | undefined {
         const functions: ((path: string) => string)[] = [];
         if (config.pathPrefix) {
             functions.push(PathRewriters.replacePrefix(config.path, config.pathPrefix));
         }
         if (config.client) {
             functions.push(PathRewriters.replaceClient(config.client));
-        }
-        if (bsp) {
-            functions.push(PathRewriters.convertAppDescriptorToManifest(bsp));
         }
         if (functions.length > 0) {
             return (path: string) => {
@@ -205,13 +191,11 @@ async function initI18n(): Promise<void> {
  *
  * @param proxyOptions reference to a proxy options object that the function will enhance
  * @param backend reference to the backend configuration that the the function may enhance
- * @returns true if the destination requires an authentication prompt in the CLI
  */
 export async function enhanceConfigsForDestination(
     proxyOptions: Options & { headers: object },
     backend: DestinationBackendConfig
-): Promise<boolean> {
-    let authNeeded = true;
+): Promise<void> {
     proxyOptions.target = getDestinationUrlForAppStudio(backend.destination);
     if (backend.destinationInstance) {
         proxyOptions.headers['bas-destination-instance-cred'] = await getUserForDestinationService(
@@ -221,7 +205,6 @@ export async function enhanceConfigsForDestination(
         const destinations = await listDestinations();
         const destination = destinations[backend.destination];
         if (destination) {
-            authNeeded = destination.Authentication === 'NoAuthentication';
             // in case of a full url destination remove the path defined in the destination from the forwarded call
             if (isFullUrlDestination(destination)) {
                 const destPath = new URL(destination.Host).pathname.replace(/\/$/, '');
@@ -233,7 +216,6 @@ export async function enhanceConfigsForDestination(
             throw new Error();
         }
     }
-    return authNeeded;
 }
 
 /**
@@ -278,11 +260,11 @@ export async function enhanceConfigForSystem(
     }
 }
 
-export async function getBackendProxy(
+export async function generateProxyMiddlewareOptions(
     backend: BackendConfig,
     common: CommonConfig,
     logger: Logger
-): Promise<RequestHandler> {
+): Promise<Options> {
     await initI18n();
     // base options
     const proxyOptions: Options & { headers: object } = {
@@ -293,13 +275,11 @@ export async function getBackendProxy(
         headers: {}
     };
 
-    let authNeeded = true;
-
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
         backend.destination = backend.destination ?? process.env.FIORI_TOOLS_DESTINATION;
         if (backend.destination) {
-            authNeeded = await enhanceConfigsForDestination(proxyOptions, backend);
+            await enhanceConfigsForDestination(proxyOptions, backend);
             logger.info('Using destination: ' + backend.destination);
         }
     } else {
@@ -317,7 +297,7 @@ export async function getBackendProxy(
         }
     }
 
-    proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger, common.bsp);
+    proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
 
     if (backend.apiHub) {
         const apiHubKey = await getApiHubKey(logger);
@@ -334,22 +314,8 @@ export async function getBackendProxy(
         proxyOptions.xfwd = true;
     }
 
-    if (common.proxy && !isHostExcludedFromProxy(common.noProxyList, backend.url)) {
+    if (common.proxy && !isHostExcludedFromProxy(common.noProxyList, proxyOptions.target as string)) {
         proxyOptions.agent = new (HttpsProxyAgent as any)(common.proxy);
-    }
-
-    if (common.bsp) {
-        const regex = new RegExp('(' + common.bsp + '/manifest\\.appdescr\\b)');
-        proxyOptions.router = (req): string | undefined => {
-            // redirects the request for manifest.appdescr to localhost
-            if (req.path.match(regex)) {
-                return req.protocol + '://' + req.headers.host;
-            }
-        };
-
-        if (!proxyOptions.auth && authNeeded) {
-            proxyOptions.auth = await promptUserPass(logger);
-        }
     }
 
     logger.info(
@@ -357,5 +323,13 @@ export async function getBackendProxy(
             backend.path ? backend.path : ''
         }`
     );
-    return createProxyMiddleware(proxyOptions);
+    return proxyOptions;
+}
+
+export async function createProxy(
+    backend: BackendConfig,
+    common: CommonConfig,
+    logger: Logger
+): Promise<RequestHandler> {
+    return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, common, logger));
 }

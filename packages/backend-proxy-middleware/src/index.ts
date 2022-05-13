@@ -1,3 +1,3 @@
-import { getBackendProxy } from './base/proxy';
+import { generateProxyMiddlewareOptions, createProxy } from './base/proxy';
 
-export { getBackendProxy };
+export { generateProxyMiddlewareOptions, createProxy };
