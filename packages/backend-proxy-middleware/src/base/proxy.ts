@@ -289,7 +289,7 @@ export async function getBackendProxy(
         ...ProxyEventHandlers,
         secure: common.secure,
         changeOrigin: true,
-        logLevel: common.debug ? 'debug' : 'silent',
+        logLevel: !!common.debug ? 'debug' : 'silent',
         headers: {}
     };
 
