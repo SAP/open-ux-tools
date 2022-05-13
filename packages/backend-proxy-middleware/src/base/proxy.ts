@@ -105,32 +105,81 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
     return apiHubKey;
 }
 
-const backendProxyReqPathResolver = (path: string, config: BackendConfig, log: Logger, bsp?: string): string => {
-    let targetPath = `${config.pathPrefix ? path.replace(config.path, config.pathPrefix.replace(/\/$/, '')) : path}`;
+/**
+ * Collection of path rewrite functions.
+ */
+export const PathRewriters = {
+    /**
+     * Generates a rewrite funtion that replace the match string with the prefix in the given string.
+     *
+     * @param match part of the path that is to be replaced
+     * @param prefix new path that is used as replacement
+     * @returns a path rewrite function
+     */
+    replacePrefix(match: string, prefix: string): (path: string) => string {
+        return (path: string) => path.replace(match, prefix.replace(/\/$/, ''));
+    },
 
-    if (config.client) {
-        const sapClient = 'sap-client=' + config.client;
-        if (targetPath.match(/sap-client=[0-9]{3}/)) {
-            targetPath = targetPath.replace(/sap-client=[0-9]{3}/, sapClient);
-        } else {
-            targetPath = targetPath.indexOf('?') !== -1 ? targetPath + '&' + sapClient : targetPath + '?' + sapClient;
-        }
-    }
+    /**
+     * Add or replace the sap-client url parameter if missing or inocrrect in the original request path.
+     *
+     * @param client sap-client as string
+     * @returns a path rewrite function
+     */
+    replaceClient(client: string): (path: string) => string {
+        const sapClient = 'sap-client=' + client;
+        return (path: string) => {
+            if (path.match(/sap-client=[0-9]{3}/)) {
+                return path.replace(/sap-client=[0-9]{3}/, sapClient);
+            } else {
+                return path.indexOf('?') !== -1 ? path + '&' + sapClient : path + '?' + sapClient;
+            }
+        };
+    },
 
-    if (bsp) {
+    /**
+     * Replace calls to manifest.appdescr file if we are running the FLP embedded flow.
+     *
+     * @param bsp path of the BSP page
+     * @returns a path rewrite function
+     */
+    convertAppDescriptorToManifest(bsp: string): (path: string) => string {
         const regex = new RegExp('(' + bsp + '/manifest\\.appdescr\\b)');
-        // returns manifest.json if manifest.appdescr is requested
-        if (targetPath.match(regex)) {
-            targetPath = '/manifest.json';
+        return (path: string) => (path.match(regex) ? '/manifest.json' : path);
+    },
+
+    /**
+     * Create a chain of rewrite function calls based on the provided configuration.
+     *
+     * @param config backend configuration
+     * @param log logger instance
+     * @param bsp (optional) BSP path in case it is the FLP embedded flow
+     * @returns a path rewrite function
+     */
+    getPathRewrite(config: BackendConfig, log: Logger, bsp?: string): ((path: string) => string) | undefined {
+        const functions: ((path: string) => string)[] = [];
+        if (config.pathPrefix) {
+            functions.push(PathRewriters.replacePrefix(config.path, config.pathPrefix));
+        }
+        if (config.client) {
+            functions.push(PathRewriters.replaceClient(config.client));
+        }
+        if (bsp) {
+            functions.push(PathRewriters.convertAppDescriptorToManifest(bsp));
+        }
+        if (functions.length > 0) {
+            return (path: string) => {
+                let newPath = path;
+                functions.forEach((func) => (newPath = func(newPath)));
+                if (newPath !== path) {
+                    log.info(`Rewrite path ${path} > ${newPath}`);
+                } else {
+                    log.info(path);
+                }
+                return newPath;
+            };
         }
     }
-
-    if (config.pathPrefix) {
-        log.info(`Rewrite path ${path} > ${targetPath}`);
-    } else {
-        log.info(targetPath);
-    }
-    return targetPath;
 };
 
 /**
@@ -268,9 +317,7 @@ export async function getBackendProxy(
         }
     }
 
-    proxyOptions.pathRewrite = (path: string): string => {
-        return backendProxyReqPathResolver(path, backend, logger, common.bsp);
-    };
+    proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger, common.bsp);
 
     if (backend.apiHub) {
         const apiHubKey = await getApiHubKey(logger);

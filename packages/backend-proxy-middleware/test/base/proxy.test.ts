@@ -5,9 +5,10 @@ import {
     getBackendProxy,
     enhanceConfigsForDestination,
     enhanceConfigForSystem,
-    ProxyEventHandlers
+    ProxyEventHandlers,
+    PathRewriters
 } from '../../src/base/proxy';
-import { DestinationBackendConfig } from '../../src/base/types';
+import { BackendConfig, DestinationBackendConfig } from '../../src/base/types';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 
 // mock required axios-extension functions
@@ -44,6 +45,49 @@ describe('proxy', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+    });
+
+    describe('PathRewriters', () => {
+        const { replacePrefix, convertAppDescriptorToManifest, replaceClient, getPathRewrite } = PathRewriters;
+
+        test('replacePrefix', () => {
+            const rewrite = replacePrefix('/old', '/my/new');
+            expect(rewrite('/old/test')).toBe('/my/new/test');
+            expect(rewrite('/test')).toBe('/test');
+        });
+
+        test('replaceClient', () => {
+            const rewrite = replaceClient('012');
+            expect(rewrite('/test')).toBe('/test?sap-client=012');
+            expect(rewrite('/test?sap-language=en')).toBe('/test?sap-language=en&sap-client=012');
+            expect(rewrite('/test?sap-client=000')).toBe('/test?sap-client=012');
+        });
+
+        test('convertAppDescriptorToManifest', () => {
+            const rewrite = convertAppDescriptorToManifest('/my/bsp');
+            expect(rewrite('/my/bsp/manifest.appdescr')).toBe('/manifest.json');
+            expect(rewrite('/test')).toBe('/test');
+        });
+
+        test('getPathRewrite', () => {
+            // no rewrite required
+            expect(getPathRewrite({} as BackendConfig, logger)).toBeUndefined();
+
+            // all writers added
+            const writerChain = getPathRewrite(
+                {
+                    client: '012',
+                    path: '/old',
+                    pathPrefix: '/my/new'
+                } as BackendConfig,
+                logger,
+                '/my/bsp'
+            );
+            expect(writerChain).toBeDefined();
+            expect(writerChain!('/old/my/bsp/test?sap-client=000')).toBe('/my/new/my/bsp/test?sap-client=012');
+            expect(writerChain!('/old/my/bsp/manifest.appdescr?sap-client=000')).toBe('/manifest.json');
+            expect(writerChain!('/test')).toBe('/test?sap-client=012');
+        });
     });
 
     describe('ProxyEventHandlers', () => {
