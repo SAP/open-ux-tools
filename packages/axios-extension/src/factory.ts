@@ -3,7 +3,8 @@ import cloneDeep from 'lodash.clonedeep';
 import type { Destination } from '@sap-ux/btp-utils';
 import { getDestinationUrlForAppStudio, getUserForDestinationService, isAbapSystem } from '@sap-ux/btp-utils';
 import { Agent as HttpsAgent } from 'https';
-import { ServiceInfo, RefreshTokenChanged, attachReentranceTicketAuthInterceptor } from './auth';
+import type { ServiceInfo, RefreshTokenChanged } from './auth';
+import { attachReentranceTicketAuthInterceptor } from './auth';
 import { attachConnectionHandler, attachBasicAuthInterceptor, attachUaaAuthInterceptor } from './auth';
 import type { ProviderConfiguration } from './base/service-provider';
 import { ServiceProvider } from './base/service-provider';
@@ -86,9 +87,9 @@ export function createForAbapOnBtp(
 }
 
 /**
- * Create an instance of an ABAP service provider for a Cloud ABAP system
+ * Create an instance of an ABAP service provider for a Cloud ABAP system.
  *
- * @params options
+ * @param options
  * @param options.url ABAP Service Instance URL
  * @returns instance of an ABAP service provider
  */

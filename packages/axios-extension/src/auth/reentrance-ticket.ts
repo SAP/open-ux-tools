@@ -8,24 +8,36 @@ import type { AddressInfo } from 'net';
 import open = require('open');
 import { defaultTimeout } from './connection';
 
+/**
+ *
+ */
 class ABAPSystem {
-    /***
-     * Removes any `-api` suffix in the first label of the hostname
+    /**
+     * Removes any `-api` suffix in the first label of the hostname.
+     *
+     * @param hostname
+     * @returns UI hostname
      */
     static uiHostname(hostname: string): string {
         const [first, ...rest] = hostname.split('.');
         return [first.replace('-api', ''), ...rest].join('.');
     }
     /**
+     * Adds a `-api` suffix to the first label of the hostname.
      *
-     * Adds a `-api` suffix to the first label of the hostname
+     * @param hostname
+     * @returns API hostname
      */
     static apiHostname(hostname: string): string {
         const [first, ...rest] = hostname.split('.');
         return !first.match(/.*-api$/) ? [first + '-api', ...rest].join('.') : hostname;
     }
 
-    // @todo: make sure this works
+    /**
+     *
+     * @param hostname
+     * @returns logoff URL
+     */
     static logoffUrl(hostname: string): string {
         return this.uiHostname(hostname) + '/sap/public/bc/icf/logoff';
     }
@@ -33,11 +45,12 @@ class ABAPSystem {
 const ADT_REENTRANCE_ENDPOINT = '/sap/bc/adt/core/http/reentranceticket';
 
 /**
+ * Get the reentrance ticket from the backend.
  *
- * Open a browser pointing to the ADT endpoint and pass in a redirection URL.
- * Start a local server at the redirection URL.
- * Browser takes care of the SAML authentication and returns a 'reentrance ticket'.
- *
+ * @param options
+ * @param options.backendUrl
+ * @param options.logger
+ * @param options.timeout
  */
 export async function getReentranceTicket({
     backendUrl,
@@ -48,6 +61,10 @@ export async function getReentranceTicket({
     logger: Logger;
     timeout?: number;
 }): Promise<{ reentranceTicket: string; apiUrl?: string }> {
+    /* Open a browser pointing to the ADT endpoint and pass in a redirection URL.
+     * Start a local server at the redirection URL.
+     * Browser takes care of the SAML authentication and returns a 'reentrance ticket'.
+     */
     return new Promise((resolve, reject) => {
         // Start local server to listen to redirect call, with timeout
         const app = express();
@@ -58,9 +75,17 @@ export async function getReentranceTicket({
             reject(new TimeoutError(`Timeout. Did not get a response within ${prettyPrintTimeInMs(timeout)}`));
         };
 
+        /**
+         *
+         */
         class Redirect {
             public static readonly path = '/redirect';
 
+            /**
+             *
+             * @param port
+             * @returns redirection URL
+             */
             public static url(port: number): string {
                 return 'http://localhost:' + port + Redirect.path;
             }

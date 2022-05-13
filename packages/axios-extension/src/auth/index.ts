@@ -1,6 +1,6 @@
 import { ServiceInfo } from '@sap-ux/btp-utils';
 import type { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { ServiceProvider } from '../base/service-provider';
+import type { ServiceProvider } from '../base/service-provider';
 import type { AbapServiceProvider } from '../abap';
 import { getReentranceTicket } from './reentrance-ticket';
 import { RefreshTokenChanged, Uaa } from './uaa';
@@ -53,11 +53,14 @@ export function attachUaaAuthInterceptor(
 }
 
 /**
- * Get the reentrace ticket from the backend and add it to the header
+ * Get the reentrace ticket from the backend and add it to the header.
+ *
  * @param options
  * @param options.provider an instance of an ABAP service provider
  */
 export function attachReentranceTicketAuthInterceptor({ provider }: { provider: ServiceProvider }): void {
+    /* This cannot be a const like eslint claims */
+    /* eslint-disable prefer-const */
     let oneTimeInterceptorId: number;
     const ejectCallback = () => provider.interceptors.request.eject(oneTimeInterceptorId);
     oneTimeInterceptorId = provider.interceptors.request.use(
@@ -66,9 +69,12 @@ export function attachReentranceTicketAuthInterceptor({ provider }: { provider: 
 }
 
 /**
- * Get the reentrace ticket from the backend and add it to the header
+ * Get the interceptor that fetches and uses reentrance tickets from the backend.
+ *
  * @param options
  * @param options.provider an instance of an ABAP service provider
+ * @param options.ejectCallback
+ * @returns the interceptor function to fetch and use reentrace tickets
  */
 export function getReentranceTicketAuthInterceptor({
     provider,
