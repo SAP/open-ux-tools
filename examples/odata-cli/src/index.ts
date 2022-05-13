@@ -113,10 +113,11 @@ async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Prom
  * Read the required values for connecting to a Cloud ABAP environment from the env variable, create a provider instance and execute the system agnostic example script.
  *
  * @param env object reprensenting the content of the .env file.
- * @param env.TEST_SERVICE_INFO_PATH path to a local copy of the service configuration file
+ * @param env.TEST_SYSTEM base url of the test system
+ * @param env.TEST_IGNORE_CERT_ERRORS optional, ignore certifcate errors or not
  * @returns Promise<void>
  */
-async function checkCloudAbapSystem(env: { TEST_SYSTEM: string; TEST_IGNORE_CERT_ERRORS?: boolean }): Promise<void> {
+async function checkCloudAbapSystem(env: { TEST_SYSTEM: string; TEST_IGNORE_CERT_ERRORS?: string }): Promise<void> {
     const provider = createForAbapOnCloud({
         url: env.TEST_SYSTEM,
         ignoreCertErrors: env.TEST_IGNORE_CERT_ERRORS === 'true'

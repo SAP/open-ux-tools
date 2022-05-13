@@ -1,5 +1,6 @@
 import { ServiceInfo } from '@sap-ux/btp-utils';
 import type { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { ServiceProvider } from '../base/service-provider';
 import type { AbapServiceProvider } from '../abap';
 import { getReentranceTicket } from './reentrance-ticket';
 import { RefreshTokenChanged, Uaa } from './uaa';
@@ -56,8 +57,27 @@ export function attachUaaAuthInterceptor(
  * @param options
  * @param options.provider an instance of an ABAP service provider
  */
-export function attachReentranceTicketAuthInterceptor({ provider }: { provider: AbapServiceProvider }): void {
-    const oneTimeInterceptorId = provider.interceptors.request.use(async (request: AxiosRequestConfig) => {
+export function attachReentranceTicketAuthInterceptor({ provider }: { provider: ServiceProvider }): void {
+    let oneTimeInterceptorId: number;
+    const ejectCallback = () => provider.interceptors.request.eject(oneTimeInterceptorId);
+    oneTimeInterceptorId = provider.interceptors.request.use(
+        getReentranceTicketAuthInterceptor({ provider, ejectCallback })
+    );
+}
+
+/**
+ * Get the reentrace ticket from the backend and add it to the header
+ * @param options
+ * @param options.provider an instance of an ABAP service provider
+ */
+export function getReentranceTicketAuthInterceptor({
+    provider,
+    ejectCallback
+}: {
+    provider: ServiceProvider;
+    ejectCallback: () => void;
+}): (request: AxiosRequestConfig) => Promise<AxiosRequestConfig<any>> {
+    return async (request: AxiosRequestConfig) => {
         const { reentranceTicket, apiUrl } = await getReentranceTicket({
             backendUrl: provider.defaults.baseURL,
             logger: provider.log
@@ -73,7 +93,7 @@ export function attachReentranceTicketAuthInterceptor({ provider }: { provider: 
         request.headers = request.headers ?? {};
         request.headers.MYSAPSSO2 = reentranceTicket;
         // remove this interceptor since it is not needed anymore
-        provider.interceptors.request.eject(oneTimeInterceptorId);
+        ejectCallback();
         return request;
-    });
+    };
 }

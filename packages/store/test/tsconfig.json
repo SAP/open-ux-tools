@@ -2,7 +2,8 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "experimentalDecorators": true,
-        "strict": false
+        "strict": false,
+        "paths": { "@src/*": ["../src/*"] }
     },
     "include": ["../../src/**/*.ts", "**/*.ts", "global.d.ts"],
     "exclude": ["dist", "node_modules"]

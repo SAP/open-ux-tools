@@ -69,7 +69,7 @@ export async function getReentranceTicket({
         const timer = setTimeout(handleTimeout, timeout);
         app.get(Redirect.path, (req, res) => {
             const reentranceTicket = req.query['reentrance-ticket']?.toString();
-            logger.info('Got reentrance ticket: ' + reentranceTicket);
+            logger.debug('Got reentrance ticket: ' + reentranceTicket);
             res.set('Content-Type', 'text/html');
             res.send(Buffer.from(redirectSuccessHtml(ABAPSystem.logoffUrl(backendUrl))));
             if (timer) {
