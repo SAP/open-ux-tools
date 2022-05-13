@@ -1,4 +1,5 @@
-import { AbapServiceProvider, createForAbapOnCloud } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { createForAbapOnCloud } from '@sap-ux/axios-extension';
 import { createForDestination, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio, listDestinations, isAbapSystem } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
