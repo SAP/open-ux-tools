@@ -20,7 +20,7 @@ class ABAPSystem {
      */
     static uiHostname(hostname: string): string {
         const [first, ...rest] = hostname.split('.');
-        return [first.replace('-api', ''), ...rest].join('.');
+        return [first.replace(/-api$/, ''), ...rest].join('.');
     }
     /**
      * Adds a `-api` suffix to the first label of the hostname.
@@ -30,7 +30,7 @@ class ABAPSystem {
      */
     static apiHostname(hostname: string): string {
         const [first, ...rest] = hostname.split('.');
-        return !first.match(/.*-api$/) ? [first + '-api', ...rest].join('.') : hostname;
+        return !first.endsWith('-api') ? [first + '-api', ...rest].join('.') : hostname;
     }
 
     /**
