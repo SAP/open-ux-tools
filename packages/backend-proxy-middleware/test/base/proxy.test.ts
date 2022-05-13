@@ -1,8 +1,13 @@
 import type { Options } from 'http-proxy-middleware';
 import * as hpm from 'http-proxy-middleware';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import { getBackendProxy, enhanceConfigsForDestination, enhanceConfigForSystem } from '../../src/base/proxy';
-import { DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
+import {
+    getBackendProxy,
+    enhanceConfigsForDestination,
+    enhanceConfigForSystem,
+    ProxyEventHandlers
+} from '../../src/base/proxy';
+import { DestinationBackendConfig } from '../../src/base/types';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 
 // mock required axios-extension functions
@@ -20,6 +25,7 @@ import {
     WebIDEUsage,
     getUserForDestinationService
 } from '@sap-ux/btp-utils';
+import { ClientRequest, IncomingMessage } from 'http';
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as object),
     listDestinations: jest.fn(),
@@ -40,11 +46,97 @@ describe('proxy', () => {
         jest.clearAllMocks();
     });
 
+    describe('ProxyEventHandlers', () => {
+        const { onProxyReq, onProxyRes, onError } = ProxyEventHandlers;
+
+        test('onProxyReq', () => {
+            const mockSetHeader = jest.fn();
+
+            onProxyReq({ path: 'hello/world', setHeader: mockSetHeader as unknown } as ClientRequest);
+            expect(mockSetHeader).not.toBeCalled();
+
+            onProxyReq({
+                path: 'hello/Fiorilaunchpad.html',
+                headersSent: true,
+                setHeader: mockSetHeader as unknown
+            } as ClientRequest);
+            expect(mockSetHeader).not.toBeCalled();
+
+            onProxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader as unknown } as ClientRequest);
+            expect(mockSetHeader).toBeCalled();
+        });
+
+        test('onProxyRes', () => {
+            const response = {} as IncomingMessage;
+
+            // no set-cookie header, nothing to do, nothing changes
+            onProxyRes(response);
+            expect(response).toEqual({});
+            response.headers = {};
+            onProxyRes(response);
+            expect(response).toEqual({ headers: {} });
+            response.headers['set-cookie'] = [];
+            onProxyRes(response);
+            expect(response).toEqual({ headers: { 'set-cookie': [] } });
+
+            // cookies are modified i.e. SameSite, Domain, Secure are removed
+            response.headers['set-cookie'] = [
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; secure; Domain=example.com',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; Domain=example.com; secure',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; secure; Domain=example.com; SameSite=None',
+                'SameSite=None; MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; secure; Domain=example.com',
+                'Domain=example.com MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; SameSite=None; secure'
+            ];
+            onProxyRes(response);
+            expect(response.headers['set-cookie']).toEqual([
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly;',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly;',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly;',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly;',
+                'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly;'
+            ]);
+        });
+
+        test('onError', () => {
+            const mockNext = jest.fn();
+            const request = {} as IncomingMessage;
+            const requestWithNext = {
+                next: mockNext as Function
+            } as IncomingMessage & { next: Function };
+
+            // do nothing if no error is provided
+            onError(undefined as unknown as Error, request);
+
+            // handle CA error
+            const certError: Error & { code?: string } = new Error('Certificate error');
+            certError.code = 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY';
+            onError(certError, requestWithNext);
+            expect(mockNext).toBeCalled();
+            try {
+                onError(certError, request);
+            } catch (error) {
+                expect(error).not.toBe(certError);
+            }
+            mockNext.mockReset();
+
+            // forward or throw other errors
+            const otherError = new Error();
+            onError(otherError, requestWithNext);
+            expect(mockNext).toBeCalledTimes(1);
+            try {
+                onError(otherError, request);
+            } catch (error) {
+                expect(error).toBe(otherError);
+            }
+        });
+    });
+
     describe('enhanceConfigsForDestination', () => {
         const backend = {
             destination: '~destination',
             path: '/sap/xyz'
         };
+
         test('unknown destination', async () => {
             try {
                 await enhanceConfigsForDestination({ headers: {} }, backend);

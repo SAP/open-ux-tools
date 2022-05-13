@@ -1,6 +1,7 @@
 import HttpsProxyAgent from 'https-proxy-agent';
+import type { ServerOptions } from 'http-proxy';
 import i18n from 'i18next';
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
 import { createForAbapOnBtp } from '@sap-ux/axios-extension';
 import {
@@ -10,7 +11,6 @@ import {
     listDestinations,
     isFullUrlDestination
 } from '@sap-ux/btp-utils';
-import type { Request } from 'express';
 import type { Options, RequestHandler } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { BackendConfig, CommonConfig, DestinationBackendConfig } from './types';
@@ -19,6 +19,72 @@ import translations from './i18n.json';
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
 import { isHostExcludedFromProxy, promptUserPass } from './config';
+import type { Url } from 'url';
+
+/**
+ * Collection of custom event handler for the proxy.
+ */
+export const ProxyEventHandlers = {
+    /**
+     * Modifies the request to the proxy server if the `FioriLaunchpad.html` is requested to add a required header.
+     *
+     * @param proxyReq request to the proxy server that can be modified
+     * @param _req (not used) original request
+     * @param _res (not used)
+     * @param _options (not used)
+     */
+    onProxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions) {
+        if (proxyReq.path.indexOf('Fiorilaunchpad.html') !== -1 && !proxyReq.headersSent) {
+            proxyReq.setHeader('accept-encoding', 'br');
+        }
+    },
+
+    /**
+     * Retrieve the set-cookie headers from the response and transform secure cookies to insecure ones.
+     *
+     * @param proxyRes request to the proxy server that can be modified
+     * @param _req (not used) original request
+     * @param _res (not used)
+     */
+    onProxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse) {
+        const header = proxyRes?.headers?.['set-cookie'];
+        if (header?.length) {
+            for (let i = header.length - 1; i >= 0; i--) {
+                const cookie = header[i].replace(/\s?Domain=[^\s]*\s?|\s?SameSite=[^\s]*\s?|\s?Secure[^\s]*\s?/gi, '');
+                header[i] = cookie;
+            }
+        }
+    },
+
+    /**
+     * Specifically handlingign errors due to unsigned certificates.
+     *
+     * @param err the error thrown when proxying the request or processing the response
+     * @param req request causing the error
+     * @param _res (not used)
+     * @param _target (not used)
+     */
+    onError(
+        err: Error & { code?: string },
+        req: IncomingMessage & { next?: Function },
+        _res?: ServerResponse,
+        _target?: string | Partial<Url>
+    ) {
+        if (err) {
+            let error: Error;
+            if (err.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY') {
+                error = new Error(i18n.t('error.sslProxy'));
+            } else {
+                error = err;
+            }
+            if (typeof req.next === 'function') {
+                req.next(error);
+            } else {
+                throw error;
+            }
+        }
+    }
+};
 
 /**
  * Return the SAP API Hub key either provided as environment variable (including .env file) or from the secure store when not running in AppStudio.
@@ -38,17 +104,6 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
     }
     return apiHubKey;
 }
-
-const backendProxyUserResHeaderDecorator = (proxyRes: IncomingMessage): void => {
-    // retrieve the set-cookie headers from the response and transform secure cookies to insecure ones
-    const header = proxyRes?.headers?.['set-cookie'];
-    if (header?.length) {
-        for (let i = header.length - 1; i >= 0; i--) {
-            const cookie = header[i].replace(/\s?Domain=[^\s]*\s?|\s?SameSite=[^\s]*\s?|\s?Secure[^\s]*\s?/gi, '');
-            header[i] = cookie;
-        }
-    }
-};
 
 const backendProxyReqPathResolver = (path: string, config: BackendConfig, log: Logger, bsp?: string): string => {
     let targetPath = `${config.pathPrefix ? path.replace(config.path, config.pathPrefix.replace(/\/$/, '')) : path}`;
@@ -76,31 +131,6 @@ const backendProxyReqPathResolver = (path: string, config: BackendConfig, log: L
         log.info(targetPath);
     }
     return targetPath;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const proxyErrorHandler = (err: any, req: Request, _res: ServerResponse): void => {
-    switch (err && err.code) {
-        case 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY': {
-            const errMsg = i18n.t('error.sslProxy');
-            const error = new Error(errMsg);
-            if (typeof req.next === 'function') {
-                req.next(error);
-            } else {
-                throw error;
-            }
-            break;
-        }
-        case undefined:
-            break;
-        default: {
-            if (typeof req.next === 'function') {
-                req.next(err);
-            } else {
-                throw new Error(err);
-            }
-        }
-    }
 };
 
 /**
@@ -189,15 +219,13 @@ export async function enhanceConfigForSystem(
         // TODO: @ullas needs to add the missing code to the axios-extension
         //const connection = await (await system.getCatalog(ODataVersion.v2)).getConnection();
         //cookies = connection.cookies;
-    } else {
-        if (
-            (system.username || process.env.FIORI_TOOLS_USER) &&
-            (system.password || process.env.FIORI_TOOLS_PASSWORD)
-        ) {
-            proxyOptions.auth = `${system.username || process.env.FIORI_TOOLS_USER}:${
-                system.password || process.env.FIORI_TOOLS_PASSWORD
-            }`;
-        }
+    } else if (
+        (system.username || process.env.FIORI_TOOLS_USER) &&
+        (system.password || process.env.FIORI_TOOLS_PASSWORD)
+    ) {
+        proxyOptions.auth = `${system.username || process.env.FIORI_TOOLS_USER}:${
+            system.password || process.env.FIORI_TOOLS_PASSWORD
+        }`;
     }
 }
 
@@ -209,17 +237,11 @@ export async function getBackendProxy(
     await initI18n();
     // base options
     const proxyOptions: Options & { headers: object } = {
+        ...ProxyEventHandlers,
         secure: !common.ignoreCertError,
         changeOrigin: true,
         logLevel: common.debug ? 'debug' : 'silent',
-        headers: {},
-        onProxyRes: backendProxyUserResHeaderDecorator,
-        onProxyReq: (proxyReq) => {
-            if (proxyReq.path.indexOf('Fiorilaunchpad.html') !== -1 && !proxyReq.headersSent) {
-                proxyReq.setHeader('accept-encoding', 'br');
-            }
-        },
-        onError: proxyErrorHandler as any
+        headers: {}
     };
 
     let authNeeded = true;
