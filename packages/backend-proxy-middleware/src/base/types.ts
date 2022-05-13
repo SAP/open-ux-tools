@@ -29,7 +29,10 @@ export type BackendConfig = LocalBackendConfig & DestinationBackendConfig;
 export interface CommonConfig {
     proxy?: string;
     noProxyList?: string;
-    ignoreCertError?: boolean;
+    /**
+     * If explicitely set to false then certificate errors will be ignored.
+     */
+    secure?: boolean;
     debug?: boolean;
 
     /**

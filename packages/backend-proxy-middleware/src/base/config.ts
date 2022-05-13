@@ -68,6 +68,8 @@ export function mergeConfigWithEnvVariables(config: ProxyConfig): ProxyConfig {
 
     mergedConfig.noProxyList = process.env.no_proxy || process.env.npm_config_noproxy;
 
+    mergedConfig.secure = config.secure !== undefined ? !!config.secure : true;
+
     return mergedConfig;
 }
 

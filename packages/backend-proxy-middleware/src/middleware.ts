@@ -20,7 +20,6 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
             proxy = proxy.replace(proxy.slice(forwardSlashIndex + 2, atIndex), '***:***');
         }
     }
-
     return proxy || 'none';
 }
 
@@ -40,9 +39,9 @@ module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise
     logger.info(
         `Starting backend-proxy-middleware using following configuration:\nproxy: '${formatProxyForLogging(
             config.proxy
-        )}'\nignoreCertError: '${config.ignoreCertError ? 'true' : 'false'}'\nbackend: ${JSON.stringify(
-            config.backend
-        )}\ndebug: '${config.debug ? 'true' : 'false'}'`
+        )}'\nsecure: '${config.secure ? 'true' : 'false'}'\nbackend: ${JSON.stringify(config.backend)}\ndebug: '${
+            config.debug ? 'true' : 'false'
+        }'`
     );
 
     if (config.backend) {

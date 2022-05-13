@@ -238,7 +238,7 @@ export async function getBackendProxy(
     // base options
     const proxyOptions: Options & { headers: object } = {
         ...ProxyEventHandlers,
-        secure: !common.ignoreCertError,
+        secure: common.secure,
         changeOrigin: true,
         logLevel: common.debug ? 'debug' : 'silent',
         headers: {}
