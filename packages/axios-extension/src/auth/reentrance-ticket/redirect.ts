@@ -4,13 +4,23 @@ import http from 'http';
 import { TimeoutError } from '../error';
 import { prettyPrintTimeInMs } from '../../abap/message';
 import { redirectSuccessHtml } from '../static';
-import { ABAPSystem } from '../abap-system';
+import type { ABAPSystem } from '../abap-system';
 
 interface Redirect {
     server: http.Server;
     redirectUrl(port: number): string;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.resolve
+ * @param root0.reject
+ * @param root0.timeout
+ * @param root0.backend
+ * @param root0.logger
+ * @returns a `Redirect` object
+ */
 export function setupRedirectHandling({
     resolve,
     reject,

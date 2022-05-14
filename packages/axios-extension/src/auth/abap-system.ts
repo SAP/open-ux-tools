@@ -1,15 +1,21 @@
+/**
+ *
+ */
 export class ABAPSystem {
     private apiURL: URL;
     private uiURL: URL;
     private systemURL: URL;
 
+    /**
+     *
+     * @param backendUrl
+     */
     constructor(backendUrl: string) {
         this.systemURL = new URL(backendUrl);
     }
     /**
      * Removes any `-api` suffix in the first label of the hostname.
      *
-     * @param hostname
      * @returns UI hostname
      */
     uiHostname(): string {
@@ -25,7 +31,6 @@ export class ABAPSystem {
     /**
      * Adds a `-api` suffix to the first label of the hostname.
      *
-     * @param hostname
      * @returns API hostname
      */
     apiHostname(): string {
@@ -42,7 +47,6 @@ export class ABAPSystem {
 
     /**
      *
-     * @param hostname
      * @returns logoff URL
      */
     logoffUrl(): string {
