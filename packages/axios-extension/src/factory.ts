@@ -4,8 +4,12 @@ import type { Destination } from '@sap-ux/btp-utils';
 import { getDestinationUrlForAppStudio, getUserForDestinationService, isAbapSystem } from '@sap-ux/btp-utils';
 import { Agent as HttpsAgent } from 'https';
 import type { ServiceInfo, RefreshTokenChanged } from './auth';
-import { attachReentranceTicketAuthInterceptor } from './auth';
-import { attachConnectionHandler, attachBasicAuthInterceptor, attachUaaAuthInterceptor } from './auth';
+import {
+    attachConnectionHandler,
+    attachBasicAuthInterceptor,
+    attachUaaAuthInterceptor,
+    attachReentranceTicketAuthInterceptor
+} from './auth';
 import type { ProviderConfiguration } from './base/service-provider';
 import { ServiceProvider } from './base/service-provider';
 import type { ODataService } from './base/odata-service';
