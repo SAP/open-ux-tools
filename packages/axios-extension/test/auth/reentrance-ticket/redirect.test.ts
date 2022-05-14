@@ -1,6 +1,6 @@
 import http from 'http';
 import { setupRedirectHandling, SetupRedirectOptions } from '@src/auth/reentrance-ticket/redirect';
-import { ABAPSystem } from '@src/auth/abap-system';
+import { ABAPSystem } from '@src/auth/reentrance-ticket/abap-system';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { TimeoutError } from '@src/auth';
 import request from 'supertest';

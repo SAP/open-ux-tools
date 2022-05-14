@@ -9,7 +9,6 @@ jest.mock('open');
 const mockOpen = jest.mocked(open);
 
 describe('getReentranceTicket()', () => {
-    const setupRedirectHandlingSpy = jest.spyOn(redirect, 'setupRedirectHandling');
     const REDIRECT_URL = 'http://redirect_url';
     const serverListenSpy = jest.fn();
 

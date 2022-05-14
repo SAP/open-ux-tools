@@ -4,7 +4,7 @@ import http from 'http';
 import { TimeoutError } from '../error';
 import { prettyPrintTimeInMs } from '../../abap/message';
 import { redirectSuccessHtml } from '../static';
-import type { ABAPSystem } from '../abap-system';
+import type { ABAPSystem } from './abap-system';
 
 interface Redirect {
     server: http.Server;

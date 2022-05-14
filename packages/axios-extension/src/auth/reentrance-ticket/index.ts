@@ -2,7 +2,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { AddressInfo } from 'net';
 import open = require('open');
 import { defaultTimeout } from '../connection';
-import { ABAPSystem } from '../abap-system';
+import { ABAPSystem } from './abap-system';
 import { setupRedirectHandling } from './redirect';
 
 const ADT_REENTRANCE_ENDPOINT = '/sap/bc/adt/core/http/reentranceticket';
