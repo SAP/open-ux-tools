@@ -2,8 +2,6 @@ import nock from 'nock';
 import fs from 'fs';
 import { Ui5AbapRepositoryService, createForAbap, AppInfo } from '../../src';
 
-nock.disableNetConnect();
-
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
     const validApp = 'VALID_APP';
@@ -21,6 +19,7 @@ describe('Ui5AbapRepositoryService', () => {
     const service = createForAbap({ baseURL: server }).ui5AbapRepository();
 
     beforeAll(() => {
+        nock.disableNetConnect();
         // mock an existing and not existing app
         nock(server)
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?$format=json`)
@@ -30,6 +29,11 @@ describe('Ui5AbapRepositoryService', () => {
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${notExistingApp}%27)?$format=json`)
             .replyWithError('the app does not exist')
             .persist();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
     });
 
     beforeEach(() => {

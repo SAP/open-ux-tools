@@ -2,8 +2,6 @@ import { createForAbap, ODataVersion, V2CatalogService } from '../../../src';
 import { join } from 'path';
 import nock from 'nock';
 
-nock.disableNetConnect();
-
 describe('V2CatalogService', () => {
     const server = 'https://sap.example';
     const config = {
@@ -15,10 +13,16 @@ describe('V2CatalogService', () => {
     };
 
     beforeAll(() => {
+        nock.disableNetConnect();
         nock(server)
             .get('/sap/bc/adt/ato/settings')
             .replyWithFile(200, join(__dirname, '../mockResponses/atoSettingsNotS4C.xml'))
             .persist();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
     });
 
     describe('listServices', () => {
