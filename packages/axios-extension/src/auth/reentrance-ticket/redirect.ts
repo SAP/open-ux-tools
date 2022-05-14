@@ -11,6 +11,14 @@ interface Redirect {
     redirectUrl(port: number): string;
 }
 
+export interface SetupRedirectOptions {
+    resolve;
+    reject;
+    timeout: number;
+    backend: ABAPSystem;
+    logger: Logger;
+}
+
 /**
  *
  * @param root0
@@ -21,19 +29,7 @@ interface Redirect {
  * @param root0.logger
  * @returns a `Redirect` object
  */
-export function setupRedirectHandling({
-    resolve,
-    reject,
-    timeout,
-    backend,
-    logger
-}: {
-    resolve;
-    reject;
-    timeout: number;
-    backend: ABAPSystem;
-    logger: Logger;
-}): Redirect {
+export function setupRedirectHandling({ resolve, reject, timeout, backend, logger }: SetupRedirectOptions): Redirect {
     const app = express();
     const server = http.createServer(app);
     const REDIRECT_PATH = '/redirect';
