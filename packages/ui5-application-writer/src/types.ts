@@ -18,9 +18,22 @@ export interface App {
     baseComponent?: string; // UI5 Component `required` by Component.js
     startFile?: string;
     localStartFile?: string;
+    /**
+     * Defines the template used by the generation tool
+     */
     sourceTemplate?: {
+        /**
+         * Identifies the source template used to generate the application. Set to empty string if not provided.
+         */
         id?: string;
+        /**
+         * Source template version. Set to empty string if not provided.
+         */
         version?: string;
+        /**
+         * Source template tools id. Optional property. Will not be written to manifest.json if not provided
+         */
+        toolsId?: string;
     };
 }
 

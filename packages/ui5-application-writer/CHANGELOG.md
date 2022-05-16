@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.13.0
+
+### Minor Changes
+
+-   9726e2d: Feature: Adds support for setting the sourceTemplate toolsId into generated ui5 applications
+
 ## 0.12.8
 
 ### Patch Changes
