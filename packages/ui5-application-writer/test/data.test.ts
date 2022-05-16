@@ -1,6 +1,6 @@
-import { UI5_DEFAULT, mergeUi5, defaultUI5Libs } from '../src/data/defaults';
+import { UI5_DEFAULT, mergeUi5, defaultUI5Libs, mergeApp } from '../src/data/defaults';
 import { mergeWithDefaults } from '../src/data/index';
-import type { UI5, Ui5App } from '../src/types';
+import type { App, UI5, Ui5App } from '../src/types';
 
 describe('Setting defaults', () => {
     const testData: { input: Partial<UI5>; expected: UI5 }[] = [
@@ -271,5 +271,52 @@ describe('Setting defaults', () => {
         };
 
         expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
+    });
+
+    // Test function `mergeApp` sets the correct defaults
+    test('mergApp', () => {
+        const app: App = {
+            id: 'test_appId',
+            description: 'Should be default package description'
+        };
+
+        const expectedApp = {
+            baseComponent: 'sap/ui/core/UIComponent',
+            description: 'Should be default package description',
+            id: 'test_appId',
+            sourceTemplate: {
+                id: '',
+                version: ''
+            },
+            title: 'Title of test_appId',
+            version: '0.0.1'
+        } as App;
+
+        expect(mergeApp(app)).toEqual(expectedApp);
+
+        // Test toolsId is correctly set, sourceTemplate.id and sourceTemplate.version are set if not provided.
+        const toolsId = 'guid:abcd1234';
+        app.sourceTemplate = {
+            toolsId
+        };
+        (expectedApp.sourceTemplate = {
+            id: '',
+            toolsId,
+            version: ''
+        }),
+            expect(mergeApp(app)).toEqual(expectedApp);
+
+        // Test toolsId is correctly set, sourceTemplate.id and sourceTemplate.version are set to provided value.
+        app.sourceTemplate = {
+            id: 'test-source-template-id',
+            version: '9.9.9',
+            toolsId
+        };
+        (expectedApp.sourceTemplate = {
+            id: 'test-source-template-id',
+            version: '9.9.9',
+            toolsId
+        }),
+            expect(mergeApp(app)).toEqual(expectedApp);
     });
 });
