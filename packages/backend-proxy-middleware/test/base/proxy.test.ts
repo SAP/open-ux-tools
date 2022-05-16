@@ -1,12 +1,12 @@
 import type { Options } from 'http-proxy-middleware';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import {
-    generateProxyMiddlewareOptions,
     enhanceConfigsForDestination,
     enhanceConfigForSystem,
     ProxyEventHandlers,
     PathRewriters
 } from '../../src/base/proxy';
+import { generateProxyMiddlewareOptions, createProxy } from '../../src';
 import { BackendConfig, CommonConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import { ClientRequest, IncomingMessage } from 'http';
@@ -310,7 +310,8 @@ describe('proxy', () => {
                 url: 'http://backend.example',
                 path: '/my/path',
                 ws: true,
-                xfwd: true
+                xfwd: true,
+                apiHub: true
             };
             const common: CommonConfig = {
                 proxy: 'http://proxy.example',
@@ -349,6 +350,20 @@ describe('proxy', () => {
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
             expect(options.logLevel).toBe('silent');
+        });
+    });
+
+    describe('createProxy', () => {
+        test('standard input', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+
+            const proxy = await createProxy(backend, {}, logger);
+            expect(proxy).toBeDefined();
+            expect(typeof proxy).toBe('function');
         });
     });
 });

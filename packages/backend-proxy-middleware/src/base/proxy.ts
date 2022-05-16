@@ -164,6 +164,8 @@ export const PathRewriters = {
                 }
                 return newPath;
             };
+        } else {
+            return undefined;
         }
     }
 };
@@ -241,7 +243,7 @@ export async function enhanceConfigForSystem(
             );
             // sending a request to the backend to get cookies
             await provider.getAtoInfo();
-            proxyOptions.headers!['cookie'] = provider.cookies.toString();
+            proxyOptions.headers['cookie'] = provider.cookies.toString();
         } else {
             // TODO: similar to prompting user/password, should allow prompting for service keys here?
             throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
@@ -261,11 +263,12 @@ export async function enhanceConfigForSystem(
 }
 
 /**
+ * Generate options for the proxy middleware based on the input.
  *
- * @param backend
- * @param common
- * @param logger
- * @returns
+ * @param backend backend system specific configuration
+ * @param common common configurations
+ * @param logger logger instance
+ * @returns options for the http-proxy-middleware
  */
 export async function generateProxyMiddlewareOptions(
     backend: BackendConfig,
@@ -337,6 +340,14 @@ export async function generateProxyMiddlewareOptions(
     return proxyOptions;
 }
 
+/**
+ * Generate an instance of the proxy middleware based on the input.
+ *
+ * @param backend backend system specific configuration
+ * @param common common configurations
+ * @param logger logger instance
+ * @returns an instance of http-proxy-middleware
+ */
 export async function createProxy(
     backend: BackendConfig,
     common: CommonConfig,

@@ -19,7 +19,7 @@ export function convertAppDescriptorToManifest(bsp: string): (path: string) => s
 /**
  * Prompts the user for credentials.
  *
- * @param log - logger to report info to the user
+ * @param log logger to report info to the user
  * @returns prompted user and password serialized for a basic auth header
  */
 export async function promptUserPass(log: Logger): Promise<string | undefined> {
@@ -76,12 +76,21 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
     return `${username}:${password}`;
 }
 
+/**
+ * Add additional options required for the special use case embedded FLP.
+ *
+ * @param bspPath path of the BSP hosting the app
+ * @param proxyOptions existing http-proxy-middleware options
+ * @param logger logger to report info to the user
+ */
 export async function addOptionsForEmbeddedBSP(bspPath: string, proxyOptions: Options, logger: Logger) {
     const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)');
     proxyOptions.router = (req): string | undefined => {
         // redirects the request for manifest.appdescr to localhost
         if (req.path.match(regex)) {
             return req.protocol + '://' + req.headers.host;
+        } else {
+            return undefined;
         }
     };
     if (proxyOptions.pathRewrite) {
