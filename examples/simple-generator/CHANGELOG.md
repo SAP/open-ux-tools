@@ -1,5 +1,13 @@
 # @sap-ux/generator-simple-fe
 
+## 0.1.3
+
+### Patch Changes
+
+-   Updated dependencies [815bf59]
+    -   @sap-ux/btp-utils@0.9.1
+    -   @sap-ux/axios-extension@0.5.1
+
 ## 0.1.2
 
 ### Patch Changes
