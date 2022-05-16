@@ -14,5 +14,7 @@ server:
           afterMiddleware: ui5-proxy-middleware
           configuration:
               backend:
-                  - path: /sap
-                    url: https://sapes5.sapdevcenter.com
+                  path: /sapX
+                  pathPrefix: /sap
+                  url: https://sapes5.sapdevcenter.com
+                  client: '002'
