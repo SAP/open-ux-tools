@@ -2,7 +2,7 @@ import http from 'http';
 import { setupRedirectHandling, SetupRedirectOptions } from '@src/auth/reentrance-ticket/redirect';
 import { ABAPSystem } from '@src/auth/reentrance-ticket/abap-system';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { TimeoutError } from '@src/auth';
+import { ConnectionError, TimeoutError } from '@src/auth';
 import request from 'supertest';
 
 describe('setupRedirectHandling()', () => {
@@ -72,6 +72,24 @@ describe('setupRedirectHandling()', () => {
         const rejectCallback = jest.fn();
         const resolveCallback = jest.fn();
         const backedUrl = 'https://backend';
+        const REENTRANCE_TICKET = 'reentrance_ticket';
+
+        const { server, redirectUrl } = setup({
+            resolve: resolveCallback,
+            reject: rejectCallback,
+            backend: new ABAPSystem(backedUrl)
+        });
+        await request(server).get(`${redirectPath(redirectUrl)}?reentrance-ticket=${REENTRANCE_TICKET}`);
+
+        expect(rejectCallback).not.toBeCalled();
+        expect(resolveCallback).toBeCalledTimes(1);
+        expect(resolveCallback).toBeCalledWith(expect.objectContaining({ apiUrl: backedUrl + '-api' }));
+    });
+
+    it('calls reject() when reentrance ticket is missing', async () => {
+        const rejectCallback = jest.fn();
+        const resolveCallback = jest.fn();
+        const backedUrl = 'https://backend';
 
         const { server, redirectUrl } = setup({
             resolve: resolveCallback,
@@ -80,9 +98,9 @@ describe('setupRedirectHandling()', () => {
         });
         await request(server).get(redirectPath(redirectUrl));
 
-        expect(rejectCallback).not.toBeCalled();
-        expect(resolveCallback).toBeCalledTimes(1);
-        expect(resolveCallback).toBeCalledWith(expect.objectContaining({ apiUrl: backedUrl + '-api' }));
+        expect(resolveCallback).not.toBeCalled();
+        expect(rejectCallback).toBeCalledTimes(1);
+        expect(rejectCallback).toBeCalledWith(expect.any(ConnectionError));
     });
 
     it('returns an HTTP Server', () => {

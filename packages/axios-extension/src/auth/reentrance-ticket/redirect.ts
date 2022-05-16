@@ -1,9 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
 import express from 'express';
 import http from 'http';
-import { TimeoutError } from '../error';
+import { ConnectionError, TimeoutError } from '../error';
 import { prettyPrintTimeInMs } from '../../abap/message';
-import { redirectSuccessHtml } from '../static';
+import { redirectErrorHtml, redirectSuccessHtml } from '../static';
 import type { ABAPSystem } from './abap-system';
 
 interface Redirect {
@@ -41,15 +41,25 @@ export function setupRedirectHandling({ resolve, reject, timeout, backend, logge
 
     const timer = setTimeout(handleTimeout, timeout);
     app.get(REDIRECT_PATH, (req, res) => {
-        const reentranceTicket = req.query['reentrance-ticket']?.toString();
-        logger.debug('Got reentrance ticket: ' + reentranceTicket);
-        res.set('Content-Type', 'text/html');
-        res.send(Buffer.from(redirectSuccessHtml(backend.logoffUrl())));
         if (timer) {
             clearTimeout(timer);
         }
-        server.close();
-        resolve({ reentranceTicket, apiUrl: backend.apiHostname() });
+        const reentranceTicket = req.query['reentrance-ticket']?.toString();
+        if (reentranceTicket) {
+            logger.debug('Got reentrance ticket: ' + reentranceTicket);
+            res.set('Content-Type', 'text/html');
+            res.send(Buffer.from(redirectSuccessHtml(backend.logoffUrl())));
+            server.close();
+            resolve({ reentranceTicket, apiUrl: backend.apiHostname() });
+        } else {
+            logger.error('Error getting reentrance ticket');
+            logger.debug(req);
+            res.set('Content-Type', 'text/html');
+            res.status(500);
+            res.send(Buffer.from(redirectErrorHtml()));
+            server.close();
+            reject(new ConnectionError('Error getting reentrance ticket'));
+        }
     });
 
     return {
