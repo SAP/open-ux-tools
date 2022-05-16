@@ -14,7 +14,7 @@ import {
     isFullUrlDestination
 } from '@sap-ux/btp-utils';
 import type { Options } from 'http-proxy-middleware';
-import type { BackendConfig, CommonConfig, DestinationBackendConfig } from './types';
+import type { BackendConfig, CommonConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import translations from './i18n.json';
 
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
@@ -260,6 +260,13 @@ export async function enhanceConfigForSystem(
     }
 }
 
+/**
+ *
+ * @param backend
+ * @param common
+ * @param logger
+ * @returns
+ */
 export async function generateProxyMiddlewareOptions(
     backend: BackendConfig,
     common: CommonConfig,
@@ -277,20 +284,24 @@ export async function generateProxyMiddlewareOptions(
 
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
-        backend.destination = backend.destination ?? process.env.FIORI_TOOLS_DESTINATION;
-        if (backend.destination) {
-            await enhanceConfigsForDestination(proxyOptions, backend);
-            logger.info('Using destination: ' + backend.destination);
+        const destBackend = backend as DestinationBackendConfig;
+        destBackend.destination = destBackend.destination ?? process.env.FIORI_TOOLS_DESTINATION;
+        if (destBackend.destination) {
+            await enhanceConfigsForDestination(proxyOptions, destBackend);
+            logger.info('Using destination: ' + destBackend.destination);
         }
     } else {
-        proxyOptions.target = backend.url;
+        const localBackend = backend as LocalBackendConfig;
+        proxyOptions.target = localBackend.url;
         // check if system credentials are stored in the store
         const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
-        const system = await systemStore.read(new BackendSystemKey({ url: backend.url, client: backend.client }));
+        const system = await systemStore.read(
+            new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
+        );
         if (system) {
             await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
                 if (refreshToken) {
-                    logger.info('Updating refresh token for: ' + backend.url);
+                    logger.info('Updating refresh token for: ' + localBackend.url);
                     systemStore.write({ ...system, refreshToken });
                 }
             });

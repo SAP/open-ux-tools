@@ -4,7 +4,6 @@ import i18n from 'i18next';
 import prompts from 'prompts';
 import type { Logger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import e from 'express';
 
 /**
  * Replace calls to manifest.appdescr file if we are running the FLP embedded flow.

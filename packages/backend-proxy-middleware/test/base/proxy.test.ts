@@ -7,8 +7,9 @@ import {
     ProxyEventHandlers,
     PathRewriters
 } from '../../src/base/proxy';
-import { BackendConfig, DestinationBackendConfig } from '../../src/base/types';
+import { BackendConfig, CommonConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import { ClientRequest, IncomingMessage } from 'http';
 
 // mock required axios-extension functions
 import { createForAbapOnBtp } from '@sap-ux/axios-extension';
@@ -23,16 +24,18 @@ import {
     listDestinations,
     getDestinationUrlForAppStudio,
     WebIDEUsage,
-    getUserForDestinationService
+    getUserForDestinationService,
+    isAppStudio
 } from '@sap-ux/btp-utils';
-import { ClientRequest, IncomingMessage } from 'http';
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as object),
     listDestinations: jest.fn(),
-    getUserForDestinationService: jest.fn()
+    getUserForDestinationService: jest.fn(),
+    isAppStudio: jest.fn()
 }));
 const mockListDestinations = listDestinations as jest.Mock;
 const mockGetUserForDestinationService = getUserForDestinationService as jest.Mock;
+const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('proxy', () => {
     type OptionsWithHeaders = Options & { headers: object };
@@ -301,12 +304,51 @@ describe('proxy', () => {
     });
 
     describe('generateProxyMiddlewareOptions', () => {
-        test.skip('TBD', async () => {
-            const backend = {} as any;
-            const common = {} as any;
+        test('generate proxy middleware outside of BAS with all parameters', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path',
+                ws: true,
+                xfwd: true
+            };
+            const common: CommonConfig = {
+                proxy: 'http://proxy.example',
+                secure: true,
+                debug: true
+            };
 
             const options = await generateProxyMiddlewareOptions(backend, common, logger);
             expect(options).toBeDefined();
+            expect(options.target).toBe(backend.url);
+            expect(options.changeOrigin).toBe(true);
+            expect(options.agent).toBeDefined();
+            expect(options.ws).toBe(backend.ws);
+            expect(options.xfwd).toBe(backend.xfwd);
+            expect(options.secure).toBe(common.secure);
+            expect(options.logLevel).toBe('debug');
+        });
+
+        test('generate proxy middleware inside of BAS with minimal parameters', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: DestinationBackendConfig = {
+                destination: '~destination',
+                path: '/my/path'
+            };
+            mockListDestinations.mockResolvedValueOnce({
+                [backend.destination]: {}
+            });
+            const common: CommonConfig = {};
+
+            const options = await generateProxyMiddlewareOptions(backend, common, logger);
+            expect(options).toBeDefined();
+            expect(options.target).toBe(getDestinationUrlForAppStudio(backend.destination));
+            expect(options.changeOrigin).toBe(true);
+            expect(options.agent).toBeUndefined();
+            expect(options.ws).toBeUndefined();
+            expect(options.xfwd).toBeUndefined();
+            expect(options.secure).toBeUndefined();
+            expect(options.logLevel).toBe('silent');
         });
     });
 });

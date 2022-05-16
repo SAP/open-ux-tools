@@ -1,14 +1,26 @@
 import { getCorporateProxyServer, isHostExcludedFromProxy, mergeConfigWithEnvVariables } from '../../src/base/config';
 
 describe('config', () => {
-    test('getCorporateProxyServer: gets proxy configuration of user', () => {
-        const corporateProxy = 'https://myproxy:8443';
-        expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
+    const corporateProxy = 'https://myproxy.example:8443';
 
-        const envProxy = process.env.npm_config_https_proxy;
-        process.env.npm_config_https_proxy = corporateProxy;
-        expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
-        process.env.npm_config_https_proxy = envProxy;
+    describe('getCorporateProxyServer', () => {
+        test('get value from CLI (wins over input)', () => {
+            process.argv.push(`proxy=${corporateProxy}`);
+            expect(getCorporateProxyServer('~not.used')).toEqual(corporateProxy);
+            process.argv.pop();
+        });
+        test('get value from input (wins over env)', () => {
+            const envProxy = process.env.npm_config_https_proxy;
+            process.env.npm_config_https_proxy = '~not.used';
+            expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
+            process.env.npm_config_https_proxy = envProxy;
+        });
+        test('get value from env if there is no input', () => {
+            const envProxy = process.env.npm_config_https_proxy;
+            process.env.npm_config_https_proxy = corporateProxy;
+            expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
+            process.env.npm_config_https_proxy = envProxy;
+        });
     });
 
     describe('isHostExcludedFromProxy', () => {
@@ -43,9 +55,23 @@ describe('config', () => {
     });
 
     describe('mergeConfigWithEnvVariables', () => {
-        const env = process.env;
+        const envString = JSON.stringify(process.env);
+
+        afterEach(() => {
+            process.env = JSON.parse(envString);
+        });
+
         test('read everything from environment variables', () => {
-            // TODO
+            process.env.HTTP_PROXY = 'http://proxy.example';
+            process.env.no_proxy = 'noproxy.example';
+            process.env.FIORI_TOOLS_BACKEND_CONFIG = JSON.stringify([{ url: 'http://backend.example' }]);
+
+            const config = mergeConfigWithEnvVariables({});
+
+            expect(config.proxy).toBe(process.env.HTTP_PROXY);
+            expect(config.noProxyList).toBe(process.env.no_proxy);
+            expect(JSON.stringify(config.backend)).toBe(process.env.FIORI_TOOLS_BACKEND_CONFIG);
+            expect(config.secure).toBe(true);
         });
     });
 });

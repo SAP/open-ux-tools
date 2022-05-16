@@ -7,6 +7,7 @@ export type Ui5MiddlewareConfig = UI5ProxyConfig;
 
 export interface BaseBackendConfig {
     path: string;
+    client?: string;
     pathPrefix?: string;
     scp?: boolean;
     apiHub?: boolean;
@@ -21,10 +22,9 @@ export interface DestinationBackendConfig extends BaseBackendConfig {
 
 export interface LocalBackendConfig extends BaseBackendConfig {
     url: string;
-    client?: string;
 }
 
-export type BackendConfig = LocalBackendConfig & DestinationBackendConfig;
+export type BackendConfig = LocalBackendConfig | DestinationBackendConfig;
 
 export interface CommonConfig {
     proxy?: string;

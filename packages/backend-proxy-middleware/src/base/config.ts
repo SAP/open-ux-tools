@@ -52,7 +52,7 @@ export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, url: 
  * @param config - configuration provided as input (e.g. from ui5.yaml)
  * @returns proxy configuration with merged values
  */
-export function mergeConfigWithEnvVariables(config: ProxyConfig): ProxyConfig {
+export function mergeConfigWithEnvVariables(config: Partial<ProxyConfig>): ProxyConfig {
     const mergedConfig = JSON.parse(JSON.stringify(config));
     dotenv.config();
 
