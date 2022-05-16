@@ -4,6 +4,7 @@ import i18n from 'i18next';
 import prompts from 'prompts';
 import type { Logger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import e from 'express';
 
 /**
  * Replace calls to manifest.appdescr file if we are running the FLP embedded flow.
@@ -84,7 +85,13 @@ export async function addOptionsForEmbeddedBSP(bspPath: string, proxyOptions: Op
             return req.protocol + '://' + req.headers.host;
         }
     };
-    proxyOptions.pathRewrite = convertAppDescriptorToManifest(bspPath);
+    if (proxyOptions.pathRewrite) {
+        const oldRewrite = proxyOptions.pathRewrite as (path: string) => string;
+        const appDescrRewrite = convertAppDescriptorToManifest(bspPath);
+        proxyOptions.pathRewrite = (path: string) => appDescrRewrite(oldRewrite(path));
+    } else {
+        proxyOptions.pathRewrite = convertAppDescriptorToManifest(bspPath);
+    }
 
     if (!proxyOptions.auth) {
         proxyOptions.auth = await promptUserPass(logger);
