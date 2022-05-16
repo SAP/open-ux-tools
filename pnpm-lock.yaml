@@ -91,9 +91,11 @@ importers:
 
     examples/temp-middlewares:
         specifiers:
+            '@sap-ux/backend-proxy-middleware': ../../packages/backend-proxy-middleware
             '@sap-ux/ui5-proxy-middleware': workspace:*
             '@ui5/cli': 2.14.1
         devDependencies:
+            '@sap-ux/backend-proxy-middleware': link:../../packages/backend-proxy-middleware
             '@sap-ux/ui5-proxy-middleware': link:../../packages/ui5-proxy-middleware
             '@ui5/cli': 2.14.1
 

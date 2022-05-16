@@ -9,7 +9,7 @@
     },
     "devDependencies": {
         "@sap-ux/ui5-proxy-middleware": "workspace:*",
-        "@sap-ux/backend-proxy-middleware": "workspace:*",
+        "@sap-ux/backend-proxy-middleware": "../../packages/backend-proxy-middleware",
         "@ui5/cli": "2.14.1"
     },
     "ui5": {
