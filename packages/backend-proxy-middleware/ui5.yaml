@@ -4,4 +4,4 @@ metadata:
 kind: extension
 type: server-middleware
 middleware:
-    path: dist/middleware/index.js
+    path: dist/middleware.js
