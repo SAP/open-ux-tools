@@ -1,4 +1,9 @@
-import { Destination, getDestinationUrlForAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
+import {
+    Destination,
+    getDestinationUrlForAppStudio,
+    WebIDEUsage,
+    BAS_DEST_INSTANCE_CRED_HEADER
+} from '@sap-ux/btp-utils';
 import axios from 'axios';
 import nock from 'nock';
 import { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } from '../src';
@@ -8,14 +13,14 @@ const servicePath = '/ns/myservice';
 const metadataPath = '/$metadata';
 const client = '010';
 const expectedMetadata = '<METADATA>';
-const destinationServiceUser = 'EXAMPLE_BASE64';
+const destinationServiceCreds = 'EXAMPLE_BASE64';
 
 jest.mock('@sap-ux/btp-utils', () => {
     const original = jest.requireActual('@sap-ux/btp-utils');
     return {
         ...original,
-        getUserForDestinationService: jest.fn(() => {
-            return destinationServiceUser;
+        getCredentialsForDestinationService: jest.fn(() => {
+            return destinationServiceCreds;
         })
     };
 });
@@ -105,6 +110,6 @@ describe('createForDestination', () => {
         nock(`https://${destination.Name}.dest`).get(/.*/).reply(200);
         await provider.get('/');
         expect(provider.defaults.baseURL).toContain(destination.Name);
-        expect(provider.defaults.baseURL).toContain(destinationServiceUser);
+        expect(provider.defaults.headers.common[BAS_DEST_INSTANCE_CRED_HEADER]).toBe(destinationServiceCreds);
     });
 });

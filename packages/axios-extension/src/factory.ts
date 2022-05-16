@@ -1,7 +1,12 @@
 import type { AxiosRequestConfig } from 'axios';
 import cloneDeep from 'lodash.clonedeep';
 import type { Destination } from '@sap-ux/btp-utils';
-import { getDestinationUrlForAppStudio, getUserForDestinationService, isAbapSystem } from '@sap-ux/btp-utils';
+import {
+    getDestinationUrlForAppStudio,
+    getCredentialsForDestinationService,
+    isAbapSystem,
+    BAS_DEST_INSTANCE_CRED_HEADER
+} from '@sap-ux/btp-utils';
 import { Agent as HttpsAgent } from 'https';
 import type { ServiceInfo, RefreshTokenChanged } from './auth';
 import {
@@ -37,6 +42,16 @@ function createInstance<T extends ServiceProvider>(
     providerConfig.withCredentials = providerConfig?.auth && Object.keys(providerConfig.auth).length > 0;
 
     const instance = new ProviderType(providerConfig);
+    instance.defaults.headers = instance.defaults.headers ?? {
+        common: {},
+        // eslint-disable-next-line quote-props
+        delete: {},
+        put: {},
+        get: {},
+        post: {},
+        head: {},
+        patch: {}
+    };
     attachConnectionHandler(instance);
     if (providerConfig.auth?.password) {
         attachBasicAuthInterceptor(instance);
@@ -153,9 +168,8 @@ export function createForDestination(
     // resolve destination service user on first request if required
     if (destinationServiceInstance) {
         const oneTimeReqInterceptorId = provider.interceptors.request.use(async (request: AxiosRequestConfig) => {
-            const url = new URL(provider.defaults.baseURL);
-            url.username = await getUserForDestinationService(destinationServiceInstance);
-            request.baseURL = provider.defaults.baseURL = url.toString();
+            const credentials = await getCredentialsForDestinationService(destinationServiceInstance);
+            provider.defaults.headers.common[BAS_DEST_INSTANCE_CRED_HEADER] = credentials;
             provider.interceptors.request.eject(oneTimeReqInterceptorId);
             return request;
         });
