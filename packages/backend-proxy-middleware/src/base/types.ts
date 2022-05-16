@@ -3,11 +3,29 @@ import type { IncomingMessage } from 'http';
 import type { Options } from 'http-proxy-middleware';
 
 export interface BaseBackendConfig {
+    /**
+     * Path that is to be proxied
+     */
     path: string;
-    client?: string;
+    /**
+     * If provided then the path will be replaced with the pathPrefix before forwarding.
+     */
     pathPrefix?: string;
+    /**
+     * sap-client parameter
+     */
+    client?: string;
+    /**
+     * If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP
+     */
     scp?: boolean;
+    /**
+     * If set to true then the proxy will connect to the SAP API Business Hub
+     */
     apiHub?: boolean;
+    /**
+     * If set then it will override the proxy settings from node.
+     */
     proxy?: string;
     /**
      * The BSP property for the FLP Embedded Flow. The property refers to the BSP Application Name.
@@ -17,11 +35,20 @@ export interface BaseBackendConfig {
 }
 
 export interface DestinationBackendConfig extends BaseBackendConfig {
+    /**
+     * Required if the backend system is available as destination in SAP Business Application Studio.
+     */
     destination: string;
+    /**
+     * If a destination needs to be read by a specific instance of a destination service then you need to provide the id of the service as optional property `destinationInstance`.
+     */
     destinationInstance?: string;
 }
 
 export interface LocalBackendConfig extends BaseBackendConfig {
+    /**
+     * Mandatory URL pointing to the backend system
+     */
     url: string;
 }
 
