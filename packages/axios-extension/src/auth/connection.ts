@@ -155,16 +155,6 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                 throwIfHtmlLoginForm(response);
                 // remember xsrf token
                 if (response.headers?.[CSRF.ResponseHeaderName]) {
-                    provider.defaults.headers = provider.defaults.headers ?? {
-                        common: {},
-                        // eslint-disable-next-line quote-props
-                        delete: {},
-                        put: {},
-                        get: {},
-                        post: {},
-                        head: {},
-                        patch: {}
-                    };
                     provider.defaults.headers.common[CSRF.RequestHeaderName] =
                         response.headers[CSRF.ResponseHeaderName];
                 }
