@@ -7,7 +7,7 @@ import {
     PathRewriters
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
-import { BackendConfig, CommonConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
+import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import { ClientRequest, IncomingMessage } from 'http';
 
@@ -309,25 +309,23 @@ describe('proxy', () => {
             const backend: LocalBackendConfig = {
                 url: 'http://backend.example',
                 path: '/my/path',
-                ws: true,
-                xfwd: true,
+                proxy: 'http://proxy.example',
                 apiHub: true
             };
-            const common: CommonConfig = {
-                proxy: 'http://proxy.example',
+            const baseOptions: Options = {
                 secure: true,
-                debug: true
+                ws: true,
+                xfwd: true
             };
 
-            const options = await generateProxyMiddlewareOptions(backend, common, logger);
+            const options = await generateProxyMiddlewareOptions(backend, baseOptions, logger);
             expect(options).toBeDefined();
             expect(options.target).toBe(backend.url);
             expect(options.changeOrigin).toBe(true);
             expect(options.agent).toBeDefined();
-            expect(options.ws).toBe(backend.ws);
-            expect(options.xfwd).toBe(backend.xfwd);
-            expect(options.secure).toBe(common.secure);
-            expect(options.logLevel).toBe('debug');
+            expect(options.ws).toBe(true);
+            expect(options.xfwd).toBe(true);
+            expect(options.secure).toBe(true);
         });
 
         test('generate proxy middleware inside of BAS with minimal parameters', async () => {
@@ -339,9 +337,8 @@ describe('proxy', () => {
             mockListDestinations.mockResolvedValueOnce({
                 [backend.destination]: {}
             });
-            const common: CommonConfig = {};
 
-            const options = await generateProxyMiddlewareOptions(backend, common, logger);
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
             expect(options.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(options.changeOrigin).toBe(true);
@@ -349,7 +346,6 @@ describe('proxy', () => {
             expect(options.ws).toBeUndefined();
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
-            expect(options.logLevel).toBe('silent');
         });
     });
 

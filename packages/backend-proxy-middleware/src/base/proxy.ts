@@ -1,10 +1,12 @@
 import HttpsProxyAgent from 'https-proxy-agent';
+import dotenv from 'dotenv';
 import type { ServerOptions } from 'http-proxy';
 import type { RequestHandler } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
+import { ToolsLogger } from '@sap-ux/logger';
 import { createForAbapOnBtp } from '@sap-ux/axios-extension';
 import {
     isAppStudio,
@@ -14,12 +16,12 @@ import {
     isFullUrlDestination
 } from '@sap-ux/btp-utils';
 import type { Options } from 'http-proxy-middleware';
-import type { BackendConfig, CommonConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import translations from './i18n.json';
 
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
-import { isHostExcludedFromProxy } from './config';
+import { getCorporateProxyServer, isHostExcludedFromProxy } from './config';
 import type { Url } from 'url';
 
 /**
@@ -266,24 +268,23 @@ export async function enhanceConfigForSystem(
  * Generate options for the proxy middleware based on the input.
  *
  * @param backend backend system specific configuration
- * @param common common configurations
- * @param logger logger instance
+ * @param options optional base options for the http-proxy-middleware
+ * @param logger optional logger instance
  * @returns options for the http-proxy-middleware
  */
 export async function generateProxyMiddlewareOptions(
     backend: BackendConfig,
-    common: CommonConfig,
-    logger: Logger
+    options: Options = {},
+    logger: Logger = new ToolsLogger()
 ): Promise<Options> {
     await initI18n();
-    // base options
-    const proxyOptions: Options & { headers: object } = {
-        ...ProxyEventHandlers,
-        secure: common.secure,
-        changeOrigin: true,
-        logLevel: !!common.debug ? 'debug' : 'silent',
-        headers: {}
-    };
+    dotenv.config();
+    // add required options
+    const proxyOptions: Options & { headers: object } = { headers: {}, ...options };
+    proxyOptions.changeOrigin = true;
+    proxyOptions.onError = proxyOptions.onError ?? ProxyEventHandlers.onError;
+    proxyOptions.onProxyReq = proxyOptions.onProxyReq ?? ProxyEventHandlers.onProxyReq;
+    proxyOptions.onProxyRes = proxyOptions.onProxyRes ?? ProxyEventHandlers.onProxyRes;
 
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
@@ -320,16 +321,9 @@ export async function generateProxyMiddlewareOptions(
         }
     }
 
-    if (backend.ws) {
-        proxyOptions.ws = true;
-    }
-
-    if (backend.xfwd) {
-        proxyOptions.xfwd = true;
-    }
-
-    if (common.proxy && !isHostExcludedFromProxy(common.noProxyList, proxyOptions.target as string)) {
-        proxyOptions.agent = new (HttpsProxyAgent as any)(common.proxy);
+    backend.proxy = getCorporateProxyServer(backend.proxy);
+    if (backend.proxy && !isHostExcludedFromProxy(proxyOptions.target as string)) {
+        proxyOptions.agent = new (HttpsProxyAgent as any)(backend.proxy);
     }
 
     logger.info(
@@ -344,14 +338,10 @@ export async function generateProxyMiddlewareOptions(
  * Generate an instance of the proxy middleware based on the input.
  *
  * @param backend backend system specific configuration
- * @param common common configurations
- * @param logger logger instance
+ * @param options optional base options for the http-proxy-middleware
+ * @param logger optional logger instance
  * @returns an instance of http-proxy-middleware
  */
-export async function createProxy(
-    backend: BackendConfig,
-    common: CommonConfig,
-    logger: Logger
-): Promise<RequestHandler> {
-    return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, common, logger));
+export async function createProxy(backend: BackendConfig, options?: Options, logger?: Logger): Promise<RequestHandler> {
+    return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, options, logger));
 }

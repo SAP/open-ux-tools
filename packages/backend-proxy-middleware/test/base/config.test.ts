@@ -1,4 +1,4 @@
-import { getCorporateProxyServer, isHostExcludedFromProxy, mergeConfigWithEnvVariables } from '../../src/base/config';
+import { getCorporateProxyServer, isHostExcludedFromProxy } from '../../src/base/config';
 
 describe('config', () => {
     const corporateProxy = 'https://myproxy.example:8443';
@@ -25,53 +25,46 @@ describe('config', () => {
 
     describe('isHostExcludedFromProxy', () => {
         const host = 'http://www.host.example';
+        const noProxyConfig = process.env.no_proxy;
+
+        afterEach(() => {
+            process.env.no_proxy = noProxyConfig;
+        });
 
         test('no_proxy config does not exist', () => {
-            expect(isHostExcludedFromProxy(undefined, host)).toBeFalsy();
+            process.env.no_proxy = undefined;
+            expect(isHostExcludedFromProxy(host)).toBeFalsy();
         });
 
         test('host is not excluded via no_proxy config', () => {
-            expect(isHostExcludedFromProxy('host,www', host)).toBeFalsy();
+            process.env.no_proxy = 'host,www';
+            expect(isHostExcludedFromProxy(host)).toBeFalsy();
         });
 
         test('host is not excluded via no_proxy config but has similar ending', () => {
-            expect(isHostExcludedFromProxy('ample', host)).toBeFalsy();
-            expect(isHostExcludedFromProxy('ost.example', host)).toBeFalsy();
+            process.env.no_proxy = 'ample';
+            expect(isHostExcludedFromProxy(host)).toBeFalsy();
+            process.env.no_proxy = 'ost.example';
+            expect(isHostExcludedFromProxy(host)).toBeFalsy();
         });
 
         test('host is excluded via no_proxy config', () => {
-            expect(isHostExcludedFromProxy('host.example', host)).toBeTruthy();
-            expect(isHostExcludedFromProxy('example', host)).toBeTruthy();
+            process.env.no_proxy = 'host.example';
+            expect(isHostExcludedFromProxy(host)).toBeTruthy();
+            process.env.no_proxy = 'example';
+            expect(isHostExcludedFromProxy(host)).toBeTruthy();
         });
 
         test('host is excluded via no_proxy config, bit with leading .', () => {
-            expect(isHostExcludedFromProxy('.host.example', host)).toBeTruthy();
-            expect(isHostExcludedFromProxy('.example', host)).toBeTruthy();
+            process.env.no_proxy = '.host.example';
+            expect(isHostExcludedFromProxy(host)).toBeTruthy();
+            process.env.no_proxy = '.example';
+            expect(isHostExcludedFromProxy(host)).toBeTruthy();
         });
 
         test('all hosts are excluded from proxy', () => {
-            expect(isHostExcludedFromProxy('*', host)).toBeTruthy();
-        });
-    });
-
-    describe('mergeConfigWithEnvVariables', () => {
-        const envString = JSON.stringify(process.env);
-
-        afterEach(() => {
-            process.env = JSON.parse(envString);
-        });
-
-        test('read everything from environment variables', () => {
-            process.env.HTTP_PROXY = 'http://proxy.example';
-            process.env.no_proxy = 'noproxy.example';
-            process.env.FIORI_TOOLS_BACKEND_CONFIG = JSON.stringify([{ url: 'http://backend.example' }]);
-
-            const config = mergeConfigWithEnvVariables({});
-
-            expect(config.proxy).toBe(process.env.HTTP_PROXY);
-            expect(config.noProxyList).toBe(process.env.no_proxy);
-            expect(JSON.stringify(config.backend)).toBe(process.env.FIORI_TOOLS_BACKEND_CONFIG);
-            expect(config.secure).toBe(true);
+            process.env.no_proxy = '*';
+            expect(isHostExcludedFromProxy(host)).toBeTruthy();
         });
     });
 });

@@ -1,11 +1,10 @@
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { MiddlewareParameters, ProxyConfig } from './base/types';
-import { generateProxyMiddlewareOptions } from './base/proxy';
-import { mergeConfigWithEnvVariables } from './base/config';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import { Router as createRouter } from 'express';
-import { addOptionsForEmbeddedBSP } from 'ext/bsp';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import type { MiddlewareParameters, Ui5MiddlewareConfig } from './base/types';
+import { generateProxyMiddlewareOptions } from './base/proxy';
+import { addOptionsForEmbeddedBSP } from './ext/bsp';
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.
@@ -31,36 +30,36 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
  * @param params input parameters for UI5 middleware
  * @param params.options configuration options
  */
-module.exports = async ({ options }: MiddlewareParameters<ProxyConfig>): Promise<RequestHandler> => {
+module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
     });
     const router = createRouter();
-    const config = mergeConfigWithEnvVariables(options.configuration);
+    const backend = options.configuration.backend;
+    const debug = options.configuration.debug;
+    const configOptions = options.configuration.options ?? {};
+    configOptions.secure = configOptions.secure !== undefined ? !!configOptions.secure : true;
+    if (debug || configOptions.logLevel === undefined) {
+        configOptions.logLevel = !!debug ? 'debug' : 'silent';
+    }
 
-    logger.info(
-        `Starting backend-proxy-middleware using following configuration:\nproxy: '${formatProxyForLogging(
-            config.proxy
-        )}'\nsecure: '${config.secure ? 'true' : 'false'}'\nbackend: ${JSON.stringify(config.backend)}\ndebug: '${
-            config.debug ? 'true' : 'false'
-        }'`
-    );
-
-    if (config.backend) {
-        for (const backend of config.backend) {
-            try {
-                const options = await generateProxyMiddlewareOptions(backend, config, logger);
-                // TODO: decide if this code should be removed
-                if (config.bsp) {
-                    addOptionsForEmbeddedBSP(config.bsp, options, logger);
-                }
-                router.use(backend.path, createProxyMiddleware(options));
-            } catch (e) {
-                const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;
-                logger.error(message);
-                throw new Error(message);
-            }
+    try {
+        const proxyOptions = await generateProxyMiddlewareOptions(options.configuration.backend, configOptions, logger);
+        if (backend.bsp) {
+            addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);
         }
+        router.use(backend.path, createProxyMiddleware(proxyOptions));
+        logger.info(
+            `Starting backend-proxy-middleware using following configuration:\nproxy: '${formatProxyForLogging(
+                backend.proxy
+            )}'\nsecure: '${proxyOptions.secure ? 'true' : 'false'}'\nbackend: ${JSON.stringify(backend)}\ndebug: '${
+                debug ? 'true' : 'false'
+            }'`
+        );
+    } catch (e) {
+        const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;
+        logger.error(message);
+        throw new Error(message);
     }
 
     return router;
