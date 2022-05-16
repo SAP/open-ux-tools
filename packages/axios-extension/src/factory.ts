@@ -14,6 +14,7 @@ import type { ProviderConfiguration } from './base/service-provider';
 import { ServiceProvider } from './base/service-provider';
 import type { ODataService } from './base/odata-service';
 import { AbapServiceProvider } from './abap';
+import { inspect } from 'util';
 
 type Class<T> = new (...args: any[]) => T;
 
@@ -70,42 +71,53 @@ export function createForAbap(config: AxiosRequestConfig & Partial<ProviderConfi
     return createInstance(AbapServiceProvider, config);
 }
 
-/**
- * Create an instance of an ABAP service provider for an ABAP environment on SAP BTP.
- *
- * @param service ABAP environment service
- * @param refreshToken optional refresh token
- * @param refreshTokenChangedCb option callback for refresh token updates
- * @returns instance of an ABAP service provider
- */
-export function createForAbapOnBtp(
-    service: ServiceInfo,
-    refreshToken?: string,
-    refreshTokenChangedCb?: RefreshTokenChanged
-): AbapServiceProvider {
-    const provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
-        baseURL: service.url
-    });
-    attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
-    return provider;
+export enum Authentication {
+    OAuth = 'OAuth',
+    ReentranceTicket = 'ReentranceTicket'
 }
+
+export interface AbapEnvironmentBtp {
+    authentication: Authentication.OAuth;
+    service: ServiceInfo;
+    refreshToken?: string;
+    refreshTokenChangedCb?: RefreshTokenChanged;
+}
+
+export interface AbapEnvironmentCloud {
+    authentication: Authentication.ReentranceTicket;
+    url: string;
+}
+
+export type AbapEnvironment = AbapEnvironmentBtp | AbapEnvironmentCloud;
 
 /**
  * Create an instance of an ABAP service provider for a Cloud ABAP system.
  *
  * @param options
- * @param options.url ABAP Service Instance URL
  * @returns instance of an ABAP service provider
  */
-export function createForAbapOnCloud({
-    url,
-    ...config
-}: { url: string } & Partial<ProviderConfiguration>): AbapServiceProvider {
-    const provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
-        baseURL: url,
-        ...config
-    });
-    attachReentranceTicketAuthInterceptor({ provider });
+export function createForAbapOnCloud(options: AbapEnvironment & Partial<ProviderConfiguration>): AbapServiceProvider {
+    let provider: AbapServiceProvider;
+    switch (options.authentication) {
+        case Authentication.OAuth:
+            const { service, refreshToken, refreshTokenChangedCb } = options;
+            provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
+                baseURL: service.url
+            });
+            attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
+            break;
+        case Authentication.ReentranceTicket:
+            const { url, ...config } = options;
+            provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
+                baseURL: url,
+                ...config
+            });
+            attachReentranceTicketAuthInterceptor({ provider });
+            break;
+        default:
+            const opts: never = options;
+            throw new Error(`Unknown authenticaton type supplied: ${inspect(opts)}`);
+    }
     return provider;
 }
 
