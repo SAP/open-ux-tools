@@ -148,9 +148,12 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
     private _readAll(entityName: string): { entities?: { [key: string]: E }; error?: Error & { code?: string } } {
         let rawContents: string;
         try {
-            rawContents = readFileSync(path.join(this.storeDirectory, `${entityName}.json`))
-                ?.toString()
-                .trim();
+            const configPath = path.join(this.storeDirectory, `${entityName}.json`);
+            if (existsSync(configPath)) {
+                rawContents = readFileSync(configPath).toString().trim();
+            } else {
+                rawContents = '';
+            }
         } catch (e) {
             const err = errorInstance(e);
             this.logger.debug(err.message);
