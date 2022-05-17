@@ -19,7 +19,7 @@ async function getTestServer(configuration: BackendMiddlewareConfig): Promise<an
     return supertest(app);
 }
 
-describe('backend-proxy-middlewaer', () => {
+describe('backend-proxy-middleware', () => {
     const backend = {
         path: '/my/service',
         url: 'http://backend.example'

@@ -1,5 +1,6 @@
+import type { ClientRequest, IncomingMessage } from 'http';
 import type { Options } from 'http-proxy-middleware';
-import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import {
     enhanceConfigsForDestination,
     enhanceConfigForSystem,
@@ -9,7 +10,6 @@ import {
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
 import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
-import { ClientRequest, IncomingMessage } from 'http';
 
 // mock required axios-extension functions
 import { createForAbapOnBtp } from '@sap-ux/axios-extension';
@@ -40,7 +40,7 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 describe('proxy', () => {
     type OptionsWithHeaders = Options & { headers: object };
     const logger = new ToolsLogger({
-        transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
+        transports: [new NullTransport()]
     });
 
     beforeEach(() => {
