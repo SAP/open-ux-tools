@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.11.12
+
+### Patch Changes
+
+-   7e80052: Fix for #487: `sourceTemplate.toolsId` not written
+
 ## 0.11.11
 
 ### Patch Changes
