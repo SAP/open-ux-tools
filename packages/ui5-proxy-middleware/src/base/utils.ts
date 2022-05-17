@@ -204,20 +204,21 @@ export async function getUI5VersionFromManifest(args: string[]): Promise<string 
  * @returns The UI5 version with which the application will be started
  */
 export async function resolveUI5Version(version?: string, log?: ToolsLogger): Promise<string> {
-    let ui5Version: string = '';
+    let ui5Version = process.env.FIORI_TOOLS_UI5_VERSION || version;
     let ui5VersionInfo: string;
     let ui5VersionLocation: string = 'manifest.json';
 
-    if (version !== undefined) {
-        ui5Version = version ? version : '';
+    if (ui5Version !== undefined) {
+        ui5Version = ui5Version ? ui5Version : '';
         ui5VersionLocation =
             process.env.FIORI_TOOLS_UI5_VERSION || process.env.FIORI_TOOLS_UI5_VERSION === ''
                 ? 'CLI arguments / Run configuration'
                 : getYamlFile(process.argv);
     } else {
+        ui5Version = '';
         const minUI5Version = await getUI5VersionFromManifest(process.argv);
         if (minUI5Version) {
-            ui5Version = isNaN(parseFloat(minUI5Version)) ? '' : minUI5Version;
+            ui5Version = isNaN(parseFloat(minUI5Version)) ? ui5Version : minUI5Version;
         }
     }
 
