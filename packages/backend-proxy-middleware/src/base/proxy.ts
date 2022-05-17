@@ -11,7 +11,7 @@ import { createForAbapOnBtp } from '@sap-ux/axios-extension';
 import {
     isAppStudio,
     getDestinationUrlForAppStudio,
-    getUserForDestinationService,
+    getCredentialsForDestinationService,
     listDestinations,
     isFullUrlDestination
 } from '@sap-ux/btp-utils';
@@ -202,7 +202,7 @@ export async function enhanceConfigsForDestination(
 ): Promise<void> {
     proxyOptions.target = getDestinationUrlForAppStudio(backend.destination);
     if (backend.destinationInstance) {
-        proxyOptions.headers['bas-destination-instance-cred'] = await getUserForDestinationService(
+        proxyOptions.headers['bas-destination-instance-cred'] = await getCredentialsForDestinationService(
             backend.destinationInstance
         );
     } else {

@@ -24,17 +24,17 @@ import {
     listDestinations,
     getDestinationUrlForAppStudio,
     WebIDEUsage,
-    getUserForDestinationService,
+    getCredentialsForDestinationService,
     isAppStudio
 } from '@sap-ux/btp-utils';
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as object),
     listDestinations: jest.fn(),
-    getUserForDestinationService: jest.fn(),
+    getCredentialsForDestinationService: jest.fn(),
     isAppStudio: jest.fn()
 }));
 const mockListDestinations = listDestinations as jest.Mock;
-const mockGetUserForDestinationService = getUserForDestinationService as jest.Mock;
+const mockGetCredentialsForDestinationService = getCredentialsForDestinationService as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('proxy', () => {
@@ -214,7 +214,7 @@ describe('proxy', () => {
                 }
             });
             const cred = '~base64EncodedCredentials';
-            mockGetUserForDestinationService.mockResolvedValue(cred);
+            mockGetCredentialsForDestinationService.mockResolvedValue(cred);
             const proxyOptions: OptionsWithHeaders = { headers: {} };
 
             await enhanceConfigsForDestination(proxyOptions, {
