@@ -52,25 +52,26 @@ export function mergePackages(packageA: Partial<Package>, packageB: Partial<Pack
     return mergedPackage;
 }
 /**
- * Returns an app instance with default properties. Every property must have a value for templating to succeed.
+ * Returns an app instance merged with default properties.
  *
  * @param {App} app - specifies the application properties
  * @returns {Partial<App>} the App instance
  */
 export function mergeApp(app: App): App {
-    return Object.assign(
+    return mergeObjects([
         {
             version: '0.0.1',
             title: t('text.defaultAppTitle', { id: app.id }),
             description: t('text.defaultAppDescription', { id: app.id }),
             baseComponent: 'sap/ui/core/UIComponent',
             sourceTemplate: {
-                id: app.sourceTemplate?.id || '',
-                version: app.sourceTemplate?.version || ''
+                id: app.sourceTemplate?.id ?? '',
+                version: app.sourceTemplate?.version ?? '',
+                toolsId: app.sourceTemplate?.toolsId
             }
         },
         app
-    ) as App;
+    ]) as App;
 }
 
 export enum UI5_DEFAULT {

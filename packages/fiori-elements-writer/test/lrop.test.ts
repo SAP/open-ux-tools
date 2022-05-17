@@ -87,6 +87,44 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }),
                 service: v2Service
             } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_set_toolsId',
+            config: {
+                ...Object.assign(feBaseConfig('felrop5'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    app: {
+                        ...feBaseConfig('felrop4').app,
+                        sourceTemplate: {
+                            version: '1.2.3-test',
+                            id: 'test-fe-template',
+                            toolsId: 'toolsId:1234abcd'
+                        }
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_set_toolsId_only',
+            config: {
+                ...Object.assign(feBaseConfig('felrop5'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    app: {
+                        ...feBaseConfig('felrop4').app,
+                        sourceTemplate: {
+                            toolsId: 'toolsId:1234abcd'
+                        }
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
         }
     ];
 

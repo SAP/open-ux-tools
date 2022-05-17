@@ -12,7 +12,8 @@
       "resources": "resources.json",
       "sourceTemplate": {
           "id": "<%= app.sourceTemplate.id %>",
-          "version": "<%= app.sourceTemplate.version %>"
+          "version": "<%= app.sourceTemplate.version %>"<% if (app.sourceTemplate.toolsId) { %>,
+          "toolsId": "<%= app.sourceTemplate.toolsId %>"<% } %>
       }
     },
     "sap.ui": {
