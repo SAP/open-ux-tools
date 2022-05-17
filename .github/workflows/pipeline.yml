@@ -11,7 +11,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest]
-                node-version: [12.x, 14.x, 16.x]
+                node-version: [14.x, 16.x, 18.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 15
         steps:
@@ -22,11 +22,8 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.0.1
               with:
-                - if matrix.node-version == '12.x'
-                  version: 6.26.1
-                - if matrix.node-version != '12.x'
                   version: 7.1.0
-                run_install: true
+                  run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v2
               env:
@@ -49,7 +46,7 @@ jobs:
             - name: Run unit tests
               run: pnpm run test
             - name: Run SonarCloud scan
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '12.x'
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '14.x'
               uses: sonarsource/sonarcloud-github-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
