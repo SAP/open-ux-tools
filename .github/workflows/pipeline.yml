@@ -22,8 +22,11 @@ jobs:
             - name: Setup pnpm
               uses: pnpm/action-setup@v2.0.1
               with:
+                - if matrix.node-version == '12.x'
+                  version: 6.26.1
+                - if matrix.node-version != '12.x'
                   version: 7.1.0
-                  run_install: true
+                run_install: true
             - name: Cache pnpm modules
               uses: actions/cache@v2
               env:
