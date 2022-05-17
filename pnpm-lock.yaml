@@ -19,7 +19,7 @@ importers:
             eslint-config-prettier: 8.5.0
             eslint-import-resolver-typescript: 2.5.0
             eslint-plugin-import: 2.25.4
-            eslint-plugin-jsdoc: 38.0.6
+            eslint-plugin-jsdoc: 39.2.9
             eslint-plugin-prettier: 4.0.0
             eslint-plugin-promise: 6.0.0
             husky: 7.0.4
@@ -40,7 +40,7 @@ importers:
             eslint-config-prettier: 8.5.0_eslint@8.11.0
             eslint-import-resolver-typescript: 2.5.0_7yrnqyx753fo5bwjhiag2wpedy
             eslint-plugin-import: 2.25.4_znvipj6vagw2fxxmrueqoi2i7y
-            eslint-plugin-jsdoc: 38.0.6_eslint@8.11.0
+            eslint-plugin-jsdoc: 39.2.9_eslint@8.11.0
             eslint-plugin-prettier: 4.0.0_ndw46vtq6n3sdoxv2lfmmesoju
             eslint-plugin-promise: 6.0.0_eslint@8.11.0
             husky: 7.0.4
@@ -1110,16 +1110,16 @@ packages:
             kuler: 2.0.0
         dev: false
 
-    /@es-joy/jsdoccomment/0.22.1:
+    /@es-joy/jsdoccomment/0.29.0:
         resolution:
             {
-                integrity: sha512-/WMkqLYfwCf0waCAMC8Eddt3iAOdghkDF5vmyKEu8pfO66KRFY1L15yks8mfgURiwOAOJpAQ3blvB3Znj6ZwBw==
+                integrity: sha512-4yKy5t+/joLihG+ei6CCU6sc08sjUdEdXCQ2U+9h9VP13EiqHQ4YMgDC18ys/AsLdJDBX3KRx/AWY6PR7hn52Q==
             }
-        engines: { node: ^12 || ^14 || ^16 || ^17 }
+        engines: { node: ^14 || ^16 || ^17 || ^18 }
         dependencies:
             comment-parser: 1.3.1
             esquery: 1.4.0
-            jsdoc-type-pratt-parser: 2.2.5
+            jsdoc-type-pratt-parser: 3.0.1
         dev: true
 
     /@eslint/eslintrc/1.2.1:
@@ -4208,23 +4208,22 @@ packages:
             - supports-color
         dev: true
 
-    /eslint-plugin-jsdoc/38.0.6_eslint@8.11.0:
+    /eslint-plugin-jsdoc/39.2.9_eslint@8.11.0:
         resolution:
             {
-                integrity: sha512-Wvh5ERLUL8zt2yLZ8LLgi8RuF2UkjDvD+ri1/i7yMpbfreK2S29B9b5JC7iBIoFR7KDaEWCLnUPHTqgwcXX1Sg==
+                integrity: sha512-gaPYJT94rWlWyQcisQyyEJHtLaaJqN4baFlLCEr/LcXVibS9wzQTL2dskqk327ggwqQopR+Xecu2Lng1IJ9Ypw==
             }
-        engines: { node: ^12 || ^14 || ^16 || ^17 }
+        engines: { node: ^14 || ^16 || ^17 || ^18 }
         peerDependencies:
             eslint: ^7.0.0 || ^8.0.0
         dependencies:
-            '@es-joy/jsdoccomment': 0.22.1
+            '@es-joy/jsdoccomment': 0.29.0
             comment-parser: 1.3.1
             debug: 4.3.4
             escape-string-regexp: 4.0.0
             eslint: 8.11.0
             esquery: 1.4.0
-            regextras: 0.8.0
-            semver: 7.3.5
+            semver: 7.3.7
             spdx-expression-parse: 3.0.1
         transitivePeerDependencies:
             - supports-color
@@ -6956,10 +6955,10 @@ packages:
         dependencies:
             argparse: 2.0.1
 
-    /jsdoc-type-pratt-parser/2.2.5:
+    /jsdoc-type-pratt-parser/3.0.1:
         resolution:
             {
-                integrity: sha512-2a6eRxSxp1BW040hFvaJxhsCMI9lT8QB8t14t+NY5tC5rckIR0U9cr2tjOeaFirmEOy6MHvmJnY7zTBHq431Lw==
+                integrity: sha512-vqMCdAFVIiFhVgBYE/X8naf3L/7qiJsaYWTfUJZZZ124dR3OUz9HrmaMUGpYIYAN4VSuodf6gIZY0e8ktPw9cg==
             }
         engines: { node: '>=12.0.0' }
         dev: true
@@ -8708,14 +8707,6 @@ packages:
         engines: { node: '>=8' }
         dev: true
 
-    /regextras/0.8.0:
-        resolution:
-            {
-                integrity: sha512-k519uI04Z3SaY0fLX843MRXnDeG2+vHOFsyhiPZvNLe7r8rD2YNRjq4BQLZZ0oAr2NrtvZlICsXysGNFPGa3CQ==
-            }
-        engines: { node: '>=0.1.14' }
-        dev: true
-
     /remove-trailing-separator/1.1.0:
         resolution: { integrity: sha1-wkvOKig62tW8P1jg1IJJuSN52O8= }
 
@@ -8936,6 +8927,17 @@ packages:
         hasBin: true
         dependencies:
             lru-cache: 6.0.0
+
+    /semver/7.3.7:
+        resolution:
+            {
+                integrity: sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g==
+            }
+        engines: { node: '>=10' }
+        hasBin: true
+        dependencies:
+            lru-cache: 6.0.0
+        dev: true
 
     /send/0.17.1:
         resolution:
