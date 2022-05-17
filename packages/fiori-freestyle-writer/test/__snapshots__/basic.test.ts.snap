@@ -1623,7 +1623,7 @@ title=App Title",
     \\"resources\\": \\"resources.json\\",
     \\"sourceTemplate\\": {
       \\"id\\": \\"@sap-ux/fiori-freestyle-writer:basic\\",
-      \\"version\\": \\"0.11.11\\",
+      \\"version\\": \\"0.11.12\\",
       \\"toolsId\\": \\"testToolsId:abcd1234\\"
     },
     \\"dataSources\\": {

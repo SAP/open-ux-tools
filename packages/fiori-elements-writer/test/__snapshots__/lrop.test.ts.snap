@@ -16955,7 +16955,7 @@ appDescription=A Fiori application.",
     \\"resources\\": \\"resources.json\\",
     \\"sourceTemplate\\": {
       \\"id\\": \\"@sap-ux/fiori-elements-writer:lrop\\",
-      \\"version\\": \\"0.3.2\\",
+      \\"version\\": \\"0.3.3\\",
       \\"toolsId\\": \\"toolsId:1234abcd\\"
     },
     \\"dataSources\\": {
