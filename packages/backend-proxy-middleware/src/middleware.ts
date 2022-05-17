@@ -36,12 +36,8 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
     });
     const router = createRouter();
     const backend = options.configuration.backend;
-    const debug = options.configuration.debug;
     const configOptions = options.configuration.options ?? {};
     configOptions.secure = configOptions.secure !== undefined ? !!configOptions.secure : true;
-    if (debug || configOptions.logLevel === undefined) {
-        configOptions.logLevel = !!debug ? 'debug' : 'silent';
-    }
 
     try {
         const proxyOptions = await generateProxyMiddlewareOptions(options.configuration.backend, configOptions, logger);
@@ -52,9 +48,7 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
         logger.info(
             `Starting backend-proxy-middleware using following configuration:\nproxy: '${formatProxyForLogging(
                 backend.proxy
-            )}'\nsecure: '${proxyOptions.secure ? 'true' : 'false'}'\nbackend: ${JSON.stringify(backend)}\ndebug: '${
-                debug ? 'true' : 'false'
-            }'`
+            )}'\nbackend: ${JSON.stringify(backend)}\options: ${JSON.stringify(configOptions)}'`
         );
     } catch (e) {
         const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;

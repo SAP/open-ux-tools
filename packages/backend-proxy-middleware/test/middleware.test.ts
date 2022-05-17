@@ -5,6 +5,7 @@ import * as proxyMiddleware from '../src/middleware';
 
 import { BackendMiddlewareConfig } from '../src/base/types';
 import nock from 'nock';
+import { Options } from 'http-proxy-middleware';
 
 // spy on createProxy and injectScripts to verify calls
 const generateProxyOptionsSpy = jest.spyOn(proxy, 'generateProxyMiddlewareOptions');
@@ -33,7 +34,7 @@ describe('backend-proxy-middleware', () => {
             await getTestServer({ backend });
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(backend),
-                expect.objectContaining({ secure: true, logLevel: 'silent' }),
+                expect.objectContaining({ secure: true }),
                 expect.objectContaining({})
             );
         });
@@ -44,23 +45,24 @@ describe('backend-proxy-middleware', () => {
                 client: '012',
                 destination: '~destination'
             };
-            await getTestServer({ backend: addtionalConfig, debug: true });
+            await getTestServer({ backend: addtionalConfig });
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(addtionalConfig),
-                expect.objectContaining({ secure: true, logLevel: 'debug' }),
+                expect.objectContaining({ secure: true }),
                 expect.objectContaining({})
             );
         });
 
         test('additional http-proxy-middleware options', async () => {
-            const options = {
+            const options: Options = {
                 ws: true,
-                xfwd: true
+                xfwd: true,
+                logLevel: 'debug'
             };
             await getTestServer({ backend, options });
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(backend),
-                expect.objectContaining({ ...options, secure: true, logLevel: 'silent' }),
+                expect.objectContaining({ ...options, secure: true }),
                 expect.objectContaining({})
             );
         });

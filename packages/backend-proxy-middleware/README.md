@@ -24,11 +24,6 @@ Additional optional experimental property `bsp` (type `string`): The BSP propert
 ### `options`
 Optional object that can be used to directly set options of the used `http-proxy-middleware` modules (https://www.npmjs.com/package/http-proxy-middleware#http-proxy-middleware-options). Note: only declarative options (i.e. no functions) are supported.
 
-### `debug`
-
-- `<boolean>` (default: `false`)
-Set this parameter to get more log information.
-
 ## Configuration Examples
 
 ### [Connecting to a backend system](#connecting-to-a-backend-system)
