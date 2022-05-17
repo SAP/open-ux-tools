@@ -57,7 +57,8 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
         const packageInfo = readPkgUp.sync({ cwd: __dirname });
         feApp.app.sourceTemplate = {
             id: `${packageInfo?.packageJson.name}:${feApp.template.type}`,
-            version: packageInfo?.packageJson.version
+            version: packageInfo?.packageJson.version,
+            toolsId: feApp.app.sourceTemplate?.toolsId
         };
     }
 
