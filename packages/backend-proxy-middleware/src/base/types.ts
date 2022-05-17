@@ -1,5 +1,3 @@
-import type { NextFunction } from 'express';
-import type { IncomingMessage } from 'http';
 import type { Options } from 'http-proxy-middleware';
 
 export interface BaseBackendConfig {
