@@ -22,7 +22,7 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 Additional optional experimental property `bsp` (type `string`): The BSP property is only needed for the FLP Embedded Flow. The property refers to the BSP Application Name. In that case, we need to redirect the manifest.appdescr request to the local manifest.json in order to overwrite the deployed application with the local one.
 
 ### `options`
-Optional object that can be used to directly set options of the used `http-proxy-middleware` modules (https://www.npmjs.com/package/http-proxy-middleware#http-proxy-middleware-options);
+Optional object that can be used to directly set options of the used `http-proxy-middleware` modules (https://www.npmjs.com/package/http-proxy-middleware#http-proxy-middleware-options). Note: only declarative options (i.e. no functions) are supported.
 
 ### `debug`
 
