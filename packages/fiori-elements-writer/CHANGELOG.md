@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.3.4
+
+### Patch Changes
+
+-   3fc088e: Fix for #487: `sourceTemplate.toolsId` not written
+
+## 0.3.3
+
+### Patch Changes
+
+-   7e80052: Fix for #487: `sourceTemplate.toolsId` not written
+
 ## 0.3.2
 
 ### Patch Changes
