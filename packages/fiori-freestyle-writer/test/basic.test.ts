@@ -7,6 +7,15 @@ import { BasicAppSettings } from '../src/types';
 
 const TEST_NAME = 'basicTemplate';
 
+jest.mock('read-pkg-up', () => ({
+    sync: jest.fn().mockReturnValue({
+        packageJson: {
+            name: 'mocked-package-name',
+            version: '9.9.9-mocked'
+        }
+    })
+}));
+
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
