@@ -42,7 +42,8 @@
     "devDependencies": {
         "@types/ejs": "3.1.0",
         "@types/fs-extra": "9.0.13",
-        "@types/mem-fs-editor": "7.0.0",
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.2",
         "fs-extra": "10.0.0",
         "lodash": "4.17.21"
     },
