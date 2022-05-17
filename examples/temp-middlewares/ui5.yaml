@@ -8,7 +8,7 @@ server:
           afterMiddleware: compression
           configuration:
               ui5:
-                  - path: /resources/test-resources
+                  - path: /resources|/test-resources
                     url: https://ui5.sap.com
         - name: backend-proxy-middleware
           afterMiddleware: ui5-proxy-middleware

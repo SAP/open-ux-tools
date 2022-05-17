@@ -54,7 +54,7 @@ export interface LocalBackendConfig extends BaseBackendConfig {
 
 export type BackendConfig = LocalBackendConfig | DestinationBackendConfig;
 
-export interface Ui5MiddlewareConfig {
+export interface BackendMiddlewareConfig {
     backend: BackendConfig;
     options?: Partial<Options>;
     debug?: boolean;
@@ -66,9 +66,3 @@ export interface MiddlewareParameters<T> {
         configuration: T;
     };
 }
-
-export interface UI5ProxyRequest {
-    next?: NextFunction;
-}
-
-export type ProxyRequest = IncomingMessage & UI5ProxyRequest;

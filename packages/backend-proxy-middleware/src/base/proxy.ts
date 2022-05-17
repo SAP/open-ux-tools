@@ -1,4 +1,4 @@
-import HttpsProxyAgent from 'https-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import dotenv from 'dotenv';
 import type { ServerOptions } from 'http-proxy';
 import type { RequestHandler } from 'http-proxy-middleware';
@@ -60,7 +60,7 @@ export const ProxyEventHandlers = {
     },
 
     /**
-     * Specifically handlingign errors due to unsigned certificates.
+     * Specifically handling errors due to unsigned certificates.
      *
      * @param err the error thrown when proxying the request or processing the response
      * @param req request causing the error
@@ -323,7 +323,7 @@ export async function generateProxyMiddlewareOptions(
 
     backend.proxy = getCorporateProxyServer(backend.proxy);
     if (backend.proxy && !isHostExcludedFromProxy(proxyOptions.target as string)) {
-        proxyOptions.agent = new (HttpsProxyAgent as any)(backend.proxy);
+        proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 
     logger.info(

@@ -2,7 +2,7 @@ import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import { Router as createRouter } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { MiddlewareParameters, Ui5MiddlewareConfig } from './base/types';
+import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
 import { generateProxyMiddlewareOptions } from './base/proxy';
 import { addOptionsForEmbeddedBSP } from './ext/bsp';
 
@@ -30,7 +30,7 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
  * @param params input parameters for UI5 middleware
  * @param params.options configuration options
  */
-module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
+module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
     });

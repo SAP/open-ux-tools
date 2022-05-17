@@ -3,14 +3,14 @@ import supertest from 'supertest';
 import * as proxy from '../src/base/proxy';
 import * as proxyMiddleware from '../src/middleware';
 
-import { Ui5MiddlewareConfig } from '../src/base/types';
+import { BackendMiddlewareConfig } from '../src/base/types';
 import nock from 'nock';
 
 // spy on createProxy and injectScripts to verify calls
 const generateProxyOptionsSpy = jest.spyOn(proxy, 'generateProxyMiddlewareOptions');
 
 // middleware function wrapper for testing to simplify tests
-async function getTestServer(configuration: Ui5MiddlewareConfig): Promise<any> {
+async function getTestServer(configuration: BackendMiddlewareConfig): Promise<any> {
     const router = await (proxyMiddleware as any).default({
         options: { configuration }
     });
