@@ -16954,8 +16954,8 @@ appDescription=A Fiori application.",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
     \\"sourceTemplate\\": {
-      \\"id\\": \\"@sap-ux/fiori-elements-writer:lrop\\",
-      \\"version\\": \\"0.3.2\\",
+      \\"id\\": \\"mocked-package-name:lrop\\",
+      \\"version\\": \\"9.9.9-mocked\\",
       \\"toolsId\\": \\"toolsId:1234abcd\\"
     },
     \\"dataSources\\": {
