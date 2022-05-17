@@ -18,3 +18,4 @@ server:
                   pathPrefix: /sap
                   url: https://sapes5.sapdevcenter.com
                   client: '002'
+                  destination: ES5
