@@ -73,6 +73,19 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 appOptions: { loadReuseLibs: false }
             },
             settings: {}
+        },
+        {
+            name: 'basic_with_toolsId',
+            config: {
+                ...commonConfig,
+                app: {
+                    ...commonConfig.app,
+                    sourceTemplate: {
+                        toolsId: 'testToolsId:abcd1234'
+                    }
+                }
+            },
+            settings: {}
         }
     ];
 
