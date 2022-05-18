@@ -291,6 +291,7 @@ export async function generateProxyMiddlewareOptions(
     proxyOptions.onError = proxyOptions.onError ?? ProxyEventHandlers.onError;
     proxyOptions.onProxyReq = proxyOptions.onProxyReq ?? ProxyEventHandlers.onProxyReq;
     proxyOptions.onProxyRes = proxyOptions.onProxyRes ?? ProxyEventHandlers.onProxyRes;
+    proxyOptions.logProvider = () => logger;
 
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
