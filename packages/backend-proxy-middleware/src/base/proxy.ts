@@ -1,6 +1,6 @@
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import type { ServerOptions } from 'http-proxy';
-import type { RequestHandler } from 'http-proxy-middleware';
+import type { RequestHandler, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
@@ -15,7 +15,6 @@ import {
     isFullUrlDestination,
     BAS_DEST_INSTANCE_CRED_HEADER
 } from '@sap-ux/btp-utils';
-import type { Options } from 'http-proxy-middleware';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import translations from './i18n.json';
 
@@ -132,8 +131,8 @@ export const PathRewriters = {
     replaceClient(client: string): (path: string) => string {
         const sapClient = 'sap-client=' + client;
         return (path: string) => {
-            if (path.match(/sap-client=[0-9]{3}/)) {
-                return path.replace(/sap-client=[0-9]{3}/, sapClient);
+            if (path.match(/sap-client=\d{3}/)) {
+                return path.replace(/sap-client=\d{3}/, sapClient);
             } else {
                 return path.indexOf('?') !== -1 ? path + '&' + sapClient : path + '?' + sapClient;
             }
