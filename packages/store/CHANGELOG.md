@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.1.4
+
+### Patch Changes
+
+-   9f84d52: Intrdocded new backend-proxy-middleware.
+
 ## 0.1.3
 
 ### Patch Changes
