@@ -289,18 +289,22 @@ describe('proxy', () => {
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
         });
 
-        test.skip('use reentrance tickets', async () => {
+        test('use reentrance tickets', async () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
-            await enhanceConfigForSystem(
-                proxyOptions,
-                {
-                    ...system,
-                    authenticationType: AuthenticationType.ReentranceTicket
-                },
-                false,
-                jest.fn()
-            );
-            fail('Implementation missing');
+            try {
+                await enhanceConfigForSystem(
+                    proxyOptions,
+                    {
+                        ...system,
+                        authenticationType: AuthenticationType.ReentranceTicket
+                    },
+                    false,
+                    jest.fn()
+                );
+                fail('It should not have worked because the implementation is missing');
+            } catch (error) {
+                expect(error.message).toContain('open-ux-tools/pull/485');
+            }
         });
     });
 
