@@ -149,8 +149,8 @@ export const PathRewriters = {
      */
     getPathRewrite(config: BackendConfig, log: Logger): ((path: string) => string) | undefined {
         const functions: ((path: string) => string)[] = [];
-        if (config.pathPrefix) {
-            functions.push(PathRewriters.replacePrefix(config.path, config.pathPrefix));
+        if (config.pathReplace) {
+            functions.push(PathRewriters.replacePrefix(config.path, config.pathReplace));
         }
         if (config.client) {
             functions.push(PathRewriters.replaceClient(config.client));
@@ -212,8 +212,8 @@ export async function enhanceConfigsForDestination(
             // in case of a full url destination remove the path defined in the destination from the forwarded call
             if (isFullUrlDestination(destination)) {
                 const destPath = new URL(destination.Host).pathname.replace(/\/$/, '');
-                if (backend.path.startsWith(destPath) && !backend.pathPrefix) {
-                    backend.pathPrefix = backend.path.replace(destPath, '');
+                if (backend.path.startsWith(destPath) && !backend.pathReplace) {
+                    backend.pathReplace = backend.path.replace(destPath, '');
                 }
             }
         } else {

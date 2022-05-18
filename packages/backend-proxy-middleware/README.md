@@ -13,7 +13,7 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 | `destination` | `string` mandatory (if no url) | Required if the backend system is available as destination in SAP Business Application Studio. |
 | `destinationInstance` | `string` optional | If a destination needs to be read by a specific instance of a destination service then you need to provide the id of the service as optional property `destinationInstance`.|
 | `path`        | `string` mandatory     | Path that is to be proxied |
-| `pathPrefix`  | `string` optional      | If provided then the path will be replaced with the pathPrefix before forwarding |
+| `pathReplace`  | `string` optional      | If provided then the path will be replaced with this value before forwarding |
 | `client`      | `string` optional      | sap-client parameter |
 | `scp`         | `boolean` optional      | If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP |
 | `apiHub`      | `boolean` optional      | If set to true then the proxy will connect to the SAP API Business Hub
@@ -117,7 +117,7 @@ If you want to configure the proxy to send requests from a certain path `/servic
   configuration:
     backend:
     - path: /services/odata
-      pathPrefix: /my/entry/path
+      pathReplace: /my/entry/path
       url: https://my.backend.example:1234
       destination: my_example_destination
 ```

@@ -6,9 +6,9 @@ export interface BaseBackendConfig {
      */
     path: string;
     /**
-     * If provided then the path will be replaced with the pathPrefix before forwarding.
+     * If provided then the path will be replaced with this value before forwarding.
      */
-    pathPrefix?: string;
+    pathReplace?: string;
     /**
      * sap-client parameter
      */

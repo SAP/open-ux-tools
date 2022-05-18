@@ -73,7 +73,7 @@ describe('proxy', () => {
                 {
                     client: '012',
                     path: '/old',
-                    pathPrefix: '/my/new'
+                    pathReplace: '/my/new'
                 } as BackendConfig,
                 logger
             );
@@ -205,7 +205,7 @@ describe('proxy', () => {
 
             await enhanceConfigsForDestination(proxyOptions, modifiedBackend);
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
-            expect(modifiedBackend.pathPrefix).toBe('/xyz');
+            expect(modifiedBackend.pathReplace).toBe('/xyz');
         });
 
         test('destination provided by a destination service instance', async () => {

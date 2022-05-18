@@ -88,16 +88,16 @@ describe('backend-proxy-middleware', () => {
             expect(await server.get('/not/my/backend')).toMatchObject({ status: 404 });
         });
 
-        test('Replace path with pathPrefix', async () => {
-            const pathPrefix = '/new/path';
-            nock(backend.url).get(`${pathPrefix}/${MANIFEST}`).reply(200);
-            const server = await getTestServer({ backend: { ...backend, pathPrefix } });
+        test('Replace path with pathReplace', async () => {
+            const pathReplace = '/new/path';
+            nock(backend.url).get(`${pathReplace}/${MANIFEST}`).reply(200);
+            const server = await getTestServer({ backend: { ...backend, pathReplace } });
 
             // request that is proxied
             expect(await server.get(`${backend.path}/${MANIFEST}`)).toMatchObject({ status: 200 });
 
             // request that is not handled
-            expect(await server.get(`${pathPrefix}/${MANIFEST}`)).toMatchObject({ status: 404 });
+            expect(await server.get(`${pathReplace}/${MANIFEST}`)).toMatchObject({ status: 404 });
         });
     });
 });
