@@ -13,7 +13,8 @@ import {
     getDestinationUrlForAppStudio,
     getCredentialsForDestinationService,
     listDestinations,
-    isFullUrlDestination
+    isFullUrlDestination,
+    BAS_DEST_INSTANCE_CRED_HEADER
 } from '@sap-ux/btp-utils';
 import type { Options } from 'http-proxy-middleware';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
@@ -202,7 +203,7 @@ export async function enhanceConfigsForDestination(
 ): Promise<void> {
     proxyOptions.target = getDestinationUrlForAppStudio(backend.destination);
     if (backend.destinationInstance) {
-        proxyOptions.headers['bas-destination-instance-cred'] = await getCredentialsForDestinationService(
+        proxyOptions.headers[BAS_DEST_INSTANCE_CRED_HEADER] = await getCredentialsForDestinationService(
             backend.destinationInstance
         );
     } else {
@@ -247,13 +248,18 @@ export async function enhanceConfigForSystem(
             await provider.getAtoInfo();
             proxyOptions.headers['cookie'] = provider.cookies.toString();
         } else {
-            // TODO: similar to prompting user/password, should allow prompting for service keys here?
             throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
         }
     } else if (system.authenticationType === AuthenticationType.ReentranceTicket) {
-        // TODO: @ullas needs to add the missing code to the axios-extension
-        //const connection = await (await system.getCatalog(ODataVersion.v2)).getConnection();
-        //cookies = connection.cookies;
+        throw new Error('Feature comes with https://github.com/SAP/open-ux-tools/pull/485');
+        /*
+        const provider = createForAbapOnBtp(
+            ...
+        );
+        // sending a request to the backend to get cookies
+        await provider.getAtoInfo();
+        proxyOptions.headers['cookie'] = provider.cookies.toString();
+        */
     } else if (
         (system.username || process.env.FIORI_TOOLS_USER) &&
         (system.password || process.env.FIORI_TOOLS_PASSWORD)
