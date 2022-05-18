@@ -86,42 +86,57 @@ export function createForAbap(config: AxiosRequestConfig & Partial<ProviderConfi
     return createInstance(AbapServiceProvider, config);
 }
 
-export enum Authentication {
-    OAuth = 'OAuth',
-    ReentranceTicket = 'ReentranceTicket'
+/** Supported ABAP environments on the cloud */
+export enum AbapCloudEnvironment {
+    Standalone = 'Standalone',
+    EmbeddedSteampunk = 'EmbeddedSteampunk'
 }
 
-export interface AbapEnvironmentBtp {
-    authentication: Authentication.OAuth;
+/** Cloud Foundry OAuth 2.0 options */
+export interface CFAOauthOptions {
     service: ServiceInfo;
     refreshToken?: string;
     refreshTokenChangedCb?: RefreshTokenChanged;
 }
 
-export interface AbapEnvironmentCloud {
-    authentication: Authentication.ReentranceTicket;
+export interface ReentranceTicketOptions {
+    /** Backend API hostname */
     url: string;
 }
 
-export type AbapEnvironment = AbapEnvironmentBtp | AbapEnvironmentCloud;
+/** Options for an ABAP Standalone Cloud system  (ABAP on BTP) */
+export interface AbapCloudStandaloneOptions extends CFAOauthOptions {
+    environment: AbapCloudEnvironment.Standalone;
+}
+
+/** Options for an ABAP Embedded Steampunk system */
+export interface AbapEmbeddedSteampunkOptions extends ReentranceTicketOptions {
+    environment: AbapCloudEnvironment.EmbeddedSteampunk;
+}
+
+/** Discriminated union of supported environments - {@link AbapCloudStandaloneOptions} and {@link AbapEmbeddedSteampunkOptions} */
+type AbapCloudOptions = AbapCloudStandaloneOptions | AbapEmbeddedSteampunkOptions;
 
 /**
  * Create an instance of an ABAP service provider for a Cloud ABAP system.
  *
- * @param options
- * @returns instance of an ABAP service provider
+ * @param options {@link AbapCloudOptions}
+ * @returns instance of an {@link AbapServiceProvider}
  */
-export function createForAbapOnCloud(options: AbapEnvironment & Partial<ProviderConfiguration>): AbapServiceProvider {
+export function createForAbapOnCloud(options: AbapCloudOptions & Partial<ProviderConfiguration>): AbapServiceProvider {
     let provider: AbapServiceProvider;
-    switch (options.authentication) {
-        case Authentication.OAuth:
-            const { service, refreshToken, refreshTokenChangedCb } = options;
+
+    switch (options.environment) {
+        case AbapCloudEnvironment.Standalone: {
+            const { service, refreshToken, refreshTokenChangedCb, ...config } = options;
             provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
-                baseURL: service.url
+                baseURL: service.url,
+                ...config
             });
             attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
             break;
-        case Authentication.ReentranceTicket:
+        }
+        case AbapCloudEnvironment.EmbeddedSteampunk: {
             const { url, ...config } = options;
             provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
                 baseURL: url,
@@ -129,9 +144,10 @@ export function createForAbapOnCloud(options: AbapEnvironment & Partial<Provider
             });
             attachReentranceTicketAuthInterceptor({ provider });
             break;
+        }
         default:
             const opts: never = options;
-            throw new Error(`Unknown authenticaton type supplied: ${inspect(opts)}`);
+            throw new Error(`Unknown environment type supplied: ${inspect(opts)}`);
     }
     return provider;
 }

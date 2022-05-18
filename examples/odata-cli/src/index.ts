@@ -2,8 +2,8 @@ import {
     ODataVersion,
     createForAbap,
     createForAbapOnCloud,
-    Authentication,
-    createForDestination
+    createForDestination,
+    AbapCloudEnvironment
 } from '@sap-ux/axios-extension';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isAppStudio, listDestinations, isAbapSystem } from '@sap-ux/btp-utils';
@@ -110,7 +110,7 @@ async function checkAbapSystem(env: {
 async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Promise<void> {
     const serviceInfo = JSON.parse(readFileSync(env.TEST_SERVICE_INFO_PATH, 'utf-8'));
     const provider = createForAbapOnCloud({
-        authentication: Authentication.OAuth,
+        environment: AbapCloudEnvironment.Standalone,
         service: serviceInfo,
         refreshTokenChangedCb: (newToken: string) => {
             logger.info(`New refresh token issued ${newToken}`);
@@ -129,7 +129,7 @@ async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Prom
  */
 async function checkCloudAbapSystem(env: { TEST_SYSTEM: string; TEST_IGNORE_CERT_ERRORS?: string }): Promise<void> {
     const provider = createForAbapOnCloud({
-        authentication: Authentication.ReentranceTicket,
+        environment: AbapCloudEnvironment.EmbeddedSteampunk,
         url: env.TEST_SYSTEM,
         ignoreCertErrors: env.TEST_IGNORE_CERT_ERRORS === 'true'
     });
