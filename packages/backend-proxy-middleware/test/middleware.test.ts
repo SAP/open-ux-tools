@@ -7,6 +7,11 @@ import { BackendMiddlewareConfig } from '../src/base/types';
 import nock from 'nock';
 import { Options } from 'http-proxy-middleware';
 
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...(jest.requireActual('@sap-ux/btp-utils') as object),
+    isAppStudio: jest.fn().mockReturnValue(false)
+}));
+
 // spy on createProxy and injectScripts to verify calls
 const generateProxyOptionsSpy = jest.spyOn(proxy, 'generateProxyMiddlewareOptions');
 

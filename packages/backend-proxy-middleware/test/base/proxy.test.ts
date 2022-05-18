@@ -8,6 +8,7 @@ import {
     PathRewriters
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
+import { getCorporateProxyServer } from '../../src/base/config';
 import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 
@@ -342,7 +343,11 @@ describe('proxy', () => {
             expect(options).toBeDefined();
             expect(options.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(options.changeOrigin).toBe(true);
-            expect(options.agent).toBeUndefined();
+            if (getCorporateProxyServer()) {
+                expect(options.agent).toBeDefined();
+            } else {
+                expect(options.agent).toBeUndefined();
+            }
             expect(options.ws).toBeUndefined();
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();

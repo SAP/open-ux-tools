@@ -10,16 +10,16 @@ describe('config', () => {
             process.argv.pop();
         });
         test('get value from input (wins over env)', () => {
-            const envProxy = process.env.npm_config_https_proxy;
-            process.env.npm_config_https_proxy = '~not.used';
+            const envProxy = process.env.FIORI_TOOLS_PROXY;
+            process.env.FIORI_TOOLS_PROXY = '~not.used';
             expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
-            process.env.npm_config_https_proxy = envProxy;
+            process.env.FIORI_TOOLS_PROXY = envProxy;
         });
         test('get value from env if there is no input', () => {
-            const envProxy = process.env.npm_config_https_proxy;
-            process.env.npm_config_https_proxy = corporateProxy;
+            const envProxy = process.env.FIORI_TOOLS_PROXY;
+            process.env.FIORI_TOOLS_PROXY = corporateProxy;
             expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
-            process.env.npm_config_https_proxy = envProxy;
+            process.env.FIORI_TOOLS_PROXY = envProxy;
         });
     });
 
