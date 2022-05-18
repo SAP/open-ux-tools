@@ -325,6 +325,9 @@ describe('proxy', () => {
 
             const options = await generateProxyMiddlewareOptions(backend, baseOptions, logger);
             expect(options).toBeDefined();
+            expect(options.onError).toBeDefined();
+            expect(options.onProxyReq).toBeDefined();
+            expect(options.onProxyRes).toBeDefined();
             expect(options.target).toBe(backend.url);
             expect(options.changeOrigin).toBe(true);
             expect(options.agent).toBeDefined();

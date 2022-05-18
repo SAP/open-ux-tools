@@ -282,11 +282,12 @@ export async function generateProxyMiddlewareOptions(
     logger: Logger = new ToolsLogger()
 ): Promise<Options> {
     // add required options
-    const proxyOptions: Options & { headers: object } = { headers: {}, ...options };
+    const proxyOptions: Options & { headers: object } = {
+        headers: {},
+        ...ProxyEventHandlers,
+        ...options
+    };
     proxyOptions.changeOrigin = true;
-    proxyOptions.onError = proxyOptions.onError ?? ProxyEventHandlers.onError;
-    proxyOptions.onProxyReq = proxyOptions.onProxyReq ?? ProxyEventHandlers.onProxyReq;
-    proxyOptions.onProxyRes = proxyOptions.onProxyRes ?? ProxyEventHandlers.onProxyRes;
     proxyOptions.logProvider = () => logger;
 
     // overwrite url if running in AppStudio
