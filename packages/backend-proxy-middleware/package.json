@@ -31,7 +31,6 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "@sap-ux/ui5-config": "workspace:*",
         "chalk": "4.1.2",
         "dotenv": "16.0.0",
         "express": "4.17.2",
