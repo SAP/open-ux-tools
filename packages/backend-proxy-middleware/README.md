@@ -136,9 +136,18 @@ By default the `backend-proxy-middleware` will read the proxy configuration from
       url: https://my.backend.example:1234
 
 ```
+## Programmatic Usage
+Alternatively you can only use the underlying proxy function, e.g. for the case when you want to use the `backend-proxy-middleware` functionality in your `express` server.
+
+```Typescript
+import { createProxy } from '@sap-ux/backend-proxy-middleware';
+const proxy = createProxy(backend, options);
+```
+- **config** - The backend configuration
+- **options** - Options of the [http-proxy-middleware](https://www.npmjs.com/package/http-proxy-middleware#options)
 
 ## Keywords
-Backend Proxy Middleware
-Fiori tools
-Fiori elements
-SAP UI5
+* Backend Proxy Middleware
+* Fiori tools
+* Fiori elements
+* SAP UI5

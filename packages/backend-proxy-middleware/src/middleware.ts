@@ -1,9 +1,10 @@
+import dotenv from 'dotenv';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import { Router as createRouter } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
-import { generateProxyMiddlewareOptions } from './base/proxy';
+import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
 import { addOptionsForEmbeddedBSP } from './ext/bsp';
 
 /**
@@ -34,6 +35,10 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
     });
+
+    await initI18n();
+    dotenv.config();
+
     const router = createRouter();
     const backend = options.configuration.backend;
     const configOptions = options.configuration.options ?? {};
@@ -48,7 +53,7 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
         logger.info(
             `Starting backend-proxy-middleware using following configuration:\nproxy: '${formatProxyForLogging(
                 backend.proxy
-            )}'\nbackend: ${JSON.stringify(backend)}\options: ${JSON.stringify(configOptions)}'`
+            )}'\nbackend: ${JSON.stringify(backend)}\noptions: ${JSON.stringify(configOptions)}'`
         );
     } catch (e) {
         const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;

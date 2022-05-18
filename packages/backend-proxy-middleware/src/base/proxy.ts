@@ -1,5 +1,4 @@
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import dotenv from 'dotenv';
 import type { ServerOptions } from 'http-proxy';
 import type { RequestHandler } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -176,7 +175,7 @@ export const PathRewriters = {
 /**
  * Initialize i18next with the translations for this module.
  */
-async function initI18n(): Promise<void> {
+export async function initI18n(): Promise<void> {
     const ns = 'backend-proxy-middleware';
     await i18n.init({
         resources: {
@@ -283,8 +282,6 @@ export async function generateProxyMiddlewareOptions(
     options: Options = {},
     logger: Logger = new ToolsLogger()
 ): Promise<Options> {
-    await initI18n();
-    dotenv.config();
     // add required options
     const proxyOptions: Options & { headers: object } = { headers: {}, ...options };
     proxyOptions.changeOrigin = true;
