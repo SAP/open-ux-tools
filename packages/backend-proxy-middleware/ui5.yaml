@@ -1,0 +1,7 @@
+specVersion: '2.6'
+metadata:
+    name: backend-proxy-middleware
+kind: extension
+type: server-middleware
+middleware:
+    path: dist/middleware.js

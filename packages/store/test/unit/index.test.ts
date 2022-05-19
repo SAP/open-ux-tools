@@ -1,5 +1,4 @@
-import { EntityName } from 'typescript';
-import { getService } from '../../src';
+import { EnityName, getService } from '../../src';
 import { Entities } from '../../src/data-provider/constants';
 import * as i18n from '../../src/i18n';
 
@@ -16,7 +15,9 @@ describe('store', () => {
         });
 
         it('throws an error for an invalid entity name', async () => {
-            expect(getService({ entityName: 'foo' })).rejects.toThrow(i18n.text('error.unsupportedEntity'));
+            expect(getService({ entityName: 'foo' as EnityName })).rejects.toThrow(
+                i18n.text('error.unsupportedEntity')
+            );
         });
     });
 });
