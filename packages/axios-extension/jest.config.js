@@ -9,9 +9,6 @@ module.exports = {
             tsconfig: './test/tsconfig.json'
         }
     },
-    moduleNameMapper: {
-        '^@src/(.*)$': '<rootDir>/src/$1'
-    },
     reporters: [
         'default',
         [

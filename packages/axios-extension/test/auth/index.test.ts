@@ -1,6 +1,6 @@
-import { ServiceProvider } from '@src/base/service-provider';
-import { getReentranceTicketAuthInterceptor } from '@src/auth';
-import * as rt from '@src/auth/reentrance-ticket';
+import { ServiceProvider } from '../../src/base/service-provider';
+import { getReentranceTicketAuthInterceptor } from '../../src/auth';
+import * as rt from '../../src/auth/reentrance-ticket';
 import { AxiosRequestConfig } from 'axios';
 
 describe('getReentranceTicketAuthInterceptor', () => {

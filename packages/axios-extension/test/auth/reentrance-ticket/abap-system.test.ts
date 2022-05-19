@@ -1,4 +1,4 @@
-import { ABAPSystem } from '@src/auth/reentrance-ticket/abap-system';
+import { ABAPSystem } from '../../../src/auth/reentrance-ticket/abap-system';
 
 describe('ABAPSystem', () => {
     describe('uiHostname()', () => {

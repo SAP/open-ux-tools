@@ -1,7 +1,7 @@
-import * as redirect from '@src/auth/reentrance-ticket/redirect';
+import * as redirect from '../../../src/auth/reentrance-ticket/redirect';
 import { AddressInfo } from 'net';
 import http from 'http';
-import { getReentranceTicket } from '@src/auth/reentrance-ticket';
+import { getReentranceTicket } from '../../../src/auth/reentrance-ticket';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import open = require('open');
 
