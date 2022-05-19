@@ -17,7 +17,7 @@ interface Service<Entity, EntityKey> {
 }
 ```
 
-Currently, `'system'` is the only supported entity. Support for `'user'` and `'api-key'` may be added in the future.
+Currently, `'system'`, `'telemetry'` and `'api-hub'`  are the only supported entities. Support for `'user'` may be added in the future.
 Unsupported entity names will result in an error being thrown.
 
 # Recommended way to add support for a new entity

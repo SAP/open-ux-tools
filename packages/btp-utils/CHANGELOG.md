@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.9.2
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+
 ## 0.9.1
 
 ### Patch Changes

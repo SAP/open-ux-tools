@@ -1,5 +1,19 @@
 # @sap-ux/store
 
+## 0.1.5
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/logger@0.1.6
+
+## 0.1.4
+
+### Patch Changes
+
+-   9f84d52: Intrdocded new backend-proxy-middleware.
+
 ## 0.1.3
 
 ### Patch Changes

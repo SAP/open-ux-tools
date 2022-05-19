@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.0.8
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/logger@0.1.6
+    -   @sap-ux/ui5-config@0.13.3
+
 ## 1.0.7
 
 ### Patch Changes

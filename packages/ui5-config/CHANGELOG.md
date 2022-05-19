@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.13.3
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/yaml@0.11.5
+
 ## 0.13.2
 
 ### Patch Changes

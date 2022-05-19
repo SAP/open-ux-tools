@@ -1,5 +1,27 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.3.5
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/odata-service-writer@0.12.2
+    -   @sap-ux/ui5-application-writer@0.13.1
+    -   @sap-ux/ui5-config@0.13.3
+
+## 0.3.4
+
+### Patch Changes
+
+-   3fc088e: Fix for #487: `sourceTemplate.toolsId` not written
+
+## 0.3.3
+
+### Patch Changes
+
+-   7e80052: Fix for #487: `sourceTemplate.toolsId` not written
+
 ## 0.3.2
 
 ### Patch Changes

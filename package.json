@@ -13,7 +13,7 @@
         "eslint-config-prettier": "8.5.0",
         "eslint-import-resolver-typescript": "2.5.0",
         "eslint-plugin-import": "2.25.4",
-        "eslint-plugin-jsdoc": "38.0.6",
+        "eslint-plugin-jsdoc": "39.2.9",
         "eslint-plugin-prettier": "4.0.0",
         "eslint-plugin-promise": "6.0.0",
         "husky": "7.0.4",
@@ -42,8 +42,8 @@
     "engines": {
         "npm": "please-use-pnpm",
         "yarn": "please-use-pnpm",
-        "pnpm": ">=6.26.1",
-        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     },
     "pnpm": {
         "overrides": {
