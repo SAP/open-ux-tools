@@ -12,7 +12,7 @@ describe('createForAbapCloud', () => {
     it('adds reentrace ticket interceptor', () => {
         const reentraceTicketInterceptorSpy = jest.spyOn(Auth, 'attachReentranceTicketAuthInterceptor');
         expect(
-            createForAbapOnCloud({ environment: AbapCloudEnvironment.EmbeddedSteampunk, url: 'someUrl' })
+            createForAbapOnCloud({ environment: AbapCloudEnvironment.EmbeddedSteampunk, url: 'someUrl.example' })
         ).toBeInstanceOf(AbapServiceProvider);
         expect(reentraceTicketInterceptorSpy).toBeCalledTimes(1);
     });

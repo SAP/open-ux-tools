@@ -32,7 +32,7 @@ pnpm start -- btp
 ### Local Test with Cloud ABAP Environment (Embedded Steampunk)
 Copy the URL of the Cloud ABAP system and add it to the `.env/env.properties` file:
 ```
-TEST_SYSTEM=https://my-sap-cloud-system
+TEST_SYSTEM=https://my-sap-cloud-system.example
 ```
 
 And, then run

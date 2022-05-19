@@ -9,7 +9,7 @@ jest.mock('open');
 const mockOpen = jest.mocked(open);
 
 describe('getReentranceTicket()', () => {
-    const REDIRECT_URL = 'http://redirect_url';
+    const REDIRECT_URL = 'http://redirect_url.example';
     const serverListenSpy = jest.fn();
 
     beforeEach(() => {
@@ -30,7 +30,7 @@ describe('getReentranceTicket()', () => {
 
     it('sets up a server to listen for the redirect', async () => {
         await getReentranceTicket({
-            backendUrl: 'http://some_url',
+            backendUrl: 'http://some_url.example',
             logger: new ToolsLogger({ transports: [new NullTransport()] })
         });
         expect(serverListenSpy).toBeCalledTimes(1);
@@ -38,7 +38,7 @@ describe('getReentranceTicket()', () => {
 
     it("attempts to open URL in user's default browser for SAML login", async () => {
         await getReentranceTicket({
-            backendUrl: 'http://some_url',
+            backendUrl: 'http://some_url.example',
             logger: new ToolsLogger({ transports: [new NullTransport()] })
         });
         expect(mockOpen).toHaveBeenCalledWith(expect.stringContaining(REDIRECT_URL));
