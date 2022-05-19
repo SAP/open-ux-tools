@@ -6,7 +6,7 @@ import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { createForAbapOnBtp } from '@sap-ux/axios-extension';
+import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import {
     isAppStudio,
     getDestinationUrlForAppStudio,
@@ -237,11 +237,12 @@ export async function enhanceConfigForSystem(
 ): Promise<void> {
     if (oAuthRequired) {
         if (system.serviceKeys) {
-            const provider = createForAbapOnBtp(
-                JSON.parse(system.serviceKeys as string),
-                system.refreshToken,
-                tokenChangedCallback
-            );
+            const provider = createForAbapOnCloud({
+                environment: AbapCloudEnvironment.Standalone,
+                service: JSON.parse(system.serviceKeys as string),
+                refreshToken: system.refreshToken,
+                refreshTokenChangedCb: tokenChangedCallback
+            });
             // sending a request to the backend to get cookies
             await provider.getAtoInfo();
             proxyOptions.headers['cookie'] = provider.cookies.toString();
