@@ -13,11 +13,13 @@ import {
     resolveUI5Version,
     hideProxyCredentials
 } from '../base';
+import dotenv from 'dotenv';
 
 module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
+    dotenv.config();
     const router = express.Router();
     const config = options.configuration;
     const ui5Version = await resolveUI5Version(config.version, logger);
