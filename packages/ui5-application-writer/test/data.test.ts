@@ -303,7 +303,7 @@ describe('Setting defaults', () => {
             id: '',
             toolsId,
             version: ''
-        },
+        };
         expect(mergeApp(app)).toEqual(expectedApp);
 
         // Test toolsId is correctly set, sourceTemplate.id and sourceTemplate.version are set to provided value.
@@ -316,7 +316,7 @@ describe('Setting defaults', () => {
             id: 'test-source-template-id',
             version: '9.9.9',
             toolsId
-        },
+        };
         expect(mergeApp(app)).toEqual(expectedApp);
     });
 });

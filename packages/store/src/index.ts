@@ -5,13 +5,17 @@ import { initI18n, text } from './i18n';
 import type { Service } from './services';
 import { getInstance as getSystemService } from './services/backend-system';
 import { getInstance as getTelemetrySettingService } from './services/telemetry-setting';
+import { getInstance as getApiHubSettingsService } from './services/api-hub';
 import { getDefaultLogger } from './defaults';
+
+export type EnityName = 'system' | 'telemetrySetting' | 'api-hub';
 
 const services: {
     [entityName: string]: (logger: Logger, options: ServiceOptions) => Service<unknown, unknown>;
 } = {
     system: getSystemService,
-    telemetrySetting: getTelemetrySettingService
+    telemetrySetting: getTelemetrySettingService,
+    'api-hub': getApiHubSettingsService
 };
 
 export async function getService<Entity, Key>({
@@ -20,7 +24,7 @@ export async function getService<Entity, Key>({
     options = {}
 }: {
     logger?: Logger;
-    entityName: string;
+    entityName: EnityName;
     options?: ServiceOptions;
 }): Promise<Service<Entity, Key>> {
     await initI18n();
@@ -36,6 +40,7 @@ export * from './services';
 export * from './secure-store';
 export * from './entities/backend-system';
 export * from './entities/telemetry-setting';
+export * from './entities/api-hub';
 
 // @todo: change notification needs to be more generic and not tied to filesystems
 // Support any filesystem watchers

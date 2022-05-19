@@ -117,6 +117,45 @@ importers:
       '@types/lodash.clonedeep': 4.5.6
       nock: 13.2.1
 
+  packages/backend-proxy-middleware:
+    specifiers:
+      '@sap-ux/axios-extension': workspace:*
+      '@sap-ux/btp-utils': workspace:*
+      '@sap-ux/logger': workspace:*
+      '@sap-ux/store': workspace:*
+      '@types/express': 4.17.13
+      '@types/prompts': 2.0.14
+      '@types/supertest': 2.0.12
+      chalk: 4.1.2
+      dotenv: 16.0.0
+      express: 4.17.2
+      http-proxy-middleware: 2.0.1
+      https-proxy-agent: 5.0.0
+      i18next: 20.3.2
+      nock: 13.2.4
+      prompts: 2.4.2
+      supertest: 6.2.2
+      yaml: 2.0.0-10
+    dependencies:
+      '@sap-ux/axios-extension': link:../axios-extension
+      '@sap-ux/btp-utils': link:../btp-utils
+      '@sap-ux/logger': link:../logger
+      '@sap-ux/store': link:../store
+      chalk: 4.1.2
+      dotenv: 16.0.0
+      express: 4.17.2
+      http-proxy-middleware: 2.0.1
+      https-proxy-agent: 5.0.0
+      i18next: 20.3.2
+      prompts: 2.4.2
+    devDependencies:
+      '@types/express': 4.17.13
+      '@types/prompts': 2.0.14
+      '@types/supertest': 2.0.12
+      nock: 13.2.4
+      supertest: 6.2.2
+      yaml: 2.0.0-10
+
   packages/btp-utils:
     specifiers:
       '@sap/cf-tools': 2.1.1
@@ -1664,6 +1703,12 @@ packages:
     resolution: {integrity: sha512-QzSuZMBuG5u8HqYz01qtMdg/Jfctlnvj1z/lYnIDXs/golxw0fxtRAHd9KrzjR7Yxz1qVeI00o0kiO3PmVdJ9w==}
     dev: true
 
+  /@types/prompts/2.0.14:
+    resolution: {integrity: sha512-HZBd99fKxRWpYCErtm2/yxUZv6/PBI9J7N4TNFffl5JbrYMHBwF25DjQGTW3b3jmXq+9P6/8fCIb2ee57BFfYA==}
+    dependencies:
+      '@types/node': 17.0.9
+    dev: true
+
   /@types/qs/6.9.1:
     resolution: {integrity: sha512-lhbQXx9HKZAPgBkISrBcmAcMpZsmpe/Cd/hY7LGZS5OfkySUBItnPZHgQPssWYUET8elF+yCFBbP1Q0RZPTdaw==}
     dev: true
@@ -1951,7 +1996,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.3.3
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
 
@@ -2758,6 +2803,7 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+    dev: true
 
   /debug/4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -2956,6 +3002,11 @@ packages:
   /dotenv/10.0.0:
     resolution: {integrity: sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==}
     engines: {node: '>=10'}
+    dev: false
+
+  /dotenv/16.0.0:
+    resolution: {integrity: sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==}
+    engines: {node: '>=12'}
     dev: false
 
   /ee-first/1.1.1:
@@ -4110,7 +4161,7 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.3
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
 
@@ -5412,7 +5463,6 @@ packages:
   /kleur/3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
-    dev: true
 
   /kuler/2.0.0:
     resolution: {integrity: sha512-Xq9nH7KlWZmXAtodXDDRE7vs6DU1gTU8zYDHDiWLSip45Egwq3plLHzPn27NgvzL2r1LMPC1vdqh98sQxtqj4A==}
@@ -6337,7 +6387,6 @@ packages:
     dependencies:
       kleur: 3.0.3
       sisteransi: 1.0.5
-    dev: true
 
   /propagate/2.0.1:
     resolution: {integrity: sha512-vGrhOavPSTz4QVNuBNdcNXePNdNMaO1xj9yBeH1ScQPjk/rhg9sSlCXPhMkFuaNNW/syTvYqsnbIJxMBfRbbag==}
@@ -6845,7 +6894,6 @@ packages:
 
   /sisteransi/1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
-    dev: true
 
   /slash/2.0.0:
     resolution: {integrity: sha512-ZYKh3Wh2z1PpEXWr0MpSBZ0V6mZHAQfYevttO11c51CaWjGTaadiKZ+wVt1PbMlDV5qhMFslpZCemhwOK7C89A==}
