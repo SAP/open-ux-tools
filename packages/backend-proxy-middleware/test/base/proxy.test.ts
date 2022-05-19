@@ -291,21 +291,28 @@ describe('proxy', () => {
         });
 
         test('use reentrance tickets', async () => {
+            mockCreateForAbapOnCloud.mockImplementationOnce(() => {
+                return {
+                    cookies: '~cookies',
+                    getAtoInfo: jest.fn()
+                };
+            });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
-            try {
-                await enhanceConfigForSystem(
-                    proxyOptions,
-                    {
-                        ...system,
-                        authenticationType: AuthenticationType.ReentranceTicket
-                    },
-                    false,
-                    jest.fn()
-                );
-                fail('It should not have worked because the implementation is missing');
-            } catch (error) {
-                expect(error.message).toContain('open-ux-tools/pull/485');
-            }
+            await enhanceConfigForSystem(
+                proxyOptions,
+                {
+                    ...system,
+                    authenticationType: AuthenticationType.ReentranceTicket
+                },
+                false,
+                jest.fn()
+            );
+
+            expect(proxyOptions.headers.cookie).toBe('~cookies');
+            expect(mockCreateForAbapOnCloud).toBeCalledWith({
+                environment: AbapCloudEnvironment.EmbeddedSteampunk,
+                url: system.url
+            });
         });
     });
 
