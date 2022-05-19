@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.11.14
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/odata-service-writer@0.12.2
+    -   @sap-ux/ui5-application-writer@0.13.1
+    -   @sap-ux/ui5-config@0.13.3
+
 ## 0.11.13
 
 ### Patch Changes

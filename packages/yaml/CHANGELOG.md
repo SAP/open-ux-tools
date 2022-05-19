@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.11.5
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+
 ## 0.11.4
 
 ### Patch Changes
