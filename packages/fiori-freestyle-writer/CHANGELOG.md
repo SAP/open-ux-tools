@@ -1,5 +1,162 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.11.14
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/odata-service-writer@0.12.2
+    -   @sap-ux/ui5-application-writer@0.13.1
+    -   @sap-ux/ui5-config@0.13.3
+
+## 0.11.13
+
+### Patch Changes
+
+-   3fc088e: Fix for #487: `sourceTemplate.toolsId` not written
+
+## 0.11.12
+
+### Patch Changes
+
+-   7e80052: Fix for #487: `sourceTemplate.toolsId` not written
+
+## 0.11.11
+
+### Patch Changes
+
+-   Updated dependencies [9726e2d]
+    -   @sap-ux/ui5-application-writer@0.13.0
+
+## 0.11.10
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+-   Updated dependencies [b5ab868]
+    -   @sap-ux/odata-service-writer@0.12.1
+    -   @sap-ux/ui5-application-writer@0.12.8
+    -   @sap-ux/ui5-config@0.13.2
+
+## 0.11.9
+
+### Patch Changes
+
+-   Updated dependencies [cfca196]
+    -   @sap-ux/odata-service-writer@0.12.0
+
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [73d6a6b]
+    -   @sap-ux/ui5-application-writer@0.12.7
+
+## 0.11.7
+
+### Patch Changes
+
+-   275880e: Implemented UI5 guidance for basic freestyle applications.
+
+## 0.11.6
+
+### Patch Changes
+
+-   Updated dependencies [5b5355c]
+    -   @sap-ux/ui5-config@0.13.1
+    -   @sap-ux/odata-service-writer@0.11.6
+    -   @sap-ux/ui5-application-writer@0.12.6
+
+## 0.11.5
+
+### Patch Changes
+
+-   Updated dependencies [56409d0]
+    -   @sap-ux/ui5-config@0.13.0
+    -   @sap-ux/odata-service-writer@0.11.5
+    -   @sap-ux/ui5-application-writer@0.12.5
+
+## 0.11.4
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/odata-service-writer@0.11.4
+    -   @sap-ux/ui5-application-writer@0.12.4
+    -   @sap-ux/ui5-config@0.12.3
+
+## 0.11.3
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+-   Updated dependencies [0837ac1]
+    -   @sap-ux/odata-service-writer@0.11.3
+    -   @sap-ux/ui5-application-writer@0.12.3
+    -   @sap-ux/ui5-config@0.12.2
+
+## 0.11.2
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+-   Updated dependencies [7107fbc]
+    -   @sap-ux/odata-service-writer@0.11.2
+    -   @sap-ux/ui5-application-writer@0.12.2
+    -   @sap-ux/ui5-config@0.12.1
+
+## 0.11.1
+
+### Patch Changes
+
+-   Updated dependencies [f989e61]
+    -   @sap-ux/ui5-application-writer@0.12.1
+
+## 0.11.0
+
+### Minor Changes
+
+-   574bf78: New module @sap-ux/fiori-elements-writer. Bug fix and extended api to add template info to manifest.json @sap-ux/ui5-application-writer. Add template info to manifest.json @sap-ux/fiori-freestyle-writer.
+
+### Patch Changes
+
+-   Updated dependencies [574bf78]
+    -   @sap-ux/ui5-application-writer@0.12.0
+
+## 0.10.28
+
+### Patch Changes
+
+-   Updated dependencies [893c924]
+    -   @sap-ux/ui5-application-writer@0.11.2
+
+## 0.10.27
+
+### Patch Changes
+
+-   0e72d5b: Fixes reuse libs loading from index.html. Adds optional support for reuse libs loading to ui5-application-writer.
+-   Updated dependencies [0e72d5b]
+    -   @sap-ux/ui5-application-writer@0.11.1
+
+## 0.10.26
+
+### Patch Changes
+
+-   Updated dependencies [2b12f4f]
+-   Updated dependencies [2b12f4f]
+    -   @sap-ux/ui5-config@0.12.0
+    -   @sap-ux/ui5-application-writer@0.11.0
+    -   @sap-ux/odata-service-writer@0.11.1
+
+## 0.10.25
+
+### Patch Changes
+
+-   Updated dependencies [282b6af]
+    -   @sap-ux/ui5-application-writer@0.10.10
+
 ## 0.10.24
 
 ### Patch Changes

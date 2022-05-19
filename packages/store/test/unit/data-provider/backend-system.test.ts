@@ -1,13 +1,23 @@
 import { BackendSystem, BackendSystemKey } from '../../../src';
-import { HybridStore } from '../../../src/data-access/hybrid';
+import * as dataAccessHybrid from '../../../src/data-access/hybrid';
 import { SystemDataProvider } from '../../../src/data-provider/backend-system';
 import { Entities } from '../../../src/data-provider/constants';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 describe('Backend system data provider', () => {
+    const mockGetHybridStore = jest.spyOn(dataAccessHybrid, 'getHybridStore');
+    const mockHybridStore = {
+        write: jest.fn(),
+        read: jest.fn(),
+        del: jest.fn(),
+        getAll: jest.fn(),
+        readAll: jest.fn()
+    };
+
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
     beforeEach(() => {
         jest.resetAllMocks();
+        mockGetHybridStore.mockReturnValue(mockHybridStore);
     });
 
     it('read delegates to the data accessor', () => {
@@ -18,7 +28,7 @@ describe('Backend system data provider', () => {
             username: 'user',
             password: 'pass'
         };
-        jest.spyOn(HybridStore.prototype, 'read').mockResolvedValueOnce(expectedSystem);
+        mockHybridStore.read.mockResolvedValueOnce(expectedSystem);
         expect(
             new SystemDataProvider(logger).read(new BackendSystemKey({ url: 'url', client: 'client' }))
         ).resolves.toBe(expectedSystem);
@@ -32,9 +42,9 @@ describe('Backend system data provider', () => {
             username: 'user',
             password: 'pass'
         });
-        const mockHybridStore = jest.spyOn(HybridStore.prototype, 'write').mockResolvedValueOnce(expectedSystem);
+        mockHybridStore.write.mockResolvedValueOnce(expectedSystem);
         expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(expectedSystem);
-        expect(mockHybridStore).toBeCalledWith({
+        expect(mockHybridStore.write).toBeCalledWith({
             entityName: Entities.BackendSystem,
             id: BackendSystemKey.from(expectedSystem).getId(),
             entity: new BackendSystem(expectedSystem)
@@ -49,9 +59,9 @@ describe('Backend system data provider', () => {
             username: 'user',
             password: 'pass'
         });
-        const mockHybridStore = jest.spyOn(HybridStore.prototype, 'write').mockResolvedValueOnce(expectedSystem);
-        expect(new SystemDataProvider(logger).write(expectedSystem)).resolves.toBe(expectedSystem);
-        expect(mockHybridStore).toBeCalledWith({
+        mockHybridStore.write.mockResolvedValueOnce(expectedSystem);
+        expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(expectedSystem);
+        expect(mockHybridStore.write).toBeCalledWith({
             entityName: Entities.BackendSystem,
             id: BackendSystemKey.from(expectedSystem).getId(),
             entity: new BackendSystem(expectedSystem)
@@ -66,9 +76,9 @@ describe('Backend system data provider', () => {
             username: 'user',
             password: 'pass'
         });
-        const mockHybridStore = jest.spyOn(HybridStore.prototype, 'del').mockResolvedValueOnce(true);
-        expect(await new SystemDataProvider(logger).delete(new BackendSystem(expectedSystem))).toBe(true);
-        expect(mockHybridStore).toBeCalledWith({
+        mockHybridStore.del.mockResolvedValueOnce(true);
+        expect(new SystemDataProvider(logger).delete(new BackendSystem(expectedSystem))).resolves.toBe(true);
+        expect(mockHybridStore.del).toBeCalledWith({
             entityName: Entities.BackendSystem,
             id: BackendSystemKey.from(expectedSystem).getId()
         });
@@ -96,11 +106,9 @@ describe('Backend system data provider', () => {
             username: 'user',
             password: 'pass'
         });
-        const mockHybridStore = jest
-            .spyOn(HybridStore.prototype, 'readAll')
-            .mockResolvedValueOnce({ sys1, sys2, sys3 });
+        mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3 });
         expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1, sys2, sys3]);
-        expect(mockHybridStore).toBeCalledWith({
+        expect(mockHybridStore.readAll).toBeCalledWith({
             entityName: Entities.BackendSystem
         });
     });
@@ -134,11 +142,9 @@ describe('Backend system data provider', () => {
             username: 'user',
             password: 'pass'
         }) as unknown as BackendSystem; // We want url to be undefined for the test
-        const mockHybridStore = jest
-            .spyOn(HybridStore.prototype, 'readAll')
-            .mockResolvedValueOnce({ sys1, sys2, sys3, sys4, sys5: undefined });
+        mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3, sys4, sys5: undefined });
         expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1]);
-        expect(mockHybridStore).toBeCalledWith({
+        expect(mockHybridStore.readAll).toBeCalledWith({
             entityName: Entities.BackendSystem
         });
     });

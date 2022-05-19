@@ -1,8 +1,10 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { ProxyBackend, UI5Config } from '@sap-ux/ui5-config';
+import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
+import { UI5Config } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
@@ -34,7 +36,6 @@ function validateBasePath(basePath: string, fs: Editor) {
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
-
     if (!fs) {
         fs = create(createStorage());
     }

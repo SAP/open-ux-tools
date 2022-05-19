@@ -1,5 +1,29 @@
 # @sap-ux/yaml
 
+## 0.11.5
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+
+## 0.11.4
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+
+## 0.11.3
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+
+## 0.11.2
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+
 ## 0.11.1
 
 ### Patch Changes

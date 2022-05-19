@@ -1,5 +1,59 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.6.2
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+
+## 0.6.1
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+
+## 0.6.0
+
+### Minor Changes
+
+-   29a3ebe: Feature: enable FPM in an existing UI5 application
+
+## 0.5.4
+
+### Patch Changes
+
+-   5b5355c: Fix: adding a custom page to an empty FE FPM application with FCL enabled
+
+## 0.5.3
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+
+## 0.5.2
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+
+## 0.5.1
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+
+## 0.5.0
+
+### Minor Changes
+
+-   1ee1501: custom extension - consider backslashes when "folder" converted into namespace for "template"
+
+## 0.4.1
+
+### Patch Changes
+
+-   f989e61: Fix: incorrect json generated if optional paramater is missing
+
 ## 0.4.0
 
 ### Minor Changes

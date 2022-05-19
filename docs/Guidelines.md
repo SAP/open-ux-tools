@@ -24,7 +24,7 @@ We use [`jest`](https://jestjs.io/docs/getting-started) for our tests. Please lo
 
 Keep the following in mind when writing tests:
 * Test code should be simple and straightforward
-* Keep the scope of the tests focussed. Breaking tests then indicate the problem area directly
+* Keep the scope of the tests focused. Breaking tests then indicate the problem area directly
 * Test behavior and not implementation. Do not write tests for implementation details that should be hidden from callers
 * Test the public interface for all possible inputs
   - Test that correct values are returned
@@ -106,3 +106,13 @@ The app descriptor version should be calculated based on the minimal supported U
 
 Fixes #42
 ```
+
+## Versioning
+To establish and increase versions for modules in this repository, we follow [Semantic Versioning (semver)](https://semver.org/). In essence, this means:
+
+> Given a version number MAJOR.MINOR.PATCH, increment the:
+> 1. MAJOR version when you make incompatible API changes,
+> 1. MINOR version when you add functionality in a backwards compatible manner, and
+> 1. PATCH version when you make backwards compatible bug fixes.
+>
+> https://semver.org/#summary

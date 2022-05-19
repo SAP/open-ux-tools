@@ -1,6 +1,7 @@
 # IDE and OS temporary files
 
 .idea
+.tmp
 .project
 .DS_Store
 
@@ -161,3 +162,6 @@ dist
 {"mode":"full","isActive":false}
 
 **/test-output/**
+
+# Output of 'npm pack'
+*.tgz

@@ -1,10 +1,10 @@
 {
     "sap.ui5": {
         "rootView": {
-            "viewName": "<%- app.id %>.view.<%- template.settings.viewName %>",
+            "viewName": "<%- app.id %>.view.App",
             "type": "XML",
             "async": true,
-            "id": "<%- template.settings.viewName %>"
+            "id": "App"
         },
         "resources": {
             "css": [

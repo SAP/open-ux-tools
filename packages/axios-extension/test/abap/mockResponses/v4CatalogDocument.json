@@ -1,0 +1,9 @@
+{
+    "@odata.context": "$metadata",
+    "value": [
+        {
+            "name": "ServiceGroups",
+            "url": "ServiceGroups"
+        }
+    ]
+}

@@ -3,7 +3,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 
 export const testOutputDir = join(__dirname, '/test-output');
 
@@ -22,7 +22,11 @@ export const commonConfig = {
     app: {
         id: 'test.me',
         title: 'My Test App',
-        flpAppId: 'testme-app'
+        flpAppId: 'testme-app',
+        sourceTemplate: {
+            version: '1.2.3-test',
+            id: 'test-template'
+        }
     },
     package: {
         name: 'test.me'

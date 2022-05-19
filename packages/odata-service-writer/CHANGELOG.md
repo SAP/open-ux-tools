@@ -1,5 +1,73 @@
 # @sap-ux/odata-service-writer
 
+## 0.12.2
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/ui5-config@0.13.3
+
+## 0.12.1
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+-   Updated dependencies [b5ab868]
+    -   @sap-ux/ui5-config@0.13.2
+
+## 0.12.0
+
+### Minor Changes
+
+-   cfca196: Feature: Adds support for Overview Page floorplan with odata v4 services. Fix: Use batch mode by default for v4 services.
+
+## 0.11.6
+
+### Patch Changes
+
+-   Updated dependencies [5b5355c]
+    -   @sap-ux/ui5-config@0.13.1
+
+## 0.11.5
+
+### Patch Changes
+
+-   56409d0: Consolidated ui5 configuration types and enhanced API
+-   Updated dependencies [56409d0]
+    -   @sap-ux/ui5-config@0.13.0
+
+## 0.11.4
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/ui5-config@0.12.3
+
+## 0.11.3
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+-   Updated dependencies [0837ac1]
+    -   @sap-ux/ui5-config@0.12.2
+
+## 0.11.2
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+-   Updated dependencies [7107fbc]
+    -   @sap-ux/ui5-config@0.12.1
+
+## 0.11.1
+
+### Patch Changes
+
+-   Updated dependencies [2b12f4f]
+    -   @sap-ux/ui5-config@0.12.0
+
 ## 0.11.0
 
 ### Minor Changes

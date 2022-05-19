@@ -83,11 +83,10 @@ server:
           - path: /V2
             url: https://services.odata.org
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -112,7 +111,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -123,11 +121,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -152,7 +149,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -197,6 +193,23 @@ server:
         });
     }
 );",
+    "state": "modified",
+  },
+  "webapp/controller/App.controller.js": Object {
+    "contents": "sap.ui.define(
+    [
+        \\"sap/ui/core/mvc/Controller\\"
+    ],
+    function(BaseController) {
+      \\"use strict\\";
+  
+      return BaseController.extend(\\"test.me.controller.controller.App\\", {
+        onInit() {
+        }
+      });
+    }
+  );
+  ",
     "state": "modified",
   },
   "webapp/controller/View1.controller.js": Object {
@@ -256,11 +269,14 @@ title=My Test App",
         data-sap-ui-resourceroots='{
             \\"test.me\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
+        data-sap-ui-manifest-uri=\\"./manifest.json\\"
+        data-sap-ui-componentName=\\"test.me\\">
+    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -847,6 +863,10 @@ title=My Test App",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",
@@ -878,7 +898,7 @@ title=My Test App",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60\\",
+      \\"minUI5Version\\": \\"1.60.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -939,10 +959,10 @@ title=My Test App",
       }
     },
     \\"rootView\\": {
-      \\"viewName\\": \\"test.me.view.View1\\",
+      \\"viewName\\": \\"test.me.view.App\\",
       \\"type\\": \\"XML\\",
       \\"async\\": true,
-      \\"id\\": \\"View1\\"
+      \\"id\\": \\"App\\"
     }
   }
 }
@@ -1235,22 +1255,24 @@ sap.registerComponentDependencyPaths(manifestUri);
 ",
     "state": "modified",
   },
+  "webapp/view/App.view.xml": Object {
+    "contents": "<mvc:View controllerName=\\"test.me.controller.App\\"
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\" displayBlock=\\"true\\"
+    xmlns=\\"sap.m\\">
+    <App id=\\"app\\">
+    </App>
+</mvc:View>
+",
+    "state": "modified",
+  },
   "webapp/view/View1.view.xml": Object {
-    "contents": "<mvc:View
-    controllerName=\\"test.me.controller.View1\\"
-    xmlns:mvc=\\"sap.ui.core.mvc\\"
-    displayBlock=\\"true\\"
-    xmlns=\\"sap.m\\"
->
-    <Shell id=\\"shell\\">
-        <App id=\\"app\\">
-            <pages>
-                <Page id=\\"page\\" title=\\"{i18n>title}\\">
-                    <content />
-                </Page>
-            </pages>
-        </App>
-    </Shell>
+    "contents": "<mvc:View controllerName=\\"test.me.controller.View1\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\" displayBlock=\\"true\\"
+    xmlns=\\"sap.m\\">
+    <Page id=\\"page\\" title=\\"{i18n>title}\\">
+        <content />
+    </Page>
 </mvc:View>
 ",
     "state": "modified",
@@ -1341,11 +1363,10 @@ server:
           - path: /V2
             url: https://services.odata.org
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -1370,7 +1391,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -1381,11 +1401,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -1410,7 +1429,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -2537,11 +2555,14 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"test.me\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
+        data-sap-ui-manifest-uri=\\"./manifest.json\\"
+        data-sap-ui-componentName=\\"test.me\\">
+    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -3128,6 +3149,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",
@@ -3159,7 +3184,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60\\",
+      \\"minUI5Version\\": \\"1.60.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -3946,11 +3971,10 @@ server:
           - path: /V2
             url: https://services.odata.org
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -3975,7 +3999,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -3986,11 +4009,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /V2/Northwind/Northwind.svc
-          name: ''
+          urlPath: /V2/Northwind/Northwind.svc
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -4015,7 +4037,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: '' # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /V2
             url: https://services.odata.org
@@ -4671,11 +4692,14 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"test.me\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
+        data-sap-ui-manifest-uri=\\"./manifest.json\\"
+        data-sap-ui-componentName=\\"test.me\\">
+    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -5262,6 +5286,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",
@@ -5293,7 +5321,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60\\",
+      \\"minUI5Version\\": \\"1.60.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},

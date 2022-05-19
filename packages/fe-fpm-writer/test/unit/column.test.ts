@@ -40,8 +40,7 @@ describe('CustomAction', () => {
             header: 'col header',
             folder: 'extensions/custom',
             position: {
-                placement: Placement.After,
-                anchor: 'DataField::BooleanProperty'
+                placement: Placement.After
             }
         };
         const expectedFragmentPath = join(testDir, 'webapp', customColumn.folder!, `${customColumn.name}.fragment.xml`);
@@ -131,7 +130,11 @@ describe('CustomAction', () => {
                 ...customColumn,
                 availability: Availability.Adaptation,
                 horizontalAlign: HorizontalAlign.Center,
-                width: '150px'
+                width: '150px',
+                position: {
+                    placement: Placement.After,
+                    anchor: 'DataField::BooleanProperty'
+                }
             };
 
             const testFS = generateCustomColumn(testDir, { ...testCustomColumn, ui5Version: 1.85 });

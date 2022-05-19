@@ -1,5 +1,61 @@
 # @sap-ux/ui5-config
 
+## 0.13.3
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/yaml@0.11.5
+
+## 0.13.2
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+
+## 0.13.1
+
+### Patch Changes
+
+-   5b5355c: Fix: adding a custom page to an empty FE FPM application with FCL enabled
+
+## 0.13.0
+
+### Minor Changes
+
+-   56409d0: Consolidated ui5 configuration types and enhanced API
+
+## 0.12.3
+
+### Patch Changes
+
+-   c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
+-   Updated dependencies [c18fc5c]
+    -   @sap-ux/yaml@0.11.4
+
+## 0.12.2
+
+### Patch Changes
+
+-   0837ac1: Add missing information to package.json and enforced use of higher version of minimist
+-   Updated dependencies [0837ac1]
+    -   @sap-ux/yaml@0.11.3
+
+## 0.12.1
+
+### Patch Changes
+
+-   7107fbc: chore - use import type in TS code.
+-   Updated dependencies [7107fbc]
+    -   @sap-ux/yaml@0.11.2
+
+## 0.12.0
+
+### Minor Changes
+
+-   2b12f4f: UI5 version removal from ui5.yaml and ui5-mock.yaml
+
 ## 0.11.1
 
 ### Patch Changes

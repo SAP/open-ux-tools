@@ -1,4 +1,5 @@
-import { Transport, TransportOptions } from '../types';
+import type { TransportOptions } from '../types';
+import { Transport } from '../types';
 
 export type ConsoleTransportOptions = TransportOptions;
 /**

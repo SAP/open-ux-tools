@@ -88,11 +88,10 @@ server:
           - path: /here
             url: http://localhost
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /here/goes/your/serviceurl
-          name: ''
+          urlPath: /here/goes/your/serviceurl
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -117,7 +116,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /here
             url: http://localhost
@@ -128,11 +126,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /here/goes/your/serviceurl
-          name: ''
+          urlPath: /here/goes/your/serviceurl
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -157,7 +154,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /here
             url: http://localhost
@@ -807,11 +803,14 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
+        data-sap-ui-manifest-uri=\\"./manifest.json\\"
+        data-sap-ui-componentName=\\"wrk1\\">
+    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -6059,6 +6058,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/here/goes/your/serviceurl/\\",
@@ -6090,7 +6093,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60\\",
+      \\"minUI5Version\\": \\"1.78.16\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -6120,8 +6123,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
           \\"synchronizationMode\\": \\"None\\",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true,
-          \\"groupId\\": \\"$direct\\"
+          \\"earlyRequests\\": true
         }
       }
     },
@@ -6773,11 +6775,10 @@ server:
             client: '012'
             destination: SIDCLNT012
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -6802,7 +6803,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - scp: true
             path: /sap
@@ -6816,11 +6816,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          name: ''
+          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -6845,7 +6844,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - scp: true
             path: /sap
@@ -7504,11 +7502,14 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
+        data-sap-ui-manifest-uri=\\"./manifest.json\\"
+        data-sap-ui-componentName=\\"wrk1\\">
+    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -9346,6 +9347,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
@@ -9377,7 +9382,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60\\",
+      \\"minUI5Version\\": \\"1.78.16\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -10061,11 +10066,10 @@ server:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /catalog-admin-noauth
-          name: ''
+          urlPath: /catalog-admin-noauth
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -10090,7 +10094,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
@@ -10101,11 +10104,10 @@ server:
         path: webapp
         delay: 300
     - name: sap-fe-mockserver
-      beforeMiddleware: fiori-tools-proxy
+      beforeMiddleware: csp
       configuration:
         service:
-          urlBasePath: /catalog-admin-noauth
-          name: ''
+          urlPath: /catalog-admin-noauth
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -10130,7 +10132,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.78.16 # The UI5 version, for instance, 1.78.1. Empty string means latest version
         backend:
           - path: /catalog-admin-noauth
             url: https://fesamples-tooling.cfapps.sap.hana.ondemand.com
@@ -10780,11 +10781,14 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
+        data-sap-ui-manifest-uri=\\"./manifest.json\\"
+        data-sap-ui-componentName=\\"wrk1\\">
+    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -12213,6 +12217,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
     \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
     \\"dataSources\\": {
       \\"mainService\\": {
         \\"uri\\": \\"/catalog-admin-noauth/\\",
@@ -12244,7 +12252,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60\\",
+      \\"minUI5Version\\": \\"1.78.16\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -12274,8 +12282,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
           \\"synchronizationMode\\": \\"None\\",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true,
-          \\"groupId\\": \\"$direct\\"
+          \\"earlyRequests\\": true
         }
       }
     },

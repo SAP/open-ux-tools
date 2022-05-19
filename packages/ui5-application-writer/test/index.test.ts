@@ -1,7 +1,8 @@
-import { generate } from '../src';
+import { generate, Ui5App } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { Editor } from 'mem-fs-editor';
+import { spawn } from 'child_process';
 
 describe('UI5 templates', () => {
     let fs: Editor;
@@ -26,11 +27,15 @@ describe('UI5 templates', () => {
 
     it('generates files correctly', async () => {
         const projectDir = join(outputDir, 'testapp1');
-        fs = await generate(projectDir, {
+        const ui5AppConfig = {
             app: {
                 id: 'testAppId',
                 title: 'Test App Title',
-                description: 'Test App Description'
+                description: 'Test App Description',
+                sourceTemplate: {
+                    version: '1.2.3-test',
+                    id: '@sap/test-ui5-template-id'
+                }
             },
             ui5: {
                 framework: 'OpenUI5'
@@ -38,8 +43,25 @@ describe('UI5 templates', () => {
             package: {
                 name: 'testPackageName'
             }
-        });
+        } as Ui5App;
+
+        fs = await generate(projectDir, ui5AppConfig);
         expect((fs as any).dump(projectDir)).toMatchSnapshot();
+
+        // Test `sap.app.sourceTemplate.toolsId` is correctly written
+        ui5AppConfig.app.sourceTemplate = {
+            ...ui5AppConfig.app.sourceTemplate,
+            toolsId: 'guid:1234abcd'
+        };
+        fs = await generate(projectDir, ui5AppConfig);
+        expect((fs.readJSON(join(projectDir, '/webapp/manifest.json')) as any)['sap.app']['sourceTemplate'])
+            .toMatchInlineSnapshot(`
+            Object {
+              "id": "@sap/test-ui5-template-id",
+              "toolsId": "guid:1234abcd",
+              "version": "1.2.3-test",
+            }
+        `);
     });
 
     // Test to ensure the appid does not contain any characters that result in malfored docs
@@ -59,7 +81,7 @@ describe('UI5 templates', () => {
                     name: 'testPackageName'
                 }
             })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: appId.id contains disallowed characters: \\""`);
+        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id contains disallowed characters: \\""`);
 
         // Ensure undefined, null or '' cannot be used
         await expect(

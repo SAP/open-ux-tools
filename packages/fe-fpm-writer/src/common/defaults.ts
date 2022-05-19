@@ -1,6 +1,7 @@
-import { CustomElement, InternalCustomElement, Manifest } from './types';
+import type { CustomElement, InternalCustomElement, Manifest } from './types';
 import { join, dirname } from 'path';
 
+export const FCL_ROUTER = 'sap.f.routing.Router';
 /**
  * Sets the common default values for all custom elements.
  *
@@ -22,7 +23,7 @@ export function setCommonDefaults<T extends CustomElement & Partial<InternalCust
     config.folder = config.folder || `ext/${firstChar.toLocaleLowerCase() + config.name.substring(1)}`;
 
     // calculate namespace and path for generated artifacts
-    config.ns = `${manifest['sap.app'].id}.${config.folder.replace(/\//g, '.')}`;
+    config.ns = `${manifest['sap.app'].id}.${config.folder.replace(/[\/\\]/g, '.')}`;
     config.path = join(dirname(manifestPath), config.folder);
 
     return config as InternalCustomElement & T;

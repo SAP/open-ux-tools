@@ -1,11 +1,13 @@
 import { join } from 'path';
 import { mergeWithDefaults } from './data';
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { mergeObjects } from 'json-merger';
 import { render } from 'ejs';
 import { getFilePaths } from './files';
-import { App, AppOptions, Package, UI5, Ui5App } from './types';
+import type { App, AppOptions, Package, UI5 } from './types';
+import { Ui5App } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
@@ -35,7 +37,6 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
     ui5Config.addFioriToolsProxydMiddleware({
         ui5: {
-            version: ui5App.ui5?.version,
             url: ui5App.ui5?.frameworkUrl
         }
     });

@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Utils injectUI5Url injects UI5 URL in html 1`] = `
+"
+            <html>
+            <head>
+                <script src=\\"https://ui5.example/1.23.4/test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+                <script id=\\"sap-ui-bootstrap\\"
+                src=\\"https://ui5.sap.com/1.86.4/resources/sap-ui-core.js\\"
+                data-sap-ui-libs=\\"sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app\\"
+                data-sap-ui-async=\\"true\\"
+                data-sap-ui-preload=\\"async\\"
+                data-sap-ui-theme=\\"sap_fiori_3\\"
+                data-sap-ui-compatVersion=\\"edge\\"
+                data-sap-ui-language=\\"en\\"
+                data-sap-ui-resourceroots='{\\"project\\": \\"../\\"}'
+                data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+                </script>
+            </head>
+            </html>"
+`;
+
+exports[`Utils injectUI5Url injects UI5 URL in html, latest ui5 version 1`] = `
+"
+            <html>
+            <head>
+                <script src=\\"https://ui5.example/test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+                <script id=\\"sap-ui-bootstrap\\"
+                src=\\"https://ui5.sap.com/resources/sap-ui-core.js\\"
+                data-sap-ui-libs=\\"sap.m, sap.ushell, sap.ui.core, sap.f, sap.ui.comp, sap.ui.table, sap.suite.ui.generic.template, sap.ui.generic.app\\"
+                data-sap-ui-async=\\"true\\"
+                data-sap-ui-preload=\\"async\\"
+                data-sap-ui-theme=\\"sap_fiori_3\\"
+                data-sap-ui-compatVersion=\\"edge\\"
+                data-sap-ui-language=\\"en\\"
+                data-sap-ui-resourceroots='{\\"project\\": \\"../\\"}'
+                data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+                </script>
+            </head>
+            </html>"
+`;

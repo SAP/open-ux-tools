@@ -1,11 +1,13 @@
 import { join } from 'path';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { generate as generateUi5Project, Package } from '@sap-ux/ui5-application-writer';
+import type { Package } from '@sap-ux/ui5-application-writer';
+import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import { BasicAppSettings, FreestyleApp, TemplateType } from './types';
+import type { BasicAppSettings } from './types';
+import { FreestyleApp, TemplateType } from './types';
 import { setDefaults } from './defaults';
 
 /**
@@ -19,13 +21,10 @@ import { setDefaults } from './defaults';
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
     // Clone rather than modifying callers refs
     const ffApp: FreestyleApp<T> = cloneDeep(data) as FreestyleApp<T>;
-    // generate base UI5 project
-    ffApp.app.baseComponent = ffApp.app.baseComponent || 'sap/ui/core/UIComponent';
+    // set defaults
+    setDefaults(ffApp);
 
     fs = await generateUi5Project(basePath, ffApp, fs);
-
-    // set additional defaults
-    setDefaults(ffApp);
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
@@ -42,11 +41,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         fs.copyTpl(join(tmplPath, ffApp.template.type, 'custom/Controller.js'), controllerTarget, ffApp);
     }
 
-    // merge content into existing files
-    const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
-
-    // manifest.json
+    // Add template specific manifest settings
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
+    const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
     fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')), ffApp)));
 
     // i18n.properties

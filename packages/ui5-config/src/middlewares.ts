@@ -1,10 +1,10 @@
 import type {
-    ProxyBackend,
+    FioriToolsProxyConfigBackend,
     CustomMiddleware,
     FioriAppReloadConfig,
     FioriToolsProxyConfig,
     MockserverConfig,
-    ProxyUIConfig
+    FioriToolsProxyConfigUI5
 } from './types';
 import type { NodeComment } from '@sap-ux/yaml';
 
@@ -33,8 +33,8 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
  * @returns {{config, comments}} configuration and comments
  */
 export function getFioriToolsProxyMiddlewareConfig(
-    backends?: ProxyBackend[],
-    ui5?: ProxyUIConfig
+    backends?: FioriToolsProxyConfigBackend[],
+    ui5?: Partial<FioriToolsProxyConfigUI5>
 ): {
     config: CustomMiddleware<FioriToolsProxyConfig>;
     comments: NodeComment<CustomMiddleware<FioriToolsProxyConfig>>[];
@@ -63,31 +63,28 @@ export function getFioriToolsProxyMiddlewareConfig(
 
     if (ui5 !== undefined) {
         fioriToolsProxy.configuration['ui5'] = {
-            path: ['/resources', '/test-resources'],
-            url: ui5.url || 'https://ui5.sap.com',
-            version: ui5.version || ''
+            path: ui5.path || ['/resources', '/test-resources'],
+            url: ui5.url || 'https://ui5.sap.com'
         };
+        if (ui5.version) {
+            fioriToolsProxy.configuration['ui5'].version = ui5.version;
+        }
         if (ui5.directLoad) {
             fioriToolsProxy.configuration['ui5'].directLoad = true;
         }
-        comments.push({
-            path: 'configuration.ui5.version',
-            comment: ' The UI5 version, for instance, 1.78.1. Empty string means latest version'
-        });
     }
 
     return { config: fioriToolsProxy, comments };
 }
 
 export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<MockserverConfig> => {
-    const pathSegments = path?.split('/') || [];
+    path = path?.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
     return {
         name: 'sap-fe-mockserver',
-        beforeMiddleware: 'fiori-tools-proxy',
+        beforeMiddleware: 'csp',
         configuration: {
             service: {
-                urlBasePath: pathSegments.slice(0, -1).join('/'),
-                name: pathSegments[pathSegments.length - 1],
+                urlPath: path || '',
                 metadataXmlPath: './webapp/localService/metadata.xml',
                 mockdataRootPath: './webapp/localService/data',
                 generateMockData: true

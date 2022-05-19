@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomApp enableFPM enable FCL 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+      "minUI5Version": "",
+    },
+    "rootView": Object {
+      "async": true,
+      "id": "appRootView",
+      "type": "XML",
+      "viewName": "sap.fe.templates.RootContainer.view.Fcl",
+    },
+    "routing": Object {
+      "config": Object {
+        "routerClass": "sap.f.routing.Router",
+      },
+      "routes": Array [],
+      "targets": Object {},
+    },
+  },
+}
+`;
+
+exports[`CustomApp enableFPM valid app with no minimum version 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+      "minUI5Version": "",
+    },
+    "routing": Object {
+      "routes": Array [],
+      "targets": Object {},
+    },
+  },
+}
+`;

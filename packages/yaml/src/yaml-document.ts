@@ -1,5 +1,6 @@
 import { initI18n, t } from './i18n';
-import yaml, { Document, isMap, isSeq, Node, YAMLMap, YAMLSeq } from 'yaml';
+import type { Document, Node, YAMLMap } from 'yaml';
+import yaml, { isMap, isSeq, YAMLSeq } from 'yaml';
 
 import merge = require('lodash.merge');
 
@@ -139,7 +140,7 @@ export class YamlDocument {
      *
      * @param path - hierarchical path where the node will be inserted/updated
      * @param {string} path.path - the path object's path
-     * @param {Object} path.value - the path object's value
+     * @param {object} path.value - the path object's value
      * @param {boolean} path.createIntermediateKeys - create the intermediate keys if they're missing. Error if not
      * @param path.nodeComment - optional comment to add to the node
      * @param path.comments - optional comments for subnodes in value being added
@@ -199,8 +200,8 @@ export class YamlDocument {
      *
      * @param path - hierarchical path where the node will be inserted/updated
      * @param {string} path.path - the path object's path
-     * @param {Object} path.matcher - key/value pair identifying the object
-     * @param {Object} path.value - the path object's value
+     * @param {object} path.matcher - key/value pair identifying the object
+     * @param {object} path.value - the path object's value
      * @param path.matcher.key
      * @param path.matcher.value
      * @returns {YamlDocument} the YamlDocument instance
@@ -233,7 +234,7 @@ export class YamlDocument {
      *
      * @param path - hierarchical path where the node will be deleted
      * @param {string} path.path - the path object's path
-     * @param {Object} path.matcher - key/value pair identifying the object
+     * @param {object} path.matcher - key/value pair identifying the object
      * @param {string} path.matcher.key - the key
      * @param {string} path.matcher.value - the value
      * @returns {YamlDocument} the YamlDocument instance

@@ -1,12 +1,13 @@
 import path from 'path';
-import fs, { readFileSync, writeFileSync, mkdirSync, FSWatcher, existsSync } from 'fs';
+import type { FSWatcher } from 'fs';
+import fs, { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { plural } from 'pluralize';
-import { DataAccess, DataAccessConstructor } from '.';
-import { Logger } from '@sap-ux/logger';
+import type { DataAccess } from '.';
+import type { Logger } from '@sap-ux/logger';
 import { errorInstance, getFioriToolsDirectory } from '../utils';
-import { Entity } from '..';
-import { ServiceOptions } from '../types';
+import type { ServiceOptions } from '../types';
 import os from 'os';
+import type { Entity } from '../constants';
 
 export const basedir = ({ baseDirectory }: { baseDirectory?: string } = {}): string => {
     if (!baseDirectory) {
@@ -18,12 +19,7 @@ export const basedir = ({ baseDirectory }: { baseDirectory?: string } = {}): str
     }
 };
 
-/**
- * Filesystem store. The entity is stored in JSON format (don't depend on the format, this could change).
- * The entity is stored in a file named with the plural form of the entity name in the base directory. Again, this is an
- * implementation detail, please don't depend on it.
- */
-export const FilesystemStore: DataAccessConstructor<object> = class implements DataAccess<object> {
+class FilesystemStore<E extends object> implements DataAccess<E> {
     private readonly logger: Logger;
     private readonly storeDirectory: string;
 
@@ -32,20 +28,14 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
         this.storeDirectory = basedir(options);
     }
 
-    public async read<Entity extends object>({
-        entityName,
-        id
-    }: {
-        entityName: string;
-        id: string;
-    }): Promise<undefined | Entity> {
+    public async read({ entityName, id }: { entityName: string; id: string }): Promise<undefined | E> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('read: Entity Type is falsy - ' + entityName);
             return Promise.resolve(undefined);
         }
 
-        const { entities, error } = this._readAll<Entity>(name);
+        const { entities, error } = this._readAll(name);
         if (error) {
             if (error.code === 'ENOENT') {
                 return Promise.resolve(undefined);
@@ -60,14 +50,14 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
         return Promise.resolve(entities[id]);
     }
 
-    public async getAll<Entity extends object>({ entityName }: { entityName: string }): Promise<Entity[] | []> {
+    public async getAll({ entityName }: { entityName: string }): Promise<E[] | []> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('read: Entity Type is falsy - ' + entityName);
             return Promise.resolve([]);
         }
 
-        const { entities, error } = this._readAll<Entity>(name);
+        const { entities, error } = this._readAll(name);
         if (error) {
             if (error.code === 'ENOENT') {
                 return Promise.resolve([]);
@@ -82,18 +72,14 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
         return Promise.resolve(Object.values(entities));
     }
 
-    public async readAll<Entity extends object>({
-        entityName
-    }: {
-        entityName: string;
-    }): Promise<{ [key: string]: Entity }> {
+    public async readAll({ entityName }: { entityName: string }): Promise<{ [key: string]: E }> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('read: Entity Type is falsy - ' + entityName);
             return Promise.resolve({});
         }
 
-        const { entities, error } = this._readAll<Entity>(name);
+        const { entities, error } = this._readAll(name);
         if (error) {
             if (error.code === 'ENOENT') {
                 return Promise.resolve({});
@@ -108,22 +94,22 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
         return Promise.resolve(entities);
     }
 
-    public async write<Entity extends object>({
+    public async write({
         entityName,
         id,
         entity
     }: {
         entityName: string;
         id: string;
-        entity: Entity;
-    }): Promise<undefined | Entity> {
+        entity: E;
+    }): Promise<undefined | E> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('write: Entity is falsy - ' + name);
             return Promise.resolve(undefined);
         }
 
-        const { entities = {}, error } = this._readAll<Entity>(name);
+        const { entities = {}, error } = this._readAll(name);
         if (error && error.code !== 'ENOENT') {
             throw error;
         }
@@ -133,14 +119,14 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
         return Promise.resolve(entity);
     }
 
-    async del<Entity extends object>({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
+    async del({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
         const name = toPersistenceName(entityName);
         if (!name) {
             this.logger.debug('delete: Entity is falsy - ' + name);
             return Promise.resolve(false);
         }
 
-        const { entities = {}, error } = this._readAll<Entity>(name);
+        const { entities = {}, error } = this._readAll(name);
         if (error) {
             if (error.code !== 'ENOENT') {
                 throw error;
@@ -159,14 +145,15 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
         }
     }
 
-    private _readAll<E extends object>(
-        entityName: string
-    ): { entities?: { [key: string]: E }; error?: Error & { code?: string } } {
+    private _readAll(entityName: string): { entities?: { [key: string]: E }; error?: Error & { code?: string } } {
         let rawContents: string;
         try {
-            rawContents = readFileSync(path.join(this.storeDirectory, `${entityName}.json`))
-                ?.toString()
-                .trim();
+            const configPath = path.join(this.storeDirectory, `${entityName}.json`);
+            if (existsSync(configPath)) {
+                rawContents = readFileSync(configPath).toString().trim();
+            } else {
+                rawContents = '';
+            }
         } catch (e) {
             const err = errorInstance(e);
             this.logger.debug(err.message);
@@ -187,7 +174,7 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
         return { entities };
     }
 
-    private writeToFile<Entity extends object>(entityName: string, entities: { [key: string]: Entity }): void {
+    private writeToFile(entityName: string, entities: { [key: string]: E }): void {
         const data = JSON.stringify({ [entityName]: entities }, null, 2);
         const filename = getEntityFileName(entityName);
         try {
@@ -203,7 +190,7 @@ export const FilesystemStore: DataAccessConstructor<object> = class implements D
             }
         }
     }
-};
+}
 
 /**
  * Trims, lowercases and returns plural if a non-empty string
@@ -235,4 +222,13 @@ export function getFilesystemWatcherFor(
         console.warn(`File Not Found: ${watchPath}`);
         return undefined;
     }
+}
+
+/**
+ * Filesystem store. The entity is stored in JSON format (don't depend on the format, this could change).
+ * The entity is stored in a file named with the plural form of the entity name in the base directory. Again, this is an
+ * implementation detail, please don't depend on it.
+ */
+export function getFilesystemStore<E extends object>(logger: Logger, options?: ServiceOptions): DataAccess<E> {
+    return new FilesystemStore<E>(logger, options);
 }
