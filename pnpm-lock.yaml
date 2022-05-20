@@ -1,4 +1,4 @@
-lockfileVersion: 5.4
+lockfileVersion: 5.3
 
 overrides:
     ansi-regex: ^5.0.1
@@ -34,14 +34,14 @@ importers:
             '@changesets/cli': 2.21.1
             '@types/jest': 27.4.1
             '@types/node': 12.12.6
-            '@typescript-eslint/eslint-plugin': 5.16.0_qd7xrrmpwehv5bdogwn54v5fpu
-            '@typescript-eslint/parser': 5.16.0_cppdphovtxbnvcvx2irz6hc5ue
+            '@typescript-eslint/eslint-plugin': 5.16.0_80ff78c58fb10f5e846e359bde57a57d
+            '@typescript-eslint/parser': 5.16.0_eslint@8.11.0+typescript@4.0.8
             eslint: 8.11.0
             eslint-config-prettier: 8.5.0_eslint@8.11.0
-            eslint-import-resolver-typescript: 2.5.0_7yrnqyx753fo5bwjhiag2wpedy
-            eslint-plugin-import: 2.25.4_znvipj6vagw2fxxmrueqoi2i7y
+            eslint-import-resolver-typescript: 2.5.0_fe22d862ffeecaee86c93a006d59e41e
+            eslint-plugin-import: 2.25.4_eslint@8.11.0
             eslint-plugin-jsdoc: 39.2.9_eslint@8.11.0
-            eslint-plugin-prettier: 4.0.0_ndw46vtq6n3sdoxv2lfmmesoju
+            eslint-plugin-prettier: 4.0.0_68edcf5670f37721baf5d2cac6124e4d
             eslint-plugin-promise: 6.0.0_eslint@8.11.0
             husky: 7.0.4
             jest: 27.5.1
@@ -49,7 +49,7 @@ importers:
             prettier: 2.6.0
             pretty-quick: 3.1.3_prettier@2.6.0
             rimraf: 3.0.2
-            ts-jest: 27.1.3_wye5kbc3sqtj6awq46fqxr6haq
+            ts-jest: 27.1.3_b609d5045b94269f02d0e78b0bc7c704
             typescript: 4.0.8
 
     examples/odata-cli:
@@ -356,7 +356,7 @@ importers:
             fast-check: 2.19.0
             jest: 27.5.1
             jest-extended: 0.11.5
-            jest-mock-extended: 2.0.4_purtu5guvbdyesnfsb44cpkwcy
+            jest-mock-extended: 2.0.4_jest@27.5.1+typescript@4.0.8
             memfs: 3.3.0
             typescript: 4.0.8
             unionfs: 4.4.0
@@ -409,6 +409,7 @@ importers:
             '@sap-ux/ui5-config': workspace:*
             '@types/express': 4.17.13
             '@types/supertest': 2.0.12
+            dotenv: 16.0.0
             express: 4.17.2
             http-proxy-middleware: 2.0.1
             https-proxy-agent: 5.0.0
@@ -419,6 +420,7 @@ importers:
         dependencies:
             '@sap-ux/logger': link:../logger
             '@sap-ux/ui5-config': link:../ui5-config
+            dotenv: 16.0.0
             express: 4.17.2
             http-proxy-middleware: 2.0.1
             https-proxy-agent: 5.0.0
@@ -2332,7 +2334,7 @@ packages:
             rxjs: 6.6.7
         dev: true
 
-    /@typescript-eslint/eslint-plugin/5.16.0_qd7xrrmpwehv5bdogwn54v5fpu:
+    /@typescript-eslint/eslint-plugin/5.16.0_80ff78c58fb10f5e846e359bde57a57d:
         resolution:
             {
                 integrity: sha512-SJoba1edXvQRMmNI505Uo4XmGbxCK9ARQpkvOd00anxzri9RNQk0DDCxD+LIl+jYhkzOJiOMMKYEHnHEODjdCw==
@@ -2346,10 +2348,10 @@ packages:
             typescript:
                 optional: true
         dependencies:
-            '@typescript-eslint/parser': 5.16.0_cppdphovtxbnvcvx2irz6hc5ue
+            '@typescript-eslint/parser': 5.16.0_eslint@8.11.0+typescript@4.0.8
             '@typescript-eslint/scope-manager': 5.16.0
-            '@typescript-eslint/type-utils': 5.16.0_cppdphovtxbnvcvx2irz6hc5ue
-            '@typescript-eslint/utils': 5.16.0_cppdphovtxbnvcvx2irz6hc5ue
+            '@typescript-eslint/type-utils': 5.16.0_eslint@8.11.0+typescript@4.0.8
+            '@typescript-eslint/utils': 5.16.0_eslint@8.11.0+typescript@4.0.8
             debug: 4.3.3
             eslint: 8.11.0
             functional-red-black-tree: 1.0.1
@@ -2362,7 +2364,7 @@ packages:
             - supports-color
         dev: true
 
-    /@typescript-eslint/parser/5.16.0_cppdphovtxbnvcvx2irz6hc5ue:
+    /@typescript-eslint/parser/5.16.0_eslint@8.11.0+typescript@4.0.8:
         resolution:
             {
                 integrity: sha512-fkDq86F0zl8FicnJtdXakFs4lnuebH6ZADDw6CYQv0UZeIjHvmEw87m9/29nk2Dv5Lmdp0zQ3zDQhiMWQf/GbA==
@@ -2396,7 +2398,7 @@ packages:
             '@typescript-eslint/visitor-keys': 5.16.0
         dev: true
 
-    /@typescript-eslint/type-utils/5.16.0_cppdphovtxbnvcvx2irz6hc5ue:
+    /@typescript-eslint/type-utils/5.16.0_eslint@8.11.0+typescript@4.0.8:
         resolution:
             {
                 integrity: sha512-SKygICv54CCRl1Vq5ewwQUJV/8padIWvPgCxlWPGO/OgQLCijY9G7lDu6H+mqfQtbzDNlVjzVWQmeqbLMBLEwQ==
@@ -2409,7 +2411,7 @@ packages:
             typescript:
                 optional: true
         dependencies:
-            '@typescript-eslint/utils': 5.16.0_cppdphovtxbnvcvx2irz6hc5ue
+            '@typescript-eslint/utils': 5.16.0_eslint@8.11.0+typescript@4.0.8
             debug: 4.3.4
             eslint: 8.11.0
             tsutils: 3.21.0_typescript@4.0.8
@@ -2450,7 +2452,7 @@ packages:
             - supports-color
         dev: true
 
-    /@typescript-eslint/utils/5.16.0_cppdphovtxbnvcvx2irz6hc5ue:
+    /@typescript-eslint/utils/5.16.0_eslint@8.11.0+typescript@4.0.8:
         resolution:
             {
                 integrity: sha512-iYej2ER6AwmejLWMWzJIHy3nPJeGDuCqf8Jnb+jAQVoPpmWzwQOfa9hWVB8GIQE5gsCv/rfN4T+AYb/V06WseQ==
@@ -2983,8 +2985,6 @@ packages:
             qs: 6.7.0
             raw-body: 2.4.0
             type-is: 1.6.18
-        transitivePeerDependencies:
-            - supports-color
         dev: false
 
     /body-parser/1.19.1:
@@ -3004,8 +3004,6 @@ packages:
             qs: 6.9.6
             raw-body: 2.4.2
             type-is: 1.6.18
-        transitivePeerDependencies:
-            - supports-color
         dev: false
 
     /brace-expansion/1.1.11:
@@ -3034,8 +3032,6 @@ packages:
             snapdragon-node: 2.1.1
             split-string: 3.1.0
             to-regex: 3.0.2
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /braces/3.0.2:
@@ -3664,11 +3660,6 @@ packages:
             {
                 integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
             }
-        peerDependencies:
-            supports-color: '*'
-        peerDependenciesMeta:
-            supports-color:
-                optional: true
         dependencies:
             ms: 2.0.0
 
@@ -3677,11 +3668,6 @@ packages:
             {
                 integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
             }
-        peerDependencies:
-            supports-color: '*'
-        peerDependenciesMeta:
-            supports-color:
-                optional: true
         dependencies:
             ms: 2.1.3
         dev: true
@@ -4182,11 +4168,9 @@ packages:
         dependencies:
             debug: 3.2.7
             resolve: 1.21.0
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
-    /eslint-import-resolver-typescript/2.5.0_7yrnqyx753fo5bwjhiag2wpedy:
+    /eslint-import-resolver-typescript/2.5.0_fe22d862ffeecaee86c93a006d59e41e:
         resolution:
             {
                 integrity: sha512-qZ6e5CFr+I7K4VVhQu3M/9xGv9/YmwsEXrsm3nimw8vWaVHRDrQRp26BgCypTxBp3vUp4o5aVEJRiy0F2DFddQ==
@@ -4198,7 +4182,7 @@ packages:
         dependencies:
             debug: 4.3.3
             eslint: 8.11.0
-            eslint-plugin-import: 2.25.4_znvipj6vagw2fxxmrueqoi2i7y
+            eslint-plugin-import: 2.25.4_eslint@8.11.0
             glob: 7.2.0
             is-glob: 4.0.3
             resolve: 1.21.0
@@ -4207,57 +4191,33 @@ packages:
             - supports-color
         dev: true
 
-    /eslint-module-utils/2.7.2_z2tl7pnubyta2tfjkmoxrxl2iq:
+    /eslint-module-utils/2.7.2:
         resolution:
             {
                 integrity: sha512-zquepFnWCY2ISMFwD/DqzaM++H+7PDzOpUvotJWm/y1BAFt5R4oeULgdrTejKqLkz7MA/tgstsUMNYc7wNdTrg==
             }
         engines: { node: '>=4' }
-        peerDependencies:
-            '@typescript-eslint/parser': '*'
-            eslint-import-resolver-node: '*'
-            eslint-import-resolver-typescript: '*'
-            eslint-import-resolver-webpack: '*'
-        peerDependenciesMeta:
-            '@typescript-eslint/parser':
-                optional: true
-            eslint-import-resolver-node:
-                optional: true
-            eslint-import-resolver-typescript:
-                optional: true
-            eslint-import-resolver-webpack:
-                optional: true
         dependencies:
-            '@typescript-eslint/parser': 5.16.0_cppdphovtxbnvcvx2irz6hc5ue
             debug: 3.2.7
-            eslint-import-resolver-node: 0.3.6
-            eslint-import-resolver-typescript: 2.5.0_7yrnqyx753fo5bwjhiag2wpedy
             find-up: 2.1.0
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
-    /eslint-plugin-import/2.25.4_znvipj6vagw2fxxmrueqoi2i7y:
+    /eslint-plugin-import/2.25.4_eslint@8.11.0:
         resolution:
             {
                 integrity: sha512-/KJBASVFxpu0xg1kIBn9AUa8hQVnszpwgE7Ld0lKAlx7Ie87yzEzCgSkekt+le/YVhiaosO4Y14GDAOc41nfxA==
             }
         engines: { node: '>=4' }
         peerDependencies:
-            '@typescript-eslint/parser': '*'
             eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
-        peerDependenciesMeta:
-            '@typescript-eslint/parser':
-                optional: true
         dependencies:
-            '@typescript-eslint/parser': 5.16.0_cppdphovtxbnvcvx2irz6hc5ue
             array-includes: 3.1.4
             array.prototype.flat: 1.2.5
             debug: 2.6.9
             doctrine: 2.1.0
             eslint: 8.11.0
             eslint-import-resolver-node: 0.3.6
-            eslint-module-utils: 2.7.2_z2tl7pnubyta2tfjkmoxrxl2iq
+            eslint-module-utils: 2.7.2
             has: 1.0.3
             is-core-module: 2.8.1
             is-glob: 4.0.3
@@ -4265,10 +4225,6 @@ packages:
             object.values: 1.1.5
             resolve: 1.21.0
             tsconfig-paths: 3.12.0
-        transitivePeerDependencies:
-            - eslint-import-resolver-typescript
-            - eslint-import-resolver-webpack
-            - supports-color
         dev: true
 
     /eslint-plugin-jsdoc/39.2.9_eslint@8.11.0:
@@ -4292,7 +4248,7 @@ packages:
             - supports-color
         dev: true
 
-    /eslint-plugin-prettier/4.0.0_ndw46vtq6n3sdoxv2lfmmesoju:
+    /eslint-plugin-prettier/4.0.0_68edcf5670f37721baf5d2cac6124e4d:
         resolution:
             {
                 integrity: sha512-98MqmCJ7vJodoQK359bqQWaxOE0CS8paAz/GgjaZLyex4TTk3g9HugoO89EqWCrFiOqn9EVvcoo7gZzONCWVwQ==
@@ -4553,8 +4509,6 @@ packages:
             regex-not: 1.0.2
             snapdragon: 0.8.2
             to-regex: 3.0.2
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /expand-template/2.0.3:
@@ -4579,8 +4533,6 @@ packages:
             jest-matcher-utils: 24.9.0
             jest-message-util: 24.9.0
             jest-regex-util: 24.9.0
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /expect/26.6.2:
@@ -4648,8 +4600,6 @@ packages:
             type-is: 1.6.18
             utils-merge: 1.0.1
             vary: 1.1.2
-        transitivePeerDependencies:
-            - supports-color
         dev: false
 
     /express/4.17.2:
@@ -4689,8 +4639,6 @@ packages:
             type-is: 1.6.18
             utils-merge: 1.0.1
             vary: 1.1.2
-        transitivePeerDependencies:
-            - supports-color
         dev: false
 
     /extend-shallow/2.0.1:
@@ -4742,8 +4690,6 @@ packages:
             regex-not: 1.0.2
             snapdragon: 0.8.2
             to-regex: 3.0.2
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /fast-check/2.19.0:
@@ -4895,8 +4841,6 @@ packages:
             parseurl: 1.3.3
             statuses: 1.5.0
             unpipe: 1.0.0
-        transitivePeerDependencies:
-            - supports-color
         dev: false
 
     /find-up/2.1.0:
@@ -6419,8 +6363,6 @@ packages:
             expect: 24.9.0
             jest-get-type: 22.4.3
             jest-matcher-utils: 22.4.3
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /jest-extended/1.2.0:
@@ -6636,8 +6578,6 @@ packages:
             micromatch: 3.1.10
             slash: 2.0.0
             stack-utils: 1.0.5
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /jest-message-util/26.6.2:
@@ -6676,7 +6616,7 @@ packages:
             stack-utils: 2.0.5
         dev: true
 
-    /jest-mock-extended/2.0.4_purtu5guvbdyesnfsb44cpkwcy:
+    /jest-mock-extended/2.0.4_jest@27.5.1+typescript@4.0.8:
         resolution:
             {
                 integrity: sha512-MgL3B3GjURQFjjPGqbCANydA5BFNPygv0mYp4Tjfxohh9MWwxxX8Eq2p6ncCt/Vt+RAnaLlDaI7gwrDRD7Pt9A==
@@ -7524,8 +7464,6 @@ packages:
             regex-not: 1.0.2
             snapdragon: 0.8.2
             to-regex: 3.0.2
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /micromatch/4.0.4:
@@ -7733,8 +7671,6 @@ packages:
             regex-not: 1.0.2
             snapdragon: 0.8.2
             to-regex: 3.0.2
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /napi-build-utils/1.0.2:
@@ -9020,8 +8956,6 @@ packages:
             on-finished: 2.3.0
             range-parser: 1.2.1
             statuses: 1.5.0
-        transitivePeerDependencies:
-            - supports-color
         dev: false
 
     /send/0.17.2:
@@ -9044,8 +8978,6 @@ packages:
             on-finished: 2.3.0
             range-parser: 1.2.1
             statuses: 1.5.0
-        transitivePeerDependencies:
-            - supports-color
         dev: false
 
     /serve-static/1.14.1:
@@ -9059,8 +8991,6 @@ packages:
             escape-html: 1.0.3
             parseurl: 1.3.3
             send: 0.17.1
-        transitivePeerDependencies:
-            - supports-color
         dev: false
 
     /serve-static/1.14.2:
@@ -9074,8 +9004,6 @@ packages:
             escape-html: 1.0.3
             parseurl: 1.3.3
             send: 0.17.2
-        transitivePeerDependencies:
-            - supports-color
         dev: false
 
     /set-blocking/2.0.0:
@@ -9265,8 +9193,6 @@ packages:
             source-map: 0.5.7
             source-map-resolve: 0.5.3
             use: 3.1.1
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /sort-keys/4.2.0:
@@ -9895,7 +9821,7 @@ packages:
             typescript: 4.0.8
         dev: true
 
-    /ts-jest/27.1.3_wye5kbc3sqtj6awq46fqxr6haq:
+    /ts-jest/27.1.3_b609d5045b94269f02d0e78b0bc7c704:
         resolution:
             {
                 integrity: sha512-6Nlura7s6uM9BVUAoqLH7JHyMXjz8gluryjpPXxr3IxZdAXnU6FhjvVLHFtfd1vsE1p8zD1OJfskkc0jhTSnkA==
