@@ -16,36 +16,23 @@ import { OdataService, OdataVersion } from './types';
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {Editor} fs - the memfs editor instance
  */
-function validateBasePath(basePath: string, fs: Editor) {
-    [join(basePath, 'package.json'), join(basePath, 'webapp', 'manifest.json'), join(basePath, 'ui5.yaml')].forEach(
-        (path) => {
-            if (!fs.exists(path)) {
-                throw new Error(t('error.requiredProjectFileNotFound', { path }));
-            }
+function validateBasePath(basePath: string, files: string[], fs: Editor) {
+    files.forEach((path) => {
+        if (!fs.exists(join(basePath, path))) {
+            throw new Error(t('error.requiredProjectFileNotFound', { path }));
         }
-    );
+    });
 }
+
 /**
- * Writes the odata service related file updates to an existing UI5 project specified by the base path.
- *
+ * Internal function that updates the manifest.json based on the given service configuration.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {Editor} [fs] - the memfs editor instance
- * @throws {Error} - if required UI5 project files are not found
- * @returns {Promise<Editor>} the updated memfs editor instance
+ * @param templateRoot
  */
-async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
-    if (!fs) {
-        fs = create(createStorage());
-    }
-    validateBasePath(basePath, fs);
-    enhanceData(service);
-
-    // merge content into existing files
-    const templateRoot = join(__dirname, '..', 'templates');
-    const extRoot = join(templateRoot, 'extend');
-
+function updateManifest(basePath: string, service: OdataService, fs: Editor, templateRoot: string) {
     // manifest.json
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
@@ -59,8 +46,49 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         );
     }
 
-    const manifestJsonExt = fs.read(join(extRoot, `manifest.json`));
+    const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
     fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, service)));
+}
+
+/**
+ * Adds model and data source configuration to the manifest.json
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {OdataService} service - the OData service instance
+ * @param {Editor} [fs] - the memfs editor instance
+ * @returns {Editor} the updated memfs editor instance
+ */
+function addServiceToManifest(basePath: string, service: OdataService, fs?: Editor): Editor {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    validateBasePath(basePath, ['webapp/manifest.json'], fs);
+    const templateRoot = join(__dirname, '..', 'templates');
+    updateManifest(basePath, service, fs, templateRoot);
+    return fs;
+}
+
+/**
+ * Writes the odata service related file updates to an existing UI5 project specified by the base path.
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {OdataService} service - the OData service instance
+ * @param {Editor} [fs] - the memfs editor instance
+ * @throws {Error} - if required UI5 project files are not found
+ * @returns {Promise<Editor>} the updated memfs editor instance
+ */
+async function generate(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    validateBasePath(basePath, ['package.json', 'webapp/manifest.json', 'ui5.yaml'], fs);
+    enhanceData(service);
+
+    // merge content into existing files
+    const templateRoot = join(__dirname, '..', 'templates');
+
+    // manifest.json
+    updateManifest(basePath, service, fs, templateRoot);
 
     // ui5.yaml
     const ui5ConfigPath = join(basePath, 'ui5.yaml');
@@ -126,4 +154,4 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     return fs;
 }
 
-export { generate, OdataVersion, OdataService };
+export { generate, addServiceToManifest, OdataVersion, OdataService };
