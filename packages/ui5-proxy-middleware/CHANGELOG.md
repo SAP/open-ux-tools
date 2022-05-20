@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.0.9
+
+### Patch Changes
+
+-   47538c6: Read FIORI_TOOLS_UI5\* env variables of a run configuration
+
 ## 1.0.8
 
 ### Patch Changes
