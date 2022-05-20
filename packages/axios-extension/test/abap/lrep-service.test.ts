@@ -3,8 +3,6 @@ import fs from 'fs';
 import type { Message } from '../../src/abap/lrep-service';
 import { LayeredRepositoryService, createForAbap, AdaptationConfig } from '../../src';
 
-nock.disableNetConnect();
-
 describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';
     const service = createForAbap({ baseURL: server }).layeredRepository();
@@ -13,6 +11,15 @@ describe('LayeredRepositoryService', () => {
         package: 'MY_PACKAGE',
         transport: 'MYTRANSPORT'
     };
+
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
 
     beforeEach(() => {
         jest.resetModules();

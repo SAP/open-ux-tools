@@ -11,9 +11,16 @@ import {
 } from '../../src';
 import { ATO_CATALOG_URL_PATH } from '../../src/abap/ato';
 
-nock.disableNetConnect();
-
 describe('AbapServiceProvider', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
     const server = 'https://server.example';
     const config = {
         baseURL: server,

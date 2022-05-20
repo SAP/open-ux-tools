@@ -4,6 +4,11 @@ module.exports = {
     },
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
+    globals: {
+        'ts-jest': {
+            tsconfig: './test/tsconfig.json'
+        }
+    },
     reporters: [
         'default',
         [

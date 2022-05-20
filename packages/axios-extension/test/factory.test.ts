@@ -25,12 +25,15 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
-nock.disableNetConnect();
-
 beforeAll(() => {
+    nock.disableNetConnect();
     nock(server).get(`${servicePath}${metadataPath}?sap-client=${client}`).reply(200, expectedMetadata).persist(true);
 });
 
+afterAll(() => {
+    nock.cleanAll();
+    nock.enableNetConnect();
+});
 test('create', async () => {
     const response = await axios.get(`${server}${servicePath}${metadataPath}`, {
         params: { 'sap-client': client }
