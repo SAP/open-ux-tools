@@ -13,14 +13,17 @@ import {
     resolveUI5Version,
     hideProxyCredentials
 } from '../base';
+import dotenv from 'dotenv';
 
 module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
+    dotenv.config();
     const router = express.Router();
     const config = options.configuration;
     const ui5Version = await resolveUI5Version(config.version, logger);
+    const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;
     const secure = config.secure !== undefined ? !!config.secure : true;
     const debug = !!config.debug;
     const directLoad = !!config.directLoad;
@@ -45,7 +48,7 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
         for (const ui5Path of paths) {
             const ui5Config: ProxyConfig = {
                 path: ui5Path,
-                url: ui5.url,
+                url: envUI5Url || ui5.url,
                 version: ui5Version
             };
             if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
