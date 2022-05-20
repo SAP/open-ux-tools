@@ -13,12 +13,12 @@ import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 
 // mock required axios-extension functions
-import { createForAbapOnBtp } from '@sap-ux/axios-extension';
+import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
 jest.mock('@sap-ux/axios-extension', () => ({
     ...(jest.requireActual('@sap-ux/axios-extension') as object),
-    createForAbapOnBtp: jest.fn()
+    createForAbapOnCloud: jest.fn()
 }));
-const mockCreateForAbapOnBtp = createForAbapOnBtp as jest.Mock;
+const mockCreateForAbapOnCloud = createForAbapOnCloud as jest.Mock;
 
 // mock required btp-utils functions
 import {
@@ -241,7 +241,7 @@ describe('proxy', () => {
         });
 
         test('oauth required', async () => {
-            mockCreateForAbapOnBtp.mockImplementationOnce(() => {
+            mockCreateForAbapOnCloud.mockImplementationOnce(() => {
                 return {
                     cookies: '~cookies',
                     getAtoInfo: jest.fn()
@@ -264,11 +264,12 @@ describe('proxy', () => {
             const callback = jest.fn();
             await enhanceConfigForSystem(proxyOptions, cloudSystem, true, callback);
             expect(proxyOptions.headers.cookie).toBe('~cookies');
-            expect(mockCreateForAbapOnBtp).toBeCalledWith(
-                JSON.parse(cloudSystem.serviceKeys),
-                cloudSystem.refreshToken,
-                callback
-            );
+            expect(mockCreateForAbapOnCloud).toBeCalledWith({
+                environment: AbapCloudEnvironment.Standalone,
+                service: JSON.parse(cloudSystem.serviceKeys),
+                refreshToken: cloudSystem.refreshToken,
+                refreshTokenChangedCb: callback
+            });
         });
 
         test('user/password authentication', async () => {
@@ -290,21 +291,28 @@ describe('proxy', () => {
         });
 
         test('use reentrance tickets', async () => {
+            mockCreateForAbapOnCloud.mockImplementationOnce(() => {
+                return {
+                    cookies: '~cookies',
+                    getAtoInfo: jest.fn()
+                };
+            });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
-            try {
-                await enhanceConfigForSystem(
-                    proxyOptions,
-                    {
-                        ...system,
-                        authenticationType: AuthenticationType.ReentranceTicket
-                    },
-                    false,
-                    jest.fn()
-                );
-                fail('It should not have worked because the implementation is missing');
-            } catch (error) {
-                expect(error.message).toContain('open-ux-tools/pull/485');
-            }
+            await enhanceConfigForSystem(
+                proxyOptions,
+                {
+                    ...system,
+                    authenticationType: AuthenticationType.ReentranceTicket
+                },
+                false,
+                jest.fn()
+            );
+
+            expect(proxyOptions.headers.cookie).toBe('~cookies');
+            expect(mockCreateForAbapOnCloud).toBeCalledWith({
+                environment: AbapCloudEnvironment.EmbeddedSteampunk,
+                url: system.url
+            });
         });
     });
 
