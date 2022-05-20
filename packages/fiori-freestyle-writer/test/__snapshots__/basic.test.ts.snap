@@ -343,7 +343,7 @@ title=App Title",
       \\"routes\\": [
         {
           \\"name\\": \\"RouteView1\\",
-          \\"pattern\\": \\"RouteView1\\",
+          \\"pattern\\": \\":?query:\\",
           \\"target\\": [
             \\"TargetView1\\"
           ]
@@ -1024,7 +1024,7 @@ title=App Title",
       \\"routes\\": [
         {
           \\"name\\": \\"RouteCustomViewName\\",
-          \\"pattern\\": \\"RouteCustomViewName\\",
+          \\"pattern\\": \\":?query:\\",
           \\"target\\": [
             \\"TargetCustomViewName\\"
           ]
@@ -1706,7 +1706,7 @@ title=App Title",
       \\"routes\\": [
         {
           \\"name\\": \\"RouteView1\\",
-          \\"pattern\\": \\"RouteView1\\",
+          \\"pattern\\": \\":?query:\\",
           \\"target\\": [
             \\"TargetView1\\"
           ]
@@ -2384,7 +2384,7 @@ title=App Title",
       \\"routes\\": [
         {
           \\"name\\": \\"RouteView1\\",
-          \\"pattern\\": \\"RouteView1\\",
+          \\"pattern\\": \\":?query:\\",
           \\"target\\": [
             \\"TargetView1\\"
           ]
