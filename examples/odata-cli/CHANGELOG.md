@@ -1,5 +1,16 @@
 # @sap-ux/odata-cli
 
+## 0.9.0
+
+### Minor Changes
+
+-   9864fb5: Add support for login with reentrance tickets
+
+### Patch Changes
+
+-   Updated dependencies [9864fb5]
+    -   @sap-ux/axios-extension@0.6.0
+
 ## 0.8.4
 
 ### Patch Changes

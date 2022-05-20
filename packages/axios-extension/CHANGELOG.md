@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.6.0
+
+### Minor Changes
+
+-   9864fb5: Add support for login with reentrance tickets
+
 ## 0.5.2
 
 ### Patch Changes
