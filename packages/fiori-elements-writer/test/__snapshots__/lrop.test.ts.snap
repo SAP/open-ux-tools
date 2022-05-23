@@ -3356,7 +3356,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
@@ -3366,8 +3366,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop2\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop2/test/changes_loader\\", \\"custom\\":true}]'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop2/test/changes_loader\\", \\"custom\\":true}]'>
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
@@ -6918,7 +6918,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
@@ -6928,8 +6928,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop3\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop3/test/changes_loader\\", \\"custom\\":true}]'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop3/test/changes_loader\\", \\"custom\\":true}]'>
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
@@ -10479,7 +10479,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
@@ -10489,8 +10489,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
         </script>
     <!-- relevant for version < 1.78.0 only -->
 	<script src=\\"changes_preview.js\\"></script>
@@ -13865,7 +13865,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
@@ -13875,8 +13875,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
@@ -17428,7 +17428,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
@@ -17438,8 +17438,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
@@ -21023,7 +21023,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
@@ -21033,7 +21033,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop1\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        data-sap-ui-frameOptions=\\"allow\\">
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
@@ -24617,7 +24617,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
@@ -24627,7 +24627,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felropui5\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        data-sap-ui-frameOptions=\\"allow\\">
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
