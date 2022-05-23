@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.3.6
+
+### Patch Changes
+
+-   8e27784: Fix for https://github.com/SAP/open-ux-tools/issues/502: End tag moved to correct position in flpSandbox.html template.
+
 ## 0.3.5
 
 ### Patch Changes
