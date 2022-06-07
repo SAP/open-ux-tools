@@ -1,0 +1,23 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- target %>": {
+                    "options": {
+                        "settings": {
+                            "views": {
+                                "paths": [
+                                    {
+                                        "key": "<%- key %>",
+                                        "label": "<%- label %>",
+                                        "template": "<%- ns %>.<%- name %>"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

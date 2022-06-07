@@ -10,6 +10,9 @@ export { generateCustomColumn } from './column';
 export { CustomSection } from './section/types';
 export { generateCustomSection } from './section';
 
+export { CustomView } from './view/types';
+export { generateCustomView } from './view';
+
 export { enableFPM, FPMConfig } from './app';
 
 export { validateBasePath, validateVersion } from './common/validate';
