@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomView only mandatory properties 1`] = `
+Object {
+  "key": "viewKey",
+  "label": "viewLabel",
+  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+}
+`;
+
+exports[`CustomView only mandatory properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"NewCustomView\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView with custom control passed in interface 1`] = `
+Object {
+  "key": "viewKey",
+  "label": "viewLabel",
+  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+}
+`;
+
+exports[`CustomView with custom control passed in interface 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<CustomXML text=\\"\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView with new handler, all properties 1`] = `
+Object {
+  "key": "customViewKey",
+  "label": "viewLabel",
+  "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+}
+`;
+
+exports[`CustomView with new handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomView'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView with new handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;

@@ -278,6 +278,27 @@ Object {
 ",
     "state": "modified",
   },
+  "webapp/ext/newCustomView/NewCustomView.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomView/NewCustomView'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "webapp/ext/newCustomView/NewCustomView.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
   "webapp/manifest.json": Object {
     "contents": "{
   \\"_version\\": \\"1.32.0\\",
@@ -420,6 +441,15 @@ Object {
                     }
                   }
                 }
+              },
+              \\"views\\": {
+                \\"paths\\": [
+                  {
+                    \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                  }
+                ]
               }
             }
           }
