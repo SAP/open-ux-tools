@@ -1,6 +1,7 @@
 import XmlParser from 'fast-xml-parser';
 
 export const ATO_CATALOG_URL_PATH = '/sap/bc/adt/ato/settings';
+export const ATO_CONTENT_TYPE = 'application/vnd.sap.adt.ato.settings.v1+xml';
 
 export enum TenantType {
     SAP = 'SAP',

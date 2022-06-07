@@ -3,7 +3,7 @@ import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
 
 import type { AtoSettings } from './ato';
-import { ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
+import { ATO_CONTENT_TYPE, ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
@@ -51,7 +51,9 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     public async getAtoInfo(): Promise<AtoSettings> {
         if (!this.atoSettings) {
             try {
-                const response = await this.get(ATO_CATALOG_URL_PATH);
+                const response = await this.get(ATO_CATALOG_URL_PATH, {
+                    headers: { Accept: ATO_CONTENT_TYPE }
+                });
                 this.atoSettings = parseAtoResponse(response.data);
             } catch (error) {
                 this.atoSettings = {};

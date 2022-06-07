@@ -53,6 +53,11 @@ if (isAppStudio()) {
  */
 async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
     try {
+        const atoSettings = await provider.getAtoInfo();
+        if (Object.keys(atoSettings).length === 0) {
+            console.warn('ATO setting is empty');
+        }
+
         const catalog = provider.catalog(ODataVersion.v2);
 
         const services = await catalog.listServices();
