@@ -5,7 +5,7 @@ import type { CustomView, InternalCustomView } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest } from '../common/types';
+import type { Manifest, Ui5RoutingTarget, Ui5TargetSettings } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 
 /**
@@ -23,6 +23,13 @@ function enhanceConfig(data: CustomView, manifestPath: string, manifest: Manifes
     // set default event handler if it is to be created
     if (config.eventHandler === true) {
         config.eventHandler = `${config.ns}.${config.name}.onPress`;
+    }
+
+    // existing views
+    const existingViews = (manifest['sap.ui5']?.routing?.targets?.[data.target] as Ui5RoutingTarget<Ui5TargetSettings>)
+        .options?.settings?.views;
+    if (existingViews) {
+        config.views = existingViews;
     }
 
     // generate view content
