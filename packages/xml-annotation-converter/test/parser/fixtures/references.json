@@ -1,0 +1,22 @@
+{
+    "type": "element",
+    "range": "[(0,0)..(4,17)]",
+    "name": "Reference",
+    "nameRange": "[(0,1)..(0,15)]",
+    "contentRange": "[(2,58)..(4,0)]",
+    "namespace": "http://docs.oasis-open.org/odata/ns/edmx",
+    "namespaceAlias": "edmx",
+    "attributes": {},
+    "content": [
+        {
+            "type": "element",
+            "range": "[(3,4)..(3,78)]",
+            "name": "Include",
+            "nameRange": "[(3,5)..(3,17)]",
+            "namespace": "http://docs.oasis-open.org/odata/ns/edmx",
+            "namespaceAlias": "edmx",
+            "attributes": {},
+            "content": []
+        }
+    ]
+}

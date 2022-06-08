@@ -1,0 +1,43 @@
+{
+    "name": "@sap-ux/xml-annotation-converter",
+    "description": "Low level library for working with odata annotations.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/xml-annotation-converter"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Axml-annotation-converter"
+    },
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "pnpm clean && tsc",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output coverage",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml,xml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "test:update-fixtures": "node scripts/update-parser-fixtures.mjs",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "dist"
+    ],
+    "dependencies": {
+        "@sap-ux/odata-annotation-core": "workspace:*"
+    },
+    "devDependencies": {
+        "@xml-tools/ast": "5.0.5",
+        "@xml-tools/parser": "1.0.11"
+    },
+    "engines": {
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+    }
+}

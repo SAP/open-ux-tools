@@ -1,0 +1,1 @@
+export { convertDocument } from './parser';

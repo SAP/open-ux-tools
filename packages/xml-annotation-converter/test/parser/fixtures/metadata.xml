@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<edmx:Edmx
+    Version="1.0"
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            Namespace="Z2SEPMRA_C_PD_PRODUCT_CDS"
+            xml:lang="en"
+            sap:schema-version="1"
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="I_CurrencyType" sap:label="Currency" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Currency" />
+                </Key>
+                <Property
+                    Name="Currency"
+                    Type="Edm.String"
+                    Nullable="false"
+                    MaxLength="5"
+                    sap:text="Currency_Text"
+                    sap:label="Currency"
+                    sap:quickinfo="Currency Key"
+                    sap:semantics="currency-code"
+                />
+                <Property
+                    Name="Currency_Text"
+                    Type="Edm.String"
+                    MaxLength="40"
+                    sap:label="Long Text"
+                    sap:creatable="false"
+                    sap:updatable="false"
+                />
+                <Property Name="Decimals" Type="Edm.Byte" />
+                <Property
+                    Name="CurrencyISOCode"
+                    Type="Edm.String"
+                    MaxLength="3"
+                    sap:display-format="UpperCase"
+                    sap:label="ISO code"
+                    sap:quickinfo="ISO currency code"
+                />
+                <Property
+                    Name="AlternativeCurrencyKey"
+                    Type="Edm.String"
+                    MaxLength="3"
+                    sap:display-format="UpperCase"
+                    sap:label="Alternative key"
+                    sap:quickinfo="Alternative key for currencies"
+                />
+                <Property
+                    Name="IsPrimaryCurrencyForISOCrcy"
+                    Type="Edm.Boolean"
+                    sap:display-format="UpperCase"
+                    sap:label="Primary"
+                    sap:quickinfo="Primary SAP Currency Code for ISO Code"
+                />
+            </EntityType>
+         
+            <EntityContainer
+                Name="Z2SEPMRA_C_PD_PRODUCT_CDS_Entities"
+                m:IsDefaultEntityContainer="true"
+                sap:supported-formats="atom json xlsx">
+                <EntitySet
+                    Name="I_Currency"
+                    EntityType="Z2SEPMRA_C_PD_PRODUCT_CDS.I_CurrencyType"
+                    sap:creatable="false"
+                    sap:updatable="false"
+                    sap:deletable="false"
+                    sap:searchable="true"
+                    sap:content-version="1"
+                />
+            </EntityContainer>
+            <atom:link
+                rel="self"
+                href="http://ims.saplabs.com:50017/sap/opu/odata/sap/Z2SEPMRA_C_PD_PRODUCT_CDS/$metadata"
+                xmlns:atom="http://www.w3.org/2005/Atom"
+            />
+            <atom:link
+                rel="latest-version"
+                href="http://ims.saplabs.com:50017/sap/opu/odata/sap/Z2SEPMRA_C_PD_PRODUCT_CDS/$metadata"
+                xmlns:atom="http://www.w3.org/2005/Atom"
+            />
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

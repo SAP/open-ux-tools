@@ -1,0 +1,5 @@
+<edmx:Reference
+    Uri="http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"
+    xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common" />
+</edmx:Reference>

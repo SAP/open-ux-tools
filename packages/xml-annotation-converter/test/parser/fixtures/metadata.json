@@ -1,0 +1,148 @@
+{
+    "type": "element",
+    "range": "[(1,0)..(86,12)]",
+    "name": "Edmx",
+    "nameRange": "[(1,1)..(1,10)]",
+    "contentRange": "[(5,53)..(86,0)]",
+    "namespace": "http://schemas.microsoft.com/ado/2007/06/edmx",
+    "namespaceAlias": "edmx",
+    "attributes": {},
+    "content": [
+        {
+            "type": "element",
+            "range": "[(6,4)..(85,24)]",
+            "name": "DataServices",
+            "nameRange": "[(6,5)..(6,22)]",
+            "contentRange": "[(6,50)..(85,4)]",
+            "namespace": "http://schemas.microsoft.com/ado/2007/06/edmx",
+            "namespaceAlias": "edmx",
+            "attributes": {},
+            "content": [
+                {
+                    "type": "element",
+                    "range": "[(7,8)..(84,17)]",
+                    "name": "Schema",
+                    "nameRange": "[(7,9)..(7,15)]",
+                    "contentRange": "[(11,65)..(84,8)]",
+                    "attributes": {},
+                    "content": [
+                        {
+                            "type": "element",
+                            "range": "[(12,12)..(58,25)]",
+                            "name": "EntityType",
+                            "nameRange": "[(12,13)..(12,23)]",
+                            "contentRange": "[(12,91)..(58,12)]",
+                            "attributes": {},
+                            "content": [
+                                {
+                                    "type": "element",
+                                    "range": "[(13,16)..(15,22)]",
+                                    "name": "Key",
+                                    "nameRange": "[(13,17)..(13,20)]",
+                                    "contentRange": "[(13,21)..(15,16)]",
+                                    "attributes": {},
+                                    "content": [
+                                        {
+                                            "type": "element",
+                                            "range": "[(14,20)..(14,51)]",
+                                            "name": "PropertyRef",
+                                            "nameRange": "[(14,21)..(14,32)]",
+                                            "attributes": {},
+                                            "content": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "element",
+                                    "range": "[(16,16)..(25,18)]",
+                                    "name": "Property",
+                                    "nameRange": "[(16,17)..(16,25)]",
+                                    "attributes": {},
+                                    "content": []
+                                },
+                                {
+                                    "type": "element",
+                                    "range": "[(26,16)..(33,18)]",
+                                    "name": "Property",
+                                    "nameRange": "[(26,17)..(26,25)]",
+                                    "attributes": {},
+                                    "content": []
+                                },
+                                {
+                                    "type": "element",
+                                    "range": "[(34,16)..(34,60)]",
+                                    "name": "Property",
+                                    "nameRange": "[(34,17)..(34,25)]",
+                                    "attributes": {},
+                                    "content": []
+                                },
+                                {
+                                    "type": "element",
+                                    "range": "[(35,16)..(42,18)]",
+                                    "name": "Property",
+                                    "nameRange": "[(35,17)..(35,25)]",
+                                    "attributes": {},
+                                    "content": []
+                                },
+                                {
+                                    "type": "element",
+                                    "range": "[(43,16)..(50,18)]",
+                                    "name": "Property",
+                                    "nameRange": "[(43,17)..(43,25)]",
+                                    "attributes": {},
+                                    "content": []
+                                },
+                                {
+                                    "type": "element",
+                                    "range": "[(51,16)..(57,18)]",
+                                    "name": "Property",
+                                    "nameRange": "[(51,17)..(51,25)]",
+                                    "attributes": {},
+                                    "content": []
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "range": "[(60,12)..(73,30)]",
+                            "name": "EntityContainer",
+                            "nameRange": "[(60,13)..(60,28)]",
+                            "contentRange": "[(63,55)..(73,12)]",
+                            "attributes": {},
+                            "content": [
+                                {
+                                    "type": "element",
+                                    "range": "[(64,16)..(72,18)]",
+                                    "name": "EntitySet",
+                                    "nameRange": "[(64,17)..(64,26)]",
+                                    "attributes": {},
+                                    "content": []
+                                }
+                            ]
+                        },
+                        {
+                            "type": "element",
+                            "range": "[(74,12)..(78,14)]",
+                            "name": "link",
+                            "nameRange": "[(74,13)..(74,22)]",
+                            "namespace": "http://www.w3.org/2005/Atom",
+                            "namespaceAlias": "atom",
+                            "attributes": {},
+                            "content": []
+                        },
+                        {
+                            "type": "element",
+                            "range": "[(79,12)..(83,14)]",
+                            "name": "link",
+                            "nameRange": "[(79,13)..(79,22)]",
+                            "namespace": "http://www.w3.org/2005/Atom",
+                            "namespaceAlias": "atom",
+                            "attributes": {},
+                            "content": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

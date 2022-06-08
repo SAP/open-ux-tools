@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="/sap/opu/odata/sap/SEPMRA_PROD_MAN/$metadata">
+        <edmx:Include Alias="SEPMRA_PROD_MAN_ALIAS" Namespace="SEPMRA_PROD_MAN" />
+    </edmx:Reference>
+    <edmx:DataServices>                <Unknown>dummy</Unknown> 
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="test1.SEPMRA_PROD_MAN">
+            <Annotations Target="SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType">  <Annotation
+                    Term="UI.DataPoint"
+                    Qualifier="Price">
+                    <Record Type="UI.DataPointType">
+                        <PropertyValue Property="Value" Path="Price" />   <PropertyValue
+                            Property="Title"
+                            String="Price"
+                        />
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.QuickCreateFacets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">Text 1
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#QuickCreate" />
+                            Text 2
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />    Text3
+    Text4
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Unknown>dummy</Unknown> 
+                <Annotation Term="UI.QuickViewFacets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#QuickView" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                            <test> </test>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+        <UnknownTag />
+    </edmx:DataServices>
+</edmx:Edmx>

@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": ["src/**/*.ts"],
+    "compilerOptions": {
+        "declaration": true,
+        "outDir": "./dist",
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "composite": true
+    },
+    "references": [
+        {
+            "path": "../odata-annotation-core"
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "include": ["src/**/*.ts"],
+    "compilerOptions": {
+        "declaration": true,
+        "outDir": "dist",
+        "sourceMap": true,
+        "baseUrl": "./src",
+        "resolveJsonModule": true,
+        "composite": true
+    },
+    "extends": "../../tsconfig.json"
+}

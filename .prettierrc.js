@@ -8,6 +8,7 @@
     };
 */
 module.exports = {
+    plugins: ['./node_modules/@prettier/plugin-xml'],
     arrowParens: 'always',
     bracketSpacing: true,
     endOfLine: 'lf',

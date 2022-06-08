@@ -1,0 +1,256 @@
+{
+    "type": "element",
+    "range": "[(1,0)..(41,12)]",
+    "name": "Edmx",
+    "nameRange": "[(1,1)..(1,10)]",
+    "contentRange": "[(1,79)..(41,0)]",
+    "namespace": "http://docs.oasis-open.org/odata/ns/edmx",
+    "namespaceAlias": "edmx",
+    "attributes": {},
+    "content": [
+        {
+            "type": "element",
+            "range": "[(2,4)..(4,21)]",
+            "name": "Reference",
+            "nameRange": "[(2,5)..(2,19)]",
+            "contentRange": "[(2,71)..(4,4)]",
+            "namespace": "http://docs.oasis-open.org/odata/ns/edmx",
+            "namespaceAlias": "edmx",
+            "attributes": {},
+            "content": [
+                {
+                    "type": "element",
+                    "range": "[(3,8)..(3,82)]",
+                    "name": "Include",
+                    "nameRange": "[(3,9)..(3,21)]",
+                    "namespace": "http://docs.oasis-open.org/odata/ns/edmx",
+                    "namespaceAlias": "edmx",
+                    "attributes": {},
+                    "content": []
+                }
+            ]
+        },
+        {
+            "type": "element",
+            "range": "[(5,4)..(40,24)]",
+            "name": "DataServices",
+            "nameRange": "[(5,5)..(5,22)]",
+            "contentRange": "[(5,23)..(40,4)]",
+            "namespace": "http://docs.oasis-open.org/odata/ns/edmx",
+            "namespaceAlias": "edmx",
+            "attributes": {},
+            "content": [
+                {
+                    "type": "element",
+                    "range": "[(5,39)..(5,63)]",
+                    "name": "Unknown",
+                    "nameRange": "[(5,40)..(5,47)]",
+                    "contentRange": "[(5,48)..(5,53)]",
+                    "attributes": {},
+                    "content": [
+                        {
+                            "type": "text",
+                            "range": "[(5,48)..(5,53)]",
+                            "text": "dummy"
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "range": "[(6,8)..(38,17)]",
+                    "name": "Schema",
+                    "nameRange": "[(6,9)..(6,15)]",
+                    "contentRange": "[(6,98)..(38,8)]",
+                    "attributes": {},
+                    "content": [
+                        {
+                            "type": "element",
+                            "range": "[(7,12)..(37,26)]",
+                            "name": "Annotations",
+                            "nameRange": "[(7,13)..(7,24)]",
+                            "contentRange": "[(7,74)..(37,12)]",
+                            "attributes": {},
+                            "content": [
+                                {
+                                    "type": "element",
+                                    "range": "[(7,76)..(16,29)]",
+                                    "name": "Annotation",
+                                    "nameRange": "[(7,77)..(7,87)]",
+                                    "contentRange": "[(9,38)..(16,16)]",
+                                    "attributes": {},
+                                    "content": [
+                                        {
+                                            "type": "element",
+                                            "range": "[(10,20)..(15,29)]",
+                                            "name": "Record",
+                                            "nameRange": "[(10,21)..(10,27)]",
+                                            "contentRange": "[(10,52)..(15,20)]",
+                                            "attributes": {},
+                                            "content": [
+                                                {
+                                                    "type": "element",
+                                                    "range": "[(11,24)..(11,71)]",
+                                                    "name": "PropertyValue",
+                                                    "nameRange": "[(11,25)..(11,38)]",
+                                                    "attributes": {},
+                                                    "content": []
+                                                },
+                                                {
+                                                    "type": "element",
+                                                    "range": "[(11,74)..(14,26)]",
+                                                    "name": "PropertyValue",
+                                                    "nameRange": "[(11,75)..(11,88)]",
+                                                    "attributes": {},
+                                                    "content": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "element",
+                                    "range": "[(17,16)..(26,29)]",
+                                    "name": "Annotation",
+                                    "nameRange": "[(17,17)..(17,27)]",
+                                    "contentRange": "[(17,56)..(26,16)]",
+                                    "attributes": {},
+                                    "content": [
+                                        {
+                                            "type": "element",
+                                            "range": "[(18,20)..(25,33)]",
+                                            "name": "Collection",
+                                            "nameRange": "[(18,21)..(18,31)]",
+                                            "contentRange": "[(18,32)..(25,20)]",
+                                            "attributes": {},
+                                            "content": [
+                                                {
+                                                    "type": "element",
+                                                    "range": "[(19,24)..(24,33)]",
+                                                    "name": "Record",
+                                                    "nameRange": "[(19,25)..(19,31)]",
+                                                    "contentRange": "[(19,57)..(24,24)]",
+                                                    "attributes": {},
+                                                    "content": [
+                                                        {
+                                                            "type": "text",
+                                                            "range": "[(19,57)..(20,28)]",
+                                                            "text": "Text 1\n                            "
+                                                        },
+                                                        {
+                                                            "type": "element",
+                                                            "range": "[(20,28)..(20,107)]",
+                                                            "name": "PropertyValue",
+                                                            "nameRange": "[(20,29)..(20,42)]",
+                                                            "attributes": {},
+                                                            "content": []
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "range": "[(20,107)..(22,28)]",
+                                                            "text": "\n                            Text 2\n                            "
+                                                        },
+                                                        {
+                                                            "type": "element",
+                                                            "range": "[(22,28)..(22,99)]",
+                                                            "name": "Annotation",
+                                                            "nameRange": "[(22,29)..(22,39)]",
+                                                            "attributes": {},
+                                                            "content": []
+                                                        },
+                                                        {
+                                                            "type": "text",
+                                                            "range": "[(22,99)..(24,24)]",
+                                                            "text": "    Text3\n    Text4\n                        "
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "element",
+                                    "range": "[(27,16)..(27,40)]",
+                                    "name": "Unknown",
+                                    "nameRange": "[(27,17)..(27,24)]",
+                                    "contentRange": "[(27,25)..(27,30)]",
+                                    "attributes": {},
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "range": "[(27,25)..(27,30)]",
+                                            "text": "dummy"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "element",
+                                    "range": "[(28,16)..(36,29)]",
+                                    "name": "Annotation",
+                                    "nameRange": "[(28,17)..(28,27)]",
+                                    "contentRange": "[(28,54)..(36,16)]",
+                                    "attributes": {},
+                                    "content": [
+                                        {
+                                            "type": "element",
+                                            "range": "[(29,20)..(35,33)]",
+                                            "name": "Collection",
+                                            "nameRange": "[(29,21)..(29,31)]",
+                                            "contentRange": "[(29,32)..(35,20)]",
+                                            "attributes": {},
+                                            "content": [
+                                                {
+                                                    "type": "element",
+                                                    "range": "[(30,24)..(34,33)]",
+                                                    "name": "Record",
+                                                    "nameRange": "[(30,25)..(30,31)]",
+                                                    "contentRange": "[(30,57)..(34,24)]",
+                                                    "attributes": {},
+                                                    "content": [
+                                                        {
+                                                            "type": "element",
+                                                            "range": "[(31,28)..(31,105)]",
+                                                            "name": "PropertyValue",
+                                                            "nameRange": "[(31,29)..(31,42)]",
+                                                            "attributes": {},
+                                                            "content": []
+                                                        },
+                                                        {
+                                                            "type": "element",
+                                                            "range": "[(32,28)..(32,99)]",
+                                                            "name": "Annotation",
+                                                            "nameRange": "[(32,29)..(32,39)]",
+                                                            "attributes": {},
+                                                            "content": []
+                                                        },
+                                                        {
+                                                            "type": "element",
+                                                            "range": "[(33,28)..(33,42)]",
+                                                            "name": "test",
+                                                            "nameRange": "[(33,29)..(33,33)]",
+                                                            "contentRange": "[(33,34)..(33,35)]",
+                                                            "attributes": {},
+                                                            "content": []
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "element",
+                    "range": "[(39,8)..(39,22)]",
+                    "name": "UnknownTag",
+                    "nameRange": "[(39,9)..(39,19)]",
+                    "attributes": {},
+                    "content": []
+                }
+            ]
+        }
+    ]
+}
