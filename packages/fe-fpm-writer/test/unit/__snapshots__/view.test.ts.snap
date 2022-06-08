@@ -18,6 +18,145 @@ exports[`CustomView only mandatory properties 2`] = `
 </core:FragmentDefinition>"
 `;
 
+exports[`CustomView with control \`true\` (sample table fragment) 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView with control \`true\` (sample table fragment) 2`] = `
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:u=\\"sap.ui.unified\\">
+    <Table id=\\"NewCustomView\\">
+        <headerToolbar>
+            <OverflowToolbar>
+                <content>
+                    <Title text=\\"Header Title\\" level=\\"H2\\" />
+                    <ToolbarSpacer />
+                </content>
+            </OverflowToolbar>
+        </headerToolbar>
+        <infoToolbar>
+            <OverflowToolbar>
+                <Label text=\\"Toolbar Label\\" />
+            </OverflowToolbar>
+        </infoToolbar>
+        <columns>
+            <Column>
+                <Text text=\\"Column\\" />
+            </Column>
+        </columns>
+        <items>
+            <ColumnListItem>
+                <cells>
+                    <Text text=\\"NewCustomView\\" />
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</core:FragmentDefinition>
+"
+`;
+
+exports[`CustomView with custom control passed in interface 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView with custom control passed in interface 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<CustomXML text=\\"\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView with existing handler 1`] = `
+Object {
+  "sap.ui.controllerExtensions": Object {
+    "sap.fe.templates.ListReport.ListReportController": Object {
+      "controllerName": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  },
+}
+`;
+
+exports[`CustomView with existing handler 2`] = `
+Object {
+  "paths": Array [
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView with existing views 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "existingView",
+    },
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant",
+      "key": "existingView2",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+  "showCounts": false,
+}
+`;
+
+exports[`CustomView with existing views 2`] = `
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:u=\\"sap.ui.unified\\">
+    <Table id=\\"NewCustomView\\">
+        <headerToolbar>
+            <OverflowToolbar>
+                <content>
+                    <Title text=\\"Header Title\\" level=\\"H2\\" />
+                    <ToolbarSpacer />
+                </content>
+            </OverflowToolbar>
+        </headerToolbar>
+        <infoToolbar>
+            <OverflowToolbar>
+                <Label text=\\"Toolbar Label\\" />
+            </OverflowToolbar>
+        </infoToolbar>
+        <columns>
+            <Column>
+                <Text text=\\"Column\\" />
+            </Column>
+        </columns>
+        <items>
+            <ColumnListItem>
+                <cells>
+                    <Text text=\\"NewCustomView\\" />
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</core:FragmentDefinition>
+"
+`;
+
 exports[`CustomView with new handler 1`] = `
 Object {
   "sap.ui.controllerExtensions": Object {
@@ -32,7 +171,7 @@ exports[`CustomView with new handler 2`] = `
 Object {
   "paths": Array [
     Object {
-      "key": "customViewKey",
+      "key": "viewKey",
       "label": "viewLabel",
       "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
     },
@@ -128,50 +267,5 @@ exports[`CustomView with new handler and new table fragment (all properties) 4`]
         }
     };
 });
-"
-`;
-
-exports[`CustomView with new table fragment 1`] = `
-Object {
-  "paths": Array [
-    Object {
-      "key": "viewKey",
-      "label": "viewLabel",
-      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
-    },
-  ],
-}
-`;
-
-exports[`CustomView with new table fragment 2`] = `
-"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:u=\\"sap.ui.unified\\">
-    <Table id=\\"NewCustomView\\">
-        <headerToolbar>
-            <OverflowToolbar>
-                <content>
-                    <Title text=\\"Header Title\\" level=\\"H2\\" />
-                    <ToolbarSpacer />
-                </content>
-            </OverflowToolbar>
-        </headerToolbar>
-        <infoToolbar>
-            <OverflowToolbar>
-                <Label text=\\"Toolbar Label\\" />
-            </OverflowToolbar>
-        </infoToolbar>
-        <columns>
-            <Column>
-                <Text text=\\"Column\\" />
-            </Column>
-        </columns>
-        <items>
-            <ColumnListItem>
-                <cells>
-                    <Text text=\\"NewCustomView\\" />
-                </cells>
-            </ColumnListItem>
-        </items>
-    </Table>
-</core:FragmentDefinition>
 "
 `;
