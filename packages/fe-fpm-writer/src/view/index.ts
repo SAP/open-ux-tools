@@ -9,7 +9,7 @@ import type { Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 
 /**
- * Enhances the provided custom view configuration with additional data.
+ * Enhances the provided custom view configuration with default data.
  *
  * @param {CustomView} data - a custom view configuration object
  * @param {string} manifestPath - path to the project's manifest.json
@@ -26,7 +26,11 @@ function enhanceConfig(data: CustomView, manifestPath: string, manifest: Manifes
     }
 
     // generate view content
-    config.content = getDefaultFragmentContent(config.name, config.eventHandler);
+    if (typeof config.control === 'string') {
+        config.content = config.control;
+    } else {
+        config.content = getDefaultFragmentContent(config.name, config.eventHandler);
+    }
 
     return config as InternalCustomView;
 }
@@ -68,7 +72,7 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
 
     // add fragment
     const viewPath = join(completeView.path, `${completeView.name}.fragment.xml`);
-    if (completeView.tableControl) {
+    if (completeView.control === true) {
         fs.copyTpl(join(root, 'view/ext/CustomViewWithTable.xml'), viewPath, completeView);
     } else if (!fs.exists(viewPath)) {
         fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeView);
