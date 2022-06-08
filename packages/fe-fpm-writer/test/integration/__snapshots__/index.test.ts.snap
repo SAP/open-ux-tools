@@ -512,6 +512,15 @@ Object {
     \\"contentDensities\\": {
       \\"compact\\": true,
       \\"cozy\\": true
+    },
+    \\"extends\\": {
+      \\"extensions\\": {
+        \\"sap.ui.controllerExtensions\\": {
+          \\"sap.fe.templates.ListReport.ListReportController\\": {
+            \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+          }
+        }
+      }
     }
   },
   \\"sap.platform.abap\\": {

@@ -27,38 +27,53 @@ describe('CustomView', () => {
         //sut
         generateCustomView(testDir, customView, fs);
         const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
-
+        const extension = updatedManifest['sap.ui5']['extends'];
         const views = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'];
-        expect(views).toBeDefined();
-        expect(views.paths).toBeDefined();
-        expect(views.paths[0]).toMatchSnapshot();
+        expect(extension).not.toBeDefined();
+        expect(views).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
     });
 
-    test('with new handler, all properties', () => {
+    test('with new handler', () => {
         //sut
         generateCustomView(testDir, { ...customView, key: 'customViewKey', eventHandler: true }, fs);
         const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
-
+        const extension = updatedManifest['sap.ui5']['extends']['extensions'];
         const views = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'];
-        expect(views).toBeDefined();
-        expect(views.paths).toBeDefined();
-        expect(views.paths[0]).toMatchSnapshot();
+        expect(extension).toMatchSnapshot();
+        expect(views).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
     });
 
-    test('with custom control passed in interface', () => {
+    test('with new table fragment', () => {
         const testCustomView: CustomView = {
             ...customView,
-            control: '<CustomXML text="" />'
+            tableControl: true
         };
         generateCustomView(testDir, testCustomView, fs);
         const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
-
-        const view =
-            updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views']['paths'][0];
-        expect(view).toMatchSnapshot();
+        const extension = updatedManifest['sap.ui5']['extends'];
+        const views = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'];
+        expect(extension).not.toBeDefined();
+        expect(views).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+    });
+
+    test('with new handler and new table fragment (all properties)', () => {
+        const testCustomView: CustomView = {
+            ...customView,
+            eventHandler: true,
+            tableControl: true
+        };
+        generateCustomView(testDir, testCustomView, fs);
+        const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+        const extension = updatedManifest['sap.ui5']['extends']['extensions'];
+        const views = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'];
+        expect(extension).toMatchSnapshot();
+        expect(views).toMatchSnapshot();
+
+        expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+        expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
     });
 });
