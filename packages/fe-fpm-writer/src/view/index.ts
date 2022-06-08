@@ -26,7 +26,7 @@ function enhanceConfig(data: CustomView, manifestPath: string, manifest: Manifes
     }
 
     // generate view content
-    config.content = config.control || getDefaultFragmentContent(config.name, config.eventHandler);
+    config.content = getDefaultFragmentContent(config.name, config.eventHandler);
 
     return config as InternalCustomView;
 }
@@ -68,7 +68,9 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
 
     // add fragment
     const viewPath = join(completeView.path, `${completeView.name}.fragment.xml`);
-    if (!fs.exists(viewPath)) {
+    if (completeView.tableControl) {
+        fs.copyTpl(join(root, 'view/ext/CustomViewWithTable.xml'), viewPath, completeView);
+    } else if (!fs.exists(viewPath)) {
         fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeView);
     }
 

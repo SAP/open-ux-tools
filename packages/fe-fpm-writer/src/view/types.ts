@@ -23,9 +23,9 @@ export interface CustomView extends CustomElement {
     eventHandler?: string | true;
 
     /**
-     * Optional control XML that will be generated into the fragment of the view. If the property isn't provided then a sample control will be generated.
+     * If set, a sample table control XML will be generated into the fragment of the view.
      */
-    control?: string;
+    tableControl?: true;
 }
 
 export interface InternalCustomView extends CustomView, InternalCustomElement {
