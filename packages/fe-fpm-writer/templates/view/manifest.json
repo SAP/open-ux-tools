@@ -1,5 +1,16 @@
 {
     "sap.ui5": {
+        <% if (locals.eventHandler) { %> 
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {
+                    "sap.fe.templates.ListReport.ListReportController": {
+                        "controllerName": "<%- ns %>.<%- name %>"
+                    }
+                }
+            }
+        },
+        <% } %>
         "routing": {
             "targets": {
                 "<%- target %>": {
