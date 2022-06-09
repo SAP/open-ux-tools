@@ -3,18 +3,15 @@ import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
 
 import type { AtoSettings } from './ato';
-import { ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
+import { parseAtoResponse, TenantType } from './ato';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-
-export interface AbapServiceProviderExtension {
-    s4Cloud: boolean | undefined;
-    user(): Promise<string>;
-    catalog(oDataVersion: ODataVersion): CatalogService;
-    ui5AbapRepository(): Ui5AbapRepositoryService;
-}
+import { adt, adtSchema } from './adt';
+import type { AdtCollection } from './types';
+import { AdtSchemaStore } from './adt/adtSchemaStore';
+import type { AbapServiceProviderExtension } from './interface';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -23,6 +20,12 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     public s4Cloud: boolean | undefined;
 
     protected atoSettings: AtoSettings;
+
+    protected schemaStore = new AdtSchemaStore();
+
+    public getSchemaStore(): AdtSchemaStore {
+        return this.schemaStore;
+    }
 
     /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
@@ -45,13 +48,20 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
 
     /**
      * Get the ATO settings either locally or from the server if not yet available.
-     *
+     * @param schema Auto fill by adt decorator process
      * @returns ABAP Transport Organizer settings
      */
-    public async getAtoInfo(): Promise<AtoSettings> {
-        if (!this.atoSettings) {
+    @adt('transportconfigurations')
+    public async getAtoInfo(@adtSchema schema?: AdtCollection): Promise<AtoSettings> {
+        if (!schema) {
+            this.atoSettings = {};
+        } else if (!this.atoSettings) {
             try {
-                const response = await this.get(ATO_CATALOG_URL_PATH);
+                const url = schema.href;
+                const acceptHeaders = {
+                    headers: {}
+                };
+                const response = await this.get(url, acceptHeaders);
                 this.atoSettings = parseAtoResponse(response.data);
             } catch (error) {
                 this.atoSettings = {};
@@ -60,6 +70,15 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
         }
         return this.atoSettings;
     }
+
+    // public async getADTSerivce(path: string, config: any): Promise<void> {
+    //     try {
+    //         const response = await this.get(path, config);
+    //         console.log(response.data);
+    //     } catch (error) {
+    //         throw error;
+    //     }
+    // }
 
     /**
      * Detect if the given configuration points to an S/4HANA Cloud system.
