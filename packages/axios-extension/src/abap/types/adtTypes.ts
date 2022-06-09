@@ -1,7 +1,7 @@
 export interface AdtSchemaData {
     service: {
         workspace: AdtWorkspace[];
-    }
+    };
 }
 
 export type AdtCategoryTerm = string;
@@ -16,11 +16,13 @@ export interface AdtCollection {
     workspaceTitle?: AdtWorkspaceTitle;
     href: string;
     title: string;
-    accept: any[];
+    accept: AdtAcceptContentType[];
     category: AdtCategory;
     templateLinks: any;
     [key: string]: any;
 }
+
+export type AdtAcceptContentType = string;
 
 export interface AdtCategory {
     term: AdtCategoryTerm;

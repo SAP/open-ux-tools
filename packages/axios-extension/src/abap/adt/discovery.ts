@@ -47,6 +47,8 @@ function parseAdtSchemaData(xml: string): AdtSchemaData | null {
     }
 }
 
+const adtSchemaParamMetadataKey = 'adtSchema';
+
 /**
  * Define adt decorator. For functions with this decorator, it makes sure ADT schema is available before calling ADT services
  * within these functions.
@@ -61,20 +63,17 @@ export const adt = (term: AdtCategoryTerm): Function => {
             return;
         }
         descriptor.value = async function (...args: any[]): Promise<any> {
-            
             await loadAdtDiscoverySchema(this);
             const adtCollection = this.getSchemaStore().getAdtCollection(term);
-            console.log(adtCollection);
-            console.log(original.toString(), args);
-            console.log(descriptor);
+
+            const adtSchemaParamIndex = Reflect.getOwnMetadata(adtSchemaParamMetadataKey, target, functionName);
+            args[adtSchemaParamIndex] = adtCollection;
+
             return original.apply(this, args);
         };
     };
 };
 
-
 export const adtSchema = (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
-    let descriptor: PropertyDescriptor = Reflect.setPrototypeOf .getOwnPropertyDescriptor(target, propertyKey);
-    descriptor.parameterIndex);
-    Reflect.defineMetadata(requiredMetadataKey, existingRequiredParameters, target, propertyKey);
-}
+    Reflect.defineMetadata(adtSchemaParamMetadataKey, parameterIndex, target, propertyKey);
+};

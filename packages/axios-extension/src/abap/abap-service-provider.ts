@@ -51,16 +51,26 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      * @param schema Auto fill by adt decorator process
      * @returns ABAP Transport Organizer settings
      */
-    @adt('transportconfigurations')
-    public async getAtoInfo(@adtSchema schema?: AdtCollection): Promise<AtoSettings> {
+    @adt('settings')
+    public async getAtoInfo(
+        dummy1: string,
+        dummy2: string,
+        @adtSchema schema?: AdtCollection,
+        dummy3?: string
+    ): Promise<AtoSettings> {
         if (!schema) {
             this.atoSettings = {};
         } else if (!this.atoSettings) {
             try {
                 const url = schema.href;
+                console.log(schema.accept);
+                const acceptHeaderValue = schema.accept.find((accept) => accept.includes('xml'));
                 const acceptHeaders = {
-                    headers: {}
+                    headers: {
+                        Accept: acceptHeaderValue
+                    }
                 };
+                console.log(acceptHeaderValue);
                 const response = await this.get(url, acceptHeaders);
                 this.atoSettings = parseAtoResponse(response.data);
             } catch (error) {
@@ -88,7 +98,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     public async isS4Cloud(): Promise<boolean> {
         if (this.s4Cloud === undefined) {
             try {
-                const settings = await this.getAtoInfo();
+                const settings = await this.getAtoInfo('', '', undefined, '');
                 this.s4Cloud =
                     settings.tenantType === TenantType.Customer &&
                     settings.operationsType === 'C' &&
