@@ -121,7 +121,7 @@ describe('CustomView', () => {
         expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
     });
 
-    test.only('with existing views', () => {
+    test('with existing views', () => {
         const testManifest = JSON.parse(JSON.stringify(manifest));
         (testManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'] as Views) = {
             paths: [
