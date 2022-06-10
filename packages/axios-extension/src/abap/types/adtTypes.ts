@@ -16,7 +16,7 @@ export interface AdtCollection {
     workspaceTitle?: AdtWorkspaceTitle;
     href: string;
     title: string;
-    accept: AdtAcceptContentType[];
+    accept?: AdtAcceptContentType[];
     category: AdtCategory;
     templateLinks: any;
     [key: string]: any;
