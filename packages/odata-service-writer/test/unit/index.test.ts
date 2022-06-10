@@ -89,8 +89,8 @@ describe('generate', () => {
         it('Standard folder structure - all files updated', async () => {
             const packagePath = join(root, 'package.json');
             fs.writeJSON(packagePath, {});
-            const ui5YamlC = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
-            fs.write(join(root, 'ui5.yaml'), ui5YamlC);
+            const ui5YamlWithOutMiddleware = (await UI5Config.newInstance('')).setConfiguration({}).toString();
+            fs.write(join(root, 'ui5.yaml'), ui5YamlWithOutMiddleware);
 
             await generate(root, config, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
@@ -106,8 +106,10 @@ describe('generate', () => {
         it('Nested folder structure - all files updated', async () => {
             const packagePath = join(testDir, 'package.json');
             fs.writeJSON(packagePath, {});
-            const ui5YamlC = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
-            fs.write(join(root, 'ui5.yaml'), ui5YamlC);
+            const ui5YamlWithMiddleware = (await UI5Config.newInstance(''))
+                .addFioriToolsProxydMiddleware({ ui5: {} })
+                .toString();
+            fs.write(join(root, 'ui5.yaml'), ui5YamlWithMiddleware);
 
             await generate(root, config, fs);
             const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;

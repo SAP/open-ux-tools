@@ -97,7 +97,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     enhanceData(service);
 
     // merge content into existing files
-    const templateRoot = join(__dirname, '..', 'templates');
+    const templateRoot = join(__dirname, '../templates');
 
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
@@ -108,7 +108,16 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     let ui5LocalConfigPath: string | undefined;
     if (paths.ui5Yaml) {
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
-        ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+        try {
+            ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+        } catch (error: any) {
+            if (error.message === 'error.nodeNotFound') {
+                ui5Config.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
+            } else {
+                throw error;
+            }
+        }
+
         fs.write(paths.ui5Yaml, ui5Config.toString());
 
         // ui5-local.yaml
@@ -129,12 +138,11 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
 
             // package.json updates
             if (paths.packageJson) {
-                const mockDevDeps = {
+                fs.extendJSON(paths.packageJson, {
                     devDependencies: {
                         '@sap/ux-ui5-fe-mockserver-middleware': '1'
                     }
-                };
-                fs.extendJSON(paths.packageJson, mockDevDeps);
+                });
                 // Extending here would overwrite existing array entries so we have to parse and push
                 const packageJson = JSON.parse(fs.read(paths.packageJson));
                 packageJson.ui5 = packageJson.ui5 ?? {};
