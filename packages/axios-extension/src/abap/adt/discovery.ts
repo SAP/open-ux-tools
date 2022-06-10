@@ -1,9 +1,9 @@
 import type { AbapServiceProviderExtension } from '../interface';
 import XmlParser from 'fast-xml-parser';
-import type { AdtCategoryTerm, AdtSchemaData } from '../types';
-import { ServiceProvider } from 'index';
+import type { AdtSchemaData } from '../types';
+import type { ServiceProvider } from 'index';
 import 'reflect-metadata';
-import { AdtServices } from '.';
+import type { AdtServices } from '.';
 
 const ADT_DISCOVERY_URL_PATH = '/sap/bc/adt/discovery';
 
@@ -29,8 +29,6 @@ async function checkOrLoadAdtDiscoverySchema(target: AbapServiceProviderExtensio
 }
 
 /**
- * Parse XML ADT schema data to its corresponding JSON object
- *
  * @param xml Raw XML schema data from ADT discovery service response data
  * @returns
  */
@@ -79,7 +77,7 @@ export const adt = (serviceUrlPath: AdtServices): Function => {
 
         // Interceptor implementation that augments the original method implementaiton
         // args refer to the parameter list defined in the original method
-        descriptor.value = async function (...args: any[]): Promise<any> {
+        descriptor.value = async (...args: any[]): Promise<any> => {
             await checkOrLoadAdtDiscoverySchema(this);
             // Find the schema for the input service url path
             const adtCollection = this.getSchemaStore().getAdtCollection(serviceUrlPath);
@@ -97,6 +95,7 @@ export const adt = (serviceUrlPath: AdtServices): Function => {
  * Implements @adtSchema decorator. Record the index of paramter decorated by @adtSchema. Since
  * parameter decorator is executed before method decorator, it allows the recorded parameter index
  * to be propagated to @adt method decorator.
+ *
  * @param target
  * @param propertyKey
  * @param parameterIndex Index of decorated parameter in the parameter list

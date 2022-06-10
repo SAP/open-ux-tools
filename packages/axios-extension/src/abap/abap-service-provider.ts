@@ -9,7 +9,7 @@ import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
 import { adt, adtSchema, AdtSchemaStore, AdtServices } from './adt';
-import type { AdtCollection } from './types';
+import { AdtCollection } from './types';
 import type { AbapServiceProviderExtension } from './interface';
 
 /**
@@ -22,6 +22,9 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
 
     protected schemaStore = new AdtSchemaStore();
 
+    /**
+     * @returns ADT schema store
+     */
     public getSchemaStore(): AdtSchemaStore {
         return this.schemaStore;
     }
@@ -47,6 +50,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
 
     /**
      * Get the ATO settings either locally or from the server if not yet available.
+     *
      * @param schema Auto fill by adt decorator execution
      * @returns ABAP Transport Organizer settings
      */
@@ -76,15 +80,6 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
         }
         return this.atoSettings;
     }
-
-    // public async getADTSerivce(path: string, config: any): Promise<void> {
-    //     try {
-    //         const response = await this.get(path, config);
-    //         console.log(response.data);
-    //     } catch (error) {
-    //         throw error;
-    //     }
-    // }
 
     /**
      * Detect if the given configuration points to an S/4HANA Cloud system.
