@@ -1,13 +1,28 @@
-import type { AdtCategoryTerm, AdtCollection, AdtSchemaData, AdtWorkspace } from '../types';
-
+/**
+ * This class stores the ADT schema fetched by calling ADT discovery service.
+ */
+import type { AdtCategoryTerm, AdtCollection, AdtSchemaData } from '../types';
 export class AdtSchemaStore {
+    /**
+     * ADT schema is modeled as a map for fast access
+     */
     private adtSchema: Record<AdtCategoryTerm, AdtCollection>;
 
+    /**
+     * Given the ID of a particular ADT service, return the schema of this service
+     * @param term Id of the ADT service
+     * @returns Schema of an ADT service
+     */
     public getAdtCollection(term: AdtCategoryTerm): AdtCollection {
         return this.adtSchema[term];
     }
 
-    public updateSchemaData(schemaData: AdtSchemaData) {
+    /**
+     * Convert the raw ADT schema data structure to key-value map for fast access
+     * @param schemaData Raw ADT schema data structure that matches the XML schema
+     * received from backend
+     */
+    public updateSchemaData(schemaData: AdtSchemaData): void {
         if (schemaData) {
             this.adtSchema = {};
             const workspaces = schemaData.service.workspace;
@@ -31,7 +46,11 @@ export class AdtSchemaStore {
         }
     }
 
-    public isAdtSchemaEmpty() {
+    /**
+     * Check if an schema has been loaded and cached
+     * @returns
+     */
+    public isAdtSchemaEmpty(): boolean {
         return !this.adtSchema;
     }
 }

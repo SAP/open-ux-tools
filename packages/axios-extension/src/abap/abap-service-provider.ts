@@ -52,12 +52,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      * @returns ABAP Transport Organizer settings
      */
     @adt('settings')
-    public async getAtoInfo(
-        dummy1: string,
-        dummy2: string,
-        @adtSchema schema?: AdtCollection,
-        dummy3?: string
-    ): Promise<AtoSettings> {
+    public async getAtoInfo(@adtSchema schema?: AdtCollection): Promise<AtoSettings> {
         if (!schema) {
             this.atoSettings = {};
         } else if (!this.atoSettings) {
