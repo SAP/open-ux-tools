@@ -25,9 +25,9 @@ The url path can be defined as a constant in [supportedServices.ts](./supportedS
 this helps code maintenance in case the service url is changed in the future.
 
 ```javascript
-import { ATO_SETTINGS } from './adt/supportedServices'
+import { AdtServices } from './adt/supportedServices'
 
-@adt(ATO_SETTINGS)
+@adt(AdtServices.ATO_SETTINGS)
 public async getAtoInfo() {
     ...
 }
@@ -39,7 +39,7 @@ calling the actual ADT request in `getAtoInfo()`. The schema store is defined in
 so it is possible to write one extra line of code in `getAtoInfo()` to obtain the schema of ATO_SETTINGS service.
 
 ```javascript
-const serviceSchema: AdtCollection = this.getSchemaStore().getAdtCollection(ATO_SETTINGS);
+const serviceSchema: AdtCollection = this.getSchemaStore().getAdtCollection(AdtServices.ATO_SETTINGS);
 ```
 
 We further simplify the usage to avoid writing the line above in every ADT method by using a decorated parameter
@@ -52,7 +52,7 @@ access the decorated parameter `serviceSchema` or assume the ADT service is not 
 if `serviceSchema` is undefined.
 
 ```javascript
-@adt(ATO_SETTINGS)
+@adt(AdtServices.ATO_SETTINGS)
 public async getAtoInfo(
     ...,
     @adtSchema serviceSchema?: AdtCollection,
@@ -65,9 +65,9 @@ public async getAtoInfo(
 Complete code example as following.
 
 ```javascript
-import { ATO_SETTINGS } from './adt'
+import { AdtServices } from './adt'
 
-@adt(ATO_SETTINGS)
+@adt(AdtServices.ATO_SETTINGS)
 public async getAtoInfo(
     ..., // Developer can define parameters required by the service
     @adtSchema schema?: AdtCollection, // parameter decorated with @adtSchema will

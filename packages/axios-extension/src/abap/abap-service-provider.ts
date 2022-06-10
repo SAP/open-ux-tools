@@ -8,9 +8,8 @@ import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-import { adt, adtSchema } from './adt';
+import { adt, adtSchema, AdtSchemaStore, AdtServices } from './adt';
 import type { AdtCollection } from './types';
-import { AdtSchemaStore } from './adt/adtSchemaStore';
 import type { AbapServiceProviderExtension } from './interface';
 
 /**
@@ -48,24 +47,26 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
 
     /**
      * Get the ATO settings either locally or from the server if not yet available.
-     * @param schema Auto fill by adt decorator process
+     * @param schema Auto fill by adt decorator execution
      * @returns ABAP Transport Organizer settings
      */
-    @adt('settings')
+    @adt(AdtServices.ATO_SETTINGS)
     public async getAtoInfo(@adtSchema schema?: AdtCollection): Promise<AtoSettings> {
+        // Service not available on target ABAP backend version, return empty setting config
         if (!schema) {
             this.atoSettings = {};
-        } else if (!this.atoSettings) {
+            return this.atoSettings;
+        }
+
+        if (!this.atoSettings) {
             try {
                 const url = schema.href;
-                console.log(schema.accept);
-                const acceptHeaderValue = schema.accept.find((accept) => accept.includes('xml'));
+                const acceptHeaderValue = schema.accept?.find((accept) => accept.includes('xml'));
                 const acceptHeaders = {
                     headers: {
-                        Accept: acceptHeaderValue
+                        Accept: acceptHeaderValue ?? 'application/*'
                     }
                 };
-                console.log(acceptHeaderValue);
                 const response = await this.get(url, acceptHeaders);
                 this.atoSettings = parseAtoResponse(response.data);
             } catch (error) {
@@ -93,7 +94,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     public async isS4Cloud(): Promise<boolean> {
         if (this.s4Cloud === undefined) {
             try {
-                const settings = await this.getAtoInfo('', '', undefined, '');
+                const settings = await this.getAtoInfo();
                 this.s4Cloud =
                     settings.tenantType === TenantType.Customer &&
                     settings.operationsType === 'C' &&

@@ -1,1 +1,7 @@
-export const ATO_SETTINGS = '/sap/bc/adt/ato/settings';
+/**
+ * Services implemented by AbapServiceProvider
+ */
+
+export enum AdtServices {
+    ATO_SETTINGS = '/sap/bc/adt/ato/settings'
+}

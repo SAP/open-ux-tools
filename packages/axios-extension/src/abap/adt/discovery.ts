@@ -3,16 +3,17 @@ import XmlParser from 'fast-xml-parser';
 import type { AdtCategoryTerm, AdtSchemaData } from '../types';
 import { ServiceProvider } from 'index';
 import 'reflect-metadata';
+import { AdtServices } from '.';
 
 const ADT_DISCOVERY_URL_PATH = '/sap/bc/adt/discovery';
 
 /**
  * If ADT schema is not loaded, send discovery request to backend to fetch the schema and cache it.
  * If ADT schema is already cached, no request is sent.
+ *
  * @param target ServiceProvider instance
- * @returns
  */
-async function loadAdtDiscoverySchema(target: AbapServiceProviderExtension & ServiceProvider): Promise<void> {
+async function checkOrLoadAdtDiscoverySchema(target: AbapServiceProviderExtension & ServiceProvider): Promise<void> {
     if (!target.getSchemaStore().isAdtSchemaEmpty()) {
         return;
     }
@@ -27,6 +28,12 @@ async function loadAdtDiscoverySchema(target: AbapServiceProviderExtension & Ser
     target.getSchemaStore().updateSchemaData(schemaData);
 }
 
+/**
+ * Parse XML ADT schema data to its corresponding JSON object
+ *
+ * @param xml Raw XML schema data from ADT discovery service response data
+ * @returns
+ */
 function parseAdtSchemaData(xml: string): AdtSchemaData | null {
     if (XmlParser.validate(xml) !== true) {
         return null;
@@ -47,33 +54,53 @@ function parseAdtSchemaData(xml: string): AdtSchemaData | null {
     }
 }
 
-const adtSchemaParamMetadataKey = 'adtSchema';
+/**
+ * Key for storing the index of parameter decorated by @adtSchema
+ */
+const adtSchemaParam = 'adtSchema';
 
 /**
- * Define adt decorator. For functions with this decorator, it makes sure ADT schema is available before calling ADT services
- * within these functions.
- * @param paraName Optional parameter name in the decorated method that should be filled with AdtCollection data with id specified by param { term }
- * @param term ADT Category term attribute in the ADT discovery schema. Uniquely identifies an AdtCollection
- * @returns
+ * Implementation of @adt decorator. It makes sure ADT schema is available in the cache before calling methods it decorates.
+ * If the decorated method has a parameter decorated by @adtSchema, this parameter will be filled with the service schema data
+ * before calling the method.
+ *
+ * @param serviceUrlPath ADT service url path that uniquely identifies an AdtCollection (service schema) in ADT schema store
+ *                       It is passed to the decorator where decorator is used. E.g @adt('/sap/bc/adt/ato/settings')
+ * @returns Decorator function that augments the original method implementation
  */
-export const adt = (term: AdtCategoryTerm): Function => {
+export const adt = (serviceUrlPath: AdtServices): Function => {
     return function decorator(target: any, functionName: string, descriptor: PropertyDescriptor): void {
+        // original is the original method implementation decorated by @adt
         const original = descriptor.value;
+        // @adt decorator is only for methods
         if (typeof original !== 'function') {
             return;
         }
+
+        // Interceptor implementation that augments the original method implementaiton
+        // args refer to the parameter list defined in the original method
         descriptor.value = async function (...args: any[]): Promise<any> {
-            await loadAdtDiscoverySchema(this);
-            const adtCollection = this.getSchemaStore().getAdtCollection(term);
-
-            const adtSchemaParamIndex = Reflect.getOwnMetadata(adtSchemaParamMetadataKey, target, functionName);
+            await checkOrLoadAdtDiscoverySchema(this);
+            // Find the schema for the input service url path
+            const adtCollection = this.getSchemaStore().getAdtCollection(serviceUrlPath);
+            // Get the parameter index for parameter decorated by @adtSchema
+            const adtSchemaParamIndex = Reflect.getOwnMetadata(adtSchemaParam, target, functionName);
+            // Automatically fill the @adtSchema parameter with the service schema
             args[adtSchemaParamIndex] = adtCollection;
-
+            // Call original method decorated by @adt
             return original.apply(this, args);
         };
     };
 };
 
+/**
+ * Implements @adtSchema decorator. Record the index of paramter decorated by @adtSchema. Since
+ * parameter decorator is executed before method decorator, it allows the recorded parameter index
+ * to be propagated to @adt method decorator.
+ * @param target
+ * @param propertyKey
+ * @param parameterIndex Index of decorated parameter in the parameter list
+ */
 export const adtSchema = (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
-    Reflect.defineMetadata(adtSchemaParamMetadataKey, parameterIndex, target, propertyKey);
+    Reflect.defineMetadata(adtSchemaParam, parameterIndex, target, propertyKey);
 };

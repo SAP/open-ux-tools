@@ -34,13 +34,13 @@ export class AdtSchemaStore {
                 if (Array.isArray(workspace.collection)) {
                     workspace.collection.forEach((collection) => {
                         collection.workspaceTitle = workspace.title;
-                        const id = collection.category.term;
+                        const id = collection.href;
                         this.adtSchema[id] = collection;
                     });
                 } else {
                     const collection = workspace.collection as AdtCollection;
                     const id = collection.category.term;
-                    this.adtSchema[id] = JSON.parse(JSON.stringify(workspace.collection));
+                    this.adtSchema[id] = workspace.collection;
                 }
             }
         }
