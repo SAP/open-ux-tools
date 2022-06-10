@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.11.15
+
+### Patch Changes
+
+-   a0a6942: Fix: incorrect routing pattern in basic template
+
 ## 0.11.14
 
 ### Patch Changes

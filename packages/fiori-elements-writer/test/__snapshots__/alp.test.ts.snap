@@ -5716,7 +5716,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
@@ -5726,8 +5726,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"alp2\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"alp2/test/changes_loader\\", \\"custom\\":true}]'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"alp2/test/changes_loader\\", \\"custom\\":true}]'>
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>
@@ -11640,7 +11640,7 @@ appDescription=A Fiori application.",
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
@@ -11650,7 +11650,7 @@ appDescription=A Fiori application.",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"alp1\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
+        data-sap-ui-frameOptions=\\"allow\\">
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
         </script>

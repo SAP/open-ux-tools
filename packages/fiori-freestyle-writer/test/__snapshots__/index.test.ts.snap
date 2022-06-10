@@ -942,7 +942,7 @@ title=My Test App",
       \\"routes\\": [
         {
           \\"name\\": \\"RouteView1\\",
-          \\"pattern\\": \\"RouteView1\\",
+          \\"pattern\\": \\":?query:\\",
           \\"target\\": [
             \\"TargetView1\\"
           ]
