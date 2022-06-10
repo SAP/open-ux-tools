@@ -63,7 +63,7 @@ const adtSchemaParam = 'adtSchema';
  * before calling the method.
  *
  * @param serviceUrlPath ADT service url path that uniquely identifies an AdtCollection (service schema) in ADT schema store
- *                       It is passed to the decorator where decorator is used. E.g @adt('/sap/bc/adt/ato/settings')
+ *  It is passed to the decorator where decorator is used. E.g @adt('/sap/bc/adt/ato/settings')
  * @returns Decorator function that augments the original method implementation
  */
 export const adt = (serviceUrlPath: AdtServices): Function => {
@@ -75,9 +75,9 @@ export const adt = (serviceUrlPath: AdtServices): Function => {
             return;
         }
 
-        // Interceptor implementation that augments the original method implementaiton
-        // args refer to the parameter list defined in the original method
-        descriptor.value = async (...args: any[]): Promise<any> => {
+        // Interceptor implementation that augments the original method implementation.
+        // 'args' refer to the parameter list defined in the original method.
+        async function interceptedMethod(...args: any[]): Promise<any> {
             await checkOrLoadAdtDiscoverySchema(this);
             // Find the schema for the input service url path
             const adtCollection = this.getSchemaStore().getAdtCollection(serviceUrlPath);
@@ -87,7 +87,9 @@ export const adt = (serviceUrlPath: AdtServices): Function => {
             args[adtSchemaParamIndex] = adtCollection;
             // Call original method decorated by @adt
             return original.apply(this, args);
-        };
+        }
+
+        descriptor.value = interceptedMethod;
     };
 };
 
