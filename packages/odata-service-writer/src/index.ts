@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -22,6 +22,34 @@ function validateBasePath(basePath: string, files: string[], fs: Editor) {
             throw new Error(t('error.requiredProjectFileNotFound', { path }));
         }
     });
+}
+
+/**
+ * Try finding a package.json and a ui5.yaml for the given project by looking upwards in the folder hierachy.
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {Editor} [fs] - the memfs editor instance
+ * @returns an object with the optional locations of the package.json and ui5.yaml
+ */
+export async function findProjectFiles(
+    basePath: string,
+    fs: Editor
+): Promise<{ packageJson?: string; ui5Yaml?: string }> {
+    const files: { packageJson?: string; ui5Yaml?: string } = {};
+    const parts = join(basePath).split('/');
+
+    while (parts.length > 0 && (!files.packageJson || !files.ui5Yaml)) {
+        const path = parts.join('/');
+        if (!files.packageJson && fs.exists(join(path, 'package.json'))) {
+            files.packageJson = join(path, 'package.json');
+        }
+        if (!files.ui5Yaml && fs.exists(join(path, 'ui5.yaml'))) {
+            files.ui5Yaml = join(path, 'ui5.yaml');
+        }
+        parts.pop();
+    }
+
+    return files;
 }
 
 /**
@@ -51,24 +79,6 @@ function updateManifest(basePath: string, service: OdataService, fs: Editor, tem
 }
 
 /**
- * Adds model and data source configuration to the manifest.json
- *
- * @param {string} basePath - the root path of an existing UI5 application
- * @param {OdataService} service - the OData service instance
- * @param {Editor} [fs] - the memfs editor instance
- * @returns {Editor} the updated memfs editor instance
- */
-function addServiceToManifest(basePath: string, service: OdataService, fs?: Editor): Editor {
-    if (!fs) {
-        fs = create(createStorage());
-    }
-    validateBasePath(basePath, ['webapp/manifest.json'], fs);
-    const templateRoot = join(__dirname, '..', 'templates');
-    updateManifest(basePath, service, fs, templateRoot);
-    return fs;
-}
-
-/**
  * Writes the odata service related file updates to an existing UI5 project specified by the base path.
  *
  * @param {string} basePath - the root path of an existing UI5 application
@@ -81,7 +91,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, ['package.json', 'webapp/manifest.json', 'ui5.yaml'], fs);
+    const paths = await findProjectFiles(basePath, fs);
+    validateBasePath(basePath, ['webapp/manifest.json'], fs);
     enhanceData(service);
 
     // merge content into existing files
@@ -90,38 +101,52 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     // manifest.json
     updateManifest(basePath, service, fs, templateRoot);
 
-    // ui5.yaml
-    const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+    // update ui5.yaml if it exists
+    let ui5Config: UI5Config | undefined = undefined;
+    let ui5LocalConfig: UI5Config | undefined = undefined;
+    let ui5LocalConfigPath: string | undefined = undefined;
+    if (paths.ui5Yaml) {
+        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+        ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+        fs.write(paths.ui5Yaml, ui5Config.toString());
 
-    // ui5-local.yaml
-    const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
-    const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-    ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
+        // ui5-local.yaml
+        ui5LocalConfigPath = join(dirname(paths.ui5Yaml), 'ui5-local.yaml');
+        if (fs.exists(ui5LocalConfigPath)) {
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+            ui5LocalConfig.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
+        }
+    }
 
     // Add mockserver entries
     if (service.metadata) {
-        // package.json updates
-        const mockDevDeps = {
-            devDependencies: {
-                '@sap/ux-ui5-fe-mockserver-middleware': '1'
-            }
-        };
-        const packagePath = join(basePath, 'package.json');
-        fs.extendJSON(packagePath, mockDevDeps);
-        // Extending here would overwrite existing array entries so we have to parse and push
-        const packageJson = JSON.parse(fs.read(packagePath));
-        packageJson.ui5.dependencies.push('@sap/ux-ui5-fe-mockserver-middleware');
-        fs.writeJSON(packagePath, packageJson);
-
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
-        const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
-        ui5MockConfig.addMockServerMiddleware(service.path);
-        fs.write(join(basePath, 'ui5-mock.yaml'), ui5MockConfig.toString());
+        if (ui5Config) {
+            const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
+            ui5MockConfig.addMockServerMiddleware(service.path);
+            fs.write(join(dirname(paths.ui5Yaml!), 'ui5-mock.yaml'), ui5MockConfig.toString());
 
-        // also add mockserver middleware to ui5-local.yaml
-        ui5LocalConfig.addMockServerMiddleware(service.path);
+            // package.json updates
+            if (paths.packageJson) {
+                const mockDevDeps = {
+                    devDependencies: {
+                        '@sap/ux-ui5-fe-mockserver-middleware': '1'
+                    }
+                };
+                fs.extendJSON(paths.packageJson, mockDevDeps);
+                // Extending here would overwrite existing array entries so we have to parse and push
+                const packageJson = JSON.parse(fs.read(paths.packageJson));
+                packageJson.ui5 = packageJson.ui5 ?? {};
+                packageJson.ui5.dependencies = packageJson.ui5.dependencies ?? [];
+                packageJson.ui5.dependencies.push('@sap/ux-ui5-fe-mockserver-middleware');
+                fs.writeJSON(paths.packageJson, packageJson);
+            }
+
+            // also add mockserver middleware to ui5-local.yaml
+            if (ui5LocalConfig) {
+                ui5LocalConfig.addMockServerMiddleware(service.path);
+            }
+        }
 
         // create local copy of metadata and annotations
         fs.write(
@@ -140,9 +165,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         }
     }
 
-    // write yamls to disk
-    fs.write(ui5ConfigPath, ui5Config.toString());
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    if (ui5LocalConfig) {
+        fs.write(ui5LocalConfigPath!, ui5LocalConfig.toString());
+    }
 
     if (service.annotations?.xml) {
         fs.write(
@@ -154,4 +179,4 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     return fs;
 }
 
-export { generate, addServiceToManifest, OdataVersion, OdataService };
+export { generate, OdataVersion, OdataService };
