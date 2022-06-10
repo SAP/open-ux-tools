@@ -11,10 +11,11 @@ import { t } from './i18n';
 import { OdataService, OdataVersion } from './types';
 
 /**
- * Validates the provided base path.
+ * Validates the existence of the given files in the provided base path.
  *
- * @param {string} basePath - the root path of an existing UI5 application
- * @param {Editor} fs - the memfs editor instance
+ * @param basePath - the root path of an existing UI5 application
+ * @param files - list of files that need to exist
+ * @param fs - the memfs editor instance
  */
 function validateBasePath(basePath: string, files: string[], fs: Editor) {
     files.forEach((path) => {
@@ -102,9 +103,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     updateManifest(basePath, service, fs, templateRoot);
 
     // update ui5.yaml if it exists
-    let ui5Config: UI5Config | undefined = undefined;
-    let ui5LocalConfig: UI5Config | undefined = undefined;
-    let ui5LocalConfigPath: string | undefined = undefined;
+    let ui5Config: UI5Config | undefined;
+    let ui5LocalConfig: UI5Config | undefined;
+    let ui5LocalConfigPath: string | undefined;
     if (paths.ui5Yaml) {
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
