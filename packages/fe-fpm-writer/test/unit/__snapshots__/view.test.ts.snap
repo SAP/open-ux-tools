@@ -31,34 +31,8 @@ Object {
 `;
 
 exports[`CustomView with control \`true\` (sample table fragment) 2`] = `
-"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:u=\\"sap.ui.unified\\">
-    <Table id=\\"NewCustomView\\">
-        <headerToolbar>
-            <OverflowToolbar>
-                <content>
-                    <Title text=\\"Header Title\\" level=\\"H2\\" />
-                    <ToolbarSpacer />
-                </content>
-            </OverflowToolbar>
-        </headerToolbar>
-        <infoToolbar>
-            <OverflowToolbar>
-                <Label text=\\"Toolbar Label\\" />
-            </OverflowToolbar>
-        </infoToolbar>
-        <columns>
-            <Column>
-                <Text text=\\"Column\\" />
-            </Column>
-        </columns>
-        <items>
-            <ColumnListItem>
-                <cells>
-                    <Text text=\\"NewCustomView\\" />
-                </cells>
-            </ColumnListItem>
-        </items>
-    </Table>
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:u=\\"sap.ui.unified\\">
+    <macros:Table id=\\"NewCustomView\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" displayMode=\\"true\\" />
 </core:FragmentDefinition>
 "
 `;
@@ -125,34 +99,8 @@ Object {
 `;
 
 exports[`CustomView with existing views 2`] = `
-"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:u=\\"sap.ui.unified\\">
-    <Table id=\\"NewCustomView\\">
-        <headerToolbar>
-            <OverflowToolbar>
-                <content>
-                    <Title text=\\"Header Title\\" level=\\"H2\\" />
-                    <ToolbarSpacer />
-                </content>
-            </OverflowToolbar>
-        </headerToolbar>
-        <infoToolbar>
-            <OverflowToolbar>
-                <Label text=\\"Toolbar Label\\" />
-            </OverflowToolbar>
-        </infoToolbar>
-        <columns>
-            <Column>
-                <Text text=\\"Column\\" />
-            </Column>
-        </columns>
-        <items>
-            <ColumnListItem>
-                <cells>
-                    <Text text=\\"NewCustomView\\" />
-                </cells>
-            </ColumnListItem>
-        </items>
-    </Table>
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:u=\\"sap.ui.unified\\">
+    <macros:Table id=\\"NewCustomView\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" displayMode=\\"true\\" />
 </core:FragmentDefinition>
 "
 `;
@@ -223,34 +171,8 @@ Object {
 `;
 
 exports[`CustomView with new handler and new table fragment (all properties) 3`] = `
-"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:u=\\"sap.ui.unified\\">
-    <Table id=\\"NewCustomView\\">
-        <headerToolbar>
-            <OverflowToolbar>
-                <content>
-                    <Title text=\\"Header Title\\" level=\\"H2\\" />
-                    <ToolbarSpacer />
-                </content>
-            </OverflowToolbar>
-        </headerToolbar>
-        <infoToolbar>
-            <OverflowToolbar>
-                <Label text=\\"Toolbar Label\\" />
-            </OverflowToolbar>
-        </infoToolbar>
-        <columns>
-            <Column>
-                <Text text=\\"Column\\" />
-            </Column>
-        </columns>
-        <items>
-            <ColumnListItem>
-                <cells>
-                    <Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomView'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
-                </cells>
-            </ColumnListItem>
-        </items>
-    </Table>
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:u=\\"sap.ui.unified\\">
+    <macros:Table id=\\"NewCustomView\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" displayMode=\\"true\\" />
 </core:FragmentDefinition>
 "
 `;

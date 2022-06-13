@@ -24,7 +24,7 @@ export interface CustomView extends CustomElement {
 
     /**
      * Optional control XML that will be generated into the fragment of the view.
-     * If set to true, a sample table control will be generated.
+     * If set to true, a table macro control will be generated.
      */
     control?: string | true;
 }
