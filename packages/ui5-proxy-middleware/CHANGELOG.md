@@ -1,5 +1,17 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/logger@0.2.0
+    -   @sap-ux/ui5-config@0.14.0
+
 ## 1.0.9
 
 ### Patch Changes
