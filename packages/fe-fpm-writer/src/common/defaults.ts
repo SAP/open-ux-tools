@@ -38,12 +38,12 @@ export function setCommonDefaults<T extends CustomElement & Partial<InternalCust
  *      if value is not passed then "Text" control would be generated
  * @returns default content for fragment
  */
-export function getDefaultFragmentContent(text: string, eventHandler?: string): string {
+export function getDefaultFragmentContent(text: string, eventHandler?: string, isController = false): string {
     let content: string;
     if (eventHandler) {
-        const parts = (eventHandler as string).split('.');
+        const parts = eventHandler.split('.');
         const method = parts.pop();
-        const handler = parts.join('/');
+        const handler = `${parts.join('/')}${isController ? '.controller' : ''}`;
         content = `<Button core:require="{ handler: '${handler}'}" text="${text}" press="handler.${method}" />`;
     } else {
         content = `<Text text="${text}" />`;

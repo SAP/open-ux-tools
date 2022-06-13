@@ -129,7 +129,7 @@ Object {
 
 exports[`CustomView with new handler 3`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomView'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>"
 `;
 

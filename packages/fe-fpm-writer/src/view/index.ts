@@ -36,7 +36,7 @@ function enhanceConfig(data: CustomView, manifestPath: string, manifest: Manifes
     if (typeof config.control === 'string') {
         config.content = config.control;
     } else {
-        config.content = getDefaultFragmentContent(config.name, config.eventHandler);
+        config.content = getDefaultFragmentContent(config.name, config.eventHandler, true);
     }
 
     return config as InternalCustomView;
@@ -67,7 +67,7 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
 
     // add event handler if requested
     if (completeView.eventHandler) {
-        const controllerPath = join(completeView.path, `${completeView.name}.js`);
+        const controllerPath = join(completeView.path, `${completeView.name}.controller.js`);
         if (!fs.exists(controllerPath)) {
             fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, completeView);
         }

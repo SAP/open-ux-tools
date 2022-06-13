@@ -85,7 +85,7 @@ describe('CustomView', () => {
         expect(extension).toMatchSnapshot();
         expect(views).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
-        expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+        expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.controller.js'))).toMatchSnapshot();
     });
 
     test('with existing handler', () => {
@@ -118,7 +118,7 @@ describe('CustomView', () => {
         expect(extension).toMatchSnapshot();
         expect(views).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
-        expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+        expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.controller.js'))).toMatchSnapshot();
     });
 
     test('with existing views', () => {
