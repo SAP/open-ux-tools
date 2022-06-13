@@ -60,14 +60,11 @@ describe('generate', () => {
             // generate required files
             fs = create(createStorage());
 
-            fs.write(
-                join(root, 'webapp/manifest.json'),
-                JSON.stringify({
-                    'sap.app': {
-                        id: 'testappid'
-                    }
-                })
-            );
+            fs.writeJSON(join(root, 'webapp/manifest.json'), {
+                'sap.app': {
+                    id: 'testappid'
+                }
+            });
         });
 
         it('No package.json or ui5.yaml - only manifest updates', async () => {
