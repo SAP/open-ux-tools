@@ -1,5 +1,20 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/axios-extension@0.7.0
+    -   @sap-ux/btp-utils@0.10.0
+    -   @sap-ux/fiori-elements-writer@0.4.0
+    -   @sap-ux/fiori-freestyle-writer@0.12.0
+    -   @sap-ux/logger@0.2.0
+
 ## 0.1.9
 
 ### Patch Changes
