@@ -2,7 +2,7 @@ import { join, dirname } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { render } from 'ejs';
+import { updateManifest, updatePackageJson } from './updates';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
@@ -51,32 +51,6 @@ export async function findProjectFiles(
     }
 
     return files;
-}
-
-/**
- * Internal function that updates the manifest.json based on the given service configuration.
- *
- * @param {string} basePath - the root path of an existing UI5 application
- * @param {OdataService} service - the OData service instance
- * @param {Editor} [fs] - the memfs editor instance
- * @param templateRoot
- */
-function updateManifest(basePath: string, service: OdataService, fs: Editor, templateRoot: string) {
-    // manifest.json
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
-    // Get component app id
-    const manifest = fs.readJSON(manifestPath);
-    const appProp = 'sap.app';
-    const appid = manifest?.[appProp]?.id;
-    // Throw if required property is not found manifest.json
-    if (!appid) {
-        throw new Error(
-            t('error.requiredProjectPropertyNotFound', { property: `'${appProp}'.id`, path: manifestPath })
-        );
-    }
-
-    const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
-    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, service)));
 }
 
 /**
@@ -136,21 +110,6 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
             ui5MockConfig.addMockServerMiddleware(service.path);
             fs.write(join(dirname(paths.ui5Yaml!), 'ui5-mock.yaml'), ui5MockConfig.toString());
 
-            // package.json updates
-            if (paths.packageJson) {
-                fs.extendJSON(paths.packageJson, {
-                    devDependencies: {
-                        '@sap/ux-ui5-fe-mockserver-middleware': '1'
-                    }
-                });
-                // Extending here would overwrite existing array entries so we have to parse and push
-                const packageJson = JSON.parse(fs.read(paths.packageJson));
-                packageJson.ui5 = packageJson.ui5 ?? {};
-                packageJson.ui5.dependencies = packageJson.ui5.dependencies ?? [];
-                packageJson.ui5.dependencies.push('@sap/ux-ui5-fe-mockserver-middleware');
-                fs.writeJSON(paths.packageJson, packageJson);
-            }
-
             // also add mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
                 ui5LocalConfig.addMockServerMiddleware(service.path);
@@ -172,6 +131,11 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
                 { ...service, namespaces }
             );
         }
+    }
+
+    // update package.json if required
+    if (paths.packageJson && paths.ui5Yaml) {
+        updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
 
     if (ui5LocalConfig) {

@@ -97,7 +97,7 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
             expect(fs.readJSON(packagePath)).toMatchObject({
                 ui5: {
-                    dependencies: ['@sap/ux-ui5-fe-mockserver-middleware']
+                    dependencies: ['@sap/ux-ui5-tooling', '@sap/ux-ui5-fe-mockserver-middleware']
                 }
             });
             expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
@@ -116,7 +116,7 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
             expect(fs.readJSON(packagePath)).toMatchObject({
                 ui5: {
-                    dependencies: ['@sap/ux-ui5-fe-mockserver-middleware']
+                    dependencies: ['@sap/ux-ui5-tooling', '@sap/ux-ui5-fe-mockserver-middleware']
                 }
             });
             expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
