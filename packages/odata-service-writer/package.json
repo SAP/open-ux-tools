@@ -31,7 +31,7 @@
         "templates"
     ],
     "dependencies": {
-        "@sap-ux/ui5-config": "0.13.3",
+        "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.7",
         "fast-xml-parser": "4.0.1",
         "i18next": "20.3.2",
