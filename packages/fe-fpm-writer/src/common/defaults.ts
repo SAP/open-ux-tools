@@ -36,6 +36,7 @@ export function setCommonDefaults<T extends CustomElement & Partial<InternalCust
  * @param {string} [eventHandler] - event handler path
  *      if value is passed then "Button" control with 'press' event would be generated
  *      if value is not passed then "Text" control would be generated
+ * @param {boolean} isController - controls if `controller` should be added to handler path
  * @returns default content for fragment
  */
 export function getDefaultFragmentContent(text: string, eventHandler?: string, isController = false): string {
