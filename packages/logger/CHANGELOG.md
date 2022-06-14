@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.2.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
 ## 0.1.6
 
 ### Patch Changes
