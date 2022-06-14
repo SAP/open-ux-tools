@@ -9,7 +9,7 @@ import {
     Ui5AbapRepositoryService,
     AppIndexService
 } from '../../src';
-import { ATO_CATALOG_URL_PATH } from '../../src/abap/ato';
+import { AdtServices } from '../../src/abap/adt';
 
 describe('AbapServiceProvider', () => {
     beforeAll(() => {
@@ -40,6 +40,8 @@ describe('AbapServiceProvider', () => {
         test('AtoInfo', async () => {
             const ato = { tenantType: TenantType.SAP };
             provider.setAtoInfo(ato);
+
+            nock(server).get(AdtServices.DISCOVERY).replyWithFile(200, join(__dirname, 'mockResponses/discovery.xml'));
             expect(await provider.getAtoInfo()).toBe(ato);
         });
     });
@@ -47,14 +49,18 @@ describe('AbapServiceProvider', () => {
     describe('isS4Cloud', () => {
         test('S/4Cloud system', async () => {
             nock(server)
-                .get(ATO_CATALOG_URL_PATH)
+                .get(AdtServices.DISCOVERY)
+                .replyWithFile(200, join(__dirname, 'mockResponses/discovery.xml'))
+                .get(AdtServices.ATO_SETTINGS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
             expect(await createForAbap(config).isS4Cloud()).toBe(true);
         });
 
         test('On premise system', async () => {
             nock(server)
-                .get(ATO_CATALOG_URL_PATH)
+                .get(AdtServices.DISCOVERY)
+                .replyWithFile(200, join(__dirname, 'mockResponses/discovery.xml'))
+                .get(AdtServices.ATO_SETTINGS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsNotS4C.xml'));
             expect(await createForAbap(config).isS4Cloud()).toBe(false);
         });
@@ -66,7 +72,11 @@ describe('AbapServiceProvider', () => {
         });
 
         test('Request failed', async () => {
-            nock(server).get(ATO_CATALOG_URL_PATH).replyWithError('Something went wrong');
+            nock(server)
+                .get(AdtServices.DISCOVERY)
+                .replyWithFile(200, join(__dirname, 'mockResponses/discovery.xml'))
+                .get(AdtServices.ATO_SETTINGS)
+                .replyWithError('Something went wrong');
             expect(await createForAbap(config).isS4Cloud()).toBe(false);
         });
     });

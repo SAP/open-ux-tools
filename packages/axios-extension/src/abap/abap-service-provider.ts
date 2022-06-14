@@ -2,13 +2,12 @@ import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
 
-import type { AtoSettings } from './ato';
-import { parseAtoResponse, TenantType } from './ato';
+import type { AtoSettings } from './adt';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-import { adt, adtSchema, AdtSchemaStore, AdtServices } from './adt';
+import { adt, adtSchema, AdtSchemaStore, AdtServices, parseAtoResponse, TenantType } from './adt';
 import { AdtCollection } from './types';
 import type { AbapServiceProviderExtension } from './interface';
 
@@ -19,7 +18,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     public s4Cloud: boolean | undefined;
 
     protected atoSettings: AtoSettings;
-
+    protected transportSearchConfigId: string;
     protected schemaStore = new AdtSchemaStore();
 
     /**
@@ -64,14 +63,13 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
 
         if (!this.atoSettings) {
             try {
-                const url = schema.href;
                 const acceptHeaderValue = schema.accept?.find((accept) => accept.includes('xml'));
                 const acceptHeaders = {
                     headers: {
                         Accept: acceptHeaderValue ?? 'application/*'
                     }
                 };
-                const response = await this.get(url, acceptHeaders);
+                const response = await this.get(AdtServices.ATO_SETTINGS, acceptHeaders);
                 this.atoSettings = parseAtoResponse(response.data);
             } catch (error) {
                 this.atoSettings = {};
@@ -172,5 +170,28 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             );
         }
         return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
+    }
+
+    @adt(AdtServices.TRANSPORT_SEARCH_CONFIG)
+    public async getTransportSearchConfig(@adtSchema schema?: AdtCollection): Promise<string> {
+        // Service not available on target ABAP backend version, return empty setting config
+        if (!schema) {
+            return;
+        }
+
+        if (!this.transportSearchConfigId) {
+            try {
+                const acceptHeaderValue = schema.accept?.find((accept) => accept.includes('xml'));
+                const acceptHeaders = {
+                    headers: {
+                        Accept: acceptHeaderValue ?? 'application/*'
+                    }
+                };
+                const response = await this.get(AdtServices.TRANSPORT_SEARCH_CONFIG, acceptHeaders);
+                this.transportSearchConfigId = parseSearchConfigId(response.data);
+            } catch (error) {
+                throw error;
+            }
+        }
     }
 }

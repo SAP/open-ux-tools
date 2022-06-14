@@ -1,3 +1,4 @@
 export * from './discovery';
-export * from './supportedServices';
+export * from './supported-services';
 export { AdtSchemaStore } from './adtSchemaStore';
+export * from './handlers';

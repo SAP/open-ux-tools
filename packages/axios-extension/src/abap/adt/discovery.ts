@@ -3,9 +3,7 @@ import XmlParser from 'fast-xml-parser';
 import type { AdtSchemaData } from '../types';
 import type { ServiceProvider } from 'index';
 import 'reflect-metadata';
-import type { AdtServices } from '.';
-
-const ADT_DISCOVERY_URL_PATH = '/sap/bc/adt/discovery';
+import { AdtServices } from '.';
 
 /**
  * If ADT schema is not loaded, send discovery request to backend to fetch the schema and cache it.
@@ -18,7 +16,7 @@ async function checkOrLoadAdtDiscoverySchema(target: AbapServiceProviderExtensio
         return;
     }
 
-    const response = await target.get(ADT_DISCOVERY_URL_PATH, {
+    const response = await target.get(AdtServices.DISCOVERY, {
         headers: {
             Accept: 'application/*'
         }

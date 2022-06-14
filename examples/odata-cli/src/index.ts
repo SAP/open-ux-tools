@@ -58,19 +58,6 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
             console.warn('ATO setting is empty!');
         }
 
-        // This is temporary test specific to Y05
-        // await provider.getADTSerivce('/sap/bc/adt/cts/transportrequests/searchconfiguration/configurations', {
-        //     headers: { Accept: 'application/*' }
-        // });
-        // console.log();
-        // await provider.getADTSerivce('/sap/bc/adt/cts/transportrequests/searchconfiguration/configurations/CAC71A12CA651EDCB08F882610B8C407', {
-        //     headers: { Accept: 'application/*' }
-        // });
-        // console.log();
-        // await provider.getADTSerivce('/sap/bc/adt/cts/transportrequests?targets=true&configUri=%2Fsap%2Fbc%2Fadt%2Fcts%2Ftransportrequests%2Fsearchconfiguration%2Fconfigurations%2F690F6E8DB7F41EECB9EB83D1830ACE8F', {
-        //     headers: { Accept: 'application/*' }
-        // });
-
         const catalog = provider.catalog(ODataVersion.v2);
 
         const services = await catalog.listServices();
