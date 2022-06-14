@@ -111,6 +111,14 @@ Object {
                                         \\"route\\": \\"TravelObjectPage\\"
                                     }
                                 }
+                            },
+                            \\"views\\": {
+                                \\"paths\\": [
+                                    {
+                                        \\"key\\": \\"tab1\\",
+                                        \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                                    }
+                                ]
                             }
                         }
                     }
@@ -416,6 +424,19 @@ Object {
                   }
                 }
               },
+              \\"views\\": {
+                \\"paths\\": [
+                  {
+                    \\"key\\": \\"tab1\\",
+                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                  },
+                  {
+                    \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                  }
+                ]
+              },
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
                   \\"columns\\": {
@@ -441,15 +462,6 @@ Object {
                     }
                   }
                 }
-              },
-              \\"views\\": {
-                \\"paths\\": [
-                  {
-                    \\"key\\": \\"CustomViewKey\\",
-                    \\"label\\": \\"Custom View\\",
-                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
-                  }
-                ]
               }
             }
           }
