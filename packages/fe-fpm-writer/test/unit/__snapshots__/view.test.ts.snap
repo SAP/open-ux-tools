@@ -4,6 +4,10 @@ exports[`CustomView only mandatory properties 1`] = `
 Object {
   "paths": Array [
     Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
+    Object {
       "key": "viewKey",
       "label": "viewLabel",
       "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
@@ -21,6 +25,10 @@ exports[`CustomView only mandatory properties 2`] = `
 exports[`CustomView with control \`true\` (sample table fragment) 1`] = `
 Object {
   "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
     Object {
       "key": "viewKey",
       "label": "viewLabel",
@@ -40,6 +48,10 @@ exports[`CustomView with control \`true\` (sample table fragment) 2`] = `
 exports[`CustomView with custom control passed in interface 1`] = `
 Object {
   "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
     Object {
       "key": "viewKey",
       "label": "viewLabel",
@@ -68,6 +80,10 @@ Object {
 exports[`CustomView with existing handler 2`] = `
 Object {
   "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
     Object {
       "key": "viewKey",
       "label": "viewLabel",
@@ -119,6 +135,10 @@ exports[`CustomView with new handler 2`] = `
 Object {
   "paths": Array [
     Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
+    Object {
       "key": "viewKey",
       "label": "viewLabel",
       "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
@@ -161,6 +181,10 @@ Object {
 exports[`CustomView with new handler and new table fragment (all properties) 2`] = `
 Object {
   "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
     Object {
       "key": "viewKey",
       "label": "viewLabel",

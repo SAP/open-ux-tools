@@ -60,7 +60,15 @@
                     "name": "sap.fe.templates.ListReport",
                     "options": {
                         "settings": {
-                            "entitySet": "RootEntity"
+                            "entitySet": "RootEntity",
+                            "views": {
+                                "paths": [
+                                    {
+                                        "key": "tab1",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.LineItem"
+                                    }
+                                ]
+                            }
                         }
                     }
                 }
