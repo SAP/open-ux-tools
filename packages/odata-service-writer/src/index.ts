@@ -11,13 +11,13 @@ import { t } from './i18n';
 import { OdataService, OdataVersion } from './types';
 
 /**
- * Validates the existence of the given files in the provided base path.
+ * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
  *
  * @param basePath - the root path of an existing UI5 application
  * @param files - list of files that need to exist
  * @param fs - the memfs editor instance
  */
-function validateBasePath(basePath: string, files: string[], fs: Editor) {
+function ensureExists(basePath: string, files: string[], fs: Editor) {
     files.forEach((path) => {
         if (!fs.exists(join(basePath, path))) {
             throw new Error(t('error.requiredProjectFileNotFound', { path }));
@@ -67,7 +67,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         fs = create(createStorage());
     }
     const paths = await findProjectFiles(basePath, fs);
-    validateBasePath(basePath, ['webapp/manifest.json'], fs);
+    ensureExists(basePath, ['webapp/manifest.json'], fs);
     enhanceData(service);
 
     // merge content into existing files
