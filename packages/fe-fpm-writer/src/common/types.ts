@@ -11,7 +11,7 @@ export interface CustomElement {
      */
     name: string;
     /**
-     * Target folder relative to the manifest that is used to generate the custom extension content (e.g. view, fragment, controoler).
+     * Target folder relative to the manifest that is used to generate the custom extension content (e.g. view, fragment, controller).
      * If undefined then `ext/${id}` is used.
      */
     folder?: string;
@@ -53,4 +53,51 @@ export type Position = {
 
 export interface Ui5RoutingTarget<T> extends ManifestNamespace.Target {
     options?: T;
+}
+
+export interface ViewVariant {
+    /**
+     * The key entry is used for initializing the corresponding IconTabBar item.
+     */
+    key: string;
+    /**
+     * The annotationPath of a specific variant.
+     */
+    annotationPath: string;
+    /**
+     * View title, is shown in the tab item.
+     */
+    label?: string;
+    /**
+     * If you switch from an app with only a single table to an app with multiple tables, you can keep the previously defined variant on one tab.
+     */
+    keepPreviousPersonalization?: boolean;
+    /**
+     * The template being used for the custom view.
+     */
+    template?: string;
+}
+
+export interface Views {
+    /**
+     * The paths section contains a set of entries that point to the variants defined in the annotations.
+     */
+    paths?: Array<ViewVariant>;
+    /**
+     * Determines whether the count is displayed in the tabs (default setting: false).
+     */
+    showCounts?: boolean;
+}
+
+export interface Ui5TargetSettings {
+    settings?: {
+        /**
+         * Represents the entity set that defines either the aggregation or the root object of the component.
+         */
+        entitySet?: string;
+        /**
+         * By default, the list report displays only one table. You can define multiple views of a table, and add a chart, if required.
+         */
+        views?: Views;
+    };
 }

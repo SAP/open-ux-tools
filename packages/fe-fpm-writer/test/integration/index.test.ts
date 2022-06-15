@@ -6,7 +6,8 @@ import {
     generateCustomColumn,
     generateCustomPage,
     TargetControl,
-    generateCustomSection
+    generateCustomSection,
+    generateCustomView
 } from '../../src';
 import { Placement } from '../../src/common/types';
 
@@ -62,6 +63,20 @@ describe('use FPM with existing apps', () => {
                         anchor: 'DataField::TravelID'
                     },
                     properties: ['TotalPrice', 'CurrencyCode']
+                },
+                fs
+            );
+        });
+
+        test('generateCustomView in ListReport', () => {
+            generateCustomView(
+                targetPath,
+                {
+                    target: 'TravelList',
+                    key: 'CustomViewKey',
+                    label: 'Custom View',
+                    name: 'NewCustomView',
+                    eventHandler: true
                 },
                 fs
             );
