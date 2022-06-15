@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.0
+
+### Minor Changes
+
+-   c29bf99: Support for different project structures
+
 ## 0.13.0
 
 ### Minor Changes
