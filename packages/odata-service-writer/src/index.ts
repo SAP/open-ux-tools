@@ -1,4 +1,4 @@
-import { join, dirname } from 'path';
+import { join, dirname, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -37,10 +37,10 @@ export async function findProjectFiles(
     fs: Editor
 ): Promise<{ packageJson?: string; ui5Yaml?: string }> {
     const files: { packageJson?: string; ui5Yaml?: string } = {};
-    const parts = join(basePath).split('/');
+    const parts = basePath.split(sep);
 
     while (parts.length > 0 && (!files.packageJson || !files.ui5Yaml)) {
-        const path = parts.join('/');
+        const path = parts.join(sep);
         if (!files.packageJson && fs.exists(join(path, 'package.json'))) {
             files.packageJson = join(path, 'package.json');
         }
