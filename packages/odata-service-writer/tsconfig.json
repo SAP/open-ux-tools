@@ -7,8 +7,7 @@
         "sourceMap": true,
         "baseUrl": "./src",
         "resolveJsonModule": true,
-        "noImplicitAny": false,
-        "esModuleInterop": true
+        "noImplicitAny": false
     },
     "extends": "../../tsconfig.json"
 }
