@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.1
+
+### Patch Changes
+
+-   5c5c904: Add author to package.json
+
 ## 1.1.0
 
 ### Minor Changes

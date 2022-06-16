@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.1
+
+### Patch Changes
+
+-   5c5c904: Add author to package.json
+
 ## 0.6.0
 
 ### Minor Changes
