@@ -31,7 +31,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"1\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
@@ -45,7 +45,7 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
   }
 }
@@ -1315,7 +1315,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"1\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
@@ -1329,7 +1329,7 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
   }
 }
@@ -3927,7 +3927,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"1\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
@@ -3941,7 +3941,7 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
   }
 }
