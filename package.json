@@ -2,6 +2,7 @@
     "name": "@sap-ux/open-ux-tools-root",
     "version": "0.9.0",
     "license": "Apache-2.0",
+    "author": "@SAP/ux-tools-team",
     "private": true,
     "devDependencies": {
         "@changesets/cli": "2.21.1",

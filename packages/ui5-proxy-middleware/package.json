@@ -11,6 +11,7 @@
     },
     "version": "1.1.0",
     "license": "Apache-2.0",
+    "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
     "scripts": {
         "build": "pnpm clean && tsc",
