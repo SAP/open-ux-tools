@@ -106,6 +106,14 @@
                                         "route": "TravelObjectPage"
                                     }
                                 }
+                            },
+                            "views": {
+                                "paths": [
+                                    {
+                                        "key": "tab1",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.LineItem"
+                                    }
+                                ]
                             }
                         }
                     }

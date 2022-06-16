@@ -111,6 +111,14 @@ Object {
                                         \\"route\\": \\"TravelObjectPage\\"
                                     }
                                 }
+                            },
+                            \\"views\\": {
+                                \\"paths\\": [
+                                    {
+                                        \\"key\\": \\"tab1\\",
+                                        \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                                    }
+                                ]
                             }
                         }
                     }
@@ -278,6 +286,27 @@ Object {
 ",
     "state": "modified",
   },
+  "webapp/ext/newCustomView/NewCustomView.controller.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "webapp/ext/newCustomView/NewCustomView.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomView/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
   "webapp/manifest.json": Object {
     "contents": "{
   \\"_version\\": \\"1.32.0\\",
@@ -395,6 +424,19 @@ Object {
                   }
                 }
               },
+              \\"views\\": {
+                \\"paths\\": [
+                  {
+                    \\"key\\": \\"tab1\\",
+                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                  },
+                  {
+                    \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                  }
+                ]
+              },
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
                   \\"columns\\": {
@@ -482,6 +524,15 @@ Object {
     \\"contentDensities\\": {
       \\"compact\\": true,
       \\"cozy\\": true
+    },
+    \\"extends\\": {
+      \\"extensions\\": {
+        \\"sap.ui.controllerExtensions\\": {
+          \\"sap.fe.templates.ListReport.ListReportController\\": {
+            \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+          }
+        }
+      }
     }
   },
   \\"sap.platform.abap\\": {

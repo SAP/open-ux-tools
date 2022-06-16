@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.8.0
+
+### Minor Changes
+
+-   dc0fb1c: Feature: Custom Views support for fe-fpm-writer
+
 ## 0.7.0
 
 ### Minor Changes
