@@ -55,7 +55,7 @@ export function updatePackageJson(path: string, fs: Editor, addMockServer: boole
             !packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware'] &&
             !packageJson.devDependencies['@sap-ux/ui5-middleware-fe-mockserver']
         ) {
-            packageJson.devDependencies['@sap-ux/ui5-middleware-fe-mockserver'] = '1';
+            packageJson.devDependencies['@sap-ux/ui5-middleware-fe-mockserver'] = '2';
         }
         if (
             !packageJson.ui5.dependencies.includes('@sap/ux-ui5-fe-mockserver-middleware') &&
