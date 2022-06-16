@@ -51,8 +51,11 @@ export function updatePackageJson(path: string, fs: Editor, addMockServer: boole
     }
 
     if (addMockServer) {
-        if (!packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware']) {
-            packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware'] = '1';
+        if (
+            !packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware'] &&
+            !packageJson.devDependencies['@sap-ux/ui5-middleware-fe-mockserver']
+        ) {
+            packageJson.devDependencies['@sap-ux/ui5-middleware-fe-mockserver'] = '1';
         }
         if (!packageJson.ui5.dependencies.includes('@sap/ux-ui5-fe-mockserver-middleware')) {
             packageJson.ui5.dependencies.push('@sap/ux-ui5-fe-mockserver-middleware');
