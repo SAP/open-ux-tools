@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ObjectPage generate minimal input 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "TestListReport",
+          "pattern": ":?query:",
+          "target": "TestListReport",
+        },
+        Object {
+          "name": "RootEnityObjectPage",
+          "pattern": "RootEnity:?query:",
+          "target": "RootEnityObjectPage",
+        },
+      ],
+      "targets": Object {
+        "RootEnityObjectPage": Object {
+          "id": "RootEnityObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": Object {
+            "settings": Object {
+              "entitySet": "RootEnity",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+        "TestListReport": Object {},
+      },
+    },
+  },
+}
+`;
+
+exports[`ObjectPage generate simple inbound navigation 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "TestListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEnityObjectPage",
+      "pattern": "/navToChildEntity({navToChildEntityKey}):?query:",
+      "target": "RootEnityObjectPage",
+    },
+  ],
+  "targets": Object {
+    "RootEnityObjectPage": Object {
+      "id": "RootEnityObjectPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "entitySet": "RootEnity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "TestListReport": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "navToChildEntity": Object {
+              "detail": Object {
+                "route": "RootEnityObjectPage",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;

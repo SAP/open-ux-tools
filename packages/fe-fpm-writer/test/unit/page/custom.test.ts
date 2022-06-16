@@ -2,10 +2,10 @@ import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { ManifestNamespace } from '@sap-ux/ui5-config';
-import { generateCustomPage, validateBasePath, CustomPage } from '../../src';
-import { validatePageConfig } from '../../src/page';
-import { Manifest } from '../../src/common/types';
-import { FCL_ROUTER } from '../../src/common/defaults';
+import { generateCustomPage, validateBasePath, CustomPage } from '../../../src';
+import { validatePageConfig } from '../../../src/page';
+import { Manifest } from '../../../src/common/types';
+import { FCL_ROUTER } from '../../../src/common/defaults';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
