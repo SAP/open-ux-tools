@@ -83,12 +83,16 @@ export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<M
         name: 'sap-fe-mockserver',
         beforeMiddleware: 'csp',
         configuration: {
-            service: {
-                urlPath: path || '',
-                metadataXmlPath: './webapp/localService/metadata.xml',
-                mockdataRootPath: './webapp/localService/data',
-                generateMockData: true
-            }
+            mountPath: '/',
+            services: [
+                {
+                    urlPath: path || '',
+                    metadataXmlPath: './webapp/localService/metadata.xml',
+                    mockdataRootPath: './webapp/localService/data',
+                    generateMockData: true
+                }
+            ],
+            annotations: []
         }
     };
 };
