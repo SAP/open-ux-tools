@@ -1,10 +1,10 @@
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { ManifestNamespace } from '@sap-ux/ui5-config';
+import type { ManifestNamespace } from '@sap-ux/ui5-config';
 import { validateBasePath } from '../common/validate';
-import type { CustomPage, FCL, InternalCustomPage, InternalObjectPage, ObjectPage } from './types';
+import type { CustomPage, FCL, InternalCustomPage, InternalObjectPage, ObjectPage, Navigation } from './types';
 import type { Manifest } from '../common/types';
-import { FCL_ROUTER } from 'common/defaults';
+import { FCL_ROUTER } from '../common/defaults';
 
 /**
  * Add a new route to the provided route array, and update existing routes if necessary (e.g. if targets are defined as arrays for FCL).
@@ -41,6 +41,12 @@ export function updateRoutes(routes: ManifestNamespace.Route[], config: Internal
     routes.push(newRoute);
 }
 
+/**
+ * Create a function that can be used as JsonReplace when calling extendJson.
+ *
+ * @param config page configuration
+ * @returns a JsonReplacer function for the usage in ejs
+ */
 export function getManifestJsonExtensionHelper(
     config: InternalCustomPage | InternalObjectPage
 ): (key: string, value: any) => any {
@@ -57,6 +63,30 @@ export function getManifestJsonExtensionHelper(
         }
         return value;
     };
+}
+
+/**
+ * Get the configuration parameters for the flexible column layout based on the given manifest and navigation config.
+ *
+ * @param manifest existing manifest
+ * @param navigation navigation configuration that is to be added
+ * @returns fcl configuration
+ */
+export function getFclConfig(manifest: Manifest, navigation?: Navigation): FCL {
+    const config: FCL = {};
+    if (manifest['sap.ui5']?.routing?.config?.routerClass === FCL_ROUTER) {
+        config.fcl = true;
+        if (navigation) {
+            const sourceRoute = ((manifest['sap.ui5']?.routing?.routes as ManifestNamespace.Route[]) || []).find(
+                (route) => route.name === navigation?.sourcePage
+            );
+            config.controlAggregation =
+                ((sourceRoute?.target as string[]) ?? []).length > 1 ? 'endColumnPages' : 'midColumnPages';
+        } else {
+            config.controlAggregation = 'beginColumnPages';
+        }
+    }
+    return config;
 }
 
 /**

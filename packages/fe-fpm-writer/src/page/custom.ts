@@ -3,10 +3,38 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { enhanceData } from './defaults';
-import type { CustomPage } from './types';
+import type { CustomPage, InternalCustomPage } from './types';
+import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
+import { setCommonDefaults } from '../common/defaults';
+import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
-import { getManifestJsonExtensionHelper, validatePageConfig } from './common';
+
+/**
+ * Enhances the provided custom page configuration with default data.
+ *
+ * @param data - a custom page configuration object
+ * @param manifestPath - path to the application manifest
+ * @param fs - mem-fs reference to be used for file access
+ * @returns enhanced configuration
+ */
+export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor): InternalCustomPage {
+    const manifest = fs.readJSON(manifestPath) as Manifest;
+
+    // set common defaults
+    const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
+
+    // set FCL configuration
+    const fclConfig = getFclConfig(manifest, config.navigation);
+    config.fcl = fclConfig.fcl;
+    config.controlAggregation = fclConfig.controlAggregation;
+
+    if (config.view === undefined) {
+        config.view = {
+            title: config.name
+        };
+    }
+    return config;
+}
 
 /**
  * Validate the UI5 version and if valid return the root folder for the templates to be used.

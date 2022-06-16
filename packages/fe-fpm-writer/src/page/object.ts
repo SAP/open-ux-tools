@@ -3,11 +3,9 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { enhanceData } from './defaults';
-import type { CustomPage, InternalObjectPage } from './types';
-import { validateVersion } from '../common/validate';
-import { getManifestJsonExtensionHelper, validatePageConfig } from './common';
-import { ObjectPage } from 'page';
+import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
+import type { Manifest } from '../common/types';
+import type { ObjectPage, InternalObjectPage } from './types';
 
 /**
  * Add an object page to an existing UI5 application.
@@ -24,8 +22,9 @@ export function generate(basePath: string, data: ObjectPage, fs?: Editor): Edito
     validatePageConfig(basePath, data, fs);
 
     const manifestPath = join(basePath, 'webapp/manifest.json');
-    //const config = enhanceData(data, manifestPath, fs);
-    const config: InternalObjectPage = { ...data, name: 'ObjectPage' }; // TEMP
+    const manifest = fs.readJSON(manifestPath) as Manifest;
+
+    const config: InternalObjectPage = { ...data, name: 'ObjectPage', ...getFclConfig(manifest, data.navigation) };
 
     // enhance manifest.json
     fs.extendJSON(
