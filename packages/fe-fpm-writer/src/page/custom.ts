@@ -16,9 +16,9 @@ import { getManifestJsonExtensionHelper, validatePageConfig } from './common';
  */
 export function getTemplateRoot(ui5Version?: number): string {
     if (ui5Version === undefined || ui5Version >= 1.94) {
-        return join(__dirname, '../../templates/page/1.94');
+        return join(__dirname, '../../templates/page/custom/1.94');
     } else {
-        return join(__dirname, '../../templates/page/1.84');
+        return join(__dirname, '../../templates/page/custom/1.84');
     }
 }
 
@@ -38,6 +38,7 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     validatePageConfig(basePath, data, fs);
 
     const manifestPath = join(basePath, 'webapp/manifest.json');
+
     const config = enhanceData(data, manifestPath, fs);
 
     // merge content into existing files

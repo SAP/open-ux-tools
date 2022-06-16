@@ -30,11 +30,6 @@ export interface Navigation {
  */
 export interface ObjectPage {
     /**
-     * Optional name of the object page. If not provided then the name will be generated based on the entity name.
-     */
-    name?: string;
-
-    /**
      * Name of the entity used for the custom page.
      */
     entity: string;
@@ -79,7 +74,7 @@ export interface FCL {
     /**
      * The FCL flag is calculated to true if the existing app is configured to use the flexible column layout
      */
-    fcl: boolean;
+    fcl?: boolean;
 
     /**
      * Represents the name of the control aggregation to be used for the custom page.
@@ -93,4 +88,4 @@ export interface FCL {
  */
 export type InternalCustomPage = CustomPage & InternalCustomElement & FCL;
 
-export type InternalObjectPage = ObjectPage & FCL;
+export type InternalObjectPage = ObjectPage & FCL & { name: 'ObjectPage' };

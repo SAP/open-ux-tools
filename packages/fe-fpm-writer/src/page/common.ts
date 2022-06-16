@@ -2,8 +2,9 @@ import { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { ManifestNamespace } from '@sap-ux/ui5-config';
 import { validateBasePath } from '../common/validate';
-import type { CustomPage, InternalCustomPage, InternalObjectPage, ObjectPage } from './types';
+import type { CustomPage, FCL, InternalCustomPage, InternalObjectPage, ObjectPage } from './types';
 import type { Manifest } from '../common/types';
+import { FCL_ROUTER } from 'common/defaults';
 
 /**
  * Add a new route to the provided route array, and update existing routes if necessary (e.g. if targets are defined as arrays for FCL).
