@@ -46,5 +46,28 @@ describe('ListReport', () => {
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
+
+        test('all optional settings used', () => {
+            const target = join(testDir, 'all-settings');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generate(
+                target,
+                {
+                    ...minimalInput,
+                    settings: {
+                        enhanceI18n: true,
+                        tableSettings: {
+                            condensedTableLayout: true,
+                            selectionMode: 'None',
+                            type: 'GridTable'
+                        },
+                        variantManagement: 'Page'
+                    }
+                },
+                fs
+            );
+
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
     });
 });

@@ -48,16 +48,6 @@ describe('ObjectPage', () => {
             entity: 'RootEnity'
         };
 
-        const inputWithNavigation: ObjectPage = {
-            ...minimalInput,
-            navigation: {
-                sourcePage: 'TestListReport',
-                sourceEntity: 'RootEntity',
-                navEntity: 'navToChildEntity',
-                navKey: true
-            }
-        };
-
         test('minimal input', () => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
@@ -66,10 +56,40 @@ describe('ObjectPage', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
+        test('all optional settings', () => {
+            const target = join(testDir, 'all-settings');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generate(
+                target,
+                {
+                    ...minimalInput,
+                    settings: {
+                        enhanceI18n: true,
+                        variantManagement: 'Page'
+                    }
+                },
+                fs
+            );
+
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
+
         test('simple inbound navigation', () => {
             const target = join(testDir, 'with-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-            generate(target, inputWithNavigation, fs);
+            generate(
+                target,
+                {
+                    ...minimalInput,
+                    navigation: {
+                        sourcePage: 'TestListReport',
+                        sourceEntity: 'RootEntity',
+                        navEntity: 'navToChildEntity',
+                        navKey: true
+                    }
+                },
+                fs
+            );
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
         });
     });

@@ -25,6 +25,22 @@ export interface Navigation {
     navKey?: boolean;
 }
 
+export interface StandardPageSettings {
+    enhanceI18n?: string | true;
+    variantManagement?: 'Page' | 'None';
+}
+
+/**
+ * Support list of settings for a ListReport page
+ */
+export interface ListReportSettings extends StandardPageSettings {
+    tableSettings?: {
+        type?: 'ResponsiveTable' | 'GridTable';
+        selectionMode?: 'None' | 'Single' | 'Multi' | 'Auto';
+        condensedTableLayout?: boolean;
+    };
+}
+
 /**
  * Configuration options for adding a list report page.
  */
@@ -33,6 +49,11 @@ export interface ListReport {
      * Name of the entity used for the custom page.
      */
     entity: string;
+
+    /**
+     * Optional settings for the ListReport page
+     */
+    settings?: ListReportSettings;
 }
 
 /**
@@ -43,6 +64,11 @@ export interface ObjectPage {
      * Name of the entity used for the custom page.
      */
     entity: string;
+
+    /**
+     * Optional settings for the object page
+     */
+    settings?: StandardPageSettings;
 
     /**
      * Optional incoming navigation configuration. If provided then a navigation configuration is added to an existing page navigating to this custom page.
@@ -98,6 +124,6 @@ export interface FCL {
  */
 export type InternalCustomPage = CustomPage & InternalCustomElement & FCL;
 
-export type InternalListReport = ListReport & FCL & { name: 'ListReport'; navigation?: Navigation };
+export type InternalListReport = ListReport & FCL & { name: 'ListReport'; navigation?: Navigation; settings: any };
 
-export type InternalObjectPage = ObjectPage & FCL & { name: 'ObjectPage' };
+export type InternalObjectPage = ObjectPage & FCL & { name: 'ObjectPage'; settings: any };

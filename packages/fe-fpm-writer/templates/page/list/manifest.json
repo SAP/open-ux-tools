@@ -8,10 +8,7 @@
                     "name": "sap.fe.templates.ListReport",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
-                        "settings": {
-                            "entitySet": "<%- entity %>",
-                            "navigation": { }
-                        }
+                        "settings": <%- JSON.stringify(settings) %>
                     }
                 }
             }
