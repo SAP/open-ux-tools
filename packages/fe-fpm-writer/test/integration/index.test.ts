@@ -152,12 +152,7 @@ describe('use FPM with existing apps', () => {
         });
 
         afterAll(() => {
-            expect(
-                (fs as any).dump(targetPath, '**/test-output/*/webapp/{manifest.json,ext/**/*}')
-                /*(fs as any).dump(targetPath, (args: any) => {
-                    console.log(args);
-                })*/
-            ).toMatchSnapshot();
+            expect((fs as any).dump(targetPath, '**/test-output/*/webapp/{manifest.json,ext/**/*}')).toMatchSnapshot();
         });
     });
 });
