@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomAction, CustomActionTarget, InternalCustomAction } from './types';
+import type { CustomAction, CustomActionTarget, InternalCustomAction, CustomActionNewEventHandler } from './types';
 import { TargetControl } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
@@ -89,38 +89,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     // add event handler if requested
     if (eventHandler === true || typeof eventHandler === 'object') {
-        // New event handler function name - 'onPress' is default
-        let eventHandlerFnName = 'onPress';
-        let insertPosition: FileContentPosition | undefined;
-        // By default - use action name for js file name
-        let fileName = config.name;
-        let prependComma: boolean | undefined;
-        if (typeof eventHandler === 'object') {
-            if (eventHandler.fnName) {
-                eventHandlerFnName = eventHandler.fnName;
-            }
-            insertPosition = eventHandler.insertPosition;
-            if (eventHandler.fileName) {
-                // Use passed file name
-                fileName = eventHandler.fileName;
-            }
-            prependComma = eventHandler.prependComma;
-        }
-        const controllerPath = join(config.path, `${fileName}.js`);
-        if (!fs.exists(controllerPath)) {
-            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, {
-                eventHandlerFnName
-            });
-        } else if (insertPosition) {
-            let content = fs.read(controllerPath);
-            const actionJsString = render(fs.read(join(root, 'common/EventHandlerFn.js')), {
-                eventHandlerFnName,
-                prependComma
-            });
-            content = insertTextAtPosition(actionJsString, content, insertPosition);
-            fs.write(controllerPath, content);
-        }
-        config.settings.eventHandler = `${config.ns}.${fileName}.${eventHandlerFnName}`;
+        config.settings.eventHandler = createNewEventHandler(fs, root, config, eventHandler);
     }
 
     // enhance manifest with action definition and controller reference
@@ -129,4 +98,54 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     fs.writeJSON(manifestPath, manifest);
 
     return fs;
+}
+
+/**
+ * Method creates or updates handler js file and update 'settings.eventHandler' entry with namespace path entry to method.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} root - the root path
+ * @param {InternalCustomAction} config - action configuration
+ * @param {true | CustomActionNewEventHandler} eventHandler - eventHandler for creation
+ * @returns {string} full namespace path to method
+ */
+function createNewEventHandler(
+    fs: Editor,
+    root: string,
+    config: InternalCustomAction,
+    eventHandler: true | CustomActionNewEventHandler
+): string {
+    // New event handler function name - 'onPress' is default
+    let eventHandlerFnName = 'onPress';
+    let insertPosition: FileContentPosition | undefined;
+    // By default - use action name for js file name
+    let fileName = config.name;
+    let prependComma: boolean | undefined;
+    if (typeof eventHandler === 'object') {
+        if (eventHandler.fnName) {
+            eventHandlerFnName = eventHandler.fnName;
+        }
+        insertPosition = eventHandler.insertPosition;
+        if (eventHandler.fileName) {
+            // Use passed file name
+            fileName = eventHandler.fileName;
+        }
+        prependComma = eventHandler.prependComma;
+    }
+    const controllerPath = join(config.path, `${fileName}.js`);
+    if (!fs.exists(controllerPath)) {
+        fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, {
+            eventHandlerFnName
+        });
+    } else if (insertPosition) {
+        let content = fs.read(controllerPath);
+        const actionJsString = render(fs.read(join(root, 'common/EventHandlerFn.js')), {
+            eventHandlerFnName,
+            prependComma
+        });
+        content = insertTextAtPosition(actionJsString, content, insertPosition);
+        fs.write(controllerPath, content);
+    }
+    // Return full namespace path to method
+    return `${config.ns}.${fileName}.${eventHandlerFnName}`;
 }
