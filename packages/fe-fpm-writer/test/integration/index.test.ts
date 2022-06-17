@@ -10,8 +10,7 @@ import {
     generateCustomView
 } from '../../src';
 import { Placement } from '../../src/common/types';
-import { generateObjectPage } from '../../src/page';
-import { argv } from 'process';
+import { generateListReport, generateObjectPage } from '../../src/page';
 
 describe('use FPM with existing apps', () => {
     const testInput = join(__dirname, '../test-input');
@@ -29,11 +28,15 @@ describe('use FPM with existing apps', () => {
         }
     });
 
-    describe('extend Fiori elements for OData v4 ListReport ObjectPage', () => {
+    describe('extend UI5 application with FPM', () => {
         const targetPath = join(testOutput, 'lrop');
         const mainEntity = 'Travel';
         beforeAll(() => {
             fs.copy(join(testInput, 'basic-lrop'), targetPath);
+        });
+
+        test('generateListReport', () => {
+            generateListReport(targetPath, { entity: mainEntity }, fs);
         });
 
         test('generateObjectPage with navigation from ListReport', () => {
@@ -44,7 +47,7 @@ describe('use FPM with existing apps', () => {
                     navigation: {
                         navEntity: mainEntity,
                         sourceEntity: mainEntity,
-                        sourcePage: 'TravelList',
+                        sourcePage: 'TravelListReport',
                         navKey: true
                     }
                 },
@@ -72,7 +75,7 @@ describe('use FPM with existing apps', () => {
             generateCustomColumn(
                 targetPath,
                 {
-                    target: 'TravelList',
+                    target: 'TravelListReport',
                     targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
                     name: 'NewCustomColumn',
                     header: 'Custom Price and Currency',
@@ -88,10 +91,33 @@ describe('use FPM with existing apps', () => {
         });
 
         test('generateCustomView in ListReport', () => {
+            //pre-requisite is at least one view based on annotations
+            fs.extendJSON(join(targetPath, 'webapp/manifest.json'), {
+                'sap.ui5': {
+                    routing: {
+                        targets: {
+                            TravelListReport: {
+                                options: {
+                                    settings: {
+                                        views: {
+                                            paths: [
+                                                {
+                                                    key: 'LineItemView',
+                                                    annotationPath: 'com.sap.vocabularies.UI.v1.LineItem'
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
             generateCustomView(
                 targetPath,
                 {
-                    target: 'TravelList',
+                    target: 'TravelListReport',
                     key: 'CustomViewKey',
                     label: 'Custom View',
                     name: 'NewCustomView',
@@ -107,7 +133,7 @@ describe('use FPM with existing apps', () => {
                 {
                     name: 'MyCustomAction',
                     target: {
-                        page: 'TravelList',
+                        page: 'TravelListReport',
                         control: TargetControl.table
                     },
                     settings: {

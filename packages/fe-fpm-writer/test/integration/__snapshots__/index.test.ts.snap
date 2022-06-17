@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`use FPM with existing apps extend Fiori elements for OData v4 ListReport ObjectPage generateCustomSection in ObjectPage 1`] = `
+exports[`use FPM with existing apps extend UI5 application with FPM generateCustomSection in ObjectPage 1`] = `
 Object {
   "webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
     "contents": "sap.ui.define([
@@ -214,7 +214,7 @@ Object {
       \\"css\\": []
     },
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.76.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.ui.core\\": {},
         \\"sap.fe.templates\\": {}
@@ -239,9 +239,9 @@ Object {
     \\"routing\\": {
       \\"routes\\": [
         {
+          \\"name\\": \\"TravelListReport\\",
           \\"pattern\\": \\":?query:\\",
-          \\"name\\": \\"TravelList\\",
-          \\"target\\": \\"TravelList\\"
+          \\"target\\": \\"TravelListReport\\"
         },
         {
           \\"name\\": \\"TravelObjectPage\\",
@@ -255,33 +255,19 @@ Object {
         }
       ],
       \\"targets\\": {
-        \\"TravelList\\": {
+        \\"TravelListReport\\": {
           \\"type\\": \\"Component\\",
-          \\"id\\": \\"TravelList\\",
+          \\"id\\": \\"TravelListReport\\",
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
               \\"entitySet\\": \\"Travel\\",
-              \\"variantManagement\\": \\"Page\\",
               \\"navigation\\": {
                 \\"Travel\\": {
                   \\"detail\\": {
                     \\"route\\": \\"TravelObjectPage\\"
                   }
                 }
-              },
-              \\"views\\": {
-                \\"paths\\": [
-                  {
-                    \\"key\\": \\"tab1\\",
-                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
-                  },
-                  {
-                    \\"key\\": \\"CustomViewKey\\",
-                    \\"label\\": \\"Custom View\\",
-                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
-                  }
-                ]
               },
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
@@ -308,6 +294,19 @@ Object {
                     }
                   }
                 }
+              },
+              \\"views\\": {
+                \\"paths\\": [
+                  {
+                    \\"key\\": \\"LineItemView\\",
+                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                  },
+                  {
+                    \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                  }
+                ]
               }
             }
           }
