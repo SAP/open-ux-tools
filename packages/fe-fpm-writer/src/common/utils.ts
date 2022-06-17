@@ -4,6 +4,7 @@ import type { FileContentPosition } from '../common/types';
 /**
  * Method insert passed text into content by line and char position.
  * In case if position is out ofrange, then whitespaces would be created.
+ *
  * @param {string} text - text to insert
  * @param {string} content - target content for update
  * @param {FileContentPosition} position - Line and char position to insert in
