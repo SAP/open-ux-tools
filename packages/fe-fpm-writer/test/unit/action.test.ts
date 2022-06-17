@@ -3,7 +3,20 @@ import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomAction, CustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
-import { TargetControl } from '../../src/action/types';
+import { CustomActionEventHandler, TargetControl } from '../../src/action/types';
+
+const existingFileContent = `sap.ui.define([], function() {
+    'use strict';
+    return {
+        onDummy: function() {
+            console.log("onPress");
+        },
+        onDummy2: function() {
+            console.log("onPress2");
+        }
+    };
+});
+`;
 
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
@@ -170,32 +183,41 @@ describe('CustomAction', () => {
         });
 
         describe('Test property "eventHandlerFnName"', () => {
-            test(`Apply "eventHandlerFnName" when "eventHandler" is "true"`, () => {
-                const eventHandlerFnName = 'DummyOnAction';
+            const generateCustomActionWithEventHandler = (
+                actionName: string,
+                eventHandler: CustomActionEventHandler,
+                folder?: string
+            ) => {
                 generateCustomAction(
                     testDir,
                     {
-                        name,
+                        name: actionName,
                         target,
+                        folder,
                         settings: {
                             ...settings,
-                            eventHandler: true,
-                            eventHandlerFnName
+                            eventHandler
                         }
                     },
                     fs
                 );
+            };
+            test(`Apply "eventHandlerFnName" when "eventHandler" is "true"`, () => {
+                const eventHandlerFnName = 'DummyOnAction';
+                generateCustomActionWithEventHandler(name, {
+                    fnName: eventHandlerFnName
+                });
+
                 const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
                 const action =
                     manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content']['header'][
                         'actions'
                     ][name];
-                expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.DummyOnAction');
+                expect(action['press']).toEqual(`my.test.App.ext.myCustomAction.MyCustomAction.${eventHandlerFnName}`);
                 expect(fs.read(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toMatchSnapshot();
             });
 
-            test(`Ignore "eventHandlerFnName" when "eventHandler" is String`, () => {
-                const eventHandlerFnName = 'DummyOnAction';
+            test(`Apply "eventHandlerFnName" when "eventHandler" is String`, () => {
                 generateCustomAction(
                     testDir,
                     {
@@ -203,8 +225,7 @@ describe('CustomAction', () => {
                         target,
                         settings: {
                             ...settings,
-                            eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction',
-                            eventHandlerFnName
+                            eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction'
                         }
                     },
                     fs
@@ -216,6 +237,39 @@ describe('CustomAction', () => {
                     ][name];
                 expect(action['press']).toEqual('my.test.App.ext.ExistingHandler.onCustomAction');
                 expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
+            });
+
+            test(`Apply "eventHandlerFnName" by adding new function to existing file`, () => {
+                const fileName = 'MyExistingAction';
+                // Create existing file with existing actions
+                const folder = join('ext', 'fragments');
+                const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
+                fs.write(existingPath, existingFileContent);
+                // Create second action - append previously created file
+                const actionName = 'CustomAction2';
+                const fnName = 'onHandleSecondAction';
+                generateCustomActionWithEventHandler(
+                    actionName,
+                    {
+                        fnName,
+                        fileName,
+                        insertPosition: {
+                            line: 8,
+                            character: 9
+                        },
+                        prependComma: true
+                    },
+                    folder
+                );
+
+                const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action =
+                    manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content']['header'][
+                        'actions'
+                    ][actionName];
+                expect(action['press']).toEqual(`my.test.App.ext.fragments.${fileName}.${fnName}`);
+                // Check update js file content
+                expect(fs.read(existingPath)).toMatchSnapshot();
             });
         });
     });

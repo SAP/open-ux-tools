@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement, Position } from '../common/types';
+import type { CustomElement, InternalCustomElement, Position, FileContentPosition } from '../common/types';
 
 export enum TargetControl {
     header = 'header',
@@ -14,6 +14,27 @@ export interface CustomActionTarget {
     qualifier?: string;
 }
 
+export interface CustomActionNewEventHandler {
+    /**
+     * JS file name
+     */
+    fileName?: string;
+    /**
+     * Function name
+     */
+    fnName?: string;
+    /**
+     * If file exists, then new method should be inserted in to passed position
+     */
+    insertPosition?: FileContentPosition;
+    /**
+     * Prepend comma before new function snippet
+     */
+    prependComma?: boolean;
+}
+
+export type CustomActionEventHandler = string | true | CustomActionNewEventHandler;
+
 export interface CustomAction extends CustomElement {
     target: CustomActionTarget;
     settings: {
@@ -25,13 +46,9 @@ export interface CustomAction extends CustomElement {
         /**
          * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.
          * If an existing event handler is to be used then its id needs to be provided as string.
+         * Object with 'CustomActionNewEventHandler' provides option to append existing js file with new action.
          */
-        eventHandler?: string | true;
-        /**
-         * Property works together with eventHandler, when eventHandler is set as true.
-         * If value provided - value would be used as new function's name in js.
-         */
-        eventHandlerFnName?: string;
+        eventHandler?: CustomActionEventHandler;
     };
 }
 

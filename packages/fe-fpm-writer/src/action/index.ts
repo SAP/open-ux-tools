@@ -6,8 +6,9 @@ import { TargetControl } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest } from '../common/types';
+import type { Manifest, FileContentPosition } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
+import { insertTextAtPosition } from '../common/utils';
 
 /**
  * Enhances the provided custom action configuration with default data.
@@ -84,16 +85,43 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     const config = enhanceConfig(actionConfig, manifestPath, manifest);
 
     const root = join(__dirname, '../../templates');
+    const { eventHandler } = config.settings;
 
     // add event handler if requested
-    if (config.settings.eventHandler === true) {
-        // Event handler function name - 'onPress' is default
-        config.settings.eventHandlerFnName = config.settings.eventHandlerFnName || 'onPress';
-        const controllerPath = join(config.path, `${config.name}.js`);
-        if (!fs.exists(controllerPath)) {
-            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, config.settings);
+    if (eventHandler === true || typeof eventHandler === 'object') {
+        // New event handler function name - 'onPress' is default
+        let eventHandlerFnName = 'onPress';
+        let insertPosition: FileContentPosition | undefined;
+        // By default - use action name for js file name
+        let fileName = config.name;
+        let prependComma: boolean | undefined;
+        //let newEventHandler: CustomActionNewEventHandler | undefined;
+        if (typeof eventHandler === 'object') {
+            if (eventHandler.fnName) {
+                eventHandlerFnName = eventHandler.fnName;
+            }
+            insertPosition = eventHandler.insertPosition;
+            if (eventHandler.fileName) {
+                // Use passed file name
+                fileName = eventHandler.fileName;
+            }
+            prependComma = eventHandler.prependComma;
         }
-        config.settings.eventHandler = `${config.ns}.${config.name}.${config.settings.eventHandlerFnName}`;
+        const controllerPath = join(config.path, `${fileName}.js`);
+        if (!fs.exists(controllerPath)) {
+            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, {
+                eventHandlerFnName
+            });
+        } else if (insertPosition) {
+            let content = fs.read(controllerPath);
+            let actionJsString = render(fs.read(join(root, 'common/EventHandlerFn.js')), {
+                eventHandlerFnName,
+                prependComma: true
+            });
+            content = insertTextAtPosition(actionJsString, content, insertPosition);
+            fs.write(controllerPath, content);
+        }
+        config.settings.eventHandler = `${config.ns}.${fileName}.${eventHandlerFnName}`;
     }
 
     // enhance manifest with action definition and controller reference

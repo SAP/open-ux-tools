@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" Apply "eventHandlerFnName" by adding new function to existing file 1`] = `
+"sap.ui.define([], function() {
+    'use strict';
+    return {
+        onDummy: function() {
+            console.log(\\"onPress\\");
+        },
+        onDummy2: function() {
+            console.log(\\"onPress2\\");
+        },
+        onHandleSecondAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
 exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" Apply "eventHandlerFnName" when "eventHandler" is "true" 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"

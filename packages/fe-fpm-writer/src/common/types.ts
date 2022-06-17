@@ -101,3 +101,17 @@ export interface Ui5TargetSettings {
         views?: Views;
     };
 }
+
+/**
+ * Represents a line and character position in file.
+ */
+export interface FileContentPosition {
+    /**
+     * Zero based line index.
+     */
+    line: number;
+    /**
+     * Zero based character value.
+     */
+    character: number;
+}
