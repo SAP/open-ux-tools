@@ -114,9 +114,9 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
             });
         } else if (insertPosition) {
             let content = fs.read(controllerPath);
-            let actionJsString = render(fs.read(join(root, 'common/EventHandlerFn.js')), {
+            const actionJsString = render(fs.read(join(root, 'common/EventHandlerFn.js')), {
                 eventHandlerFnName,
-                prependComma: true
+                prependComma
             });
             content = insertTextAtPosition(actionJsString, content, insertPosition);
             fs.write(controllerPath, content);
