@@ -84,11 +84,6 @@
                     "pattern": ":?query:",
                     "name": "TravelList",
                     "target": "TravelList"
-                },
-                {
-                    "pattern": "Travel({key}):?query:",
-                    "name": "TravelObjectPage",
-                    "target": "TravelObjectPage"
                 }
             ],
             "targets": {
@@ -100,13 +95,7 @@
                         "settings": {
                             "entitySet": "Travel",
                             "variantManagement": "Page",
-                            "navigation": {
-                                "Travel": {
-                                    "detail": {
-                                        "route": "TravelObjectPage"
-                                    }
-                                }
-                            },
+                            "navigation": {},
                             "views": {
                                 "paths": [
                                     {
@@ -115,16 +104,6 @@
                                     }
                                 ]
                             }
-                        }
-                    }
-                },
-                "TravelObjectPage": {
-                    "type": "Component",
-                    "id": "TravelObjectPage",
-                    "name": "sap.fe.templates.ObjectPage",
-                    "options": {
-                        "settings": {
-                            "entitySet": "Travel"
                         }
                     }
                 }

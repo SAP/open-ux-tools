@@ -10,6 +10,8 @@ import {
     generateCustomView
 } from '../../src';
 import { Placement } from '../../src/common/types';
+import { generateObjectPage } from '../../src/page';
+import { argv } from 'process';
 
 describe('use FPM with existing apps', () => {
     const testInput = join(__dirname, '../test-input');
@@ -29,8 +31,25 @@ describe('use FPM with existing apps', () => {
 
     describe('extend Fiori elements for OData v4 ListReport ObjectPage', () => {
         const targetPath = join(testOutput, 'lrop');
+        const mainEntity = 'Travel';
         beforeAll(() => {
             fs.copy(join(testInput, 'basic-lrop'), targetPath);
+        });
+
+        test('generateObjectPage with navigation from ListReport', () => {
+            generateObjectPage(
+                targetPath,
+                {
+                    entity: mainEntity,
+                    navigation: {
+                        navEntity: mainEntity,
+                        sourceEntity: mainEntity,
+                        sourcePage: 'TravelList',
+                        navKey: true
+                    }
+                },
+                fs
+            );
         });
 
         test('generateCustomPage with navigation from ObjectPage', () => {
@@ -40,7 +59,7 @@ describe('use FPM with existing apps', () => {
                     name: 'MyCustomPage',
                     entity: 'Booking',
                     navigation: {
-                        sourceEntity: 'Travel',
+                        sourceEntity: mainEntity,
                         sourcePage: 'TravelObjectPage',
                         navEntity: '_Booking'
                     }
@@ -133,11 +152,12 @@ describe('use FPM with existing apps', () => {
         });
 
         afterAll(() => {
-            if (!debug) {
-                expect(
-                    (fs as any).dump(relative(process.cwd(), targetPath), '**/webapp/{manifest.json,ext/**/*}')
-                ).toMatchSnapshot();
-            }
+            expect(
+                (fs as any).dump(targetPath, '**/test-output/*/webapp/{manifest.json,ext/**/*}')
+                /*(fs as any).dump(targetPath, (args: any) => {
+                    console.log(args);
+                })*/
+            ).toMatchSnapshot();
         });
     });
 });
