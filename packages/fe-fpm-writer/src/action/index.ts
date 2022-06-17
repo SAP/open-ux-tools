@@ -91,10 +91,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
         config.settings.eventHandlerFnName = config.settings.eventHandlerFnName || 'onPress';
         const controllerPath = join(config.path, `${config.name}.js`);
         if (!fs.exists(controllerPath)) {
-            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, {
-                ...config,
-                eventHandlerFnName: config.settings.eventHandlerFnName
-            });
+            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, config.settings);
         }
         config.settings.eventHandler = `${config.ns}.${config.name}.${config.settings.eventHandlerFnName}`;
     }
