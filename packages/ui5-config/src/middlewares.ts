@@ -87,8 +87,8 @@ export const getMockServerMiddlewareConfig = (path?: string): CustomMiddleware<M
             services: [
                 {
                     urlPath: path || '',
-                    metadataXmlPath: './webapp/localService/metadata.xml',
-                    mockdataRootPath: './webapp/localService/data',
+                    metadataPath: './webapp/localService/metadata.xml',
+                    mockdataPath: './webapp/localService/data',
                     generateMockData: true
                 }
             ],

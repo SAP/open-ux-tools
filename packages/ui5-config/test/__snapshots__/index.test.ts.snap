@@ -220,8 +220,8 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
         mountPath: /
         services:
           - urlPath: /~testpath~
-            metadataXmlPath: ./webapp/localService/metadata.xml
-            mockdataRootPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 "
@@ -236,8 +236,8 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
         mountPath: /
         services:
           - urlPath: ''
-            metadataXmlPath: ./webapp/localService/metadata.xml
-            mockdataRootPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 "

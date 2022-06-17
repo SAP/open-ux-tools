@@ -94,8 +94,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataXmlPath: ./webapp/localService/metadata.xml
-            mockdataRootPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 ",
@@ -135,8 +135,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataXmlPath: ./webapp/localService/metadata.xml
-            mockdataRootPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 ",
@@ -3665,8 +3665,8 @@ server:
         mountPath: /
         services:
           - urlPath: sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataXmlPath: ./webapp/localService/metadata.xml
-            mockdataRootPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 ",
@@ -3705,8 +3705,8 @@ server:
         mountPath: /
         services:
           - urlPath: sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataXmlPath: ./webapp/localService/metadata.xml
-            mockdataRootPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
             generateMockData: true
         annotations: []
 ",

@@ -46,8 +46,8 @@ export interface MockserverConfig {
     }[];
     services?: {
         urlPath: string;
-        metadataXmlPath: string;
-        mockdataRootPath?: string;
+        metadataPath: string;
+        mockdataPath?: string;
         generateMockData?: boolean;
     }[];
 }
