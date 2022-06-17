@@ -202,7 +202,7 @@ describe('CustomAction', () => {
                     fs
                 );
             };
-            test(`Apply "eventHandlerFnName" when "eventHandler" is "true"`, () => {
+            test(`"eventHandler" is "true"`, () => {
                 const eventHandlerFnName = 'DummyOnAction';
                 generateCustomActionWithEventHandler(name, {
                     fnName: eventHandlerFnName
@@ -217,7 +217,7 @@ describe('CustomAction', () => {
                 expect(fs.read(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toMatchSnapshot();
             });
 
-            test(`Apply "eventHandlerFnName" when "eventHandler" is String`, () => {
+            test(`"eventHandler" is String`, () => {
                 generateCustomAction(
                     testDir,
                     {
@@ -239,7 +239,7 @@ describe('CustomAction', () => {
                 expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
             });
 
-            test(`Apply "eventHandlerFnName" by adding new function to existing file`, () => {
+            test(`"eventHandler" is object. Append new function to existing js file`, () => {
                 const fileName = 'MyExistingAction';
                 // Create existing file with existing actions
                 const folder = join('ext', 'fragments');
