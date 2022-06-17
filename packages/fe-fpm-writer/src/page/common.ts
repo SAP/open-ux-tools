@@ -2,7 +2,15 @@ import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import type { ManifestNamespace } from '@sap-ux/ui5-config';
 import { validateBasePath } from '../common/validate';
-import type { CustomPage, FCL, InternalCustomPage, InternalObjectPage, ObjectPage, Navigation } from './types';
+import type {
+    CustomPage,
+    FCL,
+    InternalCustomPage,
+    InternalObjectPage,
+    ObjectPage,
+    Navigation,
+    InternalListReport
+} from './types';
 import type { Manifest } from '../common/types';
 import { FCL_ROUTER } from '../common/defaults';
 
@@ -12,7 +20,10 @@ import { FCL_ROUTER } from '../common/defaults';
  * @param routes existing application routes (from the manifest)
  * @param config configuration object
  */
-export function updateRoutes(routes: ManifestNamespace.Route[], config: InternalCustomPage | InternalObjectPage) {
+export function updateRoutes(
+    routes: ManifestNamespace.Route[],
+    config: InternalCustomPage | InternalObjectPage | InternalListReport
+) {
     const newRoute: ManifestNamespace.Route = {
         name: `${config.entity}${config.name}`
     };
@@ -48,7 +59,7 @@ export function updateRoutes(routes: ManifestNamespace.Route[], config: Internal
  * @returns a JsonReplacer function for the usage in ejs
  */
 export function getManifestJsonExtensionHelper(
-    config: InternalCustomPage | InternalObjectPage
+    config: InternalCustomPage | InternalObjectPage | InternalListReport
 ): (key: string, value: any) => any {
     return (key, value) => {
         switch (key) {

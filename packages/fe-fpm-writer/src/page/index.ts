@@ -1,6 +1,16 @@
-import type { CustomPage, ObjectPage, Navigation } from './types';
+import type { CustomPage, ObjectPage, ListReport, Navigation } from './types';
 import { validatePageConfig } from './common';
 import { generate as generateCustomPage } from './custom';
 import { generate as generateObjectPage } from './object';
+import { generate as generateListReport } from './list';
 
-export { validatePageConfig, generateCustomPage, generateObjectPage, CustomPage, ObjectPage, Navigation };
+export {
+    validatePageConfig,
+    generateCustomPage,
+    generateObjectPage,
+    generateListReport,
+    CustomPage,
+    ObjectPage,
+    ListReport,
+    Navigation
+};

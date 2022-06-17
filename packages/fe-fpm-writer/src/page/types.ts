@@ -26,6 +26,16 @@ export interface Navigation {
 }
 
 /**
+ * Configuration options for adding a list report page.
+ */
+export interface ListReport {
+    /**
+     * Name of the entity used for the custom page.
+     */
+    entity: string;
+}
+
+/**
  * Configuration options for adding an object page.
  */
 export interface ObjectPage {
@@ -87,5 +97,7 @@ export interface FCL {
  * Additional internal configuration options that will be calculated based on the provided input as well as the target application.
  */
 export type InternalCustomPage = CustomPage & InternalCustomElement & FCL;
+
+export type InternalListReport = ListReport & FCL & { name: 'ListReport'; navigation?: Navigation };
 
 export type InternalObjectPage = ObjectPage & FCL & { name: 'ObjectPage' };
