@@ -35,13 +35,9 @@ export function updateRoutes(
             navKey: config.navigation.navKey ? `({${config.navigation.navEntity}Key})` : ''
         };
         newRoute.pattern = `${pattern.base}/${pattern.navEntity}${pattern.navKey}:?query:`;
-        if (sourceRoute?.target?.constructor === Array) {
-            const pages = sourceRoute.target;
-            // FCL only supports 3 columns, therefore, show the page in fullscreen if it is the 4th level of navigation
-            newRoute.target =
-                pages.length > 2
-                    ? [newRoute.name]
-                    : ([...pages, newRoute.name] as [string | ManifestNamespace.RouteTargetObject]);
+        // FCL only supports 3 columns, therefore, show the page in fullscreen if it is the 4th level of navigation
+        if (sourceRoute?.target?.constructor === Array && sourceRoute.target.length < 3) {
+            newRoute.target = [...sourceRoute.target, newRoute.name] as [string | ManifestNamespace.RouteTargetObject];
         } else {
             newRoute.target = config.fcl ? [newRoute.name] : newRoute.name;
         }
