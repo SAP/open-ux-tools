@@ -33,6 +33,21 @@ exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "e
 "
 `;
 
+exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "eventHandler" is object. Append new function to unexisting js file 1`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onHandleAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
 exports[`CustomAction generateCustomAction minimal settings (no eventhandler) 1`] = `
 Object {
   "sap.app": Object {

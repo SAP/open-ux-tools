@@ -245,7 +245,7 @@ describe('CustomAction', () => {
                 const folder = join('ext', 'fragments');
                 const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
                 fs.write(existingPath, existingFileContent);
-                // Create second action - append previously created file
+                // Create third action - append existing js file
                 const actionName = 'CustomAction2';
                 const fnName = 'onHandleSecondAction';
                 generateCustomActionWithEventHandler(
@@ -270,6 +270,34 @@ describe('CustomAction', () => {
                 expect(action['press']).toEqual(`my.test.App.ext.fragments.${fileName}.${fnName}`);
                 // Check update js file content
                 expect(fs.read(existingPath)).toMatchSnapshot();
+            });
+
+            test(`"eventHandler" is object. Append new function to unexisting js file`, () => {
+                const fileName = 'MyUnexistingAction';
+                // Create second action - append previously created file
+                const actionName = 'CustomAction2';
+                const fnName = 'onHandleAction';
+                generateCustomActionWithEventHandler(
+                    actionName,
+                    {
+                        fnName,
+                        fileName,
+                        insertPosition: {
+                            line: 8,
+                            character: 9
+                        },
+                        prependComma: true
+                    }
+                );
+
+                const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action =
+                    manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content']['header'][
+                        'actions'
+                    ][actionName];
+                expect(action['press']).toEqual(`my.test.App.ext.customAction2.${fileName}.${fnName}`);
+                // Check update js file content
+                expect(fs.read(join(testDir, `webapp/ext/customAction2/${fileName}.js`))).toMatchSnapshot();
             });
         });
     });
