@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListReport generate minimal input 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEnityListReport",
+          "pattern": ":?query:",
+          "target": "RootEnityListReport",
+        },
+      ],
+      "targets": Object {
+        "RootEnityListReport": Object {
+          "id": "RootEnityListReport",
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "entitySet": "RootEnity",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+      },
+    },
+  },
+}
+`;
