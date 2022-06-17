@@ -2,4 +2,4 @@
 '@sap-ux/fe-fpm-writer': minor
 ---
 
-Add support to generate an ObjectPage into an FPM application
+Support for generating standard Fiori elements page types added.
