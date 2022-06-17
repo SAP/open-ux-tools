@@ -168,5 +168,55 @@ describe('CustomAction', () => {
                 expect(action['requiresSelection']).toEqual(value);
             });
         });
+
+        describe('Test property "eventHandlerFnName"', () => {
+            test(`Apply "eventHandlerFnName" when "eventHandler" is "true"`, () => {
+                const eventHandlerFnName = 'DummyOnAction';
+                generateCustomAction(
+                    testDir,
+                    {
+                        name,
+                        target,
+                        settings: {
+                            ...settings,
+                            eventHandler: true,
+                            eventHandlerFnName
+                        }
+                    },
+                    fs
+                );
+                const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action =
+                    manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content']['header'][
+                        'actions'
+                    ][name];
+                expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.DummyOnAction');
+                expect(fs.read(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toMatchSnapshot();
+            });
+
+            test(`Ignore "eventHandlerFnName" when "eventHandler" is String`, () => {
+                const eventHandlerFnName = 'DummyOnAction';
+                generateCustomAction(
+                    testDir,
+                    {
+                        name,
+                        target,
+                        settings: {
+                            ...settings,
+                            eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction',
+                            eventHandlerFnName
+                        }
+                    },
+                    fs
+                );
+                const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action =
+                    manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content']['header'][
+                        'actions'
+                    ][name];
+                expect(action['press']).toEqual('my.test.App.ext.ExistingHandler.onCustomAction');
+                expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
+            });
+        });
     });
 });

@@ -27,6 +27,11 @@ export interface CustomAction extends CustomElement {
          * If an existing event handler is to be used then its id needs to be provided as string.
          */
         eventHandler?: string | true;
+        /**
+         * Property works together with eventHandler, when eventHandler is set as true.
+         * If value provided - value would be used as new function's name in js.
+         */
+        eventHandlerFnName?: string;
     };
 }
 

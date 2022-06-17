@@ -87,11 +87,16 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     // add event handler if requested
     if (config.settings.eventHandler === true) {
+        // Event handler function name - 'onPress' is default
+        config.settings.eventHandlerFnName = config.settings.eventHandlerFnName || 'onPress';
         const controllerPath = join(config.path, `${config.name}.js`);
         if (!fs.exists(controllerPath)) {
-            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, config);
+            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, {
+                ...config,
+                eventHandlerFnName: config.settings.eventHandlerFnName
+            });
         }
-        config.settings.eventHandler = `${config.ns}.${config.name}.onPress`;
+        config.settings.eventHandler = `${config.ns}.${config.name}.${config.settings.eventHandlerFnName}`;
     }
 
     // enhance manifest with action definition and controller reference
