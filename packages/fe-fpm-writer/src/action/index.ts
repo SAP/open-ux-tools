@@ -95,7 +95,6 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
         // By default - use action name for js file name
         let fileName = config.name;
         let prependComma: boolean | undefined;
-        //let newEventHandler: CustomActionNewEventHandler | undefined;
         if (typeof eventHandler === 'object') {
             if (eventHandler.fnName) {
                 eventHandlerFnName = eventHandler.fnName;
