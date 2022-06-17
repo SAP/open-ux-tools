@@ -281,12 +281,7 @@ describe('CustomAction', () => {
                     actionName,
                     {
                         fnName,
-                        fileName,
-                        insertPosition: {
-                            line: 8,
-                            character: 9
-                        },
-                        prependComma: true
+                        fileName
                     }
                 );
 
