@@ -1,1 +1,1 @@
-export { convertDocument } from './parser';
+export { convertDocument, convertMetadataDocument } from './parser';

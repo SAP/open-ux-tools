@@ -1,7 +1,7 @@
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 
-import { Range, Position } from '@sap-ux/odata-annotation-core';
+import { Range, Position } from '@sap-ux/odata-annotation-core-types';
 
 export const FIXTURE_ROOT = join(__dirname, 'fixtures');
 

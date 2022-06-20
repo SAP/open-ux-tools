@@ -11,7 +11,7 @@
     },
     "version": "0.0.1",
     "license": "Apache-2.0",
-    "main": "dist/index.js",
+    "main": "dist/src/index.js",
     "scripts": {
         "build": "pnpm clean && tsc",
         "watch": "tsc --watch",
@@ -30,7 +30,8 @@
         "dist"
     ],
     "dependencies": {
-        "@sap-ux/odata-annotation-core": "workspace:*"
+        "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "@sap-ux/odata-metadata": "workspace:*"
     },
     "devDependencies": {
         "@xml-tools/ast": "5.0.5",

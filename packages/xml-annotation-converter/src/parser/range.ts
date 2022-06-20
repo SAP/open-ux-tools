@@ -1,13 +1,13 @@
 import type { XMLElement, SourcePosition } from '@xml-tools/ast';
-import { Range } from '@sap-ux/odata-annotation-core';
+import { Range } from '@sap-ux/odata-annotation-core-types';
 
-export function transformRange(position: SourcePosition): Range | undefined {
+export function transformRange(position: SourcePosition | undefined): Range | undefined {
     return position
         ? Range.create(position.startLine - 1, position.startColumn - 1, position.endLine - 1, position.endColumn)
         : undefined;
 }
 
-export function transformElementRange(position: SourcePosition, element: XMLElement): Range | undefined {
+export function transformElementRange(position: SourcePosition | undefined, element: XMLElement): Range | undefined {
     const range = transformRange(position);
     if (range && element.syntax.guessedAttributesRange) {
         // guessed attribute range only has offset and we do not know how to resolve them here.
@@ -17,7 +17,10 @@ export function transformElementRange(position: SourcePosition, element: XMLElem
     return range;
 }
 
-export function getGapRangeBetween(begin: SourcePosition, end: SourcePosition): Range | undefined {
+export function getGapRangeBetween(
+    begin: SourcePosition | undefined,
+    end: SourcePosition | undefined
+): Range | undefined {
     if (begin && end) {
         return Range.create(begin.endLine - 1, begin.endColumn, end.startLine - 1, end.startColumn - 3);
     }

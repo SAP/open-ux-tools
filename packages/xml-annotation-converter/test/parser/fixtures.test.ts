@@ -16,7 +16,8 @@ describe('fixtures', async () => {
             const expected = deserialize(await readFile(fixture.replace('.xml', '.json'), 'utf8'));
             const { cst, tokenVector } = parse(text);
             const ast = buildAst(cst as DocumentCstNode, tokenVector);
-            const result = convertDocument(ast);
+            // TODO: use real file uri
+            const result = convertDocument('file://annotations.xml', ast);
             expect(result).toStrictEqual(expected);
         });
     }

@@ -1,9 +1,27 @@
-import type { XMLDocument, XMLElement, XMLTextContent } from '@xml-tools/ast';
+import type { XMLDocument, XMLElement, XMLTextContent, XMLAttribute } from '@xml-tools/ast';
 
-import type { ElementChild, Diagnostic, Element, TextNode } from '@sap-ux/odata-annotation-core';
-import { createTextNode, createElementNode } from '@sap-ux/odata-annotation-core';
+import type {
+    ElementChild,
+    Diagnostic,
+    Element,
+    TextNode,
+    AnnotationFile,
+    Target,
+    Attributes,
+    Reference
+} from '@sap-ux/odata-annotation-core-types';
+import {
+    createTextNode,
+    createElementNode,
+    createAttributeNode,
+    Edm,
+    ELEMENT_TYPE
+} from '@sap-ux/odata-annotation-core-types';
 
-import { getGapRangeBetween, transformElementRange, transformRange } from './range';
+import { adjustRange, getGapRangeBetween, transformElementRange, transformRange } from './range';
+import { getElementsWithName } from './element-getters';
+import { getElementAttributeByName } from './attribute-getters';
+import { removeEscapeSequences } from './escaping';
 
 interface NamespaceDetails {
     alias: string;
@@ -13,13 +31,93 @@ interface NamespaceDetails {
 /**
  * Convert AST of an XML document to annotation document.
  *
+ * @param uri Uri of the document
  * @param ast AST of an XML document
  * @returns annotation document root Element
  */
-export function convertDocument(ast: XMLDocument): Element | undefined {
-    if (ast.rootElement) {
-        return convertElement(ast.rootElement);
+export function convertDocument(uri: string, ast: XMLDocument): AnnotationFile {
+    if (ast.rootElement && ast.rootElement.syntax.openBody && ast.rootElement.syntax.closeName) {
+        const dataServices = getElementsWithName('DataServices', ast.rootElement);
+        const schemas = dataServices.length ? getElementsWithName('Schema', dataServices[0]) : [];
+        const targets = schemas.reduce<Target[]>((acc, schema) => [...acc, ...convertSchema(schema)], []);
+        const range = transformElementRange(ast.rootElement.position, ast.rootElement);
+        const contentRange = getGapRangeBetween(ast.rootElement.syntax.openBody, ast.rootElement.syntax.closeName);
+        const references = convertReferences(ast.rootElement);
+        if (range && contentRange) {
+            return {
+                type: 'annotation-file',
+                uri,
+                range,
+                contentRange,
+                references,
+                targets
+            };
+        }
     }
+    return {
+        type: 'annotation-file',
+        uri,
+        range: undefined,
+        contentRange: undefined,
+        references: [],
+        targets: []
+    };
+}
+
+function convertReferences(element: XMLElement): Reference[] {
+    const referenceElements = getElementsWithName('Reference', element);
+    const references: Reference[] = [];
+    for (const referenceElement of referenceElements) {
+        const uri = getElementAttributeByName('Uri', referenceElement)?.value ?? undefined;
+        for (const namespaceElement of getElementsWithName('Include', referenceElement)) {
+            const namespace = getElementAttributeByName('Namespace', namespaceElement)?.value;
+            const alias = getElementAttributeByName('Alias', namespaceElement)?.value ?? undefined;
+            if (namespace) {
+                references.push({
+                    type: 'reference',
+                    name: namespace,
+                    alias,
+                    uri
+                });
+            }
+        }
+    }
+    return references;
+}
+
+function convertSchema(schema: XMLElement): Target[] {
+    const targets: Target[] = [];
+    const annotationsElements = getElementsWithName(Edm.Annotations, schema);
+    for (const annotations of annotationsElements) {
+        const targetAttribute = getElementAttributeByName('Target', annotations);
+        if (targetAttribute) {
+            const targetName = targetAttribute.value;
+
+            const targetNamePosition = transformRange(targetAttribute.syntax.value);
+            if (targetNamePosition) {
+                adjustRange(targetNamePosition, 1, -1);
+                const terms = getElementsWithName(Edm.Annotation, annotations)
+                    .map(convertElement)
+                    .filter((node): node is Element => node?.type === ELEMENT_TYPE);
+
+                const termsRange = getGapRangeBetween(annotations.syntax.openBody, annotations.syntax.closeName);
+                const range = transformElementRange(annotations.position, annotations);
+                if (targetName) {
+                    const target: Target = {
+                        type: 'target',
+                        name: targetName,
+                        nameRange: targetNamePosition,
+                        terms,
+                        range,
+                        termsRange
+                    };
+                    targets.push(target);
+                }
+            }
+        }
+    }
+
+    return targets;
 }
 
 function getNamespace(element: XMLElement): NamespaceDetails | undefined {
@@ -93,11 +191,36 @@ function convertElement(element: XMLElement): Element {
             diagnostics: Diagnostic[];
         }
     );
+    const attributes = element.attributes.reduce<Attributes>((acc: Attributes, attribute: XMLAttribute) => {
+        if (!attribute.key) {
+            return acc;
+        }
+        const value = attribute.value ? removeEscapeSequences(attribute.value) : '';
+
+        // {
+        //     type: ATTRIBUTE_TYPE,
+        //     name: atr.key,
+        //     value,
+        //     nameRange: transformRange(attribute.syntax.key),
+        //     valueRange: transformRange(attribute.syntax.value)
+        // };
+        const attributeNode = createAttributeNode(
+            attribute.key,
+            value,
+            transformRange(attribute.syntax.key),
+            transformRange(attribute.syntax.value)
+        );
+        if (attributeNode.valueRange) {
+            adjustRange(attributeNode.valueRange, 1, -1);
+        }
+        acc[attribute.key] = attributeNode;
+        return acc;
+    }, {});
     return createElementNode(
         element.name ?? '',
         range,
         nameRange,
-        {},
+        attributes,
         children.nodes,
         contentRange,
         namespace?.uri,

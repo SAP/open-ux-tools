@@ -6,12 +6,12 @@ export interface Node {
 }
 export const ATTRIBUTE_TYPE = 'attribute';
 
-export interface Attribute extends Node {
+export interface Attribute {
     type: typeof ATTRIBUTE_TYPE;
     name: string;
     value: string;
-    nameRange: Range;
-    valueRange: Range;
+    nameRange?: Range;
+    valueRange?: Range;
 }
 
 export interface Attributes {
@@ -57,18 +57,62 @@ export interface Element extends Node {
     contentRange?: Range;
 }
 
-export type AnyNode = ElementChild;
+export const REFERENCE_TYPE = 'reference';
 
-export function createAttributeNode(
-    range: Range,
-    name: string,
-    nameRange: Range,
-    value: string,
-    valueRange: Range
-): Attribute {
+/**
+ * Outer structure and annotation file itself
+ */
+// content of 'edmx:Reference' element
+export interface Reference extends Node {
+    type: typeof REFERENCE_TYPE;
+    name: string; // for CDS this can also be any fully qualified name or empty (e.g. for: using from './otherFile')
+    nameRange?: Range; // <Include> tag's Namespace attribute value range
+    alias?: string;
+    aliasRange?: Range; // <Include> tag's Alias attribute value range
+    /**
+     * Uri to the source of the reference
+     */
+    uri?: string;
+    uriRange?: Range;
+}
+
+export const TARGET_TYPE = 'target';
+
+/**
+ * Annotation with external target.
+ */
+export interface Target extends Node {
+    type: typeof TARGET_TYPE;
+    name: string; // target path
+    nameRange?: Range; // range of target string
+    /**
+     * All annotations for this target
+     */
+    terms: Element[];
+    /**
+     * Range covering all annotations for this target
+     */
+    termsRange?: Range;
+}
+
+export const ANNOTATION_FILE_TYPE = 'annotation-file';
+
+/**
+ * Contains references block (usings) and annotation with external targeting.
+ */
+export interface AnnotationFile extends Node {
+    type: typeof ANNOTATION_FILE_TYPE;
+    uri: string;
+    contentRange?: Range;
+    references: Reference[];
+    targets: Target[];
+}
+
+export type AnyNode = ElementChild | Reference | AnnotationFile | Target;
+
+export function createAttributeNode(name: string, value: string, nameRange?: Range, valueRange?: Range): Attribute {
     return {
         type: ATTRIBUTE_TYPE,
-        range,
         name,
         nameRange,
         value,

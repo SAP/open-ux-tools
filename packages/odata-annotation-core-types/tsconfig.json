@@ -3,17 +3,10 @@
     "include": ["src/**/*.ts"],
     "compilerOptions": {
         "declaration": true,
-        "outDir": "./dist",
+        "outDir": "dist",
         "sourceMap": true,
+        "baseUrl": "./src",
         "resolveJsonModule": true,
         "composite": true
-    },
-    "references": [
-        {
-            "path": "../odata-annotation-core-types"
-        },
-        {
-            "path": "../odata-metadata"
-        }
-    ]
+    }
 }

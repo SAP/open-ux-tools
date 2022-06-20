@@ -1,0 +1,39 @@
+{
+    "name": "demo1",
+    "version": "0.0.1",
+    "private": true,
+    "sapux": true,
+    "description": "This is my new Fiori elements application",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "main": "webapp/index.html",
+    "scripts": {
+        "start-live": "npm run start-live-v2",
+        "start-live-v2": "node --inspect node_modules/@ui5/cli/bin/ui5 serve --open test/flpSandbox.html",
+        "start": "npm run build && npm run start-live",
+        "start-mock": "node --inspect node_modules/@ui5/cli/bin/ui5 serve --open test/flpSandboxMockServer.html?sap-ushell-config=headerless",
+        "build": "rimraf dist && ui5 build -a --include-task=generateManifestBundle generateCachebusterInfo"
+    },
+    "remarkConfig": {
+        "plugins": [
+            "remark-preset-lint-consistent"
+        ]
+    },
+    "devDependencies": {
+        "rimraf": "3.0.0",
+        "@ui5/logger": "^2.0.1",
+        "@ui5/cli": "^2.14.1",
+        "@sap-ux/ui5-tooling": "0.0.62"
+    },
+    "optionalDependencies": {
+        "fsevents": "1.2.9"
+    },
+    "ui5": {
+        "dependencies": [
+            "@sap-ux/ui5-tooling"
+        ]
+    }
+}

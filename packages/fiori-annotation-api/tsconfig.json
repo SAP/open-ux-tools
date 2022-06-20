@@ -1,4 +1,5 @@
 {
+    "extends": "../../tsconfig.json",
     "include": ["src/**/*.ts"],
     "compilerOptions": {
         "declaration": true,
@@ -7,5 +8,15 @@
         "baseUrl": "./src",
         "resolveJsonModule": true
     },
-    "extends": "../../tsconfig.json"
+    "references": [
+        {
+            "path": "../odata-annotation-core-types"
+        },
+        {
+            "path": "../odata-metadata"
+        },
+        {
+            "path": "../xml-annotation-converter"
+        }
+    ]
 }

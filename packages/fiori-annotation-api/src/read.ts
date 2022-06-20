@@ -1,28 +1,13 @@
-import type { ConvertedMetadata, RawMetadata } from '@sap-ux/vocabularies-types';
+import type { AnnotationList, ConvertedMetadata, RawAnnotation, RawMetadata } from '@sap-ux/vocabularies-types';
 import { convert } from '@sap-ux/annotation-converter';
 
-import type { Project } from './project';
+import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
+import { MetadataService } from '@sap-ux/odata-metadata';
 
-export interface CapService {
-    type: 'CAP';
-    serviceFiles: File[];
-}
-
-export interface LocalService {
-    type: 'local';
-    metadataFile: File;
-    annotationFiles: File[];
-}
-
-export interface File {
-    /**
-     * Absolute uri to the file
-     */
-    uri: string;
-    content: string;
-}
-
-export type Service = CapService | LocalService;
+import type { CompiledService, Service } from './services';
+import { mergeXmlAnnotations, readXmlAnnotations } from './xml';
+import { convertMetaDataToAvtSchema } from './convenience';
+import { convertAnnotationFile } from './formatConversion';
 
 /**
  * Reads annotations for a specific service in an application.
@@ -31,47 +16,51 @@ export type Service = CapService | LocalService;
  * @returns
  */
 export function readAnnotations(service: Service): ConvertedMetadata {
+    const compiledService = compileService(service);
+
+    const metadataService = new MetadataService();
+    metadataService.import(compiledService.metadata);
+
     const rawMetadata: RawMetadata = {
         version: '2.0',
         identification: 'metadataFile',
-        schema: {
-            actions: [],
-            annotations: {},
-            associationSets: [],
-            associations: [],
-            complexTypes: [],
-            entityContainer: {
-                _type: 'EntityContainer',
-                fullyQualifiedName: ''
-            },
-            entitySets: [],
-            entityTypes: [],
-            namespace: '',
-            singletons: [],
-            typeDefinitions: []
-        },
+        schema: convertMetaDataToAvtSchema(metadataService),
         references: []
     };
 
-    // const application = project.apps[applicationName];
+    const annotationIds = new Set<string>();
 
-    // if (!application) {
-    //     throw new Error(`Application "${applicationName}" not found in the project.`); // TODO: translate?
-    // }
-
-    // const service = application.services[serviceName];
-    // if (!service) {
-    //     throw new Error(`Service "${serviceName}" not found in the project.`); // TODO: translate?
-    // }
-
-    // service.
+    // Merge
+    for (const annotationFile of [...compiledService.annotationFiles].reverse()) {
+        const targets = convertAnnotationFile(annotationFile);
+        const convertedTargets: AnnotationList[] = [];
+        for (const target of targets) {
+            const convertedTarget: AnnotationList = {
+                target: target.target,
+                annotations: []
+            };
+            for (const annotation of target.annotations) {
+                const qualifier = annotation.qualifier ? '#' + annotation.qualifier : '';
+                const id = `${target.target}@${annotation.term}${qualifier}`;
+                if (!annotationIds.has(id)) {
+                    annotationIds.add(id);
+                    convertedTarget.annotations.push(annotation);
+                }
+            }
+            if (convertedTarget.annotations.length) {
+                convertedTargets.push(convertedTarget);
+            }
+        }
+        rawMetadata.schema.annotations[annotationFile.uri] = convertedTargets;
+    }
 
     return convert(rawMetadata);
 }
 
-function loadService(service: Service) {
+function compileService(service: Service): CompiledService {
     if (service.type === 'local') {
-    } else if (service.type === 'CAP') {
+        return readXmlAnnotations(service);
+    } else {
+        throw new Error(`Unsupported service type "${service.type}"!`);
     }
-    throw new Error(`Unknown service type '${service.type}'`);
 }
