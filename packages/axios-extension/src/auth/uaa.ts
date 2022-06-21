@@ -180,13 +180,15 @@ export class Uaa {
         return new Promise((resolve, reject) => {
             // eslint-disable-next-line prefer-const
             let redirect: Redirect;
+            // eslint-disable-next-line prefer-const
+            let server: http.Server;
             const handleTimeout = (): void => {
-                server.close();
+                server?.close();
                 reject(new UAATimeoutError(`Timeout. Did not get a response within ${prettyPrintTimeInMs(timeout)}`));
             };
             const timer = setTimeout(handleTimeout, timeout);
-            const server = http.createServer((req, res) => {
-                const reqUrl = new URL(req.url);
+            server = http.createServer((req, res) => {
+                const reqUrl = new URL(req.url, `http:${req.headers.host}`);
                 if (reqUrl.pathname === Redirect.path) {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(Buffer.from(redirectSuccessHtml(this.logoutUrl, this.systemId)));

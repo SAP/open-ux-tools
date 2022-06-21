@@ -31,14 +31,17 @@ export interface SetupRedirectOptions {
 export function setupRedirectHandling({ resolve, reject, timeout, backend, logger }: SetupRedirectOptions): Redirect {
     const REDIRECT_PATH = '/redirect';
 
+    // eslint-disable-next-line prefer-const
+    let server: http.Server;
+
     const handleTimeout = (): void => {
-        server.close();
+        server?.close();
         reject(new TimeoutError(`Timeout. Did not get a response within ${prettyPrintTimeInMs(timeout)}`));
     };
 
     const timer = setTimeout(handleTimeout, timeout);
-    const server = http.createServer((req, res) => {
-        const reqUrl = new URL(req.url);
+    server = http.createServer((req, res) => {
+        const reqUrl = new URL(req.url, `http:${req.headers.host}`);
         if (reqUrl.pathname === REDIRECT_PATH) {
             if (timer) {
                 clearTimeout(timer);
