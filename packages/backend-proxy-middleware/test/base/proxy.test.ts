@@ -263,7 +263,7 @@ describe('proxy', () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const cloudSystem = {
                 ...system,
-                serviceKeys: '{"keys": "~keys"}',
+                serviceKeys: { keys: '~keys' },
                 refreshToken: '~token'
             };
             const callback = jest.fn();
@@ -271,7 +271,7 @@ describe('proxy', () => {
             expect(proxyOptions.headers.cookie).toBe('~cookies');
             expect(mockCreateForAbapOnCloud).toBeCalledWith({
                 environment: AbapCloudEnvironment.Standalone,
-                service: JSON.parse(cloudSystem.serviceKeys),
+                service: cloudSystem.serviceKeys,
                 refreshToken: cloudSystem.refreshToken,
                 refreshTokenChangedCb: callback
             });

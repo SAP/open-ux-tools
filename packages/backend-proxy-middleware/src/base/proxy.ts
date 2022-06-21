@@ -13,7 +13,8 @@ import {
     getCredentialsForDestinationService,
     listDestinations,
     isFullUrlDestination,
-    BAS_DEST_INSTANCE_CRED_HEADER
+    BAS_DEST_INSTANCE_CRED_HEADER,
+    ServiceInfo
 } from '@sap-ux/btp-utils';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import translations from './i18n.json';
@@ -240,7 +241,7 @@ export async function enhanceConfigForSystem(
         if (system.serviceKeys) {
             const provider = createForAbapOnCloud({
                 environment: AbapCloudEnvironment.Standalone,
-                service: JSON.parse(system.serviceKeys as string),
+                service: system.serviceKeys as ServiceInfo,
                 refreshToken: system.refreshToken,
                 refreshTokenChangedCb: tokenChangedCallback
             });
