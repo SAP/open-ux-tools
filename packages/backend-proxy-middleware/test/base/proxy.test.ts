@@ -38,6 +38,11 @@ const mockListDestinations = listDestinations as jest.Mock;
 const mockGetCredentialsForDestinationService = getCredentialsForDestinationService as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
+const mockPrompt = jest.fn();
+jest.mock('prompts', () => {
+    return () => mockPrompt();
+});
+
 describe('proxy', () => {
     type OptionsWithHeaders = Options & { headers: object };
     const logger = new ToolsLogger({
@@ -366,6 +371,24 @@ describe('proxy', () => {
             expect(options.ws).toBeUndefined();
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
+        });
+
+        test('generate proxy middleware options for FLP Embedded flow', async () => {
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path',
+                bsp: 'my_bsp'
+            };
+            const answers = {
+                username: '~user',
+                password: '~password'
+            };
+            mockIsAppStudio.mockReturnValue(false);
+            mockPrompt.mockResolvedValue({ ...answers, authNeeded: true });
+            const options = await generateProxyMiddlewareOptions(backend);
+            expect(options.pathRewrite).toBeDefined();
+            expect(options.router).toBeDefined();
+            expect(options.auth).toBeDefined();
         });
     });
 

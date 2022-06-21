@@ -319,7 +319,7 @@ export async function generateProxyMiddlewareOptions(
     proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
 
     if (backend.bsp) {
-        addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);
+        await addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);
     }
 
     if (backend.apiHub) {
