@@ -1,5 +1,4 @@
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
-import express from 'express';
 import type { Options } from 'http-proxy-middleware';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
@@ -20,7 +19,6 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
     dotenv.config();
-    const router = express.Router();
     const config = options.configuration;
     const ui5Version = await resolveUI5Version(config.version, logger);
     const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;
@@ -43,6 +41,7 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
 
     const configs = Array.isArray(config.ui5) ? config.ui5 : [config.ui5];
     const ui5Configs: ProxyConfig[] = [];
+    const routes: { route: string; handler: RequestHandler }[] = [];
     for (const ui5 of configs) {
         const paths = Array.isArray(ui5.path) ? ui5.path : [ui5.path];
         for (const ui5Path of paths) {
@@ -54,16 +53,27 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
             if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
                 proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
             }
-            router.use(ui5Config.path, ui5Proxy(ui5Config, proxyOptions));
+            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });
             ui5Configs.push(ui5Config);
         }
     }
 
     if (directLoad) {
-        router.use(HTML_MOUNT_PATHS, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const directLoadProxy = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
             await injectScripts(req, res, next, ui5Configs);
+        };
+
+        HTML_MOUNT_PATHS.forEach((path) => {
+            routes.push({ route: path, handler: directLoadProxy });
         });
     }
 
-    return router;
+    return (req, res, next) => {
+        for (const route of routes) {
+            if (req.path.startsWith(route.route)) {
+                return route.handler(req, res, next);
+            }
+        }
+        next();
+    };
 };
