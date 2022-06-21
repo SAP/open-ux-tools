@@ -38,7 +38,7 @@ export function setupRedirectHandling({ resolve, reject, timeout, backend, logge
 
     const timer = setTimeout(handleTimeout, timeout);
     const server = http.createServer((req, res) => {
-        const reqUrl = new URL(req.url);
+        const reqUrl = new URL(req.url, `http:${req.headers.host}`);
         if (reqUrl.pathname === REDIRECT_PATH) {
             if (timer) {
                 clearTimeout(timer);

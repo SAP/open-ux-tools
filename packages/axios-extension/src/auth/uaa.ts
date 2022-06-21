@@ -186,7 +186,7 @@ export class Uaa {
             };
             const timer = setTimeout(handleTimeout, timeout);
             const server = http.createServer((req, res) => {
-                const reqUrl = new URL(req.url);
+                const reqUrl = new URL(req.url, `http:${req.headers.host}`);
                 if (reqUrl.pathname === Redirect.path) {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(Buffer.from(redirectSuccessHtml(this.logoutUrl, this.systemId)));
