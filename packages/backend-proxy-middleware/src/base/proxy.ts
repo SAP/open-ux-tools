@@ -13,9 +13,9 @@ import {
     getCredentialsForDestinationService,
     listDestinations,
     isFullUrlDestination,
-    BAS_DEST_INSTANCE_CRED_HEADER,
-    ServiceInfo
+    BAS_DEST_INSTANCE_CRED_HEADER
 } from '@sap-ux/btp-utils';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import translations from './i18n.json';
 
