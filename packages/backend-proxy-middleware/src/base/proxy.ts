@@ -22,6 +22,7 @@ import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendS
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
 import { getCorporateProxyServer, isHostExcludedFromProxy } from './config';
 import type { Url } from 'url';
+import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 
 /**
  * Collection of custom event handler for the proxy.
@@ -316,6 +317,10 @@ export async function generateProxyMiddlewareOptions(
     }
 
     proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
+
+    if (backend.bsp) {
+        addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);
+    }
 
     if (backend.apiHub) {
         const apiHubKey = await getApiHubKey(logger);
