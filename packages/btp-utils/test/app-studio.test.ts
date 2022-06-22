@@ -29,7 +29,9 @@ jest.mock('@sap/cf-tools', () => {
             if (name === 'invalid') {
                 throw new Error();
             } else {
-                return name.includes('uaa') ? { uaa: mockInstanceSettings } : mockInstanceSettings;
+                return name.includes('uaa')
+                    ? { credentials: { uaa: mockInstanceSettings } }
+                    : { credentials: mockInstanceSettings };
             }
         })
     };

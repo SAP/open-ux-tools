@@ -34,9 +34,9 @@ export function getAppStudioProxyURL(): string | undefined {
  */
 export async function getCredentialsForDestinationService(instance: string): Promise<string> {
     try {
-        const serviceInfo = await cfGetInstanceKeyParameters(instance);
-        const clientId = serviceInfo.uaa?.clientid || serviceInfo.clientid;
-        const clientSecret = serviceInfo.uaa?.clientsecret || serviceInfo.clientsecret;
+        const serviceCredentials = (await cfGetInstanceKeyParameters(instance)).credentials;
+        const clientId = serviceCredentials.uaa?.clientid || serviceCredentials.clientid;
+        const clientSecret = serviceCredentials.uaa?.clientsecret || serviceCredentials.clientsecret;
         return Buffer.from(`${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`).toString('base64');
     } catch (error) {
         throw new Error(
