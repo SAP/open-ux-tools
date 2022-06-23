@@ -28,6 +28,10 @@ jest.mock('@sap/cf-tools', () => {
         cfGetInstanceKeyParameters: jest.fn((name?) => {
             if (name === 'invalid') {
                 throw new Error();
+            } else if (name === 'noinstance') {
+                return undefined;
+            } else if (name === 'nocredentials') {
+                return {};
             } else {
                 return name.includes('uaa')
                     ? { credentials: { uaa: mockInstanceSettings } }
@@ -87,6 +91,14 @@ describe('App Studio', () => {
 
         it('Invalid instance', async () => {
             expect(getCredentialsForDestinationService('invalid')).rejects.toThrowError();
+        });
+
+        it('Instance does not exist', async () => {
+            expect(getCredentialsForDestinationService('noinstance')).rejects.toThrowError();
+        });
+
+        it('Instance does not have credentials', async () => {
+            expect(getCredentialsForDestinationService('nocredentials')).rejects.toThrowError();
         });
     });
 
