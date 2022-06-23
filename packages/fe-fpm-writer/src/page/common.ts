@@ -34,7 +34,10 @@ export function updateRoutes(
             navEntity: config.navigation.navEntity,
             navKey: config.navigation.navKey ? `({${config.navigation.navEntity}Key})` : ''
         };
-        newRoute.pattern = `${pattern.base}/${pattern.navEntity}${pattern.navKey}:?query:`;
+        if (pattern.base) {
+            pattern.base = `${pattern.base}/`;
+        }
+        newRoute.pattern = `${pattern.base}${pattern.navEntity}${pattern.navKey}:?query:`;
         // FCL only supports 3 columns, therefore, show the page in fullscreen if it is the 4th level of navigation
         if (sourceRoute?.target?.constructor === Array && sourceRoute.target.length < 3) {
             newRoute.target = [...sourceRoute.target, newRoute.name] as [string | ManifestNamespace.RouteTargetObject];

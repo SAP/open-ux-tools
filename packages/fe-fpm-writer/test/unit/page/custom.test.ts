@@ -65,7 +65,6 @@ describe('CustomPage', () => {
             entity: 'ChildEntity',
             navigation: {
                 sourcePage: 'TestObjectPage',
-                sourceEntity: 'RootEntity',
                 navEntity: 'navToChildEntity',
                 navKey: true
             }
@@ -177,7 +176,6 @@ describe('CustomPage', () => {
             entity: 'ChildEntity',
             navigation: {
                 sourcePage: 'TestObjectPage',
-                sourceEntity: 'RootEntity',
                 navEntity: 'navToChildEntity',
                 navKey: true
             }

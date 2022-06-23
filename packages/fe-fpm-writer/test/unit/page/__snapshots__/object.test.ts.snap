@@ -14,31 +14,37 @@ Object {
     "routing": Object {
       "routes": Array [
         Object {
-          "name": "TestListReport",
+          "name": "RootEntityListReport",
           "pattern": ":?query:",
           "target": "TestListReport",
         },
         Object {
-          "name": "RootEnityObjectPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityObjectPage",
+          "name": "RootEntityObjectPage",
+          "pattern": "RootEntity({RootEntityKey}):?query:",
+          "target": "RootEntityObjectPage",
+        },
+        Object {
+          "name": "OtherEntityObjectPage",
+          "pattern": "OtherEntity:?query:",
+          "target": "OtherEntityObjectPage",
         },
       ],
       "targets": Object {
-        "RootEnityObjectPage": Object {
-          "id": "RootEnityObjectPage",
+        "OtherEntityObjectPage": Object {
+          "id": "OtherEntityObjectPage",
           "name": "sap.fe.templates.ObjectPage",
           "options": Object {
             "settings": Object {
-              "enhanceI18n": "i18n/customRootEnityObjectPage.properties",
-              "entitySet": "RootEnity",
+              "enhanceI18n": "i18n/customOtherEntityObjectPage.properties",
+              "entitySet": "OtherEntity",
               "navigation": Object {},
               "variantManagement": "Page",
             },
           },
           "type": "Component",
         },
-        "TestListReport": Object {},
+        "RootEntityListReport": Object {},
+        "RootEntityObjectPage": Object {},
       },
     },
   },
@@ -59,29 +65,35 @@ Object {
     "routing": Object {
       "routes": Array [
         Object {
-          "name": "TestListReport",
+          "name": "RootEntityListReport",
           "pattern": ":?query:",
           "target": "TestListReport",
         },
         Object {
-          "name": "RootEnityObjectPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityObjectPage",
+          "name": "RootEntityObjectPage",
+          "pattern": "RootEntity({RootEntityKey}):?query:",
+          "target": "RootEntityObjectPage",
+        },
+        Object {
+          "name": "OtherEntityObjectPage",
+          "pattern": "OtherEntity:?query:",
+          "target": "OtherEntityObjectPage",
         },
       ],
       "targets": Object {
-        "RootEnityObjectPage": Object {
-          "id": "RootEnityObjectPage",
+        "OtherEntityObjectPage": Object {
+          "id": "OtherEntityObjectPage",
           "name": "sap.fe.templates.ObjectPage",
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "OtherEntity",
               "navigation": Object {},
             },
           },
           "type": "Component",
         },
-        "TestListReport": Object {},
+        "RootEntityListReport": Object {},
+        "RootEntityObjectPage": Object {},
       },
     },
   },
@@ -92,35 +104,90 @@ exports[`ObjectPage generate simple inbound navigation 1`] = `
 Object {
   "routes": Array [
     Object {
-      "name": "TestListReport",
+      "name": "RootEntityListReport",
       "pattern": ":?query:",
       "target": "TestListReport",
     },
     Object {
-      "name": "RootEnityObjectPage",
-      "pattern": "/navToChildEntity({navToChildEntityKey}):?query:",
-      "target": "RootEnityObjectPage",
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "OtherEntityObjectPage",
+      "pattern": "OtherEntity({OtherEntityKey}):?query:",
+      "target": "OtherEntityObjectPage",
     },
   ],
   "targets": Object {
-    "RootEnityObjectPage": Object {
-      "id": "RootEnityObjectPage",
+    "OtherEntityObjectPage": Object {
+      "id": "OtherEntityObjectPage",
       "name": "sap.fe.templates.ObjectPage",
       "options": Object {
         "settings": Object {
-          "entitySet": "RootEnity",
+          "entitySet": "OtherEntity",
           "navigation": Object {},
         },
       },
       "type": "Component",
     },
-    "TestListReport": Object {
+    "RootEntityListReport": Object {
       "options": Object {
         "settings": Object {
           "navigation": Object {
-            "navToChildEntity": Object {
+            "OtherEntity": Object {
               "detail": Object {
-                "route": "RootEnityObjectPage",
+                "route": "OtherEntityObjectPage",
+              },
+            },
+          },
+        },
+      },
+    },
+    "RootEntityObjectPage": Object {},
+  },
+}
+`;
+
+exports[`ObjectPage generate simple nested navigation 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "OtherEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey})/to_OtherEntity({to_OtherEntityKey}):?query:",
+      "target": "OtherEntityObjectPage",
+    },
+  ],
+  "targets": Object {
+    "OtherEntityObjectPage": Object {
+      "id": "OtherEntityObjectPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "entitySet": "OtherEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {},
+    "RootEntityObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "to_OtherEntity": Object {
+              "detail": Object {
+                "route": "OtherEntityObjectPage",
               },
             },
           },

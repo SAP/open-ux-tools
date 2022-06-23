@@ -117,7 +117,7 @@ Object {
     },
     Object {
       "name": "ChildEntityCustomPage",
-      "pattern": "/navToChildEntity({navToChildEntityKey}):?query:",
+      "pattern": "navToChildEntity({navToChildEntityKey}):?query:",
       "target": "ChildEntityCustomPage",
     },
   ],

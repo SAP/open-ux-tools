@@ -10,11 +10,6 @@ export interface Navigation {
     sourcePage: string;
 
     /**
-     * Source entity that is use as the base part of the route
-     */
-    sourceEntity: string;
-
-    /**
      * Name of the navigation entity
      */
     navEntity: string;
