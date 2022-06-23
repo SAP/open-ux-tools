@@ -4,8 +4,7 @@ import {
     BackendSystemKey,
     ServiceOptions,
     ApiHubSettingsKey,
-    ApiHubSettings,
-    ApiHubSettingsService
+    ApiHubSettings
 } from '../../src';
 import os from 'os';
 import path from 'path';
