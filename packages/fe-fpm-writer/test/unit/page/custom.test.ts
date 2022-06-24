@@ -3,8 +3,6 @@ import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { ManifestNamespace } from '@sap-ux/ui5-config';
 import { generateCustomPage, validateBasePath, CustomPage } from '../../../src';
-import { validatePageConfig } from '../../../src/page';
-import { Manifest } from '../../../src/common/types';
 import { FCL_ROUTER } from '../../../src/common/defaults';
 
 describe('CustomPage', () => {
@@ -57,58 +55,6 @@ describe('CustomPage', () => {
         delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
         fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
         expect(() => validateBasePath(target, fs)).toThrowError();
-    });
-
-    describe('validateCustomPageConfig', () => {
-        const config: CustomPage = {
-            name: 'CustomPage',
-            entity: 'ChildEntity',
-            navigation: {
-                sourcePage: 'TestObjectPage',
-                navEntity: 'navToChildEntity',
-                navKey: true
-            }
-        };
-
-        test('provided navigation config is valid for existing manifest', async () => {
-            const target = join(testDir, 'validateNavigation');
-            const manifest = JSON.parse(testAppManifest) as Manifest;
-
-            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            expect(() => validatePageConfig(target, config, fs)).not.toThrowError();
-        });
-
-        test('provided navigation config is not valid for existing manifest', () => {
-            const target = join(testDir, 'invalidateNavigation');
-
-            let manifest = JSON.parse(testAppManifest) as Manifest;
-
-            manifest['sap.ui5']!.routing!.routes = [];
-            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            expect(() => validatePageConfig(target, config, fs)).toThrowError();
-
-            delete manifest['sap.ui5']!.routing!.routes;
-            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            expect(() => validatePageConfig(target, config, fs)).toThrowError();
-
-            manifest = JSON.parse(testAppManifest) as Manifest;
-
-            delete manifest['sap.ui5']!.routing!.targets!['TestObjectPage'];
-            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            expect(() => validatePageConfig(target, config, fs)).toThrowError();
-
-            delete manifest['sap.ui5']!.routing!.targets;
-            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            expect(() => validatePageConfig(target, config, fs)).toThrowError();
-
-            delete manifest['sap.ui5']!.routing;
-            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            expect(() => validatePageConfig(target, config, fs)).toThrowError();
-
-            delete manifest['sap.ui5'];
-            fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            expect(() => validatePageConfig(target, config, fs)).toThrowError();
-        });
     });
 
     describe('generateCustomPage: different versions or target folder', () => {

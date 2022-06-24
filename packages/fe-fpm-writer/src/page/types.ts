@@ -7,12 +7,12 @@ export interface Navigation {
     /**
      * Source of the navigation to the custom page
      */
-    sourcePage: string;
+    sourcePage?: string;
 
     /**
      * Name of the navigation entity
      */
-    navEntity: string;
+    navEntity?: string;
 
     /**
      * If set to true, then the generated route will point to a specific entity, otherwise, it will point to a list of the entities.
