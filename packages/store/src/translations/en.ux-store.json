@@ -14,6 +14,11 @@
         "authTypeDetermined": "Authentication type [{{- authenticationType }}] determined for {{- systemId }}",
         "authTypeNotDetermined": "Authentication type could not be determined for {{- systemId }}",
         "updatingRefreshTokenInNewStore": "Update refresh token in new store for {{- systemId}}",
-        "deletingRefreshTokenFromOldStore": "Deleting refresh token in old store for {{- systemId}}"
+        "deletingRefreshTokenFromOldStore": "Deleting refresh token in old store for {{- systemId}}",
+        "legacyApiHubKeyFound": "Legacy format API Hub Key found in secure store",
+        "legacyApiHubKeyDeleted": "Legacy format API Hub Key removed from secure store",
+        "legacyApiHubKeyMigrated": "Legacy format API Hub Key migrated to new format",
+        "legacyApiHubKeyNotMigrated": "Legacy format API Hub Key not migrated, new format already exits",
+        "noLegacyApiHubKeyFound": "No legacy format API Hub Key found in secure store"
     }
 }
