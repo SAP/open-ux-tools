@@ -11,7 +11,7 @@ export const ApiHubSettingsProvider: DataProviderConstructor<ApiHubSettings, Api
     implements DataProvider<ApiHubSettings, ApiHubSettingsKey>
 {
     private readonly dataAccessor: DataAccess<ApiHubSettings>;
-    private readonly entityName = Entities.BackendSystem;
+    private readonly entityName = Entities.ApiHub;
     private readonly logger: Logger;
 
     constructor(logger: Logger, options: ServiceOptions = {}) {
