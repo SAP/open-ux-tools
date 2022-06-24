@@ -1,5 +1,5 @@
 import type { ODataVersion } from '../base/odata-service';
-import type { AdtSchemaStore } from './adt/adtSchemaStore';
+import type { AdtSchemaStore } from './adt/adt-schema-store';
 import type { CatalogService } from './catalog';
 import type { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 

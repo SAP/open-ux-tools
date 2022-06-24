@@ -1,1 +1,1 @@
-export * from './adtTypes';
+export * from './adt-types';

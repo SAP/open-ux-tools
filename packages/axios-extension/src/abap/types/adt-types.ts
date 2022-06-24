@@ -16,13 +16,13 @@ export interface AdtCollection {
     workspaceTitle?: AdtWorkspaceTitle;
     href: string;
     title: string;
-    accept?: AdtAcceptContentType[];
+    accept?: AdtAcceptContentType;
     category: AdtCategory;
     templateLinks: any;
     [key: string]: any;
 }
 
-export type AdtAcceptContentType = string;
+export type AdtAcceptContentType = string[] | string;
 
 export interface AdtCategory {
     term: AdtCategoryTerm;
