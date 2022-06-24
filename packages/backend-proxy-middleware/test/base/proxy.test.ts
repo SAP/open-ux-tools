@@ -389,6 +389,7 @@ describe('proxy', () => {
             expect(options.pathRewrite).toBeDefined();
             expect(options.router).toBeDefined();
             expect(options.auth).toBeDefined();
+            expect(options.auth).toBe(`${answers.username}:${answers.password}`);
         });
     });
 
