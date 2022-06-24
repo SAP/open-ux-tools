@@ -1,5 +1,4 @@
-import type { AdtServices } from '.';
-import type { AdtCategoryTerm, AdtCollection, AdtSchemaData } from '../types';
+import type { AdtCategory, AdtCategoryId, AdtCollection, AdtSchemaData } from '../types';
 
 /**
  * This class stores the ADT schema fetched by calling ADT discovery service.
@@ -8,20 +7,21 @@ export class AdtSchemaStore {
     /**
      * ADT schema is modeled as a map for fast access
      */
-    private adtSchema: Record<AdtCategoryTerm, AdtCollection>;
+    private adtSchema: Record<AdtCategoryId, AdtCollection>;
 
     /**
-     * Given the ID of a particular ADT service,
-     * return the schema of this service.
-     * @param serviceUrlPath ADT service url path that serves as unique id of a service schema
+     * Given the ID of a particular ADT service, return the schema of this service.
+     * @param adtCategory ADT service serves as unique id of a service schema
      * @returns Schema of an ADT service
      */
-    public getAdtCollection(serviceUrlPath: AdtServices): AdtCollection {
-        return this.adtSchema[serviceUrlPath];
+    public getAdtCollection(adtCategory: AdtCategory): AdtCollection {
+        const id = this.serializeAdtCategory(adtCategory);
+        return this.adtSchema[id];
     }
 
     /**
-     * Convert the raw ADT schema data structure to
+     * Convert the raw ADT schema data structure toP
+     *
      * key-value map for fast access.
      * @param schemaData Raw ADT schema data structure that matches the XML schema
      *                   received from backend
@@ -38,12 +38,12 @@ export class AdtSchemaStore {
                 if (Array.isArray(workspace.collection)) {
                     workspace.collection.forEach((collection) => {
                         collection.workspaceTitle = workspace.title;
-                        const id = collection.href;
+                        const id = this.serializeAdtCategory(collection.category);
                         this.adtSchema[id] = collection;
                     });
                 } else {
                     const collection = workspace.collection as AdtCollection;
-                    const id = collection.category.term;
+                    const id = this.serializeAdtCategory(collection.category);
                     this.adtSchema[id] = workspace.collection;
                 }
             }
@@ -56,5 +56,9 @@ export class AdtSchemaStore {
      */
     public isAdtSchemaEmpty(): boolean {
         return !this.adtSchema;
+    }
+
+    private serializeAdtCategory(adtCategory: AdtCategory) {
+        return `${adtCategory.scheme},${adtCategory.term}`;
     }
 }

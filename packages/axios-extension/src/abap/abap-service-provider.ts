@@ -2,15 +2,16 @@ import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
 
+import { AdtServiceName } from './adt';
 import type { AtoSettings } from './adt';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-import { adt, adtSchema, AdtSchemaStore, AdtServices, parseAtoResponse, TenantType } from './adt';
+import { adt, adtSchema, AdtSchemaStore, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt';
 import { AdtCollection } from './types';
 import type { AbapServiceProviderExtension } from './interface';
-import { parseSearchConfigRef, parseTransportRequests } from './adt/handlers/transport';
+import { parseTransportRequests } from './adt/handlers/transport';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -54,7 +55,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      * @param schema Auto fill by adt decorator execution
      * @returns ABAP Transport Organizer settings
      */
-    @adt(AdtServices.ATO_SETTINGS)
+    @adt(AdtServiceConfigs[AdtServiceName.AtoSettings])
     public async getAtoInfo(@adtSchema schema?: AdtCollection): Promise<AtoSettings> {
         // Service not available on target ABAP backend version, return empty setting config
         if (!schema) {
@@ -69,7 +70,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
                         Accept: 'application/*'
                     }
                 };
-                const response = await this.get(AdtServices.ATO_SETTINGS, acceptHeaders);
+                const response = await this.get(schema.href, acceptHeaders);
                 this.atoSettings = parseAtoResponse(response.data);
             } catch (error) {
                 this.atoSettings = {};
@@ -172,42 +173,38 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
         return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
     }
 
-    @adt(AdtServices.TRANSPORT_SEARCH_CONFIG)
-    public async getTransportSearchConfig(@adtSchema schema?: AdtCollection): Promise<string> {
-        // Service not available on target ABAP backend version, return empty setting config
-        if (!schema) {
-            return;
-        }
+    // @adt(AdtServices.TRANSPORT_SEARCH_CONFIG)
+    // public async getTransportSearchConfig(@adtSchema schema?: AdtCollection): Promise<string> {
+    //     // Service not available on target ABAP backend version, return empty setting config
+    //     if (!schema) {
+    //         return;
+    //     }
 
-        if (!this.transportSearchConfigId) {
-            try {
-                const acceptHeaders = {
-                    headers: {
-                        Accept: 'application/*'
-                    }
-                };
-                const response = await this.get(AdtServices.TRANSPORT_SEARCH_CONFIG, acceptHeaders);
-                this.transportSearchConfigId = parseSearchConfigRef(response.data);
-            } catch (error) {
-                throw error;
-            }
-        }
-        return this.transportSearchConfigId;
-    }
+    //     if (!this.transportSearchConfigId) {
+    //         try {
+    //             const acceptHeaders = {
+    //                 headers: {
+    //                     Accept: 'application/*'
+    //                 }
+    //             };
+    //             const response = await this.get(AdtServices.TRANSPORT_SEARCH_CONFIG, acceptHeaders);
+    //             this.transportSearchConfigId = parseSearchConfigRef(response.data);
+    //         } catch (error) {
+    //             throw error;
+    //         }
+    //     }
+    //     return this.transportSearchConfigId;
+    // }
 
-    @adt(AdtServices.TRANSPORT_REQUESTS)
-    public async getTransportRequests(
-        transportSearchConfigPath: string,
-        @adtSchema schema?: AdtCollection
-    ): Promise<string[]> {
+    @adt(AdtServiceConfigs[AdtServiceName.TransportRequests])
+    public async getTransportRequests(@adtSchema schema?: AdtCollection): Promise<string[]> {
         // Service not available on target ABAP backend version, return empty setting config
         if (!schema) {
             return;
         }
 
         try {
-            // Example use case: https://github.com/pfefferf/ui5-nwabap-deployer/blob/97b33d7236147a23ba0265be141532a82b0f7877/packages/ui5-nwabap-deployer-core/lib/TransportManager.js
-            const urlPath = `${AdtServices.TRANSPORT_REQUESTS}`;
+            const urlPath = schema.href;
             const acceptHeaders = {
                 headers: {
                     Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
@@ -234,12 +231,12 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
                         <OBJECTNAME></OBJECTNAME>
                         <DEVCLASS>ZSPD</DEVCLASS>
                         <OPERATION>I</OPERATION>
-                        <URI>sap/bc/adt/filestore/ui5-bsp/objects/zblabla/$create</URI>
+                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/zblabla/$create</URI>
                     </DATA>
                   </asx:values>
                 </asx:abap>
             `;
-            // sap/bc/adt/filestore/ui5-bsp/objects/zblabla/$create
+            // /sap/bc/adt/filestore/ui5-bsp/objects/zblabla/$create
             const response = await this.post(urlPath, data, acceptHeaders);
             // const response = await this.get(urlPath, acceptHeaders);
             console.log('response', response.data);

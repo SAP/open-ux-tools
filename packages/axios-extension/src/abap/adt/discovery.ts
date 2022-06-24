@@ -1,9 +1,10 @@
 import type { AbapServiceProviderExtension } from '../interface';
 import XmlParser from 'fast-xml-parser';
-import type { AdtSchemaData } from '../types';
+import type { AdtCategory, AdtSchemaData } from '../types';
 import type { ServiceProvider } from 'index';
 import 'reflect-metadata';
-import { AdtServices } from '.';
+
+const ADT_DISCOVERY_SERVICE = '/sap/bc/adt/discovery';
 
 /**
  * If ADT schema is not loaded, send discovery request to backend to fetch the schema and cache it.
@@ -16,7 +17,7 @@ async function checkOrLoadAdtDiscoverySchema(target: AbapServiceProviderExtensio
         return;
     }
 
-    const response = await target.get(AdtServices.DISCOVERY, {
+    const response = await target.get(ADT_DISCOVERY_SERVICE, {
         headers: {
             Accept: 'application/*'
         }
@@ -60,11 +61,11 @@ const adtSchemaParam = 'adtSchema';
  * If the decorated method has a parameter decorated by @adtSchema, this parameter will be filled with the service schema data
  * before calling the method.
  *
- * @param serviceUrlPath ADT service url path that uniquely identifies an AdtCollection (service schema) in ADT schema store
- *  It is passed to the decorator where decorator is used. E.g @adt('/sap/bc/adt/ato/settings')
+ * @param adtCategory ADT adtCategory that uniquely identifies an AdtCollection (service schema) in ADT schema store
+ *  It is passed to the decorator where decorator is used. E.g @adt(AdtServiceConfigs[AdtServiceName.AtoSettings])
  * @returns Decorator function that augments the original method implementation
  */
-export const adt = (serviceUrlPath: AdtServices): Function => {
+export const adt = (adtCategory: AdtCategory): Function => {
     return function decorator(target: any, functionName: string, descriptor: PropertyDescriptor): void {
         // original is the original method implementation decorated by @adt
         const original = descriptor.value;
@@ -78,7 +79,7 @@ export const adt = (serviceUrlPath: AdtServices): Function => {
         async function interceptedMethod(...args: any[]): Promise<any> {
             await checkOrLoadAdtDiscoverySchema(this);
             // Find the schema for the input service url path
-            const adtCollection = this.getSchemaStore().getAdtCollection(serviceUrlPath);
+            const adtCollection = this.getSchemaStore().getAdtCollection(adtCategory);
             // Get the parameter index for parameter decorated by @adtSchema
             const adtSchemaParamIndex = Reflect.getOwnMetadata(adtSchemaParam, target, functionName);
             // Automatically fill the @adtSchema parameter with the service schema

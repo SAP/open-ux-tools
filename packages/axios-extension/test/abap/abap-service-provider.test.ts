@@ -9,7 +9,15 @@ import {
     Ui5AbapRepositoryService,
     AppIndexService
 } from '../../src';
-import { AdtServices } from '../../src/abap/adt';
+
+/**
+ * URL are specific to the discovery schema.
+ * Keep the URL paths same as those in packages/axios-extension/test/abap/mockResponses/discovery.xml
+ */
+enum AdtServices {
+    DISCOVERY = '/sap/bc/adt/discovery',
+    ATO_SETTINGS = '/sap/bc/adt/ato/settings'
+}
 
 describe('AbapServiceProvider', () => {
     beforeAll(() => {

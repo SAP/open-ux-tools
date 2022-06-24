@@ -6,7 +6,7 @@ export interface AdtSchemaData {
 
 export type AdtCategoryTerm = string;
 export type AdtWorkspaceTitle = string;
-
+export type AdtCategoryId = string;
 export interface AdtWorkspace {
     title: AdtWorkspaceTitle;
     collection: AdtCollection | AdtCollection[];
@@ -26,5 +26,5 @@ export type AdtAcceptContentType = string[] | string;
 
 export interface AdtCategory {
     term: AdtCategoryTerm;
-    schema: string;
+    scheme: string;
 }

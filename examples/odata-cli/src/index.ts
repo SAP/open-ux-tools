@@ -57,12 +57,8 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
         if (!atoSettings || Object.keys(atoSettings).length === 0) {
             console.warn('ATO setting is empty!');
         }
-        const transportSearchConfigPath = await provider.getTransportSearchConfig();
-        if (!transportSearchConfigPath) {
-            console.warn('Search config id is empty!');
-        }
 
-        await provider.getTransportRequests(transportSearchConfigPath);
+        await provider.getTransportRequests();
 
         const catalog = provider.catalog(ODataVersion.v2);
 

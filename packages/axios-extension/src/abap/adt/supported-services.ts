@@ -1,10 +1,20 @@
+import type { AdtCategory } from 'abap/types';
+
 /**
  * Services implemented by AbapServiceProvider
  */
-
-export enum AdtServices {
-    DISCOVERY = '/sap/bc/adt/discovery',
-    ATO_SETTINGS = '/sap/bc/adt/ato/settings',
-    TRANSPORT_SEARCH_CONFIG = '/sap/bc/adt/cts/transportrequests/searchconfiguration/configurations',
-    TRANSPORT_REQUESTS = '/sap/bc/adt/cts/transportchecks'
+export enum AdtServiceName {
+    AtoSettings,
+    TransportRequests
 }
+
+export const AdtServiceConfigs: Record<AdtServiceName, AdtCategory> = {
+    [AdtServiceName.AtoSettings]: {
+        scheme: 'http://www.sap.com/adt/categories/ato',
+        term: 'settings'
+    },
+    [AdtServiceName.TransportRequests]: {
+        scheme: 'http://www.sap.com/adt/categories/cts',
+        term: 'transportchecks'
+    }
+};
