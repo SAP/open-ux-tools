@@ -5,7 +5,8 @@ import { defaultTimeout } from '../connection';
 import { ABAPSystem } from './abap-system';
 import { setupRedirectHandling } from './redirect';
 
-/** DO NOT USE THIS SERVICE ENDPOINT DIRECTLY.
+/**
+ * DO NOT USE THIS SERVICE ENDPOINT DIRECTLY.
  *  It might change without notice.
  */
 const ADT_REENTRANCE_ENDPOINT = '/sap/bc/adt/core/http/reentranceticket';
