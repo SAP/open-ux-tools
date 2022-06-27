@@ -46,7 +46,6 @@ describe('use FPM with existing apps', () => {
                     entity: mainEntity,
                     navigation: {
                         navEntity: mainEntity,
-                        sourceEntity: mainEntity,
                         sourcePage: 'TravelListReport',
                         navKey: true
                     }
@@ -62,7 +61,6 @@ describe('use FPM with existing apps', () => {
                     name: 'MyCustomPage',
                     entity: 'Booking',
                     navigation: {
-                        sourceEntity: mainEntity,
                         sourcePage: 'TravelObjectPage',
                         navEntity: '_Booking'
                     }

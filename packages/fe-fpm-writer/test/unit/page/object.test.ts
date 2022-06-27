@@ -24,12 +24,18 @@ describe('ObjectPage', () => {
                     routes: [
                         {
                             pattern: ':?query:',
-                            name: 'TestListReport',
+                            name: 'RootEntityListReport',
                             target: 'TestListReport'
+                        },
+                        {
+                            pattern: 'RootEntity({RootEntityKey}):?query:',
+                            name: 'RootEntityObjectPage',
+                            target: 'RootEntityObjectPage'
                         }
                     ] as ManifestNamespace.Route[],
                     targets: {
-                        TestListReport: {}
+                        RootEntityListReport: {},
+                        RootEntityObjectPage: {}
                     }
                 }
             }
@@ -45,7 +51,7 @@ describe('ObjectPage', () => {
 
     describe('generate', () => {
         const minimalInput: ObjectPage = {
-            entity: 'RootEnity'
+            entity: 'OtherEntity'
         };
 
         test('minimal input', () => {
@@ -82,9 +88,26 @@ describe('ObjectPage', () => {
                 {
                     ...minimalInput,
                     navigation: {
-                        sourcePage: 'TestListReport',
-                        sourceEntity: 'RootEntity',
-                        navEntity: 'navToChildEntity',
+                        sourcePage: 'RootEntityListReport',
+                        navEntity: minimalInput.entity,
+                        navKey: true
+                    }
+                },
+                fs
+            );
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('simple nested navigation', () => {
+            const target = join(testDir, 'with-nested-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generate(
+                target,
+                {
+                    ...minimalInput,
+                    navigation: {
+                        sourcePage: 'RootEntityObjectPage',
+                        navEntity: `to_${minimalInput.entity}`,
                         navKey: true
                     }
                 },
