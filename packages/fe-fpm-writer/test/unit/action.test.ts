@@ -142,5 +142,31 @@ describe('CustomAction', () => {
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
         });
+
+        const requiresSelectionValues = [undefined, true, false];
+        requiresSelectionValues.forEach((value?: boolean) => {
+            test(`Test property "requiresSelection" with value "${value}"`, () => {
+                generateCustomAction(
+                    testDir,
+                    {
+                        name,
+                        target,
+                        settings: {
+                            ...settings,
+                            requiresSelection: value
+                        }
+                    },
+                    fs
+                );
+                const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action =
+                    manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content']['header'][
+                        'actions'
+                    ][name];
+                // "requiresSelection" property should not be added if it is undefined
+                expect('requiresSelection' in action).toEqual(value === undefined ? false : true);
+                expect(action['requiresSelection']).toEqual(value);
+            });
+        });
     });
 });
