@@ -20,6 +20,7 @@ export interface CustomAction extends CustomElement {
         text: string;
         visible?: string | true;
         enabled?: string | true;
+        requiresSelection?: boolean;
         position?: Position;
         /**
          * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.

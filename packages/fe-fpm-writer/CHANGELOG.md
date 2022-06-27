@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.10.0
+
+### Minor Changes
+
+-   ab39dae: "requireSelection" property support for custom action in fe-fpm-writer
+
 ## 0.9.0
 
 ### Minor Changes
