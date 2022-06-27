@@ -245,12 +245,12 @@ Object {
         },
         {
           \\"name\\": \\"TravelObjectPage\\",
-          \\"pattern\\": \\"/Travel({TravelKey}):?query:\\",
+          \\"pattern\\": \\"Travel({TravelKey}):?query:\\",
           \\"target\\": \\"TravelObjectPage\\"
         },
         {
           \\"name\\": \\"BookingMyCustomPage\\",
-          \\"pattern\\": \\"/Travel({TravelKey})/_Booking:?query:\\",
+          \\"pattern\\": \\"Travel({TravelKey})/_Booking:?query:\\",
           \\"target\\": \\"BookingMyCustomPage\\"
         }
       ],

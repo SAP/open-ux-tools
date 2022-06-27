@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.11.0
+
+### Minor Changes
+
+-   4bda671: Removed unused property and fixed route generation for FCL
+
 ## 0.10.0
 
 ### Minor Changes
