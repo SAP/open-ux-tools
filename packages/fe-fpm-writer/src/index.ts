@@ -16,3 +16,6 @@ export { generateCustomView } from './view';
 export { enableFPM, FPMConfig } from './app';
 
 export { validateBasePath, validateVersion } from './common/validate';
+
+export { BuildingBlockType, FilterBar, Chart, Field, FieldFormatOptions } from './building-block/types';
+export { generateBuildingBlock } from './building-block';
