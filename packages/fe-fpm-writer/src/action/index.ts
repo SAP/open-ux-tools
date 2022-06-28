@@ -6,7 +6,7 @@ import { TargetControl } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest, FileContentPosition } from '../common/types';
+import type { Manifest, FileContentPosition, TextFragmentInsertion } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { insertTextAtPosition } from '../common/utils';
 
@@ -117,33 +117,30 @@ function createNewEventHandler(
 ): string {
     // New event handler function name - 'onPress' is default
     let eventHandlerFnName = 'onPress';
-    let insertPosition: FileContentPosition | undefined;
+    let insertScript: TextFragmentInsertion | undefined;
     // By default - use action name for js file name
     let fileName = config.name;
-    let prependComma: boolean | undefined;
     if (typeof eventHandler === 'object') {
         if (eventHandler.fnName) {
             eventHandlerFnName = eventHandler.fnName;
         }
-        insertPosition = eventHandler.insertPosition;
+        insertScript = eventHandler.insertScript;
         if (eventHandler.fileName) {
             // Use passed file name
             fileName = eventHandler.fileName;
         }
-        prependComma = eventHandler.prependComma;
     }
     const controllerPath = join(config.path, `${fileName}.js`);
     if (!fs.exists(controllerPath)) {
         fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, {
             eventHandlerFnName
         });
-    } else if (insertPosition) {
+    } else if (insertScript) {
         let content = fs.read(controllerPath);
-        const actionJsString = render(fs.read(join(root, 'common/EventHandlerFn.js')), {
-            eventHandlerFnName,
-            prependComma
-        });
-        content = insertTextAtPosition(actionJsString, content, insertPosition);
+        // const actionJsString = render(fs.read(join(root, 'common/EventHandlerFn.js')), {
+        //     eventHandlerFnName
+        // });
+        content = insertTextAtPosition(insertScript.fragment, content, insertScript.position);
         fs.write(controllerPath, content);
     }
     // Return full namespace path to method

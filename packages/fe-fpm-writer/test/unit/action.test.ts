@@ -128,7 +128,7 @@ describe('CustomAction', () => {
                     target,
                     settings: {
                         ...settings,
-                        eventHandler: true
+                        eventHandler: {}
                     }
                 },
                 fs
@@ -253,11 +253,13 @@ describe('CustomAction', () => {
                     {
                         fnName,
                         fileName,
-                        insertPosition: {
-                            line: 8,
-                            character: 9
-                        },
-                        prependComma: true
+                        insertScript: {
+                            fragment: ',\n        onHandleSecondAction: function() {\n            MessageToast.show(\"Custom handler invoked.\");\n        }',
+                            position: {
+                                line: 8,
+                                character: 9
+                            }
+                        }
                     },
                     folder
                 );

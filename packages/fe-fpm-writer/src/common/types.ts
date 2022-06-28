@@ -115,3 +115,17 @@ export interface FileContentPosition {
      */
     character: number;
 }
+
+/**
+ * Interface for text fragment insertion into existing text file.
+ */
+export interface TextFragmentInsertion {
+    /**
+     * Insert position for passed script fragment.
+     */
+    position: FileContentPosition;
+    /**
+     * Full fragment of script to insert.
+     */
+    fragment: string;
+}

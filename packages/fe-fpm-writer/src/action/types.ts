@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement, Position, FileContentPosition } from '../common/types';
+import type { CustomElement, InternalCustomElement, Position, TextFragmentInsertion } from '../common/types';
 
 export enum TargetControl {
     header = 'header',
@@ -16,24 +16,20 @@ export interface CustomActionTarget {
 
 export interface CustomActionNewEventHandler {
     /**
-     * JS file name
+     * JS file name - existing or new.
      */
     fileName?: string;
     /**
-     * Function name
+     * Function name. If undefined then `onPress` is used as default value.
      */
     fnName?: string;
     /**
-     * If file exists, then new method should be inserted in to passed position
+     * If file exists, then existing file should be appended with passed script fragment.
      */
-    insertPosition?: FileContentPosition;
-    /**
-     * Prepend comma before new function snippet
-     */
-    prependComma?: boolean;
+    insertScript?: TextFragmentInsertion;
 }
 
-export type CustomActionEventHandler = string | true | CustomActionNewEventHandler;
+export type CustomActionEventHandler = string | CustomActionNewEventHandler;
 
 export interface CustomAction extends CustomElement {
     target: CustomActionTarget;
