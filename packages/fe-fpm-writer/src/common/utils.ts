@@ -11,6 +11,9 @@ import type { FileContentPosition } from '../common/types';
  * @returns new content with inserted text
  */
 export function insertTextAtPosition(text: string, content: string, position: FileContentPosition): string {
+    if (position.line < 0 || position.character < 0) {
+        return content;
+    }
     const lines = content.split(/\r\n|\n/);
     let targetLine = lines[position.line];
     // Check if line position exist and create missing lines

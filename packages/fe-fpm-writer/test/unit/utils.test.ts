@@ -40,4 +40,26 @@ describe('insertTextAtPosition', () => {
             `${os.EOL}${os.EOL}${os.EOL}${os.EOL}${os.EOL}${os.EOL}${os.EOL}${os.EOL}${os.EOL}${os.EOL}     ${text}`
         );
     });
+
+    const negativeValues = [
+        {
+            line: -1,
+            character: 1
+        },
+        {
+            line: 1,
+            character: -1
+        },
+        {
+            line: -1,
+            character: -1
+        }
+    ];
+    for (const negativeValue of negativeValues) {
+        test(`Negative values - line=${negativeValue.line}, character=${negativeValue.character}`, () => {
+            const text = 'dummy';
+            const newContent = insertTextAtPosition(text, content, negativeValue);
+            expect(newContent).toEqual(content);
+        });
+    }
 });
