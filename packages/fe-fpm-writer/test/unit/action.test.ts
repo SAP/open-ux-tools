@@ -230,9 +230,7 @@ describe('CustomAction', () => {
                 const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
                 const action = getActionByName(manifest, name);
                 expect(action['press']).toEqual('my.test.App.ext.custom.dummyAction.DummyOnAction');
-                expect(
-                    fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))
-                ).toMatchSnapshot();
+                expect(fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))).toMatchSnapshot();
             });
 
             test('"eventHandler" is "object" - create new file with custom function name', () => {
@@ -250,7 +248,7 @@ describe('CustomAction', () => {
 
             test(`"eventHandler" is String - no changes to handler file`, () => {
                 generateCustomActionWithEventHandler(name, 'my.test.App.ext.ExistingHandler.onCustomAction');
-                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
                 const action = getActionByName(manifest, name);
                 expect(action['press']).toEqual('my.test.App.ext.ExistingHandler.onCustomAction');
                 expect(fs.exists(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))).toBeFalsy();
@@ -282,7 +280,7 @@ describe('CustomAction', () => {
                     folder
                 );
 
-                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
                 const action = getActionByName(manifest, actionName);
                 expect(action['press']).toEqual(`my.test.App.ext.fragments.${fileName}.${fnName}`);
                 // Check update js file content
@@ -298,11 +296,11 @@ describe('CustomAction', () => {
                     fnName,
                     fileName
                 });
-                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
                 const action = getActionByName(manifest, actionName);
                 expect(action['press']).toEqual(`my.test.App.ext.customAction2.${fileName}.${fnName}`);
                 // Check update js file content
-                expect(fs.read(join(testDir, `webapp/ext/customAction2/${fileName}.js`))).toMatchSnapshot();
+                expect(fs.read(join(testDir, 'webapp', 'ext', 'customAction2', `${fileName}.js`))).toMatchSnapshot();
             });
         });
     });
