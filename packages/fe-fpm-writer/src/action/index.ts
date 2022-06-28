@@ -6,7 +6,7 @@ import { TargetControl } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest, FileContentPosition, TextFragmentInsertion } from '../common/types';
+import type { Manifest, TextFragmentInsertion } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { insertTextAtPosition } from '../common/utils';
 
