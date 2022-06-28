@@ -1,12 +1,12 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomAction, CustomActionTarget, InternalCustomAction, CustomActionNewEventHandler } from './types';
+import type { CustomAction, CustomActionTarget, InternalCustomAction } from './types';
 import { TargetControl } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest, TextFragmentInsertion } from '../common/types';
+import type { Manifest, TextFragmentInsertion, EventHandlerConfiguration } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { insertTextAtPosition } from '../common/utils';
 
@@ -106,14 +106,14 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
  * @param {Editor} fs - the memfs editor instance
  * @param {string} root - the root path
  * @param {InternalCustomAction} config - action configuration
- * @param {true | CustomActionNewEventHandler} eventHandler - eventHandler for creation
+ * @param {true | EventHandlerConfiguration} eventHandler - eventHandler for creation
  * @returns {string} full namespace path to method
  */
 function createNewEventHandler(
     fs: Editor,
     root: string,
     config: InternalCustomAction,
-    eventHandler: true | CustomActionNewEventHandler
+    eventHandler: true | EventHandlerConfiguration
 ): string {
     // New event handler function name - 'onPress' is default
     let eventHandlerFnName = 'onPress';

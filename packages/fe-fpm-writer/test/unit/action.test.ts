@@ -1,9 +1,10 @@
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
-import { generateCustomAction, CustomAction } from '../../src';
+import { generateCustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
-import { CustomActionEventHandler, TargetControl } from '../../src/action/types';
+import { TargetControl } from '../../src/action/types';
+import { EventHandlerConfiguration } from '../../src/common/types';
 
 const existingFileContent = `sap.ui.define([], function() {
     'use strict';
@@ -185,7 +186,7 @@ describe('CustomAction', () => {
         describe('Test property "eventHandlerFnName"', () => {
             const generateCustomActionWithEventHandler = (
                 actionId: string,
-                eventHandler: CustomActionEventHandler,
+                eventHandler: string | EventHandlerConfiguration,
                 folder?: string
             ) => {
                 generateCustomAction(

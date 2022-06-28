@@ -129,3 +129,27 @@ export interface TextFragmentInsertion {
      */
     fragment: string;
 }
+
+export interface EventHandlerConfiguration {
+    /**
+     * JS file name - existing or new.
+     */
+    fileName?: string;
+    /**
+     * Function name. If undefined then `onPress` is used as default value.
+     */
+    fnName?: string;
+    /**
+     * If file exists, then existing file should be appended with passed script fragment.
+     */
+    insertScript?: TextFragmentInsertion;
+}
+
+export interface EventHandler {
+    /**
+     * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.
+     * If an existing event handler is to be used then its id needs to be provided as string.
+     * Object with 'EventHandlerConfiguration' provides option to append existing js file with new action.
+     */
+    eventHandler?: string | EventHandlerConfiguration;
+}
