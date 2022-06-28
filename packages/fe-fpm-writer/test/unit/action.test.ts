@@ -277,13 +277,10 @@ describe('CustomAction', () => {
                 // Create second action - append previously created file
                 const actionName = 'CustomAction2';
                 const fnName = 'onHandleAction';
-                generateCustomActionWithEventHandler(
-                    actionName,
-                    {
-                        fnName,
-                        fileName
-                    }
-                );
+                generateCustomActionWithEventHandler(actionName, {
+                    fnName,
+                    fileName
+                });
 
                 const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
                 const action =

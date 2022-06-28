@@ -1,161 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`use FPM with existing apps extend Fiori elements for OData v4 ListReport ObjectPage generateCustomSection in ObjectPage 1`] = `
+exports[`use FPM with existing apps extend UI5 application with FPM generateCustomSection in ObjectPage 1`] = `
 Object {
-  "../../test-input/basic-lrop/webapp/manifest.json": Object {
-    "contents": "{
-    \\"_version\\": \\"1.32.0\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"v4travel\\",
-        \\"type\\": \\"application\\",
-        \\"i18n\\": \\"i18n/i18n.properties\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"1.0.0\\"
-        },
-        \\"title\\": \\"{{appTitle}}\\",
-        \\"description\\": \\"{{appDescription}}\\",
-        \\"dataSources\\": {
-            \\"mainService\\": {
-                \\"uri\\": \\"/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/\\",
-                \\"type\\": \\"OData\\",
-                \\"settings\\": {
-                    \\"annotations\\": [\\"annotation\\"],
-                    \\"odataVersion\\": \\"4.0\\",
-                    \\"localUri\\": \\"localService/metadata.xml\\"
-                }
-            },
-            \\"annotation\\": {
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"uri\\": \\"annotations/annotation.xml\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"annotations/annotation.xml\\"
-                }
-            }
-        },
-        \\"offline\\": false,
-        \\"resources\\": \\"resources.json\\",
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
-            \\"version\\": \\"1.0.0\\"
-        }
-    },
-    \\"sap.ui\\": {
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"\\",
-            \\"favIcon\\": \\"\\",
-            \\"phone\\": \\"\\",
-            \\"phone@2\\": \\"\\",
-            \\"tablet\\": \\"\\",
-            \\"tablet@2\\": \\"\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": true
-        }
-    },
-    \\"sap.ui5\\": {
-        \\"resources\\": {
-            \\"js\\": [],
-            \\"css\\": []
-        },
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"1.76.0\\",
-            \\"libs\\": {
-                \\"sap.ui.core\\": {},
-                \\"sap.fe.templates\\": {}
-            }
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"\\": {
-                \\"dataSource\\": \\"mainService\\",
-                \\"preload\\": true,
-                \\"settings\\": {
-                    \\"synchronizationMode\\": \\"None\\",
-                    \\"operationMode\\": \\"Server\\",
-                    \\"autoExpandSelect\\": true,
-                    \\"earlyRequests\\": true
-                }
-            }
-        },
-        \\"routing\\": {
-            \\"routes\\": [
-                {
-                    \\"pattern\\": \\":?query:\\",
-                    \\"name\\": \\"TravelList\\",
-                    \\"target\\": \\"TravelList\\"
-                },
-                {
-                    \\"pattern\\": \\"Travel({key}):?query:\\",
-                    \\"name\\": \\"TravelObjectPage\\",
-                    \\"target\\": \\"TravelObjectPage\\"
-                }
-            ],
-            \\"targets\\": {
-                \\"TravelList\\": {
-                    \\"type\\": \\"Component\\",
-                    \\"id\\": \\"TravelList\\",
-                    \\"name\\": \\"sap.fe.templates.ListReport\\",
-                    \\"options\\": {
-                        \\"settings\\": {
-                            \\"entitySet\\": \\"Travel\\",
-                            \\"variantManagement\\": \\"Page\\",
-                            \\"navigation\\": {
-                                \\"Travel\\": {
-                                    \\"detail\\": {
-                                        \\"route\\": \\"TravelObjectPage\\"
-                                    }
-                                }
-                            },
-                            \\"views\\": {
-                                \\"paths\\": [
-                                    {
-                                        \\"key\\": \\"tab1\\",
-                                        \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                \\"TravelObjectPage\\": {
-                    \\"type\\": \\"Component\\",
-                    \\"id\\": \\"TravelObjectPage\\",
-                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
-                    \\"options\\": {
-                        \\"settings\\": {
-                            \\"entitySet\\": \\"Travel\\"
-                        }
-                    }
-                }
-            }
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
-        }
-    },
-    \\"sap.platform.abap\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"uri\\": \\"\\"
-    },
-    \\"sap.platform.hcp\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"uri\\": \\"\\"
-    },
-    \\"sap.fiori\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"registrationIds\\": [],
-        \\"archeType\\": \\"transactional\\"
-    }
-}
-",
-  },
   "webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
@@ -368,7 +214,7 @@ Object {
       \\"css\\": []
     },
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.76.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.ui.core\\": {},
         \\"sap.fe.templates\\": {}
@@ -393,49 +239,35 @@ Object {
     \\"routing\\": {
       \\"routes\\": [
         {
+          \\"name\\": \\"TravelListReport\\",
           \\"pattern\\": \\":?query:\\",
-          \\"name\\": \\"TravelList\\",
-          \\"target\\": \\"TravelList\\"
+          \\"target\\": \\"TravelListReport\\"
         },
         {
-          \\"pattern\\": \\"Travel({key}):?query:\\",
           \\"name\\": \\"TravelObjectPage\\",
+          \\"pattern\\": \\"Travel({TravelKey}):?query:\\",
           \\"target\\": \\"TravelObjectPage\\"
         },
         {
           \\"name\\": \\"BookingMyCustomPage\\",
-          \\"pattern\\": \\"Travel({key})/_Booking:?query:\\",
+          \\"pattern\\": \\"Travel({TravelKey})/_Booking:?query:\\",
           \\"target\\": \\"BookingMyCustomPage\\"
         }
       ],
       \\"targets\\": {
-        \\"TravelList\\": {
+        \\"TravelListReport\\": {
           \\"type\\": \\"Component\\",
-          \\"id\\": \\"TravelList\\",
+          \\"id\\": \\"TravelListReport\\",
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
               \\"entitySet\\": \\"Travel\\",
-              \\"variantManagement\\": \\"Page\\",
               \\"navigation\\": {
                 \\"Travel\\": {
                   \\"detail\\": {
                     \\"route\\": \\"TravelObjectPage\\"
                   }
                 }
-              },
-              \\"views\\": {
-                \\"paths\\": [
-                  {
-                    \\"key\\": \\"tab1\\",
-                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
-                  },
-                  {
-                    \\"key\\": \\"CustomViewKey\\",
-                    \\"label\\": \\"Custom View\\",
-                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
-                  }
-                ]
               },
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
@@ -462,6 +294,19 @@ Object {
                     }
                   }
                 }
+              },
+              \\"views\\": {
+                \\"paths\\": [
+                  {
+                    \\"key\\": \\"LineItemView\\",
+                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                  },
+                  {
+                    \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                  }
+                ]
               }
             }
           }

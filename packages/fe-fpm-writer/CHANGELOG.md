@@ -1,5 +1,23 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.11.0
+
+### Minor Changes
+
+-   4bda671: Removed unused property and fixed route generation for FCL
+
+## 0.10.0
+
+### Minor Changes
+
+-   ab39dae: "requireSelection" property support for custom action in fe-fpm-writer
+
+## 0.9.0
+
+### Minor Changes
+
+-   52c3af0: Support for generating standard Fiori elements page types added.
+
 ## 0.8.0
 
 ### Minor Changes

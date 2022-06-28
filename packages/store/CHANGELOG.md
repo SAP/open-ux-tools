@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.3.0
+
+### Minor Changes
+
+-   ebc59b4: Added support for migrating api-hub settings from old to new format.
+
 ## 0.2.0
 
 ### Minor Changes
