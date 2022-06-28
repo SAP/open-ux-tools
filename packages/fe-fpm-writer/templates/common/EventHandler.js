@@ -4,6 +4,8 @@ sap.ui.define([
     'use strict';
 
     return {
-        <%- include('./EventHandlerFn.js'); %>
+        <%- (typeof eventHandlerFnName !== 'undefined' && eventHandlerFnName) || 'onPress' %>: function() {
+            MessageToast.show("Custom handler invoked.");
+        }
     };
 });

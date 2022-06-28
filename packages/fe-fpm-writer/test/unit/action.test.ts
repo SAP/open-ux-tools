@@ -202,7 +202,19 @@ describe('CustomAction', () => {
                     fs
                 );
             };
-            test(`"eventHandler" is "true"`, () => {
+            test(`"eventHandler" is empty "object" - create new file with default function name`, () => {
+                generateCustomActionWithEventHandler(name, {});
+
+                const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action =
+                    manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content']['header'][
+                        'actions'
+                    ][name];
+                expect(action['press']).toEqual(`my.test.App.ext.myCustomAction.MyCustomAction.onPress`);
+                expect(fs.read(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toMatchSnapshot();
+            });
+
+            test(`"eventHandler" is "object" - create new file with custom function name`, () => {
                 const eventHandlerFnName = 'DummyOnAction';
                 generateCustomActionWithEventHandler(name, {
                     fnName: eventHandlerFnName
@@ -217,7 +229,7 @@ describe('CustomAction', () => {
                 expect(fs.read(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toMatchSnapshot();
             });
 
-            test(`"eventHandler" is String`, () => {
+            test(`"eventHandler" is String - no changes to handler file`, () => {
                 generateCustomAction(
                     testDir,
                     {
@@ -254,7 +266,8 @@ describe('CustomAction', () => {
                         fnName,
                         fileName,
                         insertScript: {
-                            fragment: ',\n        onHandleSecondAction: function() {\n            MessageToast.show(\"Custom handler invoked.\");\n        }',
+                            fragment:
+                                ',\n        onHandleSecondAction: function() {\n            MessageToast.show("Custom handler invoked.");\n        }',
                             position: {
                                 line: 8,
                                 character: 9
