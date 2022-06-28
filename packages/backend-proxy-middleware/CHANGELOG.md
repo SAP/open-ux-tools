@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.4
+
+### Patch Changes
+
+-   febef3e: Moves bsp logic to function generateProxyMiddlewareOptions
+
 ## 0.6.3
 
 ### Patch Changes
