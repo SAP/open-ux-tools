@@ -136,7 +136,7 @@ describe('use FPM with existing apps', () => {
                     },
                     settings: {
                         text: 'My Custom Action',
-                        eventHandler: true
+                        eventHandler: {}
                     }
                 },
                 fs
@@ -151,7 +151,7 @@ describe('use FPM with existing apps', () => {
                     },
                     settings: {
                         text: 'My other Action',
-                        eventHandler: true
+                        eventHandler: {}
                     }
                 },
                 fs
