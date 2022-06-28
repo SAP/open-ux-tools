@@ -136,10 +136,9 @@ function createNewEventHandler(
             eventHandlerFnName
         });
     } else if (insertScript) {
+        // Read current file content
         let content = fs.read(controllerPath);
-        // const actionJsString = render(fs.read(join(root, 'common/EventHandlerFn.js')), {
-        //     eventHandlerFnName
-        // });
+        // Append conent with additional script fragment
         content = insertTextAtPosition(insertScript.fragment, content, insertScript.position);
         fs.write(controllerPath, content);
     }
