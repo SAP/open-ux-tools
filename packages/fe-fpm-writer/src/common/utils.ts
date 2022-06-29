@@ -2,6 +2,28 @@ import os from 'os';
 import type { FileContentPosition } from '../common/types';
 
 /**
+ * Method inserts passed text into content by char index position.
+ * In case if position is out of range, then whitespaces would be created.
+ * Negative positions are not supported.
+ *
+ * @param {string} text - text to insert
+ * @param {string} content - target content for update
+ * @param {number} position - Char index position to insert in
+ * @returns new content with inserted text
+ */
+export function insertTextAtAbslutePosition(text: string, content: string, position: number): string {
+    if (position < 0) {
+        return content;
+    }
+    // Check if char position exist and create missing chars
+    const prepareCharIndex = Math.max(position - 1, 0);
+    while (prepareCharIndex > 0 && content[prepareCharIndex] === undefined) {
+        content += ' ';
+    }
+    return `${content.slice(0, position)}${text}${content.slice(position)}`;
+}
+
+/**
  * Method inserts passed text into content by line and char position.
  * In case if position is out of range, then whitespaces would be created.
  * Negative positions are not supported.
@@ -22,14 +44,7 @@ export function insertTextAtPosition(text: string, content: string, position: Fi
         lines.push('');
         targetLine = lines[position.line];
     }
-    // Check if char position exist and create missing chars
-    const prepareCharIndex = Math.max(position.character - 1, 0);
-    let targetChar = targetLine[prepareCharIndex];
-    while (targetChar === undefined) {
-        targetLine += ' ';
-        targetChar = targetLine[prepareCharIndex];
-    }
     // Update line with inserting passed text
-    lines[position.line] = `${targetLine.slice(0, position.character)}${text}${targetLine.slice(position.character)}`;
+    lines[position.line] = insertTextAtAbslutePosition(text, lines[position.line], position.character);
     return lines.join(os.EOL);
 }

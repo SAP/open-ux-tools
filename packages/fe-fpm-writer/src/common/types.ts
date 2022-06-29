@@ -122,8 +122,9 @@ export interface FileContentPosition {
 export interface TextFragmentInsertion {
     /**
      * Insert position for passed script fragment.
+     * Position can be line + char indices or absolute char index
      */
-    position: FileContentPosition;
+    position: FileContentPosition | number;
     /**
      * Fragment of script to insert.
      */

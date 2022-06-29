@@ -63,13 +63,37 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file 1`] = `
+exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"Sample Text\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file 2`] = `
+exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onHandleSecondAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position 206 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"Sample Text\\" press=\\"handler.onHandleSecondAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position 206 2`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {

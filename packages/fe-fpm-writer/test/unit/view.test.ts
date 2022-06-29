@@ -192,33 +192,41 @@ describe('CustomView', () => {
             expect(fs.read(xmlPath.replace('.fragment.xml', '.controller.js'))).toMatchSnapshot();
         });
 
-        test(`"eventHandler" is object. Append new function to existing js file`, () => {
-            const fileName = 'MyExistingAction';
-            // Create existing file with existing actions
-            const folder = join('extensions', 'custom');
-            const existingPath = join(testDir, 'webapp', folder, `${fileName}.controller.js`);
-            // Generate handler with single method - content should be updated during generating of custom view
-            fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
-            const fnName = 'onHandleSecondAction';
+        const positions = [
+            {
+                line: 8,
+                character: 9
+            },
+            206
+        ];
+        for (const position of positions) {
+            test(`"eventHandler" is object. Append new function to existing js file with position ${
+                typeof position === 'object' ? JSON.stringify(position) : position
+            }`, () => {
+                const fileName = 'MyExistingAction';
+                // Create existing file with existing actions
+                const folder = join('extensions', 'custom');
+                const existingPath = join(testDir, 'webapp', folder, `${fileName}.controller.js`);
+                // Generate handler with single method - content should be updated during generating of custom view
+                fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                const fnName = 'onHandleSecondAction';
 
-            const extension = {
-                fnName,
-                fileName,
-                insertScript: {
-                    fragment: `,\n        ${fnName}: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
-                    position: {
-                        line: 8,
-                        character: 9
+                const extension = {
+                    fnName,
+                    fileName,
+                    insertScript: {
+                        fragment: `,\n        ${fnName}: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                        position
                     }
-                }
-            };
+                };
 
-            const id = customView.name;
-            generateCustomViewWithEventHandler(id, extension, folder);
-            const xmlPath = join(testDir, 'webapp', folder!, `${id}.fragment.xml`);
-            expect(fs.read(xmlPath)).toMatchSnapshot();
-            // Check update js file content
-            expect(fs.read(existingPath)).toMatchSnapshot();
-        });
+                const id = customView.name;
+                generateCustomViewWithEventHandler(id, extension, folder);
+                const xmlPath = join(testDir, 'webapp', folder!, `${id}.fragment.xml`);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                // Check update js file content
+                expect(fs.read(existingPath)).toMatchSnapshot();
+            });
+        }
     });
 });

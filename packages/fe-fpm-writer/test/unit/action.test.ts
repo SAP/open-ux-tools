@@ -242,39 +242,48 @@ describe('CustomAction', () => {
                 expect(fs.exists(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))).toBeFalsy();
             });
 
-            test(`"eventHandler" is object. Append new function to existing js file`, () => {
-                const fileName = 'MyExistingAction';
-                // Create existing file with existing actions
-                const folder = join('ext', 'fragments');
-                const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
-                // Generate handler with single method - content should be updated during generating of custom action
-                fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
-                // Create third action - append existing js file
-                const actionName = 'CustomAction2';
-                const fnName = 'onHandleSecondAction';
-                generateCustomActionWithEventHandler(
-                    actionName,
-                    {
-                        fnName,
-                        fileName,
-                        insertScript: {
-                            fragment:
-                                ',\n        onHandleSecondAction: function() {\n            MessageToast.show("Custom handler invoked.");\n        }',
-                            position: {
-                                line: 8,
-                                character: 9
+            // Test with both position interfaces
+            const positions = [
+                {
+                    line: 8,
+                    character: 9
+                },
+                206
+            ];
+            for (const position of positions) {
+                test(`"eventHandler" is object. Append new function to existing js file with position ${
+                    typeof position === 'object' ? JSON.stringify(position) : position
+                }`, () => {
+                    const fileName = 'MyExistingAction';
+                    // Create existing file with existing actions
+                    const folder = join('ext', 'fragments');
+                    const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
+                    // Generate handler with single method - content should be updated during generating of custom action
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                    // Create third action - append existing js file
+                    const actionName = 'CustomAction2';
+                    const fnName = 'onHandleSecondAction';
+                    generateCustomActionWithEventHandler(
+                        actionName,
+                        {
+                            fnName,
+                            fileName,
+                            insertScript: {
+                                fragment:
+                                    ',\n        onHandleSecondAction: function() {\n            MessageToast.show("Custom handler invoked.");\n        }',
+                                position
                             }
-                        }
-                    },
-                    folder
-                );
+                        },
+                        folder
+                    );
 
-                const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
-                const action = getActionByName(manifest, actionName);
-                expect(action['press']).toEqual(`my.test.App.ext.fragments.${fileName}.${fnName}`);
-                // Check update js file content
-                expect(fs.read(existingPath)).toMatchSnapshot();
-            });
+                    const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
+                    const action = getActionByName(manifest, actionName);
+                    expect(action['press']).toEqual(`my.test.App.ext.fragments.${fileName}.${fnName}`);
+                    // Check update js file content
+                    expect(fs.read(existingPath)).toMatchSnapshot();
+                });
+            }
         });
     });
 });
