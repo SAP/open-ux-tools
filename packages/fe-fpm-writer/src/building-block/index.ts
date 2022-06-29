@@ -1,7 +1,9 @@
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import type { BuildingBlock } from './types';
+import type { BuildingBlock, BuildingBlockConfig } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
@@ -11,42 +13,41 @@ import { getErrorMessage, validateBasePath } from '../common/validate';
  * Generates a building block into the provided xml view file.
  *
  * @param {string} basePath - the base path
- * @param {string} viewOrFragmentPath - the path of the view or fragment xml file relative to the base path
- * @param {string} aggregationPath - the aggregation xpath
- * @param {BuildingBlock} buildingBlockData - the building block data
+ * @param {BuildingBlockConfig} config - the building block configuration parameters
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Editor} the updated memfs editor instance
  */
 export function generateBuildingBlock<T extends BuildingBlock>(
     basePath: string,
-    viewOrFragmentPath: string,
-    aggregationPath: string,
-    buildingBlockData: T,
-    fs: Editor
+    config: BuildingBlockConfig<T>,
+    fs?: Editor
 ): Editor {
     // Validate the base and view paths
+    if (!fs) {
+        fs = create(createStorage());
+    }
     validateBasePath(basePath, fs);
-    if (!fs.exists(join(basePath, viewOrFragmentPath))) {
-        throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
+    if (!fs.exists(join(basePath, config.viewOrFragmentPath))) {
+        throw new Error(`Invalid view path ${config.viewOrFragmentPath}.`);
     }
 
     // Read the view xml and template files and update contents of the view xml file
-    const viewDocument = getViewDocument(basePath, viewOrFragmentPath, fs);
-    const templateDocument = getTemplateDocument(buildingBlockData, viewDocument, fs);
-    fs = updateViewFile(basePath, viewOrFragmentPath, aggregationPath, viewDocument, templateDocument, fs);
+    const xmlDocument = getUI5XmlDocument(basePath, config.viewOrFragmentPath, fs);
+    const templateDocument = getTemplateDocument(config.buildingBlockData, xmlDocument, fs);
+    fs = updateViewFile(basePath, config.viewOrFragmentPath, config.aggregationPath, xmlDocument, templateDocument, fs);
 
     return fs;
 }
 
 /**
- * Returns the view xml file document.
+ * Returns the UI5 xml file document (view/fragment).
  *
  * @param {string} basePath - the base path
  * @param {string} viewPath - the path of the xml view relative to the base path
  * @param {Editor} fs - the memfs editor instance
  * @returns {Document} the view xml file document
  */
-function getViewDocument(basePath: string, viewPath: string, fs: Editor): Document {
+function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Document {
     let viewContent: string;
     try {
         viewContent = fs.read(join(basePath, viewPath));
@@ -69,16 +70,16 @@ function getViewDocument(basePath: string, viewPath: string, fs: Editor): Docume
     return viewDocument;
 }
 /**
- * Returns the macros namespace from the xml view document if it exists or creates a new one and returns it.
+ * Returns the macros namespace from the xml document if it exists or creates a new one and returns it.
  *
- * @param {Document} viewDocument - the view xml file document
+ * @param {Document} ui5XmlDocument - the view/fragment xml file document
  * @returns {string} the macros namespace
  */
-function getOrAddMacrosNamespace(viewDocument: Document): string {
-    const namespaceMap = (viewDocument.firstChild as any)._nsMap;
+function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
+    const namespaceMap = (ui5XmlDocument.firstChild as any)._nsMap;
     const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
     if (!macrosNamespaceEntry) {
-        (viewDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
+        (ui5XmlDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
     }
     return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macros';
 }

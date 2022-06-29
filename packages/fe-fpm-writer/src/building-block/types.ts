@@ -346,3 +346,23 @@ export interface Table extends BuildingBlock {
      */
     variantManagement?: string;
 }
+
+/**
+ * Input configuration for the generate function.
+ */
+export interface BuildingBlockConfig<T extends BuildingBlock> {
+    /**
+     * The path of the view or fragment xml file relative to the base path.
+     */
+    viewOrFragmentPath: string;
+
+    /**
+     * The aggregation xpath.
+     */
+    aggregationPath: string;
+
+    /**
+     * The building block parameters.
+     */
+    buildingBlockData: T;
+}

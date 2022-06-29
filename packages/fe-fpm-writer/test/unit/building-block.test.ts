@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { BuildingBlockType, Chart, Field, FieldFormatOptions, FilterBar, generateBuildingBlock } from '../../src';
+import { BuildingBlockType, Chart, Field, FilterBar, generateBuildingBlock } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
 import { promisify } from 'util';
@@ -42,11 +42,13 @@ describe('Building Blocks', () => {
         expect(() =>
             generateBuildingBlock<FilterBar>(
                 'invalidBasePath',
-                'testViewPath',
-                'testAggregation',
                 {
-                    id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar
+                    viewOrFragmentPath: 'testViewPath',
+                    aggregationPath: 'testAggregation',
+                    buildingBlockData: {
+                        id: 'testFilterBar',
+                        buildingBlockType: BuildingBlockType.FilterBar
+                    }
                 },
                 fs
             )
@@ -57,11 +59,13 @@ describe('Building Blocks', () => {
         expect(() =>
             generateBuildingBlock<FilterBar>(
                 basePath,
-                'invalidXmlViewFilePath',
-                'testAggregation',
                 {
-                    id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar
+                    viewOrFragmentPath: 'invalidXmlViewFilePath',
+                    aggregationPath: 'testAggregation',
+                    buildingBlockData: {
+                        id: 'testFilterBar',
+                        buildingBlockType: BuildingBlockType.FilterBar
+                    }
                 },
                 fs
             )
@@ -77,11 +81,13 @@ describe('Building Blocks', () => {
         expect(() =>
             generateBuildingBlock<FilterBar>(
                 basePath,
-                'testViewPath',
-                'testAggregation',
                 {
-                    id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar
+                    viewOrFragmentPath: 'testViewPath',
+                    aggregationPath: 'testAggregation',
+                    buildingBlockData: {
+                        id: 'testFilterBar',
+                        buildingBlockType: BuildingBlockType.FilterBar
+                    }
                 },
                 fs
             )
@@ -99,11 +105,13 @@ describe('Building Blocks', () => {
         expect(() =>
             generateBuildingBlock<FilterBar>(
                 basePath,
-                xmlViewFilePath,
-                aggregationPath,
                 {
-                    id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: {
+                        id: 'testFilterBar',
+                        buildingBlockType: BuildingBlockType.FilterBar
+                    }
                 },
                 fs
             )
@@ -118,11 +126,13 @@ describe('Building Blocks', () => {
         expect(() =>
             generateBuildingBlock<FilterBar>(
                 basePath,
-                'invalidXmlViewFilePath',
-                'testAggregationPath',
                 {
-                    id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar
+                    viewOrFragmentPath: 'invalidXmlViewFilePath',
+                    aggregationPath: 'testAggregationPath',
+                    buildingBlockData: {
+                        id: 'testFilterBar',
+                        buildingBlockType: BuildingBlockType.FilterBar
+                    }
                 },
                 fs
             )
@@ -145,11 +155,13 @@ describe('Building Blocks', () => {
         expect(() =>
             generateBuildingBlock<FilterBar>(
                 basePath,
-                xmlViewFilePath,
-                aggregationPath,
                 {
-                    id: 'testFilterBar',
-                    buildingBlockType: BuildingBlockType.FilterBar
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath: aggregationPath,
+                    buildingBlockData: {
+                        id: 'testFilterBar',
+                        buildingBlockType: BuildingBlockType.FilterBar
+                    }
                 },
                 fs
             )
@@ -185,7 +197,15 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
             // Test generator with valid manifest.json, view.xml files and build block data with just id
-            fs = generateBuildingBlock(basePath, xmlViewFilePath, aggregationPath, testData.buildingBlockData, fs);
+            generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: testData.buildingBlockData
+                },
+                fs
+            );
             expect((fs as any).dump(testAppPath)).toMatchSnapshot(
                 `generate-${testData.buildingBlockData.buildingBlockType}-with-id`
             );
@@ -240,7 +260,15 @@ describe('Building Blocks', () => {
             fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
 
             // Test generator with valid manifest.json, view.xml files and building block data with optional parameters
-            fs = generateBuildingBlock(basePath, xmlViewFilePath, aggregationPath, testData.buildingBlockData, fs);
+            generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: testData.buildingBlockData
+                },
+                fs
+            );
             expect((fs as any).dump(testAppPath)).toMatchSnapshot(
                 `generate-${testData.buildingBlockData.buildingBlockType}-with-optional-params`
             );
