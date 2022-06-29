@@ -13,10 +13,12 @@ import type {
 import type { MetadataService, MetadataElement, Path } from '@sap-ux/odata-metadata';
 
 /**
- * convert metadata to AVT Schema representation
- * @param metadataService
+ * Convert metadata to AVT Schema representation.
+ *
+ * @param metadataService Metadata service.
+ * @returns Metadata in AVT format.
  */
-export function convertMetaDataToAvtSchema(metadataService: MetadataService): RawSchema {
+export function convertMetadataToAvtSchema(metadataService: MetadataService): RawSchema {
     const rootLevelElement = metadataService.getRootMetadataElements();
     // Schema representation includes entityTypes, entitySets, associations (not supported here), a single entityContainer and actions
     // collect these objects based on the (multiple) EdmTargetKinds of each metadata element

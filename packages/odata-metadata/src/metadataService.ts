@@ -10,7 +10,6 @@ import type {
     MetadataElementVisitor
 } from './types';
 
-// type ElementMapWithNode = Map<Path, { element: MetadataElement; node: MetadataElementNode }>;
 // Mapping of action/function names to all their overloads
 type ActionNameMap = Map<Path, Set<Path>>;
 

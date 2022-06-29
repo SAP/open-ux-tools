@@ -31,9 +31,9 @@ interface NamespaceDetails {
 /**
  * Convert AST of an XML document to annotation document.
  *
- * @param uri Uri of the document
- * @param ast AST of an XML document
- * @returns annotation document root Element
+ * @param uri Uri of the document.
+ * @param ast XML document containing annotations.
+ * @returns annotation file.
  */
 export function convertDocument(uri: string, ast: XMLDocument): AnnotationFile {
     if (ast.rootElement && ast.rootElement.syntax.openBody && ast.rootElement.syntax.closeName) {
@@ -64,6 +64,11 @@ export function convertDocument(uri: string, ast: XMLDocument): AnnotationFile {
     };
 }
 
+/**
+ *
+ * @param element EDMX XML Element
+ * @returns references contained in the XML element
+ */
 function convertReferences(element: XMLElement): Reference[] {
     const referenceElements = getElementsWithName('Reference', element);
     const references: Reference[] = [];
@@ -85,6 +90,11 @@ function convertReferences(element: XMLElement): Reference[] {
     return references;
 }
 
+/**
+ *
+ * @param schema Schema XML Element
+ * @returns targets contained in the XML element
+ */
 function convertSchema(schema: XMLElement): Target[] {
     const targets: Target[] = [];
     const annotationsElements = getElementsWithName(Edm.Annotations, schema);
@@ -120,6 +130,11 @@ function convertSchema(schema: XMLElement): Target[] {
     return targets;
 }
 
+/**
+ *
+ * @param element XML element
+ * @returns element default namespace if it exists
+ */
 function getNamespace(element: XMLElement): NamespaceDetails | undefined {
     if (element.ns) {
         const namespace = element.namespaces[element.ns];
@@ -133,6 +148,11 @@ function getNamespace(element: XMLElement): NamespaceDetails | undefined {
     return undefined;
 }
 
+/**
+ *
+ * @param element XMLElement
+ * @returns generic annotation file Element
+ */
 function convertElement(element: XMLElement): Element {
     const range = transformElementRange(element.position, element);
     const nameRange = element.syntax.openName ? transformRange(element.syntax.openName) : undefined;
@@ -191,19 +211,13 @@ function convertElement(element: XMLElement): Element {
             diagnostics: Diagnostic[];
         }
     );
+
     const attributes = element.attributes.reduce<Attributes>((acc: Attributes, attribute: XMLAttribute) => {
         if (!attribute.key) {
             return acc;
         }
         const value = attribute.value ? removeEscapeSequences(attribute.value) : '';
 
-        // {
-        //     type: ATTRIBUTE_TYPE,
-        //     name: atr.key,
-        //     value,
-        //     nameRange: transformRange(attribute.syntax.key),
-        //     valueRange: transformRange(attribute.syntax.value)
-        // };
         const attributeNode = createAttributeNode(
             attribute.key,
             value,
@@ -216,6 +230,7 @@ function convertElement(element: XMLElement): Element {
         acc[attribute.key] = attributeNode;
         return acc;
     }, {});
+
     return createElementNode(
         element.name ?? '',
         range,
@@ -228,6 +243,11 @@ function convertElement(element: XMLElement): Element {
     );
 }
 
+/**
+ *
+ * @param textNode XML text node
+ * @returns annotation file TextNode
+ */
 function convertTextNode(textNode: XMLTextContent): TextNode {
     const range = transformRange(textNode.position);
     return createTextNode(textNode.text ?? '', range);

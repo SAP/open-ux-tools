@@ -1,6 +1,5 @@
 import type {
     Attribute,
-    Target,
     TargetPath,
     Element,
     Namespace,
@@ -62,8 +61,8 @@ export interface RecordWithOrigins extends AnnotationRecord {
 /**
  * Convert annotation files to AVT parser format.
  *
- * @param targets
- * @param aliasInfo
+ * @param file Annotation file
+ * @returns A list of annotations defined in the annotation file.
  */
 export function convertAnnotationFile(file: AnnotationFile): AnnotationList[] {
     const annotations: AnnotationList[] = [];
@@ -147,9 +146,11 @@ const EXPRESSION_TYPES = new Set<string>([
 ]);
 
 /**
- * convert element of generic annotation format to expression
+ * Convert element of generic annotation format to expression.
+ *
  * @param element - is supposed to represent an expression
- * @param aliasInfo
+ * @param aliasMap
+ * @returns
  */
 function convertExpressionFromInternal(element: Element, aliasMap: AliasMap): Expression {
     const expressionValues: Expression[] = [];
@@ -242,7 +243,6 @@ function convertExpression(name: string, value: string, aliasMap: AliasMap): Exp
                 type: 'Null'
             };
         default:
-            console.error('Unsupported inline expression type ' + name);
             return {
                 type: 'Unknown'
             };
@@ -250,9 +250,10 @@ function convertExpression(name: string, value: string, aliasMap: AliasMap): Exp
 }
 
 /**
- * convert expression value from internal
- *  - value for an expression can be primitive or non primitive (AnnotationRecord, Collection, Apply)
- *  - all primitive values are returned in their stringified version
+ * Convert expression value from internal:
+ *  - value for an expression can be primitive or non primitive (AnnotationRecord, Collection, Apply).
+ *  - all primitive values are returned in their stringified version.
+ *
  * @param element - is supposed to represent a value of an expression
  * @param aliasMap
  * @returns
@@ -386,9 +387,11 @@ function resolvePath(path: string, aliasMap: AliasMap): string {
 }
 
 /**
- * get segment without alias
- * @param aliasInfo
+ * Get segment without alias.
+ *
+ * @param aliasMap
  * @param segment
+ * @returns
  */
 function getSegmentWithoutAlias(aliasMap: AliasMap, segment: string): string {
     let segmentWithoutAlias = '';
@@ -427,19 +430,12 @@ function getAliasQualifiedName(qualifiedName: QualifiedName, aliasInfo: AliasInf
     return aliasQualifiedName;
 }
 
-function getAliasedEnumMember(result: string, aliasInfo: AliasInformation): string {
-    return result
-        .split(' ')
-        .map((enumMember) => getAliasQualifiedName(enumMember, aliasInfo))
-        .join(' ');
-}
-
 /**
- * get aliased path
- * - replaces all namespaces (having aliases) in path and replaces them with alias
+ * Replaces all namespaces (having aliases) in path and replaces them with alias.
  *
  * @param path
  * @param aliasInfo
+ * @returns
  */
 export function getAliasedPath(path: string, aliasInfo: AliasInformation): string {
     function getAliasedSegment(aliasInfo: AliasInformation, segment: string): string {

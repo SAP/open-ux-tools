@@ -1,13 +1,11 @@
-import type { AnnotationList, ConvertedMetadata, RawAnnotation, RawMetadata } from '@sap-ux/vocabularies-types';
+import type { AnnotationList, ConvertedMetadata, RawMetadata } from '@sap-ux/vocabularies-types';
 import { convert } from '@sap-ux/annotation-converter';
 
-import type { AnnotationFile } from '@sap-ux/odata-annotation-core-types';
 import { MetadataService } from '@sap-ux/odata-metadata';
 
 import type { CompiledService, Service } from './services';
-import { mergeXmlAnnotations, readXmlAnnotations } from './xml';
-import { convertMetaDataToAvtSchema } from './convenience';
-import { convertAnnotationFile } from './formatConversion';
+import { readXmlAnnotations } from './xml';
+import { convertMetadataToAvtSchema, convertAnnotationFile } from './avt';
 
 /**
  * Reads annotations for a specific service in an application.
@@ -24,7 +22,7 @@ export function readAnnotations(service: Service): ConvertedMetadata {
     const rawMetadata: RawMetadata = {
         version: '2.0',
         identification: 'metadataFile',
-        schema: convertMetaDataToAvtSchema(metadataService),
+        schema: convertMetadataToAvtSchema(metadataService),
         references: []
     };
 

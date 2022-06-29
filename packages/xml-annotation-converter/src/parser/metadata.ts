@@ -85,6 +85,14 @@ interface Context {
     parentPath: string;
     uri: string;
 }
+
+/**
+ * Traverses the XML document and collects metadata element definitions.
+ *
+ * @param uri Uri of the document.
+ * @param document XML document containing metadata.
+ * @returns an array of MetadataElements extracted from the XML document.
+ */
 export function convertMetadataDocument(uri: string, document: XMLDocument): MetadataElement[] {
     // const nodes =
     const root = document.rootElement;
@@ -153,9 +161,15 @@ export function convertMetadataDocument(uri: string, document: XMLDocument): Met
     return metadataElements;
 }
 
+/**
+ *
+ * @param context Conversion context
+ * @param element Source XML element
+ * @returns matching MetadataElement if it exists for the given XML element
+ */
 function convertMetadataElement(context: Context, element: XMLElement): MetadataElement | undefined {
     if (!element.name || !EDMX_METADATA_ELEMENT_NAMES.has(element.name)) {
-        return;
+        return undefined;
     }
 
     const metadataElement = createMetadataNode(context, element);
@@ -179,6 +193,12 @@ function convertMetadataElement(context: Context, element: XMLElement): Metadata
     return metadataElement;
 }
 
+/**
+ *
+ * @param context Conversion context
+ * @param element Source XML element
+ * @returns matching MetadataElement if it exists for the given XML element
+ */
 function createMetadataNode(context: Context, element: XMLElement): MetadataElement | undefined {
     let typeAttrName: string;
     switch (element.name) {
@@ -228,12 +248,25 @@ function createMetadataNode(context: Context, element: XMLElement): MetadataElem
     return createMetadataElementNodeForType(context, element, type, forAction);
 }
 
+/**
+ * @param context Conversion context
+ * @param element Source XML element
+ * @param type Fully qualified type name
+ * @param forAction Indicates if overloads should be checked
+ * @returns matching MetadataElement if it exists for the given XML element
+ */
 function createMetadataElementNodeForType(
     context: Context,
     element: XMLElement,
     type: string,
     forAction?: boolean
 ): MetadataElement | undefined {
+    /**
+     *  Converts to singular type name.
+     *
+     * @param fqTypeName Fully qualified name for a type.
+     * @returns singular type name.
+     */
     function getTypeName(fqTypeName: FullyQualifiedTypeName): FullyQualifiedName {
         // links always go to entityTypes/complexTypes/functions or actions, which are defined as direct container children
         // --> use fully qualified name as path with single segment (strip Collection())
@@ -370,6 +403,12 @@ function createMetadataElementNodeForType(
     };
 }
 
+/**
+ *
+ * @param context Conversion context
+ * @param element Source XML element
+ * @returns matching MetadataElement if it exists for the given XML element
+ */
 function getOverloadName(context: Context, element: XMLElement): string {
     // generate overload name MyFunction(MySchema.MyBindingParamType,First.NonBinding.ParamType)
     const name = getAttributeValue('Name', element);
@@ -388,6 +427,11 @@ function getOverloadName(context: Context, element: XMLElement): string {
     return name + '(' + parameterTypes.join(',') + ')';
 }
 
+/**
+ *
+ * @param element Source XML element
+ * @returns an array of PropertyRef names
+ */
 function getKeys(element: XMLElement): string[] {
     // find all PropertyRef sub elements of Key sub element and collect their Name attribute
     // (there should be at most a single 'Key' sub element)

@@ -31,5 +31,25 @@ const ast = buildAst(cst, tokenVector);
 const annotationDocument = convertDocument(ast);
 ```
 
+
+Convert metadata (data model) defined in an XML file to an array of `MetadataElement`.
+
+```Typescript
+import { readFile } from 'fs/promises';
+import { buildAst } from '@xml-tools/ast';
+import { parse } from '@xml-tools/parser';
+
+import { convertMetadataDocument } from '@sap-ux/xml-annotation-converter';
+
+// read annotation file
+const text = await readFile('metadata.xml', 'utf8');
+// parse XML
+const { cst, tokenVector } = parse(text);
+// build AST
+const ast = buildAst(cst, tokenVector);
+// convert to annotation document format
+const metadata = convertMetadataDocument(ast);
+```
+
 ## Keywords
 OData annotations
