@@ -156,6 +156,33 @@ describe('use FPM with existing apps', () => {
                 },
                 fs
             );
+            // Generate custom action by appending existing file
+            generateCustomAction(
+                targetPath,
+                {
+                    name: 'AppendedAction',
+                    target: {
+                        page: 'TravelObjectPage',
+                        control: TargetControl.header
+                    },
+                    settings: {
+                        text: 'My other Action',
+                        eventHandler: {
+                            fileName: 'AnotherCustomAction',
+                            fnName: 'OnAppenedFn',
+                            insertScript: {
+                                fragment: `,\n        OnAppenedFn: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                                position: {
+                                    line: 8,
+                                    character: 9
+                                }
+                            }
+                        }
+                    },
+                    folder: join('ext', 'anotherCustomAction')
+                },
+                fs
+            );
         });
 
         test('generateCustomSection in ObjectPage', () => {
