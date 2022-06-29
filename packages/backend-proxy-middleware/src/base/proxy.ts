@@ -259,13 +259,8 @@ export async function enhanceConfigForSystem(
         // sending a request to the backend to get cookies
         await provider.getAtoInfo();
         proxyOptions.headers['cookie'] = provider.cookies.toString();
-    } else if (
-        (system.username || process.env.FIORI_TOOLS_USER) &&
-        (system.password || process.env.FIORI_TOOLS_PASSWORD)
-    ) {
-        proxyOptions.auth = `${system.username || process.env.FIORI_TOOLS_USER}:${
-            system.password || process.env.FIORI_TOOLS_PASSWORD
-        }`;
+    } else if (system.username && system.password) {
+        proxyOptions.auth = `${system.username}:${system.password}`;
     }
 }
 
@@ -315,6 +310,10 @@ export async function generateProxyMiddlewareOptions(
                 }
             });
         }
+    }
+
+    if (!proxyOptions.auth && process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
+        proxyOptions.auth = `${process.env.FIORI_TOOLS_USER}:${process.env.FIORI_TOOLS_PASSWORD}`;
     }
 
     proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
