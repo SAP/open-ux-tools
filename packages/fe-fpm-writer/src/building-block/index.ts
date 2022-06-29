@@ -11,7 +11,7 @@ import { getErrorMessage, validateBasePath } from '../common/validate';
  * Generates a building block into the provided xml view file.
  *
  * @param {string} basePath - the base path
- * @param {string} viewPath - the path of the xml view relative to the base path
+ * @param {string} viewOrFragmentPath - the path of the view or fragment xml file relative to the base path
  * @param {string} aggregationPath - the aggregation xpath
  * @param {BuildingBlock} buildingBlockData - the building block data
  * @param {Editor} [fs] - the memfs editor instance
@@ -19,21 +19,21 @@ import { getErrorMessage, validateBasePath } from '../common/validate';
  */
 export function generateBuildingBlock<T extends BuildingBlock>(
     basePath: string,
-    viewPath: string,
+    viewOrFragmentPath: string,
     aggregationPath: string,
     buildingBlockData: T,
     fs: Editor
 ): Editor {
     // Validate the base and view paths
     validateBasePath(basePath, fs);
-    if (!fs.exists(join(basePath, viewPath))) {
-        throw new Error(`Invalid view path ${viewPath}.`);
+    if (!fs.exists(join(basePath, viewOrFragmentPath))) {
+        throw new Error(`Invalid view path ${viewOrFragmentPath}.`);
     }
 
     // Read the view xml and template files and update contents of the view xml file
-    const viewDocument = getViewDocument(basePath, viewPath, fs);
+    const viewDocument = getViewDocument(basePath, viewOrFragmentPath, fs);
     const templateDocument = getTemplateDocument(buildingBlockData, viewDocument, fs);
-    fs = updateViewFile(basePath, viewPath, aggregationPath, viewDocument, templateDocument, fs);
+    fs = updateViewFile(basePath, viewOrFragmentPath, aggregationPath, viewDocument, templateDocument, fs);
 
     return fs;
 }
@@ -69,12 +69,12 @@ function getViewDocument(basePath: string, viewPath: string, fs: Editor): Docume
     return viewDocument;
 }
 /**
- * Returns the macros namespace from the xml view document.
+ * Returns the macros namespace from the xml view document if it exists or creates a new one and returns it.
  *
  * @param {Document} viewDocument - the view xml file document
  * @returns {string} the macros namespace
  */
-function getMacrosNamespace(viewDocument: Document): string {
+function getOrAddMacrosNamespace(viewDocument: Document): string {
     const namespaceMap = (viewDocument.firstChild as any)._nsMap;
     const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
     if (!macrosNamespaceEntry) {
@@ -99,7 +99,7 @@ function getTemplateDocument<T extends BuildingBlock>(
     const templateFolderName = buildingBlockData.buildingBlockType;
     const templateFilePath = join(__dirname, `../../templates/building-block/${templateFolderName}/View.xml`);
     const templateContent = render(fs.read(templateFilePath), {
-        macrosNamespace: getMacrosNamespace(viewDocument),
+        macrosNamespace: getOrAddMacrosNamespace(viewDocument),
         data: buildingBlockData
     });
     const errorHandler = (level: string, message: string) => {

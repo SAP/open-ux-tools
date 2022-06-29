@@ -25,7 +25,7 @@ Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Chart id=\\"testField\\"/>
+            <macros:Field id=\\"testField\\"/>
         </content>
     </Page>
 </mvc:View>",
@@ -63,7 +63,7 @@ Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Chart id=\\"testChart\\" metaPath=\\"testMetaPath\\" contextPath=\\"testContextPath\\" filterBar=\\"testFilterBar\\" personalization=\\"testPersonalization\\" selectionMode=\\"MULTIPLE\\"/>
+            <macros:Chart id=\\"testChart\\" metaPath=\\"testMetaPath\\" contextPath=\\"testContextPath\\" filterBar=\\"testFilterBar\\" personalization=\\"testPersonalization\\" selectionMode=\\"MULTIPLE\\" selectionChange=\\"testOnSelectionChange\\"/>
         </content>
     </Page>
 </mvc:View>",
@@ -82,7 +82,7 @@ Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Chart id=\\"testField\\" metaPath=\\"testMetaPath\\" contextPath=\\"testContextPath\\" formatOptions=\\"{'displayMode':'Value'}\\" readOnly=\\"true\\" semanticObject=\\"testSemanticObject\\"/>
+            <macros:Field id=\\"testField\\" metaPath=\\"testMetaPath\\" contextPath=\\"testContextPath\\" formatOptions=\\"{'displayMode':'Value'}\\" readOnly=\\"true\\" semanticObject=\\"testSemanticObject\\"/>
         </content>
     </Page>
 </mvc:View>",

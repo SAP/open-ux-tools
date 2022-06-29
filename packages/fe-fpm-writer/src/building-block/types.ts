@@ -55,6 +55,12 @@ export interface Chart extends BuildingBlock {
      * Specifies the selection mode.
      */
     selectionMode?: string;
+    /**
+     * An event triggered when chart selections are changed.
+     * The event contains information about the data selected/deselected and the Boolean flag that indicates
+     * whether data is selected or deselected.
+     */
+    selectionChange?: string;
 }
 
 /**

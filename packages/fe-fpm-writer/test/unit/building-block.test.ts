@@ -213,7 +213,8 @@ describe('Building Blocks', () => {
                     metaPath: 'testMetaPath',
                     filterBar: 'testFilterBar',
                     personalization: 'testPersonalization',
-                    selectionMode: 'MULTIPLE'
+                    selectionMode: 'MULTIPLE',
+                    selectionChange: 'testOnSelectionChange'
                 } as Chart
             },
             {

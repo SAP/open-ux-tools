@@ -1,4 +1,4 @@
-<<%- macrosNamespace %>:Chart
+<<%- macrosNamespace %>:Field
     id="<%- data.id %>"<% if (data.metaPath) { %>
     metaPath="<%- data.metaPath %>"<% } %><% if (data.contextPath) { %>
     contextPath="<%- data.contextPath %>"<% } %><% if (data.formatOptions) { %>
