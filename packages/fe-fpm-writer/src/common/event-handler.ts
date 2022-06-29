@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomElement } from '../common/types';
-import { insertTextAtPosition, insertTextAtAbslutePosition } from '../common/utils';
+import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/utils';
 
 /**
  * Method creates or updates handler js file and update 'settings.eventHandler' entry with namespace path entry to method.
@@ -51,7 +51,7 @@ export function applyEventHandlerConfiguration(
         if (typeof insertScript.position === 'object') {
             content = insertTextAtPosition(insertScript.fragment, content, insertScript.position);
         } else {
-            content = insertTextAtAbslutePosition(insertScript.fragment, content, insertScript.position);
+            content = insertTextAtAbsolutePosition(insertScript.fragment, content, insertScript.position);
         }
         fs.write(controllerPath, content);
     }

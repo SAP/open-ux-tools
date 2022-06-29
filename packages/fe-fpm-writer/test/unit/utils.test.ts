@@ -1,5 +1,5 @@
 import os from 'os';
-import { insertTextAtPosition, insertTextAtAbslutePosition } from '../../src/common/utils';
+import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../../src/common/utils';
 
 describe('insertTextAtPosition', () => {
     const content = `Line 0,${os.EOL}Line 1,${os.EOL}Line 2,${os.EOL}Line 3`;
@@ -64,41 +64,41 @@ describe('insertTextAtPosition', () => {
     }
 });
 
-describe('insertTextAtAbslutePosition', () => {
+describe('insertTextAtAbsolutePosition', () => {
     const content = `Line 0,${os.EOL}Line 1,${os.EOL}Line 2,${os.EOL}Line 3`;
     test('Insert at beginning', () => {
         const text = 'dummy';
-        const newContent = insertTextAtAbslutePosition(text, content, 0);
+        const newContent = insertTextAtAbsolutePosition(text, content, 0);
         expect(newContent).toEqual(`${text}${content}`);
     });
 
     test('Insert at end', () => {
         const text = 'dummy';
-        const newContent = insertTextAtAbslutePosition(text, content, content.length);
+        const newContent = insertTextAtAbsolutePosition(text, content, content.length);
         expect(newContent).toEqual(`${content}${text}`);
     });
 
     test('Insert at middle', () => {
         const text = 'dummy';
-        const newContent = insertTextAtAbslutePosition(text, content, 9 + os.EOL.length);
+        const newContent = insertTextAtAbsolutePosition(text, content, 9 + os.EOL.length);
         expect(newContent).toEqual(`Line 0,${os.EOL}Li${text}ne 1,${os.EOL}Line 2,${os.EOL}Line 3`);
     });
 
     test('At beginning of empty string', () => {
         const text = 'dummy';
-        const newContent = insertTextAtAbslutePosition(text, '', 0);
+        const newContent = insertTextAtAbsolutePosition(text, '', 0);
         expect(newContent).toEqual(text);
     });
 
     test('Line and char out of range', () => {
         const text = 'dummy';
-        const newContent = insertTextAtAbslutePosition(text, '', 5);
+        const newContent = insertTextAtAbsolutePosition(text, '', 5);
         expect(newContent).toEqual(`     ${text}`);
     });
 
     test(`Negative value`, () => {
         const text = 'dummy';
-        const newContent = insertTextAtAbslutePosition(text, content, -10);
+        const newContent = insertTextAtAbsolutePosition(text, content, -10);
         expect(newContent).toEqual(content);
     });
 });

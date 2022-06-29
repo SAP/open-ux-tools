@@ -11,7 +11,7 @@ import type { FileContentPosition } from '../common/types';
  * @param {number} position - Char index position to insert in
  * @returns new content with inserted text
  */
-export function insertTextAtAbslutePosition(text: string, content: string, position: number): string {
+export function insertTextAtAbsolutePosition(text: string, content: string, position: number): string {
     if (position < 0) {
         return content;
     }
@@ -45,6 +45,6 @@ export function insertTextAtPosition(text: string, content: string, position: Fi
         targetLine = lines[position.line];
     }
     // Update line with inserting passed text
-    lines[position.line] = insertTextAtAbslutePosition(text, lines[position.line], position.character);
+    lines[position.line] = insertTextAtAbsolutePosition(text, lines[position.line], position.character);
     return lines.join(os.EOL);
 }
