@@ -169,9 +169,9 @@ describe('use FPM with existing apps', () => {
                         text: 'My other Action',
                         eventHandler: {
                             fileName: 'AnotherCustomAction',
-                            fnName: 'OnAppenedFn',
+                            fnName: 'OnAppendedFn',
                             insertScript: {
-                                fragment: `,\n        OnAppenedFn: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                                fragment: `,\n        OnAppendedFn: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
                                 position: {
                                     line: 8,
                                     character: 9

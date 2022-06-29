@@ -125,7 +125,7 @@ export interface TextFragmentInsertion {
      */
     position: FileContentPosition;
     /**
-     * Full fragment of script to insert.
+     * Fragment of script to insert.
      */
     fragment: string;
 }
@@ -149,7 +149,9 @@ export interface EventHandler {
     /**
      * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.
      * If an existing event handler is to be used then its id needs to be provided as string.
-     * Object with 'EventHandlerConfiguration' provides option to append existing js file with new action.
+     * Object with 'EventHandlerConfiguration' provides following options:
+     * 1. Append existing js file with new action by providing script fragment;
+     * 2. Pass non-default function name(default is "onPress");
      */
     eventHandler?: true | string | EventHandlerConfiguration;
 }

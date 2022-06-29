@@ -12,7 +12,7 @@ Object {
         onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
-        OnAppenedFn: function() {
+        OnAppendedFn: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -338,7 +338,7 @@ Object {
                       \\"text\\": \\"My other Action\\"
                     },
                     \\"AppendedAction\\": {
-                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.OnAppenedFn\\",
+                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.OnAppendedFn\\",
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My other Action\\"

@@ -2,8 +2,9 @@ import os from 'os';
 import type { FileContentPosition } from '../common/types';
 
 /**
- * Method insert passed text into content by line and char position.
- * In case if position is out ofrange, then whitespaces would be created.
+ * Method inserts passed text into content by line and char position.
+ * In case if position is out of range, then whitespaces would be created.
+ * Negative positions are not supported.
  *
  * @param {string} text - text to insert
  * @param {string} content - target content for update

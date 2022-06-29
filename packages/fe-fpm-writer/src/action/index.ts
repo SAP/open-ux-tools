@@ -85,11 +85,10 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     const config = enhanceConfig(actionConfig, manifestPath, manifest);
 
     const root = join(__dirname, '../../templates');
-    const { eventHandler } = config.settings;
 
     // Apply event handler
-    if (eventHandler) {
-        config.settings.eventHandler = applyEventHandlerConfiguration(fs, root, config, eventHandler);
+    if (config.settings.eventHandler) {
+        config.settings.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.settings.eventHandler);
     }
 
     // enhance manifest with action definition and controller reference
