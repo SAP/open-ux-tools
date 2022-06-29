@@ -76,7 +76,7 @@ describe('CustomView', () => {
         //sut
         const testCustomView: CustomView = {
             ...customView,
-            eventHandler: true
+            eventHandler: {}
         };
         generateCustomView(testDir, testCustomView, fs);
         updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
@@ -108,7 +108,7 @@ describe('CustomView', () => {
     test('with new handler and new table fragment (all properties)', () => {
         const testCustomView: CustomView = {
             ...customView,
-            eventHandler: true,
+            eventHandler: {},
             control: true
         };
         generateCustomView(testDir, testCustomView, fs);

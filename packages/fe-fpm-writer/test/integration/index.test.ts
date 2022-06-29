@@ -77,7 +77,7 @@ describe('use FPM with existing apps', () => {
                     targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
                     name: 'NewCustomColumn',
                     header: 'Custom Price and Currency',
-                    eventHandler: true,
+                    eventHandler: {},
                     position: {
                         placement: Placement.After,
                         anchor: 'DataField::TravelID'
@@ -119,7 +119,7 @@ describe('use FPM with existing apps', () => {
                     key: 'CustomViewKey',
                     label: 'Custom View',
                     name: 'NewCustomView',
-                    eventHandler: true
+                    eventHandler: {}
                 },
                 fs
             );
@@ -169,7 +169,7 @@ describe('use FPM with existing apps', () => {
                         placement: Placement.After,
                         anchor: 'DummyFacet'
                     },
-                    eventHandler: true
+                    eventHandler: {}
                 },
                 fs
             );

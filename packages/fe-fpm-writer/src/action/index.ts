@@ -6,9 +6,9 @@ import { TargetControl } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest, TextFragmentInsertion, EventHandlerConfiguration } from '../common/types';
+import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
-import { insertTextAtPosition } from '../common/utils';
+import { applyEventHandlerConfiguration } from '../common/event-handler';
 
 /**
  * Enhances the provided custom action configuration with default data.
@@ -88,8 +88,8 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     const { eventHandler } = config.settings;
 
     // add event handler if requested
-    if (eventHandler === true || typeof eventHandler === 'object') {
-        config.settings.eventHandler = createNewEventHandler(fs, root, config, eventHandler);
+    if (typeof eventHandler === 'object') {
+        config.settings.eventHandler = applyEventHandlerConfiguration(fs, root, config, eventHandler);
     }
 
     // enhance manifest with action definition and controller reference
@@ -98,50 +98,4 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     fs.writeJSON(manifestPath, manifest);
 
     return fs;
-}
-
-/**
- * Method creates or updates handler js file and update 'settings.eventHandler' entry with namespace path entry to method.
- *
- * @param {Editor} fs - the memfs editor instance
- * @param {string} root - the root path
- * @param {InternalCustomAction} config - action configuration
- * @param {true | EventHandlerConfiguration} eventHandler - eventHandler for creation
- * @returns {string} full namespace path to method
- */
-function createNewEventHandler(
-    fs: Editor,
-    root: string,
-    config: InternalCustomAction,
-    eventHandler: true | EventHandlerConfiguration
-): string {
-    // New event handler function name - 'onPress' is default
-    let eventHandlerFnName = 'onPress';
-    let insertScript: TextFragmentInsertion | undefined;
-    // By default - use action name for js file name
-    let fileName = config.name;
-    if (typeof eventHandler === 'object') {
-        if (eventHandler.fnName) {
-            eventHandlerFnName = eventHandler.fnName;
-        }
-        insertScript = eventHandler.insertScript;
-        if (eventHandler.fileName) {
-            // Use passed file name
-            fileName = eventHandler.fileName;
-        }
-    }
-    const controllerPath = join(config.path, `${fileName}.js`);
-    if (!fs.exists(controllerPath)) {
-        fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, {
-            eventHandlerFnName
-        });
-    } else if (insertScript) {
-        // Read current file content
-        let content = fs.read(controllerPath);
-        // Append conent with additional script fragment
-        content = insertTextAtPosition(insertScript.fragment, content, insertScript.position);
-        fs.write(controllerPath, content);
-    }
-    // Return full namespace path to method
-    return `${config.ns}.${fileName}.${eventHandlerFnName}`;
 }
