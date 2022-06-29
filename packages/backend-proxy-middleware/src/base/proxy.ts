@@ -15,6 +15,7 @@ import {
     isFullUrlDestination,
     BAS_DEST_INSTANCE_CRED_HEADER
 } from '@sap-ux/btp-utils';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import translations from './i18n.json';
 
@@ -22,6 +23,7 @@ import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendS
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
 import { getCorporateProxyServer, isHostExcludedFromProxy } from './config';
 import type { Url } from 'url';
+import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 
 /**
  * Collection of custom event handler for the proxy.
@@ -239,7 +241,7 @@ export async function enhanceConfigForSystem(
         if (system.serviceKeys) {
             const provider = createForAbapOnCloud({
                 environment: AbapCloudEnvironment.Standalone,
-                service: JSON.parse(system.serviceKeys as string),
+                service: system.serviceKeys as ServiceInfo,
                 refreshToken: system.refreshToken,
                 refreshTokenChangedCb: tokenChangedCallback
             });
@@ -316,6 +318,10 @@ export async function generateProxyMiddlewareOptions(
     }
 
     proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
+
+    if (backend.bsp) {
+        await addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);
+    }
 
     if (backend.apiHub) {
         const apiHubKey = await getApiHubKey(logger);
