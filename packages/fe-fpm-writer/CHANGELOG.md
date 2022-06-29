@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.12.0
+
+### Minor Changes
+
+-   338dcb6: Add support to generate building blocks
+
 ## 0.11.0
 
 ### Minor Changes

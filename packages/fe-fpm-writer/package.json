@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fe-fpm-writer",
     "description": "SAP Fiori elements flexible programming model writer",
-    "version": "0.11.0",
+    "version": "0.12.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -27,11 +27,13 @@
         "templates"
     ],
     "dependencies": {
+        "@xmldom/xmldom": "0.8.2",
         "ejs": "3.1.7",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "xml-js": "1.6.11",
-        "semver": "7.3.5"
+        "semver": "7.3.5",
+        "xml-formatter": "2.6.1",
+        "xpath": "0.0.32"
     },
     "devDependencies": {
         "@types/ejs": "3.1.0",

@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.5
+
+### Patch Changes
+
+-   6fae741: Support setting credentials via .env file
+
 ## 0.6.4
 
 ### Patch Changes
