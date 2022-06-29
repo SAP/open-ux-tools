@@ -151,5 +151,5 @@ export interface EventHandler {
      * If an existing event handler is to be used then its id needs to be provided as string.
      * Object with 'EventHandlerConfiguration' provides option to append existing js file with new action.
      */
-    eventHandler?: string | EventHandlerConfiguration;
+    eventHandler?: true | string | EventHandlerConfiguration;
 }

@@ -57,7 +57,7 @@ describe('CustomSection', () => {
         test('with handler, all properties', () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
-                eventHandler: {}
+                eventHandler: true
             };
             generateCustomSection(testDir, { ...testCustomSection }, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
@@ -71,7 +71,7 @@ describe('CustomSection', () => {
         test('with existing handler, all properties', () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
-                eventHandler: {}
+                eventHandler: true
             };
             fs.write(expectedFragmentPath, 'dummyContent');
 
@@ -157,7 +157,7 @@ describe('CustomSection', () => {
             test(`Versions ${ui5Version}, with handler, all properties`, () => {
                 const testCustomSection: CustomSection = {
                     ...customSection,
-                    eventHandler: {},
+                    eventHandler: true,
                     ui5Version
                 };
                 generateCustomSection(testDir, { ...testCustomSection }, fs);

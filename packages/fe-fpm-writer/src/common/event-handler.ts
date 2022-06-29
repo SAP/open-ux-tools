@@ -17,7 +17,7 @@ export function applyEventHandlerConfiguration(
     fs: Editor,
     root: string,
     config: Partial<InternalCustomElement>,
-    eventHandler: EventHandlerConfiguration,
+    eventHandler: EventHandlerConfiguration | true,
     controllerSuffix = false
 ): string {
     // New event handler function name - 'onPress' is default

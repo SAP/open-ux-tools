@@ -30,7 +30,7 @@ function enhanceConfig(
     setCommonDefaults(config, manifestPath, manifest);
 
     // set default event handler if it is to be created
-    if (typeof config.eventHandler === 'object') {
+    if (typeof config.eventHandler === 'object' || config.eventHandler === true) {
         config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler, true);
     }
 

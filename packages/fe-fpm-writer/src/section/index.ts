@@ -46,7 +46,7 @@ function enhanceConfig(
     setCommonDefaults(config, manifestPath, manifest);
 
     // add event handler if requested
-    if (typeof config.eventHandler === 'object') {
+    if (typeof config.eventHandler === 'object' || config.eventHandler === true) {
         config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler);
     }
 

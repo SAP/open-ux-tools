@@ -88,7 +88,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     const { eventHandler } = config.settings;
 
     // add event handler if requested
-    if (typeof eventHandler === 'object') {
+    if (typeof eventHandler === 'object' || eventHandler === true) {
         config.settings.eventHandler = applyEventHandlerConfiguration(fs, root, config, eventHandler);
     }
 

@@ -129,7 +129,7 @@ describe('CustomAction', () => {
                     target,
                     settings: {
                         ...settings,
-                        eventHandler: {}
+                        eventHandler: true
                     }
                 },
                 fs

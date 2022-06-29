@@ -66,7 +66,7 @@ describe('CustomAction', () => {
         test('version 1.86, with new handler, all properties', () => {
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
-                eventHandler: {},
+                eventHandler: true,
                 availability: Availability.Adaptation,
                 horizontalAlign: HorizontalAlign.Center,
                 width: '150px',
