@@ -46,8 +46,8 @@ function enhanceConfig(
     const config: CustomTableColumn & Partial<InternalCustomTableColumn> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
-    // add event handler if requested
-    if (typeof config.eventHandler === 'object' || config.eventHandler === true) {
+    // Apply event handler
+    if (config.eventHandler) {
         config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler);
     }
 

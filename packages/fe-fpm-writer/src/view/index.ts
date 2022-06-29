@@ -29,8 +29,8 @@ function enhanceConfig(
     const config: CustomView & Partial<InternalCustomView> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
-    // set default event handler if it is to be created
-    if (typeof config.eventHandler === 'object' || config.eventHandler === true) {
+    // Apply event handler
+    if (config.eventHandler) {
         config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler, true);
     }
 

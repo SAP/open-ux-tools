@@ -87,8 +87,8 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     const root = join(__dirname, '../../templates');
     const { eventHandler } = config.settings;
 
-    // add event handler if requested
-    if (typeof eventHandler === 'object' || eventHandler === true) {
+    // Apply event handler
+    if (eventHandler) {
         config.settings.eventHandler = applyEventHandlerConfiguration(fs, root, config, eventHandler);
     }
 
