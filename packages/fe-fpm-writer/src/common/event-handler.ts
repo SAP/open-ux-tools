@@ -8,7 +8,7 @@ import { insertTextAtPosition } from '../common/utils';
  *
  * @param {Editor} fs - the memfs editor instance
  * @param {string} root - the root path
- * @param {InternalCustomAction} config - action configuration
+ * @param {InternalCustomElement} config - action configuration
  * @param {true | EventHandlerConfiguration} eventHandler - eventHandler for creation
  * @param {boolean} [controllerSuffix=false] - append controller suffix to new file
  * @returns {string} full namespace path to method
