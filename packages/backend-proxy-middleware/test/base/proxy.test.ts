@@ -391,6 +391,21 @@ describe('proxy', () => {
             expect(options.auth).toBeDefined();
             expect(options.auth).toBe(`${answers.username}:${answers.password}`);
         });
+
+        test('user/password authentication from env', async () => {
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+            const creds = {
+                username: '~user',
+                password: '~password'
+            };
+            process.env.FIORI_TOOLS_USER = creds.username;
+            process.env.FIORI_TOOLS_PASSWORD = creds.password;
+            const proxyOptions = await generateProxyMiddlewareOptions(backend);
+            expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
+        });
     });
 
     describe('createProxy', () => {
