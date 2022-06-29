@@ -87,13 +87,13 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is object. Appen
 "
 `;
 
-exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position 206 1`] = `
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position 206 2`] = `
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 2`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {

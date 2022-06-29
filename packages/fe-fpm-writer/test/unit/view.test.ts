@@ -1,3 +1,4 @@
+import os from 'os';
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
@@ -197,11 +198,11 @@ describe('CustomView', () => {
                 line: 8,
                 character: 9
             },
-            206
+            190 + 8 * os.EOL.length
         ];
         for (const position of positions) {
             test(`"eventHandler" is object. Append new function to existing js file with position ${
-                typeof position === 'object' ? JSON.stringify(position) : position
+                typeof position === 'object' ? JSON.stringify(position) : 'absolute'
             }`, () => {
                 const fileName = 'MyExistingAction';
                 // Create existing file with existing actions
