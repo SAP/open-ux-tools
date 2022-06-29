@@ -8,7 +8,7 @@ import { insertTextAtPosition } from '../common/utils';
  *
  * @param {Editor} fs - the memfs editor instance
  * @param {string} root - the root path
- * @param {InternalCustomElement} config - action configuration
+ * @param {InternalCustomElement} config - configuration
  * @param {EventHandlerConfiguration | true | string} [eventHandler] - eventHandler for creation
  * @param {boolean} [controllerSuffix=false] - append controller suffix to new file
  * @returns {string} full namespace path to method
@@ -27,7 +27,7 @@ export function applyEventHandlerConfiguration(
     // New event handler function name - 'onPress' is default
     let eventHandlerFnName = 'onPress';
     let insertScript: TextFragmentInsertion | undefined;
-    // By default - use action name for js file name
+    // By default - use config name for js file name
     let fileName = `${config.name}`;
     if (typeof eventHandler === 'object') {
         if (eventHandler.fnName) {

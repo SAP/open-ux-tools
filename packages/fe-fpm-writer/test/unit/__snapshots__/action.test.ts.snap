@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
+exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -15,7 +15,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "e
 "
 `;
 
-exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "eventHandler" is "object" - create new file with custom function name 1`] = `
+exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -30,7 +30,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "e
 "
 `;
 
-exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "eventHandler" is empty "object" - create new file with default function name 1`] = `
+exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -45,32 +45,17 @@ exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "e
 "
 `;
 
-exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "eventHandler" is object. Append new function to existing js file 1`] = `
-"sap.ui.define([], function() {
-    'use strict';
-    return {
-        onDummy: function() {
-            console.log(\\"onPress\\");
-        },
-        onDummy2: function() {
-            console.log(\\"onPress2\\");
-        },
-        onHandleSecondAction: function() {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomAction generateCustomAction Test property "eventHandlerFnName" "eventHandler" is object. Append new function to unexisting js file 1`] = `
+exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is object. Append new function to existing js file 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onHandleAction: function() {
+        onPress: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onHandleSecondAction: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };

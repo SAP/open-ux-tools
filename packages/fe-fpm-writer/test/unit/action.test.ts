@@ -6,19 +6,6 @@ import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
 import { EventHandlerConfiguration } from '../../src/common/types';
 
-const existingFileContent = `sap.ui.define([], function() {
-    'use strict';
-    return {
-        onDummy: function() {
-            console.log("onPress");
-        },
-        onDummy2: function() {
-            console.log("onPress2");
-        }
-    };
-});
-`;
-
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
         const testInput = [
@@ -183,7 +170,7 @@ describe('CustomAction', () => {
             });
         });
 
-        describe('Test property "eventHandlerFnName"', () => {
+        describe('Test property "eventHandler"', () => {
             const generateCustomActionWithEventHandler = (
                 actionId: string,
                 eventHandler: string | EventHandlerConfiguration,
@@ -260,7 +247,8 @@ describe('CustomAction', () => {
                 // Create existing file with existing actions
                 const folder = join('ext', 'fragments');
                 const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
-                fs.write(existingPath, existingFileContent);
+                // Generate handler with single method - content should be updated during generating of custom action
+                fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
                 // Create third action - append existing js file
                 const actionName = 'CustomAction2';
                 const fnName = 'onHandleSecondAction';
@@ -286,22 +274,6 @@ describe('CustomAction', () => {
                 expect(action['press']).toEqual(`my.test.App.ext.fragments.${fileName}.${fnName}`);
                 // Check update js file content
                 expect(fs.read(existingPath)).toMatchSnapshot();
-            });
-
-            test(`"eventHandler" is object. Append new function to unexisting js file`, () => {
-                const fileName = 'MyUnexistingAction';
-                // Create second action - append previously created file
-                const actionName = 'CustomAction2';
-                const fnName = 'onHandleAction';
-                generateCustomActionWithEventHandler(actionName, {
-                    fnName,
-                    fileName
-                });
-                const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
-                const action = getActionByName(manifest, actionName);
-                expect(action['press']).toEqual(`my.test.App.ext.customAction2.${fileName}.${fnName}`);
-                // Check update js file content
-                expect(fs.read(join(testDir, 'webapp', 'ext', 'customAction2', `${fileName}.js`))).toMatchSnapshot();
             });
         });
     });
