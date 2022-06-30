@@ -101,3 +101,58 @@ export interface Ui5TargetSettings {
         views?: Views;
     };
 }
+
+/**
+ * Represents a line and character position in file.
+ */
+export interface FileContentPosition {
+    /**
+     * Zero based line index.
+     */
+    line: number;
+    /**
+     * Zero based character value.
+     */
+    character: number;
+}
+
+/**
+ * Interface for text fragment insertion into existing text file.
+ */
+export interface TextFragmentInsertion {
+    /**
+     * Insert position for passed script fragment.
+     * Position can be line + char indices or absolute char index
+     */
+    position: FileContentPosition | number;
+    /**
+     * Fragment of script to insert.
+     */
+    fragment: string;
+}
+
+export interface EventHandlerConfiguration {
+    /**
+     * JS file name - existing or new.
+     */
+    fileName?: string;
+    /**
+     * Function name. If undefined then `onPress` is used as default value.
+     */
+    fnName?: string;
+    /**
+     * If file exists, then existing file should be appended with passed script fragment.
+     */
+    insertScript?: TextFragmentInsertion;
+}
+
+export interface EventHandler {
+    /**
+     * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.
+     * If an existing event handler is to be used then its id needs to be provided as string.
+     * Object with 'EventHandlerConfiguration' provides following options:
+     * 1. Append existing js file with new action by providing script fragment;
+     * 2. Pass non-default function name(default is "onPress");
+     */
+    eventHandler?: true | string | EventHandlerConfiguration;
+}

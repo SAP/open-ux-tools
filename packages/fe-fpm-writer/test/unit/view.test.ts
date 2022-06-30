@@ -1,10 +1,11 @@
+import os from 'os';
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomView } from '../../src';
 import { CustomView } from '../../src/view/types';
 import * as manifest from './sample/view/webapp/manifest.json';
-import type { Views } from '../../src/common/types';
+import type { Views, EventHandlerConfiguration } from '../../src/common/types';
 import type { Manifest } from '@sap-ux/ui5-config';
 
 const testDir = join(__dirname, 'sample/view');
@@ -149,5 +150,84 @@ describe('CustomView', () => {
 
         expect(views).toMatchSnapshot();
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+    });
+
+    describe('Test property "eventHandler"', () => {
+        const generateCustomViewWithEventHandler = (
+            viewId: string,
+            eventHandler: string | EventHandlerConfiguration,
+            folder?: string
+        ) => {
+            generateCustomView(testDir, { ...customView, name: viewId, folder, eventHandler }, fs);
+        };
+
+        test('"eventHandler" is empty "object" - create new file with default function name', () => {
+            const id = customView.name;
+            generateCustomViewWithEventHandler(id, {}, customView.folder);
+            const xmlPath = join(testDir, 'webapp', customView.folder!, `${id}.fragment.xml`);
+            expect(fs.read(xmlPath)).toMatchSnapshot();
+            expect(fs.read(xmlPath.replace('.fragment.xml', '.controller.js'))).toMatchSnapshot();
+        });
+
+        test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+            const extension = {
+                fnName: 'DummyOnAction',
+                fileName: 'dummyAction'
+            };
+            const id = customView.name;
+            generateCustomViewWithEventHandler(id, extension, customView.folder);
+            const fragmentName = `${id}.fragment.xml`;
+            const xmlPath = join(testDir, 'webapp', customView.folder!, fragmentName);
+            expect(fs.read(xmlPath)).toMatchSnapshot();
+            expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.controller.js`))).toMatchSnapshot();
+        });
+
+        test('"eventHandler" is "object" - create new file with custom function name', () => {
+            const extension = {
+                fnName: 'DummyOnAction'
+            };
+            const id = customView.name;
+            generateCustomViewWithEventHandler(id, extension, customView.folder);
+            const xmlPath = join(testDir, 'webapp', customView.folder!, `${id}.fragment.xml`);
+            expect(fs.read(xmlPath)).toMatchSnapshot();
+            expect(fs.read(xmlPath.replace('.fragment.xml', '.controller.js'))).toMatchSnapshot();
+        });
+
+        const positions = [
+            {
+                line: 8,
+                character: 9
+            },
+            190 + 8 * os.EOL.length
+        ];
+        for (const position of positions) {
+            test(`"eventHandler" is object. Append new function to existing js file with position ${
+                typeof position === 'object' ? JSON.stringify(position) : 'absolute'
+            }`, () => {
+                const fileName = 'MyExistingAction';
+                // Create existing file with existing actions
+                const folder = join('extensions', 'custom');
+                const existingPath = join(testDir, 'webapp', folder, `${fileName}.controller.js`);
+                // Generate handler with single method - content should be updated during generating of custom view
+                fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                const fnName = 'onHandleSecondAction';
+
+                const extension = {
+                    fnName,
+                    fileName,
+                    insertScript: {
+                        fragment: `,\n        ${fnName}: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                        position
+                    }
+                };
+
+                const id = customView.name;
+                generateCustomViewWithEventHandler(id, extension, folder);
+                const xmlPath = join(testDir, 'webapp', folder!, `${id}.fragment.xml`);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                // Check update js file content
+                expect(fs.read(existingPath)).toMatchSnapshot();
+            });
+        }
     });
 });
