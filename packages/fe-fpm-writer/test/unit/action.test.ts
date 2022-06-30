@@ -78,9 +78,9 @@ describe('CustomAction', () => {
                 {
                     name,
                     target,
+                    eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction',
                     settings: {
-                        ...settings,
-                        eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction'
+                        ...settings
                     }
                 },
                 fs
@@ -96,9 +96,9 @@ describe('CustomAction', () => {
                 {
                     name,
                     target,
+                    eventHandler: controllerPath,
                     settings: {
-                        ...settings,
-                        eventHandler: controllerPath
+                        ...settings
                     }
                 },
                 fs
@@ -115,9 +115,9 @@ describe('CustomAction', () => {
                     name,
                     folder: 'ext',
                     target,
+                    eventHandler: true,
                     settings: {
-                        ...settings,
-                        eventHandler: true
+                        ...settings
                     }
                 },
                 fs
@@ -183,9 +183,9 @@ describe('CustomAction', () => {
                         name: actionId,
                         target,
                         folder,
+                        eventHandler,
                         settings: {
-                            ...settings,
-                            eventHandler
+                            ...settings
                         }
                     },
                     fs
@@ -249,7 +249,7 @@ describe('CustomAction', () => {
                     line: 8,
                     character: 9
                 },
-                190 + (8 * os.EOL.length)
+                190 + 8 * os.EOL.length
             ];
             for (const position of positions) {
                 test(`"eventHandler" is object. Append new function to existing js file with position ${
