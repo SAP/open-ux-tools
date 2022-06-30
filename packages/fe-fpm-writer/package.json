@@ -24,7 +24,9 @@
     "files": [
         "LICENSE",
         "dist",
-        "templates"
+        "templates",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
         "@xmldom/xmldom": "0.8.2",

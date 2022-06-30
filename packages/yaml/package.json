@@ -24,7 +24,9 @@
     },
     "files": [
         "LICENSE",
-        "dist"
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
         "i18next": "20.3.2",

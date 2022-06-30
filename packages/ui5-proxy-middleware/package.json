@@ -25,7 +25,9 @@
     "files": [
         "LICENSE",
         "dist",
-        "ui5.yaml"
+        "ui5.yaml",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",

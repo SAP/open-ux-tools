@@ -28,7 +28,9 @@
     "files": [
         "LICENSE",
         "dist",
-        "templates"
+        "templates",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
