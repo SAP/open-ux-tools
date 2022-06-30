@@ -14,15 +14,17 @@ export interface CustomActionTarget {
     qualifier?: string;
 }
 
+export interface CustomActionSettings extends EventHandler {
+    text: string;
+    visible?: string | true;
+    enabled?: string | true;
+    requiresSelection?: boolean;
+    position?: Position;
+}
+
 export interface CustomAction extends CustomElement {
     target: CustomActionTarget;
-    settings: {
-        text: string;
-        visible?: string | true;
-        enabled?: string | true;
-        requiresSelection?: boolean;
-        position?: Position;
-    } & EventHandler;
+    settings: CustomActionSettings;
 }
 
 export type InternalCustomAction = CustomAction & InternalCustomElement;
