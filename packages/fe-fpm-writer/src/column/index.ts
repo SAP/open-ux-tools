@@ -7,6 +7,7 @@ import type { CustomTableColumn, InternalCustomTableColumn } from './types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion, validateBasePath } from '../common/validate';
+import { applyEventHandlerConfiguration } from '../common/event-handler';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -27,19 +28,27 @@ export function getManifestRoot(ui5Version?: number): string {
 /**
  * Enhances the provided custom table column configuration with default data.
  *
+ * @param {Editor} fs - the mem-fs editor instance
+ * @param {string} root - root path
  * @param {CustomTableColumn} data - a custom column configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
  * @returns enhanced configuration
  */
-function enhanceConfig(data: CustomTableColumn, manifestPath: string, manifest: Manifest): InternalCustomTableColumn {
+function enhanceConfig(
+    fs: Editor,
+    root: string,
+    data: CustomTableColumn,
+    manifestPath: string,
+    manifest: Manifest
+): InternalCustomTableColumn {
     // clone input and set defaults
     const config: CustomTableColumn & Partial<InternalCustomTableColumn> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
-    // set default event handler if it is to be created
-    if (config.eventHandler === true) {
-        config.eventHandler = `${config.ns}.${config.name}.onPress`;
+    // Apply event handler
+    if (config.eventHandler) {
+        config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler);
     }
 
     // generate column content
@@ -73,16 +82,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     const root = join(__dirname, '../../templates');
 
     // merge with defaults
-    const completeColumn = enhanceConfig(customColumn, manifestPath, manifest);
-
-    // add event handler if requested
-    if (completeColumn.eventHandler) {
-        fs.copyTpl(
-            join(root, 'common/EventHandler.js'),
-            join(completeColumn.path, `${completeColumn.name}.js`),
-            completeColumn
-        );
-    }
+    const completeColumn = enhanceConfig(fs, root, customColumn, manifestPath, manifest);
 
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.ui5Version);

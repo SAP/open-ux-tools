@@ -1,0 +1,9 @@
+<<%- macrosNamespace %>:Chart
+    id="<%- data.id %>"<% if (data.metaPath) { %>
+    metaPath="<%- data.metaPath %>"<% } %><% if (data.contextPath) { %>
+    contextPath="<%- data.contextPath %>"<% } %><% if (data.filterBar) { %>
+    filterBar="<%- data.filterBar %>"<% } %><% if (data.personalization) { %>
+    personalization="<%- data.personalization %>"<% } %><% if (data.selectionMode) { %>
+    selectionMode="<%- data.selectionMode %>"<% } %><% if (data.selectionChange) { %>
+    selectionChange="<%- data.selectionChange %>"<% } %>
+/>
