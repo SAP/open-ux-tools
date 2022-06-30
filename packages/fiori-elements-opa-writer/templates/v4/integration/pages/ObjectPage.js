@@ -1,4 +1,4 @@
-sap.ui.define(['sap/fe/test/<%- template %>'], function(<%- template %>) {
+sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
     var CustomPageDefinitions = {
@@ -6,7 +6,7 @@ sap.ui.define(['sap/fe/test/<%- template %>'], function(<%- template %>) {
         assertions: {}
     };
 
-    return new <%- template %>(
+    return new ObjectPage(
         {
             appId: '<%- appID %>',
             componentId: '<%- componentID %>',

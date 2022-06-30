@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`OPA FE v4 templates FCL LR-OP 1`] = `
+exports[`fiori-elements-opa-writer generateOPAFiles FCL LR-OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -170,7 +170,7 @@ Object {
 }
 `;
 
-exports[`OPA FE v4 templates FCL start on OP 1`] = `
+exports[`fiori-elements-opa-writer generateOPAFiles FCL start on OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -342,7 +342,7 @@ Object {
 }
 `;
 
-exports[`OPA FE v4 templates Fullscreen LR-OP 1`] = `
+exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen LR-OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -512,7 +512,7 @@ Object {
 }
 `;
 
-exports[`OPA FE v4 templates Fullscreen only OP without start page 1`] = `
+exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen only OP without start page 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -650,7 +650,7 @@ Object {
 }
 `;
 
-exports[`OPA FE v4 templates Fullscreen start on OP 1`] = `
+exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen start on OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -790,7 +790,7 @@ Object {
 }
 `;
 
-exports[`OPA FE v4 templates Fullscreen with 2 Sub-OP 1`] = `
+exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen with 2 Sub-OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -1003,3 +1003,272 @@ Object {
   },
 }
 `;
+
+exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen with custom FPM page 1`] = `
+Object {
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+	\\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesListTarget.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesListTarget.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesListTarget.onTable().iCheckRows();
+
+                When.onTheEmployeesListTarget.onTable().iPressRow(0);
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+	
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script id=\\"sap-ui-bootstrap\\"
+			src=\\"/resources/sap-ui-core.js\\"
+			data-sap-ui-theme='sap_fiori_3'
+			data-sap-ui-resourceroots='{
+				\\"projectservice\\": \\"../../\\"
+			}'
+			data-sap-ui-animation=\\"false\\"
+			data-sap-ui-compatVersion=\\"edge\\"
+			data-sap-ui-async=\\"true\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+	<script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'projectservice/test/integration/Firstjourney',
+		'projectservice/test/integration/pages/EmployeesListTarget',
+		'projectservice/test/integration/pages/EmployeesObjectPageTarget',
+		'projectservice/test/integration/pages/EmployeesCustomPageTarget'
+    ],
+    function(JourneyRunner, Firstjourney, EmployeesListTarget, EmployeesObjectPageTarget, EmployeesCustomPageTarget) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('projectservice') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesListTarget: EmployeesListTarget,
+					onTheEmployeesObjectPageTarget: EmployeesObjectPageTarget,
+					onTheEmployeesCustomPageTarget: EmployeesCustomPageTarget
+                }
+            },
+            Firstjourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesCustomPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new TemplatePage(
+        'projectservice::EmployeesCustomPage',
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesListTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`fiori-elements-opa-writer generatePageObjectFile Another component view (not supported) 1`] = `Object {}`;
+
+exports[`fiori-elements-opa-writer generatePageObjectFile Bad target 1`] = `Object {}`;
+
+exports[`fiori-elements-opa-writer generatePageObjectFile FPM custom 1`] = `
+Object {
+  "webapp/test/integration/pages/EmployeesCustomPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new TemplatePage(
+        'projectservice::EmployeesCustomPage',
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`fiori-elements-opa-writer generatePageObjectFile ListReport 1`] = `
+Object {
+  "webapp/test/integration/pages/EmployeesListTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`fiori-elements-opa-writer generatePageObjectFile Missing ID 1`] = `Object {}`;
+
+exports[`fiori-elements-opa-writer generatePageObjectFile Missing entityset 1`] = `Object {}`;
+
+exports[`fiori-elements-opa-writer generatePageObjectFile Object Page 1`] = `
+Object {
+  "webapp/test/integration/pages/EmployeesObjectPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`fiori-elements-opa-writer generatePageObjectFile Plain XML view (not supported) 1`] = `Object {}`;
