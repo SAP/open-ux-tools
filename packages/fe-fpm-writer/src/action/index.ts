@@ -8,6 +8,7 @@ import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
+import { applyEventHandlerConfiguration } from '../common/event-handler';
 
 /**
  * Enhances the provided custom action configuration with default data.
@@ -85,13 +86,9 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     const root = join(__dirname, '../../templates');
 
-    // add event handler if requested
-    if (config.settings.eventHandler === true) {
-        const controllerPath = join(config.path, `${config.name}.js`);
-        if (!fs.exists(controllerPath)) {
-            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, config);
-        }
-        config.settings.eventHandler = `${config.ns}.${config.name}.onPress`;
+    // Apply event handler
+    if (config.eventHandler) {
+        config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler);
     }
 
     // enhance manifest with action definition and controller reference

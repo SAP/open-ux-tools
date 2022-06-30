@@ -1,5 +1,32 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.5
+
+### Patch Changes
+
+-   6fae741: Support setting credentials via .env file
+
+## 0.6.4
+
+### Patch Changes
+
+-   febef3e: Moves bsp logic to function generateProxyMiddlewareOptions
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [ebc59b4]
+    -   @sap-ux/store@0.3.0
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [6f0f217]
+    -   @sap-ux/btp-utils@0.10.1
+    -   @sap-ux/axios-extension@0.7.1
+
 ## 0.6.1
 
 ### Patch Changes

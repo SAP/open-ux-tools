@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.10.1
+
+### Patch Changes
+
+-   6f0f217: Fix getting credentials for a destination service
+
 ## 0.10.0
 
 ### Minor Changes
