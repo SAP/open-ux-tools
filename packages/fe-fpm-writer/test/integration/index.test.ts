@@ -46,7 +46,6 @@ describe('use FPM with existing apps', () => {
                     entity: mainEntity,
                     navigation: {
                         navEntity: mainEntity,
-                        sourceEntity: mainEntity,
                         sourcePage: 'TravelListReport',
                         navKey: true
                     }
@@ -62,7 +61,6 @@ describe('use FPM with existing apps', () => {
                     name: 'MyCustomPage',
                     entity: 'Booking',
                     navigation: {
-                        sourceEntity: mainEntity,
                         sourcePage: 'TravelObjectPage',
                         navEntity: '_Booking'
                     }
@@ -137,9 +135,9 @@ describe('use FPM with existing apps', () => {
                         control: TargetControl.table
                     },
                     settings: {
-                        text: 'My Custom Action',
-                        eventHandler: true
-                    }
+                        text: 'My Custom Action'
+                    },
+                    eventHandler: true
                 },
                 fs
             );
@@ -152,9 +150,36 @@ describe('use FPM with existing apps', () => {
                         control: TargetControl.header
                     },
                     settings: {
-                        text: 'My other Action',
-                        eventHandler: true
-                    }
+                        text: 'My other Action'
+                    },
+                    eventHandler: true
+                },
+                fs
+            );
+            // Generate custom action by appending existing file
+            generateCustomAction(
+                targetPath,
+                {
+                    name: 'AppendedAction',
+                    target: {
+                        page: 'TravelObjectPage',
+                        control: TargetControl.header
+                    },
+                    settings: {
+                        text: 'My other Action'
+                    },
+                    eventHandler: {
+                        fileName: 'AnotherCustomAction',
+                        fnName: 'OnAppendedFn',
+                        insertScript: {
+                            fragment: `,\n        OnAppendedFn: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                            position: {
+                                line: 8,
+                                character: 9
+                            }
+                        }
+                    },
+                    folder: join('ext', 'anotherCustomAction')
                 },
                 fs
             );

@@ -7,22 +7,31 @@ import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest, Ui5RoutingTarget, Ui5TargetSettings } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
+import { applyEventHandlerConfiguration } from '../common/event-handler';
 
 /**
  * Enhances the provided custom view configuration with default data.
  *
+ * @param {Editor} fs - the mem-fs editor instance
+ * @param {string} root - root path
  * @param {CustomView} data - a custom view configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
  * @returns enhanced configuration
  */
-function enhanceConfig(data: CustomView, manifestPath: string, manifest: Manifest): InternalCustomView {
+function enhanceConfig(
+    fs: Editor,
+    root: string,
+    data: CustomView,
+    manifestPath: string,
+    manifest: Manifest
+): InternalCustomView {
     const config: CustomView & Partial<InternalCustomView> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
-    // set default event handler if it is to be created
-    if (config.eventHandler === true) {
-        config.eventHandler = `${config.ns}.${config.name}.onPress`;
+    // Apply event handler
+    if (config.eventHandler) {
+        config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler, true);
     }
 
     // existing views
@@ -63,15 +72,7 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
     const root = join(__dirname, '../../templates');
 
     // merge with defaults
-    const completeView = enhanceConfig(customView, manifestPath, manifest);
-
-    // add event handler if requested
-    if (completeView.eventHandler) {
-        const controllerPath = join(completeView.path, `${completeView.name}.controller.js`);
-        if (!fs.exists(controllerPath)) {
-            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, completeView);
-        }
-    }
+    const completeView = enhanceConfig(fs, root, customView, manifestPath, manifest);
 
     // enhance manifest with view definition
     const filledTemplate = render(fs.read(join(root, 'view', `manifest.json`)), completeView);

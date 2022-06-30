@@ -5,7 +5,6 @@ import { Router as createRouter } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
 import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
-import { addOptionsForEmbeddedBSP } from './ext/bsp';
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.
@@ -46,9 +45,6 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
 
     try {
         const proxyOptions = await generateProxyMiddlewareOptions(options.configuration.backend, configOptions, logger);
-        if (backend.bsp) {
-            addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);
-        }
         router.use(backend.path, createProxyMiddleware(proxyOptions));
         logger.info(
             `Starting backend-proxy-middleware using following configuration:\nbackend: ${JSON.stringify({
