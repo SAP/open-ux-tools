@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/logger@0.2.1
+    -   @sap-ux/ui5-config@0.14.1
+
 ## 1.1.1
 
 ### Patch Changes

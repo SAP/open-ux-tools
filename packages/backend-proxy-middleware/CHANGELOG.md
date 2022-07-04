@@ -1,5 +1,16 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.6
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/axios-extension@0.7.2
+    -   @sap-ux/btp-utils@0.10.2
+    -   @sap-ux/logger@0.2.1
+    -   @sap-ux/store@0.3.1
+
 ## 0.6.5
 
 ### Patch Changes
