@@ -1,5 +1,17 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.3
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/axios-extension@0.7.2
+    -   @sap-ux/btp-utils@0.10.2
+    -   @sap-ux/fiori-elements-writer@0.4.2
+    -   @sap-ux/fiori-freestyle-writer@0.12.2
+    -   @sap-ux/logger@0.2.1
+
 ## 0.2.2
 
 ### Patch Changes

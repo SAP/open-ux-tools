@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.12.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/odata-service-writer@0.14.1
+    -   @sap-ux/ui5-application-writer@0.14.1
+    -   @sap-ux/ui5-config@0.14.1
+
 ## 0.12.1
 
 ### Patch Changes
