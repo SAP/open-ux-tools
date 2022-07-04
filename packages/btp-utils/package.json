@@ -34,7 +34,9 @@
     },
     "files": [
         "dist",
-        "LICENSE"
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
