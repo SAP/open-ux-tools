@@ -1,11 +1,8 @@
 {
-    "type": "element",
+    "type": "annotation-file",
+    "uri": "file://document.xml",
     "range": "[(1,0)..(5,12)]",
-    "name": "Edmx",
-    "nameRange": "[(1,1)..(1,10)]",
     "contentRange": "[(4,77)..(5,0)]",
-    "namespace": "http://schemas.microsoft.com/ado/2007/06/edmx",
-    "namespaceAlias": "edmx",
-    "attributes": {},
-    "content": []
+    "references": [],
+    "targets": []
 }

@@ -7,11 +7,6 @@ import type { AnnotationFile, TextNode } from '@sap-ux/odata-annotation-core-typ
 
 import { convertMetadataDocument } from '../../src/parser';
 
-function parseXml(text: string): MetadataElement[] {
-    const { cst, tokenVector } = parse(text);
-    const ast = buildAst(cst as DocumentCstNode, tokenVector);
-    return convertMetadataDocument('file://metadata.xml', ast);
-}
 function parseV4(text: string): MetadataElement[] {
     const markup = `<?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
@@ -76,144 +71,149 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
-                        "fileUri": "file://metadata.xml",
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
                         "isEntityType": false,
                         "kind": "Property",
+                        "location": Object {
+                          "range": Object {
+                            "end": Object {
+                              "character": 88,
+                              "line": 38,
+                            },
+                            "start": Object {
+                              "character": 12,
+                              "line": 38,
+                            },
+                          },
+                          "uri": "file://metadata.xml",
+                        },
                         "name": "Sector",
-                        "path": "",
-                        "range": Object {
-                          "end": Object {
-                            "character": 88,
-                            "line": 38,
-                          },
-                          "start": Object {
-                            "character": 12,
-                            "line": 38,
-                          },
-                        },
-                        "subElementNames": Array [],
+                        "path": "/com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector",
                       },
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
-                        "fileUri": "file://metadata.xml",
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
                         "isEntityType": false,
                         "kind": "Property",
+                        "location": Object {
+                          "range": Object {
+                            "end": Object {
+                              "character": 83,
+                              "line": 39,
+                            },
+                            "start": Object {
+                              "character": 12,
+                              "line": 39,
+                            },
+                          },
+                          "uri": "file://metadata.xml",
+                        },
                         "name": "ID",
-                        "path": "",
-                        "range": Object {
-                          "end": Object {
-                            "character": 83,
-                            "line": 39,
-                          },
-                          "start": Object {
-                            "character": 12,
-                            "line": 39,
-                          },
-                        },
-                        "subElementNames": Array [],
+                        "path": "/com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID",
                       },
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
-                        "fileUri": "file://metadata.xml",
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
                         "isEntityType": false,
                         "kind": "Property",
-                        "name": "Name",
-                        "path": "",
-                        "range": Object {
-                          "end": Object {
-                            "character": 86,
-                            "line": 40,
+                        "location": Object {
+                          "range": Object {
+                            "end": Object {
+                              "character": 86,
+                              "line": 40,
+                            },
+                            "start": Object {
+                              "character": 12,
+                              "line": 40,
+                            },
                           },
-                          "start": Object {
-                            "character": 12,
-                            "line": 40,
-                          },
+                          "uri": "file://metadata.xml",
                         },
-                        "subElementNames": Array [],
+                        "name": "Name",
+                        "path": "/com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name",
                       },
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.Int32",
-                        "fileUri": "file://metadata.xml",
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
                         "isEntityType": false,
                         "kind": "Property",
-                        "name": "MemberCount",
-                        "path": "",
-                        "range": Object {
-                          "end": Object {
-                            "character": 77,
-                            "line": 41,
+                        "location": Object {
+                          "range": Object {
+                            "end": Object {
+                              "character": 77,
+                              "line": 41,
+                            },
+                            "start": Object {
+                              "character": 12,
+                              "line": 41,
+                            },
                           },
-                          "start": Object {
-                            "character": 12,
-                            "line": 41,
-                          },
+                          "uri": "file://metadata.xml",
                         },
-                        "subElementNames": Array [],
+                        "name": "MemberCount",
+                        "path": "/com.sap.gateway.default.iwbep.tea_busi.v0001.Department/MemberCount",
                       },
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
-                        "fileUri": "file://metadata.xml",
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
                         "isEntityType": false,
                         "kind": "Property",
-                        "name": "ManagerID",
-                        "path": "",
-                        "range": Object {
-                          "end": Object {
-                            "character": 90,
-                            "line": 42,
+                        "location": Object {
+                          "range": Object {
+                            "end": Object {
+                              "character": 90,
+                              "line": 42,
+                            },
+                            "start": Object {
+                              "character": 12,
+                              "line": 42,
+                            },
                           },
-                          "start": Object {
-                            "character": 12,
-                            "line": 42,
-                          },
+                          "uri": "file://metadata.xml",
                         },
-                        "subElementNames": Array [],
+                        "name": "ManagerID",
+                        "path": "/com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ManagerID",
                       },
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "com.sap.gateway.default.iwbep.tea_busi.v0001.TEAM",
-                        "fileUri": "file://metadata.xml",
                         "isAnnotatable": true,
                         "isCollectionValued": true,
                         "isComplexType": false,
                         "isEntityType": true,
                         "kind": "NavigationProperty",
-                        "name": "DEPARTMENT_2_TEAMS",
-                        "path": "",
-                        "range": Object {
-                          "end": Object {
-                            "character": 129,
-                            "line": 43,
+                        "location": Object {
+                          "range": Object {
+                            "end": Object {
+                              "character": 129,
+                              "line": 43,
+                            },
+                            "start": Object {
+                              "character": 12,
+                              "line": 43,
+                            },
                           },
-                          "start": Object {
-                            "character": 12,
-                            "line": 43,
-                          },
+                          "uri": "file://metadata.xml",
                         },
+                        "name": "DEPARTMENT_2_TEAMS",
+                        "path": "/com.sap.gateway.default.iwbep.tea_busi.v0001.Department/DEPARTMENT_2_TEAMS",
                         "structuredType": "com.sap.gateway.default.iwbep.tea_busi.v0001.TEAM",
-                        "subElementNames": Array [],
                       },
                     ],
-                    "fileUri": "file://metadata.xml",
                     "isAnnotatable": true,
                     "isCollectionValued": false,
                     "isComplexType": false,
@@ -223,63 +223,24 @@ describe('parse', () => {
                       "ID",
                     ],
                     "kind": "EntityType",
-                    "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
-                    "path": "",
-                    "range": Object {
-                      "end": Object {
-                        "character": 21,
-                        "line": 44,
+                    "location": Object {
+                      "range": Object {
+                        "end": Object {
+                          "character": 21,
+                          "line": 44,
+                        },
+                        "start": Object {
+                          "character": 91,
+                          "line": 33,
+                        },
                       },
-                      "start": Object {
-                        "character": 91,
-                        "line": 33,
-                      },
+                      "uri": "file://metadata.xml",
                     },
-                    "subElementNames": Array [],
+                    "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
+                    "path": "/com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
                   },
                 ]
             `);
         });
     });
-    // describe('text nodes', () => {
-    //     test(`text`, () => {
-    //         const result = parseXml('<a>abc</a>');
-    //         expect(result?.content?.map((node) => node.type)).toStrictEqual(['text']);
-    //         expect(
-    //             result?.content?.filter((node): node is TextNode => node.type === 'text').map((node) => node.text)
-    //         ).toStrictEqual(['abc']);
-    //     });
-
-    //     test(`leading whitespace`, () => {
-    //         const result = parseXml('<a>  abc</a>');
-    //         expect(result?.content?.map((node) => node.type)).toStrictEqual(['text']);
-    //         expect(
-    //             result?.content?.filter((node): node is TextNode => node.type === 'text').map((node) => node.text)
-    //         ).toStrictEqual(['  abc']);
-    //     });
-
-    //     test(`trailing whitespace`, () => {
-    //         const result = parseXml('<a>  abc \n\n</a>');
-    //         expect(result?.content?.map((node) => node.type)).toStrictEqual(['text']);
-    //         expect(
-    //             result?.content?.filter((node): node is TextNode => node.type === 'text').map((node) => node.text)
-    //         ).toStrictEqual(['  abc \n\n']);
-    //     });
-
-    //     test(`trailing whitespace`, () => {
-    //         const result = parseXml('<a>  abc \n\n</a>');
-    //         expect(result?.content?.map((node) => node.type)).toStrictEqual(['text']);
-    //         expect(
-    //             result?.content?.filter((node): node is TextNode => node.type === 'text').map((node) => node.text)
-    //         ).toStrictEqual(['  abc \n\n']);
-    //     });
-
-    //     test(`child elements`, () => {
-    //         const result = parseXml('<a>  abc\n<b/>\nxyz <d/></a>');
-    //         expect(result?.content?.map((node) => node.type)).toStrictEqual(['text', 'element', 'text', 'element']);
-    //         expect(
-    //             result?.content?.filter((node): node is TextNode => node.type === 'text').map((node) => node.text)
-    //         ).toStrictEqual(['  abc\n', '\nxyz ']);
-    //     });
-    // });
 });

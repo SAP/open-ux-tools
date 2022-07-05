@@ -4,37 +4,95 @@ exports[`MetadataService for XML import() 1`] = `
 Array [
   Object {
     "element": Object {
-      "fileUri": "someAbsoluteFileUri",
+      "content": Array [
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "Sector",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector",
+        },
+        Object {
+          "content": Array [],
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "ID",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID",
+        },
+        Object {
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "Name",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name",
+        },
+        Object {
+          "edmPrimitiveType": "Edm.Int32",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "MemberCount",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/MemberCount",
+        },
+        Object {
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "ManagerID",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ManagerID",
+        },
+        Object {
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": true,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Property",
+          "name": "Categories",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Categories",
+        },
+      ],
       "isAnnotatable": true,
       "isCollectionValued": false,
       "isComplexType": false,
       "isEntityType": true,
       "kind": "EntityType",
+      "location": Object {
+        "range": Object {
+          "end": Object {
+            "character": 5,
+            "line": 5,
+          },
+          "start": Object {
+            "character": 1,
+            "line": 1,
+          },
+        },
+        "uri": "file://metadata.xml",
+      },
       "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department",
-      "range": Object {
-        "end": Object {
-          "character": 5,
-          "line": 5,
-        },
-        "start": Object {
-          "character": 1,
-          "line": 1,
-        },
-      },
-      "subElementNames": Set {
-        "Sector",
-        "ID",
-        "Name",
-        "MemberCount",
-        "ManagerID",
-        "Categories",
-      },
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
+      "content": Array [],
       "edmPrimitiveType": "Edm.String",
       "isAnnotatable": true,
       "isCollectionValued": false,
@@ -43,13 +101,11 @@ Array [
       "kind": "Property",
       "name": "Sector",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Sector",
-      "range": undefined,
-      "subElementNames": Set {},
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
+      "content": Array [],
       "edmPrimitiveType": "Edm.String",
       "isAnnotatable": true,
       "isCollectionValued": false,
@@ -58,10 +114,7 @@ Array [
       "kind": "Property",
       "name": "ID",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ID",
-      "range": undefined,
-      "subElementNames": Set {},
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
@@ -73,10 +126,7 @@ Array [
       "kind": "Property",
       "name": "Name",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Name",
-      "range": undefined,
-      "subElementNames": Set {},
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
@@ -88,10 +138,7 @@ Array [
       "kind": "Property",
       "name": "MemberCount",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/MemberCount",
-      "range": undefined,
-      "subElementNames": Set {},
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
@@ -103,10 +150,7 @@ Array [
       "kind": "Property",
       "name": "ManagerID",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/ManagerID",
-      "range": undefined,
-      "subElementNames": Set {},
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
@@ -118,14 +162,22 @@ Array [
       "kind": "Property",
       "name": "Categories",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.Department/Categories",
-      "range": undefined,
-      "subElementNames": Set {},
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
-      "fileUri": "someAbsoluteFileUri",
+      "content": Array [
+        Object {
+          "edmPrimitiveType": "Edm.String",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Parameter",
+          "name": "DepartmentName",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)/DepartmentName",
+        },
+      ],
       "isAnnotatable": true,
       "isCollectionValued": false,
       "isComplexType": false,
@@ -133,21 +185,7 @@ Array [
       "kind": "Function",
       "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)",
-      "range": Object {
-        "end": Object {
-          "character": 1,
-          "line": 8,
-        },
-        "start": Object {
-          "character": 1,
-          "line": 6,
-        },
-      },
-      "subElementNames": Set {
-        "DepartmentName",
-      },
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
@@ -159,14 +197,22 @@ Array [
       "kind": "Parameter",
       "name": "DepartmentName",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.String)/DepartmentName",
-      "range": undefined,
-      "subElementNames": Set {},
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
-      "fileUri": "someAbsoluteFileUri",
+      "content": Array [
+        Object {
+          "edmPrimitiveType": "Edm.Int16",
+          "isAnnotatable": true,
+          "isCollectionValued": false,
+          "isComplexType": false,
+          "isEntityType": false,
+          "kind": "Parameter",
+          "name": "DepartmentID",
+          "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)/DepartmentID",
+        },
+      ],
       "isAnnotatable": true,
       "isCollectionValued": false,
       "isComplexType": false,
@@ -174,21 +220,7 @@ Array [
       "kind": "Function",
       "name": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)",
-      "range": Object {
-        "end": Object {
-          "character": 1,
-          "line": 11,
-        },
-        "start": Object {
-          "character": 1,
-          "line": 9,
-        },
-      },
-      "subElementNames": Set {
-        "DepartmentID",
-      },
     },
-    "fileUri": "testFileUri",
   },
   Object {
     "element": Object {
@@ -200,10 +232,7 @@ Array [
       "kind": "Parameter",
       "name": "DepartmentID",
       "path": "com.sap.gateway.default.iwbep.tea_busi.v0001.GetDepartment(Edm.Int16)/DepartmentID",
-      "range": undefined,
-      "subElementNames": Set {},
     },
-    "fileUri": "testFileUri",
   },
 ]
 `;

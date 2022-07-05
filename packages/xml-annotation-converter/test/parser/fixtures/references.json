@@ -1,22 +1,15 @@
 {
-    "type": "element",
-    "range": "[(0,0)..(4,17)]",
-    "name": "Reference",
-    "nameRange": "[(0,1)..(0,15)]",
-    "contentRange": "[(2,58)..(4,0)]",
-    "namespace": "http://docs.oasis-open.org/odata/ns/edmx",
-    "namespaceAlias": "edmx",
-    "attributes": {},
-    "content": [
+    "type": "annotation-file",
+    "uri": "file://references.xml",
+    "range": "[(1,0)..(10,12)]",
+    "contentRange": "[(4,77)..(10,0)]",
+    "references": [
         {
-            "type": "element",
-            "range": "[(3,4)..(3,78)]",
-            "name": "Include",
-            "nameRange": "[(3,5)..(3,17)]",
-            "namespace": "http://docs.oasis-open.org/odata/ns/edmx",
-            "namespaceAlias": "edmx",
-            "attributes": {},
-            "content": []
+            "type": "reference",
+            "name": "com.sap.vocabularies.Common.v1",
+            "alias": "Common",
+            "uri": "http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"
         }
-    ]
+    ],
+    "targets": []
 }

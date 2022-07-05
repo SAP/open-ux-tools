@@ -9,7 +9,7 @@ function createTestService() {
     const metadataElementNodes: MetadataElement[] = [
         {
             kind: 'entity',
-            path: '/IncidentService.SafetyIncidents',
+            path: 'IncidentService.SafetyIncidents',
             isEntityType: true,
             isCollectionValued: true,
             isComplexType: false,
@@ -19,8 +19,7 @@ function createTestService() {
             keys: ['ID'],
             content: [
                 {
-                    path: '/IncidentService.SafetyIncidents/ID',
-
+                    path: 'IncidentService.SafetyIncidents/ID',
                     kind: 'element',
                     isEntityType: false,
                     isCollectionValued: false,
@@ -48,6 +47,7 @@ describe('MetadataService for CDS', () => {
         // Expect
         const expectedResult = {
             kind: 'entity',
+            path: 'IncidentService.SafetyIncidents',
             isEntityType: true,
             isCollectionValued: true,
             isComplexType: false,
@@ -55,8 +55,19 @@ describe('MetadataService for CDS', () => {
             name: 'IncidentService.SafetyIncidents',
             originalName: 'IncidentService.SafetyIncidents',
             keys: ['ID'],
-            path: 'IncidentService.SafetyIncidents',
-            subElementNames: new Set(['ID'])
+            content: [
+                {
+                    path: 'IncidentService.SafetyIncidents/ID',
+                    kind: 'element',
+                    isEntityType: false,
+                    isCollectionValued: false,
+                    isComplexType: false,
+                    isAnnotatable: true,
+                    name: 'ID',
+                    originalName: 'scp.cloud.SafetyIncidents.ID',
+                    edmPrimitiveType: 'Edm.Guid'
+                }
+            ]
         };
         expect(element).toEqual(expectedResult);
     });

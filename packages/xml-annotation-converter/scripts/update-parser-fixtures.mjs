@@ -19,10 +19,12 @@ async function update() {
     const config = await resolveConfig(join(FIXTURE_ROOT));
     const printWithOptions = print({ ...config, parser: 'json' });
     const updates = fixtures.map(async (fixture) => {
-        const text = await readFile(join(FIXTURE_ROOT, fixture), 'utf8');
+        const sourcePath = join(FIXTURE_ROOT, fixture);
+        const text = await readFile(sourcePath, 'utf8');
         const { cst, tokenVector } = parse(text);
         const ast = buildAst(cst, tokenVector);
-        const result = convertDocument(ast);
+        const name = fixture.replace(FIXTURE_ROOT, '').replace('.xml', '');
+        const result = convertDocument(`file://${name}.xml`, ast);
         const jsonFileName = fixture.replace('.xml', '.json');
         const formatted = printWithOptions(result);
         await writeFile(join(FIXTURE_ROOT, jsonFileName), formatted);
