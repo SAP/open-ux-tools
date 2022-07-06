@@ -31,5 +31,25 @@ const fullyQualifiedName = toFullyQualifiedName(
 ```
 
 
+```Typescript
+import {
+  parsePath,
+  toFullyQualifiedPath,
+} from "@sap-ux/odata-annotation-core";
+
+const parsedPath = parsePath("MyAlias.MyType/@UI.LineItem#abc");
+const fullyQualifiedName = toFullyQualifiedPath(
+  {
+    UI: "com.sap.vocabularies.UI.v1",
+    "com.sap.vocabularies.UI.v1": "com.sap.vocabularies.UI.v1",
+    MyAlias: "MyNamespace",
+    MyNamespace: "MyNamespace"
+  },
+  "Namespace1",
+  parsedPath
+); // MyNamespace.MyType/@com.sap.vocabularies.UI.v1.LineItem
+
+```
+
 ## Keywords
 OData annotations

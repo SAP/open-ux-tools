@@ -98,6 +98,8 @@ function convertReferences(element: XMLElement): Reference[] {
 function convertSchema(schema: XMLElement): Target[] {
     const targets: Target[] = [];
     const annotationsElements = getElementsWithName(Edm.Annotations, schema);
+    const namespace = getElementAttributeByName('Namespace', schema)?.value ?? '';
+    const alias = getElementAttributeByName('Alias', schema)?.value ?? undefined;
     for (const annotations of annotationsElements) {
         const targetAttribute = getElementAttributeByName('Target', annotations);
         if (targetAttribute) {
@@ -117,6 +119,8 @@ function convertSchema(schema: XMLElement): Target[] {
                         type: 'target',
                         name: targetName,
                         nameRange: targetNamePosition,
+                        namespace,
+                        alias,
                         terms,
                         range,
                         termsRange

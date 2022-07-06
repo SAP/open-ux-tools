@@ -1,4 +1,4 @@
-import type { ParsedCollectionIdentifier, ParsedIdentifier } from './parse';
+import type { ParsedName } from './parse';
 
 /**
  * Normalize parsed name to fully qualified name, based on the available namespaces.
@@ -13,11 +13,21 @@ import type { ParsedCollectionIdentifier, ParsedIdentifier } from './parse';
 export function toFullyQualifiedName(
     namespaceMap: { [aliasOrNamespace: string]: string },
     currentNamespace: string,
-    identifier: ParsedIdentifier | ParsedCollectionIdentifier
+    identifier: ParsedName
 ): string | undefined {
     const namespace = identifier.namespaceOrAlias ? namespaceMap[identifier.namespaceOrAlias] : currentNamespace;
+
     if (!namespace) {
         return undefined;
+    }
+
+    if (identifier.type === 'action-function') {
+        const parameters = identifier.parameters
+            .map((parameter) => toFullyQualifiedName(namespaceMap, currentNamespace, parameter))
+            .filter((parameter): parameter is string => !!parameter)
+            .join(',');
+
+        return `${namespace}.${identifier.name}(${parameters})`;
     }
 
     const fullyQualifiedName = `${namespace}.${identifier.name}`;

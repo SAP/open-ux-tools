@@ -31,6 +31,7 @@
     ],
     "dependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-metadata": "workspace:*"
     },
     "devDependencies": {

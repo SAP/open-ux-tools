@@ -93,6 +93,11 @@ export interface Target extends Node {
      * Range covering all annotations for this target
      */
     termsRange?: Range;
+    /**
+     * Namespace in which this annotation is defined
+     */
+    namespace: string;
+    alias?: string;
 }
 
 export const ANNOTATION_FILE_TYPE = 'annotation-file';

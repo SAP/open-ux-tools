@@ -5,7 +5,6 @@ describe('identifiers', () => {
         test('without namespace or alias', () => {
             expect(parseIdentifier('LineItem')).toStrictEqual({
                 type: 'identifier',
-                raw: 'LineItem',
                 name: 'LineItem'
             });
         });
@@ -13,7 +12,6 @@ describe('identifiers', () => {
         test('with alias', () => {
             expect(parseIdentifier('UI.LineItem')).toStrictEqual({
                 type: 'identifier',
-                raw: 'UI.LineItem',
                 namespaceOrAlias: 'UI',
                 name: 'LineItem'
             });
@@ -22,7 +20,6 @@ describe('identifiers', () => {
         test('with namespace', () => {
             expect(parseIdentifier('com.sap.vocabularies.UI.v1.LineItem')).toStrictEqual({
                 type: 'identifier',
-                raw: 'com.sap.vocabularies.UI.v1.LineItem',
                 namespaceOrAlias: 'com.sap.vocabularies.UI.v1',
                 name: 'LineItem'
             });
@@ -31,7 +28,6 @@ describe('identifiers', () => {
         test('collection with namespace', () => {
             expect(parseIdentifier('Collection(com.sap.vocabularies.UI.v1.DataField)')).toStrictEqual({
                 type: 'collection',
-                raw: 'Collection(com.sap.vocabularies.UI.v1.DataField)',
                 namespaceOrAlias: 'com.sap.vocabularies.UI.v1',
                 name: 'DataField'
             });
@@ -40,7 +36,6 @@ describe('identifiers', () => {
         test('collection with missing )', () => {
             expect(parseIdentifier('Collection(com.sap.vocabularies.UI.v1.DataField')).toStrictEqual({
                 type: 'collection',
-                raw: 'Collection(com.sap.vocabularies.UI.v1.DataField',
                 namespaceOrAlias: 'com.sap.vocabularies.UI.v1',
                 name: 'DataField'
             });
@@ -49,7 +44,6 @@ describe('identifiers', () => {
         test('action', () => {
             expect(parseIdentifier('MySchema.MyAction()')).toStrictEqual({
                 type: 'action-function',
-                raw: 'MySchema.MyAction()',
                 namespaceOrAlias: 'MySchema',
                 name: 'MyAction',
                 parameters: []
@@ -59,13 +53,11 @@ describe('identifiers', () => {
         test('action with parameter', () => {
             expect(parseIdentifier('MySchema.MyAction(MySchema.MyBindingType)')).toStrictEqual({
                 type: 'action-function',
-                raw: 'MySchema.MyAction(MySchema.MyBindingType)',
                 namespaceOrAlias: 'MySchema',
                 name: 'MyAction',
                 parameters: [
                     {
                         type: 'identifier',
-                        raw: 'MySchema.MyBindingType',
                         name: 'MyBindingType',
                         namespaceOrAlias: 'MySchema'
                     }
@@ -78,19 +70,16 @@ describe('identifiers', () => {
                 parseIdentifier('MySchema.MyAction(Collection(MySchema.MyBindingType),Collection(MySchema.MyType))')
             ).toStrictEqual({
                 type: 'action-function',
-                raw: 'MySchema.MyAction(Collection(MySchema.MyBindingType),Collection(MySchema.MyType))',
                 namespaceOrAlias: 'MySchema',
                 name: 'MyAction',
                 parameters: [
                     {
                         type: 'collection',
-                        raw: 'Collection(MySchema.MyBindingType)',
                         name: 'MyBindingType',
                         namespaceOrAlias: 'MySchema'
                     },
                     {
                         type: 'collection',
-                        raw: 'Collection(MySchema.MyType)',
                         name: 'MyType',
                         namespaceOrAlias: 'MySchema'
                     }

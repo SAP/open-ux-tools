@@ -1,16 +1,9 @@
 import type { XMLDocument, XMLElement } from '@xml-tools/ast';
 
 import type { MetadataElementProperties, MetadataElement } from '@sap-ux/odata-metadata';
-import type {
-    FullyQualifiedTypeName,
-    FullyQualifiedName,
-    Namespace,
-    Range,
-    Alias,
-    Name,
-    QualifiedName
-} from '@sap-ux/odata-annotation-core-types';
+import type { FullyQualifiedTypeName, FullyQualifiedName, Namespace, Range } from '@sap-ux/odata-annotation-core-types';
 import { Edm, Location } from '@sap-ux/odata-annotation-core-types';
+import { toFullyQualifiedName, parseIdentifier } from '@sap-ux/odata-annotation-core';
 
 import { getAttributeValue, getElementAttributeByName } from './attribute-getters';
 import { transformElementRange } from './range';
@@ -78,7 +71,7 @@ interface AssociationData {
 }
 
 interface Context {
-    aliasMap: AliasMap;
+    aliasMap: NamespaceMap;
     typeMap: TypeMap;
     associationMap: AssociationMap;
     namespace: string;
@@ -94,12 +87,11 @@ interface Context {
  * @returns an array of MetadataElements extracted from the XML document.
  */
 export function convertMetadataDocument(uri: string, document: XMLDocument): MetadataElement[] {
-    // const nodes =
     const root = document.rootElement;
     if (!root) {
         return [];
     }
-    const aliasMap = getAliasMap(root);
+    const aliasMap = getNamespaceMap(root);
     const dataServices = getElementsWithName('DataServices', root);
     const schemas = dataServices.length ? getElementsWithName('Schema', dataServices[0]) : [];
     const metadataElements: MetadataElement[] = [];
@@ -137,7 +129,7 @@ export function convertMetadataDocument(uri: string, document: XMLDocument): Met
             (associations || []).forEach((element) => {
                 const name = getAttributeValue('Name', element);
                 if (name) {
-                    associationMap[name] = createAssociation(getElementsWithName('End', element), aliasMap);
+                    associationMap[name] = createAssociation(getElementsWithName('End', element), aliasMap, namespace);
                 }
             });
             const context: Context = {
@@ -215,26 +207,30 @@ function createMetadataNode(context: Context, element: XMLElement): MetadataElem
         default:
             typeAttrName = 'Type';
     }
-    let type = getAttributeValue(typeAttrName, element);
-    const resolvedName = resolveName(type, context.aliasMap);
-    type = resolvedName.qName ? resolvedName.qName : type;
+    let type = attributeValueToFullyQualifiedName(typeAttrName, context.aliasMap, context.namespace, element);
     if (!type) {
         if (element.name === Edm.FunctionImport) {
             // OData V2: FunctionImport
             type = getAttributeValue('ReturnType', element);
         } else if (element.name === Edm.NavigationProperty) {
             // OData V2: use association information to determine Type
-            let relationship = getAttributeValue('Relationship', element);
-            const resolvedName = resolveName(relationship, context.aliasMap);
-            relationship = resolvedName.qName ? resolvedName.qName : relationship;
+            const relationship = attributeValueToFullyQualifiedName(
+                'Relationship',
+                context.aliasMap,
+                context.namespace,
+                element
+            );
             if (relationship) {
                 const associationName = relationship.split('.').pop();
                 if (associationName) {
                     const association = context.associationMap[associationName];
                     if (association) {
-                        let toRole = getAttributeValue('ToRole', element);
-                        const resolvedName = resolveName(toRole, context.aliasMap);
-                        toRole = resolvedName.qName ? resolvedName.qName : toRole;
+                        const toRole = attributeValueToFullyQualifiedName(
+                            'ToRole',
+                            context.aliasMap,
+                            context.namespace,
+                            element
+                        );
                         const role = association[toRole];
                         if (role && role.type) {
                             type = role.multiplicity === '*' ? `Collection(${role.type})` : role.type;
@@ -370,9 +366,13 @@ function createMetadataElementNodeForType(
             });
         }
     }
-    let v2ActionFor = getAttributeValue('sap:action-for', element);
-    const resolvedName = resolveName(v2ActionFor, context.aliasMap);
-    v2ActionFor = resolvedName.qName ? resolvedName.qName : v2ActionFor;
+
+    const v2ActionFor = attributeValueToFullyQualifiedName(
+        'sap:action-for',
+        context.aliasMap,
+        context.namespace,
+        element
+    );
     if (Edm.FunctionImport === element.name && v2ActionFor) {
         // generate binding parameter sub node with name '_it'
         const bindingParameterProperties: MetadataElementProperties = {
@@ -418,12 +418,9 @@ function getOverloadName(context: Context, element: XMLElement): string {
     if (element.name === Edm.Action) {
         parameterSubElements = parameterSubElements.slice(0, 1);
     }
-    const parameterTypes = parameterSubElements.map((parameterElement: XMLElement) => {
-        let type = getAttributeValue('Type', parameterElement);
-        const resolvedName = resolveName(type, context.aliasMap);
-        type = resolvedName.qName ? resolvedName.qName : type;
-        return type;
-    });
+    const parameterTypes = parameterSubElements.map((parameterElement: XMLElement) =>
+        attributeValueToFullyQualifiedName('Type', context.aliasMap, context.namespace, parameterElement)
+    );
     return name + '(' + parameterTypes.join(',') + ')';
 }
 
@@ -449,134 +446,28 @@ interface TypeMap {
     [typeName: string]: string;
 }
 
-// TODO: figure out where to put these
-
-interface ResolvedName {
-    namespace?: Namespace;
-    alias?: Alias;
-    name: Name;
-    qName: FullyQualifiedName;
-}
-
-interface AliasMap {
+interface NamespaceMap {
     // also add entries for namespaces to facilitate alias to namespace conversion
     [aliasOrNamespace: string]: Namespace;
 }
 
-function resolveName(qualifiedName: QualifiedName, aliasMap?: AliasMap): ResolvedName {
-    // qualifiedName has the form "<SchemaNamespaceOrAlias>.<SimpleIdentifierOrPath>[(<FunctionOrActionSignature>)])"
-    // SchemaNamespace and FunctionOrActionSignature can contain ".", SimpleIdentifierOrPath should not contain dots
-    const resolvedName: ResolvedName = { name: qualifiedName, qName: qualifiedName };
-    if (qualifiedName && typeof qualifiedName === 'string' && qualifiedName.indexOf('.')) {
-        const indexFirstBracket = qualifiedName.indexOf('(');
-        const nameBeforeBracket = indexFirstBracket > -1 ? qualifiedName.slice(0, indexFirstBracket) : qualifiedName;
-        const parts = nameBeforeBracket.trim().split('.');
-        const name = parts.pop() || '';
-        const namespace = parts.join('.');
-        if (aliasMap) {
-            if (aliasMap[namespace]) {
-                // valid namespace
-                if (aliasMap[namespace] && aliasMap[namespace] !== namespace) {
-                    resolvedName.alias = namespace;
-                    resolvedName.namespace = aliasMap[namespace];
-                } else {
-                    resolvedName.namespace = namespace;
-                }
-                resolvedName.name = name;
-                resolvedName.qName = resolvedName.namespace + '.' + name;
-            }
-        } else {
-            resolvedName.name = name;
-            resolvedName.namespace = namespace;
-        }
-        if (indexFirstBracket > -1) {
-            const bracketContent = qualifiedName.slice(indexFirstBracket + 1, qualifiedName.lastIndexOf(')'));
-            resolvedName.name += '(' + bracketContent + ')';
-            if (aliasMap && aliasMap[namespace]) {
-                const bracketEntries = bracketContent.split(',');
-                const bracketEntriesResolved = bracketEntries.map((qualifiedTypeName) => {
-                    const valueType = convertValueTypeFromString(qualifiedTypeName);
-                    valueType.name = resolveName(valueType.name, aliasMap).qName;
-                    return convertValueTypeToString(valueType);
-                });
-                resolvedName.qName += '(' + bracketEntriesResolved.join(',') + ')';
-            }
-        }
-    }
-
-    return resolvedName;
+function attributeValueToFullyQualifiedName(
+    attributeName: string,
+    namespaceMap: NamespaceMap,
+    currentNamespace: string,
+    element: XMLElement
+): string {
+    const attributeValue = getAttributeValue(attributeName, element);
+    const parsedIdentifier = parseIdentifier(attributeValue);
+    const fullyQualifiedName = toFullyQualifiedName(namespaceMap, currentNamespace, parsedIdentifier);
+    return fullyQualifiedName ?? attributeValue;
 }
 
-interface Facets {
-    isNullable?: boolean; // source: $Nullable; whether the property can have the value null
-    // $MaxLength; maximum length of a binary, stream or string value; no usage in supported vocabularies
-    precision?: number; // source: $Precision, for a decimal value: the maximum number of significant decimal digits..
-    // ..for a temporal value (e.g. time of dat): the number of decimal places allowed in the seconds
-    // $Scale; maximum number of digits allowed to the right.. ; no usage in supported vocabularies
-    // $SRID: no usage in supported vocabularies
-    // $Unicode; applicable to string values; no usage in supported vocabularies
-}
-
-interface ValueType {
-    name: FullyQualifiedName; // fully qualified name of type
-    asCollection?: boolean;
-    facets?: Facets;
-    constraints?: Constraints;
-}
-
-interface Constraints {
-    // ------ validation vocabulary--------
-    // pattern: string; // regular expression applied to string value (Property or Term) - only in Core.LocalDateTime
-    // minimum: number; // minimum value (Property or Term) - only used in DataModificationExceptionType.responseCode
-    // maximum: number; // maximum value (Property or Term) - only used in DataModificationExceptionType.responseCode
-    allowedValues?: AllowedValues[]; // valid values (Property or Term)
-    openPropertyTypeConstraints?: FullyQualifiedTypeName[]; // used in UI vocabulary
-    allowedTerms?: FullyQualifiedTypeName[]; // restrict terms allowed for annotation path (Property or Term)
-    // ApplicableTerms?  Names of specific terms that are applicable and may be applied in the current context
-    // MaxItems, MinItems: no usage in supported vocabularies
-    derivedTypeConstraints?: FullyQualifiedTypeName[]; // listed sub types (and their subtypes) (Property only!)
-    // ------ core vocabulary--------
-    // isURL? Can we check this ?
-    isLanguageDependent?: boolean; // string value is language dependent (Property or Term)
-    // term can only be applied to elements of this type/subType (Term)
-    // applies to says it's only used for terms, but properties use it too, e.g. RecursiveHierarchyType.IsLeafProperty
-    requiresType?: FullyQualifiedName;
-    // ------common vocabulary------------
-    // IsUpperCase: no usage in supported vocabularies
-    // MinOccurs: no usage in supported vocabularies
-    // MaxOccurs: no usage in supported vocabularies
-    // ------ communication vocabulary----
-    // isEmailAddress: boolean;  no usage in supported vocabularies
-    // isPhoneNumber: boolean;  no usage in supported vocabularies
-}
-
-interface AllowedValues {
-    value: any;
-    description: string;
-    longDescription: string;
-}
-
-function convertValueTypeFromString(type: FullyQualifiedTypeName): ValueType {
-    type = type || '';
-    const valueType: ValueType = { name: type.trim() };
-    valueType.asCollection = type.startsWith('Collection(');
-    if (valueType.asCollection) {
-        valueType.name = valueType.name.slice(11, -1);
-    }
-    return valueType;
-}
-
-function convertValueTypeToString(valueType: ValueType): FullyQualifiedTypeName {
-    return valueType && valueType.asCollection ? 'Collection(' + valueType.name + ')' : valueType.name || '';
-}
-
-// ALIAS
-
-function getAliasMap(element: XMLElement): AliasMap {
+function getNamespaceMap(element: XMLElement): NamespaceMap {
     const references = getElementsWithName('Reference', element);
     const dataServices = getElementsWithName('DataServices', element);
     const schemas = dataServices.length ? getElementsWithName('Schema', dataServices[0]) : [];
-    const aliasMap: AliasMap = {};
+    const aliasMap: NamespaceMap = {};
     const includes = references.reduce<XMLElement[]>(
         (acc, reference) => [...acc, ...getElementsWithName('Include', reference)],
         []
@@ -596,13 +487,11 @@ function getAliasMap(element: XMLElement): AliasMap {
     return aliasMap;
 }
 
-function createAssociation(ends: XMLElement[], aliasMap: AliasMap): AssociationData {
+function createAssociation(ends: XMLElement[], aliasMap: NamespaceMap, currentNamespace: string): AssociationData {
     const association: AssociationData = {};
     for (const end of ends) {
         const role = getAttributeValue('Role', end);
-        let type = getAttributeValue('Type', end);
-        const resolvedName = resolveName(type, aliasMap);
-        type = resolvedName.qName ? resolvedName.qName : type;
+        const type = attributeValueToFullyQualifiedName('Type', aliasMap, currentNamespace, end);
         const multiplicity = getAttributeValue('Multiplicity', end);
         if (role && type && multiplicity) {
             association[role] = {

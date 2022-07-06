@@ -7,3 +7,12 @@ export {
     parseIdentifier,
     toFullyQualifiedName
 } from './names';
+
+export {
+    NavigationPropertyAnnotationSegment,
+    ParsedPath,
+    ParsedPathSegment,
+    TermCastSegment,
+    parsePath,
+    toFullyQualifiedPath
+} from './paths';

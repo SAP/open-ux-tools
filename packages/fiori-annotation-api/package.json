@@ -30,6 +30,7 @@
     ],
     "dependencies": {
         "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-metadata": "workspace:*",
         "@sap-ux/xml-annotation-converter": "workspace:*",
         "@sap-ux/vocabularies-types": "0.5.5",

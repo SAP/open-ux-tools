@@ -3,11 +3,6 @@ import type {
     TargetPath,
     Element,
     Namespace,
-    Alias,
-    QualifiedName,
-    FullyQualifiedTypeName,
-    FullyQualifiedName,
-    Name,
     AnnotationFile,
     Reference,
     TextNode
@@ -18,44 +13,26 @@ import type {
     AnnotationRecord,
     Apply,
     Collection,
-    CollectionExpression,
     Expression,
     PropertyValue,
     RawAnnotation
 } from '@sap-ux/vocabularies-types';
+import { parsePath, toFullyQualifiedPath, toFullyQualifiedName, parseIdentifier } from '@sap-ux/odata-annotation-core';
 
 /**
  * Represents annotation file content for a specific target
  */
 export interface TargetAnnotations {
-    target: TargetPath; // path identifying the targeted metadata element (e.g. <namespace>.<EntityType>/<PropertyName> )
+    /**
+     * Path identifying the targeted metadata element (e.g. <namespace>.<EntityType>/<PropertyName> )
+     */
+    target: TargetPath;
     annotations: RawAnnotation[]; // generated type!! It is assumed that no introspection is required to interpret the content!
 }
 
-/**
- * Represents annotation file content for a specific target with origin information
- */
-export interface TargetAnnotationsWithOrigins extends TargetAnnotations {
-    origins: Range[]; // origins for annotations (look for same index)
-}
-
-/**
- * Types for adding more origin information to annotations
- * (all added properties are optional so these types can also be used when no origin information shall be added)
- */
-export interface AnnotationWithOrigin extends RawAnnotation {
-    origin?: Range; // new: range of annotation (for non embedded annotations this is also contained in TargetAnnotationsWithOrigins.origins)
-    collectionOrigins?: Range[]; // new: ranges of entries in Annotation.collection (if present)
-    record?: RecordWithOrigins; // extend existing property with origin information
-    annotations?: AnnotationWithOrigin[]; // extend existing property with origin information
-}
-
-export interface CollectionExpressionWithOrigins extends CollectionExpression {
-    collectionOrigins?: Range[]; // new: ranges of collection entries when Collection is used as expression
-}
-export interface RecordWithOrigins extends AnnotationRecord {
-    propertyValuesOrigins?: Range[]; // new: ranges of propertyValues
-    annotations?: AnnotationWithOrigin[]; // extend existing property with origin information
+export interface NamespaceMap {
+    // also add entries for namespaces to facilitate alias to namespace conversion
+    [aliasOrNamespace: string]: Namespace;
 }
 
 /**
@@ -66,46 +43,57 @@ export interface RecordWithOrigins extends AnnotationRecord {
  */
 export function convertAnnotationFile(file: AnnotationFile): AnnotationList[] {
     const annotations: AnnotationList[] = [];
-    const aliasMap = getAliasMap(file.references);
+    const namespaceMap = getNamespaceMap(file.references);
+    Object.freeze(namespaceMap);
     for (const target of file.targets) {
         const terms: RawAnnotation[] = [];
+        const targetNamespaceMap = { ...namespaceMap, [target.namespace]: target.namespace };
+        if (target.alias) {
+            targetNamespaceMap[target.alias] = target.namespace;
+        }
         for (const term of target.terms) {
-            terms.push(convertAnnotationFromInternal(term, aliasMap));
+            terms.push(convertAnnotation(targetNamespaceMap, target.name, term));
         }
         annotations.push({
-            target: resolvePath(target.name, aliasMap),
+            target: resolvePath(targetNamespaceMap, target.namespace, target.name),
             annotations: terms
         });
     }
     return annotations;
 }
 
-function getAliasMap(references: Reference[]): AliasMap {
-    const aliasMap: AliasMap = {};
+function getNamespaceMap(references: Reference[]): NamespaceMap {
+    const namespaceMap: NamespaceMap = {};
     for (const reference of references) {
-        aliasMap[reference.name] = reference.name;
+        namespaceMap[reference.name] = reference.name;
         if (reference.alias) {
-            aliasMap[reference.alias] = reference.name;
+            namespaceMap[reference.alias] = reference.name;
         }
     }
 
-    return aliasMap;
+    return namespaceMap;
 }
 
-function convertAnnotationFromInternal(annotationElement: Element, aliasMap: AliasMap): RawAnnotation {
-    const resolvedTerm = resolveName(getAttributeValue('Term', annotationElement), aliasMap);
+function convertAnnotation(
+    namespaceMap: NamespaceMap,
+    currentNamespace: string,
+    annotationElement: Element
+): RawAnnotation {
+    const termAttributeValue = getAttributeValue('Term', annotationElement);
+    const term = parseIdentifier(termAttributeValue);
+
     const qualifier = getAttributeValue('Qualifier', annotationElement);
 
-    const value = convertExpressionFromInternal(annotationElement, aliasMap);
+    const value = convertExpression(namespaceMap, currentNamespace, annotationElement);
     const annotation: RawAnnotation = {
-        term: resolvedTerm.qName,
+        term: toFullyQualifiedName(namespaceMap, '', term) ?? termAttributeValue,
         value
     };
     if (qualifier) {
         annotation.qualifier = qualifier;
     }
     if (annotation.value?.type === 'Record') {
-        annotation.record = annotation.value.Record as RecordWithOrigins;
+        annotation.record = annotation.value.Record;
         delete annotation.value;
     } else if (annotation.value?.type === 'Collection') {
         annotation.collection = annotation.value.Collection;
@@ -113,19 +101,21 @@ function convertAnnotationFromInternal(annotationElement: Element, aliasMap: Ali
     } else if (annotation.value?.type === 'Unknown' && Object.keys(annotation.value).length === 1) {
         delete annotation.value; // did not appear in parseEdmx output
     }
-    const embeddedAnnotations = getEmbeddedAnnotationsFromInternal(annotationElement, aliasMap);
+    const embeddedAnnotations = getEmbeddedAnnotationsFromInternal(namespaceMap, currentNamespace, annotationElement);
     if (embeddedAnnotations && embeddedAnnotations.length) {
         annotation.annotations = embeddedAnnotations;
     }
     return annotation as RawAnnotation;
 }
 
-function getEmbeddedAnnotationsFromInternal(element: Element, aliasMap: AliasMap): RawAnnotation[] {
+function getEmbeddedAnnotationsFromInternal(
+    namespaceMap: NamespaceMap,
+    currentNamespace: string,
+    element: Element
+): RawAnnotation[] {
     return (element.content ?? [])
         .filter((child): child is Element => child.type === ELEMENT_TYPE && child.name === Edm.Annotation)
-        .map((embeddedAnnotation) => {
-            return convertAnnotationFromInternal(embeddedAnnotation, aliasMap);
-        });
+        .map((embeddedAnnotation) => convertAnnotation(namespaceMap, currentNamespace, embeddedAnnotation));
 }
 const EXPRESSION_TYPES = new Set<string>([
     Edm.String,
@@ -145,19 +135,12 @@ const EXPRESSION_TYPES = new Set<string>([
     Edm.Null
 ]);
 
-/**
- * Convert element of generic annotation format to expression.
- *
- * @param element - is supposed to represent an expression
- * @param aliasMap
- * @returns
- */
-function convertExpressionFromInternal(element: Element, aliasMap: AliasMap): Expression {
+function convertExpression(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): Expression {
     const expressionValues: Expression[] = [];
 
     // check if element itself represents the value
     if (EXPRESSION_TYPES.has(element.name)) {
-        expressionValues.push(convertExpressionValueFromInternal(element, aliasMap));
+        expressionValues.push(convertExpressionValue(namespaceMap, currentNamespace, element));
     }
 
     // check if value is provided as attribute
@@ -165,7 +148,9 @@ function convertExpressionFromInternal(element: Element, aliasMap: AliasMap): Ex
         if (EXPRESSION_TYPES.has(attributeName)) {
             const attribute = getElementAttribute(attributeName, element);
             if (attribute) {
-                expressionValues.push(convertExpression(attribute.name, attribute.value, aliasMap));
+                expressionValues.push(
+                    createExpression(namespaceMap, currentNamespace, attribute.name, attribute.value)
+                );
             }
         }
     }
@@ -176,17 +161,19 @@ function convertExpressionFromInternal(element: Element, aliasMap: AliasMap): Ex
     );
 
     for (const child of children) {
-        expressionValues.push(convertExpressionValueFromInternal(child, aliasMap));
+        expressionValues.push(convertExpressionValue(namespaceMap, currentNamespace, child));
     }
-    if (expressionValues.length > 1) {
-        // TODO: handle error
-        //throw new Error(`Too many expressions defined on a single object ${JSON.stringify(expression)}`);
-    }
+
     const expression = expressionValues[0];
     return expression;
 }
 
-function convertExpression(name: string, value: string, aliasMap: AliasMap): Expression {
+function createExpression(
+    namespaceMap: NamespaceMap,
+    currentNamespace: string,
+    name: string,
+    value: string
+): Expression {
     switch (name) {
         case 'String':
             return {
@@ -216,27 +203,27 @@ function convertExpression(name: string, value: string, aliasMap: AliasMap): Exp
         case 'Path':
             return {
                 type: 'Path',
-                Path: resolvePath(value, aliasMap)
+                Path: resolvePath(namespaceMap, currentNamespace, value)
             };
         case 'PropertyPath':
             return {
                 type: 'PropertyPath',
-                PropertyPath: resolvePath(value, aliasMap)
+                PropertyPath: resolvePath(namespaceMap, currentNamespace, value)
             };
         case 'AnnotationPath':
             return {
                 type: 'AnnotationPath',
-                AnnotationPath: resolvePath(value, aliasMap)
+                AnnotationPath: resolvePath(namespaceMap, currentNamespace, value)
             };
         case 'NavigationPropertyPath':
             return {
                 type: 'NavigationPropertyPath',
-                NavigationPropertyPath: resolvePath(value, aliasMap)
+                NavigationPropertyPath: resolvePath(namespaceMap, currentNamespace, value)
             };
         case 'EnumMember':
             return {
                 type: 'EnumMember',
-                EnumMember: resolveEnumMemberValue(value, aliasMap)
+                EnumMember: resolveEnumMemberValue(namespaceMap, currentNamespace, value)
             };
         case 'Null':
             return {
@@ -255,40 +242,41 @@ function convertExpression(name: string, value: string, aliasMap: AliasMap): Exp
  *  - all primitive values are returned in their stringified version.
  *
  * @param element - is supposed to represent a value of an expression
- * @param aliasMap
+ * @param namespaceMap
  * @returns
  */
-function convertExpressionValueFromInternal(element: Element, aliasMap: AliasMap): Expression {
+function convertExpressionValue(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): Expression {
     switch (element.name) {
         case 'Collection':
             return {
                 type: 'Collection',
-                Collection: convertCollectionFromInternal(element, aliasMap)
+                Collection: convertCollection(namespaceMap, currentNamespace, element)
             };
         case 'Record':
             return {
                 type: 'Record',
-                Record: convertRecordFromInternal(element, aliasMap)
+                Record: convertRecord(namespaceMap, currentNamespace, element)
             };
         case 'Apply':
             return {
                 type: 'Apply',
-                Apply: convertApplyFromInternal(element, aliasMap)
+                Apply: convertApplyFromInternal(namespaceMap, currentNamespace, element)
             };
         default:
             const singleTextNode = getSingleTextNode(element);
             const value = singleTextNode?.text ?? '';
 
-            return convertExpression(element.name, value, aliasMap);
+            return createExpression(namespaceMap, currentNamespace, element.name, value);
     }
 }
 
-function convertRecordFromInternal(recordElement: Element, aliasMap: AliasMap): AnnotationRecord {
+function convertRecord(namespaceMap: NamespaceMap, currentNamespace: string, recordElement: Element): AnnotationRecord {
     const type = getAttributeValue('Type', recordElement);
     let resolvedRecordType: string | undefined;
 
     if (type) {
-        resolvedRecordType = resolveName(type, aliasMap).qName;
+        const parsedIdentifier = parseIdentifier(type);
+        resolvedRecordType = toFullyQualifiedName(namespaceMap, '', parsedIdentifier);
     }
 
     const propertyValues = (recordElement.content || [])
@@ -297,9 +285,9 @@ function convertRecordFromInternal(recordElement: Element, aliasMap: AliasMap): 
             const name = getAttributeValue('Property', propValueChild);
             const propertyValue: PropertyValue = {
                 name,
-                value: convertExpressionFromInternal(propValueChild, aliasMap)
+                value: convertExpression(namespaceMap, currentNamespace, propValueChild)
             };
-            const annotations = getEmbeddedAnnotationsFromInternal(propValueChild, aliasMap);
+            const annotations = getEmbeddedAnnotationsFromInternal(namespaceMap, currentNamespace, propValueChild);
             if (annotations && annotations.length) {
                 propertyValue.annotations = annotations;
             }
@@ -313,7 +301,7 @@ function convertRecordFromInternal(recordElement: Element, aliasMap: AliasMap): 
     if (resolvedRecordType) {
         record.type = resolvedRecordType;
     }
-    const annotations = getEmbeddedAnnotationsFromInternal(recordElement, aliasMap);
+    const annotations = getEmbeddedAnnotationsFromInternal(namespaceMap, currentNamespace, recordElement);
     if (annotations && annotations.length) {
         record.annotations = annotations;
     }
@@ -321,11 +309,15 @@ function convertRecordFromInternal(recordElement: Element, aliasMap: AliasMap): 
     return record;
 }
 
-function convertCollectionFromInternal(collectionElement: Element, aliasMap: AliasMap): Collection {
+function convertCollection(
+    namespaceMap: NamespaceMap,
+    currentNamespace: string,
+    collectionElement: Element
+): Collection {
     const collection: Collection = (collectionElement.content || [])
         .filter((child): child is Element => child.type === ELEMENT_TYPE)
         .map((collectionEntryElement: Element) => {
-            const value = convertExpressionFromInternal(collectionEntryElement, aliasMap);
+            const value = convertExpression(namespaceMap, currentNamespace, collectionEntryElement);
             let entry = value as any;
             if (value && value.type) {
                 // record and string can be used directly as collection entries
@@ -340,24 +332,28 @@ function convertCollectionFromInternal(collectionElement: Element, aliasMap: Ali
     return collection;
 }
 
-function convertApplyFromInternal(element: Element, aliasMap: AliasMap): Apply {
+function convertApplyFromInternal(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): Apply {
     // use internal representation (without alias) to represent Apply value
     const clone: Element = JSON.parse(JSON.stringify(element));
-    return replaceAliasInElement(clone, aliasMap);
+    return replaceAliasInElement(namespaceMap, currentNamespace, clone);
 }
 
-function replaceAliasInElement(element: Element, aliasMap: AliasMap): Element {
+function replaceAliasInElement(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): Element {
     const result = element;
     // replace aliased in all attributes/sub nodes with full namespaces (reverse = true ? vice versa):
     // in attributes: term or type attributes, enumValue and any path values provided as attributes
     Object.keys(result.attributes || {}).forEach((attributeName) => {
         const attribute = result.attributes[attributeName];
         if (attributeName === Edm.Term || attributeName === 'Type') {
-            attribute.value = resolveName(attribute.value, aliasMap)?.qName;
+            const parsedIdentifier = parseIdentifier(attribute.value);
+            const fullyQualifiedName = toFullyQualifiedName(namespaceMap, '', parsedIdentifier);
+            if (fullyQualifiedName) {
+                attribute.value = fullyQualifiedName;
+            }
         } else if (attributeName === 'EnumMember') {
-            attribute.value = resolveEnumMemberValue(attribute.value, aliasMap);
+            attribute.value = resolveEnumMemberValue(namespaceMap, currentNamespace, attribute.value);
         } else if (attributeName.endsWith('Path')) {
-            attribute.value = resolvePath(attribute.value, aliasMap);
+            attribute.value = resolvePath(namespaceMap, currentNamespace, attribute.value);
         }
     });
     if ((result.content || []).some((entry) => entry.type === ELEMENT_TYPE)) {
@@ -367,101 +363,40 @@ function replaceAliasInElement(element: Element, aliasMap: AliasMap): Element {
     // in sub nodes
     for (const subNode of result.content) {
         if (subNode.type === ELEMENT_TYPE) {
-            replaceAliasInElement(subNode, aliasMap);
+            replaceAliasInElement(namespaceMap, currentNamespace, subNode);
         } else if (subNode.type === TEXT_TYPE) {
             const text = subNode.text;
             if (result.name === 'EnumMember') {
-                subNode.text = resolveEnumMemberValue(text, aliasMap);
+                subNode.text = resolveEnumMemberValue(namespaceMap, currentNamespace, text);
             } else if (subNode.type === TEXT_TYPE && result.name.endsWith('Path')) {
-                subNode.text = resolvePath(text, aliasMap);
+                subNode.text = resolvePath(namespaceMap, currentNamespace, text);
             }
         }
     }
     return result;
 }
 
-function resolvePath(path: string, aliasMap: AliasMap): string {
-    const segments = path.split('/');
-    const segmentsNoAlias = segments.map((segment: string) => getSegmentWithoutAlias(aliasMap, segment));
-    return segmentsNoAlias.join('/');
+function resolvePath(namespaceMap: NamespaceMap, currentNamespace: string, path: string): string {
+    const parsedPath = parsePath(path);
+    return toFullyQualifiedPath(namespaceMap, currentNamespace, parsedPath);
 }
 
-/**
- * Get segment without alias.
- *
- * @param aliasMap
- * @param segment
- * @returns
- */
-function getSegmentWithoutAlias(aliasMap: AliasMap, segment: string): string {
-    let segmentWithoutAlias = '';
-    const indexAt = segment.indexOf('@');
-    if (indexAt >= 0) {
-        const term = resolveName(segment.substr(indexAt + 1), aliasMap).qName;
-        segmentWithoutAlias = segment.substr(0, indexAt) + '@' + term;
-    } else if (segment.indexOf('.') > -1) {
-        segmentWithoutAlias = resolveName(segment, aliasMap).qName;
-    } else {
-        segmentWithoutAlias = segment;
-    }
-
-    return segmentWithoutAlias;
+function resolveEnumMemberValue(
+    namespaceMap: NamespaceMap,
+    currentNamespace: string,
+    enumMemberString: string
+): string {
+    return enumMemberString
+        .split(' ')
+        .map((enumMember) => resolvePath(namespaceMap, currentNamespace, enumMember))
+        .join(' ');
 }
 
-function resolveEnumMemberValue(enumMemberString: string, aliasMap: AliasMap): string {
-    const enumMembers = enumMemberString.split(' ');
-    const enumMembersNoAlias = enumMembers.map((enumMember) => resolvePath(enumMember, aliasMap));
-    return enumMembersNoAlias.join(' ');
-}
-
-function getAliasQualifiedName(qualifiedName: QualifiedName, aliasInfo: AliasInformation): FullyQualifiedName {
-    const resolvedName = resolveName(qualifiedName, aliasInfo.aliasMap);
-    const alias = resolvedName.namespace ? aliasInfo.reverseAliasMap[resolvedName.namespace] : undefined;
-    let aliasQualifiedName = alias ? `${alias}.${resolvedName.name}` : qualifiedName;
-    const indexFirstBracket = aliasQualifiedName.indexOf('(');
-    if (indexFirstBracket > -1) {
-        // handle signature of overloads: <SchemaNamespaceOrAlias>.<SimpleIdentifierOrPath>(<FunctionOrActionSignature>)
-        const beforeBracket = aliasQualifiedName.slice(0, indexFirstBracket);
-        const bracketContent = aliasQualifiedName.slice(indexFirstBracket + 1, aliasQualifiedName.lastIndexOf(')'));
-        let bracketEntries = bracketContent.split(',');
-        bracketEntries = bracketEntries.map((qName: string) => getAliasQualifiedName(qName, aliasInfo));
-        aliasQualifiedName = beforeBracket + '(' + bracketEntries.join(',') + ')';
-    }
-    return aliasQualifiedName;
-}
-
-/**
- * Replaces all namespaces (having aliases) in path and replaces them with alias.
- *
- * @param path
- * @param aliasInfo
- * @returns
- */
-export function getAliasedPath(path: string, aliasInfo: AliasInformation): string {
-    function getAliasedSegment(aliasInfo: AliasInformation, segment: string): string {
-        let segmentWitAlias = '';
-        const indexAt = segment.indexOf('@');
-        if (indexAt >= 0) {
-            const term = getAliasQualifiedName(segment.substr(indexAt + 1), aliasInfo);
-            segmentWitAlias = segment.substr(0, indexAt) + '@' + term;
-        } else if (segment.indexOf('.') > -1) {
-            segmentWitAlias = getAliasQualifiedName(segment, aliasInfo);
-        } else {
-            segmentWitAlias = segment;
-        }
-        return segmentWitAlias;
-    }
-    return path
-        .split('/')
-        .map((segment) => getAliasedSegment(aliasInfo, segment))
-        .join('/');
-}
-
-export function getElementAttribute(name: string, element: Element): Attribute | undefined {
+function getElementAttribute(name: string, element: Element): Attribute | undefined {
     return element.attributes && element.attributes[name];
 }
 
-export function getAttributeValue(name: string, element: Element): string {
+function getAttributeValue(name: string, element: Element): string {
     return getElementAttribute(name, element)?.value ?? '';
 }
 /**
@@ -492,136 +427,4 @@ function getSingleTextNode(element: Element): TextNode | undefined {
 
 function isEmptyText(text: string | undefined): boolean {
     return (text ?? '').replace(/[\n\t\s]/g, '').length === 0;
-}
-
-/**
- * generic context used in value handling (check/completion of annotation values)
- */
-export interface AliasMap {
-    // also add entries for namespaces to facilitate alias to namespace conversion
-    [aliasOrNamespace: string]: Namespace;
-}
-
-export interface AliasInformation {
-    currentFileNamespace: Namespace;
-    currentFileAlias?: Alias;
-    aliasMap: AliasMap;
-    reverseAliasMap: { [namespace: string]: Alias | Namespace }; // if no alias available: use namespace
-    aliasMapMetadata: AliasMap;
-    aliasMapVocabulary: AliasMap;
-}
-
-interface ResolvedName {
-    namespace?: Namespace;
-    alias?: Alias;
-    name: Name;
-    qName: FullyQualifiedName;
-}
-
-// TODO: remove duplicate implementation
-function resolveName(qualifiedName: QualifiedName, aliasMap?: AliasMap): ResolvedName {
-    // qualifiedName has the form "<SchemaNamespaceOrAlias>.<SimpleIdentifierOrPath>[(<FunctionOrActionSignature>)])"
-    // SchemaNamespace and FunctionOrActionSignature can contain ".", SimpleIdentifierOrPath should not contain dots
-    const resolvedName: ResolvedName = { name: qualifiedName, qName: qualifiedName };
-    if (qualifiedName && typeof qualifiedName === 'string' && qualifiedName.indexOf('.')) {
-        const indexFirstBracket = qualifiedName.indexOf('(');
-        const nameBeforeBracket = indexFirstBracket > -1 ? qualifiedName.slice(0, indexFirstBracket) : qualifiedName;
-        const parts = nameBeforeBracket.trim().split('.');
-        const name = parts.pop() || '';
-        const namespace = parts.join('.');
-        if (aliasMap) {
-            if (aliasMap[namespace]) {
-                // valid namespace
-                if (aliasMap[namespace] && aliasMap[namespace] !== namespace) {
-                    resolvedName.alias = namespace;
-                    resolvedName.namespace = aliasMap[namespace];
-                } else {
-                    resolvedName.namespace = namespace;
-                }
-                resolvedName.name = name;
-                resolvedName.qName = resolvedName.namespace + '.' + name;
-            }
-        } else {
-            resolvedName.name = name;
-            resolvedName.namespace = namespace;
-        }
-        if (indexFirstBracket > -1) {
-            const bracketContent = qualifiedName.slice(indexFirstBracket + 1, qualifiedName.lastIndexOf(')'));
-            resolvedName.name += '(' + bracketContent + ')';
-            if (aliasMap && aliasMap[namespace]) {
-                const bracketEntries = bracketContent.split(',');
-                const bracketEntriesResolved = bracketEntries.map((qualifiedTypeName) => {
-                    const valueType = convertValueTypeFromString(qualifiedTypeName);
-                    valueType.name = resolveName(valueType.name, aliasMap).qName;
-                    return convertValueTypeToString(valueType);
-                });
-                resolvedName.qName += '(' + bracketEntriesResolved.join(',') + ')';
-            }
-        }
-    }
-
-    return resolvedName;
-}
-
-interface AllowedValues {
-    value: any;
-    description: string;
-    longDescription: string;
-}
-
-function convertValueTypeFromString(type: FullyQualifiedTypeName): ValueType {
-    type = type || '';
-    const valueType: ValueType = { name: type.trim() };
-    valueType.asCollection = type.startsWith('Collection(');
-    if (valueType.asCollection) {
-        valueType.name = valueType.name.slice(11, -1);
-    }
-    return valueType;
-}
-
-function convertValueTypeToString(valueType: ValueType): FullyQualifiedTypeName {
-    return valueType && valueType.asCollection ? 'Collection(' + valueType.name + ')' : valueType.name || '';
-}
-
-interface Facets {
-    isNullable?: boolean; // source: $Nullable; whether the property can have the value null
-    // $MaxLength; maximum length of a binary, stream or string value; no usage in supported vocabularies
-    precision?: number; // source: $Precision, for a decimal value: the maximum number of significant decimal digits..
-    // ..for a temporal value (e.g. time of dat): the number of decimal places allowed in the seconds
-    // $Scale; maximum number of digits allowed to the right.. ; no usage in supported vocabularies
-    // $SRID: no usage in supported vocabularies
-    // $Unicode; applicable to string values; no usage in supported vocabularies
-}
-
-interface ValueType {
-    name: FullyQualifiedName; // fully qualified name of type
-    asCollection?: boolean;
-    facets?: Facets;
-    constraints?: Constraints;
-}
-
-interface Constraints {
-    // ------ validation vocabulary--------
-    // pattern: string; // regular expression applied to string value (Property or Term) - only in Core.LocalDateTime
-    // minimum: number; // minimum value (Property or Term) - only used in DataModificationExceptionType.responseCode
-    // maximum: number; // maximum value (Property or Term) - only used in DataModificationExceptionType.responseCode
-    allowedValues?: AllowedValues[]; // valid values (Property or Term)
-    openPropertyTypeConstraints?: FullyQualifiedTypeName[]; // used in UI vocabulary
-    allowedTerms?: FullyQualifiedTypeName[]; // restrict terms allowed for annotation path (Property or Term)
-    // ApplicableTerms?  Names of specific terms that are applicable and may be applied in the current context
-    // MaxItems, MinItems: no usage in supported vocabularies
-    derivedTypeConstraints?: FullyQualifiedTypeName[]; // listed sub types (and their subtypes) (Property only!)
-    // ------ core vocabulary--------
-    // isURL? Can we check this ?
-    isLanguageDependent?: boolean; // string value is language dependent (Property or Term)
-    // term can only be applied to elements of this type/subType (Term)
-    // applies to says it's only used for terms, but properties use it too, e.g. RecursiveHierarchyType.IsLeafProperty
-    requiresType?: FullyQualifiedName;
-    // ------common vocabulary------------
-    // IsUpperCase: no usage in supported vocabularies
-    // MinOccurs: no usage in supported vocabularies
-    // MaxOccurs: no usage in supported vocabularies
-    // ------ communication vocabulary----
-    // isEmailAddress: boolean;  no usage in supported vocabularies
-    // isPhoneNumber: boolean;  no usage in supported vocabularies
 }

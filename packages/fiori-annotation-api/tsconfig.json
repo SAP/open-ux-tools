@@ -13,6 +13,9 @@
             "path": "../odata-annotation-core-types"
         },
         {
+            "path": "../odata-annotation-core"
+        },
+        {
             "path": "../odata-metadata"
         },
         {

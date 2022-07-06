@@ -6,8 +6,7 @@ describe('identifiers', () => {
             expect(
                 toFullyQualifiedName({}, 'com.sap.vocabularies.UI.v1', {
                     type: 'identifier',
-                    name: 'LineItem',
-                    raw: 'LineItem'
+                    name: 'LineItem'
                 })
             ).toStrictEqual('com.sap.vocabularies.UI.v1.LineItem');
         });
@@ -16,8 +15,7 @@ describe('identifiers', () => {
             expect(
                 toFullyQualifiedName({}, 'com.sap.vocabularies.UI.v1', {
                     type: 'collection',
-                    name: 'LineItem',
-                    raw: 'LineItem'
+                    name: 'LineItem'
                 })
             ).toStrictEqual('Collection(com.sap.vocabularies.UI.v1.LineItem)');
         });
@@ -33,8 +31,7 @@ describe('identifiers', () => {
                     {
                         type: 'identifier',
                         name: 'LineItem',
-                        namespaceOrAlias: 'UI',
-                        raw: 'UI.LineItem'
+                        namespaceOrAlias: 'UI'
                     }
                 )
             ).toStrictEqual('com.sap.vocabularies.UI.v1.LineItem');
@@ -51,8 +48,7 @@ describe('identifiers', () => {
                     {
                         type: 'identifier',
                         name: 'LineItem',
-                        namespaceOrAlias: 'com.sap.vocabularies.UI.v1',
-                        raw: 'com.sap.vocabularies.UI.v1.LineItem'
+                        namespaceOrAlias: 'com.sap.vocabularies.UI.v1'
                     }
                 )
             ).toStrictEqual('com.sap.vocabularies.UI.v1.LineItem');
@@ -63,10 +59,24 @@ describe('identifiers', () => {
                 toFullyQualifiedName({}, 'Namespace1', {
                     type: 'identifier',
                     name: 'LineItem',
-                    namespaceOrAlias: 'UI',
-                    raw: 'UI.LineItem'
+                    namespaceOrAlias: 'UI'
                 })
             ).toStrictEqual(undefined);
+        });
+
+        test('function', () => {
+            expect(
+                toFullyQualifiedName({}, 'MySchema', {
+                    type: 'action-function',
+                    name: 'MyAction',
+                    parameters: [
+                        {
+                            type: 'identifier',
+                            name: 'MyBindingType'
+                        }
+                    ]
+                })
+            ).toStrictEqual('MySchema.MyAction(MySchema.MyBindingType)');
         });
     });
 });

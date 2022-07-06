@@ -1,8 +1,4 @@
 interface IdentifierBase {
-    /**
-     * Full source value
-     */
-    raw: string;
     namespaceOrAlias?: string;
     /**
      * Simple identifier segment of the name
@@ -56,7 +52,7 @@ export function parseIdentifier(identifier: string): ParsedName {
                               : parseInternal(parameter)
                       )
                 : [];
-        return { ...parsedIdentifier, type: 'action-function', parameters, raw: identifier };
+        return { ...parsedIdentifier, type: 'action-function', parameters };
     }
 
     return parseInternal(identifier);
@@ -65,7 +61,7 @@ export function parseIdentifier(identifier: string): ParsedName {
 function parseCollection(identifier: string): ParsedCollectionIdentifier {
     const substringEndIndex = identifier.endsWith(')') ? -1 : undefined;
     const parsedIdentifier = parseInternal(identifier.slice(COLLECTION_PREFIX.length, substringEndIndex));
-    return { ...parsedIdentifier, type: 'collection', raw: identifier };
+    return { ...parsedIdentifier, type: 'collection' };
 }
 
 function parseInternal(identifier: string): ParsedIdentifier {
@@ -73,14 +69,12 @@ function parseInternal(identifier: string): ParsedIdentifier {
     if (parts.length > 1) {
         return {
             type: 'identifier',
-            raw: identifier,
             namespaceOrAlias: parts.slice(0, -1).join('.'),
             name: parts.splice(-1)[0]
         };
     } else {
         return {
             type: 'identifier',
-            raw: identifier,
             name: identifier
         };
     }
