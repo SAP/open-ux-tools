@@ -50,6 +50,8 @@ if (isAppStudio()) {
  * Execute a sequence of test calls using the given provider.
  *
  * @param provider instance of a service provider
+ * @param testPackageName optional environment variable
+ * @param testAppName optional environment variable
  */
 async function callAFewAbapServices(
     provider: AbapServiceProvider,
@@ -98,6 +100,8 @@ async function callAFewAbapServices(
  * @param env.TEST_SYSTEM base url of the test system
  * @param env.TEST_USER optional username
  * @param env.TEST_PASSWORD optional password
+ * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
+ * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
  * @returns Promise<void>
  */
 async function checkAbapSystem(env: {
