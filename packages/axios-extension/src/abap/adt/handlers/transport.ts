@@ -71,7 +71,7 @@ function getTransportableList(doc: Document): string[] {
     const requests = xpath.select('//REQ_HEADER', doc) as Element[];
     const list = [];
     if (requests && requests.length > 0) {
-        for (let request of requests) {
+        for (const request of requests) {
             const transportNum = xpath.select1('//REQ_HEADER/TRKORR/text()', request)?.toString();
             list.push(transportNum);
         }
