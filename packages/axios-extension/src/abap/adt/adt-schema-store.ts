@@ -30,8 +30,7 @@ export class AdtSchemaStore {
         if (schemaData) {
             this.adtSchema = {};
             const workspaces = schemaData.service.workspace;
-            for (let i = 0; i < workspaces.length; i++) {
-                const workspace = workspaces[i];
+            for (const workspace of workspaces) {
                 if (!workspace.collection) {
                     continue;
                 }
@@ -42,7 +41,7 @@ export class AdtSchemaStore {
                         this.adtSchema[id] = collection;
                     });
                 } else {
-                    const collection = workspace.collection as AdtCollection;
+                    const collection = workspace.collection;
                     const id = this.serializeAdtCategory(collection.category);
                     this.adtSchema[id] = workspace.collection;
                 }

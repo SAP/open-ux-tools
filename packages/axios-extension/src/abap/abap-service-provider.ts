@@ -1,14 +1,12 @@
 import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
-
-import { AdtServiceName } from './adt';
 import type { AtoSettings } from './adt';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-import { adt, adtSchema, AdtSchemaStore, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt';
+import { adt, adtSchema, AdtServiceName, AdtSchemaStore, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt';
 import { AdtCollection } from './types';
 import type { AbapServiceProviderExtension } from './interface';
 import { parseTransportRequests } from './adt/handlers/transport';
@@ -191,17 +189,16 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             return;
         }
 
-        try {
-            const urlPath = schema.href;
-            const acceptHeaders = {
-                headers: {
-                    Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
-                    'content-type':
-                        'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
-                }
-            };
+        const urlPath = schema.href;
+        const acceptHeaders = {
+            headers: {
+                Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
+                'content-type':
+                    'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
+            }
+        };
 
-            const data = `
+        const data = `
                 <?xml version="1.0" encoding="UTF-8"?>
                 <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
                     <asx:values>
@@ -218,10 +215,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
                 </asx:abap>
             `;
 
-            const response = await this.post(urlPath, data, acceptHeaders);
-            return parseTransportRequests(response.data);
-        } catch (error) {
-            throw error;
-        }
+        const response = await this.post(urlPath, data, acceptHeaders);
+        return parseTransportRequests(response.data);
     }
 }
