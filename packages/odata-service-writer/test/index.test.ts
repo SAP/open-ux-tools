@@ -1,4 +1,3 @@
-import { t } from '../src/i18n';
 import { OdataService, OdataVersion } from '../src/types';
 import { generate } from '../src';
 import { join } from 'path';
@@ -38,47 +37,37 @@ describe('ODataService templates', () => {
         }
     });
 
-    it('generate: invalid project with faulty manifest.json', async () => {
-        const testDir = join(outputDir, 'invalid-project');
-
-        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
-        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
-        fs.write(join(testDir, 'ui5-local.yaml'), '');
-        fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
-        const manifestPath = join(testDir, 'webapp/manifest.json');
-        fs.write(manifestPath, '{}');
-
-        await expect(generate(testDir, validServiceConfig, fs)).rejects.toEqual(
-            Error(t('error.requiredProjectPropertyNotFound', { property: `'sap.app'.id`, path: manifestPath }))
-        );
+    beforeEach(() => {
+        fs = create(createStorage());
     });
 
-    it('generate: valid project with standard valid input', async () => {
-        const testDir = join(outputDir, 'odata-service-v2');
+    async function createTestDir(name: string): Promise<string> {
+        const testDir = join(outputDir, name);
         const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
-
-        const fs = create(createStorage());
         fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
         fs.write(join(testDir, 'ui5-local.yaml'), '');
         fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
         fs.write(
-            join(testDir, 'webapp', 'manifest.json'),
+            join(testDir, 'webapp/manifest.json'),
             JSON.stringify({
                 'sap.app': {
                     id: 'testappid'
                 }
             })
         );
+        return testDir;
+    }
 
-        const fsEditor = await generate(testDir, validServiceConfig as OdataService, fs);
-        expect((fsEditor as any).dump(testDir)).toMatchSnapshot();
+    it('generate: valid project with standard valid input', async () => {
+        const testDir = await createTestDir('odata-service-v2');
+        await generate(testDir, validServiceConfig as OdataService, fs);
+        expect((fs as any).dump(testDir)).toMatchSnapshot();
     });
 
     it('generate: project with local annotations', async () => {
         const serviceConfigWithAnnotations: OdataService = {
-            url: 'http://localhost',
-            path: '/sap/odata/testme',
-            version: OdataVersion.v2,
+            ...validServiceConfig,
+            version: OdataVersion.v4,
             metadata: await readFile(join(__dirname, 'test-data', 'sepmra_prod_man_v2', `metadata.xml`), 'utf-8'),
             annotations: {
                 technicalName: 'sepmra_annotations_tech_name',
@@ -87,27 +76,8 @@ describe('ODataService templates', () => {
             localAnnotationsName: 'annotations_test'
         };
 
-        const testDir = join(outputDir, 'local-annotations');
-        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
-
-        const fs = create(createStorage());
-        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
-        fs.write(join(testDir, 'ui5-local.yaml'), '');
-        fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
-        fs.write(
-            join(testDir, 'webapp', 'manifest.json'),
-            JSON.stringify({
-                'sap.app': {
-                    id: 'testappid'
-                }
-            })
-        );
-
-        const fsEditor = await generate(
-            testDir,
-            Object.assign(serviceConfigWithAnnotations, { version: OdataVersion.v4 }),
-            fs
-        );
-        expect((fsEditor as any).dump(testDir)).toMatchSnapshot();
+        const testDir = await createTestDir('local-annotations');
+        await generate(testDir, serviceConfigWithAnnotations, fs);
+        expect((fs as any).dump(testDir)).toMatchSnapshot();
     });
 });

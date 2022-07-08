@@ -7,6 +7,7 @@ import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
+import { applyEventHandlerConfiguration } from '../common/event-handler';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -27,18 +28,26 @@ export function getManifestRoot(root: string, ui5Version?: number): string {
 /**
  * Enhances the provided custom section configuration with additonal data.
  *
+ * @param {Editor} fs - the mem-fs editor instance
+ * @param {string} root - root path
  * @param {CustomSection} data - a custom section configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
  * @returns enhanced configuration
  */
-function enhanceConfig(data: CustomSection, manifestPath: string, manifest: Manifest): InternalCustomSection {
+function enhanceConfig(
+    fs: Editor,
+    root: string,
+    data: CustomSection,
+    manifestPath: string,
+    manifest: Manifest
+): InternalCustomSection {
     const config: CustomSection & Partial<InternalCustomSection> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
-    // set default event handler if it is to be created
-    if (config.eventHandler === true) {
-        config.eventHandler = `${config.ns}.${config.name}.onPress`;
+    // Apply event handler
+    if (config.eventHandler) {
+        config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler);
     }
 
     // generate section content
@@ -68,15 +77,7 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
     const root = join(__dirname, '../../templates');
 
     // merge with defaults
-    const completeSection = enhanceConfig(customSection, manifestPath, manifest);
-
-    // add event handler if requested
-    if (completeSection.eventHandler) {
-        const controllerPath = join(completeSection.path, `${completeSection.name}.js`);
-        if (!fs.exists(controllerPath)) {
-            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, completeSection);
-        }
-    }
+    const completeSection = enhanceConfig(fs, root, customSection, manifestPath, manifest);
 
     // enhance manifest with section definition
     const manifestRoot = getManifestRoot(root, customSection.ui5Version);

@@ -1,5 +1,24 @@
 # @sap-ux/ui5-config
 
+## 0.14.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/yaml@0.12.1
+
+## 0.14.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/yaml@0.12.0
+
 ## 0.13.3
 
 ### Patch Changes

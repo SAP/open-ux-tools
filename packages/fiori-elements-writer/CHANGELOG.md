@@ -1,5 +1,35 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.4.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/odata-service-writer@0.14.1
+    -   @sap-ux/ui5-application-writer@0.14.1
+    -   @sap-ux/ui5-config@0.14.1
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [c29bf99]
+    -   @sap-ux/odata-service-writer@0.14.0
+
+## 0.4.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/odata-service-writer@0.13.0
+    -   @sap-ux/ui5-application-writer@0.14.0
+    -   @sap-ux/ui5-config@0.14.0
+
 ## 0.3.6
 
 ### Patch Changes

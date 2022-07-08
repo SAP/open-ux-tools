@@ -1,5 +1,33 @@
 # @sap-ux/axios-extension
 
+## 0.7.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/btp-utils@0.10.2
+    -   @sap-ux/logger@0.2.1
+
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [6f0f217]
+    -   @sap-ux/btp-utils@0.10.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/btp-utils@0.10.0
+    -   @sap-ux/logger@0.2.0
+
 ## 0.6.0
 
 ### Minor Changes

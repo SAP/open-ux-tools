@@ -1,5 +1,32 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/logger@0.2.1
+    -   @sap-ux/ui5-config@0.14.1
+
+## 1.1.1
+
+### Patch Changes
+
+-   5c5c904: Add author to package.json
+
+## 1.1.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/logger@0.2.0
+    -   @sap-ux/ui5-config@0.14.0
+
 ## 1.0.9
 
 ### Patch Changes

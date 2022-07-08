@@ -230,14 +230,15 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
                     <PGMID/>
                     <OBJECT/>
                     <OBJECTNAME/>
-                    <DEVCLASS>SADT_MAIN</DEVCLASS>
+                    <DEVCLASS>ZSPD</DEVCLASS>
                     <SUPER_PACKAGE/>
                     <OPERATION>I</OPERATION>
-                    <URI>/sap/bc/adt/oo/classes/cl_my_new_class/source/main</URI>
+                    <URI>/sap/bc/adt/filestore/ui5-bsp/objects/zshensushant/$create</URI>
                     </DATA>
                 </asx:values>
             </asx:abap>
             `;
+            // <URI>/sap/bc/adt/oo/classes/cl_my_new_class/source/main</URI>
             // const data = `
             //     <?xml version=\"1.0\" encoding=\"UTF-8\"?>
             //     <asx:abap xmlns:asx=\"http://www.sap.com/abapxml\" version=\"1.0\">

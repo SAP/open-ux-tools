@@ -1,0 +1,78 @@
+{
+    "_version": "1.12.0",
+    "sap.app": {
+        "id": "sapux.fe.fpm.writer.test",
+        "type": "application",
+        "i18n": {
+            "bundleUrl": "../../i18n/i18n.properties",
+            "supportedLocales": [""],
+            "fallbackLocale": ""
+        },
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/sap/fe/core/mock/customColumnContent/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "odataVersion": "4.0"
+                }
+            }
+        }
+    },
+    "sap.ui5": {
+        "dependencies": {
+            "minUI5Version": "1.60.0",
+            "libs": {
+                "sap.ui.core": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "../../i18n/i18n.properties"
+            },
+            "": {
+                "dataSource": "mainService",
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            }
+        },
+        "routing": {
+            "routes": [
+                {
+                    "pattern": "/RootEntity({key}):?query:",
+                    "name": "default",
+                    "target": "sample"
+                }
+            ],
+            "targets": {
+                "sample": {
+                    "type": "Component",
+                    "id": "Default",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "entitySet": "RootEntity",
+                            "views": {
+                                "paths": [
+                                    {
+                                        "key": "tab1",
+                                        "annotationPath": "com.sap.vocabularies.UI.v1.LineItem"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
