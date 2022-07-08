@@ -51,14 +51,23 @@ if (isAppStudio()) {
  *
  * @param provider instance of a service provider
  */
-async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
+async function callAFewAbapServices(
+    provider: AbapServiceProvider,
+    testPackageName?: string,
+    testAppName?: string
+): Promise<void> {
     try {
         const atoSettings = await provider.getAtoInfo();
         if (!atoSettings || Object.keys(atoSettings).length === 0) {
             console.warn('ATO setting is empty!');
         }
 
-        await provider.getTransportRequests();
+        if (testPackageName && testAppName) {
+            const transportNumList = await provider.getTransportRequests(testPackageName, testAppName);
+            if (transportNumList.length === 0) {
+                console.info(`Transport number is empty for package name ${testPackageName}, app name ${testAppName}`);
+            }
+        }
 
         const catalog = provider.catalog(ODataVersion.v2);
 
@@ -95,6 +104,8 @@ async function checkAbapSystem(env: {
     TEST_SYSTEM: string;
     TEST_USER?: string;
     TEST_PASSWORD?: string;
+    TEST_PACKAGE?: string;
+    TEST_APP?: string;
 }): Promise<void> {
     const provider = createForAbap({
         baseURL: env.TEST_SYSTEM,
@@ -104,7 +115,7 @@ async function checkAbapSystem(env: {
             password: env.TEST_PASSWORD
         }
     });
-    return callAFewAbapServices(provider);
+    return callAFewAbapServices(provider, env.TEST_PACKAGE, env.TEST_APP);
 }
 
 /**

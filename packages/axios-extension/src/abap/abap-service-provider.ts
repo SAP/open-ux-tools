@@ -173,31 +173,19 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
         return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
     }
 
-    // @adt(AdtServices.TRANSPORT_SEARCH_CONFIG)
-    // public async getTransportSearchConfig(@adtSchema schema?: AdtCollection): Promise<string> {
-    //     // Service not available on target ABAP backend version, return empty setting config
-    //     if (!schema) {
-    //         return;
-    //     }
-
-    //     if (!this.transportSearchConfigId) {
-    //         try {
-    //             const acceptHeaders = {
-    //                 headers: {
-    //                     Accept: 'application/*'
-    //                 }
-    //             };
-    //             const response = await this.get(AdtServices.TRANSPORT_SEARCH_CONFIG, acceptHeaders);
-    //             this.transportSearchConfigId = parseSearchConfigRef(response.data);
-    //         } catch (error) {
-    //             throw error;
-    //         }
-    //     }
-    //     return this.transportSearchConfigId;
-    // }
-
-    @adt(AdtServiceConfigs[AdtServiceName.TransportRequests])
-    public async getTransportRequests(@adtSchema schema?: AdtCollection): Promise<string[]> {
+    /**
+     *
+     * @param packageName Package name for deployment
+     * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
+     * @param schema Decorated para that will be autofilled
+     * @returns
+     */
+    @adt(AdtServiceConfigs[AdtServiceName.TransportChecks])
+    public async getTransportRequests(
+        packageName: string,
+        appName: string,
+        @adtSchema schema?: AdtCollection
+    ): Promise<string[]> {
         // Service not available on target ABAP backend version, return empty setting config
         if (!schema) {
             return;
@@ -211,53 +199,26 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
                     'content-type':
                         'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
                 }
-                // headers: {
-                //     'Accept': 'application/vnd.sap.adt.transportorganizertree.v1+xml, application/vnd.sap.adt.transportorganizer.v1+xml'
-                // },
-                // params: {
-                //     'user': '',
-                //     'target': 'true',
-                //     'requestType': 'KWT',
-                //     'requestStatus': 'DR'
-                // }
             };
 
             const data = `
-            <?xml version="1.0" encoding="UTF-8"?>
-            <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
-                <asx:values>
-                    <DATA>
-                    <PGMID/>
-                    <OBJECT/>
-                    <OBJECTNAME/>
-                    <DEVCLASS>ZSPD</DEVCLASS>
-                    <SUPER_PACKAGE/>
-                    <OPERATION>I</OPERATION>
-                    <URI>/sap/bc/adt/filestore/ui5-bsp/objects/zshensushant/$create</URI>
-                    </DATA>
-                </asx:values>
-            </asx:abap>
+                <?xml version="1.0" encoding="UTF-8"?>
+                <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+                    <asx:values>
+                        <DATA>
+                        <PGMID/>
+                        <OBJECT/>
+                        <OBJECTNAME/>
+                        <DEVCLASS>${packageName}</DEVCLASS>
+                        <SUPER_PACKAGE/>
+                        <OPERATION>I</OPERATION>
+                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${appName}/$create</URI>
+                        </DATA>
+                    </asx:values>
+                </asx:abap>
             `;
-            // <URI>/sap/bc/adt/oo/classes/cl_my_new_class/source/main</URI>
-            // const data = `
-            //     <?xml version=\"1.0\" encoding=\"UTF-8\"?>
-            //     <asx:abap xmlns:asx=\"http://www.sap.com/abapxml\" version=\"1.0\">
-            //       <asx:values>
-            //         <DATA>
-            //             <PGMID></PGMID>
-            //             <OBJECT></OBJECT>
-            //             <OBJECTNAME></OBJECTNAME>
-            //             <DEVCLASS>ZSPD</DEVCLASS>
-            //             <OPERATION>I</OPERATION>
-            //             <URI>/sap/bc/adt/filestore/ui5-bsp/objects/zblabla/$create</URI>
-            //         </DATA>
-            //       </asx:values>
-            //     </asx:abap>
-            // `;
-            // /sap/bc/adt/filestore/ui5-bsp/objects/zblabla/$create
+
             const response = await this.post(urlPath, data, acceptHeaders);
-            // const response = await this.get(urlPath, acceptHeaders);
-            console.log('response', response.data);
             return parseTransportRequests(response.data);
         } catch (error) {
             throw error;
