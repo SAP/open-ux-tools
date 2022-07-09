@@ -155,6 +155,15 @@ describe('AbapServiceProvider', () => {
             expect(await provider.getTransportRequests(testPackage, testExistProject)).toStrictEqual(['EC1K900294']);
         });
 
+        test('Valid package name, existing project name - no transport number', async () => {
+            nock(server)
+                .get(AdtServices.DISCOVERY)
+                .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+                .post(AdtServices.TRANSPORT_CHECKS)
+                .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-5.xml'));
+            expect(await provider.getTransportRequests(testPackage, testExistProject)).toStrictEqual([]);
+        });
+
         test('Local package: no transport number requested for deploy for both new and exist project', async () => {
             nock(server)
                 .get(AdtServices.DISCOVERY)

@@ -88,6 +88,10 @@ function getTransportableList(doc: Document): string[] {
  * @returns
  */
 function getLockedTransport(doc: Document): string[] {
-    const transportNum = xpath.select1('//LOCKS//TRKORR/text()', doc)?.toString();
-    return [transportNum];
+    const transportNum = xpath.select1('//LOCKS//REQ_HEADER/TRKORR/text()', doc)?.toString();
+    if (transportNum) {
+        return [transportNum];
+    } else {
+        return [];
+    }
 }
