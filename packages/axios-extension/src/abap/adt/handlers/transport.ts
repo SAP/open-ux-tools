@@ -43,7 +43,7 @@ function getTransportChecksResponse(doc: Document): string[] {
  * @param doc
  * @returns
  * - For local package, an array list that contain a single empty string is returned.
- * - For errors or other unkonwn reasons no transport number found, an empty array list is turned.
+ * - For errors or other unkonwn reasons no transport number found, an empty array list is returned.
  */
 function getTransportList(doc: Document): string[] {
     const recording = xpath.select1('//RECORDING/text()', doc)?.toString();
