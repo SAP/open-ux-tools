@@ -15,6 +15,9 @@ export class AdtSchemaStore {
      * @returns Schema of an ADT service
      */
     public getAdtCollection(adtCategory: AdtCategory): AdtCollection {
+        if (!this.adtSchema) {
+            return null;
+        }
         const id = this.serializeAdtCategory(adtCategory);
         return this.adtSchema[id];
     }

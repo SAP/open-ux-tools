@@ -186,7 +186,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     ): Promise<string[]> {
         // Service not available on target ABAP backend version, return empty setting config
         if (!schema) {
-            return;
+            return [];
         }
 
         const urlPath = schema.href;

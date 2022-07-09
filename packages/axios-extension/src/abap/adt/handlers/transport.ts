@@ -4,13 +4,13 @@ import { DOMParser } from '@xmldom/xmldom';
 
 export function parseTransportRequests(xml: string): string[] {
     if (XmlParser.validate(xml) !== true) {
-        return null;
+        return [];
     }
     const doc = new DOMParser().parseFromString(xml);
     return getTransportChecksResponse(doc);
 }
 
-const LocalPackage = 'LOCAL_PACKAGE';
+const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
 const enum AdtTransportStatus {
     Success = 'S',
     Error = 'E'
@@ -54,7 +54,7 @@ function getTransportList(doc: Document): string[] {
         return getTransportableList(doc);
     } else if (locked) {
         return getLockedTransport(doc);
-    } else if (localPackage === LocalPackage) {
+    } else if (LocalPackageText.includes(localPackage)) {
         return [''];
     } else {
         return [];
@@ -68,12 +68,14 @@ function getTransportList(doc: Document): string[] {
  * @returns
  */
 function getTransportableList(doc: Document): string[] {
-    const requests = xpath.select('//REQ_HEADER', doc) as Element[];
+    const transportNums = xpath.select('//REQ_HEADER/TRKORR/text()', doc) as Element[];
     const list = [];
-    if (requests && requests.length > 0) {
-        for (const request of requests) {
-            const transportNum = xpath.select1('//REQ_HEADER/TRKORR/text()', request)?.toString();
-            list.push(transportNum);
+    if (transportNums && transportNums.length > 0) {
+        for (const transportNumElement of transportNums) {
+            const transportNum = transportNumElement?.toString();
+            if (transportNum) {
+                list.push(transportNum);
+            }
         }
     }
     return list;
