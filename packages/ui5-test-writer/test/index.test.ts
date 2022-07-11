@@ -3,7 +3,7 @@ import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import type { Editor } from 'mem-fs-editor';
 
-describe('fiori-elements-opa-writer', () => {
+describe('ui5-test-writer', () => {
     let fs: Editor;
     const debug = !!process.env['UX_DEBUG'];
     const inputDir = join(__dirname, '/test-input');

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`fiori-elements-opa-writer generateOPAFiles FCL LR-OP 1`] = `
+exports[`ui5-test-writer generateOPAFiles FCL LR-OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -170,7 +170,7 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generateOPAFiles FCL start on OP 1`] = `
+exports[`ui5-test-writer generateOPAFiles FCL start on OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -342,7 +342,7 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen LR-OP 1`] = `
+exports[`ui5-test-writer generateOPAFiles Fullscreen LR-OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -512,7 +512,7 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen only OP without start page 1`] = `
+exports[`ui5-test-writer generateOPAFiles Fullscreen only OP without start page 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -650,7 +650,7 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen start on OP 1`] = `
+exports[`ui5-test-writer generateOPAFiles Fullscreen start on OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -790,7 +790,7 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen with 2 Sub-OP 1`] = `
+exports[`ui5-test-writer generateOPAFiles Fullscreen with 2 Sub-OP 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -1004,7 +1004,7 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generateOPAFiles Fullscreen with custom FPM page 1`] = `
+exports[`ui5-test-writer generateOPAFiles Fullscreen with custom FPM page 1`] = `
 Object {
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
@@ -1192,11 +1192,11 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generatePageObjectFile Another component view (not supported) 1`] = `Object {}`;
+exports[`ui5-test-writer generatePageObjectFile Another component view (not supported) 1`] = `Object {}`;
 
-exports[`fiori-elements-opa-writer generatePageObjectFile Bad target 1`] = `Object {}`;
+exports[`ui5-test-writer generatePageObjectFile Bad target 1`] = `Object {}`;
 
-exports[`fiori-elements-opa-writer generatePageObjectFile FPM custom 1`] = `
+exports[`ui5-test-writer generatePageObjectFile FPM custom 1`] = `
 Object {
   "webapp/test/integration/pages/EmployeesCustomPageTarget.js": Object {
     "contents": "sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
@@ -1217,7 +1217,7 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generatePageObjectFile ListReport 1`] = `
+exports[`ui5-test-writer generatePageObjectFile ListReport 1`] = `
 Object {
   "webapp/test/integration/pages/EmployeesListTarget.js": Object {
     "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
@@ -1242,11 +1242,11 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generatePageObjectFile Missing ID 1`] = `Object {}`;
+exports[`ui5-test-writer generatePageObjectFile Missing ID 1`] = `Object {}`;
 
-exports[`fiori-elements-opa-writer generatePageObjectFile Missing entityset 1`] = `Object {}`;
+exports[`ui5-test-writer generatePageObjectFile Missing entityset 1`] = `Object {}`;
 
-exports[`fiori-elements-opa-writer generatePageObjectFile Object Page 1`] = `
+exports[`ui5-test-writer generatePageObjectFile Object Page 1`] = `
 Object {
   "webapp/test/integration/pages/EmployeesObjectPageTarget.js": Object {
     "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
@@ -1271,4 +1271,4 @@ Object {
 }
 `;
 
-exports[`fiori-elements-opa-writer generatePageObjectFile Plain XML view (not supported) 1`] = `Object {}`;
+exports[`ui5-test-writer generatePageObjectFile Plain XML view (not supported) 1`] = `Object {}`;

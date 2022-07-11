@@ -1,14 +1,14 @@
 {
-    "name": "@sap-ux/fiori-elements-opa-writer",
-    "description": "SAP Fiori OPA tests writer",
+    "name": "@sap-ux/ui5-test-writer",
+    "description": "SAP UI5 tests writer",
     "version": "0.0.1",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/fiori-elements-opa-writer"
+        "directory": "packages/ui5-test-writer"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afiori-elements-opa-writer"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-test-writer"
     },
     "license": "Apache-2.0",
     "main": "dist/index.js",

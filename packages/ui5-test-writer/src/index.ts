@@ -6,7 +6,7 @@ import type { ManifestNamespace } from '@sap-ux/ui5-config';
 import type { FEV4OPAConfig, FEV4OPAPageConfig } from './types';
 import { SupportedPageTypes } from './types';
 
-type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: any };
+type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
 
 /**
  * Create the page configuration object from the app descriptor and the target key.
@@ -21,18 +21,17 @@ function createPageConfig(manifest: Manifest, targetKey: string): FEV4OPAPageCon
     const appPath = appID.split('.').join('/');
 
     if (
-        target &&
-        target.type === 'Component' &&
-        (target.name as string) in SupportedPageTypes &&
-        target.id &&
-        (target.options as any)?.settings?.entitySet
+        target?.type === 'Component' &&
+        (target?.name as string) in SupportedPageTypes &&
+        target?.id &&
+        (target?.options as any)?.settings?.entitySet
     ) {
         return {
             appPath,
             appID,
             targetKey,
-            componentID: target.id as string,
-            entitySet: (target.options as any).settings.entitySet as string,
+            componentID: target?.id as string,
+            entitySet: (target?.options as any).settings.entitySet as string,
             template: SupportedPageTypes[target.name as string],
             isStartup: false
         };
@@ -119,7 +118,7 @@ export function generateOPAFiles(basePath: string, fs?: Editor): Editor {
         fs = create(createStorage());
     }
 
-    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as Manifest;
+    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
     const config = createConfig(manifest);
 
     const rootTemplateDirPath = join(__dirname, '../templates/v4'); // Only v4 is supported for the time being
@@ -190,7 +189,7 @@ export function generatePageObjectFile(basePath: string, targetKey: string, fs?:
         fs = create(createStorage());
     }
 
-    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as Manifest;
+    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
     const pageConfig = createPageConfig(manifest, targetKey);
     if (pageConfig) {
         const rootTemplateDirPath = join(__dirname, '../templates/v4'); // Only v4 is supported for the time being

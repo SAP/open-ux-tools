@@ -1,5 +1,5 @@
 ---
-'@sap-ux/fiori-elements-opa-writer': major
+'@sap-ux/ui5-test-writer': major
 ---
 
-Initial version of Fiori elements OPA writer
+Initial version of SAP UI5 OPA writer
