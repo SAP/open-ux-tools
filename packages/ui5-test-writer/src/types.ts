@@ -31,3 +31,14 @@ export type FEV4ManifestTarget = {
         };
     };
 };
+
+export type FEV4ManifestTarget = {
+    type?: string;
+    name?: string;
+    id?: string;
+    options?: {
+        settings?: {
+            entitySet?: string;
+        };
+    };
+};
