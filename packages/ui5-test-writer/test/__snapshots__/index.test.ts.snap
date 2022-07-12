@@ -1,0 +1,1274 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ui5-test-writer generateOPAFiles FCL LR-OP 1`] = `
+Object {
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+	\\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+                When.onTheEmployeesList.onTable().iPressRow(0);
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+	
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script id=\\"sap-ui-bootstrap\\"
+			src=\\"/resources/sap-ui-core.js\\"
+			data-sap-ui-theme='sap_fiori_3'
+			data-sap-ui-resourceroots='{
+				\\"vesc.temp.employees.employee2\\": \\"../../\\"
+			}'
+			data-sap-ui-animation=\\"false\\"
+			data-sap-ui-compatVersion=\\"edge\\"
+			data-sap-ui-async=\\"true\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+	<script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'vesc/temp/employees/employee2/test/integration/Firstjourney',
+		'vesc/temp/employees/employee2/test/integration/pages/EmployeesList',
+		'vesc/temp/employees/employee2/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, Firstjourney, EmployeesList, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('vesc/temp/employees/employee2') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList,
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            Firstjourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'vesc.temp.employees.employee2',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.temp.employees.employee2',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles FCL start on OP 1`] = `
+Object {
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+	\\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+                When.onTheEmployeesList.onTable().iPressRow(0);
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+	
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script id=\\"sap-ui-bootstrap\\"
+			src=\\"/resources/sap-ui-core.js\\"
+			data-sap-ui-theme='sap_fiori_3'
+			data-sap-ui-resourceroots='{
+				\\"vesc.temp.employees.employee2\\": \\"../../\\"
+			}'
+			data-sap-ui-animation=\\"false\\"
+			data-sap-ui-compatVersion=\\"edge\\"
+			data-sap-ui-async=\\"true\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+	<script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'vesc/temp/employees/employee2/test/integration/Firstjourney',
+		'vesc/temp/employees/employee2/test/integration/pages/EmployeesList',
+		'vesc/temp/employees/employee2/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, Firstjourney, EmployeesList, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('vesc/temp/employees/employee2') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList,
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            Firstjourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'vesc.temp.employees.employee2',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.temp.employees.employee2',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen LR-OP 1`] = `
+Object {
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+	\\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+                When.onTheEmployeesList.onTable().iPressRow(0);
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+	
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script id=\\"sap-ui-bootstrap\\"
+			src=\\"/resources/sap-ui-core.js\\"
+			data-sap-ui-theme='sap_fiori_3'
+			data-sap-ui-resourceroots='{
+				\\"vesc.temp.employees.employee2\\": \\"../../\\"
+			}'
+			data-sap-ui-animation=\\"false\\"
+			data-sap-ui-compatVersion=\\"edge\\"
+			data-sap-ui-async=\\"true\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+	<script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'vesc/temp/employees/employee2/test/integration/Firstjourney',
+		'vesc/temp/employees/employee2/test/integration/pages/EmployeesList',
+		'vesc/temp/employees/employee2/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, Firstjourney, EmployeesList, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('vesc/temp/employees/employee2') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList,
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            Firstjourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'vesc.temp.employees.employee2',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.temp.employees.employee2',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen only OP without start page 1`] = `
+Object {
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+	\\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+            });
+
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+	
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script id=\\"sap-ui-bootstrap\\"
+			src=\\"/resources/sap-ui-core.js\\"
+			data-sap-ui-theme='sap_fiori_3'
+			data-sap-ui-resourceroots='{
+				\\"vesc.temp.employees.employee2\\": \\"../../\\"
+			}'
+			data-sap-ui-animation=\\"false\\"
+			data-sap-ui-compatVersion=\\"edge\\"
+			data-sap-ui-async=\\"true\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+	<script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'vesc/temp/employees/employee2/test/integration/Firstjourney',
+		'vesc/temp/employees/employee2/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, Firstjourney, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('vesc/temp/employees/employee2') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            Firstjourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.temp.employees.employee2',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen start on OP 1`] = `
+Object {
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+	\\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+	
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script id=\\"sap-ui-bootstrap\\"
+			src=\\"/resources/sap-ui-core.js\\"
+			data-sap-ui-theme='sap_fiori_3'
+			data-sap-ui-resourceroots='{
+				\\"vesc.temp.employees.employee2\\": \\"../../\\"
+			}'
+			data-sap-ui-animation=\\"false\\"
+			data-sap-ui-compatVersion=\\"edge\\"
+			data-sap-ui-async=\\"true\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+	<script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'vesc/temp/employees/employee2/test/integration/Firstjourney',
+		'vesc/temp/employees/employee2/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, Firstjourney, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('vesc/temp/employees/employee2') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            Firstjourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.temp.employees.employee2',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen with 2 Sub-OP 1`] = `
+Object {
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+	\\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+                When.onTheEmployeesList.onTable().iPressRow(0);
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+	
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script id=\\"sap-ui-bootstrap\\"
+			src=\\"/resources/sap-ui-core.js\\"
+			data-sap-ui-theme='sap_fiori_3'
+			data-sap-ui-resourceroots='{
+				\\"vesc.demo.employee.project2\\": \\"../../\\"
+			}'
+			data-sap-ui-animation=\\"false\\"
+			data-sap-ui-compatVersion=\\"edge\\"
+			data-sap-ui-async=\\"true\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+	<script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'vesc/demo/employee/project2/test/integration/Firstjourney',
+		'vesc/demo/employee/project2/test/integration/pages/EmployeesList',
+		'vesc/demo/employee/project2/test/integration/pages/EmployeesObjectPage',
+		'vesc/demo/employee/project2/test/integration/pages/PositionsObjectPage',
+		'vesc/demo/employee/project2/test/integration/pages/TrainingsObjectPage'
+    ],
+    function(JourneyRunner, Firstjourney, EmployeesList, EmployeesObjectPage, PositionsObjectPage, TrainingsObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('vesc/demo/employee/project2') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList,
+					onTheEmployeesObjectPage: EmployeesObjectPage,
+					onThePositionsObjectPage: PositionsObjectPage,
+					onTheTrainingsObjectPage: TrainingsObjectPage
+                }
+            },
+            Firstjourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'vesc.demo.employee.project2',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.demo.employee.project2',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/PositionsObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.demo.employee.project2',
+            componentId: 'PositionsObjectPage',
+            entitySet: 'Positions'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/TrainingsObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.demo.employee.project2',
+            componentId: 'TrainingsObjectPage',
+            entitySet: 'Trainings'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen with custom FPM page 1`] = `
+Object {
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+	\\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+	\\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesListTarget.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesListTarget.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesListTarget.onTable().iCheckRows();
+
+                When.onTheEmployeesListTarget.onTable().iPressRow(0);
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+	
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration tests</title>
+	<meta charset=\\"utf-8\\">
+
+	<script id=\\"sap-ui-bootstrap\\"
+			src=\\"/resources/sap-ui-core.js\\"
+			data-sap-ui-theme='sap_fiori_3'
+			data-sap-ui-resourceroots='{
+				\\"projectservice\\": \\"../../\\"
+			}'
+			data-sap-ui-animation=\\"false\\"
+			data-sap-ui-compatVersion=\\"edge\\"
+			data-sap-ui-async=\\"true\\">
+	</script>
+
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+	<script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+	<script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'projectservice/test/integration/Firstjourney',
+		'projectservice/test/integration/pages/EmployeesListTarget',
+		'projectservice/test/integration/pages/EmployeesObjectPageTarget',
+		'projectservice/test/integration/pages/EmployeesCustomPageTarget'
+    ],
+    function(JourneyRunner, Firstjourney, EmployeesListTarget, EmployeesObjectPageTarget, EmployeesCustomPageTarget) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('projectservice') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesListTarget: EmployeesListTarget,
+					onTheEmployeesObjectPageTarget: EmployeesObjectPageTarget,
+					onTheEmployeesCustomPageTarget: EmployeesCustomPageTarget
+                }
+            },
+            Firstjourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesCustomPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new TemplatePage(
+        'projectservice::EmployeesCustomPage',
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesListTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generatePageObjectFile Another component view (not supported) 1`] = `Object {}`;
+
+exports[`ui5-test-writer generatePageObjectFile Bad target 1`] = `Object {}`;
+
+exports[`ui5-test-writer generatePageObjectFile FPM custom 1`] = `
+Object {
+  "webapp/test/integration/pages/EmployeesCustomPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new TemplatePage(
+        'projectservice::EmployeesCustomPage',
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generatePageObjectFile ListReport 1`] = `
+Object {
+  "webapp/test/integration/pages/EmployeesListTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generatePageObjectFile Missing ID 1`] = `Object {}`;
+
+exports[`ui5-test-writer generatePageObjectFile Missing entityset 1`] = `Object {}`;
+
+exports[`ui5-test-writer generatePageObjectFile Object Page 1`] = `
+Object {
+  "webapp/test/integration/pages/EmployeesObjectPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generatePageObjectFile Plain XML view (not supported) 1`] = `Object {}`;
