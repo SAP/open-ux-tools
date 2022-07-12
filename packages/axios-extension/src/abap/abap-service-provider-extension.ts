@@ -1,8 +1,8 @@
 import type { ODataVersion } from '../base/odata-service';
-import { AtoSettings } from './adt';
+import type { AtoSettings } from './adt';
 import type { AdtSchemaStore } from './adt/adt-schema-store';
 import type { CatalogService } from './catalog';
-import { AdtCollection } from './types';
+import type { AdtCollection } from './types';
 import type { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 
 export interface AbapServiceProviderExtension {

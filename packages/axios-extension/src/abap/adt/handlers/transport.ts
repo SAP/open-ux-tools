@@ -24,6 +24,8 @@ const enum AdtTransportStatus {
  * the backend error messages to end user / API consumer in the future.
  *
  * @param doc
+ * @param xml Raw XML from reponse data for logging purpose
+ * @param log Service provider logger
  * @returns available transport numbers
  */
 function getTransportChecksResponse(doc: Document, xml: string, log: Logger): string[] {
