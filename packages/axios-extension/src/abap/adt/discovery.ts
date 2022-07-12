@@ -1,4 +1,4 @@
-import type { AbapServiceProviderExtension } from '../interface';
+import type { AbapServiceProviderExtension } from '../abap-service-provider-extension';
 import XmlParser from 'fast-xml-parser';
 import type { AdtCategory, AdtSchemaData } from '../types';
 import type { ServiceProvider } from 'index';
