@@ -9,7 +9,7 @@ import { LayeredRepositoryService } from './lrep-service';
 import { adt, adtSchema, AdtServiceName, AdtSchemaStore, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt';
 import { AdtCollection } from './types';
 import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
-import { parseTransportRequests } from './adt/handlers/transport';
+import { getTransportNumberList } from './adt/handlers/transport';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -216,6 +216,6 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             `;
 
         const response = await this.post(urlPath, data, acceptHeaders);
-        return parseTransportRequests(response.data, this.log);
+        return getTransportNumberList(response.data, this.log);
     }
 }

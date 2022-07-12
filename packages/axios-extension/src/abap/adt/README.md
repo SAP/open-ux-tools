@@ -15,7 +15,7 @@ see the Usage section below for details.
 
 ### Usage
 
-ADT decorator is simple to use. Currently it can be used for methods that 
+ADT decorator can be used for methods that 
 implement ADT service requests in [AbapServiceProvider](../abap-service-provider.ts) class.
 The following use the getAtoInfo() method as an example. 
 

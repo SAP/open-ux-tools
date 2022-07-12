@@ -3,7 +3,7 @@ import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 import type { Logger } from '@sap-ux/logger';
 
-export function parseTransportRequests(xml: string, log: Logger): string[] {
+export function getTransportNumberList(xml: string, log: Logger): string[] {
     if (XmlParser.validate(xml) !== true) {
         log.warn(`Invalid XML: ${xml}`);
         return [];
