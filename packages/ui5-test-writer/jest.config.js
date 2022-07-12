@@ -14,7 +14,6 @@ module.exports = {
             }
         ]
     ],
-    coverageReporters: ['text', ['lcov', { projectRoot: '../../' }]],
     modulePathIgnorePatterns: [
         '<rootDir>/dist',
         '<rootDir>/test/test-output',

@@ -52,17 +52,17 @@ importers:
             ts-jest: 27.1.3_wye5kbc3sqtj6awq46fqxr6haq
             typescript: 4.0.8
 
-  examples/odata-cli:
-    specifiers:
-      '@sap-ux/axios-extension': workspace:*
-      '@sap-ux/btp-utils': workspace:*
-      '@sap-ux/logger': workspace:*
-      dotenv: 10.0.0
-    dependencies:
-      '@sap-ux/axios-extension': link:../../packages/axios-extension
-      '@sap-ux/btp-utils': link:../../packages/btp-utils
-      '@sap-ux/logger': link:../../packages/logger
-      dotenv: 10.0.0
+    examples/odata-cli:
+        specifiers:
+            '@sap-ux/axios-extension': workspace:*
+            '@sap-ux/btp-utils': workspace:*
+            '@sap-ux/logger': workspace:*
+            dotenv: 10.0.0
+        dependencies:
+            '@sap-ux/axios-extension': link:../../packages/axios-extension
+            '@sap-ux/btp-utils': link:../../packages/btp-utils
+            '@sap-ux/logger': link:../../packages/logger
+            dotenv: 10.0.0
 
     examples/simple-generator:
         specifiers:
@@ -118,46 +118,46 @@ importers:
             nock: 13.2.1
             supertest: 6.2.2
 
-  packages/backend-proxy-middleware:
-    specifiers:
-      '@sap-ux/axios-extension': workspace:*
-      '@sap-ux/btp-utils': workspace:*
-      '@sap-ux/logger': workspace:*
-      '@sap-ux/store': workspace:*
-      '@types/express': 4.17.13
-      '@types/http-proxy': ^1.17.5
-      '@types/prompts': 2.0.14
-      '@types/supertest': 2.0.12
-      chalk: 4.1.2
-      dotenv: 16.0.0
-      express: 4.17.2
-      http-proxy-middleware: 2.0.1
-      https-proxy-agent: 5.0.0
-      i18next: 20.3.2
-      nock: 13.2.4
-      prompts: 2.4.2
-      supertest: 6.2.2
-      yaml: 2.0.0-10
-    dependencies:
-      '@sap-ux/axios-extension': link:../axios-extension
-      '@sap-ux/btp-utils': link:../btp-utils
-      '@sap-ux/logger': link:../logger
-      '@sap-ux/store': link:../store
-      chalk: 4.1.2
-      dotenv: 16.0.0
-      express: 4.17.2
-      http-proxy-middleware: 2.0.1
-      https-proxy-agent: 5.0.0
-      i18next: 20.3.2
-      prompts: 2.4.2
-    devDependencies:
-      '@types/express': 4.17.13
-      '@types/http-proxy': 1.17.8
-      '@types/prompts': 2.0.14
-      '@types/supertest': 2.0.12
-      nock: 13.2.4
-      supertest: 6.2.2
-      yaml: 2.0.0-10
+    packages/backend-proxy-middleware:
+        specifiers:
+            '@sap-ux/axios-extension': workspace:*
+            '@sap-ux/btp-utils': workspace:*
+            '@sap-ux/logger': workspace:*
+            '@sap-ux/store': workspace:*
+            '@types/express': 4.17.13
+            '@types/http-proxy': ^1.17.5
+            '@types/prompts': 2.0.14
+            '@types/supertest': 2.0.12
+            chalk: 4.1.2
+            dotenv: 16.0.0
+            express: 4.17.2
+            http-proxy-middleware: 2.0.1
+            https-proxy-agent: 5.0.0
+            i18next: 20.3.2
+            nock: 13.2.4
+            prompts: 2.4.2
+            supertest: 6.2.2
+            yaml: 2.0.0-10
+        dependencies:
+            '@sap-ux/axios-extension': link:../axios-extension
+            '@sap-ux/btp-utils': link:../btp-utils
+            '@sap-ux/logger': link:../logger
+            '@sap-ux/store': link:../store
+            chalk: 4.1.2
+            dotenv: 16.0.0
+            express: 4.17.2
+            http-proxy-middleware: 2.0.1
+            https-proxy-agent: 5.0.0
+            i18next: 20.3.2
+            prompts: 2.4.2
+        devDependencies:
+            '@types/express': 4.17.13
+            '@types/http-proxy': 1.17.8
+            '@types/prompts': 2.0.14
+            '@types/supertest': 2.0.12
+            nock: 13.2.4
+            supertest: 6.2.2
+            yaml: 2.0.0-10
 
     packages/btp-utils:
         specifiers:
@@ -6475,9 +6475,12 @@ packages:
             }
         dev: false
 
-  /json-schema-traverse/0.4.1:
-    resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
-    dev: true
+    /json-schema-traverse/0.4.1:
+        resolution:
+            {
+                integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==
+            }
+        dev: true
 
   /json-stable-stringify-without-jsonify/1.0.1:
     resolution: {integrity: sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=}
