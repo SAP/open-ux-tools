@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { ManifestNamespace } from '@sap-ux/ui5-config';
-import type { FEV4OPAConfig, FEV4OPAPageConfig } from './types';
+import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
 import { SupportedPageTypes } from './types';
 
 type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
@@ -16,23 +16,24 @@ type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
  */
 function createPageConfig(manifest: Manifest, targetKey: string): FEV4OPAPageConfig | undefined {
     const appTargets = manifest['sap.ui5']?.routing?.targets;
-    const target = appTargets && appTargets[targetKey];
+    const target = appTargets && (appTargets[targetKey] as FEV4ManifestTarget);
     const appID = manifest['sap.app'].id;
     const appPath = appID.split('.').join('/');
 
     if (
         target?.type === 'Component' &&
-        (target?.name as string) in SupportedPageTypes &&
+        target?.name &&
+        target.name in SupportedPageTypes &&
         target?.id &&
-        (target?.options as any)?.settings?.entitySet
+        target?.options?.settings?.entitySet
     ) {
         return {
             appPath,
             appID,
             targetKey,
-            componentID: target?.id as string,
-            entitySet: (target?.options as any).settings.entitySet as string,
-            template: SupportedPageTypes[target.name as string],
+            componentID: target.id,
+            entitySet: target.options.settings.entitySet,
+            template: SupportedPageTypes[target.name],
             isStartup: false
         };
     } else {
