@@ -216,6 +216,6 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             `;
 
         const response = await this.post(urlPath, data, acceptHeaders);
-        return parseTransportRequests(response.data);
+        return parseTransportRequests(response.data, this.log);
     }
 }

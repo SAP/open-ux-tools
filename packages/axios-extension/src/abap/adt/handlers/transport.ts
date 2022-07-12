@@ -1,13 +1,15 @@
 import XmlParser from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
+import type { Logger } from '@sap-ux/logger';
 
-export function parseTransportRequests(xml: string): string[] {
+export function parseTransportRequests(xml: string, log: Logger): string[] {
     if (XmlParser.validate(xml) !== true) {
+        log.warn(`Invalid XML: ${xml}`);
         return [];
     }
     const doc = new DOMParser().parseFromString(xml);
-    return getTransportChecksResponse(doc);
+    return getTransportChecksResponse(doc, xml, log);
 }
 
 const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
@@ -24,7 +26,7 @@ const enum AdtTransportStatus {
  * @param doc
  * @returns available transport numbers
  */
-function getTransportChecksResponse(doc: Document): string[] {
+function getTransportChecksResponse(doc: Document, xml: string, log: Logger): string[] {
     const status = xpath.select1('//RESULT/text()', doc)?.toString();
 
     switch (status) {
@@ -32,6 +34,7 @@ function getTransportChecksResponse(doc: Document): string[] {
             return getTransportList(doc);
         case AdtTransportStatus.Error:
         default:
+            log.warn(`Error or unkown response content: ${xml}`);
             return [];
     }
 }
