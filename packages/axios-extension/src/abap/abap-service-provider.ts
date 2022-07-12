@@ -8,7 +8,7 @@ import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
 import { adt, adtSchema, AdtServiceName, AdtSchemaStore, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt';
 import { AdtCollection } from './types';
-import type { AbapServiceProviderExtension } from './interface';
+import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
 import { parseTransportRequests } from './adt/handlers/transport';
 
 /**
