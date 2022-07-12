@@ -1,3 +1,6 @@
+/**
+ * Captures the data structure in the XML response of calling ADT discovery service
+ */
 export interface AdtSchemaData {
     service: {
         workspace: AdtWorkspace[];
