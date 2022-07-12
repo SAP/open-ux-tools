@@ -13,18 +13,22 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc",
-        "clean": "rimraf dist",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "build": "rimraf dist && tsc",
+        "clean": "rimraf dist test/test-output coverage",
+        "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "watch": "tsc --watch"
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
     },
     "files": [
         "LICENSE",
         "dist",
-        "templates"
+        "templates",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
         "ejs": "3.1.7",
@@ -36,11 +40,11 @@
         "@types/ejs": "3.1.0",
         "@types/mem-fs": "1.1.2",
         "@types/fs-extra": "9.0.13",
-        "@types/mem-fs-editor": "7.0.0",
+        "@types/mem-fs-editor": "7.0.1",
         "fs-extra": "10.0.0"
     },
     "engines": {
-        "pnpm": ">=6.26.1",
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
         "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     }
 }
