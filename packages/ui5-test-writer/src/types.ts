@@ -19,3 +19,14 @@ export type FEV4OPAConfig = {
     appPath: string;
     pages: FEV4OPAPageConfig[];
 };
+
+export type FEV4ManifestTarget = {
+    type?: string;
+    name?: string;
+    id?: string;
+    options?: {
+        settings?: {
+            entitySet?: string;
+        };
+    };
+};
