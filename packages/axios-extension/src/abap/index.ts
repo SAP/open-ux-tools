@@ -4,4 +4,3 @@ export { AbapServiceProvider } from './abap-service-provider';
 export { AppIndex, AppIndexService } from './app-index-service';
 export * from './message';
 export * from './catalog';
-export * from './adt';
