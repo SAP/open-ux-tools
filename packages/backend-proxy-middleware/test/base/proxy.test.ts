@@ -373,6 +373,27 @@ describe('proxy', () => {
             expect(options.secure).toBeUndefined();
         });
 
+        test('generate proxy middleware inside of BAS with direct odata service url', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options).toBeDefined();
+            expect(options.target).toBe(backend.url);
+            expect(options.changeOrigin).toBe(true);
+            if (getCorporateProxyServer()) {
+                expect(options.agent).toBeDefined();
+            } else {
+                expect(options.agent).toBeUndefined();
+            }
+            expect(options.ws).toBeUndefined();
+            expect(options.xfwd).toBeUndefined();
+            expect(options.secure).toBeUndefined();
+        });
+
         test('generate proxy middleware options for FLP Embedded flow', async () => {
             const backend: LocalBackendConfig = {
                 url: 'http://backend.example',
