@@ -332,7 +332,7 @@ export async function generateProxyMiddlewareOptions(
     }
 
     backend.proxy = getCorporateProxyServer(backend.proxy);
-    if (backend.proxy && !isHostExcludedFromProxy(proxyOptions.target as string)) {
+    if (backend.proxy && !isHostExcludedFromProxy(proxyOptions.target)) {
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 
