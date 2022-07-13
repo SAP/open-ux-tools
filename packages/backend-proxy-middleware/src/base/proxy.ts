@@ -286,6 +286,10 @@ export async function generateProxyMiddlewareOptions(
     proxyOptions.changeOrigin = true;
     proxyOptions.logProvider = () => logger;
 
+    // always set the target to the url provided in yaml
+    const localBackend = backend as LocalBackendConfig;
+    proxyOptions.target = localBackend.url;
+
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
         const destBackend = backend as DestinationBackendConfig;
@@ -295,8 +299,6 @@ export async function generateProxyMiddlewareOptions(
             logger.info('Using destination: ' + destBackend.destination);
         }
     } else {
-        const localBackend = backend as LocalBackendConfig;
-        proxyOptions.target = localBackend.url;
         // check if system credentials are stored in the store
         const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
         const system = await systemStore.read(
