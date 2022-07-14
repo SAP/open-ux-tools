@@ -3,6 +3,12 @@ import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 import type { Logger } from '@sap-ux/logger';
 
+/**
+ * Get a list of valid transport numbers from ADT transportcheckes response response
+ * @param xml Raw XML string from ADT transportcheckes reponse data
+ * @param log
+ * @returns A list of valid transport numbers can be used for deploy config
+ */
 export function getTransportNumberList(xml: string, log: Logger): string[] {
     if (XmlParser.validate(xml) !== true) {
         log.warn(`Invalid XML: ${xml}`);
