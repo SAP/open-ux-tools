@@ -1,0 +1,46 @@
+{
+    "name": "@sap-ux/ui5-test-writer",
+    "description": "SAP UI5 tests writer",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/ui5-test-writer"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-test-writer"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "pnpm clean && tsc",
+        "clean": "rimraf dist",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --watch"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "templates"
+    ],
+    "dependencies": {
+        "ejs": "3.1.7",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0",
+        "@sap-ux/ui5-config": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/ejs": "3.1.0",
+        "@types/mem-fs": "1.1.2",
+        "@types/fs-extra": "9.0.13",
+        "@types/mem-fs-editor": "7.0.0",
+        "fs-extra": "10.0.0"
+    },
+    "engines": {
+        "pnpm": ">=6.26.1",
+        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+    }
+}
