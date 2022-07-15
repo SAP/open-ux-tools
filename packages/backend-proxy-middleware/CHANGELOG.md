@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.8
+
+### Patch Changes
+
+-   fa232ad: Add optonal url property to the type DestinationBackendConfig
+
 ## 0.6.7
 
 ### Patch Changes
