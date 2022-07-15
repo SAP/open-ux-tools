@@ -34,7 +34,7 @@ export interface BaseBackendConfig {
 
 export interface DestinationBackendConfig extends BaseBackendConfig {
     /**
-     * Mandatory URL pointing to the backend system
+     * Optional URL pointing to the backend system
      */
     url?: string;
     /**

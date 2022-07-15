@@ -331,16 +331,16 @@ export async function generateProxyMiddlewareOptions(
         }
     }
 
+    if (!proxyOptions?.target) {
+        throw new Error(`Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`);
+    }
+
     backend.proxy = getCorporateProxyServer(backend.proxy);
-    if (backend.proxy && !isHostExcludedFromProxy(proxyOptions.target!)) {
+    if (backend.proxy && !isHostExcludedFromProxy(proxyOptions.target)) {
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 
-    logger.info(
-        `Backend proxy created for ${proxyOptions.target ? proxyOptions.target : ''} ${
-            backend.path ? backend.path : ''
-        }`
-    );
+    logger.info(`Backend proxy created for ${proxyOptions.target} ${backend.path ? backend.path : ''}`);
     return proxyOptions;
 }
 
