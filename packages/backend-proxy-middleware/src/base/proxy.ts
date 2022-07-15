@@ -331,7 +331,7 @@ export async function generateProxyMiddlewareOptions(
         }
     }
 
-    if (!proxyOptions?.target) {
+    if (!proxyOptions.target) {
         throw new Error(`Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`);
     }
 
