@@ -84,14 +84,14 @@ export class UI5Config {
         ui5Framework: string,
         ui5Version: string,
         ui5Libraries: string[],
-        ui5Theme = 'sap_fiori_3'
+        ui5Theme = 'sap_horizon'
     ): UI5Config {
         const libraryObjs = [];
         for (const library of ui5Libraries) {
             libraryObjs.push({ name: library });
         }
         // Add theme lib (dark theme versions are provided by base theme lib)
-        libraryObjs.push({ name: `themelib_${ui5Theme.replace(/_dark$/, '')}` });
+        libraryObjs.push({ name: `themelib_${ui5Theme.replace(/_dark|_hcw|_hcb/, '')}` });
 
         this.document.setIn({
             path: 'framework',

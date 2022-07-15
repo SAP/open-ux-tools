@@ -62,6 +62,21 @@ describe('UI5Config', () => {
             ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_fiori_3_dark');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
+
+        test('Use horizon high dark theme', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.96.0', ['sap.m'], 'sap_horizon_dark');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('Use horizon high contrast white theme', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.96.0', ['sap.m'], 'sap_horizon_hcw');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('Use horizon high contrast black theme', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.96.0', ['sap.m'], 'sap_horizon_hcb');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
     });
 
     describe('addFioriToolsProxydMiddleware', () => {
