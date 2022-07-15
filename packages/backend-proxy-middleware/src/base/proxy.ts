@@ -287,8 +287,7 @@ export async function generateProxyMiddlewareOptions(
     proxyOptions.logProvider = () => logger;
 
     // always set the target to the url provided in yaml
-    const localBackend = backend as LocalBackendConfig;
-    proxyOptions.target = localBackend.url;
+    proxyOptions.target = backend.url;
 
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
@@ -299,6 +298,7 @@ export async function generateProxyMiddlewareOptions(
             logger.info('Using destination: ' + destBackend.destination);
         }
     } else {
+        const localBackend = backend as LocalBackendConfig;
         // check if system credentials are stored in the store
         const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
         const system = await systemStore.read(
@@ -331,16 +331,16 @@ export async function generateProxyMiddlewareOptions(
         }
     }
 
+    if (!proxyOptions.target) {
+        throw new Error(`Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`);
+    }
+
     backend.proxy = getCorporateProxyServer(backend.proxy);
     if (backend.proxy && !isHostExcludedFromProxy(proxyOptions.target)) {
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 
-    logger.info(
-        `Backend proxy created for ${proxyOptions.target ? proxyOptions.target : ''} ${
-            backend.path ? backend.path : ''
-        }`
-    );
+    logger.info(`Backend proxy created for ${proxyOptions.target} ${backend.path ? backend.path : ''}`);
     return proxyOptions;
 }
 

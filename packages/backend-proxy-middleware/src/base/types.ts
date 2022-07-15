@@ -34,6 +34,10 @@ export interface BaseBackendConfig {
 
 export interface DestinationBackendConfig extends BaseBackendConfig {
     /**
+     * Optional URL pointing to the backend system
+     */
+    url?: string;
+    /**
      * Required if the backend system is available as destination in SAP Business Application Studio.
      */
     destination: string;
