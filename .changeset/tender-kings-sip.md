@@ -2,4 +2,4 @@
 '@sap-ux/axios-extension': minor
 ---
 
-ADT service support in abap service prodiver
+ADT service support in abap service provider

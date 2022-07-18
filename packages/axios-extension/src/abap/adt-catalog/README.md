@@ -7,10 +7,10 @@ which contains availability for ADT services.
 
 ### ADT Service Implementation
 
-A lazy loading strategy is used for fetching Adt discovery schema. I.e. The discovery request is sent
-when the first time an ADT service request is triggered. 
-To implement ADT services with this lazy loading, developer needs to make sure to call the getServiceDefinition() function in 
-AdtCatalogService to fetch the service schema for the ADT service to be implemented. E.g.
+The ADT service schema is lazily loaded. The first time an ADT service request is triggered, 
+the initial schema discovery request is made.
+To use an ADT service, make sure to call `getServiceDefinition()` in 
+`AdtCatalogService` first to make sure the service schema is initialized correctly. E.g.
 
 ```javascript
     public async getAtoInfo(): Promise<AtoSettings> {
