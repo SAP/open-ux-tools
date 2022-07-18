@@ -76,7 +76,7 @@ describe('AbapServiceProvider', () => {
     });
 
     // Discovery schema is cached, so separate this test suite from other ADT service tests
-    describe('ADT Services unavailable in discovery', () => {
+    describe.only('ADT Services unavailable in discovery', () => {
         const provider = createForAbap(config);
 
         test('Services unavailable in discovery', async () => {

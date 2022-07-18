@@ -34,7 +34,6 @@ export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
         if (!this.schemaStore.isAdtSchemaEmpty()) {
             return;
         }
-
         const response = await this.get('', {
             headers: {
                 Accept: 'application/*'

@@ -94,11 +94,16 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
         return this.s4Cloud;
     }
 
-    public getAdtCatalogService(): AdtCatalogService {
-        return (
-            (this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtCatalogService) ??
-            this.createService<AdtCatalogService>(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, AdtCatalogService)
-        );
+    private getAdtCatalogService(): AdtCatalogService {
+        if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
+            const adtCatalogSerivce = this.createService<AdtCatalogService>(
+                AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
+                AdtCatalogService
+            );
+            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = adtCatalogSerivce;
+        }
+
+        return this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtCatalogService;
     }
 
     /**
