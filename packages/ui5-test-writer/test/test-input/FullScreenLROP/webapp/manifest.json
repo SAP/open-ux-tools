@@ -1,7 +1,7 @@
 {
     "_version": "1.32.0",
     "sap.app": {
-        "id": "vesc.temp.employees.employee2",
+        "id": "ui5-test-writer.test.employees",
         "type": "application",
         "i18n": "i18n/i18n.properties",
         "applicationVersion": {

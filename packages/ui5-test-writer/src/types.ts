@@ -18,6 +18,7 @@ export type FEV4OPAConfig = {
     appID: string;
     appPath: string;
     pages: FEV4OPAPageConfig[];
+    opaJourneyFileName: string;
 };
 
 export type FEV4ManifestTarget = {

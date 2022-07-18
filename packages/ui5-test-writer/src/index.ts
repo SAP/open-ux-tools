@@ -8,6 +8,13 @@ import { SupportedPageTypes } from './types';
 
 type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
 
+function getAppFromManifest(manifest: Manifest): { appID: string; appPath: string } {
+    const appID = manifest['sap.app'].id;
+    const appPath = appID.split('.').join('/');
+
+    return { appID, appPath };
+}
+
 /**
  * Create the page configuration object from the app descriptor and the target key.
  * @param manifest - the app descriptor of the app
@@ -17,8 +24,7 @@ type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
 function createPageConfig(manifest: Manifest, targetKey: string): FEV4OPAPageConfig | undefined {
     const appTargets = manifest['sap.ui5']?.routing?.targets;
     const target = appTargets && (appTargets[targetKey] as FEV4ManifestTarget);
-    const appID = manifest['sap.app'].id;
-    const appPath = appID.split('.').join('/');
+    const { appID, appPath } = getAppFromManifest(manifest);
 
     if (
         target?.type === 'Component' &&
@@ -44,17 +50,19 @@ function createPageConfig(manifest: Manifest, targetKey: string): FEV4OPAPageCon
  * Create the configuration object from the app descriptor.
  *
  * @param manifest - the app descriptor of the target app
+ * @param opaConfig - parameters for the generation
+ * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @returns OPA test configuration object
  */
-function createConfig(manifest: Manifest): FEV4OPAConfig {
+function createConfig(manifest: Manifest, opaConfig: { scriptName?: string }): FEV4OPAConfig {
     // General application info
-    const appID = manifest['sap.app'].id;
-    const appPath = appID.split('.').join('/');
+    const { appID, appPath } = getAppFromManifest(manifest);
 
     const config: FEV4OPAConfig = {
         appID,
         appPath,
-        pages: []
+        pages: [],
+        opaJourneyFileName: opaConfig.scriptName || 'FirstJourney'
     };
 
     // Identify startup targets from the routes
@@ -111,37 +119,31 @@ function writePageObject(
  * Note: this can potentially overwrite existing files in the webapp/test folder.
  *
  * @param basePath - the absolute target path where the application will be generated
+ * @param opaConfig - parameters for the generation
+ * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
-export function generateOPAFiles(basePath: string, fs?: Editor): Editor {
+export function generateOPAFiles(basePath: string, opaConfig: { scriptName?: string }, fs?: Editor): Editor {
     if (!fs) {
         fs = create(createStorage());
     }
 
     const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
-    const config = createConfig(manifest);
+    const config = createConfig(manifest, opaConfig);
 
-    const rootTemplateDirPath = join(__dirname, '../templates/v4'); // Only v4 is supported for the time being
+    const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
+    const rootV4TemplateDirPath = join(__dirname, '../templates/v4'); // Only v4 is supported for the time being
     const testOutDirPath = join(basePath, 'webapp/test');
 
     // Test files
-    fs.copy(join(rootTemplateDirPath, 'testsuite.qunit.html'), join(testOutDirPath, 'testsuite.qunit.html'));
-    fs.copy(join(rootTemplateDirPath, 'testsuite.qunit.js'), join(testOutDirPath, 'testsuite.qunit.js'));
+    fs.copy(join(rootCommonTemplateDirPath, 'testsuite.qunit.html'), join(testOutDirPath, 'testsuite.qunit.html'));
+    fs.copy(join(rootCommonTemplateDirPath, 'testsuite.qunit.js'), join(testOutDirPath, 'testsuite.qunit.js'));
 
     // Integration (OPA) test files
     fs.copyTpl(
-        join(rootTemplateDirPath, 'integration/opaTests.qunit.html'),
-        join(testOutDirPath, 'integration/opaTests.qunit.html'),
-        config,
-        undefined,
-        {
-            globOptions: { dot: true }
-        }
-    );
-    fs.copyTpl(
-        join(rootTemplateDirPath, 'integration/opaTests.qunit.js'),
-        join(testOutDirPath, 'integration/opaTests.qunit.js'),
+        join(rootV4TemplateDirPath, 'integration', 'opaTests.*.*'),
+        join(testOutDirPath, 'integration'),
         config,
         undefined,
         {
@@ -151,7 +153,7 @@ export function generateOPAFiles(basePath: string, fs?: Editor): Editor {
 
     // Pages files (one for each page in the app)
     config.pages.forEach((page) => {
-        writePageObject(page, rootTemplateDirPath, testOutDirPath, fs!);
+        writePageObject(page, rootV4TemplateDirPath, testOutDirPath, fs!);
     });
 
     // OPA Journey file
@@ -164,8 +166,8 @@ export function generateOPAFiles(basePath: string, fs?: Editor): Editor {
         startLR: startListReportPage?.targetKey
     };
     fs.copyTpl(
-        join(rootTemplateDirPath, 'integration/FirstJourney.js'),
-        join(testOutDirPath, 'integration/FirstJourney.js'),
+        join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),
+        join(testOutDirPath, `integration/${config.opaJourneyFileName}.js`),
         journeyParams,
         undefined,
         {
@@ -181,17 +183,22 @@ export function generateOPAFiles(basePath: string, fs?: Editor): Editor {
  * Note: this doesn't modify other existing files in the webapp/test folder.
  *
  * @param basePath - the absolute target path where the application will be generated
- * @param targetKey - the key of the target in the manifest file corresponding to the page
+ * @param pageObjectParameters - parameters for the page
+ * @param pageObjectParameters.targetKey - the key of the target in the manifest file corresponding to the page
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
-export function generatePageObjectFile(basePath: string, targetKey: string, fs?: Editor): Editor {
+export function generatePageObjectFile(
+    basePath: string,
+    pageObjectParameters: { targetKey: string },
+    fs?: Editor
+): Editor {
     if (!fs) {
         fs = create(createStorage());
     }
 
     const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
-    const pageConfig = createPageConfig(manifest, targetKey);
+    const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey);
     if (pageConfig) {
         const rootTemplateDirPath = join(__dirname, '../templates/v4'); // Only v4 is supported for the time being
         const testOutDirPath = join(basePath, 'webapp/test');

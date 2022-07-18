@@ -2,18 +2,20 @@ import { generateOPAFiles, generatePageObjectFile } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import type { Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 describe('ui5-test-writer', () => {
     let fs: Editor;
     const debug = !!process.env['UX_DEBUG'];
-    const inputDir = join(__dirname, '/test-input');
-    const outputDir = join(__dirname, '/test-output');
+    const inputDir = join(__dirname, 'test-output');
 
     beforeAll(() => {
-        removeSync(outputDir); // even for in memory
+        fs = create(createStorage());
+        fs.copy(join(__dirname, 'test-input'), inputDir);
     });
 
-    afterEach(() => {
+    afterAll(() => {
         return new Promise((resolve) => {
             // write out the files for debugging
             if (debug) {
@@ -62,7 +64,7 @@ describe('ui5-test-writer', () => {
 
         it.each(testPages)('$description', async (config) => {
             const projectDir = join(inputDir, 'Pages');
-            fs = await generatePageObjectFile(projectDir, config.targetKey);
+            fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
             expect((fs as any).dump(projectDir)).toMatchSnapshot();
         });
     });
@@ -71,37 +73,44 @@ describe('ui5-test-writer', () => {
         const testApplications = [
             {
                 description: 'Fullscreen LR-OP',
-                dirPath: 'FullScreenLROP'
+                dirPath: 'FullScreenLROP',
+                scriptName: undefined
             },
             {
                 description: 'FCL LR-OP',
-                dirPath: 'FclLROP'
+                dirPath: 'FclLROP',
+                scriptName: 'myOPATest'
             },
             {
                 description: 'Fullscreen start on OP',
-                dirPath: 'FullScreenOP'
+                dirPath: 'FullScreenOP',
+                scriptName: undefined
             },
             {
                 description: 'FCL start on OP',
-                dirPath: 'FclOP'
+                dirPath: 'FclOP',
+                scriptName: undefined
             },
             {
                 description: 'Fullscreen only OP without start page',
-                dirPath: 'FullScreenOPNoStart'
+                dirPath: 'FullScreenOPNoStart',
+                scriptName: undefined
             },
             {
                 description: 'Fullscreen with 2 Sub-OP',
-                dirPath: 'FullScreenSubOP'
+                dirPath: 'FullScreenSubOP',
+                scriptName: undefined
             },
             {
                 description: 'Fullscreen with custom FPM page',
-                dirPath: 'CustomOP'
+                dirPath: 'CustomOP',
+                scriptName: undefined
             }
         ];
 
         it.each(testApplications)('$description', async (config) => {
             const projectDir = join(inputDir, config.dirPath);
-            fs = await generateOPAFiles(projectDir);
+            fs = await generateOPAFiles(projectDir, { scriptName: config.scriptName }, fs);
             expect((fs as any).dump(projectDir)).toMatchSnapshot();
         });
     });
