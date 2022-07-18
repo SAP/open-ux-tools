@@ -427,6 +427,18 @@ describe('proxy', () => {
             const proxyOptions = await generateProxyMiddlewareOptions(backend);
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
         });
+
+        test('throw an error if proxyOptions.target is not defined', async () => {
+            const backend = { url: '', path: '/my/path' } as LocalBackendConfig;
+            try {
+                await generateProxyMiddlewareOptions(backend);
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual(
+                    `Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`
+                );
+            }
+        });
     });
 
     describe('createProxy', () => {
