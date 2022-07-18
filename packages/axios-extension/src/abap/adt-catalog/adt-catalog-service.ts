@@ -1,7 +1,7 @@
-import { Logger } from '@sap-ux/logger';
-import { AdtCategory, AdtCollection, AdtSchemaData } from 'abap/types';
+import type { Logger } from '@sap-ux/logger';
+import type { AdtCategory, AdtCollection, AdtSchemaData } from 'abap/types';
 import { Axios } from 'axios';
-import { AdtCatalogServiceApi } from './adt-catalog-service-api';
+import type { AdtCatalogServiceApi } from './adt-catalog-service-api';
 import { AdtSchemaStore } from './adt-schema-store';
 import XmlParser from 'fast-xml-parser';
 
@@ -13,8 +13,10 @@ export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
     public log: Logger;
 
     /**
-     * Adt Catalog Service which fetches the Adt service specification for a given ADT service
-     * @param adtCategory
+     * Adt Catalog Service which fetches the Adt service
+     * specification for a given ADT service.
+     *
+     * @param adtCategory Adt service Id
      * @returns Service schema of the input Adt service
      */
     async getServiceDefinition(adtCategory: AdtCategory): Promise<AdtCollection> {
