@@ -49,7 +49,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
         );
 
         // Service not available on target ABAP backend version, return empty setting config
-        if (!serviceSchema) {
+        if (!serviceSchema || !serviceSchema.href) {
             this.atoSettings = {};
             return this.atoSettings;
         }
@@ -187,7 +187,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             AdtServiceConfigs[AdtServiceName.TransportChecks]
         );
         // Service not available on target ABAP backend version, return empty setting config
-        if (!serviceSchema) {
+        if (!serviceSchema || !serviceSchema.href) {
             return [];
         }
         const urlPath = serviceSchema.href;
