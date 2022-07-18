@@ -373,6 +373,27 @@ describe('proxy', () => {
             expect(options.secure).toBeUndefined();
         });
 
+        test('generate proxy middleware inside of BAS with direct odata service url', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options).toBeDefined();
+            expect(options.target).toBe(backend.url);
+            expect(options.changeOrigin).toBe(true);
+            if (getCorporateProxyServer()) {
+                expect(options.agent).toBeDefined();
+            } else {
+                expect(options.agent).toBeUndefined();
+            }
+            expect(options.ws).toBeUndefined();
+            expect(options.xfwd).toBeUndefined();
+            expect(options.secure).toBeUndefined();
+        });
+
         test('generate proxy middleware options for FLP Embedded flow', async () => {
             const backend: LocalBackendConfig = {
                 url: 'http://backend.example',
@@ -405,6 +426,18 @@ describe('proxy', () => {
             process.env.FIORI_TOOLS_PASSWORD = creds.password;
             const proxyOptions = await generateProxyMiddlewareOptions(backend);
             expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
+        });
+
+        test('throw an error if proxyOptions.target is not defined', async () => {
+            const backend = { url: '', path: '/my/path' } as LocalBackendConfig;
+            try {
+                await generateProxyMiddlewareOptions(backend);
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual(
+                    `Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`
+                );
+            }
         });
     });
 
