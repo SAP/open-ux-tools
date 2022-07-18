@@ -70,14 +70,14 @@ export const ProxyEventHandlers = {
  * @param _res (not used)
  * @param _target (not used)
  */
-function proxyErrorHandler(
+export function proxyErrorHandler(
     err: Error & { code?: string },
     req: IncomingMessage & { next?: Function; originalUrl?: string },
     logger: ToolsLogger,
     _res?: ServerResponse,
     _target?: string | Partial<Url>
 ): void {
-    if (err && err.code) {
+    if (err && err.stack?.toLowerCase() !== 'error') {
         let error: Error;
         if (err.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY') {
             error = new Error(i18n.t('error.sslProxy'));
@@ -90,7 +90,7 @@ function proxyErrorHandler(
             throw error;
         }
     } else {
-        logger.debug(i18n.t('error.noCodeError', { error: err, request: req.originalUrl }));
+        logger.debug(i18n.t('error.noCodeError', { error: JSON.stringify(err, null, 2), request: req.originalUrl }));
     }
 }
 
