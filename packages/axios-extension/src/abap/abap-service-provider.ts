@@ -1,15 +1,15 @@
 import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
-import type { AtoSettings } from './adt';
+import type { AtoSettings } from './adt-catalog';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-import { adt, adtSchema, AdtServiceName, AdtSchemaStore, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt';
-import { AdtCollection } from './types';
+import { AdtServiceName, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt-catalog';
 import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
-import { getTransportNumberList } from './adt/handlers/transport';
+import { getTransportNumberList } from './adt-catalog/handlers/transport';
+import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -18,15 +18,6 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     public s4Cloud: boolean | undefined;
 
     protected atoSettings: AtoSettings;
-    protected transportSearchConfigId: string;
-    protected schemaStore = new AdtSchemaStore();
-
-    /**
-     * @returns ADT schema store
-     */
-    public getSchemaStore(): AdtSchemaStore {
-        return this.schemaStore;
-    }
 
     /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
@@ -50,13 +41,15 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     /**
      * Get the ATO settings either locally or from the server if not yet available.
      *
-     * @param schema Auto fill by adt decorator execution
      * @returns ABAP Transport Organizer settings
      */
-    @adt(AdtServiceConfigs[AdtServiceName.AtoSettings])
-    public async getAtoInfo(@adtSchema schema?: AdtCollection): Promise<AtoSettings> {
+    public async getAtoInfo(): Promise<AtoSettings> {
+        const serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
+            AdtServiceConfigs[AdtServiceName.AtoSettings]
+        );
+
         // Service not available on target ABAP backend version, return empty setting config
-        if (!schema) {
+        if (!serviceSchema) {
             this.atoSettings = {};
             return this.atoSettings;
         }
@@ -68,7 +61,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
                         Accept: 'application/*'
                     }
                 };
-                const response = await this.get(schema.href, acceptHeaders);
+                const response = await this.get(serviceSchema.href, acceptHeaders);
                 this.atoSettings = parseAtoResponse(response.data);
             } catch (error) {
                 this.atoSettings = {};
@@ -99,6 +92,13 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             }
         }
         return this.s4Cloud;
+    }
+
+    public getAdtCatalogService(): AdtCatalogService {
+        return (
+            (this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtCatalogService) ??
+            this.createService<AdtCatalogService>(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, AdtCatalogService)
+        );
     }
 
     /**
@@ -175,21 +175,17 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @param packageName Package name for deployment
      * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
-     * @param schema Decorated para that will be autofilled
      * @returns
      */
-    @adt(AdtServiceConfigs[AdtServiceName.TransportChecks])
-    public async getTransportRequests(
-        packageName: string,
-        appName: string,
-        @adtSchema schema?: AdtCollection
-    ): Promise<string[]> {
+    public async getTransportRequests(packageName: string, appName: string): Promise<string[]> {
+        const serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
+            AdtServiceConfigs[AdtServiceName.TransportChecks]
+        );
         // Service not available on target ABAP backend version, return empty setting config
-        if (!schema) {
+        if (!serviceSchema) {
             return [];
         }
-
-        const urlPath = schema.href;
+        const urlPath = serviceSchema.href;
         const acceptHeaders = {
             headers: {
                 Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',

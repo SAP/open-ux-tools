@@ -76,10 +76,10 @@ describe('AbapServiceProvider', () => {
     });
 
     // Discovery schema is cached, so separate this test suite from other ADT service tests
-    describe('Service unavailable in discovery', () => {
+    describe('ADT Services unavailable in discovery', () => {
         const provider = createForAbap(config);
 
-        test('Service unavailable in discovery', async () => {
+        test('Services unavailable in discovery', async () => {
             nock(server)
                 .get(AdtServices.DISCOVERY)
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-2.xml'));
