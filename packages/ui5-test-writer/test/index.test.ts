@@ -10,12 +10,12 @@ describe('ui5-test-writer', () => {
     const debug = !!process.env['UX_DEBUG'];
     const inputDir = join(__dirname, 'test-output');
 
-    beforeAll(() => {
+    beforeEach(() => {
         fs = create(createStorage());
         fs.copy(join(__dirname, 'test-input'), inputDir);
     });
 
-    afterAll(() => {
+    afterEach(() => {
         return new Promise((resolve) => {
             // write out the files for debugging
             if (debug) {
