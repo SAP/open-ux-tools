@@ -151,8 +151,9 @@ describe('proxy', () => {
             } as IncomingMessage & { originalUrl?: string };
             const debugSpy = jest.spyOn(logger, 'debug');
 
-            // do nothing if no error is provided
+            // do nothing if no error is provided, but log for debug purposes
             proxyErrorHandler(undefined as unknown as Error, request, logger);
+            expect(debugSpy).toBeCalled();
 
             // handle CA error
             const certError: Error & { code?: string } = new Error('Certificate error');

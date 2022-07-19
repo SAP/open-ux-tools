@@ -2,8 +2,9 @@ import type { Filter, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ProxyConfig } from './types';
-import { proxyRequestHandler, proxyResponseHandler, filterCompressedHtmlFiles } from './utils';
+import { proxyRequestHandler, proxyResponseHandler, filterCompressedHtmlFiles, proxyErrorHandler } from './utils';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import type { Url } from 'url';
 
 /**
  * Function for proxying UI5 sources.
@@ -29,6 +30,14 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         pathRewrite: { [config.path]: ui5Ver + config.path },
         onProxyRes: (proxyRes: IncomingMessage): void => {
             proxyResponseHandler(proxyRes, etag);
+        },
+        onError: function (
+            err: Error & { code?: string },
+            req: IncomingMessage & { next?: Function; originalUrl?: string },
+            res: ServerResponse,
+            target: string | Partial<Url> | undefined
+        ) {
+            proxyErrorHandler(err, req, logger, res, target);
         }
     };
     Object.assign(proxyConfig, options);
