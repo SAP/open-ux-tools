@@ -67,6 +67,18 @@ describe('ui5-test-writer', () => {
             fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
             expect((fs as any).dump(projectDir)).toMatchSnapshot();
         });
+
+        it('No manifest', async () => {
+            const projectDir = join(inputDir, 'Not_Here');
+            let error: string | undefined;
+            try {
+                fs = await generatePageObjectFile(projectDir, { targetKey: 'xx' }, fs);
+            } catch (e) {
+                error = (e as Error).message;
+            }
+
+            expect(error?.startsWith('Validation error: Cannot read manifest file')).toEqual(true);
+        });
     });
 
     describe('generateOPAFiles', () => {
@@ -112,6 +124,30 @@ describe('ui5-test-writer', () => {
             const projectDir = join(inputDir, config.dirPath);
             fs = await generateOPAFiles(projectDir, { scriptName: config.scriptName }, fs);
             expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        });
+
+        it('No manifest', async () => {
+            const projectDir = join(inputDir, 'Not_Here');
+            let error: string | undefined;
+            try {
+                fs = await generateOPAFiles(projectDir, {}, fs);
+            } catch (e) {
+                error = (e as Error).message;
+            }
+
+            expect(error?.startsWith('Validation error: Cannot read manifest file')).toEqual(true);
+        });
+
+        it('Missing app ID', async () => {
+            const projectDir = join(inputDir, 'MissingAppId');
+            let error: string | undefined;
+            try {
+                fs = await generateOPAFiles(projectDir, {}, fs);
+            } catch (e) {
+                error = (e as Error).message;
+            }
+
+            expect(error).toEqual('Validation error: Cannot read appID in the manifest file');
         });
     });
 });

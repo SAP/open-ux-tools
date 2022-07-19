@@ -1,0 +1,6 @@
+{
+    "error": {
+        "cannotReadManifest": "Cannot read manifest file {{ filePath }}",
+        "cannotReadAppID": "Cannot read appID in the manifest file"
+    }
+}

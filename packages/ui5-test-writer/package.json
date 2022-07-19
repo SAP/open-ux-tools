@@ -34,7 +34,8 @@
         "ejs": "3.1.7",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "@sap-ux/ui5-config": "workspace:*"
+        "@sap-ux/ui5-config": "workspace:*",
+        "i18next": "20.3.2"
     },
     "devDependencies": {
         "@types/ejs": "3.1.0",
