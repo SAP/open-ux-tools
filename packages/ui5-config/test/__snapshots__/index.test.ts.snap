@@ -254,7 +254,7 @@ exports[`UI5Config addUI5Framework Minimal set of inputs 1`] = `
   name: SAPUI5
   version: 1.64.0
   libraries:
-    - name: themelib_sap_horizon
+    - name: themelib_sap_fiori_3
 "
 `;
 

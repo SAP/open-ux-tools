@@ -84,7 +84,7 @@ export class UI5Config {
         ui5Framework: string,
         ui5Version: string,
         ui5Libraries: string[],
-        ui5Theme = 'sap_horizon'
+        ui5Theme = 'sap_fiori_3'
     ): UI5Config {
         const libraryObjs = [];
         for (const library of ui5Libraries) {
