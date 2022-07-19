@@ -454,6 +454,20 @@ describe('proxy', () => {
                 );
             }
         });
+
+        test('calling onError calls proxyErrorHandler', async () => {
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+            const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, logger);
+            const debugSpy = jest.spyOn(logger, 'debug');
+            debugSpy.mockReset();
+            if (typeof proxyOptions?.onError === 'function') {
+                proxyOptions?.onError(undefined as any, {} as any, {} as any);
+                expect(debugSpy).toHaveBeenCalledTimes(1);
+            }
+        });
     });
 
     describe('createProxy', () => {
