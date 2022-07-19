@@ -31,12 +31,12 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         onProxyRes: (proxyRes: IncomingMessage): void => {
             proxyResponseHandler(proxyRes, etag);
         },
-        onError: function (
+        onError: (
             err: Error & { code?: string },
             req: IncomingMessage & { next?: Function; originalUrl?: string },
             res: ServerResponse,
             target: string | Partial<Url> | undefined
-        ) {
+        ) => {
             proxyErrorHandler(err, req, logger, res, target);
         }
     };

@@ -285,12 +285,12 @@ export async function generateProxyMiddlewareOptions(
     const proxyOptions: Options & { headers: object } = {
         headers: {},
         ...ProxyEventHandlers,
-        onError: function (
+        onError: (
             err: Error & { code?: string },
             req: IncomingMessage & { next?: Function; originalUrl?: string },
             res: ServerResponse,
             target: string | Partial<Url> | undefined
-        ) {
+        ) => {
             proxyErrorHandler(err, req, logger, res, target);
         },
         ...options
