@@ -14,7 +14,7 @@ To use an ADT service, make sure to call `getServiceDefinition()` in
 
 ```javascript
     public async getAtoInfo(): Promise<AtoSettings> {
-        const serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
+        let serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
             AdtServiceConfigs[AdtServiceName.AtoSettings]
         );
 
@@ -22,36 +22,42 @@ To use an ADT service, make sure to call `getServiceDefinition()` in
     }
 ```
 
-getServiceDefinition() is implemented so that it checks if ADT discovery schema has been cached
+`getServiceDefinition()` is implemented so that it checks if ADT discovery schema has been cached
 locally. If not, it fetches the schema from backend and cache it locally.
 
-
-Developer is then responsible to handle the cases if the service schema is not found:
+`getServiceDefinition()` validates `serviceSchema`, and it log a warning for invalid `serviceSchema` and throws
+an error. Developer is then responsible to handle the cases if `serviceSchema` is not found:
 
 ```javascript
     public async getAtoInfo(): Promise<AtoSettings> {
-        const serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
-            AdtServiceConfigs[AdtServiceName.AtoSettings]
-        );
-
-        ...
-
-        // Handling ATO settings service is not available on the target ABAP backend version
-        if (!serviceSchema) {
+        let serviceSchema: AdtCollection;
+        try {
+            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
+                AdtServiceConfigs[AdtServiceName.AtoSettings]
+            );
+        } catch {
+            // Service not available on target ABAP backend version, return empty setting config
             this.atoSettings = {};
             return this.atoSettings;
         }
     }
 ```
 
-And developer should make sure the correct service url is based for the target backend version.
-Service url is available in the href property:
+And developer should make sure the correct service url is used for the target backend version.
+Service url is available in the href property of `serviceSchema`:
 
 ```javascript
     public async getAtoInfo(): Promise<AtoSettings> {
-        const serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
-            AdtServiceConfigs[AdtServiceName.AtoSettings]
-        );
+        let serviceSchema: AdtCollection;
+        try {
+            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
+                AdtServiceConfigs[AdtServiceName.AtoSettings]
+            );
+        } catch {
+            // Service not available on target ABAP backend version, return empty setting config
+            this.atoSettings = {};
+            return this.atoSettings;
+        }
 
         ...
         // Use the service url specified in the discover schema

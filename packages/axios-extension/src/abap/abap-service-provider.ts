@@ -10,6 +10,7 @@ import { AdtServiceName, AdtServiceConfigs, parseAtoResponse, TenantType } from 
 import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
 import { getTransportNumberList } from './adt-catalog/handlers/transport';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
+import type { AdtCollection } from './types';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -44,12 +45,13 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      * @returns ABAP Transport Organizer settings
      */
     public async getAtoInfo(): Promise<AtoSettings> {
-        const serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
-            AdtServiceConfigs[AdtServiceName.AtoSettings]
-        );
-
-        // Service not available on target ABAP backend version, return empty setting config
-        if (!serviceSchema || !serviceSchema.href) {
+        let serviceSchema: AdtCollection;
+        try {
+            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
+                AdtServiceConfigs[AdtServiceName.AtoSettings]
+            );
+        } catch {
+            // Service not available on target ABAP backend version, return empty setting config
             this.atoSettings = {};
             return this.atoSettings;
         }
@@ -183,10 +185,16 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      * @returns
      */
     public async getTransportRequests(packageName: string, appName: string): Promise<string[]> {
-        const serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
-            AdtServiceConfigs[AdtServiceName.TransportChecks]
-        );
-        // Service not available on target ABAP backend version, return empty setting config
+        let serviceSchema: AdtCollection;
+        try {
+            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
+                AdtServiceConfigs[AdtServiceName.TransportChecks]
+            );
+        } catch {
+            // Service not available on target ABAP backend version, return empty setting config
+            return [];
+        }
+
         if (!serviceSchema || !serviceSchema.href) {
             return [];
         }

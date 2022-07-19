@@ -14,6 +14,7 @@ export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
     public static ADT_DISCOVERY_SERVICE_PATH = '/sap/bc/adt/discovery';
     // Cache of fetched discovery schema
     protected schemaStore = new AdtSchemaStore();
+    // Instantiated by calling ServiceProvider.createService()
     public log: Logger;
 
     /**
@@ -26,7 +27,26 @@ export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
     public async getServiceDefinition(adtCategory: AdtCategory): Promise<AdtCollection> {
         await this.checkOrLoadAdtDiscoverySchema();
         // Find the schema for the input service url path
-        return this.schemaStore.getAdtCollection(adtCategory);
+        const serviceSchema = this.schemaStore.getAdtCollection(adtCategory);
+        const isValidSchema = this.validateServiceSchema(adtCategory, serviceSchema);
+
+        if (isValidSchema) {
+            return serviceSchema;
+        } else {
+            throw new Error('Invalid Discovery Schema');
+        }
+    }
+
+    private validateServiceSchema(adtCategory: AdtCategory, serviceSchema: AdtCollection): boolean {
+        if (!serviceSchema) {
+            this.log.warn(`Schema Not Found: ${adtCategory.term} - ${adtCategory.scheme}`);
+            return false;
+        } else if (!serviceSchema.href) {
+            this.log.warn(`Empty href in schema: ${adtCategory.term} - ${adtCategory.scheme}`);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
