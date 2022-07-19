@@ -32,13 +32,17 @@ export type FEV4ManifestTarget = {
     };
 };
 
-export type FEV4ManifestTarget = {
-    type?: string;
-    name?: string;
-    id?: string;
-    options?: {
-        settings?: {
-            entitySet?: string;
-        };
-    };
-};
+/**
+ * General validation error thrown if app config options contain invalid combinations
+ */
+export class ValidationError extends Error {
+    /**
+     * ValidationError constructor.
+     *
+     * @param message - the error message
+     */
+    constructor(message: string) {
+        super(`Validation error: ${message}`);
+        this.name = this.constructor.name;
+    }
+}

@@ -4,19 +4,31 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { ManifestNamespace } from '@sap-ux/ui5-config';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
-import { SupportedPageTypes } from './types';
+import { SupportedPageTypes, ValidationError } from './types';
+import { t } from './i18n';
 
 type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
 
+/**
+ * Retrieves appID and appPath from the manifest.
+ *
+ * @param manifest - the app descriptor of the app
+ * @returns appID and appPath
+ */
 function getAppFromManifest(manifest: Manifest): { appID: string; appPath: string } {
-    const appID = manifest['sap.app'].id;
-    const appPath = appID.split('.').join('/');
+    const appID = manifest['sap.app']?.id;
+    const appPath = appID?.split('.').join('/');
+
+    if (!appID || !appPath) {
+        throw new ValidationError(t('error.cannotReadAppID'));
+    }
 
     return { appID, appPath };
 }
 
 /**
  * Create the page configuration object from the app descriptor and the target key.
+ *
  * @param manifest - the app descriptor of the app
  * @param targetKey - the key of the target in the manifest
  * @returns Page configuration object, or undefined if the target type is not supported
@@ -125,11 +137,16 @@ function writePageObject(
  * @returns Reference to a mem-fs-editor
  */
 export function generateOPAFiles(basePath: string, opaConfig: { scriptName?: string }, fs?: Editor): Editor {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    const editor = fs || create(createStorage());
 
-    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
+    const manifest = editor.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
+    if (!manifest) {
+        throw new ValidationError(
+            t('error.cannotReadManifest', {
+                filePath: join(basePath, 'webapp/manifest.json')
+            })
+        );
+    }
     const config = createConfig(manifest, opaConfig);
 
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
@@ -137,11 +154,11 @@ export function generateOPAFiles(basePath: string, opaConfig: { scriptName?: str
     const testOutDirPath = join(basePath, 'webapp/test');
 
     // Test files
-    fs.copy(join(rootCommonTemplateDirPath, 'testsuite.qunit.html'), join(testOutDirPath, 'testsuite.qunit.html'));
-    fs.copy(join(rootCommonTemplateDirPath, 'testsuite.qunit.js'), join(testOutDirPath, 'testsuite.qunit.js'));
+    editor.copy(join(rootCommonTemplateDirPath, 'testsuite.qunit.html'), join(testOutDirPath, 'testsuite.qunit.html'));
+    editor.copy(join(rootCommonTemplateDirPath, 'testsuite.qunit.js'), join(testOutDirPath, 'testsuite.qunit.js'));
 
     // Integration (OPA) test files
-    fs.copyTpl(
+    editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'opaTests.*.*'),
         join(testOutDirPath, 'integration'),
         config,
@@ -153,7 +170,7 @@ export function generateOPAFiles(basePath: string, opaConfig: { scriptName?: str
 
     // Pages files (one for each page in the app)
     config.pages.forEach((page) => {
-        writePageObject(page, rootV4TemplateDirPath, testOutDirPath, fs!);
+        writePageObject(page, rootV4TemplateDirPath, testOutDirPath, editor);
     });
 
     // OPA Journey file
@@ -165,7 +182,7 @@ export function generateOPAFiles(basePath: string, opaConfig: { scriptName?: str
         startPages,
         startLR: startListReportPage?.targetKey
     };
-    fs.copyTpl(
+    editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),
         join(testOutDirPath, `integration/${config.opaJourneyFileName}.js`),
         journeyParams,
@@ -175,7 +192,7 @@ export function generateOPAFiles(basePath: string, opaConfig: { scriptName?: str
         }
     );
 
-    return fs;
+    return editor;
 }
 
 /**
@@ -193,17 +210,22 @@ export function generatePageObjectFile(
     pageObjectParameters: { targetKey: string },
     fs?: Editor
 ): Editor {
-    if (!fs) {
-        fs = create(createStorage());
-    }
+    const editor = fs || create(createStorage());
 
-    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
+    const manifest = editor.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
+    if (!manifest) {
+        throw new ValidationError(
+            t('error.cannotReadManifest', {
+                filePath: join(basePath, 'webapp/manifest.json')
+            })
+        );
+    }
     const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey);
     if (pageConfig) {
         const rootTemplateDirPath = join(__dirname, '../templates/v4'); // Only v4 is supported for the time being
         const testOutDirPath = join(basePath, 'webapp/test');
-        writePageObject(pageConfig, rootTemplateDirPath, testOutDirPath, fs);
+        writePageObject(pageConfig, rootTemplateDirPath, testOutDirPath, editor);
     }
 
-    return fs;
+    return editor;
 }

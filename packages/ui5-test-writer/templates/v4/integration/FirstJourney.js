@@ -1,7 +1,7 @@
 sap.ui.define([
-	"sap/ui/test/opaQunit"
+    "sap/ui/test/opaQunit"
 ], function (opaTest) {
-	"use strict";
+    "use strict";
 
     var Journey = {
         run: function() {
@@ -29,6 +29,6 @@ sap.ui.define([
             });
         }
     }
-	
+
     return Journey;
 });
