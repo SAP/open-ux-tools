@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.14.2
+
+### Patch Changes
+
+-   7c4a4df: trim themelib theme names
+
 ## 0.14.1
 
 ### Patch Changes
