@@ -50,9 +50,27 @@ if (isAppStudio()) {
  * Execute a sequence of test calls using the given provider.
  *
  * @param provider instance of a service provider
+ * @param testPackageName optional environment variable
+ * @param testAppName optional environment variable
  */
-async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
+async function callAFewAbapServices(
+    provider: AbapServiceProvider,
+    testPackageName?: string,
+    testAppName?: string
+): Promise<void> {
     try {
+        const atoSettings = await provider.getAtoInfo();
+        if (!atoSettings || Object.keys(atoSettings).length === 0) {
+            console.warn('ATO setting is empty!');
+        }
+
+        if (testPackageName && testAppName) {
+            const transportNumList = await provider.getTransportRequests(testPackageName, testAppName);
+            if (transportNumList.length === 0) {
+                console.info(`Transport number is empty for package name ${testPackageName}, app name ${testAppName}`);
+            }
+        }
+
         const catalog = provider.catalog(ODataVersion.v2);
 
         const services = await catalog.listServices();
@@ -71,7 +89,7 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
             });
         }
     } catch (error) {
-        console.error(error.cause);
+        console.error(error.cause || error.toString() || error);
     }
 }
 
@@ -82,12 +100,16 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
  * @param env.TEST_SYSTEM base url of the test system
  * @param env.TEST_USER optional username
  * @param env.TEST_PASSWORD optional password
+ * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
+ * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
  * @returns Promise<void>
  */
 async function checkAbapSystem(env: {
     TEST_SYSTEM: string;
     TEST_USER?: string;
     TEST_PASSWORD?: string;
+    TEST_PACKAGE?: string;
+    TEST_APP?: string;
 }): Promise<void> {
     const provider = createForAbap({
         baseURL: env.TEST_SYSTEM,
@@ -97,7 +119,7 @@ async function checkAbapSystem(env: {
             password: env.TEST_PASSWORD
         }
     });
-    return callAFewAbapServices(provider);
+    return callAFewAbapServices(provider, env.TEST_PACKAGE, env.TEST_APP);
 }
 
 /**

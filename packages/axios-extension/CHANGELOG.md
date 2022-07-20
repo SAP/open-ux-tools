@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.8.0
+
+### Minor Changes
+
+-   732171b: ADT service support in abap service provider
+
 ## 0.7.2
 
 ### Patch Changes

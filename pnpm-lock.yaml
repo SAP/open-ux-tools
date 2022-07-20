@@ -95,6 +95,7 @@ importers:
       '@sap-ux/btp-utils': workspace:*
       '@sap-ux/logger': workspace:*
       '@types/lodash.clonedeep': 4.5.6
+      '@xmldom/xmldom': 0.8.2
       axios: 0.24.0
       detect-content-type: 1.2.0
       express: 4.17.1
@@ -104,9 +105,11 @@ importers:
       open: 7.0.3
       qs: 6.7.0
       supertest: 6.2.2
+      xpath: 0.0.32
     dependencies:
       '@sap-ux/btp-utils': link:../btp-utils
       '@sap-ux/logger': link:../logger
+      '@xmldom/xmldom': 0.8.2
       axios: 0.24.0
       detect-content-type: 1.2.0
       express: 4.17.1
@@ -114,6 +117,7 @@ importers:
       lodash.clonedeep: 4.5.0
       open: 7.0.3
       qs: 6.7.0
+      xpath: 0.0.32
     devDependencies:
       '@types/lodash.clonedeep': 4.5.6
       nock: 13.2.1
@@ -3419,7 +3423,7 @@ packages:
     dev: true
 
   /esprima/1.2.2:
-    resolution: {integrity: sha1-dqD9Zvz+FU/SkmZ9wmQBl1CxZXs=}
+    resolution: {integrity: sha512-+JpPZam9w5DuJ3Q67SqsMGtiHKENSMRVoxvArfJZK01/BfLEObtZ6orJa/MtoGNR/rfMgp5837T41PAmTwAv/A==}
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: false
@@ -3706,7 +3710,7 @@ packages:
     dev: true
 
   /fast-levenshtein/2.0.6:
-    resolution: {integrity: sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=}
+    resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
   /fast-safe-stringify/2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
@@ -5564,7 +5568,7 @@ packages:
     dev: true
 
   /levn/0.3.0:
-    resolution: {integrity: sha1-OwmSTt+fCDwEkP3UwLxEIeBHZO4=}
+    resolution: {integrity: sha512-0OO4y2iOHix2W6ujICbKIaEQXvFQHue65vUG3pb5EUomzPI90z9hsA1VsO/dbIIpC53J8gxM9Q4Oho0jrCM/yA==}
     engines: {node: '>= 0.8.0'}
     dependencies:
       prelude-ls: 1.1.2
@@ -6370,7 +6374,7 @@ packages:
     dev: true
 
   /prelude-ls/1.1.2:
-    resolution: {integrity: sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=}
+    resolution: {integrity: sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==}
     engines: {node: '>= 0.8.0'}
 
   /prelude-ls/1.2.1:
@@ -7592,7 +7596,7 @@ packages:
     optional: true
 
   /type-check/0.3.2:
-    resolution: {integrity: sha1-WITKtRLPHTVeP7eE8wgEsrUg23I=}
+    resolution: {integrity: sha512-ZCmOJdvOWDBYJlzAoFkC+Q0+bUyEOS1ltgp1MGU03fqHG+dbi9tBFU2Rd9QKiDZFAYrhPh2JUf7rZRIuHRKtOg==}
     engines: {node: '>= 0.8.0'}
     dependencies:
       prelude-ls: 1.1.2
