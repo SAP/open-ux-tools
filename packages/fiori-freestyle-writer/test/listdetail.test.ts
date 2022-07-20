@@ -35,6 +35,36 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     }
                 }
             } as FreestyleApp<ListDetailSettings>
+        },
+        {
+            name: 'listdetail-good-eslint',
+            config: {
+                ...commonConfig,
+                service: northwind,
+                template: {
+                    type: TemplateType.ListDetail,
+                    settings: {
+                        entity: {
+                            name: 'Suppliers',
+                            key: 'SupplierID',
+                            idProperty: 'CompanyName',
+                            numberProperty: undefined,
+                            unitOfMeasureProperty: undefined
+                        },
+                        lineItem: {
+                            name: 'Products',
+                            key: 'ProductID',
+                            idProperty: 'ProductName',
+                            numberProperty: 'UnitsInStock',
+                            unitOfMeasureProperty: 'QuantityPerUnit'
+                        }
+                    }
+                },
+                appOptions: {
+                    codeAssist: true,
+                    eslint: true
+                }
+            } as FreestyleApp<ListDetailSettings>
         }
     ];
 
