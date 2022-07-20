@@ -1,0 +1,172 @@
+{
+    "_version": "1.8.0",
+    "sap.app": {
+        "id": "Namespace1.demo1",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "1.0"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "tags": {
+            "keywords": []
+        },
+        "ach": "",
+        "resources": "resources.json",
+        "dataSources": {
+            "mainService": {
+                "uri": "/sap/opu/odata/sap/SEPMRA_PROD_MAN/",
+                "type": "OData",
+                "settings": {
+                    "annotations": ["SEPMRA_PROD_MAN_ANNO_MDL", "annotation0", "annotation1"],
+                    "localUri": "localService/metadata.xml"
+                }
+            },
+            "SEPMRA_PROD_MAN_ANNO_MDL": {
+                "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/",
+                "type": "ODataAnnotation",
+                "settings": {
+                    "localUri": "localService/SEPMRA_PROD_MAN_ANNO_MDL.xml"
+                }
+            },
+            "annotation0": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation0.xml",
+                "settings": {
+                    "localUri": "annotations/annotation0.xml"
+                }
+            },
+            "annotation1": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation1.xml",
+                "settings": {
+                    "localUri": "annotations/annotation1.xml"
+                }
+            }
+        },
+        "offline": false,
+        "sourceTemplate": {
+            "id": "ui5template.smartTemplate",
+            "version": "1.40.12"
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        },
+        "supportedThemes": ["sap_hcb", "sap_belize"]
+    },
+    "sap.ui5": {
+        "resources": {
+            "js": [],
+            "css": []
+        },
+        "dependencies": {
+            "minUI5Version": "1.71.0",
+            "libs": {},
+            "components": {}
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            },
+            "i18n|sap.suite.ui.generic.template.ListReport|SEPMRA_C_PD_Product": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/ListReport/SEPMRA_C_PD_Product/i18n.properties"
+            },
+            "i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_Product": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/ObjectPage/SEPMRA_C_PD_Product/i18n.properties"
+            },
+            "i18n|sap.suite.ui.generic.template.ObjectPage|SEPMRA_C_PD_ProductSalesData": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/ObjectPage/SEPMRA_C_PD_ProductSalesData/i18n.properties"
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "defaultBindingMode": "TwoWay",
+                    "defaultCountMode": "Inline",
+                    "refreshAfterChange": false,
+                    "metadataUrlParams": {
+                        "sap-value-list": "none"
+                    }
+                }
+            }
+        },
+        "extends": {
+            "extensions": {}
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        }
+    },
+    "sap.ui.generic.app": {
+        "settings": {
+            "forceGlobalRefresh": false,
+            "objectPageHeaderType": "Dynamic",
+            "showDraftToggle": false
+        },
+        "pages": [
+            {
+                "component": {
+                    "name": "sap.suite.ui.generic.template.ListReport",
+                    "settings": {
+                        "smartVariantManagement": true
+                    },
+                    "list": true
+                },
+                "entitySet": "SEPMRA_C_PD_Product",
+                "pages": [
+                    {
+                        "component": {
+                            "name": "sap.suite.ui.generic.template.ObjectPage",
+                            "settings": {}
+                        },
+                        "entitySet": "SEPMRA_C_PD_Product",
+                        "pages": [
+                            {
+                                "component": {
+                                    "name": "sap.suite.ui.generic.template.ObjectPage",
+                                    "settings": {}
+                                },
+                                "entitySet": "SEPMRA_C_PD_ProductSalesData",
+                                "navigationProperty": "to_ProductSalesData",
+                                "pages": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "sap.platform.abap": {
+        "uri": ""
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    },
+    "sap.platform.hcp": {
+        "uri": ""
+    }
+}

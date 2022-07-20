@@ -1,0 +1,8 @@
+{
+    "type": "annotation-file",
+    "uri": "file://metadata.xml",
+    "range": "[(1,0)..(86,12)]",
+    "contentRange": "[(5,53)..(86,0)]",
+    "references": [],
+    "targets": []
+}
