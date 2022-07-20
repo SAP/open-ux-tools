@@ -7,7 +7,7 @@ import { t } from './i18n';
  * @param options.localOnly no server available
  * @param options.addMock add a script for using the mockserver
  * @param options.sapClient SAP client required for connecting to the backend
- * @param options.flpAppId local FLP id
+ * @param options.intent intent to be used for local preview
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be opend with the start-local script
  * @description Generates the package.json scripts
@@ -17,14 +17,14 @@ export function getPackageJsonTasks({
     localOnly,
     addMock = true,
     sapClient,
-    flpAppId = '',
+    intent,
     startFile,
     localStartFile
 }: {
     localOnly: boolean;
     addMock: boolean;
     sapClient?: string;
-    flpAppId?: string;
+    intent: string;
     startFile?: string;
     localStartFile?: string;
 }): { start: string; 'start-local': string; 'start-noflp': string; 'start-mock'?: string } {
@@ -37,10 +37,8 @@ export function getPackageJsonTasks({
 
     let searchParam = new URLSearchParams(searchParamList).toString();
     searchParam = searchParam ? `?${searchParam}` : '';
-    // Build fragment identifier part of url
-    const hashFragment = flpAppId ? `#${flpAppId}` : '';
     // Full parameter section composed by search param and fragment identifier
-    const params = `${searchParam}${hashFragment}`;
+    const params = `${searchParam}#${intent}`;
 
     const startCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
