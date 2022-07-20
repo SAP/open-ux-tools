@@ -1,7 +1,5 @@
 import XmlParser from 'fast-xml-parser';
 
-export const ATO_CATALOG_URL_PATH = '/sap/bc/adt/ato/settings';
-
 export enum TenantType {
     SAP = 'SAP',
     Customer = 'CUSTOMER'
