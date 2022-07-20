@@ -39,14 +39,15 @@ export interface FioriToolsProxyConfig {
 }
 
 export interface MockserverConfig {
+    mountPath: string;
     annotations?: {
         localPath?: string;
         urlPath: string;
-    };
-    service?: {
+    }[];
+    services?: {
         urlPath: string;
-        metadataXmlPath: string;
-        mockdataRootPath?: string;
+        metadataPath: string;
+        mockdataPath?: string;
         generateMockData?: boolean;
-    };
+    }[];
 }
