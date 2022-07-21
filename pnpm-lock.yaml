@@ -94,6 +94,7 @@ importers:
             '@sap-ux/btp-utils': workspace:*
             '@sap-ux/logger': workspace:*
             '@types/lodash.clonedeep': 4.5.6
+            '@xmldom/xmldom': 0.8.2
             axios: 0.24.0
             detect-content-type: 1.2.0
             express: 4.17.1
@@ -103,9 +104,11 @@ importers:
             open: 7.0.3
             qs: 6.7.0
             supertest: 6.2.2
+            xpath: 0.0.32
         dependencies:
             '@sap-ux/btp-utils': link:../btp-utils
             '@sap-ux/logger': link:../logger
+            '@xmldom/xmldom': 0.8.2
             axios: 0.24.0
             detect-content-type: 1.2.0
             express: 4.17.1
@@ -113,6 +116,7 @@ importers:
             lodash.clonedeep: 4.5.0
             open: 7.0.3
             qs: 6.7.0
+            xpath: 0.0.32
         devDependencies:
             '@types/lodash.clonedeep': 4.5.6
             nock: 13.2.1
