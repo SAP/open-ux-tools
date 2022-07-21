@@ -5,7 +5,7 @@ import { join } from 'path';
 import { generateCustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
-import { EventHandlerConfiguration } from '../../src/common/types';
+import { EventHandlerConfiguration, Placement } from '../../src/common/types';
 
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
@@ -143,6 +143,44 @@ describe('CustomAction', () => {
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
+        });
+
+        const positionTests = [
+            {
+                name: 'Create with anchor',
+                position: {
+                    placement: Placement.Before,
+                    anchor: 'Dummy'
+                }
+            },
+            {
+                name: 'Create without anchor',
+                position: {
+                    placement: Placement.Before
+                }
+            },
+            {
+                name: 'Create without position',
+                position: undefined
+            }
+        ];
+        positionTests.forEach((testCase) => {
+            test(`Test 'position' property. ${testCase.name}`, () => {
+                generateCustomAction(
+                    testDir,
+                    {
+                        name,
+                        target,
+                        eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction',
+                        settings: {
+                            ...settings,
+                            position: testCase.position
+                        }
+                    },
+                    fs
+                );
+                expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            });
         });
 
         const requiresSelectionValues = [undefined, true, false];
