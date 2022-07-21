@@ -8,7 +8,7 @@
         "@changesets/cli": "2.21.1",
         "@types/jest": "27.4.1",
         "@types/node": "12.12.6",
-        "@typescript-eslint/eslint-plugin": "5.16.0",
+        "@typescript-eslint/eslint-plugin": "5.30.7",
         "@typescript-eslint/parser": "5.16.0",
         "eslint": "8.11.0",
         "eslint-config-prettier": "8.5.0",
