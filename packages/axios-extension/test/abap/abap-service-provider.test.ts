@@ -38,6 +38,10 @@ describe('AbapServiceProvider', () => {
             password: 'SECRET'
         }
     };
+    const existingCookieConfig = {
+        baseURL: server,
+        cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_Y05_100=abc'
+    };
 
     const testPackage = 'ZSPD';
     const testLocalPackage = '$TMP';
@@ -215,6 +219,19 @@ describe('AbapServiceProvider', () => {
                 .get(AdtServices.ATO_SETTINGS)
                 .replyWithError('Something went wrong');
             expect(await createForAbap(config).isS4Cloud()).toBe(false);
+        });
+    });
+
+    describe('Use existing connection session', () => {
+        test('abap service provider', async () => {
+            nock(server)
+                .get(AdtServices.DISCOVERY)
+                .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+                .get(AdtServices.ATO_SETTINGS)
+                .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
+
+            const provider = createForAbap(existingCookieConfig);
+            expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
         });
     });
 
