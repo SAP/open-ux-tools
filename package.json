@@ -15,7 +15,7 @@
         "eslint-import-resolver-typescript": "2.5.0",
         "eslint-plugin-import": "2.25.4",
         "eslint-plugin-jsdoc": "39.2.9",
-        "eslint-plugin-prettier": "4.0.0",
+        "eslint-plugin-prettier": "4.2.1",
         "eslint-plugin-promise": "6.0.0",
         "husky": "7.0.4",
         "jest-sonar": "0.2.12",
