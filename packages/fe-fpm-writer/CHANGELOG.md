@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.13.2
+
+### Patch Changes
+
+-   4c1b0c2: Custom Action. Optional "anchor" position property. Do not include "anchor" property if undefined is passed
+
 ## 0.13.1
 
 ### Patch Changes
