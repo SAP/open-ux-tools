@@ -1,9 +1,30 @@
 {
     "_version": "1.32.0",
     "sap.app": {
-        "id": "projectservice"
+        "id": "projectservice",
+        "dataSources": {
+            "mainService": {
+                "uri": "/employee/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
+                }
+            }
+        }
     },
     "sap.ui5": {
+        "models": {
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            }
+        },
         "routing": {
             "targets": {
                 "EmployeesListTarget": {
