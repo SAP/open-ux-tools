@@ -1,5 +1,44 @@
 # @sap-ux/store
 
+## 0.3.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/logger@0.2.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   ebc59b4: Added support for migrating api-hub settings from old to new format.
+
+## 0.2.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/logger@0.2.0
+
+## 0.1.5
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/logger@0.1.6
+
+## 0.1.4
+
+### Patch Changes
+
+-   9f84d52: Intrdocded new backend-proxy-middleware.
+
 ## 0.1.3
 
 ### Patch Changes

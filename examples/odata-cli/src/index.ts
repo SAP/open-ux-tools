@@ -1,5 +1,11 @@
+import {
+    ODataVersion,
+    createForAbap,
+    createForAbapOnCloud,
+    createForDestination,
+    AbapCloudEnvironment
+} from '@sap-ux/axios-extension';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { createForDestination, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio, listDestinations, isAbapSystem } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
@@ -28,6 +34,9 @@ if (isAppStudio()) {
         case 'btp':
             checkAbapBtpSystem(processEnv);
             break;
+        case 'cloud':
+            checkCloudAbapSystem(processEnv);
+            break;
         case undefined:
             logger.info(`Test name missing, try 'pnpm test -- abap'`);
             break;
@@ -41,9 +50,27 @@ if (isAppStudio()) {
  * Execute a sequence of test calls using the given provider.
  *
  * @param provider instance of a service provider
+ * @param testPackageName optional environment variable
+ * @param testAppName optional environment variable
  */
-async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
+async function callAFewAbapServices(
+    provider: AbapServiceProvider,
+    testPackageName?: string,
+    testAppName?: string
+): Promise<void> {
     try {
+        const atoSettings = await provider.getAtoInfo();
+        if (!atoSettings || Object.keys(atoSettings).length === 0) {
+            console.warn('ATO setting is empty!');
+        }
+
+        if (testPackageName && testAppName) {
+            const transportNumList = await provider.getTransportRequests(testPackageName, testAppName);
+            if (transportNumList.length === 0) {
+                console.info(`Transport number is empty for package name ${testPackageName}, app name ${testAppName}`);
+            }
+        }
+
         const catalog = provider.catalog(ODataVersion.v2);
 
         const services = await catalog.listServices();
@@ -62,7 +89,7 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
             });
         }
     } catch (error) {
-        console.error(error.cause);
+        console.error(error.cause || error.toString() || error);
     }
 }
 
@@ -73,12 +100,16 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
  * @param env.TEST_SYSTEM base url of the test system
  * @param env.TEST_USER optional username
  * @param env.TEST_PASSWORD optional password
+ * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
+ * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
  * @returns Promise<void>
  */
 async function checkAbapSystem(env: {
     TEST_SYSTEM: string;
     TEST_USER?: string;
     TEST_PASSWORD?: string;
+    TEST_PACKAGE?: string;
+    TEST_APP?: string;
 }): Promise<void> {
     const provider = createForAbap({
         baseURL: env.TEST_SYSTEM,
@@ -88,7 +119,7 @@ async function checkAbapSystem(env: {
             password: env.TEST_PASSWORD
         }
     });
-    return callAFewAbapServices(provider);
+    return callAFewAbapServices(provider, env.TEST_PACKAGE, env.TEST_APP);
 }
 
 /**
@@ -100,8 +131,29 @@ async function checkAbapSystem(env: {
  */
 async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Promise<void> {
     const serviceInfo = JSON.parse(readFileSync(env.TEST_SERVICE_INFO_PATH, 'utf-8'));
-    const provider = createForAbapOnBtp(serviceInfo, undefined, (newToken: string) => {
-        logger.info(`New refresh token issued ${newToken}`);
+    const provider = createForAbapOnCloud({
+        environment: AbapCloudEnvironment.Standalone,
+        service: serviceInfo,
+        refreshTokenChangedCb: (newToken: string) => {
+            logger.info(`New refresh token issued ${newToken}`);
+        }
+    });
+    return callAFewAbapServices(provider);
+}
+
+/**
+ * Read the required values for connecting to a Cloud ABAP environment from the env variable, create a provider instance and execute the system agnostic example script.
+ *
+ * @param env object reprensenting the content of the .env file.
+ * @param env.TEST_SYSTEM base url of the test system
+ * @param env.TEST_IGNORE_CERT_ERRORS optional, ignore certifcate errors or not
+ * @returns Promise<void>
+ */
+async function checkCloudAbapSystem(env: { TEST_SYSTEM: string; TEST_IGNORE_CERT_ERRORS?: string }): Promise<void> {
+    const provider = createForAbapOnCloud({
+        environment: AbapCloudEnvironment.EmbeddedSteampunk,
+        url: env.TEST_SYSTEM,
+        ignoreCertErrors: env.TEST_IGNORE_CERT_ERRORS === 'true'
     });
     return callAFewAbapServices(provider);
 }

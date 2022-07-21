@@ -25,7 +25,6 @@ const fs = await generateCustomPage(
         name: 'MyCustomPage',
         entity: 'Booking',
         navigation: {
-            sourceEntity: 'Travel',
             sourcePage: 'TravelObjectPage',
             navEntity: '_Booking'
         }

@@ -1,5 +1,23 @@
 # @sap-ux/logger
 
+## 0.2.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+
+## 0.2.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+## 0.1.6
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+
 ## 0.1.5
 
 ### Patch Changes

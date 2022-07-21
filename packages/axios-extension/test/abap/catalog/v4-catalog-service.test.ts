@@ -2,11 +2,18 @@ import { join } from 'path';
 import nock from 'nock';
 import { createForAbap, ODataVersion, V4CatalogService } from '../../../src';
 
-nock.disableNetConnect();
-
 const mockRespPath = join(__dirname, '../mockResponses');
 
 describe('V4CatalogService', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
     const server = 'https://iccsrm.sap.com:44300';
     const config = {
         baseURL: server,

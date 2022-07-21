@@ -1,9 +1,10 @@
+import os from 'os';
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomSection, getManifestRoot } from '../../src/section';
 import { CustomSection } from '../../src/section/types';
-import { Placement } from '../../src/common/types';
+import { Placement, EventHandlerConfiguration } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
 
 const testDir = join(__dirname, 'sample/section');
@@ -188,5 +189,84 @@ describe('CustomSection', () => {
                 );
             });
         }
+
+        describe('Test property "eventHandler"', () => {
+            const generateCustomSectionWithEventHandler = (
+                sectionId: string,
+                eventHandler: string | EventHandlerConfiguration,
+                folder?: string
+            ) => {
+                generateCustomSection(testDir, { ...customSection, name: sectionId, folder, eventHandler }, fs);
+            };
+
+            test('"eventHandler" is empty "object" - create new file with default function name', () => {
+                const id = customSection.name;
+                generateCustomSectionWithEventHandler(id, {}, customSection.folder);
+                const xmlPath = join(testDir, 'webapp', customSection.folder!, `${id}.fragment.xml`);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+                const extension = {
+                    fnName: 'DummyOnAction',
+                    fileName: 'dummyAction'
+                };
+                const id = customSection.name;
+                generateCustomSectionWithEventHandler(id, extension, customSection.folder);
+                const fragmentName = `${id}.fragment.xml`;
+                const xmlPath = join(testDir, 'webapp', customSection.folder!, fragmentName);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.js`))).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object" - create new file with custom function name', () => {
+                const extension = {
+                    fnName: 'DummyOnAction'
+                };
+                const id = customSection.name;
+                generateCustomSectionWithEventHandler(id, extension, customSection.folder);
+                const xmlPath = join(testDir, 'webapp', customSection.folder!, `${id}.fragment.xml`);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            });
+
+            const positions = [
+                {
+                    line: 8,
+                    character: 9
+                },
+                190 + 8 * os.EOL.length
+            ];
+            for (const position of positions) {
+                test(`"eventHandler" is object. Append new function to existing js file with position ${
+                    typeof position === 'object' ? JSON.stringify(position) : 'absolute'
+                }`, () => {
+                    const fileName = 'MyExistingAction';
+                    // Create existing file with existing actions
+                    const folder = join('extensions', 'custom');
+                    const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
+                    // Generate handler with single method - content should be updated during generating of custom section
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                    const fnName = 'onHandleSecondAction';
+
+                    const extension = {
+                        fnName,
+                        fileName,
+                        insertScript: {
+                            fragment: `,\n        ${fnName}: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                            position
+                        }
+                    };
+
+                    const id = customSection.name;
+                    generateCustomSectionWithEventHandler(id, extension, folder);
+                    const xmlPath = join(testDir, 'webapp', folder!, `${id}.fragment.xml`);
+                    expect(fs.read(xmlPath)).toMatchSnapshot();
+                    // Check update js file content
+                    expect(fs.read(existingPath)).toMatchSnapshot();
+                });
+            }
+        });
     });
 });

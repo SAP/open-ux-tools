@@ -169,10 +169,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             const fs = await generate(testPath, freestyleApp);
             const manifest = { json: fs.readJSON(join(testPath, 'webapp', 'manifest.json')) as any };
             expect(manifest.json['sap.ui5'].rootView.viewName.startsWith(freestyleApp.app.id)).toBe(true);
+            expect(manifest.json['sap.ui5'].routing.routes[0].pattern).toBe(':?query:');
             expect(
                 [
                     manifest.json['sap.ui5'].routing.routes[0].name,
-                    manifest.json['sap.ui5'].routing.routes[0].pattern,
                     manifest.json['sap.ui5'].routing.routes[0].target[0],
                     manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewId,
                     manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewName

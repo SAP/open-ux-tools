@@ -1,0 +1,30 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- entity %>ObjectPage": {
+                    "type": "Component",
+                    "id": "<%- entity %>ObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",<%if (locals.controlAggregation) {%>
+                    "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
+                    "options": {
+                        "settings": <%- JSON.stringify(settings) %>
+                    }
+                }<%if (locals.navigation) {%>,
+                "<%- navigation.sourcePage %>": {
+                    "options": {
+                        "settings": {
+                            "navigation": {
+                                "<%- navigation.navEntity %>": {
+                                    "detail": {
+                                        "route": "<%- entity %>ObjectPage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }<% } %>
+            }
+        }
+    }
+}

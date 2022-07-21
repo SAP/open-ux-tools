@@ -1,5 +1,60 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [7c4a4df]
+    -   @sap-ux/ui5-config@0.14.2
+    -   @sap-ux/odata-service-writer@0.14.2
+    -   @sap-ux/ui5-application-writer@0.14.2
+
+## 0.4.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/odata-service-writer@0.14.1
+    -   @sap-ux/ui5-application-writer@0.14.1
+    -   @sap-ux/ui5-config@0.14.1
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [c29bf99]
+    -   @sap-ux/odata-service-writer@0.14.0
+
+## 0.4.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/odata-service-writer@0.13.0
+    -   @sap-ux/ui5-application-writer@0.14.0
+    -   @sap-ux/ui5-config@0.14.0
+
+## 0.3.6
+
+### Patch Changes
+
+-   8e27784: Fix for https://github.com/SAP/open-ux-tools/issues/502: End tag moved to correct position in flpSandbox.html template.
+
+## 0.3.5
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/odata-service-writer@0.12.2
+    -   @sap-ux/ui5-application-writer@0.13.1
+    -   @sap-ux/ui5-config@0.13.3
+
 ## 0.3.4
 
 ### Patch Changes

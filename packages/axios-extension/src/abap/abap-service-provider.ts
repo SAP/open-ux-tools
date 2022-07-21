@@ -1,20 +1,16 @@
 import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
-
-import type { AtoSettings } from './ato';
-import { ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
+import type { AtoSettings } from './adt-catalog';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-
-export interface AbapServiceProviderExtension {
-    s4Cloud: boolean | undefined;
-    user(): Promise<string>;
-    catalog(oDataVersion: ODataVersion): CatalogService;
-    ui5AbapRepository(): Ui5AbapRepositoryService;
-}
+import { AdtServiceName, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt-catalog';
+import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
+import { getTransportNumberList } from './adt-catalog/handlers/transport';
+import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
+import type { AdtCollection } from './types';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -49,9 +45,25 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      * @returns ABAP Transport Organizer settings
      */
     public async getAtoInfo(): Promise<AtoSettings> {
+        let serviceSchema: AdtCollection;
+        try {
+            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
+                AdtServiceConfigs[AdtServiceName.AtoSettings]
+            );
+        } catch {
+            // Service not available on target ABAP backend version, return empty setting config
+            this.atoSettings = {};
+            return this.atoSettings;
+        }
+
         if (!this.atoSettings) {
             try {
-                const response = await this.get(ATO_CATALOG_URL_PATH);
+                const acceptHeaders = {
+                    headers: {
+                        Accept: 'application/*'
+                    }
+                };
+                const response = await this.get(serviceSchema.href, acceptHeaders);
                 this.atoSettings = parseAtoResponse(response.data);
             } catch (error) {
                 this.atoSettings = {};
@@ -82,6 +94,18 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             }
         }
         return this.s4Cloud;
+    }
+
+    private getAdtCatalogService(): AdtCatalogService {
+        if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
+            const adtCatalogSerivce = this.createService<AdtCatalogService>(
+                AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
+                AdtCatalogService
+            );
+            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = adtCatalogSerivce;
+        }
+
+        return this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtCatalogService;
     }
 
     /**
@@ -152,5 +176,55 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             );
         }
         return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
+    }
+
+    /**
+     *
+     * @param packageName Package name for deployment
+     * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
+     * @returns
+     */
+    public async getTransportRequests(packageName: string, appName: string): Promise<string[]> {
+        let serviceSchema: AdtCollection;
+        try {
+            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
+                AdtServiceConfigs[AdtServiceName.TransportChecks]
+            );
+        } catch {
+            // Service not available on target ABAP backend version, return empty setting config
+            return [];
+        }
+
+        if (!serviceSchema || !serviceSchema.href) {
+            return [];
+        }
+        const urlPath = serviceSchema.href;
+        const acceptHeaders = {
+            headers: {
+                Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
+                'content-type':
+                    'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
+            }
+        };
+
+        const data = `
+                <?xml version="1.0" encoding="UTF-8"?>
+                <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+                    <asx:values>
+                        <DATA>
+                        <PGMID/>
+                        <OBJECT/>
+                        <OBJECTNAME/>
+                        <DEVCLASS>${packageName}</DEVCLASS>
+                        <SUPER_PACKAGE/>
+                        <OPERATION>I</OPERATION>
+                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${appName}/$create</URI>
+                        </DATA>
+                    </asx:values>
+                </asx:abap>
+            `;
+
+        const response = await this.post(urlPath, data, acceptHeaders);
+        return getTransportNumberList(response.data, this.log);
     }
 }
