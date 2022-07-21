@@ -10,13 +10,33 @@ import { t } from './i18n';
 type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
 
 /**
+ * Retrieves the OData version of the main datasource.
+ *
+ * @param manifest - the app descriptor of the app
+ * @returns the OData version, or undefined if it can't be found or if it's not supported
+ */
+function getODataVersionFromManifest(manifest: Manifest): string | undefined {
+    // Get the datasource from the main model
+    const models = manifest['sap.ui5']?.models;
+    const mainModelDatasource = models && models['']?.dataSource;
+    const dataSource =
+        mainModelDatasource &&
+        manifest['sap.app']?.dataSources &&
+        manifest['sap.app']?.dataSources[mainModelDatasource];
+
+    // For the time being, we only support OData V4 apps
+    return dataSource && dataSource.settings?.odataVersion === '4.0' ? 'v4' : undefined;
+}
+
+/**
  * Retrieves appID and appPath from the manifest.
  *
  * @param manifest - the app descriptor of the app
+ * @param forcedAppID - the appID in case we don't want to read it from the manifest
  * @returns appID and appPath
  */
-function getAppFromManifest(manifest: Manifest): { appID: string; appPath: string } {
-    const appID = manifest['sap.app']?.id;
+function getAppFromManifest(manifest: Manifest, forcedAppID?: string): { appID: string; appPath: string } {
+    const appID = forcedAppID || manifest['sap.app']?.id;
     const appPath = appID?.split('.').join('/');
 
     if (!appID || !appPath) {
@@ -31,12 +51,13 @@ function getAppFromManifest(manifest: Manifest): { appID: string; appPath: strin
  *
  * @param manifest - the app descriptor of the app
  * @param targetKey - the key of the target in the manifest
+ * @param forcedAppID - the appID in case we don't want to read it from the manifest
  * @returns Page configuration object, or undefined if the target type is not supported
  */
-function createPageConfig(manifest: Manifest, targetKey: string): FEV4OPAPageConfig | undefined {
+function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: string): FEV4OPAPageConfig | undefined {
     const appTargets = manifest['sap.ui5']?.routing?.targets;
     const target = appTargets && (appTargets[targetKey] as FEV4ManifestTarget);
-    const { appID, appPath } = getAppFromManifest(manifest);
+    const { appID, appPath } = getAppFromManifest(manifest, forcedAppID);
 
     if (
         target?.type === 'Component' &&
@@ -64,11 +85,12 @@ function createPageConfig(manifest: Manifest, targetKey: string): FEV4OPAPageCon
  * @param manifest - the app descriptor of the target app
  * @param opaConfig - parameters for the generation
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
+ * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
  * @returns OPA test configuration object
  */
-function createConfig(manifest: Manifest, opaConfig: { scriptName?: string }): FEV4OPAConfig {
+function createConfig(manifest: Manifest, opaConfig: { scriptName?: string; appID?: string }): FEV4OPAConfig {
     // General application info
-    const { appID, appPath } = getAppFromManifest(manifest);
+    const { appID, appPath } = getAppFromManifest(manifest, opaConfig.appID);
 
     const config: FEV4OPAConfig = {
         appID,
@@ -91,7 +113,7 @@ function createConfig(manifest: Manifest, opaConfig: { scriptName?: string }): F
     // Create page configurations in supported cases
     const appTargets = manifest['sap.ui5']?.routing?.targets;
     for (const targetKey in appTargets) {
-        const pageConfig = createPageConfig(manifest, targetKey);
+        const pageConfig = createPageConfig(manifest, targetKey, opaConfig.appID);
         if (pageConfig) {
             pageConfig.isStartup = startupTargets.includes(targetKey);
             config.pages.push(pageConfig);
@@ -133,10 +155,15 @@ function writePageObject(
  * @param basePath - the absolute target path where the application will be generated
  * @param opaConfig - parameters for the generation
  * @param opaConfig.scriptName - the name of the OPA journey file. If not specified, 'FirstJourney' will be used
+ * @param opaConfig.appID - the appID. If not specified, will be read from the manifest in sap.app/id
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
-export function generateOPAFiles(basePath: string, opaConfig: { scriptName?: string }, fs?: Editor): Editor {
+export function generateOPAFiles(
+    basePath: string,
+    opaConfig: { scriptName?: string; appID?: string },
+    fs?: Editor
+): Editor {
     const editor = fs || create(createStorage());
 
     const manifest = editor.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
@@ -147,10 +174,16 @@ export function generateOPAFiles(basePath: string, opaConfig: { scriptName?: str
             })
         );
     }
+
+    const version = getODataVersionFromManifest(manifest);
+    if (!version) {
+        throw new ValidationError(t('error.badODataVersion'));
+    }
+
     const config = createConfig(manifest, opaConfig);
 
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
-    const rootV4TemplateDirPath = join(__dirname, '../templates/v4'); // Only v4 is supported for the time being
+    const rootV4TemplateDirPath = join(__dirname, `../templates/${version}`); // Only v4 is supported for the time being
     const testOutDirPath = join(basePath, 'webapp/test');
 
     // Test files
@@ -202,12 +235,13 @@ export function generateOPAFiles(basePath: string, opaConfig: { scriptName?: str
  * @param basePath - the absolute target path where the application will be generated
  * @param pageObjectParameters - parameters for the page
  * @param pageObjectParameters.targetKey - the key of the target in the manifest file corresponding to the page
+ * @param pageObjectParameters.appID - the appID. If not specified, will be read from the manifest in sap.app/id
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
 export function generatePageObjectFile(
     basePath: string,
-    pageObjectParameters: { targetKey: string },
+    pageObjectParameters: { targetKey: string; appID?: string },
     fs?: Editor
 ): Editor {
     const editor = fs || create(createStorage());
@@ -220,11 +254,22 @@ export function generatePageObjectFile(
             })
         );
     }
-    const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey);
+    const version = getODataVersionFromManifest(manifest);
+    if (!version) {
+        throw new ValidationError(t('error.badODataVersion'));
+    }
+
+    const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey, pageObjectParameters.appID);
     if (pageConfig) {
-        const rootTemplateDirPath = join(__dirname, '../templates/v4'); // Only v4 is supported for the time being
+        const rootTemplateDirPath = join(__dirname, `../templates/${version}`); // Only v4 is supported for the time being
         const testOutDirPath = join(basePath, 'webapp/test');
         writePageObject(pageConfig, rootTemplateDirPath, testOutDirPath, editor);
+    } else {
+        throw new ValidationError(
+            t('error.cannotGeneratePageFile', {
+                targetKey: pageObjectParameters.targetKey
+            })
+        );
     }
 
     return editor;
