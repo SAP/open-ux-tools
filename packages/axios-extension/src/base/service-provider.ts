@@ -12,6 +12,11 @@ export interface ProviderConfiguration {
      * Ignore certificate verification errors
      */
     ignoreCertErrors: boolean;
+    /**
+     * Serialized connection session info from previously established connection.
+     * Authentication can be skipped if connection session cookies are presented.
+     */
+    cookies: string;
 }
 
 export interface ServiceProviderExtension {
