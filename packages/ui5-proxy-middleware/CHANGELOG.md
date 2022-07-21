@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.4
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/logger@0.2.2
+    -   @sap-ux/ui5-config@0.14.3
+
 ## 1.1.3
 
 ### Patch Changes

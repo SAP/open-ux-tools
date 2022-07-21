@@ -1,5 +1,13 @@
 # @sap-ux/ui5-config
 
+## 0.14.3
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/yaml@0.12.2
+
 ## 0.14.2
 
 ### Patch Changes

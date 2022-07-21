@@ -1,5 +1,16 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.10
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/axios-extension@0.8.1
+    -   @sap-ux/btp-utils@0.10.3
+    -   @sap-ux/logger@0.2.2
+    -   @sap-ux/store@0.3.2
+
 ## 0.6.9
 
 ### Patch Changes
