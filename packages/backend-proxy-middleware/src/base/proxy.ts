@@ -172,7 +172,11 @@ export const PathRewriters = {
                 return newPath;
             };
         } else {
-            return undefined;
+            // Display request path even if it was not rewritten
+            return (path: string) => {
+                log.info(path);
+                return path;
+            };
         }
     }
 };

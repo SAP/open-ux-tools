@@ -72,7 +72,9 @@ describe('proxy', () => {
 
         test('getPathRewrite', () => {
             // no rewrite required
-            expect(getPathRewrite({} as BackendConfig, logger)).toBeUndefined();
+            const pathOutput = getPathRewrite({} as BackendConfig, logger);
+            expect(pathOutput).toBeDefined();
+            expect(pathOutput!('/my/path')).toEqual('/my/path');
 
             // all writers added
             const writerChain = getPathRewrite(
