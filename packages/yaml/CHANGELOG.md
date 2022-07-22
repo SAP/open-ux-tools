@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.12.2
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+
 ## 0.12.1
 
 ### Patch Changes

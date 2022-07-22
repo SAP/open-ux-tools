@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.13.3
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+
 ## 0.13.2
 
 ### Patch Changes
