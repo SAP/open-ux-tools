@@ -1,5 +1,5 @@
 import { AxiosRequestHeaders, AxiosResponse, AxiosResponseHeaders } from 'axios';
-import { Cookies } from '../../src/auth/connection';
+import { Cookies } from '../../src/auth';
 
 describe('Cookies', () => {
     const newAxiosResponseWithCookies = (cookies: string[]): AxiosResponse => {
