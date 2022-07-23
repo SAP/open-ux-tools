@@ -5,7 +5,6 @@ import type { AbapServiceProvider } from '../abap';
 import { getReentranceTicket } from './reentrance-ticket';
 import { RefreshTokenChanged, Uaa } from './uaa';
 
-export { Cookies, PartialHttpResponse } from './cookies';
 export * from './connection';
 export * from './error';
 

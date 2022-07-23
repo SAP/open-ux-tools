@@ -13,8 +13,8 @@ export interface ProviderConfiguration {
      */
     ignoreCertErrors: boolean;
     /**
-     * Value to be passed into the `Cookie` request header
-     * https://datatracker.ietf.org/doc/html/rfc6265#section-4.2
+     * Serialized connection session info from previously established connection.
+     * Authentication can be skipped if connection session cookies are presented.
      */
     cookies: string;
 }
