@@ -12,6 +12,11 @@ export interface ProviderConfiguration {
      * Ignore certificate verification errors
      */
     ignoreCertErrors: boolean;
+    /**
+     * Value to be passed into the `Cookie` request header
+     * https://datatracker.ietf.org/doc/html/rfc6265#section-4.2
+     */
+    cookies: string;
 }
 
 export interface ServiceProviderExtension {
