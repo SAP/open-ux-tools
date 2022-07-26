@@ -57,6 +57,11 @@ function createInstance<T extends ServiceProvider>(
         attachBasicAuthInterceptor(instance);
     }
 
+    if (config.cookies) {
+        config.cookies.split(';').forEach((singleCookieStr: string) => {
+            instance.cookies.addCookie(singleCookieStr.trim());
+        });
+    }
     return instance;
 }
 
@@ -128,21 +133,26 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
 
     switch (options.environment) {
         case AbapCloudEnvironment.Standalone: {
-            const { service, refreshToken, refreshTokenChangedCb, ...config } = options;
+            const { service, refreshToken, refreshTokenChangedCb, cookies, ...config } = options;
             provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
                 baseURL: service.url,
+                cookies,
                 ...config
             });
-            attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
+            if (!cookies) {
+                attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
+            }
             break;
         }
         case AbapCloudEnvironment.EmbeddedSteampunk: {
-            const { url, ...config } = options;
+            const { url, cookies, ...config } = options;
             provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
                 baseURL: url,
                 ...config
             });
-            attachReentranceTicketAuthInterceptor({ provider });
+            if (!cookies) {
+                attachReentranceTicketAuthInterceptor({ provider });
+            }
             break;
         }
         default:
@@ -155,19 +165,22 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
 /**
  * Create an instance of a service provider for the given destination.
  *
- * @param config axios config with additional extension specific properties
+ * @param options axios config with additional extension specific properties
  * @param destination destination config
  * @param destinationServiceInstance optional id of a destination service instance providing the destination
  * @returns instance of a service provider
  */
 export function createForDestination(
-    config: AxiosRequestConfig,
+    options: AxiosRequestConfig & Partial<ProviderConfiguration>,
     destination: Destination,
     destinationServiceInstance?: string
 ): ServiceProvider {
-    const providerConfig: AxiosRequestConfig = {
+    const { cookies, ...config } = options;
+
+    const providerConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         ...config,
-        baseURL: getDestinationUrlForAppStudio(destination.Name, new URL(destination.Host).pathname)
+        baseURL: getDestinationUrlForAppStudio(destination.Name, new URL(destination.Host).pathname),
+        cookies: cookies
     };
 
     // SAML in AppStudio is not yet supported

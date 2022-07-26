@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.5
+
+### Patch Changes
+
+-   5b46c30: Improve error handling of proxy middlewares
+
 ## 1.1.4
 
 ### Patch Changes

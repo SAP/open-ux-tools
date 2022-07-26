@@ -58,37 +58,41 @@ export const ProxyEventHandlers = {
                 header[i] = cookie;
             }
         }
-    },
-
-    /**
-     * Specifically handling errors due to unsigned certificates.
-     *
-     * @param err the error thrown when proxying the request or processing the response
-     * @param req request causing the error
-     * @param _res (not used)
-     * @param _target (not used)
-     */
-    onError(
-        err: Error & { code?: string },
-        req: IncomingMessage & { next?: Function },
-        _res?: ServerResponse,
-        _target?: string | Partial<Url>
-    ) {
-        if (err) {
-            let error: Error;
-            if (err.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY') {
-                error = new Error(i18n.t('error.sslProxy'));
-            } else {
-                error = err;
-            }
-            if (typeof req.next === 'function') {
-                req.next(error);
-            } else {
-                throw error;
-            }
-        }
     }
 };
+
+/**
+ * Specifically handling errors due to unsigned certificates and empty errors.
+ *
+ * @param err the error thrown when proxying the request or processing the response
+ * @param req request causing the error
+ * @param logger logger instance
+ * @param _res (not used)
+ * @param _target (not used)
+ */
+export function proxyErrorHandler(
+    err: Error & { code?: string },
+    req: IncomingMessage & { next?: Function; originalUrl?: string },
+    logger: ToolsLogger,
+    _res?: ServerResponse,
+    _target?: string | Partial<Url>
+): void {
+    if (err && err.stack?.toLowerCase() !== 'error') {
+        let error: Error;
+        if (err.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY') {
+            error = new Error(i18n.t('error.sslProxy'));
+        } else {
+            error = err;
+        }
+        if (typeof req.next === 'function') {
+            req.next(error);
+        } else {
+            throw error;
+        }
+    } else {
+        logger.debug(i18n.t('error.noCodeError', { error: JSON.stringify(err, null, 2), request: req.originalUrl }));
+    }
+}
 
 /**
  * Return the SAP API Hub key either provided as environment variable (including .env file) or from the secure store when not running in AppStudio.
@@ -168,7 +172,11 @@ export const PathRewriters = {
                 return newPath;
             };
         } else {
-            return undefined;
+            // Display request path even if it was not rewritten
+            return (path: string) => {
+                log.info(path);
+                return path;
+            };
         }
     }
 };
@@ -275,12 +283,20 @@ export async function enhanceConfigForSystem(
 export async function generateProxyMiddlewareOptions(
     backend: BackendConfig,
     options: Options = {},
-    logger: Logger = new ToolsLogger()
+    logger: ToolsLogger = new ToolsLogger()
 ): Promise<Options> {
     // add required options
     const proxyOptions: Options & { headers: object } = {
         headers: {},
         ...ProxyEventHandlers,
+        onError: (
+            err: Error & { code?: string },
+            req: IncomingMessage & { next?: Function; originalUrl?: string },
+            res: ServerResponse,
+            target: string | Partial<Url> | undefined
+        ) => {
+            proxyErrorHandler(err, req, logger, res, target);
+        },
         ...options
     };
     proxyOptions.changeOrigin = true;
@@ -352,6 +368,10 @@ export async function generateProxyMiddlewareOptions(
  * @param logger optional logger instance
  * @returns an instance of http-proxy-middleware
  */
-export async function createProxy(backend: BackendConfig, options?: Options, logger?: Logger): Promise<RequestHandler> {
+export async function createProxy(
+    backend: BackendConfig,
+    options?: Options,
+    logger?: ToolsLogger
+): Promise<RequestHandler> {
     return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, options, logger));
 }

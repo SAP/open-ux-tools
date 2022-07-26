@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.9.0
+
+### Minor Changes
+
+-   49dcf36: Supports establishing abap connection from existing cookies without auth.
+
 ## 0.8.1
 
 ### Patch Changes

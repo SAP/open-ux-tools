@@ -1,5 +1,18 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.12
+
+### Patch Changes
+
+-   5b46c30: Improve error handling of proxy middlewares
+
+## 0.6.11
+
+### Patch Changes
+
+-   Updated dependencies [49dcf36]
+    -   @sap-ux/axios-extension@0.9.0
+
 ## 0.6.10
 
 ### Patch Changes

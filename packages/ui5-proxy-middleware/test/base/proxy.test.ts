@@ -25,6 +25,7 @@ describe('ui5Proxy', () => {
                 target: 'https://example.example',
                 onProxyReq: expect.any(Function),
                 onProxyRes: expect.any(Function),
+                onError: expect.any(Function),
                 pathRewrite: { '/mypath': '/1.0.0/mypath' }
             })
         );
@@ -111,6 +112,25 @@ describe('ui5Proxy', () => {
             proxyConfig?.onProxyRes({} as any, {} as any, {} as any);
             expect(proxyResponseHandlerSpy).toHaveBeenCalledTimes(1);
             expect(proxyResponseHandlerSpy).toHaveBeenCalledWith({}, 'W/"1.0.0"');
+        }
+    });
+
+    test('ui5Proxy: calling onError calls proxyErrorHandler', () => {
+        const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
+        const proxyErrorHandlerSpy = jest.spyOn(utils, 'proxyErrorHandler').mockImplementation(jest.fn());
+        const config = {
+            path: '/mypath',
+            url: 'https://example.example',
+            version: '1.0.0'
+        };
+
+        ui5Proxy(config);
+        const proxyConfig = createProxyMiddlewareSpy.mock.calls[0][1];
+        if (typeof proxyConfig?.onError === 'function') {
+            const err = new Error();
+            proxyConfig?.onError(err as any, {} as any, {} as any);
+            expect(proxyErrorHandlerSpy).toHaveBeenCalledTimes(1);
+            expect(proxyErrorHandlerSpy).toHaveBeenCalledWith(err, {}, expect.any(ToolsLogger), {}, undefined);
         }
     });
 });
