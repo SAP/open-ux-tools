@@ -7,7 +7,7 @@ import type { ProxyConfig } from './types';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
-
+import type { Url } from 'url';
 import { t } from '../i18n';
 
 /**
@@ -311,3 +311,30 @@ export const filterCompressedHtmlFiles = (_pathname: string, req: IncomingMessag
     }
     return true;
 };
+
+/**
+ * Specifically handling errors due to undefined and empty errors.
+ *
+ * @param err the error thrown when proxying the request or processing the response
+ * @param req request causing the error
+ * @param logger logger instance
+ * @param _res (not used)
+ * @param _target (not used)
+ */
+export function proxyErrorHandler(
+    err: Error & { code?: string },
+    req: IncomingMessage & { next?: Function; originalUrl?: string },
+    logger: ToolsLogger,
+    _res?: ServerResponse,
+    _target?: string | Partial<Url>
+): void {
+    if (err && err.stack?.toLowerCase() !== 'error') {
+        if (typeof req.next === 'function') {
+            req.next(err);
+        } else {
+            throw err;
+        }
+    } else {
+        logger.debug(t('error.noCodeError', { error: JSON.stringify(err, null, 2), request: req.originalUrl }));
+    }
+}
