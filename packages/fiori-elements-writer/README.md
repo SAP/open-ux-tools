@@ -7,6 +7,7 @@ Easy to use Fiori Elements project files writer for use within Yeoman generator 
 Npm
 `npm install --save @sap-ux/fiori-elements-writer`
 
+
 Yarn
 `yarn add @sap-ux/fiori-elements-writer`
 
