@@ -1,5 +1,15 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.4.5
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/odata-service-writer@0.14.4
+    -   @sap-ux/ui5-application-writer@0.14.4
+    -   @sap-ux/ui5-config@0.14.4
+
 ## 0.4.4
 
 ### Patch Changes
