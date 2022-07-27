@@ -6,7 +6,7 @@ import { OdataService, OdataVersion } from '../../src';
 import * as ejs from 'ejs';
 
 jest.mock('ejs', () => ({
-    __esModule: true, // Allows mocking off ejs funcs
+    __esModule: true, // Allows mocking of ejs funcs
     ...(jest.requireActual('ejs') as {})
 }));
 
