@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.13.4
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+
 ## 0.13.3
 
 ### Patch Changes

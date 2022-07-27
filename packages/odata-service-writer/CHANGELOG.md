@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.4
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/ui5-config@0.14.4
+
 ## 0.14.3
 
 ### Patch Changes
