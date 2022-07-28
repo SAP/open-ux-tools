@@ -86,7 +86,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
 
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.ui5Version);
-    const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn);
+    const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn, {});
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment

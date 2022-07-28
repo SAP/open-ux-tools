@@ -75,7 +75,7 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
     const completeView = enhanceConfig(fs, root, customView, manifestPath, manifest);
 
     // enhance manifest with view definition
-    const filledTemplate = render(fs.read(join(root, 'view', `manifest.json`)), completeView);
+    const filledTemplate = render(fs.read(join(root, 'view', `manifest.json`)), completeView, {});
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment

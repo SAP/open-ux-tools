@@ -102,7 +102,7 @@ function getTemplateDocument<T extends BuildingBlock>(
     const templateContent = render(fs.read(templateFilePath), {
         macrosNamespace: getOrAddMacrosNamespace(viewDocument),
         data: buildingBlockData
-    });
+    }, {});
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };

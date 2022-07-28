@@ -81,7 +81,7 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
 
     // enhance manifest with section definition
     const manifestRoot = getManifestRoot(root, customSection.ui5Version);
-    const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeSection);
+    const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeSection, {});
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment
