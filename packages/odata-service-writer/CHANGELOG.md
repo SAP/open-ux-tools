@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.5
+
+### Patch Changes
+
+-   6c22256: Fix: Prevent ejs.render() using oDataService props as options
+
 ## 0.14.4
 
 ### Patch Changes
