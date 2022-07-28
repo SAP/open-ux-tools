@@ -54,7 +54,10 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     // package.json
     const packagePath = join(basePath, 'package.json');
-    fs.extendJSON(packagePath, JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {})));
+    fs.extendJSON(
+        packagePath,
+        JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
+    );
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
     packageJson.scripts = Object.assign(packageJson.scripts, {
