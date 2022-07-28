@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.10.3
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+
 ## 0.10.2
 
 ### Patch Changes

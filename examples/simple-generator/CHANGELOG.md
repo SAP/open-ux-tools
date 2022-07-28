@@ -1,5 +1,32 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.8
+
+### Patch Changes
+
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/fiori-elements-writer@0.4.5
+    -   @sap-ux/fiori-freestyle-writer@0.12.5
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [49dcf36]
+    -   @sap-ux/axios-extension@0.9.0
+
+## 0.2.6
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/axios-extension@0.8.1
+    -   @sap-ux/btp-utils@0.10.3
+    -   @sap-ux/fiori-elements-writer@0.4.4
+    -   @sap-ux/fiori-freestyle-writer@0.12.4
+    -   @sap-ux/logger@0.2.2
+
 ## 0.2.5
 
 ### Patch Changes

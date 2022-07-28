@@ -127,10 +127,17 @@ async function checkAbapSystem(env: {
  *
  * @param env object reprensenting the content of the .env file.
  * @param env.TEST_SERVICE_INFO_PATH path to a local copy of the service configuration file
+ * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
+ * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
  * @returns Promise<void>
  */
-async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Promise<void> {
+async function checkAbapBtpSystem(env: {
+    TEST_SERVICE_INFO_PATH: string;
+    TEST_PACKAGE?: string;
+    TEST_APP?: string;
+}): Promise<void> {
     const serviceInfo = JSON.parse(readFileSync(env.TEST_SERVICE_INFO_PATH, 'utf-8'));
+    // provider launches browser for uaa authentication
     const provider = createForAbapOnCloud({
         environment: AbapCloudEnvironment.Standalone,
         service: serviceInfo,
@@ -138,7 +145,18 @@ async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Prom
             logger.info(`New refresh token issued ${newToken}`);
         }
     });
-    return callAFewAbapServices(provider);
+    await callAFewAbapServices(provider);
+
+    // provider2 uses existing cookies from provider and doesn't launches browser for second time uaa authentication
+    const provider2 = createForAbapOnCloud({
+        environment: AbapCloudEnvironment.Standalone,
+        service: serviceInfo,
+        cookies: provider.cookies.toString(),
+        refreshTokenChangedCb: (newToken: string) => {
+            logger.info(`New refresh token issued ${newToken}`);
+        }
+    });
+    await callAFewAbapServices(provider2);
 }
 
 /**
@@ -186,6 +204,15 @@ async function checkDestination(env: {
             destinations[env.TEST_DESTINATION]
         ) as AbapServiceProvider;
         await callAFewAbapServices(provider);
+
+        const provider2 = createForDestination(
+            {
+                cookies: provider.cookies.toString()
+            },
+            destinations[env.TEST_DESTINATION]
+        ) as AbapServiceProvider;
+        (provider2 as any).cookies = provider.cookies;
+        await callAFewAbapServices(provider2);
     } else {
         logger.info(`Invalid destination ${env.TEST_DESTINATION}`);
     }

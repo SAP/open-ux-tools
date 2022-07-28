@@ -7,7 +7,9 @@ import {
     TenantType,
     V4CatalogService,
     Ui5AbapRepositoryService,
-    AppIndexService
+    AppIndexService,
+    createForAbapOnCloud,
+    AbapCloudEnvironment
 } from '../../src';
 
 /**
@@ -37,6 +39,19 @@ describe('AbapServiceProvider', () => {
             username: 'USER',
             password: 'SECRET'
         }
+    };
+    const existingCookieConfig = {
+        baseURL: server,
+        cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_Y05_100=abc'
+    };
+    const configForAbapOnCloud = {
+        service: {},
+        environment: AbapCloudEnvironment.Standalone
+    };
+    const existingCookieConfigForAbapOnCloud = {
+        service: {},
+        cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_Y05_100=abc',
+        environment: AbapCloudEnvironment.Standalone
     };
 
     const testPackage = 'ZSPD';
@@ -215,6 +230,40 @@ describe('AbapServiceProvider', () => {
                 .get(AdtServices.ATO_SETTINGS)
                 .replyWithError('Something went wrong');
             expect(await createForAbap(config).isS4Cloud()).toBe(false);
+        });
+    });
+
+    describe('Use existing connection session', () => {
+        const attachUaaAuthInterceptorSpy = jest.spyOn(require('../../src/auth'), 'attachUaaAuthInterceptor');
+
+        test('abap service provider', async () => {
+            const provider = createForAbap(existingCookieConfig);
+            expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
+        });
+
+        test('abap service provider for cloud', async () => {
+            nock(server)
+                .get(AdtServices.DISCOVERY)
+                .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+                .get(AdtServices.ATO_SETTINGS)
+                .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
+
+            const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloud as any);
+            expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
+            expect(await provider.isS4Cloud()).toBe(false);
+            expect(attachUaaAuthInterceptorSpy.mockImplementation(jest.fn())).toBeCalledTimes(0);
+        });
+
+        test('abap service provider for cloud - require authentication', async () => {
+            nock(server)
+                .get(AdtServices.DISCOVERY)
+                .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+                .get(AdtServices.ATO_SETTINGS)
+                .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
+
+            const provider = createForAbapOnCloud(configForAbapOnCloud as any);
+            expect(await provider.isS4Cloud()).toBe(false);
+            expect(attachUaaAuthInterceptorSpy.mockImplementation(jest.fn())).toBeCalledTimes(1);
         });
     });
 
