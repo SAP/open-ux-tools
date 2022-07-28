@@ -58,7 +58,7 @@ export function generate(basePath: string, data: ListReport, fs?: Editor): Edito
     // enhance manifest.json
     fs.extendJSON(
         manifestPath,
-        JSON.parse(render(fs.read(join(__dirname, '../../templates/page/list/manifest.json')), config)),
+        JSON.parse(render(fs.read(join(__dirname, '../../templates/page/list/manifest.json')), config, {})),
         getManifestJsonExtensionHelper(config)
     );
 

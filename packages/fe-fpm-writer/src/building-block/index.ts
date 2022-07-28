@@ -99,10 +99,14 @@ function getTemplateDocument<T extends BuildingBlock>(
 ): Document {
     const templateFolderName = buildingBlockData.buildingBlockType;
     const templateFilePath = join(__dirname, `../../templates/building-block/${templateFolderName}/View.xml`);
-    const templateContent = render(fs.read(templateFilePath), {
-        macrosNamespace: getOrAddMacrosNamespace(viewDocument),
-        data: buildingBlockData
-    });
+    const templateContent = render(
+        fs.read(templateFilePath),
+        {
+            macrosNamespace: getOrAddMacrosNamespace(viewDocument),
+            data: buildingBlockData
+        },
+        {}
+    );
     const errorHandler = (level: string, message: string) => {
         throw new Error(`Unable to parse template file with building block data. Details: [${level}] - ${message}`);
     };
