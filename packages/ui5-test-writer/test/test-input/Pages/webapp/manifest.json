@@ -1,0 +1,98 @@
+{
+    "_version": "1.32.0",
+    "sap.app": {
+        "id": "projectservice",
+        "dataSources": {
+            "mainService": {
+                "uri": "/employee/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
+                }
+            }
+        }
+    },
+    "sap.ui5": {
+        "models": {
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            }
+        },
+        "routing": {
+            "targets": {
+                "EmployeesListTarget": {
+                    "type": "Component",
+                    "id": "EmployeesList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "entitySet": "Employees"
+                        }
+                    }
+                },
+                "EmployeesObjectPageTarget": {
+                    "type": "Component",
+                    "id": "EmployeesObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "entitySet": "Employees"
+                        }
+                    }
+                },
+                "EmployeesCustomPageTarget": {
+                    "type": "Component",
+                    "id": "EmployeesCustomPage",
+                    "name": "sap.fe.core.fpm",
+                    "options": {
+                        "settings": {
+                            "viewName": "projectservice.ext.view.MyCustomPage",
+                            "entitySet": "Employees"
+                        }
+                    }
+                },
+                "AnotherCustomPageTarget": {
+                    "type": "Component",
+                    "id": "EmployeesCustomPage",
+                    "name": "another.component.name",
+                    "options": {
+                        "settings": {
+                            "viewName": "projectservice.ext.view.MyCustomPage",
+                            "entitySet": "Employees"
+                        }
+                    }
+                },
+                "XMLView": {
+                    "type": "View",
+                    "name": "myView"
+                },
+                "NoID": {
+                    "type": "Component",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "entitySet": "Employees"
+                        }
+                    }
+                },
+                "NoEntitySet": {
+                    "type": "Component",
+                    "id": "EmployeesList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "variantManagement": "Page"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
