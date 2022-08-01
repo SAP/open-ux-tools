@@ -51,13 +51,3 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Vulnerable versions | <=1.2.5 |
 | Patched versions    | >=1.2.6 |
 | More info           | https://github.com/advisories/GHSA-xvch-5gv4-984h |
-
-## glob-parent
-| Override:           | ^6.0.1 |
-|:--------------------| :-------------|
-|                     | |
-| **moderate**        | Vulnerable to Regular Expression Denial of Service (ReDoS) |
-| Package             | glob-parent |
-| Vulnerable versions | < 6.0.1 |
-| Patched versions    | >=6.0.1 |
-| More info           | https://github.com/advisories/GHSA-cj88-88mr-972w |

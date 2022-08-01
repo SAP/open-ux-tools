@@ -52,8 +52,7 @@
             "follow-redirects": ">=1.14.8",
             "tmpl": "^1.0.5",
             "vm2@<3.9.6": "^3.9.6",
-            "minimist": "^1.2.6",
-            "glob-parent": "^6.0.1"
+            "minimist": "^1.2.6"
         }
     }
 }
