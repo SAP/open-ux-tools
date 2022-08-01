@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement, Position } from '../common/types';
+import type { CustomElement, InternalCustomElement, Position, EventHandler } from '../common/types';
 
 export enum Availability {
     'Default' = 'Default',
@@ -18,7 +18,7 @@ export type ColumnPropertiesType = string[];
  * Custom Column.
  *
  */
-export interface CustomTableColumn extends CustomElement {
+export interface CustomTableColumn extends CustomElement, EventHandler {
     /**
      * Name of the routing target
      */
@@ -35,11 +35,6 @@ export interface CustomTableColumn extends CustomElement {
      * The header is shown on the table as header, as well as in the add/remove dialog.
      */
     header: string;
-    /**
-     * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.
-     * If an existing event handler is to be used then its id needs to be provided as string.
-     */
-    eventHandler?: string | true;
     /**
      * Optional control XML that will be generated into the fragment of table column. If the property isn't provided then a sample control will be generated.
      */

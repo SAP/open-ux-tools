@@ -27,7 +27,10 @@ export function updateManifest(basePath: string, service: OdataService, fs: Edit
     }
 
     const manifestJsonExt = fs.read(join(templateRoot, 'extend', `manifest.json`));
-    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, service)));
+
+    // If the service object includes ejs options, for example 'client' (see: https://ejs.co/#docs),
+    // resulting in unexpected behaviour and problems when webpacking. Passing an empty options object prevents this.
+    fs.extendJSON(manifestPath, JSON.parse(render(manifestJsonExt, service, {})));
 }
 
 /**

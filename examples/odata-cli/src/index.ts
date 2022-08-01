@@ -50,9 +50,27 @@ if (isAppStudio()) {
  * Execute a sequence of test calls using the given provider.
  *
  * @param provider instance of a service provider
+ * @param testPackageName optional environment variable
+ * @param testAppName optional environment variable
  */
-async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
+async function callAFewAbapServices(
+    provider: AbapServiceProvider,
+    testPackageName?: string,
+    testAppName?: string
+): Promise<void> {
     try {
+        const atoSettings = await provider.getAtoInfo();
+        if (!atoSettings || Object.keys(atoSettings).length === 0) {
+            console.warn('ATO setting is empty!');
+        }
+
+        if (testPackageName && testAppName) {
+            const transportNumList = await provider.getTransportRequests(testPackageName, testAppName);
+            if (transportNumList.length === 0) {
+                console.info(`Transport number is empty for package name ${testPackageName}, app name ${testAppName}`);
+            }
+        }
+
         const catalog = provider.catalog(ODataVersion.v2);
 
         const services = await catalog.listServices();
@@ -71,7 +89,7 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
             });
         }
     } catch (error) {
-        console.error(error.cause);
+        console.error(error.cause || error.toString() || error);
     }
 }
 
@@ -82,12 +100,16 @@ async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void
  * @param env.TEST_SYSTEM base url of the test system
  * @param env.TEST_USER optional username
  * @param env.TEST_PASSWORD optional password
+ * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
+ * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
  * @returns Promise<void>
  */
 async function checkAbapSystem(env: {
     TEST_SYSTEM: string;
     TEST_USER?: string;
     TEST_PASSWORD?: string;
+    TEST_PACKAGE?: string;
+    TEST_APP?: string;
 }): Promise<void> {
     const provider = createForAbap({
         baseURL: env.TEST_SYSTEM,
@@ -97,7 +119,7 @@ async function checkAbapSystem(env: {
             password: env.TEST_PASSWORD
         }
     });
-    return callAFewAbapServices(provider);
+    return callAFewAbapServices(provider, env.TEST_PACKAGE, env.TEST_APP);
 }
 
 /**
@@ -105,10 +127,17 @@ async function checkAbapSystem(env: {
  *
  * @param env object reprensenting the content of the .env file.
  * @param env.TEST_SERVICE_INFO_PATH path to a local copy of the service configuration file
+ * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
+ * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
  * @returns Promise<void>
  */
-async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Promise<void> {
+async function checkAbapBtpSystem(env: {
+    TEST_SERVICE_INFO_PATH: string;
+    TEST_PACKAGE?: string;
+    TEST_APP?: string;
+}): Promise<void> {
     const serviceInfo = JSON.parse(readFileSync(env.TEST_SERVICE_INFO_PATH, 'utf-8'));
+    // provider launches browser for uaa authentication
     const provider = createForAbapOnCloud({
         environment: AbapCloudEnvironment.Standalone,
         service: serviceInfo,
@@ -116,7 +145,18 @@ async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Prom
             logger.info(`New refresh token issued ${newToken}`);
         }
     });
-    return callAFewAbapServices(provider);
+    await callAFewAbapServices(provider);
+
+    // provider2 uses existing cookies from provider and doesn't launches browser for second time uaa authentication
+    const provider2 = createForAbapOnCloud({
+        environment: AbapCloudEnvironment.Standalone,
+        service: serviceInfo,
+        cookies: provider.cookies.toString(),
+        refreshTokenChangedCb: (newToken: string) => {
+            logger.info(`New refresh token issued ${newToken}`);
+        }
+    });
+    await callAFewAbapServices(provider2);
 }
 
 /**
@@ -164,6 +204,15 @@ async function checkDestination(env: {
             destinations[env.TEST_DESTINATION]
         ) as AbapServiceProvider;
         await callAFewAbapServices(provider);
+
+        const provider2 = createForDestination(
+            {
+                cookies: provider.cookies.toString()
+            },
+            destinations[env.TEST_DESTINATION]
+        ) as AbapServiceProvider;
+        (provider2 as any).cookies = provider.cookies;
+        await callAFewAbapServices(provider2);
     } else {
         logger.info(`Invalid destination ${env.TEST_DESTINATION}`);
     }

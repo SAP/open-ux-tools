@@ -5,7 +5,8 @@ import {
     enhanceConfigsForDestination,
     enhanceConfigForSystem,
     ProxyEventHandlers,
-    PathRewriters
+    PathRewriters,
+    proxyErrorHandler
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
 import { getCorporateProxyServer } from '../../src/base/config';
@@ -38,6 +39,11 @@ const mockListDestinations = listDestinations as jest.Mock;
 const mockGetCredentialsForDestinationService = getCredentialsForDestinationService as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
+const mockPrompt = jest.fn();
+jest.mock('prompts', () => {
+    return () => mockPrompt();
+});
+
 describe('proxy', () => {
     type OptionsWithHeaders = Options & { headers: object };
     const logger = new ToolsLogger({
@@ -66,7 +72,9 @@ describe('proxy', () => {
 
         test('getPathRewrite', () => {
             // no rewrite required
-            expect(getPathRewrite({} as BackendConfig, logger)).toBeUndefined();
+            const pathOutput = getPathRewrite({} as BackendConfig, logger);
+            expect(pathOutput).toBeDefined();
+            expect(pathOutput!('/my/path')).toEqual('/my/path');
 
             // all writers added
             const writerChain = getPathRewrite(
@@ -84,7 +92,7 @@ describe('proxy', () => {
     });
 
     describe('ProxyEventHandlers', () => {
-        const { onProxyReq, onProxyRes, onError } = ProxyEventHandlers;
+        const { onProxyReq, onProxyRes } = ProxyEventHandlers;
 
         test('onProxyReq', () => {
             const mockSetHeader = jest.fn();
@@ -140,17 +148,22 @@ describe('proxy', () => {
             const requestWithNext = {
                 next: mockNext as Function
             } as IncomingMessage & { next: Function };
+            const requestCausingError = {
+                originalUrl: 'my/request/.error'
+            } as IncomingMessage & { originalUrl?: string };
+            const debugSpy = jest.spyOn(logger, 'debug');
 
-            // do nothing if no error is provided
-            onError(undefined as unknown as Error, request);
+            // do nothing if no error is provided, but log for debug purposes
+            proxyErrorHandler(undefined as unknown as Error, request, logger);
+            expect(debugSpy).toBeCalled();
 
             // handle CA error
             const certError: Error & { code?: string } = new Error('Certificate error');
             certError.code = 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY';
-            onError(certError, requestWithNext);
+            proxyErrorHandler(certError, requestWithNext, logger);
             expect(mockNext).toBeCalled();
             try {
-                onError(certError, request);
+                proxyErrorHandler(certError, request, logger);
             } catch (error) {
                 expect(error).not.toBe(certError);
             }
@@ -158,13 +171,22 @@ describe('proxy', () => {
 
             // forward or throw other errors
             const otherError = new Error();
-            onError(otherError, requestWithNext);
+            proxyErrorHandler(otherError, requestWithNext, logger);
             expect(mockNext).toBeCalledTimes(1);
             try {
-                onError(otherError, request);
+                proxyErrorHandler(otherError, request, logger);
             } catch (error) {
                 expect(error).toBe(otherError);
             }
+
+            // ignore empty errors
+            debugSpy.mockReset();
+            const emptyError = { message: '', stack: 'Error' } as Error;
+            proxyErrorHandler(emptyError, requestCausingError, logger);
+            expect(debugSpy).toBeCalledTimes(1);
+            expect(debugSpy).toBeCalledWith(
+                `Error ${JSON.stringify(emptyError, null, 2)} thrown for request ${requestCausingError.originalUrl}`
+            );
         });
     });
 
@@ -258,7 +280,7 @@ describe('proxy', () => {
             const proxyOptions: OptionsWithHeaders = { headers: {} };
             const cloudSystem = {
                 ...system,
-                serviceKeys: '{"keys": "~keys"}',
+                serviceKeys: { keys: '~keys' },
                 refreshToken: '~token'
             };
             const callback = jest.fn();
@@ -266,7 +288,7 @@ describe('proxy', () => {
             expect(proxyOptions.headers.cookie).toBe('~cookies');
             expect(mockCreateForAbapOnCloud).toBeCalledWith({
                 environment: AbapCloudEnvironment.Standalone,
-                service: JSON.parse(cloudSystem.serviceKeys),
+                service: cloudSystem.serviceKeys,
                 refreshToken: cloudSystem.refreshToken,
                 refreshTokenChangedCb: callback
             });
@@ -366,6 +388,87 @@ describe('proxy', () => {
             expect(options.ws).toBeUndefined();
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
+        });
+
+        test('generate proxy middleware inside of BAS with direct odata service url', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options).toBeDefined();
+            expect(options.target).toBe(backend.url);
+            expect(options.changeOrigin).toBe(true);
+            if (getCorporateProxyServer()) {
+                expect(options.agent).toBeDefined();
+            } else {
+                expect(options.agent).toBeUndefined();
+            }
+            expect(options.ws).toBeUndefined();
+            expect(options.xfwd).toBeUndefined();
+            expect(options.secure).toBeUndefined();
+        });
+
+        test('generate proxy middleware options for FLP Embedded flow', async () => {
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path',
+                bsp: 'my_bsp'
+            };
+            const answers = {
+                username: '~user',
+                password: '~password'
+            };
+            mockIsAppStudio.mockReturnValue(false);
+            mockPrompt.mockResolvedValue({ ...answers, authNeeded: true });
+            const options = await generateProxyMiddlewareOptions(backend);
+            expect(options.pathRewrite).toBeDefined();
+            expect(options.router).toBeDefined();
+            expect(options.auth).toBeDefined();
+            expect(options.auth).toBe(`${answers.username}:${answers.password}`);
+        });
+
+        test('user/password authentication from env', async () => {
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+            const creds = {
+                username: '~user',
+                password: '~password'
+            };
+            process.env.FIORI_TOOLS_USER = creds.username;
+            process.env.FIORI_TOOLS_PASSWORD = creds.password;
+            const proxyOptions = await generateProxyMiddlewareOptions(backend);
+            expect(proxyOptions.auth).toBe(`${creds.username}:${creds.password}`);
+        });
+
+        test('throw an error if proxyOptions.target is not defined', async () => {
+            const backend = { url: '', path: '/my/path' } as LocalBackendConfig;
+            try {
+                await generateProxyMiddlewareOptions(backend);
+            } catch (error) {
+                expect(error).toBeDefined();
+                expect(error.message).toEqual(
+                    `Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`
+                );
+            }
+        });
+
+        test('calling onError calls proxyErrorHandler', async () => {
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+            const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, logger);
+            const debugSpy = jest.spyOn(logger, 'debug');
+            debugSpy.mockReset();
+            if (typeof proxyOptions?.onError === 'function') {
+                proxyOptions?.onError(undefined as any, {} as any, {} as any);
+                expect(debugSpy).toHaveBeenCalledTimes(1);
+            }
         });
     });
 

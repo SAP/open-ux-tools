@@ -1,5 +1,17 @@
 # @sap-ux/yaml
 
+## 0.12.2
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+
+## 0.12.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+
 ## 0.12.0
 
 ### Minor Changes

@@ -1,5 +1,71 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.12
+
+### Patch Changes
+
+-   5b46c30: Improve error handling of proxy middlewares
+
+## 0.6.11
+
+### Patch Changes
+
+-   Updated dependencies [49dcf36]
+    -   @sap-ux/axios-extension@0.9.0
+
+## 0.6.10
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/axios-extension@0.8.1
+    -   @sap-ux/btp-utils@0.10.3
+    -   @sap-ux/logger@0.2.2
+    -   @sap-ux/store@0.3.2
+
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [732171b]
+    -   @sap-ux/axios-extension@0.8.0
+
+## 0.6.8
+
+### Patch Changes
+
+-   fa232ad: Add optonal url property to the type DestinationBackendConfig
+
+## 0.6.7
+
+### Patch Changes
+
+-   7f339ca: Support using direct OData service URLs in BAS
+
+## 0.6.6
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/axios-extension@0.7.2
+    -   @sap-ux/btp-utils@0.10.2
+    -   @sap-ux/logger@0.2.1
+    -   @sap-ux/store@0.3.1
+
+## 0.6.5
+
+### Patch Changes
+
+-   6fae741: Support setting credentials via .env file
+
+## 0.6.4
+
+### Patch Changes
+
+-   febef3e: Moves bsp logic to function generateProxyMiddlewareOptions
+
 ## 0.6.3
 
 ### Patch Changes

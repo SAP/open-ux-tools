@@ -1,0 +1,12 @@
+{
+    "sap.app": {
+        "id": "my.test.App"
+    },
+    "sap.ui5": {
+        "dependencies": {
+            "libs": {
+                "sap.fe.templates": {}
+            }
+        }
+    }
+}

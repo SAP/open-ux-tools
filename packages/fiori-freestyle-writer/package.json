@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
     "description": "SAP Fiori freestyle application writer",
-    "version": "0.12.1",
+    "version": "0.12.6",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -26,7 +26,9 @@
     "files": [
         "LICENSE",
         "dist",
-        "templates"
+        "templates",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
         "@sap-ux/odata-service-writer": "workspace:*",

@@ -55,7 +55,7 @@ export function extendManifestJson<T>(
     extendTemplatePaths.forEach((extendTemplatePath) => {
         const manifestTemplatePath = join(extendTemplatePath, 'manifest.json');
         if (fs.exists(manifestTemplatePath)) {
-            fs.extendJSON(manifestPath, JSON.parse(render(fs.read(manifestTemplatePath), templateSettings)));
+            fs.extendJSON(manifestPath, JSON.parse(render(fs.read(manifestTemplatePath), templateSettings, {})));
         }
     });
 }

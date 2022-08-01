@@ -49,7 +49,7 @@ export function generate(basePath: string, data: ObjectPage, fs?: Editor): Edito
     // enhance manifest.json
     fs.extendJSON(
         manifestPath,
-        JSON.parse(render(fs.read(join(__dirname, '../../templates/page/object/manifest.json')), config)),
+        JSON.parse(render(fs.read(join(__dirname, '../../templates/page/object/manifest.json')), config, {})),
         getManifestJsonExtensionHelper(config)
     );
 

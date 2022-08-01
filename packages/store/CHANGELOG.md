@@ -1,5 +1,21 @@
 # @sap-ux/store
 
+## 0.3.2
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/logger@0.2.2
+
+## 0.3.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/logger@0.2.1
+
 ## 0.3.0
 
 ### Minor Changes

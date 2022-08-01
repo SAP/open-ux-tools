@@ -7,19 +7,28 @@ updates:
     # --- GitHub Actions
     - package-ecosystem: 'github-actions'
       directory: '/'
+      open-pull-requests-limit: 5
       schedule:
-          interval: 'daily'
-
+          interval: 'weekly'
+          # Check for npm updates on Mondays
+          day: 'monday'
+          time: '09:00'
     - package-ecosystem: 'npm'
       directory: '/'
-      open-pull-requests-limit: 20
+      open-pull-requests-limit: 5
       rebase-strategy: 'auto'
       schedule:
           interval: 'weekly'
+          # Check for npm updates on Mondays
+          day: 'monday'
+          time: '09:00'
       allow:
           - dependency-type: 'direct'
       ignore:
           - dependency-name: 'typescript'
             versions: ['4.x']
+          # jest 28 requires typescript 4.3+, currently using 4.0.8
+          - dependency-name: 'jest'
+            versions: ['28.x']            
           - dependency-name: '@types/node'
-            versions: ['13.x', '14.x', '15.x', '16.x', '17.x']
+            versions: ['13.x', '14.x', '15.x', '16.x', '17.x', '18.x']

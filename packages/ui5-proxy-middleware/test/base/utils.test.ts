@@ -10,17 +10,23 @@ import {
     isHostExcludedFromProxy,
     proxyRequestHandler,
     proxyResponseHandler,
-    setHtmlResponse
+    setHtmlResponse,
+    proxyErrorHandler
 } from '../../src/base/utils';
 import type { Response } from 'express';
 import YAML from 'yaml';
 import fs from 'fs';
 import * as baseUtils from '../../src/base/utils';
 import { ProxyConfig } from '../../src/base/types';
+import type { IncomingMessage } from 'http';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 describe('Utils', () => {
     const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
     const readFileMock = jest.spyOn(fs, 'readFileSync').mockReturnValue('');
+    const logger = new ToolsLogger({
+        transports: [new NullTransport()]
+    });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -66,6 +72,41 @@ describe('Utils', () => {
         process.env.npm_config_https_proxy = corporateProxy;
         expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
         process.env.npm_config_https_proxy = envProxy;
+    });
+
+    test('proxyErrorHandler', () => {
+        const mockNext = jest.fn();
+        const request = {} as IncomingMessage;
+        const requestWithNext = {
+            next: mockNext as Function
+        } as IncomingMessage & { next: Function };
+        const requestCausingError = {
+            originalUrl: 'my/request/.error'
+        } as IncomingMessage & { originalUrl?: string };
+        const debugSpy = jest.spyOn(logger, 'debug');
+
+        // do nothing if no error is provided, but log for debug purposes
+        proxyErrorHandler(undefined as unknown as Error, request, logger);
+        expect(debugSpy).toBeCalled();
+
+        // forward or throw other errors
+        const otherError = new Error();
+        proxyErrorHandler(otherError, requestWithNext, logger);
+        expect(mockNext).toBeCalledTimes(1);
+        try {
+            proxyErrorHandler(otherError, request, logger);
+        } catch (error) {
+            expect(error).toBe(otherError);
+        }
+
+        // ignore empty errors
+        debugSpy.mockReset();
+        const emptyError = { message: '', stack: 'Error' } as Error;
+        proxyErrorHandler(emptyError, requestCausingError, logger);
+        expect(debugSpy).toBeCalledTimes(1);
+        expect(debugSpy).toBeCalledWith(
+            `Error ${JSON.stringify(emptyError, null, 2)} thrown for request ${requestCausingError.originalUrl}`
+        );
     });
 
     describe('isHostExcludedFromProxy', () => {
