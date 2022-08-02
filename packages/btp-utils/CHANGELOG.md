@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.10.4
+
+### Patch Changes
+
+-   5710cfa: fix handling of full url destinations
+
 ## 0.10.3
 
 ### Patch Changes

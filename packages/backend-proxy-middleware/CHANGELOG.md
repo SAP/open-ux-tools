@@ -1,5 +1,14 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.13
+
+### Patch Changes
+
+-   5710cfa: fix handling of full url destinations
+-   Updated dependencies [5710cfa]
+    -   @sap-ux/btp-utils@0.10.4
+    -   @sap-ux/axios-extension@0.9.1
+
 ## 0.6.12
 
 ### Patch Changes
