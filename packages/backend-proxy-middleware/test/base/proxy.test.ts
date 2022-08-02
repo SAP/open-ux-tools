@@ -26,6 +26,7 @@ import {
     listDestinations,
     getDestinationUrlForAppStudio,
     WebIDEUsage,
+    WebIDEAdditionalData,
     getCredentialsForDestinationService,
     isAppStudio
 } from '@sap-ux/btp-utils';
@@ -220,7 +221,7 @@ describe('proxy', () => {
                 [backend.destination]: {
                     Host: 'http://backend.example/sap',
                     WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC}`,
-                    WebIDEAdditionalData: 'full_url'
+                    WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
@@ -237,7 +238,7 @@ describe('proxy', () => {
                 [backend.destination]: {
                     Host: 'http://backend.example/sap',
                     WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC}`,
-                    WebIDEAdditionalData: 'full_url'
+                    WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
