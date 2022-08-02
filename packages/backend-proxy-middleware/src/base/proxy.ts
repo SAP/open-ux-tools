@@ -220,10 +220,8 @@ export async function enhanceConfigsForDestination(
         if (destination) {
             // in case of a full url destination remove the path defined in the destination from the forwarded call
             if (isFullUrlDestination(destination)) {
-                const destPath = new URL(destination.Host).pathname.replace(/\/$/, '');
-                if (backend.path.startsWith(destPath) && !backend.pathReplace) {
-                    backend.pathReplace = backend.path.replace(destPath, '');
-                }
+                backend.path = new URL(destination.Host).pathname.replace(/\/$/, '');
+                backend.pathReplace = backend.pathReplace ?? '/';
             }
         } else {
             throw new Error();
