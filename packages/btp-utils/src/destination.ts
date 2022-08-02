@@ -5,7 +5,6 @@ export enum WebIDEUsage {
     ODATA_GENERIC = 'odata_gen',
     ODATA_ABAP = 'odata_abap',
     DEV_ABAP = 'dev_abap',
-    FULL_URL = 'full_url',
     ABAP_CLOUD = 'abap_cloud'
 }
 
@@ -19,6 +18,7 @@ type DestinationProperty =
     | 'sap-platform'
     | 'TrustAll';
 type AdditionalDestinationProperties = { [property in DestinationProperty]: string };
+const FULL_URL = 'full_url';
 
 /**
  * Mandatory destination properties combined with the known/relevant optional properties.
@@ -81,7 +81,7 @@ export function isGenericODataDestination(destination: Destination): boolean {
  * @returns true, if this destination is generic odata and 'full_url' attribute is not set
  */
 export function isPartialUrlDestination(destination: Destination): boolean {
-    return Boolean(!destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination));
+    return Boolean(!destination.WebIDEAdditionalData?.includes(FULL_URL) && isGenericODataDestination(destination));
 }
 
 /**
@@ -91,5 +91,5 @@ export function isPartialUrlDestination(destination: Destination): boolean {
  * @returns true, if this destination has the generic odata and 'full_url' attribute is set
  */
 export function isFullUrlDestination(destination: Destination): boolean {
-    return Boolean(destination.WebIDEUsage?.includes(WebIDEUsage.FULL_URL) && isGenericODataDestination(destination));
+    return Boolean(destination.WebIDEAdditionalData?.includes(FULL_URL) && isGenericODataDestination(destination));
 }
