@@ -3,6 +3,7 @@ import {
     isAbapSystem,
     isAbapEnvironmentOnBtp,
     WebIDEUsage,
+    WebIDEAdditionalData,
     isGenericODataDestination,
     isPartialUrlDestination,
     isFullUrlDestination
@@ -87,7 +88,7 @@ describe('destination', () => {
                 isFullUrlDestination({
                     ...destination,
                     WebIDEUsage: WebIDEUsage.ODATA_GENERIC,
-                    WebIDEAdditionalData: 'full_url'
+                    WebIDEAdditionalData: WebIDEAdditionalData.FULL_URL
                 })
             ).toBe(true);
         });
