@@ -7,7 +7,6 @@ import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
 import { AdtServiceName, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt-catalog';
-import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
 import { getTransportNumberList } from './adt-catalog/handlers/transport';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
 import type { AdtCollection } from './types';
@@ -15,7 +14,7 @@ import type { AdtCollection } from './types';
 /**
  * Extension of the service provider for ABAP services.
  */
-export class AbapServiceProvider extends ServiceProvider implements AbapServiceProviderExtension {
+export class AbapServiceProvider extends ServiceProvider {
     public s4Cloud: boolean | undefined;
 
     protected atoSettings: AtoSettings;
@@ -138,7 +137,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @returns an instance of the UI5 ABAP repository service.
      */
-    public ui5AbapRepository(): Ui5AbapRepositoryService {
+    public get ui5AbapRepository(): Ui5AbapRepositoryService {
         if (!this.services[Ui5AbapRepositoryService.PATH]) {
             this.services[Ui5AbapRepositoryService.PATH] = this.createService<Ui5AbapRepositoryService>(
                 Ui5AbapRepositoryService.PATH,
@@ -153,7 +152,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @returns an instance of the app index service.
      */
-    public appIndex(): AppIndexService {
+    public get appIndex(): AppIndexService {
         if (!this.services[AppIndexService.PATH]) {
             this.services[AppIndexService.PATH] = this.createService<AppIndexService>(
                 AppIndexService.PATH,
@@ -168,7 +167,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @returns an instance of the design time adaptation service.
      */
-    public layeredRepository(): LayeredRepositoryService {
+    public get layeredRepository(): LayeredRepositoryService {
         if (!this.services[LayeredRepositoryService.PATH]) {
             this.services[LayeredRepositoryService.PATH] = this.createService<LayeredRepositoryService>(
                 LayeredRepositoryService.PATH,

@@ -303,12 +303,10 @@ describe('AbapServiceProvider', () => {
     describe('services', () => {
         const provider = createForAbap(config);
         test('ui5AbapRepository', () => {
-            const service = provider.ui5AbapRepository();
-            expect(service).toBe(provider.service(Ui5AbapRepositoryService.PATH));
+            expect(provider.ui5AbapRepository).toBe(provider.service(Ui5AbapRepositoryService.PATH));
         });
         test('appIndex', () => {
-            const service = provider.appIndex();
-            expect(service).toBe(provider.service(AppIndexService.PATH));
+            expect(provider.appIndex).toBe(provider.service(AppIndexService.PATH));
         });
     });
 });

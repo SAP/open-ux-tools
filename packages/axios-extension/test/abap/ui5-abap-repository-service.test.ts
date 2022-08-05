@@ -16,7 +16,7 @@ describe('Ui5AbapRepositoryService', () => {
         message: '~message',
         details: [{ code: '200', message: '~message', severity: 'info' }]
     });
-    const service = createForAbap({ baseURL: server }).ui5AbapRepository();
+    const service = createForAbap({ baseURL: server }).ui5AbapRepository;
 
     beforeAll(() => {
         nock.disableNetConnect();
@@ -115,7 +115,7 @@ describe('Ui5AbapRepositoryService', () => {
         });
 
         test('retry deployment on 504', async () => {
-            const badService = createForAbap({ baseURL: server }).ui5AbapRepository();
+            const badService = createForAbap({ baseURL: server }).ui5AbapRepository;
             const mockPut = jest.fn().mockRejectedValue({
                 response: {
                     status: 504

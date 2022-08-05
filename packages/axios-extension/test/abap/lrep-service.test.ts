@@ -5,7 +5,7 @@ import { LayeredRepositoryService, createForAbap, AdaptationConfig } from '../..
 
 describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';
-    const service = createForAbap({ baseURL: server }).layeredRepository();
+    const service = createForAbap({ baseURL: server }).layeredRepository;
     const config: AdaptationConfig = {
         namespace: 'apps/my.base.app/appVariants/customer.variant/',
         package: 'MY_PACKAGE',

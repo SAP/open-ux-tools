@@ -37,7 +37,7 @@ describe('AppIndexService', () => {
 
     describe('search', () => {
         const provider = createForAbap(config);
-        const service: AppIndexService = provider.appIndex();
+        const service: AppIndexService = provider.appIndex;
 
         test('no filter', async () => {
             const appIndex = await service.search();
