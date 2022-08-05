@@ -251,7 +251,7 @@ title=My Test App",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -997,7 +997,7 @@ title=My Test App",
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -2530,7 +2530,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -3319,7 +3319,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -4660,7 +4660,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -5451,7 +5451,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">

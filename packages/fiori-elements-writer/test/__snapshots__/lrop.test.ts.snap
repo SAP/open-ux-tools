@@ -218,7 +218,7 @@ appDescription=A Fiori application.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -3300,7 +3300,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -3773,7 +3773,7 @@ appDescription=A Fiori application.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -6855,7 +6855,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -7330,7 +7330,7 @@ appDescription=A Fiori application.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -10409,7 +10409,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -10712,7 +10712,7 @@ appDescription=A Fiori application.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -13795,7 +13795,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -14268,7 +14268,7 @@ appDescription=A Fiori application.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -17351,7 +17351,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -17818,7 +17818,7 @@ appDescription=A Fiori application.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -20939,7 +20939,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -21405,7 +21405,7 @@ appDescription=A Fiori application.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -24526,7 +24526,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
