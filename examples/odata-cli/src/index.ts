@@ -10,6 +10,7 @@ import { isAppStudio, listDestinations, isAbapSystem } from '@sap-ux/btp-utils';
 import { ToolsLogger } from '@sap-ux/logger';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { getADTCatalog } from './adt';
 
 // read CLI arguments as well as environment variables
 const args = process.argv.slice(3);
@@ -36,6 +37,9 @@ if (isAppStudio()) {
             break;
         case 'cloud':
             checkCloudAbapSystem(processEnv);
+            break;
+        case 'adt':
+            getADTCatalog(processEnv);
             break;
         case undefined:
             logger.info(`Test name missing, try 'pnpm test -- abap'`);
@@ -65,7 +69,7 @@ async function callAFewAbapServices(
         }
 
         if (testPackageName && testAppName) {
-            const transportNumList = await provider.getTransportRequests(testPackageName, testAppName);
+            const transportNumList = await provider.adt.getTransportRequests(testPackageName, testAppName);
             if (transportNumList.length === 0) {
                 console.info(`Transport number is empty for package name ${testPackageName}, app name ${testAppName}`);
             }

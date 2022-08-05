@@ -1,7 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
-import type { AdtCategory, AdtCollection, AdtSchemaData } from 'abap/types';
+import type { AdtCategory, AdtCollection, AdtSchemaData } from '../types/';
 import { Axios } from 'axios';
-import type { AdtCatalogServiceApi } from './adt-catalog-service-api';
 import { AdtSchemaStore } from './adt-schema-store';
 import XmlParser from 'fast-xml-parser';
 
@@ -9,7 +8,7 @@ import XmlParser from 'fast-xml-parser';
  * Adt Catalog Service implementation fetches the
  * Adt service specification for a given ADT service.
  */
-export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
+export class AdtCatalogService extends Axios {
     // Discovery service url provided by ADT team
     public static ADT_DISCOVERY_SERVICE_PATH = '/sap/bc/adt/discovery';
     // Cache of fetched discovery schema

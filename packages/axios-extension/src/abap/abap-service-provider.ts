@@ -1,7 +1,7 @@
 import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
-import type { AtoSettings } from './adt-catalog';
+import { AdtServices, AtoSettings } from './adt-catalog';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
@@ -46,9 +46,7 @@ export class AbapServiceProvider extends ServiceProvider {
     public async getAtoInfo(): Promise<AtoSettings> {
         let serviceSchema: AdtCollection;
         try {
-            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
-                AdtServiceConfigs[AdtServiceName.AtoSettings]
-            );
+            serviceSchema = await this.adt.catalog.getServiceDefinition(AdtServiceConfigs[AdtServiceName.AtoSettings]);
         } catch {
             // Service not available on target ABAP backend version, return empty setting config
             this.atoSettings = {};
@@ -93,18 +91,6 @@ export class AbapServiceProvider extends ServiceProvider {
             }
         }
         return this.s4Cloud;
-    }
-
-    private getAdtCatalogService(): AdtCatalogService {
-        if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
-            const adtCatalogSerivce = this.createService<AdtCatalogService>(
-                AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
-                AdtCatalogService
-            );
-            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = adtCatalogSerivce;
-        }
-
-        return this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtCatalogService;
     }
 
     /**
@@ -177,53 +163,15 @@ export class AbapServiceProvider extends ServiceProvider {
         return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
     }
 
-    /**
-     *
-     * @param packageName Package name for deployment
-     * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
-     * @returns
-     */
-    public async getTransportRequests(packageName: string, appName: string): Promise<string[]> {
-        let serviceSchema: AdtCollection;
-        try {
-            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
-                AdtServiceConfigs[AdtServiceName.TransportChecks]
+    public get adt(): AdtServices {
+        if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
+            const adtCatalogSerivce = this.createService<AdtCatalogService>(
+                AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
+                AdtCatalogService
             );
-        } catch {
-            // Service not available on target ABAP backend version, return empty setting config
-            return [];
+            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = new AdtServices(adtCatalogSerivce);
         }
 
-        if (!serviceSchema || !serviceSchema.href) {
-            return [];
-        }
-        const urlPath = serviceSchema.href;
-        const acceptHeaders = {
-            headers: {
-                Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
-                'content-type':
-                    'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
-            }
-        };
-
-        const data = `
-                <?xml version="1.0" encoding="UTF-8"?>
-                <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
-                    <asx:values>
-                        <DATA>
-                        <PGMID/>
-                        <OBJECT/>
-                        <OBJECTNAME/>
-                        <DEVCLASS>${packageName}</DEVCLASS>
-                        <SUPER_PACKAGE/>
-                        <OPERATION>I</OPERATION>
-                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${appName}/$create</URI>
-                        </DATA>
-                    </asx:values>
-                </asx:abap>
-            `;
-
-        const response = await this.post(urlPath, data, acceptHeaders);
-        return getTransportNumberList(response.data, this.log);
+        return this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtServices;
     }
 }
