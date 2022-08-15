@@ -56,6 +56,7 @@ export default class extends Generator {
             type: 'input',
             name: 'entity',
             message: 'Main entity',
+            default: 'SEPMRA_C_PD_Product',
             validate: (answer) => !!answer
         });
 
@@ -63,7 +64,8 @@ export default class extends Generator {
             version: OdataVersion.v2,
             url: service.url,
             path: service.path,
-            metadata: service.metadata
+            metadata: service.metadata,
+            annotations: service.annotations
         };
         if (service.destination) {
             this.service.destination = {
