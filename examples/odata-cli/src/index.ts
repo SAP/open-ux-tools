@@ -38,7 +38,7 @@ if (isAppStudio()) {
             checkCloudAbapSystem(processEnv);
             break;
         case undefined:
-            logger.info(`Test name missing, try 'pnpm start -- abap'`);
+            logger.info(`Test name missing, try 'pnpm start abap'`);
             break;
         default:
             logger.info(`Unknown manual test ${test}`);
