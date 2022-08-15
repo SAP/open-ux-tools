@@ -1,12 +1,6 @@
 import type Generator from 'yeoman-generator';
-import {
-    ODataService,
-    AbapServiceProvider,
-    createForAbap,
-    createForDestination,
-    ODataVersion,
-    Annotations
-} from '@sap-ux/axios-extension';
+import type { ODataService, AbapServiceProvider, Annotations } from '@sap-ux/axios-extension';
+import { createForAbap, createForDestination, ODataVersion } from '@sap-ux/axios-extension';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 
 export interface ServiceInfo {
@@ -79,7 +73,8 @@ export async function getServiceInfoInBAS(generator: Generator): Promise<Service
  * Tries fetching metadata from the given service and prompts for user/password if a 401 is returned.
  *
  * @param generator an instance of a yeoman generator
- * @param service axios service abstraction
+ * @param provider service provider
+ * @param path path of the service
  * @returns service metadata
  */
 export async function getMetadata(
@@ -90,7 +85,7 @@ export async function getMetadata(
     metadata: string;
     annotations?: OdataService['annotations'];
 }> {
-    let service = provider.service<ODataService>(path);
+    const service = provider.service<ODataService>(path);
     let metadata: string | undefined;
     let annotations: Annotations[] = [];
     while (!metadata) {

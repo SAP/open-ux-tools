@@ -11,6 +11,9 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ServiceInfo } from './service';
 import { getServiceInfo, getServiceInfoInBAS } from './service';
 
+/**
+ *
+ */
 export default class extends Generator {
     private app!: Ui5App & { app: { flpAppId: string } };
     private service!: OdataService;
