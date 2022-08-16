@@ -92,7 +92,7 @@ export class V2CatalogService extends CatalogService {
 
         const params = {
             $format: 'json',
-            $filter: `Title%20eq%20%27${title}%27`
+            $filter: `Title eq '${title}'`
         };
         const response = await this.get<ODataServiceV2Info[]>(`/${this.entitySet}`, { params });
         const services = response.odata();

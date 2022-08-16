@@ -15,7 +15,7 @@ TEST_PASSWORD=MY_SECRET
 
 And, then run
 ```bash
-pnpm start -- abap
+pnpm start abap
 ```
 
 ### Local Test with ABAP Environment on SAP BTP
@@ -26,7 +26,7 @@ TEST_SERVICE_INFO_PATH=./.env/XYZ_KEYS.json
 
 And, then run
 ```bash
-pnpm start -- btp
+pnpm start btp
 ```
 
 ### Local Test with Cloud ABAP Environment (Embedded Steampunk)
@@ -37,7 +37,7 @@ TEST_SYSTEM=https://my-sap-cloud-system.example
 
 And, then run
 ```bash
-pnpm start -- cloud
+pnpm start cloud
 ```
 
 ### Test in AppStudio With Destination

@@ -100,11 +100,7 @@ describe('V2CatalogService', () => {
 
         test('find by path or title', async () => {
             nock(server)
-                .get((path) =>
-                    path.startsWith(
-                        `${V2CatalogService.PATH}/ServiceCollection?$format=json&$filter=Title%2520eq%2520%2527${title}%2527`
-                    )
-                )
+                .get(`${V2CatalogService.PATH}/ServiceCollection?$format=json&$filter=Title eq '${title}'`)
                 .reply(200, {
                     d: {
                         results: [
