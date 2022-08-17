@@ -130,7 +130,7 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
  * @returns minimum UI5 version for manifest
  */
 function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
-    return minUI5Version ?? (ui5Version ? ui5Version : UI5_DEFAULT.MIN_UI5_VERSION);
+    return minUI5Version ?? ui5Version ?? UI5_DEFAULT.MIN_UI5_VERSION;
 }
 
 /**
