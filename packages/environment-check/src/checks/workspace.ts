@@ -6,8 +6,10 @@ import type { ResultMessage } from '../types';
 import { t } from '../i18n';
 
 /**
+ * Retrieve destination from the app.
  *
- * @param appRoot
+ * @param appRoot root of app
+ * @returns destination
  */
 async function getDestinationFromApp(appRoot: string): Promise<string[]> {
     const appDestinations: string[] = [];
@@ -25,8 +27,10 @@ async function getDestinationFromApp(appRoot: string): Promise<string[]> {
 }
 
 /**
+ * Retrieve destinations from workspace.
  *
- * @param wsFolders
+ * @param wsFolders workspace folders
+ * @returns messages, destinations
  */
 export async function getDestinationsFromWorkspace(
     wsFolders: string[]

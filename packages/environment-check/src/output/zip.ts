@@ -6,10 +6,10 @@ import { convertResultsToMarkdown } from '.';
 import { t } from '../i18n';
 
 /**
- * Convert a int byte number to a nice output format like 1.23 KB
+ * Convert a int byte number to a nice output format like 1.23 KB.
  *
  * @param byteNumber - int number of bytes
- * @returns - output string
+ * @returns output string
  */
 function byteNumberToSizeString(byteNumber: number): string {
     if (byteNumber === 0) {
@@ -29,17 +29,17 @@ function byteNumberToSizeString(byteNumber: number): string {
 export function storeResultsZip(results: EnvironmentCheckResult, targetFile = 'envcheck-results.zip'): void {
     const zip = archiver.default('zip', { zlib: { level: 9 } });
     const writeStream = createWriteStream(targetFile);
-    writeStream.on('close', function () {
+    writeStream.on('close', () => {
         console.log(`Results written to file '${targetFile}' ${byteNumberToSizeString(zip.pointer())}`);
     });
-    zip.on('warning', function (error) {
+    zip.on('warning', (error) => {
         if (error.code === 'ENOENT') {
             console.warn(error);
         } else {
             throw error;
         }
     });
-    zip.on('error', function (error) {
+    zip.on('error', (error) => {
         throw error;
     });
     zip.pipe(writeStream);

@@ -3,7 +3,7 @@ import { Severity } from './types';
 
 /**
  * Return a logger to log messages. Once done adding messages, call getMessages()
- * to retrive an array of logged messages
+ * to retrive an array of logged messages.
  *
  * @returns logger to log messages
  */

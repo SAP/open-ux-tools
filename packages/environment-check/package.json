@@ -30,6 +30,9 @@
         "prompts": "2.4.2",
         "yamljs": "0.3.0"
     },
+    "devDependencies": {
+        "@types/vscode": "1.39.0"
+    },
     "files": [
         "dist",
         "package.json"

@@ -40,7 +40,7 @@ const destinationTableFields = new Map<string, string>([
 ]);
 
 /**
- * Convert enum UrlServiceType to text
+ * Convert enum UrlServiceType to text.
  *
  * @param urlServiceType - classifaction of destination from getUrlServiceTypeForDest
  * @returns - meaningful text
@@ -108,7 +108,7 @@ function getMarkdownWriter(): MarkdownWriter {
 }
 
 /**
- * Write the results for environment check
+ * Write the results for environment check.
  *
  * @param writer - markdown writter
  * @param environment - environment results, like development environment, node version, etc
@@ -126,7 +126,7 @@ function writeEnvironment(writer: MarkdownWriter, environment?: Environment): vo
 }
 
 /**
- * Write the details of one destination
+ * Write the details of one destination.
  *
  * @param writer - markdown writter
  * @param destName - name of the destination
@@ -175,7 +175,7 @@ function writeDestinationDetails(
 }
 
 /**
- * Write the results for destination checks
+ * Write the results for destination checks.
  *
  * @param writer - markdown writter
  * @param destinationResults - results of destination checks that include the catalog services
@@ -204,10 +204,10 @@ function writeDestinationResults(
 }
 
 /**
- * Write the table of destinations
+ * Write the table of destinations.
  *
+ * @param writer - markdown writer
  * @param destinations - array of destinations
- * @param writer - markdown writter
  */
 function writeDestinations(writer: MarkdownWriter, destinations: FlatDestination[] = []): void {
     const numberOfDestinations = destinations.length || 0;
@@ -232,7 +232,7 @@ function writeDestinations(writer: MarkdownWriter, destinations: FlatDestination
 }
 
 /**
- * Write the messages that were collected during check
+ * Write the messages that were collected during check.
  *
  * @param writer - markdown writter
  * @param messages - array of messages
@@ -254,7 +254,7 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
 }
 
 /**
- * Converts the envcheck results to markdown report
+ * Converts the envcheck results to markdown report.
  *
  * @param results - envcheck results
  * @returns - markdown report
@@ -277,9 +277,9 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
 }
 
 /**
- * Flattens destination details
+ * Flattens destination details.
  *
- * @param destinations
+ * @param destinations - bas destinations
  * @returns details with no nested objects
  */
 function flattenDestinationDetails(destinations: Destination[]): FlatDestination[] {

@@ -2,17 +2,17 @@ import type { WorkspaceFolder } from 'vscode';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as fs from 'fs';
 import type { MiddlewareProxy } from '../src/types';
-import { Package, FileName, DirName } from '../src/types';
+import { FileName, DirName } from '../src/types';
 import * as yaml from 'yamljs';
 import { default as find } from 'findit2';
 import { join, basename, dirname } from 'path';
 import { t } from './i18n';
 
 /**
- * Returns the ui5 middleware settings of a given Fiori elements project (v2 or v4)
+ * Returns the ui5 middleware settings of a given Fiori elements project (v2 or v4).
  *
- * @param root: string - path to the SAP UX project (where the ui5.yaml is)
- * @param root
+ * @param root string - path to the SAP UX project (where the ui5.yaml is)
+ * @returns middleware proxy
  */
 export async function getUi5CustomMiddleware(root: string): Promise<MiddlewareProxy> {
     const yamlContent = await readFile(join(root, FileName.Ui5Yaml));
@@ -21,10 +21,11 @@ export async function getUi5CustomMiddleware(root: string): Promise<MiddlewarePr
 }
 
 /**
- * Internal function to find all folders that contain a package.json in a given workspace
+ * Internal function to find all folders that contain a package.json in a given workspace.
  *
  * @param wsFolders - root folder paths or workspaces to start the search from
  * @param [logger] - logger to log messages (optional)
+ * @returns projects
  */
 export async function findAllPackageJsonFolders(
     wsFolders: WorkspaceFolder[] | string[] | undefined,
@@ -64,9 +65,10 @@ export async function findAllPackageJsonFolders(
 }
 
 /**
- * WorkspaceFolder typeguard
+ * WorkspaceFolder typeguard.
  *
  * @param value value to typecheck
+ * @returns boolean  - if workspace folder
  */
 function isWorkspaceFolder(value: WorkspaceFolder[] | string[]): value is WorkspaceFolder[] {
     return value && (value as WorkspaceFolder[]).length > 0 && (value as WorkspaceFolder[])[0].uri !== undefined;
@@ -91,6 +93,7 @@ async function findProject(wsRoot: string, projects: string[]): Promise<void> {
 
 /**
  * Asynchronously reads the entire contents of a file.
+ *
  * @param path A path to a file
  */
 async function readFile(path: string): Promise<string> {
@@ -106,7 +109,7 @@ async function readFile(path: string): Promise<string> {
 }
 
 /**
- * Find function to search through folders starting from root
+ * Find function to search through folders starting from root.
  *
  * @param root - root folder to start search
  * @param filename - filename to search
@@ -114,7 +117,7 @@ async function readFile(path: string): Promise<string> {
  * @param stopFolders - list of foldernames to exclude (search doesn't traverse into these folders)
  */
 async function findAll(root: string, filename: string, results: string[], stopFolders: string[]): Promise<void> {
-    return new Promise((doResolve, reject) => {
+    return new Promise((resolve, reject) => {
         const finder = find(root);
         finder.on('directory', (dir, stat, stop) => {
             const base = basename(dir);
@@ -128,7 +131,7 @@ async function findAll(root: string, filename: string, results: string[], stopFo
             }
         });
         finder.on('end', () => {
-            doResolve();
+            resolve();
         });
         finder.on('error', (error) => {
             reject(error);
@@ -137,7 +140,7 @@ async function findAll(root: string, filename: string, results: string[], stopFo
 }
 
 /**
- * Recursive function to extract nested objects
+ * Recursive function to extract nested objects.
  *
  * @param object object to be flattened
  * @returns flattened object

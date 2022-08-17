@@ -9,16 +9,28 @@ import { OdataVersion, DevelopmentEnvironment, Severity, UrlServiceType } from '
 import { t } from '../i18n';
 
 /**
- * Get URL to catalog service depending on dev environment and OData version
+ * Returns the path for v2 catalog service.
  *
- * @param client
+ * @param client sap client
+ * @returns v2 catalog path
  */
 const getV2CatalogPath = (client: string | undefined): string =>
     `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection/${client ? '?sap-client=' + client : ''}`;
+
+/**
+ * Get URL to catalog service for v4.
+ *
+ * @param client sap client
+ * @returns v4 catalog path
+ */
 const getV4CatalogPath = (client: string | undefined): string =>
     `/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)${
         client ? '&sap-client=' + client : ''
     }`;
+
+/**
+ * Get URL to catalog service depending on dev environment and OData version.
+ */
 const catalogUrlResolver = {
     [DevelopmentEnvironment.VSCode]: (odataVersion: OdataVersion, host: string, client: string | undefined): string =>
         `${host}${odataVersion === OdataVersion.v2 ? getV2CatalogPath(client) : getV4CatalogPath(client)}`,
@@ -36,11 +48,12 @@ const catalogMessages = {
 };
 
 /**
- * Check a BAS destination, like catalog service v2 & v4
+ * Check a BAS destination, like catalog service v2 & v4.
  *
  * @param destination - Destination from list of all destinations
- * @param username
- * @param password
+ * @param username username
+ * @param password password
+ * @returns messages and destination results
  */
 export async function checkBASDestination(
     destination: Destination,
@@ -60,10 +73,11 @@ export async function checkBASDestination(
 }
 
 /**
- * Checks for services from catalog requests
- * @param destination
- * @param username
- * @param password
+ * Checks for services from catalog requests.
+ *
+ * @param destination sap detination
+ * @param username username
+ * @param password password
  * @returns Result messages and results of catalog requests
  */
 async function checkCatalogServices(
@@ -101,11 +115,13 @@ async function checkCatalogServices(
 }
 
 /**
- * Performs a catalog request for the given odata version and destination
- * @param odataVersion
- * @param destination
- * @param username
- * @param password
+ * Performs a catalog request for the given odata version and destination.
+ *
+ * @param odataVersion odataVersion to be used
+ * @param destination destination to be checked
+ * @param username username
+ * @param password password
+ * @returns messages, catalog results, response status
  */
 async function catalogRequest(
     odataVersion: OdataVersion,
@@ -174,18 +190,19 @@ async function catalogRequest(
 }
 
 /**
- * Returns whether a given destination requires username/password
+ * Returns whether a given destination requires username/password.
  *
  * @param destination - the destination to check
+ * @returns boolean if basic auth is required
  */
 export function needsUsernamePassword(destination: Destination): boolean {
     return !!destination && destination.credentials?.authentication === 'NoAuthentication';
 }
 
 /**
- * Checks the destinations and returns a list. Optionally, deep dive into a list of passed destinations
+ * Checks the destinations and returns a list. Optionally, deep dive into a list of passed destinations.
  *
- * @param options - options to check e.g. list of destination for deep check
+ * @returns messages, destinations
  */
 export async function checkBASDestinations(): Promise<{
     messages: ResultMessage[];
@@ -248,7 +265,7 @@ export async function checkBASDestinations(): Promise<{
 }
 
 /**
- * Return the URL service type for a given destination
+ * Return the URL service type for a given destination.
  *
  * @param destination - destination to check
  * @returns - URL service type, like 'Full Service URL', 'Catalog Service', 'Partial URL'

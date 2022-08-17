@@ -9,7 +9,7 @@ import { checkEnvironment } from '../checks/environment';
 import { storeResultsZip } from '../output';
 
 /**
- * Output usage information to console
+ * Output usage information to console.
  */
 function showHelp(): void {
     console.log(`
@@ -28,7 +28,7 @@ Following <OPTIONS> are available:
 }
 
 /**
- * Convert command line arguments into environment check options
+ * Convert command line arguments into environment check options.
  *
  * @param cliArgs - parsed command line arguments from minimist
  * @returns - options to check enviroment
@@ -45,9 +45,10 @@ function getOptions(cliArgs: minimist.ParsedArgs): CheckEnvironmentOptions | und
 }
 
 /**
+ * Writes to file.
  *
- * @param filename
- * @param content
+ * @param filename name of file
+ * @param content file content
  */
 async function writeToFile(filename: string, content: string): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -61,10 +62,10 @@ async function writeToFile(filename: string, content: string): Promise<void> {
 }
 
 /**
- * Output the results according to the selected output method
+ * Output the results according to the selected output method.
  *
  * @param result - the data structure containing the results
- * @param mode
+ * @param mode output (JSON, markdown, zip)
  */
 async function outputResults(result: EnvironmentCheckResult, mode?: OutputMode): Promise<void> {
     for (const message of result.messages || []) {
@@ -113,10 +114,10 @@ async function outputResults(result: EnvironmentCheckResult, mode?: OutputMode):
 }
 
 /**
- * Callback in case user credentials are required
+ * Callback in case user credentials are required.
  *
  * @param destination - destination info with Name, Host, ...
- * @returns {username, password} - user input for username and password
+ * @returns user input for username and password
  */
 async function credentialCallback(destination: Destination): Promise<{ username: string; password: string }> {
     console.log(t('info.authRequired', { destination: destination.name }));
@@ -136,9 +137,8 @@ async function credentialCallback(destination: Destination): Promise<{ username:
 }
 
 /**
- * Main function that checks command line arguments and calls environment check
+ * Main function that checks command line arguments and calls environment check.
  *
- * @returns - void
  */
 export async function cli(): Promise<void> {
     try {
@@ -161,6 +161,6 @@ export async function cli(): Promise<void> {
 }
 
 /**
- * Execute directly when this file is loaded
+ * Execute directly when this file is loaded.
  */
 cli();

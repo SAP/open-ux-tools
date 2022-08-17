@@ -3,6 +3,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from './destination';
 import { getDestinationsFromWorkspace } from './workspace';
 import { getLogger } from '../logger';
+import { core as basCoreApi } from '@sap/bas-sdk';
 import type {
     DestinationResults,
     CheckEnvironmentOptions,
@@ -15,7 +16,7 @@ import { DevelopmentEnvironment } from '../types';
 import { t } from '../i18n';
 
 /**
- * Return the environment
+ * Return the environment.
  *
  * @returns environment, including ide, versions, ...
  */
@@ -44,7 +45,7 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
 }
 
 /**
- * Internal function to check a destination
+ * Internal function to check a destination.
  *
  * @param destination - the destination to get detailed results for
  * @param credentialCallback - callback in case user credentials are required to query a destination
@@ -85,7 +86,7 @@ async function getDestinationResults(
 }
 
 /**
- * Internal function to check a set of destinations (deep dive into them)
+ * Internal function to check a set of destinations (deep dive into them).
  *
  * @param deepDiveDestinations - destinations selected for a closer look
  * @param destinations - array of all destinations that contains url and destination type information
@@ -124,7 +125,7 @@ async function getDestinationsResults(
 }
 
 /**
- * Check environment includes process.env, list of destinations, details about destinations
+ * Check environment includes process.env, list of destinations, details about destinations.
  *
  * @param options - see type CheckEnvironmentOptions, includes destination for deep dive, workspace roots, ...
  * @returns the result, currently as JSON
@@ -159,11 +160,7 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
         messages: logger.getMessages()
     };
 }
-// TO BE REMOVED
-enum ENV {
-    PROXY_URL = 'HTTP_PROXY',
-    H2O_URL = 'H2O_URL'
-}
+
 /**
  * Obtain dev space type from SBAS rest api.
  *
@@ -171,8 +168,7 @@ enum ENV {
  */
 async function getSbasDevspace(): Promise<string> {
     if (isAppStudio()) {
-        // can be replaced by bas-sdk
-        const h20Url = process.env[ENV.H2O_URL];
+        const h20Url = basCoreApi.getEnvValue('H2O_URL');
         let workspaceId = '';
         if (process.env.WORKSPACE_ID) {
             workspaceId = process.env.WORKSPACE_ID.replace('workspaces-', '');
