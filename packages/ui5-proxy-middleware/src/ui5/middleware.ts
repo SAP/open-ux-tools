@@ -13,6 +13,22 @@ import {
     hideProxyCredentials
 } from '../base';
 import dotenv from 'dotenv';
+import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
+
+/**
+ * Create proxy options based on the middleware config.
+ *
+ * @param logger logger to be used when running the middleware
+ * @param config middleware configuration
+ * @returns options object
+ */
+function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Options {
+    return {
+        secure: config.secure !== undefined ? !!config.secure : true,
+        logLevel: !!config.debug ? 'debug' : 'info',
+        logProvider: () => logger
+    };
+}
 
 module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
@@ -22,21 +38,15 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
     const config = options.configuration;
     const ui5Version = await resolveUI5Version(config.version, logger);
     const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;
-    const secure = config.secure !== undefined ? !!config.secure : true;
-    const debug = !!config.debug;
     const directLoad = !!config.directLoad;
     const noProxyVal = process.env.no_proxy || process.env.npm_config_noproxy;
     const corporateProxyServer = getCorporateProxyServer(config.proxy);
     // hide user and pass from proxy configuration for displaying it in the terminal
     const proxyInfo = hideProxyCredentials(corporateProxyServer);
-    const proxyOptions: Options = {
-        secure,
-        logLevel: debug ? 'debug' : 'info',
-        logProvider: () => logger
-    };
+    const proxyOptions = createProxyOptions(logger, config);
 
     logger.info(
-        `Starting ui5-proxy-middleware using following configuration:\nproxy: '${proxyInfo}'\nsecure: '${secure}'\ndebug: '${debug}''\ndirectLoad: '${directLoad}'`
+        `Starting ui5-proxy-middleware using following configuration:\nproxy: '${proxyInfo}'\nsecure: '${proxyOptions.secure}'\nlog: '${proxyOptions.logLevel}''\ndirectLoad: '${directLoad}'`
     );
 
     const configs = Array.isArray(config.ui5) ? config.ui5 : [config.ui5];
