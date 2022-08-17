@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.9.2
+
+### Patch Changes
+
+-   d7b3e4f: Fixed issues with fetching annotations based on a service path
+
 ## 0.9.1
 
 ### Patch Changes
