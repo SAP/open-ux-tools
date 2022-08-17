@@ -71,7 +71,7 @@ function getTransportList(doc: Document): TransportRequest[] {
     } else if (LocalPackageText.includes(localPackage)) {
         return [];
     } else {
-        throw 'Unable to parse ADT response';
+        throw new Error('Unable to parse ADT response');
     }
 }
 
