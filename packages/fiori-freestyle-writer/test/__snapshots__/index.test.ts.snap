@@ -898,7 +898,7 @@ title=My Test App",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60.0\\",
+      \\"minUI5Version\\": \\"\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -3184,7 +3184,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60.0\\",
+      \\"minUI5Version\\": \\"\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -5321,7 +5321,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.60.0\\",
+      \\"minUI5Version\\": \\"\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
