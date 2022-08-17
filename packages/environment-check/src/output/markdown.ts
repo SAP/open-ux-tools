@@ -9,8 +9,8 @@ import type {
     ResultMessage,
     FlatDestination
 } from '../types';
-import { flattenObject } from 'utils';
-
+import { flattenObject } from '../utils';
+import { t } from '../i18n';
 /**
  * Output mapping from severity -> icon + text
  */
@@ -49,19 +49,19 @@ const urlServiceTypeToText = (urlServiceType: UrlServiceType): string => {
     let text: string;
     switch (urlServiceType) {
         case UrlServiceType.FullServiceUrl: {
-            text = `Configured to be used by Fiori Generator as Full Service URL`;
+            text = t('markdownText.fullServiceUrlConfig');
             break;
         }
         case UrlServiceType.PartialUrl: {
-            text = `Configured to be used by Fiori Generator as Partial URL`;
+            text = t('markdownText.partialUrlConfig');
             break;
         }
         case UrlServiceType.CatalogServiceUrl: {
-            text = `Configured to be used by Fiori Generator as Catalog Service`;
+            text = t('markdownText.catalogServiceConfig');
             break;
         }
         default: {
-            text = `Wrong configuration, Fiori Generator cannot use this destination. Please check properties`;
+            text = t('markdownText.wrongConfig');
         }
     }
     return text;
@@ -116,12 +116,12 @@ function getMarkdownWriter(): MarkdownWriter {
 function writeEnvironment(writer: MarkdownWriter, environment?: Environment): void {
     writer.addH2(`Environment`);
     if (environment) {
-        writer.addLine(`Platform: \`${environment.platform}\``);
-        writer.addLine(`Development environment: \`${environment.developmentEnvironment}\``);
-        writer.addLine(`Dev Space Type: \`${environment.basDevSpace}\``);
-        writer.addDetails(`Versions`, JSON.stringify(environment.versions, null, 4));
+        writer.addLine(t('markdownText.platform', { platform: environment.platform }));
+        writer.addLine(t('markdownText.devEnvironement', { devEnvironment: environment.developmentEnvironment }));
+        writer.addLine(t('markdownText.devSpaceType', { basDevSpace: environment.basDevSpace }));
+        writer.addDetails(`${t('markdownText.versions')}`, JSON.stringify(environment.versions, null, 4));
     } else {
-        writer.addLine(`Environment not checked`);
+        writer.addLine(t('markdownText.envNotChecked'));
     }
 }
 
@@ -139,36 +139,38 @@ function writeDestinationDetails(
     destDetails: DestinationResults,
     urlServiceType?: UrlServiceType
 ): void {
-    writer.addH3(`Details for \`${destName}\``);
+    writer.addH3(t('markdownText.detailsFor', { destName }));
     if (destDetails.v2 && Array.isArray(destDetails.v2.results)) {
         writer.addLine(
-            `✅ &nbsp; V2 catalog call returned ${getServiceCountText(countNumberOfServices(destDetails.v2))}`
+            `✅ &nbsp; ${t('markdownText.v2CatalogReturned')} ${getServiceCountText(
+                countNumberOfServices(destDetails.v2)
+            )}`
         );
     } else {
-        writer.addLine(`🚫 &nbsp; V2 catalog service not available`);
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.v2CatalogNotAvailable')}`);
     }
     if (destDetails.v4 && Array.isArray(destDetails.v4.value)) {
         writer.addLine(
-            `✅ &nbsp; V4 catalog call returned ${getServiceCountText(countNumberOfServices(destDetails.v4))}`
+            `✅ &nbsp; ${t('markdownText.v4CatalogReturned')} ${getServiceCountText(
+                countNumberOfServices(destDetails.v4)
+            )}`
         );
     } else {
-        writer.addLine(`🚫 &nbsp; V4 catalog service not available`);
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.v4CatalogNotAvailable')}`);
     }
     if (destDetails.HTML5DynamicDestination) {
-        writer.addLine(`✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\``);
+        writer.addLine(`✅ &nbsp; ${t('markdownText.html5DynamicDestTrue')}`);
     } else {
-        writer.addLine(
-            `🚫 &nbsp; Please ensure property \`HTML5.DynamicDestination\` is set to \`true\` in SAP BTP Cockpit -> 'Additional Properties'`
-        );
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.setHtml5DynamicDest')}`);
     }
     if (urlServiceType) {
         writer.addLine(
-            `${
-                urlServiceType === UrlServiceType.InvalidUrl ? '🚫 &nbsp;' : '✅ &nbsp;'
-            } SAP Fiori tools usage: ${urlServiceTypeToText(urlServiceType)}`
+            `${urlServiceType === UrlServiceType.InvalidUrl ? '🚫 &nbsp;' : '✅ &nbsp;'} ${t(
+                'markdownText.sapFioriToolsUsage'
+            )}: ${urlServiceTypeToText(urlServiceType)}`
         );
     } else {
-        writer.addLine(`🟡 &nbsp; No URL service type was determined.`);
+        writer.addLine(`🟡 &nbsp; ${t('markdownText.noUrlServiceType')}`);
     }
 }
 
@@ -185,7 +187,7 @@ function writeDestinationResults(
     destinations: FlatDestination[] = []
 ): void {
     const numberOfDestDetails = Object.keys(destinationResults).length;
-    writer.addH2(`Destination Details (${numberOfDestDetails})`);
+    writer.addH2(`${t('markdownText.destinationDetails')} (${numberOfDestDetails})`);
     if (numberOfDestDetails > 0) {
         for (const destName of Object.keys(destinationResults)) {
             const destination = destinations.find((d) => d.name === destName);
@@ -197,7 +199,7 @@ function writeDestinationResults(
             writer.addTable(table);
         }
     } else {
-        writer.addLine(`No destination details`);
+        writer.addLine(t('markdownText.noDestinationDetails'));
     }
 }
 
@@ -209,7 +211,7 @@ function writeDestinationResults(
  */
 function writeDestinations(writer: MarkdownWriter, destinations: FlatDestination[] = []): void {
     const numberOfDestinations = destinations.length || 0;
-    writer.addH2(`All Destinations (${numberOfDestinations})`);
+    writer.addH2(t('markdownText.allDestinations', { numberOfDestinations }));
     if (numberOfDestinations > 0) {
         const table = [...destinations]
             .sort((a, b) => {
@@ -225,7 +227,7 @@ function writeDestinations(writer: MarkdownWriter, destinations: FlatDestination
         table.unshift(Array.from(destinationTableFields.values()));
         writer.addTable(table);
     } else {
-        writer.addLine(`No destinations`);
+        writer.addLine(t('markdownText.noDestinations'));
     }
 }
 
@@ -237,7 +239,7 @@ function writeDestinations(writer: MarkdownWriter, destinations: FlatDestination
  */
 function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): void {
     const numberOfMessages = messages.length || 0;
-    writer.addH2(`Messages (${numberOfMessages})`);
+    writer.addH2(t('markdownText.messages', { numberOfMessages }));
     if (numberOfMessages > 0) {
         for (const message of messages) {
             if (message.severity === Severity.Info) {
@@ -247,7 +249,7 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
             }
         }
     } else {
-        writer.addLine(`No messages`);
+        writer.addLine(t('markdownText.noMessages'));
     }
 }
 
@@ -260,14 +262,16 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
 export function convertResultsToMarkdown(results: EnvironmentCheckResult): string {
     const writer = getMarkdownWriter();
 
-    writer.addH1(`SAP Fiori tools - Environment Check in SAP Business Application Studio`);
+    writer.addH1(t('markdownText.envCheckTitle'));
     const destinations = flattenDestinationDetails(results.destinations);
     writeEnvironment(writer, results.environment);
     writeDestinationResults(writer, results.destinationResults, destinations);
     writeDestinations(writer, destinations);
     writeMessages(writer, results.messages);
 
-    writer.addSub(`created at ${new Date().toISOString().replace('T', ' ').substring(0, 19)} (UTC)`);
+    writer.addSub(
+        `${t('markdownText.createdAt')} ${new Date().toISOString().replace('T', ' ').substring(0, 19)} (UTC)`
+    );
 
     return writer.toString();
 }

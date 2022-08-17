@@ -35,7 +35,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 ## Environment
 Platform: \`linux\`<br>
 Development environment: \`Business Application Studio\`<br>
-Dev Space Type: \`undefined\`<br>
+Dev Space Type: \`\`<br>
 <details><summary>Versions</summary>
 <pre>
 {
@@ -85,7 +85,7 @@ Dev Space Type: \`undefined\`<br>
 ✅ &nbsp; V2 catalog call returned 2 services<br>
 🚫 &nbsp; V4 catalog service not available<br>
 🚫 &nbsp; Please ensure property \`HTML5.DynamicDestination\` is set to \`true\` in SAP BTP Cockpit -> 'Additional Properties'<br>
-🟡 &nbsp; No URL service type was determined.<br>
+🟡 &nbsp; No URL service type was determined<br>
 |Name|Description|Host|sap-client|WebIDEEnabled|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
 |--|--|--|--|--|--|--|--|--|--|--|--|
 |||||||||||||

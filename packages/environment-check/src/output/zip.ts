@@ -3,6 +3,7 @@ import { basename, dirname, join } from 'path';
 import * as archiver from 'archiver';
 import type { EnvironmentCheckResult } from '..';
 import { convertResultsToMarkdown } from '.';
+import { t } from '../i18n';
 
 /**
  * Convert a int byte number to a nice output format like 1.23 KB
@@ -102,7 +103,7 @@ export async function archiveProject(
                 reject(error);
             }
         } else {
-            reject(new Error(`Project root '${projectRoot}' does not exist`));
+            reject(new Error(t('error.noProjectRoot', { projectRoot })));
         }
     });
 }

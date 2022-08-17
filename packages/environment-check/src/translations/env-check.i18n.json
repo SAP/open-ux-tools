@@ -36,6 +36,35 @@
         "ui5YamlMissing": "App {{- appRoot}} has no ui5.yaml. Not able to get destinations",
         "basDevSpace": "Couldn't read Business Application Studio Dev environment. Error: {{- error}}",
         "invalidPkgJson": "Found invalid package.json. Error : {{- error}}",
-        "checkingEnv": "Error checking environment: {{- error}}"
+        "checkingEnv": "Error checking environment: {{- error}}",
+        "noProjectRoot": "Project root {{- projectRoot}} does not exist"
+    },
+    "markdownText": {
+        "fullServiceUrlConfig": "Configured to be used by Fiori Generator as Full Service URL",
+        "partialUrlConfig": "Configured to be used by Fiori Generator as Partial URL",
+        "catalogServiceConfig": "Configured to be used by Fiori Generator as Catalog Service",
+        "wrongConfig": "Wrong configuration, Fiori Generator cannot use this destination. Please check properties",
+        "platform": "Platform: `{{platform}}`",
+        "devEnvironement": "Development environment: `{{devEnvironment}}`",
+        "devSpaceType": "Dev Space Type: `{{basDevSpace}}`",
+        "versions": "Versions",
+        "envNotChecked": "Environment not checked",
+        "detailsFor": "Details for `{{destName}}`",
+        "v2CatalogReturned": "V2 catalog call returned",
+        "v2CatalogNotAvailable": "V2 catalog service not available",
+        "v4CatalogReturned": "V4 catalog call returned",
+        "v4CatalogNotAvailable": "V4 catalog service not available",
+        "html5DynamicDestTrue": "Destination property `HTML5.DynamicDestination` set to `true`",
+        "setHtml5DynamicDest": "Please ensure property `HTML5.DynamicDestination` is set to `true` in SAP BTP Cockpit -> 'Additional Properties'",
+        "sapFioriToolsUsage": "SAP Fiori tools usage",
+        "noUrlServiceType": "No URL service type was determined",
+        "destinationDetails": "Destination Details",
+        "noDestinationDetails": "No destination details",
+        "allDestinations": "All Destinations ({{numberOfDestinations}})",
+        "noDestinations": "No destinations",
+        "messages": "Messages ({{numberOfMessages}})",
+        "noMessages": "No messages",
+        "envCheckTitle": "SAP Fiori tools - Environment Check in SAP Business Application Studio",
+        "createdAt": "created at"
     }
 }
