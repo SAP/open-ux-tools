@@ -122,4 +122,4 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
 }
 
 export { Ui5App, generate };
-export { App, Package, UI5 } from './types';
+export { App, Package, UI5, AppOptions };
