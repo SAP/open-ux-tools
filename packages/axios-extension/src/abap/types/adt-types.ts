@@ -63,9 +63,9 @@ export interface TransportRequest {
     user: string;
     date: string;
     time: string;
-    desc: string;
+    description: string;
     client: string;
     targetSystem: string;
-    trFunction: string;
-    trStatus: string;
+    transportRequestFunction: string;
+    transportRequestStatus: string;
 }

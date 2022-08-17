@@ -159,12 +159,12 @@ describe('AbapServiceProvider', () => {
                 expect.objectContaining({
                     transportNumber: 'EC1K900294',
                     user: 'TESTUSER',
-                    desc: 'Fiori tools'
+                    description: 'Fiori tools'
                 }),
                 expect.objectContaining({
                     transportNumber: 'EC1K900295',
                     user: 'TESTUSER2',
-                    desc: 'Fiori tools'
+                    description: 'Fiori tools'
                 })
             ]);
         });
@@ -179,7 +179,7 @@ describe('AbapServiceProvider', () => {
                 expect.objectContaining({
                     transportNumber: 'EC1K900294',
                     user: 'TESTUSER',
-                    desc: 'Fiori tools'
+                    description: 'Fiori tools'
                 })
             ]);
         });
@@ -199,7 +199,7 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-3.xml'));
-            expect(await provider.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual(undefined);
+            expect(await provider.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual([]);
         });
 
         test('New package name: no transport number available', async () => {

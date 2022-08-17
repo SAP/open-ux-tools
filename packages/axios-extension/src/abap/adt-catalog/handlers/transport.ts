@@ -56,8 +56,8 @@ function getTransportChecksResponse(doc: Document, xml: string, log: Logger): Tr
  *
  * @param doc
  * @returns
- * - For local package, return undefined.
- * - For errors or other unkonwn reasons no transport number found, an empty array list is returned.
+ * - For local package, return [].
+ * - For errors or other unkonwn reasons no transport number found, an error is thrown.
  */
 function getTransportList(doc: Document): TransportRequest[] | undefined {
     const recording = xpath.select1('//RECORDING/text()', doc)?.toString();
@@ -69,9 +69,9 @@ function getTransportList(doc: Document): TransportRequest[] | undefined {
     } else if (locked) {
         return getLockedTransport(doc);
     } else if (LocalPackageText.includes(localPackage)) {
-        return undefined;
-    } else {
         return [];
+    } else {
+        throw 'Unable to parse ADT response';
     }
 }
 
@@ -125,10 +125,10 @@ function getTransportRequestFromAdt(transportReq: Element): TransportRequest {
         user: xpath.select1('AS4USER/text()', transportReq)?.toString(),
         date: xpath.select1('AS4DATE/text()', transportReq)?.toString(),
         time: xpath.select1('AS4TIME/text()', transportReq)?.toString(),
-        desc: xpath.select1('AS4TEXT/text()', transportReq)?.toString(),
+        description: xpath.select1('AS4TEXT/text()', transportReq)?.toString(),
         client: xpath.select1('CLIENT/text()', transportReq)?.toString(),
         targetSystem: xpath.select1('TARSYSTEM/text()', transportReq)?.toString(),
-        trStatus: xpath.select1('TRSTATUS/text()', transportReq)?.toString(),
-        trFunction: xpath.select1('TRFUNCTION/text()', transportReq)?.toString()
+        transportRequestStatus: xpath.select1('TRSTATUS/text()', transportReq)?.toString(),
+        transportRequestFunction: xpath.select1('TRFUNCTION/text()', transportReq)?.toString()
     };
 }
