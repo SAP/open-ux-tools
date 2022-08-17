@@ -65,4 +65,26 @@ describe('UI5 templates', () => {
             }
         });
     });
+
+    it('option: `typescript and Fiori tools`', async () => {
+        const projectDir = join(outputDir, 'testapp_typescript');
+        const fs = await generate(
+            projectDir,
+            Object.assign(baseAppConfig, {
+                appOptions: {
+                    typescript: true,
+                    sapux: true
+                }
+            })
+        );
+        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
 });

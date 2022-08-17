@@ -41,7 +41,6 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
-    fs.write(ui5ConfigPath, ui5Config.toString());
 
     // ui5-local.yaml
     const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
@@ -53,7 +52,6 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ui5App.ui5.ui5Theme
     );
     ui5LocalConfig.addFioriToolsAppReloadMiddleware();
-    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
 
     // Add optional features
     if (ui5App.appOptions) {
@@ -78,7 +76,48 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
                 });
             }
         });
+        if (ui5App.appOptions.typescript) {
+            fs.delete(join(basePath, 'webapp/Component.js'));
+            ui5Config.addCustomMiddleware([
+                {
+                    name: 'ui5-tooling-modules-middleware',
+                    afterMiddleware: 'compression',
+                    configuration: {}
+                },
+                {
+                    name: 'ui5-tooling-transpile-middleware',
+                    afterMiddleware: 'compression',
+                    configuration: {
+                        debug: true,
+                        transpileAsync: true,
+                        transpileTypeScript: true
+                    }
+                }
+            ]);
+            ui5Config.addCustomTasks([
+                {
+                    name: 'ui5-tooling-modules-task',
+                    afterTask: 'replaceVersion',
+                    configuration: {}
+                },
+                {
+                    name: 'ui5-tooling-transpile-task',
+                    afterTask: 'replaceVersion',
+                    configuration: {
+                        debug: true,
+                        removeConsoleStatements: true,
+                        transpileAsync: true,
+                        transpileTypeScript: true
+                    }
+                }
+            ]);
+        }
     }
+
+    // write ui5 yamls
+    fs.write(ui5ConfigPath, ui5Config.toString());
+    fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+
     return fs;
 }
 
