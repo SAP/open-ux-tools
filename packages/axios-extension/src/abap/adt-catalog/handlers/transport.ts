@@ -12,12 +12,12 @@ const enum AdtTransportStatus {
 }
 
 /**
- * Get a list of valid transport numbers
+ * Get a list of valid transport requests
  * from ADT transportcheckes response response.
  *
  * @param xml Raw XML string from ADT transportcheckes reponse data
  * @param log Service provider logger
- * @returns a list of valid transport numbers can be used for deploy config
+ * @returns a list of valid transport requests can be used for deploy config
  */
 export function getTransportRequestList(xml: string, log: Logger): TransportRequest[] {
     if (XmlParser.validate(xml) !== true) {
@@ -64,7 +64,7 @@ function getTransportList(doc: Document): TransportRequest[] {
 
 /**
  * This function processes ADT response for new project name that have not been deployed before,
- * all the available transport numbers are returned.
+ * all the available transport requests are returned.
  * @param doc
  * @returns
  */
@@ -84,7 +84,7 @@ function getTransportListForNewProject(doc: Document): TransportRequest[] {
 
 /**
  * This function processes ADT response for existing project name that has been locked.
- * A single, previously provided transport number is returned in the list.
+ * A single, previously provided transport request is returned in the list.
  * @param doc
  * @returns
  */
