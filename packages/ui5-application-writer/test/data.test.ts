@@ -1,4 +1,4 @@
-import { UI5_DEFAULT, mergeUi5, defaultUI5Libs, mergeApp } from '../src/data/defaults';
+import { UI5_DEFAULT, mergeUi5, defaultUI5Libs, mergeApp, getSpecTagVersion } from '../src/data/defaults';
 import { mergeWithDefaults } from '../src/data/index';
 import type { App, UI5, Ui5App } from '../src/types';
 
@@ -213,8 +213,8 @@ describe('Setting defaults', () => {
         }
     ];
 
-    test.each(testData)(`mergeUi5 testData index: $#`, (test) => {
-        expect(mergeUi5(test.input)).toEqual(test.expected);
+    test.each(testData)(`mergeUi5 testData index: $#`, async (test) => {
+        expect(await mergeUi5(test.input)).toEqual(test.expected);
     });
 
     it('merge Ui5App.package settings with defaults', async () => {
@@ -270,12 +270,12 @@ describe('Setting defaults', () => {
             version: '0.0.1'
         };
 
-        expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
+        expect((await mergeWithDefaults(input)).package).toEqual(expectedPackage);
     });
 
     // Test function `mergeApp` sets the correct defaults
-    test('mergApp', () => {
-        const app: App = {
+    describe('mergeApp', () => {
+        const baseInput: App = {
             id: 'test_appId',
             description: 'Should be default package description'
         };
@@ -292,31 +292,38 @@ describe('Setting defaults', () => {
             version: '0.0.1'
         } as App;
 
-        expect(mergeApp(app)).toEqual(expectedApp);
+        test('minimal input', async () => {
+            expect(await mergeApp(baseInput)).toEqual(expectedApp);
+        });
 
-        // Test toolsId is correctly set, sourceTemplate.id and sourceTemplate.version are set if not provided.
-        const toolsId = 'guid:abcd1234';
-        app.sourceTemplate = {
-            toolsId
-        };
-        expectedApp.sourceTemplate = {
-            id: '',
-            toolsId,
-            version: ''
-        };
-        expect(mergeApp(app)).toEqual(expectedApp);
+        test('toolsId provided but not id/version of source template', async () => {
+            const toolsId = 'guid:abcd1234';
+            const merged = await mergeApp({
+                ...baseInput,
+                sourceTemplate: {
+                    toolsId
+                }
+            });
+            expect(merged.sourceTemplate).toEqual({ ...expectedApp.sourceTemplate, toolsId });
+        });
 
-        // Test toolsId is correctly set, sourceTemplate.id and sourceTemplate.version are set to provided value.
-        app.sourceTemplate = {
-            id: 'test-source-template-id',
-            version: '9.9.9',
-            toolsId
-        };
-        expectedApp.sourceTemplate = {
-            id: 'test-source-template-id',
-            version: '9.9.9',
-            toolsId
-        };
-        expect(mergeApp(app)).toEqual(expectedApp);
+        test('source template provided', async () => {
+            const sourceTemplate = {
+                id: 'test-source-template-id',
+                version: '9.9.9',
+                toolsId: 'guid:abcd1234'
+            };
+            const merged = await mergeApp({
+                ...baseInput,
+                sourceTemplate
+            });
+            expect(merged.sourceTemplate).toEqual(sourceTemplate);
+        });
+    });
+
+    describe('getSpecTagVersion', () => {
+        test('get latest version', async () => {
+            expect(await getSpecTagVersion('')).toBe('latest');
+        });
     });
 });

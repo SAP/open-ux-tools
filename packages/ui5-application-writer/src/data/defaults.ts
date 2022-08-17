@@ -5,6 +5,7 @@ import semVer from 'semver';
 import type { SemVer } from 'semver';
 import { t } from '../i18n';
 import { mergeObjects } from 'json-merger';
+import { spawn } from 'child_process';
 
 /**
  * Returns a package instance with default properties.
@@ -224,4 +225,57 @@ function getLocalVersion({
         result = semVer.valid(versionSemVer)!;
     }
     return result;
+}
+
+function runCommand(cmd: string, args: string[] = [], opts: object = {}): Promise<string | void> {
+    return new Promise((resolve, reject) => {
+        const stack: string[] = [];
+        const command = `\`${cmd} ${args.join(' ')}\``;
+
+        const spawnedCmd = spawn(cmd, args, opts);
+        let response: string;
+
+        spawnedCmd.stdout.on('data', (data) => {
+            stack.push(data.toString());
+            response = data.toString();
+        });
+        spawnedCmd.stderr.on('data', (data) => {
+            stack.push(data.toString());
+        });
+        spawnedCmd.on('close', (errorCode) => {
+            if (errorCode !== 0) {
+                return reject(` Error ${errorCode} running ${command}\n${stack.join(', ')}`);
+            }
+            resolve(response);
+        });
+    });
+}
+
+/**
+ * Retrieve the tag version of the @sap/ux-specification based on the given version.
+ *
+ * @param ui5Version UI5 version used in the project
+ * @returns version tag
+ */
+export async function getSpecTagVersion(ui5Version: string | undefined): Promise<string> {
+    let tagVersion: string | undefined;
+    if (ui5Version) {
+        const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+        try {
+            const data = await runCommand(npm, ['view', '@sap/ux-specification@latest', 'dist-tags', '--json']);
+            if (data) {
+                const distVersions = JSON.parse(data);
+                if (semVer.valid(ui5Version)) {
+                    const ui5MajorMinor = `${semVer.major(ui5Version)}.${semVer.minor(ui5Version)}`;
+                    tagVersion = Object.keys(distVersions).find((elem) => elem.includes(ui5MajorMinor));
+                } else if (ui5Version.includes('snapshot') && ui5Version.includes('.')) {
+                    const snaphotVersion = ui5Version.split('snapshot-')[1];
+                    tagVersion = Object.keys(distVersions).find((elem) => elem.includes(snaphotVersion));
+                }
+            }
+        } catch (error) {
+            // ignore for now and just use latest version
+        }
+    }
+    return tagVersion || 'latest';
 }

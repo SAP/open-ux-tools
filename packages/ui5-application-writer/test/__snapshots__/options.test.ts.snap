@@ -51,6 +51,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"latest\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"1.92.2\\",
@@ -255,6 +256,255 @@ appDescription=Test App Description",
       \\"flexEnabled\\": true,
       \\"dependencies\\": {
         \\"minUI5Version\\": \\"\\",
+        \\"libs\\": {
+          \\"sap.m\\": {},
+          \\"sap.ui.core\\": {}
+        }
+      },
+      \\"contentDensities\\": {
+        \\"compact\\": true,
+        \\"cozy\\": true
+      },
+      \\"models\\": {
+        \\"i18n\\": {
+          \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+          \\"settings\\": {
+            \\"bundleName\\": \\"testAppId.i18n.i18n\\"
+          }
+        }
+      },
+      \\"resources\\": {
+        \\"css\\": []
+      },
+      \\"routing\\": {
+        \\"config\\": {},
+        \\"routes\\": [],
+        \\"targets\\": {}
+      }
+    }
+  }
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`UI5 templates generates options: \`sapux\` with specific version 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"testpackagename\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"Test App Description\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.92\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
+    \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\"
+    ]
+  },
+  \\"sapux\\": true
+}
+",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: testAppId
+type: application
+framework:
+  name: SAPUI5
+  version: 1.92.1
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: testAppId
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+",
+    "state": "modified",
+  },
+  "webapp/Component.js": Object {
+    "contents": "sap.ui.define(
+    [\\"sap/ui/core/UIComponent\\"],
+    function (UIComponent) {
+        \\"use strict\\";
+
+        return UIComponent.extend(\\"testAppId.Component\\", {
+            metadata: {
+                manifest: \\"json\\"
+            },
+
+            /**
+             * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+             * @public
+             * @override
+             */
+            init: function () {
+                // call the base component's init function
+                UIComponent.prototype.init.apply(this, arguments);
+
+                // enable routing
+                this.getRouter().initialize();
+            }
+        });
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for testAppId
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=Test App Title
+
+#YDES: Application description
+appDescription=Test App Description",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>Test App Title</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-resourceroots='{
+            \\"testAppId\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"testAppId\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"testAppId\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.34.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"testAppId\\",
+      \\"type\\": \\"application\\",
+      \\"i18n\\": \\"i18n/i18n.properties\\",
+      \\"applicationVersion\\": {
+        \\"version\\": \\"0.0.1\\"
+      },
+      \\"title\\": \\"{{appTitle}}\\",
+      \\"description\\": \\"{{appDescription}}\\",
+      \\"resources\\": \\"resources.json\\",
+      \\"sourceTemplate\\": {
+          \\"id\\": \\"\\",
+          \\"version\\": \\"\\"
+      }
+    },
+    \\"sap.ui\\": {
+      \\"technology\\": \\"UI5\\",
+      \\"icons\\": {
+        \\"icon\\": \\"\\",
+        \\"favIcon\\": \\"\\",
+        \\"phone\\": \\"\\",
+        \\"phone@2\\": \\"\\",
+        \\"tablet\\": \\"\\",
+        \\"tablet@2\\": \\"\\"
+      },
+      \\"deviceTypes\\": {
+        \\"desktop\\": true,
+        \\"tablet\\": true,
+        \\"phone\\": true
+      }
+    },
+    \\"sap.ui5\\": {
+      \\"flexEnabled\\": true,
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.92.1\\",
         \\"libs\\": {
           \\"sap.m\\": {},
           \\"sap.ui.core\\": {}
