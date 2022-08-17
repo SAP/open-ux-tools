@@ -2,6 +2,19 @@ import { UI5_DEFAULT, mergeUi5, defaultUI5Libs, mergeApp, getSpecTagVersion } fr
 import { mergeWithDefaults } from '../src/data/index';
 import type { App, UI5, Ui5App } from '../src/types';
 
+const mockSpecVersions = JSON.stringify({ latest: '1.102.3', 'UI5-1.71': '1.71.64', 'UI5-1.92': '1.92.1' });
+jest.mock('child_process', () => ({
+    spawn: () => ({
+        stdout: {
+            on: (_event: string, fn: Function) => fn(mockSpecVersions)
+        },
+        stderr: {
+            on: (_event: string, fn: Function) => fn('test')
+        },
+        on: (_event: string, fn: Function) => fn(0)
+    })
+}));
+
 describe('Setting defaults', () => {
     const testData: { input: Partial<UI5>; expected: UI5 }[] = [
         // 0
@@ -324,6 +337,14 @@ describe('Setting defaults', () => {
     describe('getSpecTagVersion', () => {
         test('get latest version', async () => {
             expect(await getSpecTagVersion('')).toBe('latest');
+        });
+
+        test('get specific version', async () => {
+            expect(await getSpecTagVersion('1.92.1')).toBe('UI5-1.92');
+        });
+
+        test('get snapshot version', async () => {
+            expect(await getSpecTagVersion('snapshot-1.71')).toBe('UI5-1.71');
         });
     });
 });
