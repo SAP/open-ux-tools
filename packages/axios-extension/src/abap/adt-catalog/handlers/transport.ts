@@ -86,11 +86,9 @@ function getTransportableList(doc: Document): TransportRequest[] {
     const list = [];
     if (transportReqs && transportReqs.length > 0) {
         for (const transportReqEle of transportReqs) {
-            if (transportReqEle) {
-                const transportReq = getTransportRequestFromAdt(transportReqEle);
-                if (transportReq) {
-                    list.push(transportReq);
-                }
+            const transportReq = getTransportRequestFromAdt(transportReqEle);
+            if (transportReq) {
+                list.push(transportReq);
             }
         }
     }
@@ -106,13 +104,9 @@ function getTransportableList(doc: Document): TransportRequest[] {
 function getLockedTransport(doc: Document): TransportRequest[] {
     const transportReqEle = xpath.select1('//LOCKS//REQ_HEADER', doc) as Element;
 
-    if (transportReqEle) {
-        const transportReq = getTransportRequestFromAdt(transportReqEle);
-        if (transportReq) {
-            return [transportReq];
-        } else {
-            return [];
-        }
+    const transportReq = getTransportRequestFromAdt(transportReqEle);
+    if (transportReq) {
+        return [transportReq];
     } else {
         return [];
     }
