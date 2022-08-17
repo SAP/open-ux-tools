@@ -1,0 +1,7 @@
+server:
+    customMiddleware:
+        - name: fiori-tools-proxy
+          configuration:
+              backend:
+                  - destination: TEST_DEST_B1
+                  - destination: TEST_DEST_B2

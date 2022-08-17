@@ -1,0 +1,41 @@
+{
+    "info": {
+        "checkingDestination": "Checking destination {{destination}}",
+        "numServicesForDestination": "{{odataVersion}} catalog request for destination {{destination}} returned {{numberOfServices}}",
+        "urlRequestFailure": "Request to URL: {{url}} failed with message: {{- error}}. Complete error object: {{errorObj}}",
+        "numDestinationsFound": "Found {{destinationNumber}} destinations",
+        "appSearch": "Looking for apps in {{folders}}",
+        "developmentEnvironment": "Development environment: {{env}}",
+        "versions": "Versions: {{versions}}",
+        "platform": "Platform: {{platform}}",
+        "basDevSpace": "Business Application Studio Dev space: {{basDevSpace}}",
+        "detailsForDestinations": "Getting details for destinations: {{destinations}}",
+        "noDetailsRequested": "No destinations details requested",
+        "foundNumApps": "Found {{numApps}} apps",
+        "foundDestinationsInApp": "Found destinations in app {{- appRoot}} : {{- appDestinations}}",
+        "noDestinationsFoundInApp": "No destinations found in app {{- appRoot}}",
+        "noDestinationDefinedForApp": "No destination defined for app {{- appRoot}} : {{- error}}",
+        "jsonResults": "Full results written as JSON to file {{filename}}",
+        "markdownResults": "Full results written as markdown to file {{filename}}",
+        "authRequired": "Authentication required for {{destination}}"
+    },
+    "warning": {
+        "reloadFailure": "Call to '/reload' service failed",
+        "noDestinationsFound": "No destinations found",
+        "basicAuthRequired": "Destination {{destination}} requires username/password, no callback for user input provided",
+        "destinationsNotFound": "Couldn't find destination {{deepDiveDestination}} in list of {{destNumber}} destinations(s)"
+    },
+    "error": {
+        "missingDynamicDestProperty": "Additional property 'HTML5.DynamicDestination = true' missing for destination {{destination}}",
+        "projectRootWorkspace": "Error while trying to find project in workspace root {{- root}}. Error was: {{- error}}",
+        "401": "Unauthorized to access {{odataVersion}} catalog service for destination {{destination}}",
+        "403": "{{odataVersion}} catalog service for destination {{destination}} not available",
+        "queryFailure": "Could not query {{odataVersion}} catalog service for destination {{destination}}",
+        "urlRequestFailure": " Request to URL: {{url}} failed with message: {{- error}}. Complete error object: {{- errorObj}}",
+        "retrievingDestinations": "Error while retrieving destinations. Error was: {{- error}}",
+        "ui5YamlMissing": "App {{- appRoot}} has no ui5.yaml. Not able to get destinations",
+        "basDevSpace": "Couldn't read Business Application Studio Dev environment. Error: {{- error}}",
+        "invalidPkgJson": "Found invalid package.json. Error : {{- error}}",
+        "checkingEnv": "Error checking environment: {{- error}}"
+    }
+}
