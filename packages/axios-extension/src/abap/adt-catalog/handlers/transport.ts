@@ -2,7 +2,7 @@ import XmlParser from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 import type { Logger } from '@sap-ux/logger';
-import { TransportRequest } from 'abap/types';
+import type { TransportRequest } from 'abap/types';
 
 /**
  * Get a list of valid transport numbers
