@@ -54,7 +54,7 @@ describe('UAA', () => {
         });
     });
 
-    describe.only('getAccessToken', () => {
+    describe('getAccessToken', () => {
         const accessToken = 'accessToken';
         const refreshToken = 'refreshToken';
         const mockedResponse = {
