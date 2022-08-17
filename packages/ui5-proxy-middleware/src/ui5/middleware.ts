@@ -30,6 +30,23 @@ function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Option
     };
 }
 
+/**
+ * Creates a function handling the routes the need to be rerouted to a UI5 provider.
+ *
+ * @param routes routes that need to be handled
+ * @returns handler function
+ */
+function createRequestHandler(routes: { route: string; handler: RequestHandler }[]): RequestHandler {
+    return (req, res, next) => {
+        for (const route of routes) {
+            if (req.path.startsWith(route.route)) {
+                return route.handler(req, res, next);
+            }
+        }
+        next();
+    };
+}
+
 module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
@@ -39,7 +56,6 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
     const ui5Version = await resolveUI5Version(config.version, logger);
     const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;
     const directLoad = !!config.directLoad;
-    const noProxyVal = process.env.no_proxy || process.env.npm_config_noproxy;
     const corporateProxyServer = getCorporateProxyServer(config.proxy);
     // hide user and pass from proxy configuration for displaying it in the terminal
     const proxyInfo = hideProxyCredentials(corporateProxyServer);
@@ -60,7 +76,7 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
                 url: envUI5Url || ui5.url,
                 version: ui5Version
             };
-            if (corporateProxyServer && !isHostExcludedFromProxy(noProxyVal, ui5Config.url)) {
+            if (corporateProxyServer && !isHostExcludedFromProxy(ui5Config.url)) {
                 proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
             }
             routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });
@@ -78,12 +94,5 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
         });
     }
 
-    return (req, res, next) => {
-        for (const route of routes) {
-            if (req.path.startsWith(route.route)) {
-                return route.handler(req, res, next);
-            }
-        }
-        next();
-    };
+    return createRequestHandler(routes);
 };
