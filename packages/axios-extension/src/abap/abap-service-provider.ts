@@ -10,7 +10,7 @@ import { AdtServiceName, AdtServiceConfigs, parseAtoResponse, TenantType } from 
 import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
 import { getTransportNumberList } from './adt-catalog/handlers/transport';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import type { AdtCollection } from './types';
+import type { AdtCollection, TransportRequest } from './types';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -184,7 +184,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
      * @returns
      */
-    public async getTransportRequests(packageName: string, appName: string): Promise<string[]> {
+    public async getTransportRequests(packageName: string, appName: string): Promise<TransportRequest[]> {
         let serviceSchema: AdtCollection;
         try {
             serviceSchema = await this.getAdtCatalogService().getServiceDefinition(

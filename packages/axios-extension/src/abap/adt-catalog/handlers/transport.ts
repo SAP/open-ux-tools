@@ -2,6 +2,7 @@ import XmlParser from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 import type { Logger } from '@sap-ux/logger';
+import { TransportRequest } from 'abap/types';
 
 /**
  * Get a list of valid transport numbers
@@ -11,7 +12,7 @@ import type { Logger } from '@sap-ux/logger';
  * @param log Service provider logger
  * @returns a list of valid transport numbers can be used for deploy config
  */
-export function getTransportNumberList(xml: string, log: Logger): string[] {
+export function getTransportNumberList(xml: string, log: Logger): TransportRequest[] {
     if (XmlParser.validate(xml) !== true) {
         log.warn(`Invalid XML: ${xml}`);
         return [];
@@ -36,7 +37,7 @@ const enum AdtTransportStatus {
  * @param log Service provider logger
  * @returns available transport numbers
  */
-function getTransportChecksResponse(doc: Document, xml: string, log: Logger): string[] {
+function getTransportChecksResponse(doc: Document, xml: string, log: Logger): TransportRequest[] {
     const status = xpath.select1('//RESULT/text()', doc)?.toString();
 
     switch (status) {
@@ -55,10 +56,10 @@ function getTransportChecksResponse(doc: Document, xml: string, log: Logger): st
  *
  * @param doc
  * @returns
- * - For local package, an array list that contain a single empty string is returned.
+ * - For local package, return undefined.
  * - For errors or other unkonwn reasons no transport number found, an empty array list is returned.
  */
-function getTransportList(doc: Document): string[] {
+function getTransportList(doc: Document): TransportRequest[] | undefined {
     const recording = xpath.select1('//RECORDING/text()', doc)?.toString();
     const locked = (xpath.select1('//LOCKS', doc) as Element)?.textContent;
     const localPackage = xpath.select1('//DLVUNIT/text()', doc)?.toString();
@@ -68,7 +69,7 @@ function getTransportList(doc: Document): string[] {
     } else if (locked) {
         return getLockedTransport(doc);
     } else if (LocalPackageText.includes(localPackage)) {
-        return [''];
+        return undefined;
     } else {
         return [];
     }
@@ -80,14 +81,16 @@ function getTransportList(doc: Document): string[] {
  * @param doc
  * @returns
  */
-function getTransportableList(doc: Document): string[] {
-    const transportNums = xpath.select('//REQ_HEADER/TRKORR/text()', doc) as Element[];
+function getTransportableList(doc: Document): TransportRequest[] {
+    const transportReqs = xpath.select('//REQ_HEADER', doc) as Element[];
     const list = [];
-    if (transportNums && transportNums.length > 0) {
-        for (const transportNumElement of transportNums) {
-            const transportNum = transportNumElement?.toString();
-            if (transportNum) {
-                list.push(transportNum);
+    if (transportReqs && transportReqs.length > 0) {
+        for (const transportReqEle of transportReqs) {
+            if (transportReqEle) {
+                const transportReq = getTransportRequestFromAdt(transportReqEle);
+                if (transportReq) {
+                    list.push(transportReq);
+                }
             }
         }
     }
@@ -100,11 +103,38 @@ function getTransportableList(doc: Document): string[] {
  * @param doc
  * @returns
  */
-function getLockedTransport(doc: Document): string[] {
-    const transportNum = xpath.select1('//LOCKS//REQ_HEADER/TRKORR/text()', doc)?.toString();
-    if (transportNum) {
-        return [transportNum];
+function getLockedTransport(doc: Document): TransportRequest[] {
+    const transportReqEle = xpath.select1('//LOCKS//REQ_HEADER', doc) as Element;
+
+    if (transportReqEle) {
+        const transportReq = getTransportRequestFromAdt(transportReqEle);
+        if (transportReq) {
+            return [transportReq];
+        } else {
+            return [];
+        }
     } else {
         return [];
     }
+}
+
+function getTransportRequestFromAdt(transportReq: Element): TransportRequest {
+    if (!transportReq) {
+        return undefined;
+    }
+    const transportNumber = xpath.select1('TRKORR/text()', transportReq)?.toString();
+    if (!transportNumber) {
+        return undefined;
+    }
+    return {
+        transportNumber: transportNumber,
+        user: xpath.select1('AS4USER/text()', transportReq)?.toString(),
+        date: xpath.select1('AS4DATE/text()', transportReq)?.toString(),
+        time: xpath.select1('AS4TIME/text()', transportReq)?.toString(),
+        desc: xpath.select1('AS4TEXT/text()', transportReq)?.toString(),
+        client: xpath.select1('CLIENT/text()', transportReq)?.toString(),
+        targetSystem: xpath.select1('TARSYSTEM/text()', transportReq)?.toString(),
+        trStatus: xpath.select1('TRSTATUS/text()', transportReq)?.toString(),
+        trFunction: xpath.select1('TRFUNCTION/text()', transportReq)?.toString()
+    };
 }
