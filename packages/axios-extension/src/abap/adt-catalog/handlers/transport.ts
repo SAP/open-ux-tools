@@ -59,7 +59,7 @@ function getTransportChecksResponse(doc: Document, xml: string, log: Logger): Tr
  * - For local package, return [].
  * - For errors or other unkonwn reasons no transport number found, an error is thrown.
  */
-function getTransportList(doc: Document): TransportRequest[] | undefined {
+function getTransportList(doc: Document): TransportRequest[] {
     const recording = xpath.select1('//RECORDING/text()', doc)?.toString();
     const locked = (xpath.select1('//LOCKS', doc) as Element)?.textContent;
     const localPackage = xpath.select1('//DLVUNIT/text()', doc)?.toString();
