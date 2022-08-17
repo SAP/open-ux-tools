@@ -4,6 +4,12 @@ import { DOMParser } from '@xmldom/xmldom';
 import type { Logger } from '@sap-ux/logger';
 import type { TransportRequest } from 'abap/types';
 
+const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
+const enum AdtTransportStatus {
+    Success = 'S',
+    Error = 'E'
+}
+
 /**
  * Get a list of valid transport numbers
  * from ADT transportcheckes response response.
@@ -28,12 +34,6 @@ export function getTransportRequestList(xml: string, log: Logger): TransportRequ
             log.warn(`Error or unkown response content: ${xml}`);
             return [];
     }
-}
-
-const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
-const enum AdtTransportStatus {
-    Success = 'S',
-    Error = 'E'
 }
 
 /**
@@ -99,8 +99,8 @@ function getLockedTransport(doc: Document): TransportRequest[] {
 }
 
 /**
- * Convert transport request in XML element of ADT response to typed object
- * @param transportReq XML element of transport request data in ADT response
+ * Convert transport request in XML element of ADT response to typed object.
+ * @param transportReqEle XML element of transport request data in ADT response
  * @returns
  */
 function convertTransportRequest(transportReqEle: Element): TransportRequest {
