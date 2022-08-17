@@ -2,6 +2,9 @@ import { Uaa } from '../../src/auth/uaa';
 import axios from 'axios';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
+let openMockCallback: (url: string) => void;
+jest.mock('open', () => jest.fn((url: string) => openMockCallback && openMockCallback(url)));
+
 describe('UAA', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
     const uaaInstance = ({ url }: { url: string } = { url: 'someUaa' }) => {
@@ -51,18 +54,38 @@ describe('UAA', () => {
         });
     });
 
-    describe('getAccessToken', () => {
-        it('returns an access token given a refresh token', async () => {
-            const accessToken = 'accessToken';
-            const refreshToken = 'refreshToken';
-            jest.spyOn(axios, 'request').mockResolvedValueOnce({
-                data: {
-                    access_token: accessToken,
-                    refresh_token: refreshToken
-                }
-            });
+    describe.only('getAccessToken', () => {
+        const accessToken = 'accessToken';
+        const refreshToken = 'refreshToken';
+        const mockedResponse = {
+            data: {
+                access_token: accessToken,
+                refresh_token: refreshToken
+            }
+        };
 
+        it('returns an access token given a refresh token', async () => {
+            jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
             await expect(uaaInstance().getAccessToken(refreshToken)).resolves.toEqual(accessToken);
+        });
+
+        it('returns the access token without refresh token', async () => {
+            jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
+
+            // mocked exchange with the server
+            openMockCallback = (url: string) => {
+                const params = new URLSearchParams(url.split('?')[1]);
+                expect(params.get('response_type')).toBe('code');
+                const openedUri = params.get('redirect_uri');
+                expect(openedUri).toBeDefined();
+                axios.get(openedUri, {
+                    params: {
+                        code: 'authCode'
+                    }
+                });
+            };
+
+            await expect(uaaInstance().getAccessToken()).resolves.toEqual(accessToken);
         });
     });
 });
