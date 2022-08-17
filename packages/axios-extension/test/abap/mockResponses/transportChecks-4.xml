@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<asx:abap version="1.0"
+    xmlns:asx="http://www.sap.com/abapxml">
+    <asx:values>
+        <DATA>
+            <PGMID>R3TR</PGMID>
+            <OBJECT>WAPA</OBJECT>
+            <OBJECTNAME>ZDUMMYEXAMPLE</OBJECTNAME>
+            <OPERATION>I</OPERATION>
+            <DEVCLASS/>
+            <CTEXT/>
+            <KORRFLAG/>
+            <AS4USER/>
+            <PDEVCLASS/>
+            <DLVUNIT/>
+            <NAMESPACE/>
+            <SUPER_PACKAGE/>
+            <RESULT>S</RESULT>
+            <RECORDING>X</RECORDING>
+            <EXISTING_REQ_ONLY/>
+            <MESSAGES/>
+            <REQUESTS/>
+            <LOCKS/>
+            <TADIRDEVC>NEWPACKAGE</TADIRDEVC>
+            <URI>/sap/bc/adt/filestore/ui5-bsp/objects/zdummyexample/$create</URI>
+            <CTS_PROJECTS/>
+        </DATA>
+    </asx:values>
+</asx:abap>

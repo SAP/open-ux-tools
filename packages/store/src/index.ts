@@ -37,7 +37,6 @@ export async function getService<Entity, Key>({
 }
 
 export * from './services';
-export * from './secure-store';
 export * from './entities/backend-system';
 export * from './entities/telemetry-setting';
 export * from './entities/api-hub';

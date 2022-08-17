@@ -1,5 +1,51 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.12.6
+
+### Patch Changes
+
+-   Updated dependencies [6c22256]
+    -   @sap-ux/odata-service-writer@0.14.5
+
+## 0.12.5
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/odata-service-writer@0.14.4
+    -   @sap-ux/ui5-application-writer@0.14.4
+    -   @sap-ux/ui5-config@0.14.4
+
+## 0.12.4
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/odata-service-writer@0.14.3
+    -   @sap-ux/ui5-application-writer@0.14.3
+    -   @sap-ux/ui5-config@0.14.3
+
+## 0.12.3
+
+### Patch Changes
+
+-   Updated dependencies [7c4a4df]
+    -   @sap-ux/ui5-config@0.14.2
+    -   @sap-ux/odata-service-writer@0.14.2
+    -   @sap-ux/ui5-application-writer@0.14.2
+
+## 0.12.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/odata-service-writer@0.14.1
+    -   @sap-ux/ui5-application-writer@0.14.1
+    -   @sap-ux/ui5-config@0.14.1
+
 ## 0.12.1
 
 ### Patch Changes

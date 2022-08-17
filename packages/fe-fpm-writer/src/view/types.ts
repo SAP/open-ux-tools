@@ -1,6 +1,6 @@
-import type { CustomElement, InternalCustomElement, Views } from '../common/types';
+import type { CustomElement, InternalCustomElement, Views, EventHandler } from '../common/types';
 
-export interface CustomView extends CustomElement {
+export interface CustomView extends CustomElement, EventHandler {
     /**
      * Name of the routing target.
      */
@@ -15,12 +15,6 @@ export interface CustomView extends CustomElement {
      * Unique tab identifier.
      */
     key: string;
-
-    /**
-     * If set to true, a new controller is created and linked to the action.
-     * If an existing event handler is to be used then its id needs to be provided as string.
-     */
-    eventHandler?: string | true;
 
     /**
      * Optional control XML that will be generated into the fragment of the view.

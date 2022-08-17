@@ -1,12 +1,14 @@
 import type Generator from 'yeoman-generator';
-import type { ODataService, AbapServiceProvider } from '@sap-ux/axios-extension';
-import { createServiceForUrl, createForDestination } from '@sap-ux/axios-extension';
+import type { ODataService, AbapServiceProvider, Annotations } from '@sap-ux/axios-extension';
+import { createForAbap, createForDestination, ODataVersion } from '@sap-ux/axios-extension';
+import type { OdataService } from '@sap-ux/odata-service-writer';
 
 export interface ServiceInfo {
     url?: string;
     destination?: string;
     path: string;
     metadata: string;
+    annotations?: OdataService['annotations'];
 }
 
 /**
@@ -25,14 +27,15 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
     });
 
     const serviceUrl = new URL(url);
-    const service = createServiceForUrl(url, {
+    const provider = createForAbap({
+        baseURL: serviceUrl.origin,
         ignoreCertErrors: true
     });
 
     return {
         url: serviceUrl.origin,
         path: serviceUrl.pathname,
-        metadata: await getMetadata(generator, service)
+        ...(await getMetadata(generator, provider, serviceUrl.pathname))
     };
 }
 
@@ -62,7 +65,7 @@ export async function getServiceInfoInBAS(generator: Generator): Promise<Service
     return {
         destination,
         path,
-        metadata: await getMetadata(generator, provider.service<ODataService>(path))
+        ...(await getMetadata(generator, provider, path))
     };
 }
 
@@ -70,14 +73,25 @@ export async function getServiceInfoInBAS(generator: Generator): Promise<Service
  * Tries fetching metadata from the given service and prompts for user/password if a 401 is returned.
  *
  * @param generator an instance of a yeoman generator
- * @param service axios service abstraction
+ * @param provider service provider
+ * @param path path of the service
  * @returns service metadata
  */
-export async function getMetadata(generator: Generator, service: ODataService): Promise<string> {
+export async function getMetadata(
+    generator: Generator,
+    provider: AbapServiceProvider,
+    path: string
+): Promise<{
+    metadata: string;
+    annotations?: OdataService['annotations'];
+}> {
+    const service = provider.service<ODataService>(path);
     let metadata: string | undefined;
+    let annotations: Annotations[] = [];
     while (!metadata) {
         try {
             metadata = await service.metadata();
+            annotations = await provider.catalog(ODataVersion.v2).getAnnotations({ path });
         } catch (error: any) {
             if (service.defaults?.auth?.username) {
                 generator.log.error(error.cause.statusText);
@@ -106,5 +120,14 @@ export async function getMetadata(generator: Generator, service: ODataService): 
             }
         }
     }
-    return metadata;
+    return {
+        metadata,
+        annotations:
+            annotations?.length > 0
+                ? {
+                      technicalName: annotations[0].TechnicalName,
+                      xml: annotations[0].Definitions
+                  }
+                : undefined
+    };
 }

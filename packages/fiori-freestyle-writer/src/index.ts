@@ -44,17 +44,20 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // Add template specific manifest settings
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     const extRoot = join(__dirname, '..', 'templates', ffApp.template.type, 'extend', 'webapp');
-    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')), ffApp)));
+    fs.extendJSON(manifestPath, JSON.parse(render(fs.read(join(extRoot, 'manifest.json')), ffApp, {})));
 
     // i18n.properties
     fs.append(
         join(basePath, 'webapp', 'i18n', 'i18n.properties'),
-        render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), ffApp)
+        render(fs.read(join(extRoot, 'i18n', 'i18n.properties')), ffApp, {})
     );
 
     // package.json
     const packagePath = join(basePath, 'package.json');
-    fs.extendJSON(packagePath, JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp)));
+    fs.extendJSON(
+        packagePath,
+        JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
+    );
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
     packageJson.scripts = Object.assign(packageJson.scripts, {

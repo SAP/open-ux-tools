@@ -1,5 +1,5 @@
 {
-    "include": ["src"],
+    "include": ["src", "src/@types"],
     "compilerOptions": {
         "declaration": true,
         "outDir": "dist",

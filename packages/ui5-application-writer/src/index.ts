@@ -70,7 +70,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
                             globOptions: { dot: true }
                         });
                     } else {
-                        const add = JSON.parse(render(fs?.read(optTmplFilePath), ui5App));
+                        const add = JSON.parse(render(fs?.read(optTmplFilePath), ui5App, {}));
                         const existingFile = JSON.parse(fs?.read(outPath));
                         const merged = mergeObjects([existingFile, add], { defaultArrayMergeOperation: 'concat' });
                         fs?.writeJSON(outPath, merged);

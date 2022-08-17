@@ -1,5 +1,62 @@
 # @sap-ux/odata-cli
 
+## 0.10.7
+
+### Patch Changes
+
+-   Updated dependencies [d7b3e4f]
+    -   @sap-ux/axios-extension@0.9.2
+
+## 0.10.6
+
+### Patch Changes
+
+-   Updated dependencies [5710cfa]
+    -   @sap-ux/btp-utils@0.10.4
+    -   @sap-ux/axios-extension@0.9.1
+
+## 0.10.5
+
+### Patch Changes
+
+-   Updated dependencies [49dcf36]
+    -   @sap-ux/axios-extension@0.9.0
+
+## 0.10.4
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/axios-extension@0.8.1
+    -   @sap-ux/btp-utils@0.10.3
+    -   @sap-ux/logger@0.2.2
+
+## 0.10.3
+
+### Patch Changes
+
+-   Updated dependencies [732171b]
+    -   @sap-ux/axios-extension@0.8.0
+
+## 0.10.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/axios-extension@0.7.2
+    -   @sap-ux/btp-utils@0.10.2
+    -   @sap-ux/logger@0.2.1
+
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [6f0f217]
+    -   @sap-ux/btp-utils@0.10.1
+    -   @sap-ux/axios-extension@0.7.1
+
 ## 0.10.0
 
 ### Minor Changes

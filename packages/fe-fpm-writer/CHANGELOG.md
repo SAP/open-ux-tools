@@ -1,5 +1,56 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.13.4
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+
+## 0.13.3
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+
+## 0.13.2
+
+### Patch Changes
+
+-   4c1b0c2: Custom Action. Optional "anchor" position property. Do not include "anchor" property if undefined is passed
+
+## 0.13.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+
+## 0.13.0
+
+### Minor Changes
+
+-   a32cb3a: `eventHandler` property enhancement for custom actions, sections, columns and views:
+    -   Allow to update existing js handler file with new method by providing method as script fragment string;
+    -   Allow to pass file and method name for new custom handler js file;
+    -   Custom Actions. `eventHandler` property is moved from `CustomAction.settings` to root level of `CustomAction` interface.
+
+## 0.12.0
+
+### Minor Changes
+
+-   338dcb6: Add support to generate building blocks
+
+## 0.11.0
+
+### Minor Changes
+
+-   4bda671: Removed unused property and fixed route generation for FCL
+
+## 0.10.0
+
+### Minor Changes
+
+-   ab39dae: "requireSelection" property support for custom action in fe-fpm-writer
+
 ## 0.9.0
 
 ### Minor Changes

@@ -1,5 +1,43 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.6
+
+### Patch Changes
+
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/ui5-config@0.14.4
+
+## 1.1.5
+
+### Patch Changes
+
+-   5b46c30: Improve error handling of proxy middlewares
+
+## 1.1.4
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/logger@0.2.2
+    -   @sap-ux/ui5-config@0.14.3
+
+## 1.1.3
+
+### Patch Changes
+
+-   Updated dependencies [7c4a4df]
+    -   @sap-ux/ui5-config@0.14.2
+
+## 1.1.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/logger@0.2.1
+    -   @sap-ux/ui5-config@0.14.1
+
 ## 1.1.1
 
 ### Patch Changes

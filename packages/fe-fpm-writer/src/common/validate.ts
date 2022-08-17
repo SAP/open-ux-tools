@@ -42,3 +42,13 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
 
     return true;
 }
+
+/**
+ * Returns the message property if the error is an instance of `Error` else a string representation of the error.
+ *
+ * @param error {Error | unknown} - the error instance
+ * @returns {string} the error message
+ */
+export function getErrorMessage(error: Error | unknown): string {
+    return error instanceof Error ? error.message : String(error);
+}
