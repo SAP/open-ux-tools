@@ -36,7 +36,8 @@
         "open": "7.0.3",
         "qs": "6.7.0",
         "xpath": "0.0.32",
-        "@xmldom/xmldom": "0.8.2"
+        "@xmldom/xmldom": "0.8.2",
+        "i18next": "20.3.2"
     },
     "devDependencies": {
         "@types/lodash.clonedeep": "4.5.6",

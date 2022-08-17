@@ -12,34 +12,14 @@ import type { TransportRequest } from 'abap/types';
  * @param log Service provider logger
  * @returns a list of valid transport numbers can be used for deploy config
  */
-export function getTransportNumberList(xml: string, log: Logger): TransportRequest[] {
+export function getTransportRequestList(xml: string, log: Logger): TransportRequest[] {
     if (XmlParser.validate(xml) !== true) {
         log.warn(`Invalid XML: ${xml}`);
         return [];
     }
     const doc = new DOMParser().parseFromString(xml);
-    return getTransportChecksResponse(doc, xml, log);
-}
 
-const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
-const enum AdtTransportStatus {
-    Success = 'S',
-    Error = 'E'
-}
-
-/**
- * Implementation based on WebIDE with simplified error handling.
- * Might need to improve the error handling in the future to expose
- * the backend error messages to end user / API consumer in the future.
- *
- * @param doc
- * @param xml Raw XML from reponse data for logging purpose
- * @param log Service provider logger
- * @returns available transport numbers
- */
-function getTransportChecksResponse(doc: Document, xml: string, log: Logger): TransportRequest[] {
     const status = xpath.select1('//RESULT/text()', doc)?.toString();
-
     switch (status) {
         case AdtTransportStatus.Success:
             return getTransportList(doc);
@@ -50,8 +30,14 @@ function getTransportChecksResponse(doc: Document, xml: string, log: Logger): Tr
     }
 }
 
+const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
+const enum AdtTransportStatus {
+    Success = 'S',
+    Error = 'E'
+}
+
 /**
- * Provide a list of transport numbers available for the input package name and project name
+ * Provide a list of transport requests available for the input package name and project name
  * in a ADT CTS request.
  *
  * @param doc
@@ -65,7 +51,7 @@ function getTransportList(doc: Document): TransportRequest[] {
     const localPackage = xpath.select1('//DLVUNIT/text()', doc)?.toString();
 
     if (recording && !locked) {
-        return getTransportableList(doc);
+        return getTransportListForNewProject(doc);
     } else if (locked) {
         return getLockedTransport(doc);
     } else if (LocalPackageText.includes(localPackage)) {
@@ -81,12 +67,12 @@ function getTransportList(doc: Document): TransportRequest[] {
  * @param doc
  * @returns
  */
-function getTransportableList(doc: Document): TransportRequest[] {
+function getTransportListForNewProject(doc: Document): TransportRequest[] {
     const transportReqs = xpath.select('//REQ_HEADER', doc) as Element[];
     const list = [];
     if (transportReqs && transportReqs.length > 0) {
         for (const transportReqEle of transportReqs) {
-            const transportReq = getTransportRequestFromAdt(transportReqEle);
+            const transportReq = convertTransportRequest(transportReqEle);
             if (transportReq) {
                 list.push(transportReq);
             }
@@ -104,7 +90,7 @@ function getTransportableList(doc: Document): TransportRequest[] {
 function getLockedTransport(doc: Document): TransportRequest[] {
     const transportReqEle = xpath.select1('//LOCKS//REQ_HEADER', doc) as Element;
 
-    const transportReq = getTransportRequestFromAdt(transportReqEle);
+    const transportReq = convertTransportRequest(transportReqEle);
     if (transportReq) {
         return [transportReq];
     } else {
@@ -112,23 +98,28 @@ function getLockedTransport(doc: Document): TransportRequest[] {
     }
 }
 
-function getTransportRequestFromAdt(transportReq: Element): TransportRequest {
-    if (!transportReq) {
+/**
+ * Convert transport request in XML element of ADT response to typed object
+ * @param transportReq XML element of transport request data in ADT response
+ * @returns
+ */
+function convertTransportRequest(transportReqEle: Element): TransportRequest {
+    if (!transportReqEle) {
         return undefined;
     }
-    const transportNumber = xpath.select1('TRKORR/text()', transportReq)?.toString();
+    const transportNumber = xpath.select1('TRKORR/text()', transportReqEle)?.toString();
     if (!transportNumber) {
         return undefined;
     }
     return {
         transportNumber: transportNumber,
-        user: xpath.select1('AS4USER/text()', transportReq)?.toString(),
-        date: xpath.select1('AS4DATE/text()', transportReq)?.toString(),
-        time: xpath.select1('AS4TIME/text()', transportReq)?.toString(),
-        description: xpath.select1('AS4TEXT/text()', transportReq)?.toString(),
-        client: xpath.select1('CLIENT/text()', transportReq)?.toString(),
-        targetSystem: xpath.select1('TARSYSTEM/text()', transportReq)?.toString(),
-        transportRequestStatus: xpath.select1('TRSTATUS/text()', transportReq)?.toString(),
-        transportRequestFunction: xpath.select1('TRFUNCTION/text()', transportReq)?.toString()
+        user: xpath.select1('AS4USER/text()', transportReqEle)?.toString(),
+        date: xpath.select1('AS4DATE/text()', transportReqEle)?.toString(),
+        time: xpath.select1('AS4TIME/text()', transportReqEle)?.toString(),
+        description: xpath.select1('AS4TEXT/text()', transportReqEle)?.toString(),
+        client: xpath.select1('CLIENT/text()', transportReqEle)?.toString(),
+        targetSystem: xpath.select1('TARSYSTEM/text()', transportReqEle)?.toString(),
+        transportRequestStatus: xpath.select1('TRSTATUS/text()', transportReqEle)?.toString(),
+        transportRequestFunction: xpath.select1('TRFUNCTION/text()', transportReqEle)?.toString()
     };
 }

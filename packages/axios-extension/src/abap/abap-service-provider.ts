@@ -8,7 +8,7 @@ import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
 import { AdtServiceName, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt-catalog';
 import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
-import { getTransportNumberList } from './adt-catalog/handlers/transport';
+import { getTransportRequestList } from './adt-catalog/handlers/transport';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
 import type { AdtCollection, TransportRequest } from './types';
 
@@ -225,6 +225,6 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             `;
 
         const response = await this.post(urlPath, data, acceptHeaders);
-        return getTransportNumberList(response.data, this.log);
+        return getTransportRequestList(response.data, this.log);
     }
 }
