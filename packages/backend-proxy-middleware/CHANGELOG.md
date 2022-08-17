@@ -1,5 +1,12 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.14
+
+### Patch Changes
+
+-   Updated dependencies [d7b3e4f]
+    -   @sap-ux/axios-extension@0.9.2
+
 ## 0.6.13
 
 ### Patch Changes
