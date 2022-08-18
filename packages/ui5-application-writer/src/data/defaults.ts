@@ -232,7 +232,7 @@ function getLocalVersion({
  * @param ui5Version UI5 version used in the project
  * @returns version tag
  */
-export async function getSpecTagVersion(ui5Version: string | undefined): Promise<string> {
+export function getSpecTagVersion(ui5Version: string | undefined): string {
     if (ui5Version) {
         if (semVer.valid(ui5Version)) {
             return `UI5-${semVer.major(ui5Version)}.${semVer.minor(ui5Version)}`;

@@ -9,12 +9,12 @@ import { validate } from './validators';
  * @param {Ui5App} ui5App - the Ui5App instance
  * @returns {Ui5App} - a new Ui5App instance with all required defaults set
  */
-export async function mergeWithDefaults(ui5App: Ui5App): Promise<{
+export function mergeWithDefaults(ui5App: Ui5App): {
     app: App;
     appOptions: Partial<AppOptions>;
     ui5: UI5;
     package: Package;
-}> {
+} {
     validate(ui5App);
     ui5App.app = mergeApp(ui5App.app);
     ui5App.appOptions = ui5App.appOptions || {};
@@ -22,7 +22,7 @@ export async function mergeWithDefaults(ui5App: Ui5App): Promise<{
     ui5App.package = mergePackages(packageDefaults(ui5App.package.version, ui5App.app.description), ui5App.package);
 
     if (ui5App.appOptions.sapux) {
-        ui5App.package.devDependencies!['@sap/ux-specification'] = await getSpecTagVersion(ui5App.ui5.version);
+        ui5App.package.devDependencies!['@sap/ux-specification'] = getSpecTagVersion(ui5App.ui5.version);
     }
 
     return ui5App as {

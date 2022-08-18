@@ -22,9 +22,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (!fs) {
         fs = create(createStorage());
     }
-    const ui5App: { app: App; appOptions: Partial<AppOptions>; ui5: UI5; package: Package } = await mergeWithDefaults(
-        ui5AppConfig
-    );
+    const ui5App: { app: App; appOptions: Partial<AppOptions>; ui5: UI5; package: Package } =
+        mergeWithDefaults(ui5AppConfig);
 
     const tmplPath = join(__dirname, '..', 'templates');
 
