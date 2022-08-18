@@ -1824,7 +1824,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"\\",
+      \\"minUI5Version\\": \\"1.60.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
