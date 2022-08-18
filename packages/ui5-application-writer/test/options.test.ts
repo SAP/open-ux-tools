@@ -2,19 +2,6 @@ import { generate } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 
-const mockSpecVersions = JSON.stringify({ latest: '1.102.3', 'UI5-1.71': '1.71.64', 'UI5-1.92': '1.92.1' });
-jest.mock('child_process', () => ({
-    spawn: () => ({
-        stdout: {
-            on: (_event: string, fn: Function) => fn(mockSpecVersions)
-        },
-        stderr: {
-            on: jest.fn()
-        },
-        on: (_event: string, fn: Function) => fn(0)
-    })
-}));
-
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
     const outputDir = join(__dirname, '/test-output');
