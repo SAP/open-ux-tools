@@ -5,7 +5,6 @@ import semVer from 'semver';
 import type { SemVer } from 'semver';
 import { t } from '../i18n';
 import { mergeObjects } from 'json-merger';
-import { spawn } from 'child_process';
 
 /**
  * Returns a package instance with default properties.
