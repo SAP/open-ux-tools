@@ -1,49 +1,19 @@
-import type { AxiosResponse, AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
 import axios from 'axios';
 import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
 import { getLogger } from '../logger';
 import { countNumberOfServices, getServiceCountText } from '../formatter';
 import type { CatalogResultV2, CatalogResultV4, DestinationResults, Destination, ResultMessage } from '../types';
-import { OdataVersion, DevelopmentEnvironment, Severity, UrlServiceType } from '../types';
+import { Severity, UrlServiceType } from '../types';
 import { t } from '../i18n';
-
-/**
- * Returns the path for v2 catalog service.
- *
- * @param client sap client
- * @returns v2 catalog path
- */
-const getV2CatalogPath = (client: string | undefined): string =>
-    `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection/${client ? '?sap-client=' + client : ''}`;
-
-/**
- * Get URL to catalog service for v4.
- *
- * @param client sap client
- * @returns v4 catalog path
- */
-const getV4CatalogPath = (client: string | undefined): string =>
-    `/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)${
-        client ? '&sap-client=' + client : ''
-    }`;
-
-/**
- * Get URL to catalog service depending on dev environment and OData version.
- */
-const catalogUrlResolver = {
-    [DevelopmentEnvironment.VSCode]: (odataVersion: OdataVersion, host: string, client: string | undefined): string =>
-        `${host}${odataVersion === OdataVersion.v2 ? getV2CatalogPath(client) : getV4CatalogPath(client)}`,
-    [DevelopmentEnvironment.BAS]: (odataVersion: OdataVersion, destName: string, client: string | undefined): string =>
-        `http://${destName}.dest${
-            odataVersion === OdataVersion.v2 ? getV2CatalogPath(client) : getV4CatalogPath(client)
-        }`
-};
+import { createForAbap, ODataVersion } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 const catalogMessages = {
-    401: (destination: Destination, odataVersion: OdataVersion): string =>
+    401: (destination: Destination, odataVersion: ODataVersion): string =>
         t('error.401', { odataVersion, destination: destination.name }),
-    403: (destination: Destination, odataVersion: OdataVersion): string =>
+    403: (destination: Destination, odataVersion: ODataVersion): string =>
         t('error.403', { odataVersion, destination: destination.name })
 };
 
@@ -87,10 +57,10 @@ async function checkCatalogServices(
 ): Promise<{ messages: ResultMessage[]; result: DestinationResults }> {
     const messages: ResultMessage[] = [];
 
-    const v2results = await catalogRequest(OdataVersion.v2, destination, username, password);
+    const v2results = await catalogRequest(ODataVersion.v2, destination, username, password);
     messages.push(...v2results.messages);
 
-    const v4results = await catalogRequest(OdataVersion.v4, destination, username, password);
+    const v4results = await catalogRequest(ODataVersion.v4, destination, username, password);
     messages.push(...v4results.messages);
 
     const html5DynamicDestination = !!destination.basProperties?.html5DynamicDestination;
@@ -103,8 +73,8 @@ async function checkCatalogServices(
     }
 
     const result: DestinationResults = {
-        v2: v2results.result,
-        v4: v4results.result,
+        v2: { results: v2results.result, status: v2results.responseStatus },
+        v4: { results: v4results.result, status: v4results.responseStatus },
         HTML5DynamicDestination: html5DynamicDestination
     };
 
@@ -124,7 +94,7 @@ async function checkCatalogServices(
  * @returns messages, catalog results, response status
  */
 async function catalogRequest(
-    odataVersion: OdataVersion,
+    odataVersion: ODataVersion,
     destination: Destination,
     username?: string | undefined,
     password?: string | undefined
@@ -134,30 +104,24 @@ async function catalogRequest(
     let url: string;
     let responseStatus: number;
     try {
-        const client = destination.basProperties?.sapClient;
-
-        const axiosConfig: AxiosRequestConfig =
+        const auth =
             username !== undefined && password !== undefined
                 ? {
-                      auth: {
-                          username,
-                          password
-                      }
+                      username,
+                      password
                   }
                 : undefined;
 
-        url = isAppStudio()
-            ? catalogUrlResolver[DevelopmentEnvironment.BAS](odataVersion, destination.name, client)
-            : catalogUrlResolver[DevelopmentEnvironment.VSCode](odataVersion, destination.host, client);
+        const axiosConfig: AxiosRequestConfig = {
+            baseURL: destination.host,
+            auth: auth
+        };
 
-        const response: AxiosResponse<CatalogResultV2 | CatalogResultV4> = await axios.get<
-            CatalogResultV2 | CatalogResultV4
-        >(url, axiosConfig);
+        const provider: AbapServiceProvider = createForAbap(axiosConfig);
+        const catalog = provider.catalog(odataVersion);
+        result = await catalog.listServices();
 
-        responseStatus = response.status;
-
-        if (response.data) {
-            result = response.data.d || response.data;
+        if (result.length > 0) {
             const numberOfServices = countNumberOfServices(result);
             logger.log(
                 t('info.numServicesForDestination', {
@@ -168,7 +132,7 @@ async function catalogRequest(
             );
         }
     } catch (error) {
-        responseStatus = error?.response?.status;
+        responseStatus = error?.response?.status || error?.cause?.status;
         logger.error(
             catalogMessages[error?.response?.status]
                 ? catalogMessages[error?.response?.status](destination, odataVersion)

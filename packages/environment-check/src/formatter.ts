@@ -10,11 +10,6 @@ export function countNumberOfServices(catalogResult: CatalogResultV2 | CatalogRe
     let numberServices = 0;
     if (Array.isArray(catalogResult?.results)) {
         numberServices = catalogResult.results.length;
-    } else if (Array.isArray(catalogResult?.value)) {
-        numberServices = catalogResult.value.reduce(
-            (count: number, group: { DefaultSystem: { Services: [] } }) => count + group.DefaultSystem.Services.length,
-            0
-        );
     }
     return numberServices;
 }

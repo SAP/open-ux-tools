@@ -42,15 +42,17 @@ export class V2CatalogService extends CatalogService {
      * @returns version independent information
      */
     protected mapServices(services: ODataServiceV2Info[]): ODataServiceInfo[] {
-        return services.map((service) => {
-            return {
-                id: service.ID,
-                name: service.TechnicalServiceName,
-                path: new URL(service.ServiceUrl).pathname,
-                serviceVersion: service.TechnicalServiceVersion + '',
-                odataVersion: ODataVersion.v2
-            };
-        });
+        if (Array.isArray(services)) {
+            return services.map((service) => {
+                return {
+                    id: service.ID,
+                    name: service.TechnicalServiceName,
+                    path: new URL(service.ServiceUrl).pathname,
+                    serviceVersion: service.TechnicalServiceVersion + '',
+                    odataVersion: ODataVersion.v2
+                };
+            });
+        }
     }
 
     /**

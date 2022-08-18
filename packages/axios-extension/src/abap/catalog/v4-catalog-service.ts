@@ -42,22 +42,24 @@ export class V4CatalogService extends CatalogService {
      */
     protected mapServices(groups: ServiceGroup[], entitySet: string): ODataServiceInfo[] {
         const services: ODataServiceInfo[] = [];
-        groups
-            .filter((group) => group?.DefaultSystem?.[entitySet]?.length > 0)
-            .forEach((group) => {
-                services.push(
-                    ...(group.DefaultSystem[entitySet] as V4Service[]).map((service) => {
-                        return {
-                            id: service.ServiceId,
-                            group: group.GroupId,
-                            path: service.ServiceUrl.split('?').shift(),
-                            name: `${group.GroupId} > ${service.ServiceAlias || service.ServiceId}`,
-                            serviceVersion: service.ServiceVersion,
-                            odataVersion: ODataVersion.v4
-                        };
-                    })
-                );
-            });
+        if (Array.isArray(groups)) {
+            groups
+                .filter((group) => group?.DefaultSystem?.[entitySet]?.length > 0)
+                .forEach((group) => {
+                    services.push(
+                        ...(group.DefaultSystem[entitySet] as V4Service[]).map((service) => {
+                            return {
+                                id: service.ServiceId,
+                                group: group.GroupId,
+                                path: service.ServiceUrl.split('?').shift(),
+                                name: `${group.GroupId} > ${service.ServiceAlias || service.ServiceId}`,
+                                serviceVersion: service.ServiceVersion,
+                                odataVersion: ODataVersion.v4
+                            };
+                        })
+                    );
+                });
+        }
         return services;
     }
 

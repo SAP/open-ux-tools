@@ -1,11 +1,9 @@
 import axios from 'axios';
 import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
-import type { Destination } from '../../src';
-import { checkBASDestination, checkBASDestinations, needsUsernamePassword, UrlServiceType, Severity } from '../../src';
+import type { Destination } from '../../src/types';
+import { checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
+import { UrlServiceType, Severity } from '../../src/types';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
-
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('@sap/bas-sdk');
 const mockDestinationsApi = destinationsApi as jest.Mocked<typeof destinationsApi>;
@@ -115,97 +113,6 @@ describe('Destinaton tests, needsUsernamePassword()', () => {
     test('No password required, should return false', () => {
         const result = needsUsernamePassword({} as unknown as Destination);
         expect(result).toBeFalsy();
-    });
-});
-
-describe('Destinaton tests, function checkBASDestination()', () => {
-    test('Valid destination, should return catalog results', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValue(true);
-        const destination: Partial<Destination> = {
-            name: 'ONE',
-            host: 'https://one.dest:123',
-            basProperties: {
-                sapClient: '123'
-            }
-        };
-        const v2catalogResponse = {
-            status: 200,
-            data: {
-                d: {
-                    results: ['V2_S1', 'V2_S2', 'V2_S3']
-                }
-            }
-        };
-        const v4catalogResponse = {
-            status: 200,
-            data: {
-                value: [
-                    { DefaultSystem: { Services: ['V4_S1'] } },
-                    { DefaultSystem: { Services: ['V4_S2'] } },
-                    { DefaultSystem: { Services: ['V4_S3'] } }
-                ]
-            }
-        };
-        mockedAxios.get.mockImplementation((url) => {
-            if (url === 'http://ONE.dest/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/ServiceCollection/?sap-client=123') {
-                return Promise.resolve(v2catalogResponse);
-            }
-            if (
-                url ===
-                'http://ONE.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)&sap-client=123'
-            ) {
-                return Promise.resolve(v4catalogResponse);
-            }
-            return Promise.reject();
-        });
-
-        // Test execution
-        const result = await checkBASDestination(destination as Destination, 'testUsername', 'testPassword');
-
-        // Result check
-        expect(result.destinationResults.v2.results).toEqual(['V2_S1', 'V2_S2', 'V2_S3']);
-        expect(result.destinationResults.v4.value).toEqual(v4catalogResponse.data.value);
-        expect(result.messages.length > 0);
-    });
-
-    test('Catalog services return 500, HTML5.DynamicDestination missing', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-
-        const destination: Partial<Destination> = {
-            name: 'DEST',
-            host: 'https://one.dest:123'
-        };
-        mockedAxios.get.mockImplementation(() => Promise.resolve({ status: 500 }));
-
-        // Test execution
-        const result = await checkBASDestination(destination as Destination);
-
-        // Result check
-        expect(result.destinationResults.HTML5DynamicDestination).toEqual(false);
-        expect(result.messages.filter((m) => m.severity === Severity.Error).length).toBe(1);
-    });
-
-    test('HTML5.DynamicDestination set to true', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-
-        const destination: Partial<Destination> = {
-            name: 'DEST',
-            host: 'https://one.dest:123',
-            basProperties: {
-                html5DynamicDestination: 'true'
-            }
-        };
-        mockedAxios.get.mockImplementation(() => Promise.resolve({ status: 200 }));
-
-        // Test execution
-        const result = await checkBASDestination(destination as Destination);
-
-        // Result check
-        expect(result.destinationResults.HTML5DynamicDestination).toEqual(true);
-        expect(result.messages.filter((m) => m.severity >= Severity.Warning).length).toBe(0);
     });
 });
 

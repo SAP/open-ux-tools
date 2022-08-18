@@ -149,7 +149,7 @@ function writeDestinationDetails(
     } else {
         writer.addLine(`🚫 &nbsp; ${t('markdownText.v2CatalogNotAvailable')}`);
     }
-    if (destDetails.v4 && Array.isArray(destDetails.v4.value)) {
+    if (destDetails.v4 && Array.isArray(destDetails.v4.results)) {
         writer.addLine(
             `✅ &nbsp; ${t('markdownText.v4CatalogReturned')} ${getServiceCountText(
                 countNumberOfServices(destDetails.v4)

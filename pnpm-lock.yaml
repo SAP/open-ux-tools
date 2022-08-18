@@ -176,6 +176,7 @@ importers:
 
     packages/environment-check:
         specifiers:
+            '@sap-ux/axios-extension': workspace:*
             '@sap-ux/btp-utils': workspace:*
             '@sap-ux/logger': workspace:*
             '@sap/bas-sdk': ^2.1.0
@@ -189,6 +190,7 @@ importers:
             prompts: 2.4.2
             yamljs: 0.3.0
         dependencies:
+            '@sap-ux/axios-extension': link:../axios-extension
             '@sap-ux/btp-utils': link:../btp-utils
             '@sap-ux/logger': link:../logger
             '@sap/bas-sdk': 2.1.0

@@ -22,78 +22,20 @@ const data = {
             v2: {
                 results: [
                     {
-                        __metadata: {
-                            id: "http://SYS.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')",
-                            uri: "http://SYS.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')",
-                            type: 'CATALOGSERVICE.Service'
-                        },
-                        ID: 'SERVICE_ID',
-                        Description: 'OData Service',
-                        Title: 'OData Service Title',
-                        Author: 'ANY',
-                        TechnicalServiceVersion: 1,
-                        MetadataUrl: 'http://sys.domain:443/odata/SERVICE/$metadata',
-                        TechnicalServiceName: 'ZFINS_ACDOC_PLAN_IMPORT_SRV',
-                        ImageUrl: '',
-                        ServiceUrl: 'http://sys.domain:443/odata/SERVICE',
-                        UpdatedDate: '/Date(1476344102000)/',
-                        ReleaseStatus: '',
-                        Category: '',
-                        IsSapService: true,
-                        EntitySets: {
-                            __deferred: {
-                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')/EntitySets"
-                            }
-                        },
-                        TagCollection: {
-                            __deferred: {
-                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')/TagCollection"
-                            }
-                        },
-                        Annotations: {
-                            __deferred: {
-                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')/Annotations"
-                            }
-                        }
+                        id: 'SERVICE_ID',
+                        name: 'OData Service Title',
+                        path: 'http://sys.domain:443/odata/SERVICE',
+                        serviceVersion: '1',
+                        odataVersion: '2'
                     },
                     {
-                        __metadata: {
-                            id: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')",
-                            uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')",
-                            type: 'CATALOGSERVICE.Service'
-                        },
-                        ID: 'OTHER_SERVICE_ID',
-                        Description: 'Another OData Service',
-                        Title: 'Title',
-                        Author: 'OTHER',
-                        TechnicalServiceVersion: 1,
-                        MetadataUrl: 'http://sys.domain:443/odata/OTHER_SERVICE/$metadata',
-                        TechnicalServiceName: 'OTHER_SERVICE',
-                        ImageUrl: '',
-                        ServiceUrl: 'http://sys.domain:443/odata/OTHER_SERVICE',
-                        UpdatedDate: '/Date(1478276043000)/',
-                        ReleaseStatus: '',
-                        Category: '',
-                        IsSapService: true,
-                        EntitySets: {
-                            __deferred: {
-                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')/EntitySets"
-                            }
-                        },
-                        TagCollection: {
-                            __deferred: {
-                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')/TagCollection"
-                            }
-                        },
-                        Annotations: {
-                            __deferred: {
-                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')/Annotations"
-                            }
-                        }
+                        id: 'OTHER_SERVICE_ID',
+                        name: 'Title',
+                        path: 'http://sys.domain:443/odata/OTHER_SERVICE',
+                        serviceVersion: '1',
+                        odataVersion: '2'
                     }
-                ],
-                __delta:
-                    "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection/?sap-client=123?!deltatoken='20211125194120'"
+                ]
             },
             v4: {}
         },
@@ -247,7 +189,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
                 ABC: {
                     v2: {},
                     v4: {
-                        value: []
+                        results: []
                     }
                 }
             }
@@ -263,7 +205,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
                         results: []
                     },
                     v4: {
-                        value: []
+                        results: []
                     }
                 }
             }

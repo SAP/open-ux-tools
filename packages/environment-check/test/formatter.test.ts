@@ -4,22 +4,11 @@ import { countNumberOfServices, getServiceCountText } from '../src/formatter';
  * Tests countNumberOfServices()
  */
 describe('Tests for formatter function countNumberOfServices', () => {
-    test('Count number of V2 services', () => {
+    test('Count number of services', () => {
         const catalogResult = {
             results: [{}, {}, {}]
         };
         expect(countNumberOfServices(catalogResult)).toBe(3);
-    });
-
-    test('Count number of V4 services', () => {
-        const catalogResult = {
-            value: [
-                { DefaultSystem: { Services: [{}] } },
-                { DefaultSystem: { Services: [{}, {}] } },
-                { DefaultSystem: { Services: [{}, {}, {}] } }
-            ]
-        };
-        expect(countNumberOfServices(catalogResult)).toBe(6);
     });
 
     test('Count number of services on empty result', () => {

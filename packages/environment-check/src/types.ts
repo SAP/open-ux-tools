@@ -127,11 +127,6 @@ export interface MarkdownWriter {
     toString: () => string;
 }
 
-export enum OdataVersion {
-    v2 = 'v2',
-    v4 = 'v4'
-}
-
 export enum FileName {
     Package = 'package.json',
     Ui5Yaml = 'ui5.yaml'
