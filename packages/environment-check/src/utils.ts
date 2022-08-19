@@ -1,8 +1,8 @@
 import type { WorkspaceFolder } from 'vscode';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as fs from 'fs';
-import type { MiddlewareProxy } from '../src/types';
-import { FileName, DirName } from '../src/types';
+import type { MiddlewareProxy } from './types';
+import { FileName, DirName } from './types';
 import * as yaml from 'yamljs';
 import { default as find } from 'findit2';
 import { join, basename, dirname } from 'path';

@@ -6,7 +6,7 @@
         "numDestinationsFound": "Found {{destinationNumber}} destinations",
         "appSearch": "Looking for apps in {{folders}}",
         "developmentEnvironment": "Development environment: {{env}}",
-        "versions": "Versions: {{versions}}",
+        "versions": "Versions: {{- versions}}",
         "platform": "Platform: {{platform}}",
         "basDevSpace": "Business Application Studio Dev space: {{basDevSpace}}",
         "detailsForDestinations": "Getting details for destinations: {{destinations}}",
