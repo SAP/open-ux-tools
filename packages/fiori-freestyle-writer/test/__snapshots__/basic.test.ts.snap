@@ -823,8 +823,7 @@ archive.zip
       \\"ui5-tooling-transpile\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
-  },
-  \\"sapux\\": true
+  }
 }
 ",
     "state": "modified",

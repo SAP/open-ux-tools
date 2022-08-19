@@ -103,7 +103,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 ...commonConfig,
                 appOptions: {
                     loadReuseLibs: false,
-                    sapux: true,
                     typescript: true
                 }
             },
