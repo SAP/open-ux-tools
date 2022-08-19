@@ -120,7 +120,6 @@ async function catalogRequest(
         const provider: AbapServiceProvider = createForAbap(axiosConfig);
         const catalog = provider.catalog(odataVersion);
         result = await catalog.listServices();
-
         if (result.length > 0) {
             const numberOfServices = countNumberOfServices(result);
             logger.log(
@@ -134,17 +133,15 @@ async function catalogRequest(
     } catch (error) {
         responseStatus = error?.response?.status || error?.cause?.status;
         logger.error(
-            catalogMessages[error?.response?.status]
-                ? catalogMessages[error?.response?.status](destination, odataVersion)
+            catalogMessages[responseStatus]
+                ? catalogMessages[responseStatus](destination, odataVersion)
                 : t('error.queryFailure', { odataVersion, destination: destination.name })
         );
         const errorJson = error.toJSON ? error.toJSON() : {};
         if (errorJson?.config?.auth?.password) {
             delete errorJson.config.auth.password;
         }
-        logger.info(
-            t('error.urlRequestFailure', { url, error: error.message, errorObj: JSON.stringify(errorJson, null, 4) })
-        );
+        logger.info(t('error.urlRequestFailure', { url, error: error.message, errorObj: error }));
     }
     return {
         messages: logger.getMessages(),
