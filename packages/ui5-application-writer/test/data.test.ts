@@ -227,7 +227,7 @@ describe('Setting defaults', () => {
     ];
 
     test.each(testData)(`mergeUi5 testData index: $#`, async (test) => {
-        expect(await mergeUi5(test.input)).toEqual(test.expected);
+        expect(mergeUi5(test.input)).toEqual(test.expected);
     });
 
     it('merge Ui5App.package settings with defaults', async () => {
@@ -283,7 +283,7 @@ describe('Setting defaults', () => {
             version: '0.0.1'
         };
 
-        expect((await mergeWithDefaults(input)).package).toEqual(expectedPackage);
+        expect(mergeWithDefaults(input).package).toEqual(expectedPackage);
     });
 
     // Test function `mergeApp` sets the correct defaults
@@ -306,12 +306,12 @@ describe('Setting defaults', () => {
         } as App;
 
         test('minimal input', async () => {
-            expect(await mergeApp(baseInput)).toEqual(expectedApp);
+            expect(mergeApp(baseInput)).toEqual(expectedApp);
         });
 
         test('toolsId provided but not id/version of source template', async () => {
             const toolsId = 'guid:abcd1234';
-            const merged = await mergeApp({
+            const merged = mergeApp({
                 ...baseInput,
                 sourceTemplate: {
                     toolsId
@@ -326,7 +326,7 @@ describe('Setting defaults', () => {
                 version: '9.9.9',
                 toolsId: 'guid:abcd1234'
             };
-            const merged = await mergeApp({
+            const merged = mergeApp({
                 ...baseInput,
                 sourceTemplate
             });
@@ -336,15 +336,15 @@ describe('Setting defaults', () => {
 
     describe('getSpecTagVersion', () => {
         test('get latest version', async () => {
-            expect(await getSpecTagVersion('')).toBe('latest');
+            expect(getSpecTagVersion('')).toBe('latest');
         });
 
         test('get specific version', async () => {
-            expect(await getSpecTagVersion('1.92.1')).toBe('UI5-1.92');
+            expect(getSpecTagVersion('1.92.1')).toBe('UI5-1.92');
         });
 
         test('get snapshot version', async () => {
-            expect(await getSpecTagVersion('snapshot-1.71')).toBe('UI5-1.71');
+            expect(getSpecTagVersion('snapshot-1.71')).toBe('UI5-1.71');
         });
     });
 });
