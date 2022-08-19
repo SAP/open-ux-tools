@@ -9,6 +9,7 @@ import { getFilePaths } from './files';
 import type { App, AppOptions, Package, UI5 } from './types';
 import { Ui5App } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
+import { ui5TsMiddlewares, ui5TsTasks } from './data/ui5Libs';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -78,39 +79,10 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         });
         if (ui5App.appOptions.typescript) {
             fs.delete(join(basePath, 'webapp/Component.js'));
-            ui5Config.addCustomMiddleware([
-                {
-                    name: 'ui5-tooling-modules-middleware',
-                    afterMiddleware: 'compression',
-                    configuration: {}
-                },
-                {
-                    name: 'ui5-tooling-transpile-middleware',
-                    afterMiddleware: 'compression',
-                    configuration: {
-                        debug: true,
-                        transpileAsync: true,
-                        transpileTypeScript: true
-                    }
-                }
-            ]);
-            ui5Config.addCustomTasks([
-                {
-                    name: 'ui5-tooling-modules-task',
-                    afterTask: 'replaceVersion',
-                    configuration: {}
-                },
-                {
-                    name: 'ui5-tooling-transpile-task',
-                    afterTask: 'replaceVersion',
-                    configuration: {
-                        debug: true,
-                        removeConsoleStatements: true,
-                        transpileAsync: true,
-                        transpileTypeScript: true
-                    }
-                }
-            ]);
+            ui5Config.addCustomMiddleware(ui5TsMiddlewares);
+            ui5Config.addCustomTasks(ui5TsTasks);
+            ui5LocalConfig.addCustomMiddleware(ui5TsMiddlewares);
+            ui5LocalConfig.addCustomTasks(ui5TsTasks);
         }
     }
 
