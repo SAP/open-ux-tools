@@ -1,10 +1,10 @@
-import UIComponent from "<%- app.baseComponent %>";
+import BaseComponent from "<%- app.baseComponent %>";
 import { createDeviceModel } from "<%=app.id.replace(/\./g, '/')%>/model/models";
 
 /**
  * @namespace <%- app.id %>
  */
-export default class Component extends UIComponent {
+export default class Component extends BaseComponent {
 
 	public static metadata = {
 		manifest: "json"
