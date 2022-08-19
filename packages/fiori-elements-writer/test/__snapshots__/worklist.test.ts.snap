@@ -47,7 +47,8 @@ archive.zip
       \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
-  }
+  },
+  \\"sapux\\": true
 }
 ",
     "state": "modified",
@@ -3619,7 +3620,8 @@ archive.zip
       \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
-  }
+  },
+  \\"sapux\\": true
 }
 ",
     "state": "modified",
