@@ -3316,20 +3316,20 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"config\\": {},
       \\"routes\\": [
         {
-          \\"name\\": \\"BookingsMain\\",
+          \\"name\\": \\"BookingMain\\",
           \\"pattern\\": \\":?query:\\",
-          \\"target\\": \\"BookingsMain\\"
+          \\"target\\": \\"BookingMain\\"
         }
       ],
       \\"targets\\": {
-        \\"BookingsMain\\": {
+        \\"BookingMain\\": {
           \\"type\\": \\"Component\\",
-          \\"id\\": \\"BookingsMain\\",
+          \\"id\\": \\"BookingMain\\",
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
               \\"viewName\\": \\"fefpmjs.ext.main.Main\\",
-              \\"entitySet\\": \\"Bookings\\",
+              \\"entitySet\\": \\"Booking\\",
               \\"navigation\\": {}
             }
           }
@@ -7037,20 +7037,20 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"config\\": {},
       \\"routes\\": [
         {
-          \\"name\\": \\"BookingsMain\\",
+          \\"name\\": \\"BookingMain\\",
           \\"pattern\\": \\":?query:\\",
-          \\"target\\": \\"BookingsMain\\"
+          \\"target\\": \\"BookingMain\\"
         }
       ],
       \\"targets\\": {
-        \\"BookingsMain\\": {
+        \\"BookingMain\\": {
           \\"type\\": \\"Component\\",
-          \\"id\\": \\"BookingsMain\\",
+          \\"id\\": \\"BookingMain\\",
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
               \\"viewName\\": \\"fefpmts.ext.main.Main\\",
-              \\"entitySet\\": \\"Bookings\\",
+              \\"entitySet\\": \\"Booking\\",
               \\"navigation\\": {}
             }
           }

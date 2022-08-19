@@ -5,22 +5,13 @@ import { testOutputDir, debug, feBaseConfig, v4Service } from './common';
 
 const TEST_NAME = 'fpmTemplates';
 
-jest.mock('read-pkg-up', () => ({
-    sync: jest.fn().mockReturnValue({
-        packageJson: {
-            name: 'mocked-package-name',
-            version: '9.9.9-mocked'
-        }
-    })
-}));
-
 describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
     const fpmTemplate = {
         type: TemplateType.FlexibleProgrammingModel,
         settings: {
             entityConfig: {
-                mainEntityName: 'Bookings'
+                mainEntityName: 'Booking'
             },
             pageName: 'Main'
         }
