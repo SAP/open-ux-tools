@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fiori Elements template: feopTemplate Generate files for template: fefeop1 1`] = `
+exports[`Flexible Programming Model template: fpmTemplates Generate files for template: with-js 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
@@ -17,7 +17,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"fefeop1\\",
+  \\"name\\": \\"fefpmjs\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
@@ -34,13 +34,13 @@ archive.zip
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop1-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop1-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop1-tile\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
@@ -57,17 +57,17 @@ archive.zip
 
 specVersion: \\"2.5\\"
 metadata:
-  name: fefeop1
+  name: fefpmjs
 type: application
 framework:
   name: SAPUI5
-  version: 1.86.3
+  version: 1.95.0
   libraries:
     - name: sap.m
     - name: sap.ui.core
     - name: sap.ushell
     - name: sap.fe.templates
-    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
 server:
   customMiddleware:
     - name: fiori-tools-appreload
@@ -99,7 +99,7 @@ server:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: fefeop1
+  name: fefpmjs
 type: application
 server:
   customMiddleware:
@@ -137,7 +137,7 @@ server:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: fefeop1
+  name: fefpmjs
 type: application
 server:
   customMiddleware:
@@ -168,20 +168,9 @@ server:
     function (Component) {
         \\"use strict\\";
 
-        return Component.extend(\\"fefeop1.Component\\", {
+        return Component.extend(\\"fefpmjs.Component\\", {
             metadata: {
                 manifest: \\"json\\"
-            },
-
-            /**
-             * Gets the component startup parameters, setting preferredMode to 'create'.
-             * @public
-             * @returns 
-             */
-            getStartupParameters: function() {
-                return Promise.resolve({
-                    preferredMode: [\\"create\\"]
-                });
             }
         });
     }
@@ -209,8 +198,66 @@ server:
 </edmx:Edmx>",
     "state": "modified",
   },
+  "webapp/ext/main/Main.controller.js": Object {
+    "contents": "sap.ui.define(
+    [
+        'sap/fe/core/PageController'
+    ],
+    function(PageController) {
+        'use strict';
+
+        return PageController.extend('fefpmjs.ext.main.Main', {
+            /**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf fefpmjs.ext.main.Main
+             */
+            //  onInit: function () {
+            //
+            //  },
+
+            /**
+             * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
+             * (NOT before the first rendering! onInit() is used for that one!).
+             * @memberOf fefpmjs.ext.main.Main
+             */
+            //  onBeforeRendering: function() {
+            //
+            //  },
+
+            /**
+             * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
+             * This hook is the same one that SAPUI5 controls get after being rendered.
+             * @memberOf fefpmjs.ext.main.Main
+             */
+            //  onAfterRendering: function() {
+            //
+            //  },
+
+            /**
+             * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
+             * @memberOf fefpmjs.ext.main.Main
+             */
+            //  onExit: function() {
+            //
+            //  }
+        });
+    }
+);
+",
+    "state": "modified",
+  },
+  "webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"fefpmjs.ext.main.Main\\">
+    <Page title=\\"Main\\">
+        <content></content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for fefeop1
+    "contents": "# This is the resource bundle for fefpmjs
 
 #Texts for manifest.json
 
@@ -237,9 +284,9 @@ appDescription=A Fiori application.",
     <script
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
-        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-resourceroots='{
-            \\"fefeop1\\": \\"./\\"
+            \\"fefpmjs\\": \\"./\\"
         }'
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
@@ -247,15 +294,15 @@ appDescription=A Fiori application.",
     ></script>
     <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
         data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"fefeop1\\">
+        data-sap-ui-componentName=\\"fefpmjs\\">
     </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"fefeop1\\"
+        data-name=\\"fefpmjs\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"fefeop1\\"}'
+        data-settings='{\\"id\\" : \\"fefpmjs\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -3174,7 +3221,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     "contents": "{
   \\"_version\\": \\"1.37.0\\",
   \\"sap.app\\": {
-    \\"id\\": \\"fefeop1\\",
+    \\"id\\": \\"fefpmjs\\",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
@@ -3227,7 +3274,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.90.0\\",
+      \\"minUI5Version\\": \\"1.96.11\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -3243,7 +3290,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
         \\"settings\\": {
-          \\"bundleName\\": \\"fefeop1.i18n.i18n\\"
+          \\"bundleName\\": \\"fefpmjs.i18n.i18n\\"
         }
       },
       \\"\\": {
@@ -3268,58 +3315,26 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"config\\": {},
       \\"routes\\": [
         {
-          \\"pattern\\": \\"Travel({key}):?query:\\",
-          \\"name\\": \\"TravelObjectPage\\",
-          \\"target\\": \\"TravelObjectPage\\"
-        },
-        {
-          \\"pattern\\": \\"Travel({key})/_Booking({key2}):?query:\\",
-          \\"name\\": \\"BookingObjectPage\\",
-          \\"target\\": \\"BookingObjectPage\\"
+          \\"name\\": \\"BookingsMain\\",
+          \\"pattern\\": \\":?query:\\",
+          \\"target\\": \\"BookingsMain\\"
         }
       ],
       \\"targets\\": {
-        \\"TravelObjectPage\\": {
+        \\"BookingsMain\\": {
           \\"type\\": \\"Component\\",
-          \\"id\\": \\"TravelObjectPage\\",
-          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"id\\": \\"BookingsMain\\",
+          \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Travel\\",
-              \\"content\\": {
-                \\"header\\": {
-                  \\"visible\\": false,
-                  \\"anchorBarVisible\\": false
-                }
-              },
-              \\"navigation\\": {
-                \\"_Booking\\": {
-                  \\"detail\\": {
-                    \\"route\\": \\"BookingObjectPage\\"
-                  }
-                }
-              }
-            }
-          }
-        },
-        \\"BookingObjectPage\\": {
-          \\"type\\": \\"Component\\",
-          \\"id\\": \\"BookingObjectPage\\",
-          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
-          \\"options\\": {
-            \\"settings\\": {
-              \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Booking\\"
+              \\"viewName\\": \\"fefpmjs.ext.main.Main\\",
+              \\"entitySet\\": \\"Bookings\\",
+              \\"navigation\\": {}
             }
           }
         }
       }
     }
-  },
-  \\"sap.fiori\\": {
-    \\"registrationIds\\": [],
-    \\"archeType\\": \\"transactional\\"
   }
 }
 ",
@@ -3371,10 +3386,10 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                 }
             },
             applications: {
-                \\"fefeop1-tile\\": {
+                \\"fefpmjs-tile\\": {
                     title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
                     description: \\"A Fiori application.\\",
-                    additionalInformation: \\"SAPUI5.Component=fefeop1\\",
+                    additionalInformation: \\"SAPUI5.Component=fefpmjs\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
                 }
@@ -3389,10 +3404,10 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_belize\\"
+        data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"fefeop1\\": \\"../\\"}'
+        data-sap-ui-resourceroots='{\\"fefpmjs\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
         </script>
         <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">

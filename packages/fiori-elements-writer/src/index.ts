@@ -1,12 +1,14 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
+import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import { FioriElementsApp } from './types';
+import type { FioriElementsApp, FPMSettings } from './types';
+import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
 import type { TemplateOptions } from './data/templateAttributes';
@@ -64,13 +66,31 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
         JSON.parse(render(fs.read(join(rootTemplatesPath, 'common', 'extend', 'package.json')), feApp, {}))
     );
 
-    const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
-    // Copy version specific common templates and version specific, floorplan specific templates
-    [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
-        (templatePath) => {
-            fs!.copyTpl(join(templatePath, '**/*.*'), basePath, feApp, {}, { ignoreNoMatch: true });
+    // Special handling for FPM because it is not based on template files but used the fpm writer
+    if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
+        if (feApp.service?.version === OdataVersion.v2) {
+            throw new Error(
+                'The Flexible Programming model template is only supported for SAP Fiori elements for OData v4'
+            );
         }
-    );
+        const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
+        generateCustomPage(
+            basePath,
+            {
+                entity: config.entityConfig.mainEntityName,
+                name: config.pageName
+            },
+            fs
+        );
+    } else {
+        // Copy version specific common templates and version specific, floorplan specific templates
+        const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
+        [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
+            (templatePath) => {
+                fs!.copyTpl(join(templatePath, '**/*.*'), basePath, feApp, {}, { ignoreNoMatch: true });
+            }
+        );
+    }
 
     // Update manifest.json with template specific settings
     extendManifestJson(fs, basePath, rootTemplatesPath, feApp);

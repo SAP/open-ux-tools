@@ -3659,7 +3659,7 @@ server:
       beforeMiddleware: csp
       configuration:
         service:
-          urlPath: sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
+          urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -3697,7 +3697,7 @@ server:
       beforeMiddleware: csp
       configuration:
         service:
-          urlPath: sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
+          urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
           metadataXmlPath: ./webapp/localService/metadata.xml
           mockdataRootPath: ./webapp/localService/data
           generateMockData: true
@@ -3760,7 +3760,7 @@ server:
     <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    <edmx:Reference Uri=\\"sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/$metadata\\">
+    <edmx:Reference Uri=\\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/$metadata\\">
         <edmx:Include Namespace=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001\\" Alias=\\"SAP__self\\"/>
     </edmx:Reference>
     <edmx:DataServices>
@@ -6750,7 +6750,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     },
     \\"dataSources\\": {
       \\"mainService\\": {
-        \\"uri\\": \\"sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
+        \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [

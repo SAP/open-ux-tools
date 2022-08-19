@@ -33,6 +33,7 @@
     "dependencies": {
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/ui5-application-writer": "workspace:*",
+        "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.7",
         "i18next": "20.3.2",
