@@ -517,7 +517,7 @@ title=App Title",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"nods1\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-frameOptions=\\"allow\\">
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -1335,7 +1335,12 @@ export function createDeviceModel () {
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"nods1\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-frameOptions=\\"allow\\">
+    </script>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+        });
     </script>
 </head>
 
@@ -1890,7 +1895,7 @@ title=App Title",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"nods1\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-frameOptions=\\"allow\\">
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -2625,7 +2630,7 @@ title=App Title",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"nods1\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-frameOptions=\\"allow\\">
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -3356,7 +3361,12 @@ title=App Title",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"nods1\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-frameOptions=\\"allow\\">
+    </script>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+        });
     </script>
 </head>
 

@@ -65,9 +65,14 @@
         data-sap-ui-compatVersion="edge"
         data-sap-ui-language="en"
         data-sap-ui-resourceroots='{"<%- app.id  %>": "../"}'
-        data-sap-ui-frameOptions="allow"
+        data-sap-ui-frameOptions="allow">
     </script><% if (appOptions.loadReuseLibs) { %>
     <script id="locate-reuse-libs" src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
+    </script><% } else { %>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt("content");
+        });
     </script><% } %>
 </head>
 

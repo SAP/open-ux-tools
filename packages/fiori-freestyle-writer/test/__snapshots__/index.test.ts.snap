@@ -1063,7 +1063,7 @@ title=My Test App",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-frameOptions=\\"allow\\">
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -3392,7 +3392,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-frameOptions=\\"allow\\">
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -5531,7 +5531,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-frameOptions=\\"allow\\">
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
