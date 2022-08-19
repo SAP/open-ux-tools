@@ -1,12 +1,12 @@
 import type { WorkspaceFolder } from 'vscode';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as fs from 'fs';
-import type { MiddlewareProxy } from './types';
-import { FileName, DirName } from './types';
+import type { MiddlewareProxy } from '../types';
+import { FileName, DirName } from '../types';
 import * as yaml from 'yamljs';
 import { default as find } from 'findit2';
 import { join, basename, dirname } from 'path';
-import { t } from './i18n';
+import { t } from '../i18n';
 
 /**
  * Returns the ui5 middleware settings of a given Fiori elements project (v2 or v4).
@@ -138,22 +138,3 @@ async function findAll(root: string, filename: string, results: string[], stopFo
         });
     });
 }
-
-/**
- * Recursive function to extract nested objects.
- *
- * @param object object to be flattened
- * @returns flattened object
- */
-export const flattenObject = (object) => {
-    const flattened = {};
-    Object.keys(object).forEach((key) => {
-        const value = object[key];
-        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-            Object.assign(flattened, flattenObject(value));
-        } else {
-            flattened[key] = value;
-        }
-    });
-    return flattened;
-};

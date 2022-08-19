@@ -1,7 +1,7 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { FileName, Severity } from '../types';
-import { findAllPackageJsonFolders, getUi5CustomMiddleware } from '../utils';
+import { findAllPackageJsonFolders, getUi5CustomMiddleware } from './project-utils';
 import type { ResultMessage } from '../types';
 import { t } from '../i18n';
 

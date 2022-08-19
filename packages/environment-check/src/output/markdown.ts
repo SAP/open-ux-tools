@@ -9,7 +9,7 @@ import type {
     ResultMessage,
     FlatDestination
 } from '../types';
-import { flattenObject } from '../utils';
+import { flattenObject } from './utils';
 import { t } from '../i18n';
 /**
  * Output mapping from severity -> icon + text

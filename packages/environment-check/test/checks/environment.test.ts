@@ -32,6 +32,13 @@ describe('Test for getEnvironmentCheck()', () => {
         ).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
     });
+
+    test('Ensure correct dev environment, getEnvironmentCheck()', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        const { environment, messages } = await getEnvironment();
+        expect(environment.developmentEnvironment === DevelopmentEnvironment.BAS).toBeTruthy();
+        expect(messages.length).toBeGreaterThan(0);
+    });
 });
 
 describe('Test for checkEnvironment()', () => {
