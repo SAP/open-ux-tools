@@ -30,11 +30,10 @@ describe('use FPM with existing apps', () => {
     });
 
     describe('extend UI5 application with FPM', () => {
-        const targetPath = join(testOutput, 'lrop');
         const mainEntity = 'Travel';
 
         const basicConfig = {
-            path: targetPath,
+            path: join(testOutput, 'lrop'),
             settings: {}
         };
         const tsConfig = {
@@ -43,7 +42,7 @@ describe('use FPM with existing apps', () => {
                 typescript: true
             }
         };
-        const configs = [basicConfig, tsConfig];
+        const configs: { path: string; settings: { typescript?: boolean } }[] = [basicConfig, tsConfig];
 
         beforeAll(() => {
             fs.copy(join(testInput, 'basic-lrop'), basicConfig.path);
@@ -148,9 +147,9 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test('generateCustomAction in ListReport and ObjectPage', () => {
+        test.each(configs)('generateCustomAction in ListReport and ObjectPage', (config) => {
             generateCustomAction(
-                targetPath,
+                config.path,
                 {
                     name: 'MyCustomAction',
                     target: {
@@ -160,12 +159,13 @@ describe('use FPM with existing apps', () => {
                     settings: {
                         text: 'My Custom Action'
                     },
-                    eventHandler: true
+                    eventHandler: true,
+                    ...config.settings
                 },
                 fs
             );
             generateCustomAction(
-                targetPath,
+                config.path,
                 {
                     name: 'AnotherCustomAction',
                     target: {
@@ -175,13 +175,17 @@ describe('use FPM with existing apps', () => {
                     settings: {
                         text: 'My other Action'
                     },
-                    eventHandler: true
+                    eventHandler: true,
+                    ...config.settings
                 },
                 fs
             );
             // Generate custom action by appending existing file
+            const fragment = config.settings.typescript
+                ? `\nexport function onAppended() {\n            MessageToast.show("Custom handler invoked.");\n        }`
+                : `,\n        onAppended: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`;
             generateCustomAction(
-                targetPath,
+                config.path,
                 {
                     name: 'AppendedAction',
                     target: {
@@ -193,24 +197,25 @@ describe('use FPM with existing apps', () => {
                     },
                     eventHandler: {
                         fileName: 'AnotherCustomAction',
-                        fnName: 'OnAppendedFn',
+                        fnName: 'onAppended',
                         insertScript: {
-                            fragment: `,\n        OnAppendedFn: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                            fragment,
                             position: {
                                 line: 8,
                                 character: 9
                             }
                         }
                     },
-                    folder: join('ext', 'anotherCustomAction')
+                    folder: join('ext', 'anotherCustomAction'),
+                    ...config.settings
                 },
                 fs
             );
         });
 
-        test('generateCustomSection in ObjectPage', () => {
+        test.each(configs)('generateCustomSection in ObjectPage', (config) => {
             generateCustomSection(
-                targetPath,
+                config.path,
                 {
                     name: 'MyCustomSection',
                     target: 'TravelObjectPage',
@@ -219,14 +224,15 @@ describe('use FPM with existing apps', () => {
                         placement: Placement.After,
                         anchor: 'DummyFacet'
                     },
-                    eventHandler: true
+                    eventHandler: true,
+                    ...config.settings
                 },
                 fs
             );
         });
 
         afterAll(() => {
-            expect((fs as any).dump(targetPath, '**/test-output/*/webapp/{manifest.json,ext/**/*}')).toMatchSnapshot();
+            expect((fs as any).dump(testOutput, '**/test-output/*/webapp/{manifest.json,ext/**/*}')).toMatchSnapshot();
         });
     });
 });
