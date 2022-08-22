@@ -10,6 +10,7 @@ import type { Ui5App } from '@sap-ux/ui5-application-writer';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ServiceInfo } from './service';
 import { getServiceInfo, getServiceInfoInBAS } from './service';
+import { getUI5Versions } from './ui5';
 
 /**
  *
@@ -125,7 +126,7 @@ export default class extends Generator {
                     ...this.app,
                     service: this.service,
                     ui5: {
-                        minUI5Version: '1.99.0'
+                        minUI5Version: (await getUI5Versions()).latest.version
                     },
                     template: this.template as FreestyleTemplate
                 },
