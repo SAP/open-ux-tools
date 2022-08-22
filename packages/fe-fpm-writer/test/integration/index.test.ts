@@ -110,9 +110,9 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test('generateCustomView in ListReport', () => {
+        test.each(configs)('generateCustomView in ListReport', (config) => {
             //pre-requisite is at least one view based on annotations
-            fs.extendJSON(join(targetPath, 'webapp/manifest.json'), {
+            fs.extendJSON(join(config.path, 'webapp/manifest.json'), {
                 'sap.ui5': {
                     routing: {
                         targets: {
@@ -135,13 +135,14 @@ describe('use FPM with existing apps', () => {
                 }
             });
             generateCustomView(
-                targetPath,
+                config.path,
                 {
                     target: 'TravelListReport',
                     key: 'CustomViewKey',
                     label: 'Custom View',
                     name: 'NewCustomView',
-                    eventHandler: true
+                    eventHandler: true,
+                    ...config.settings
                 },
                 fs
             );
