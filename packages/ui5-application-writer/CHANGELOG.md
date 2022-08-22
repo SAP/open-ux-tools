@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.14.5
+
+### Patch Changes
+
+-   238f401: Fix: corrected minVersion calculation and handling of sapux setting
+
 ## 0.14.4
 
 ### Patch Changes
