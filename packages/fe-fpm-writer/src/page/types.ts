@@ -99,11 +99,6 @@ export interface CustomPage extends CustomElement {
          */
         title?: string;
     };
-
-    /**
-     * Optional flag to generate typescript instead of javascript code.
-     */
-    typescript?: boolean;
 }
 
 export interface FCL {

@@ -56,6 +56,20 @@ export default class MyCustomPage extends Controller {
 </mvc:View>",
     "state": "modified",
   },
+  "../ts/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "../ts/webapp/ext/newCustomColumn/NewCustomColumn.ts": Object {
+    "contents": "import MessageToast from 'sap/m/MessageToast'
+
+export function onPress() {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
   "../ts/webapp/manifest.json": Object {
     "contents": "{
   \\"_version\\": \\"1.32.0\\",
@@ -169,6 +183,24 @@ export default class MyCustomPage extends Controller {
                 \\"Travel\\": {
                   \\"detail\\": {
                     \\"route\\": \\"TravelObjectPage\\"
+                  }
+                }
+              },
+              \\"controlConfiguration\\": {
+                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"columns\\": {
+                    \\"NewCustomColumn\\": {
+                      \\"header\\": \\"Custom Price and Currency\\",
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DataField::TravelID\\"
+                      },
+                      \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
+                      \\"properties\\": [
+                        \\"TotalPrice\\",
+                        \\"CurrencyCode\\"
+                      ]
+                    }
                   }
                 }
               }

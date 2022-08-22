@@ -90,9 +90,9 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test('generateCustomColumn in ListReport', () => {
+        test.each(configs)('generateCustomColumn in ListReport', (config) => {
             generateCustomColumn(
-                targetPath,
+                config.path,
                 {
                     target: 'TravelListReport',
                     targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
@@ -103,7 +103,8 @@ describe('use FPM with existing apps', () => {
                         placement: Placement.After,
                         anchor: 'DataField::TravelID'
                     },
-                    properties: ['TotalPrice', 'CurrencyCode']
+                    properties: ['TotalPrice', 'CurrencyCode'],
+                    ...config.settings
                 },
                 fs
             );
