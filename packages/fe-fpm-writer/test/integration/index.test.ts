@@ -7,7 +7,8 @@ import {
     generateCustomPage,
     TargetControl,
     generateCustomSection,
-    generateCustomView
+    generateCustomView,
+    enableFPM
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
@@ -31,39 +32,59 @@ describe('use FPM with existing apps', () => {
     describe('extend UI5 application with FPM', () => {
         const targetPath = join(testOutput, 'lrop');
         const mainEntity = 'Travel';
+
+        const basicConfig = {
+            path: targetPath,
+            settings: {}
+        };
+        const tsConfig = {
+            path: join(testOutput, 'ts'),
+            settings: {
+                typescript: true
+            }
+        };
+        const configs = [basicConfig, tsConfig];
+
         beforeAll(() => {
-            fs.copy(join(testInput, 'basic-lrop'), targetPath);
+            fs.copy(join(testInput, 'basic-lrop'), basicConfig.path);
+            fs.copy(join(testInput, 'basic-ts'), tsConfig.path);
         });
 
-        test('generateListReport', () => {
-            generateListReport(targetPath, { entity: mainEntity }, fs);
+        test.each(configs)('enableFpm', (config) => {
+            enableFPM(config.path, config.settings, fs);
         });
 
-        test('generateObjectPage with navigation from ListReport', () => {
+        test.each(configs)('generateListReport', (config) => {
+            generateListReport(config.path, { entity: mainEntity, ...config.settings }, fs);
+        });
+
+        test.each(configs)('generateObjectPage with navigation from ListReport', (config) => {
             generateObjectPage(
-                targetPath,
+                config.path,
                 {
                     entity: mainEntity,
                     navigation: {
                         navEntity: mainEntity,
                         sourcePage: 'TravelListReport',
                         navKey: true
-                    }
+                    },
+                    ...config.settings
                 },
                 fs
             );
         });
 
-        test('generateCustomPage with navigation from ObjectPage', () => {
+        test.each(configs)('generateCustomPage with navigation from ObjectPage', (config) => {
             generateCustomPage(
-                targetPath,
+                config.path,
                 {
                     name: 'MyCustomPage',
                     entity: 'Booking',
                     navigation: {
                         sourcePage: 'TravelObjectPage',
                         navEntity: '_Booking'
-                    }
+                    },
+                    ...config.settings
                 },
                 fs
             );
