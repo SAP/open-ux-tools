@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.12.8
+
+### Patch Changes
+
+-   0fcddfd: Correct app controller name
+
 ## 0.12.7
 
 ### Patch Changes
