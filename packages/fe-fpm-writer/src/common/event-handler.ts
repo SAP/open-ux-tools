@@ -11,7 +11,7 @@ import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/ut
  * @param {InternalCustomElement} config - configuration
  * @param {EventHandlerConfiguration | true | string} [eventHandler] - eventHandler for creation
  * @param {boolean} [controllerSuffix=false] - append controller suffix to new file
- * @param {boolean} - create Typescript file instead of Javascript
+ * @param {boolean} typescript - create Typescript file instead of Javascript
  * @returns {string} full namespace path to method
  */
 export function applyEventHandlerConfiguration(
