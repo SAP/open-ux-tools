@@ -31,6 +31,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -3594,6 +3595,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.77\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -7159,6 +7161,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.77\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -10542,6 +10545,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -14106,6 +14110,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -17670,6 +17675,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -21265,6 +21271,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
