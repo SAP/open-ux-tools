@@ -1847,17 +1847,6 @@ server:
 });",
     "state": "modified",
   },
-  "webapp/controller/DetailObjectNotFound.js": Object {
-    "contents": "sap.ui.define([
-    \\"./BaseController\\"
-], function (BaseController) {
-    \\"use strict\\";
-
-    return BaseController.extend(\\"test.me.controller.DetailObjectNotFound\\", {});
-});
-",
-    "state": "modified",
-  },
   "webapp/controller/ErrorHandler.js": Object {
     "contents": "sap.ui.define([
     \\"sap/ui/base/Object\\",

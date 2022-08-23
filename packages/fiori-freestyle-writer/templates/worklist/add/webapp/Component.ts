@@ -1,7 +1,6 @@
 import UIComponent from "sap/ui/core/UIComponent";
 import Device from "sap/ui/Device";
 import ErrorHandler from "./controller/ErrorHandler";
-import ListSelector from "./controller/ListSelector";
 import { createDeviceModel } from "./model/models";
 
 /**
@@ -13,7 +12,6 @@ export default class Component extends UIComponent {
         manifest: "json"
     };
 
-    public listSelector: ListSelector;
     private errorHandler: ErrorHandler;
     private contentDensityClass: string;
 
@@ -24,7 +22,6 @@ export default class Component extends UIComponent {
         // call the base component's init function
         super.init();
 
-        this.listSelector = new ListSelector();
         this.errorHandler = new ErrorHandler(this);
 
         // enable routing
@@ -39,7 +36,6 @@ export default class Component extends UIComponent {
      * In this method, the ListSelector and ErrorHandler are destroyed.
      */
     public destroy() {
-        this.listSelector.destroy();
         this.errorHandler.destroy();
         // call the base component's destroy function
         super.destory();
