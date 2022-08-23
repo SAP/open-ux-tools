@@ -2,12 +2,30 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { ManifestNamespace } from '@sap-ux/ui5-config';
+import type { Manifest } from '@sap-ux/ui5-config';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
 
-type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile;
+/**
+ * Reads the manifest for an app.
+ *
+ * @param fs - a reference to a mem-fs editor
+ * @param basePath - the root folder of the app
+ * @returns the manifest object. An exception is thrown if the manifest cannot be read.
+ */
+function readManifest(fs: Editor, basePath: string): Manifest {
+    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
+    if (!manifest) {
+        throw new ValidationError(
+            t('error.cannotReadManifest', {
+                filePath: join(basePath, 'webapp/manifest.json')
+            })
+        );
+    }
+
+    return manifest;
+}
 
 /**
  * Retrieves the OData version of the main datasource.
@@ -166,15 +184,7 @@ export function generateOPAFiles(
 ): Editor {
     const editor = fs || create(createStorage());
 
-    const manifest = editor.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
-    if (!manifest) {
-        throw new ValidationError(
-            t('error.cannotReadManifest', {
-                filePath: join(basePath, 'webapp/manifest.json')
-            })
-        );
-    }
-
+    const manifest = readManifest(editor, basePath);
     const version = getODataVersionFromManifest(manifest);
     if (!version) {
         throw new ValidationError(t('error.badODataVersion'));
@@ -186,11 +196,10 @@ export function generateOPAFiles(
     const rootV4TemplateDirPath = join(__dirname, `../templates/${version}`); // Only v4 is supported for the time being
     const testOutDirPath = join(basePath, 'webapp/test');
 
-    // Test files
-    editor.copy(join(rootCommonTemplateDirPath, 'testsuite.qunit.html'), join(testOutDirPath, 'testsuite.qunit.html'));
-    editor.copy(join(rootCommonTemplateDirPath, 'testsuite.qunit.js'), join(testOutDirPath, 'testsuite.qunit.js'));
+    // Common test files
+    editor.copy(join(rootCommonTemplateDirPath), testOutDirPath);
 
-    // Integration (OPA) test files
+    // Integration (OPA) test files - version-specific
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration', 'opaTests.*.*'),
         join(testOutDirPath, 'integration'),
@@ -246,14 +255,7 @@ export function generatePageObjectFile(
 ): Editor {
     const editor = fs || create(createStorage());
 
-    const manifest = editor.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
-    if (!manifest) {
-        throw new ValidationError(
-            t('error.cannotReadManifest', {
-                filePath: join(basePath, 'webapp/manifest.json')
-            })
-        );
-    }
+    const manifest = readManifest(editor, basePath);
     const version = getODataVersionFromManifest(manifest);
     if (!version) {
         throw new ValidationError(t('error.badODataVersion'));
