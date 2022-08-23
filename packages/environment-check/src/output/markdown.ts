@@ -27,7 +27,6 @@ const destinationTableFields = new Map<string, string>([
     ['Description', 'Description'],
     ['Host', 'Host'],
     ['sap-client', 'sap-client'],
-    ['WebIDEEnabled', 'WebIDEEnabled'],
     ['UrlServiceType', 'Fiori tools usage'],
     ['WebIDEUsage', 'WebIDEUsage'],
     ['WebIDEAdditionalData', 'WebIDEAdditionalData'],
