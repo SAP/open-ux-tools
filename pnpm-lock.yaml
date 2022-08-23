@@ -179,6 +179,7 @@ importers:
             '@sap-ux/axios-extension': workspace:*
             '@sap-ux/btp-utils': workspace:*
             '@sap-ux/logger': workspace:*
+            '@sap-ux/ui5-config': workspace:*
             '@sap/bas-sdk': ^2.1.0
             '@types/archiver': 5.1.1
             '@types/vscode': 1.39.0
@@ -193,6 +194,7 @@ importers:
             '@sap-ux/axios-extension': link:../axios-extension
             '@sap-ux/btp-utils': link:../btp-utils
             '@sap-ux/logger': link:../logger
+            '@sap-ux/ui5-config': link:../ui5-config
             '@sap/bas-sdk': 2.1.0
             '@types/archiver': 5.1.1
             archiver: 5.3.0

@@ -1,7 +1,7 @@
 import type { WorkspaceFolder } from 'vscode';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as fs from 'fs';
-import type { MiddlewareProxy } from '../types';
+import type { CustomMiddleware, FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 import { FileName, DirName } from '../types';
 import * as yaml from 'yamljs';
 import { default as find } from 'findit2';
@@ -14,9 +14,9 @@ import { t } from '../i18n';
  * @param root string - path to the SAP UX project (where the ui5.yaml is)
  * @returns middleware proxy
  */
-export async function getUi5CustomMiddleware(root: string): Promise<MiddlewareProxy> {
+export async function getUi5CustomMiddleware(root: string): Promise<CustomMiddleware<FioriToolsProxyConfig>> {
     const yamlContent = await readFile(join(root, FileName.Ui5Yaml));
-    const middlewares: MiddlewareProxy[] = yaml.parse(yamlContent)?.server?.customMiddleware;
+    const middlewares: CustomMiddleware<FioriToolsProxyConfig>[] = yaml.parse(yamlContent)?.server?.customMiddleware;
     return middlewares?.find((element) => element.name === 'fiori-tools-proxy');
 }
 

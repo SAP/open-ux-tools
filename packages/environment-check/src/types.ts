@@ -152,26 +152,6 @@ export const enum UI5FlexLayer {
     CUSTOMER_BASE = 'CUSTOMER_BASE'
 }
 
-export interface MiddlewareProxy {
-    name: string;
-    configuration: {
-        backend: BackendConfig[];
-        ui5?: {
-            path: string[];
-            url: string;
-            version?: string;
-        };
-    };
-}
-
-export interface BackendConfig {
-    path: string;
-    url: string;
-    destination?: string;
-    scp?: boolean;
-    client?: string;
-}
-
 export enum DirName {
     Sapux = 'src',
     Webapp = 'webapp'
