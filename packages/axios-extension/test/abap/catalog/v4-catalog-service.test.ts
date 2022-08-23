@@ -87,5 +87,27 @@ describe('V4CatalogService', () => {
             expect(services).toBeDefined();
             expect(services.length).toBeGreaterThan(0);
         });
+
+        test('service returns an error', async () => {
+            nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADTA />'));
+            nock(server)
+                .get((path) => path.startsWith(path))
+                .reply(200, {
+                    error: {
+                        code: '42',
+                        message: 'OData service error'
+                    }
+                });
+
+            const provider = createForAbap(config);
+            provider.s4Cloud = false;
+            const catalog = provider.catalog(ODataVersion.v4);
+            try {
+                await catalog.listServices();
+                fail('Should have thrown an error.');
+            } catch (error) {
+                expect(error['message']).toBeDefined();
+            }
+        });
     });
 });
