@@ -53,6 +53,29 @@ describe('V2CatalogService', () => {
             const services = await catalog.listServices();
             expect(services).toBeDefined();
         });
+
+        test('error', async () => {
+            nock(server)
+                .get(`${V2CatalogService.PATH}/?$format=json`)
+                .reply(200, { d: { EntitySets: ['RecommendedServiceCollection'] } });
+            nock(server)
+                .get((path) => path.startsWith(`${V2CatalogService.PATH}/RecommendedServiceCollection?`))
+                .reply(200, {
+                    error: {
+                        code: '42',
+                        message: 'OData service error'
+                    }
+                });
+
+            const provider = createForAbap(config);
+            const catalog = provider.catalog(ODataVersion.v2);
+            try {
+                await catalog.listServices();
+                fail('Should have thrown an error.');
+            } catch (error) {
+                expect(error['message']).toBeDefined();
+            }
+        });
     });
 
     describe('getAnnotations', () => {
