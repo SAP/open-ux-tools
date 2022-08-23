@@ -1,5 +1,18 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.12.8
+
+### Patch Changes
+
+-   0fcddfd: Correct app controller name
+
+## 0.12.7
+
+### Patch Changes
+
+-   Updated dependencies [238f401]
+    -   @sap-ux/ui5-application-writer@0.14.5
+
 ## 0.12.6
 
 ### Patch Changes

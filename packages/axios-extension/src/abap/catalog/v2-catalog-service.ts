@@ -1,6 +1,7 @@
 import type { ODataServiceInfo, Annotations, FilterOptions } from './base';
 import { CatalogService } from './base';
 import { ODataVersion } from '../../base/odata-service';
+import { ODataRequestError } from '../../base/odata-request-error';
 
 const V2_CLASSIC_ENTITYSET = 'ServiceCollection';
 const V2_RECOMMENDED_ENTITYSET = 'RecommendedServiceCollection';
@@ -71,7 +72,14 @@ export class V2CatalogService extends CatalogService {
             params['$filter'] = V2_S4CLOUD_FILTER;
         }
         const response = await this.get<ODataServiceV2Info[]>(`/${this.entitySet}`, { params });
-        return this.mapServices(response.odata());
+        const data = response.odata();
+
+        // check if the service responded with an odata error
+        if (ODataRequestError.containsError(data)) {
+            throw new ODataRequestError(data);
+        }
+
+        return this.mapServices(data);
     }
 
     /**

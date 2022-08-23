@@ -203,7 +203,7 @@ server:
     function(BaseController) {
       \\"use strict\\";
   
-      return BaseController.extend(\\"test.me.controller.controller.App\\", {
+      return BaseController.extend(\\"test.me.controller.App\\", {
         onInit() {
         }
       });
