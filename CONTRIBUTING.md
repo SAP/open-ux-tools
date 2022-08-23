@@ -24,6 +24,6 @@ Due to legal reasons, contributors will be asked to accept a DCO before they sub
     - **Please follow our [Development Conventions and Guidelines](/docs/Guidelines.md).**
 1. Create a pull request in the UX Tools repository.
 1. Follow the link posted by the CLA assistant to your pull request and accept it, as described above.
-1. Wait for our code review and approval, possibly enhancing your change on request.
+1. Wait for our code review and approval, possibly enhancing your change on request. Please do not mark conversations as resolved. The reviewer will take care of doing this.
 1. Once the change has been approved and merged, we will inform you in a comment.
 1. Celebrate!

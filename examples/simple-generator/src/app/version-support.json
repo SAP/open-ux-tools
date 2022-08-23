@@ -1,0 +1,37 @@
+{
+    "latest": {
+        "version": "1.105.0",
+        "support": "Maintenance",
+        "lts": false
+    },
+    "1.96": {
+        "version": "1.96.11",
+        "support": "Maintenance",
+        "lts": true
+    },
+    "1.84": {
+        "version": "1.84.28",
+        "support": "Maintenance",
+        "lts": true
+    },
+    "1.71": {
+        "version": "1.71.50",
+        "support": "Maintenance",
+        "lts": true
+    },
+    "1.38": {
+        "version": "1.38.57",
+        "support": "Maintenance",
+        "lts": true
+    },
+    "1.105": {
+        "version": "1.105.0",
+        "support": "Maintenance",
+        "lts": false
+    },
+    "1.102": {
+        "version": "1.102.6",
+        "support": "Maintenance",
+        "lts": false
+    }
+}
