@@ -199,7 +199,6 @@ export async function checkBASDestinations(): Promise<{
 
         for (const destination of retrievedDestinations) {
             destination.urlServiceType = getUrlServiceTypeForDest(destination);
-            destination.basProperties.webIDEEnabled = 'true';
             destinations.push(destination);
         }
 
