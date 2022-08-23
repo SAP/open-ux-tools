@@ -61,6 +61,7 @@ async function getDestinationResults(
     const logger = getLogger();
     let username: string;
     let password: string;
+
     if (needsUsernamePassword(destination)) {
         if (typeof credentialCallback === 'function') {
             const credentials = await credentialCallback(destination);
@@ -71,11 +72,12 @@ async function getDestinationResults(
         } else {
             logger.warning(
                 t('warning.basicAuthRequired', {
-                    destination: destination.name
+                    destination: destination.Name
                 })
             );
         }
     }
+
     const destDetails = await checkBASDestination(destination, username, password);
     logger.push(...destDetails.messages);
 
@@ -108,16 +110,19 @@ async function getDestinationsResults(
             ? t('info.detailsForDestinations', { destinations: Array.from(deepDiveDestinations).join(', ') })
             : t('info.noDetailsRequested')
     );
+
     for (const deepDiveDestination of Array.from(deepDiveDestinations)) {
-        const checkDest = destinations.find((d) => d.name === deepDiveDestination);
+        const checkDest = destinations.find((d) => d.Name === deepDiveDestination);
         if (checkDest) {
             const { messages: destMessages, destResults } = await getDestinationResults(checkDest, credentialCallback);
             logger.push(...destMessages);
-            destinationResults[checkDest.name] = destResults;
+
+            destinationResults[checkDest.Name] = destResults;
         } else {
             logger.warning(t('warning.destinationsNotFound', { deepDiveDestination, destNumber: destinations.length }));
         }
     }
+
     return {
         messages: logger.getMessages(),
         destinationResults

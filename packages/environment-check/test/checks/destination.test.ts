@@ -4,14 +4,14 @@ import { Destination, FileName, Severity } from '../../src/types';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
 import { UrlServiceType } from '../../src/types';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
-import { createForAbap } from '@sap-ux/axios-extension';
+import { createForDestination } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/axios-extension', () => ({
     ...(jest.requireActual('@sap-ux/axios-extension') as object),
-    createForAbap: jest.fn()
+    createForDestination: jest.fn()
 }));
 
-const mockCreateForAbap = createForAbap as jest.Mock;
+const mockCreateForDestination = createForDestination as jest.Mock;
 
 jest.mock('@sap/bas-sdk');
 const mockDestinationsApi = destinationsApi as jest.Mocked<typeof destinationsApi>;
@@ -65,7 +65,32 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
         const destResult = await checkBASDestinations();
 
         // Result check
-        expect(destResult.destinations).toEqual(data);
+
+        const expectedData = [
+            {
+                Name: 'ONE',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEUsage: 'odata_abap',
+                UrlServiceType: 'Catalog Service',
+                Host: 'https://one.dest:123'
+            },
+            {
+                Name: 'TWO',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'OnPremise',
+                Description: 'TWO_DESC',
+                'sap-client': '111',
+                WebIDEUsage: 'odata_abap,dev_abap',
+                UrlServiceType: 'Catalog Service',
+                Host: 'http://two.dest:234'
+            }
+        ];
+
+        expect(destResult.destinations).toEqual(expectedData);
         expect(destResult.messages).toBeDefined();
     });
 
@@ -115,11 +140,9 @@ describe('Destinaton tests, function checkBASDestination()', () => {
         // Mock setup
         mockIsAppStudio.mockReturnValue(true);
         const destination: Partial<Destination> = {
-            name: 'ONE',
-            host: 'https://one.dest:123',
-            basProperties: {
-                sapClient: '123'
-            }
+            Name: 'ONE',
+            Host: 'https://one.dest:123',
+            'sap-client': '123'
         };
         const v2catalogResponse = ['V2_S1', 'V2_S2', 'V2_S3'];
         const v4catalogResponse = ['V4_S1', 'V4_S2', 'V4_S3'];
@@ -135,7 +158,7 @@ describe('Destinaton tests, function checkBASDestination()', () => {
             };
         });
 
-        mockCreateForAbap.mockImplementation(() => {
+        mockCreateForDestination.mockImplementation(() => {
             return {
                 catalog: catalog
             };
@@ -155,8 +178,8 @@ describe('Destinaton tests, function checkBASDestination()', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
 
         const destination: Partial<Destination> = {
-            name: 'DEST',
-            host: 'https://one.dest:123'
+            Name: 'DEST',
+            Host: 'https://one.dest:123'
         };
         const catalog = jest.fn();
         const listServices = jest.fn();
@@ -177,7 +200,7 @@ describe('Destinaton tests, function checkBASDestination()', () => {
             };
         });
 
-        mockCreateForAbap.mockImplementation(() => {
+        mockCreateForDestination.mockImplementation(() => {
             return {
                 catalog: catalog
             };
@@ -195,8 +218,8 @@ describe('Destinaton tests, function checkBASDestination()', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
 
         const destination: Partial<Destination> = {
-            name: 'DEST',
-            host: 'https://one.dest:123'
+            Name: 'DEST',
+            Host: 'https://one.dest:123'
         };
         const catalog = jest.fn();
         const listServices = jest.fn();
@@ -217,7 +240,7 @@ describe('Destinaton tests, function checkBASDestination()', () => {
             };
         });
 
-        mockCreateForAbap.mockImplementation(() => {
+        mockCreateForDestination.mockImplementation(() => {
             return {
                 catalog: catalog
             };
@@ -235,11 +258,9 @@ describe('Destinaton tests, function checkBASDestination()', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
 
         const destination: Partial<Destination> = {
-            name: 'DEST',
-            host: 'https://one.dest:123',
-            basProperties: {
-                html5DynamicDestination: 'true'
-            }
+            Name: 'DEST',
+            Host: 'https://one.dest:123',
+            'HTML5.DynamicDestination': 'true'
         };
         const v2catalogResponse = ['V2_S1', 'V2_S2', 'V2_S3'];
         const v4catalogResponse = ['V4_S1', 'V4_S2', 'V4_S3'];
@@ -255,7 +276,7 @@ describe('Destinaton tests, function checkBASDestination()', () => {
             };
         });
 
-        mockCreateForAbap.mockImplementation(() => {
+        mockCreateForDestination.mockImplementation(() => {
             return {
                 catalog: catalog
             };
@@ -273,8 +294,8 @@ describe('Destinaton tests, function checkBASDestination()', () => {
 describe('Destinaton tests, needsUsernamePassword()', () => {
     test('Password required, should return true', () => {
         const result = needsUsernamePassword({
-            credentials: { authentication: 'NoAuthentication' }
-        } as unknown as Destination);
+            Authentication: 'NoAuthentication'
+        } as Destination);
         expect(result).toBeTruthy();
     });
 
@@ -309,7 +330,7 @@ describe('Destination test for classification', () => {
         const destResult = await checkBASDestinations();
 
         // Result check
-        expect(destResult.destinations.find((d) => d.name === 'FUL').urlServiceType).toEqual(
+        expect(destResult.destinations.find((d) => d.Name === 'FUL')?.UrlServiceType).toEqual(
             UrlServiceType.FullServiceUrl
         );
     });
@@ -337,7 +358,7 @@ describe('Destination test for classification', () => {
         const destResult = await checkBASDestinations();
 
         // Result check
-        expect(destResult.destinations.find((d) => d.name === 'CAT').urlServiceType).toEqual(
+        expect(destResult.destinations.find((d) => d.Name === 'CAT').UrlServiceType).toEqual(
             UrlServiceType.CatalogServiceUrl
         );
     });
@@ -365,7 +386,7 @@ describe('Destination test for classification', () => {
         const destResult = await checkBASDestinations();
 
         // Result check
-        expect(destResult.destinations.find((d) => d.name === 'PAR').urlServiceType).toEqual(UrlServiceType.PartialUrl);
+        expect(destResult.destinations.find((d) => d.Name === 'PAR').UrlServiceType).toEqual(UrlServiceType.PartialUrl);
     });
 
     test('InvalidUrl', async () => {
@@ -392,7 +413,7 @@ describe('Destination test for classification', () => {
         const destResult = await checkBASDestinations();
 
         // Result check
-        expect(destResult.destinations.find((d) => d.name === 'INV').urlServiceType).toEqual(UrlServiceType.InvalidUrl);
+        expect(destResult.destinations.find((d) => d.Name === 'INV').UrlServiceType).toEqual(UrlServiceType.InvalidUrl);
     });
     test('InvalidUrl, no WebIDEUsage', async () => {
         // Mock setup
@@ -417,7 +438,7 @@ describe('Destination test for classification', () => {
         const destResult = await checkBASDestinations();
 
         // Result check
-        expect(destResult.destinations.find((d) => d.name === 'INV').urlServiceType).toEqual(UrlServiceType.InvalidUrl);
+        expect(destResult.destinations.find((d) => d.Name === 'INV').UrlServiceType).toEqual(UrlServiceType.InvalidUrl);
     });
     test('InvalidUrl, no WebIDEEnabled', async () => {
         // Mock setup
@@ -441,6 +462,6 @@ describe('Destination test for classification', () => {
         const destResult = await checkBASDestinations();
 
         // Result check
-        expect(destResult.destinations.find((d) => d.name === 'INV').urlServiceType).toEqual(UrlServiceType.InvalidUrl);
+        expect(destResult.destinations.find((d) => d.Name === 'INV').UrlServiceType).toEqual(UrlServiceType.InvalidUrl);
     });
 });

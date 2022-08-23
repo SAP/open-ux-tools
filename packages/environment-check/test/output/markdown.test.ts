@@ -22,20 +22,78 @@ const data = {
             v2: {
                 results: [
                     {
-                        id: 'SERVICE_ID',
-                        name: 'OData Service Title',
-                        path: 'http://sys.domain:443/odata/SERVICE',
-                        serviceVersion: '1',
-                        odataVersion: '2'
+                        __metadata: {
+                            id: "http://SYS.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')",
+                            uri: "http://SYS.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')",
+                            type: 'CATALOGSERVICE.Service'
+                        },
+                        ID: 'SERVICE_ID',
+                        Description: 'OData Service',
+                        Title: 'OData Service Title',
+                        Author: 'ANY',
+                        TechnicalServiceVersion: 1,
+                        MetadataUrl: 'http://sys.domain:443/odata/SERVICE/$metadata',
+                        TechnicalServiceName: 'ZFINS_ACDOC_PLAN_IMPORT_SRV',
+                        ImageUrl: '',
+                        ServiceUrl: 'http://sys.domain:443/odata/SERVICE',
+                        UpdatedDate: '/Date(1476344102000)/',
+                        ReleaseStatus: '',
+                        Category: '',
+                        IsSapService: true,
+                        EntitySets: {
+                            __deferred: {
+                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')/EntitySets"
+                            }
+                        },
+                        TagCollection: {
+                            __deferred: {
+                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')/TagCollection"
+                            }
+                        },
+                        Annotations: {
+                            __deferred: {
+                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('SERVICE')/Annotations"
+                            }
+                        }
                     },
                     {
-                        id: 'OTHER_SERVICE_ID',
-                        name: 'Title',
-                        path: 'http://sys.domain:443/odata/OTHER_SERVICE',
-                        serviceVersion: '1',
-                        odataVersion: '2'
+                        __metadata: {
+                            id: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')",
+                            uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')",
+                            type: 'CATALOGSERVICE.Service'
+                        },
+                        ID: 'OTHER_SERVICE_ID',
+                        Description: 'Another OData Service',
+                        Title: 'Title',
+                        Author: 'OTHER',
+                        TechnicalServiceVersion: 1,
+                        MetadataUrl: 'http://sys.domain:443/odata/OTHER_SERVICE/$metadata',
+                        TechnicalServiceName: 'OTHER_SERVICE',
+                        ImageUrl: '',
+                        ServiceUrl: 'http://sys.domain:443/odata/OTHER_SERVICE',
+                        UpdatedDate: '/Date(1478276043000)/',
+                        ReleaseStatus: '',
+                        Category: '',
+                        IsSapService: true,
+                        EntitySets: {
+                            __deferred: {
+                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')/EntitySets"
+                            }
+                        },
+                        TagCollection: {
+                            __deferred: {
+                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')/TagCollection"
+                            }
+                        },
+                        Annotations: {
+                            __deferred: {
+                                uri: "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection('OTHER_SERVICE')/Annotations"
+                            }
+                        }
                     }
-                ]
+                ],
+                __delta:
+                    "http://sys.domain:443/odata/CATALOGSERVICE;v=2/ServiceCollection/?sap-client=123?!deltatoken='20211125194120'"
             },
             v4: {}
         },
@@ -83,84 +141,78 @@ const data = {
     },
     destinations: [
         {
-            name: 'ABC',
-            type: 'HTTP',
-            credentials: { authentication: 'BasicAuthentication' },
-            proxyType: 'Internet',
-            description: 'Destination description',
-            basProperties: {
-                html5DynamicDestination: 'true',
-                additionalData: 'full_url',
-                webIDEEnabled: 'true',
-                usage: 'odata_gen'
-            },
-            host: 'https://abc-api.org',
-            urlServiceType: UrlServiceType.FullServiceUrl
+            Name: 'ABC',
+            Type: 'HTTP',
+            Authentication: 'BasicAuthentication',
+            ProxyType: 'Internet',
+            'HTML5.DynamicDestination': 'true',
+            WebIDEAdditionalData: 'full_url',
+            Description: 'Destination description',
+            'HTML5.Timeout': '60000',
+            TrustAll: true,
+            WebIDEEnabled: 'true',
+            WebIDEUsage: 'odata_gen',
+            Host: 'https://abc-api.org',
+            UrlServiceType: UrlServiceType.FullServiceUrl
         },
         {
-            name: 'DEF',
-            type: 'HTTP',
-            credentials: { authentication: 'BasicAuthentication' },
-            proxyType: 'Internet',
-            description: 'def',
-            basProperties: {
-                html5DynamicDestination: 'true',
-                additionalData: 'full_url',
-                webIDEEnabled: 'true',
-                usage: 'odata_gen'
-            },
-            host: 'https://def.service',
-            urlServiceType: UrlServiceType.CatalogServiceUrl
+            Name: 'DEF',
+            Type: 'HTTP',
+            Authentication: 'BasicAuthentication',
+            ProxyType: 'Internet',
+            'HTML5.DynamicDestination': 'true',
+            Description: 'def',
+            'HTML5.Timeout': '60000',
+            TrustAll: true,
+            WebIDEEnabled: 'true',
+            WebIDEUsage: 'odata_abap',
+            Host: 'https://def.service',
+            UrlServiceType: UrlServiceType.CatalogServiceUrl
         },
         {
-            name: 'XYZ',
-            type: 'HTTP',
-            credentials: { authentication: 'BasicAuthentication' },
-            proxyType: 'Internet',
-            description: 'xyz',
-            basProperties: {
-                html5DynamicDestination: 'true',
-                additionalData: 'full_url',
-                webIDEEnabled: 'true',
-                usage: 'odata_gen'
-            },
-            host: 'https://service',
-            urlServiceType: UrlServiceType.PartialUrl
+            Name: 'XYZ',
+            Type: 'HTTP',
+            Authentication: 'BasicAuthentication',
+            ProxyType: 'Internet',
+            'HTML5.DynamicDestination': 'true',
+            Description: 'xyz',
+            TrustAll: true,
+            WebIDEEnabled: 'true',
+            WebIDEUsage: 'odata_gen',
+            Host: 'https://service',
+            UrlServiceType: UrlServiceType.PartialUrl
         },
         {
-            name: 'XYZ',
-            type: 'HTTP',
-            credentials: { authentication: 'BasicAuthentication' },
-            proxyType: 'Internet',
-            description: 'xyz',
-            basProperties: {
-                html5DynamicDestination: 'true',
-                additionalData: 'full_url',
-                webIDEEnabled: 'true',
-                usage: 'odata_gen'
-            },
-            host: 'https://sys-api.s4hana.ondemand.com/sap/opu/odata/sap/API_BUSINESS_PARTNER',
-            urlServiceType: UrlServiceType.CatalogServiceUrl
+            Name: 'SYS',
+            Type: 'HTTP',
+            Authentication: 'BasicAuthentication',
+            ProxyType: 'Internet',
+            'HTML5.DynamicDestination': 'true',
+            WebIDEAdditionalData: 'full_url',
+            Description: 'sys',
+            'HTML5.Timeout': '60000',
+            TrustAll: true,
+            WebIDEEnabled: 'true',
+            WebIDEUsage: 'odata_gen',
+            Host: 'https://sys-api.s4hana.ondemand.com/sap/opu/odata/sap/API_BUSINESS_PARTNER',
+            UrlServiceType: UrlServiceType.CatalogServiceUrl
         },
         {
-            name: 'JUST_WRONG',
-            type: 'HTTP',
-            proxyType: 'Internet',
-            description: 's4',
-            basProperties: {
-                html5DynamicDestination: 'true',
-                additionalData: 'full_url',
-                webIDEEnabled: 'true',
-                usage: 'odata_gen,odata_abap'
-            },
-            host: '',
-            urlServiceType: UrlServiceType.InvalidUrl
+            Name: 'JUST_WRONG',
+            Type: 'HTTP',
+            ProxyType: 'Internet',
+            WebIDEAdditionalData: 'full_url',
+            Description: 's4',
+            WebIDEEnabled: 'true',
+            WebIDEUsage: 'odata_gen,odata_abap',
+            Host: '',
+            UrlServiceType: UrlServiceType.InvalidUrl
         },
         {
-            name: 'DUPLICATE'
+            Name: 'DUPLICATE'
         },
         {
-            name: 'DUPLICATE'
+            Name: 'DUPLICATE'
         }
     ]
 };

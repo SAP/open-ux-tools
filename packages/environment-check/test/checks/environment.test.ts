@@ -50,29 +50,24 @@ describe('Test for checkEnvironment()', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
-                name: 'ONE',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap'
-                },
-                host: 'https://one.dest:123'
+                Name: 'ONE',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEUsage: 'odata_abap',
+                Host: 'https://one.dest:123'
             },
             {
-                name: 'TWO',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'OnPremise',
-                description: 'TWO_DESC',
-                basProperties: {
-                    sapClient: '111',
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap'
-                },
-                host: 'https://one.dest:123'
+                Name: 'TWO',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'OnPremise',
+                Description: 'TWO_DESC',
+                'sap-client': '111',
+                WebIDEUsage: 'odata_abap,dev_abap',
+                Host: 'http://two.dest:234',
+                WebIDEExposedHost: 'http://two.dest:345'
             }
         ];
         mockCheckBASDestinations.mockImplementationOnce(() => Promise.resolve({ messages: [], destinations: data }));
@@ -110,56 +105,47 @@ describe('Test for checkEnvironment()', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
-                name: 'ONE',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap',
-                    html5DynamicDestination: 'true'
-                },
-                host: 'https://one.dest:123'
+                Name: 'ONE',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                'HTML5.DynamicDestination': 'true',
+                Description: 'ONE_DESC',
+                WebIDEUsage: 'odata_abap',
+                Host: 'https://one.dest:123'
             },
             {
-                name: 'TEST_DEST_B1',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'OnPremise',
-                description: 'TEST_DEST_B1_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap,dev_abap',
-                    html5DynamicDestination: 'true'
-                },
-                host: 'http://two.dest:234'
+                Name: 'TEST_DEST_B1',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'OnPremise',
+                'HTML5.DynamicDestination': 'true',
+                Description: 'TWO_DESC',
+                WebIDEUsage: 'odata_abap,dev_abap',
+                Host: 'http://two.dest:234',
+                WebIDEExposedHost: 'http://two.dest:345'
             },
             {
-                name: 'TEST_DEST_A',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'OnPremise',
-                description: 'TEST_DEST_A_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap,dev_abap',
-                    html5DynamicDestination: 'true'
-                },
-                host: 'http://two.dest:234'
+                Name: 'TEST_DEST_A',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'OnPremise',
+                'HTML5.DynamicDestination': 'true',
+                Description: 'TWO_DESC',
+                WebIDEUsage: 'odata_abap,dev_abap',
+                Host: 'http://two.dest:234',
+                WebIDEExposedHost: 'http://two.dest:345'
             },
             {
-                name: 'TEST_DEST_B2',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'OnPremise',
-                description: 'TEST_DEST_B2_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap,dev_abap',
-                    html5DynamicDestination: 'true'
-                },
-                host: 'http://two.dest:234'
+                Name: 'TEST_DEST_B2',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'OnPremise',
+                'HTML5.DynamicDestination': 'true',
+                Description: 'TWO_DESC',
+                WebIDEUsage: 'odata_abap,dev_abap',
+                Host: 'http://two.dest:234',
+                WebIDEExposedHost: 'http://two.dest:345'
             }
         ];
         const v2catalogResponse = {
@@ -197,7 +183,7 @@ describe('Test for checkEnvironment()', () => {
         const mockCredentialCallback = jest
             .fn()
             .mockImplementation((destination: Destination) =>
-                Promise.resolve({ username: destination.name + 'USER', password: 'pwd' })
+                Promise.resolve({ username: destination.Name + 'USER', password: 'pwd' })
             );
         const options: CheckEnvironmentOptions = {
             workspaceRoots: [join(__dirname, '..', 'sample-workspace')],
@@ -220,18 +206,14 @@ describe('Test for checkEnvironment()', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
-                name: 'EC1_NOAUTH',
-                type: 'HTTP',
-                credentials: { authentication: 'BasicAuthentication' },
-                proxyType: 'OnPremise',
-                description: 'EC1',
-                basProperties: {
-                    sapClient: '100',
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap',
-                    html5DynamicDestination: 'true'
-                },
-                host: 'http://ccwdfgl9773.devint.net.sap:50000'
+                Name: 'EC1_NOAUTH',
+                Type: 'HTTP',
+                Authentication: 'BasicAuthentication',
+                ProxyType: 'OnPremise',
+                Description: 'EC1',
+                'sap-client': '100',
+                WebIDEUsage: 'odata_abap',
+                Host: 'http://ccwdfgl9773.devint.net.sap:50000'
             }
         ];
         mockCheckBASDestinations.mockImplementationOnce(() => Promise.resolve({ messages: [], destinations: data }));
@@ -249,7 +231,7 @@ describe('Test for checkEnvironment()', () => {
 
         const options: CheckEnvironmentOptions = {
             workspaceRoots: [join(__dirname, '..', 'sample-workspace')],
-            destinations: [data[0].name]
+            destinations: [data[0].Name]
         };
 
         // Test execution
@@ -265,16 +247,13 @@ describe('Test for checkEnvironment()', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
-                name: 'ONE',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap'
-                },
-                host: 'https://one.dest:123'
+                Name: 'ONE',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEUsage: 'odata_abap',
+                Host: 'https://one.dest:123'
             }
         ];
         mockCheckBASDestinations.mockImplementationOnce(() => Promise.resolve({ messages: [], destinations: data }));
@@ -311,16 +290,13 @@ describe('Test for checkEnvironment()', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
-                name: 'ONE',
-                type: 'HTTP',
-                credentials: { authentication: 'NoAuthentication' },
-                proxyType: 'Internet',
-                description: 'ONE_DESC',
-                basProperties: {
-                    webIDEEnabled: 'true',
-                    usage: 'odata_abap'
-                },
-                host: 'https://one.dest:123'
+                Name: 'ONE',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'ONE_DESC',
+                WebIDEUsage: 'odata_abap',
+                Host: 'https://one.dest:123'
             }
         ];
         mockCheckBASDestinations.mockImplementationOnce(() => Promise.resolve({ messages: [], destinations: data }));
@@ -363,10 +339,8 @@ describe('Test for checkEnvironment()', () => {
                 Authentication: 'NoAuthentication',
                 ProxyType: 'Internet',
                 Description: 'ONE_DESC',
-                WebIDEEnabled: 'true',
                 WebIDEUsage: 'odata_abap',
-                Host: 'https://one.dest:123',
-                TrustAll: true
+                Host: 'https://one.dest:123'
             }
         ];
         mockCheckBASDestinations.mockImplementationOnce(() => Promise.resolve({ messages: [], destinations: data }));

@@ -1,7 +1,7 @@
 {
     "info": {
-        "checkingDestination": "Checking destination {{destination}}",
-        "numServicesForDestination": "v{{odataVersion}} catalog request for destination {{destination}} returned {{numberOfServices}}",
+        "checkingDestination": "Checking destination {{- destination}}",
+        "numServicesForDestination": "v{{odataVersion}} catalog request for destination {{- destination}} returned {{numberOfServices}}",
         "urlRequestFailure": "Request to URL: {{url}} failed with message: {{- error}}. Complete error object: {{- errorObj}}",
         "numDestinationsFound": "Found {{destinationNumber}} destinations",
         "appSearch": "Looking for apps in {{folders}}",
@@ -17,20 +17,20 @@
         "noDestinationDefinedForApp": "No destination defined for app {{- appRoot}} : {{- error}}",
         "jsonResults": "Full results written as JSON to file {{filename}}",
         "markdownResults": "Full results written as markdown to file {{filename}}",
-        "authRequired": "Authentication required for {{destination}}"
+        "authRequired": "Authentication required for {{- destination}}"
     },
     "warning": {
         "reloadFailure": "Call to '/reload' service failed",
         "noDestinationsFound": "No destinations found",
-        "basicAuthRequired": "Destination {{destination}} requires username/password, no callback for user input provided",
+        "basicAuthRequired": "Destination {{- destination}} requires username/password, no callback for user input provided",
         "destinationsNotFound": "Couldn't find destination {{deepDiveDestination}} in list of {{destNumber}} destinations(s)"
     },
     "error": {
-        "missingDynamicDestProperty": "Additional property 'HTML5.DynamicDestination = true' missing for destination {{destination}}",
+        "missingDynamicDestProperty": "Additional property 'HTML5.DynamicDestination = true' missing for destination {{- destination}}",
         "projectRootWorkspace": "Error while trying to find project in workspace root {{- root}}. Error was: {{- error}}",
-        "401": "Unauthorized to access v{{odataVersion}} catalog service for destination {{destination}}",
-        "403": "v{{odataVersion}} catalog service for destination {{destination}} not available",
-        "queryFailure": "Could not query v{{odataVersion}} catalog service for destination {{destination}}",
+        "401": "Unauthorized to access v{{odataVersion}} catalog service for destination {{- destination}}",
+        "403": "v{{odataVersion}} catalog service for destination {{- destination}} not available",
+        "queryFailure": "Could not query v{{odataVersion}} catalog service for destination {{- destination}}",
         "urlRequestFailure": " Request to URL: {{url}} failed with message: {{- error}}. Complete error object: {{- errorObj}}",
         "retrievingDestinations": "Error while retrieving destinations. Error was: {{- error}}",
         "ui5YamlMissing": "App {{- appRoot}} has no ui5.yaml. Not able to get destinations",

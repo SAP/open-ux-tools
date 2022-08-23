@@ -120,7 +120,7 @@ async function outputResults(result: EnvironmentCheckResult, mode?: OutputMode):
  * @returns user input for username and password
  */
 async function credentialCallback(destination: Destination): Promise<{ username: string; password: string }> {
-    console.log(t('info.authRequired', { destination: destination.name }));
+    console.log(t('info.authRequired', { destination: destination.Name }));
     const { username, password } = await prompts([
         {
             type: 'text',

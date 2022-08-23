@@ -1,15 +1,13 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
 import { Severity, UrlServiceType } from '../types';
 import type {
-    DestinationResults,
     Destination,
+    DestinationResults,
     Environment,
     EnvironmentCheckResult,
     MarkdownWriter,
-    ResultMessage,
-    FlatDestination
+    ResultMessage
 } from '../types';
-import { flattenObject } from './utils';
 import { t } from '../i18n';
 /**
  * Output mapping from severity -> icon + text
@@ -25,18 +23,18 @@ const severityMap = {
  * Column sequence of the destination table, first colun id, the column title
  */
 const destinationTableFields = new Map<string, string>([
-    ['name', 'Name'],
-    ['description', 'Description'],
-    ['host', 'Host'],
-    ['sapClient', 'sap-client'],
-    ['webIDEEnabled', 'WebIDEEnabled'],
-    ['urlServiceType', 'Fiori tools usage'],
-    ['usage', 'WebIDEUsage'],
-    ['additionalData', 'WebIDEAdditionalData'],
-    ['type', 'Type'],
-    ['authentication', 'Authentication'],
-    ['proxyType', 'ProxyType'],
-    ['html5DynamicDestination', 'HTML5.DynamicDestination']
+    ['Name', 'Name'],
+    ['Description', 'Description'],
+    ['Host', 'Host'],
+    ['sap-client', 'sap-client'],
+    ['WebIDEEnabled', 'WebIDEEnabled'],
+    ['UrlServiceType', 'Fiori tools usage'],
+    ['WebIDEUsage', 'WebIDEUsage'],
+    ['WebIDEAdditionalData', 'WebIDEAdditionalData'],
+    ['Type', 'Type'],
+    ['Authentication', 'Authentication'],
+    ['ProxyType', 'ProxyType'],
+    ['HTML5.DynamicDestination', 'HTML5.DynamicDestination']
 ]);
 
 /**
@@ -184,14 +182,14 @@ function writeDestinationDetails(
 function writeDestinationResults(
     writer: MarkdownWriter,
     destinationResults: { [dest: string]: DestinationResults } = {},
-    destinations: FlatDestination[] = []
+    destinations: Destination[] = []
 ): void {
     const numberOfDestDetails = Object.keys(destinationResults).length;
     writer.addH2(`${t('markdownText.destinationDetails')} (${numberOfDestDetails})`);
     if (numberOfDestDetails > 0) {
         for (const destName of Object.keys(destinationResults)) {
-            const destination = destinations.find((d) => d.name === destName);
-            writeDestinationDetails(writer, destName, destinationResults[destName], destination?.urlServiceType);
+            const destination = destinations.find((d) => d.Name === destName);
+            writeDestinationDetails(writer, destName, destinationResults[destName], destination?.UrlServiceType);
             const table = [
                 Array.from(destinationTableFields.values()),
                 Array.from(destinationTableFields.keys()).map((f) => destination?.[f])
@@ -209,16 +207,16 @@ function writeDestinationResults(
  * @param writer - markdown writer
  * @param destinations - array of destinations
  */
-function writeDestinations(writer: MarkdownWriter, destinations: FlatDestination[] = []): void {
+function writeDestinations(writer: MarkdownWriter, destinations: Destination[] = []): void {
     const numberOfDestinations = destinations.length || 0;
     writer.addH2(t('markdownText.allDestinations', { numberOfDestinations }));
     if (numberOfDestinations > 0) {
         const table = [...destinations]
             .sort((a, b) => {
-                if (a.name > b.name) {
+                if (a.Name > b.Name) {
                     return 1;
                 }
-                if (a.name < b.name) {
+                if (a.Name < b.Name) {
                     return -1;
                 }
                 return 0;
@@ -263,10 +261,9 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
     const writer = getMarkdownWriter();
 
     writer.addH1(t('markdownText.envCheckTitle'));
-    const destinations = flattenDestinationDetails(results.destinations);
     writeEnvironment(writer, results.environment);
-    writeDestinationResults(writer, results.destinationResults, destinations);
-    writeDestinations(writer, destinations);
+    writeDestinationResults(writer, results.destinationResults, results.destinations);
+    writeDestinations(writer, results.destinations);
     writeMessages(writer, results.messages);
 
     writer.addSub(
@@ -274,20 +271,4 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
     );
 
     return writer.toString();
-}
-
-/**
- * Flattens destination details.
- *
- * @param destinations - bas destinations
- * @returns details with no nested objects
- */
-function flattenDestinationDetails(destinations: Destination[]): FlatDestination[] {
-    const flattenDestinations = [];
-    if (destinations) {
-        for (const dest of destinations) {
-            flattenDestinations.push(flattenObject(dest));
-        }
-    }
-    return flattenDestinations;
 }

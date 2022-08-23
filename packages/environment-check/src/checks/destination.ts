@@ -4,17 +4,17 @@ import axios from 'axios';
 import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
 import { getLogger } from '../logger';
 import { countNumberOfServices, getServiceCountText } from '../formatter';
-import type { CatalogResultV2, CatalogResultV4, DestinationResults, Destination, ResultMessage } from '../types';
+import type { Destination, CatalogResultV2, CatalogResultV4, DestinationResults, ResultMessage } from '../types';
 import { Severity, UrlServiceType } from '../types';
 import { t } from '../i18n';
-import { createForAbap, ODataVersion } from '@sap-ux/axios-extension';
+import { createForDestination, ODataVersion } from '@sap-ux/axios-extension';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 const catalogMessages = {
     401: (destination: Destination, odataVersion: ODataVersion): string =>
-        t('error.401', { odataVersion, destination: destination.name }),
+        t('error.401', { odataVersion, destination: destination.Name }),
     403: (destination: Destination, odataVersion: ODataVersion): string =>
-        t('error.403', { odataVersion, destination: destination.name })
+        t('error.403', { odataVersion, destination: destination.Name })
 };
 
 /**
@@ -31,7 +31,7 @@ export async function checkBASDestination(
     password?: string | undefined
 ): Promise<{ messages: ResultMessage[]; destinationResults: DestinationResults }> {
     const logger = getLogger();
-    logger.log(t('checkingDestination', { destination: destination.name }));
+    logger.log(t('checkingDestination', { destination: destination.Name }));
 
     const { messages, result: destinationResults } = await checkCatalogServices(destination, username, password);
 
@@ -63,12 +63,12 @@ async function checkCatalogServices(
     const v4results = await catalogRequest(ODataVersion.v4, destination, username, password);
     messages.push(...v4results.messages);
 
-    const html5DynamicDestination = !!destination.basProperties?.html5DynamicDestination;
+    const html5DynamicDestination = !!destination['HTML5.DynamicDestination'];
 
     if (!html5DynamicDestination) {
         messages.push({
             severity: Severity.Error,
-            text: t('error.missingDynamicDestProperty', { destination: destination.name })
+            text: t('error.missingDynamicDestProperty', { destination: destination.Name })
         });
     }
 
@@ -113,11 +113,11 @@ async function catalogRequest(
                 : undefined;
 
         const axiosConfig: AxiosRequestConfig = {
-            baseURL: destination.host,
+            baseURL: destination.Host,
             auth: auth
         };
 
-        const provider: AbapServiceProvider = createForAbap(axiosConfig);
+        const provider: AbapServiceProvider = createForDestination(axiosConfig, destination) as AbapServiceProvider;
         const catalog = provider.catalog(odataVersion);
         result = await catalog.listServices();
         if (result.length > 0) {
@@ -125,7 +125,7 @@ async function catalogRequest(
             logger.log(
                 t('info.numServicesForDestination', {
                     odataVersion,
-                    destination: destination.name,
+                    destination: destination.Name,
                     numServicesForDest: getServiceCountText(numberOfServices)
                 })
             );
@@ -135,7 +135,7 @@ async function catalogRequest(
         logger.error(
             catalogMessages[responseStatus]
                 ? catalogMessages[responseStatus](destination, odataVersion)
-                : t('error.queryFailure', { odataVersion, destination: destination.name })
+                : t('error.queryFailure', { odataVersion, destination: destination.Name })
         );
         const errorJson = error.toJSON ? error.toJSON() : {};
         if (errorJson?.config?.auth?.password) {
@@ -157,7 +157,7 @@ async function catalogRequest(
  * @returns boolean if basic auth is required
  */
 export function needsUsernamePassword(destination: Destination): boolean {
-    return !!destination && destination.credentials?.authentication === 'NoAuthentication';
+    return !!destination && destination.Authentication === 'NoAuthentication';
 }
 
 /**
@@ -192,13 +192,13 @@ export async function checkBASDestinations(): Promise<{
 
         if (isAppStudio()) {
             const response = await destinationsApi.getDestinations();
-            retrievedDestinations = response;
+            retrievedDestinations = transformDestination(response);
         } else {
             // Destination check for VSCode would go here
         }
 
         for (const destination of retrievedDestinations) {
-            destination.urlServiceType = getUrlServiceTypeForDest(destination);
+            destination.UrlServiceType = getUrlServiceTypeForDest(destination);
             destinations.push(destination);
         }
 
@@ -232,9 +232,9 @@ export async function checkBASDestinations(): Promise<{
  */
 function getUrlServiceTypeForDest(destination: Destination): UrlServiceType {
     let urlServiceType: UrlServiceType = UrlServiceType.InvalidUrl;
-    const odataGen = !!destination.basProperties?.usage?.split(',').find((entry) => entry.trim() === 'odata_gen');
-    const odataAbap = !!destination.basProperties?.usage?.split(',').find((entry) => entry.trim() === 'odata_abap');
-    const fullUrl = destination.basProperties?.additionalData === 'full_url';
+    const odataGen = !!destination.WebIDEUsage?.split(',').find((entry) => entry.trim() === 'odata_gen');
+    const odataAbap = !!destination.WebIDEUsage?.split(',').find((entry) => entry.trim() === 'odata_abap');
+    const fullUrl = destination.WebIDEAdditionalData === 'full_url';
 
     if (odataGen && fullUrl && !odataAbap) {
         urlServiceType = UrlServiceType.FullServiceUrl;
@@ -244,4 +244,44 @@ function getUrlServiceTypeForDest(destination: Destination): UrlServiceType {
         urlServiceType = UrlServiceType.PartialUrl;
     }
     return urlServiceType;
+}
+
+/**
+ * Transforms the destination format to align with @sap-ux/btp-utils Destination type.
+ *
+ * @param destinationInfo DestinationListInfo[] from '@sap/bas-sdk'
+ * @returns list of destinations in new (flat) format
+ */
+function transformDestination(destinationInfo): Destination[] {
+    const destinations: Destination[] = [];
+
+    for (const destInfo of destinationInfo) {
+        const answerDestination: Destination = {
+            Name: destInfo.name,
+            Type: 'HTTP',
+            Authentication: destInfo.credentials.authentication,
+            ProxyType: destInfo.proxyType,
+            Description: destInfo.description,
+            Host: destInfo.host
+        };
+
+        if (destInfo.basProperties?.additionalData) {
+            answerDestination.WebIDEAdditionalData = destInfo.basProperties.additionalData;
+        }
+
+        if (destInfo.basProperties?.usage) {
+            answerDestination.WebIDEUsage = String(destInfo.basProperties.usage);
+        }
+
+        if (destInfo.basProperties?.sapClient) {
+            answerDestination['sap-client'] = destInfo.basProperties.sapClient;
+        }
+
+        if (destInfo.basProperties?.html5DynamicDestination !== undefined) {
+            answerDestination['HTML5.DynamicDestination'] = destInfo.basProperties.html5DynamicDestination;
+        }
+
+        destinations.push(answerDestination);
+    }
+    return destinations;
 }

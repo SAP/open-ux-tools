@@ -1,3 +1,5 @@
+import type { Destination as BTPDestination } from '@sap-ux/btp-utils';
+
 export interface CheckEnvironmentOptions {
     workspaceRoots?: string[];
     destinations?: string[];
@@ -54,52 +56,6 @@ export const enum UrlServiceType {
     InvalidUrl = 'Invalid URL'
 }
 
-interface BasProperties {
-    usage?: string;
-    additionalData?: string;
-    sapClient?: string;
-    webIDEEnabled?: string;
-    html5DynamicDestination?: string;
-}
-
-type AuthenticationType = 'NoAuthentication' | 'BasicAuthentication' | 'OAuth2ClientCredentials';
-
-interface BasicAuthentication {
-    userName: string;
-    userPassword: string;
-}
-
-interface Credentials {
-    authentication?: AuthenticationType;
-    basicAuthentication?: BasicAuthentication;
-}
-
-export interface Destination {
-    name: string;
-    type: string;
-    credentials: Credentials;
-    proxyType: string;
-    description?: string;
-    basProperties?: BasProperties;
-    host: string;
-    urlServiceType?: UrlServiceType;
-}
-
-export interface FlatDestination {
-    name?: string;
-    type?: string;
-    proxyType?: string;
-    authentication?: AuthenticationType;
-    description?: string;
-    host?: string;
-    urlServiceType?: UrlServiceType;
-    usage?: string;
-    additionalData?: string;
-    sapClient?: string;
-    webIDEEnabled?: string;
-    html5DynamicDestination?: string;
-}
-
 export type CatalogResultV2 = any;
 export type CatalogResultV4 = any;
 
@@ -107,6 +63,10 @@ export interface DestinationResults {
     v2: CatalogResultV2;
     v4: CatalogResultV4;
     HTML5DynamicDestination?: boolean;
+}
+
+export interface Destination extends BTPDestination {
+    UrlServiceType?: UrlServiceType;
 }
 
 export interface EnvironmentCheckResult {
