@@ -168,7 +168,7 @@ describe('Building Blocks', () => {
         ).toThrowError(/Unable to parse xml view file/);
     });
 
-    describe.only('Generate with just ID and xml view without macros namespace', () => {
+    describe('Generate with just ID and xml view without macros namespace', () => {
         const testInput = [
             {
                 buildingBlockData: {
