@@ -71,10 +71,15 @@ async function callAFewAbapServices(
             }
         }
 
+        // check v2 services
         const catalog = provider.catalog(ODataVersion.v2);
-
         const services = await catalog.listServices();
         writeFileSync(join(outDir, 'v2-catalog.json'), JSON.stringify(services, null, 4));
+
+        // check v4 services
+        const v4Catalog = provider.catalog(ODataVersion.v4);
+        const v4Services = await v4Catalog.listServices();
+        writeFileSync(join(outDir, 'v4-catalog.json'), JSON.stringify(v4Services, null, 4));
 
         const serviceInfo = services.find((service) => service.name.includes('SEPMRA_PROD_MAN'));
 
