@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/ui5-config';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
-import { SupportedPageTypes, ValidationError } from './types';
+import { SupportedPageTypes, SupportedODataVersions, ValidationError } from './types';
 import { t } from './i18n';
 
 /**
@@ -31,9 +31,9 @@ function readManifest(fs: Editor, basePath: string): Manifest {
  * Retrieves the OData version of the main datasource.
  *
  * @param manifest - the app descriptor of the app
- * @returns the OData version, or undefined if it can't be found or if it's not supported
+ * @returns the OData version. An exception is thrown if it can't be found or if it's not supported
  */
-function getODataVersionFromManifest(manifest: Manifest): string | undefined {
+function getODataVersionFromManifest(manifest: Manifest): string {
     // Get the datasource from the main model
     const models = manifest['sap.ui5']?.models;
     const mainModelDatasource = models && models['']?.dataSource;
@@ -42,8 +42,13 @@ function getODataVersionFromManifest(manifest: Manifest): string | undefined {
         manifest['sap.app']?.dataSources &&
         manifest['sap.app']?.dataSources[mainModelDatasource];
 
-    // For the time being, we only support OData V4 apps
-    return dataSource && dataSource.settings?.odataVersion === '4.0' ? 'v4' : undefined;
+    const version =
+        dataSource && dataSource.settings?.odataVersion && SupportedODataVersions[dataSource.settings?.odataVersion];
+    if (!version) {
+        throw new ValidationError(t('error.badODataVersion'));
+    }
+
+    return version;
 }
 
 /**
@@ -186,9 +191,6 @@ export function generateOPAFiles(
 
     const manifest = readManifest(editor, basePath);
     const version = getODataVersionFromManifest(manifest);
-    if (!version) {
-        throw new ValidationError(t('error.badODataVersion'));
-    }
 
     const config = createConfig(manifest, opaConfig);
 
@@ -257,9 +259,6 @@ export function generatePageObjectFile(
 
     const manifest = readManifest(editor, basePath);
     const version = getODataVersionFromManifest(manifest);
-    if (!version) {
-        throw new ValidationError(t('error.badODataVersion'));
-    }
 
     const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey, pageObjectParameters.appID);
     if (pageConfig) {

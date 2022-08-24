@@ -1,4 +1,4 @@
-import { generateOPAFiles, generatePageObjectFile } from '../src';
+import { generateOPAFiles, generatePageObjectFile } from '../../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
@@ -11,8 +11,8 @@ describe('ui5-test-writer', () => {
 
     function prepareTestFiles(testConfigurationName: string): string {
         // Copy input templates into output directory
-        const inputDir = join(__dirname, 'test-input', testConfigurationName);
-        const outputDir = join(__dirname, 'test-output', testConfigurationName);
+        const inputDir = join(__dirname, '../test-input', testConfigurationName);
+        const outputDir = join(__dirname, '../test-output', testConfigurationName);
         fs = create(createStorage());
         if (fileSystem.existsSync(inputDir)) {
             fs.copy(inputDir, outputDir);
