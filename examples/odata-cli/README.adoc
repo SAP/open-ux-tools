@@ -62,10 +62,15 @@ You can also run a different test with any of the previously explained environme
 The default activity
 
 ### dta
-Deploy an adaptation project to the target environment. The configuration requires the additional properties `TEST_ZIP` e.g.
+Deploy an adaptation project to the target environment. The configuration requires the additional properties `TEST_ZIP` and `TEST_NAMESPACE` the optional `TEST_PACKAGE` and `TEST_TRANSPORT`. If `TEST_PACKAGE` is undefined then `$TMP` will be used and no transport is required e.g.
 ```
 TEST_ZIP=./.env/webapp.zip
+TEST_NAMESPACE=apps/sap.my.existing.app/appVariants/my.custom.dta.project.id/
 ```
 
 ### adt
-TBD
+Fetch available transport request for a given package and application name. The configuration requires the additional properties `TEST_PACKAGE` and `TEST_APP` e.g.
+```
+TEST_PACKAGE=Z_OPENUX
+TEST_APP=my.custom.app
+```
