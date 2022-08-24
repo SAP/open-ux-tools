@@ -122,6 +122,8 @@ export class LayeredRepositoryService extends Axios implements Service {
             if (config.package.toLowerCase() !== '$tmp') {
                 params['changelist'] = config.transport;
             }
+        } else {
+            params['package'] = '$tmp';
         }
         const response = await this.request({
             method: checkResponse.status === 200 ? 'PUT' : 'POST',
