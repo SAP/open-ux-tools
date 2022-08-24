@@ -1,4 +1,5 @@
 import type { Destination as BTPDestination } from '@sap-ux/btp-utils';
+import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 
 export interface CheckEnvironmentOptions {
     workspaceRoots?: string[];
@@ -56,12 +57,14 @@ export const enum UrlServiceType {
     InvalidUrl = 'Invalid URL'
 }
 
-export type CatalogResultV2 = any;
-export type CatalogResultV4 = any;
+interface CatalogResult {
+    results: ODataServiceInfo[];
+    status: number;
+}
 
 export interface DestinationResults {
-    v2: CatalogResultV2;
-    v4: CatalogResultV4;
+    v2: CatalogResult;
+    v4: CatalogResult;
     HTML5DynamicDestination?: boolean;
 }
 

@@ -4,11 +4,11 @@ import axios from 'axios';
 import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
 import { getLogger } from '../logger';
 import { countNumberOfServices, getServiceCountText } from '../formatter';
-import type { Destination, CatalogResultV2, CatalogResultV4, DestinationResults, ResultMessage } from '../types';
+import type { Destination, DestinationResults, ResultMessage } from '../types';
 import { Severity, UrlServiceType } from '../types';
 import { t } from '../i18n';
 import { createForDestination, ODataVersion } from '@sap-ux/axios-extension';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
 
 const catalogMessages = {
     401: (destination: Destination, odataVersion: ODataVersion): string =>
@@ -98,9 +98,9 @@ async function catalogRequest(
     destination: Destination,
     username?: string | undefined,
     password?: string | undefined
-): Promise<{ messages: ResultMessage[]; result: CatalogResultV2 | CatalogResultV4; responseStatus: number }> {
+): Promise<{ messages: ResultMessage[]; result: ODataServiceInfo[]; responseStatus: number }> {
     const logger = getLogger();
-    let result: CatalogResultV2 | CatalogResultV4;
+    let result: ODataServiceInfo[];
     let url: string;
     let responseStatus: number;
     try {

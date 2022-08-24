@@ -29,7 +29,7 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
     };
     logger.log(t('info.developmentEnvironment', { env: environment.developmentEnvironment }));
     logger.log(t('info.versions', { versions: JSON.stringify(environment.versions, null, 4) }));
-    logger.log(t('info.platform', { plaform: environment.platform }));
+    logger.log(t('info.platform', { platform: environment.platform }));
 
     try {
         environment.basDevSpace = isAppStudio() ? await getSbasDevspace() : undefined;
