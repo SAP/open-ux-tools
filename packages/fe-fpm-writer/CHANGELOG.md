@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.13.5
+
+### Patch Changes
+
+-   aee31b4: Fix issue with fe-fpm-writer module's building block generator to add macros namespace if it is not found in the xml view.
+
 ## 0.13.4
 
 ### Patch Changes
