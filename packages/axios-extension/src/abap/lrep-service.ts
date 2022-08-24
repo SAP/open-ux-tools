@@ -120,7 +120,7 @@ export class LayeredRepositoryService extends Axios implements Service {
         if (config.package) {
             params['package'] = config.package;
             if (config.package.toLowerCase() !== '$tmp') {
-                params['changeList'] = config.transport;
+                params['changelist'] = config.transport;
             }
         }
         const response = await this.request({
@@ -153,7 +153,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             layer: 'CUSTOMER_BASE' as Layer
         };
         if (config.transport) {
-            params['changeList'] = config.transport;
+            params['changelist'] = config.transport;
         }
         const response = await this.delete(DTA_PATH_SUFFIX, { params });
         this.tryLogResponse(response, 'Undeployment successful.');
