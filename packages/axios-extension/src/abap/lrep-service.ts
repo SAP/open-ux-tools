@@ -94,7 +94,8 @@ export class LayeredRepositoryService extends Axios implements Service {
         const response = await this.get(DTA_PATH_SUFFIX, {
             params: {
                 name: getNamespaceAsString(namespace),
-                layer: 'CUSTOMER_BASE' as Layer
+                layer: 'CUSTOMER_BASE' as Layer,
+                timestamp: Date.now()
             }
         });
         this.tryLogResponse(response);
@@ -117,14 +118,12 @@ export class LayeredRepositoryService extends Axios implements Service {
             name: getNamespaceAsString(config.namespace),
             layer: 'CUSTOMER_BASE' as Layer
         };
-        if (config.package) {
-            params['package'] = config.package;
-            if (config.package.toLowerCase() !== '$tmp') {
-                params['changelist'] = config.transport;
-            }
-        } else {
-            params['package'] = '$tmp';
+
+        params['package'] = config.package ?? '$TMP';
+        if (params['package'].toUpperCase() !== '$TMP') {
+            params['changelist'] = config.transport;
         }
+
         const response = await this.request({
             method: checkResponse.status === 200 ? 'PUT' : 'POST',
             url: DTA_PATH_SUFFIX,
