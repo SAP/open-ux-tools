@@ -13,48 +13,21 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "lib/yaml: Debug Current Jest File",
-            "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "name": "examples/odata-cli: Run Example",
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": ["start", "--", "${input:axiosODataExample}"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "disableOptimisticBPs": true,
-            "cwd": "${workspaceFolder}/packages/yaml"
+            "cwd": "${workspaceFolder}/examples/odata-cli"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "templates/fiori-freestyle: Debug Current Jest File",
-            "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "disableOptimisticBPs": true,
-            "cwd": "${workspaceFolder}/packages/fiori-freestyle-writer"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "templates/odata-service: Debug Current Jest File",
-            "program": "${workspaceFolder}/node_modules/.bin/jest",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "disableOptimisticBPs": true,
-            "windows": {
-                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
-            },
-            "cwd": "${workspaceFolder}/packages/odata-service-writer"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "fev4-fpm: Debug Current Jest File",
+            "name": "fe-fpm-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "disableOptimisticBPs": true,
             "windows": {
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
@@ -63,13 +36,35 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "examples: OData CLI",
-            "runtimeExecutable": "pnpm",
-            "runtimeArgs": ["start", "--", "${input:axiosODataExample}"],
+            "name": "fiori-freestyle-writer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "disableOptimisticBPs": true,
-            "cwd": "${workspaceFolder}/examples/odata-cli"
+            "cwd": "${workspaceFolder}/packages/fiori-freestyle-writer"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "odata-service-writer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/odata-service-writer"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "yaml: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/yaml"
         }
     ]
 }
