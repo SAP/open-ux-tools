@@ -2,32 +2,456 @@
 
 exports[`ui5-test-writer - Integration tests Generate initial OPA test files and add more pages 1`] = `
 Object {
+  "README.md": Object {
+    "contents": "### Starting the generated app
+
+-   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  In order to launch the generated app, simply run the following from the generated app root folder:
+
+\`\`\`
+    npm start
+\`\`\`
+
+- It is also possible to run the application using mock data that reflects the OData Service URL supplied during application generation.  In order to run the application with Mock Data, run the following from the generated app root folder:
+
+\`\`\`
+    npm run start-mock
+\`\`\`
+
+#### Pre-requisites:
+
+1. Active NodeJS LTS (Long Term Support) version and associated supported NPM version.  (See https://nodejs.org)
+
+
+",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"restaurant-app\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"Restaurant List\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.105\\",
+    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantapp-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantapp-tile\\\\\\"\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantapp-tile\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+    \\"int-tests\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'\\",
+    \\"tests\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/testsuite.qunit.html'\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
+      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+    ]
+  },
+  \\"sapux\\": true,
+  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\"
+}
+",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: restaurantapp
+type: application
+framework:
+  name: SAPUI5
+  version: 1.105.0
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.ushell
+    - name: sap.fe.templates
+    - name: themelib_sap_horizon
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /restaurant
+            url: http://localhost:4004
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        service:
+          urlPath: /restaurant
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: restaurantapp
+        ui5Theme: sap_horizon
+",
+    "state": "modified",
+  },
+  "ui5-mock.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: restaurantapp
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /restaurant
+            url: http://localhost:4004
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        service:
+          urlPath: /restaurant
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: restaurantapp
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /restaurant
+            url: http://localhost:4004
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: restaurantapp
+        ui5Theme: sap_horizon
+",
+    "state": "modified",
+  },
+  "webapp/Component.js": Object {
+    "contents": "sap.ui.define(
+    [\\"sap/fe/core/AppComponent\\"],
+    function (Component) {
+        \\"use strict\\";
+
+        return Component.extend(\\"restaurantapp.Component\\", {
+            metadata: {
+                manifest: \\"json\\"
+            }
+        });
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/annotations/annotation.xml": Object {
+    "contents": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/restaurant/$metadata\\">
+        <edmx:Include Namespace=\\"RestaurantService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"local\\">
+            <Annotations Target=\\"RestaurantService.Restaurant\\">
+                <Annotation Term=\\"UI.LineItem\\">
+                    <Collection>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Label\\" String=\\"ID\\"/>
+                            <PropertyValue Property=\\"Value\\" Path=\\"ID\\"/>
+                        </Record>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Label\\" String=\\"name\\"/>
+                            <PropertyValue Property=\\"Value\\" Path=\\"name\\"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term=\\"UI.FieldGroup\\" Qualifier=\\"GeneratedGroup1\\">
+                    <Record Type=\\"UI.FieldGroupType\\">
+                        <PropertyValue Property=\\"Data\\">
+                            <Collection>
+                                <Record Type=\\"UI.DataField\\">
+                                    <PropertyValue Property=\\"Label\\" String=\\"ID\\"/>
+                                    <PropertyValue Property=\\"Value\\" Path=\\"ID\\"/>
+                                </Record>
+                                <Record Type=\\"UI.DataField\\">
+                                    <PropertyValue Property=\\"Label\\" String=\\"name\\"/>
+                                    <PropertyValue Property=\\"Value\\" Path=\\"name\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"UI.Facets\\">
+                    <Collection>
+                        <Record Type=\\"UI.ReferenceFacet\\">
+                            <PropertyValue Property=\\"ID\\" String=\\"GeneratedFacet1\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"General Information\\"/>
+                            <PropertyValue Property=\\"Target\\" AnnotationPath=\\"@UI.FieldGroup#GeneratedGroup1\\"/>
+                        </Record>
+                        <Record Type=\\"UI.ReferenceFacet\\">
+                            <PropertyValue Property=\\"Label\\" String=\\"Menu\\"/>
+                            <PropertyValue Property=\\"ID\\" String=\\"Menu\\"/>
+                            <PropertyValue Property=\\"Target\\" AnnotationPath=\\"_Dishes/@UI.LineItem#Menu\\"/>
+                        </Record>
+                        <Record Type=\\"UI.ReferenceFacet\\">
+                            <PropertyValue Property=\\"Label\\" String=\\"Staff\\"/>
+                            <PropertyValue Property=\\"ID\\" String=\\"Staff\\"/>
+                            <PropertyValue Property=\\"Target\\" AnnotationPath=\\"_Employees/@UI.LineItem#Staff\\"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"RestaurantService.Dish\\">
+                <Annotation Term=\\"UI.LineItem\\" Qualifier=\\"Menu\\">
+                    <Collection>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" Path=\\"dishName\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"dishName\\"/>
+                        </Record></Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"RestaurantService.Employees\\">
+                <Annotation Term=\\"UI.LineItem\\" Qualifier=\\"Staff\\">
+                    <Collection>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" Path=\\"fullName\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"fullName\\"/>
+                        </Record>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" Path=\\"role\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"role\\"/>
+                        </Record></Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/ext/view/EmployeeView.controller.js": Object {
+    "contents": "sap.ui.define(
+    [
+        'sap/fe/core/PageController'
+    ],
+    function(PageController) {
+        'use strict';
+
+        return PageController.extend('restaurantapp.ext.view.EmployeeView', {
+
+        });
+    }
+);
+",
+    "state": "modified",
+  },
+  "webapp/ext/view/EmployeeView.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"restaurantapp.ext.view.EmployeeView\\">
+    <Page title=\\"EmployeeView\\">
+        <content></content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for restaurantapp
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=Restaurant List
+
+#YDES: Application description
+appDescription=Restaurant List",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>Restaurant List</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
+        data-sap-ui-resourceroots='{
+            \\"restaurantapp\\": \\"./\\"
+        }'
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
+        data-sap-ui-manifest-uri=\\"./manifest.json\\"
+        data-sap-ui-componentName=\\"restaurantapp\\">
+    </script> 
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"restaurantapp\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"restaurantapp\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/localService/metadata.xml": Object {
+    "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
+<edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
+    <edmx:DataServices>
+        <Schema Namespace=\\"RestaurantService\\" xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
+            <EntityContainer Name=\\"EntityContainer\\">
+                <EntitySet Name=\\"Employees\\" EntityType=\\"RestaurantService.Employees\\"/>
+                <EntitySet Name=\\"Dish\\" EntityType=\\"RestaurantService.Dish\\"/>
+                <EntitySet Name=\\"Restaurant\\" EntityType=\\"RestaurantService.Restaurant\\">
+                    <NavigationPropertyBinding Path=\\"_Dishes\\" Target=\\"Dish\\"/>
+                    <NavigationPropertyBinding Path=\\"_Employees\\" Target=\\"Employees\\"/>
+                </EntitySet>
+            </EntityContainer>
+            <EntityType Name=\\"Employees\\">
+                <Key>
+                    <PropertyRef Name=\\"employeeID\\"/>
+                </Key>
+                <Property Name=\\"employeeID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\"/>
+                <Property Name=\\"fullName\\" Type=\\"Edm.String\\"/>
+                <Property Name=\\"role\\" Type=\\"Edm.String\\"/>
+                <Property Name=\\"restaurantID\\" Type=\\"Edm.Int32\\"/>
+            </EntityType>
+            <EntityType Name=\\"Dish\\">
+                <Key>
+                    <PropertyRef Name=\\"dishID\\"/>
+                </Key>
+                <Property Name=\\"dishID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\"/>
+                <Property Name=\\"dishName\\" Type=\\"Edm.String\\"/>
+                <Property Name=\\"restaurantID\\" Type=\\"Edm.Int32\\"/>
+            </EntityType>
+            <EntityType Name=\\"Restaurant\\">
+                <Key>
+                    <PropertyRef Name=\\"ID\\"/>
+                </Key>
+                <Property Name=\\"ID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\"/>
+                <Property Name=\\"name\\" Type=\\"Edm.String\\"/>
+                <NavigationProperty Name=\\"_Dishes\\" Type=\\"Collection(RestaurantService.Dish)\\">
+                    <OnDelete Action=\\"Cascade\\"/>
+                </NavigationProperty>
+                <NavigationProperty Name=\\"_Employees\\" Type=\\"Collection(RestaurantService.Employees)\\">
+                    <OnDelete Action=\\"Cascade\\"/>
+                </NavigationProperty>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>",
+    "state": "modified",
+  },
   "webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.32.0\\",
+  \\"_version\\": \\"1.40.0\\",
   \\"sap.app\\": {
-    \\"id\\": \\"ui5-test-writer.test.employees\\",
+    \\"id\\": \\"restaurantapp\\",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
-      \\"version\\": \\"1.0.0\\"
+      \\"version\\": \\"0.0.1\\"
     },
     \\"title\\": \\"{{appTitle}}\\",
     \\"description\\": \\"{{appDescription}}\\",
-    \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/employee/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"odataVersion\\": \\"4.0\\"
-        }
-      }
-    },
-    \\"offline\\": false,
     \\"resources\\": \\"resources.json\\",
     \\"sourceTemplate\\": {
-      \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
-      \\"version\\": \\"1.0.0\\"
+      \\"id\\": \\"@sap/generator-fiori:lrop\\",
+      \\"version\\": \\"1.7.1\\",
+      \\"toolsId\\": \\"c4ddb756-9b8b-4c4e-8d46-5ef91b686336\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/restaurant/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
     }
   },
   \\"sap.ui\\": {
@@ -47,25 +471,26 @@ Object {
     }
   },
   \\"sap.ui5\\": {
-    \\"resources\\": {
-      \\"js\\": [],
-      \\"css\\": []
-    },
+    \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.103.0\\",
+      \\"minUI5Version\\": \\"1.105.0\\",
       \\"libs\\": {
+        \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
+        \\"sap.ushell\\": {},
         \\"sap.fe.templates\\": {}
       }
     },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
     \\"models\\": {
-      \\"@i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
-      },
       \\"i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
+        \\"settings\\": {
+          \\"bundleName\\": \\"restaurantapp.i18n.i18n\\"
+        }
       },
       \\"\\": {
         \\"dataSource\\": \\"mainService\\",
@@ -76,92 +501,193 @@ Object {
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
+    },
+    \\"resources\\": {
+      \\"css\\": []
     },
     \\"routing\\": {
       \\"routes\\": [
         {
           \\"pattern\\": \\":?query:\\",
-          \\"name\\": \\"EmployeesList\\",
-          \\"target\\": \\"EmployeesList\\"
+          \\"name\\": \\"RestaurantList\\",
+          \\"target\\": \\"RestaurantList\\"
         },
         {
-          \\"pattern\\": \\"Employees({key}):?query:\\",
-          \\"name\\": \\"EmployeesObjectPage\\",
-          \\"target\\": \\"EmployeesObjectPage\\"
+          \\"pattern\\": \\"Restaurant({key}):?query:\\",
+          \\"name\\": \\"RestaurantObjectPage\\",
+          \\"target\\": \\"RestaurantObjectPage\\"
+        },
+        {
+          \\"name\\": \\"DishObjectPage\\",
+          \\"target\\": \\"DishObjectPage\\",
+          \\"pattern\\": \\"Restaurant({key})/_Dishes({key2}):?query:\\"
+        },
+        {
+          \\"name\\": \\"EmployeesCustomPage\\",
+          \\"target\\": \\"EmployeesCustomPage\\",
+          \\"pattern\\": \\"Restaurant({key})/_Employees({_EmployeesKey}):?query:\\"
         }
       ],
       \\"targets\\": {
-        \\"EmployeesList\\": {
+        \\"RestaurantList\\": {
           \\"type\\": \\"Component\\",
-          \\"id\\": \\"EmployeesList\\",
+          \\"id\\": \\"RestaurantList\\",
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"entitySet\\": \\"Employees\\",
+              \\"entitySet\\": \\"Restaurant\\",
               \\"variantManagement\\": \\"Page\\",
               \\"navigation\\": {
-                \\"Employees\\": {
+                \\"Restaurant\\": {
                   \\"detail\\": {
-                    \\"route\\": \\"EmployeesObjectPage\\"
+                    \\"route\\": \\"RestaurantObjectPage\\"
+                  }
+                }
+              },
+              \\"initialLoad\\": \\"Enabled\\"
+            }
+          }
+        },
+        \\"RestaurantObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"RestaurantObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"editableHeaderContent\\": false,
+              \\"entitySet\\": \\"Restaurant\\",
+              \\"navigation\\": {
+                \\"_Dishes\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"DishObjectPage\\"
+                  }
+                },
+                \\"_Employees\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"EmployeesCustomPage\\"
                   }
                 }
               }
             }
           }
         },
-        \\"EmployeesObjectPage\\": {
+        \\"DishObjectPage\\": {
           \\"type\\": \\"Component\\",
-          \\"id\\": \\"EmployeesObjectPage\\",
+          \\"id\\": \\"DishObjectPage\\",
           \\"name\\": \\"sap.fe.templates.ObjectPage\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"editableHeaderContent\\": false,
-              \\"entitySet\\": \\"Employees\\"
+              \\"entitySet\\": \\"Dish\\"
             }
           }
         },
-        \\"SubOP\\": {
+        \\"EmployeesCustomPage\\": {
           \\"type\\": \\"Component\\",
-          \\"id\\": \\"SubObjectPage\\",
-          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
-          \\"options\\": {
-            \\"settings\\": {
-              \\"entitySet\\": \\"anything\\"
-            }
-          }
-        },
-        \\"CustomPage\\": {
-          \\"type\\": \\"Component\\",
-          \\"id\\": \\"Custom\\",
+          \\"id\\": \\"EmployeesCustomPage\\",
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"entitySet\\": \\"anythingElse\\"
+              \\"viewName\\": \\"restaurantapp.ext.view.EmployeeView\\",
+              \\"entitySet\\": \\"Employees\\"
             }
           }
         }
       }
-    },
-    \\"contentDensities\\": {
-      \\"compact\\": true,
-      \\"cozy\\": true
     }
   },
-  \\"sap.platform.abap\\": {
-    \\"_version\\": \\"1.1.0\\",
-    \\"uri\\": \\"\\"
-  },
-  \\"sap.platform.hcp\\": {
-    \\"_version\\": \\"1.1.0\\",
-    \\"uri\\": \\"\\"
-  },
   \\"sap.fiori\\": {
-    \\"_version\\": \\"1.1.0\\",
     \\"registrationIds\\": [],
     \\"archeType\\": \\"transactional\\"
   }
 }
+",
+    "state": "modified",
+  },
+  "webapp/test/flpSandbox.html": Object {
+    "contents": "<!DOCTYPE HTML>
+<html>
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>{{appTitle}}</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\"
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"restaurantapp-tile\\": {
+                    title: \\"Restaurant List\\",
+                    description: \\"Restaurant List\\",
+                    additionalInformation: \\"SAPUI5.Component=restaurantapp\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
+
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"restaurantapp\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\">
+        </script>
+        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+        </script>
+</head>
+
+<!-- UI Content -->
+
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>
 ",
     "state": "modified",
   },
@@ -178,17 +704,17 @@ Object {
             opaTest(\\"Start application\\", function (Given, When, Then) {
                 Given.iStartMyApp();
 
-                Then.onTheEmployeesList.iSeeThisPage();
+                Then.onTheRestaurantList.iSeeThisPage();
 
             });
 
 
             opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
                 // Note: this test will fail if the ListReport page doesn't show any data
-                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
-                Then.onTheEmployeesList.onTable().iCheckRows();
+                When.onTheRestaurantList.onFilterBar().iExecuteSearch();
+                Then.onTheRestaurantList.onTable().iCheckRows();
 
-                When.onTheEmployeesList.onTable().iPressRow(0);
+                When.onTheRestaurantList.onTable().iPressRow(0);
             });
 
             opaTest(\\"Teardown\\", function (Given, When, Then) { 
@@ -213,7 +739,7 @@ Object {
             src=\\"/resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
-                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+                \\"restaurantapp\\": \\"../../\\"
             }'
             data-sap-ui-animation=\\"false\\"
             data-sap-ui-compatVersion=\\"edge\\"
@@ -239,23 +765,23 @@ Object {
     "contents": "sap.ui.require(
     [
         'sap/fe/test/JourneyRunner',
-        'ui5-test-writer/test/employees/test/integration/FirstJourney',
-		'ui5-test-writer/test/employees/test/integration/pages/EmployeesList',
-		'ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage'
+        'restaurantapp/test/integration/FirstJourney',
+		'restaurantapp/test/integration/pages/RestaurantList',
+		'restaurantapp/test/integration/pages/RestaurantObjectPage'
     ],
-    function(JourneyRunner, opaJourney, EmployeesList, EmployeesObjectPage) {
+    function(JourneyRunner, opaJourney, RestaurantList, RestaurantObjectPage) {
         'use strict';
         var JourneyRunner = new JourneyRunner({
             // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html'
+            launchUrl: sap.ui.require.toUrl('restaurantapp') + '/index.html'
         });
 
        
         JourneyRunner.run(
             {
                 pages: { 
-					onTheEmployeesList: EmployeesList,
-					onTheEmployeesObjectPage: EmployeesObjectPage
+					onTheRestaurantList: RestaurantList,
+					onTheRestaurantObjectPage: RestaurantObjectPage
                 }
             },
             opaJourney.run
@@ -264,7 +790,27 @@ Object {
 );",
     "state": "modified",
   },
-  "webapp/test/integration/pages/CustomPage.js": Object {
+  "webapp/test/integration/pages/DishObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'restaurantapp',
+            componentId: 'DishObjectPage',
+            entitySet: 'Dish'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesCustomPage.js": Object {
     "contents": "sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
     'use strict';
 
@@ -274,13 +820,13 @@ Object {
     };
 
     return new TemplatePage(
-        'ui5-test-writer.test.employees::Custom',
+        'restaurantapp::EmployeesCustomPage',
         CustomPageDefinitions
     );
 });",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesList.js": Object {
+  "webapp/test/integration/pages/RestaurantList.js": Object {
     "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
     'use strict';
 
@@ -291,16 +837,16 @@ Object {
 
     return new ListReport(
         {
-            appId: 'ui5-test-writer.test.employees',
-            componentId: 'EmployeesList',
-            entitySet: 'Employees'
+            appId: 'restaurantapp',
+            componentId: 'RestaurantList',
+            entitySet: 'Restaurant'
         },
         CustomPageDefinitions
     );
 });",
     "state": "modified",
   },
-  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+  "webapp/test/integration/pages/RestaurantObjectPage.js": Object {
     "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
     'use strict';
 
@@ -311,29 +857,9 @@ Object {
 
     return new ObjectPage(
         {
-            appId: 'ui5-test-writer.test.employees',
-            componentId: 'EmployeesObjectPage',
-            entitySet: 'Employees'
-        },
-        CustomPageDefinitions
-    );
-});",
-    "state": "modified",
-  },
-  "webapp/test/integration/pages/SubOP.js": Object {
-    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
-    'use strict';
-
-    var CustomPageDefinitions = {
-        actions: {},
-        assertions: {}
-    };
-
-    return new ObjectPage(
-        {
-            appId: 'ui5-test-writer.test.employees',
-            componentId: 'SubObjectPage',
-            entitySet: 'anything'
+            appId: 'restaurantapp',
+            componentId: 'RestaurantObjectPage',
+            entitySet: 'Restaurant'
         },
         CustomPageDefinitions
     );
@@ -364,6 +890,183 @@ Object {
 
     return oSuite;
 };",
+    "state": "modified",
+  },
+  "webapp/utils/locate-reuse-libs.js": Object {
+    "contents": "/*eslint-disable semi, no-console*/
+(function (sap) {
+  var fioriToolsGetManifestLibs = function (manifestPath) {
+    var url = manifestPath;
+    var result = \\"\\";
+    // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+    var ui5Libs = [
+      \\"sap.apf\\",
+      \\"sap.base\\",
+      \\"sap.chart\\",
+      \\"sap.collaboration\\",
+      \\"sap.f\\",
+      \\"sap.fe\\",
+      \\"sap.fileviewer\\",
+      \\"sap.gantt\\",
+      \\"sap.landvisz\\",
+      \\"sap.m\\",
+      \\"sap.ndc\\",
+      \\"sap.ovp\\",
+      \\"sap.rules\\",
+      \\"sap.suite\\",
+      \\"sap.tnt\\",
+      \\"sap.ui\\",
+      \\"sap.uiext\\",
+      \\"sap.ushell\\",
+      \\"sap.uxap\\",
+      \\"sap.viz\\",
+      \\"sap.webanalytics\\",
+      \\"sap.zen\\"
+    ];
+    function getKeys(libOrComp,libOrCompKeysString) {
+      Object.keys(libOrComp).forEach(function (libOrCompKey) {
+        // ignore libs or Components that start with SAPUI5 delivered namespaces
+        if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
+          if (libOrCompKeysString.length > 0) {
+            libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
+          } else {
+            libOrCompKeysString = libOrCompKey;
+          }
+        }
+      });
+      return libOrCompKeysString;
+    }
+    return new Promise(function (resolve, reject) {
+      $.ajax(url)
+        .done(function (manifest) {
+          if (manifest) {
+            if (
+              manifest[\\"sap.ui5\\"] &&
+              manifest[\\"sap.ui5\\"].dependencies
+            ) {
+              if (manifest[\\"sap.ui5\\"].dependencies.libs){
+                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result)
+              }
+              if (manifest[\\"sap.ui5\\"].dependencies.components){
+                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result)
+              }
+            }
+            if (
+              manifest[\\"sap.ui5\\"] &&
+              manifest[\\"sap.ui5\\"].componentUsages
+            ) {
+              result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result)
+            }
+          }
+          resolve(result);
+        })
+        .fail(function (error) {
+          reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
+        });
+    });
+  };
+  /**
+   * Registers the module paths for dependencies of the given component.
+   * @param {string} manifestPath The the path to the app manifest path
+   * for which the dependencies should be registered.
+   * @returns {Promise} A promise which is resolved when the ajax request for
+   * the app-index was successful and the module paths were registered.
+   */
+  sap.registerComponentDependencyPaths = function (manifestPath) {
+    /*eslint-disable semi, consistent-return*/
+    return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
+      if (libs && libs.length > 0) {
+        var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+        var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
+        if (sapClient && sapClient.length === 3) {
+          url = url + \\"&sap-client=\\" + sapClient;
+        }
+        return $.ajax(url).done(function (data) {
+          if (data) {
+            Object.keys(data).forEach(function (moduleDefinitionKey) {
+              var moduleDefinition = data[moduleDefinitionKey];
+              if (moduleDefinition && moduleDefinition.dependencies) {
+                moduleDefinition.dependencies.forEach(function (dependency) {
+                  if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                    jQuery.sap.log.info(
+                      \\"Registering Library \\" +
+                      dependency.componentId +
+                      \\" from server \\" +
+                      dependency.url
+                    );
+                    jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  };
+})(sap);
+
+/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+var scripts = document.getElementsByTagName(\\"script\\");
+var currentScript = document.getElementById('locate-reuse-libs');
+if(!currentScript){
+    currentScript = document.currentScript;
+};
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+sap.registerComponentDependencyPaths(manifestUri)
+  .catch(function (error) {
+    jQuery.sap.log.error(error);
+  })
+  .finally(function () {
+
+    // setting the app title with internationalization
+    sap.ui.getCore().attachInit(function () {
+      jQuery.sap.require(\\"jquery.sap.resources\\");
+      var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+      var oBundle = jQuery.sap.resources({
+        url: \\"i18n/i18n.properties\\",
+        locale: sLocale
+      });
+      document.title = oBundle.getText(\\"appTitle\\");
+    });
+
+    if (componentName && componentName.length > 0) {
+      if (useMockserver && useMockserver === \\"true\\") {
+        sap.ui.getCore().attachInit(function () {
+          sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
+            // set up test service for local testing
+            server.init();
+            // initialize the ushell sandbox component
+            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+          });
+        });
+      } else {
+        // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
+        sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
+
+        // setting the app title with the i18n text
+        sap.ui.getCore().attachInit(function () {
+          jQuery.sap.require(\\"jquery.sap.resources\\");
+          var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+          var oBundle = jQuery.sap.resources({
+            url: \\"i18n/i18n.properties\\",
+            locale: sLocale
+          });
+          document.title = oBundle.getText(\\"appTitle\\");
+        });
+      }
+    } else {
+      sap.ui.getCore().attachInit(function () {
+        // initialize the ushell sandbox component
+        sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+      });
+    }
+  });
+
+sap.registerComponentDependencyPaths(manifestUri);
+",
     "state": "modified",
   },
 }

@@ -35,12 +35,22 @@ describe('ui5-test-writer - Integration tests', () => {
     });
 
     it('Generate initial OPA test files and add more pages', async () => {
-        const projectDir = prepareTestFiles('FullScreenLROP');
+        const projectDir = prepareTestFiles('RestaurantApp');
 
-        function addTargetInManifest(targetKey: string, targetObject: any) {
+        function addSubOPInManifest(targetKey: string, routePattern: string, navProperty: string, targetObject: any) {
             const manifestPath = join(projectDir, 'webapp/manifest.json');
             const manifest = fs?.readJSON(manifestPath) as any;
+            manifest['sap.ui5'].routing.routes.push({
+                name: targetKey,
+                target: targetKey,
+                pattern: routePattern
+            });
             manifest['sap.ui5'].routing.targets[targetKey] = targetObject;
+            manifest['sap.ui5'].routing.targets['RestaurantObjectPage'].options.settings.navigation[navProperty] = {
+                detail: {
+                    route: targetKey
+                }
+            };
             fs?.writeJSON(manifestPath, manifest);
         }
 
@@ -48,32 +58,38 @@ describe('ui5-test-writer - Integration tests', () => {
         fs = await generateOPAFiles(projectDir, {}, fs);
 
         // Add a SubOP page (FEV4 object page)
-        const SubOP = {
+        const DishOP = {
             type: 'Component',
-            id: 'SubObjectPage',
+            id: 'DishObjectPage',
             name: 'sap.fe.templates.ObjectPage',
             options: {
                 settings: {
-                    entitySet: 'anything'
+                    entitySet: 'Dish'
                 }
             }
         };
-        addTargetInManifest('SubOP', SubOP);
-        fs = await generatePageObjectFile(projectDir, { targetKey: 'SubOP' }, fs);
+        addSubOPInManifest('DishObjectPage', 'Restaurant({key})/_Dishes({key2}):?query:', '_Dishes', DishOP);
+        fs = await generatePageObjectFile(projectDir, { targetKey: 'DishObjectPage' }, fs);
 
         // Add a custom FPM page
-        const CustomPage = {
+        const EmployeePage = {
             type: 'Component',
-            id: 'Custom',
+            id: 'EmployeesCustomPage',
             name: 'sap.fe.core.fpm',
             options: {
                 settings: {
-                    entitySet: 'anythingElse'
+                    viewName: 'restaurantapp.ext.view.EmployeeView',
+                    entitySet: 'Employees'
                 }
             }
         };
-        addTargetInManifest('CustomPage', CustomPage);
-        fs = await generatePageObjectFile(projectDir, { targetKey: 'CustomPage' }, fs);
+        addSubOPInManifest(
+            'EmployeesCustomPage',
+            'Restaurant({key})/_Employees({_EmployeesKey}):?query:',
+            '_Employees',
+            EmployeePage
+        );
+        fs = await generatePageObjectFile(projectDir, { targetKey: 'EmployeesCustomPage' }, fs);
 
         expect((fs as any).dump(projectDir)).toMatchSnapshot();
     });
