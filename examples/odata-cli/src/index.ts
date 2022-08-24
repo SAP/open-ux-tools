@@ -1,7 +1,8 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
-import { logger, TestActivity, TestTarget } from './types';
+import type { TestActivity, TestTarget } from './types';
+import { logger } from './types';
 import { testWithAbapSystem, testWithDestination, testWithAbapBtpSystem, testWithCloudAbapSystem } from './targets';
 import { testDeployUndeployDTA, useAdtServices, useCatalogAndFetchSomeMetadata } from './activities';
 

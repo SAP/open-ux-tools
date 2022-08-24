@@ -1,6 +1,7 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
-import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { ODataVersion } from '@sap-ux/axios-extension';
 import { logger } from './types';
 
 /**
@@ -106,6 +107,7 @@ export async function testDeployUndeployDTA(
 
         response = await service.deploy(env.TEST_ZIP, {
             namespace: env.TEST_NAMESPACE,
+            // eslint-disable-next-line quote-props
             package: env.TEST_PACKAGE,
             transport: env.TEST_TRANSPORT
         });
@@ -118,6 +120,7 @@ export async function testDeployUndeployDTA(
 
             response = await service.undeploy({
                 namespace: env.TEST_NAMESPACE,
+                // eslint-disable-next-line quote-props
                 package: env.TEST_PACKAGE ?? '$tmp',
                 transport: env.TEST_TRANSPORT
             });
