@@ -39,11 +39,13 @@ describe('LayeredRepositoryService', () => {
 
         test('deploy new adapation project', async () => {
             nock(server)
-                .get(
-                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
-                        config.namespace as string
-                    )}&layer=CUSTOMER_BASE`
-                )
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
                 .reply(404);
 
             nock(server)
@@ -60,11 +62,13 @@ describe('LayeredRepositoryService', () => {
 
         test('update an existing adapation project', async () => {
             nock(server)
-                .get(
-                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
-                        config.namespace as string
-                    )}&layer=CUSTOMER_BASE`
-                )
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
                 .reply(200, undefined, {
                     'x-csrf-token': 'token'
                 });
@@ -98,11 +102,13 @@ describe('LayeredRepositoryService', () => {
     describe('undeploy', () => {
         test('undeploy existing adapation project', async () => {
             nock(server)
-                .get(
-                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
-                        config.namespace as string
-                    )}&layer=CUSTOMER_BASE`
-                )
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
                 .reply(200, undefined, {
                     'x-csrf-token': 'token'
                 });
