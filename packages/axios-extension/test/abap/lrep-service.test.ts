@@ -50,7 +50,7 @@ describe('LayeredRepositoryService', () => {
                 .post(
                     `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
                         config.namespace as string
-                    )}&layer=CUSTOMER_BASE&package=${config.package}&changeList=${config.transport}`
+                    )}&layer=CUSTOMER_BASE&package=${config.package}&changelist=${config.transport}`
                 )
                 .reply(200);
 
@@ -73,7 +73,7 @@ describe('LayeredRepositoryService', () => {
                 .put(
                     `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
                         config.namespace as string
-                    )}&layer=CUSTOMER_BASE&package=${config.package}&changeList=${config.transport}`
+                    )}&layer=CUSTOMER_BASE&package=${config.package}&changelist=${config.transport}`
                 )
                 .reply(200, {
                     result: {
@@ -110,7 +110,7 @@ describe('LayeredRepositoryService', () => {
                 .delete(
                     `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
                         config.namespace as string
-                    )}&layer=CUSTOMER_BASE&changeList=${config.transport}`
+                    )}&layer=CUSTOMER_BASE&changelist=${config.transport}`
                 )
                 .reply(200, 'Response that throws an error when given to JSON.parse');
 
