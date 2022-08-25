@@ -55,7 +55,6 @@ Options
     --output            json | markdown | verbose | zip format for output, if not specified all messages   except 'info' are shown
 
     <WORKSPACE_ROOT*>   path the root folder of a workspace. Multiple roots can be defined. We search for apps with destinations in workspaces
-
 ```
 ## Keywords
 SAP Fiori Tools
