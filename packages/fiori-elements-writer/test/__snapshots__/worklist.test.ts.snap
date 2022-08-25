@@ -32,7 +32,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\",
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#fewrk1-tile\\\\\\"\\",
@@ -46,7 +46,7 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
   },
   \\"sapux\\": true
@@ -93,11 +93,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -132,11 +134,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -3606,7 +3610,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.99\\",
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fewrk2-tile\\\\\\"\\",
@@ -3620,7 +3624,7 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
   },
   \\"sapux\\": true
@@ -3662,11 +3666,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -3700,11 +3706,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
