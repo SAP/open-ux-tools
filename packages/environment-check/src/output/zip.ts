@@ -78,7 +78,7 @@ export async function archiveProject(
                         .toISOString()
                         .replace('T', '')
                         .replace(':', '')
-                        .substr(0, 14)}.zip`;
+                        .substring(0, 14)}.zip`;
                 }
                 const targetPath = join(dirname(projectRoot), targetName);
                 const writeStream = createWriteStream(targetPath);
