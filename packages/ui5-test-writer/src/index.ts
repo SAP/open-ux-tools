@@ -147,7 +147,7 @@ function createConfig(manifest: Manifest, opaConfig: { scriptName?: string; appI
 }
 
 /**
- * Finds the injtial ListReport page and the first Object page from the app.
+ * Finds the initial ListReport page and the first Object page from the app.
  *
  * @param pages - the page configs of the app
  * @param manifest - the app descriptor of the target app
