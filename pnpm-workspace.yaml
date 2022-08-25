@@ -1,6 +1,3 @@
 packages:
-    - 'packages/**'
-    - 'examples/**'
-    - '!packages/**/templates/**'
-    - '!packages/**/test-input/**'
-    - '!packages/**/test-output/**' # Ignoring templates folder within template packages that might contain invalid json characters
+    - 'packages/*'
+    - 'examples/*'

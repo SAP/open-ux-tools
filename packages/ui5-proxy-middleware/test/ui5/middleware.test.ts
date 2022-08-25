@@ -32,10 +32,14 @@ describe('Different ui5 configurations', () => {
     const ui5Server = 'http://ui5.example';
     const altUi5Server = 'http://alternative.example';
     const ui5Version = '1.96.0';
+    const runConfigVersion = '1.101.1';
+    const runConfigServer = 'https://ui5.runconfig.example';
 
     nock(ui5Server).get(`/${ui5Version}${CORE}`).reply(200).persist();
     nock(ui5Server).get(`/${ui5Version}${SANDBOX}`).reply(200).persist();
     nock(altUi5Server).get(`/${ui5Version}${ALTERNATIVE}`).reply(200).persist();
+    nock(runConfigServer).get(`/${runConfigVersion}${CORE}`).reply(200).persist();
+    nock(runConfigServer).get(`/${runConfigVersion}${SANDBOX}`).reply(200).persist();
 
     test('flexible configuration', async () => {
         const server = await getTestServer({
@@ -81,6 +85,24 @@ describe('Different ui5 configurations', () => {
         expect(await server.get(ALTERNATIVE)).toMatchObject({ status: 200 });
         expect(await server.get(INVALID)).toMatchObject({ status: 404 });
     });
+
+    test('run configuration', async () => {
+        process.env.FIORI_TOOLS_UI5_URI = runConfigServer;
+        process.env.FIORI_TOOLS_UI5_VERSION = runConfigVersion;
+
+        const server = await getTestServer({
+            version: ui5Version,
+            ui5: {
+                path: ['/resources', '/test-resources'],
+                url: ui5Server
+            }
+        });
+
+        expect(await server.get(CORE)).toMatchObject({ status: 200 });
+        expect(await server.get(SANDBOX)).toMatchObject({ status: 200 });
+        delete process.env.FIORI_TOOLS_UI5_VERSION;
+        delete process.env.FIORI_TOOLS_UI5_URI;
+    });
 });
 
 describe('Set optional properties', () => {
@@ -100,7 +122,7 @@ describe('Set optional properties', () => {
         await getTestServer(config);
         expect(ui5ProxySpy).toBeCalledWith(
             expect.objectContaining({}),
-            expect.objectContaining({ secure: false, logLevel: 'info' })
+            expect.objectContaining({ secure: true, logLevel: 'info' })
         );
     });
 
@@ -129,6 +151,14 @@ describe('Set optional properties', () => {
             secure: true
         });
         expect(ui5ProxySpy).toBeCalledWith(expect.objectContaining({}), expect.objectContaining({ secure: true }));
+    });
+
+    test('secure', async () => {
+        await getTestServer({
+            ...config,
+            secure: false
+        });
+        expect(ui5ProxySpy).toBeCalledWith(expect.objectContaining({}), expect.objectContaining({ secure: false }));
     });
 
     test('directLoad', async () => {

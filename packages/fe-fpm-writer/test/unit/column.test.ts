@@ -1,3 +1,4 @@
+import os from 'os';
 import { create, Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
@@ -5,7 +6,7 @@ import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column';
 import { Availability, HorizontalAlign, CustomTableColumn } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
-import { Placement } from '../../src/common/types';
+import { Placement, EventHandlerConfiguration } from '../../src/common/types';
 
 const testDir = join(__dirname, 'sample/column');
 
@@ -144,6 +145,85 @@ describe('CustomAction', () => {
             expect(settings.controlConfiguration).toMatchSnapshot();
 
             expect(testFS.read(expectedFragmentPath)).toMatchSnapshot();
+        });
+
+        describe('Test property "eventHandler"', () => {
+            const generateCustomColumnWithEventHandler = (
+                columnId: string,
+                eventHandler: string | EventHandlerConfiguration,
+                folder?: string
+            ) => {
+                generateCustomColumn(testDir, { ...customColumn, name: columnId, folder, eventHandler }, fs);
+            };
+
+            test('"eventHandler" is empty "object" - create new file with default function name', () => {
+                const id = customColumn.name;
+                generateCustomColumnWithEventHandler(id, {}, customColumn.folder);
+                const xmlPath = join(testDir, 'webapp', customColumn.folder!, `${id}.fragment.xml`);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+                const extension = {
+                    fnName: 'DummyOnAction',
+                    fileName: 'dummyAction'
+                };
+                const id = customColumn.name;
+                generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
+                const fragmentName = `${id}.fragment.xml`;
+                const xmlPath = join(testDir, 'webapp', customColumn.folder!, fragmentName);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.js`))).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object" - create new file with custom function name', () => {
+                const extension = {
+                    fnName: 'DummyOnAction'
+                };
+                const id = customColumn.name;
+                generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
+                const xmlPath = join(testDir, 'webapp', customColumn.folder!, `${id}.fragment.xml`);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            });
+
+            const positions = [
+                {
+                    line: 8,
+                    character: 9
+                },
+                190 + 8 * os.EOL.length
+            ];
+            for (const position of positions) {
+                test(`"eventHandler" is object. Append new function to existing js file with position ${
+                    typeof position === 'object' ? JSON.stringify(position) : 'absolute'
+                }`, () => {
+                    const fileName = 'MyExistingAction';
+                    // Create existing file with existing actions
+                    const folder = join('extensions', 'custom');
+                    const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
+                    // Generate handler with single method - content should be updated during generating of custom column
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                    const fnName = 'onHandleSecondAction';
+
+                    const extension = {
+                        fnName,
+                        fileName,
+                        insertScript: {
+                            fragment: `,\n        ${fnName}: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                            position
+                        }
+                    };
+
+                    const id = customColumn.name;
+                    generateCustomColumnWithEventHandler(id, extension, folder);
+                    const xmlPath = join(testDir, 'webapp', folder!, `${id}.fragment.xml`);
+                    expect(fs.read(xmlPath)).toMatchSnapshot();
+                    // Check update js file content
+                    expect(fs.read(existingPath)).toMatchSnapshot();
+                });
+            }
         });
     });
 });

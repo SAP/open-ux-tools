@@ -1,5 +1,136 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.12.8
+
+### Patch Changes
+
+-   0fcddfd: Correct app controller name
+
+## 0.12.7
+
+### Patch Changes
+
+-   Updated dependencies [238f401]
+    -   @sap-ux/ui5-application-writer@0.14.5
+
+## 0.12.6
+
+### Patch Changes
+
+-   Updated dependencies [6c22256]
+    -   @sap-ux/odata-service-writer@0.14.5
+
+## 0.12.5
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/odata-service-writer@0.14.4
+    -   @sap-ux/ui5-application-writer@0.14.4
+    -   @sap-ux/ui5-config@0.14.4
+
+## 0.12.4
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/odata-service-writer@0.14.3
+    -   @sap-ux/ui5-application-writer@0.14.3
+    -   @sap-ux/ui5-config@0.14.3
+
+## 0.12.3
+
+### Patch Changes
+
+-   Updated dependencies [7c4a4df]
+    -   @sap-ux/ui5-config@0.14.2
+    -   @sap-ux/odata-service-writer@0.14.2
+    -   @sap-ux/ui5-application-writer@0.14.2
+
+## 0.12.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/odata-service-writer@0.14.1
+    -   @sap-ux/ui5-application-writer@0.14.1
+    -   @sap-ux/ui5-config@0.14.1
+
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [c29bf99]
+    -   @sap-ux/odata-service-writer@0.14.0
+
+## 0.12.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/odata-service-writer@0.13.0
+    -   @sap-ux/ui5-application-writer@0.14.0
+    -   @sap-ux/ui5-config@0.14.0
+
+## 0.11.15
+
+### Patch Changes
+
+-   a0a6942: Fix: incorrect routing pattern in basic template
+
+## 0.11.14
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/odata-service-writer@0.12.2
+    -   @sap-ux/ui5-application-writer@0.13.1
+    -   @sap-ux/ui5-config@0.13.3
+
+## 0.11.13
+
+### Patch Changes
+
+-   3fc088e: Fix for #487: `sourceTemplate.toolsId` not written
+
+## 0.11.12
+
+### Patch Changes
+
+-   7e80052: Fix for #487: `sourceTemplate.toolsId` not written
+
+## 0.11.11
+
+### Patch Changes
+
+-   Updated dependencies [9726e2d]
+    -   @sap-ux/ui5-application-writer@0.13.0
+
+## 0.11.10
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+-   Updated dependencies [b5ab868]
+    -   @sap-ux/odata-service-writer@0.12.1
+    -   @sap-ux/ui5-application-writer@0.12.8
+    -   @sap-ux/ui5-config@0.13.2
+
+## 0.11.9
+
+### Patch Changes
+
+-   Updated dependencies [cfca196]
+    -   @sap-ux/odata-service-writer@0.12.0
+
 ## 0.11.8
 
 ### Patch Changes

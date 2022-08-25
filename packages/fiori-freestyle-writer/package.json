@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
     "description": "SAP Fiori freestyle application writer",
-    "version": "0.11.8",
+    "version": "0.12.8",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -26,17 +26,19 @@
     "files": [
         "LICENSE",
         "dist",
-        "templates"
+        "templates",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "ejs": "3.1.6",
+        "ejs": "3.1.7",
         "i18next": "20.3.2",
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.0.0",
+        "mem-fs-editor": "9.4.0",
         "read-pkg-up": "7.0.1"
     },
     "devDependencies": {
@@ -44,10 +46,11 @@
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.176",
         "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.2",
         "fs-extra": "10.0.0"
     },
     "engines": {
-        "pnpm": ">=6.26.1",
-        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     }
 }

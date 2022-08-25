@@ -11,9 +11,7 @@ import { Redirect } from './redirect';
 import { prettyPrintTimeInMs } from '../abap/message';
 import { UAATimeoutError } from './error';
 import { redirectSuccessHtml } from './static';
-
-/** Connection timeout. Should be made configurable */
-export const defaultTimeout = 60 * 1000; // 1 minute
+import { defaultTimeout } from './connection';
 
 export type RefreshTokenChanged = (refreshToken?: string) => void | Promise<void>;
 

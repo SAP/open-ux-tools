@@ -3,6 +3,7 @@ import {
     isAbapSystem,
     isAbapEnvironmentOnBtp,
     WebIDEUsage,
+    WebIDEAdditionalData,
     isGenericODataDestination,
     isPartialUrlDestination,
     isFullUrlDestination
@@ -71,7 +72,7 @@ describe('destination', () => {
     });
 
     describe('isPartialUrlDest', () => {
-        it('WebIDEUsage set to full_url', () => {
+        it('destination not set to full_url', () => {
             expect(isPartialUrlDestination({ ...destination, WebIDEUsage: WebIDEUsage.ODATA_GENERIC })).toBe(true);
         });
 
@@ -82,11 +83,12 @@ describe('destination', () => {
     });
 
     describe('isFullUrlDest', () => {
-        it('WebIDEUsage set to full_url', () => {
+        it('destination set to full_url', () => {
             expect(
                 isFullUrlDestination({
                     ...destination,
-                    WebIDEUsage: [WebIDEUsage.ODATA_GENERIC, WebIDEUsage.FULL_URL].join(',')
+                    WebIDEUsage: WebIDEUsage.ODATA_GENERIC,
+                    WebIDEAdditionalData: WebIDEAdditionalData.FULL_URL
                 })
             ).toBe(true);
         });

@@ -8,6 +8,8 @@ export enum CSRF {
     RequestHeaderValue = 'Fetch',
     ResponseHeaderName = 'x-csrf-token'
 }
+/** Default connection timeout (milliseconds) */
+export const defaultTimeout = 60 * 1000; // 1 minute
 
 /**
  * Helper class for managing cookies.
@@ -141,9 +143,9 @@ export function attachConnectionHandler(provider: ServiceProvider) {
         return request;
     });
 
-    // throw error on connection issues and remove interceptor if successfully connected
+    // throw error if the user is unauthorized otherwise, remove interceptor if successfully connected
     const oneTimeRespInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
-        if (response.status >= 400) {
+        if (response.status === 401) {
             throw new ConnectionError(response.statusText, response);
         } else {
             // if a redirect to a SAML login page happened try again with disable saml param
@@ -155,16 +157,6 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                 throwIfHtmlLoginForm(response);
                 // remember xsrf token
                 if (response.headers?.[CSRF.ResponseHeaderName]) {
-                    provider.defaults.headers = provider.defaults.headers ?? {
-                        common: {},
-                        // eslint-disable-next-line quote-props
-                        delete: {},
-                        put: {},
-                        get: {},
-                        post: {},
-                        head: {},
-                        patch: {}
-                    };
                     provider.defaults.headers.common[CSRF.RequestHeaderName] =
                         response.headers[CSRF.ResponseHeaderName];
                 }

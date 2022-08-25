@@ -207,7 +207,7 @@ sap.ui.define([
     function(BaseController) {
       \\"use strict\\";
   
-      return BaseController.extend(\\"test.me.controller.controller.App\\", {
+      return BaseController.extend(\\"test.me.controller.App\\", {
         onInit() {
         }
       });
@@ -946,7 +946,7 @@ title=My Test App",
       \\"routes\\": [
         {
           \\"name\\": \\"RouteView1\\",
-          \\"pattern\\": \\"RouteView1\\",
+          \\"pattern\\": \\":?query:\\",
           \\"target\\": [
             \\"TargetView1\\"
           ]

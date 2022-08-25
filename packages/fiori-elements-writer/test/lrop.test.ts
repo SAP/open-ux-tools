@@ -1,4 +1,4 @@
-import { FioriElementsApp, generate, TemplateType, LROPSettings, Template } from '../src';
+import { FioriElementsApp, generate, TemplateType, LROPSettings } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import {
@@ -12,6 +12,15 @@ import {
 } from './common';
 
 const TEST_NAME = 'lropTemplates';
+
+jest.mock('read-pkg-up', () => ({
+    sync: jest.fn().mockReturnValue({
+        packageJson: {
+            name: 'mocked-package-name',
+            version: '9.9.9-mocked'
+        }
+    })
+}));
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -83,6 +92,44 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     },
                     appOptions: {
                         loadReuseLibs: false
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_set_toolsId',
+            config: {
+                ...Object.assign(feBaseConfig('felrop5'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    app: {
+                        ...feBaseConfig('felrop4').app,
+                        sourceTemplate: {
+                            version: '1.2.3-test',
+                            id: 'test-fe-template',
+                            toolsId: 'toolsId:1234abcd'
+                        }
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_set_toolsId_only',
+            config: {
+                ...Object.assign(feBaseConfig('felrop5'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    app: {
+                        ...feBaseConfig('felrop4').app,
+                        sourceTemplate: {
+                            toolsId: 'toolsId:1234abcd'
+                        }
                     }
                 }),
                 service: v2Service

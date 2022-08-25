@@ -52,25 +52,26 @@ export function mergePackages(packageA: Partial<Package>, packageB: Partial<Pack
     return mergedPackage;
 }
 /**
- * Returns an app instance with default properties. Every property must have a value for templating to succeed.
+ * Returns an app instance merged with default properties.
  *
  * @param {App} app - specifies the application properties
  * @returns {Partial<App>} the App instance
  */
 export function mergeApp(app: App): App {
-    return Object.assign(
+    return mergeObjects([
         {
             version: '0.0.1',
             title: t('text.defaultAppTitle', { id: app.id }),
             description: t('text.defaultAppDescription', { id: app.id }),
             baseComponent: 'sap/ui/core/UIComponent',
             sourceTemplate: {
-                id: app.sourceTemplate?.id || '',
-                version: app.sourceTemplate?.version || ''
+                id: app.sourceTemplate?.id ?? '',
+                version: app.sourceTemplate?.version ?? '',
+                toolsId: app.sourceTemplate?.toolsId
             }
         },
         app
-    ) as App;
+    ]) as App;
 }
 
 export enum UI5_DEFAULT {
@@ -223,4 +224,22 @@ function getLocalVersion({
         result = semVer.valid(versionSemVer)!;
     }
     return result;
+}
+
+/**
+ * Retrieve the tag version of the @sap/ux-specification based on the given version.
+ *
+ * @param ui5Version UI5 version used in the project
+ * @returns version tag
+ */
+export function getSpecTagVersion(ui5Version: string | undefined): string {
+    if (ui5Version) {
+        if (semVer.valid(ui5Version)) {
+            return `UI5-${semVer.major(ui5Version)}.${semVer.minor(ui5Version)}`;
+        } else if (ui5Version.includes('snapshot') && ui5Version.includes('.')) {
+            const snaphotVersion = ui5Version.split('snapshot-')[1];
+            return `UI5-${snaphotVersion}`;
+        }
+    }
+    return 'latest';
 }

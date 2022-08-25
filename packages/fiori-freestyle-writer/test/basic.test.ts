@@ -7,6 +7,15 @@ import { BasicAppSettings } from '../src/types';
 
 const TEST_NAME = 'basicTemplate';
 
+jest.mock('read-pkg-up', () => ({
+    sync: jest.fn().mockReturnValue({
+        packageJson: {
+            name: 'mocked-package-name',
+            version: '9.9.9-mocked'
+        }
+    })
+}));
+
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
@@ -71,6 +80,19 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             config: {
                 ...commonConfig,
                 appOptions: { loadReuseLibs: false }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_with_toolsId',
+            config: {
+                ...commonConfig,
+                app: {
+                    ...commonConfig.app,
+                    sourceTemplate: {
+                        toolsId: 'testToolsId:abcd1234'
+                    }
+                }
             },
             settings: {}
         }
@@ -147,10 +169,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             const fs = await generate(testPath, freestyleApp);
             const manifest = { json: fs.readJSON(join(testPath, 'webapp', 'manifest.json')) as any };
             expect(manifest.json['sap.ui5'].rootView.viewName.startsWith(freestyleApp.app.id)).toBe(true);
+            expect(manifest.json['sap.ui5'].routing.routes[0].pattern).toBe(':?query:');
             expect(
                 [
                     manifest.json['sap.ui5'].routing.routes[0].name,
-                    manifest.json['sap.ui5'].routing.routes[0].pattern,
                     manifest.json['sap.ui5'].routing.routes[0].target[0],
                     manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewId,
                     manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewName

@@ -268,6 +268,36 @@ exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
 "
 `;
 
+exports[`UI5Config addUI5Framework Use horizon high contrast black theme 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.96.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_horizon
+"
+`;
+
+exports[`UI5Config addUI5Framework Use horizon high contrast white theme 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.96.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_horizon
+"
+`;
+
+exports[`UI5Config addUI5Framework Use horizon high dark theme 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.96.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_horizon
+"
+`;
+
 exports[`UI5Config addUi5ToFioriToolsProxydMiddleware add ui5 config to empty tools middleware config 1`] = `
 "server:
   customMiddleware:

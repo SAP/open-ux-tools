@@ -1,7 +1,7 @@
 {
     "sap.ui5": {
         "routing": {
-            "routes": [<% if (type === 'lrop' || type === 'alp') { %>
+            "routes": [<% if (type === 'lrop' || type === 'worklist' || type === 'alp') { %>
                 {
                     "pattern": ":?query:",
                     "name": "<%- entityConfig.mainEntityName %>List",
@@ -19,7 +19,7 @@
                     }<%
                 } %>
             ],
-            "targets": {<% if (type === 'lrop' || type === 'alp') { %>
+            "targets": {<% if (type === 'lrop' || type === 'worklist' || type === 'alp') { %>
                 "<%- entityConfig.mainEntityName %>List": {
                     "type": "Component",
                     "id": "<%- entityConfig.mainEntityName %>List",
@@ -28,6 +28,8 @@
                         "settings": {
                             "entitySet": "<%- entityConfig.mainEntityName %>",
                             "variantManagement": "Page",
+                            <% if (type === 'worklist') { %>
+                            "hideFilterBar": true,<% } %>
                             "navigation": {
                                 "<%- entityConfig.mainEntityName %>": {
                                     "detail": {

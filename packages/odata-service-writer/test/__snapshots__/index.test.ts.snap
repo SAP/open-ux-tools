@@ -6,10 +6,12 @@ Object {
     "contents": "{
   \\"ui5\\": {
     \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
   },
   \\"devDependencies\\": {
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   }
 }
@@ -2756,8 +2758,7 @@ Object {
           \\"synchronizationMode\\": \\"None\\",
           \\"operationMode\\": \\"Server\\",
           \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true,
-          \\"groupId\\": \\"$direct\\"
+          \\"earlyRequests\\": true
         }
       }
     }
@@ -2775,10 +2776,12 @@ Object {
     "contents": "{
   \\"ui5\\": {
     \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
   },
   \\"devDependencies\\": {
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   }
 }

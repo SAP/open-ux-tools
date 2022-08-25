@@ -1,5 +1,5 @@
 import * as appStudioUtils from '../../../src/utils/app-studio';
-import { getSecureStore } from '../../../src';
+import { getSecureStore } from '../../../src/secure-store';
 import { DummyStore } from '../../../src/secure-store/dummy-store';
 import { KeytarStore } from '../../../src/secure-store/keytar-store';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';

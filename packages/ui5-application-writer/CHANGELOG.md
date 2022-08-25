@@ -1,5 +1,75 @@
 # @sap-ux/ui5-application-writer
 
+## 0.14.5
+
+### Patch Changes
+
+-   238f401: Fix: corrected minVersion calculation and handling of sapux setting
+
+## 0.14.4
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/ui5-config@0.14.4
+
+## 0.14.3
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/ui5-config@0.14.3
+
+## 0.14.2
+
+### Patch Changes
+
+-   Updated dependencies [7c4a4df]
+    -   @sap-ux/ui5-config@0.14.2
+
+## 0.14.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/ui5-config@0.14.1
+
+## 0.14.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/ui5-config@0.14.0
+
+## 0.13.1
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/ui5-config@0.13.3
+
+## 0.13.0
+
+### Minor Changes
+
+-   9726e2d: Feature: Adds support for setting the sourceTemplate toolsId into generated ui5 applications
+
+## 0.12.8
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+-   Updated dependencies [b5ab868]
+    -   @sap-ux/ui5-config@0.13.2
+
 ## 0.12.7
 
 ### Patch Changes

@@ -1,5 +1,29 @@
 # @sap-ux/yaml
 
+## 0.12.2
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+
+## 0.12.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+
+## 0.12.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+## 0.11.5
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+
 ## 0.11.4
 
 ### Patch Changes

@@ -1,0 +1,42 @@
+{
+    "sap.ui5": {
+    <% if (locals.eventHandler ) { %> 
+        "extends": {
+                "extensions": {
+                    "sap.ui.controllerExtensions": {
+                        "sap.fe.templates.ListReport.ListReportController": {
+                            "controllerName": "<%- ns %>.<%- name %>"
+                        }
+                    }
+                }
+            },
+    <%
+        } %>
+        "routing": {
+            "targets": {
+                "<%- target %>": {
+                    "options": {
+                        "settings": {
+                            "views": {
+                                "paths": [
+                                    <% if (locals.views?.paths) { %>
+                                        <% locals.views.paths.forEach ( (path) => { %>
+                                            <%- JSON.stringify(path) %>,
+                                    <%
+                                        } ) %>
+                                    <%
+                                    } %>
+                                    {
+                                        "key": "<%- key %>",
+                                        "label": "<%- label %>",
+                                        "template": "<%- ns %>.<%- name %>"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -35,7 +35,8 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
         const packageInfo = readPkgUp.sync({ cwd: __dirname });
         ffApp.app.sourceTemplate = {
             id: `${packageInfo?.packageJson.name}:${ffApp.template.type}`,
-            version: packageInfo?.packageJson.version
+            version: packageInfo?.packageJson.version,
+            toolsId: ffApp.app.sourceTemplate?.toolsId
         };
     }
 

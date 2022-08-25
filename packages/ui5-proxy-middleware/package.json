@@ -9,8 +9,9 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-proxy-middleware"
     },
-    "version": "1.0.5",
+    "version": "1.1.6",
     "license": "Apache-2.0",
+    "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
     "scripts": {
         "build": "pnpm clean && tsc",
@@ -24,11 +25,14 @@
     "files": [
         "LICENSE",
         "dist",
-        "ui5.yaml"
+        "ui5.yaml",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "dotenv": "16.0.0",
         "express": "4.17.2",
         "http-proxy-middleware": "2.0.1",
         "https-proxy-agent": "5.0.0",
@@ -45,7 +49,7 @@
         "dependencies": []
     },
     "engines": {
-        "pnpm": ">=6.26.1",
-        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     }
 }

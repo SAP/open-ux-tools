@@ -2,11 +2,18 @@ import { join } from 'path';
 import nock from 'nock';
 import { createForAbap, ODataVersion, V4CatalogService } from '../../../src';
 
-nock.disableNetConnect();
-
 const mockRespPath = join(__dirname, '../mockResponses');
 
 describe('V4CatalogService', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
     const server = 'https://iccsrm.sap.com:44300';
     const config = {
         baseURL: server,
@@ -79,6 +86,28 @@ describe('V4CatalogService', () => {
             const services = await catalog.listServices();
             expect(services).toBeDefined();
             expect(services.length).toBeGreaterThan(0);
+        });
+
+        test('service returns an error', async () => {
+            nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADTA />'));
+            nock(server)
+                .get((path) => path.startsWith(path))
+                .reply(200, {
+                    error: {
+                        code: '42',
+                        message: 'OData service error'
+                    }
+                });
+
+            const provider = createForAbap(config);
+            provider.s4Cloud = false;
+            const catalog = provider.catalog(ODataVersion.v4);
+            try {
+                await catalog.listServices();
+                fail('Should have thrown an error.');
+            } catch (error) {
+                expect(error['message']).toBeDefined();
+            }
         });
     });
 });
