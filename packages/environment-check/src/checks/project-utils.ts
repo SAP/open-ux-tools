@@ -23,7 +23,6 @@ export async function getUi5CustomMiddleware(root: string): Promise<CustomMiddle
  * Internal function to find all folders that contain a package.json in a given workspace.
  *
  * @param wsFolders - root folder paths or workspaces to start the search from
- * @param [logger] - logger to log messages (optional)
  * @returns projects
  */
 export async function findAllPackageJsonFolders(

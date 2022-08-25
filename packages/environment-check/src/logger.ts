@@ -1,5 +1,5 @@
 import { EnvcheckTransport, ToolsLogger } from '@sap-ux/logger';
-import { ResultMessage, Severity } from './types';
+import type { ResultMessage, Severity } from './types';
 
 /**
  * Logger to collect messages while performing checks
