@@ -31,7 +31,7 @@ export async function checkBASDestination(
     password?: string | undefined
 ): Promise<{ messages: ResultMessage[]; destinationResults: DestinationResults }> {
     const logger = getLogger();
-    logger.log(t('checkingDestination', { destination: destination.Name }));
+    logger.info(t('checkingDestination', { destination: destination.Name }));
 
     const { messages, result: destinationResults } = await checkCatalogServices(destination, username, password);
 
@@ -122,7 +122,7 @@ async function catalogRequest(
         result = await catalog.listServices();
         if (result.length > 0) {
             const numberOfServices = countNumberOfServices(result);
-            logger.log(
+            logger.info(
                 t('info.numServicesForDestination', {
                     odataVersion,
                     destination: destination.Name,
@@ -141,7 +141,7 @@ async function catalogRequest(
         if (errorJson?.config?.auth?.password) {
             delete errorJson.config.auth.password;
         }
-        logger.info(t('error.urlRequestFailure', { url, error: error.message, errorObj: error }));
+        logger.debug(t('error.urlRequestFailure', { url, error: error.message, errorObj: error }));
     }
     return {
         messages: logger.getMessages(),
@@ -177,8 +177,8 @@ export async function checkBASDestinations(): Promise<{
     try {
         await axios.get(getAppStudioProxyURL() + '/reload');
     } catch (error) {
-        logger.warning(t('warning.reloadFailure'));
-        logger.info(
+        logger.warn(t('warning.reloadFailure'));
+        logger.debug(
             t('info.urlRequestFailure', {
                 url: `${getAppStudioProxyURL() + '/reload'}`,
                 error: error.message,
@@ -204,13 +204,13 @@ export async function checkBASDestinations(): Promise<{
 
         const destinationNumber = Object.keys(destinations).length;
         if (destinationNumber > 0) {
-            logger.log(t('info.numDestinationsFound', { destinationNumber }));
+            logger.info(t('info.numDestinationsFound', { destinationNumber }));
         } else {
-            logger.warning(t('warning.noDestinationsFound'));
+            logger.warn(t('warning.noDestinationsFound'));
         }
     } catch (error) {
         logger.error(t('error.retrievingDestinations', { error: error.message }));
-        logger.info(
+        logger.debug(
             t('info.urlRequestFailure', {
                 url: url,
                 error: error.message,

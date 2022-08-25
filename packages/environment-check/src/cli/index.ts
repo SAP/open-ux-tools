@@ -78,7 +78,7 @@ async function outputResults(result: EnvironmentCheckResult, mode?: OutputMode):
                 console.warn(`🟡 ${message.text}`);
                 break;
             }
-            case Severity.Info: {
+            case Severity.Debug: {
                 if (mode === OutputMode.Verbose) {
                     console.info(`ℹ ${message.text}`);
                 }

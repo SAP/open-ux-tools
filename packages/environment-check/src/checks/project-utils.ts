@@ -1,5 +1,4 @@
 import type { WorkspaceFolder } from 'vscode';
-import type { ToolsLogger } from '@sap-ux/logger';
 import * as fs from 'fs';
 import type { CustomMiddleware, FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 import { FileName, DirName } from '../types';
@@ -28,8 +27,7 @@ export async function getUi5CustomMiddleware(root: string): Promise<CustomMiddle
  * @returns projects
  */
 export async function findAllPackageJsonFolders(
-    wsFolders: WorkspaceFolder[] | string[] | undefined,
-    logger?: ToolsLogger
+    wsFolders: WorkspaceFolder[] | string[] | undefined
 ): Promise<string[]> {
     // extract root path if provided as VSCode folder
     let wsRoots: string[];
@@ -54,11 +52,7 @@ export async function findAllPackageJsonFolders(
                 root,
                 error: error.message
             });
-            if (logger) {
-                logger.error(errorMessage);
-            } else {
-                console.error(errorMessage);
-            }
+            console.error(errorMessage);
         }
     }
     return projects;

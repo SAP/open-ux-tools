@@ -27,15 +27,15 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
         versions: process.versions,
         platform: process.platform
     };
-    logger.log(t('info.developmentEnvironment', { env: environment.developmentEnvironment }));
-    logger.log(t('info.versions', { versions: JSON.stringify(environment.versions, null, 4) }));
-    logger.log(t('info.platform', { plaform: environment.platform }));
+    logger.info(t('info.developmentEnvironment', { env: environment.developmentEnvironment }));
+    logger.info(t('info.versions', { versions: JSON.stringify(environment.versions, null, 4) }));
+    logger.info(t('info.platform', { plaform: environment.platform }));
 
     try {
         environment.basDevSpace = isAppStudio() ? await getSbasDevspace() : undefined;
-        logger.log(t('info.basDevSpace', { basDevSpace: environment.basDevSpace }));
+        logger.info(t('info.basDevSpace', { basDevSpace: environment.basDevSpace }));
     } catch (error) {
-        logger.log(t('error.basDevSpace', { error: error.message }));
+        logger.info(t('error.basDevSpace', { error: error.message }));
     }
 
     return {
@@ -70,7 +70,7 @@ async function getDestinationResults(
                 password = credentials.password;
             }
         } else {
-            logger.warning(
+            logger.warn(
                 t('warning.basicAuthRequired', {
                     destination: destination.Name
                 })
@@ -105,7 +105,7 @@ async function getDestinationsResults(
 ): Promise<{ messages: ResultMessage[]; destinationResults: { [dest: string]: DestinationResults } }> {
     const logger = getLogger();
     const destinationResults: { [dest: string]: DestinationResults } = {};
-    logger.log(
+    logger.info(
         deepDiveDestinations.size > 0
             ? t('info.detailsForDestinations', { destinations: Array.from(deepDiveDestinations).join(', ') })
             : t('info.noDetailsRequested')
@@ -119,7 +119,7 @@ async function getDestinationsResults(
 
             destinationResults[checkDest.Name] = destResults;
         } else {
-            logger.warning(t('warning.destinationsNotFound', { deepDiveDestination, destNumber: destinations.length }));
+            logger.warn(t('warning.destinationsNotFound', { deepDiveDestination, destNumber: destinations.length }));
         }
     }
 

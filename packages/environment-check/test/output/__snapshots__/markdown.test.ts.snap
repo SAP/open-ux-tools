@@ -115,11 +115,11 @@ Dev Space Type: \`\`<br>
 <br>
 
 ## Messages (5)
-🟢 &nbsp; Log: Found 80 destinations<br>
-🟢 &nbsp; Log: Checking destination 'SYS'<br>
-🟢 &nbsp; Log: v2 catalog request for destination 'SYS' returned 739 services<br>
+🟢 &nbsp; Info: Found 80 destinations<br>
+🟢 &nbsp; Info: Checking destination 'SYS'<br>
+🟢 &nbsp; Info: v2 catalog request for destination 'SYS' returned 739 services<br>
 🔴 &nbsp; Error: v4 catalog service for destination 'SYS' not available<br>
-<details><summary>ℹ Info</summary>
+<details><summary>ℹ Debug</summary>
 <pre>
 Request to URL: 'http://SYS.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)&sap-client=100' failed with message: Request failed with status code 403. Complete error object: 
 {

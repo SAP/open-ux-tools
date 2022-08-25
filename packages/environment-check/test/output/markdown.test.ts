@@ -105,23 +105,23 @@ const data = {
     },
     messages: [
         {
-            severity: 1,
+            severity: 'info',
             text: 'Found 80 destinations'
         },
         {
-            severity: 1,
+            severity: 'info',
             text: "Checking destination 'SYS'"
         },
         {
-            severity: 1,
+            severity: 'info',
             text: "v2 catalog request for destination 'SYS' returned 739 services"
         },
         {
-            severity: 3,
+            severity: 'error',
             text: "v4 catalog service for destination 'SYS' not available"
         },
         {
-            severity: 0,
+            severity: 'debug',
             text: 'Request to URL: \'http://SYS.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)&sap-client=100\' failed with message: Request failed with status code 403. Complete error object: \n{\n    "message": "Request failed with status code 403",\n    "name": "Error",\n    "stack": "Error: Request failed with status code 403\\n    at module.exports (/tmp/vscode-unpacked/sap-ux-application-modeler-extension-1.4.2.vsix/extension/dist/src/extension-min.js:2:5470354)\\n    at module.exports (/tmp/vscode-unpacked/sap-ux-application-modeler-extension-1.4.2.vsix/extension/dist/src/extension-min.js:2:5474468)\\n    at IncomingMessage.<anonymous> (/tmp/vscode-unpacked/sap-ux-application-modeler-extension-1.4.2.vsix/extension/dist/src/extension-min.js:2:5460363)\\n    at IncomingMessage.emit (events.js:326:22)\\n    at endReadableNT (_stream_readable.js:1241:12)\\n    at processTicksAndRejections (internal/process/task_queues.js:84:21)",\n    "config": {\n        "url": "http://SYS.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)&sap-client=100",\n        "method": "get",\n        "headers": {\n            "Accept": "application/json, text/plain, */*",\n            "User-Agent": "axios/0.21.4",\n            "host": "sh4.dest"\n        },\n        "auth": {\n            "username": "davesh"\n        },\n        "transformRequest": [\n            null\n        ],\n        "transformResponse": [\n            null\n        ],\n        "timeout": 0,\n        "xsrfCookieName": "XSRF-TOKEN",\n        "xsrfHeaderName": "X-XSRF-TOKEN",\n        "maxContentLength": -1,\n        "maxBodyLength": -1,\n        "transitional": {\n            "silentJSONParsing": true,\n            "forcedJSONParsing": true,\n            "clarifyTimeoutError": false\n        }\n    }\n}'
         }
     ],

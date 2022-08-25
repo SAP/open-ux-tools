@@ -27,21 +27,11 @@ export const enum DevelopmentEnvironment {
 }
 
 export const enum Severity {
-    Info,
-    Log,
-    Warning,
-    Error
+    Debug = 'debug',
+    Info = 'info',
+    Warning = 'warn',
+    Error = 'error'
 }
-
-export interface Logger {
-    info: (text: string) => void;
-    log: (text: string) => void;
-    warning: (text: string) => void;
-    error: (text: string) => void;
-    push: (...newMessages: ResultMessage[]) => void;
-    getMessages: () => ResultMessage[];
-}
-
 export type ResultMessageText = string;
 
 export interface ResultMessage {
