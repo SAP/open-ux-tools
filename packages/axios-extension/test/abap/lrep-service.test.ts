@@ -39,18 +39,20 @@ describe('LayeredRepositoryService', () => {
 
         test('deploy new adapation project', async () => {
             nock(server)
-                .get(
-                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
-                        config.namespace as string
-                    )}&layer=CUSTOMER_BASE`
-                )
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
                 .reply(404);
 
             nock(server)
                 .post(
                     `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
                         config.namespace as string
-                    )}&layer=CUSTOMER_BASE&package=${config.package}&changeList=${config.transport}`
+                    )}&layer=CUSTOMER_BASE&package=${config.package}&changelist=${config.transport}`
                 )
                 .reply(200);
 
@@ -60,11 +62,13 @@ describe('LayeredRepositoryService', () => {
 
         test('update an existing adapation project', async () => {
             nock(server)
-                .get(
-                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
-                        config.namespace as string
-                    )}&layer=CUSTOMER_BASE`
-                )
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
                 .reply(200, undefined, {
                     'x-csrf-token': 'token'
                 });
@@ -73,7 +77,7 @@ describe('LayeredRepositoryService', () => {
                 .put(
                     `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
                         config.namespace as string
-                    )}&layer=CUSTOMER_BASE&package=${config.package}&changeList=${config.transport}`
+                    )}&layer=CUSTOMER_BASE&package=${config.package}&changelist=${config.transport}`
                 )
                 .reply(200, {
                     result: {
@@ -98,11 +102,13 @@ describe('LayeredRepositoryService', () => {
     describe('undeploy', () => {
         test('undeploy existing adapation project', async () => {
             nock(server)
-                .get(
-                    `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
-                        config.namespace as string
-                    )}&layer=CUSTOMER_BASE`
-                )
+                .get((url) => {
+                    return url.startsWith(
+                        `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
+                            config.namespace as string
+                        )}&layer=CUSTOMER_BASE`
+                    );
+                })
                 .reply(200, undefined, {
                     'x-csrf-token': 'token'
                 });
@@ -110,7 +116,7 @@ describe('LayeredRepositoryService', () => {
                 .delete(
                     `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
                         config.namespace as string
-                    )}&layer=CUSTOMER_BASE&changeList=${config.transport}`
+                    )}&layer=CUSTOMER_BASE&changelist=${config.transport}`
                 )
                 .reply(200, 'Response that throws an error when given to JSON.parse');
 

@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.6
+
+### Patch Changes
+
+-   b6d0c67: Replaced used mockserver middleware
+-   Updated dependencies [b6d0c67]
+    -   @sap-ux/ui5-config@0.14.5
+
 ## 0.14.5
 
 ### Patch Changes
