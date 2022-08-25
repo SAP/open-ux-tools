@@ -13,7 +13,7 @@ Object {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         OnAppendedFn: function() {
-            MessageToast.show(\\"Custom handler invoked.\\");
+            window.location.href += '/_Booking';
         }
     };
 });
@@ -341,7 +341,7 @@ Object {
                       \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.OnAppendedFn\\",
                       \\"visible\\": true,
                       \\"enabled\\": true,
-                      \\"text\\": \\"My other Action\\"
+                      \\"text\\": \\"Navigate to CustomPage (appended action)\\"
                     }
                   }
                 },

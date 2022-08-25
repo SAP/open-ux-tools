@@ -166,13 +166,13 @@ describe('use FPM with existing apps', () => {
                         control: TargetControl.header
                     },
                     settings: {
-                        text: 'My other Action'
+                        text: 'Navigate to CustomPage (appended action)'
                     },
                     eventHandler: {
                         fileName: 'AnotherCustomAction',
                         fnName: 'OnAppendedFn',
                         insertScript: {
-                            fragment: `,\n        OnAppendedFn: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                            fragment: `,\n        OnAppendedFn: function() {\n            window.location.href += '/_Booking';\n        }`,
                             position: {
                                 line: 8,
                                 character: 9
