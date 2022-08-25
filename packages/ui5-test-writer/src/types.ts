@@ -28,6 +28,13 @@ export type FEV4ManifestTarget = {
     options?: {
         settings?: {
             entitySet?: string;
+            navigation?: {
+                [id: string]: {
+                    detail?: {
+                        route?: string;
+                    };
+                };
+            };
         };
     };
 };

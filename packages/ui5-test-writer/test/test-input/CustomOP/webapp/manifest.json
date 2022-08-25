@@ -109,7 +109,7 @@
                             "navigation": {
                                 "Employees": {
                                     "detail": {
-                                        "route": "EmployeesObjectPage"
+                                        "route": "EmployeesObjectPageRoute"
                                     }
                                 }
                             }
