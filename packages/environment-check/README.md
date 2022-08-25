@@ -37,5 +37,25 @@ const destinationResults = await checkBASDestinations();
 const destResult = await checkBASDestination(destination, username, password);
 
 ```
+
+## CLI
+
+A CLI application is also available to investigate the environment and destinations.
+
+## Usage
+
+```
+$ envcheck --help
+
+Usage 
+    $ envheck --destination <DESTINATION> --output <OUTPUT> <WORKSPACE_ROOT>
+
+Options
+    --destination       destination to perform deep check, multiple destionations can be passed
+    --output            json | markdown | verbose | zip format for output, if not specified all messages   except 'info' are shown
+
+    <WORKSPACE_ROOT*>   path the root folder of a workspace. Multiple roots can be defined. We search for apps with destinations in workspaces
+
+```
 ## Keywords
 SAP Fiori Tools
