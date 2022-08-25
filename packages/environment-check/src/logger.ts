@@ -1,5 +1,42 @@
-import type { Logger, ResultMessage } from './types';
-import { Severity } from './types';
+import { EnvcheckTransport, ToolsLogger } from '@sap-ux/logger';
+import type { ResultMessage, Severity } from './types';
+
+/**
+ * Logger to collect messages while performing checks
+ */
+class Logger extends ToolsLogger {
+    constructor() {
+        super({ transports: [new EnvcheckTransport()] });
+    }
+
+    /**
+     * Log multiple messages at once.
+     *
+     * @param newMessages - messages to be logged
+     */
+    push(...newMessages: ResultMessage[]): void {
+        for (const message of newMessages) {
+            this[message.severity](message.text);
+        }
+    }
+
+    /**
+     * Return all logged messages.
+     *
+     * @returns - messages with severity
+     */
+    getMessages(): ResultMessage[] {
+        let messages: ResultMessage[] = [];
+        const transport = this.transports()[0];
+        if (transport instanceof EnvcheckTransport) {
+            messages = transport.messageCollector.map((message: { level: string; message: string }) => ({
+                severity: message.level as Severity,
+                text: message.message
+            }));
+        }
+        return messages;
+    }
+}
 
 /**
  * Return a logger to log messages. Once done adding messages, call getMessages()
@@ -8,23 +45,5 @@ import { Severity } from './types';
  * @returns logger to log messages
  */
 export function getLogger(): Logger {
-    const messages: ResultMessage[] = [];
-    return {
-        info: (text): void => {
-            messages.push({ severity: Severity.Info, text });
-        },
-        log: (text): void => {
-            messages.push({ severity: Severity.Log, text });
-        },
-        warning: (text): void => {
-            messages.push({ severity: Severity.Warning, text });
-        },
-        error: (text): void => {
-            messages.push({ severity: Severity.Error, text });
-        },
-        push: (...newMessages): void => {
-            messages.push(...newMessages);
-        },
-        getMessages: (): ResultMessage[] => messages
-    };
+    return new Logger();
 }

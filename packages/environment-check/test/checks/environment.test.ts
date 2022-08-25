@@ -276,7 +276,7 @@ describe('Test for checkEnvironment()', () => {
         // Test execution
         const result = await checkEnvironment(options);
         const warningMessage = result.messages?.find(
-            (m) => m.text.includes('No destinations details requested') && m.severity === Severity.Log
+            (m) => m.text.includes('No destinations details requested') && m.severity === Severity.Info
         );
 
         // Result check

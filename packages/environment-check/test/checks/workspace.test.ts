@@ -15,13 +15,13 @@ describe('Test for getDestinationsFromWorkspace()', () => {
         // Test execution
         const result = await getDestinationsFromWorkspace(wsFolders);
         const noUI5YamlMessage = result.messages.find(
-            (msg) => msg.severity === Severity.Info && msg.text.includes(FileName.Ui5Yaml)
+            (msg) => msg.severity === Severity.Debug && msg.text.includes(FileName.Ui5Yaml)
         );
         const noBackendMessage = result.messages.find(
-            (msg) => msg.severity === Severity.Info && msg.text.includes('NO_BACKEND')
+            (msg) => msg.severity === Severity.Debug && msg.text.includes('NO_BACKEND')
         );
         const noDestMessage = result.messages.find(
-            (msg) => msg.severity === Severity.Info && msg.text.includes('NO_DEST')
+            (msg) => msg.severity === Severity.Debug && msg.text.includes('NO_DEST')
         );
         // Result check
         expect(result.destinations.sort()).toEqual(['TEST_DEST_A', 'TEST_DEST_B1', 'TEST_DEST_B2']);

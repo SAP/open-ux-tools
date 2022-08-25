@@ -15,8 +15,8 @@ import { t } from '../i18n';
 const severityMap = {
     [Severity.Error]: '🔴 &nbsp; Error',
     [Severity.Warning]: '🟡 &nbsp; Warning',
-    [Severity.Log]: '🟢 &nbsp; Log',
-    [Severity.Info]: 'ℹ Info'
+    [Severity.Info]: '🟢 &nbsp; Info',
+    [Severity.Debug]: 'ℹ Debug'
 };
 
 /**
@@ -239,7 +239,7 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
     writer.addH2(t('markdownText.messages', { numberOfMessages }));
     if (numberOfMessages > 0) {
         for (const message of messages) {
-            if (message.severity === Severity.Info) {
+            if (message.severity === Severity.Debug) {
                 writer.addDetails(severityMap[message.severity], message.text);
             } else {
                 writer.addLine(`${severityMap[message.severity]}: ${message.text}`);

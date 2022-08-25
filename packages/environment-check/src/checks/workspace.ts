@@ -38,13 +38,13 @@ export async function getDestinationsFromWorkspace(
     const messages: ResultMessage[] = [];
     const destinations: string[] = [];
     messages.push({
-        severity: Severity.Log,
+        severity: Severity.Info,
         text: t('info.appSearch', { folders: wsFolders.join(', ') })
     });
     const appRoots = await findAllPackageJsonFolders(wsFolders);
 
     messages.push({
-        severity: Severity.Log,
+        severity: Severity.Info,
         text: t('info.foundNumApps', { numApps: appRoots.length })
     });
 
@@ -55,18 +55,18 @@ export async function getDestinationsFromWorkspace(
             if (appDestinations.length > 0) {
                 destinations.push(...appDestinations);
                 messages.push({
-                    severity: Severity.Log,
+                    severity: Severity.Info,
                     text: t('info.foundDestinationsInApp', { appRoot, appDestinations: appDestinations.join(', ') })
                 });
             } else {
                 messages.push({
-                    severity: Severity.Info,
+                    severity: Severity.Debug,
                     text: t('info.noDestinationsFoundInApp', { appRoot })
                 });
             }
         } catch (error) {
             messages.push({
-                severity: Severity.Info,
+                severity: Severity.Debug,
                 text: t('info.noDestinationDefinedForApp', { appRoot, error: error.message })
             });
         }

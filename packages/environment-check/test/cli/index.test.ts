@@ -54,7 +54,7 @@ describe('Test for cli()', () => {
                     { severity: Severity.Error, text: 'ERROR message' },
                     { severity: Severity.Warning, text: 'WARNING message' },
                     { severity: Severity.Info, text: 'INFO message' },
-                    { severity: Severity.Log, text: 'LOG message' }
+                    { severity: Severity.Debug, text: 'DEBUG message' }
                 ]
             })
         );
@@ -69,7 +69,7 @@ describe('Test for cli()', () => {
         // Result check
         expect(console.error).toBeCalledWith('🔴 ERROR message');
         expect(console.warn).toBeCalledWith('🟡 WARNING message');
-        expect(console.log).toBeCalledWith('🟢 LOG message');
+        expect(console.log).toBeCalledWith('🟢 INFO message');
         expect(console.info).not.toHaveBeenCalled(); // should be called only in case we pass verbose
     });
 
@@ -77,7 +77,7 @@ describe('Test for cli()', () => {
         // Mock setup
         mockCheckEnvironment.mockImplementation(() =>
             Promise.resolve({
-                messages: [{ severity: Severity.Info, text: 'INFO message' }]
+                messages: [{ severity: Severity.Debug, text: 'DEBUG message' }]
             })
         );
         console.info = jest.fn();
@@ -87,7 +87,7 @@ describe('Test for cli()', () => {
         await cli();
 
         // Result check
-        expect(console.info).toHaveBeenCalledWith('ℹ INFO message');
+        expect(console.info).toHaveBeenCalledWith('ℹ DEBUG message');
     });
 
     test('Call cli() --destination ONE, checkEnvironment() should be called with ONE', async () => {
@@ -118,7 +118,7 @@ describe('Test for cli()', () => {
             checkDest = options.destinations.sort();
             checkWorkspace = options.workspaceRoots.sort();
             return Promise.resolve({
-                messages: [{ severity: Severity.Log, text: 'Test log message' }],
+                messages: [{ severity: Severity.Info, text: 'Test log message' }],
                 destinations: [],
                 destinationResults: {}
             });
@@ -138,7 +138,7 @@ describe('Test for cli()', () => {
         let checkWriteOtions;
         let checkContent;
         const result = {
-            messages: [{ severity: Severity.Log, text: 'DUMMY TEXT' }],
+            messages: [{ severity: Severity.Info, text: 'DUMMY TEXT' }],
             destinations: ['DUMMYS' as unknown as Destination] as unknown as Destination[],
             destinationResults: { DUMMY: { v2: 'V2DUMMY', v4: 'V4DUMMY' } }
         };
@@ -163,7 +163,7 @@ describe('Test for cli()', () => {
         let checkWriteOtions;
         let checkContent;
         const result = {
-            messages: [{ severity: Severity.Log, text: 'DUMMY TEXT' }],
+            messages: [{ severity: Severity.Info, text: 'DUMMY TEXT' }],
             destinations: ['DUMMYS' as unknown as Destination] as unknown as Destination[],
             destinationResults: { DUMMY: { v2: 'V2DUMMY', v4: 'V4DUMMY' } }
         };
@@ -187,7 +187,7 @@ describe('Test for cli()', () => {
         // Mock setup
         let checkContent;
         const result = {
-            messages: [{ severity: Severity.Log, text: 'DUMMY TEXT' }],
+            messages: [{ severity: Severity.Info, text: 'DUMMY TEXT' }],
             destinations: ['DUMMYS' as unknown as Destination] as unknown as Destination[],
             destinationResults: { DUMMY: { v2: 'V2DUMMY', v4: 'V4DUMMY' } }
         };

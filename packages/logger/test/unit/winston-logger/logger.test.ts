@@ -1,6 +1,12 @@
 import 'jest-extended';
 import { LogLevel, ToolsLogger, Transport } from '../../../src';
-import { ConsoleTransport, NullTransport, UI5ToolingTransport, VSCodeTransport } from '../../../src/transports';
+import {
+    ConsoleTransport,
+    EnvcheckTransport,
+    NullTransport,
+    UI5ToolingTransport,
+    VSCodeTransport
+} from '../../../src/transports';
 import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport';
 import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport';
 import winston from 'winston';
@@ -59,6 +65,13 @@ describe('Default (Winston) logger', () => {
         expect(logger.transports()).toIncludeSameMembers([new VSCodeTransport({ channelName: 'sampleChannel' })]);
     });
 
+    it('Envcheck transport', () => {
+        const logger = new ToolsLogger({
+            transports: [new EnvcheckTransport()]
+        });
+        expect(logger.transports()[0] instanceof EnvcheckTransport).toBeTrue();
+    });
+
     it('UI5 Tooling transport is only added once per channel', () => {
         const logger = new ToolsLogger({
             transports: Array.from({ length: 500 }, () => new UI5ToolingTransport({ moduleName: 'test:module' })),
@@ -104,8 +117,14 @@ describe('Default (Winston) logger', () => {
         const consoleLog = jest.spyOn(winston.transports.Console.prototype, 'log').mockImplementation(() => 0);
         const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log').mockClear();
         const vscodeLog = jest.spyOn(WinstonVSCodeTransport.prototype, 'log').mockClear();
+        const envcheckLog = jest.spyOn(EnvcheckTransport.prototype, 'log').mockClear();
         const logger = new ToolsLogger({
-            transports: [new ConsoleTransport(), new NullTransport(), new VSCodeTransport({ channelName: 'random' })]
+            transports: [
+                new ConsoleTransport(),
+                new NullTransport(),
+                new VSCodeTransport({ channelName: 'random' }),
+                new EnvcheckTransport()
+            ]
         });
         logger.info('info message');
         expect(consoleLog).toBeCalledWith(
@@ -117,6 +136,10 @@ describe('Default (Winston) logger', () => {
             expect.any(Function)
         );
         expect(vscodeLog).toBeCalledWith(
+            expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
+            expect.any(Function)
+        );
+        expect(envcheckLog).toBeCalledWith(
             expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
