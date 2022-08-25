@@ -2,6 +2,50 @@
 
 exports[`use FPM with existing apps extend UI5 application with FPM generateCustomSection in ObjectPage 1`] = `
 Object {
+  "../ts/webapp/ext/anotherCustomAction/AnotherCustomAction.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/ext/myCustomAction/MyCustomAction.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/ext/myCustomPage/MyCustomPage.controller.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/ext/myCustomSection/MyCustomSection.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/ext/newCustomColumn/NewCustomColumn.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/ext/newCustomView/NewCustomView.controller.ts": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/ext/newCustomView/NewCustomView.fragment.xml": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "../ts/webapp/manifest.json": Object {
+    "contents": null,
+    "state": "deleted",
+  },
   "webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
@@ -87,7 +131,7 @@ Object {
   "webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
-    <Page title=\\"MyCustomPage\\">
+    <Page id=\\"MyCustomPage\\" title=\\"MyCustomPage\\">
         <content></content>
     </Page>
 </mvc:View>",
