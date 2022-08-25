@@ -1,6 +1,6 @@
 # Example: CLI using Axios OData
 
-This project contains scripts to fetch OData metadata and annotations from using the `@sap-ux/axios-extension` and `@sap-ux/btp-utils` modules with real environments. It also contains scripts showing how to work with the layer repository service and the ADT services.
+This project contains scripts to fetch OData metadata and annotations by using the `@sap-ux/axios-extension` and `@sap-ux/btp-utils` modules with real environments. It also contains scripts showing how to work with the layered repository service and the ADT services.
 
 ## Usage
 Create a `.env` folder in this project (all its content is ignored by git) and in there create the `.env/env.properties` file that is used for credentials and other configurions for running the manual tests.
