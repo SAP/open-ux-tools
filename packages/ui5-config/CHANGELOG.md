@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.14.5
+
+### Patch Changes
+
+-   b6d0c67: Replaced used mockserver middleware
+
 ## 0.14.4
 
 ### Patch Changes

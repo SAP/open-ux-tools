@@ -80,6 +80,7 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
     const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
     if (!macrosNamespaceEntry) {
         (ui5XmlDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
+        ui5XmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
     }
     return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macros';
 }

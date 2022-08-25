@@ -168,6 +168,60 @@ describe('Building Blocks', () => {
         ).toThrowError(/Unable to parse xml view file/);
     });
 
+    describe('Generate with just ID and xml view without macros namespace', () => {
+        const testInput = [
+            {
+                buildingBlockData: {
+                    id: 'testFilterBar',
+                    buildingBlockType: BuildingBlockType.FilterBar
+                } as FilterBar
+            },
+            {
+                buildingBlockData: {
+                    id: 'testChart',
+                    buildingBlockType: BuildingBlockType.Chart
+                } as Chart
+            },
+            {
+                buildingBlockData: {
+                    id: 'testField',
+                    buildingBlockType: BuildingBlockType.Field
+                } as Field
+            }
+        ];
+
+        test.each(testInput)('generate $buildingBlockData.buildingBlockType building block', async (testData) => {
+            const basePath = join(
+                testAppPath,
+                `generate-${testData.buildingBlockData.buildingBlockType}-with-id-no-macros-ns`
+            );
+            const xmlViewContentWithoutMacrosNs = (
+                await fsPromises.readFile(
+                    join('test/unit/sample/building-block/webapp-without-macros-ns-xml-view/ext/main/Main.view.xml'),
+                    'utf-8'
+                )
+            ).toLocaleString();
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlViewContentWithoutMacrosNs);
+
+            // Test generator with valid manifest.json, view.xml files and build block data with just id
+            generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: testData.buildingBlockData
+                },
+                fs
+            );
+            expect((fs as any).dump(testAppPath)).toMatchSnapshot(
+                `generate-${testData.buildingBlockData.buildingBlockType}-with-id-no-macros-ns`
+            );
+            await writeFilesForDebugging(fs);
+        });
+    });
+
     describe('Generate with just ID', () => {
         const testInput = [
             {
