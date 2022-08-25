@@ -58,8 +58,8 @@ export const enum UrlServiceType {
 }
 
 interface CatalogResult {
-    results: ODataServiceInfo[];
-    status: number;
+    results?: ODataServiceInfo[];
+    status?: number;
 }
 
 export interface DestinationResults {

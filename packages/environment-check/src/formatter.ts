@@ -1,4 +1,4 @@
-import type { CatalogResultV2, CatalogResultV4 } from './types';
+import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 
 /**
  * Count the number of services from the result of a catalog call.
@@ -6,10 +6,10 @@ import type { CatalogResultV2, CatalogResultV4 } from './types';
  * @param catalogResult - V2 or V4 result of catalog call
  * @returns - number of services
  */
-export function countNumberOfServices(catalogResult: CatalogResultV2 | CatalogResultV4): number {
+export function countNumberOfServices(catalogResult?: ODataServiceInfo[]): number {
     let numberServices = 0;
-    if (Array.isArray(catalogResult?.results)) {
-        numberServices = catalogResult.results.length;
+    if (Array.isArray(catalogResult)) {
+        numberServices = catalogResult.length;
     }
     return numberServices;
 }

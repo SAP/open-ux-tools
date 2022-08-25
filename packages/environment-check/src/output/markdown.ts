@@ -140,7 +140,7 @@ function writeDestinationDetails(
     if (destDetails.v2 && Array.isArray(destDetails.v2.results)) {
         writer.addLine(
             `✅ &nbsp; ${t('markdownText.v2CatalogReturned')} ${getServiceCountText(
-                countNumberOfServices(destDetails.v2)
+                countNumberOfServices(destDetails.v2.results)
             )}`
         );
     } else {
@@ -149,7 +149,7 @@ function writeDestinationDetails(
     if (destDetails.v4 && Array.isArray(destDetails.v4.results)) {
         writer.addLine(
             `✅ &nbsp; ${t('markdownText.v4CatalogReturned')} ${getServiceCountText(
-                countNumberOfServices(destDetails.v4)
+                countNumberOfServices(destDetails.v4.results)
             )}`
         );
     } else {

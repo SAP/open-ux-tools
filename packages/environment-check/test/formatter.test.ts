@@ -1,3 +1,4 @@
+import { ODataServiceInfo } from '@sap-ux/axios-extension';
 import { countNumberOfServices, getServiceCountText } from '../src/formatter';
 
 /**
@@ -6,13 +7,13 @@ import { countNumberOfServices, getServiceCountText } from '../src/formatter';
 describe('Tests for formatter function countNumberOfServices', () => {
     test('Count number of services', () => {
         const catalogResult = {
-            results: [{}, {}, {}]
+            results: [{}, {}, {}] as ODataServiceInfo[]
         };
-        expect(countNumberOfServices(catalogResult)).toBe(3);
+        expect(countNumberOfServices(catalogResult.results)).toBe(3);
     });
 
     test('Count number of services on empty result', () => {
-        expect(countNumberOfServices({})).toBe(0);
+        expect(countNumberOfServices([])).toBe(0);
     });
 
     test('Count number of services on undefined result', () => {
