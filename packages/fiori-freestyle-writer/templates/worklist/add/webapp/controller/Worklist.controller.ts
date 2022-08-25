@@ -5,14 +5,16 @@ import FilterOperator from "sap/ui/model/FilterOperator";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import ObjectListItem from "sap/m/ObjectListItem";
 import BaseController from "./BaseController";
-import formatter from "../model/formatter";
+import { currencyValue } from "../model/formatter";
 
 /**
  * @namespace <%- app.id %>
  */
 export default class Worklist extends BaseController {
 
-    public readonly formatter = formatter;
+    public readonly formatter = {
+        currencyValue
+    };
 
     /**
      * Called when the worklist controller is instantiated.

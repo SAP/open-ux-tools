@@ -2,14 +2,16 @@ import Event from "sap/ui/base/Event";
 import History from "sap/ui/core/routing/History";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import BaseController from "./BaseController";
-import formatter from "../model/formatter";
+import { currencyValue } from "../model/formatter";
 
 /**
  * @namespace <%- app.id %>
  */
 export default class Object extends BaseController {
 
-    public readonly formatter = formatter;
+    public readonly formatter = {
+        currencyValue
+    };
 
     /**
      * Called when the object controller is instantiated.

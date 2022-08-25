@@ -55,7 +55,7 @@ export default class BaseController extends Controller {
     public onShareEmailPress() {
         const viewModel = (this.getModel("objectView") || this.getModel("worklistView"));
         URLHelper.triggerEmail(
-            null,
+            undefined,
             viewModel.getProperty("/shareSendEmailSubject"),
             viewModel.getProperty("/shareSendEmailMessage")
         );
