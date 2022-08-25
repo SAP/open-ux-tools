@@ -15,17 +15,11 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-        backend:
-          - path: /restaurant
-            url: http://localhost:4004
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
       configuration:
-        port: 35729
-        path: webapp
-        delay: 300
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-appreload
-      configuration:
-        component: restaurantapp
-        ui5Theme: sap_horizon
+        service:
+          urlPath: /restaurant
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true

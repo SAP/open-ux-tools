@@ -2,40 +2,12 @@
 
 exports[`ui5-test-writer - Integration tests Generate initial OPA test files and add more pages 1`] = `
 Object {
-  "README.md": Object {
-    "contents": "### Starting the generated app
-
--   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  In order to launch the generated app, simply run the following from the generated app root folder:
-
-\`\`\`
-    npm start
-\`\`\`
-
-- It is also possible to run the application using mock data that reflects the OData Service URL supplied during application generation.  In order to run the application with Mock Data, run the following from the generated app root folder:
-
-\`\`\`
-    npm run start-mock
-\`\`\`
-
-#### Pre-requisites:
-
-1. Active NodeJS LTS (Long Term Support) version and associated supported NPM version.  (See https://nodejs.org)
-
-
-",
-    "state": "modified",
-  },
   "package.json": Object {
     "contents": "{
   \\"name\\": \\"restaurant-app\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
   \\"description\\": \\"Restaurant List\\",
-  \\"keywords\\": [
-    \\"ui5\\",
-    \\"openui5\\",
-    \\"sapui5\\"
-  ],
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
@@ -45,111 +17,17 @@ Object {
     \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantapp-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantapp-tile\\\\\\"\\",
-    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"deploy\\": \\"fiori verify\\",
-    \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#restaurantapp-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
-    \\"int-tests\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'\\",
-    \\"tests\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/testsuite.qunit.html'\\"
+    \\"start\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"build\\": \\"ui5 build --clean-dest --dest dist\\",
+    \\"test\\": \\"fiori run --open 'test/testsuite.qunit.html'\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
       \\"@sap/ux-ui5-fe-mockserver-middleware\\"
     ]
-  },
-  \\"sapux\\": true,
-  \\"sapuxLayer\\": \\"CUSTOMER_BASE\\"
+  }
 }
-",
-    "state": "modified",
-  },
-  "ui5-local.yaml": Object {
-    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: \\"2.5\\"
-metadata:
-  name: restaurantapp
-type: application
-framework:
-  name: SAPUI5
-  version: 1.105.0
-  libraries:
-    - name: sap.m
-    - name: sap.ui.core
-    - name: sap.ushell
-    - name: sap.fe.templates
-    - name: themelib_sap_horizon
-server:
-  customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        backend:
-          - path: /restaurant
-            url: http://localhost:4004
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        service:
-          urlPath: /restaurant
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-appreload
-      configuration:
-        component: restaurantapp
-        ui5Theme: sap_horizon
-",
-    "state": "modified",
-  },
-  "ui5-mock.yaml": Object {
-    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: \\"2.5\\"
-metadata:
-  name: restaurantapp
-type: application
-server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-        backend:
-          - path: /restaurant
-            url: http://localhost:4004
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        service:
-          urlPath: /restaurant
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
 ",
     "state": "modified",
   },
@@ -171,20 +49,14 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-        backend:
-          - path: /restaurant
-            url: http://localhost:4004
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
       configuration:
-        port: 35729
-        path: webapp
-        delay: 300
-    - name: fiori-tools-preview
-      afterMiddleware: fiori-tools-appreload
-      configuration:
-        component: restaurantapp
-        ui5Theme: sap_horizon
+        service:
+          urlPath: /restaurant
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
 ",
     "state": "modified",
   },
@@ -346,14 +218,11 @@ appDescription=Restaurant List",
         data-sap-ui-resourceroots='{
             \\"restaurantapp\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"restaurantapp\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -608,89 +477,6 @@ appDescription=Restaurant List",
 ",
     "state": "modified",
   },
-  "webapp/test/flpSandbox.html": Object {
-    "contents": "<!DOCTYPE HTML>
-<html>
-<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
-<head>
-    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <meta charset=\\"UTF-8\\">
-    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <title>{{appTitle}}</title>
-
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            bootstrapPlugins: {
-                \\"RuntimeAuthoringPlugin\\": {
-                    component: \\"sap.ushell.plugins.rta\\",
-                    config: {
-                        validateAppVersion: false
-                    }
-                }
-            },
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\"
-                        }
-                    }
-                }
-            },
-            applications: {
-                \\"restaurantapp-tile\\": {
-                    title: \\"Restaurant List\\",
-                    description: \\"Restaurant List\\",
-                    additionalInformation: \\"SAPUI5.Component=restaurantapp\\",
-                    applicationType: \\"URL\\",
-                    url: \\"../\\"
-                }
-            }
-        };
-    </script>
-
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
-    <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.fe.templates\\"
-        data-sap-ui-async=\\"true\\"
-        data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_horizon\\"
-        data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"restaurantapp\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\">
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
-</head>
-
-<!-- UI Content -->
-
-<body class=\\"sapUiBody\\" id=\\"content\\">
-</body>
-
-</html>
-",
-    "state": "modified",
-  },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\"
@@ -890,183 +676,6 @@ appDescription=Restaurant List",
 
     return oSuite;
 };",
-    "state": "modified",
-  },
-  "webapp/utils/locate-reuse-libs.js": Object {
-    "contents": "/*eslint-disable semi, no-console*/
-(function (sap) {
-  var fioriToolsGetManifestLibs = function (manifestPath) {
-    var url = manifestPath;
-    var result = \\"\\";
-    // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
-    var ui5Libs = [
-      \\"sap.apf\\",
-      \\"sap.base\\",
-      \\"sap.chart\\",
-      \\"sap.collaboration\\",
-      \\"sap.f\\",
-      \\"sap.fe\\",
-      \\"sap.fileviewer\\",
-      \\"sap.gantt\\",
-      \\"sap.landvisz\\",
-      \\"sap.m\\",
-      \\"sap.ndc\\",
-      \\"sap.ovp\\",
-      \\"sap.rules\\",
-      \\"sap.suite\\",
-      \\"sap.tnt\\",
-      \\"sap.ui\\",
-      \\"sap.uiext\\",
-      \\"sap.ushell\\",
-      \\"sap.uxap\\",
-      \\"sap.viz\\",
-      \\"sap.webanalytics\\",
-      \\"sap.zen\\"
-    ];
-    function getKeys(libOrComp,libOrCompKeysString) {
-      Object.keys(libOrComp).forEach(function (libOrCompKey) {
-        // ignore libs or Components that start with SAPUI5 delivered namespaces
-        if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
-          if (libOrCompKeysString.length > 0) {
-            libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
-          } else {
-            libOrCompKeysString = libOrCompKey;
-          }
-        }
-      });
-      return libOrCompKeysString;
-    }
-    return new Promise(function (resolve, reject) {
-      $.ajax(url)
-        .done(function (manifest) {
-          if (manifest) {
-            if (
-              manifest[\\"sap.ui5\\"] &&
-              manifest[\\"sap.ui5\\"].dependencies
-            ) {
-              if (manifest[\\"sap.ui5\\"].dependencies.libs){
-                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result)
-              }
-              if (manifest[\\"sap.ui5\\"].dependencies.components){
-                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result)
-              }
-            }
-            if (
-              manifest[\\"sap.ui5\\"] &&
-              manifest[\\"sap.ui5\\"].componentUsages
-            ) {
-              result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result)
-            }
-          }
-          resolve(result);
-        })
-        .fail(function (error) {
-          reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
-        });
-    });
-  };
-  /**
-   * Registers the module paths for dependencies of the given component.
-   * @param {string} manifestPath The the path to the app manifest path
-   * for which the dependencies should be registered.
-   * @returns {Promise} A promise which is resolved when the ajax request for
-   * the app-index was successful and the module paths were registered.
-   */
-  sap.registerComponentDependencyPaths = function (manifestPath) {
-    /*eslint-disable semi, consistent-return*/
-    return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
-      if (libs && libs.length > 0) {
-        var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-        var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
-        if (sapClient && sapClient.length === 3) {
-          url = url + \\"&sap-client=\\" + sapClient;
-        }
-        return $.ajax(url).done(function (data) {
-          if (data) {
-            Object.keys(data).forEach(function (moduleDefinitionKey) {
-              var moduleDefinition = data[moduleDefinitionKey];
-              if (moduleDefinition && moduleDefinition.dependencies) {
-                moduleDefinition.dependencies.forEach(function (dependency) {
-                  if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
-                    jQuery.sap.log.info(
-                      \\"Registering Library \\" +
-                      dependency.componentId +
-                      \\" from server \\" +
-                      dependency.url
-                    );
-                    jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
-                  }
-                });
-              }
-            });
-          }
-        });
-      }
-    });
-  };
-})(sap);
-
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
-var currentScript = document.getElementById('locate-reuse-libs');
-if(!currentScript){
-    currentScript = document.currentScript;
-};
-var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
-var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
-var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-sap.registerComponentDependencyPaths(manifestUri)
-  .catch(function (error) {
-    jQuery.sap.log.error(error);
-  })
-  .finally(function () {
-
-    // setting the app title with internationalization
-    sap.ui.getCore().attachInit(function () {
-      jQuery.sap.require(\\"jquery.sap.resources\\");
-      var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-      var oBundle = jQuery.sap.resources({
-        url: \\"i18n/i18n.properties\\",
-        locale: sLocale
-      });
-      document.title = oBundle.getText(\\"appTitle\\");
-    });
-
-    if (componentName && componentName.length > 0) {
-      if (useMockserver && useMockserver === \\"true\\") {
-        sap.ui.getCore().attachInit(function () {
-          sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
-            // set up test service for local testing
-            server.init();
-            // initialize the ushell sandbox component
-            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
-          });
-        });
-      } else {
-        // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
-        sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
-
-        // setting the app title with the i18n text
-        sap.ui.getCore().attachInit(function () {
-          jQuery.sap.require(\\"jquery.sap.resources\\");
-          var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-          var oBundle = jQuery.sap.resources({
-            url: \\"i18n/i18n.properties\\",
-            locale: sLocale
-          });
-          document.title = oBundle.getText(\\"appTitle\\");
-        });
-      }
-    } else {
-      sap.ui.getCore().attachInit(function () {
-        // initialize the ushell sandbox component
-        sap.ushell.Container.createRenderer().placeAt(\\"content\\");
-      });
-    }
-  });
-
-sap.registerComponentDependencyPaths(manifestUri);
-",
     "state": "modified",
   },
 }
