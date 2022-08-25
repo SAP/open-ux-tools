@@ -13509,8 +13509,8 @@ export default class Object extends BaseController {
 
         var oResourceBundle = this.getResourceBundle(),
             oObject = oView.getBindingContext().getObject(),
-            sObjectId = oObject.,
-            sObjectName = oObject.;
+            sObjectId = oObject.Name,
+            sObjectName = oObject.SEPMRA_C_PD_Product;
 
         viewModel.setProperty(\\"/busy\\", false);
         viewModel.setProperty(\\"/shareSendEmailSubject\\",

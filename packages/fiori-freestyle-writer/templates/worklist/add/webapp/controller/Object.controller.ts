@@ -88,8 +88,8 @@ export default class Object extends BaseController {
 
         var oResourceBundle = this.getResourceBundle(),
             oObject = oView.getBindingContext().getObject(),
-            sObjectId = oObject.<% - template.settings.entity.idProperty %>,
-            sObjectName = oObject.<% - template.settings.entity.name %>;
+            sObjectId = oObject.<%- template.settings.entity.idProperty %>,
+            sObjectName = oObject.<%- template.settings.entity.name %>;
 
         viewModel.setProperty("/busy", false);
         viewModel.setProperty("/shareSendEmailSubject",
