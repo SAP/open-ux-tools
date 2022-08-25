@@ -78,11 +78,6 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
 
     // Special handling for FPM because it is not based on template files but used the fpm writer
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
-        if (feApp.service?.version === OdataVersion.v2) {
-            throw new Error(
-                'The Flexible Programming model template is only supported for SAP Fiori elements for OData v4'
-            );
-        }
         const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
         generateCustomPage(
             basePath,

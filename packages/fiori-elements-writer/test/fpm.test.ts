@@ -1,7 +1,7 @@
-import { FioriElementsApp, generate, TemplateType, FPMSettings } from '../src';
+import { FioriElementsApp, generate, TemplateType, FPMSettings, ValidationError } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, feBaseConfig, v4Service } from './common';
+import { testOutputDir, debug, feBaseConfig, v4Service, v2Service } from './common';
 
 const TEST_NAME = 'fpmTemplates';
 
@@ -64,5 +64,18 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
                 resolve(true);
             }
         });
+    });
+
+    test('Try generating with invalid service', async () => {
+        const config = {
+            ...fpmConfigs[0].config,
+            service: v2Service
+        };
+        try {
+            await generate(curTestOutPath, config);
+            fail('generation should have raised a ValidationError');
+        } catch (error) {
+            expect(error instanceof ValidationError).toBe(true);
+        }
     });
 });
