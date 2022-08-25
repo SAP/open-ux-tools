@@ -2538,7 +2538,7 @@ archive.zip
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
@@ -2555,7 +2555,7 @@ archive.zip
       \\"@sap/ux-ui5-tooling\\",
       \\"ui5-tooling-modules\\",
       \\"ui5-tooling-transpile\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
   }
 }
@@ -2628,11 +2628,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /V2/Northwind/Northwind.svc
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 builder:
   customTasks:
     - name: ui5-tooling-modules-task
@@ -2687,11 +2689,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /V2/Northwind/Northwind.svc
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 builder:
   customTasks:
     - name: ui5-tooling-modules-task
