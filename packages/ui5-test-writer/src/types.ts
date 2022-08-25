@@ -4,11 +4,6 @@ export const SupportedPageTypes: { [id: string]: string } = {
     'sap.fe.core.fpm': 'FPM'
 };
 
-// For the time being, we only support OData V4
-export const SupportedODataVersions: { [id: string]: string } = {
-    '4.0': 'v4'
-};
-
 export type FEV4OPAPageConfig = {
     appID: string;
     appPath: string;

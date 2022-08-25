@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/ui5-config';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
-import { SupportedPageTypes, SupportedODataVersions, ValidationError } from './types';
+import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
 
 /**
@@ -28,27 +28,26 @@ function readManifest(fs: Editor, basePath: string): Manifest {
 }
 
 /**
- * Retrieves the OData version of the main datasource.
+ * Retrieves the application type of the main datasource (FreeStyle, FE V2 or FE V4).
  *
  * @param manifest - the app descriptor of the app
- * @returns the OData version. An exception is thrown if it can't be found or if it's not supported
+ * @returns the application type. An exception is thrown if it can't be found or if it's not supported
  */
-function getODataVersionFromManifest(manifest: Manifest): string {
-    // Get the datasource from the main model
-    const models = manifest['sap.ui5']?.models;
-    const mainModelDatasource = models && models['']?.dataSource;
-    const dataSource =
-        mainModelDatasource &&
-        manifest['sap.app']?.dataSources &&
-        manifest['sap.app']?.dataSources[mainModelDatasource];
-
-    const version =
-        dataSource && dataSource.settings?.odataVersion && SupportedODataVersions[dataSource.settings?.odataVersion];
-    if (!version) {
-        throw new ValidationError(t('error.badODataVersion'));
+function getAppTypeFromManifest(manifest: Manifest): string {
+    const appTargets = manifest['sap.ui5']?.routing?.targets;
+    let isFEV4 = false;
+    for (const targetKey in appTargets) {
+        const target = appTargets[targetKey] as FEV4ManifestTarget;
+        if (target.type === 'Component' && target.name && target.name in SupportedPageTypes) {
+            isFEV4 = true;
+        }
     }
 
-    return version;
+    if (!isFEV4) {
+        throw new ValidationError(t('error.badApplicationType'));
+    }
+
+    return 'v4'; // For the time being, only FE V4 is supported
 }
 
 /**
@@ -190,12 +189,12 @@ export function generateOPAFiles(
     const editor = fs || create(createStorage());
 
     const manifest = readManifest(editor, basePath);
-    const version = getODataVersionFromManifest(manifest);
+    const applicationType = getAppTypeFromManifest(manifest);
 
     const config = createConfig(manifest, opaConfig);
 
     const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
-    const rootV4TemplateDirPath = join(__dirname, `../templates/${version}`); // Only v4 is supported for the time being
+    const rootV4TemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
     const testOutDirPath = join(basePath, 'webapp/test');
 
     // Common test files
@@ -258,11 +257,11 @@ export function generatePageObjectFile(
     const editor = fs || create(createStorage());
 
     const manifest = readManifest(editor, basePath);
-    const version = getODataVersionFromManifest(manifest);
+    const applicationType = getAppTypeFromManifest(manifest);
 
     const pageConfig = createPageConfig(manifest, pageObjectParameters.targetKey, pageObjectParameters.appID);
     if (pageConfig) {
-        const rootTemplateDirPath = join(__dirname, `../templates/${version}`); // Only v4 is supported for the time being
+        const rootTemplateDirPath = join(__dirname, `../templates/${applicationType}`); // Only v4 is supported for the time being
         const testOutDirPath = join(basePath, 'webapp/test');
         writePageObject(pageConfig, rootTemplateDirPath, testOutDirPath, editor);
     } else {

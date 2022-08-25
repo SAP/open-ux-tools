@@ -193,8 +193,8 @@ describe('ui5-test-writer', () => {
             expect((fs as any).dump(projectDir)).toMatchSnapshot();
         });
 
-        it('Cannot find main datasource version', async () => {
-            const projectDir = prepareTestFiles('NoDatasource');
+        it('Freestyle app not supported', async () => {
+            const projectDir = prepareTestFiles('FreeStyle');
             let error: string | undefined;
             try {
                 fs = await generateOPAFiles(projectDir, {}, fs);
@@ -203,11 +203,11 @@ describe('ui5-test-writer', () => {
             }
 
             expect(error).toEqual(
-                'Validation error: Cannot find OData version in the manifest, or unsupported version'
+                'Validation error: Cannot determine application type from the manifest, or unsupported type'
             );
         });
 
-        it('OData V2 not supported', async () => {
+        it('FE V2 not supported', async () => {
             const projectDir = prepareTestFiles('ODataV2');
             let error: string | undefined;
             try {
@@ -217,7 +217,7 @@ describe('ui5-test-writer', () => {
             }
 
             expect(error).toEqual(
-                'Validation error: Cannot find OData version in the manifest, or unsupported version'
+                'Validation error: Cannot determine application type from the manifest, or unsupported type'
             );
         });
     });

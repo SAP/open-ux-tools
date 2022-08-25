@@ -2,7 +2,7 @@
     "error": {
         "cannotReadManifest": "Cannot read manifest file {{ filePath }}",
         "cannotReadAppID": "Cannot read appID in the manifest file",
-        "badODataVersion": "Cannot find OData version in the manifest, or unsupported version",
+        "badApplicationType": "Cannot determine application type from the manifest, or unsupported type",
         "cannotGeneratePageFile": "Cannot generate page file for target {{ targetKey }}"
     }
 }
