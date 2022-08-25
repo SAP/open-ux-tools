@@ -1,5 +1,30 @@
 # @sap-ux/axios-extension
 
+## 0.9.4
+
+### Patch Changes
+
+-   2896b77: Fixed incorrect url parameter
+
+## 0.9.3
+
+### Patch Changes
+
+-   4342e1a: Fix: incorrect error thrown catalog service
+
+## 0.9.2
+
+### Patch Changes
+
+-   d7b3e4f: Fixed issues with fetching annotations based on a service path
+
+## 0.9.1
+
+### Patch Changes
+
+-   Updated dependencies [5710cfa]
+    -   @sap-ux/btp-utils@0.10.4
+
 ## 0.9.0
 
 ### Minor Changes

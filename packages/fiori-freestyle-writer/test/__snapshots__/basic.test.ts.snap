@@ -159,7 +159,7 @@ server:
     function(BaseController) {
       \\"use strict\\";
   
-      return BaseController.extend(\\"nods1.controller.controller.App\\", {
+      return BaseController.extend(\\"nods1.controller.App\\", {
         onInit() {
         }
       });
@@ -840,7 +840,7 @@ server:
     function(BaseController) {
       \\"use strict\\";
   
-      return BaseController.extend(\\"nods1.controller.controller.App\\", {
+      return BaseController.extend(\\"nods1.controller.App\\", {
         onInit() {
         }
       });
@@ -1521,7 +1521,7 @@ server:
     function(BaseController) {
       \\"use strict\\";
   
-      return BaseController.extend(\\"nods1.controller.controller.App\\", {
+      return BaseController.extend(\\"nods1.controller.App\\", {
         onInit() {
         }
       });
@@ -2203,7 +2203,7 @@ server:
     function(BaseController) {
       \\"use strict\\";
   
-      return BaseController.extend(\\"nods1.controller.controller.App\\", {
+      return BaseController.extend(\\"nods1.controller.App\\", {
         onInit() {
         }
       });

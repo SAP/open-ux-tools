@@ -10,7 +10,7 @@
         "@types/node": "12.12.6",
         "@typescript-eslint/eslint-plugin": "5.30.7",
         "@typescript-eslint/parser": "5.30.7",
-        "eslint": "8.20.0",
+        "eslint": "8.21.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-import-resolver-typescript": "3.3.0",
         "eslint-plugin-import": "2.26.0",
@@ -52,8 +52,7 @@
             "follow-redirects": ">=1.14.8",
             "tmpl": "^1.0.5",
             "vm2@<3.9.6": "^3.9.6",
-            "minimist": "^1.2.6",
-            "glob-parent": "^6.0.1"
+            "minimist": "^1.2.6"
         }
     }
 }

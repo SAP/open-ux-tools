@@ -26,6 +26,7 @@ import {
     listDestinations,
     getDestinationUrlForAppStudio,
     WebIDEUsage,
+    WebIDEAdditionalData,
     getCredentialsForDestinationService,
     isAppStudio
 } from '@sap-ux/btp-utils';
@@ -219,7 +220,8 @@ describe('proxy', () => {
             mockListDestinations.mockResolvedValueOnce({
                 [backend.destination]: {
                     Host: 'http://backend.example/sap',
-                    WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC},${WebIDEUsage.FULL_URL}`
+                    WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC}`,
+                    WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
                 }
             });
             const proxyOptions: OptionsWithHeaders = { headers: {} };
@@ -227,6 +229,24 @@ describe('proxy', () => {
 
             await enhanceConfigsForDestination(proxyOptions, modifiedBackend);
             expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
+            expect(modifiedBackend.path).toBe('/sap');
+            expect(modifiedBackend.pathReplace).toBe('/');
+        });
+
+        test('destination with full url: do not override pathReplace, if set', async () => {
+            mockListDestinations.mockResolvedValueOnce({
+                [backend.destination]: {
+                    Host: 'http://backend.example/sap',
+                    WebIDEUsage: `${WebIDEUsage.ODATA_GENERIC}`,
+                    WebIDEAdditionalData: `${WebIDEAdditionalData.FULL_URL}`
+                }
+            });
+            const proxyOptions: OptionsWithHeaders = { headers: {} };
+            const modifiedBackend: DestinationBackendConfig = { ...backend, pathReplace: '/xyz' };
+
+            await enhanceConfigsForDestination(proxyOptions, modifiedBackend);
+            expect(proxyOptions.target).toBe(getDestinationUrlForAppStudio(backend.destination));
+            expect(modifiedBackend.path).toBe('/sap');
             expect(modifiedBackend.pathReplace).toBe('/xyz');
         });
 
