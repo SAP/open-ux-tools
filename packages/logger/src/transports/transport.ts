@@ -1,3 +1,4 @@
+import WinstonTransport from 'winston-transport';
 import type { TransportOptions } from '../types';
 import { Transport } from '../types';
 
@@ -108,4 +109,21 @@ export class VSCodeTransport extends Transport {
             return instance;
         }
     }
+}
+
+/**
+ * Transport for environment check
+ */
+export class EnvcheckTransport extends WinstonTransport {
+    public readonly messageCollector: { level: string; message: string }[];
+    constructor() {
+        super({ level: 'debug' });
+        this.messageCollector = [];
+    }
+    log(info: { level: string; message: string }, next: () => void) {
+        this.messageCollector.push(info);
+        next();
+    }
+    // Mixin from Transport
+    copy = Transport.prototype.copy;
 }
