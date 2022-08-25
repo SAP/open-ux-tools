@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.9.3
+
+### Patch Changes
+
+-   4342e1a: Fix: incorrect error thrown catalog service
+
 ## 0.9.2
 
 ### Patch Changes
