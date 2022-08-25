@@ -180,7 +180,7 @@ importers:
             '@sap-ux/btp-utils': workspace:*
             '@sap-ux/logger': workspace:*
             '@sap-ux/ui5-config': workspace:*
-            '@sap/bas-sdk': ^2.1.0
+            '@sap/bas-sdk': 2.1.0
             '@types/archiver': 5.1.1
             '@types/vscode': 1.39.0
             archiver: 5.3.0
@@ -3682,7 +3682,10 @@ packages:
         dev: false
 
     /concat-map/0.0.1:
-        resolution: { integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s= }
+        resolution:
+            {
+                integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
+            }
 
     /console-control-strings/1.1.0:
         resolution: { integrity: sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4= }
