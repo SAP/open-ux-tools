@@ -1057,26 +1057,30 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-    \\"compilerOptions\\": {
-      \\"target\\": \\"es2015\\",
-      \\"module\\": \\"es2015\\",
-      \\"skipLibCheck\\": true,
-      \\"preserveConstEnums\\": true,
-      \\"inlineSourceMap\\": true,
-      \\"allowJs\\": true,
-      \\"strict\\": true,
-      \\"strictNullChecks\\": true,
-      \\"strictPropertyInitialization\\": false,
-      \\"moduleResolution\\": \\"node\\",
-      \\"rootDir\\": \\"webapp\\",
-      \\"outDir\\": \\"./dist\\",
-      \\"baseUrl\\": \\"./\\",
-      \\"paths\\": {
-        \\"testAppId/*\\": [\\"webapp/*\\"]
-      }
-    },
-    \\"include\\": [\\"webapp/**/*\\"]
-  }",
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2015\\",
+    \\"module\\": \\"es2015\\",
+    \\"skipLibCheck\\": true,
+    \\"preserveConstEnums\\": true,
+    \\"inlineSourceMap\\": true,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictNullChecks\\": true,
+    \\"strictPropertyInitialization\\": false,
+    \\"moduleResolution\\": \\"node\\",
+    \\"rootDir\\": \\"webapp\\",
+    \\"outDir\\": \\"./dist\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"paths\\": {
+      \\"testAppId/*\\": [
+        \\"webapp/*\\"
+      ]
+    }
+  },
+  \\"include\\": [
+    \\"webapp/**/*\\"
+  ]
+}",
     "state": "modified",
   },
   "ui5-local.yaml": Object {

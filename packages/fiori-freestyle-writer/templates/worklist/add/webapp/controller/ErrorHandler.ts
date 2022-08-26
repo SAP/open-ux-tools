@@ -1,56 +1,51 @@
 import UI5Object from "sap/ui/base/Object";
-import UIComponent from "sap/ui/core/UIComponent";
-import MessageBox from "sap/m/MessageBox";
+import MessageBox, { Action } from "sap/m/MessageBox";
 import Event from "sap/ui/base/Event";
 import Filter from "sap/ui/model/Filter";
 import FilterOperator from "sap/ui/model/FilterOperator";
-//import { getCore } from "sap/ui";
+import ResourceModel from "sap/ui/model/resource/ResourceModel";
+import AppComponent from "../Component";
+import ResourceBundle from "sap/base/i18n/ResourceBundle";
+import Message from "sap/ui/core/message/Message";
+import ListBinding from "sap/ui/model/ListBinding";
 
 /**
  * @namespace <%- app.id %>
  */
 export default class ErrorHandler extends UI5Object {
 
-    protected readonly component: UIComponent;
+    protected readonly component: AppComponent;
     protected messageOpen = false;
 
     /**
      * Handles application errors by automatically attaching to the model events and displaying errors when needed.
      * @param component reference to the app's component
      */
-    public constructor(component: UIComponent) {
+    public constructor(component: AppComponent) {
         super();
-        var oMessageManager = sap.ui.getCore().getMessageManager(),
-        oMessageModel = oMessageManager.getMessageModel(),
-        oResourceBundle = component.getModel("i18n").getResourceBundle(),
-        sErrorText = oResourceBundle.getText("errorText"),
-        sMultipleErrors = oResourceBundle.getText("multipleErrorsText");
+        const messageManager = sap.ui.getCore().getMessageManager();
+        const resourceBundle = (component.getModel("i18n") as ResourceModel).getResourceBundle() as ResourceBundle;
 
-        this.messageOpen = false;
-
-        const messageModelBinding = oMessageModel.bindList("/", undefined,
+        const messageModelBinding = messageManager.getMessageModel().bindList("/", undefined,
             [], new Filter("technical", FilterOperator.EQ, true));
-
         messageModelBinding.attachChange(function (this: ErrorHandler, event: Event) {
-            var aContexts = event.getSource().getContexts(),
-                aMessages = [],
-                sErrorTitle;
-
-            if (this.messageOpen || !aContexts.length) {
+            const contexts = (event.getSource() as ListBinding).getContexts();
+            if (this.messageOpen || !contexts.length) {
                 return;
             }
 
             // Extract and remove the technical messages
-            aContexts.forEach(function (oContext) {
-                aMessages.push(oContext.getObject());
+            const messages: Message[] = [];
+            contexts.forEach(function (context) {
+                messages.push(context.getObject() as Message);
             });
-            oMessageManager.removeMessages(aMessages);
+            messageManager.removeMessages(messages);
 
             // Due to batching there can be more than one technical message. However the UX
             // guidelines say "display a single message in a message box" assuming that there
             // will be only one at a time.
-            sErrorTitle = aMessages.length === 1 ? sErrorText : sMultipleErrors;
-            this.showServiceError(sErrorTitle, aMessages[0].message);
+            const errorTitle = resourceBundle.getText(messages.length === 1 ? "errorText" : "multipleErrorsText");
+            this.showServiceError(errorTitle, messages[0].getMessage());
         }, this);
     }
 
@@ -69,12 +64,11 @@ export default class ErrorHandler extends UI5Object {
                 id : "serviceErrorMessageBox",
                 details,
                 styleClass: this.component.getContentDensityClass(),
-                actions: [MessageBox.Action.CLOSE],
-                onClose: function () {
-                    this._bMessageOpen = false;
+                actions: [Action.CLOSE],
+                onClose: function (this: ErrorHandler) {
+                    this.messageOpen = false;
                 }.bind(this)
             }
         );
     }
-
 }

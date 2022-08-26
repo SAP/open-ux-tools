@@ -1,5 +1,5 @@
 import UIComponent from "sap/ui/core/UIComponent";
-import Device from "sap/ui/Device";
+import Device, { support } from "sap/ui/Device";
 import ErrorHandler from "./controller/ErrorHandler";
 import { createDeviceModel } from "./model/models";
 
@@ -38,7 +38,7 @@ export default class Component extends UIComponent {
     public destroy() {
         this.errorHandler.destroy();
         // call the base component's destroy function
-        super.destory();
+        super.destroy();
     }
 
     /**
@@ -52,7 +52,7 @@ export default class Component extends UIComponent {
             // eslint-disable-next-line sap-no-proprietary-browser-api
             if (document.body.classList.contains("sapUiSizeCozy") || document.body.classList.contains("sapUiSizeCompact")) {
                 this.contentDensityClass = "";
-            } else if (!Device.support.touch) { // apply "compact" mode if touch is not supported
+            } else if (!support.touch) { // apply "compact" mode if touch is not supported
                 this.contentDensityClass = "sapUiSizeCompact";
             } else {
                 // "cozy" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table

@@ -2564,26 +2564,30 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-    \\"compilerOptions\\": {
-      \\"target\\": \\"es2015\\",
-      \\"module\\": \\"es2015\\",
-      \\"skipLibCheck\\": true,
-      \\"preserveConstEnums\\": true,
-      \\"inlineSourceMap\\": true,
-      \\"allowJs\\": true,
-      \\"strict\\": true,
-      \\"strictNullChecks\\": true,
-      \\"strictPropertyInitialization\\": false,
-      \\"moduleResolution\\": \\"node\\",
-      \\"rootDir\\": \\"webapp\\",
-      \\"outDir\\": \\"./dist\\",
-      \\"baseUrl\\": \\"./\\",
-      \\"paths\\": {
-        \\"test.me/*\\": [\\"webapp/*\\"]
-      }
-    },
-    \\"include\\": [\\"webapp/**/*\\"]
-  }",
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2015\\",
+    \\"module\\": \\"es2015\\",
+    \\"skipLibCheck\\": true,
+    \\"preserveConstEnums\\": true,
+    \\"inlineSourceMap\\": true,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictNullChecks\\": true,
+    \\"strictPropertyInitialization\\": false,
+    \\"moduleResolution\\": \\"node\\",
+    \\"rootDir\\": \\"webapp\\",
+    \\"outDir\\": \\"./dist\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"paths\\": {
+      \\"test.me/*\\": [
+        \\"webapp/*\\"
+      ]
+    }
+  },
+  \\"include\\": [
+    \\"webapp/**/*\\"
+  ]
+}",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -2811,7 +2815,7 @@ export default class Component extends UIComponent {
         this.listSelector.destroy();
         this.errorHandler.destroy();
         // call the base component's destroy function
-        super.destory();
+        super.destroy();
     }
 
     /**
@@ -2886,20 +2890,27 @@ import Model from \\"sap/ui/model/Model\\";
 import ResourceModel from \\"sap/ui/model/resource/ResourceModel\\";
 import Controller from \\"sap/ui/core/mvc/Controller\\";
 import View from \\"sap/ui/core/mvc/View\\";
-import UIComponent from \\"sap/ui/core/UIComponent\\";
+import History from \\"sap/ui/core/routing/History\\";
 import Router from \\"sap/ui/core/routing/Router\\";
+import AppComponent from \\"../Component\\";
+import { currencyValue } from \\"../model/formatter\\";
 
 /**
  * @namespace test.me
  */
 export default class BaseController extends Controller {
+
+    public readonly formatter = {
+        currencyValue
+    };
+
     /**
-     * Convenience method for accessing the owner component as UIComponent.
+     * Convenience method for accessing the owner component.
      *
      * @returns the owner component
      */
-     protected getUIComponent(): UIComponent {
-        return super.getOwnerComponent() as UIComponent;
+    protected getUIComponent(): AppComponent {
+        return super.getOwnerComponent() as AppComponent;
     }
 
     /**
@@ -2917,8 +2928,8 @@ export default class BaseController extends Controller {
      * @param name the model name
      * @returns the model instance
      */
-    protected getModel(name: string): Model {
-        return this.getView()!.getModel(name);
+    protected getModel<T extends Model>(name?: string): T {
+        return this.getView()!.getModel(name) as T;
     }
 
     /**
@@ -2937,8 +2948,8 @@ export default class BaseController extends Controller {
      *
      * @returns the resourceBundle of the component
      */
-     protected getResourceBundle(): ResourceBundle | Promise<ResourceBundle> {
-        return (this.getUIComponent().getModel(\\"i18n\\") as ResourceModel).getResourceBundle();
+     protected getResourceBundle(): ResourceBundle {
+        return (this.getUIComponent().getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle;
     }
 
     /**
@@ -2947,13 +2958,12 @@ export default class BaseController extends Controller {
      * If not, it will replace the current entry of the browser history with the list route.
      * 
      */
-    protected onNavBack() {
-        var previousHash = History.getInstance().getPreviousHash();
-        if (previousHash !== undefined) {
+     protected onNavBack() {
+        if (History.getInstance().getPreviousHash() !== undefined) {
             // eslint-disable-next-line sap-no-history-manipulation
             history.go(-1);
         } else {
-            this.getRouter().navTo(\\"list\\", {}, true);
+            this.getRouter().navTo(\\"list\\", {});
         }
     }
 }",
@@ -2961,21 +2971,17 @@ export default class BaseController extends Controller {
   },
   "webapp/controller/Detail.controller.ts": Object {
     "contents": "import { URLHelper } from \\"sap/m/library\\";
+import Table from \\"sap/m/Table\\";;
 import Event from \\"sap/ui/base/Event\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
-import formatter from \\"../model/formatter\\";
+import ListBinding from \\"sap/ui/model/ListBinding\\";
+import ODataModel from \\"sap/ui/model/odata/v2/ODataModel\\";
 import BaseController from \\"./BaseController\\";
 
 /**
  * @namespace test.me
  */
 export default class Detail extends BaseController {
-
-    public readonly formatter = formatter;
-
-    /* =========================================================== */
-    /* lifecycle methods                                           */
-    /* =========================================================== */
 
     public onInit(): void {
         // Model used to manipulate control states. The chosen values make sure,
@@ -2987,16 +2993,12 @@ export default class Detail extends BaseController {
             lineItemListTitle: this.getResourceBundle().getText(\\"detailLineItemTableHeading\\")
         });
 
-        this.getRouter().getRoute(\\"object\\").attachPatternMatched(this.onObjectMatched, this);
+        this.getRouter().getRoute(\\"object\\")!.attachPatternMatched(this.onObjectMatched, this);
 
         this.setModel(viewModel, \\"detailView\\");
 
-        this.getUIComponent().getModel().metadataLoaded().then(this.onMetadataLoaded.bind(this));
+        (this.getUIComponent().getModel() as ODataModel).metadataLoaded().then(this.onMetadataLoaded.bind(this));
     }
-
-    /* =========================================================== */
-    /* event handlers                                              */
-    /* =========================================================== */
 
     /**
      * Event handler when the share by E-Mail button has been clicked
@@ -3005,7 +3007,7 @@ export default class Detail extends BaseController {
         const viewModel = this.getModel(\\"detailView\\");
 
         URLHelper.triggerEmail(
-            null,
+            undefined,
             viewModel.getProperty(\\"/shareSendEmailSubject\\"),
             viewModel.getProperty(\\"/shareSendEmailMessage\\")
         );
@@ -3016,26 +3018,21 @@ export default class Detail extends BaseController {
      * Updates the item count within the line item table's header
      * @param event an event containing the total number of items in the list
      */
-    public onListUpdateFinished(event: Event) {
-        var sTitle,
-            iTotalItems = event.getParameter(\\"total\\"),
-            viewModel = this.getModel(\\"detailView\\");
-
+     public onListUpdateFinished(event: Event) {
+        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
+        const totalItems = event.getParameter(\\"total\\") as number;
+        let title: string;
         // only update the counter if the length is final
-        if (this.byId(\\"lineItemsList\\").getBinding(\\"items\\").isLengthFinal()) {
-            if (iTotalItems) {
-                sTitle = this.getResourceBundle().getText(\\"detailLineItemTableHeadingCount\\", [iTotalItems]);
+        if ((this.byId(\\"lineItemsList\\")!.getBinding(\\"items\\") as ListBinding).isLengthFinal()) {
+            if (totalItems) {
+                title = this.getResourceBundle().getText(\\"detailLineItemTableHeadingCount\\", [totalItems]);
             } else {
                 //Display 'Line Items' instead of 'Line items (0)'
-                sTitle = this.getResourceBundle().getText(\\"detailLineItemTableHeading\\");
+                title = this.getResourceBundle().getText(\\"detailLineItemTableHeading\\");
             }
-            viewModel.setProperty(\\"/lineItemListTitle\\", sTitle);
+            viewModel.setProperty(\\"/lineItemListTitle\\", title);
         }
     }
-
-    /* =========================================================== */
-    /* begin: internal methods                                     */
-    /* =========================================================== */
 
     /**
      * Binds the view to the object path and expands the aggregated line items.
@@ -3043,14 +3040,14 @@ export default class Detail extends BaseController {
      * @param event pattern match event in route 'object'
      * @private
      */
-    private onObjectMatched(event: Event) {
-        var sObjectId = event.getParameter(\\"arguments\\").objectId;
-        this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
-        this.getModel().metadataLoaded().then(function (this: Detail) {
-            var sObjectPath = this.getModel().createKey(\\"Suppliers\\", {
-                SupplierID: sObjectId
+     private onObjectMatched(event: Event) {
+        const objectId = event.getParameter(\\"arguments\\").objectId;
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
+        this.getModel<ODataModel>().metadataLoaded().then(function (this: Detail) {
+            const objectPath = this.getModel<ODataModel>().createKey(\\"Suppliers\\", {
+                SupplierID: objectId
             });
-            this.bindView(\\"/\\" + sObjectPath);
+            this.bindView(\\"/\\" + objectPath);
         }.bind(this));
     }
 
@@ -3060,9 +3057,9 @@ export default class Detail extends BaseController {
      * @function
      * @param objectPath path to the object to be bound to the view.
      */
-    private bindView(objectPath) {
+    private bindView(objectPath: string) {
         // Set busy indicator during view binding
-        var viewModel = this.getModel(\\"detailView\\");
+        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
 
         // If the view was not bound yet its not busy, only if the binding requests data it is set to busy again
         viewModel.setProperty(\\"/busy\\", false);
@@ -3082,61 +3079,59 @@ export default class Detail extends BaseController {
     }
 
     private onBindingChange() {
-        const view = this.getView();
+        const view = this.getView()!;
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
         if (!elementBinding.getBoundContext()) {
-            this.getRouter().getTargets().display(\\"detailObjectNotFound\\");
+            this.getRouter().getTargets()!.display(\\"detailObjectNotFound\\");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
-            this.getUIComponent().listSelector.clearListListSelection();
+            this.getUIComponent().listSelector.clearListSelection();
             return;
         }
 
-        var sPath = elementBinding.getPath(),
-            oResourceBundle = this.getResourceBundle(),
-            oObject = view.getModel().getObject(sPath),
-            sObjectId = oObject.SupplierID,
-            sObjectName = oObject.CompanyName,
-            viewModel = this.getModel(\\"detailView\\");
+        const path = elementBinding.getPath();
+        const resourceBundle = this.getResourceBundle();
+        const detailObject = view.getModel().getObject(path);
+        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
 
-        this.getUIComponent().listSelector.selectAListItem(sPath);
+        this.getUIComponent().listSelector.selectAListItem(path);
 
         viewModel.setProperty(\\"/shareSendEmailSubject\\",
-            oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
+            resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
         viewModel.setProperty(\\"/shareSendEmailMessage\\",
-            oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
+            resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
     }
 
     protected onMetadataLoaded() {
         // Store original busy indicator delay for the detail view
-        var iOriginalViewBusyDelay = this.getView()!.getBusyIndicatorDelay(),
-            viewModel = this.getModel(\\"detailView\\"),
-            oLineItemTable = this.byId(\\"lineItemsList\\"),
-            iOriginalLineItemTableBusyDelay = oLineItemTable.getBusyIndicatorDelay();;
+        const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
+        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
+        const lineItemTable = this.byId(\\"lineItemsList\\") as Table;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();;
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time
         viewModel.setProperty(\\"/delay\\", 0);
         viewModel.setProperty(\\"/lineItemTableDelay\\", 0);
 
-        oLineItemTable.attachEventOnce(\\"updateFinished\\", function () {
+        lineItemTable.attachEventOnce(\\"updateFinished\\", function () {
             // Restore original busy indicator delay for line item table
-            viewModel.setProperty(\\"/lineItemTableDelay\\", iOriginalLineItemTableBusyDelay);
+            viewModel.setProperty(\\"/lineItemTableDelay\\", originalLineItemTableBusyDelay);
         });
 
         // Binding the view will set it to not busy - so the view is always busy if it is not bound
         viewModel.setProperty(\\"/busy\\", true);
         // Restore original busy indicator delay for the detail view
-        viewModel.setProperty(\\"/delay\\", iOriginalViewBusyDelay);
+        viewModel.setProperty(\\"/delay\\", originalViewBusyDelay);
     }
 
     /**
      * Set the full screen mode to false and navigate to list page
      */
     protected onCloseDetailPress() {
-        this.getModel(\\"appView\\").setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", false);
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", false);
         // No item should be selected on list after detail page is closed
         this.getUIComponent().listSelector.clearListSelection();
         this.getRouter().navTo(\\"list\\");
@@ -3146,15 +3141,16 @@ export default class Detail extends BaseController {
      * Toggle between full and non full screen mode.
      */
     protected toggleFullScreen() {
-        var bFullScreen = this.getModel(\\"appView\\").getProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\");
-        this.getModel(\\"appView\\").setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", !bFullScreen);
-        if (!bFullScreen) {
+        const viewModel = this.getModel<JSONModel>(\\"appView\\");
+        const fullScreen = viewModel.getProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\");
+        viewModel.setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", !fullScreen);
+        if (!fullScreen) {
             // store current layout and go full screen
-            this.getModel(\\"appView\\").setProperty(\\"/previousLayout\\", this.getModel(\\"appView\\").getProperty(\\"/layout\\"));
-            this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"MidColumnFullScreen\\");
+            viewModel.setProperty(\\"/previousLayout\\", viewModel.getProperty(\\"/layout\\"));
+            viewModel.setProperty(\\"/layout\\", \\"MidColumnFullScreen\\");
         } else {
             // reset to previous layout
-            this.getModel(\\"appView\\").setProperty(\\"/layout\\", this.getModel(\\"appView\\").getProperty(\\"/previousLayout\\"));
+            viewModel.setProperty(\\"/layout\\", viewModel.getProperty(\\"/previousLayout\\"));
         }
     }
 }
@@ -3174,30 +3170,33 @@ export default class DetailObjectNotFound extends BaseController {
     "state": "modified",
   },
   "webapp/controller/ErrorHandler.ts": Object {
-    "contents": "import UI5Object from \\"sap/ui/base/Object\\";
-import UIComponent from \\"sap/ui/core/UIComponent\\";
-import MessageBox from \\"sap/m/MessageBox\\";
+    "contents": "import MessageBox, { Action } from \\"sap/m/MessageBox\\";
+import UI5Object from \\"sap/ui/base/Object\\";
 import Event from \\"sap/ui/base/Event\\";
+import ODataModel from \\"sap/ui/model/odata/v2/ODataModel\\";
+import AppComponent from \\"../Component\\";
+import ResourceModel from \\"sap/ui/model/resource/ResourceModel\\";
+import ResourceBundle from \\"sap/base/i18n/ResourceBundle\\";
 
 /**
  * @namespace test.me
  */
 export default class ErrorHandler extends UI5Object {
 
-    protected readonly component: UIComponent;
+    protected readonly component: AppComponent;
     protected messageOpen = false;
 
     /**
      * Handles application errors by automatically attaching to the model events and displaying errors when needed.
      * @param component reference to the app's component
      */
-    public constructor(component: UIComponent) {
+    public constructor(component: AppComponent) {
         super();
         this.component = component;
-        const model = component.getModel();
+        const model = component.getModel() as ODataModel;
         model.attachMetadataFailed(this.showServiceError);
         model.attachRequestFailed(function (this: ErrorHandler, event: Event) {
-            const params = event.getParameters();
+            const params = event.getParameters() as { response: XMLHttpRequest['response'] };
             // An entity that was not found in the service is also throwing a 404 error in oData.
             // We already cover this case with a notFound target so we skip it here.
             // A request that cannot be sent to the server is a technical error that we have to handle though
@@ -3218,12 +3217,12 @@ export default class ErrorHandler extends UI5Object {
         }
         this.messageOpen = true;
         MessageBox.error(
-            this.component.getModel(\\"i18n\\").getText(\\"errorText\\"),
+            ((this.component.getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle).getText(\\"errorText\\"),
             {
                 id: \\"serviceErrorMessageBox\\",
-                details: event.getParameters().response,
+                details: (event.getParameters() as XMLHttpRequest['response']).response,
                 styleClass: this.component.getContentDensityClass(),
-                actions: [MessageBox.Action.CLOSE],
+                actions: [Action.CLOSE],
                 onClose: function (this: ErrorHandler) {
                     this.messageOpen = false;
                 }.bind(this)
@@ -3238,15 +3237,19 @@ export default class ErrorHandler extends UI5Object {
     "contents": "import GroupHeaderListItem from \\"sap/m/GroupHeaderListItem\\";
 import Button from \\"sap/m/Button\\";
 import ListControl from \\"sap/m/List\\";
+import ObjectListItem from \\"sap/m/ObjectListItem\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
+import Event from \\"sap/ui/base/Event\\";
 import Filter from \\"sap/ui/model/Filter\\";
 import Sorter from \\"sap/ui/model/Sorter\\";
 import FilterOperator from \\"sap/ui/model/FilterOperator\\";
-import Device from \\"sap/ui/Device\\";
+import { system } from \\"sap/ui/Device\\";
 import Fragment from \\"sap/ui/core/Fragment\\";
-import Event from \\"sap/ui/base/Event\\";
-import formatter from \\"../model/formatter\\";
+import UI5Element from \\"sap/ui/core/Element\\";
 import BaseController from \\"./BaseController\\";
+import Control from \\"sap/ui/core/Control\\";
+import ViewSettingsDialog from \\"sap/m/ViewSettingsDialog\\";
+import ListBinding from \\"sap/ui/model/ListBinding\\";
 
 /**
  * @namespace test.me
@@ -3259,42 +3262,34 @@ export default class List extends BaseController {
         aSearch: [] as Filter[]
     };
 
-    public readonly formatter = formatter;
-
-    /* =========================================================== */
-    /* lifecycle methods                                           */
-    /* =========================================================== */
-
     /**
      * Called when the list controller is instantiated. It sets up the event handling for the list/detail communication and other lifecycle tasks.
      */
     public onInit(): void {
         // Control state model
-        this.list = this.byId(\\"list\\");
+        this.list = this.byId(\\"list\\") as ListControl;
         const viewModel = this.createViewModel();
         // Put down list's original value for busy indicator delay,
         // so it can be restored later on. Busy handling on the list is
         // taken care of by the list itself.
         const iOriginalBusyDelay = this.list.getBusyIndicatorDelay();
 
-        
-
         this.setModel(viewModel, \\"listView\\");
         // Make sure, busy indication is showing immediately so there is no
         // break after the busy indication for loading the view's meta data is
         // ended (see promise 'oWhenMetadataIsLoaded' in AppController)
-        this.list.attachEventOnce(\\"updateFinished\\", function () {
+        this.list.attachEventOnce(\\"updateFinished\\", function (this: List) {
             // Restore original busy indicator delay for the list
             viewModel.setProperty(\\"/delay\\", iOriginalBusyDelay);
         });
 
         this.getView()!.addEventDelegate({
-            onBeforeFirstShow: function () {
+            onBeforeFirstShow: function (this: List) {
                 this.getUIComponent().listSelector.setBoundList(this.list);
             }.bind(this)
         });
 
-        this.getRouter().getRoute(\\"list\\").attachPatternMatched(this._onMasterMatched, this);
+        this.getRouter().getRoute(\\"list\\")!.attachPatternMatched(this.onListMatched, this);
         this.getRouter().attachBypassed(this.onBypassed, this);
     }
 
@@ -3309,7 +3304,7 @@ export default class List extends BaseController {
      */
     public onUpdateFinished(event: Event) {
         // update the list object counter after new data is loaded
-        this._updateListItemCount(event.getParameter(\\"total\\"));
+        this.updateListItemCount(event.getParameter(\\"total\\"));
     }
 
     /**
@@ -3317,10 +3312,11 @@ export default class List extends BaseController {
      * filter value and triggers a new search. If the search field's
      * 'refresh' button has been pressed, no new search is triggered
      * and the list binding is refresh instead.
+     *
      * @param event the search event
      */
     public onSearch(event: Event) {
-        if (event.getParameters().refreshButtonPressed) {
+        if ((event.getParameters() as any).refreshButtonPressed) {
             // Search field's 'refresh' button has been pressed.
             // This is visible if you select any list item.
             // In this case no new search is triggered, we only
@@ -3353,29 +3349,31 @@ export default class List extends BaseController {
      * @param event the button press event
      */
     public onOpenViewSettings(event: Event) {
-        var sDialogTab = \\"filter\\";
+        let dialogTab = \\"filter\\";
         if (event.getSource() instanceof Button) {
-            var sButtonId = event.getSource().getId();
-            if (sButtonId.match(\\"sort\\")) {
-                sDialogTab = \\"sort\\";
-            } else if (sButtonId.match(\\"group\\")) {
-                sDialogTab = \\"group\\";
+            const buttonId = (event.getSource() as UI5Element).getId();
+            if (buttonId.match(\\"sort\\")) {
+                dialogTab = \\"sort\\";
+            } else if (buttonId.match(\\"group\\")) {
+                dialogTab = \\"group\\";
             }
         }
         // load asynchronous XML fragment
+        let dialog = this.byId(\\"viewSettingsDialog\\") as ViewSettingsDialog;
         if (!this.byId(\\"viewSettingsDialog\\")) {
             Fragment.load({
                 id: this.getView()!.getId(),
                 name: \\"test.me.view.ViewSettingsDialog\\",
                 controller: this
-            }).then(function (oDialog) {
+            }).then(function (this: List, ctrl: Control | Control[]) {
                 // connect dialog to the root view of this component (models, lifecycle)
-                this.getView()!.addDependent(oDialog);
-                oDialog.addStyleClass(this.getUIComponent().getContentDensityClass());
-                oDialog.open(sDialogTab);
+                dialog = (Array.isArray(ctrl) ? ctrl[0] : ctrl) as ViewSettingsDialog;
+                this.getView()!.addDependent(dialog as Control);
+                dialog.addStyleClass(this.getUIComponent().getContentDensityClass());
+                dialog.open(dialogTab);
             }.bind(this));
         } else {
-            this.byId(\\"viewSettingsDialog\\").open(sDialogTab);
+            dialog.open(dialogTab);
         }
     }
 
@@ -3386,7 +3384,6 @@ export default class List extends BaseController {
      * are removed from the list, in case they are
      * removed in the ViewSettingsDialog.
      * @param event the confirm event
-     * @public
      */
     public onConfirmViewSettingsDialog(event: Event) {
         
@@ -3397,38 +3394,38 @@ export default class List extends BaseController {
      * Apply the chosen sorter and grouper to the list
      * @param event the confirm event
      */
-     private applySortGroup(event: Event) {
-        var mParams = event.getParameters(),
-            sPath,
-            bDescending,
-            aSorters = [];
+    private applySortGroup(event: Event) {
+        const params = event.getParameters() as {
+            sortItem: any;
+            groupItem?: any;
+            sortDescending: boolean;
+        };
+        const sorters = [];
         
-        sPath = mParams.sortItem.getKey();
-        bDescending = mParams.sortDescending;
-        aSorters.push(new Sorter(sPath, bDescending));
-        this.list.getBinding(\\"items\\").sort(aSorters);
+        sorters.push(new Sorter(params.sortItem.getKey(), params.sortDescending));
+        (this.list.getBinding(\\"items\\") as ListBinding).sort(sorters);
     }
 
     /**
-     * Event handler for the list selection event
-     * @param {sap.ui.base.Event} oEvent the list selectionChange event
-     * @public
+     * Event handler for the list selection event.
+     *
+     * @param event the list selectionChange event
      */
-    onSelectionChange(oEvent) {
-        var oList = oEvent.getSource(),
-            bSelected = oEvent.getParameter(\\"selected\\");
+    onSelectionChange(event: Event) {
+        const list = event.getSource() as ListControl;
+        const selected = event.getParameter(\\"selected\\");
 
         // skip navigation when deselecting an item in multi selection mode
-        if (!(oList.getMode() === \\"MultiSelect\\" && !bSelected)) {
+        if (!(list.getMode() === \\"MultiSelect\\" && !selected)) {
             // get the list item, either from the listItem parameter or from the event's source itself (will depend on the device-dependent mode).
-            this._showDetail(oEvent.getParameter(\\"listItem\\") || oEvent.getSource());
+            this.showDetail(event.getParameter(\\"listItem\\") || event.getSource());
         }
     }
 
     /**
      * Event handler for the bypassed event, which is fired when no routing pattern matched.
      * If there was an object selected in the list, that selection is removed.
-     * @public
+     *
      */
     onBypassed() {
         this.list.removeSelections(true);
@@ -3438,31 +3435,16 @@ export default class List extends BaseController {
      * Used to create GroupHeaders with non-capitalized caption.
      * These headers are inserted into the list to
      * group the list's items.
-     * @param {Object} oGroup group whose text is to be displayed
-     * @public
-     * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
+     * @param group group whose text is to be displayed
+     *
+     * @returns group header with non-capitalized caption.
      */
-    createGroupHeader(oGroup) {
+    createGroupHeader(group: { text: string }): GroupHeaderListItem {
         return new GroupHeaderListItem({
-            title: oGroup.text,
+            title: group.text,
             upperCase: false
         });
     }
-
-    /**
-     * Event handler for navigating back.
-     * We navigate back in the browser history
-     * @public
-     */
-    onNavBack() {
-        // eslint-disable-next-line sap-no-history-manipulation
-        history.go(-1);
-    }
-
-    /* =========================================================== */
-    /* begin: internal methods                                     */
-    /* =========================================================== */
-
 
     private createViewModel() {
         return new JSONModel({
@@ -3476,37 +3458,35 @@ export default class List extends BaseController {
         });
     }
 
-    _onMasterMatched() {
+    private onListMatched() {
         //Set the layout property of the FCL control to 'OneColumn'
-        this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
     }
 
     /**
      * Shows the selected item on the detail page
      * On phones a additional history entry is created
-     * @param {sap.m.ObjectListItem} oItem selected Item
-     * @private
+     * @param item selected Item
+     *
      */
-    _showDetail(oItem) {
-        var bReplace = !Device.system.phone;
+    private showDetail(item: ObjectListItem) {
         // set the layout property of FCL control to show two columns
-        this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
         this.getRouter().navTo(\\"object\\", {
-            objectId: oItem.getBindingContext().getProperty(\\"SupplierID\\")
-        }, bReplace);
+            objectId: item.getBindingContext()!.getProperty(\\"SupplierID\\")
+        }, undefined, !system.phone);
     }
 
     /**
      * Sets the item count on the list header
-     * @param {integer} iTotalItems the total number of items in the list
-     * @private
+     * @param total the total number of items in the list
+     *
      */
-    _updateListItemCount(iTotalItems) {
-        var sTitle;
+    updateListItemCount(total: number) {
         // only update the counter if the length is final
         if (this.list.getBinding(\\"items\\").isLengthFinal()) {
-            sTitle = this.getResourceBundle().getText(\\"listTitleCount\\", [iTotalItems]);
-            this.getModel(\\"listView\\").setProperty(\\"/title\\", sTitle);
+            const title = this.getResourceBundle().getText(\\"listTitleCount\\", [total]);
+            this.getModel<JSONModel>(\\"listView\\").setProperty(\\"/title\\", title);
         }
     }
 
@@ -3514,15 +3494,15 @@ export default class List extends BaseController {
      * Internal helper method to apply both filter and search state together on the list binding
      */
     private applyFilterSearch() {
-        var aFilters = this.listFilterState.aSearch.concat(this.listFilterState.aFilter),
-            oViewModel = this.getModel(\\"listView\\");
-        this.list.getBinding(\\"items\\").filter(aFilters, \\"Application\\");
+        const filters = this.listFilterState.aSearch.concat(this.listFilterState.aFilter);
+        const viewModel = this.getModel<JSONModel>(\\"listView\\");
+        this.list.getBinding(\\"items\\").filter(filters, \\"Application\\");
         // changes the noDataText of the list in case there are no filter results
-        if (aFilters.length !== 0) {
-            oViewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"listListNoDataWithFilterOrSearchText\\"));
+        if (filters.length !== 0) {
+            viewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"listListNoDataWithFilterOrSearchText\\"));
         } else if (this.listFilterState.aSearch.length > 0) {
             // only reset the no data text to default when no new search was triggered
-            oViewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"listListNoDataText\\"));
+            viewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"listListNoDataText\\"));
         }
     }
 
@@ -3533,11 +3513,12 @@ export default class List extends BaseController {
     "contents": "import UI5Object from \\"sap/ui/base/Object\\";
 import Log from \\"sap/base/Log\\";
 import List from \\"sap/m/List\\";
+import ListItemBase from \\"sap/m/ListItemBase\\";
 
 /**
  * @namespace test.me
  */
-export default class ErrorHandler extends UI5Object {
+export default class ListSelector extends UI5Object {
 
     protected readonly oWhenListLoadingIsDone: Promise<any>;
     protected readonly _oWhenListHasBeenSet: Promise<void>;
@@ -3548,27 +3529,23 @@ export default class ErrorHandler extends UI5Object {
      * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundMasterList
      * function.
      */
-    constructor() {
+     constructor() {
         super();
-        this._oWhenListHasBeenSet = new Promise(function (fnResolveListHasBeenSet) {
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
             this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
         // invoke selectItem functions before calling setBoundList
-        this.oWhenListLoadingIsDone = new Promise(function (fnResolve, fnReject) {
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
-                .then(function (oList) {
-                    oList.getBinding(\\"items\\").attachEventOnce(\\"dataReceived\\",
-                        function () {
+                .then(function (this: ListSelector, list: List) {
+                    list.getBinding(\\"items\\").attachEventOnce(\\"dataReceived\\",
+                        function (this: ListSelector) {
                             if (this.list.getItems().length) {
-                                fnResolve({
-                                    list: oList
-                                });
+                                resolve({ list });
                             } else {
                                 // No items in the list
-                                fnReject({
-                                    list: oList
-                                });
+                                reject({ list });
                             }
                         }.bind(this)
                     );
@@ -3580,9 +3557,9 @@ export default class ErrorHandler extends UI5Object {
      * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
      * May only be invoked once per ListSelector instance.
      * @param list The list all the select functions will be invoked on.
-     * @public
+     *
      */
-    setBoundList(list: List) {
+     public setBoundList(list: List) {
         this.list = list;
         this._fnResolveListHasBeenSet(list);
     }
@@ -3590,36 +3567,33 @@ export default class ErrorHandler extends UI5Object {
     /**
      * Tries to select and scroll to a list item with a matching binding context. If there are no items matching the binding context or the ListMode is none,
      * no selection/scrolling will happen
-     * @param {string} sBindingPath the binding path matching the binding path of a list item
-     * @public
+     * @param path the binding path matching the binding path of a list item
+     *
      */
-    selectAListItem(sBindingPath) {
+    public selectAListItem(path: string) {
 
         this.oWhenListLoadingIsDone.then(
-            function () {
-                var oList = this.list,
-                    oSelectedItem;
-
-                if (oList.getMode() === \\"None\\") {
+            function (this: ListSelector) {
+                const list = this.list;
+                if (list.getMode() === \\"None\\") {
                     return;
                 }
-
-                oSelectedItem = oList.getSelectedItem();
 
                 // skip update if the current selection is already matching the object path
-                if (oSelectedItem && oSelectedItem.getBindingContext().getPath() === sBindingPath) {
+                const selectedItem = list.getSelectedItem();
+                if (selectedItem && selectedItem.getBindingContext()!.getPath() === path) {
                     return;
                 }
 
-                oList.getItems().some(function (oItem) {
-                    if (oItem.getBindingContext() && oItem.getBindingContext().getPath() === sBindingPath) {
-                        oList.setSelectedItem(oItem);
+                list.getItems().some(function (oItem: ListItemBase) {
+                    if (oItem.getBindingContext() && oItem.getBindingContext()!.getPath() === path) {
+                        list.setSelectedItem(oItem);
                         return true;
                     }
                 });
             }.bind(this),
             function () {
-                Log.warning(\\"Could not select the list item with the path\\" + sBindingPath + \\" because the list encountered an error or had no items\\");
+                Log.warning(\\"Could not select the list item with the path\\" + path + \\" because the list encountered an error or had no items\\");
             }
         );
     }
@@ -3637,18 +3611,20 @@ export default class ErrorHandler extends UI5Object {
     "state": "modified",
   },
   "webapp/controller/NotFound.controller.ts": Object {
-    "contents": "import BaseController from \\"./BaseController\\";
+    "contents": "import Target from \\"sap/ui/core/routing/Target\\";
+import JSONModel from \\"sap/ui/model/json/JSONModel\\";
+import BaseController from \\"./BaseController\\";
 
 /**
  * @namespace test.me
  */
 export default class NotFound extends BaseController {
-    onInit() {
-        this.getRouter().getTarget(\\"notFound\\").attachDisplay(this._onNotFoundDisplayed, this);
+    public onInit() {
+        (this.getRouter().getTarget(\\"notFound\\") as Target).attachDisplay(this.onNotFoundDisplayed, this);
     }
 
-    _onNotFoundDisplayed() {
-        this.getModel(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
+    private onNotFoundDisplayed() {
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
     }
 }
 ",

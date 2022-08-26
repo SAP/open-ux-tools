@@ -1,19 +1,15 @@
-import { URLHelper } from "sap/m/library";
+import { URLHelper } from "sap/m/library";<%if (template.settings.lineItem.name) {%>
+import Table from "sap/m/Table";<%}%>;
 import Event from "sap/ui/base/Event";
 import JSONModel from "sap/ui/model/json/JSONModel";
-import formatter from "../model/formatter";
+import ListBinding from "sap/ui/model/ListBinding";
+import ODataModel from "sap/ui/model/odata/v2/ODataModel";
 import BaseController from "./BaseController";
 
 /**
  * @namespace <%- app.id %>
  */
 export default class Detail extends BaseController {
-
-    public readonly formatter = formatter;
-
-    /* =========================================================== */
-    /* lifecycle methods                                           */
-    /* =========================================================== */
 
     public onInit(): void {
         // Model used to manipulate control states. The chosen values make sure,
@@ -25,16 +21,12 @@ export default class Detail extends BaseController {
             lineItemListTitle: this.getResourceBundle().getText("detailLineItemTableHeading")<%}%>
         });
 
-        this.getRouter().getRoute("object").attachPatternMatched(this.onObjectMatched, this);
+        this.getRouter().getRoute("object")!.attachPatternMatched(this.onObjectMatched, this);
 
         this.setModel(viewModel, "detailView");
 
-        this.getUIComponent().getModel().metadataLoaded().then(this.onMetadataLoaded.bind(this));
+        (this.getUIComponent().getModel() as ODataModel).metadataLoaded().then(this.onMetadataLoaded.bind(this));
     }
-
-    /* =========================================================== */
-    /* event handlers                                              */
-    /* =========================================================== */
 
     /**
      * Event handler when the share by E-Mail button has been clicked
@@ -43,7 +35,7 @@ export default class Detail extends BaseController {
         const viewModel = this.getModel("detailView");
 
         URLHelper.triggerEmail(
-            null,
+            undefined,
             viewModel.getProperty("/shareSendEmailSubject"),
             viewModel.getProperty("/shareSendEmailMessage")
         );
@@ -54,26 +46,21 @@ export default class Detail extends BaseController {
      * Updates the item count within the line item table's header
      * @param event an event containing the total number of items in the list
      */
-    public onListUpdateFinished(event: Event) {
-        var sTitle,
-            iTotalItems = event.getParameter("total"),
-            viewModel = this.getModel("detailView");
-
+     public onListUpdateFinished(event: Event) {
+        const viewModel = this.getModel<JSONModel>("detailView");
+        const totalItems = event.getParameter("total") as number;
+        let title: string;
         // only update the counter if the length is final
-        if (this.byId("lineItemsList").getBinding("items").isLengthFinal()) {
-            if (iTotalItems) {
-                sTitle = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [iTotalItems]);
+        if ((this.byId("lineItemsList")!.getBinding("items") as ListBinding).isLengthFinal()) {
+            if (totalItems) {
+                title = this.getResourceBundle().getText("detailLineItemTableHeadingCount", [totalItems]);
             } else {
                 //Display 'Line Items' instead of 'Line items (0)'
-                sTitle = this.getResourceBundle().getText("detailLineItemTableHeading");
+                title = this.getResourceBundle().getText("detailLineItemTableHeading");
             }
-            viewModel.setProperty("/lineItemListTitle", sTitle);
+            viewModel.setProperty("/lineItemListTitle", title);
         }
     }<%}%>
-
-    /* =========================================================== */
-    /* begin: internal methods                                     */
-    /* =========================================================== */
 
     /**
      * Binds the view to the object path and expands the aggregated line items.
@@ -81,14 +68,14 @@ export default class Detail extends BaseController {
      * @param event pattern match event in route 'object'
      * @private
      */
-    private onObjectMatched(event: Event) {
-        var sObjectId = event.getParameter("arguments").objectId;
-        this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
-        this.getModel().metadataLoaded().then(function (this: Detail) {
-            var sObjectPath = this.getModel().createKey("<%=template.settings.entity.name%>", {
-                <%=template.settings.entity.key%>: sObjectId
+     private onObjectMatched(event: Event) {
+        const objectId = event.getParameter("arguments").objectId;
+        this.getModel<JSONModel>("appView").setProperty("/layout", "TwoColumnsMidExpanded");
+        this.getModel<ODataModel>().metadataLoaded().then(function (this: Detail) {
+            const objectPath = this.getModel<ODataModel>().createKey("Suppliers", {
+                SupplierID: objectId
             });
-            this.bindView("/" + sObjectPath);
+            this.bindView("/" + objectPath);
         }.bind(this));
     }
 
@@ -98,9 +85,9 @@ export default class Detail extends BaseController {
      * @function
      * @param objectPath path to the object to be bound to the view.
      */
-    private bindView(objectPath) {
+    private bindView(objectPath: string) {
         // Set busy indicator during view binding
-        var viewModel = this.getModel("detailView");
+        const viewModel = this.getModel<JSONModel>("detailView");
 
         // If the view was not bound yet its not busy, only if the binding requests data it is set to busy again
         viewModel.setProperty("/busy", false);
@@ -120,61 +107,59 @@ export default class Detail extends BaseController {
     }
 
     private onBindingChange() {
-        const view = this.getView();
+        const view = this.getView()!;
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
         if (!elementBinding.getBoundContext()) {
-            this.getRouter().getTargets().display("detailObjectNotFound");
+            this.getRouter().getTargets()!.display("detailObjectNotFound");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
-            this.getUIComponent().listSelector.clearListListSelection();
+            this.getUIComponent().listSelector.clearListSelection();
             return;
         }
 
-        var sPath = elementBinding.getPath(),
-            oResourceBundle = this.getResourceBundle(),
-            oObject = view.getModel().getObject(sPath),
-            sObjectId = oObject.<%=template.settings.entity.key%>,
-            sObjectName = oObject.<%=template.settings.entity.idProperty%>,
-            viewModel = this.getModel("detailView");
+        const path = elementBinding.getPath();
+        const resourceBundle = this.getResourceBundle();
+        const detailObject = view.getModel().getObject(path);
+        const viewModel = this.getModel<JSONModel>("detailView");
 
-        this.getUIComponent().listSelector.selectAListItem(sPath);
+        this.getUIComponent().listSelector.selectAListItem(path);
 
         viewModel.setProperty("/shareSendEmailSubject",
-            oResourceBundle.getText("shareSendEmailObjectSubject", [sObjectId]));
+            resourceBundle.getText("shareSendEmailObjectSubject", [detailObject.<%=template.settings.entity.key%>]));
         viewModel.setProperty("/shareSendEmailMessage",
-            oResourceBundle.getText("shareSendEmailObjectMessage", [sObjectName, sObjectId, location.href]));
+            resourceBundle.getText("shareSendEmailObjectMessage", [detailObject.<%=template.settings.entity.idProperty%>, detailObject.<%=template.settings.entity.key%>, location.href]));
     }
 
     protected onMetadataLoaded() {
         // Store original busy indicator delay for the detail view
-        var iOriginalViewBusyDelay = this.getView()!.getBusyIndicatorDelay(),
-            viewModel = this.getModel("detailView")<%if (template.settings.lineItem.name) {%>,
-            oLineItemTable = this.byId("lineItemsList"),
-            iOriginalLineItemTableBusyDelay = oLineItemTable.getBusyIndicatorDelay();<%}%>;
+        const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
+        const viewModel = this.getModel<JSONModel>("detailView");<%if (template.settings.lineItem.name) {%>
+        const lineItemTable = this.byId("lineItemsList") as Table;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();<%}%>;
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time
         viewModel.setProperty("/delay", 0);<%if (template.settings.lineItem.name) {%>
         viewModel.setProperty("/lineItemTableDelay", 0);
 
-        oLineItemTable.attachEventOnce("updateFinished", function () {
+        lineItemTable.attachEventOnce("updateFinished", function () {
             // Restore original busy indicator delay for line item table
-            viewModel.setProperty("/lineItemTableDelay", iOriginalLineItemTableBusyDelay);
+            viewModel.setProperty("/lineItemTableDelay", originalLineItemTableBusyDelay);
         });<%}%>
 
         // Binding the view will set it to not busy - so the view is always busy if it is not bound
         viewModel.setProperty("/busy", true);
         // Restore original busy indicator delay for the detail view
-        viewModel.setProperty("/delay", iOriginalViewBusyDelay);
+        viewModel.setProperty("/delay", originalViewBusyDelay);
     }
 
     /**
      * Set the full screen mode to false and navigate to list page
      */
     protected onCloseDetailPress() {
-        this.getModel("appView").setProperty("/actionButtonsInfo/midColumn/fullScreen", false);
+        this.getModel<JSONModel>("appView").setProperty("/actionButtonsInfo/midColumn/fullScreen", false);
         // No item should be selected on list after detail page is closed
         this.getUIComponent().listSelector.clearListSelection();
         this.getRouter().navTo("list");
@@ -184,15 +169,16 @@ export default class Detail extends BaseController {
      * Toggle between full and non full screen mode.
      */
     protected toggleFullScreen() {
-        var bFullScreen = this.getModel("appView").getProperty("/actionButtonsInfo/midColumn/fullScreen");
-        this.getModel("appView").setProperty("/actionButtonsInfo/midColumn/fullScreen", !bFullScreen);
-        if (!bFullScreen) {
+        const viewModel = this.getModel<JSONModel>("appView");
+        const fullScreen = viewModel.getProperty("/actionButtonsInfo/midColumn/fullScreen");
+        viewModel.setProperty("/actionButtonsInfo/midColumn/fullScreen", !fullScreen);
+        if (!fullScreen) {
             // store current layout and go full screen
-            this.getModel("appView").setProperty("/previousLayout", this.getModel("appView").getProperty("/layout"));
-            this.getModel("appView").setProperty("/layout", "MidColumnFullScreen");
+            viewModel.setProperty("/previousLayout", viewModel.getProperty("/layout"));
+            viewModel.setProperty("/layout", "MidColumnFullScreen");
         } else {
             // reset to previous layout
-            this.getModel("appView").setProperty("/layout", this.getModel("appView").getProperty("/previousLayout"));
+            viewModel.setProperty("/layout", viewModel.getProperty("/previousLayout"));
         }
     }
 }

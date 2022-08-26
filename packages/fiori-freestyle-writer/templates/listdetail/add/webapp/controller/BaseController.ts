@@ -3,20 +3,27 @@ import Model from "sap/ui/model/Model";
 import ResourceModel from "sap/ui/model/resource/ResourceModel";
 import Controller from "sap/ui/core/mvc/Controller";
 import View from "sap/ui/core/mvc/View";
-import UIComponent from "sap/ui/core/UIComponent";
+import History from "sap/ui/core/routing/History";
 import Router from "sap/ui/core/routing/Router";
+import AppComponent from "../Component";
+import { currencyValue } from "../model/formatter";
 
 /**
  * @namespace <%- app.id %>
  */
 export default class BaseController extends Controller {
+
+    public readonly formatter = {
+        currencyValue
+    };
+
     /**
-     * Convenience method for accessing the owner component as UIComponent.
+     * Convenience method for accessing the owner component.
      *
      * @returns the owner component
      */
-     protected getUIComponent(): UIComponent {
-        return super.getOwnerComponent() as UIComponent;
+    protected getUIComponent(): AppComponent {
+        return super.getOwnerComponent() as AppComponent;
     }
 
     /**
@@ -34,8 +41,8 @@ export default class BaseController extends Controller {
      * @param name the model name
      * @returns the model instance
      */
-    protected getModel(name: string): Model {
-        return this.getView()!.getModel(name);
+    protected getModel<T extends Model>(name?: string): T {
+        return this.getView()!.getModel(name) as T;
     }
 
     /**
@@ -54,8 +61,8 @@ export default class BaseController extends Controller {
      *
      * @returns the resourceBundle of the component
      */
-     protected getResourceBundle(): ResourceBundle | Promise<ResourceBundle> {
-        return (this.getUIComponent().getModel("i18n") as ResourceModel).getResourceBundle();
+     protected getResourceBundle(): ResourceBundle {
+        return (this.getUIComponent().getModel("i18n") as ResourceModel).getResourceBundle() as ResourceBundle;
     }
 
     /**
@@ -64,13 +71,12 @@ export default class BaseController extends Controller {
      * If not, it will replace the current entry of the browser history with the list route.
      * 
      */
-    protected onNavBack() {
-        var previousHash = History.getInstance().getPreviousHash();
-        if (previousHash !== undefined) {
+     protected onNavBack() {
+        if (History.getInstance().getPreviousHash() !== undefined) {
             // eslint-disable-next-line sap-no-history-manipulation
             history.go(-1);
         } else {
-            this.getRouter().navTo("list", {}, true);
+            this.getRouter().navTo("list", {});
         }
     }
 }

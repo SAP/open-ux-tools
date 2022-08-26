@@ -1,15 +1,19 @@
 import GroupHeaderListItem from "sap/m/GroupHeaderListItem";
 import Button from "sap/m/Button";
 import ListControl from "sap/m/List";
+import ObjectListItem from "sap/m/ObjectListItem";
 import JSONModel from "sap/ui/model/json/JSONModel";
+import Event from "sap/ui/base/Event";
 import Filter from "sap/ui/model/Filter";
 import Sorter from "sap/ui/model/Sorter";
 import FilterOperator from "sap/ui/model/FilterOperator";
-import Device from "sap/ui/Device";
+import { system } from "sap/ui/Device";
 import Fragment from "sap/ui/core/Fragment";
-import Event from "sap/ui/base/Event";
-import formatter from "../model/formatter";
+import UI5Element from "sap/ui/core/Element";
 import BaseController from "./BaseController";
+import Control from "sap/ui/core/Control";
+import ViewSettingsDialog from "sap/m/ViewSettingsDialog";
+import ListBinding from "sap/ui/model/ListBinding";
 
 /**
  * @namespace <%- app.id %>
@@ -21,62 +25,52 @@ export default class List extends BaseController {
         aFilter: [],
         aSearch: [] as Filter[]
     };<%if (template.settings.entity.numberProperty) {%>
-    private groupFunctions: any;<%}%>
-
-    public readonly formatter = formatter;
-
-    /* =========================================================== */
-    /* lifecycle methods                                           */
-    /* =========================================================== */
+    private groupFunctions = {
+        <%=template.settings.entity.numberProperty%>: function(oContext) {
+            var iNumber = oContext.getProperty('<%=template.settings.entity.numberProperty%>'),
+                key, text;
+            if (iNumber <= 20) {
+                key = "LE20";
+                text = this.getResourceBundle().getText("listGroup1Header1");
+            } else {
+                key = "GT20";
+                text = this.getResourceBundle().getText("listGroup1Header2");
+            }
+            return {
+                key: key,
+                text: text
+            };
+        }.bind(this)
+    };<%}%>
 
     /**
      * Called when the list controller is instantiated. It sets up the event handling for the list/detail communication and other lifecycle tasks.
      */
     public onInit(): void {
         // Control state model
-        this.list = this.byId("list");
+        this.list = this.byId("list") as ListControl;
         const viewModel = this.createViewModel();
         // Put down list's original value for busy indicator delay,
         // so it can be restored later on. Busy handling on the list is
         // taken care of by the list itself.
         const iOriginalBusyDelay = this.list.getBusyIndicatorDelay();
 
-        <%if (template.settings.entity.numberProperty) {%>
-        this.groupFunctions = {
-            <%=template.settings.entity.numberProperty%>: function(oContext) {
-                var iNumber = oContext.getProperty('<%=template.settings.entity.numberProperty%>'),
-                    key, text;
-                if (iNumber <= 20) {
-                    key = "LE20";
-                    text = this.getResourceBundle().getText("listGroup1Header1");
-                } else {
-                    key = "GT20";
-                    text = this.getResourceBundle().getText("listGroup1Header2");
-                }
-                return {
-                    key: key,
-                    text: text
-                };
-            }.bind(this)
-        };
-<%}%>
-
         this.setModel(viewModel, "listView");
         // Make sure, busy indication is showing immediately so there is no
         // break after the busy indication for loading the view's meta data is
         // ended (see promise 'oWhenMetadataIsLoaded' in AppController)
-        this.list.attachEventOnce("updateFinished", function () {
+        this.list.attachEventOnce("updateFinished", function (this: List) {
             // Restore original busy indicator delay for the list
             viewModel.setProperty("/delay", iOriginalBusyDelay);
         });
 
         this.getView()!.addEventDelegate({
-            onBeforeFirstShow: function () {
+            onBeforeFirstShow: function (this: List) {
                 this.getUIComponent().listSelector.setBoundList(this.list);
             }.bind(this)
         });
 
-        this.getRouter().getRoute("list").attachPatternMatched(this._onMasterMatched, this);
+        this.getRouter().getRoute("list")!.attachPatternMatched(this.onListMatched, this);
         this.getRouter().attachBypassed(this.onBypassed, this);
     }
 
@@ -91,7 +85,7 @@ export default class List extends BaseController {
      */
     public onUpdateFinished(event: Event) {
         // update the list object counter after new data is loaded
-        this._updateListItemCount(event.getParameter("total"));
+        this.updateListItemCount(event.getParameter("total"));
     }
 
     /**
@@ -99,10 +93,11 @@ export default class List extends BaseController {
      * filter value and triggers a new search. If the search field's
      * 'refresh' button has been pressed, no new search is triggered
      * and the list binding is refresh instead.
+     *
      * @param event the search event
      */
     public onSearch(event: Event) {
-        if (event.getParameters().refreshButtonPressed) {
+        if ((event.getParameters() as any).refreshButtonPressed) {
             // Search field's 'refresh' button has been pressed.
             // This is visible if you select any list item.
             // In this case no new search is triggered, we only
@@ -135,29 +130,31 @@ export default class List extends BaseController {
      * @param event the button press event
      */
     public onOpenViewSettings(event: Event) {
-        var sDialogTab = "filter";
+        let dialogTab = "filter";
         if (event.getSource() instanceof Button) {
-            var sButtonId = event.getSource().getId();
-            if (sButtonId.match("sort")) {
-                sDialogTab = "sort";
-            } else if (sButtonId.match("group")) {
-                sDialogTab = "group";
+            const buttonId = (event.getSource() as UI5Element).getId();
+            if (buttonId.match("sort")) {
+                dialogTab = "sort";
+            } else if (buttonId.match("group")) {
+                dialogTab = "group";
             }
         }
         // load asynchronous XML fragment
+        let dialog = this.byId("viewSettingsDialog") as ViewSettingsDialog;
         if (!this.byId("viewSettingsDialog")) {
             Fragment.load({
                 id: this.getView()!.getId(),
                 name: "<%- app.id %>.view.ViewSettingsDialog",
                 controller: this
-            }).then(function (oDialog) {
+            }).then(function (this: List, ctrl: Control | Control[]) {
                 // connect dialog to the root view of this component (models, lifecycle)
-                this.getView()!.addDependent(oDialog);
-                oDialog.addStyleClass(this.getUIComponent().getContentDensityClass());
-                oDialog.open(sDialogTab);
+                dialog = (Array.isArray(ctrl) ? ctrl[0] : ctrl) as ViewSettingsDialog;
+                this.getView()!.addDependent(dialog as Control);
+                dialog.addStyleClass(this.getUIComponent().getContentDensityClass());
+                dialog.open(dialogTab);
             }.bind(this));
         } else {
-            this.byId("viewSettingsDialog").open(sDialogTab);
+            dialog.open(dialogTab);
         }
     }
 
@@ -168,7 +165,6 @@ export default class List extends BaseController {
      * are removed from the list, in case they are
      * removed in the ViewSettingsDialog.
      * @param event the confirm event
-     * @public
      */
     public onConfirmViewSettingsDialog(event: Event) {
         <%if (template.settings.entity.numberProperty) {%>
@@ -202,47 +198,46 @@ export default class List extends BaseController {
      * Apply the chosen sorter and grouper to the list
      * @param event the confirm event
      */
-     private applySortGroup(event: Event) {
-        var mParams = event.getParameters(),
-            sPath,
-            bDescending,
-            aSorters = [];
+    private applySortGroup(event: Event) {
+        const params = event.getParameters() as {
+            sortItem: any;
+            groupItem?: any;
+            sortDescending: boolean;
+        };
+        const sorters = [];
         <%if (template.settings.entity.numberProperty) {%>
         // apply sorter to binding
         // (grouping comes before sorting)
-        if (mParams.groupItem) {
-            sPath = mParams.groupItem.getKey();
-            bDescending = mParams.groupDescending;
-            var vGroup = this.groupFunctions[sPath];
-            aSorters.push(new Sorter(sPath, bDescending, vGroup));
+        if (params.groupItem) {
+            const path = params.groupItem.getKey();
+            const fnGroup = this.groupFunctions[path];
+            aSorters.push(new Sorter(path, params.sortDescending, fnGroup));
         }
         <%}%>
-        sPath = mParams.sortItem.getKey();
-        bDescending = mParams.sortDescending;
-        aSorters.push(new Sorter(sPath, bDescending));
-        this.list.getBinding("items").sort(aSorters);
+        sorters.push(new Sorter(params.sortItem.getKey(), params.sortDescending));
+        (this.list.getBinding("items") as ListBinding).sort(sorters);
     }
 
     /**
-     * Event handler for the list selection event
-     * @param {sap.ui.base.Event} oEvent the list selectionChange event
-     * @public
+     * Event handler for the list selection event.
+     *
+     * @param event the list selectionChange event
      */
-    onSelectionChange(oEvent) {
-        var oList = oEvent.getSource(),
-            bSelected = oEvent.getParameter("selected");
+    onSelectionChange(event: Event) {
+        const list = event.getSource() as ListControl;
+        const selected = event.getParameter("selected");
 
         // skip navigation when deselecting an item in multi selection mode
-        if (!(oList.getMode() === "MultiSelect" && !bSelected)) {
+        if (!(list.getMode() === "MultiSelect" && !selected)) {
             // get the list item, either from the listItem parameter or from the event's source itself (will depend on the device-dependent mode).
-            this._showDetail(oEvent.getParameter("listItem") || oEvent.getSource());
+            this.showDetail(event.getParameter("listItem") || event.getSource());
         }
     }
 
     /**
      * Event handler for the bypassed event, which is fired when no routing pattern matched.
      * If there was an object selected in the list, that selection is removed.
-     * @public
+     *
      */
     onBypassed() {
         this.list.removeSelections(true);
@@ -252,31 +247,16 @@ export default class List extends BaseController {
      * Used to create GroupHeaders with non-capitalized caption.
      * These headers are inserted into the list to
      * group the list's items.
-     * @param {Object} oGroup group whose text is to be displayed
-     * @public
-     * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
+     * @param group group whose text is to be displayed
+     *
+     * @returns group header with non-capitalized caption.
      */
-    createGroupHeader(oGroup) {
+    createGroupHeader(group: { text: string }): GroupHeaderListItem {
         return new GroupHeaderListItem({
-            title: oGroup.text,
+            title: group.text,
             upperCase: false
         });
     }
-
-    /**
-     * Event handler for navigating back.
-     * We navigate back in the browser history
-     * @public
-     */
-    onNavBack() {
-        // eslint-disable-next-line sap-no-history-manipulation
-        history.go(-1);
-    }
-
-    /* =========================================================== */
-    /* begin: internal methods                                     */
-    /* =========================================================== */
-
 
     private createViewModel() {
         return new JSONModel({
@@ -290,37 +270,35 @@ export default class List extends BaseController {
         });
     }
 
-    _onMasterMatched() {
+    private onListMatched() {
         //Set the layout property of the FCL control to 'OneColumn'
-        this.getModel("appView").setProperty("/layout", "OneColumn");
+        this.getModel<JSONModel>("appView").setProperty("/layout", "OneColumn");
     }
 
     /**
      * Shows the selected item on the detail page
      * On phones a additional history entry is created
-     * @param {sap.m.ObjectListItem} oItem selected Item
-     * @private
+     * @param item selected Item
+     *
      */
-    _showDetail(oItem) {
-        var bReplace = !Device.system.phone;
+    private showDetail(item: ObjectListItem) {
         // set the layout property of FCL control to show two columns
-        this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
+        this.getModel<JSONModel>("appView").setProperty("/layout", "TwoColumnsMidExpanded");
         this.getRouter().navTo("object", {
-            objectId: oItem.getBindingContext().getProperty("<%=template.settings.entity.key%>")
-        }, bReplace);
+            objectId: item.getBindingContext()!.getProperty("<%=template.settings.entity.key%>")
+        }, undefined, !system.phone);
     }
 
     /**
      * Sets the item count on the list header
-     * @param {integer} iTotalItems the total number of items in the list
-     * @private
+     * @param total the total number of items in the list
+     *
      */
-    _updateListItemCount(iTotalItems) {
-        var sTitle;
+    updateListItemCount(total: number) {
         // only update the counter if the length is final
         if (this.list.getBinding("items").isLengthFinal()) {
-            sTitle = this.getResourceBundle().getText("listTitleCount", [iTotalItems]);
-            this.getModel("listView").setProperty("/title", sTitle);
+            const title = this.getResourceBundle().getText("listTitleCount", [total]);
+            this.getModel<JSONModel>("listView").setProperty("/title", title);
         }
     }
 
@@ -328,15 +306,15 @@ export default class List extends BaseController {
      * Internal helper method to apply both filter and search state together on the list binding
      */
     private applyFilterSearch() {
-        var aFilters = this.listFilterState.aSearch.concat(this.listFilterState.aFilter),
-            oViewModel = this.getModel("listView");
-        this.list.getBinding("items").filter(aFilters, "Application");
+        const filters = this.listFilterState.aSearch.concat(this.listFilterState.aFilter);
+        const viewModel = this.getModel<JSONModel>("listView");
+        this.list.getBinding("items").filter(filters, "Application");
         // changes the noDataText of the list in case there are no filter results
-        if (aFilters.length !== 0) {
-            oViewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataWithFilterOrSearchText"));
+        if (filters.length !== 0) {
+            viewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataWithFilterOrSearchText"));
         } else if (this.listFilterState.aSearch.length > 0) {
             // only reset the no data text to default when no new search was triggered
-            oViewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataText"));
+            viewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataText"));
         }
     }
 <%if (template.settings.entity.numberProperty) {%>
@@ -346,8 +324,8 @@ export default class List extends BaseController {
      * @param filterBarText the selected filter value
      */
     private updateFilterBar(filterBarText: string) {
-        var oViewModel = this.getModel("listView");
-        oViewModel.setProperty("/isFilterBarVisible", (this.listFilterState.aFilter.length > 0));
-        oViewModel.setProperty("/filterBarLabel", this.getResourceBundle().getText("listFilterBarText", [filterBarText]));
+        const viewModel = this.getModel<JSONModel>("listView");
+        viewModel.setProperty("/isFilterBarVisible", (this.listFilterState.aFilter.length > 0));
+        viewModel.setProperty("/filterBarLabel", this.getResourceBundle().getText("listFilterBarText", [filterBarText]));
     }<%}%>
 }

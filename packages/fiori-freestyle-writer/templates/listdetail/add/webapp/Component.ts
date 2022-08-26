@@ -42,7 +42,7 @@ export default class Component extends UIComponent {
         this.listSelector.destroy();
         this.errorHandler.destroy();
         // call the base component's destroy function
-        super.destory();
+        super.destroy();
     }
 
     /**

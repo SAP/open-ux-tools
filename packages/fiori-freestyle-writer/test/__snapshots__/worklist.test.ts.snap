@@ -12951,26 +12951,30 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-    \\"compilerOptions\\": {
-      \\"target\\": \\"es2015\\",
-      \\"module\\": \\"es2015\\",
-      \\"skipLibCheck\\": true,
-      \\"preserveConstEnums\\": true,
-      \\"inlineSourceMap\\": true,
-      \\"allowJs\\": true,
-      \\"strict\\": true,
-      \\"strictNullChecks\\": true,
-      \\"strictPropertyInitialization\\": false,
-      \\"moduleResolution\\": \\"node\\",
-      \\"rootDir\\": \\"webapp\\",
-      \\"outDir\\": \\"./dist\\",
-      \\"baseUrl\\": \\"./\\",
-      \\"paths\\": {
-        \\"wrk1/*\\": [\\"webapp/*\\"]
-      }
-    },
-    \\"include\\": [\\"webapp/**/*\\"]
-  }",
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2015\\",
+    \\"module\\": \\"es2015\\",
+    \\"skipLibCheck\\": true,
+    \\"preserveConstEnums\\": true,
+    \\"inlineSourceMap\\": true,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictNullChecks\\": true,
+    \\"strictPropertyInitialization\\": false,
+    \\"moduleResolution\\": \\"node\\",
+    \\"rootDir\\": \\"webapp\\",
+    \\"outDir\\": \\"./dist\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"paths\\": {
+      \\"wrk1/*\\": [
+        \\"webapp/*\\"
+      ]
+    }
+  },
+  \\"include\\": [
+    \\"webapp/**/*\\"
+  ]
+}",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -13169,7 +13173,7 @@ builder:
   },
   "webapp/Component.ts": Object {
     "contents": "import UIComponent from \\"sap/ui/core/UIComponent\\";
-import Device from \\"sap/ui/Device\\";
+import Device, { support } from \\"sap/ui/Device\\";
 import ErrorHandler from \\"./controller/ErrorHandler\\";
 import { createDeviceModel } from \\"./model/models\\";
 
@@ -13208,7 +13212,7 @@ export default class Component extends UIComponent {
     public destroy() {
         this.errorHandler.destroy();
         // call the base component's destroy function
-        super.destory();
+        super.destroy();
     }
 
     /**
@@ -13222,7 +13226,7 @@ export default class Component extends UIComponent {
             // eslint-disable-next-line sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
-            } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
+            } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
                 this.contentDensityClass = \\"sapUiSizeCompact\\";
             } else {
                 // \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
@@ -13257,20 +13261,27 @@ import Model from \\"sap/ui/model/Model\\";
 import ResourceModel from \\"sap/ui/model/resource/ResourceModel\\";
 import Controller from \\"sap/ui/core/mvc/Controller\\";
 import View from \\"sap/ui/core/mvc/View\\";
-import UIComponent from \\"sap/ui/core/UIComponent\\";
+import History from \\"sap/ui/core/routing/History\\";
 import Router from \\"sap/ui/core/routing/Router\\";
+import AppComponent from \\"../Component\\";
+import { currencyValue } from \\"../model/formatter\\";
 
 /**
  * @namespace wrk1
  */
 export default class BaseController extends Controller {
+
+    public readonly formatter = {
+        currencyValue
+    };
+    
     /**
-     * Convenience method for accessing the owner component as UIComponent.
+     * Convenience method for accessing the owner component.
      *
      * @returns the owner component
      */
-     protected getUIComponent(): UIComponent {
-        return super.getOwnerComponent() as UIComponent;
+     protected getUIComponent(): AppComponent {
+        return super.getOwnerComponent() as AppComponent;
     }
 
     /**
@@ -13279,7 +13290,7 @@ export default class BaseController extends Controller {
      * @returns the router for this component
      */
     protected getRouter(): Router {
-        return (this.getOwnerComponent() as UIComponent).getRouter();
+        return this.getUIComponent().getRouter();
     }
 
     /**
@@ -13288,8 +13299,8 @@ export default class BaseController extends Controller {
      * @param name the model name
      * @returns the model instance
      */
-    protected getModel(name: string): Model {
-        return this.getView()!.getModel(name);
+    protected getModel<T extends Model>(name?: string): T {
+        return this.getView()!.getModel(name) as T;
     }
 
     /**
@@ -13308,8 +13319,23 @@ export default class BaseController extends Controller {
      *
      * @returns the resourceBundle of the component
      */
-     protected getResourceBundle(): ResourceBundle | Promise<ResourceBundle> {
-        return (this.getUIComponent().getModel(\\"i18n\\") as ResourceModel).getResourceBundle();
+    protected getResourceBundle(): ResourceBundle {
+        return (this.getUIComponent().getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle;
+    }
+
+    /**
+     * Event handler for navigating back.
+     * It there is a history entry we go one step back in the browser history
+     * If not, it will replace the current entry of the browser history with the list route.
+     * 
+     */
+     protected onNavBack() {
+        if (History.getInstance().getPreviousHash() !== undefined) {
+            // eslint-disable-next-line sap-no-history-manipulation
+            history.go(-1);
+        } else {
+            this.getRouter().navTo(\\"worklist\\", {});
+        }
     }
 
     /**
@@ -13329,58 +13355,53 @@ export default class BaseController extends Controller {
   },
   "webapp/controller/ErrorHandler.ts": Object {
     "contents": "import UI5Object from \\"sap/ui/base/Object\\";
-import UIComponent from \\"sap/ui/core/UIComponent\\";
-import MessageBox from \\"sap/m/MessageBox\\";
+import MessageBox, { Action } from \\"sap/m/MessageBox\\";
 import Event from \\"sap/ui/base/Event\\";
 import Filter from \\"sap/ui/model/Filter\\";
 import FilterOperator from \\"sap/ui/model/FilterOperator\\";
-//import { getCore } from \\"sap/ui\\";
+import ResourceModel from \\"sap/ui/model/resource/ResourceModel\\";
+import AppComponent from \\"../Component\\";
+import ResourceBundle from \\"sap/base/i18n/ResourceBundle\\";
+import Message from \\"sap/ui/core/message/Message\\";
+import ListBinding from \\"sap/ui/model/ListBinding\\";
 
 /**
  * @namespace wrk1
  */
 export default class ErrorHandler extends UI5Object {
 
-    protected readonly component: UIComponent;
+    protected readonly component: AppComponent;
     protected messageOpen = false;
 
     /**
      * Handles application errors by automatically attaching to the model events and displaying errors when needed.
      * @param component reference to the app's component
      */
-    public constructor(component: UIComponent) {
+    public constructor(component: AppComponent) {
         super();
-        var oMessageManager = sap.ui.getCore().getMessageManager(),
-        oMessageModel = oMessageManager.getMessageModel(),
-        oResourceBundle = component.getModel(\\"i18n\\").getResourceBundle(),
-        sErrorText = oResourceBundle.getText(\\"errorText\\"),
-        sMultipleErrors = oResourceBundle.getText(\\"multipleErrorsText\\");
+        const messageManager = sap.ui.getCore().getMessageManager();
+        const resourceBundle = (component.getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle;
 
-        this.messageOpen = false;
-
-        const messageModelBinding = oMessageModel.bindList(\\"/\\", undefined,
+        const messageModelBinding = messageManager.getMessageModel().bindList(\\"/\\", undefined,
             [], new Filter(\\"technical\\", FilterOperator.EQ, true));
-
         messageModelBinding.attachChange(function (this: ErrorHandler, event: Event) {
-            var aContexts = event.getSource().getContexts(),
-                aMessages = [],
-                sErrorTitle;
-
-            if (this.messageOpen || !aContexts.length) {
+            const contexts = (event.getSource() as ListBinding).getContexts();
+            if (this.messageOpen || !contexts.length) {
                 return;
             }
 
             // Extract and remove the technical messages
-            aContexts.forEach(function (oContext) {
-                aMessages.push(oContext.getObject());
+            const messages: Message[] = [];
+            contexts.forEach(function (context) {
+                messages.push(context.getObject() as Message);
             });
-            oMessageManager.removeMessages(aMessages);
+            messageManager.removeMessages(messages);
 
             // Due to batching there can be more than one technical message. However the UX
             // guidelines say \\"display a single message in a message box\\" assuming that there
             // will be only one at a time.
-            sErrorTitle = aMessages.length === 1 ? sErrorText : sMultipleErrors;
-            this.showServiceError(sErrorTitle, aMessages[0].message);
+            const errorTitle = resourceBundle.getText(messages.length === 1 ? \\"errorText\\" : \\"multipleErrorsText\\");
+            this.showServiceError(errorTitle, messages[0].getMessage());
         }, this);
     }
 
@@ -13399,14 +13420,13 @@ export default class ErrorHandler extends UI5Object {
                 id : \\"serviceErrorMessageBox\\",
                 details,
                 styleClass: this.component.getContentDensityClass(),
-                actions: [MessageBox.Action.CLOSE],
-                onClose: function () {
-                    this._bMessageOpen = false;
+                actions: [Action.CLOSE],
+                onClose: function (this: ErrorHandler) {
+                    this.messageOpen = false;
                 }.bind(this)
             }
         );
     }
-
 }",
     "state": "modified",
   },
@@ -13431,19 +13451,13 @@ export default class NotFound extends BaseController {
   },
   "webapp/controller/Object.controller.ts": Object {
     "contents": "import Event from \\"sap/ui/base/Event\\";
-import History from \\"sap/ui/core/routing/History\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
 import BaseController from \\"./BaseController\\";
-import { currencyValue } from \\"../model/formatter\\";
 
 /**
  * @namespace wrk1
  */
 export default class Object extends BaseController {
-
-    public readonly formatter = {
-        currencyValue
-    };
 
     /**
      * Called when the object controller is instantiated.
@@ -13457,24 +13471,8 @@ export default class Object extends BaseController {
             busy: true,
             delay: 0
         });
-        this.getRouter().getRoute(\\"object\\").attachPatternMatched(this.onObjectMatched, this);
+        this.getRouter().getRoute(\\"object\\")!.attachPatternMatched(this.onObjectMatched, this);
         this.setModel(viewModel, \\"objectView\\");
-    }
-
-    /**
-     * Event handler  for navigating back.
-     * It there is a history entry we go one step back in the browser history
-     * If not, it will replace the current entry of the browser history with the worklist route.
-     *
-     */
-    public onNavBack() {
-        var sPreviousHash = History.getInstance().getPreviousHash();
-        if (sPreviousHash !== undefined) {
-            // eslint-disable-next-line sap-no-history-manipulation
-            History.go(-1);
-        } else {
-            this.getRouter().navTo(\\"worklist\\", {}, true);
-        }
     }
 
     /**
@@ -13493,7 +13491,7 @@ export default class Object extends BaseController {
      * @param objectPath path to the object to be bound
      */
     private bindView(objectPath: string) {
-        var viewModel = this.getModel(\\"objectView\\");
+        const viewModel = this.getModel<JSONModel>(\\"objectView\\");
 
         this.getView()!.bindElement({
             path: objectPath,
@@ -13510,50 +13508,44 @@ export default class Object extends BaseController {
     }
 
     private onBindingChange() {
-        var oView = this.getView(),
-            viewModel = this.getModel(\\"objectView\\"),
-            oElementBinding = oView.getElementBinding();
+        const view = this.getView()!;
+        const viewModel = this.getModel<JSONModel>(\\"objectView\\");
+        const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (!oElementBinding.getBoundContext()) {
-            this.getRouter().getTargets().display(\\"objectNotFound\\");
+        if (!elementBinding.getBoundContext()) {
+            this.getRouter().getTargets()!.display(\\"objectNotFound\\");
             return;
         }
 
-        var oResourceBundle = this.getResourceBundle(),
-            oObject = oView.getBindingContext().getObject(),
-            sObjectId = oObject.Name,
-            sObjectName = oObject.SEPMRA_C_PD_Product;
+        const detailObject = view.getBindingContext()!.getObject() as { Name: string; SEPMRA_C_PD_Product: string};
+        const id = detailObject.Name;
+        const name = detailObject.SEPMRA_C_PD_Product;
 
         viewModel.setProperty(\\"/busy\\", false);
         viewModel.setProperty(\\"/shareSendEmailSubject\\",
-            oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
+            this.getResourceBundle().getText(\\"shareSendEmailObjectSubject\\", [id]));
         viewModel.setProperty(\\"/shareSendEmailMessage\\",
-            oResourceBundle.getText(\\"shareSendEmailObjectMessage\\", [sObjectName, sObjectId, location.href]));
-    }
+            this.getResourceBundle().getText(\\"shareSendEmailObjectMessage\\", [name, id, location.href]));
+}
 }
 ",
     "state": "modified",
   },
   "webapp/controller/Worklist.controller.ts": Object {
     "contents": "import Event from \\"sap/ui/base/Event\\";
-import History from \\"sap/ui/core/routing/History\\";
 import Filter from \\"sap/ui/model/Filter\\";
 import FilterOperator from \\"sap/ui/model/FilterOperator\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
 import ObjectListItem from \\"sap/m/ObjectListItem\\";
 import BaseController from \\"./BaseController\\";
-import { currencyValue } from \\"../model/formatter\\";
+import Table from \\"sap/m/Table\\";
+import ListBinding from \\"sap/ui/model/ListBinding\\";
 
 /**
  * @namespace wrk1
  */
 export default class Worklist extends BaseController {
-
-    public readonly formatter = {
-        currencyValue
-    };
-
     /**
      * Called when the worklist controller is instantiated.
      *
@@ -13580,17 +13572,17 @@ export default class Worklist extends BaseController {
      */
     public onUpdateFinished(event: Event) {
         // update the worklist's object counter after the table update
-        var sTitle,
-            oTable = event.getSource(),
-            iTotalItems = event.getParameter(\\"total\\");
+        const table = event.getSource() as Table;
+        const total = event.getParameter(\\"total\\") as number;
         // only update the counter if the length is final and
         // the table is not empty
-        if (iTotalItems && oTable.getBinding(\\"items\\").isLengthFinal()) {
-            sTitle = this.getResourceBundle().getText(\\"worklistTableTitleCount\\", [iTotalItems]);
+        let title: string;
+        if (total && (table.getBinding(\\"items\\") as ListBinding).isLengthFinal()) {
+            title = this.getResourceBundle().getText(\\"worklistTableTitleCount\\", [total]);
         } else {
-            sTitle = this.getResourceBundle().getText(\\"worklistTableTitle\\");
+            title = this.getResourceBundle().getText(\\"worklistTableTitle\\");
         }
-        this.getModel(\\"worklistView\\").setProperty(\\"/worklistTableTitle\\", sTitle);
+        this.getModel<JSONModel>(\\"worklistView\\").setProperty(\\"/worklistTableTitle\\", title);
     }
 
     /**
@@ -13600,37 +13592,25 @@ export default class Worklist extends BaseController {
      */
     public onPress(event: Event) {
         // The source is the list item that got pressed
-        this.showObject(event.getSource());
+        this.showObject(event.getSource() as ObjectListItem);
     }
-
-    /**
-     * Event handler for navigating back.
-     * Navigate back in the browser history
-     *
-     */
-    public onNavBack() {
-        // eslint-disable-next-line sap-no-history-manipulation
-        History.go(-1);
-    }
-
 
     public onSearch(event: Event) {
-        if (event.getParameters().refreshButtonPressed) {
+        if ((event.getParameters() as any).refreshButtonPressed) {
             // Search field's 'refresh' button has been pressed.
-            // This is visible if you select any main list item.
+            // This is visible if you select any list item.
             // In this case no new search is triggered, we only
             // refresh the list binding.
             this.onRefresh();
         } else {
-            var aTableSearchState = [];
+            const tableSearchState: Filter[] = [];
             var sQuery = event.getParameter(\\"query\\");
 
             if (sQuery && sQuery.length > 0) {
-                aTableSearchState = [new Filter(\\"Name\\", FilterOperator.Contains, sQuery)];
+                tableSearchState.push(new Filter(\\"Name\\", FilterOperator.Contains, sQuery));
             }
-            this.applySearch(aTableSearchState);
+            this.applySearch(tableSearchState);
         }
-
     }
 
     /**
@@ -13639,36 +13619,32 @@ export default class Worklist extends BaseController {
      *
      */
     public onRefresh() {
-        this.byId(\\"table\\").getBinding(\\"items\\").refresh();
+        this.byId(\\"table\\")!.getBinding(\\"items\\").refresh();
     }
 
-    /* =========================================================== */
-    /* internal methods                                            */
-    /* =========================================================== */
-
     /**
-     * Shows the selected item on the object page
-     * @param {sap.m.ObjectListItem} oItem selected Item
-     * @private
+     * Shows the selected item on the object page,
+     *
+     * @param item selected Item
      */
-    showObject(item: ObjectListItem) {
+    private showObject(item: ObjectListItem) {
         this.getRouter().navTo(\\"object\\", {
-            objectId: item.getBindingContext().getPath().substring(\\"/SEPMRA_C_PD_Product\\".length)
+            objectId: item.getBindingContext()!.getPath().substring(\\"/SEPMRA_C_PD_Product\\".length)
         });
     }
 
     /**
      * Internal helper method to apply both filter and search state together on the list binding.
      *
-     * @param aTableSearchState An array of filters for the search
+     * @param tableSearchState An array of filters for the search
      */
     private applySearch(tableSearchState: Filter[]) {
-        var oTable = this.byId(\\"table\\"),
-            oViewModel = this.getModel(\\"worklistView\\");
-        oTable.getBinding(\\"items\\").filter(tableSearchState, \\"Application\\");
+        const table = this.byId(\\"table\\") as Table;
+        const viewModel = this.getModel<JSONModel>(\\"worklistView\\");
+        (table.getBinding(\\"items\\") as ListBinding).filter(tableSearchState, \\"Application\\");
         // changes the noDataText of the list in case there are no filter results
         if (tableSearchState.length !== 0) {
-            oViewModel.setProperty(\\"/tableNoDataText\\", this.getResourceBundle().getText(\\"worklistNoDataWithSearchText\\"));
+            viewModel.setProperty(\\"/tableNoDataText\\", this.getResourceBundle().getText(\\"worklistNoDataWithSearchText\\"));
         }
     }
 }

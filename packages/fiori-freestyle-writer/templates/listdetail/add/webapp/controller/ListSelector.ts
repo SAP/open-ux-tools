@@ -1,11 +1,12 @@
 import UI5Object from "sap/ui/base/Object";
 import Log from "sap/base/Log";
 import List from "sap/m/List";
+import ListItemBase from "sap/m/ListItemBase";
 
 /**
  * @namespace <%- app.id %>
  */
-export default class ErrorHandler extends UI5Object {
+export default class ListSelector extends UI5Object {
 
     protected readonly oWhenListLoadingIsDone: Promise<any>;
     protected readonly _oWhenListHasBeenSet: Promise<void>;
@@ -16,27 +17,23 @@ export default class ErrorHandler extends UI5Object {
      * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundMasterList
      * function.
      */
-    constructor() {
+     constructor() {
         super();
-        this._oWhenListHasBeenSet = new Promise(function (fnResolveListHasBeenSet) {
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
             this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
         // invoke selectItem functions before calling setBoundList
-        this.oWhenListLoadingIsDone = new Promise(function (fnResolve, fnReject) {
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
-                .then(function (oList) {
-                    oList.getBinding("items").attachEventOnce("dataReceived",
-                        function () {
+                .then(function (this: ListSelector, list: List) {
+                    list.getBinding("items").attachEventOnce("dataReceived",
+                        function (this: ListSelector) {
                             if (this.list.getItems().length) {
-                                fnResolve({
-                                    list: oList
-                                });
+                                resolve({ list });
                             } else {
                                 // No items in the list
-                                fnReject({
-                                    list: oList
-                                });
+                                reject({ list });
                             }
                         }.bind(this)
                     );
@@ -48,9 +45,9 @@ export default class ErrorHandler extends UI5Object {
      * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
      * May only be invoked once per ListSelector instance.
      * @param list The list all the select functions will be invoked on.
-     * @public
+     *
      */
-    setBoundList(list: List) {
+     public setBoundList(list: List) {
         this.list = list;
         this._fnResolveListHasBeenSet(list);
     }
@@ -58,36 +55,33 @@ export default class ErrorHandler extends UI5Object {
     /**
      * Tries to select and scroll to a list item with a matching binding context. If there are no items matching the binding context or the ListMode is none,
      * no selection/scrolling will happen
-     * @param {string} sBindingPath the binding path matching the binding path of a list item
-     * @public
+     * @param path the binding path matching the binding path of a list item
+     *
      */
-    selectAListItem(sBindingPath) {
+    public selectAListItem(path: string) {
 
         this.oWhenListLoadingIsDone.then(
-            function () {
-                var oList = this.list,
-                    oSelectedItem;
-
-                if (oList.getMode() === "None") {
+            function (this: ListSelector) {
+                const list = this.list;
+                if (list.getMode() === "None") {
                     return;
                 }
-
-                oSelectedItem = oList.getSelectedItem();
 
                 // skip update if the current selection is already matching the object path
-                if (oSelectedItem && oSelectedItem.getBindingContext().getPath() === sBindingPath) {
+                const selectedItem = list.getSelectedItem();
+                if (selectedItem && selectedItem.getBindingContext()!.getPath() === path) {
                     return;
                 }
 
-                oList.getItems().some(function (oItem) {
-                    if (oItem.getBindingContext() && oItem.getBindingContext().getPath() === sBindingPath) {
-                        oList.setSelectedItem(oItem);
+                list.getItems().some(function (oItem: ListItemBase) {
+                    if (oItem.getBindingContext() && oItem.getBindingContext()!.getPath() === path) {
+                        list.setSelectedItem(oItem);
                         return true;
                     }
                 });
             }.bind(this),
             function () {
-                Log.warning("Could not select the list item with the path" + sBindingPath + " because the list encountered an error or had no items");
+                Log.warning("Could not select the list item with the path" + path + " because the list encountered an error or had no items");
             }
         );
     }

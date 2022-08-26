@@ -1,21 +1,16 @@
 import Event from "sap/ui/base/Event";
-import History from "sap/ui/core/routing/History";
 import Filter from "sap/ui/model/Filter";
 import FilterOperator from "sap/ui/model/FilterOperator";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import ObjectListItem from "sap/m/ObjectListItem";
 import BaseController from "./BaseController";
-import { currencyValue } from "../model/formatter";
+import Table from "sap/m/Table";
+import ListBinding from "sap/ui/model/ListBinding";
 
 /**
  * @namespace <%- app.id %>
  */
 export default class Worklist extends BaseController {
-
-    public readonly formatter = {
-        currencyValue
-    };
-
     /**
      * Called when the worklist controller is instantiated.
      *
@@ -42,17 +37,17 @@ export default class Worklist extends BaseController {
      */
     public onUpdateFinished(event: Event) {
         // update the worklist's object counter after the table update
-        var sTitle,
-            oTable = event.getSource(),
-            iTotalItems = event.getParameter("total");
+        const table = event.getSource() as Table;
+        const total = event.getParameter("total") as number;
         // only update the counter if the length is final and
         // the table is not empty
-        if (iTotalItems && oTable.getBinding("items").isLengthFinal()) {
-            sTitle = this.getResourceBundle().getText("worklistTableTitleCount", [iTotalItems]);
+        let title: string;
+        if (total && (table.getBinding("items") as ListBinding).isLengthFinal()) {
+            title = this.getResourceBundle().getText("worklistTableTitleCount", [total]);
         } else {
-            sTitle = this.getResourceBundle().getText("worklistTableTitle");
+            title = this.getResourceBundle().getText("worklistTableTitle");
         }
-        this.getModel("worklistView").setProperty("/worklistTableTitle", sTitle);
+        this.getModel<JSONModel>("worklistView").setProperty("/worklistTableTitle", title);
     }
 
     /**
@@ -62,37 +57,25 @@ export default class Worklist extends BaseController {
      */
     public onPress(event: Event) {
         // The source is the list item that got pressed
-        this.showObject(event.getSource());
+        this.showObject(event.getSource() as ObjectListItem);
     }
-
-    /**
-     * Event handler for navigating back.
-     * Navigate back in the browser history
-     *
-     */
-    public onNavBack() {
-        // eslint-disable-next-line sap-no-history-manipulation
-        History.go(-1);
-    }
-
 
     public onSearch(event: Event) {
-        if (event.getParameters().refreshButtonPressed) {
+        if ((event.getParameters() as any).refreshButtonPressed) {
             // Search field's 'refresh' button has been pressed.
-            // This is visible if you select any main list item.
+            // This is visible if you select any list item.
             // In this case no new search is triggered, we only
             // refresh the list binding.
             this.onRefresh();
         } else {
-            var aTableSearchState = [];
+            const tableSearchState: Filter[] = [];
             var sQuery = event.getParameter("query");
 
             if (sQuery && sQuery.length > 0) {
-                aTableSearchState = [new Filter("<%- template.settings.entity.idProperty %>", FilterOperator.Contains, sQuery)];
+                tableSearchState.push(new Filter("Name", FilterOperator.Contains, sQuery));
             }
-            this.applySearch(aTableSearchState);
+            this.applySearch(tableSearchState);
         }
-
     }
 
     /**
@@ -101,36 +84,32 @@ export default class Worklist extends BaseController {
      *
      */
     public onRefresh() {
-        this.byId("table").getBinding("items").refresh();
+        this.byId("table")!.getBinding("items").refresh();
     }
 
-    /* =========================================================== */
-    /* internal methods                                            */
-    /* =========================================================== */
-
     /**
-     * Shows the selected item on the object page
-     * @param {sap.m.ObjectListItem} oItem selected Item
-     * @private
+     * Shows the selected item on the object page,
+     *
+     * @param item selected Item
      */
-    showObject(item: ObjectListItem) {
+    private showObject(item: ObjectListItem) {
         this.getRouter().navTo("object", {
-            objectId: item.getBindingContext().getPath().substring("/<%- template.settings.entity.name %>".length)
+            objectId: item.getBindingContext()!.getPath().substring("/SEPMRA_C_PD_Product".length)
         });
     }
 
     /**
      * Internal helper method to apply both filter and search state together on the list binding.
      *
-     * @param aTableSearchState An array of filters for the search
+     * @param tableSearchState An array of filters for the search
      */
     private applySearch(tableSearchState: Filter[]) {
-        var oTable = this.byId("table"),
-            oViewModel = this.getModel("worklistView");
-        oTable.getBinding("items").filter(tableSearchState, "Application");
+        const table = this.byId("table") as Table;
+        const viewModel = this.getModel<JSONModel>("worklistView");
+        (table.getBinding("items") as ListBinding).filter(tableSearchState, "Application");
         // changes the noDataText of the list in case there are no filter results
         if (tableSearchState.length !== 0) {
-            oViewModel.setProperty("/tableNoDataText", this.getResourceBundle().getText("worklistNoDataWithSearchText"));
+            viewModel.setProperty("/tableNoDataText", this.getResourceBundle().getText("worklistNoDataWithSearchText"));
         }
     }
 }
