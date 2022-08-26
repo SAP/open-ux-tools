@@ -1,6 +1,6 @@
 import WinstonTransport from 'winston-transport';
 import type { TransportOptions } from '../types';
-import { Transport } from '../types';
+import { LogLevel, Transport } from '../types';
 
 export type ConsoleTransportOptions = TransportOptions;
 /**
@@ -112,16 +112,25 @@ export class VSCodeTransport extends Transport {
 }
 
 /**
- * Transport for environment check
+ * Transport for logging into an array
  */
-export class EnvcheckTransport extends WinstonTransport {
-    public readonly messageCollector: { level: string; message: string }[];
-    constructor() {
-        super({ level: 'debug' });
-        this.messageCollector = [];
+export interface ArrayTransportLogEntry {
+    level: string;
+    message: string;
+}
+
+export interface ArrayTransportOptions extends TransportOptions {
+    logs?: ArrayTransportLogEntry[];
+}
+
+export class ArrayTransport extends WinstonTransport {
+    public readonly logs: ArrayTransportLogEntry[];
+    constructor(opts?: ArrayTransportOptions) {
+        super({ level: typeof opts?.logLevel === 'number' ? LogLevel[opts.logLevel].toLowerCase() : 'debug' });
+        this.logs = opts?.logs || [];
     }
-    log(info: { level: string; message: string }, next: () => void) {
-        this.messageCollector.push(info);
+    log(info: ArrayTransportLogEntry, next: () => void) {
+        this.logs.push(info);
         next();
     }
     // Mixin from Transport

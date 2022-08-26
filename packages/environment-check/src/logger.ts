@@ -1,4 +1,5 @@
-import { EnvcheckTransport, ToolsLogger } from '@sap-ux/logger';
+import { ArrayTransport, ToolsLogger } from '@sap-ux/logger';
+import type { ArrayTransportLogEntry } from '@sap-ux/logger';
 import type { ResultMessage, Severity } from './types';
 
 /**
@@ -6,7 +7,7 @@ import type { ResultMessage, Severity } from './types';
  */
 class Logger extends ToolsLogger {
     constructor() {
-        super({ transports: [new EnvcheckTransport()] });
+        super({ transports: [new ArrayTransport()] });
     }
 
     /**
@@ -27,9 +28,9 @@ class Logger extends ToolsLogger {
      */
     getMessages(): ResultMessage[] {
         let messages: ResultMessage[] = [];
-        const transport = this.transports()[0];
-        if (transport instanceof EnvcheckTransport) {
-            messages = transport.messageCollector.map((message: { level: string; message: string }) => ({
+        const transport = this.transports().find((t) => t instanceof ArrayTransport);
+        if (transport instanceof ArrayTransport) {
+            messages = transport.logs.map((message: ArrayTransportLogEntry) => ({
                 severity: message.level as Severity,
                 text: message.message
             }));

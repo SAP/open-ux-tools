@@ -1,8 +1,9 @@
 import 'jest-extended';
 import { LogLevel, ToolsLogger, Transport } from '../../../src';
+import type { ArrayTransportLogEntry } from '../../../src/transports';
 import {
     ConsoleTransport,
-    EnvcheckTransport,
+    ArrayTransport,
     NullTransport,
     UI5ToolingTransport,
     VSCodeTransport
@@ -65,11 +66,46 @@ describe('Default (Winston) logger', () => {
         expect(logger.transports()).toIncludeSameMembers([new VSCodeTransport({ channelName: 'sampleChannel' })]);
     });
 
-    it('Envcheck transport', () => {
+    it('Should log into an array when no options are passed to array transport', () => {
         const logger = new ToolsLogger({
-            transports: [new EnvcheckTransport()]
+            transports: [new ArrayTransport()]
         });
-        expect(logger.transports()[0] instanceof EnvcheckTransport).toBeTrue();
+        logger.debug('DEBUG');
+        logger.info('INFO');
+        logger.warn('WARN');
+        logger.error('ERROR');
+        expect(logger.transports()[0] instanceof ArrayTransport).toBeTrue();
+        expect((logger.transports()[0] as ArrayTransport).logs).toMatchObject([
+            { level: 'debug', message: 'DEBUG' },
+            { level: 'info', message: 'INFO' },
+            { level: 'warn', message: 'WARN' },
+            { level: 'error', message: 'ERROR' }
+        ]);
+    });
+
+    it('Should log into a provided array', () => {
+        const logs: ArrayTransportLogEntry[] = [];
+        const logger = new ToolsLogger({
+            transports: [new ArrayTransport({ logs })]
+        });
+        logger.info('INFO');
+        logger.warn('WARN');
+        logger.error('ERROR');
+        expect(logs).toMatchObject([
+            { level: 'info', message: 'INFO' },
+            { level: 'warn', message: 'WARN' },
+            { level: 'error', message: 'ERROR' }
+        ]);
+    });
+
+    it('Should log only messages according to custom log level into array', () => {
+        const logs: ArrayTransportLogEntry[] = [];
+        const logger = new ToolsLogger({
+            transports: [new ArrayTransport({ logs, logLevel: LogLevel.Error })]
+        });
+        logger.warn('WARN');
+        logger.error('ERROR');
+        expect(logs).toMatchObject([{ level: 'error', message: 'ERROR' }]);
     });
 
     it('UI5 Tooling transport is only added once per channel', () => {
@@ -117,13 +153,13 @@ describe('Default (Winston) logger', () => {
         const consoleLog = jest.spyOn(winston.transports.Console.prototype, 'log').mockImplementation(() => 0);
         const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log').mockClear();
         const vscodeLog = jest.spyOn(WinstonVSCodeTransport.prototype, 'log').mockClear();
-        const envcheckLog = jest.spyOn(EnvcheckTransport.prototype, 'log').mockClear();
+        const arrayLog = jest.spyOn(ArrayTransport.prototype, 'log').mockClear();
         const logger = new ToolsLogger({
             transports: [
                 new ConsoleTransport(),
                 new NullTransport(),
                 new VSCodeTransport({ channelName: 'random' }),
-                new EnvcheckTransport()
+                new ArrayTransport()
             ]
         });
         logger.info('info message');
@@ -139,7 +175,7 @@ describe('Default (Winston) logger', () => {
             expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
-        expect(envcheckLog).toBeCalledWith(
+        expect(arrayLog).toBeCalledWith(
             expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );

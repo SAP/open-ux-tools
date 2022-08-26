@@ -4,7 +4,7 @@ import type WinstonTransport from 'winston-transport';
 import winston, { format } from 'winston';
 import {
     ConsoleTransport,
-    EnvcheckTransport,
+    ArrayTransport,
     FileTransport,
     NullTransport,
     UI5ToolingTransport,
@@ -103,7 +103,7 @@ const consoleFormat = format.combine(
  *  Will throw an error if the transport is not recognized
  *
  * @param transport
- * @returns {WinstonTransport}
+ * @returns {WinstonTransport} winston transport
  */
 export function toWinstonTransport(transport: Transport): WinstonTransport {
     if (transport instanceof NullTransport) {
@@ -122,7 +122,7 @@ export function toWinstonTransport(transport: Transport): WinstonTransport {
             ...toWinstonTransportOptions(transport.options),
             format: ui5ToolingFormat(transport.options.moduleName)
         });
-    } else if (transport instanceof EnvcheckTransport) {
+    } else if (transport instanceof ArrayTransport) {
         return transport;
     } else {
         throw new Error('Unrecognized transport type');
