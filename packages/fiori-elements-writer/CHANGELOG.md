@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.5.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+### Patch Changes
+
+-   Updated dependencies [d351f81]
+    -   @sap-ux/fe-fpm-writer@0.14.0
+    -   @sap-ux/ui5-application-writer@0.15.0
+
 ## 0.4.8
 
 ### Patch Changes

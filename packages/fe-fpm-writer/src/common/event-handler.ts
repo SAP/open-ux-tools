@@ -11,6 +11,7 @@ import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/ut
  * @param {InternalCustomElement} config - configuration
  * @param {EventHandlerConfiguration | true | string} [eventHandler] - eventHandler for creation
  * @param {boolean} [controllerSuffix=false] - append controller suffix to new file
+ * @param {boolean} typescript - create Typescript file instead of Javascript
  * @returns {string} full namespace path to method
  */
 export function applyEventHandlerConfiguration(
@@ -18,7 +19,8 @@ export function applyEventHandlerConfiguration(
     root: string,
     config: Partial<InternalCustomElement>,
     eventHandler: EventHandlerConfiguration | true | string,
-    controllerSuffix = false
+    controllerSuffix = false,
+    typescript?: boolean
 ): string {
     if (typeof eventHandler === 'string') {
         // Existing event handler is passed - no need for file creation/update
@@ -39,9 +41,11 @@ export function applyEventHandlerConfiguration(
             fileName = eventHandler.fileName;
         }
     }
-    const controllerPath = join(config.path || '', `${fileName}${controllerSuffix ? '.controller' : ''}.js`);
+
+    const ext = typescript ? 'ts' : 'js';
+    const controllerPath = join(config.path || '', `${fileName}${controllerSuffix ? '.controller' : ''}.${ext}`);
     if (!fs.exists(controllerPath)) {
-        fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, {
+        fs.copyTpl(join(root, `common/EventHandler.${ext}`), controllerPath, {
             eventHandlerFnName
         });
     } else if (insertScript) {

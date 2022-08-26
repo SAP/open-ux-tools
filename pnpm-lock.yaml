@@ -238,6 +238,7 @@ importers:
 
     packages/fiori-elements-writer:
         specifiers:
+            '@sap-ux/fe-fpm-writer': workspace:*
             '@sap-ux/odata-service-writer': workspace:*
             '@sap-ux/ui5-application-writer': workspace:*
             '@sap-ux/ui5-config': workspace:*
@@ -256,6 +257,7 @@ importers:
             read-pkg-up: 7.0.1
             semver: 7.3.5
         dependencies:
+            '@sap-ux/fe-fpm-writer': link:../fe-fpm-writer
             '@sap-ux/odata-service-writer': link:../odata-service-writer
             '@sap-ux/ui5-application-writer': link:../ui5-application-writer
             '@sap-ux/ui5-config': link:../ui5-config
