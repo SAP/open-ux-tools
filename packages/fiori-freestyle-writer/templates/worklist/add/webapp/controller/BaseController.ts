@@ -2,7 +2,7 @@ import { URLHelper } from "sap/m/library";
 import Controller from "sap/ui/core/mvc/Controller";
 import Router from "sap/ui/core/routing/Router";
 import Model from "sap/ui/model/Model";
-import View from "sap/ui/mvc/View";
+import View from "sap/ui/core/mvc/View";
 import ResourceModel from "sap/ui/model/resource/ResourceModel";
 
 /**
