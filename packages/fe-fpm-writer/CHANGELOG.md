@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.14.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
 ## 0.13.6
 
 ### Patch Changes
