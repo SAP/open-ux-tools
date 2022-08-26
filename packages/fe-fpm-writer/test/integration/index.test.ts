@@ -182,8 +182,8 @@ describe('use FPM with existing apps', () => {
             );
             // Generate custom action by appending existing file
             const fragment = config.settings.typescript
-                ? `\nexport function onAppended() {\n            MessageToast.show("Custom handler invoked.");\n        }`
-                : `,\n        onAppended: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`;
+                ? `\nexport function onAppended() {\n            window.location.href += '/_Booking';\n        }`
+                : `,\n        onAppended: function() {\n            window.location.href += '/_Booking';\n        }`;
             generateCustomAction(
                 config.path,
                 {
@@ -193,7 +193,7 @@ describe('use FPM with existing apps', () => {
                         control: TargetControl.header
                     },
                     settings: {
-                        text: 'My other Action'
+                        text: 'Navigate to CustomPage (appended action)'
                     },
                     eventHandler: {
                         fileName: 'AnotherCustomAction',
