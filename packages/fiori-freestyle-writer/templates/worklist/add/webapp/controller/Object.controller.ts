@@ -63,7 +63,7 @@ export default class Object extends BaseController {
     private bindView(objectPath: string) {
         var viewModel = this.getModel("objectView");
 
-        this.getView().bindElement({
+        this.getView()!.bindElement({
             path: objectPath,
             events: {
                 change: this.onBindingChange.bind(this),

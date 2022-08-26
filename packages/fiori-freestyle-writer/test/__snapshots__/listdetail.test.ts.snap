@@ -2839,6 +2839,7 @@ export default class Component extends UIComponent {
   },
   "webapp/controller/App.controller.ts": Object {
     "contents": "import JSONModel from \\"sap/ui/model/json/JSONModel\\";
+import ODataModel from \\"sap/ui/model/odata/v2/ODataModel\\";
 import BaseController from \\"./BaseController\\";
 
 /**
@@ -2847,7 +2848,7 @@ import BaseController from \\"./BaseController\\";
 export default class App extends BaseController {
 
     public onInit(): void {
-        const originalBusyDelay = this.getView().getBusyIndicatorDelay();
+        const originalBusyDelay = this.getView()!.getBusyIndicatorDelay();
 
         const viewModel = new JSONModel({
             busy : true,
@@ -2868,35 +2869,46 @@ export default class App extends BaseController {
         };
 
         // since then() has no \\"reject\\"-path attach to the MetadataFailed-Event to disable the busy indicator in case of an error
-        this.getOwnerComponent().getModel().metadataLoaded().then(fnSetAppNotBusy);
-        this.getOwnerComponent().getModel().attachMetadataFailed(fnSetAppNotBusy);
+        const mainModel: ODataModel = this.getUIComponent().getModel() as ODataModel;
+        mainModel.metadataLoaded().then(fnSetAppNotBusy);
+        mainModel.attachMetadataFailed(fnSetAppNotBusy);
 
         // apply content density mode to root view
-        this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
+        this.getView()!.addStyleClass(this.getUIComponent().getContentDensityClass());
     }
 }
 ",
     "state": "modified",
   },
   "webapp/controller/BaseController.ts": Object {
-    "contents": "import Controller from \\"sap/ui/core/mvc/Controller\\";
-import History from \\"sap/ui/core/routing/History\\";
-import Router from \\"sap/ui/core/routing/Router\\";
+    "contents": "import ResourceBundle from \\"sap/base/i18n/ResourceBundle\\";
 import Model from \\"sap/ui/model/Model\\";
-import View from \\"sap/ui/core/mvc/View\\";
 import ResourceModel from \\"sap/ui/model/resource/ResourceModel\\";
+import Controller from \\"sap/ui/core/mvc/Controller\\";
+import View from \\"sap/ui/core/mvc/View\\";
+import UIComponent from \\"sap/ui/core/UIComponent\\";
+import Router from \\"sap/ui/core/routing/Router\\";
 
 /**
  * @namespace test.me
  */
 export default class BaseController extends Controller {
     /**
+     * Convenience method for accessing the owner component as UIComponent.
+     *
+     * @returns the owner component
+     */
+     protected getUIComponent(): UIComponent {
+        return super.getOwnerComponent() as UIComponent;
+    }
+
+    /**
      * Convenience method for accessing the router in every controller of the application.
      *
      * @returns the router for this component
      */
     protected getRouter(): Router {
-        return this.getOwnerComponent().getRouter();
+        return this.getUIComponent().getRouter();
     }
 
     /**
@@ -2906,7 +2918,7 @@ export default class BaseController extends Controller {
      * @returns the model instance
      */
     protected getModel(name: string): Model {
-        return this.getView().getModel(name);
+        return this.getView()!.getModel(name);
     }
 
     /**
@@ -2917,16 +2929,16 @@ export default class BaseController extends Controller {
      * @returns the view instance
      */
     protected setModel(model: Model, name: string): View {
-        return this.getView().setModel(model, name);
+        return this.getView()!.setModel(model, name);
     }
 
     /**
      * Convenience method for getting the resource bundle.
      *
-     * @returns the resourceModel of the component
+     * @returns the resourceBundle of the component
      */
-    protected getResourceBundle(): ResourceModel {
-        return this.getOwnerComponent().getModel(\\"i18n\\").getResourceBundle();
+     protected getResourceBundle(): ResourceBundle | Promise<ResourceBundle> {
+        return (this.getUIComponent().getModel(\\"i18n\\") as ResourceModel).getResourceBundle();
     }
 
     /**
@@ -2979,7 +2991,7 @@ export default class Detail extends BaseController {
 
         this.setModel(viewModel, \\"detailView\\");
 
-        this.getOwnerComponent().getModel().metadataLoaded().then(this.onMetadataLoaded.bind(this));
+        this.getUIComponent().getModel().metadataLoaded().then(this.onMetadataLoaded.bind(this));
     }
 
     /* =========================================================== */
@@ -3055,7 +3067,7 @@ export default class Detail extends BaseController {
         // If the view was not bound yet its not busy, only if the binding requests data it is set to busy again
         viewModel.setProperty(\\"/busy\\", false);
 
-        this.getView().bindElement({
+        this.getView()!.bindElement({
             path: objectPath,
             events: {
                 change: this.onBindingChange.bind(this),
@@ -3078,7 +3090,7 @@ export default class Detail extends BaseController {
             this.getRouter().getTargets().display(\\"detailObjectNotFound\\");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
-            this.getOwnerComponent().listSelector.clearListListSelection();
+            this.getUIComponent().listSelector.clearListListSelection();
             return;
         }
 
@@ -3089,7 +3101,7 @@ export default class Detail extends BaseController {
             sObjectName = oObject.CompanyName,
             viewModel = this.getModel(\\"detailView\\");
 
-        this.getOwnerComponent().listSelector.selectAListItem(sPath);
+        this.getUIComponent().listSelector.selectAListItem(sPath);
 
         viewModel.setProperty(\\"/shareSendEmailSubject\\",
             oResourceBundle.getText(\\"shareSendEmailObjectSubject\\", [sObjectId]));
@@ -3099,7 +3111,7 @@ export default class Detail extends BaseController {
 
     protected onMetadataLoaded() {
         // Store original busy indicator delay for the detail view
-        var iOriginalViewBusyDelay = this.getView().getBusyIndicatorDelay(),
+        var iOriginalViewBusyDelay = this.getView()!.getBusyIndicatorDelay(),
             viewModel = this.getModel(\\"detailView\\"),
             oLineItemTable = this.byId(\\"lineItemsList\\"),
             iOriginalLineItemTableBusyDelay = oLineItemTable.getBusyIndicatorDelay();;
@@ -3126,7 +3138,7 @@ export default class Detail extends BaseController {
     protected onCloseDetailPress() {
         this.getModel(\\"appView\\").setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", false);
         // No item should be selected on list after detail page is closed
-        this.getOwnerComponent().listSelector.clearListSelection();
+        this.getUIComponent().listSelector.clearListSelection();
         this.getRouter().navTo(\\"list\\");
     }
 
@@ -3276,9 +3288,9 @@ export default class List extends BaseController {
             viewModel.setProperty(\\"/delay\\", iOriginalBusyDelay);
         });
 
-        this.getView().addEventDelegate({
+        this.getView()!.addEventDelegate({
             onBeforeFirstShow: function () {
-                this.getOwnerComponent().listSelector.setBoundList(this.list);
+                this.getUIComponent().listSelector.setBoundList(this.list);
             }.bind(this)
         });
 
@@ -3353,13 +3365,13 @@ export default class List extends BaseController {
         // load asynchronous XML fragment
         if (!this.byId(\\"viewSettingsDialog\\")) {
             Fragment.load({
-                id: this.getView().getId(),
+                id: this.getView()!.getId(),
                 name: \\"test.me.view.ViewSettingsDialog\\",
                 controller: this
             }).then(function (oDialog) {
                 // connect dialog to the root view of this component (models, lifecycle)
-                this.getView().addDependent(oDialog);
-                oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
+                this.getView()!.addDependent(oDialog);
+                oDialog.addStyleClass(this.getUIComponent().getContentDensityClass());
                 oDialog.open(sDialogTab);
             }.bind(this));
         } else {

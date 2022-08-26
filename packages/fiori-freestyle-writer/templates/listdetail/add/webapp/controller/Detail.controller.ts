@@ -29,7 +29,7 @@ export default class Detail extends BaseController {
 
         this.setModel(viewModel, "detailView");
 
-        this.getOwnerComponent().getModel().metadataLoaded().then(this.onMetadataLoaded.bind(this));
+        this.getUIComponent().getModel().metadataLoaded().then(this.onMetadataLoaded.bind(this));
     }
 
     /* =========================================================== */
@@ -105,7 +105,7 @@ export default class Detail extends BaseController {
         // If the view was not bound yet its not busy, only if the binding requests data it is set to busy again
         viewModel.setProperty("/busy", false);
 
-        this.getView().bindElement({
+        this.getView()!.bindElement({
             path: objectPath,
             events: {
                 change: this.onBindingChange.bind(this),
@@ -128,7 +128,7 @@ export default class Detail extends BaseController {
             this.getRouter().getTargets().display("detailObjectNotFound");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
-            this.getOwnerComponent().listSelector.clearListListSelection();
+            this.getUIComponent().listSelector.clearListListSelection();
             return;
         }
 
@@ -139,7 +139,7 @@ export default class Detail extends BaseController {
             sObjectName = oObject.<%=template.settings.entity.idProperty%>,
             viewModel = this.getModel("detailView");
 
-        this.getOwnerComponent().listSelector.selectAListItem(sPath);
+        this.getUIComponent().listSelector.selectAListItem(sPath);
 
         viewModel.setProperty("/shareSendEmailSubject",
             oResourceBundle.getText("shareSendEmailObjectSubject", [sObjectId]));
@@ -149,7 +149,7 @@ export default class Detail extends BaseController {
 
     protected onMetadataLoaded() {
         // Store original busy indicator delay for the detail view
-        var iOriginalViewBusyDelay = this.getView().getBusyIndicatorDelay(),
+        var iOriginalViewBusyDelay = this.getView()!.getBusyIndicatorDelay(),
             viewModel = this.getModel("detailView")<%if (template.settings.lineItem.name) {%>,
             oLineItemTable = this.byId("lineItemsList"),
             iOriginalLineItemTableBusyDelay = oLineItemTable.getBusyIndicatorDelay();<%}%>;
@@ -176,7 +176,7 @@ export default class Detail extends BaseController {
     protected onCloseDetailPress() {
         this.getModel("appView").setProperty("/actionButtonsInfo/midColumn/fullScreen", false);
         // No item should be selected on list after detail page is closed
-        this.getOwnerComponent().listSelector.clearListSelection();
+        this.getUIComponent().listSelector.clearListSelection();
         this.getRouter().navTo("list");
     }
 

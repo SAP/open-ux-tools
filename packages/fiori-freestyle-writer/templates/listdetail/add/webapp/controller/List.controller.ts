@@ -70,9 +70,9 @@ export default class List extends BaseController {
             viewModel.setProperty("/delay", iOriginalBusyDelay);
         });
 
-        this.getView().addEventDelegate({
+        this.getView()!.addEventDelegate({
             onBeforeFirstShow: function () {
-                this.getOwnerComponent().listSelector.setBoundList(this.list);
+                this.getUIComponent().listSelector.setBoundList(this.list);
             }.bind(this)
         });
 
@@ -147,13 +147,13 @@ export default class List extends BaseController {
         // load asynchronous XML fragment
         if (!this.byId("viewSettingsDialog")) {
             Fragment.load({
-                id: this.getView().getId(),
+                id: this.getView()!.getId(),
                 name: "<%- app.id %>.view.ViewSettingsDialog",
                 controller: this
             }).then(function (oDialog) {
                 // connect dialog to the root view of this component (models, lifecycle)
-                this.getView().addDependent(oDialog);
-                oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
+                this.getView()!.addDependent(oDialog);
+                oDialog.addStyleClass(this.getUIComponent().getContentDensityClass());
                 oDialog.open(sDialogTab);
             }.bind(this));
         } else {

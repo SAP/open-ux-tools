@@ -1,4 +1,5 @@
 import JSONModel from "sap/ui/model/json/JSONModel";
+import ODataModel from "sap/ui/model/odata/v2/ODataModel";
 import BaseController from "./BaseController";
 
 /**
@@ -7,7 +8,7 @@ import BaseController from "./BaseController";
 export default class App extends BaseController {
 
     public onInit(): void {
-        const originalBusyDelay = this.getView().getBusyIndicatorDelay();
+        const originalBusyDelay = this.getView()!.getBusyIndicatorDelay();
 
         const viewModel = new JSONModel({
             busy : true,
@@ -28,10 +29,11 @@ export default class App extends BaseController {
         };
 
         // since then() has no "reject"-path attach to the MetadataFailed-Event to disable the busy indicator in case of an error
-        this.getOwnerComponent().getModel().metadataLoaded().then(fnSetAppNotBusy);
-        this.getOwnerComponent().getModel().attachMetadataFailed(fnSetAppNotBusy);
+        const mainModel: ODataModel = this.getUIComponent().getModel() as ODataModel;
+        mainModel.metadataLoaded().then(fnSetAppNotBusy);
+        mainModel.attachMetadataFailed(fnSetAppNotBusy);
 
         // apply content density mode to root view
-        this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
+        this.getView()!.addStyleClass(this.getUIComponent().getContentDensityClass());
     }
 }

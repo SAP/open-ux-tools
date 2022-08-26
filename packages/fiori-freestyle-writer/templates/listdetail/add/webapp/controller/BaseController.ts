@@ -1,21 +1,31 @@
-import Controller from "sap/ui/core/mvc/Controller";
-import History from "sap/ui/core/routing/History";
-import Router from "sap/ui/core/routing/Router";
+import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import Model from "sap/ui/model/Model";
-import View from "sap/ui/core/mvc/View";
 import ResourceModel from "sap/ui/model/resource/ResourceModel";
+import Controller from "sap/ui/core/mvc/Controller";
+import View from "sap/ui/core/mvc/View";
+import UIComponent from "sap/ui/core/UIComponent";
+import Router from "sap/ui/core/routing/Router";
 
 /**
  * @namespace <%- app.id %>
  */
 export default class BaseController extends Controller {
     /**
+     * Convenience method for accessing the owner component as UIComponent.
+     *
+     * @returns the owner component
+     */
+     protected getUIComponent(): UIComponent {
+        return super.getOwnerComponent() as UIComponent;
+    }
+
+    /**
      * Convenience method for accessing the router in every controller of the application.
      *
      * @returns the router for this component
      */
     protected getRouter(): Router {
-        return this.getOwnerComponent().getRouter();
+        return this.getUIComponent().getRouter();
     }
 
     /**
@@ -25,7 +35,7 @@ export default class BaseController extends Controller {
      * @returns the model instance
      */
     protected getModel(name: string): Model {
-        return this.getView().getModel(name);
+        return this.getView()!.getModel(name);
     }
 
     /**
@@ -36,16 +46,16 @@ export default class BaseController extends Controller {
      * @returns the view instance
      */
     protected setModel(model: Model, name: string): View {
-        return this.getView().setModel(model, name);
+        return this.getView()!.setModel(model, name);
     }
 
     /**
      * Convenience method for getting the resource bundle.
      *
-     * @returns the resourceModel of the component
+     * @returns the resourceBundle of the component
      */
-    protected getResourceBundle(): ResourceModel {
-        return this.getOwnerComponent().getModel("i18n").getResourceBundle();
+     protected getResourceBundle(): ResourceBundle | Promise<ResourceBundle> {
+        return (this.getUIComponent().getModel("i18n") as ResourceModel).getResourceBundle();
     }
 
     /**
