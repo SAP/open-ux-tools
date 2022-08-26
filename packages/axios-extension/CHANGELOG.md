@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.9.4
+
+### Patch Changes
+
+-   2896b77: Fixed incorrect url parameter
+
 ## 0.9.3
 
 ### Patch Changes
