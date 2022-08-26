@@ -571,17 +571,6 @@ server:
 });",
     "state": "modified",
   },
-  "webapp/controller/DetailObjectNotFound.js": Object {
-    "contents": "sap.ui.define([
-    \\"./BaseController\\"
-], function (BaseController) {
-    \\"use strict\\";
-
-    return BaseController.extend(\\"test.me.controller.DetailObjectNotFound\\", {});
-});
-",
-    "state": "modified",
-  },
   "webapp/controller/ErrorHandler.js": Object {
     "contents": "sap.ui.define([
     \\"sap/ui/base/Object\\",
@@ -2026,7 +2015,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
@@ -2036,10 +2025,2541 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+        data-sap-ui-frameOptions=\\"allow\\">
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
+</head>
+
+<!-- UI Content -->
+
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/utils/locate-reuse-libs.js": Object {
+    "contents": "/*eslint-disable semi, no-console*/
+(function (sap) {
+  var fioriToolsGetManifestLibs = function (manifestPath) {
+    var url = manifestPath;
+    var result = \\"\\";
+    // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+    var ui5Libs = [
+      \\"sap.apf\\",
+      \\"sap.base\\",
+      \\"sap.chart\\",
+      \\"sap.collaboration\\",
+      \\"sap.f\\",
+      \\"sap.fe\\",
+      \\"sap.fileviewer\\",
+      \\"sap.gantt\\",
+      \\"sap.landvisz\\",
+      \\"sap.m\\",
+      \\"sap.ndc\\",
+      \\"sap.ovp\\",
+      \\"sap.rules\\",
+      \\"sap.suite\\",
+      \\"sap.tnt\\",
+      \\"sap.ui\\",
+      \\"sap.uiext\\",
+      \\"sap.ushell\\",
+      \\"sap.uxap\\",
+      \\"sap.viz\\",
+      \\"sap.webanalytics\\",
+      \\"sap.zen\\"
+    ];
+    function getKeys(libOrComp,libOrCompKeysString) {
+      Object.keys(libOrComp).forEach(function (libOrCompKey) {
+        // ignore libs or Components that start with SAPUI5 delivered namespaces
+        if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
+          if (libOrCompKeysString.length > 0) {
+            libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
+          } else {
+            libOrCompKeysString = libOrCompKey;
+          }
+        }
+      });
+      return libOrCompKeysString;
+    }
+    return new Promise(function (resolve, reject) {
+      $.ajax(url)
+        .done(function (manifest) {
+          if (manifest) {
+            if (
+              manifest[\\"sap.ui5\\"] &&
+              manifest[\\"sap.ui5\\"].dependencies
+            ) {
+              if (manifest[\\"sap.ui5\\"].dependencies.libs){
+                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result)
+              }
+              if (manifest[\\"sap.ui5\\"].dependencies.components){
+                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result)
+              }
+            }
+            if (
+              manifest[\\"sap.ui5\\"] &&
+              manifest[\\"sap.ui5\\"].componentUsages
+            ) {
+              result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result)
+            }
+          }
+          resolve(result);
+        })
+        .fail(function (error) {
+          reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
+        });
+    });
+  };
+  /**
+   * Registers the module paths for dependencies of the given component.
+   * @param {string} manifestPath The the path to the app manifest path
+   * for which the dependencies should be registered.
+   * @returns {Promise} A promise which is resolved when the ajax request for
+   * the app-index was successful and the module paths were registered.
+   */
+  sap.registerComponentDependencyPaths = function (manifestPath) {
+    /*eslint-disable semi, consistent-return*/
+    return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
+      if (libs && libs.length > 0) {
+        var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+        var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
+        if (sapClient && sapClient.length === 3) {
+          url = url + \\"&sap-client=\\" + sapClient;
+        }
+        return $.ajax(url).done(function (data) {
+          if (data) {
+            Object.keys(data).forEach(function (moduleDefinitionKey) {
+              var moduleDefinition = data[moduleDefinitionKey];
+              if (moduleDefinition && moduleDefinition.dependencies) {
+                moduleDefinition.dependencies.forEach(function (dependency) {
+                  if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                    jQuery.sap.log.info(
+                      \\"Registering Library \\" +
+                      dependency.componentId +
+                      \\" from server \\" +
+                      dependency.url
+                    );
+                    jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  };
+})(sap);
+
+/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+var scripts = document.getElementsByTagName(\\"script\\");
+var currentScript = document.getElementById('locate-reuse-libs');
+if(!currentScript){
+    currentScript = document.currentScript;
+};
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+sap.registerComponentDependencyPaths(manifestUri)
+  .catch(function (error) {
+    jQuery.sap.log.error(error);
+  })
+  .finally(function () {
+
+    // setting the app title with internationalization
+    sap.ui.getCore().attachInit(function () {
+      jQuery.sap.require(\\"jquery.sap.resources\\");
+      var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+      var oBundle = jQuery.sap.resources({
+        url: \\"i18n/i18n.properties\\",
+        locale: sLocale
+      });
+      document.title = oBundle.getText(\\"appTitle\\");
+    });
+
+    if (componentName && componentName.length > 0) {
+      if (useMockserver && useMockserver === \\"true\\") {
+        sap.ui.getCore().attachInit(function () {
+          sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
+            // set up test service for local testing
+            server.init();
+            // initialize the ushell sandbox component
+            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+          });
+        });
+      } else {
+        // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
+        sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
+
+        // setting the app title with the i18n text
+        sap.ui.getCore().attachInit(function () {
+          jQuery.sap.require(\\"jquery.sap.resources\\");
+          var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+          var oBundle = jQuery.sap.resources({
+            url: \\"i18n/i18n.properties\\",
+            locale: sLocale
+          });
+          document.title = oBundle.getText(\\"appTitle\\");
+        });
+      }
+    } else {
+      sap.ui.getCore().attachInit(function () {
+        // initialize the ushell sandbox component
+        sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+      });
+    }
+  });
+
+sap.registerComponentDependencyPaths(manifestUri);
+",
+    "state": "modified",
+  },
+  "webapp/view/App.view.xml": Object {
+    "contents": "<mvc:View
+    controllerName=\\"test.me.controller.App\\"
+    displayBlock=\\"true\\"
+    height=\\"100%\\"
+    xmlns=\\"sap.m\\"
+    xmlns:f=\\"sap.f\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
+    <App
+        id=\\"app\\"
+        busy=\\"{appView>/busy}\\"
+        busyIndicatorDelay=\\"{appView>/delay}\\">
+        <f:FlexibleColumnLayout
+            id=\\"layout\\"
+            layout=\\"{appView>/layout}\\"
+            backgroundDesign=\\"Translucent\\">
+        </f:FlexibleColumnLayout>
+    </App>
+</mvc:View>",
+    "state": "modified",
+  },
+  "webapp/view/Detail.view.xml": Object {
+    "contents": "<mvc:View
+    controllerName=\\"test.me.controller.Detail\\"
+    xmlns=\\"sap.m\\"
+    xmlns:semantic=\\"sap.f.semantic\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
+
+    <semantic:SemanticPage
+        id=\\"detailPage\\"
+        busy=\\"{detailView>/busy}\\"
+        busyIndicatorDelay=\\"{detailView>/delay}\\">
+        <semantic:titleHeading>
+            <Title
+                text=\\"{CompanyName}\\"
+                level=\\"H2\\"/>
+        </semantic:titleHeading>
+        <semantic:headerContent>
+            <ObjectAttribute title=\\"{i18n>priceTitle}\\"/>
+            <ObjectNumber />
+        </semantic:headerContent>
+        <semantic:content>
+
+            <Table
+                id=\\"lineItemsList\\"
+                width=\\"auto\\"
+                items=\\"{Products}\\"
+                updateFinished=\\".onListUpdateFinished\\"
+                noDataText=\\"{i18n>detailLineItemTableNoDataText}\\"
+                busyIndicatorDelay=\\"{detailView>/lineItemTableDelay}\\">
+                <headerToolbar>
+                    <Toolbar>
+                        <Title
+                            id=\\"lineItemsTitle\\"
+                            text=\\"{detailView>/lineItemListTitle}\\"
+                            titleStyle=\\"H3\\"
+                            level=\\"H3\\"/>
+                    </Toolbar>
+                </headerToolbar>
+                <columns>
+                    <Column>
+                        <Text text=\\"{i18n>detailLineItemTableIDColumn}\\"/>
+                    </Column>
+                    <Column
+                        minScreenWidth=\\"Tablet\\"
+                        demandPopin=\\"true\\"
+                        hAlign=\\"End\\">
+                        <Text text=\\"{i18n>detailLineItemTableUnitNumberColumn}\\"/>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <ObjectIdentifier
+                                title=\\"{ProductName}\\"
+                                text=\\"{ProductID}\\"/>
+                            <ObjectNumber
+                                number=\\"{
+                                    path: 'UnitsInStock',
+                                    formatter: '.formatter.currencyValue'
+                                }\\"
+                                unit=\\"{QuantityPerUnit}\\" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </semantic:content>
+        <!--Semantic ShareMenu Buttons-->
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction
+                id=\\"shareEmail\\"
+                press=\\".onSendEmailPress\\"/>
+        </semantic:sendEmailAction>
+
+        <semantic:closeAction>
+            <semantic:CloseAction
+                    id=\\"closeColumn\\"
+                    press=\\".onCloseDetailPress\\"/>
+        </semantic:closeAction>
+
+        <semantic:fullScreenAction>
+            <semantic:FullScreenAction
+                    id=\\"enterFullScreen\\"
+                    visible=\\"{= !\${device>/system/phone} &amp;&amp; !\${appView>/actionButtonsInfo/midColumn/fullScreen}}\\"
+                    press=\\".toggleFullScreen\\"/>
+        </semantic:fullScreenAction>
+        <semantic:exitFullScreenAction>
+            <semantic:ExitFullScreenAction
+                    id=\\"exitFullScreen\\"
+                    visible=\\"{= !\${device>/system/phone} &amp;&amp; \${appView>/actionButtonsInfo/midColumn/fullScreen}}\\"
+                    press=\\".toggleFullScreen\\"/>
+        </semantic:exitFullScreenAction>
+
+    </semantic:SemanticPage>
+
+</mvc:View>",
+    "state": "modified",
+  },
+  "webapp/view/DetailObjectNotFound.view.xml": Object {
+    "contents": "<mvc:View
+    controllerName=\\"test.me.controller.DetailObjectNotFound\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
+
+    <MessagePage
+        id=\\"page\\"
+        title=\\"{i18n>detailTitle}\\"
+        text=\\"{i18n>noObjectFoundText}\\"
+        icon=\\"sap-icon://product\\"
+        description=\\"\\">
+    </MessagePage>
+
+</mvc:View>",
+    "state": "modified",
+  },
+  "webapp/view/List.view.xml": Object {
+    "contents": "<mvc:View
+    controllerName=\\"test.me.controller.List\\"
+    xmlns=\\"sap.m\\"
+    xmlns:semantic=\\"sap.f.semantic\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
+
+    <semantic:SemanticPage
+        id=\\"listPage\\"
+        preserveHeaderStateOnScroll=\\"true\\"
+        toggleHeaderOnTitleClick=\\"false\\">
+        <semantic:titleHeading>
+            <Title
+                id=\\"listPageTitle\\"
+                text=\\"{listView>/title}\\"
+                level=\\"H2\\"/>
+        </semantic:titleHeading>
+        <semantic:content>
+            <!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}\\" -->
+            <List
+                id=\\"list\\"
+                width=\\"auto\\"
+                class=\\"sapFDynamicPageAlignContent\\"
+                items=\\"{
+                    path: '/Suppliers',
+                    sorter: {
+                        path: 'CompanyName',
+                        descending: false
+                    },
+                    groupHeaderFactory: '.createGroupHeader'
+                }\\"
+                busyIndicatorDelay=\\"{listView>/delay}\\"
+                noDataText=\\"{listView>/noDataText}\\"
+                mode=\\"{= \${device>/system/phone} ? 'None' : 'SingleSelectMaster'}\\"
+                growing=\\"true\\"
+                growingScrollToLoad=\\"true\\"
+                updateFinished=\\".onUpdateFinished\\"
+                selectionChange=\\".onSelectionChange\\">
+
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <SearchField
+                            id=\\"searchField\\"
+                            showRefreshButton=\\"true\\"
+                            tooltip=\\"{i18n>listSearchTooltip}\\"
+                            search=\\".onSearch\\"
+                            width=\\"auto\\">
+                            <layoutData>
+                                <OverflowToolbarLayoutData
+                                    minWidth=\\"150px\\"
+                                    maxWidth=\\"240px\\"
+                                    shrinkable=\\"true\\"
+                                    priority=\\"NeverOverflow\\"/>
+                            </layoutData>
+                        </SearchField>
+                        <ToolbarSpacer/>
+                        <Button
+                            id=\\"sortButton\\"
+                            press=\\".onOpenViewSettings\\"
+                            icon=\\"sap-icon://sort\\"
+                            type=\\"Transparent\\"/>
+
+                    </OverflowToolbar>
+                </headerToolbar>
+                <items>
+                    <ObjectListItem
+                        type=\\"Navigation\\"
+                        press=\\".onSelectionChange\\"
+                        title=\\"{CompanyName}\\"
+                         />
+                </items>
+            </List>
+        </semantic:content>
+    </semantic:SemanticPage>
+</mvc:View>",
+    "state": "modified",
+  },
+  "webapp/view/NotFound.view.xml": Object {
+    "contents": "<mvc:View
+    controllerName=\\"test.me.controller.NotFound\\"
+    xmlns=\\"sap.m\\"
+    xmlns:mvc=\\"sap.ui.core.mvc\\">
+
+    <MessagePage
+        id=\\"page\\"
+        title=\\"{i18n>notFoundTitle}\\"
+        text=\\"{i18n>notFoundText}\\"
+        icon=\\"sap-icon://document\\">
+    </MessagePage>
+
+</mvc:View>",
+    "state": "modified",
+  },
+  "webapp/view/ViewSettingsDialog.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition
+    xmlns=\\"sap.m\\"
+    xmlns:core=\\"sap.ui.core\\">
+
+    <ViewSettingsDialog
+        id=\\"viewSettingsDialog\\"
+        confirm=\\".onConfirmViewSettingsDialog\\">
+        <sortItems>
+            <ViewSettingsItem
+                text=\\"{i18n>listSort1}\\"
+                key=\\"CompanyName\\"
+                selected=\\"true\\"/>
+
+        </sortItems>
+
+    </ViewSettingsDialog>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Fiori freestyle template: listDetailTemplate Generate files for template: listdetail-ts 1`] = `
+Object {
+  ".babelrc.json": Object {
+    "contents": "{
+    \\"ignore\\": [\\"**/*.d.ts\\"],
+    \\"presets\\": [\\"transform-ui5\\", \\"@babel/preset-typescript\\"]
+}",
+    "state": "modified",
+  },
+  ".eslintrc": Object {
+    "contents": "{
+    \\"root\\": true,
+    \\"env\\": {
+        \\"browser\\": true,
+        \\"es6\\": true,
+        \\"node\\": true
+    },
+    \\"extends\\": [
+        \\"eslint:recommended\\",
+        \\"plugin:@typescript-eslint/recommended\\",
+        \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\"
+    ],
+	\\"ignorePatterns\\": [\\".eslintignore.js\\"],
+    \\"parser\\": \\"@typescript-eslint/parser\\",
+    \\"parserOptions\\": {
+        \\"project\\": [\\"./tsconfig.json\\"],
+        \\"tsconfigRootDir\\": \\".\\",
+        \\"sourceType\\": \\"module\\"
+    },
+    \\"plugins\\": [
+        \\"@typescript-eslint\\"
+    ]
+}",
+    "state": "modified",
+  },
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"test.me\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"Description of test.me\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@types/openui5\\": \\"latest\\",
+    \\"ui5-tooling-modules\\": \\"^0.6.0\\",
+    \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
+    \\"typescript\\": \\"^4.6.3\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"ts-typecheck\\": \\"tsc --noEmit\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
+      \\"ui5-tooling-modules\\",
+      \\"ui5-tooling-transpile\\",
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
+    ]
+  }
+}
+",
+    "state": "modified",
+  },
+  "tsconfig.json": Object {
+    "contents": "{
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2015\\",
+    \\"module\\": \\"es2015\\",
+    \\"skipLibCheck\\": true,
+    \\"preserveConstEnums\\": true,
+    \\"inlineSourceMap\\": true,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictNullChecks\\": true,
+    \\"strictPropertyInitialization\\": false,
+    \\"moduleResolution\\": \\"node\\",
+    \\"rootDir\\": \\"webapp\\",
+    \\"outDir\\": \\"./dist\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"paths\\": {
+      \\"test.me/*\\": [
+        \\"webapp/*\\"
+      ]
+    }
+  },
+  \\"include\\": [
+    \\"webapp/**/*\\"
+  ]
+}",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: test.me
+type: application
+framework:
+  name: SAPUI5
+  version: 1.90.0
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.ushell
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-modules-middleware
+      afterMiddleware: compression
+      configuration: {}
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        transpileAsync: true
+        transpileTypeScript: true
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - path: /V2
+            url: https://services.odata.org
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+builder:
+  customTasks:
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        removeConsoleStatements: true
+        transpileAsync: true
+        transpileTypeScript: true
+",
+    "state": "modified",
+  },
+  "ui5-mock.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: test.me
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /V2
+            url: https://services.odata.org
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-modules-middleware
+      afterMiddleware: compression
+      configuration: {}
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        transpileAsync: true
+        transpileTypeScript: true
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+builder:
+  customTasks:
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        removeConsoleStatements: true
+        transpileAsync: true
+        transpileTypeScript: true
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: test.me
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /V2
+            url: https://services.odata.org
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-modules-middleware
+      afterMiddleware: compression
+      configuration: {}
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        transpileAsync: true
+        transpileTypeScript: true
+builder:
+  customTasks:
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        removeConsoleStatements: true
+        transpileAsync: true
+        transpileTypeScript: true
+",
+    "state": "modified",
+  },
+  "webapp/Component.js": Object {
+    "contents": null,
+    "state": "deleted",
+  },
+  "webapp/Component.ts": Object {
+    "contents": "import UIComponent from \\"sap/ui/core/UIComponent\\";
+import Device from \\"sap/ui/Device\\";
+import ErrorHandler from \\"./controller/ErrorHandler\\";
+import ListSelector from \\"./controller/ListSelector\\";
+import { createDeviceModel } from \\"./model/models\\";
+
+/**
+ * @namespace test.me
+ */
+export default class Component extends UIComponent {
+
+    public static metadata = {
+        manifest: \\"json\\"
+    };
+
+    public listSelector: ListSelector;
+    private errorHandler: ErrorHandler;
+    private contentDensityClass: string;
+
+    /**
+     * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+     */
+    public init(): void {
+        // call the base component's init function
+        super.init();
+
+        this.listSelector = new ListSelector();
+        this.errorHandler = new ErrorHandler(this);
+
+        // enable routing
+        this.getRouter().initialize();
+
+        // set the device model
+        this.setModel(createDeviceModel(), \\"device\\");
+    }
+
+    /**
+     * The component is destroyed by UI5 automatically.
+     * In this method, the ListSelector and ErrorHandler are destroyed.
+     */
+    public destroy() {
+        this.listSelector.destroy();
+        this.errorHandler.destroy();
+        // call the base component's destroy function
+        super.destroy();
+    }
+
+    /**
+     * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
+     * design mode class should be set, which influences the size appearance of some controls.
+     * @return css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
+     */
+    public getContentDensityClass(): string {
+        if (this.contentDensityClass === undefined) {
+            // check whether FLP has already set the content density class; do nothing in this case
+            // eslint-disable-next-line sap-no-proprietary-browser-api
+            if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
+                this.contentDensityClass = \\"\\";
+            } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
+                this.contentDensityClass = \\"sapUiSizeCompact\\";
+            } else {
+                // \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
+                this.contentDensityClass = \\"sapUiSizeCozy\\";
+            }
+        }
+        return this.contentDensityClass;
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/controller/App.controller.ts": Object {
+    "contents": "import JSONModel from \\"sap/ui/model/json/JSONModel\\";
+import ODataModel from \\"sap/ui/model/odata/v2/ODataModel\\";
+import BaseController from \\"./BaseController\\";
+
+/**
+ * @namespace test.me
+ */
+export default class App extends BaseController {
+
+    public onInit(): void {
+        const originalBusyDelay = this.getView()!.getBusyIndicatorDelay();
+
+        const viewModel = new JSONModel({
+            busy : true,
+            delay : 0,
+            layout : \\"OneColumn\\",
+            previousLayout : \\"\\",
+            actionButtonsInfo : {
+                midColumn : {
+                    fullScreen : false
+                }
+            }
+        });
+        this.setModel(viewModel, \\"appView\\");
+
+        const fnSetAppNotBusy = function() {
+            viewModel.setProperty(\\"/busy\\", false);
+            viewModel.setProperty(\\"/delay\\", originalBusyDelay);
+        };
+
+        // since then() has no \\"reject\\"-path attach to the MetadataFailed-Event to disable the busy indicator in case of an error
+        const mainModel: ODataModel = this.getUIComponent().getModel() as ODataModel;
+        mainModel.metadataLoaded().then(fnSetAppNotBusy);
+        mainModel.attachMetadataFailed(fnSetAppNotBusy);
+
+        // apply content density mode to root view
+        this.getView()!.addStyleClass(this.getUIComponent().getContentDensityClass());
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/controller/BaseController.ts": Object {
+    "contents": "import ResourceBundle from \\"sap/base/i18n/ResourceBundle\\";
+import Model from \\"sap/ui/model/Model\\";
+import ResourceModel from \\"sap/ui/model/resource/ResourceModel\\";
+import Controller from \\"sap/ui/core/mvc/Controller\\";
+import View from \\"sap/ui/core/mvc/View\\";
+import History from \\"sap/ui/core/routing/History\\";
+import Router from \\"sap/ui/core/routing/Router\\";
+import AppComponent from \\"../Component\\";
+import { currencyValue } from \\"../model/formatter\\";
+
+/**
+ * @namespace test.me
+ */
+export default class BaseController extends Controller {
+
+    public readonly formatter = {
+        currencyValue
+    };
+
+    /**
+     * Convenience method for accessing the owner component.
+     *
+     * @returns the owner component
+     */
+    protected getUIComponent(): AppComponent {
+        return super.getOwnerComponent() as AppComponent;
+    }
+
+    /**
+     * Convenience method for accessing the router in every controller of the application.
+     *
+     * @returns the router for this component
+     */
+    protected getRouter(): Router {
+        return this.getUIComponent().getRouter();
+    }
+
+    /**
+     * Convenience method for getting the view model by name in every controller of the application.
+     *
+     * @param name the model name
+     * @returns the model instance
+     */
+    protected getModel<T extends Model>(name?: string): T {
+        return this.getView()!.getModel(name) as T;
+    }
+
+    /**
+     * Convenience method for setting the view model in every controller of the application.
+     *
+     * @param model the model instance
+     * @param name the model name
+     * @returns the view instance
+     */
+    protected setModel(model: Model, name: string): View {
+        return this.getView()!.setModel(model, name);
+    }
+
+    /**
+     * Convenience method for getting the resource bundle.
+     *
+     * @returns the resourceBundle of the component
+     */
+     protected getResourceBundle(): ResourceBundle {
+        return (this.getUIComponent().getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle;
+    }
+
+    /**
+     * Event handler for navigating back.
+     * It there is a history entry we go one step back in the browser history
+     * If not, it will replace the current entry of the browser history with the list route.
+     * 
+     */
+     protected onNavBack() {
+        if (History.getInstance().getPreviousHash() !== undefined) {
+            // eslint-disable-next-line sap-no-history-manipulation
+            history.go(-1);
+        } else {
+            this.getRouter().navTo(\\"list\\", {});
+        }
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/controller/Detail.controller.ts": Object {
+    "contents": "import { URLHelper } from \\"sap/m/library\\";
+import Table from \\"sap/m/Table\\";;
+import Event from \\"sap/ui/base/Event\\";
+import JSONModel from \\"sap/ui/model/json/JSONModel\\";
+import ListBinding from \\"sap/ui/model/ListBinding\\";
+import ODataModel from \\"sap/ui/model/odata/v2/ODataModel\\";
+import BaseController from \\"./BaseController\\";
+
+/**
+ * @namespace test.me
+ */
+export default class Detail extends BaseController {
+
+    public onInit(): void {
+        // Model used to manipulate control states. The chosen values make sure,
+        // detail page is busy indication immediately so there is no break in
+        // between the busy indication for loading the view's meta data
+        const viewModel = new JSONModel({
+            busy: false,
+            delay: 0,
+            lineItemListTitle: this.getResourceBundle().getText(\\"detailLineItemTableHeading\\")
+        });
+
+        this.getRouter().getRoute(\\"object\\")!.attachPatternMatched(this.onObjectMatched, this);
+
+        this.setModel(viewModel, \\"detailView\\");
+
+        (this.getUIComponent().getModel() as ODataModel).metadataLoaded().then(this.onMetadataLoaded.bind(this));
+    }
+
+    /**
+     * Event handler when the share by E-Mail button has been clicked
+     */
+    public onSendEmailPress() {
+        const viewModel = this.getModel(\\"detailView\\");
+
+        URLHelper.triggerEmail(
+            undefined,
+            viewModel.getProperty(\\"/shareSendEmailSubject\\"),
+            viewModel.getProperty(\\"/shareSendEmailMessage\\")
+        );
+    }
+
+    
+    /**
+     * Updates the item count within the line item table's header
+     * @param event an event containing the total number of items in the list
+     */
+     public onListUpdateFinished(event: Event) {
+        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
+        const totalItems = event.getParameter(\\"total\\") as number;
+        let title: string;
+        // only update the counter if the length is final
+        if ((this.byId(\\"lineItemsList\\")!.getBinding(\\"items\\") as ListBinding).isLengthFinal()) {
+            if (totalItems) {
+                title = this.getResourceBundle().getText(\\"detailLineItemTableHeadingCount\\", [totalItems]);
+            } else {
+                //Display 'Line Items' instead of 'Line items (0)'
+                title = this.getResourceBundle().getText(\\"detailLineItemTableHeading\\");
+            }
+            viewModel.setProperty(\\"/lineItemListTitle\\", title);
+        }
+    }
+
+    /**
+     * Binds the view to the object path and expands the aggregated line items.
+     * @function
+     * @param event pattern match event in route 'object'
+     * @private
+     */
+     private onObjectMatched(event: Event) {
+        const objectId = event.getParameter(\\"arguments\\").objectId;
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
+        this.getModel<ODataModel>().metadataLoaded().then(function (this: Detail) {
+            const objectPath = this.getModel<ODataModel>().createKey(\\"Suppliers\\", {
+                SupplierID: objectId
+            });
+            this.bindView(\\"/\\" + objectPath);
+        }.bind(this));
+    }
+
+    /**
+     * Binds the view to the object path. Makes sure that detail view displays
+     * a busy indicator while data for the corresponding element binding is loaded.
+     * @function
+     * @param objectPath path to the object to be bound to the view.
+     */
+    private bindView(objectPath: string) {
+        // Set busy indicator during view binding
+        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
+
+        // If the view was not bound yet its not busy, only if the binding requests data it is set to busy again
+        viewModel.setProperty(\\"/busy\\", false);
+
+        this.getView()!.bindElement({
+            path: objectPath,
+            events: {
+                change: this.onBindingChange.bind(this),
+                dataRequested: function () {
+                    viewModel.setProperty(\\"/busy\\", true);
+                },
+                dataReceived: function () {
+                    viewModel.setProperty(\\"/busy\\", false);
+                }
+            }
+        });
+    }
+
+    private onBindingChange() {
+        const view = this.getView()!;
+        const elementBinding = view.getElementBinding();
+
+        // No data for the binding
+        if (!elementBinding.getBoundContext()) {
+            this.getRouter().getTargets()!.display(\\"detailObjectNotFound\\");
+            // if object could not be found, the selection in the list
+            // does not make sense anymore.
+            this.getUIComponent().listSelector.clearListSelection();
+            return;
+        }
+
+        const path = elementBinding.getPath();
+        const resourceBundle = this.getResourceBundle();
+        const detailObject = view.getModel().getObject(path);
+        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
+
+        this.getUIComponent().listSelector.selectAListItem(path);
+
+        viewModel.setProperty(\\"/shareSendEmailSubject\\",
+            resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
+        viewModel.setProperty(\\"/shareSendEmailMessage\\",
+            resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
+    }
+
+    protected onMetadataLoaded() {
+        // Store original busy indicator delay for the detail view
+        const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
+        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
+        const lineItemTable = this.byId(\\"lineItemsList\\") as Table;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();;
+
+        // Make sure busy indicator is displayed immediately when
+        // detail view is displayed for the first time
+        viewModel.setProperty(\\"/delay\\", 0);
+        viewModel.setProperty(\\"/lineItemTableDelay\\", 0);
+
+        lineItemTable.attachEventOnce(\\"updateFinished\\", function () {
+            // Restore original busy indicator delay for line item table
+            viewModel.setProperty(\\"/lineItemTableDelay\\", originalLineItemTableBusyDelay);
+        });
+
+        // Binding the view will set it to not busy - so the view is always busy if it is not bound
+        viewModel.setProperty(\\"/busy\\", true);
+        // Restore original busy indicator delay for the detail view
+        viewModel.setProperty(\\"/delay\\", originalViewBusyDelay);
+    }
+
+    /**
+     * Set the full screen mode to false and navigate to list page
+     */
+    protected onCloseDetailPress() {
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", false);
+        // No item should be selected on list after detail page is closed
+        this.getUIComponent().listSelector.clearListSelection();
+        this.getRouter().navTo(\\"list\\");
+    }
+
+    /**
+     * Toggle between full and non full screen mode.
+     */
+    protected toggleFullScreen() {
+        const viewModel = this.getModel<JSONModel>(\\"appView\\");
+        const fullScreen = viewModel.getProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\");
+        viewModel.setProperty(\\"/actionButtonsInfo/midColumn/fullScreen\\", !fullScreen);
+        if (!fullScreen) {
+            // store current layout and go full screen
+            viewModel.setProperty(\\"/previousLayout\\", viewModel.getProperty(\\"/layout\\"));
+            viewModel.setProperty(\\"/layout\\", \\"MidColumnFullScreen\\");
+        } else {
+            // reset to previous layout
+            viewModel.setProperty(\\"/layout\\", viewModel.getProperty(\\"/previousLayout\\"));
+        }
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/controller/DetailObjectNotFound.controller.ts": Object {
+    "contents": "import BaseController from \\"./BaseController\\";
+
+/**
+ * @namespace test.me
+ */
+export default class DetailObjectNotFound extends BaseController {
+
+}
+",
+    "state": "modified",
+  },
+  "webapp/controller/ErrorHandler.ts": Object {
+    "contents": "import MessageBox, { Action } from \\"sap/m/MessageBox\\";
+import UI5Object from \\"sap/ui/base/Object\\";
+import Event from \\"sap/ui/base/Event\\";
+import ODataModel from \\"sap/ui/model/odata/v2/ODataModel\\";
+import AppComponent from \\"../Component\\";
+import ResourceModel from \\"sap/ui/model/resource/ResourceModel\\";
+import ResourceBundle from \\"sap/base/i18n/ResourceBundle\\";
+
+/**
+ * @namespace test.me
+ */
+export default class ErrorHandler extends UI5Object {
+
+    protected readonly component: AppComponent;
+    protected messageOpen = false;
+
+    /**
+     * Handles application errors by automatically attaching to the model events and displaying errors when needed.
+     * @param component reference to the app's component
+     */
+    public constructor(component: AppComponent) {
+        super();
+        this.component = component;
+        const model = component.getModel() as ODataModel;
+        model.attachMetadataFailed(this.showServiceError);
+        model.attachRequestFailed(function (this: ErrorHandler, event: Event) {
+            const params = event.getParameters() as { response: XMLHttpRequest['response'] };
+            // An entity that was not found in the service is also throwing a 404 error in oData.
+            // We already cover this case with a notFound target so we skip it here.
+            // A request that cannot be sent to the server is a technical error that we have to handle though
+            if (params.response.statusCode !== \\"404\\" || (params.response.statusCode === 404 && params.response.responseText.indexOf(\\"Cannot POST\\") === 0)) {
+                this.showServiceError(event);
+            }
+        }, this);
+    }
+
+    /**
+     * Shows a {@link sap.m.MessageBox} when a service call has failed.
+     * Only the first error message will be display.
+     * @param {string} sDetails a technical error to be displayed on request
+     */
+    private showServiceError(event: Event) {
+        if (this.messageOpen) {
+            return;
+        }
+        this.messageOpen = true;
+        MessageBox.error(
+            ((this.component.getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle).getText(\\"errorText\\"),
+            {
+                id: \\"serviceErrorMessageBox\\",
+                details: (event.getParameters() as XMLHttpRequest['response']).response,
+                styleClass: this.component.getContentDensityClass(),
+                actions: [Action.CLOSE],
+                onClose: function (this: ErrorHandler) {
+                    this.messageOpen = false;
+                }.bind(this)
+            }
+        );
+    }
+
+}",
+    "state": "modified",
+  },
+  "webapp/controller/List.controller.ts": Object {
+    "contents": "import GroupHeaderListItem from \\"sap/m/GroupHeaderListItem\\";
+import Button from \\"sap/m/Button\\";
+import ListControl from \\"sap/m/List\\";
+import ObjectListItem from \\"sap/m/ObjectListItem\\";
+import JSONModel from \\"sap/ui/model/json/JSONModel\\";
+import Event from \\"sap/ui/base/Event\\";
+import Filter from \\"sap/ui/model/Filter\\";
+import Sorter from \\"sap/ui/model/Sorter\\";
+import FilterOperator from \\"sap/ui/model/FilterOperator\\";
+import { system } from \\"sap/ui/Device\\";
+import Fragment from \\"sap/ui/core/Fragment\\";
+import UI5Element from \\"sap/ui/core/Element\\";
+import BaseController from \\"./BaseController\\";
+import Control from \\"sap/ui/core/Control\\";
+import ViewSettingsDialog from \\"sap/m/ViewSettingsDialog\\";
+import ListBinding from \\"sap/ui/model/ListBinding\\";
+
+/**
+ * @namespace test.me
+ */
+export default class List extends BaseController {
+
+    private list: ListControl;
+    private listFilterState = {
+        aFilter: [],
+        aSearch: [] as Filter[]
+    };
+
+    /**
+     * Called when the list controller is instantiated. It sets up the event handling for the list/detail communication and other lifecycle tasks.
+     */
+    public onInit(): void {
+        // Control state model
+        this.list = this.byId(\\"list\\") as ListControl;
+        const viewModel = this.createViewModel();
+        // Put down list's original value for busy indicator delay,
+        // so it can be restored later on. Busy handling on the list is
+        // taken care of by the list itself.
+        const iOriginalBusyDelay = this.list.getBusyIndicatorDelay();
+
+        this.setModel(viewModel, \\"listView\\");
+        // Make sure, busy indication is showing immediately so there is no
+        // break after the busy indication for loading the view's meta data is
+        // ended (see promise 'oWhenMetadataIsLoaded' in AppController)
+        this.list.attachEventOnce(\\"updateFinished\\", function (this: List) {
+            // Restore original busy indicator delay for the list
+            viewModel.setProperty(\\"/delay\\", iOriginalBusyDelay);
+        });
+
+        this.getView()!.addEventDelegate({
+            onBeforeFirstShow: function (this: List) {
+                this.getUIComponent().listSelector.setBoundList(this.list);
+            }.bind(this)
+        });
+
+        this.getRouter().getRoute(\\"list\\")!.attachPatternMatched(this.onListMatched, this);
+        this.getRouter().attachBypassed(this.onBypassed, this);
+    }
+
+    /* =========================================================== */
+    /* event handlers                                              */
+    /* =========================================================== */
+
+    /**
+     * After list data is available, this handler method updates the
+     * list counter
+     * @param event the update finished event
+     */
+    public onUpdateFinished(event: Event) {
+        // update the list object counter after new data is loaded
+        this.updateListItemCount(event.getParameter(\\"total\\"));
+    }
+
+    /**
+     * Event handler for the list search field. Applies current
+     * filter value and triggers a new search. If the search field's
+     * 'refresh' button has been pressed, no new search is triggered
+     * and the list binding is refresh instead.
+     *
+     * @param event the search event
+     */
+    public onSearch(event: Event) {
+        if ((event.getParameters() as any).refreshButtonPressed) {
+            // Search field's 'refresh' button has been pressed.
+            // This is visible if you select any list item.
+            // In this case no new search is triggered, we only
+            // refresh the list binding.
+            this.onRefresh();
+            return;
+        }
+
+        const query: string = event.getParameter(\\"query\\");
+
+        if (query) {
+            this.listFilterState.aSearch = [new Filter(\\"CompanyName\\", FilterOperator.Contains, query)];
+        } else {
+            this.listFilterState.aSearch = [];
+        }
+        this.applyFilterSearch();
+
+    }
+
+    /**
+     * Event handler for refresh event. Keeps filter, sort
+     * and group settings and refreshes the list binding.
+     */
+    public onRefresh() {
+        this.list.getBinding(\\"items\\").refresh();
+    }
+
+    /**
+     * Event handler for the filter, sort and group buttons to open the ViewSettingsDialog.
+     * @param event the button press event
+     */
+    public onOpenViewSettings(event: Event) {
+        let dialogTab = \\"filter\\";
+        if (event.getSource() instanceof Button) {
+            const buttonId = (event.getSource() as UI5Element).getId();
+            if (buttonId.match(\\"sort\\")) {
+                dialogTab = \\"sort\\";
+            } else if (buttonId.match(\\"group\\")) {
+                dialogTab = \\"group\\";
+            }
+        }
+        // load asynchronous XML fragment
+        let dialog = this.byId(\\"viewSettingsDialog\\") as ViewSettingsDialog;
+        if (!this.byId(\\"viewSettingsDialog\\")) {
+            Fragment.load({
+                id: this.getView()!.getId(),
+                name: \\"test.me.view.ViewSettingsDialog\\",
+                controller: this
+            }).then(function (this: List, ctrl: Control | Control[]) {
+                // connect dialog to the root view of this component (models, lifecycle)
+                dialog = (Array.isArray(ctrl) ? ctrl[0] : ctrl) as ViewSettingsDialog;
+                this.getView()!.addDependent(dialog as Control);
+                dialog.addStyleClass(this.getUIComponent().getContentDensityClass());
+                dialog.open(dialogTab);
+            }.bind(this));
+        } else {
+            dialog.open(dialogTab);
+        }
+    }
+
+    /**
+     * Event handler called when ViewSettingsDialog has been confirmed, i.e.
+     * has been closed with 'OK'. In the case, the currently chosen filters, sorters or groupers
+     * are applied to the list, which can also mean that they
+     * are removed from the list, in case they are
+     * removed in the ViewSettingsDialog.
+     * @param event the confirm event
+     */
+    public onConfirmViewSettingsDialog(event: Event) {
+        
+        this.applySortGroup(event);
+    }
+
+    /**
+     * Apply the chosen sorter and grouper to the list
+     * @param event the confirm event
+     */
+    private applySortGroup(event: Event) {
+        const params = event.getParameters() as {
+            sortItem: any;
+            groupItem?: any;
+            sortDescending: boolean;
+        };
+        const sorters = [];
+        
+        sorters.push(new Sorter(params.sortItem.getKey(), params.sortDescending));
+        (this.list.getBinding(\\"items\\") as ListBinding).sort(sorters);
+    }
+
+    /**
+     * Event handler for the list selection event.
+     *
+     * @param event the list selectionChange event
+     */
+    onSelectionChange(event: Event) {
+        const list = event.getSource() as ListControl;
+        const selected = event.getParameter(\\"selected\\");
+
+        // skip navigation when deselecting an item in multi selection mode
+        if (!(list.getMode() === \\"MultiSelect\\" && !selected)) {
+            // get the list item, either from the listItem parameter or from the event's source itself (will depend on the device-dependent mode).
+            this.showDetail(event.getParameter(\\"listItem\\") || event.getSource());
+        }
+    }
+
+    /**
+     * Event handler for the bypassed event, which is fired when no routing pattern matched.
+     * If there was an object selected in the list, that selection is removed.
+     *
+     */
+    onBypassed() {
+        this.list.removeSelections(true);
+    }
+
+    /**
+     * Used to create GroupHeaders with non-capitalized caption.
+     * These headers are inserted into the list to
+     * group the list's items.
+     * @param group group whose text is to be displayed
+     *
+     * @returns group header with non-capitalized caption.
+     */
+    createGroupHeader(group: { text: string }): GroupHeaderListItem {
+        return new GroupHeaderListItem({
+            title: group.text,
+            upperCase: false
+        });
+    }
+
+    private createViewModel() {
+        return new JSONModel({
+            isFilterBarVisible: false,
+            filterBarLabel: \\"\\",
+            delay: 0,
+            title: this.getResourceBundle().getText(\\"listTitleCount\\", [0]),
+            noDataText: this.getResourceBundle().getText(\\"listListNoDataText\\"),
+            sortBy: \\"CompanyName\\",
+            groupBy: \\"None\\"
+        });
+    }
+
+    private onListMatched() {
+        //Set the layout property of the FCL control to 'OneColumn'
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
+    }
+
+    /**
+     * Shows the selected item on the detail page
+     * On phones a additional history entry is created
+     * @param item selected Item
+     *
+     */
+    private showDetail(item: ObjectListItem) {
+        // set the layout property of FCL control to show two columns
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/layout\\", \\"TwoColumnsMidExpanded\\");
+        this.getRouter().navTo(\\"object\\", {
+            objectId: item.getBindingContext()!.getProperty(\\"SupplierID\\")
+        }, undefined, !system.phone);
+    }
+
+    /**
+     * Sets the item count on the list header
+     * @param total the total number of items in the list
+     *
+     */
+    updateListItemCount(total: number) {
+        // only update the counter if the length is final
+        if (this.list.getBinding(\\"items\\").isLengthFinal()) {
+            const title = this.getResourceBundle().getText(\\"listTitleCount\\", [total]);
+            this.getModel<JSONModel>(\\"listView\\").setProperty(\\"/title\\", title);
+        }
+    }
+
+    /**
+     * Internal helper method to apply both filter and search state together on the list binding
+     */
+    private applyFilterSearch() {
+        const filters = this.listFilterState.aSearch.concat(this.listFilterState.aFilter);
+        const viewModel = this.getModel<JSONModel>(\\"listView\\");
+        this.list.getBinding(\\"items\\").filter(filters, \\"Application\\");
+        // changes the noDataText of the list in case there are no filter results
+        if (filters.length !== 0) {
+            viewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"listListNoDataWithFilterOrSearchText\\"));
+        } else if (this.listFilterState.aSearch.length > 0) {
+            // only reset the no data text to default when no new search was triggered
+            viewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"listListNoDataText\\"));
+        }
+    }
+
+}",
+    "state": "modified",
+  },
+  "webapp/controller/ListSelector.ts": Object {
+    "contents": "import UI5Object from \\"sap/ui/base/Object\\";
+import Log from \\"sap/base/Log\\";
+import List from \\"sap/m/List\\";
+import ListItemBase from \\"sap/m/ListItemBase\\";
+
+/**
+ * @namespace test.me
+ */
+export default class ListSelector extends UI5Object {
+
+    protected readonly oWhenListLoadingIsDone: Promise<any>;
+    protected readonly _oWhenListHasBeenSet: Promise<void>;
+    protected list: List;
+    protected _fnResolveListHasBeenSet: any;
+
+    /**
+     * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundMasterList
+     * function.
+     */
+     constructor() {
+        super();
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
+            this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
+        }.bind(this));
+        // This promise needs to be created in the constructor, since it is allowed to
+        // invoke selectItem functions before calling setBoundList
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
+            this._oWhenListHasBeenSet
+                .then(function (this: ListSelector, list: List) {
+                    list.getBinding(\\"items\\").attachEventOnce(\\"dataReceived\\",
+                        function (this: ListSelector) {
+                            if (this.list.getItems().length) {
+                                resolve({ list });
+                            } else {
+                                // No items in the list
+                                reject({ list });
+                            }
+                        }.bind(this)
+                    );
+                }.bind(this));
+        }.bind(this));
+    };
+
+    /**
+     * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
+     * May only be invoked once per ListSelector instance.
+     * @param list The list all the select functions will be invoked on.
+     *
+     */
+     public setBoundList(list: List) {
+        this.list = list;
+        this._fnResolveListHasBeenSet(list);
+    }
+
+    /**
+     * Tries to select and scroll to a list item with a matching binding context. If there are no items matching the binding context or the ListMode is none,
+     * no selection/scrolling will happen
+     * @param path the binding path matching the binding path of a list item
+     *
+     */
+    public selectAListItem(path: string) {
+
+        this.oWhenListLoadingIsDone.then(
+            function (this: ListSelector) {
+                const list = this.list;
+                if (list.getMode() === \\"None\\") {
+                    return;
+                }
+
+                // skip update if the current selection is already matching the object path
+                const selectedItem = list.getSelectedItem();
+                if (selectedItem && selectedItem.getBindingContext()!.getPath() === path) {
+                    return;
+                }
+
+                list.getItems().some(function (oItem: ListItemBase) {
+                    if (oItem.getBindingContext() && oItem.getBindingContext()!.getPath() === path) {
+                        list.setSelectedItem(oItem);
+                        return true;
+                    }
+                });
+            }.bind(this),
+            function () {
+                Log.warning(\\"Could not select the list item with the path\\" + path + \\" because the list encountered an error or had no items\\");
+            }
+        );
+    }
+
+    /**
+     * Removes all selections from list.
+     * Does not trigger 'selectionChange' event on list, though.
+     */
+    public async clearListSelection() {
+        //use promise to make sure that 'this.list' is available
+        await this._oWhenListHasBeenSet;
+        this.list.removeSelections(true);
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/controller/NotFound.controller.ts": Object {
+    "contents": "import Target from \\"sap/ui/core/routing/Target\\";
+import JSONModel from \\"sap/ui/model/json/JSONModel\\";
+import BaseController from \\"./BaseController\\";
+
+/**
+ * @namespace test.me
+ */
+export default class NotFound extends BaseController {
+    public onInit() {
+        (this.getRouter().getTarget(\\"notFound\\") as Target).attachDisplay(this.onNotFoundDisplayed, this);
+    }
+
+    private onNotFoundDisplayed() {
+        this.getModel<JSONModel>(\\"appView\\").setProperty(\\"/layout\\", \\"OneColumn\\");
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for test.me
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=My Test App
+
+#YDES: Application description
+appDescription=Description of test.me
+#~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTIT: List view title with placeholder for the number of items
+listTitleCount=Suppliers ({0})
+
+#XTOL: Tooltip for the search field
+listSearchTooltip=Enter an Suppliers name or a part of it.
+
+#XBLI: text for a list with no data
+listListNoDataText=No Suppliers are currently available
+
+#XBLI: text for a list with no data with filter or search
+listListNoDataWithFilterOrSearchText=No matching Suppliers found
+
+#XSEL: Option to sort the list by CompanyName
+listSort1=Sort By CompanyName
+
+
+
+#~~~ Detail View ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTOL: Icon Tab Bar Info
+detailIconTabBarInfo=Info
+
+#XTOL: Icon Tab Bar Attachments
+detailIconTabBarAttachments=Attachments
+
+#XTOL: Tooltip text for close column button
+closeColumn=Close
+
+
+#XBLI: Text for the Products table with no data
+detailLineItemTableNoDataText=No Products
+
+#XTIT: Title of the Products table
+detailLineItemTableHeading=Products
+
+#XTIT: Title of the Products table
+detailLineItemTableHeadingCount=Products ({0})
+
+#XGRP: Title for the ProductName column in the Products table
+detailLineItemTableIDColumn=ProductName
+
+#XGRP: Title for the UnitsInStock column in the Products table
+detailLineItemTableUnitNumberColumn=UnitsInStock
+
+
+#XTIT: Send E-Mail subject
+shareSendEmailObjectSubject=<Email subject including object identifier PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0}
+
+#YMSG: Send E-Mail message
+shareSendEmailObjectMessage=<Email body PLEASE REPLACE ACCORDING TO YOUR USE CASE> {0} (id: {1})\\\\r\\\\n{2}
+
+#XBUT: Text for the send e-mail button
+sendEmail=Send E-Mail
+
+#XTIT: Title text for the price
+priceTitle=Price
+
+#~~~ Not Found View ~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTIT: Not found view title
+notFoundTitle=Not Found
+
+#YMSG: The Suppliers not found text is displayed when there is no Suppliers with this id
+noObjectFoundText=This Suppliers is not available
+
+#YMSG: The not found text is displayed when there was an error loading the resource (404 error)
+notFoundText=The requested resource was not found
+
+#~~~ Not Available View ~~~~~~~~~~~~~~~~~~~~~~~
+
+#XTIT: List view title
+notAvailableViewTitle=Suppliers
+
+#~~~ Error Handling ~~~~~~~~~~~~~~~~~~~~~~~
+
+#YMSG: Error dialog description
+errorText=Sorry, a technical error occurred! Please try again later.",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>My Test App</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-resourceroots='{
+            \\"test.me\\": \\"./\\"
+        }'
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
+        data-sap-ui-manifest-uri=\\"./manifest.json\\"
+        data-sap-ui-componentName=\\"test.me\\">
+    </script> 
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"test.me\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"test.me\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/localService/metadata.xml": Object {
+    "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
+<edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
+    <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
+        <Schema Namespace=\\"NorthwindModel\\" xmlns:d=\\"http://schemas.microsoft.com/ado/2007/08/dataservices\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
+            <EntityType Name=\\"Category\\">
+                <Key>
+                    <PropertyRef Name=\\"CategoryID\\" />
+                </Key>
+                <Property Name=\\"CategoryID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" p8:StoreGeneratedPattern=\\"Identity\\" xmlns:p8=\\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\\" />
+                <Property Name=\\"CategoryName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Description\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"Max\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Picture\\" Type=\\"Edm.Binary\\" Nullable=\\"true\\" MaxLength=\\"Max\\" FixedLength=\\"false\\" />
+                <NavigationProperty Name=\\"Products\\" Relationship=\\"NorthwindModel.FK_Products_Categories\\" FromRole=\\"Categories\\" ToRole=\\"Products\\" />
+            </EntityType>
+            <EntityType Name=\\"CustomerDemographic\\">
+                <Key>
+                    <PropertyRef Name=\\"CustomerTypeID\\" />
+                </Key>
+                <Property Name=\\"CustomerTypeID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"true\\" />
+                <Property Name=\\"CustomerDesc\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"Max\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <NavigationProperty Name=\\"Customers\\" Relationship=\\"NorthwindModel.CustomerCustomerDemo\\" FromRole=\\"CustomerDemographics\\" ToRole=\\"Customers\\" />
+            </EntityType>
+            <EntityType Name=\\"Customer\\">
+                <Key>
+                    <PropertyRef Name=\\"CustomerID\\" />
+                </Key>
+                <Property Name=\\"CustomerID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"5\\" Unicode=\\"true\\" FixedLength=\\"true\\" />
+                <Property Name=\\"CompanyName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ContactName\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"30\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ContactTitle\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"30\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Address\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"60\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"City\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Region\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"PostalCode\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Country\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Phone\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"24\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Fax\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"24\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <NavigationProperty Name=\\"Orders\\" Relationship=\\"NorthwindModel.FK_Orders_Customers\\" FromRole=\\"Customers\\" ToRole=\\"Orders\\" />
+                <NavigationProperty Name=\\"CustomerDemographics\\" Relationship=\\"NorthwindModel.CustomerCustomerDemo\\" FromRole=\\"Customers\\" ToRole=\\"CustomerDemographics\\" />
+            </EntityType>
+            <EntityType Name=\\"Employee\\">
+                <Key>
+                    <PropertyRef Name=\\"EmployeeID\\" />
+                </Key>
+                <Property Name=\\"EmployeeID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" p8:StoreGeneratedPattern=\\"Identity\\" xmlns:p8=\\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\\" />
+                <Property Name=\\"LastName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"20\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"FirstName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Title\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"30\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"TitleOfCourtesy\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"25\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"BirthDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"HireDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"Address\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"60\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"City\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Region\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"PostalCode\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Country\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"HomePhone\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"24\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Extension\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"4\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Photo\\" Type=\\"Edm.Binary\\" Nullable=\\"true\\" MaxLength=\\"Max\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Notes\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"Max\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ReportsTo\\" Type=\\"Edm.Int32\\" Nullable=\\"true\\" />
+                <Property Name=\\"PhotoPath\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"255\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <NavigationProperty Name=\\"Employees1\\" Relationship=\\"NorthwindModel.FK_Employees_Employees\\" FromRole=\\"Employees\\" ToRole=\\"Employees1\\" />
+                <NavigationProperty Name=\\"Employee1\\" Relationship=\\"NorthwindModel.FK_Employees_Employees\\" FromRole=\\"Employees1\\" ToRole=\\"Employees\\" />
+                <NavigationProperty Name=\\"Orders\\" Relationship=\\"NorthwindModel.FK_Orders_Employees\\" FromRole=\\"Employees\\" ToRole=\\"Orders\\" />
+                <NavigationProperty Name=\\"Territories\\" Relationship=\\"NorthwindModel.EmployeeTerritories\\" FromRole=\\"Employees\\" ToRole=\\"Territories\\" />
+            </EntityType>
+            <EntityType Name=\\"Order_Detail\\">
+                <Key>
+                    <PropertyRef Name=\\"OrderID\\" />
+                    <PropertyRef Name=\\"ProductID\\" />
+                </Key>
+                <Property Name=\\"OrderID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"ProductID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"UnitPrice\\" Type=\\"Edm.Decimal\\" Nullable=\\"false\\" Precision=\\"19\\" Scale=\\"4\\" />
+                <Property Name=\\"Quantity\\" Type=\\"Edm.Int16\\" Nullable=\\"false\\" />
+                <Property Name=\\"Discount\\" Type=\\"Edm.Single\\" Nullable=\\"false\\" />
+                <NavigationProperty Name=\\"Order\\" Relationship=\\"NorthwindModel.FK_Order_Details_Orders\\" FromRole=\\"Order_Details\\" ToRole=\\"Orders\\" />
+                <NavigationProperty Name=\\"Product\\" Relationship=\\"NorthwindModel.FK_Order_Details_Products\\" FromRole=\\"Order_Details\\" ToRole=\\"Products\\" />
+            </EntityType>
+            <EntityType Name=\\"Order\\">
+                <Key>
+                    <PropertyRef Name=\\"OrderID\\" />
+                </Key>
+                <Property Name=\\"OrderID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" p8:StoreGeneratedPattern=\\"Identity\\" xmlns:p8=\\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\\" />
+                <Property Name=\\"CustomerID\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"5\\" Unicode=\\"true\\" FixedLength=\\"true\\" />
+                <Property Name=\\"EmployeeID\\" Type=\\"Edm.Int32\\" Nullable=\\"true\\" />
+                <Property Name=\\"OrderDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"RequiredDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"ShippedDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"ShipVia\\" Type=\\"Edm.Int32\\" Nullable=\\"true\\" />
+                <Property Name=\\"Freight\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+                <Property Name=\\"ShipName\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipAddress\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"60\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipCity\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipRegion\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipPostalCode\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipCountry\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <NavigationProperty Name=\\"Customer\\" Relationship=\\"NorthwindModel.FK_Orders_Customers\\" FromRole=\\"Orders\\" ToRole=\\"Customers\\" />
+                <NavigationProperty Name=\\"Employee\\" Relationship=\\"NorthwindModel.FK_Orders_Employees\\" FromRole=\\"Orders\\" ToRole=\\"Employees\\" />
+                <NavigationProperty Name=\\"Order_Details\\" Relationship=\\"NorthwindModel.FK_Order_Details_Orders\\" FromRole=\\"Orders\\" ToRole=\\"Order_Details\\" />
+                <NavigationProperty Name=\\"Shipper\\" Relationship=\\"NorthwindModel.FK_Orders_Shippers\\" FromRole=\\"Orders\\" ToRole=\\"Shippers\\" />
+            </EntityType>
+            <EntityType Name=\\"Product\\">
+                <Key>
+                    <PropertyRef Name=\\"ProductID\\" />
+                </Key>
+                <Property Name=\\"ProductID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" p8:StoreGeneratedPattern=\\"Identity\\" xmlns:p8=\\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\\" />
+                <Property Name=\\"ProductName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"SupplierID\\" Type=\\"Edm.Int32\\" Nullable=\\"true\\" />
+                <Property Name=\\"CategoryID\\" Type=\\"Edm.Int32\\" Nullable=\\"true\\" />
+                <Property Name=\\"QuantityPerUnit\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"20\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"UnitPrice\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+                <Property Name=\\"UnitsInStock\\" Type=\\"Edm.Int16\\" Nullable=\\"true\\" />
+                <Property Name=\\"UnitsOnOrder\\" Type=\\"Edm.Int16\\" Nullable=\\"true\\" />
+                <Property Name=\\"ReorderLevel\\" Type=\\"Edm.Int16\\" Nullable=\\"true\\" />
+                <Property Name=\\"Discontinued\\" Type=\\"Edm.Boolean\\" Nullable=\\"false\\" />
+                <NavigationProperty Name=\\"Category\\" Relationship=\\"NorthwindModel.FK_Products_Categories\\" FromRole=\\"Products\\" ToRole=\\"Categories\\" />
+                <NavigationProperty Name=\\"Order_Details\\" Relationship=\\"NorthwindModel.FK_Order_Details_Products\\" FromRole=\\"Products\\" ToRole=\\"Order_Details\\" />
+                <NavigationProperty Name=\\"Supplier\\" Relationship=\\"NorthwindModel.FK_Products_Suppliers\\" FromRole=\\"Products\\" ToRole=\\"Suppliers\\" />
+            </EntityType>
+            <EntityType Name=\\"Region\\">
+                <Key>
+                    <PropertyRef Name=\\"RegionID\\" />
+                </Key>
+                <Property Name=\\"RegionID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"RegionDescription\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"50\\" Unicode=\\"true\\" FixedLength=\\"true\\" />
+                <NavigationProperty Name=\\"Territories\\" Relationship=\\"NorthwindModel.FK_Territories_Region\\" FromRole=\\"Region\\" ToRole=\\"Territories\\" />
+            </EntityType>
+            <EntityType Name=\\"Shipper\\">
+                <Key>
+                    <PropertyRef Name=\\"ShipperID\\" />
+                </Key>
+                <Property Name=\\"ShipperID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" p8:StoreGeneratedPattern=\\"Identity\\" xmlns:p8=\\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\\" />
+                <Property Name=\\"CompanyName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Phone\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"24\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <NavigationProperty Name=\\"Orders\\" Relationship=\\"NorthwindModel.FK_Orders_Shippers\\" FromRole=\\"Shippers\\" ToRole=\\"Orders\\" />
+            </EntityType>
+            <EntityType Name=\\"Supplier\\">
+                <Key>
+                    <PropertyRef Name=\\"SupplierID\\" />
+                </Key>
+                <Property Name=\\"SupplierID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" p8:StoreGeneratedPattern=\\"Identity\\" xmlns:p8=\\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\\" />
+                <Property Name=\\"CompanyName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ContactName\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"30\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ContactTitle\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"30\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Address\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"60\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"City\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Region\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"PostalCode\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Country\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Phone\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"24\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Fax\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"24\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"HomePage\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"Max\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <NavigationProperty Name=\\"Products\\" Relationship=\\"NorthwindModel.FK_Products_Suppliers\\" FromRole=\\"Suppliers\\" ToRole=\\"Products\\" />
+            </EntityType>
+            <EntityType Name=\\"Territory\\">
+                <Key>
+                    <PropertyRef Name=\\"TerritoryID\\" />
+                </Key>
+                <Property Name=\\"TerritoryID\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"20\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"TerritoryDescription\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"50\\" Unicode=\\"true\\" FixedLength=\\"true\\" />
+                <Property Name=\\"RegionID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <NavigationProperty Name=\\"Region\\" Relationship=\\"NorthwindModel.FK_Territories_Region\\" FromRole=\\"Territories\\" ToRole=\\"Region\\" />
+                <NavigationProperty Name=\\"Employees\\" Relationship=\\"NorthwindModel.EmployeeTerritories\\" FromRole=\\"Territories\\" ToRole=\\"Employees\\" />
+            </EntityType>
+            <EntityType Name=\\"Alphabetical_list_of_product\\">
+                <Key>
+                    <PropertyRef Name=\\"ProductID\\" />
+                    <PropertyRef Name=\\"ProductName\\" />
+                    <PropertyRef Name=\\"Discontinued\\" />
+                    <PropertyRef Name=\\"CategoryName\\" />
+                </Key>
+                <Property Name=\\"ProductID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"ProductName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"SupplierID\\" Type=\\"Edm.Int32\\" Nullable=\\"true\\" />
+                <Property Name=\\"CategoryID\\" Type=\\"Edm.Int32\\" Nullable=\\"true\\" />
+                <Property Name=\\"QuantityPerUnit\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"20\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"UnitPrice\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+                <Property Name=\\"UnitsInStock\\" Type=\\"Edm.Int16\\" Nullable=\\"true\\" />
+                <Property Name=\\"UnitsOnOrder\\" Type=\\"Edm.Int16\\" Nullable=\\"true\\" />
+                <Property Name=\\"ReorderLevel\\" Type=\\"Edm.Int16\\" Nullable=\\"true\\" />
+                <Property Name=\\"Discontinued\\" Type=\\"Edm.Boolean\\" Nullable=\\"false\\" />
+                <Property Name=\\"CategoryName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+            </EntityType>
+            <EntityType Name=\\"Category_Sales_for_1997\\">
+                <Key>
+                    <PropertyRef Name=\\"CategoryName\\" />
+                </Key>
+                <Property Name=\\"CategoryName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"CategorySales\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+            </EntityType>
+            <EntityType Name=\\"Current_Product_List\\">
+                <Key>
+                    <PropertyRef Name=\\"ProductID\\" />
+                    <PropertyRef Name=\\"ProductName\\" />
+                </Key>
+                <Property Name=\\"ProductID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" p8:StoreGeneratedPattern=\\"Identity\\" xmlns:p8=\\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\\" />
+                <Property Name=\\"ProductName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+            </EntityType>
+            <EntityType Name=\\"Customer_and_Suppliers_by_City\\">
+                <Key>
+                    <PropertyRef Name=\\"CompanyName\\" />
+                    <PropertyRef Name=\\"Relationship\\" />
+                </Key>
+                <Property Name=\\"City\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"CompanyName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ContactName\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"30\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Relationship\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"9\\" Unicode=\\"false\\" FixedLength=\\"false\\" />
+            </EntityType>
+            <EntityType Name=\\"Invoice\\">
+                <Key>
+                    <PropertyRef Name=\\"CustomerName\\" />
+                    <PropertyRef Name=\\"Salesperson\\" />
+                    <PropertyRef Name=\\"OrderID\\" />
+                    <PropertyRef Name=\\"ShipperName\\" />
+                    <PropertyRef Name=\\"ProductID\\" />
+                    <PropertyRef Name=\\"ProductName\\" />
+                    <PropertyRef Name=\\"UnitPrice\\" />
+                    <PropertyRef Name=\\"Quantity\\" />
+                    <PropertyRef Name=\\"Discount\\" />
+                </Key>
+                <Property Name=\\"ShipName\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipAddress\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"60\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipCity\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipRegion\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipPostalCode\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipCountry\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"CustomerID\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"5\\" Unicode=\\"true\\" FixedLength=\\"true\\" />
+                <Property Name=\\"CustomerName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Address\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"60\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"City\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Region\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"PostalCode\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Country\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Salesperson\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"31\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"OrderID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"OrderDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"RequiredDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"ShippedDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"ShipperName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ProductID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"ProductName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"UnitPrice\\" Type=\\"Edm.Decimal\\" Nullable=\\"false\\" Precision=\\"19\\" Scale=\\"4\\" />
+                <Property Name=\\"Quantity\\" Type=\\"Edm.Int16\\" Nullable=\\"false\\" />
+                <Property Name=\\"Discount\\" Type=\\"Edm.Single\\" Nullable=\\"false\\" />
+                <Property Name=\\"ExtendedPrice\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+                <Property Name=\\"Freight\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+            </EntityType>
+            <EntityType Name=\\"Order_Details_Extended\\">
+                <Key>
+                    <PropertyRef Name=\\"OrderID\\" />
+                    <PropertyRef Name=\\"ProductID\\" />
+                    <PropertyRef Name=\\"ProductName\\" />
+                    <PropertyRef Name=\\"UnitPrice\\" />
+                    <PropertyRef Name=\\"Quantity\\" />
+                    <PropertyRef Name=\\"Discount\\" />
+                </Key>
+                <Property Name=\\"OrderID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"ProductID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"ProductName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"UnitPrice\\" Type=\\"Edm.Decimal\\" Nullable=\\"false\\" Precision=\\"19\\" Scale=\\"4\\" />
+                <Property Name=\\"Quantity\\" Type=\\"Edm.Int16\\" Nullable=\\"false\\" />
+                <Property Name=\\"Discount\\" Type=\\"Edm.Single\\" Nullable=\\"false\\" />
+                <Property Name=\\"ExtendedPrice\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+            </EntityType>
+            <EntityType Name=\\"Order_Subtotal\\">
+                <Key>
+                    <PropertyRef Name=\\"OrderID\\" />
+                </Key>
+                <Property Name=\\"OrderID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"Subtotal\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+            </EntityType>
+            <EntityType Name=\\"Orders_Qry\\">
+                <Key>
+                    <PropertyRef Name=\\"OrderID\\" />
+                    <PropertyRef Name=\\"CompanyName\\" />
+                </Key>
+                <Property Name=\\"OrderID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"CustomerID\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"5\\" Unicode=\\"true\\" FixedLength=\\"true\\" />
+                <Property Name=\\"EmployeeID\\" Type=\\"Edm.Int32\\" Nullable=\\"true\\" />
+                <Property Name=\\"OrderDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"RequiredDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"ShippedDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"ShipVia\\" Type=\\"Edm.Int32\\" Nullable=\\"true\\" />
+                <Property Name=\\"Freight\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+                <Property Name=\\"ShipName\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipAddress\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"60\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipCity\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipRegion\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipPostalCode\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShipCountry\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"CompanyName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Address\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"60\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"City\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Region\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"PostalCode\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"10\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"Country\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+            </EntityType>
+            <EntityType Name=\\"Product_Sales_for_1997\\">
+                <Key>
+                    <PropertyRef Name=\\"CategoryName\\" />
+                    <PropertyRef Name=\\"ProductName\\" />
+                </Key>
+                <Property Name=\\"CategoryName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ProductName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ProductSales\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+            </EntityType>
+            <EntityType Name=\\"Products_Above_Average_Price\\">
+                <Key>
+                    <PropertyRef Name=\\"ProductName\\" />
+                </Key>
+                <Property Name=\\"ProductName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"UnitPrice\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+            </EntityType>
+            <EntityType Name=\\"Products_by_Category\\">
+                <Key>
+                    <PropertyRef Name=\\"CategoryName\\" />
+                    <PropertyRef Name=\\"ProductName\\" />
+                    <PropertyRef Name=\\"Discontinued\\" />
+                </Key>
+                <Property Name=\\"CategoryName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ProductName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"QuantityPerUnit\\" Type=\\"Edm.String\\" Nullable=\\"true\\" MaxLength=\\"20\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"UnitsInStock\\" Type=\\"Edm.Int16\\" Nullable=\\"true\\" />
+                <Property Name=\\"Discontinued\\" Type=\\"Edm.Boolean\\" Nullable=\\"false\\" />
+            </EntityType>
+            <EntityType Name=\\"Sales_by_Category\\">
+                <Key>
+                    <PropertyRef Name=\\"CategoryID\\" />
+                    <PropertyRef Name=\\"CategoryName\\" />
+                    <PropertyRef Name=\\"ProductName\\" />
+                </Key>
+                <Property Name=\\"CategoryID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"CategoryName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"15\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ProductName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ProductSales\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+            </EntityType>
+            <EntityType Name=\\"Sales_Totals_by_Amount\\">
+                <Key>
+                    <PropertyRef Name=\\"OrderID\\" />
+                    <PropertyRef Name=\\"CompanyName\\" />
+                </Key>
+                <Property Name=\\"SaleAmount\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+                <Property Name=\\"OrderID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"CompanyName\\" Type=\\"Edm.String\\" Nullable=\\"false\\" MaxLength=\\"40\\" Unicode=\\"true\\" FixedLength=\\"false\\" />
+                <Property Name=\\"ShippedDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+            </EntityType>
+            <EntityType Name=\\"Summary_of_Sales_by_Quarter\\">
+                <Key>
+                    <PropertyRef Name=\\"OrderID\\" />
+                </Key>
+                <Property Name=\\"ShippedDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"OrderID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"Subtotal\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+            </EntityType>
+            <EntityType Name=\\"Summary_of_Sales_by_Year\\">
+                <Key>
+                    <PropertyRef Name=\\"OrderID\\" />
+                </Key>
+                <Property Name=\\"ShippedDate\\" Type=\\"Edm.DateTime\\" Nullable=\\"true\\" />
+                <Property Name=\\"OrderID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\" />
+                <Property Name=\\"Subtotal\\" Type=\\"Edm.Decimal\\" Nullable=\\"true\\" Precision=\\"19\\" Scale=\\"4\\" />
+            </EntityType>
+            <Association Name=\\"FK_Products_Categories\\">
+                <End Role=\\"Categories\\" Type=\\"NorthwindModel.Category\\" Multiplicity=\\"0..1\\" />
+                <End Role=\\"Products\\" Type=\\"NorthwindModel.Product\\" Multiplicity=\\"*\\" />
+                <ReferentialConstraint>
+                    <Principal Role=\\"Categories\\">
+                        <PropertyRef Name=\\"CategoryID\\" />
+                    </Principal>
+                    <Dependent Role=\\"Products\\">
+                        <PropertyRef Name=\\"CategoryID\\" />
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name=\\"FK_Orders_Customers\\">
+                <End Role=\\"Customers\\" Type=\\"NorthwindModel.Customer\\" Multiplicity=\\"0..1\\" />
+                <End Role=\\"Orders\\" Type=\\"NorthwindModel.Order\\" Multiplicity=\\"*\\" />
+                <ReferentialConstraint>
+                    <Principal Role=\\"Customers\\">
+                        <PropertyRef Name=\\"CustomerID\\" />
+                    </Principal>
+                    <Dependent Role=\\"Orders\\">
+                        <PropertyRef Name=\\"CustomerID\\" />
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name=\\"FK_Employees_Employees\\">
+                <End Role=\\"Employees\\" Type=\\"NorthwindModel.Employee\\" Multiplicity=\\"0..1\\" />
+                <End Role=\\"Employees1\\" Type=\\"NorthwindModel.Employee\\" Multiplicity=\\"*\\" />
+                <ReferentialConstraint>
+                    <Principal Role=\\"Employees\\">
+                        <PropertyRef Name=\\"EmployeeID\\" />
+                    </Principal>
+                    <Dependent Role=\\"Employees1\\">
+                        <PropertyRef Name=\\"ReportsTo\\" />
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name=\\"FK_Orders_Employees\\">
+                <End Role=\\"Employees\\" Type=\\"NorthwindModel.Employee\\" Multiplicity=\\"0..1\\" />
+                <End Role=\\"Orders\\" Type=\\"NorthwindModel.Order\\" Multiplicity=\\"*\\" />
+                <ReferentialConstraint>
+                    <Principal Role=\\"Employees\\">
+                        <PropertyRef Name=\\"EmployeeID\\" />
+                    </Principal>
+                    <Dependent Role=\\"Orders\\">
+                        <PropertyRef Name=\\"EmployeeID\\" />
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name=\\"FK_Order_Details_Orders\\">
+                <End Role=\\"Orders\\" Type=\\"NorthwindModel.Order\\" Multiplicity=\\"1\\" />
+                <End Role=\\"Order_Details\\" Type=\\"NorthwindModel.Order_Detail\\" Multiplicity=\\"*\\" />
+                <ReferentialConstraint>
+                    <Principal Role=\\"Orders\\">
+                        <PropertyRef Name=\\"OrderID\\" />
+                    </Principal>
+                    <Dependent Role=\\"Order_Details\\">
+                        <PropertyRef Name=\\"OrderID\\" />
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name=\\"FK_Order_Details_Products\\">
+                <End Role=\\"Products\\" Type=\\"NorthwindModel.Product\\" Multiplicity=\\"1\\" />
+                <End Role=\\"Order_Details\\" Type=\\"NorthwindModel.Order_Detail\\" Multiplicity=\\"*\\" />
+                <ReferentialConstraint>
+                    <Principal Role=\\"Products\\">
+                        <PropertyRef Name=\\"ProductID\\" />
+                    </Principal>
+                    <Dependent Role=\\"Order_Details\\">
+                        <PropertyRef Name=\\"ProductID\\" />
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name=\\"FK_Orders_Shippers\\">
+                <End Role=\\"Shippers\\" Type=\\"NorthwindModel.Shipper\\" Multiplicity=\\"0..1\\" />
+                <End Role=\\"Orders\\" Type=\\"NorthwindModel.Order\\" Multiplicity=\\"*\\" />
+                <ReferentialConstraint>
+                    <Principal Role=\\"Shippers\\">
+                        <PropertyRef Name=\\"ShipperID\\" />
+                    </Principal>
+                    <Dependent Role=\\"Orders\\">
+                        <PropertyRef Name=\\"ShipVia\\" />
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name=\\"FK_Products_Suppliers\\">
+                <End Role=\\"Suppliers\\" Type=\\"NorthwindModel.Supplier\\" Multiplicity=\\"0..1\\" />
+                <End Role=\\"Products\\" Type=\\"NorthwindModel.Product\\" Multiplicity=\\"*\\" />
+                <ReferentialConstraint>
+                    <Principal Role=\\"Suppliers\\">
+                        <PropertyRef Name=\\"SupplierID\\" />
+                    </Principal>
+                    <Dependent Role=\\"Products\\">
+                        <PropertyRef Name=\\"SupplierID\\" />
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name=\\"FK_Territories_Region\\">
+                <End Role=\\"Region\\" Type=\\"NorthwindModel.Region\\" Multiplicity=\\"1\\" />
+                <End Role=\\"Territories\\" Type=\\"NorthwindModel.Territory\\" Multiplicity=\\"*\\" />
+                <ReferentialConstraint>
+                    <Principal Role=\\"Region\\">
+                        <PropertyRef Name=\\"RegionID\\" />
+                    </Principal>
+                    <Dependent Role=\\"Territories\\">
+                        <PropertyRef Name=\\"RegionID\\" />
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name=\\"CustomerCustomerDemo\\">
+                <End Role=\\"CustomerDemographics\\" Type=\\"NorthwindModel.CustomerDemographic\\" Multiplicity=\\"*\\" />
+                <End Role=\\"Customers\\" Type=\\"NorthwindModel.Customer\\" Multiplicity=\\"*\\" />
+            </Association>
+            <Association Name=\\"EmployeeTerritories\\">
+                <End Role=\\"Employees\\" Type=\\"NorthwindModel.Employee\\" Multiplicity=\\"*\\" />
+                <End Role=\\"Territories\\" Type=\\"NorthwindModel.Territory\\" Multiplicity=\\"*\\" />
+            </Association>
+        </Schema>
+        <Schema Namespace=\\"ODataWeb.Northwind.Model\\" xmlns:d=\\"http://schemas.microsoft.com/ado/2007/08/dataservices\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
+            <EntityContainer Name=\\"NorthwindEntities\\" p7:LazyLoadingEnabled=\\"true\\" m:IsDefaultEntityContainer=\\"true\\" xmlns:p7=\\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\\">
+                <EntitySet Name=\\"Categories\\" EntityType=\\"NorthwindModel.Category\\" />
+                <EntitySet Name=\\"CustomerDemographics\\" EntityType=\\"NorthwindModel.CustomerDemographic\\" />
+                <EntitySet Name=\\"Customers\\" EntityType=\\"NorthwindModel.Customer\\" />
+                <EntitySet Name=\\"Employees\\" EntityType=\\"NorthwindModel.Employee\\" />
+                <EntitySet Name=\\"Order_Details\\" EntityType=\\"NorthwindModel.Order_Detail\\" />
+                <EntitySet Name=\\"Orders\\" EntityType=\\"NorthwindModel.Order\\" />
+                <EntitySet Name=\\"Products\\" EntityType=\\"NorthwindModel.Product\\" />
+                <EntitySet Name=\\"Regions\\" EntityType=\\"NorthwindModel.Region\\" />
+                <EntitySet Name=\\"Shippers\\" EntityType=\\"NorthwindModel.Shipper\\" />
+                <EntitySet Name=\\"Suppliers\\" EntityType=\\"NorthwindModel.Supplier\\" />
+                <EntitySet Name=\\"Territories\\" EntityType=\\"NorthwindModel.Territory\\" />
+                <EntitySet Name=\\"Alphabetical_list_of_products\\" EntityType=\\"NorthwindModel.Alphabetical_list_of_product\\" />
+                <EntitySet Name=\\"Category_Sales_for_1997\\" EntityType=\\"NorthwindModel.Category_Sales_for_1997\\" />
+                <EntitySet Name=\\"Current_Product_Lists\\" EntityType=\\"NorthwindModel.Current_Product_List\\" />
+                <EntitySet Name=\\"Customer_and_Suppliers_by_Cities\\" EntityType=\\"NorthwindModel.Customer_and_Suppliers_by_City\\" />
+                <EntitySet Name=\\"Invoices\\" EntityType=\\"NorthwindModel.Invoice\\" />
+                <EntitySet Name=\\"Order_Details_Extendeds\\" EntityType=\\"NorthwindModel.Order_Details_Extended\\" />
+                <EntitySet Name=\\"Order_Subtotals\\" EntityType=\\"NorthwindModel.Order_Subtotal\\" />
+                <EntitySet Name=\\"Orders_Qries\\" EntityType=\\"NorthwindModel.Orders_Qry\\" />
+                <EntitySet Name=\\"Product_Sales_for_1997\\" EntityType=\\"NorthwindModel.Product_Sales_for_1997\\" />
+                <EntitySet Name=\\"Products_Above_Average_Prices\\" EntityType=\\"NorthwindModel.Products_Above_Average_Price\\" />
+                <EntitySet Name=\\"Products_by_Categories\\" EntityType=\\"NorthwindModel.Products_by_Category\\" />
+                <EntitySet Name=\\"Sales_by_Categories\\" EntityType=\\"NorthwindModel.Sales_by_Category\\" />
+                <EntitySet Name=\\"Sales_Totals_by_Amounts\\" EntityType=\\"NorthwindModel.Sales_Totals_by_Amount\\" />
+                <EntitySet Name=\\"Summary_of_Sales_by_Quarters\\" EntityType=\\"NorthwindModel.Summary_of_Sales_by_Quarter\\" />
+                <EntitySet Name=\\"Summary_of_Sales_by_Years\\" EntityType=\\"NorthwindModel.Summary_of_Sales_by_Year\\" />
+                <AssociationSet Name=\\"FK_Products_Categories\\" Association=\\"NorthwindModel.FK_Products_Categories\\">
+                    <End Role=\\"Categories\\" EntitySet=\\"Categories\\" />
+                    <End Role=\\"Products\\" EntitySet=\\"Products\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"FK_Orders_Customers\\" Association=\\"NorthwindModel.FK_Orders_Customers\\">
+                    <End Role=\\"Customers\\" EntitySet=\\"Customers\\" />
+                    <End Role=\\"Orders\\" EntitySet=\\"Orders\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"FK_Employees_Employees\\" Association=\\"NorthwindModel.FK_Employees_Employees\\">
+                    <End Role=\\"Employees\\" EntitySet=\\"Employees\\" />
+                    <End Role=\\"Employees1\\" EntitySet=\\"Employees\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"FK_Orders_Employees\\" Association=\\"NorthwindModel.FK_Orders_Employees\\">
+                    <End Role=\\"Employees\\" EntitySet=\\"Employees\\" />
+                    <End Role=\\"Orders\\" EntitySet=\\"Orders\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"FK_Order_Details_Orders\\" Association=\\"NorthwindModel.FK_Order_Details_Orders\\">
+                    <End Role=\\"Orders\\" EntitySet=\\"Orders\\" />
+                    <End Role=\\"Order_Details\\" EntitySet=\\"Order_Details\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"FK_Order_Details_Products\\" Association=\\"NorthwindModel.FK_Order_Details_Products\\">
+                    <End Role=\\"Products\\" EntitySet=\\"Products\\" />
+                    <End Role=\\"Order_Details\\" EntitySet=\\"Order_Details\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"FK_Orders_Shippers\\" Association=\\"NorthwindModel.FK_Orders_Shippers\\">
+                    <End Role=\\"Shippers\\" EntitySet=\\"Shippers\\" />
+                    <End Role=\\"Orders\\" EntitySet=\\"Orders\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"FK_Products_Suppliers\\" Association=\\"NorthwindModel.FK_Products_Suppliers\\">
+                    <End Role=\\"Suppliers\\" EntitySet=\\"Suppliers\\" />
+                    <End Role=\\"Products\\" EntitySet=\\"Products\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"FK_Territories_Region\\" Association=\\"NorthwindModel.FK_Territories_Region\\">
+                    <End Role=\\"Region\\" EntitySet=\\"Regions\\" />
+                    <End Role=\\"Territories\\" EntitySet=\\"Territories\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"CustomerCustomerDemo\\" Association=\\"NorthwindModel.CustomerCustomerDemo\\">
+                    <End Role=\\"CustomerDemographics\\" EntitySet=\\"CustomerDemographics\\" />
+                    <End Role=\\"Customers\\" EntitySet=\\"Customers\\" />
+                </AssociationSet>
+                <AssociationSet Name=\\"EmployeeTerritories\\" Association=\\"NorthwindModel.EmployeeTerritories\\">
+                    <End Role=\\"Employees\\" EntitySet=\\"Employees\\" />
+                    <End Role=\\"Territories\\" EntitySet=\\"Territories\\" />
+                </AssociationSet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.12.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"test.me\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"test-template\\",
+      \\"version\\": \\"1.2.3-test\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/V2/Northwind/Northwind.svc/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [],
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.60.0\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.ushell\\": {},
+        \\"sap.f\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"test.me.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {}
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": []
+    },
+    \\"routing\\": {
+      \\"config\\": {
+        \\"routerClass\\": \\"sap.f.routing.Router\\",
+        \\"viewType\\": \\"XML\\",
+        \\"viewPath\\": \\"test.me.view\\",
+        \\"controlId\\": \\"layout\\",
+        \\"controlAggregation\\": \\"beginColumnPages\\",
+        \\"bypassed\\": {
+          \\"target\\": [
+            \\"notFound\\"
+          ]
+        },
+        \\"async\\": true
+      },
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\"\\",
+          \\"name\\": \\"list\\",
+          \\"target\\": \\"list\\"
+        },
+        {
+          \\"pattern\\": \\"Suppliers/{objectId}\\",
+          \\"name\\": \\"object\\",
+          \\"target\\": [
+            \\"list\\",
+            \\"object\\"
+          ]
+        }
+      ],
+      \\"targets\\": {
+        \\"list\\": {
+          \\"viewName\\": \\"List\\",
+          \\"viewLevel\\": 1,
+          \\"viewId\\": \\"list\\"
+        },
+        \\"object\\": {
+          \\"viewName\\": \\"Detail\\",
+          \\"viewId\\": \\"detail\\",
+          \\"viewLevel\\": 1,
+          \\"controlAggregation\\": \\"midColumnPages\\"
+        },
+        \\"detailObjectNotFound\\": {
+          \\"viewName\\": \\"DetailObjectNotFound\\",
+          \\"viewId\\": \\"detailObjectNotFound\\",
+          \\"controlAggregation\\": \\"midColumnPages\\"
+        },
+        \\"notFound\\": {
+          \\"viewName\\": \\"NotFound\\",
+          \\"viewId\\": \\"notFound\\"
+        }
+      }
+    },
+    \\"rootView\\": {
+      \\"viewName\\": \\"test.me.view.App\\",
+      \\"type\\": \\"XML\\",
+      \\"async\\": true,
+      \\"id\\": \\"app\\"
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+  "webapp/model/formatter.ts": Object {
+    "contents": "/**
+* Rounds the currency value to 2 digits
+*
+* @param value value to be formatted
+* @returns formatted currency value with 2 digits
+*/
+export function currencyValue(value: string): string {
+    if (!value) {
+        return \\"\\";
+    }
+
+    return parseFloat(value).toFixed(2);
+}",
+    "state": "modified",
+  },
+  "webapp/model/models.ts": Object {
+    "contents": "import JSONModel from \\"sap/ui/model/json/JSONModel\\";
+import Device from \\"sap/ui/Device\\";
+
+export function createDeviceModel () {
+    var model = new JSONModel(Device);
+    model.setDefaultBindingMode(\\"OneWay\\");
+    return model;
+}",
+    "state": "modified",
+  },
+  "webapp/test/flpSandbox.html": Object {
+    "contents": "<!DOCTYPE HTML>
+<html>
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>{{appTitle}}</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            bootstrapPlugins: {
+                \\"RuntimeAuthoringPlugin\\": {
+                    component: \\"sap.ushell.plugins.rta\\",
+                    config: {
+                        validateAppVersion: false
+                    }
+                }
+            },
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\"
+                        }
+                    }
+                }
+            },
+            applications: {
+                \\"testme-app\\": {
+                    title: \\"My Test App\\",
+                    description: \\"Description of test.me\\",
+                    additionalInformation: \\"SAPUI5.Component=test.me\\",
+                    applicationType: \\"URL\\",
+                    url: \\"../\\"
+                }
+            }
+        };
+    </script>
+
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
+        data-sap-ui-frameOptions=\\"allow\\">
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->

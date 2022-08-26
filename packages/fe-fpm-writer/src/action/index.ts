@@ -88,7 +88,14 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler);
+        config.eventHandler = applyEventHandlerConfiguration(
+            fs,
+            root,
+            config,
+            config.eventHandler,
+            false,
+            config.typescript
+        );
     }
 
     // enhance manifest with action definition and controller reference

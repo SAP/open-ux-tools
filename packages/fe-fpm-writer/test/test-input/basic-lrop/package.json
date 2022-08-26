@@ -10,13 +10,13 @@
         "@ui5/cli": "2",
         "@sap/ux-specification": "latest",
         "@sap/ux-ui5-tooling": "1",
-        "@sap/ux-ui5-fe-mockserver-middleware": "1",
+        "@sap-ux/ui5-middleware-fe-mockserver": "2",
         "rimraf": "3.0.2"
     },
     "ui5": {
         "dependencies": [
             "@sap/ux-ui5-tooling",
-            "@sap/ux-ui5-fe-mockserver-middleware"
+            "@sap-ux/ui5-middleware-fe-mockserver"
         ]
     }
 }
