@@ -13,7 +13,7 @@ Object {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         OnAppendedFn: function() {
-            MessageToast.show(\\"Custom handler invoked.\\");
+            window.location.href += '/_Booking';
         }
     };
 });
@@ -87,7 +87,7 @@ Object {
   "webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
-    <Page title=\\"MyCustomPage\\">
+    <Page id=\\"MyCustomPage\\" title=\\"MyCustomPage\\">
         <content></content>
     </Page>
 </mvc:View>",
@@ -341,7 +341,7 @@ Object {
                       \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.OnAppendedFn\\",
                       \\"visible\\": true,
                       \\"enabled\\": true,
-                      \\"text\\": \\"My other Action\\"
+                      \\"text\\": \\"Navigate to CustomPage (appended action)\\"
                     }
                   }
                 },
