@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.13.6
+
+### Patch Changes
+
+-   9e6d402: Add id to page in generated custom page
+
 ## 0.13.5
 
 ### Patch Changes
