@@ -29,7 +29,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     // Common files
-    const ignore = ffApp.appOptions?.typescript ? '**/*.js' : '**/*.ts';
+    const ignore = [ffApp.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
     fs.copyTpl(join(tmplPath, 'common', 'add'), basePath, { ...ffApp, escapeFLPText }, undefined, {
         globOptions: { ignore }
     });
