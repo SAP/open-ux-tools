@@ -1,5 +1,16 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.13.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+### Patch Changes
+
+-   Updated dependencies [d351f81]
+    -   @sap-ux/ui5-application-writer@0.15.0
+
 ## 0.12.9
 
 ### Patch Changes

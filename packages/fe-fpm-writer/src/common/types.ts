@@ -21,6 +21,10 @@ export interface CustomElement {
      * If nothing can be generated for the given version then an exception is thrown.
      */
     ui5Version?: number;
+    /**
+     * If set to true then all code snippets are generated in Typescript instead of Javascript.
+     */
+    typescript?: boolean;
 }
 
 export interface InternalCustomElement extends CustomElement {

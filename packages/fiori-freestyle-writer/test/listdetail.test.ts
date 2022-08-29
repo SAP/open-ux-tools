@@ -8,61 +8,47 @@ const TEST_NAME = 'listDetailTemplate';
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
+    const listDetailConfig = {
+        ...commonConfig,
+        service: northwind,
+        template: {
+            type: TemplateType.ListDetail,
+            settings: {
+                entity: {
+                    name: 'Suppliers',
+                    key: 'SupplierID',
+                    idProperty: 'CompanyName',
+                    numberProperty: undefined,
+                    unitOfMeasureProperty: undefined
+                },
+                lineItem: {
+                    name: 'Products',
+                    key: 'ProductID',
+                    idProperty: 'ProductName',
+                    numberProperty: 'UnitsInStock',
+                    unitOfMeasureProperty: 'QuantityPerUnit'
+                }
+            }
+        }
+    } as FreestyleApp<ListDetailSettings>;
 
     const configuration: Array<{ name: string; config: FreestyleApp<unknown> }> = [
         {
-            name: 'listdetail-good',
-            config: {
-                ...commonConfig,
-                service: northwind,
-                template: {
-                    type: TemplateType.ListDetail,
-                    settings: {
-                        entity: {
-                            name: 'Suppliers',
-                            key: 'SupplierID',
-                            idProperty: 'CompanyName',
-                            numberProperty: undefined,
-                            unitOfMeasureProperty: undefined
-                        },
-                        lineItem: {
-                            name: 'Products',
-                            key: 'ProductID',
-                            idProperty: 'ProductName',
-                            numberProperty: 'UnitsInStock',
-                            unitOfMeasureProperty: 'QuantityPerUnit'
-                        }
-                    }
-                }
-            } as FreestyleApp<ListDetailSettings>
-        },
-        {
             name: 'listdetail-good-eslint',
             config: {
-                ...commonConfig,
-                service: northwind,
-                template: {
-                    type: TemplateType.ListDetail,
-                    settings: {
-                        entity: {
-                            name: 'Suppliers',
-                            key: 'SupplierID',
-                            idProperty: 'CompanyName',
-                            numberProperty: undefined,
-                            unitOfMeasureProperty: undefined
-                        },
-                        lineItem: {
-                            name: 'Products',
-                            key: 'ProductID',
-                            idProperty: 'ProductName',
-                            numberProperty: 'UnitsInStock',
-                            unitOfMeasureProperty: 'QuantityPerUnit'
-                        }
-                    }
-                },
+                ...listDetailConfig,
                 appOptions: {
                     codeAssist: true,
                     eslint: true
+                }
+            }
+        },
+        {
+            name: 'listdetail-ts',
+            config: {
+                ...listDetailConfig,
+                appOptions: {
+                    typescript: true
                 }
             } as FreestyleApp<ListDetailSettings>
         }
