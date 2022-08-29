@@ -39,6 +39,7 @@ describe('use FPM with existing apps', () => {
         const tsConfig = {
             path: join(testOutput, 'ts'),
             settings: {
+                replaceAppComponent: true,
                 typescript: true
             }
         };
@@ -232,7 +233,9 @@ describe('use FPM with existing apps', () => {
         });
 
         afterAll(() => {
-            expect((fs as any).dump(testOutput, '**/test-output/*/webapp/{manifest.json,ext/**/*}')).toMatchSnapshot();
+            expect(
+                (fs as any).dump(testOutput, '**/test-output/*/webapp/{manifest.json,Component.ts,ext/**/*}')
+            ).toMatchSnapshot();
         });
     });
 });

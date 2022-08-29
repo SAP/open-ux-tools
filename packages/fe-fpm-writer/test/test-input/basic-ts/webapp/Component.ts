@@ -1,4 +1,4 @@
-import AppComponent from "sap/fe/core/AppComponent";
+import AppComponent from "sap/ui/core/UIComponent";
 
 /**
  * @namespace v4travel
