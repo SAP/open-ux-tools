@@ -77,6 +77,7 @@ function getTransportList(doc: Document): string[] {
 /**
  * This function processes ADT response for new project name that have not been deployed before,
  * all the available transport numbers are returned.
+ *
  * @param doc
  * @returns
  */
@@ -97,6 +98,7 @@ function getTransportableList(doc: Document): string[] {
 /**
  * This function processes ADT response for existing project name that has been locked.
  * A single, previously provided transport number is returned in the list.
+ *
  * @param doc
  * @returns
  */

@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.9.6
+
+### Patch Changes
+
+-   12e4686: Fix handling of special characters in xml encode deployment payload
+
 ## 0.9.5
 
 ### Patch Changes
