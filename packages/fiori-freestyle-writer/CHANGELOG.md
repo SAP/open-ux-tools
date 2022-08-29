@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.13.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+-   Updated dependencies [c86bfaf]
+    -   @sap-ux/ui5-application-writer@0.15.1
+
 ## 0.13.0
 
 ### Minor Changes

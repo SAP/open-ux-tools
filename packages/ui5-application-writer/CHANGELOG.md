@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.15.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+
 ## 0.15.0
 
 ### Minor Changes

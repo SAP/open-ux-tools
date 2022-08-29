@@ -1,5 +1,14 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.5.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+-   Updated dependencies [c86bfaf]
+    -   @sap-ux/fe-fpm-writer@0.14.1
+    -   @sap-ux/ui5-application-writer@0.15.1
+
 ## 0.5.0
 
 ### Minor Changes

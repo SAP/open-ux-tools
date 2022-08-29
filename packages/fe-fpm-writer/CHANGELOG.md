@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.14.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+
 ## 0.14.0
 
 ### Minor Changes
