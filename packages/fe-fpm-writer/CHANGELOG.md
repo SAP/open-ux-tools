@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.14.2
+
+### Patch Changes
+
+-   b76323d: Fix for generating a Component.ts using enableFpm
+
 ## 0.14.1
 
 ### Patch Changes
