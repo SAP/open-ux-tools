@@ -15,7 +15,8 @@
       "baseUrl": "./",
       "paths": {
         "v4travel/*": ["webapp/*"]
-      }
+      },
+      "types": [ "@sapui5/ts-types-esm" ]
     },
     "include": ["webapp/**/*"]
   }
