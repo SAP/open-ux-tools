@@ -122,7 +122,7 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        this.list.getBinding("items").refresh();
+        this.list.getBinding("items").refresh(false);
     }
 
     /**
@@ -296,7 +296,7 @@ export default class List extends BaseController {
      */
     updateListItemCount(total: number) {
         // only update the counter if the length is final
-        if (this.list.getBinding("items").isLengthFinal()) {
+        if ((this.list.getBinding("items") as ListBinding).isLengthFinal()) {
             const title = this.getResourceBundle().getText("listTitleCount", [total]);
             this.getModel<JSONModel>("listView").setProperty("/title", title);
         }
@@ -308,7 +308,7 @@ export default class List extends BaseController {
     private applyFilterSearch() {
         const filters = this.listFilterState.aSearch.concat(this.listFilterState.aFilter);
         const viewModel = this.getModel<JSONModel>("listView");
-        this.list.getBinding("items").filter(filters, "Application");
+        (this.list.getBinding("items") as ListBinding).filter(filters, "Application");
         // changes the noDataText of the list in case there are no filter results
         if (filters.length !== 0) {
             viewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataWithFilterOrSearchText"));
