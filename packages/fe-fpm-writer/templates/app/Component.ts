@@ -1,7 +1,7 @@
 import AppComponent from 'sap/fe/core/AppComponent';
 
 /**
- * @namespace <%- app.id %>
+ * @namespace <%- id %>
  */
 export default class Component extends AppComponent {
 
