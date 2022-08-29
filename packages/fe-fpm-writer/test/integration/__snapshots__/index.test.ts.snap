@@ -406,6 +406,21 @@ Object {
 ",
     "state": "modified",
   },
+  "ts/webapp/Component.ts": Object {
+    "contents": "import AppComponent from 'sap/fe/core/AppComponent';
+
+/**
+ * @namespace v4travel
+ */
+export default class Component extends AppComponent {
+
+	public static metadata = {
+		manifest: \\"json\\"
+	};
+}
+",
+    "state": "modified",
+  },
   "ts/webapp/ext/anotherCustomAction/AnotherCustomAction.ts": Object {
     "contents": "import MessageToast from 'sap/m/MessageToast';
 
