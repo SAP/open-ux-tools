@@ -9,7 +9,7 @@ import ListItemBase from "sap/m/ListItemBase";
 export default class ListSelector extends UI5Object {
 
     protected readonly oWhenListLoadingIsDone: Promise<any>;
-    protected readonly _oWhenListHasBeenSet: Promise<void>;
+    protected readonly _oWhenListHasBeenSet: Promise<any>;
     protected list: List;
     protected _fnResolveListHasBeenSet: any;
 
