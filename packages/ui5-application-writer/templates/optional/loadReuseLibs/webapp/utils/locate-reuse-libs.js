@@ -1,8 +1,8 @@
 /*eslint-disable semi, no-console*/
 (function (sap) {
-    const getKeys = function (libOrComp, libOrCompKeysString) {
+    var getKeys = function (libOrComp, libOrCompKeysString) {
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
-        const ui5Libs = [
+        var ui5Libs = [
             "sap.apf",
             "sap.base",
             "sap.chart",
@@ -43,8 +43,8 @@
         return libOrCompKeysString;
     };
 
-    const updateManifest = function (manifest) {
-        let result = "";
+    var updateManifest = function (manifest) {
+        var result = "";
         if (manifest) {
             if (manifest["sap.ui5"] && manifest["sap.ui5"].dependencies) {
                 if (manifest["sap.ui5"].dependencies.libs) {
@@ -61,8 +61,8 @@
         return result;
     };
 
-    const fioriToolsGetManifestLibs = function (manifestPath) {
-        const url = manifestPath;
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -74,10 +74,10 @@
         });
     };
 
-    const updateModuleDefinition = function (data) {
+    var updateModuleDefinition = function (data) {
         if (data) {
             Object.keys(data).forEach(function (moduleDefinitionKey) {
-                const moduleDefinition = data[moduleDefinitionKey];
+                var moduleDefinition = data[moduleDefinitionKey];
                 if (moduleDefinition && moduleDefinition.dependencies) {
                     moduleDefinition.dependencies.forEach(function (dependency) {
                         if (dependency.url && dependency.url.length > 0 && dependency.type === "UI5LIB") {
@@ -103,8 +103,8 @@
         /*eslint-disable semi, consistent-return*/
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
-                let url = "/sap/bc/ui2/app_index/ui5_app_info?id=" + libs;
-                const sapClient = jQuery.sap.getUriParameters().get("sap-client");
+                var url = "/sap/bc/ui2/app_index/ui5_app_info?id=" + libs;
+                var sapClient = jQuery.sap.getUriParameters().get("sap-client");
                 if (sapClient && sapClient.length === 3) {
                     url = url + "&sap-client=" + sapClient;
                 }
@@ -115,18 +115,18 @@
 })(sap);
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-const scripts = document.getElementsByTagName("script");
-let currentScript = document.getElementById("locate-reuse-libs");
+var scripts = document.getElementsByTagName("script");
+var currentScript = document.getElementById("locate-reuse-libs");
 if (!currentScript) {
     currentScript = document.currentScript;
 }
-const manifestUri = currentScript.getAttribute("data-sap-ui-manifest-uri");
-const componentName = currentScript.getAttribute("data-sap-ui-componentName");
-const useMockserver = currentScript.getAttribute("data-sap-ui-use-mockserver");
-const bundleResources = function () {
+var manifestUri = currentScript.getAttribute("data-sap-ui-manifest-uri");
+var componentName = currentScript.getAttribute("data-sap-ui-componentName");
+var useMockserver = currentScript.getAttribute("data-sap-ui-use-mockserver");
+var bundleResources = function () {
     jQuery.sap.require("jquery.sap.resources");
-    const sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    const oBundle = jQuery.sap.resources({
+    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+    var oBundle = jQuery.sap.resources({
         url: "i18n/i18n.properties",
         locale: sLocale
     });

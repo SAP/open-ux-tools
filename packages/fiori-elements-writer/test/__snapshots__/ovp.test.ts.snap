@@ -31,7 +31,8 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+    \\"@sap/ux-specification\\": \\"UI5-1.92\\",
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
@@ -45,9 +46,10 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
-  }
+  },
+  \\"sapux\\": true
 }
 ",
     "state": "modified",
@@ -92,11 +94,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -130,11 +134,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -1458,9 +1464,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   "webapp/utils/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
-    const getKeys = function (libOrComp, libOrCompKeysString) {
+    var getKeys = function (libOrComp, libOrCompKeysString) {
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
-        const ui5Libs = [
+        var ui5Libs = [
             \\"sap.apf\\",
             \\"sap.base\\",
             \\"sap.chart\\",
@@ -1501,8 +1507,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         return libOrCompKeysString;
     };
 
-    const updateManifest = function (manifest) {
-        let result = \\"\\";
+    var updateManifest = function (manifest) {
+        var result = \\"\\";
         if (manifest) {
             if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
                 if (manifest[\\"sap.ui5\\"].dependencies.libs) {
@@ -1519,8 +1525,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         return result;
     };
 
-    const fioriToolsGetManifestLibs = function (manifestPath) {
-        const url = manifestPath;
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -1532,10 +1538,10 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         });
     };
 
-    const updateModuleDefinition = function (data) {
+    var updateModuleDefinition = function (data) {
         if (data) {
             Object.keys(data).forEach(function (moduleDefinitionKey) {
-                const moduleDefinition = data[moduleDefinitionKey];
+                var moduleDefinition = data[moduleDefinitionKey];
                 if (moduleDefinition && moduleDefinition.dependencies) {
                     moduleDefinition.dependencies.forEach(function (dependency) {
                         if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
@@ -1561,8 +1567,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         /*eslint-disable semi, consistent-return*/
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
-                let url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-                const sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
+                var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
                 if (sapClient && sapClient.length === 3) {
                     url = url + \\"&sap-client=\\" + sapClient;
                 }
@@ -1573,18 +1579,18 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 })(sap);
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-const scripts = document.getElementsByTagName(\\"script\\");
-let currentScript = document.getElementById(\\"locate-reuse-libs\\");
+var scripts = document.getElementsByTagName(\\"script\\");
+var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
 }
-const manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
-const componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
-const useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-const bundleResources = function () {
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+var bundleResources = function () {
     jQuery.sap.require(\\"jquery.sap.resources\\");
-    const sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    const oBundle = jQuery.sap.resources({
+    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+    var oBundle = jQuery.sap.resources({
         url: \\"i18n/i18n.properties\\",
         locale: sLocale
     });
@@ -1661,7 +1667,8 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+    \\"@sap/ux-specification\\": \\"UI5-1.97\\",
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
@@ -1675,9 +1682,10 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
-  }
+  },
+  \\"sapux\\": true
 }
 ",
     "state": "modified",
@@ -1719,11 +1727,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -1757,11 +1767,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -7302,9 +7314,9 @@ appDescription=A Fiori application.",
   "webapp/utils/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
-    const getKeys = function (libOrComp, libOrCompKeysString) {
+    var getKeys = function (libOrComp, libOrCompKeysString) {
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
-        const ui5Libs = [
+        var ui5Libs = [
             \\"sap.apf\\",
             \\"sap.base\\",
             \\"sap.chart\\",
@@ -7345,8 +7357,8 @@ appDescription=A Fiori application.",
         return libOrCompKeysString;
     };
 
-    const updateManifest = function (manifest) {
-        let result = \\"\\";
+    var updateManifest = function (manifest) {
+        var result = \\"\\";
         if (manifest) {
             if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
                 if (manifest[\\"sap.ui5\\"].dependencies.libs) {
@@ -7363,8 +7375,8 @@ appDescription=A Fiori application.",
         return result;
     };
 
-    const fioriToolsGetManifestLibs = function (manifestPath) {
-        const url = manifestPath;
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -7376,10 +7388,10 @@ appDescription=A Fiori application.",
         });
     };
 
-    const updateModuleDefinition = function (data) {
+    var updateModuleDefinition = function (data) {
         if (data) {
             Object.keys(data).forEach(function (moduleDefinitionKey) {
-                const moduleDefinition = data[moduleDefinitionKey];
+                var moduleDefinition = data[moduleDefinitionKey];
                 if (moduleDefinition && moduleDefinition.dependencies) {
                     moduleDefinition.dependencies.forEach(function (dependency) {
                         if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
@@ -7405,8 +7417,8 @@ appDescription=A Fiori application.",
         /*eslint-disable semi, consistent-return*/
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
-                let url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-                const sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
+                var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
                 if (sapClient && sapClient.length === 3) {
                     url = url + \\"&sap-client=\\" + sapClient;
                 }
@@ -7417,18 +7429,18 @@ appDescription=A Fiori application.",
 })(sap);
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-const scripts = document.getElementsByTagName(\\"script\\");
-let currentScript = document.getElementById(\\"locate-reuse-libs\\");
+var scripts = document.getElementsByTagName(\\"script\\");
+var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
 }
-const manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
-const componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
-const useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-const bundleResources = function () {
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+var bundleResources = function () {
     jQuery.sap.require(\\"jquery.sap.resources\\");
-    const sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    const oBundle = jQuery.sap.resources({
+    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+    var oBundle = jQuery.sap.resources({
         url: \\"i18n/i18n.properties\\",
         locale: sLocale
     });

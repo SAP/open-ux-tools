@@ -24,6 +24,12 @@
 # Module: yaml
 /packages/yaml/ @SAP/ux-tools-yaml
 
+# Module: ui5-proxy-middleware
+/packages/ui5-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
+# Module: backend-proxy-middleware
+/packages/backend-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin

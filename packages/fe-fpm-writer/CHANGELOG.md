@@ -1,5 +1,35 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.14.2
+
+### Patch Changes
+
+-   b76323d: Fix for generating a Component.ts using enableFpm
+
+## 0.14.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+
+## 0.14.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+## 0.13.6
+
+### Patch Changes
+
+-   9e6d402: Add id to page in generated custom page
+
+## 0.13.5
+
+### Patch Changes
+
+-   aee31b4: Fix issue with fe-fpm-writer module's building block generator to add macros namespace if it is not found in the xml view.
+
 ## 0.13.4
 
 ### Patch Changes

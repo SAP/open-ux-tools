@@ -24,16 +24,14 @@ describe('UI5 templates', () => {
 
     it('generates options: `codeAssist, eslint, sapux`', async () => {
         const projectDir = join(outputDir, 'testapp_options');
-        const fs = await generate(
-            projectDir,
-            Object.assign(baseAppConfig, {
-                appOptions: {
-                    codeAssist: true,
-                    eslint: true,
-                    sapux: true
-                }
-            })
-        );
+        const fs = await generate(projectDir, {
+            ...baseAppConfig,
+            appOptions: {
+                codeAssist: true,
+                eslint: true,
+                sapux: true
+            }
+        });
         expect((fs as any).dump(projectDir)).toMatchSnapshot();
         return new Promise((resolve) => {
             // write out the files for debugging
@@ -47,11 +45,53 @@ describe('UI5 templates', () => {
 
     it('option: `loadReuseLibs`', async () => {
         const projectDir = join(outputDir, 'testapp_loadReuseLibs');
+        const fs = await generate(projectDir, {
+            ...baseAppConfig,
+            appOptions: {
+                loadReuseLibs: true
+            }
+        });
+        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+
+    it('generates options: `sapux` with specific version', async () => {
+        const projectDir = join(outputDir, 'testapp_options');
+        const fs = await generate(projectDir, {
+            ...baseAppConfig,
+            appOptions: {
+                sapux: true
+            },
+            ui5: {
+                version: '1.92.1'
+            }
+        });
+        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+
+    it('option: `typescript and Fiori tools`', async () => {
+        const projectDir = join(outputDir, 'testapp_typescript');
         const fs = await generate(
             projectDir,
             Object.assign(baseAppConfig, {
                 appOptions: {
-                    loadReuseLibs: true
+                    typescript: true,
+                    sapux: true
                 }
             })
         );

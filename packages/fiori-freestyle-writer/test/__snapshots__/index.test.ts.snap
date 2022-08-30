@@ -31,7 +31,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
@@ -45,7 +45,7 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
   }
 }
@@ -85,11 +85,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /V2/Northwind/Northwind.svc
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -123,11 +125,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /V2/Northwind/Northwind.svc
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -203,7 +207,7 @@ server:
     function(BaseController) {
       \\"use strict\\";
   
-      return BaseController.extend(\\"test.me.controller.controller.App\\", {
+      return BaseController.extend(\\"test.me.controller.App\\", {
         onInit() {
         }
       });
@@ -1053,7 +1057,7 @@ title=My Test App",
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
@@ -1063,10 +1067,10 @@ title=My Test App",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+        data-sap-ui-frameOptions=\\"allow\\">
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->
@@ -1081,9 +1085,9 @@ title=My Test App",
   "webapp/utils/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
-    const getKeys = function (libOrComp, libOrCompKeysString) {
+    var getKeys = function (libOrComp, libOrCompKeysString) {
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
-        const ui5Libs = [
+        var ui5Libs = [
             \\"sap.apf\\",
             \\"sap.base\\",
             \\"sap.chart\\",
@@ -1124,8 +1128,8 @@ title=My Test App",
         return libOrCompKeysString;
     };
 
-    const updateManifest = function (manifest) {
-        let result = \\"\\";
+    var updateManifest = function (manifest) {
+        var result = \\"\\";
         if (manifest) {
             if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
                 if (manifest[\\"sap.ui5\\"].dependencies.libs) {
@@ -1142,8 +1146,8 @@ title=My Test App",
         return result;
     };
 
-    const fioriToolsGetManifestLibs = function (manifestPath) {
-        const url = manifestPath;
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -1155,10 +1159,10 @@ title=My Test App",
         });
     };
 
-    const updateModuleDefinition = function (data) {
+    var updateModuleDefinition = function (data) {
         if (data) {
             Object.keys(data).forEach(function (moduleDefinitionKey) {
-                const moduleDefinition = data[moduleDefinitionKey];
+                var moduleDefinition = data[moduleDefinitionKey];
                 if (moduleDefinition && moduleDefinition.dependencies) {
                     moduleDefinition.dependencies.forEach(function (dependency) {
                         if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
@@ -1184,8 +1188,8 @@ title=My Test App",
         /*eslint-disable semi, consistent-return*/
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
-                let url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-                const sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
+                var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
                 if (sapClient && sapClient.length === 3) {
                     url = url + \\"&sap-client=\\" + sapClient;
                 }
@@ -1196,18 +1200,18 @@ title=My Test App",
 })(sap);
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-const scripts = document.getElementsByTagName(\\"script\\");
-let currentScript = document.getElementById(\\"locate-reuse-libs\\");
+var scripts = document.getElementsByTagName(\\"script\\");
+var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
 }
-const manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
-const componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
-const useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-const bundleResources = function () {
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+var bundleResources = function () {
     jQuery.sap.require(\\"jquery.sap.resources\\");
-    const sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    const oBundle = jQuery.sap.resources({
+    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+    var oBundle = jQuery.sap.resources({
         url: \\"i18n/i18n.properties\\",
         locale: sLocale
     });
@@ -1306,7 +1310,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
@@ -1320,7 +1324,7 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
   }
 }
@@ -1360,11 +1364,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /V2/Northwind/Northwind.svc
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -1398,11 +1404,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /V2/Northwind/Northwind.svc
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -1840,17 +1848,6 @@ server:
 
     return BaseController.extend(\\"test.me.controller.DetailObjectNotFound\\", {});
 });",
-    "state": "modified",
-  },
-  "webapp/controller/DetailObjectNotFound.js": Object {
-    "contents": "sap.ui.define([
-    \\"./BaseController\\"
-], function (BaseController) {
-    \\"use strict\\";
-
-    return BaseController.extend(\\"test.me.controller.DetailObjectNotFound\\", {});
-});
-",
     "state": "modified",
   },
   "webapp/controller/ErrorHandler.js": Object {
@@ -3377,7 +3374,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
@@ -3387,10 +3384,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+        data-sap-ui-frameOptions=\\"allow\\">
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->
@@ -3405,9 +3402,9 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   "webapp/utils/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
-    const getKeys = function (libOrComp, libOrCompKeysString) {
+    var getKeys = function (libOrComp, libOrCompKeysString) {
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
-        const ui5Libs = [
+        var ui5Libs = [
             \\"sap.apf\\",
             \\"sap.base\\",
             \\"sap.chart\\",
@@ -3448,8 +3445,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         return libOrCompKeysString;
     };
 
-    const updateManifest = function (manifest) {
-        let result = \\"\\";
+    var updateManifest = function (manifest) {
+        var result = \\"\\";
         if (manifest) {
             if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
                 if (manifest[\\"sap.ui5\\"].dependencies.libs) {
@@ -3466,8 +3463,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         return result;
     };
 
-    const fioriToolsGetManifestLibs = function (manifestPath) {
-        const url = manifestPath;
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -3479,10 +3476,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         });
     };
 
-    const updateModuleDefinition = function (data) {
+    var updateModuleDefinition = function (data) {
         if (data) {
             Object.keys(data).forEach(function (moduleDefinitionKey) {
-                const moduleDefinition = data[moduleDefinitionKey];
+                var moduleDefinition = data[moduleDefinitionKey];
                 if (moduleDefinition && moduleDefinition.dependencies) {
                     moduleDefinition.dependencies.forEach(function (dependency) {
                         if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
@@ -3508,8 +3505,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         /*eslint-disable semi, consistent-return*/
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
-                let url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-                const sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
+                var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
                 if (sapClient && sapClient.length === 3) {
                     url = url + \\"&sap-client=\\" + sapClient;
                 }
@@ -3520,18 +3517,18 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 })(sap);
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-const scripts = document.getElementsByTagName(\\"script\\");
-let currentScript = document.getElementById(\\"locate-reuse-libs\\");
+var scripts = document.getElementsByTagName(\\"script\\");
+var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
 }
-const manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
-const componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
-const useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-const bundleResources = function () {
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+var bundleResources = function () {
     jQuery.sap.require(\\"jquery.sap.resources\\");
-    const sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    const oBundle = jQuery.sap.resources({
+    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+    var oBundle = jQuery.sap.resources({
         url: \\"i18n/i18n.properties\\",
         locale: sLocale
     });
@@ -3909,7 +3906,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+    \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
@@ -3923,7 +3920,7 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
   }
 }
@@ -3963,11 +3960,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /V2/Northwind/Northwind.svc
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -4001,11 +4000,13 @@ server:
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /V2/Northwind/Northwind.svc
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /V2/Northwind/Northwind.svc
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 ",
     "state": "modified",
   },
@@ -5511,7 +5512,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     </script>
 
     <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
         src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell\\"
@@ -5521,10 +5522,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"> // NON-SECURE setting for testing environment
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+        data-sap-ui-frameOptions=\\"allow\\">
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->
@@ -5539,9 +5540,9 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   "webapp/utils/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
-    const getKeys = function (libOrComp, libOrCompKeysString) {
+    var getKeys = function (libOrComp, libOrCompKeysString) {
         // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
-        const ui5Libs = [
+        var ui5Libs = [
             \\"sap.apf\\",
             \\"sap.base\\",
             \\"sap.chart\\",
@@ -5582,8 +5583,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         return libOrCompKeysString;
     };
 
-    const updateManifest = function (manifest) {
-        let result = \\"\\";
+    var updateManifest = function (manifest) {
+        var result = \\"\\";
         if (manifest) {
             if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
                 if (manifest[\\"sap.ui5\\"].dependencies.libs) {
@@ -5600,8 +5601,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         return result;
     };
 
-    const fioriToolsGetManifestLibs = function (manifestPath) {
-        const url = manifestPath;
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -5613,10 +5614,10 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         });
     };
 
-    const updateModuleDefinition = function (data) {
+    var updateModuleDefinition = function (data) {
         if (data) {
             Object.keys(data).forEach(function (moduleDefinitionKey) {
-                const moduleDefinition = data[moduleDefinitionKey];
+                var moduleDefinition = data[moduleDefinitionKey];
                 if (moduleDefinition && moduleDefinition.dependencies) {
                     moduleDefinition.dependencies.forEach(function (dependency) {
                         if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
@@ -5642,8 +5643,8 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         /*eslint-disable semi, consistent-return*/
         return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
             if (libs && libs.length > 0) {
-                let url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-                const sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
+                var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
                 if (sapClient && sapClient.length === 3) {
                     url = url + \\"&sap-client=\\" + sapClient;
                 }
@@ -5654,18 +5655,18 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 })(sap);
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-const scripts = document.getElementsByTagName(\\"script\\");
-let currentScript = document.getElementById(\\"locate-reuse-libs\\");
+var scripts = document.getElementsByTagName(\\"script\\");
+var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
 }
-const manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
-const componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
-const useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-const bundleResources = function () {
+var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
+var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
+var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
+var bundleResources = function () {
     jQuery.sap.require(\\"jquery.sap.resources\\");
-    const sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-    const oBundle = jQuery.sap.resources({
+    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+    var oBundle = jQuery.sap.resources({
         url: \\"i18n/i18n.properties\\",
         locale: sLocale
     });

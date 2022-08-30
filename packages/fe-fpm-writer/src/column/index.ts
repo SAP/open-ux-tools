@@ -48,7 +48,14 @@ function enhanceConfig(
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler);
+        config.eventHandler = applyEventHandlerConfiguration(
+            fs,
+            root,
+            config,
+            config.eventHandler,
+            false,
+            config.typescript
+        );
     }
 
     // generate column content

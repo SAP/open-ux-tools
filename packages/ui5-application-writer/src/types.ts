@@ -18,6 +18,7 @@ export interface App {
     baseComponent?: string; // UI5 Component `required` by Component.js
     startFile?: string;
     localStartFile?: string;
+
     /**
      * Defines the template used by the generation tool
      */
@@ -56,7 +57,16 @@ export interface AppOptions {
     codeAssist: boolean; // Enables code assist
     eslint: boolean; // Enables Fiori linting
     sapux: boolean; // Enables Fiori Tools Suite integration
-    loadReuseLibs: boolean; // Enables loading of re-use libs
+
+    /**
+     * Enables loading of re-use libs
+     */
+    loadReuseLibs: boolean;
+
+    /**
+     * Enable Typescript support and generate all files in Typescript instead of Javascript
+     */
+    typescript: boolean;
 }
 
 export interface Ui5App {

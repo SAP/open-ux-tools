@@ -6,7 +6,8 @@ export enum TemplateType {
     ListReportObjectPage = 'lrop',
     AnalyticalListPage = 'alp',
     OverviewPage = 'ovp',
-    FormEntryObjectPage = 'feop'
+    FormEntryObjectPage = 'feop',
+    FlexibleProgrammingModel = 'fpm'
 }
 
 /**
@@ -47,6 +48,11 @@ export enum TableSelectionMode {
 
 export interface LROPSettings {
     entityConfig: EntityConfig;
+}
+
+export interface FPMSettings {
+    entityConfig: EntityConfig;
+    pageName: string;
 }
 
 export interface WorklistSettings {

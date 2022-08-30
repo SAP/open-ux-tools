@@ -1,0 +1,7 @@
+server:
+    customMiddleware:
+        - name: fiori-tools-proxy
+          configuration:
+              backend:
+                  - one: 1
+                  - two: 2
