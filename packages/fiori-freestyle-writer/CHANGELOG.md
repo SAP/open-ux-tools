@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.13.2
+
+### Patch Changes
+
+-   a2e1676: Improving compatibility with older version of yeoman
+
 ## 0.13.1
 
 ### Patch Changes
