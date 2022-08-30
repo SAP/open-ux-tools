@@ -1,5 +1,24 @@
 # @sap-ux/ui5-application-writer
 
+## 0.15.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+
+## 0.15.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+## 0.14.6
+
+### Patch Changes
+
+-   Updated dependencies [b6d0c67]
+    -   @sap-ux/ui5-config@0.14.5
+
 ## 0.14.5
 
 ### Patch Changes

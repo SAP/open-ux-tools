@@ -1,5 +1,25 @@
 # @sap-ux/axios-extension
 
+## 0.9.6
+
+### Patch Changes
+
+-   12e4686: Fix handling of special characters in xml encode deployment payload
+
+## 0.9.5
+
+### Patch Changes
+
+-   Updated dependencies [bc4cb3a]
+    -   @sap-ux/btp-utils@0.11.0
+    -   @sap-ux/logger@0.3.0
+
+## 0.9.4
+
+### Patch Changes
+
+-   2896b77: Fixed incorrect url parameter
+
 ## 0.9.3
 
 ### Patch Changes

@@ -1,5 +1,39 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.13.2
+
+### Patch Changes
+
+-   a2e1676: Improving compatibility with older version of yeoman
+
+## 0.13.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+-   Updated dependencies [c86bfaf]
+    -   @sap-ux/ui5-application-writer@0.15.1
+
+## 0.13.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+### Patch Changes
+
+-   Updated dependencies [d351f81]
+    -   @sap-ux/ui5-application-writer@0.15.0
+
+## 0.12.9
+
+### Patch Changes
+
+-   Updated dependencies [b6d0c67]
+    -   @sap-ux/odata-service-writer@0.14.6
+    -   @sap-ux/ui5-config@0.14.5
+    -   @sap-ux/ui5-application-writer@0.14.6
+
 ## 0.12.8
 
 ### Patch Changes

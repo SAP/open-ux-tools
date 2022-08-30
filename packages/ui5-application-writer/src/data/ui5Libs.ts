@@ -12,3 +12,44 @@ export const getUI5Libs = (ui5Libs?: string | string[]): string[] => {
         return self.indexOf(value) === index;
     });
 };
+
+/**
+ * UI5 tasks configurations required for TypeScript projects
+ */
+export const ui5TsTasks = [
+    {
+        name: 'ui5-tooling-modules-task',
+        afterTask: 'replaceVersion',
+        configuration: {}
+    },
+    {
+        name: 'ui5-tooling-transpile-task',
+        afterTask: 'replaceVersion',
+        configuration: {
+            debug: true,
+            removeConsoleStatements: true,
+            transpileAsync: true,
+            transpileTypeScript: true
+        }
+    }
+];
+
+/**
+ * UI5 middleware configurations required for TypeScript projects
+ */
+export const ui5TsMiddlewares = [
+    {
+        name: 'ui5-tooling-modules-middleware',
+        afterMiddleware: 'compression',
+        configuration: {}
+    },
+    {
+        name: 'ui5-tooling-transpile-middleware',
+        afterMiddleware: 'compression',
+        configuration: {
+            debug: true,
+            transpileAsync: true,
+            transpileTypeScript: true
+        }
+    }
+];

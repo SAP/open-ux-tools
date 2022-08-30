@@ -1,6 +1,13 @@
 import 'jest-extended';
 import { LogLevel, ToolsLogger, Transport } from '../../../src';
-import { ConsoleTransport, NullTransport, UI5ToolingTransport, VSCodeTransport } from '../../../src/transports';
+import type { ArrayTransportLogEntry } from '../../../src/transports';
+import {
+    ConsoleTransport,
+    ArrayTransport,
+    NullTransport,
+    UI5ToolingTransport,
+    VSCodeTransport
+} from '../../../src/transports';
 import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport';
 import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport';
 import winston from 'winston';
@@ -59,6 +66,48 @@ describe('Default (Winston) logger', () => {
         expect(logger.transports()).toIncludeSameMembers([new VSCodeTransport({ channelName: 'sampleChannel' })]);
     });
 
+    it('Should log into an array when no options are passed to array transport', () => {
+        const logger = new ToolsLogger({
+            transports: [new ArrayTransport()]
+        });
+        logger.debug('DEBUG');
+        logger.info('INFO');
+        logger.warn('WARN');
+        logger.error('ERROR');
+        expect(logger.transports()[0] instanceof ArrayTransport).toBeTrue();
+        expect((logger.transports()[0] as ArrayTransport).logs).toMatchObject([
+            { level: 'debug', message: 'DEBUG' },
+            { level: 'info', message: 'INFO' },
+            { level: 'warn', message: 'WARN' },
+            { level: 'error', message: 'ERROR' }
+        ]);
+    });
+
+    it('Should log into a provided array', () => {
+        const logs: ArrayTransportLogEntry[] = [];
+        const logger = new ToolsLogger({
+            transports: [new ArrayTransport({ logs })]
+        });
+        logger.info('INFO');
+        logger.warn('WARN');
+        logger.error('ERROR');
+        expect(logs).toMatchObject([
+            { level: 'info', message: 'INFO' },
+            { level: 'warn', message: 'WARN' },
+            { level: 'error', message: 'ERROR' }
+        ]);
+    });
+
+    it('Should log only messages according to custom log level into array', () => {
+        const logs: ArrayTransportLogEntry[] = [];
+        const logger = new ToolsLogger({
+            transports: [new ArrayTransport({ logs, logLevel: LogLevel.Error })]
+        });
+        logger.warn('WARN');
+        logger.error('ERROR');
+        expect(logs).toMatchObject([{ level: 'error', message: 'ERROR' }]);
+    });
+
     it('UI5 Tooling transport is only added once per channel', () => {
         const logger = new ToolsLogger({
             transports: Array.from({ length: 500 }, () => new UI5ToolingTransport({ moduleName: 'test:module' })),
@@ -104,8 +153,14 @@ describe('Default (Winston) logger', () => {
         const consoleLog = jest.spyOn(winston.transports.Console.prototype, 'log').mockImplementation(() => 0);
         const nullLog = jest.spyOn(WinstonNullTransport.prototype, 'log').mockClear();
         const vscodeLog = jest.spyOn(WinstonVSCodeTransport.prototype, 'log').mockClear();
+        const arrayLog = jest.spyOn(ArrayTransport.prototype, 'log').mockClear();
         const logger = new ToolsLogger({
-            transports: [new ConsoleTransport(), new NullTransport(), new VSCodeTransport({ channelName: 'random' })]
+            transports: [
+                new ConsoleTransport(),
+                new NullTransport(),
+                new VSCodeTransport({ channelName: 'random' }),
+                new ArrayTransport()
+            ]
         });
         logger.info('info message');
         expect(consoleLog).toBeCalledWith(
@@ -117,6 +172,10 @@ describe('Default (Winston) logger', () => {
             expect.any(Function)
         );
         expect(vscodeLog).toBeCalledWith(
+            expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
+            expect.any(Function)
+        );
+        expect(arrayLog).toBeCalledWith(
             expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );

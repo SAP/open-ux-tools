@@ -24,7 +24,8 @@ type DestinationProperty =
     | 'WebIDEAdditionalData'
     | 'sap-client'
     | 'sap-platform'
-    | 'TrustAll';
+    | 'TrustAll'
+    | 'HTML5.DynamicDestination';
 type AdditionalDestinationProperties = { [property in DestinationProperty]: string };
 
 /**
