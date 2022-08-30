@@ -50,8 +50,7 @@
             "minUI5Version": "1.103.0",
             "libs": {
                 "sap.ui.core": {},
-                "sap.fe.templates": {},
-                "sap.f": {}
+                "sap.fe.templates": {}
             }
         },
         "models": {
@@ -79,18 +78,7 @@
                 {
                     "pattern": ":?query:",
                     "name": "EmployeesList",
-                    "target": [
-                        "EmployeesList",
-                        "EmployeesObjectPage"
-                    ]
-                },
-                {
-                    "pattern": "Employees({key}):?query:",
-                    "name": "EmployeesObjectPage",
-                    "target": [
-                        "EmployeesList",
-                        "EmployeesObjectPage"
-                    ]
+                    "target": "EmployeesList"
                 }
             ],
             "targets": {
@@ -101,50 +89,15 @@
                     "options": {
                         "settings": {
                             "entitySet": "Employees",
-                            "variantManagement": "Page",
-                            "navigation": {
-                                "Employees": {
-                                    "detail": {
-                                        "route": "EmployeesObjectPage"
-                                    }
-                                }
-                            }
+                            "variantManagement": "Page"
                         }
-                    },
-                    "controlAggregation": "beginColumnPages",
-                    "contextPattern": ""
-                },
-                "EmployeesObjectPage": {
-                    "type": "Component",
-                    "id": "EmployeesObjectPage",
-                    "name": "sap.fe.templates.ObjectPage",
-                    "options": {
-                        "settings": {
-                            "editableHeaderContent": false,
-                            "entitySet": "Employees"
-                        }
-                    },
-                    "controlAggregation": "midColumnPages",
-                    "contextPattern": "/Employees({key})"
+                    }
                 }
-            },
-            "config": {
-                "flexibleColumnLayout": {
-                    "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
-                    "defaultThreeColumnLayoutType": "ThreeColumnsMidExpanded"
-                },
-                "routerClass": "sap.f.routing.Router"
             }
         },
         "contentDensities": {
             "compact": true,
             "cozy": true
-        },
-        "rootView": {
-            "viewName": "sap.fe.templates.RootContainer.view.Fcl",
-            "type": "XML",
-            "async": true,
-            "id": "appRootView"
         }
     },
     "sap.platform.abap": {

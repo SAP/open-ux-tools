@@ -101,6 +101,7 @@ function createPageConfig(manifest: Manifest, targetKey: string, forcedAppID?: s
         return undefined;
     }
 }
+
 /**
  * Create the configuration object from the app descriptor.
  *
@@ -143,6 +144,65 @@ function createConfig(manifest: Manifest, opaConfig: { scriptName?: string; appI
     }
 
     return config;
+}
+
+/**
+ * Finds the initial ListReport page and the first Object page from the app.
+ *
+ * @param pages - the page configs of the app
+ * @param manifest - the app descriptor of the target app
+ * @returns the page fonfigs for the LR and the OP if they're found
+ */
+function findLROP(
+    pages: FEV4OPAPageConfig[],
+    manifest: Manifest
+): { pageLR?: FEV4OPAPageConfig; pageOP?: FEV4OPAPageConfig } {
+    const pageLR = pages.find((page) => {
+        return page.isStartup && page.template === 'ListReport';
+    });
+
+    if (!pageLR) {
+        return {};
+    }
+
+    const appTargets = manifest['sap.ui5']?.routing?.targets;
+    const appRoutes = (manifest['sap.ui5']?.routing?.routes ?? []) as any[];
+    const target = (appTargets && appTargets[pageLR.targetKey]) as FEV4ManifestTarget;
+
+    if (!target?.options?.settings?.navigation) {
+        return { pageLR }; // No navigation from LR
+    }
+
+    // Find all targets that can be navigated from the LR page
+    const navigatedTargetKeys: string[] = [];
+    for (const navKey in target.options.settings.navigation) {
+        const navObject = target.options.settings.navigation[navKey];
+        const navigatedRoute =
+            navObject.detail?.route &&
+            appRoutes.find((route) => {
+                return route.name === navObject.detail?.route;
+            });
+
+        if (Array.isArray(navigatedRoute?.target)) {
+            navigatedTargetKeys.push(...navigatedRoute.target);
+        } else if (navigatedRoute?.target) {
+            navigatedTargetKeys.push(navigatedRoute.target);
+        }
+    }
+
+    // Find the first navigated page that is valid and not the starting LR
+    let pageOP: FEV4OPAPageConfig | undefined;
+    for (let i = 0; i < navigatedTargetKeys.length && !pageOP; i++) {
+        if (navigatedTargetKeys[i] === pageLR.targetKey) {
+            continue; // This can happen in the FCL case where the LR is also part of the route's targets to the OP
+        }
+
+        pageOP = pages.find((page) => {
+            return page.targetKey === navigatedTargetKeys[i];
+        });
+    }
+
+    return { pageLR, pageOP };
 }
 
 /**
@@ -218,12 +278,11 @@ export function generateOPAFiles(
 
     // OPA Journey file
     const startPages = config.pages.filter((page) => page.isStartup).map((page) => page.targetKey);
-    const startListReportPage = config.pages.find((page) => {
-        return page.isStartup && page.template === 'ListReport';
-    });
+    const LROP = findLROP(config.pages, manifest);
     const journeyParams = {
         startPages,
-        startLR: startListReportPage?.targetKey
+        startLR: LROP.pageLR?.targetKey,
+        navigatedOP: LROP.pageOP?.targetKey
     };
     editor.copyTpl(
         join(rootV4TemplateDirPath, 'integration/FirstJourney.js'),

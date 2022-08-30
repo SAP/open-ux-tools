@@ -191,6 +191,8 @@ Object {
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
             });
 
             opaTest(\\"Teardown\\", function (Given, When, Then) { 
@@ -442,7 +444,13 @@ Object {
                         \\"settings\\": {
                             \\"entitySet\\": \\"Employees\\",
                             \\"variantManagement\\": \\"Page\\",
-                            \\"navigation\\": {}
+                            \\"navigation\\": {
+                                \\"Employees\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"EmployeesObjectPage\\"
+                                    }
+                                }
+                            }
                         }
                     },
                     \\"controlAggregation\\": \\"beginColumnPages\\",
@@ -523,6 +531,8 @@ Object {
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
             });
 
             opaTest(\\"Teardown\\", function (Given, When, Then) { 
@@ -836,6 +846,8 @@ Object {
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
             });
 
             opaTest(\\"Teardown\\", function (Given, When, Then) { 
@@ -944,6 +956,273 @@ Object {
         {
             appId: 'ui5-test-writer.test.employees',
             componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen With LR only 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"ui5-test-writer.test.employees\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"EmployeesList\\",
+                    \\"target\\": \\"EmployeesList\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesList\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\",
+                            \\"variantManagement\\": \\"Page\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'ui5-test-writer/test/employees/test/integration/FirstJourney',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesList'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesList) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesList',
             entitySet: 'Employees'
         },
         CustomPageDefinitions
@@ -1715,6 +1994,8 @@ Object {
                 Then.onTheEmployeesList.onTable().iCheckRows();
 
                 When.onTheEmployeesList.onTable().iPressRow(0);
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
             });
 
             opaTest(\\"Teardown\\", function (Given, When, Then) { 
@@ -2017,7 +2298,7 @@ Object {
                             \\"navigation\\": {
                                 \\"Employees\\": {
                                     \\"detail\\": {
-                                        \\"route\\": \\"EmployeesObjectPage\\"
+                                        \\"route\\": \\"EmployeesObjectPageRoute\\"
                                     }
                                 }
                             }
@@ -2094,6 +2375,8 @@ Object {
                 Then.onTheEmployeesListTarget.onTable().iCheckRows();
 
                 When.onTheEmployeesListTarget.onTable().iPressRow(0);
+                Then.onTheEmployeesCustomPageTarget.iSeeThisPage();
+
             });
 
             opaTest(\\"Teardown\\", function (Given, When, Then) { 

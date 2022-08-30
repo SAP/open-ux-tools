@@ -154,6 +154,11 @@ describe('ui5-test-writer', () => {
                 description: 'Fullscreen with custom FPM page',
                 dirPath: 'CustomOP',
                 scriptName: undefined
+            },
+            {
+                description: 'Fullscreen With LR only',
+                dirPath: 'FullScreenLR',
+                scriptName: undefined
             }
         ];
 

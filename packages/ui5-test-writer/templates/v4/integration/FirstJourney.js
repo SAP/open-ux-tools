@@ -19,8 +19,10 @@ sap.ui.define([
                 // Note: this test will fail if the ListReport page doesn't show any data
                 When.onThe<%- startLR%>.onFilterBar().iExecuteSearch();
                 Then.onThe<%- startLR%>.onTable().iCheckRows();
-
+<% if (navigatedOP) { %>
                 When.onThe<%- startLR%>.onTable().iPressRow(0);
+                Then.onThe<%- navigatedOP%>.iSeeThisPage();
+<%} %>
             });
 <%} %>
             opaTest("Teardown", function (Given, When, Then) { 

@@ -501,6 +501,8 @@ appDescription=Restaurant List",
                 Then.onTheRestaurantList.onTable().iCheckRows();
 
                 When.onTheRestaurantList.onTable().iPressRow(0);
+                Then.onTheRestaurantObjectPage.iSeeThisPage();
+
             });
 
             opaTest(\\"Teardown\\", function (Given, When, Then) { 
