@@ -50,16 +50,7 @@ jobs:
               uses: sonarsource/sonarcloud-github-action@master
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
-                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-              with:
-                  args: >
-                    -Dsonar.pullrequest.provider=github
-                    -Dsonar.pullrequest.github.repository=${{ github.repository }}
-                    -Dsonar.pullrequest.github.token.secured=${{ secrets.GITHUB_TOKEN }}
-                    -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
-                    -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}
-                    -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}    
-
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  
     version:
         # Run version job only on pushes to the main branch. The job depends on completion of the build job.
         if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
