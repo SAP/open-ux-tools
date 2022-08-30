@@ -20,7 +20,7 @@ jobs:
               with:
                   fetch-depth: 0
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.0.1
+              uses: pnpm/action-setup@v2.2.2
               with:
                   version: 7.1.0
                   run_install: true
@@ -51,6 +51,14 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              with:
+                  args: >
+                    -Dsonar.pullrequest.provider=github
+                    -Dsonar.pullrequest.github.repository=${{ github.repository }}
+                    -Dsonar.pullrequest.github.token.secured=${{ secrets.GITHUB_TOKEN }}
+                    -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+                    -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}
+                    -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}    
 
     version:
         # Run version job only on pushes to the main branch. The job depends on completion of the build job.
@@ -66,7 +74,7 @@ jobs:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.0.1
+              uses: pnpm/action-setup@v2.2.2
               with:
                   version: 7.1.0
                   run_install: true
@@ -112,7 +120,7 @@ jobs:
             - name: Checkout code repository
               uses: actions/checkout@v2
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.0.1
+              uses: pnpm/action-setup@v2.2.2
               with:
                   version: 7.1.0
                   run_install: true

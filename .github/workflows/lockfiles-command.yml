@@ -18,7 +18,7 @@ jobs:
                   node-version: 12.x
 
             - name: Setup PNPM
-              uses: pnpm/action-setup@v2.0.1
+              uses: pnpm/action-setup@v2.2.2
               if: success()
               with:
                   version: 7.1.0
