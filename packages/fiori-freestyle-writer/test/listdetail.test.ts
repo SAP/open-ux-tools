@@ -34,8 +34,14 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
 
     const configuration: Array<{ name: string; config: FreestyleApp<unknown> }> = [
         {
-            name: 'listdetail-good',
-            config: listDetailConfig
+            name: 'listdetail-good-eslint',
+            config: {
+                ...listDetailConfig,
+                appOptions: {
+                    codeAssist: true,
+                    eslint: true
+                }
+            }
         },
         {
             name: 'listdetail-ts',
@@ -44,7 +50,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 appOptions: {
                     typescript: true
                 }
-            }
+            } as FreestyleApp<ListDetailSettings>
         }
     ];
 
