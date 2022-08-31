@@ -84,7 +84,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
             {
                 entity: config.entityConfig.mainEntityName,
                 name: config.pageName,
-                ui5Version: parseInt(
+                ui5Version: parseFloat(
                     `${semVer.coerce(feApp.ui5?.minUI5Version)?.major}.${
                         semVer.coerce(feApp.ui5?.minUI5Version)?.minor
                     }`

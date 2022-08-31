@@ -31,13 +31,7 @@ function enhanceConfig(
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(
-            fs,
-            config,
-            config.eventHandler,
-            true,
-            config.typescript
-        );
+        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, true, config.typescript);
     }
 
     // existing views
