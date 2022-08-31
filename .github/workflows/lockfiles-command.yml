@@ -13,12 +13,12 @@ jobs:
 
             - name: Use Node.js 12.x
               if: success()
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
                   node-version: 12.x
 
             - name: Setup PNPM
-              uses: pnpm/action-setup@v2.0.1
+              uses: pnpm/action-setup@v2.2.2
               if: success()
               with:
                   version: 7.1.0
