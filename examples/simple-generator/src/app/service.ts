@@ -22,14 +22,17 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
         type: 'input',
         name: 'url',
         message: 'Service url',
-        default: 'https://sapes5.sapdevcenter.com/sap/opu/odata/sap/SEPMRA_PROD_MAN',
+        default: 'https://sapes5.sapdevcenter.com/sap/opu/odata/sap/SEPMRA_PROD_MAN?sap-client=002&saml2=disabled',
         validate: (answer) => !!answer
     });
 
     const serviceUrl = new URL(url);
+    const params: { [key: string]: string } = {};
+    serviceUrl.searchParams.forEach((value, key) => (params[key] = value));
     const provider = createForAbap({
         baseURL: serviceUrl.origin,
-        ignoreCertErrors: true
+        ignoreCertErrors: true,
+        params
     });
 
     return {
