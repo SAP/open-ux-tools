@@ -21,13 +21,15 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "yeoman-generator": "5.6.1"
     },
     "devDependencies": {
         "@types/yeoman-environment": "2.10.6",
         "@types/yeoman-generator": "5.2.9",
         "@sap-ux/ui5-application-writer": "workspace:*",
-        "@sap-ux/odata-service-writer": "workspace:*"
+        "@sap-ux/odata-service-writer": "workspace:*",
+        "axios": "0.24.0"
     },
     "files": [
         "generators",

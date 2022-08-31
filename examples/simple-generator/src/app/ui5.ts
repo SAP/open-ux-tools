@@ -39,6 +39,9 @@ export type UI5SupportVersions = {
 
 let ui5VersionSupport: UI5SupportVersions;
 
+/**
+ *
+ */
 export async function getUI5Versions(): Promise<UI5SupportVersions> {
     if (!ui5VersionSupport) {
         try {
