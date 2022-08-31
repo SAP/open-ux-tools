@@ -49,7 +49,6 @@ function enhanceConfig(
     if (config.eventHandler) {
         config.eventHandler = applyEventHandlerConfiguration(
             fs,
-            root,
             config,
             config.eventHandler,
             false,
