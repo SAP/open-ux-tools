@@ -84,15 +84,19 @@ async function storeCredentials(generator: Generator, provider: AbapServiceProvi
         }
     ]);
     if (storeCreds) {
-        const systemService = await getService<BackendSystem, string>({ entityName: 'system' });
-        const system = new BackendSystem({
-            name,
-            url: provider.defaults.baseURL!,
-            client: provider.defaults.params?.['sap-client'],
-            username: provider.defaults.auth?.username,
-            password: provider.defaults.auth?.password
-        });
-        await systemService.write(system);
+        try {
+            const systemService = await getService<BackendSystem, string>({ entityName: 'system' });
+            const system = new BackendSystem({
+                name,
+                url: provider.defaults.baseURL!,
+                client: provider.defaults.params?.['sap-client'],
+                username: provider.defaults.auth?.username,
+                password: provider.defaults.auth?.password
+            });
+            await systemService.write(system);
+        } catch (error) {
+            generator.log(`Couldn't store credentials. ${error}`);
+        }
     }
 }
 
