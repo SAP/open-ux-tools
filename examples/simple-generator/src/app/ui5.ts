@@ -40,6 +40,7 @@ export type UI5SupportVersions = {
 let ui5VersionSupport: UI5SupportVersions;
 
 /**
+ * Get a list of available UI5 version from ui5.sap.com.
  *
  */
 export async function getUI5Versions(): Promise<UI5SupportVersions> {
