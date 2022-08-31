@@ -2576,7 +2576,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@types/openui5\\": \\"latest\\",
+    \\"@sapui5/ts-types-esm\\": \\"latest\\",
     \\"ui5-tooling-modules\\": \\"^0.6.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
@@ -2626,7 +2626,8 @@ archive.zip
       \\"test.me/*\\": [
         \\"webapp/*\\"
       ]
-    }
+    },
+    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
   },
   \\"include\\": [
     \\"webapp/**/*\\"
@@ -2816,7 +2817,7 @@ builder:
   },
   "webapp/Component.ts": Object {
     "contents": "import UIComponent from \\"sap/ui/core/UIComponent\\";
-import Device from \\"sap/ui/Device\\";
+import { support } from \\"sap/ui/Device\\";
 import ErrorHandler from \\"./controller/ErrorHandler\\";
 import ListSelector from \\"./controller/ListSelector\\";
 import { createDeviceModel } from \\"./model/models\\";
@@ -2873,7 +2874,7 @@ export default class Component extends UIComponent {
             // eslint-disable-next-line sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
-            } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
+            } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
                 this.contentDensityClass = \\"sapUiSizeCompact\\";
             } else {
                 // \\"cozy\\" in case of touch support; default for most sap.m controls, but needed for desktop-first controls like sap.ui.table.Table
@@ -3385,7 +3386,7 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        this.list.getBinding(\\"items\\").refresh();
+        this.list.getBinding(\\"items\\").refresh(false);
     }
 
     /**
@@ -3528,7 +3529,7 @@ export default class List extends BaseController {
      */
     updateListItemCount(total: number) {
         // only update the counter if the length is final
-        if (this.list.getBinding(\\"items\\").isLengthFinal()) {
+        if ((this.list.getBinding(\\"items\\") as ListBinding).isLengthFinal()) {
             const title = this.getResourceBundle().getText(\\"listTitleCount\\", [total]);
             this.getModel<JSONModel>(\\"listView\\").setProperty(\\"/title\\", title);
         }
@@ -3540,7 +3541,7 @@ export default class List extends BaseController {
     private applyFilterSearch() {
         const filters = this.listFilterState.aSearch.concat(this.listFilterState.aFilter);
         const viewModel = this.getModel<JSONModel>(\\"listView\\");
-        this.list.getBinding(\\"items\\").filter(filters, \\"Application\\");
+        (this.list.getBinding(\\"items\\") as ListBinding).filter(filters, \\"Application\\");
         // changes the noDataText of the list in case there are no filter results
         if (filters.length !== 0) {
             viewModel.setProperty(\\"/noDataText\\", this.getResourceBundle().getText(\\"listListNoDataWithFilterOrSearchText\\"));
@@ -3565,7 +3566,7 @@ import ListItemBase from \\"sap/m/ListItemBase\\";
 export default class ListSelector extends UI5Object {
 
     protected readonly oWhenListLoadingIsDone: Promise<any>;
-    protected readonly _oWhenListHasBeenSet: Promise<void>;
+    protected readonly _oWhenListHasBeenSet: Promise<any>;
     protected list: List;
     protected _fnResolveListHasBeenSet: any;
 
