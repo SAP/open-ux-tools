@@ -85,7 +85,7 @@ async function storeCredentials(generator: Generator, provider: AbapServiceProvi
     ]);
     if (storeCreds) {
         try {
-            const systemService = await getService<BackendSystem, string>({ entityName: 'system' });
+            const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
             const system = new BackendSystem({
                 name,
                 url: provider.defaults.baseURL!,
