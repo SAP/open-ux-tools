@@ -36,6 +36,26 @@ function appendUniqueEntryToArray<T>(values: T[], value: T): T[] {
 }
 
 /**
+ * A function returns existing controller extension from manifest for passed extension id.
+ *
+ * @param {Manifest} manifest - manifest
+ * @param {string} extensionId - extension id
+ * @returns {ManifestControllerExtension | undefined} Existing controller extension
+ */
+function getExistingControllerExtension(
+    manifest: Manifest,
+    extensionId: string
+): ManifestControllerExtension | undefined {
+    const extensions = manifest['sap.ui5']?.extends?.extensions?.[
+        UI5_CONTROLLER_EXTENSIONS
+    ] as ManifestControllerExtensions;
+    if (extensions?.hasOwnProperty(extensionId)) {
+        return extensions[extensionId];
+    }
+    return undefined;
+}
+
+/**
  * Method enhances the provided controller extension by handling existing controller extension entry from manifest.
  * Logic applies following:
  * 1. Handles public property "overwrite" - if we should append or overwrite existing controller names.
@@ -103,9 +123,7 @@ function enhanceConfig(
     }
     config.extensionId = extensionId;
     // Get existing controller extension entry from manifest
-    const manifestExtension = (
-        manifest['sap.ui5']?.extends?.extensions?.[UI5_CONTROLLER_EXTENSIONS] as ManifestControllerExtensions
-    )?.[extensionId];
+    const manifestExtension = getExistingControllerExtension(manifest, extensionId);
     // If controller extension already exists in manifest - append new controller
     if (manifestExtension) {
         handleExistingManifestExtension(
@@ -138,10 +156,10 @@ function getManifestReplacer(
         // Handle only root - more stable solution instead of checking 'key'
         if (key === '' && isRoot) {
             isRoot = false;
-            const extension = (
-                value['sap.ui5']?.extends?.extensions?.[UI5_CONTROLLER_EXTENSIONS] as ManifestControllerExtensions
-            )?.[config.extensionId];
-            delete extension[deleteProperty];
+            const extension = getExistingControllerExtension(value, config.extensionId);
+            if (extension) {
+                delete extension[deleteProperty];
+            }
         }
         return value;
     };
