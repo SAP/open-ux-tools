@@ -138,13 +138,16 @@ function getManifestReplacer(
         // Handle only root - more stable solution instead of checking 'key'
         if (key === '' && isRoot) {
             isRoot = false;
-            const extension = (
-                value['sap.ui5']?.extends?.extensions?.[UI5_CONTROLLER_EXTENSIONS] as ManifestControllerExtensions
-            )?.[config.extensionId];
-            if (deleteProperty === 'controllerName') {
-                delete extension['controllerName'];
-            } else if (deleteProperty === 'controllerNames') {
-                delete extension['controllerNames'];
+            const extensions = value['sap.ui5']?.extends?.extensions?.[
+                UI5_CONTROLLER_EXTENSIONS
+            ] as ManifestControllerExtensions;
+            if (extensions.hasOwnProperty(config.extensionId)) {
+                const extension = extensions[config.extensionId];
+                if (deleteProperty === 'controllerName') {
+                    delete extension['controllerName'];
+                } else if (deleteProperty === 'controllerNames') {
+                    delete extension['controllerNames'];
+                }
             }
         }
         return value;
