@@ -8,6 +8,7 @@ import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from
 import { setCommonDefaults } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
+import { getTemplatePath } from '../templates';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -44,9 +45,9 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
  */
 export function getTemplateRoot(ui5Version?: number): string {
     if (ui5Version === undefined || ui5Version >= 1.94) {
-        return join(__dirname, '../../templates/page/custom/1.94');
+        return getTemplatePath('/page/custom/1.94');
     } else {
-        return join(__dirname, '../../templates/page/custom/1.84');
+        return getTemplatePath('/page/custom/1.84');
     }
 }
 

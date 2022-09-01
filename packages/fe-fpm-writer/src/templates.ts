@@ -6,6 +6,6 @@ import { join } from 'path';
  * @param relativeTemplatePath - optional, the path of the required template relative to the ./templates folder. If not specified the root templates folder is returned.
  * @returns the path of the template specified or templates root folder
  */
-export function getTemplatePath(relativeTemplatePath?: string): string {
-    return join(...[__dirname, '../templates'].concat(relativeTemplatePath || []));
+export function getTemplatePath(relativeTemplatePath: string = ''): string {
+    return join(__dirname, '../templates', relativeTemplatePath);
 }
