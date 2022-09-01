@@ -77,20 +77,11 @@ function handleExistingManifestExtension(
 /**
  * Method enhances the provided controller extension configuration with default and additional data.
  *
- * @param {ControllerExtension} data - a controller extension configuration object
+ * @param {InternalControllerExtension} config - a controller extension configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
- * @returns enhanced configuration
  */
-function enhanceConfig(
-    data: ControllerExtension,
-    manifestPath: string,
-    manifest: Manifest
-): InternalControllerExtension {
-    // clone input
-    const config: ControllerExtension & Partial<InternalControllerExtension> = {
-        ...data
-    };
+function enhanceConfig(config: InternalControllerExtension, manifestPath: string, manifest: Manifest): void {
     // Apply default data
     setCommonDefaults(config, manifestPath, manifest);
     // Create `controllerName` with full path/namespace
@@ -114,8 +105,6 @@ function enhanceConfig(
             config.controllerName
         );
     }
-
-    return config as InternalControllerExtension;
 }
 
 /**
@@ -141,7 +130,7 @@ function getManifestReplacer(
             const extension = (
                 value['sap.ui5']?.extends?.extensions?.[UI5_CONTROLLER_EXTENSIONS] as ManifestControllerExtensions
             )?.[config.extensionId];
-            delete extension[deleteProperty === 'controllerNames' ? 'controllerNames' : 'controllerName'];
+            delete extension[deleteProperty];
         }
         return value;
     };
@@ -172,7 +161,11 @@ export function generateControllerExtension(
     const root = join(__dirname, '../../templates');
 
     // merge with defaults
-    const internalConfig = enhanceConfig(controllerConfig, manifestPath, manifest);
+    const internalConfig = {
+        ...controllerConfig,
+        deleteProperty: undefined
+    } as InternalControllerExtension;
+    enhanceConfig(internalConfig, manifestPath, manifest);
 
     // enhance manifest with view definition
     const filledTemplate = render(fs.read(join(root, 'controller-extension', `manifest.json`)), internalConfig, {});
