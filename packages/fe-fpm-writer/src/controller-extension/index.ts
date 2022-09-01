@@ -40,7 +40,7 @@ function appendUniqueEntryToArray<T>(values: T[], value: T): T[] {
  *
  * @param {Manifest} manifest - manifest
  * @param {string} extensionId - extension id
- * @returns Existing controller extension
+ * @returns {ManifestControllerExtension | undefined} Existing controller extension
  */
 function getExistingControllerExtension(
     manifest: Manifest,
@@ -52,6 +52,7 @@ function getExistingControllerExtension(
     if (extensions?.hasOwnProperty(extensionId)) {
         return extensions[extensionId];
     }
+    return undefined;
 }
 
 /**
