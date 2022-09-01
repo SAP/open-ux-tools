@@ -77,11 +77,20 @@ function handleExistingManifestExtension(
 /**
  * Method enhances the provided controller extension configuration with default and additional data.
  *
- * @param {InternalControllerExtension} config - a controller extension configuration object
+ * @param {ControllerExtension} data - a controller extension configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
+ * @returns enhanced configuration
  */
-function enhanceConfig(config: InternalControllerExtension, manifestPath: string, manifest: Manifest): void {
+function enhanceConfig(
+    data: ControllerExtension,
+    manifestPath: string,
+    manifest: Manifest
+): InternalControllerExtension {
+    // clone input
+    const config: ControllerExtension & Partial<InternalControllerExtension> = {
+        ...data
+    };
     // Apply default data
     setCommonDefaults(config, manifestPath, manifest);
     // Create `controllerName` with full path/namespace
@@ -105,6 +114,8 @@ function enhanceConfig(config: InternalControllerExtension, manifestPath: string
             config.controllerName
         );
     }
+
+    return config as InternalControllerExtension;
 }
 
 /**
@@ -130,7 +141,11 @@ function getManifestReplacer(
             const extension = (
                 value['sap.ui5']?.extends?.extensions?.[UI5_CONTROLLER_EXTENSIONS] as ManifestControllerExtensions
             )?.[config.extensionId];
-            delete extension[deleteProperty];
+            if (deleteProperty === 'controllerName') {
+                delete extension['controllerName'];
+            } else if (deleteProperty === 'controllerNames') {
+                delete extension['controllerNames'];
+            }
         }
         return value;
     };
@@ -161,11 +176,7 @@ export function generateControllerExtension(
     const root = join(__dirname, '../../templates');
 
     // merge with defaults
-    const internalConfig = {
-        ...controllerConfig,
-        deleteProperty: undefined
-    } as InternalControllerExtension;
-    enhanceConfig(internalConfig, manifestPath, manifest);
+    const internalConfig = enhanceConfig(controllerConfig, manifestPath, manifest);
 
     // enhance manifest with view definition
     const filledTemplate = render(fs.read(join(root, 'controller-extension', `manifest.json`)), internalConfig, {});
