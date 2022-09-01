@@ -134,6 +134,7 @@ function getManifestReplacer(
         // No request to delete any property
         return undefined;
     }
+    const propertyName = deleteProperty === 'controllerNames' ? 'controllerNames' : 'controllerName';
     return (key: string, value: Manifest) => {
         // Handle only root - more stable solution instead of checking 'key'
         if (key === '' && isRoot) {
@@ -141,9 +142,7 @@ function getManifestReplacer(
             const extension = (
                 value['sap.ui5']?.extends?.extensions?.[UI5_CONTROLLER_EXTENSIONS] as ManifestControllerExtensions
             )?.[config.extensionId];
-            if (extension.hasOwnProperty(deleteProperty)) {
-                delete extension[deleteProperty];
-            }
+            delete extension[propertyName];
         }
         return value;
     };
