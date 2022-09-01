@@ -172,16 +172,16 @@ export function generateControllerExtension(
     const root = join(__dirname, '../../templates');
 
     // merge with defaults
-    const completeController = enhanceConfig(controllerConfig, manifestPath, manifest);
+    const internalConfig = enhanceConfig(controllerConfig, manifestPath, manifest);
 
     // enhance manifest with view definition
-    const filledTemplate = render(fs.read(join(root, 'controller-extension', `manifest.json`)), completeController, {});
-    fs.extendJSON(manifestPath, JSON.parse(filledTemplate), getManifestReplacer(completeController));
+    const filledTemplate = render(fs.read(join(root, 'controller-extension', `manifest.json`)), internalConfig, {});
+    fs.extendJSON(manifestPath, JSON.parse(filledTemplate), getManifestReplacer(internalConfig));
 
     // add controller js file
-    const viewPath = join(completeController.path, `${completeController.name}.controller.js`);
+    const viewPath = join(internalConfig.path, `${internalConfig.name}.controller.js`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(join(root, 'controller-extension/Controller.js'), viewPath, completeController);
+        fs.copyTpl(join(root, 'controller-extension/Controller.js'), viewPath, internalConfig);
     }
 
     return fs;

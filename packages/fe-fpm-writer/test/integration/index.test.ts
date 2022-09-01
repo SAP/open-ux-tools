@@ -8,7 +8,9 @@ import {
     TargetControl,
     generateCustomSection,
     generateCustomView,
-    enableFPM
+    enableFPM,
+    generateControllerExtension,
+    ControllerExtensionPageType
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
@@ -227,6 +229,20 @@ describe('use FPM with existing apps', () => {
                     },
                     eventHandler: true,
                     ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateControllerExtension in ObjectPage', (config) => {
+            generateControllerExtension(
+                config.path,
+                {
+                    name: 'MyControllerExtension',
+                    pageType: ControllerExtensionPageType.ObjectPage,
+                    ...config.settings,
+                    // Typescript version is not supported
+                    typescript: false
                 },
                 fs
             );
