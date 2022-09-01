@@ -171,7 +171,11 @@ server:
     "state": "modified",
   },
   "webapp/Component.js": Object {
-    "contents": "sap.ui.define([
+    "contents": "/**
+ * eslint-disable @sap/ui5-jsdocs/no-jsdoc
+ */
+
+sap.ui.define([
         \\"sap/ui/core/UIComponent\\",
         \\"sap/ui/Device\\",
         \\"nods1/model/models\\"
@@ -1582,7 +1586,11 @@ server:
     "state": "modified",
   },
   "webapp/Component.js": Object {
-    "contents": "sap.ui.define([
+    "contents": "/**
+ * eslint-disable @sap/ui5-jsdocs/no-jsdoc
+ */
+
+sap.ui.define([
         \\"sap/ui/core/UIComponent\\",
         \\"sap/ui/Device\\",
         \\"nods1/model/models\\"
@@ -2320,7 +2328,11 @@ server:
     "state": "modified",
   },
   "webapp/Component.js": Object {
-    "contents": "sap.ui.define([
+    "contents": "/**
+ * eslint-disable @sap/ui5-jsdocs/no-jsdoc
+ */
+
+sap.ui.define([
         \\"sap/ui/core/UIComponent\\",
         \\"sap/ui/Device\\",
         \\"nods1/model/models\\"
@@ -3059,7 +3071,11 @@ server:
     "state": "modified",
   },
   "webapp/Component.js": Object {
-    "contents": "sap.ui.define([
+    "contents": "/**
+ * eslint-disable @sap/ui5-jsdocs/no-jsdoc
+ */
+
+sap.ui.define([
         \\"sap/ui/core/UIComponent\\",
         \\"sap/ui/Device\\",
         \\"nods1/model/models\\"
