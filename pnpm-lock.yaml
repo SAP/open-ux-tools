@@ -3495,11 +3495,17 @@ packages:
         dev: true
 
     /clone-buffer/1.0.0:
-        resolution: { integrity: sha1-4+JbIHrE5wGvch4staFnksrD3Fg= }
+        resolution:
+            {
+                integrity: sha512-KLLTJWrvwIP+OPfMn0x2PheDEP20RPUcGXj/ERegTgdmPEZylALQldygiqrPPu8P45uNuPs7ckmReLY6v/iA5g==
+            }
         engines: { node: '>= 0.10' }
 
     /clone-stats/1.0.0:
-        resolution: { integrity: sha1-s3gt/4u1R04Yuba/D9/ngvh3doA= }
+        resolution:
+            {
+                integrity: sha512-au6ydSpg6nsrigcZ4m8Bc9hxjeW+GJ8xh5G3BJCMt4WXe1H10UNaVOamqQTmrx1kjVuxAHIQSNU6hY4Nsn9/ag==
+            }
 
     /clone/1.0.4:
         resolution:
@@ -3510,7 +3516,10 @@ packages:
         dev: true
 
     /clone/2.1.2:
-        resolution: { integrity: sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18= }
+        resolution:
+            {
+                integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==
+            }
         engines: { node: '>=0.8' }
 
     /cloneable-readable/1.1.3:
@@ -3664,7 +3673,10 @@ packages:
         dev: true
 
     /commondir/1.0.1:
-        resolution: { integrity: sha1-3dgA2gxmEnOTzKWVDqloo6rxJTs= }
+        resolution:
+            {
+                integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==
+            }
 
     /component-emitter/1.3.0:
         resolution:
@@ -3687,10 +3699,7 @@ packages:
         dev: false
 
     /concat-map/0.0.1:
-        resolution:
-            {
-                integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
-            }
+        resolution: { integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s= }
 
     /console-control-strings/1.1.0:
         resolution: { integrity: sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4= }
@@ -5119,7 +5128,7 @@ packages:
                 integrity: sha512-z7O0IS8Plc39rTCq6i6iHxk43duYOn8uFJiWSewIq0Bww1RNybVHSCjahmcC87ZqAm4OTvFzlzeGu3XAzG1ctQ==
             }
         dependencies:
-            minimatch: 3.0.4
+            minimatch: 3.1.2
 
     /fill-range/4.0.0:
         resolution: { integrity: sha1-1USBHUKPmOsGpj3EAtJAPDKMOPc= }
@@ -5208,7 +5217,10 @@ packages:
         dev: false
 
     /first-chunk-stream/2.0.0:
-        resolution: { integrity: sha1-G97NuOCDwGZLkZRVgVd6Q6nzHXA= }
+        resolution:
+            {
+                integrity: sha512-X8Z+b/0L4lToKYq+lwnKqi9X/Zek0NibLpsJgVsSxpoYq7JtiCtRb5HqKVEjEw/qAb/4AKKRLOwwKHlWNpm2Eg==
+            }
         engines: { node: '>=0.10.0' }
         dependencies:
             readable-stream: 2.3.7
@@ -6370,7 +6382,10 @@ packages:
         dev: true
 
     /is-utf8/0.2.1:
-        resolution: { integrity: sha1-Sw2hRCEE0bM2NA6AeX6GXPOffXI= }
+        resolution:
+            {
+                integrity: sha512-rMYPYvCzsXywIsldgLaSoPlw5PfoB/ssr7hY4pLfcodrA5M/eArza1a9VmTiNIBNMjOGr1Ow9mTyU2o69U6U9Q==
+            }
 
     /is-weakref/1.0.2:
         resolution:
@@ -6501,7 +6516,7 @@ packages:
             async: 3.2.3
             chalk: 4.1.2
             filelist: 1.0.2
-            minimatch: 3.0.4
+            minimatch: 3.1.2
 
     /jest-changed-files/27.5.1:
         resolution:
@@ -7797,7 +7812,7 @@ packages:
             globby: 11.1.0
             isbinaryfile: 4.0.8
             mem-fs: 2.1.0
-            minimatch: 3.0.4
+            minimatch: 3.1.2
             multimatch: 5.0.0
             normalize-path: 3.0.0
             textextensions: 5.14.0
@@ -8090,7 +8105,7 @@ packages:
             array-differ: 3.0.0
             array-union: 2.1.0
             arrify: 2.0.1
-            minimatch: 3.0.4
+            minimatch: 3.1.2
 
     /nanomatch/1.2.13:
         resolution:
@@ -8655,7 +8670,10 @@ packages:
         engines: { node: '>=8.6' }
 
     /pify/2.3.0:
-        resolution: { integrity: sha1-7RQaasBDqEnqWISY59yosVMw6Qw= }
+        resolution:
+            {
+                integrity: sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog==
+            }
         engines: { node: '>=0.10.0' }
 
     /pify/4.0.1:
@@ -9185,7 +9203,10 @@ packages:
         dev: true
 
     /remove-trailing-separator/1.1.0:
-        resolution: { integrity: sha1-wkvOKig62tW8P1jg1IJJuSN52O8= }
+        resolution:
+            {
+                integrity: sha512-/hS+Y0u3aOfIETiaiirUFwDBDzmXPvO+jAfKTitUngIPzdKc6Z0LoFjM/CK5PL4C+eKwHohlHAb6H0VFfmmUsw==
+            }
 
     /repeat-element/1.1.4:
         resolution:
@@ -9973,20 +9994,29 @@ packages:
             ansi-regex: 5.0.1
 
     /strip-bom-buf/1.0.0:
-        resolution: { integrity: sha1-HLRar1dTD0yvhsf3UXnSyaUd1XI= }
+        resolution:
+            {
+                integrity: sha512-1sUIL1jck0T1mhOLP2c696BIznzT525Lkub+n4jjMHjhjhoAQA6Ye659DxdlZBr0aLDMQoTxKIpnlqxgtwjsuQ==
+            }
         engines: { node: '>=4' }
         dependencies:
             is-utf8: 0.2.1
 
     /strip-bom-stream/2.0.0:
-        resolution: { integrity: sha1-+H217yYT9paKpUWr/h7HKLaoKco= }
+        resolution:
+            {
+                integrity: sha512-yH0+mD8oahBZWnY43vxs4pSinn8SMKAdml/EOGBewoe1Y0Eitd0h2Mg3ZRiXruUW6L4P+lvZiEgbh0NgUGia1w==
+            }
         engines: { node: '>=0.10.0' }
         dependencies:
             first-chunk-stream: 2.0.0
             strip-bom: 2.0.0
 
     /strip-bom/2.0.0:
-        resolution: { integrity: sha1-YhmoVhZSBJHzV4i9vxRHqZx+aw4= }
+        resolution:
+            {
+                integrity: sha512-kwrX1y7czp1E69n2ajbG65mIo9dqvJ+8aBQXOGVxqwvNbsXdFM6Lq37dLAY3mknUwru8CfcCbfOLL/gMo+fi3g==
+            }
         engines: { node: '>=0.10.0' }
         dependencies:
             is-utf8: 0.2.1
@@ -10725,7 +10755,10 @@ packages:
         dev: false
 
     /vinyl-file/3.0.0:
-        resolution: { integrity: sha1-sQTZ5ECf+jJfqt1SBkLQo7SIs2U= }
+        resolution:
+            {
+                integrity: sha512-BoJDj+ca3D9xOuPEM6RWVtWQtvEPQiQYn82LvdxhLWplfQsBzBqtgK0yhCP0s1BNTi6dH9BO+dzybvyQIacifg==
+            }
         engines: { node: '>=4' }
         dependencies:
             graceful-fs: 4.2.9
