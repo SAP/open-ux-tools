@@ -141,7 +141,9 @@ function getManifestReplacer(
             const extension = (
                 value['sap.ui5']?.extends?.extensions?.[UI5_CONTROLLER_EXTENSIONS] as ManifestControllerExtensions
             )?.[config.extensionId];
-            delete extension[deleteProperty];
+            if (['controllerName', 'controllerNames'].includes(deleteProperty)) {
+                delete extension[deleteProperty];
+            }
         }
         return value;
     };
