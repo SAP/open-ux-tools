@@ -200,7 +200,7 @@ export function generateControllerExtension(
     const ext = controllerConfig.typescript ? 'ts' : 'js';
     const viewPath = join(internalConfig.path, `${internalConfig.name}.controller.${ext}`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(join(root, 'controller-extension/Controller.js'), viewPath, internalConfig);
+        fs.copyTpl(join(root, `controller-extension/Controller.${ext}`), viewPath, internalConfig);
     }
 
     return fs;
