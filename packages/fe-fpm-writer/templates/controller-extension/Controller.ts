@@ -1,5 +1,5 @@
 import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
-import ExtensionAPI from 'sap/fe/templates/<%- pageType -%>/ExtensionAPI';
+import ExtensionAPI from 'sap/fe/<%- typeof extension === "object" ? `templates/${extension.pageType}` : "core" -%>/ExtensionAPI';
 
 /**
  * Definition of the override interface as workaround until https://github.com/SAP/ui5-typescript/issues/332 is fixed.

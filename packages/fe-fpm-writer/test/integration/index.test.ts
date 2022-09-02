@@ -239,7 +239,9 @@ describe('use FPM with existing apps', () => {
                 config.path,
                 {
                     name: 'MyControllerExtension',
-                    pageType: ControllerExtensionPageType.ObjectPage,
+                    extension: {
+                        pageType: ControllerExtensionPageType.ObjectPage
+                    },
                     ...config.settings
                 },
                 fs

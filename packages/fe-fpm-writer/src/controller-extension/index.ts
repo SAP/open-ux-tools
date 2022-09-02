@@ -3,7 +3,12 @@ import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { render } from 'ejs';
-import type { ControllerExtension, InternalControllerExtension, ManifestControllerExtension } from './types';
+import type {
+    ControllerExtension,
+    InternalControllerExtension,
+    ManifestControllerExtension,
+    ControllerExtensionPageTarget
+} from './types';
 import { ControllerExtensionPageType } from './types';
 import { validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
@@ -12,7 +17,7 @@ import { setCommonDefaults } from '../common/defaults';
 export const UI5_CONTROLLER_EXTENSION_LIST_REPORT = 'sap.fe.templates.ListReport.ListReportController';
 export const UI5_CONTROLLER_EXTENSION_OBJECT_PAGE = 'sap.fe.templates.ObjectPage.ObjectPageController';
 const UI5_CONTROLLER_EXTENSIONS = 'sap.ui.controllerExtensions';
-export const EXTENSION_PAGE_TYPE_MAP = new Map<ControllerExtensionPageType, string>([
+const EXTENSION_PAGE_TYPE_MAP = new Map<ControllerExtensionPageType, string>([
     [ControllerExtensionPageType.ListReport, UI5_CONTROLLER_EXTENSION_LIST_REPORT],
     [ControllerExtensionPageType.ObjectPage, UI5_CONTROLLER_EXTENSION_OBJECT_PAGE]
 ]);
@@ -97,6 +102,23 @@ function handleExistingManifestExtension(
 /**
  * Method enhances the provided controller extension configuration with default and additional data.
  *
+ * @param {string} extensionName - a controller extension configuration object
+ * @returns {ControllerExtensionPageTarget | undefined} Page configuration object if extension name is assigned to supported page type.
+ */
+function resolvePageDataFromExtension(extensionName: string): ControllerExtensionPageTarget | undefined {
+    for (const [key, value] of EXTENSION_PAGE_TYPE_MAP) {
+        if (extensionName.startsWith(value)) {
+            return {
+                pageType: key
+            };
+        }
+    }
+    return undefined;
+}
+
+/**
+ * Method enhances the provided controller extension configuration with default and additional data.
+ *
  * @param {ControllerExtension} data - a controller extension configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -116,10 +138,20 @@ function enhanceConfig(
     // Create `controllerName` with full path/namespace
     config.controllerName = `${config.ns}.${config.name}`;
     // Resolve controller extension id/key
-    let extensionId = EXTENSION_PAGE_TYPE_MAP.get(config.pageType) || UI5_CONTROLLER_EXTENSION_LIST_REPORT;
-    if (config.pageId) {
-        // Prepend project id
-        extensionId = `${extensionId}#${manifest['sap.app'].id}::${config.pageId}`;
+    let extensionId: string;
+    if (typeof config.extension === 'object') {
+        // Use default as List Report
+        config.extension.pageType = config.extension.pageType || ControllerExtensionPageType.ListReport;
+        const { pageType, pageId } = config.extension;
+        extensionId = EXTENSION_PAGE_TYPE_MAP.get(pageType) || UI5_CONTROLLER_EXTENSION_LIST_REPORT;
+        if (pageId) {
+            // Prepend project id
+            extensionId = `${extensionId}#${manifest['sap.app'].id}::${pageId}`;
+        }
+    } else {
+        // Try to resolve page type from manual extension
+        extensionId = config.extension;
+        config.extension = resolvePageDataFromExtension(config.extension) || config.extension;
     }
     config.extensionId = extensionId;
     // Get existing controller extension entry from manifest

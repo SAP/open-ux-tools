@@ -11,9 +11,9 @@ export enum ControllerExtensionPageType {
 }
 
 /**
- * Represents a controller extension configuration.
+ * Target page configuration for controller extension.
  */
-export interface ControllerExtension extends CustomElement {
+export interface ControllerExtensionPageTarget {
     /**
      * The page type for which controller extension should be triggered.
      */
@@ -22,6 +22,17 @@ export interface ControllerExtension extends CustomElement {
      * The unique page id for which controller extension should be triggered.
      */
     pageId?: string;
+}
+
+/**
+ * Controller extension configuration for the generate function.
+ */
+export interface ControllerExtension extends CustomElement {
+    /**
+     * Property to define extension entry point.
+     * Provide any extension name as string or use page configuration.
+     */
+    extension: ControllerExtensionPageTarget | string;
     /**
      * Controls if controller(s) for existing controller extension should be appended or replaced with new controller.
      */

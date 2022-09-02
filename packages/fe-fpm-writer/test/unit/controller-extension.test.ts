@@ -3,6 +3,10 @@ import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateControllerExtension } from '../../src';
 import { ControllerExtension, ControllerExtensionPageType } from '../../src/controller-extension/types';
+import {
+    UI5_CONTROLLER_EXTENSION_LIST_REPORT,
+    UI5_CONTROLLER_EXTENSION_OBJECT_PAGE
+} from '../../src/controller-extension';
 
 describe('ControllerExtension', () => {
     describe('generateControllerExtension', () => {
@@ -11,10 +15,12 @@ describe('ControllerExtension', () => {
         const controllerExtension: ControllerExtension = {
             name: 'NewExtension',
             folder: 'ext/controller',
-            pageType: ControllerExtensionPageType.ListReport
+            extension: {
+                pageType: ControllerExtensionPageType.ListReport
+            }
         };
-        const getControllerPath = (controller: ControllerExtension): string => {
-            return join(testDir, 'webapp', controller.folder!, `${controller.name}.controller.js`);
+        const getControllerPath = (controller: ControllerExtension, isTs = false): string => {
+            return join(testDir, 'webapp', controller.folder!, `${controller.name}.controller.${isTs ? 'ts' : 'js'}`);
         };
         const expectedControllerPath = getControllerPath(controllerExtension);
 
@@ -55,13 +61,16 @@ describe('ControllerExtension', () => {
             ControllerExtensionPageType.ObjectPage,
             undefined
         ];
+
         for (const pageType of pageTypeTests) {
-            test(`New control extension - ${pageType}`, () => {
+            test(`New controller extension - ${pageType}`, () => {
                 generateControllerExtension(
                     testDir,
                     {
                         ...controllerExtension,
-                        pageType
+                        extension: {
+                            pageType
+                        }
                     } as ControllerExtension,
                     fs
                 );
@@ -71,17 +80,33 @@ describe('ControllerExtension', () => {
             });
         }
 
-        test('New control extension with page id', () => {
+        test('New controller extension with page id', () => {
             generateControllerExtension(
                 testDir,
                 {
                     ...controllerExtension,
-                    pageId: 'TestListReport',
-                    pageType: ControllerExtensionPageType.ListReport
+                    extension: {
+                        pageId: 'TestListReport',
+                        pageType: ControllerExtensionPageType.ListReport
+                    }
                 },
                 fs
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.read(expectedControllerPath)).toMatchSnapshot();
+        });
+
+        test(`New controller extension with manual target`, () => {
+            generateControllerExtension(
+                testDir,
+                {
+                    ...controllerExtension,
+                    extension: 'my.project.ext.view.Test'
+                } as ControllerExtension,
+                fs
+            );
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(expectedControllerPath)).toBeTruthy();
             expect(fs.read(expectedControllerPath)).toMatchSnapshot();
         });
 
@@ -112,7 +137,9 @@ describe('ControllerExtension', () => {
                     controllerConfig: {
                         ...controllerExtension,
                         name: 'Dummy',
-                        pageType: ControllerExtensionPageType.ListReport
+                        extension: {
+                            pageType: ControllerExtensionPageType.ListReport
+                        }
                     }
                 },
                 {
@@ -120,7 +147,9 @@ describe('ControllerExtension', () => {
                     controllerConfig: {
                         ...controllerExtension,
                         name: 'LRExtension',
-                        pageType: ControllerExtensionPageType.ListReport
+                        extension: {
+                            pageType: ControllerExtensionPageType.ListReport
+                        }
                     }
                 },
                 {
@@ -128,7 +157,9 @@ describe('ControllerExtension', () => {
                     controllerConfig: {
                         ...controllerExtension,
                         name: 'Dummy',
-                        pageType: ControllerExtensionPageType.ListReport,
+                        extension: {
+                            pageType: ControllerExtensionPageType.ListReport
+                        },
                         overwrite: true
                     }
                 },
@@ -138,7 +169,9 @@ describe('ControllerExtension', () => {
                     controllerConfig: {
                         ...controllerExtension,
                         name: 'OPExtensionNew',
-                        pageType: ControllerExtensionPageType.ObjectPage
+                        extension: {
+                            pageType: ControllerExtensionPageType.ObjectPage
+                        }
                     }
                 },
                 {
@@ -146,7 +179,9 @@ describe('ControllerExtension', () => {
                     controllerConfig: {
                         ...controllerExtension,
                         name: 'OPExtension2',
-                        pageType: ControllerExtensionPageType.ObjectPage
+                        extension: {
+                            pageType: ControllerExtensionPageType.ObjectPage
+                        }
                     }
                 },
                 {
@@ -154,7 +189,9 @@ describe('ControllerExtension', () => {
                     controllerConfig: {
                         ...controllerExtension,
                         name: 'Dummy',
-                        pageType: ControllerExtensionPageType.ObjectPage,
+                        extension: {
+                            pageType: ControllerExtensionPageType.ObjectPage
+                        },
                         overwrite: true
                     }
                 }
@@ -178,7 +215,9 @@ describe('ControllerExtension', () => {
                     controllerConfig: {
                         ...controllerExtension,
                         name: 'LRExtension3',
-                        pageType: ControllerExtensionPageType.ListReport
+                        extension: {
+                            pageType: ControllerExtensionPageType.ListReport
+                        }
                     }
                 },
                 {
@@ -186,7 +225,9 @@ describe('ControllerExtension', () => {
                     controllerConfig: {
                         ...controllerExtension,
                         name: 'LRExtension2',
-                        pageType: ControllerExtensionPageType.ListReport
+                        extension: {
+                            pageType: ControllerExtensionPageType.ListReport
+                        }
                     }
                 }
             ];
@@ -204,6 +245,53 @@ describe('ControllerExtension', () => {
                     generateControllerExtension(testDir, testCase.controllerConfig, fs);
                     expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
                     expect(fs.exists(getControllerPath(testCase.controllerConfig))).toBeTruthy();
+                });
+            }
+        });
+
+        describe('Typescript controller', () => {
+            // Page types
+            const expectedTestControllerPath = getControllerPath(controllerExtension, true);
+            for (const pageType of pageTypeTests) {
+                test(`New controller extension - ${pageType}`, () => {
+                    generateControllerExtension(
+                        testDir,
+                        {
+                            ...controllerExtension,
+                            extension: {
+                                pageType
+                            },
+                            typescript: true
+                        } as ControllerExtension,
+                        fs
+                    );
+                    expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+                    expect(fs.exists(expectedTestControllerPath)).toBeTruthy();
+                    expect(fs.read(expectedTestControllerPath)).toMatchSnapshot();
+                });
+            }
+            // Manual extension name
+            const manualExtensionsTests = [
+                UI5_CONTROLLER_EXTENSION_LIST_REPORT,
+                UI5_CONTROLLER_EXTENSION_OBJECT_PAGE,
+                `${UI5_CONTROLLER_EXTENSION_LIST_REPORT}#dummy.project::BookingSupplementObjectPage`,
+                'my.project.ext.view.Test'
+            ];
+
+            for (const extension of manualExtensionsTests) {
+                test(`New controller extension with manual target - ${extension}`, () => {
+                    generateControllerExtension(
+                        testDir,
+                        {
+                            ...controllerExtension,
+                            extension,
+                            typescript: true
+                        } as ControllerExtension,
+                        fs
+                    );
+                    expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+                    expect(fs.exists(expectedTestControllerPath)).toBeTruthy();
+                    expect(fs.read(expectedTestControllerPath)).toMatchSnapshot();
                 });
             }
         });
