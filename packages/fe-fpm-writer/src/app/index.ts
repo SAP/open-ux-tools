@@ -5,6 +5,7 @@ import { join } from 'path';
 import { lt } from 'semver';
 import type { Manifest } from '@sap-ux/ui5-config';
 import { FCL_ROUTER } from '../common/defaults';
+import { getTemplatePath } from '../templates';
 
 /**
  * Configurable options when enabling the Flexible Programming Model in a UI5 application.
@@ -94,7 +95,7 @@ export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor)
     // replace Component.js
     if (config.replaceAppComponent) {
         const ext = config.typescript ? 'ts' : 'js';
-        const componentTemplate = join(__dirname, `../../templates/app/Component.${ext}`);
+        const componentTemplate = getTemplatePath(`/app/Component.${ext}`);
         fs.copyTpl(componentTemplate, join(basePath, `webapp/Component.${ext}`), manifest['sap.app']);
     }
 
