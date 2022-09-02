@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.15.0
+
+### Minor Changes
+
+-   e00e583: Controller Extension support
+
 ## 0.14.3
 
 ### Patch Changes
