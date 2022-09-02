@@ -12,6 +12,12 @@ import { generateProxyMiddlewareOptions, createProxy } from '../../src';
 import { getCorporateProxyServer } from '../../src/base/config';
 import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import { getInstance } from '@sap-ux/store/dist/services/backend-system';
+
+jest.mock('@sap-ux/store/dist/services/backend-system', () => ({
+    getInstance: jest.fn().mockReturnValue({ read: () => {} })
+}));
+const mockGetService = getInstance as jest.Mock;
 
 // mock required axios-extension functions
 import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
@@ -489,6 +495,22 @@ describe('proxy', () => {
                 proxyOptions?.onError(undefined as any, {} as any, {} as any);
                 expect(debugSpy).toHaveBeenCalledTimes(1);
             }
+        });
+
+        test('generate proxy middleware despite an error when accessing the store', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockGetService.mockReturnValueOnce({
+                read: () => {
+                    throw new Error();
+                }
+            });
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path'
+            };
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options).toBeDefined();
         });
     });
 
