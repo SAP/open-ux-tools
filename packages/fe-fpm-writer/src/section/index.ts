@@ -8,28 +8,27 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { getTemplatePath } from '../templates';
 
 /**
  * Get the template folder for the given UI5 version.
  *
- * @param root root path to templates folder.
  * @param ui5Version required UI5 version.
  * @returns path to the template folder containing the manifest.json ejs template
  */
-export function getManifestRoot(root: string, ui5Version?: number): string {
+export function getManifestRoot(ui5Version?: number): string {
     let subFolder = '1.86';
     if (ui5Version !== undefined && ui5Version < 1.86) {
         // Old
         subFolder = '1.85';
     }
-    return join(root, 'section', subFolder);
+    return getTemplatePath(join('section', subFolder));
 }
 
 /**
  * Enhances the provided custom section configuration with additonal data.
  *
  * @param {Editor} fs - the mem-fs editor instance
- * @param {string} root - root path
  * @param {CustomSection} data - a custom section configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -37,7 +36,6 @@ export function getManifestRoot(root: string, ui5Version?: number): string {
  */
 function enhanceConfig(
     fs: Editor,
-    root: string,
     data: CustomSection,
     manifestPath: string,
     manifest: Manifest
@@ -47,14 +45,7 @@ function enhanceConfig(
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(
-            fs,
-            root,
-            config,
-            config.eventHandler,
-            false,
-            config.typescript
-        );
+        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, false, config.typescript);
     }
 
     // generate section content
@@ -81,20 +72,18 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
-    const root = join(__dirname, '../../templates');
-
     // merge with defaults
-    const completeSection = enhanceConfig(fs, root, customSection, manifestPath, manifest);
+    const completeSection = enhanceConfig(fs, customSection, manifestPath, manifest);
 
     // enhance manifest with section definition
-    const manifestRoot = getManifestRoot(root, customSection.ui5Version);
+    const manifestRoot = getManifestRoot(customSection.ui5Version);
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeSection, {});
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment
     const viewPath = join(completeSection.path, `${completeSection.name}.fragment.xml`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeSection);
+        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeSection);
     }
 
     return fs;

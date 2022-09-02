@@ -9,6 +9,7 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { getTemplatePath } from '../templates';
 
 /**
  * Enhances the provided custom action configuration with default data.
@@ -84,23 +85,14 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     const config = enhanceConfig(actionConfig, manifestPath, manifest);
 
-    const root = join(__dirname, '../../templates');
-
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(
-            fs,
-            root,
-            config,
-            config.eventHandler,
-            false,
-            config.typescript
-        );
+        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, false, config.typescript);
     }
 
     // enhance manifest with action definition and controller reference
     const actions = enhanceManifestAndGetActionsElementReference(manifest, config.target);
-    Object.assign(actions, JSON.parse(render(fs.read(join(root, `action/manifest.action.json`)), config, {})));
+    Object.assign(actions, JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action.json`)), config, {})));
     fs.writeJSON(manifestPath, manifest);
 
     return fs;

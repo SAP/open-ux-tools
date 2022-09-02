@@ -1,4 +1,4 @@
-import { join, relative } from 'path';
+import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import {
@@ -8,7 +8,9 @@ import {
     TargetControl,
     generateCustomSection,
     generateCustomView,
-    enableFPM
+    enableFPM,
+    generateControllerExtension,
+    ControllerExtensionPageType
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
@@ -226,6 +228,20 @@ describe('use FPM with existing apps', () => {
                         anchor: 'DummyFacet'
                     },
                     eventHandler: true,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateControllerExtension in ObjectPage', (config) => {
+            generateControllerExtension(
+                config.path,
+                {
+                    name: 'MyControllerExtension',
+                    extension: {
+                        pageType: ControllerExtensionPageType.ObjectPage
+                    },
                     ...config.settings
                 },
                 fs

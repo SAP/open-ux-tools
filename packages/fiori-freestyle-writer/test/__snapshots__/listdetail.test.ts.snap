@@ -1,7 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Fiori freestyle template: listDetailTemplate Generate files for template: listdetail-good 1`] = `
+exports[`Fiori freestyle template: listDetailTemplate Generate files for template: listdetail-good-eslint 1`] = `
 Object {
+  ".eslintrc": Object {
+    "contents": "{
+  \\"plugins\\": [
+    \\"@sap/ui5-jsdocs\\",
+    \\"eslint-plugin-fiori-custom\\"
+  ],
+  \\"extends\\": [
+    \\"plugin:@sap/ui5-jsdocs/recommended\\",
+    \\"eslint:recommended\\",
+    \\"./node_modules/eslint-plugin-fiori-custom/configure.eslintrc\\"
+  ],
+  \\"ignorePatterns\\": [
+    \\"webapp/localservice/**\\",
+    \\"webapp/test/**\\",
+    \\"dist/**\\"
+  ]
+}
+",
+    "state": "modified",
+  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -31,12 +51,18 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"eslint\\": \\"7.32.0\\",
+    \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
+    \\"@sapui5/ts-types\\": \\"1.92.2\\",
+    \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
+    \\"@babel/eslint-parser\\": \\"7.14.7\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
@@ -50,6 +76,20 @@ archive.zip
   }
 }
 ",
+    "state": "modified",
+  },
+  "tsconfig.json": Object {
+    "contents": "{
+  \\"compilerOptions\\": {
+    \\"module\\": \\"none\\",
+    \\"noEmit\\": true,
+    \\"checkJs\\": true,
+    \\"allowJs\\": true,
+    \\"types\\": [
+      \\"@sapui5/ts-types\\"
+    ]
+  }
+}",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -172,11 +212,15 @@ server:
     \\"./model/models\\",
     \\"./controller/ListSelector\\",
     \\"./controller/ErrorHandler\\"
-], function (UIComponent, Device, models, ListSelector, ErrorHandler) {
+], 
+function (UIComponent, Device, models, ListSelector, ErrorHandler) {
     \\"use strict\\";
 
     return UIComponent.extend(\\"test.me.Component\\", {
-
+        /**
+         * @param {typeof sap.ui.model.json.JSONModel} JSONModel
+         * @param {typeof sap.ui.Device} Device
+         */ 
         metadata : {
             manifest : \\"json\\"
         },

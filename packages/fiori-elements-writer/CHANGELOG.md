@@ -1,5 +1,20 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [e00e583]
+    -   @sap-ux/fe-fpm-writer@0.15.0
+
+## 0.5.3
+
+### Patch Changes
+
+-   a1dc069: Improves template path handling for bundling consumers. Fixes minor issue. TBI: #650
+-   Updated dependencies [a1dc069]
+    -   @sap-ux/fe-fpm-writer@0.14.3
+
 ## 0.5.2
 
 ### Patch Changes

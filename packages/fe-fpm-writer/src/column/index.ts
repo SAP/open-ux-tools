@@ -8,6 +8,7 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 import type { Manifest } from '../common/types';
 import { validateVersion, validateBasePath } from '../common/validate';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { getTemplatePath } from '../templates';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -17,11 +18,11 @@ import { applyEventHandlerConfiguration } from '../common/event-handler';
  */
 export function getManifestRoot(ui5Version?: number): string {
     if (ui5Version === undefined || ui5Version >= 1.86) {
-        return join(__dirname, '../../templates/column/1.86');
+        return getTemplatePath('/column/1.86');
     } else if (ui5Version === 1.85) {
-        return join(__dirname, '../../templates/column/1.85');
+        return getTemplatePath('/column/1.85');
     } else {
-        return join(__dirname, '../../templates/column/1.84');
+        return getTemplatePath('column/1.84');
     }
 }
 
@@ -29,7 +30,6 @@ export function getManifestRoot(ui5Version?: number): string {
  * Enhances the provided custom table column configuration with default data.
  *
  * @param {Editor} fs - the mem-fs editor instance
- * @param {string} root - root path
  * @param {CustomTableColumn} data - a custom column configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
@@ -37,7 +37,6 @@ export function getManifestRoot(ui5Version?: number): string {
  */
 function enhanceConfig(
     fs: Editor,
-    root: string,
     data: CustomTableColumn,
     manifestPath: string,
     manifest: Manifest
@@ -48,14 +47,7 @@ function enhanceConfig(
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(
-            fs,
-            root,
-            config,
-            config.eventHandler,
-            false,
-            config.typescript
-        );
+        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, false, config.typescript);
     }
 
     // generate column content
@@ -86,10 +78,8 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
-    const root = join(__dirname, '../../templates');
-
     // merge with defaults
-    const completeColumn = enhanceConfig(fs, root, customColumn, manifestPath, manifest);
+    const completeColumn = enhanceConfig(fs, customColumn, manifestPath, manifest);
 
     // enhance manifest with column definition
     const manifestRoot = getManifestRoot(customColumn.ui5Version);
@@ -99,7 +89,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     // add fragment
     const viewPath = join(completeColumn.path, `${completeColumn.name}.fragment.xml`);
     if (completeColumn.control || !fs.exists(viewPath)) {
-        fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeColumn);
+        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeColumn);
     }
 
     return fs;
