@@ -1,4 +1,4 @@
-import { join, relative } from 'path';
+import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import {

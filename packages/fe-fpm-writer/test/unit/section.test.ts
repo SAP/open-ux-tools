@@ -21,11 +21,11 @@ describe('CustomSection', () => {
             { version: 1.86, expected: join(root, 'section', '1.86') }
         ];
         test.each(testInput)('get root path of template', ({ version, expected }) => {
-            expect(getManifestRoot(root, version)).toEqual(expected);
+            expect(getManifestRoot(version)).toEqual(expected);
         });
         test('invalid version', () => {
             try {
-                getManifestRoot(root, 1.8);
+                getManifestRoot(1.8);
                 expect(true).toBeFalsy();
             } catch (error) {
                 expect(error).toBeDefined();

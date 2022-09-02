@@ -8,6 +8,7 @@ import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
 import { getErrorMessage, validateBasePath } from '../common/validate';
+import { getTemplatePath } from '../templates';
 
 /**
  * Generates a building block into the provided xml view file.
@@ -99,7 +100,7 @@ function getTemplateDocument<T extends BuildingBlock>(
     fs: Editor
 ): Document {
     const templateFolderName = buildingBlockData.buildingBlockType;
-    const templateFilePath = join(__dirname, `../../templates/building-block/${templateFolderName}/View.xml`);
+    const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
     const templateContent = render(
         fs.read(templateFilePath),
         {
