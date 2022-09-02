@@ -13,6 +13,7 @@ import { ControllerExtensionPageType } from './types';
 import { validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
+import { getTemplatePath } from '../templates';
 
 export const UI5_CONTROLLER_EXTENSION_LIST_REPORT = 'sap.fe.templates.ListReport.ListReportController';
 export const UI5_CONTROLLER_EXTENSION_OBJECT_PAGE = 'sap.fe.templates.ObjectPage.ObjectPageController';
@@ -219,20 +220,18 @@ export function generateControllerExtension(
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
-    const root = join(__dirname, '../../templates');
-
     // merge with defaults
     const internalConfig = enhanceConfig(controllerConfig, manifestPath, manifest);
 
     // enhance manifest with view definition
-    const filledTemplate = render(fs.read(join(root, 'controller-extension', `manifest.json`)), internalConfig, {});
+    const filledTemplate = render(fs.read(getTemplatePath('controller-extension/manifest.json')), internalConfig, {});
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate), getManifestReplacer(internalConfig));
 
     // add controller js file
     const ext = controllerConfig.typescript ? 'ts' : 'js';
     const viewPath = join(internalConfig.path, `${internalConfig.name}.controller.${ext}`);
     if (!fs.exists(viewPath)) {
-        fs.copyTpl(join(root, `controller-extension/Controller.${ext}`), viewPath, internalConfig);
+        fs.copyTpl(getTemplatePath(`controller-extension/Controller.${ext}`), viewPath, internalConfig);
     }
 
     return fs;
