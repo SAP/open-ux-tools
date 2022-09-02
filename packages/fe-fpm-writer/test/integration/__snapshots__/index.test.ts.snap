@@ -461,7 +461,7 @@ export function onAppended() {
         }",
     "state": "modified",
   },
-  "ts/webapp/ext/myControllerExtension/MyControllerExtension.controller.js": Object {
+  "ts/webapp/ext/myControllerExtension/MyControllerExtension.controller.ts": Object {
     "contents": "sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExtension) {
 	'use strict';
 

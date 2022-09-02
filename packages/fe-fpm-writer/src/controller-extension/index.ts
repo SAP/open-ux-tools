@@ -197,7 +197,8 @@ export function generateControllerExtension(
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate), getManifestReplacer(internalConfig));
 
     // add controller js file
-    const viewPath = join(internalConfig.path, `${internalConfig.name}.controller.js`);
+    const ext = controllerConfig.typescript ? 'ts' : 'js';
+    const viewPath = join(internalConfig.path, `${internalConfig.name}.controller.${ext}`);
     if (!fs.exists(viewPath)) {
         fs.copyTpl(join(root, 'controller-extension/Controller.js'), viewPath, internalConfig);
     }

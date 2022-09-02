@@ -26,10 +26,6 @@ export interface ControllerExtension extends CustomElement {
      * Controls if controller(s) for existing controller extension should be appended or replaced with new controller.
      */
     overwrite?: boolean;
-    /**
-     * Typescript generation is not supported for control extensions.
-     */
-    typescript?: false;
 }
 
 /**
@@ -58,8 +54,4 @@ export interface InternalControllerExtension
      * Delete property from existing control extension object in manifest.
      */
     deleteProperty?: keyof ManifestControllerExtension;
-    /**
-     * Typescript generation is not supported for control extensions.
-     */
-    typescript?: false;
 }

@@ -240,9 +240,7 @@ describe('use FPM with existing apps', () => {
                 {
                     name: 'MyControllerExtension',
                     pageType: ControllerExtensionPageType.ObjectPage,
-                    ...config.settings,
-                    // Typescript version is not supported
-                    typescript: false
+                    ...config.settings
                 },
                 fs
             );
