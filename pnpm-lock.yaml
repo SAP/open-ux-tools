@@ -22,7 +22,7 @@ importers:
       eslint-plugin-import: 2.26.0
       eslint-plugin-jsdoc: 39.3.3
       eslint-plugin-prettier: 4.2.1
-      eslint-plugin-promise: 6.0.0
+      eslint-plugin-promise: 6.0.1
       husky: 8.0.1
       jest: 27.5.1
       jest-sonar: 0.2.12
@@ -43,7 +43,7 @@ importers:
       eslint-plugin-import: 2.26.0_ak2uvcdvtaffeyburhpjsr2ppy
       eslint-plugin-jsdoc: 39.3.3_eslint@8.21.0
       eslint-plugin-prettier: 4.2.1_h62lvancfh4b7r6zn2dgodrh5e
-      eslint-plugin-promise: 6.0.0_eslint@8.21.0
+      eslint-plugin-promise: 6.0.1_eslint@8.21.0
       husky: 8.0.1
       jest: 27.5.1
       jest-sonar: 0.2.12
@@ -3496,8 +3496,8 @@ packages:
       prettier-linter-helpers: 1.0.0
     dev: true
 
-  /eslint-plugin-promise/6.0.0_eslint@8.21.0:
-    resolution: {integrity: sha512-7GPezalm5Bfi/E22PnQxDWH2iW9GTvAlUNTztemeHb6c1BniSyoeTrM87JkC0wYdi6aQrZX9p2qEiAno8aTcbw==}
+  /eslint-plugin-promise/6.0.1_eslint@8.21.0:
+    resolution: {integrity: sha512-uM4Tgo5u3UWQiroOyDEsYcVMOo7re3zmno0IZmB5auxoaQNIceAbXEkSt8RNrKtaYehARHG06pYK6K1JhtP0Zw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
@@ -6175,8 +6175,8 @@ packages:
   /nimnjs/1.3.2:
     resolution: {integrity: sha512-TIOtI4iqkQrUM1tiM76AtTQem0c7e56SkDZ7sj1d1MfUsqRcq2ZWQvej/O+HBTZV7u/VKnwlKTDugK/75IRPPw==}
     dependencies:
-      nimn_schema_builder: 1.1.0
       nimn-date-parser: 1.0.0
+      nimn_schema_builder: 1.1.0
     dev: false
 
   /nock/13.2.1:
