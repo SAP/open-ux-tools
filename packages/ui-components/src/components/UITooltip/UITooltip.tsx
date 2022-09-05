@@ -91,6 +91,7 @@ export class UITooltip extends React.Component<UITooltipProps, {}> {
             tooltipHost
         ) : (
             <div
+                // eslint-disable-next-line react/no-unknown-property
                 onFocusCapture={(event) => {
                     if (event.target.parentElement && event.target.parentElement.classList.contains('ms-TooltipHost')) {
                         // Stop propagation to avoid display of tooltip on focus

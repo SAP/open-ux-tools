@@ -63,7 +63,10 @@ export class UISection extends React.Component<UISectionProps> {
                     </div>
                 )}
                 <div className="section__body" onScroll={this.onScroll.bind(this)}>
-                    {this.props.children}
+                    {
+                        // eslint-disable-next-line  react/prop-types
+                        this.props.children
+                    }
                 </div>
             </div>
         );
