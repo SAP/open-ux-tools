@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.16.0
+
+### Minor Changes
+
+-   4fb53ce: Fix sonar warnings
+
 ## 0.15.1
 
 ### Patch Changes
