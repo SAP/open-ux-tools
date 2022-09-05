@@ -1,0 +1,44 @@
+$validation-error-text: var(--vscode-errorForeground);
+$validation-warning-text: var(--vscode-editorMarkerNavigationWarning-background);
+$validation-info-text: var(--vscode-inputValidation-infoBorder);
+
+@mixin apply-message-style($color) {
+    .ts-message-body {
+        color: $color;
+    }
+}
+
+.ts-message {
+    &-wrapper {
+        .ts-message-body {
+            display: flex;
+            font-size: 11px;
+            > span {
+                padding-top: 1px;
+            }
+            > i {
+                margin: 1px 2px 0 0;
+            }
+        }
+        &--error {
+            @include apply-message-style($validation-error-text);
+        }
+        &--warning {
+            @include apply-message-style($validation-warning-text);
+        }
+        &--info {
+            @include apply-message-style($validation-info-text);
+            .ts-icon svg path {
+                fill: $validation-info-text;
+            }
+        }
+        // Horizontal wrapper
+        &--horizontal {
+            display: flex;
+            .ts-message-body {
+                align-self: flex-end;
+                margin: 0 0 7px 5px;
+            }
+        }
+    }
+}

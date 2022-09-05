@@ -1,0 +1,194 @@
+/* checkbox must only show up in the table, it doesn't need to work */
+/* DetailsList selection works on its own */
+.ms-DetailsHeader-cell,
+.ms-DetailsList {
+    .ms-Checkbox input {
+        display: none;
+    }
+
+    .ms-Checkbox-label {
+        pointer-events: none;
+    }
+}
+
+.ms-DetailsList {
+    &-contentWrapper .ms-DetailsRow-check {
+        height: 100%;
+    }
+
+    .ms-TextField,
+    .ms-Dropdown,
+    .ts-ComboBox,
+    .ui-DatePicker {
+        margin: -5px;
+    }
+
+    .ms-List-page .ms-List-cell:nth-child(odd) .ms-FocusZone {
+        background: var(--vscode-peekViewResult-background);
+    }
+
+    .ms-ComboBox-container {
+        position: relative;
+
+        > div[role='alert'] {
+            position: absolute;
+            display: inline-block;
+            left: 0;
+            right: 0;
+            top: 26px;
+            white-space: pre-wrap;
+        }
+    }
+}
+
+// right align row numbers
+.ms-DetailsList-row-number {
+    text-align: center;
+}
+
+.ms-DetailsHeader-cell[data-item-key='__row_number__'] .ms-DetailsHeader-cellTitle {
+    justify-content: center;
+}
+
+.ms-ScrollablePane {
+    .ms-FocusZone {
+        color: var(--vscode-foreground);
+        background: transparent;
+        border-bottom: 0;
+
+        &.ms-DetailsHeader .data-editor__header-cell {
+            display: flex;
+            vertical-align: baseline;
+            overflow: hidden;
+            position: relative;
+            justify-content: center;
+
+            .type-icon {
+                padding: 3px 10px 0 0;
+            }
+
+            span {
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+
+            .not-editable-container {
+                margin-left: auto;
+
+                .not-editable-icon {
+                    padding: 3px 0 0 10px;
+                }
+            }
+
+            .editable-container {
+                margin-left: auto;
+            }
+        }
+
+        .ms-DetailsHeader-cell,
+        .ms-DetailsHeader-cell:hover,
+        .ms-DetailsHeader-cell .ms-Icon {
+            color: var(--vscode-foreground);
+            font-weight: bold;
+            background: transparent;
+        }
+
+        // focused & hovered row
+        &:focus:hover {
+            background: transparent;
+        }
+
+        // focused row
+        &:focus .ms-DetailsRow-cell {
+            color: var(--vscode-foreground);
+        }
+
+        .ms-DetailsHeader-cell {
+            box-shadow: inset 0 1px 0 var(--vscode-editorWidget-border),
+                inset 0 -1px 0 var(--vscode-editorWidget-border), inset -1px 0 0 var(--vscode-editorWidget-border);
+        }
+
+        .ms-DetailsHeader-cell:first-of-type {
+            box-shadow: inset 0 1px 0 var(--vscode-editorWidget-border),
+                inset 0 -1px 0 var(--vscode-editorWidget-border), inset -1px 0 0 var(--vscode-editorWidget-border),
+                inset 1px 0 0 var(--vscode-editorWidget-border);
+        }
+
+        &.ms-DetailsHeader .ms-DetailsHeader-cell.selected {
+            box-shadow: inset 0 1px 0 var(--vscode-editorWidget-border), inset 0 -3px 0 var(--vscode-focusBorder),
+                inset 0 -1px 0 var(--vscode-editorWidget-border), inset -1px 0 0 var(--vscode-editorWidget-border);
+        }
+
+        & .ms-DetailsRow-cell.uneditable {
+            font-style: italic;
+            user-select: text;
+            cursor: auto;
+        }
+
+        & > .ms-DetailsRow-cell {
+            margin-right: -1px;
+        }
+
+        // checkbox cell left "border"
+        .ms-DetailsRow {
+            box-shadow: inset 1px 0 0 var(--vscode-editorWidget-border);
+        }
+
+        // first cell left "border" and last cell right "border"
+        .ms-DetailsRow-fields {
+            box-shadow: inset -1px 0 0 var(--vscode-editorWidget-border),
+                inset 1px 0 0 var(--vscode-editorWidget-border);
+        }
+
+        .ms-List-page:last-of-type {
+            padding-bottom: 1px;
+            box-shadow: inset 0 -1px 0 var(--vscode-editorWidget-border);
+        }
+
+        .ms-DetailsRow-fields .ms-DetailsRow-cell:last-child {
+            padding-right: 15px;
+        }
+
+        .ms-DetailsRow-check--isHeader {
+            box-shadow: inset 1px 0 0 var(--vscode-editorWidget-border);
+        }
+
+        &.ms-DetailsHeader {
+            color: var(--vscode-foreground);
+            background: var(--vscode-editor-background);
+            border-bottom: 0;
+            padding-top: 0;
+        }
+    }
+
+    .ms-DetailsRow-cell span:focus-visible {
+        outline: none;
+    }
+
+    .ms-DetailsRow.is-selected .ms-DetailsRow-cellCheck {
+        margin-top: 0;
+        background-color: var(--vscode-focusBorder);
+    }
+}
+
+.ms-Fabric--isFocusVisible .ms-DetailsHeader-check:focus::after,
+.ms-Fabric--isFocusVisible .ms-DetailsList .ms-DetailsRow:focus::after,
+.ms-Fabric--isFocusVisible .ms-DetailsList .ms-DetailsRow-cell:focus::after {
+    border-color: var(--vscode-focusBorder);
+    outline-color: var(--vscode-focusBorder);
+    inset: 0 0 1px 0;
+}
+
+.ms-Fabric--isFocusVisible .ms-DetailsList .ms-DetailsRow-cell:focus::after {
+    inset: 1px;
+}
+
+/*otherwise top-border is cropped*/
+.ms-Fabric--isFocusVisible .ms-DetailsHeader-check:focus::after {
+    z-index: 20;
+}
+
+.table-item-warning {
+    color: var(--vscode-editorMarkerNavigationWarning-background);
+}
