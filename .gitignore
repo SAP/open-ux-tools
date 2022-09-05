@@ -165,3 +165,7 @@ dist
 
 # Output of 'npm pack'
 *.tgz
+
+
+# tsc delta build
+*.tsbuildinfo

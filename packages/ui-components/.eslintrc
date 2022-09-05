@@ -29,7 +29,11 @@
                 "typedefs": false,
                 "classes": false
             }
-        ]
+        ],
+        "jsdoc/require-param-description": "off",
+        "jsdoc/require-returns-description": "off",
+        "jsdoc/no-undefined-types": "off",
+        "jsdoc/newline-after-description": "off"
     },
     "settings": {
         "react": {

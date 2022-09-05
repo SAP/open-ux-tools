@@ -2,6 +2,7 @@ import React from 'react';
 import { registerIcons, initializeIcons } from '@fluentui/react';
 
 const COLORS = {
+    // eslint-disable-next-line quote-props
     default: 'var(--vscode-icon-foreground, var(--vscode-foreground))',
     success: 'var(--vscode-charts-green, #84C881)',
     warning: 'var(--vscode-notificationsWarningIcon-foreground)',

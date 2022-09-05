@@ -5,6 +5,14 @@ module.exports = {
         builder: 'webpack5'
     },
     stories: ['../stories/**/*.stories.tsx', '../src/components/**/*.story.tsx'],
+    addons : [
+        {
+            name: "storybook-addon-turbo-build",
+            options: {
+              optimizationLevel: 3,
+            },
+          }
+        ],
     webpackFinal: async (config) => {
         config.module.rules.push({
             test: /\.(ts|tsx)$/,
