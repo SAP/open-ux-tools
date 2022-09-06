@@ -6,6 +6,7 @@ permissions: read-all
 jobs:
   update-lockfile:
     runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
     permissions:
       pull-requests: write
       contents: write
