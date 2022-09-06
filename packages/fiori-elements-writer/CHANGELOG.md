@@ -1,5 +1,24 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.6.0
+
+### Minor Changes
+
+-   4fb53ce: Fix sonar warnings
+
+### Patch Changes
+
+-   Updated dependencies [4fb53ce]
+    -   @sap-ux/fe-fpm-writer@0.16.0
+    -   @sap-ux/ui5-application-writer@0.16.0
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [e00e583]
+    -   @sap-ux/fe-fpm-writer@0.15.0
+
 ## 0.5.3
 
 ### Patch Changes

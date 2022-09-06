@@ -1,0 +1,684 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ui5-test-writer - Integration tests Generate initial OPA test files and add more pages 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"restaurant-app\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"Restaurant List\\",
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.105\\",
+    \\"@sap/ux-ui5-fe-mockserver-middleware\\": \\"1\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"build\\": \\"ui5 build --clean-dest --dest dist\\",
+    \\"test\\": \\"fiori run --open 'test/testsuite.qunit.html'\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
+      \\"@sap/ux-ui5-fe-mockserver-middleware\\"
+    ]
+  }
+}
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: restaurantapp
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        service:
+          urlPath: /restaurant
+          metadataXmlPath: ./webapp/localService/metadata.xml
+          mockdataRootPath: ./webapp/localService/data
+          generateMockData: true
+",
+    "state": "modified",
+  },
+  "webapp/Component.js": Object {
+    "contents": "sap.ui.define(
+    [\\"sap/fe/core/AppComponent\\"],
+    function (Component) {
+        \\"use strict\\";
+
+        return Component.extend(\\"restaurantapp.Component\\", {
+            metadata: {
+                manifest: \\"json\\"
+            }
+        });
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/annotations/annotation.xml": Object {
+    "contents": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/restaurant/$metadata\\">
+        <edmx:Include Namespace=\\"RestaurantService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"local\\">
+            <Annotations Target=\\"RestaurantService.Restaurant\\">
+                <Annotation Term=\\"UI.LineItem\\">
+                    <Collection>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Label\\" String=\\"ID\\"/>
+                            <PropertyValue Property=\\"Value\\" Path=\\"ID\\"/>
+                        </Record>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Label\\" String=\\"name\\"/>
+                            <PropertyValue Property=\\"Value\\" Path=\\"name\\"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term=\\"UI.FieldGroup\\" Qualifier=\\"GeneratedGroup1\\">
+                    <Record Type=\\"UI.FieldGroupType\\">
+                        <PropertyValue Property=\\"Data\\">
+                            <Collection>
+                                <Record Type=\\"UI.DataField\\">
+                                    <PropertyValue Property=\\"Label\\" String=\\"ID\\"/>
+                                    <PropertyValue Property=\\"Value\\" Path=\\"ID\\"/>
+                                </Record>
+                                <Record Type=\\"UI.DataField\\">
+                                    <PropertyValue Property=\\"Label\\" String=\\"name\\"/>
+                                    <PropertyValue Property=\\"Value\\" Path=\\"name\\"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term=\\"UI.Facets\\">
+                    <Collection>
+                        <Record Type=\\"UI.ReferenceFacet\\">
+                            <PropertyValue Property=\\"ID\\" String=\\"GeneratedFacet1\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"General Information\\"/>
+                            <PropertyValue Property=\\"Target\\" AnnotationPath=\\"@UI.FieldGroup#GeneratedGroup1\\"/>
+                        </Record>
+                        <Record Type=\\"UI.ReferenceFacet\\">
+                            <PropertyValue Property=\\"Label\\" String=\\"Menu\\"/>
+                            <PropertyValue Property=\\"ID\\" String=\\"Menu\\"/>
+                            <PropertyValue Property=\\"Target\\" AnnotationPath=\\"_Dishes/@UI.LineItem#Menu\\"/>
+                        </Record>
+                        <Record Type=\\"UI.ReferenceFacet\\">
+                            <PropertyValue Property=\\"Label\\" String=\\"Staff\\"/>
+                            <PropertyValue Property=\\"ID\\" String=\\"Staff\\"/>
+                            <PropertyValue Property=\\"Target\\" AnnotationPath=\\"_Employees/@UI.LineItem#Staff\\"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"RestaurantService.Dish\\">
+                <Annotation Term=\\"UI.LineItem\\" Qualifier=\\"Menu\\">
+                    <Collection>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" Path=\\"dishName\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"dishName\\"/>
+                        </Record></Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target=\\"RestaurantService.Employees\\">
+                <Annotation Term=\\"UI.LineItem\\" Qualifier=\\"Staff\\">
+                    <Collection>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" Path=\\"fullName\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"fullName\\"/>
+                        </Record>
+                        <Record Type=\\"UI.DataField\\">
+                            <PropertyValue Property=\\"Value\\" Path=\\"role\\"/>
+                            <PropertyValue Property=\\"Label\\" String=\\"role\\"/>
+                        </Record></Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/ext/view/EmployeeView.controller.js": Object {
+    "contents": "sap.ui.define(
+    [
+        'sap/fe/core/PageController'
+    ],
+    function(PageController) {
+        'use strict';
+
+        return PageController.extend('restaurantapp.ext.view.EmployeeView', {
+
+        });
+    }
+);
+",
+    "state": "modified",
+  },
+  "webapp/ext/view/EmployeeView.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"restaurantapp.ext.view.EmployeeView\\">
+    <Page title=\\"EmployeeView\\">
+        <content></content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for restaurantapp
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=Restaurant List
+
+#YDES: Application description
+appDescription=Restaurant List",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>Restaurant List</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_horizon\\"
+        data-sap-ui-resourceroots='{
+            \\"restaurantapp\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"restaurantapp\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"restaurantapp\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/localService/metadata.xml": Object {
+    "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
+<edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
+    <edmx:DataServices>
+        <Schema Namespace=\\"RestaurantService\\" xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
+            <EntityContainer Name=\\"EntityContainer\\">
+                <EntitySet Name=\\"Employees\\" EntityType=\\"RestaurantService.Employees\\"/>
+                <EntitySet Name=\\"Dish\\" EntityType=\\"RestaurantService.Dish\\"/>
+                <EntitySet Name=\\"Restaurant\\" EntityType=\\"RestaurantService.Restaurant\\">
+                    <NavigationPropertyBinding Path=\\"_Dishes\\" Target=\\"Dish\\"/>
+                    <NavigationPropertyBinding Path=\\"_Employees\\" Target=\\"Employees\\"/>
+                </EntitySet>
+            </EntityContainer>
+            <EntityType Name=\\"Employees\\">
+                <Key>
+                    <PropertyRef Name=\\"employeeID\\"/>
+                </Key>
+                <Property Name=\\"employeeID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\"/>
+                <Property Name=\\"fullName\\" Type=\\"Edm.String\\"/>
+                <Property Name=\\"role\\" Type=\\"Edm.String\\"/>
+                <Property Name=\\"restaurantID\\" Type=\\"Edm.Int32\\"/>
+            </EntityType>
+            <EntityType Name=\\"Dish\\">
+                <Key>
+                    <PropertyRef Name=\\"dishID\\"/>
+                </Key>
+                <Property Name=\\"dishID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\"/>
+                <Property Name=\\"dishName\\" Type=\\"Edm.String\\"/>
+                <Property Name=\\"restaurantID\\" Type=\\"Edm.Int32\\"/>
+            </EntityType>
+            <EntityType Name=\\"Restaurant\\">
+                <Key>
+                    <PropertyRef Name=\\"ID\\"/>
+                </Key>
+                <Property Name=\\"ID\\" Type=\\"Edm.Int32\\" Nullable=\\"false\\"/>
+                <Property Name=\\"name\\" Type=\\"Edm.String\\"/>
+                <NavigationProperty Name=\\"_Dishes\\" Type=\\"Collection(RestaurantService.Dish)\\">
+                    <OnDelete Action=\\"Cascade\\"/>
+                </NavigationProperty>
+                <NavigationProperty Name=\\"_Employees\\" Type=\\"Collection(RestaurantService.Employees)\\">
+                    <OnDelete Action=\\"Cascade\\"/>
+                </NavigationProperty>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.40.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"restaurantapp\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"@sap/generator-fiori:lrop\\",
+      \\"version\\": \\"1.7.1\\",
+      \\"toolsId\\": \\"c4ddb756-9b8b-4c4e-8d46-5ef91b686336\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/restaurant/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.105.0\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {},
+        \\"sap.ushell\\": {},
+        \\"sap.fe.templates\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"restaurantapp.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"synchronizationMode\\": \\"None\\",
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": []
+    },
+    \\"routing\\": {
+      \\"routes\\": [
+        {
+          \\"pattern\\": \\":?query:\\",
+          \\"name\\": \\"RestaurantList\\",
+          \\"target\\": \\"RestaurantList\\"
+        },
+        {
+          \\"pattern\\": \\"Restaurant({key}):?query:\\",
+          \\"name\\": \\"RestaurantObjectPage\\",
+          \\"target\\": \\"RestaurantObjectPage\\"
+        },
+        {
+          \\"name\\": \\"DishObjectPage\\",
+          \\"target\\": \\"DishObjectPage\\",
+          \\"pattern\\": \\"Restaurant({key})/_Dishes({key2}):?query:\\"
+        },
+        {
+          \\"name\\": \\"EmployeesCustomPage\\",
+          \\"target\\": \\"EmployeesCustomPage\\",
+          \\"pattern\\": \\"Restaurant({key})/_Employees({_EmployeesKey}):?query:\\"
+        }
+      ],
+      \\"targets\\": {
+        \\"RestaurantList\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"RestaurantList\\",
+          \\"name\\": \\"sap.fe.templates.ListReport\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Restaurant\\",
+              \\"variantManagement\\": \\"Page\\",
+              \\"navigation\\": {
+                \\"Restaurant\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"RestaurantObjectPage\\"
+                  }
+                }
+              },
+              \\"initialLoad\\": \\"Enabled\\"
+            }
+          }
+        },
+        \\"RestaurantObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"RestaurantObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"editableHeaderContent\\": false,
+              \\"entitySet\\": \\"Restaurant\\",
+              \\"navigation\\": {
+                \\"_Dishes\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"DishObjectPage\\"
+                  }
+                },
+                \\"_Employees\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"EmployeesCustomPage\\"
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"DishObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"DishObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Dish\\"
+            }
+          }
+        },
+        \\"EmployeesCustomPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"EmployeesCustomPage\\",
+          \\"name\\": \\"sap.fe.core.fpm\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"viewName\\": \\"restaurantapp.ext.view.EmployeeView\\",
+              \\"entitySet\\": \\"Employees\\"
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheRestaurantList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheRestaurantList.onFilterBar().iExecuteSearch();
+                Then.onTheRestaurantList.onTable().iCheckRows();
+
+                When.onTheRestaurantList.onTable().iPressRow(0);
+                Then.onTheRestaurantObjectPage.iSeeThisPage();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"restaurantapp\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'restaurantapp/test/integration/FirstJourney',
+		'restaurantapp/test/integration/pages/RestaurantList',
+		'restaurantapp/test/integration/pages/RestaurantObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, RestaurantList, RestaurantObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('restaurantapp') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheRestaurantList: RestaurantList,
+					onTheRestaurantObjectPage: RestaurantObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/DishObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'restaurantapp',
+            componentId: 'DishObjectPage',
+            entitySet: 'Dish'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesCustomPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new TemplatePage(
+        'restaurantapp::EmployeesCustomPage',
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/RestaurantList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'restaurantapp',
+            componentId: 'RestaurantList',
+            entitySet: 'Restaurant'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/RestaurantObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'restaurantapp',
+            componentId: 'RestaurantObjectPage',
+            entitySet: 'Restaurant'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
