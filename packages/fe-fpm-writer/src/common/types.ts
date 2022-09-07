@@ -20,7 +20,7 @@ export interface CustomElement {
      * If undefined then the latest version of the template is used.
      * If nothing can be generated for the given version then an exception is thrown.
      */
-    ui5Version?: number;
+    minUI5Version?: string;
     /**
      * If set to true then all code snippets are generated in Typescript instead of Javascript.
      */
