@@ -286,13 +286,13 @@ export class UI5Config {
      * @memberof UI5Config
      */
     private findCustomActivity<C extends object = object>(name: string, path: string): CustomItem<C> | undefined {
-        let list: YAMLSeq<unknown> | undefined = undefined;
+        let list: YAMLSeq<unknown> | undefined;
         try {
             list = this.document.getSequence({ path });
         } catch (error) {
             // if the document does not contain the builder > customTasks section and error is thrown
         }
-        let item: YAMLMap | undefined = undefined;
+        let item: YAMLMap | undefined;
         if (list) {
             item = this.document.findItem(list, (item: CustomItem<object>) => item.name === name) as YAMLMap;
         }
