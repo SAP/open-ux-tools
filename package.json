@@ -9,7 +9,7 @@
         "@types/jest": "27.4.1",
         "@types/node": "12.12.6",
         "@typescript-eslint/eslint-plugin": "5.30.7",
-        "@typescript-eslint/parser": "5.30.7",
+        "@typescript-eslint/parser": "5.36.2",
         "eslint": "8.23.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-import-resolver-typescript": "3.3.0",
