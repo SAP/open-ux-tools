@@ -1,23 +1,22 @@
 import { join } from 'path';
-import { mergeWithDefaults } from './data';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { mergeObjects } from 'json-merger';
-import { render } from 'ejs';
-import { getFilePaths } from './files';
 import type { App, AppOptions, Package, UI5 } from './types';
-import { Ui5App } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
+import type { Manifest } from '@sap-ux/ui5-config';
+import { mergeWithDefaults } from './data';
 import { ui5TsMiddlewares, ui5TsTasks } from './data/ui5Libs';
+import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
+import { Ui5App } from './types';
 
 /**
  * Writes the template to the memfs editor instance.
  *
- * @param {string} basePath - the base path
- * @param {Ui5App} ui5AppConfig - the Ui5App instance
- * @param {Editor} [fs] - the memfs editor instance
- * @returns {*}  {Promise<Editor>} the updated memfs editor instance
+ * @param basePath - the base path
+ * @param ui5AppConfig - the Ui5App instance
+ * @param fs - the memfs editor instance
+ * @returns the updated memfs editor instance
  */
 async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Promise<Editor> {
     if (!fs) {
@@ -55,36 +54,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     ui5LocalConfig.addFioriToolsAppReloadMiddleware();
 
     // Add optional features
-    if (ui5App.appOptions) {
-        Object.entries(ui5App.appOptions).forEach(([key, value]) => {
-            if (value === true) {
-                const optTmplDirPath = join(tmplPath, 'optional', `${key}`);
-                const optTmplFilePaths = getFilePaths(optTmplDirPath);
-                optTmplFilePaths.forEach((optTmplFilePath) => {
-                    const relPath = optTmplFilePath.replace(optTmplDirPath, '');
-                    const outPath = join(basePath, relPath);
-                    // Extend or add
-                    if (!fs?.exists(outPath)) {
-                        fs?.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
-                            globOptions: { dot: true }
-                        });
-                    } else {
-                        const add = JSON.parse(render(fs?.read(optTmplFilePath), ui5App, {}));
-                        const existingFile = JSON.parse(fs?.read(outPath));
-                        const merged = mergeObjects([existingFile, add], { defaultArrayMergeOperation: 'concat' });
-                        fs?.writeJSON(outPath, merged);
-                    }
-                });
-            }
-        });
-        if (ui5App.appOptions.typescript) {
-            fs.delete(join(basePath, 'webapp/Component.js'));
-            ui5Config.addCustomMiddleware(ui5TsMiddlewares);
-            ui5Config.addCustomTasks(ui5TsTasks);
-            ui5LocalConfig.addCustomMiddleware(ui5TsMiddlewares);
-            ui5LocalConfig.addCustomTasks(ui5TsTasks);
-        }
-    }
+    applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
 
     // write ui5 yamls
     fs.write(ui5ConfigPath, ui5Config.toString());
@@ -93,5 +63,66 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     return fs;
 }
 
-export { Ui5App, generate };
+/**
+ * Check if Typescript is enabled for the given path.
+ *
+ * @param basePath - the base path
+ * @param fs - the memfs editor instance
+ * @returns true is the project is ready for typescript code
+ */
+async function isTypescriptEnabled(basePath: string, fs?: Editor): Promise<boolean> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+
+    // check middlewares and tasks
+    const ui5Config = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')));
+    for (const middleware of ui5TsMiddlewares) {
+        if (!ui5Config.findCustomMiddleware(middleware.name)) {
+            return false;
+        }
+    }
+    for (const task of ui5TsTasks) {
+        if (!ui5Config.findCustomTask(task.name)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Enable typescript in an existing valid UI5 project.
+ *
+ * @param basePath - the base path
+ * @param fs - the memfs editor instance
+ * @returns the updated memfs editor instance
+ */
+async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const manifestPath = join(basePath, 'webapp/manifest.json');
+    const ui5ConfigPath = join(basePath, 'ui5.yaml');
+    if (!fs.exists(manifestPath)) {
+        throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
+    }
+    if (!fs.exists(ui5ConfigPath)) {
+        throw new Error(`Invalid project folder. Cannot find required file ${ui5ConfigPath}`);
+    }
+    const manifest = fs.readJSON(manifestPath) as any as Manifest;
+    const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
+
+    const tmplPath = join(__dirname, '..', 'templates');
+    enableTypescriptOption(
+        { basePath, fs, ui5Configs: [ui5Config], tmplPath, ui5App: { app: manifest['sap.app'] } },
+        true
+    );
+
+    fs.write(ui5ConfigPath, ui5Config.toString());
+
+    return fs;
+}
+
+export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
 export { App, Package, UI5, AppOptions };

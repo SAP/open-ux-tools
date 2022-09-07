@@ -54,7 +54,7 @@ archive.zip
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"1.92.2\\",
+    \\"@sapui5/ts-types-esm\\": \\"latest\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },
@@ -82,7 +82,7 @@ archive.zip
     \\"checkJs\\": true,
     \\"allowJs\\": true,
     \\"types\\": [
-      \\"@sapui5/ts-types\\"
+      \\"@sapui5/ts-types-esm\\"
     ]
   }
 }",
