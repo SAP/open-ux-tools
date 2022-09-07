@@ -1,8 +1,5 @@
 lockfileVersion: 5.4
 
-overrides:
-    ansi-regex: ^5.0.1
-
 importers:
     .:
         specifiers:
@@ -2737,6 +2734,31 @@ packages:
         engines: { node: '>=8' }
         dependencies:
             type-fest: 0.21.3
+        dev: true
+
+    /ansi-regex/2.1.1:
+        resolution:
+            {
+                integrity: sha512-TIGnTpdo+E3+pCyAluZvtED5p5wCqLdezCyhPZzKPcxvFplEt4i+W7OONCKgeZFT3+y5NZZfOOS/Bdcanm1MYA==
+            }
+        engines: { node: '>=0.10.0' }
+        dev: false
+        optional: true
+
+    /ansi-regex/3.0.1:
+        resolution:
+            {
+                integrity: sha512-+O9Jct8wf++lXxxFc4hc8LsjaSq0HFzzL7cVsw8pRDIPdjKD2mT4ytDZlLuSBZ4cLKZFXIrMGO7DbQCtMJJMKw==
+            }
+        engines: { node: '>=4' }
+        dev: true
+
+    /ansi-regex/4.1.1:
+        resolution:
+            {
+                integrity: sha512-ILlv4k/3f6vfQ4OoP2AGvirOktlQ98ZEL1k9FaQjxa3L1abBgbuTDAdPOpvbGncC0BTVQrl+OM8xZGK6tWXt7g==
+            }
+        engines: { node: '>=6' }
         dev: true
 
     /ansi-regex/5.0.1:
@@ -8829,7 +8851,7 @@ packages:
                 integrity: sha512-S4oT9/sT6MN7/3COoOy+ZJeA92VmOnveLHgrwBE3Z1W5N9S2A1QGNYiE1z75DAENbJrXXUb+OWXhpJcg05QKQQ==
             }
         dependencies:
-            ansi-regex: 5.0.1
+            ansi-regex: 3.0.1
             ansi-styles: 3.2.1
         dev: true
 
@@ -8841,7 +8863,7 @@ packages:
         engines: { node: '>= 6' }
         dependencies:
             '@jest/types': 24.9.0
-            ansi-regex: 5.0.1
+            ansi-regex: 4.1.1
             ansi-styles: 3.2.1
             react-is: 16.13.1
         dev: true
@@ -10003,7 +10025,7 @@ packages:
         resolution: { integrity: sha1-ajhfuIU9lS1f8F0Oiq+UJ43GPc8= }
         engines: { node: '>=0.10.0' }
         dependencies:
-            ansi-regex: 5.0.1
+            ansi-regex: 2.1.1
         dev: false
         optional: true
 
