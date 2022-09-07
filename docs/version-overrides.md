@@ -41,13 +41,3 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Vulnerable versions | <3.9.6 |
 | Patched versions    | >=3.9.6 |
 | More info           | https://github.com/advisories/GHSA-6pw2-5hjv-9pf7 |
-
-## minimist
-| Override:           | ^1.2.6 |
-|:--------------------| :-------------|
-|                     | |
-| **high**        | Prototype Pollution in minimist |
-| Package             | vm2 |
-| Vulnerable versions | <=1.2.5 |
-| Patched versions    | >=1.2.6 |
-| More info           | https://github.com/advisories/GHSA-xvch-5gv4-984h |
