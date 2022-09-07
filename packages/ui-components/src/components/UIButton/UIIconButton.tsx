@@ -31,7 +31,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
     }
 
     /**
-     * Method which returns button interaction background with including fallback for olde VSCode or BAS versions.
+     * Method which returns button interaction background with including fallback for old VSCode or BAS versions.
      *
      * @param {string} color First choise color.
      * @returns {string} CSS value for background color with fallback.
