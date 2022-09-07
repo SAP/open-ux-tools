@@ -52,7 +52,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
     // Common files
-    const ignore = feApp.appOptions?.typescript ? '**/*.js' : '**/*.ts';
+    const ignore = [feApp.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
