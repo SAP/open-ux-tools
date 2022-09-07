@@ -11,12 +11,3 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Patched versions    | >=5.0.1 |
 | More info           | https://github.com/advisories/GHSA-93q8-gq69-wqmw |
 
-## follow-redirects
-
-| Override:           | >=1.14.7 |
-|:--------------------| :-------------|
-|                     | |
-| **high**            | Exposure of sensitive information in follow-redirects |
-| Package             | follow-redirects |
-| Vulnerable versions | <1.14.7                                               |
-| More info           | https://github.com/advisories/GHSA-74fj-2j2h-c42q     |

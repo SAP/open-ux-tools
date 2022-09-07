@@ -48,8 +48,7 @@
     },
     "pnpm": {
         "overrides": {
-            "ansi-regex": "^5.0.1",
-            "follow-redirects": ">=1.14.8"
+            "ansi-regex": "^5.0.1"
         }
     }
 }
