@@ -23,9 +23,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<FEOPSettings>
         },
         {
-            name: 'fefeop2-ts',
+            name: 'fefeop2ts',
             config: {
-                ...Object.assign(feBaseConfig('fefeop2-ts'), {
+                ...Object.assign(feBaseConfig('fefeop2ts'), {
                     template: {
                         type: TemplateType.FormEntryObjectPage,
                         settings: v4TemplateSettings

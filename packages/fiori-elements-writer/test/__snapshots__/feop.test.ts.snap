@@ -3400,9 +3400,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"fefeop1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->
@@ -3589,7 +3589,7 @@ sap.registerComponentDependencyPaths(manifestUri);
 }
 `;
 
-exports[`Fiori Elements template: feopTemplate Generate files for template: fefeop2-ts 1`] = `
+exports[`Fiori Elements template: feopTemplate Generate files for template: fefeop2ts 1`] = `
 Object {
   ".babelrc.json": Object {
     "contents": "{
@@ -3639,7 +3639,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"fefeop2-ts\\",
+  \\"name\\": \\"fefeop2ts\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
@@ -3663,14 +3663,14 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop2-ts-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop2-ts-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop2ts-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop2ts-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop2-ts-tile\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop2ts-tile\\\\\\"\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
@@ -3702,7 +3702,7 @@ archive.zip
     \\"outDir\\": \\"./dist\\",
     \\"baseUrl\\": \\"./\\",
     \\"paths\\": {
-      \\"fefeop2-ts/*\\": [
+      \\"fefeop2ts/*\\": [
         \\"webapp/*\\"
       ]
     },
@@ -3719,7 +3719,7 @@ archive.zip
 
 specVersion: \\"2.5\\"
 metadata:
-  name: fefeop2-ts
+  name: fefeop2ts
 type: application
 framework:
   name: SAPUI5
@@ -3784,7 +3784,7 @@ builder:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: fefeop2-ts
+  name: fefeop2ts
 type: application
 server:
   customMiddleware:
@@ -3845,7 +3845,7 @@ builder:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: fefeop2-ts
+  name: fefeop2ts
 type: application
 server:
   customMiddleware:
@@ -3895,7 +3895,7 @@ builder:
     "contents": "import AppComponent from 'sap/fe/core/AppComponent';
 
 /**
- * @namespace fefeop2-ts
+ * @namespace fefeop2ts
  */
 export default class Component extends AppComponent {
 
@@ -3938,7 +3938,7 @@ export default class Component extends AppComponent {
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for fefeop2-ts
+    "contents": "# This is the resource bundle for fefeop2ts
 
 #Texts for manifest.json
 
@@ -3967,7 +3967,7 @@ appDescription=A Fiori application.",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
-            \\"fefeop2-ts\\": \\"./\\"
+            \\"fefeop2ts\\": \\"./\\"
         }'
         data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
@@ -3978,9 +3978,9 @@ appDescription=A Fiori application.",
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"fefeop2-ts\\"
+        data-name=\\"fefeop2ts\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"fefeop2-ts\\"}'
+        data-settings='{\\"id\\" : \\"fefeop2ts\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -6899,7 +6899,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     "contents": "{
   \\"_version\\": \\"1.37.0\\",
   \\"sap.app\\": {
-    \\"id\\": \\"fefeop2-ts\\",
+    \\"id\\": \\"fefeop2ts\\",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
@@ -6968,7 +6968,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
         \\"settings\\": {
-          \\"bundleName\\": \\"fefeop2-ts.i18n.i18n\\"
+          \\"bundleName\\": \\"fefeop2ts.i18n.i18n\\"
         }
       },
       \\"\\": {
@@ -7096,10 +7096,10 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                 }
             },
             applications: {
-                \\"fefeop2-ts-tile\\": {
+                \\"fefeop2ts-tile\\": {
                     title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
                     description: \\"A Fiori application.\\",
-                    additionalInformation: \\"SAPUI5.Component=fefeop2-ts\\",
+                    additionalInformation: \\"SAPUI5.Component=fefeop2ts\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
                 }
@@ -7117,9 +7117,14 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"fefeop2-ts\\": \\"../\\"}'
+        data-sap-ui-resourceroots='{\\"fefeop2ts\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
-        </script>
+    </script>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+        });
+    </script>
 </head>
 
 <!-- UI Content -->
