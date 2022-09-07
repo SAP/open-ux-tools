@@ -1,5 +1,8 @@
 lockfileVersion: 5.4
 
+overrides:
+    vm2@<3.9.11: '>=3.9.11'
+
 importers:
     .:
         specifiers:
@@ -2731,15 +2734,6 @@ packages:
         hasBin: true
         dev: true
 
-    /acorn/8.7.0:
-        resolution:
-            {
-                integrity: sha512-V/LGr1APy+PXIwKebEWrkZPwoeoF+w1jiOBUmuxuiUIaOHtob8Qc9BTrYo7VuI5fR8tqsy+buA2WFooR5olqvQ==
-            }
-        engines: { node: '>=0.4.0' }
-        hasBin: true
-        dev: false
-
     /acorn/8.8.0:
         resolution:
             {
@@ -2747,7 +2741,6 @@ packages:
             }
         engines: { node: '>=0.4.0' }
         hasBin: true
-        dev: true
 
     /agent-base/6.0.2:
         resolution:
@@ -7489,10 +7482,10 @@ packages:
             commander: 7.2.0
             fs-extra: 9.1.0
             js-yaml: 4.1.0
-            json-ptr: 3.0.1
+            json-ptr: 3.1.1
             jsonpath: 1.1.1
             lodash.range: 3.2.0
-            vm2: 3.9.9
+            vm2: 3.9.11
         dev: false
 
     /json-parse-even-better-errors/2.3.1:
@@ -7501,10 +7494,10 @@ packages:
                 integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==
             }
 
-    /json-ptr/3.0.1:
+    /json-ptr/3.1.1:
         resolution:
             {
-                integrity: sha512-hrZ4tElT8huJUH3OwOK+d7F8PRqw09QnGM3Mm3GmqKWDyCCPCG8lGHxXOwQAj0VOxzLirOds07Kz10B5F8M8EA==
+                integrity: sha512-SiSJQ805W1sDUCD1+/t1/1BIrveq2Fe9HJqENxZmMCILmrPI7WhS/pePpIOx85v6/H2z1Vy7AI08GV2TzfXocg==
             }
         dev: false
 
@@ -7773,7 +7766,10 @@ packages:
             }
 
     /lodash.range/3.2.0:
-        resolution: { integrity: sha1-9GHliPZmg/fq3q3lE+OKaaVloV0= }
+        resolution:
+            {
+                integrity: sha512-Fgkb7SinmuzqgIhNhAElo0BL/R1rHCnhwSZf78omqSwvWqD0kD2ssOAutQonDKH/ldS8BxA72ORYI09qAY9CYg==
+            }
         dev: false
 
     /lodash.set/4.3.2:
@@ -10873,15 +10869,15 @@ packages:
             remove-trailing-separator: 1.1.0
             replace-ext: 1.0.1
 
-    /vm2/3.9.9:
+    /vm2/3.9.11:
         resolution:
             {
-                integrity: sha512-xwTm7NLh/uOjARRBs8/95H0e8fT3Ukw5D/JJWhxMbhKzNh1Nu981jQKvkep9iKYNxzlVrdzD0mlBGkDKZWprlw==
+                integrity: sha512-PFG8iJRSjvvBdisowQ7iVF580DXb1uCIiGaXgm7tynMR1uTBlv7UJlB1zdv5KJ+Tmq1f0Upnj3fayoEOPpCBKg==
             }
         engines: { node: '>=6.0' }
         hasBin: true
         dependencies:
-            acorn: 8.7.0
+            acorn: 8.8.0
             acorn-walk: 8.2.0
         dev: false
 
