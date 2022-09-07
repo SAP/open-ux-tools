@@ -170,7 +170,7 @@ describe('UI5Config', () => {
         expect(ui5Config.toString()).toMatchSnapshot();
     });
 
-    describe('add/removeCustomMiddleware', () => {
+    describe('add/find/removeCustomMiddleware', () => {
         const customMiddleware = {
             name: 'custom-middleware',
             afterMiddleware: '~otherMiddleware',
@@ -188,24 +188,49 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
+        test('findCustomMiddleware', () => {
+            ui5Config.addCustomMiddleware([customMiddleware]);
+            const found = ui5Config.findCustomMiddleware(customMiddleware.name);
+            expect(found).toMatchObject(customMiddleware);
+        });
+
         test('removeMiddleware', () => {
             ui5Config.addCustomMiddleware([customMiddleware]);
-            ui5Config.removeCustomMiddleware('custom-middleware');
+            ui5Config.removeCustomMiddleware(customMiddleware.name);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
 
-    test('addCustomTask', () => {
-        ui5Config.addCustomTasks([
-            {
-                name: 'ui5-task-zipper',
-                afterTask: 'generateCachebusterInfo',
-                configuration: {
-                    archiveName: 'my-archive'
-                }
+    describe('add/find/removeCustomTask', () => {
+        const customTask = {
+            name: 'ui5-task-zipper',
+            afterTask: 'generateCachebusterInfo',
+            configuration: {
+                archiveName: 'my-archive'
             }
-        ]);
-        expect(ui5Config.toString()).toMatchSnapshot();
+        };
+
+        test('addCustomTask', () => {
+            ui5Config.addCustomTasks([customTask]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('findCustomTask', () => {
+            const notFound = ui5Config.findCustomTask(customTask.name);
+            expect(notFound).toBeUndefined();
+            ui5Config.addCustomTasks([customTask]);
+            const found = ui5Config.findCustomTask(customTask.name);
+            expect(found).toMatchObject(customTask);
+            ui5Config.removeCustomTask(customTask.name);
+            const removed = ui5Config.findCustomTask(customTask.name);
+            expect(removed).toBeUndefined();
+        });
+
+        test('removeCustomTask', () => {
+            ui5Config.addCustomTasks([customTask]);
+            ui5Config.removeCustomTask(customTask.name);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
     });
 
     describe('addAbapDeployTask', () => {
