@@ -11,17 +11,6 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Patched versions    | >=5.0.1 |
 | More info           | https://github.com/advisories/GHSA-93q8-gq69-wqmw |
 
-## tmpl
-
-| Override:           | ^1.0.5 |
-|:--------------------| :-------------|
-|                     | |
-| **moderate**        | Regular Expression Denial of Service in tmpl |
-| Package             | tmpl |
-| Vulnerable versions | <1.0.5 |
-| Patched versions    | >=1.0.5 |
-| More info           | https://github.com/advisories/GHSA-jgrx-mgxx-jf9v |
-
 ## follow-redirects
 
 | Override:           | >=1.14.7 |
