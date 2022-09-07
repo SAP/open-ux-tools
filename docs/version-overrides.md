@@ -31,13 +31,3 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 | Package             | follow-redirects |
 | Vulnerable versions | <1.14.7                                               |
 | More info           | https://github.com/advisories/GHSA-74fj-2j2h-c42q     |
-
-## vm2
-| Override:           | ^3.9.6 |
-|:--------------------| :-------------|
-|                     | |
-| **critical**        | Sandbox bypass in vm2 |
-| Package             | vm2 |
-| Vulnerable versions | <3.9.6 |
-| Patched versions    | >=3.9.6 |
-| More info           | https://github.com/advisories/GHSA-6pw2-5hjv-9pf7 |

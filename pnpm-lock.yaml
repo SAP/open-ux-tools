@@ -4,7 +4,6 @@ overrides:
     ansi-regex: ^5.0.1
     follow-redirects: '>=1.14.8'
     tmpl: ^1.0.5
-    vm2@<3.9.6: ^3.9.6
 
 importers:
     .:
