@@ -3891,10 +3891,6 @@ builder:
 ",
     "state": "modified",
   },
-  "webapp/Component.js": Object {
-    "contents": null,
-    "state": "deleted",
-  },
   "webapp/Component.ts": Object {
     "contents": "import AppComponent from 'sap/fe/core/AppComponent';
 

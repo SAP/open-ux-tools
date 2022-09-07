@@ -2806,10 +2806,6 @@ builder:
 ",
     "state": "modified",
   },
-  "webapp/Component.js": Object {
-    "contents": null,
-    "state": "deleted",
-  },
   "webapp/Component.ts": Object {
     "contents": "import UIComponent from \\"sap/ui/core/UIComponent\\";
 import { support } from \\"sap/ui/Device\\";
