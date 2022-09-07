@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.0
+
+### Minor Changes
+
+-   7b31c68: Breaking fix of API to properly support minimum UI5 version as input
+
 ## 0.16.0
 
 ### Minor Changes

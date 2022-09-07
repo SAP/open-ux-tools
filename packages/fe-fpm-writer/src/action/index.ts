@@ -74,7 +74,7 @@ export function enhanceManifestAndGetActionsElementReference(manifest: any, targ
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 export function generateCustomAction(basePath: string, actionConfig: CustomAction, fs?: Editor): Editor {
-    validateVersion(actionConfig.ui5Version);
+    validateVersion(actionConfig.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
     }

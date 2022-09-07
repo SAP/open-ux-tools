@@ -9,6 +9,7 @@ import type { Manifest } from '../common/types';
 import { validateVersion, validateBasePath } from '../common/validate';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { getTemplatePath } from '../templates';
+import { coerce } from 'semver';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -16,10 +17,11 @@ import { getTemplatePath } from '../templates';
  * @param ui5Version required UI5 version.
  * @returns path to the template folder containing the manifest.json ejs template
  */
-export function getManifestRoot(ui5Version?: number): string {
-    if (ui5Version === undefined || ui5Version >= 1.86) {
+export function getManifestRoot(ui5Version?: string): string {
+    const minVersion = coerce(ui5Version);
+    if (!minVersion || minVersion.minor >= 86) {
         return getTemplatePath('/column/1.86');
-    } else if (ui5Version === 1.85) {
+    } else if (minVersion.minor >= 85) {
         return getTemplatePath('/column/1.85');
     } else {
         return getTemplatePath('column/1.84');
@@ -69,7 +71,7 @@ function enhanceConfig(
  * @param {Editor} [fs] - the mem-fs editor instance
  */
 export function generateCustomColumn(basePath: string, customColumn: CustomTableColumn, fs?: Editor): Editor {
-    validateVersion(customColumn.ui5Version);
+    validateVersion(customColumn.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
     }
@@ -82,7 +84,7 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     const completeColumn = enhanceConfig(fs, customColumn, manifestPath, manifest);
 
     // enhance manifest with column definition
-    const manifestRoot = getManifestRoot(customColumn.ui5Version);
+    const manifestRoot = getManifestRoot(customColumn.minUI5Version);
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn, {});
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 

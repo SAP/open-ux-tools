@@ -54,7 +54,7 @@ function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manif
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
 export function generateCustomView(basePath: string, customView: CustomView, fs?: Editor): Editor {
-    validateVersion(customView.ui5Version);
+    validateVersion(customView.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
     }
