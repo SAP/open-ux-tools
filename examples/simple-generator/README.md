@@ -12,7 +12,7 @@ pnpm build
 ```
 
 ## Usage
-To start the generator execute `pnpm start`.
+To start the generator execute `pnpm start` or `pnpm start --typescript` if you want to generate a typescript project.
 On your local machine, when prompted, enter the request values e.g.
 ```
 ? **Application** name myapp
