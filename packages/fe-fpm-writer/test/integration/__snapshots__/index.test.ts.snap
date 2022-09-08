@@ -466,14 +466,8 @@ export function onAppended() {
 import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
 
 /**
- * Definition of the override interface as workaround until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
+ * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
  */
-interface ExtensionOverride {
-	base: {
-		getExtensionAPI(): ExtensionAPI;
-	}
-}
-
 export default ControllerExtension.extend('v4travel.ext.myControllerExtension.MyControllerExtension', {
 	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
 	override: {
@@ -482,7 +476,7 @@ export default ControllerExtension.extend('v4travel.ext.myControllerExtension.My
 		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
 		 * @memberOf v4travel.ext.myControllerExtension.MyControllerExtension
 		 */
-		onInit(this: ExtensionOverride) {
+		onInit(this: ControllerExtension<ExtensionAPI>) {
 			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
 			const model = this.base.getExtensionAPI().getModel();
 		}
@@ -592,6 +586,63 @@ export function onPress() {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomView/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/sap.fs.d.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import Routing from 'sap/fe/core/controllerextensions/Routing';
+import EditFlow from 'sap/fe/core/controllerextensions/EditFlow';
+import IntentBasedNavigation from 'sap/fe/core/controllerextensions/IntentBasedNavigation';
+
+/**
+ * Missing public properties (https://ui5.sap.com/#/api/sap.fe.core.ExtensionAPI)
+ */
+interface ExtensionAPIProperties {
+    routing: Routing;
+    editFlow: EditFlow;
+    intentBasedNavigation: IntentBasedNavigation;
+}
+
+/**
+ * Add missing public properties
+ */
+declare module 'sap/fe/core/ExtensionAPI' {
+	export default interface ExtensionAPI extends ExtensionAPIProperties {}
+}
+
+/**
+ * Add missing public properties
+ */
+declare module 'sap/fe/templates/ObjectPage/ExtensionAPI' {
+	export default interface ExtensionAPI extends ExtensionAPIProperties {}
+}
+
+/**
+ * Add missing public properties
+ */
+declare module 'sap/fe/templates/ListReport/ExtensionAPI' {
+	export default interface ExtensionAPI extends ExtensionAPIProperties {}
+}
+
+/**
+ * Enhancing the PageController type to simplify the work with the extension API
+ */
+declare module 'sap/fe/core/PageController' {
+	export default interface PageController {
+		getExtensionAPI() : ExtensionAPI;
+	}
+}
+
+/**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension<API extends ExtensionAPIProperties = ExtensionAPIProperties> {
+        base: {
+            getExtensionAPI(): API;
+        }
+    }
+}",
     "state": "modified",
   },
   "ts/webapp/manifest.json": Object {

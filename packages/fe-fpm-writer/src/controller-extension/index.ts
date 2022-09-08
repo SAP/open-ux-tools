@@ -14,6 +14,7 @@ import { validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
+import { addExtensionTypes } from '../common/utils';
 
 export const UI5_CONTROLLER_EXTENSION_LIST_REPORT = 'sap.fe.templates.ListReport.ListReportController';
 export const UI5_CONTROLLER_EXTENSION_OBJECT_PAGE = 'sap.fe.templates.ObjectPage.ObjectPageController';
@@ -232,6 +233,10 @@ export function generateControllerExtension(
     const viewPath = join(internalConfig.path, `${internalConfig.name}.controller.${ext}`);
     if (!fs.exists(viewPath)) {
         fs.copyTpl(getTemplatePath(`controller-extension/Controller.${ext}`), viewPath, internalConfig);
+    }
+
+    if (controllerConfig.typescript) {
+        addExtensionTypes(basePath, fs);
     }
 
     return fs;

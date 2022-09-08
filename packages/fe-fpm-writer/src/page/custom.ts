@@ -10,6 +10,7 @@ import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { coerce } from 'semver';
+import { addExtensionTypes } from '../common/utils';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -92,6 +93,10 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
     if (!fs.exists(controllerPath)) {
         fs.copyTpl(join(root, `ext/Controller.${ext}`), controllerPath, config);
+    }
+
+    if (data.typescript) {
+        addExtensionTypes(basePath, fs);
     }
 
     return fs;

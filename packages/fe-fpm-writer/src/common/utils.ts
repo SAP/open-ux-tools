@@ -1,4 +1,7 @@
+import { Editor } from 'mem-fs-editor';
 import os from 'os';
+import { join } from 'path';
+import { getTemplatePath } from '../templates';
 import type { FileContentPosition } from '../common/types';
 
 /**
@@ -47,4 +50,11 @@ export function insertTextAtPosition(text: string, content: string, position: Fi
     // Update line with inserting passed text
     lines[position.line] = insertTextAtAbsolutePosition(text, lines[position.line], position.character);
     return lines.join(os.EOL);
+}
+
+export function addExtensionTypes(basePath: string, fs: Editor) {
+    const path = join(basePath, '/webapp/ext/sap.fs.d.ts');
+    if (!fs.exists(path)) {
+        fs.copy(getTemplatePath('common/sap.fe.d.ts'), path);
+    }
 }
