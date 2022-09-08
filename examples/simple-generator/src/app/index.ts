@@ -24,6 +24,13 @@ export default class extends Generator {
         settings?: LROPSettings | OVPSettings | {};
     };
 
+    /**
+     * Enables the CLI parameter --typescript and then calls the base constructor.
+     *
+     * @param args yo args
+     * @param options yo options
+     * @param features yo features
+     */
     constructor(
         args: string | string[],
         options: Generator.GeneratorOptions,
@@ -33,8 +40,14 @@ export default class extends Generator {
         this.option('typescript');
     }
 
+    /**
+     * Just logging what is running.
+     */
     initializing(): void {
         this.log('Example of a simple Fiori generator allowing to create basic UI5 or Fiori elements applications.');
+        if (this.options.typescript) {
+            this.log('Typescript is set via CLI.');
+        }
     }
 
     async prompting(): Promise<void> {
@@ -69,7 +82,7 @@ export default class extends Generator {
             type: 'input',
             name: 'entity',
             message: 'Main entity',
-            default: 'SEPMRA_C_PD_Product',
+            default: this.config.get('entity'),
             validate: (answer) => !!answer
         });
 
@@ -136,7 +149,7 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         const appOptions = {
-            typescript: this.options['typescript']
+            typescript: this.options.typescript
         };
         if (this.template.type === FreestyleTemplateType.Basic) {
             // generate a plain UI5 application
