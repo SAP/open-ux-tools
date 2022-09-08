@@ -14,6 +14,9 @@ import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import { getInstance } from '@sap-ux/store/dist/services/backend-system';
 
+jest.mock('@sap-ux/store/dist/services/api-hub', () => ({
+    getInstance: jest.fn().mockReturnValue({ read: () => {} })
+}));
 jest.mock('@sap-ux/store/dist/services/backend-system', () => ({
     getInstance: jest.fn().mockReturnValue({ read: () => {} })
 }));
