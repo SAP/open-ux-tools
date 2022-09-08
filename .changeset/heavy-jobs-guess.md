@@ -4,4 +4,4 @@
 '@sap-ux/ui5-application-writer': patch
 ---
 
-Fix for wrong file generation in BAS when using typescript
+Issues with typescript templates when testing the integration into SAP Fiori tools in BAS
