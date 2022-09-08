@@ -9,7 +9,7 @@
         "@types/jest": "27.4.1",
         "@types/node": "12.12.6",
         "@typescript-eslint/eslint-plugin": "5.30.7",
-        "@typescript-eslint/parser": "5.30.7",
+        "@typescript-eslint/parser": "5.36.1",
         "eslint": "8.23.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-import-resolver-typescript": "3.3.0",
@@ -48,11 +48,7 @@
     },
     "pnpm": {
         "overrides": {
-            "ansi-regex": "^5.0.1",
-            "follow-redirects": ">=1.14.8",
-            "tmpl": "^1.0.5",
-            "vm2@<3.9.6": "^3.9.6",
-            "minimist": "^1.2.6"
+            "vm2@<3.9.11": ">=3.9.11"
         }
     }
 }

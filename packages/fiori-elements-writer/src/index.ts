@@ -79,15 +79,12 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     // Special handling for FPM because it is not based on template files but used the fpm writer
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
         const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
-        // Convert string version to float for FPM writer
-        const minUI5VerSemVer = semVer.coerce(feApp.ui5?.minUI5Version)!;
-        const minUI5Version = parseFloat(`${minUI5VerSemVer.major}.${minUI5VerSemVer.minor}`);
         generateCustomPage(
             basePath,
             {
                 entity: config.entityConfig.mainEntityName,
                 name: config.pageName,
-                ui5Version: minUI5Version
+                minUI5Version: feApp.ui5?.minUI5Version
             },
             fs
         );

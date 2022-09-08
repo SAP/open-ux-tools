@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.6.1
+
+### Patch Changes
+
+-   7b31c68: Breaking fix of API to properly support minimum UI5 version as input
+-   Updated dependencies [7b31c68]
+    -   @sap-ux/fe-fpm-writer@0.17.0
+
 ## 0.6.0
 
 ### Minor Changes
