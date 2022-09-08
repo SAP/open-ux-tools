@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Text, Stack, IStackTokens, SpinnerSize } from '@fluentui/react';
+import type { IStackTokens } from '@fluentui/react';
+import { Text, Stack, SpinnerSize } from '@fluentui/react';
 
 import { UILoader } from '../src/components/UILoader';
 import { initIcons } from '../src/components/Icons';
@@ -117,6 +118,9 @@ const DialogWithLoader = (props: { delayed: boolean; text: string }) => {
     const { delayed, text } = props;
     const [isOpen, setOpen] = useState(false);
     const [isBusy, setBusy] = useState(false);
+    const onToggle = () => {
+        setOpen(!isOpen);
+    };
     const showLoader = () => {
         setBusy(true);
         setTimeout(() => {
@@ -124,9 +128,7 @@ const DialogWithLoader = (props: { delayed: boolean; text: string }) => {
             onToggle();
         }, 500);
     };
-    const onToggle = () => {
-        setOpen(!isOpen);
-    };
+
     return (
         <>
             <UIDefaultButton onClick={onToggle} primary>

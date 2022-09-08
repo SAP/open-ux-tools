@@ -1,6 +1,10 @@
 import React from 'react';
 import { UIDropdown } from '../src/components/UIDropdown';
-import { data, shortData } from './select-data';
+import { data, shortData } from '../test/__mock__/select-data';
+
+import { initIcons } from '../src/components/Icons';
+
+initIcons();
 
 export default { title: 'Dropdowns/Dropdown' };
 

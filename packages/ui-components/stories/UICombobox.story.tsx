@@ -1,8 +1,13 @@
-import { IComboBox, IComboBoxOption } from '@fluentui/react';
-import React, { SetStateAction } from 'react';
-import { useState } from 'react';
+import type { SetStateAction } from 'react';
+import React, { useState } from 'react';
+import type { IComboBox, IComboBoxOption } from '@fluentui/react';
+
 import { UIComboBox } from '../src/components/UIComboBox';
-import { data } from './select-data';
+import { data } from '../test/__mock__/select-data';
+
+import { initIcons } from '../src/components/Icons';
+
+initIcons();
 
 export default { title: 'Dropdowns/Combobox' };
 
@@ -101,7 +106,7 @@ export const MultiSelectSearchHighlight = (): JSX.Element => {
     ) {
         if (option) {
             const newKeys = [...keys, option.key].filter((k) => (option.selected ? true : k !== option.key));
-            setKeys(newKeys as SetStateAction<never[]>);
+            setKeys(newKeys as SetStateAction<any[]>);
         }
     }
 

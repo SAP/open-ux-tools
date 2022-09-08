@@ -8,15 +8,6 @@ import type {
 import { ChoiceGroup } from '@fluentui/react';
 import { labelGlobalStyle } from '../UILabel';
 
-/**
- * UIChoiceGroup component.
- * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/choicegroup
- *
- * @exports
- * @class UIChoiceGroup
- * @extends {React.Component<IChoiceGroupProps, {}>}
- */
-
 export type ChoiceGroupOption = IChoiceGroupOption;
 export type ChoiceGroupOptionProps = IChoiceGroupOptionProps;
 
@@ -56,7 +47,12 @@ const UI_CHOICE_GROUP_STYLES = {
 };
 
 /**
+ * UIChoiceGroup component.
+ * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/choicegroup
  *
+ * @exports
+ * @class UIChoiceGroup
+ * @extends {React.Component<IChoiceGroupProps, {}>}
  */
 export class UIChoiceGroup extends React.Component<ChoiceGroupProps, {}> {
     /**

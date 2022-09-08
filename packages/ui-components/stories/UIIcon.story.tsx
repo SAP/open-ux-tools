@@ -1,5 +1,7 @@
+/* eslint-disable react/display-name */
 import React from 'react';
-import { DetailsList, IColumn, SelectionMode } from '@fluentui/react';
+import type { IColumn } from '@fluentui/react';
+import { DetailsList, SelectionMode } from '@fluentui/react';
 import { UIIcon } from '../src/components/UIIcon';
 import { initIcons, UiIcons } from '../src/components/Icons';
 
@@ -8,7 +10,7 @@ export default { title: 'Utilities/Icons' };
 initIcons();
 
 const items: any = [];
-for (let icon in UiIcons) {
+for (const icon in UiIcons) {
     items.push(icon);
 }
 items.sort();

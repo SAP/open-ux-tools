@@ -57,6 +57,7 @@ export class UIDatePicker extends React.Component<UIDatePickerProps> {
     }
 
     /**
+     * On Date picker change.
      *
      * @param {React.FormEvent<HTMLInputElement | HTMLTextAreaElement>} e
      */

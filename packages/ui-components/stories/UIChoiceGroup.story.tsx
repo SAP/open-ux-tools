@@ -1,7 +1,12 @@
 import React from 'react';
 import { Text, Stack } from '@fluentui/react';
 
-import { UIChoiceGroup, ChoiceGroupProps, ChoiceGroupOption } from '../src/components/UIChoiceGroup';
+import type { ChoiceGroupOption } from '../src/components/UIChoiceGroup';
+import { UIChoiceGroup } from '../src/components/UIChoiceGroup';
+
+import { initIcons } from '../src/components/Icons';
+
+initIcons();
 
 export default { title: 'Basic Inputs/ChoiceGroup' };
 

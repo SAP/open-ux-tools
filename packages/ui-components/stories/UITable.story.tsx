@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { UITable, UIDropdownOption, UiIcons } from '../src/components';
-import { UIColumn, ColumnControlType, RenderInputs } from '../src/components/UITable/types';
-import {
-    CheckboxVisibility,
-    SelectionMode,
-    Stack,
-    mergeStyles,
-    IRenderFunction,
-    IDetailsHeaderProps,
-    Sticky
-} from '@fluentui/react';
-import { items } from './table-data';
+import { CheckboxVisibility, SelectionMode, Stack, mergeStyles, Sticky } from '@fluentui/react';
+import type { IRenderFunction, IDetailsHeaderProps } from '@fluentui/react';
+
+import type { UIDropdownOption } from '../src/components/UIDropdown';
+import { UITable } from '../src/components/UITable';
+
+import { UiIcons } from '../src/components/Icons';
+import type { UIColumn } from '../src/components/UITable/types';
+import { ColumnControlType, RenderInputs } from '../src/components/UITable/types';
+
+import { items } from '../test/__mock__/table-data';
 
 export default { title: 'Tables/UITable' };
 
@@ -70,8 +69,11 @@ function onSelectionChange(items: []) {
 }
 
 function validate(newValue: any) {
-    if (newValue === 'hello') return '"hello" is not allowed here!';
-    return;
+    if (newValue === 'hello') {
+        return '"hello" is not allowed here!';
+    } else {
+        return;
+    }
 }
 
 export const EditableTable = (): JSX.Element => {
@@ -107,7 +109,9 @@ export const EditableTable = (): JSX.Element => {
 // *** EDITABLE GRID (DM MIGRATION) ****************************************************************
 
 const _onHeaderRender: IRenderFunction<IDetailsHeaderProps> = (props, defaultRender?) => {
-    if (!defaultRender) return null;
+    if (!defaultRender) {
+        return null;
+    }
     return <Sticky>{defaultRender(props)}</Sticky>;
 };
 

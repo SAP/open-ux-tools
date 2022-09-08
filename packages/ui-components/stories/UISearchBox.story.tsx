@@ -1,6 +1,6 @@
-import React from 'react';
-import { Text, Stack, IStackTokens } from '@fluentui/react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import type { IStackTokens } from '@fluentui/react';
+import { Text, Stack } from '@fluentui/react';
 
 import { UISearchBox } from '../src/components/UISearchBox';
 import { initIcons } from '../src/components/Icons';

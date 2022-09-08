@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { UISections, UISectionsProps, UISplitterType, UISplitterLayoutType } from '../src/components/UISection';
+import type { UISectionsProps } from '../src/components/UISection';
+import { UISections, UISplitterType, UISplitterLayoutType } from '../src/components/UISection';
 import { UIToggle, UIToggleSize } from '../src/components/UIToggle';
-import { UIDropdown, UIDropdownOption } from '../src/components/UIDropdown';
+import type { UIDropdownOption } from '../src/components/UIDropdown';
+import { UIDropdown } from '../src/components/UIDropdown';
+import { UIDefaultButton } from '../src/components/UIButton';
 
 export default { title: 'Utilities/Splitter' };
 
@@ -39,13 +42,14 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
         vertical: props.vertical,
         splitterType: UISplitterType.Resize,
         splitter: true,
-        minSectionSize: [30, 30],
+        minSectionSize: [300, 300],
         animation: true,
         splitterLayoutType: UISplitterLayoutType.Standard,
-        sizesAsPercents: true,
-        sizes: [60, 40]
+        sizesAsPercents: false,
+        sizes: [400, undefined]
     });
-    const [sectionVisible, setSectionVisible] = useState<boolean>(true);
+    const [leftSectionVisible, setLeftSectionVisible] = useState<boolean>(true);
+    const [rightSectionVisible, setRightSectionVisible] = useState<boolean>(true);
     const propertyChange = (name: string, value?: unknown) => {
         setSectionsProps({
             ...sectionsProps,
@@ -54,6 +58,19 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
     };
     const switchChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, checked?: boolean) => {
         propertyChange(event.currentTarget.id, checked);
+    };
+    const animationChange = (index: number, checked?: boolean) => {
+        let animation = sectionsProps.animation;
+        if (animation === true && !checked) {
+            animation = [true, true];
+            animation[index] = false;
+        } else if (!animation && checked) {
+            animation = [false, false];
+            animation[index] = true;
+        } else {
+            animation = checked;
+        }
+        propertyChange('animation', animation);
     };
     const dropdownChange = (
         id: string,
@@ -98,26 +115,71 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
                         // ts-ignore
                         onChange={dropdownChange.bind(this, 'splitterLayoutType')}
                     />
-                    <UIToggle
-                        id="animation"
-                        label="animation"
-                        checked={sectionsProps.animation}
-                        inlineLabel
-                        inlineLabelLeft
-                        size={UIToggleSize.Small}
-                        onChange={switchChange}
-                    />
-                    <UIToggle
-                        id="sectionVisible"
-                        label="toggle section"
-                        checked={sectionVisible}
-                        inlineLabel
-                        inlineLabelLeft
-                        size={UIToggleSize.Small}
-                        onChange={() => {
-                            setSectionVisible(!sectionVisible);
-                        }}
-                    />
+                    <div>
+                        <UIToggle
+                            id="animation1"
+                            label="Animate left section"
+                            checked={
+                                Array.isArray(sectionsProps.animation)
+                                    ? sectionsProps.animation[0]
+                                    : sectionsProps.animation
+                            }
+                            inlineLabel
+                            inlineLabelLeft
+                            size={UIToggleSize.Small}
+                            onChange={(event: React.MouseEvent<HTMLElement, MouseEvent>, checked?: boolean) =>
+                                animationChange(0, checked)
+                            }
+                        />
+                        <UIToggle
+                            id="animation1"
+                            label="Animate right section"
+                            checked={
+                                Array.isArray(sectionsProps.animation)
+                                    ? sectionsProps.animation[1]
+                                    : sectionsProps.animation
+                            }
+                            inlineLabel
+                            inlineLabelLeft
+                            size={UIToggleSize.Small}
+                            onChange={(event: React.MouseEvent<HTMLElement, MouseEvent>, checked?: boolean) =>
+                                animationChange(1, checked)
+                            }
+                        />
+                    </div>
+                    <div>
+                        <UIToggle
+                            id="sectionVisible"
+                            label="toggle left section"
+                            checked={leftSectionVisible}
+                            inlineLabel
+                            inlineLabelLeft
+                            size={UIToggleSize.Small}
+                            onChange={() => {
+                                setLeftSectionVisible(!leftSectionVisible);
+                            }}
+                        />
+                        <UIToggle
+                            id="sectionVisible"
+                            label="toggle right section"
+                            checked={rightSectionVisible}
+                            inlineLabel
+                            inlineLabelLeft
+                            size={UIToggleSize.Small}
+                            onChange={() => {
+                                setRightSectionVisible(!rightSectionVisible);
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <UIDefaultButton
+                            text="Toggle sections"
+                            onClick={() => {
+                                setLeftSectionVisible(!leftSectionVisible);
+                                setRightSectionVisible(!rightSectionVisible);
+                            }}
+                        />
+                    </div>
                 </div>
                 <div
                     style={{
@@ -127,16 +189,16 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
                         {...sectionsProps}
                         height="100%"
                         onClose={() => {
-                            setSectionVisible(!sectionVisible);
+                            setRightSectionVisible(!rightSectionVisible);
                         }}>
-                        <UISections.Section height="100%" cleanPadding={true}>
+                        <UISections.Section height="100%" cleanPadding={true} hidden={!leftSectionVisible}>
                             <div>
                                 {text}
                                 {text}
                                 {text}
                             </div>
                         </UISections.Section>
-                        <UISections.Section height="100%" cleanPadding={true} hidden={!sectionVisible}>
+                        <UISections.Section height="100%" cleanPadding={true} hidden={!rightSectionVisible}>
                             <div>
                                 {text}
                                 {text}

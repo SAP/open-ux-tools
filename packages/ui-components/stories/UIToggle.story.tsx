@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, Stack, IStackTokens } from '@fluentui/react';
+import type { IStackTokens } from '@fluentui/react';
+import { Text, Stack } from '@fluentui/react';
 
 import { UIToggle, UIToggleSize } from '../src/components/UIToggle';
 

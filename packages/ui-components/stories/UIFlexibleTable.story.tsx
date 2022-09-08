@@ -1,27 +1,33 @@
-import React, { useRef, useState } from 'react';
-import { IDropdownOption } from '@fluentui/react';
-import {
+import React, { useRef, useState, useEffect } from 'react';
+import type { IDropdownOption } from '@fluentui/react';
+import type {
     CellRendererParams,
     CellRendererResult,
     TableRowCells,
     TableRowEventHandlerParameters,
+    UIFlexibleTableColumnType,
+    UIFlexibleTableRowType
+} from '../src/components';
+import {
     UICheckbox,
     UIDefaultButton,
     UIDropdown,
     UIFlexibleTable,
     UIFlexibleTableActionButton,
-    UIFlexibleTableColumnType,
     UIFlexibleTableLayout,
     UIFlexibleTableRowActionButton,
-    UIFlexibleTableRowType,
     UiIcons,
     UILink,
     UITextInput,
     UIToggle,
     UIToggleSize
 } from '../src/components';
-import { useEffect } from 'react';
+
 import { arrayMove } from 'react-movable';
+
+import { initIcons } from '../src/components/Icons';
+
+initIcons();
 
 export default { title: 'Tables/UIFlexibleTable' };
 const tableIds = ['table1', 'table2'];
@@ -50,7 +56,7 @@ const getNewModelRow = (rowIndex: number) => {
     return modelRow;
 };
 
-let rows: UIFlexibleTableRowType<TableCellDescriptor>[] = [];
+const rows: UIFlexibleTableRowType<TableCellDescriptor>[] = [];
 
 const getRows = (
     model: TableModel,
@@ -147,7 +153,7 @@ function TextInputWrapper(props: { readonly?: boolean; onChange: (value: string)
         <UITextInput
             value={value}
             readOnly={props.readonly}
-            onChange={(event, value) => onChange(value as string)}
+            onChange={(event, value) => onChange(value)}
             onBlur={() => {
                 if (props.value !== value) {
                     setTimeout(() => {
@@ -346,6 +352,7 @@ export const InlineFlexTable = (): JSX.Element => {
     const onRenderPrimatyTableActions: (params: { readonly: boolean }) => React.ReactElement[] = (params) => {
         return [
             <UIDefaultButton
+                key="1"
                 iconProps={{ iconName: 'Delete' }}
                 className="flexible-table-btn-clear"
                 disabled={loading || params.readonly}
@@ -569,9 +576,19 @@ export const WrappingTable = (): JSX.Element => {
         }
     };
 
+    const onActionClick = (rowIndex: number) => {
+        setActionRow(rowIndex);
+        new Promise((done) => {
+            setTimeout(() => done(true), 2000);
+        }).then(() => {
+            setActionRow(-1);
+        });
+    };
+
     const onRenderActions = (params: TableRowEventHandlerParameters<TableCellDescriptor>): React.ReactElement[] => {
         return [
             <UIToggle
+                key="1"
                 label={'Preferred'}
                 checked={params.cells['preferred'].value === '1'}
                 onChange={(event, checked) => {
@@ -597,15 +614,6 @@ export const WrappingTable = (): JSX.Element => {
         ];
     };
 
-    const onActionClick = (rowIndex: number) => {
-        setActionRow(rowIndex);
-        new Promise((done) => {
-            setTimeout(() => done(true), 2000);
-        }).then(() => {
-            setActionRow(-1);
-        });
-    };
-
     const onRenderSecondaryTableActions: (params: { readonly: boolean }) => React.ReactElement[] = (params) => {
         return [
             <UIFlexibleTableActionButton
@@ -622,6 +630,7 @@ export const WrappingTable = (): JSX.Element => {
     const onRenderPrimatyTableActions: (params: { readonly: boolean }) => React.ReactElement[] = (params) => {
         return [
             <UIDefaultButton
+                key="1"
                 iconProps={{ iconName: 'Delete' }}
                 className="flexible-table-btn-clear"
                 disabled={loading || params.readonly}

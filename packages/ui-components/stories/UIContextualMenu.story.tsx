@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, Stack, IStackTokens } from '@fluentui/react';
+import { Text, Stack } from '@fluentui/react';
+import type { IStackTokens } from '@fluentui/react';
 
 import { UIContextualMenu } from '../src/components/UIContextualMenu';
 import { UIDefaultButton, UIIconButton } from '../src/components/UIButton';

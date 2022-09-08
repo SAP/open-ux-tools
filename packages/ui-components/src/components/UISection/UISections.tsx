@@ -59,7 +59,10 @@ interface SizeCalculationInfo {
 }
 
 /**
- *
+ * UISections component.
+ * @exports
+ * @class {UISections}
+ * @extends {React.Component<UISectionsProps, UISectionsState>}
  */
 export class UISections extends React.Component<UISectionsProps, UISectionsState> {
     static Section = UISection;
@@ -75,8 +78,9 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     private ignoreAnimation = false;
 
     /**
+     * Initializes component properties.
      *
-     * @param props
+     * @param {UISectionsProps} props
      */
     constructor(props: UISectionsProps) {
         super(props);
@@ -199,8 +203,9 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     }
 
     /**
+     * Validates state min sizes.
      *
-     * @param sizes
+     * @param {UISectionSize[]} sizes
      */
     private validateStateMinSizes(sizes: UISectionSize[]): void {
         // Prerequisite. Get size infos
@@ -466,6 +471,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     }
 
     /**
+     * Gets position style value.
      *
      * @param {number} childrenCount
      * @param {string} value

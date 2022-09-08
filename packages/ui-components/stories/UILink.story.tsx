@@ -18,7 +18,7 @@ export const defaultUsage = (): JSX.Element => {
                 <Text variant="large" className="textColor">
                     UILink
                 </Text>
-                <UILink href="JavaScript:void(0)">I'm a link</UILink>
+                <UILink href="JavaScript:void(0)">I am a link</UILink>
             </Stack>
         </Stack>
     );

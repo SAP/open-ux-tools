@@ -1,11 +1,17 @@
-import React, { FormEvent, useState } from 'react';
-import { Text, Stack, IStackTokens, ContextualMenu } from '@fluentui/react';
+import type { FormEvent } from 'react';
+import React, { useState } from 'react';
+import type { IStackTokens } from '@fluentui/react';
+import { Text, Stack, ContextualMenu } from '@fluentui/react';
 
-import { UIDialog, UIDialogScrollArea } from '../src/components/UIDialog';
+import { UIDialog } from '../src/components/UIDialog';
 import { UIDefaultButton } from '../src/components/UIButton';
 import { UITextInput } from '../src/components/UIInput';
 import { UIDropdown } from '../src/components/UIDropdown';
 import { UIComboBox } from '../src/components/UIComboBox';
+
+import { initIcons } from '../src/components/Icons';
+
+initIcons();
 
 export default { title: 'Dialogs/Dialogs' };
 
