@@ -17,7 +17,7 @@ Follow up: `vm2` is a dependency of `json-merger` that is used in `@sap-ux/ui5-a
 | Override:           | >=0.0.3 |
 |:--------------------| :-------------|
 |                     | |
-| **critical**        | Regular Expression Denial of Service in trim  |
+| **high**        | Regular Expression Denial of Service in trim  |
 | Package             | trim |
 | Vulnerable versions | <0.0.3 |
 | Patched versions    | >=0.0.3 |
@@ -27,7 +27,7 @@ Follow up: `vm2` is a dependency of `json-merger` that is used in `@sap-ux/ui5-a
 | Override:           | >=3.0.1 |
 |:--------------------| :-------------|
 |                     | |
-| **critical**        | Uncontrolled Resource Consumption in trim-newlines |
+| **high**        | Uncontrolled Resource Consumption in trim-newlines |
 | Package             | trim-newlines |
 | Vulnerable versions | <3.0.1 |
 | Patched versions    | >=3.0.1 |
@@ -37,7 +37,7 @@ Follow up: `vm2` is a dependency of `json-merger` that is used in `@sap-ux/ui5-a
 | Override:           | >=5.1.2 |
 |:--------------------| :-------------|
 |                     | |
-| **critical**        | glob-parent before 5.1.2 vulnerable to Regular Expression Denial of Service in enclosure regex |
+| **high**        | glob-parent before 5.1.2 vulnerable to Regular Expression Denial of Service in enclosure regex |
 | Package             | glob-parent |
 | Vulnerable versions | <5.1.2 |
 | Patched versions    | >=5.1.2 |

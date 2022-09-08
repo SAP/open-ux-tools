@@ -7,6 +7,4 @@
 const enzyme = require('enzyme');
 const Adapter = require('enzyme-adapter-react-16');
 
-global.vscode = { postMessage: (e) => {} };
-
 enzyme.configure({ adapter: new Adapter() });
