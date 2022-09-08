@@ -3374,9 +3374,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-resourceroots='{\\"felrop2\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop2/test/changes_loader\\", \\"custom\\":true}]'>
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->
@@ -6937,9 +6937,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-resourceroots='{\\"felrop3\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop3/test/changes_loader\\", \\"custom\\":true}]'>
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
     <!-- relevant for version < 1.78.0 only -->
 	<script src=\\"changes_preview.js\\"></script>
 </head>
@@ -10499,7 +10499,12 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
-        </script>
+    </script>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+        });
+    </script>
     <!-- relevant for version < 1.78.0 only -->
 	<script src=\\"changes_preview.js\\"></script>
 </head>
@@ -13891,9 +13896,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->
@@ -17455,9 +17460,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->
@@ -21050,9 +21055,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felrop1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->
@@ -24645,9 +24650,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"felropui5\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
-        </script>
-        <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
-        </script>
+    </script>
+    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    </script>
 </head>
 
 <!-- UI Content -->
