@@ -1,5 +1,17 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.27
+
+### Patch Changes
+
+-   b8d5315: Relaxing interfaces when working with destinations.
+-   Updated dependencies [b8d5315]
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/fiori-elements-writer@0.6.2
+    -   @sap-ux/fiori-freestyle-writer@0.14.1
+    -   @sap-ux/axios-extension@0.9.7
+    -   @sap-ux/btp-utils@0.11.1
+
 ## 0.2.26
 
 ### Patch Changes

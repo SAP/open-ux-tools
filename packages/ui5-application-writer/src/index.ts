@@ -28,8 +28,9 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
 
     const tmplPath = join(__dirname, '..', 'templates');
 
+    const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
-        globOptions: { dot: true },
+        globOptions: { dot: true, ignore },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
     });
 
@@ -78,7 +79,6 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
             }
         });
         if (ui5App.appOptions.typescript) {
-            fs.delete(join(basePath, 'webapp/Component.js'));
             ui5Config.addCustomMiddleware(ui5TsMiddlewares);
             ui5Config.addCustomTasks(ui5TsTasks);
             ui5LocalConfig.addCustomMiddleware(ui5TsMiddlewares);

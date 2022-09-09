@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.6.2
+
+### Patch Changes
+
+-   b8d5315: Issues with typescript templates when testing the integration into SAP Fiori tools in BAS
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/ui5-application-writer@0.16.1
+
 ## 0.6.1
 
 ### Patch Changes
