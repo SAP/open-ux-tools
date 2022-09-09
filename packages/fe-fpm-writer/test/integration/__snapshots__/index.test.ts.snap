@@ -448,16 +448,16 @@ export default class Component extends AppComponent {
   },
   "ts/webapp/ext/anotherCustomAction/AnotherCustomAction.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
-import UI5Event from 'sap/ui/base/Event';
+import Context from 'sap/ui/model/odata/v4/Context';
 import MessageToast from 'sap/m/MessageToast';
 
 /**
  * Generated event handler.
  *
  * @param this reference to the 'this' that the event handler is bound to.
- * @param event the event that was fired
+ * @param pageContext the context of the page on which the event was fired
  */
-export function onPress(this: ExtensionAPI, event: UI5Event) {
+export function onPress(this: ExtensionAPI, pageContext: Context) {
     MessageToast.show(\\"Custom handler invoked.\\");
 }
          
@@ -491,16 +491,16 @@ export default ControllerExtension.extend('v4travel.ext.myControllerExtension.My
   },
   "ts/webapp/ext/myCustomAction/MyCustomAction.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
-import UI5Event from 'sap/ui/base/Event';
+import Context from 'sap/ui/model/odata/v4/Context';
 import MessageToast from 'sap/m/MessageToast';
 
 /**
  * Generated event handler.
  *
  * @param this reference to the 'this' that the event handler is bound to.
- * @param event the event that was fired
+ * @param pageContext the context of the page on which the event was fired
  */
-export function onPress(this: ExtensionAPI, event: UI5Event) {
+export function onPress(this: ExtensionAPI, pageContext: Context) {
     MessageToast.show(\\"Custom handler invoked.\\");
 }",
     "state": "modified",
@@ -574,7 +574,7 @@ import MessageToast from 'sap/m/MessageToast';
  * Generated event handler.
  *
  * @param this reference to the 'this' that the event handler is bound to.
- * @param event the event that was fired
+ * @param event the event object provided by the event provider
  */
 export function onPress(this: ExtensionAPI, event: UI5Event) {
     MessageToast.show(\\"Custom handler invoked.\\");
@@ -596,7 +596,7 @@ import MessageToast from 'sap/m/MessageToast';
  * Generated event handler.
  *
  * @param this reference to the 'this' that the event handler is bound to.
- * @param event the event that was fired
+ * @param event the event object provided by the event provider
  */
 export function onPress(this: ExtensionAPI, event: UI5Event) {
     MessageToast.show(\\"Custom handler invoked.\\");
@@ -612,7 +612,7 @@ import MessageToast from 'sap/m/MessageToast';
  * Generated event handler.
  *
  * @param this reference to the 'this' that the event handler is bound to.
- * @param event the event that was fired
+ * @param event the event object provided by the event provider
  */
 export function onPress(this: ExtensionAPI, event: UI5Event) {
     MessageToast.show(\\"Custom handler invoked.\\");
