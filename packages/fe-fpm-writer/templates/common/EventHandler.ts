@@ -1,5 +1,13 @@
+import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
 import MessageToast from 'sap/m/MessageToast';
 
-export function <%- (typeof eventHandlerFnName !== 'undefined' && eventHandlerFnName) || 'onPress' %>() {
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event that was fired
+ */
+export function <%- (typeof eventHandlerFnName !== 'undefined' && eventHandlerFnName) || 'onPress' %>(this: ExtensionAPI, event: UI5Event) {
     MessageToast.show("Custom handler invoked.");
 }
