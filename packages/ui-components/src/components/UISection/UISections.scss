@@ -1,0 +1,62 @@
+@import '_variables.scss';
+
+.sections {
+    position: relative;
+    overflow: hidden;
+    &--horizontal {
+        height: 100%;
+        .sections__item {
+            height: 100%;
+        }
+    }
+    &--vertical {
+        width: 100%;
+        .sections__item {
+            width: 100%;
+        }
+    }
+    .sections__item {
+        position: absolute;
+    }
+    // Animation
+    &--animated {
+        .sections__item {
+            transition: all 300ms ease 0s;
+        }
+        &.sections--horizontal {
+            .sections__item {
+                transition-property: transform, left, right;
+            }
+        }
+        &.sections--vertical {
+            .sections__item {
+                transition-property: transform, top, bottom;
+            }
+        }
+    }
+    &.sections--horizontal {
+        // Toggle splitter
+        .sections__item--toggle {
+            &.sections__item--hidden {
+                transform: translateX(100%);
+            }
+        }
+        .sections__item--toggle {
+            max-width: calc(100% - #{$splitter-size + 10});
+        }
+        > .sections__item:first-child {
+            padding-right: calc($splitter-size / 2);
+        }
+    }
+    &.sections--vertical {
+        // Toggle splitter
+        .sections__item--toggle {
+            &.sections__item--hidden {
+                transform: translateY(100%);
+            }
+        }
+        .sections__item--toggle {
+            max-height: calc(100% - #{$splitter-size + 10});
+        }
+    }
+}
