@@ -29,6 +29,6 @@ updates:
             versions: ['4.x']
           # jest 28 requires typescript 4.3+, currently using 4.0.8
           - dependency-name: 'jest'
-            versions: ['28.x']
+            versions: ['28.x']            
           - dependency-name: '@types/node'
             versions: ['13.x', '14.x', '15.x', '16.x', '17.x', '18.x']

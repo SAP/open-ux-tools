@@ -1,25 +1,26 @@
 name: Slash Command Dispatch
 on:
-    issue_comment:
-        types: [created]
+  issue_comment:
+    types: [created]
 
 jobs:
-    slashCommandDispatch:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: xt0rted/pull-request-comment-branch@v1
-              id: comment-branch
-              continue-on-error: true
+  slashCommandDispatch:
+    runs-on: ubuntu-latest
+    steps:
 
-            - name: Slash Command Dispatch
-              uses: peter-evans/slash-command-dispatch@v3
-              if: success() && steps.comment-branch.outputs.head_ref
-              id: slash-command
-              with:
-                  token: ${{ secrets.ACCESS_PAT }}
-                  commands: |
-                      lockfiles
-                  permission: write
-                  issue-type: pull-request
-                  dispatch-type: workflow
-                  static-args: ref=${{ steps.comment-branch.outputs.head_ref }}
+      - uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
+        continue-on-error: true
+
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v3
+        if: success() && steps.comment-branch.outputs.head_ref
+        id: slash-command
+        with:
+          token: ${{ secrets.ACCESS_PAT }}
+          commands: |
+            lockfiles
+          permission: write
+          issue-type: pull-request
+          dispatch-type: workflow
+          static-args: ref=${{ steps.comment-branch.outputs.head_ref }}
