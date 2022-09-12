@@ -1,3 +1,7 @@
+/**
+ * eslint-disable @sap/ui5-jsdocs/no-jsdoc
+ */
+
 sap.ui.define([
         "<%=app.baseComponent%>",
         "sap/ui/Device",

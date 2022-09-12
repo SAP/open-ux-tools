@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -44,8 +44,8 @@
             },
             applications: {
                 "<%- app.flpAppId %>": {
-                    title: "<%- app.title %>",
-                    description: "<%- app.description %>",
+                    title: "<%- escapeFLPText(app.title) %>",
+                    description: "<%- escapeFLPText(app.description) %>",
                     additionalInformation: "SAPUI5.Component=<%- app.id  %>",
                     applicationType: "URL",
                     url: "../"
@@ -55,7 +55,7 @@
     </script>
 
     <script src="../test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="../resources/sap-ui-core.js"
         data-sap-ui-libs="<%- ui5.ui5Libs %>"
@@ -65,10 +65,15 @@
         data-sap-ui-compatVersion="edge"
         data-sap-ui-language="en"
         data-sap-ui-resourceroots='{"<%- app.id  %>": "../"}'
-        data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
-        </script><% if (appOptions.loadReuseLibs) { %>
-        <script id="locate-reuse-libs" src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
-        </script><% } %>
+        data-sap-ui-frameOptions="allow">
+    </script><% if (appOptions.loadReuseLibs) { %>
+    <script id="locate-reuse-libs" src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
+    </script><% } else { %>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt("content");
+        });
+    </script><% } %>
 </head>
 
 <!-- UI Content -->

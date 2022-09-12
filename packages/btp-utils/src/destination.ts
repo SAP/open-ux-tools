@@ -24,7 +24,8 @@ type DestinationProperty =
     | 'WebIDEAdditionalData'
     | 'sap-client'
     | 'sap-platform'
-    | 'TrustAll';
+    | 'TrustAll'
+    | 'HTML5.DynamicDestination';
 type AdditionalDestinationProperties = { [property in DestinationProperty]: string };
 
 /**
@@ -45,7 +46,7 @@ export interface Destination extends Partial<AdditionalDestinationProperties> {
  * @param destination destination info
  * @returns true of the destination is configured for an ABAP system
  */
-export function isAbapSystem(destination: Destination): boolean {
+export function isAbapSystem(destination: Partial<Destination>): boolean {
     return Boolean(
         destination.WebIDEUsage?.includes('abap') ||
             destination['sap-client'] ||

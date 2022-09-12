@@ -1,5 +1,59 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.0
+
+### Minor Changes
+
+-   7b31c68: Breaking fix of API to properly support minimum UI5 version as input
+
+## 0.16.0
+
+### Minor Changes
+
+-   4fb53ce: Fix sonar warnings
+
+## 0.15.0
+
+### Minor Changes
+
+-   e00e583: Controller Extension support
+
+## 0.14.3
+
+### Patch Changes
+
+-   a1dc069: Improves template path handling for bundling consumers. Fixes minor issue. TBI: #650
+
+## 0.14.2
+
+### Patch Changes
+
+-   b76323d: Fix for generating a Component.ts using enableFpm
+
+## 0.14.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+
+## 0.14.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+## 0.13.6
+
+### Patch Changes
+
+-   9e6d402: Add id to page in generated custom page
+
+## 0.13.5
+
+### Patch Changes
+
+-   aee31b4: Fix issue with fe-fpm-writer module's building block generator to add macros namespace if it is not found in the xml view.
+
 ## 0.13.4
 
 ### Patch Changes

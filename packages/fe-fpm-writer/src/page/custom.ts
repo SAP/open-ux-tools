@@ -8,6 +8,8 @@ import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from
 import { setCommonDefaults } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
+import { getTemplatePath } from '../templates';
+import { coerce } from 'semver';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -42,11 +44,12 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
  * @param ui5Version - optional minimum required UI5 version
  * @returns root folder  containg the templates if the version is supported otherwise throws an error
  */
-export function getTemplateRoot(ui5Version?: number): string {
-    if (ui5Version === undefined || ui5Version >= 1.94) {
-        return join(__dirname, '../../templates/page/custom/1.94');
+export function getTemplateRoot(ui5Version?: string): string {
+    const minVersion = coerce(ui5Version);
+    if (!minVersion || minVersion.minor >= 94) {
+        return getTemplatePath('/page/custom/1.94');
     } else {
-        return join(__dirname, '../../templates/page/custom/1.84');
+        return getTemplatePath('/page/custom/1.84');
     }
 }
 
@@ -62,7 +65,7 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     if (!fs) {
         fs = create(createStorage());
     }
-    validateVersion(data.ui5Version);
+    validateVersion(data.minUI5Version);
     validatePageConfig(basePath, data, fs);
 
     const manifestPath = join(basePath, 'webapp/manifest.json');
@@ -70,7 +73,7 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     const config = enhanceData(data, manifestPath, fs);
 
     // merge content into existing files
-    const root = getTemplateRoot(data.ui5Version);
+    const root = getTemplateRoot(data.minUI5Version);
 
     // enhance manifest.json
     fs.extendJSON(
@@ -84,9 +87,11 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     if (!fs.exists(viewPath)) {
         fs.copyTpl(join(root, 'ext/View.xml'), viewPath, config);
     }
-    const controllerPath = join(config.path, `${config.name}.controller.js`);
+
+    const ext = data.typescript ? 'ts' : 'js';
+    const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
     if (!fs.exists(controllerPath)) {
-        fs.copyTpl(join(root, 'ext/Controller.js'), controllerPath, config);
+        fs.copyTpl(join(root, `ext/Controller.${ext}`), controllerPath, config);
     }
 
     return fs;

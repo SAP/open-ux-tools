@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 0.11.1
+
+### Patch Changes
+
+-   b8d5315: Relaxing interfaces when working with destinations.
+
+## 0.11.0
+
+### Minor Changes
+
+-   bc4cb3a: New module @sap-ux/environment-check. Adds additional destination property 'HTML5.DynamicDestination' in @sap-ux/btp-utils
+
 ## 0.10.4
 
 ### Patch Changes

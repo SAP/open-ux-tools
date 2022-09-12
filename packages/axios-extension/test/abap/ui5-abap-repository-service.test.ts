@@ -1,6 +1,7 @@
 import nock from 'nock';
 import fs from 'fs';
 import { Ui5AbapRepositoryService, createForAbap, AppInfo } from '../../src';
+import { HeadersDefaults } from 'axios';
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -166,6 +167,25 @@ describe('Ui5AbapRepositoryService', () => {
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .replyWithError('Failed');
             await expect(service.undeploy({ name: validApp })).rejects.toThrowError();
+        });
+    });
+
+    describe('createPayload', () => {
+        test('ensure special characters are encoded', async () => {
+            class ServiceForTesting extends Ui5AbapRepositoryService {
+                defaults = {
+                    headers: {} as HeadersDefaults,
+                    baseUrl: ''
+                };
+                public createPayload = super.createPayload;
+            }
+            const service = new ServiceForTesting();
+            const inputDescription = `<my&special"'decription>`;
+            const xmlPayload = service.createPayload(__filename, 'special&name', inputDescription, '');
+            expect(xmlPayload).not.toContain('special&name');
+            expect(xmlPayload).toContain('special&amp;name');
+            expect(xmlPayload).not.toContain(inputDescription);
+            expect(xmlPayload).toContain('&lt;my&amp;special&quot;&apos;decription&gt;');
         });
     });
 });

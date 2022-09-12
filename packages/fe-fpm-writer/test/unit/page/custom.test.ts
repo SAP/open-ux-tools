@@ -75,7 +75,7 @@ describe('CustomPage', () => {
         test('with older but supported UI5 version', () => {
             const target = join(testDir, 'version-1.84');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-            generateCustomPage(target, { ...minimalInput, ui5Version: 1.84 }, fs);
+            generateCustomPage(target, { ...minimalInput, minUI5Version: '1.84' }, fs);
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
@@ -85,7 +85,7 @@ describe('CustomPage', () => {
         test('with not supported version', () => {
             const target = join(testDir, 'version-not-supported');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-            expect(() => generateCustomPage(target, { ...minimalInput, ui5Version: 1.83 }, fs)).toThrowError();
+            expect(() => generateCustomPage(target, { ...minimalInput, minUI5Version: '1.83' }, fs)).toThrowError();
         });
 
         test('latest version with minimal input but different target folder', () => {

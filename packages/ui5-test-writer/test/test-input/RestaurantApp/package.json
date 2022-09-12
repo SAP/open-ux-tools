@@ -1,0 +1,25 @@
+{
+  "name": "restaurant-app",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Restaurant List",
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^2.14.1",
+    "@sap/ux-ui5-tooling": "1",
+    "@sap/ux-specification": "UI5-1.105",
+    "@sap/ux-ui5-fe-mockserver-middleware": "1"
+  },
+  "scripts": {
+    "start": "fiori run --open \"index.html?sap-ui-xx-viewCache=false\"",
+    "build": "ui5 build --clean-dest --dest dist",
+    "test": "fiori run --open 'test/testsuite.qunit.html'"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ux-ui5-tooling",
+      "@sap/ux-ui5-fe-mockserver-middleware"
+    ]
+  }
+}

@@ -1,5 +1,39 @@
 # @sap-ux/axios-extension
 
+## 0.9.7
+
+### Patch Changes
+
+-   b8d5315: Relaxing interfaces when working with destinations.
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/btp-utils@0.11.1
+
+## 0.9.6
+
+### Patch Changes
+
+-   12e4686: Fix handling of special characters in xml encode deployment payload
+
+## 0.9.5
+
+### Patch Changes
+
+-   Updated dependencies [bc4cb3a]
+    -   @sap-ux/btp-utils@0.11.0
+    -   @sap-ux/logger@0.3.0
+
+## 0.9.4
+
+### Patch Changes
+
+-   2896b77: Fixed incorrect url parameter
+
+## 0.9.3
+
+### Patch Changes
+
+-   4342e1a: Fix: incorrect error thrown catalog service
+
 ## 0.9.2
 
 ### Patch Changes

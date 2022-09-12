@@ -8,30 +8,24 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest, Ui5RoutingTarget, Ui5TargetSettings } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { getTemplatePath } from '../templates';
 
 /**
  * Enhances the provided custom view configuration with default data.
  *
  * @param {Editor} fs - the mem-fs editor instance
- * @param {string} root - root path
  * @param {CustomView} data - a custom view configuration object
  * @param {string} manifestPath - path to the project's manifest.json
  * @param {Manifest} manifest - the application manifest
  * @returns enhanced configuration
  */
-function enhanceConfig(
-    fs: Editor,
-    root: string,
-    data: CustomView,
-    manifestPath: string,
-    manifest: Manifest
-): InternalCustomView {
+function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manifest: Manifest): InternalCustomView {
     const config: CustomView & Partial<InternalCustomView> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(fs, root, config, config.eventHandler, true);
+        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, true, config.typescript);
     }
 
     // existing views
@@ -60,7 +54,7 @@ function enhanceConfig(
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
 export function generateCustomView(basePath: string, customView: CustomView, fs?: Editor): Editor {
-    validateVersion(customView.ui5Version);
+    validateVersion(customView.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
     }
@@ -69,21 +63,19 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
     const manifestPath = join(basePath, 'webapp/manifest.json');
     const manifest = fs.readJSON(manifestPath) as Manifest;
 
-    const root = join(__dirname, '../../templates');
-
     // merge with defaults
-    const completeView = enhanceConfig(fs, root, customView, manifestPath, manifest);
+    const completeView = enhanceConfig(fs, customView, manifestPath, manifest);
 
     // enhance manifest with view definition
-    const filledTemplate = render(fs.read(join(root, 'view', `manifest.json`)), completeView, {});
+    const filledTemplate = render(fs.read(getTemplatePath('view/manifest.json')), completeView, {});
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment
     const viewPath = join(completeView.path, `${completeView.name}.fragment.xml`);
     if (completeView.control === true) {
-        fs.copyTpl(join(root, 'view/ext/CustomViewWithTable.xml'), viewPath, completeView);
+        fs.copyTpl(getTemplatePath('view/ext/CustomViewWithTable.xml'), viewPath, completeView);
     } else if (!fs.exists(viewPath)) {
-        fs.copyTpl(join(root, 'common/Fragment.xml'), viewPath, completeView);
+        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeView);
     }
 
     return fs;

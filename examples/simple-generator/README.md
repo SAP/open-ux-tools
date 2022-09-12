@@ -12,7 +12,7 @@ pnpm build
 ```
 
 ## Usage
-To start the generator execute `pnpm start`.
+To start the generator execute `pnpm start` or `pnpm start --typescript` if you want to generate a typescript project.
 On your local machine, when prompted, enter the request values e.g.
 ```
 ? **Application** name myapp
@@ -24,3 +24,14 @@ On your local machine, when prompted, enter the request values e.g.
 ```
 
 The project will be generated in a subfolder of `.tmp`.
+
+If you are too lazy to type, you can also define some of the input defaults using a `.yo-rc.json` file in the root of this project e.g.
+```json
+{
+    "@sap-ux/generator-simple-fe": {
+        "url": "https://sapes5.sapdevcenter.com/sap/opu/odata/sap/SEPMRA_PROD_MAN",
+        "username": "YOUR_USER",
+        "entity": "SEPMRA_C_PD_Product"
+    }
+}
+```
