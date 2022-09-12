@@ -13,19 +13,19 @@ describe('CustomSection', () => {
     describe('getTemplateRoot', () => {
         const root = join(__dirname, '../../templates');
         const testInput = [
-            { version: 1.9, expected: join(root, 'section', '1.86') },
-            { version: 1.96, expected: join(root, 'section', '1.86') },
-            { version: 1.84, expected: join(root, 'section', '1.85') },
+            { version: '1.100', expected: join(root, 'section', '1.86') },
+            { version: '1.96', expected: join(root, 'section', '1.86') },
+            { version: '1.84', expected: join(root, 'section', '1.85') },
             { version: undefined, expected: join(root, 'section', '1.86') },
-            { version: 1.85, expected: join(root, 'section', '1.85') },
-            { version: 1.86, expected: join(root, 'section', '1.86') }
+            { version: '1.85', expected: join(root, 'section', '1.85') },
+            { version: '1.86', expected: join(root, 'section', '1.86') }
         ];
         test.each(testInput)('get root path of template', ({ version, expected }) => {
-            expect(getManifestRoot(root, version)).toEqual(expected);
+            expect(getManifestRoot(version)).toEqual(expected);
         });
         test('invalid version', () => {
             try {
-                getManifestRoot(root, 1.8);
+                getManifestRoot('1.8');
                 expect(true).toBeFalsy();
             } catch (error) {
                 expect(error).toBeDefined();
@@ -153,13 +153,13 @@ describe('CustomSection', () => {
             expect(fs.read(fragmentPath)).toMatchSnapshot();
         });
 
-        const testVersions = [1.9, 1.85, 1.84, 1.86, 1.98];
-        for (const ui5Version of testVersions) {
-            test(`Versions ${ui5Version}, with handler, all properties`, () => {
+        const testVersions = ['1.85', '1.84', '1.86', '1.98'];
+        for (const minUI5Version of testVersions) {
+            test(`Versions ${minUI5Version}, with handler, all properties`, () => {
                 const testCustomSection: CustomSection = {
                     ...customSection,
                     eventHandler: true,
-                    ui5Version
+                    minUI5Version
                 };
                 generateCustomSection(testDir, { ...testCustomSection }, fs);
                 const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));

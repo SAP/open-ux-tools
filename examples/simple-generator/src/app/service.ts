@@ -9,6 +9,7 @@ export interface ServiceInfo {
     url?: string;
     destination?: string;
     path: string;
+    odataVersion: ODataVersion;
     metadata: string;
     annotations?: OdataService['annotations'];
 }
@@ -24,7 +25,7 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
         type: 'input',
         name: 'url',
         message: 'Service url',
-        default: 'https://sapes5.sapdevcenter.com/sap/opu/odata/sap/SEPMRA_PROD_MAN?sap-client=002&saml2=disabled',
+        default: generator.config.get('url'),
         validate: (answer) => !!answer
     });
 
@@ -112,17 +113,19 @@ export async function getServiceInfoInBAS(generator: Generator): Promise<Service
             type: 'input',
             name: 'destination',
             message: 'Destination',
+            default: generator.config.get('destination'),
             validate: (answer) => !!answer
         },
         {
             type: 'input',
             name: 'path',
             message: 'Service path',
+            default: generator.config.get('path'),
             validate: (answer) => !!answer
         }
     ]);
 
-    const provider = createForDestination({}, destination) as AbapServiceProvider;
+    const provider = createForDestination({}, { Name: destination, WebIDEUsage: 'abap' }) as AbapServiceProvider;
     return {
         destination,
         path,
@@ -143,11 +146,13 @@ export async function getMetadata(
     provider: AbapServiceProvider,
     path: string
 ): Promise<{
+    odataVersion: ODataVersion;
     metadata: string;
     annotations?: OdataService['annotations'];
 }> {
     const service = provider.service<ODataService>(path);
     let metadata: string | undefined;
+    let odataVersion: ODataVersion = ODataVersion.v2;
     let annotations: Annotations[] = [];
     let newCredentials = false;
     while (!metadata) {
@@ -159,15 +164,16 @@ export async function getMetadata(
                 await storeCredentials(generator, provider);
             }
         } catch (error: any) {
-            if (service.defaults?.auth?.username) {
-                generator.log.error(error.cause.statusText);
-            }
-            if (error.cause.status === 401) {
+            if (error.cause?.status === 401) {
+                if (service.defaults?.auth?.username) {
+                    generator.log.error(error.cause.statusText);
+                }
                 const { username, password } = await generator.prompt([
                     {
                         type: 'input',
                         name: 'username',
                         message: 'Username',
+                        default: generator.config.get('username'),
                         validate: (answer) => !!answer
                     },
                     {
@@ -188,6 +194,7 @@ export async function getMetadata(
         }
     }
     return {
+        odataVersion,
         metadata,
         annotations:
             annotations?.length > 0

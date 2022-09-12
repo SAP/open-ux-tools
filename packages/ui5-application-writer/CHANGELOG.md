@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-writer
 
+## 0.16.1
+
+### Patch Changes
+
+-   b8d5315: Issues with typescript templates when testing the integration into SAP Fiori tools in BAS
+
+## 0.16.0
+
+### Minor Changes
+
+-   4fb53ce: Fix sonar warnings
+
 ## 0.15.1
 
 ### Patch Changes

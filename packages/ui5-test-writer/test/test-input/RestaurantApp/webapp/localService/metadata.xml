@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="RestaurantService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Employees" EntityType="RestaurantService.Employees"/>
+                <EntitySet Name="Dish" EntityType="RestaurantService.Dish"/>
+                <EntitySet Name="Restaurant" EntityType="RestaurantService.Restaurant">
+                    <NavigationPropertyBinding Path="_Dishes" Target="Dish"/>
+                    <NavigationPropertyBinding Path="_Employees" Target="Employees"/>
+                </EntitySet>
+            </EntityContainer>
+            <EntityType Name="Employees">
+                <Key>
+                    <PropertyRef Name="employeeID"/>
+                </Key>
+                <Property Name="employeeID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="fullName" Type="Edm.String"/>
+                <Property Name="role" Type="Edm.String"/>
+                <Property Name="restaurantID" Type="Edm.Int32"/>
+            </EntityType>
+            <EntityType Name="Dish">
+                <Key>
+                    <PropertyRef Name="dishID"/>
+                </Key>
+                <Property Name="dishID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="dishName" Type="Edm.String"/>
+                <Property Name="restaurantID" Type="Edm.Int32"/>
+            </EntityType>
+            <EntityType Name="Restaurant">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="name" Type="Edm.String"/>
+                <NavigationProperty Name="_Dishes" Type="Collection(RestaurantService.Dish)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="_Employees" Type="Collection(RestaurantService.Employees)">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

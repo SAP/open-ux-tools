@@ -6,6 +6,7 @@ import { render } from 'ejs';
 import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
 import type { Manifest } from '../common/types';
 import type { ListReport, InternalListReport } from './types';
+import { getTemplatePath } from '../templates';
 
 /**
  * Enhances the provided list report configuration with default data.
@@ -58,7 +59,7 @@ export function generate(basePath: string, data: ListReport, fs?: Editor): Edito
     // enhance manifest.json
     fs.extendJSON(
         manifestPath,
-        JSON.parse(render(fs.read(join(__dirname, '../../templates/page/list/manifest.json')), config, {})),
+        JSON.parse(render(fs.read(getTemplatePath('page/list/manifest.json')), config, {})),
         getManifestJsonExtensionHelper(config)
     );
 
