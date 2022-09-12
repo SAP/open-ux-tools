@@ -84,14 +84,15 @@ describe('UI5 templates', () => {
         });
     });
 
-    it('option: `typescript and Fiori tools`', async () => {
+    it('option: `typescript, npm modules and Fiori tools`', async () => {
         const projectDir = join(outputDir, 'testapp_typescript');
         const fs = await generate(
             projectDir,
             Object.assign(baseAppConfig, {
                 appOptions: {
                     typescript: true,
-                    sapux: true
+                    sapux: true,
+                    npmModules: true
                 }
             })
         );

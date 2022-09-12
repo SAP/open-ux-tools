@@ -67,6 +67,11 @@ export interface AppOptions {
      * Enable Typescript support and generate all files in Typescript instead of Javascript
      */
     typescript: boolean;
+
+    /**
+     * Enable support for importing functionality from non-UI5 npm modules.
+     */
+    npmModules: boolean;
 }
 
 export interface Ui5App {

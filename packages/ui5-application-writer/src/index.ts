@@ -6,7 +6,7 @@ import type { App, AppOptions, Package, UI5 } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/ui5-config';
 import { mergeWithDefaults } from './data';
-import { ui5TsMiddlewares, ui5TsTasks } from './data/ui5Libs';
+import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
 import { Ui5App } from './types';
 
@@ -78,15 +78,11 @@ async function isTypescriptEnabled(basePath: string, fs?: Editor): Promise<boole
 
     // check middlewares and tasks
     const ui5Config = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')));
-    for (const middleware of ui5TsMiddlewares) {
-        if (!ui5Config.findCustomMiddleware(middleware.name)) {
-            return false;
-        }
+    if (!ui5Config.findCustomMiddleware(ui5TSSupport.middleware.name)) {
+        return false;
     }
-    for (const task of ui5TsTasks) {
-        if (!ui5Config.findCustomTask(task.name)) {
-            return false;
-        }
+    if (!ui5Config.findCustomTask(ui5TSSupport.task.name)) {
+        return false;
     }
 
     return true;

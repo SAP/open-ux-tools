@@ -5,7 +5,7 @@ import { mergeObjects } from 'json-merger';
 import type { Ui5App } from './types';
 import { getFilePaths } from './files';
 import type { UI5Config } from '@sap-ux/ui5-config';
-import { ui5TsMiddlewares, ui5TsTasks } from './data/ui5Libs';
+import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
 import { UI5_DEFAULT } from 'data/defaults';
 
 /**
@@ -57,7 +57,8 @@ const factories: { [key: string]: (input: FeatureInput) => void } = {
     eslint: (input: FeatureInput) => copyTemplates('eslint', input),
     loadReuseLibs: (input: FeatureInput) => copyTemplates('loadReuseLibs', input),
     sapux: (input: FeatureInput) => copyTemplates('sapux', input),
-    typescript: enableTypescript
+    typescript: enableTypescript,
+    npmModules: enableNpmModules
 };
 
 /**
@@ -67,11 +68,11 @@ const factories: { [key: string]: (input: FeatureInput) => void } = {
  * @param keepOldComponent if set to true then the old Component.js will be renamed but kept.
  */
 export function enableTypescript(input: FeatureInput, keepOldComponent: boolean = false) {
-    input.ui5App.app.baseComponent = UI5_DEFAULT.BASE_COMPONENT;
+    input.ui5App.app.baseComponent = input.ui5App.app.baseComponent ?? UI5_DEFAULT.BASE_COMPONENT;
     copyTemplates('typescript', input);
     input.ui5Configs.forEach((ui5Config) => {
-        ui5Config.addCustomMiddleware(ui5TsMiddlewares);
-        ui5Config.addCustomTasks(ui5TsTasks);
+        ui5Config.addCustomMiddleware([ui5TSSupport.middleware]);
+        ui5Config.addCustomTasks([ui5TSSupport.task]);
     });
     const compPath = join(input.basePath, 'webapp/Component.js');
     if (keepOldComponent) {
@@ -79,6 +80,19 @@ export function enableTypescript(input: FeatureInput, keepOldComponent: boolean 
     } else {
         input.fs.delete(compPath);
     }
+}
+
+/**
+ * Enable npm module import for the given input.
+ *
+ * @param input Input required to enable the optional npm modules import
+ */
+export function enableNpmModules(input: FeatureInput) {
+    copyTemplates('npmModules', input);
+    input.ui5Configs.forEach((ui5Config) => {
+        ui5Config.addCustomMiddleware([ui5NPMSupport.middleware]);
+        ui5Config.addCustomTasks([ui5NPMSupport.task]);
+    });
 }
 
 /**

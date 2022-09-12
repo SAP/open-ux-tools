@@ -14,15 +14,10 @@ export const getUI5Libs = (ui5Libs?: string | string[]): string[] => {
 };
 
 /**
- * UI5 tasks configurations required for TypeScript projects
+ * UI5 task and middleware configurations required for TypeScript projects
  */
-export const ui5TsTasks = [
-    {
-        name: 'ui5-tooling-modules-task',
-        afterTask: 'replaceVersion',
-        configuration: {}
-    },
-    {
+export const ui5TSSupport = {
+    task: {
         name: 'ui5-tooling-transpile-task',
         afterTask: 'replaceVersion',
         configuration: {
@@ -31,19 +26,8 @@ export const ui5TsTasks = [
             transpileAsync: true,
             transpileTypeScript: true
         }
-    }
-];
-
-/**
- * UI5 middleware configurations required for TypeScript projects
- */
-export const ui5TsMiddlewares = [
-    {
-        name: 'ui5-tooling-modules-middleware',
-        afterMiddleware: 'compression',
-        configuration: {}
     },
-    {
+    middleware: {
         name: 'ui5-tooling-transpile-middleware',
         afterMiddleware: 'compression',
         configuration: {
@@ -52,4 +36,20 @@ export const ui5TsMiddlewares = [
             transpileTypeScript: true
         }
     }
-];
+};
+
+/**
+ * UI5 tasks and middleware configurations required for including npm modules
+ */
+export const ui5NPMSupport = {
+    task: {
+        name: 'ui5-tooling-modules-task',
+        afterTask: 'replaceVersion',
+        configuration: {}
+    },
+    middleware: {
+        name: 'ui5-tooling-modules-middleware',
+        afterMiddleware: 'compression',
+        configuration: {}
+    }
+};
