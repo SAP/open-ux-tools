@@ -33,7 +33,6 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
     // extract params
     const params: { [key: string]: string } = {};
     serviceUrl.searchParams.forEach((value, key) => (params[key] = value));
-    // check for stored credentials
 
     const provider = createForAbap({
         baseURL: serviceUrl.origin,
