@@ -157,7 +157,8 @@ export async function getMetadata(
     while (!metadata) {
         try {
             metadata = await service.metadata();
-            annotations = await provider.catalog(ODataVersion.v2).getAnnotations({ path });
+            odataVersion = metadata?.includes('Version="4.0"') ? ODataVersion.v4 : ODataVersion.v2;
+            annotations = await provider.catalog(odataVersion).getAnnotations({ path });
             if (newCredentials && service.defaults.auth) {
                 provider.defaults.auth = service.defaults.auth;
                 await storeCredentials(generator, provider);
