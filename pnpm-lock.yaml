@@ -377,7 +377,6 @@ importers:
       i18next-fs-backend: 1.1.1
       jest: 27.5.1
       jest-extended: 0.11.5
-      jest-mock-extended: 2.0.4
       keytar: 7.8.0
       memfs: 3.3.0
       pluralize: 8.0.0
@@ -399,7 +398,6 @@ importers:
       fast-check: 2.19.0
       jest: 27.5.1
       jest-extended: 0.11.5
-      jest-mock-extended: 2.0.4_j7nn2i564qi7dqqkhb4klwcx54
       memfs: 3.3.0
       typescript: 4.3.5
       unionfs: 4.4.0
@@ -11320,17 +11318,6 @@ packages:
       stack-utils: 2.0.5
     dev: true
 
-  /jest-mock-extended/2.0.4_j7nn2i564qi7dqqkhb4klwcx54:
-    resolution: {integrity: sha512-MgL3B3GjURQFjjPGqbCANydA5BFNPygv0mYp4Tjfxohh9MWwxxX8Eq2p6ncCt/Vt+RAnaLlDaI7gwrDRD7Pt9A==}
-    peerDependencies:
-      jest: ^24.0.0 || ^25.0.0 || ^26.0.0 || ^27.0.0
-      typescript: ^3.0.0 || ^4.0.0
-    dependencies:
-      jest: 27.5.1
-      ts-essentials: 7.0.3_typescript@4.3.5
-      typescript: 4.3.5
-    dev: true
-
   /jest-mock/24.9.0:
     resolution: {integrity: sha512-3BEYN5WbSq9wd+SyLDES7AHnjH9A/ROBwmz7l2y+ol+NtSFO8DYiEBzoO1CeFc9a8DYy10EO4dDFVv/wN3zl1w==}
     engines: {node: '>= 6'}
@@ -15831,14 +15818,6 @@ packages:
   /ts-dedent/2.2.0:
     resolution: {integrity: sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ==}
     engines: {node: '>=6.10'}
-    dev: true
-
-  /ts-essentials/7.0.3_typescript@4.3.5:
-    resolution: {integrity: sha512-8+gr5+lqO3G84KdiTSMRLtuyJ+nTBVRKuCrK4lidMPdVeEp0uqC875uE5NMcaA7YYMN7XsNiFQuMvasF8HT/xQ==}
-    peerDependencies:
-      typescript: '>=3.7.0'
-    dependencies:
-      typescript: 4.3.5
     dev: true
 
   /ts-jest/27.1.5_2zv7k5h6rtkokmofpwrobdeggm:
