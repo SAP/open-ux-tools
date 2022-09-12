@@ -135,6 +135,26 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 service: v2Service
             } as FioriElementsApp<LROPSettings>
         }
+        ,
+        {
+            name: 'lropV2_ts',
+            config: {
+                ...Object.assign(feBaseConfig('felrop4'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        ...feBaseConfig('felrop4'),
+                        version: '1.77.2' // flex changes preview should be included with this version
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        }
     ];
 
     beforeAll(() => {
