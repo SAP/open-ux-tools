@@ -1,53 +1,14 @@
 # Version Overrides
 This document lists the version overrides for vulnerable (nested) dependencies and the reason.
 
-## ansi-regex
-
-| Override:           | ^5.0.1 |
-|:--------------------| :------------ |
-|                     | |
-| **moderate**        | Inefficient Regular Expression Complexity in chalk/ansi-regex |
-| Vulnerable versions | >2.1.1 <5.0.1 |
-| Patched versions    | >=5.0.1 |
-| More info           | https://github.com/advisories/GHSA-93q8-gq69-wqmw |
-
-## tmpl
-
-| Override:           | ^1.0.5 |
-|:--------------------| :-------------|
-|                     | |
-| **moderate**        | Regular Expression Denial of Service in tmpl |
-| Package             | tmpl |
-| Vulnerable versions | <1.0.5 |
-| Patched versions    | >=1.0.5 |
-| More info           | https://github.com/advisories/GHSA-jgrx-mgxx-jf9v |
-
-## follow-redirects
-
-| Override:           | >=1.14.7 |
-|:--------------------| :-------------|
-|                     | |
-| **high**            | Exposure of sensitive information in follow-redirects |
-| Package             | follow-redirects |
-| Vulnerable versions | <1.14.7                                               |
-| More info           | https://github.com/advisories/GHSA-74fj-2j2h-c42q     |
-
 ## vm2
-| Override:           | ^3.9.6 |
+| Override:           | >=3.9.11 |
 |:--------------------| :-------------|
 |                     | |
-| **critical**        | Sandbox bypass in vm2 |
+| **critical**        | Sandbox Escape in vm2 |
 | Package             | vm2 |
-| Vulnerable versions | <3.9.6 |
-| Patched versions    | >=3.9.6 |
-| More info           | https://github.com/advisories/GHSA-6pw2-5hjv-9pf7 |
+| Vulnerable versions | <3.9.11 |
+| Patched versions    | >=3.9.11 |
+| More info           | https://github.com/patriksimek/vm2/security/advisories/GHSA-mrgp-mrhc-5jrq |
 
-## minimist
-| Override:           | ^1.2.6 |
-|:--------------------| :-------------|
-|                     | |
-| **high**        | Prototype Pollution in minimist |
-| Package             | vm2 |
-| Vulnerable versions | <=1.2.5 |
-| Patched versions    | >=1.2.6 |
-| More info           | https://github.com/advisories/GHSA-xvch-5gv4-984h |
+Follow up: `vm2` is a dependency of `json-merger` that is used in `@sap-ux/ui5-application-writer`. Once a new version of `json-writer` without the vulnerable dependency is available, it is to be used and this override can be removed.

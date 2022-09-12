@@ -1,8 +1,7 @@
-import { FioriElementsApp, generate, TemplateType, LROPSettings } from '../src';
+import { FioriElementsApp, generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, getTestData, feBaseConfig, v4TemplateSettings, v4Service } from './common';
-import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
+import { testOutputDir, debug, feBaseConfig, v4TemplateSettings, v4Service } from './common';
 import { FEOPSettings } from '../src/types';
 
 const TEST_NAME = 'feopTemplate';
@@ -21,6 +20,21 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     }
                 }),
                 service: v4Service
+            } as FioriElementsApp<FEOPSettings>
+        },
+        {
+            name: 'fefeop2ts',
+            config: {
+                ...Object.assign(feBaseConfig('fefeop2ts'), {
+                    template: {
+                        type: TemplateType.FormEntryObjectPage,
+                        settings: v4TemplateSettings
+                    }
+                }),
+                service: v4Service,
+                appOptions: {
+                    typescript: true
+                }
             } as FioriElementsApp<FEOPSettings>
         }
     ];

@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.11.1
+
+### Patch Changes
+
+-   b8d5315: Relaxing interfaces when working with destinations.
+
 ## 0.11.0
 
 ### Minor Changes
