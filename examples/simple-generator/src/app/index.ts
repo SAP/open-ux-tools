@@ -1,9 +1,10 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
 
-import type { Template, LROPSettings, OVPSettings } from '@sap-ux/fiori-elements-writer';
+import type { Template, LROPSettings, OVPSettings, FPMSettings } from '@sap-ux/fiori-elements-writer';
 import { generate as generateFE, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
+import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Template as FreestyleTemplate } from '@sap-ux/fiori-freestyle-writer';
 import { generate as generateUI5, TemplateType as FreestyleTemplateType } from '@sap-ux/fiori-freestyle-writer';
 import type { Ui5App } from '@sap-ux/ui5-application-writer';
@@ -23,10 +24,30 @@ export default class extends Generator {
         settings?: LROPSettings | OVPSettings | {};
     };
 
+    /**
+     * Enables the CLI parameter --typescript and then calls the base constructor.
+     *
+     * @param args yo args
+     * @param options yo options
+     * @param features yo features
+     */
+    constructor(
+        args: string | string[],
+        options: Generator.GeneratorOptions,
+        features?: Generator.GeneratorFeatures | undefined
+    ) {
+        super(args, options, features);
+        this.option('typescript');
+    }
+
+    /**
+     * Just logging what is running.
+     */
     initializing(): void {
-        this.log(
-            'Example of a simple Fiori generator allowing to create basic UI5 or Fiori elements for OData v2 applications.'
-        );
+        this.log('Example of a simple Fiori generator allowing to create basic UI5 or Fiori elements applications.');
+        if (this.options.typescript) {
+            this.log('Typescript is set via CLI.');
+        }
     }
 
     async prompting(): Promise<void> {
@@ -42,6 +63,7 @@ export default class extends Generator {
                 name: 'template',
                 message: 'Template',
                 choices: [
+                    { value: TemplateType.FlexibleProgrammingModel, name: 'FPM (requires an OData v4 service)' },
                     { value: TemplateType.ListReportObjectPage, name: 'List Report' },
                     { value: TemplateType.OverviewPage, name: 'Overview Page' },
                     { value: FreestyleTemplateType.Basic, name: 'Freestyle App' }
@@ -60,12 +82,12 @@ export default class extends Generator {
             type: 'input',
             name: 'entity',
             message: 'Main entity',
-            default: 'SEPMRA_C_PD_Product',
+            default: this.config.get('entity'),
             validate: (answer) => !!answer
         });
 
         this.service = {
-            version: OdataVersion.v2,
+            version: service.odataVersion === ODataVersion.v4 ? OdataVersion.v4 : OdataVersion.v2,
             url: service.url,
             path: service.path,
             metadata: service.metadata,
@@ -104,6 +126,14 @@ export default class extends Generator {
                     }
                 } as LROPSettings;
                 break;
+            case TemplateType.FlexibleProgrammingModel:
+                this.template.settings = {
+                    pageName: 'Main',
+                    entityConfig: {
+                        mainEntityName: entity
+                    }
+                } as FPMSettings;
+                break;
             default:
                 this.template.settings = {};
                 break;
@@ -118,6 +148,9 @@ export default class extends Generator {
     }
 
     async writing(): Promise<void> {
+        const appOptions = {
+            typescript: this.options.typescript
+        };
         if (this.template.type === FreestyleTemplateType.Basic) {
             // generate a plain UI5 application
             await generateUI5(
@@ -128,7 +161,8 @@ export default class extends Generator {
                     ui5: {
                         minUI5Version: (await getUI5Versions()).latest.version
                     },
-                    template: this.template as FreestyleTemplate
+                    template: this.template as FreestyleTemplate,
+                    appOptions
                 },
                 this.fs
             );
@@ -139,7 +173,8 @@ export default class extends Generator {
                 {
                     ...this.app,
                     service: this.service,
-                    template: this.template as Template
+                    template: this.template as Template,
+                    appOptions
                 },
                 this.fs
             );
