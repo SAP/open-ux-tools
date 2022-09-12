@@ -31,9 +31,11 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // Common files
     const ignore = [ffApp.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
     fs.copyTpl(join(tmplPath, 'common', 'add'), basePath, { ...ffApp, escapeFLPText }, undefined, {
-        globOptions: { ignore }
+        globOptions: { ignore, dot: true }
     });
-    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add'), basePath, ffApp, undefined, { globOptions: { ignore } });
+    fs.copyTpl(join(tmplPath, ffApp.template.type, 'add'), basePath, ffApp, undefined, {
+        globOptions: { ignore, dot: true }
+    });
 
     if (ffApp.template.type === TemplateType.Basic) {
         const viewName = (ffApp.template.settings as BasicAppSettings).viewName;
