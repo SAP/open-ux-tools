@@ -63,7 +63,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
         },
         undefined,
         {
-            globOptions: { ignore }
+            globOptions: { ignore, dot: true }
         }
     );
 
@@ -99,7 +99,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
                     basePath,
                     feApp,
                     {},
-                    { ignoreNoMatch: true, globOptions: { ignore } }
+                    { ignoreNoMatch: true, globOptions: { ignore, dot: true } }
                 );
             }
         );
