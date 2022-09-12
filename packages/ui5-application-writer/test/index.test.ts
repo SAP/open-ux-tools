@@ -81,12 +81,26 @@ describe('UI5 templates', () => {
     });
 
     it('generate and evolve to ts', async () => {
-        // generic class js project
+        // generic classic js project
         const projectDir = join(outputDir, 'testapp-tsenabled');
         await generate(projectDir, { ...ui5AppConfig, ui5: { minUI5Version: '1.96.1' } }, fs);
         expect(await isTypescriptEnabled(projectDir, fs)).toBe(false);
         // enable ts
         await enableTypescript(projectDir, fs);
         expect(await isTypescriptEnabled(projectDir, fs)).toBe(true);
+    });
+
+    it('try enabling ts on an invalid project', async () => {
+        const projectDir = join(outputDir, 'testapp-invalid');
+        await generate(projectDir, ui5AppConfig, fs);
+        fs.delete(join(projectDir, 'ui5.yaml'));
+        await expect(enableTypescript(projectDir, fs)).rejects.toThrowErrorMatchingInlineSnapshot(
+            `"Invalid project folder. Cannot find required file ${projectDir}/ui5.yaml"`
+        );
+        fs.write(join(projectDir, 'ui5.yaml'), '');
+        fs.delete(join(projectDir, 'webapp/manifest.json'));
+        await expect(enableTypescript(projectDir, fs)).rejects.toThrowErrorMatchingInlineSnapshot(
+            `"Invalid project folder. Cannot find required file ${projectDir}/webapp/manifest.json"`
+        );
     });
 });
