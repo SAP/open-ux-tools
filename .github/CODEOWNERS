@@ -15,8 +15,8 @@
 # Module: odata-service-writer
 /packages/odata-service-writer/ @SAP/ux-tools-odata-service-writer
 
-# Module: ui5-components
-/packages/ui5-components/ @SAP/ux-tools-ui5-components
+# Module: ui-components
+/packages/ui-components/ @SAP/ux-tools-ui-components
 
 # Module: ui5-application-writer
 /packages/ui5-application-writer/ @SAP/ux-tools-ui5-application-writer
