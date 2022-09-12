@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.14.2
+
+### Patch Changes
+
+-   3db7c81: Fix for https://github.com/SAP/open-ux-tools/issues/673. Include dot files in negative pattern when copying templates.
+
 ## 0.14.1
 
 ### Patch Changes
