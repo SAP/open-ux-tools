@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.20
+
+### Patch Changes
+
+-   8f82b54: Make backend-proxy-middleware more robust
+
 ## 0.6.19
 
 ### Patch Changes
