@@ -2,6 +2,6 @@
     "devDependencies": {
         "eslint": "7.32.0",
         "@sap/eslint-plugin-ui5-jsdocs": "2.0.5",
-        "@sapui5/ts-types-esm": "latest"
+        "@sapui5/ts-types": "1.102.x"
     }
 }
