@@ -14,7 +14,7 @@ Object {
     \\"./node_modules/eslint-plugin-fiori-custom/configure.eslintrc\\"
   ],
   \\"ignorePatterns\\": [
-    \\"webapp/localservice/**\\",
+    \\"webapp/localService/**\\",
     \\"webapp/test/**\\",
     \\"dist/**\\"
   ]
@@ -990,8 +990,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"ts-typecheck\\": \\"tsc --noEmit\\",
-    \\"lint\\": \\"eslint webapp/ --ext .js,.ts\\"
+    \\"ts-typecheck\\": \\"tsc --noEmit\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [

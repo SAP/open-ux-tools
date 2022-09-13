@@ -14,7 +14,7 @@ Object {
     \\"./node_modules/eslint-plugin-fiori-custom/configure.eslintrc\\"
   ],
   \\"ignorePatterns\\": [
-    \\"webapp/localservice/**\\",
+    \\"webapp/localService/**\\",
     \\"webapp/test/**\\",
     \\"dist/**\\"
   ]
