@@ -86,7 +86,7 @@ archive.zip
     \\"checkJs\\": true,
     \\"allowJs\\": true,
     \\"types\\": [
-      \\"@sapui5/ts-types-esm\\"
+      \\"@sapui5/ts-types\\"
     ]
   }
 }",
