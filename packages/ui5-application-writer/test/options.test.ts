@@ -92,7 +92,7 @@ describe('UI5 templates', () => {
                 appOptions: {
                     typescript: true,
                     sapux: true,
-                    npmModules: true
+                    npmPackageConsumption: true
                 }
             })
         );

@@ -69,9 +69,9 @@ export interface AppOptions {
     typescript: boolean;
 
     /**
-     * Enable support for importing functionality from non-UI5 npm modules.
+     * Enable support for importing functionality from npm packages in UI5 applications
      */
-    npmModules: boolean;
+    npmPackageConsumption: boolean;
 }
 
 export interface Ui5App {

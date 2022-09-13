@@ -58,7 +58,7 @@ const factories: { [key: string]: (input: FeatureInput) => void } = {
     loadReuseLibs: (input: FeatureInput) => copyTemplates('loadReuseLibs', input),
     sapux: (input: FeatureInput) => copyTemplates('sapux', input),
     typescript: enableTypescript,
-    npmModules: enableNpmModules
+    npmPackageConsumption: enableNpmPackageConsumption
 };
 
 /**
@@ -87,8 +87,8 @@ export function enableTypescript(input: FeatureInput, keepOldComponent: boolean 
  *
  * @param input Input required to enable the optional npm modules import
  */
-export function enableNpmModules(input: FeatureInput) {
-    copyTemplates('npmModules', input);
+export function enableNpmPackageConsumption(input: FeatureInput) {
+    copyTemplates('npmPackageConsumption', input);
     input.ui5Configs.forEach((ui5Config) => {
         ui5Config.addCustomMiddleware([ui5NPMSupport.middleware]);
         ui5Config.addCustomTasks([ui5NPMSupport.task]);
