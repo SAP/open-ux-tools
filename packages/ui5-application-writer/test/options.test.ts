@@ -106,4 +106,28 @@ describe('UI5 templates', () => {
             }
         });
     });
+
+    it('option: `typescript and code assist` to check for conflicts', async () => {
+        const projectDir = join(outputDir, 'testapp_tsandcodeassist');
+        const fs = await generate(
+            projectDir,
+            Object.assign(baseAppConfig, {
+                appOptions: {
+                    typescript: true,
+                    codeAssist: true
+                }
+            })
+        );
+        expect(fs.read(join(projectDir, 'package.json'))).toMatchSnapshot();
+        expect(fs.read(join(projectDir, 'tsconfig.json'))).toMatchSnapshot();
+        expect(fs.read(join(projectDir, '.eslintrc'))).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
 });
