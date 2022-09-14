@@ -17714,8 +17714,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.77\\",
-    \\"@sapui5/ts-types-esm\\": \\"latest\\",
-    \\"ui5-tooling-modules\\": \\"^0.6.0\\",
+    \\"@sapui5/ts-types-esm\\": \\"1.102.x\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
@@ -17735,7 +17734,6 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-modules\\",
       \\"ui5-tooling-transpile\\",
       \\"@sap-ux/ui5-middleware-fe-mockserver\\"
     ]
@@ -17801,9 +17799,6 @@ server:
         port: 35729
         path: webapp
         delay: 300
-    - name: ui5-tooling-modules-middleware
-      afterMiddleware: compression
-      configuration: {}
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -17830,9 +17825,6 @@ server:
         annotations: []
 builder:
   customTasks:
-    - name: ui5-tooling-modules-task
-      afterTask: replaceVersion
-      configuration: {}
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       configuration:
@@ -17871,9 +17863,6 @@ server:
         port: 35729
         path: webapp
         delay: 300
-    - name: ui5-tooling-modules-middleware
-      afterMiddleware: compression
-      configuration: {}
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -17892,9 +17881,6 @@ server:
         annotations: []
 builder:
   customTasks:
-    - name: ui5-tooling-modules-task
-      afterTask: replaceVersion
-      configuration: {}
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       configuration:
@@ -17933,9 +17919,6 @@ server:
         port: 35729
         path: webapp
         delay: 300
-    - name: ui5-tooling-modules-middleware
-      afterMiddleware: compression
-      configuration: {}
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -17944,9 +17927,6 @@ server:
         transpileTypeScript: true
 builder:
   customTasks:
-    - name: ui5-tooling-modules-task
-      afterTask: replaceVersion
-      configuration: {}
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       configuration:
@@ -20832,7 +20812,8 @@ appDescription=A Fiori application.",
     "state": "modified",
   },
   "webapp/test/changes_loader.ts": Object {
-    "contents": "//Loads and extends the openui5 FileListBaseConnector
+    "contents": "// @ts-nocheck
+//Loads and extends the openui5 FileListBaseConnector
 
 const parsedUI5Version = sap.ui.version.split('.');
 
@@ -20883,7 +20864,8 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
     "state": "modified",
   },
   "webapp/test/changes_preview.ts": Object {
-    "contents": "//Load the fake lrep connector only if ui5 version < 1.78
+    "contents": "// @ts-nocheck
+//Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(\\".\\");
 if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     sap.ui.getCore().loadLibraries([\\"sap/ui/fl\\"]);
