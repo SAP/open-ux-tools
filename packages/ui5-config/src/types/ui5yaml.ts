@@ -1,16 +1,17 @@
-export interface CustomMiddleware<C> {
+export interface CustomItem<C> {
     name: string;
-    beforeMiddleware?: string;
-    afterMiddleware?: string;
-    mountPath?: string;
     configuration: C;
 }
 
-export interface CustomTask<C> {
-    name: string;
+export interface CustomMiddleware<C> extends CustomItem<C> {
+    beforeMiddleware?: string;
+    afterMiddleware?: string;
+    mountPath?: string;
+}
+
+export interface CustomTask<C> extends CustomItem<C> {
     beforeTask?: string;
     afterTask?: string;
-    configuration: C;
 }
 
 export interface Configuration {
