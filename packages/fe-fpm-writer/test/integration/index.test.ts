@@ -14,6 +14,7 @@ import {
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
+import { rmdirSync, existsSync } from 'fs';
 
 describe('use FPM with existing apps', () => {
     const testInput = join(__dirname, '../test-input');
@@ -22,7 +23,9 @@ describe('use FPM with existing apps', () => {
     const fs = create(createStorage());
 
     beforeAll(() => {
-        fs.delete(testOutput);
+        if (existsSync(testOutput)) {
+            rmdirSync(testOutput, { recursive: true });
+        }
     });
 
     afterAll(() => {
