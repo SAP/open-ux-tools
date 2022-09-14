@@ -100,13 +100,13 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         {
             name: 'lropV2_set_toolsId',
             config: {
-                ...Object.assign(feBaseConfig('felrop5'), {
+                ...Object.assign(feBaseConfig('lropV2_set_toolsId'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
                     },
                     app: {
-                        ...feBaseConfig('felrop4').app,
+                        ...feBaseConfig('lropV2_set_toolsId').app,
                         sourceTemplate: {
                             version: '1.2.3-test',
                             id: 'test-fe-template',
@@ -120,13 +120,13 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         {
             name: 'lropV2_set_toolsId_only',
             config: {
-                ...Object.assign(feBaseConfig('felrop5'), {
+                ...Object.assign(feBaseConfig('lropV2_set_toolsId_only'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
                     },
                     app: {
-                        ...feBaseConfig('felrop4').app,
+                        ...feBaseConfig('lropV2_set_toolsId_only').app,
                         sourceTemplate: {
                             toolsId: 'toolsId:1234abcd'
                         }
@@ -139,13 +139,12 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         {
             name: 'lropV2_ts',
             config: {
-                ...Object.assign(feBaseConfig('felrop4'), {
+                ...Object.assign(feBaseConfig('lropV2_ts'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
                     },
                     ui5: {
-                        ...feBaseConfig('felrop4'),
                         version: '1.77.2' // flex changes preview should be included with this version
                     },
                     appOptions: {

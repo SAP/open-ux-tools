@@ -10538,7 +10538,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"felrop5\\",
+  \\"name\\": \\"lropv2_set_toolsid\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
@@ -10556,13 +10556,13 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_set_toolsId-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_set_toolsId-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_set_toolsId-tile\\\\\\"\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
@@ -10580,7 +10580,7 @@ archive.zip
 
 specVersion: \\"2.5\\"
 metadata:
-  name: felrop4
+  name: lropV2_set_toolsId
 type: application
 framework:
   name: SAPUI5
@@ -10628,7 +10628,7 @@ server:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: felrop4
+  name: lropV2_set_toolsId
 type: application
 server:
   customMiddleware:
@@ -10669,7 +10669,7 @@ server:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: felrop4
+  name: lropV2_set_toolsId
 type: application
 server:
   customMiddleware:
@@ -10701,7 +10701,7 @@ server:
     function (Component) {
         \\"use strict\\";
 
-        return Component.extend(\\"felrop4.Component\\", {
+        return Component.extend(\\"lropV2_set_toolsId.Component\\", {
             metadata: {
                 manifest: \\"json\\"
             }
@@ -10732,7 +10732,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for felrop4
+    "contents": "# This is the resource bundle for lropV2_set_toolsId
 
 #Texts for manifest.json
 
@@ -10761,7 +10761,7 @@ appDescription=A Fiori application.",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
-            \\"felrop4\\": \\"./\\"
+            \\"lropV2_set_toolsId\\": \\"./\\"
         }'
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
@@ -10769,15 +10769,15 @@ appDescription=A Fiori application.",
     ></script>
     <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
         data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"felrop4\\">
+        data-sap-ui-componentName=\\"lropV2_set_toolsId\\">
     </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"felrop4\\"
+        data-name=\\"lropV2_set_toolsId\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"felrop4\\"}'
+        data-settings='{\\"id\\" : \\"lropV2_set_toolsId\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -13400,7 +13400,7 @@ appDescription=A Fiori application.",
     "contents": "{
   \\"_version\\": \\"1.37.0\\",
   \\"sap.app\\": {
-    \\"id\\": \\"felrop4\\",
+    \\"id\\": \\"lropV2_set_toolsId\\",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
@@ -13481,7 +13481,7 @@ appDescription=A Fiori application.",
       \\"i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
         \\"settings\\": {
-          \\"bundleName\\": \\"felrop4.i18n.i18n\\"
+          \\"bundleName\\": \\"lropV2_set_toolsId.i18n.i18n\\"
         }
       },
       \\"\\": {
@@ -13799,7 +13799,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                             oResult.changes = aProcessedChanges;
                                             var oLrepChange = {
                                                 changes: oResult,
-                                                componentClassName: \\"felrop4\\"
+                                                componentClassName: \\"lropV2_set_toolsId\\"
                                             };
                                             resolve(oLrepChange);
                                         });
@@ -13810,7 +13810,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                         oResult.changes = aProcessedChanges;
                                         var oLrepChange = {
                                             changes: oResult,
-                                            componentClassName: \\"felrop4\\"
+                                            componentClassName: \\"lropV2_set_toolsId\\"
                                         };
                                         resolve(oLrepChange);
                                     }
@@ -13872,10 +13872,10 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 }
             },
             applications: {
-                \\"felrop4-tile\\": {
+                \\"lropV2_set_toolsId-tile\\": {
                     title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
                     description: \\"A Fiori application.\\",
-                    additionalInformation: \\"SAPUI5.Component=felrop4\\",
+                    additionalInformation: \\"SAPUI5.Component=lropV2_set_toolsId\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
                 }
@@ -13893,9 +13893,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
+        data-sap-ui-resourceroots='{\\"lropV2_set_toolsId\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_set_toolsId/test/changes_loader\\", \\"custom\\":true}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -14102,7 +14102,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"felrop5\\",
+  \\"name\\": \\"lropv2_set_toolsid_only\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
@@ -14120,13 +14120,13 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_set_toolsId_only-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_set_toolsId_only-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_set_toolsId_only-tile\\\\\\"\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
@@ -14144,7 +14144,7 @@ archive.zip
 
 specVersion: \\"2.5\\"
 metadata:
-  name: felrop4
+  name: lropV2_set_toolsId_only
 type: application
 framework:
   name: SAPUI5
@@ -14192,7 +14192,7 @@ server:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: felrop4
+  name: lropV2_set_toolsId_only
 type: application
 server:
   customMiddleware:
@@ -14233,7 +14233,7 @@ server:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: felrop4
+  name: lropV2_set_toolsId_only
 type: application
 server:
   customMiddleware:
@@ -14265,7 +14265,7 @@ server:
     function (Component) {
         \\"use strict\\";
 
-        return Component.extend(\\"felrop4.Component\\", {
+        return Component.extend(\\"lropV2_set_toolsId_only.Component\\", {
             metadata: {
                 manifest: \\"json\\"
             }
@@ -14296,7 +14296,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for felrop4
+    "contents": "# This is the resource bundle for lropV2_set_toolsId_only
 
 #Texts for manifest.json
 
@@ -14325,7 +14325,7 @@ appDescription=A Fiori application.",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-resourceroots='{
-            \\"felrop4\\": \\"./\\"
+            \\"lropV2_set_toolsId_only\\": \\"./\\"
         }'
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
@@ -14333,15 +14333,15 @@ appDescription=A Fiori application.",
     ></script>
     <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
         data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"felrop4\\">
+        data-sap-ui-componentName=\\"lropV2_set_toolsId_only\\">
     </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"felrop4\\"
+        data-name=\\"lropV2_set_toolsId_only\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"felrop4\\"}'
+        data-settings='{\\"id\\" : \\"lropV2_set_toolsId_only\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -16964,7 +16964,7 @@ appDescription=A Fiori application.",
     "contents": "{
   \\"_version\\": \\"1.37.0\\",
   \\"sap.app\\": {
-    \\"id\\": \\"felrop4\\",
+    \\"id\\": \\"lropV2_set_toolsId_only\\",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
@@ -17045,7 +17045,7 @@ appDescription=A Fiori application.",
       \\"i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
         \\"settings\\": {
-          \\"bundleName\\": \\"felrop4.i18n.i18n\\"
+          \\"bundleName\\": \\"lropV2_set_toolsId_only.i18n.i18n\\"
         }
       },
       \\"\\": {
@@ -17363,7 +17363,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                             oResult.changes = aProcessedChanges;
                                             var oLrepChange = {
                                                 changes: oResult,
-                                                componentClassName: \\"felrop4\\"
+                                                componentClassName: \\"lropV2_set_toolsId_only\\"
                                             };
                                             resolve(oLrepChange);
                                         });
@@ -17374,7 +17374,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                         oResult.changes = aProcessedChanges;
                                         var oLrepChange = {
                                             changes: oResult,
-                                            componentClassName: \\"felrop4\\"
+                                            componentClassName: \\"lropV2_set_toolsId_only\\"
                                         };
                                         resolve(oLrepChange);
                                     }
@@ -17436,10 +17436,10 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 }
             },
             applications: {
-                \\"felrop4-tile\\": {
+                \\"lropV2_set_toolsId_only-tile\\": {
                     title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
                     description: \\"A Fiori application.\\",
-                    additionalInformation: \\"SAPUI5.Component=felrop4\\",
+                    additionalInformation: \\"SAPUI5.Component=lropV2_set_toolsId_only\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
                 }
@@ -17457,9 +17457,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-theme=\\"sap_belize\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
+        data-sap-ui-resourceroots='{\\"lropV2_set_toolsId_only\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_set_toolsId_only/test/changes_loader\\", \\"custom\\":true}]'>
     </script>
     <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
@@ -17699,7 +17699,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"felrop4\\",
+  \\"name\\": \\"lropv2_ts\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
   \\"description\\": \\"A Fiori application.\\",
@@ -17723,14 +17723,14 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
@@ -17762,7 +17762,7 @@ archive.zip
     \\"outDir\\": \\"./dist\\",
     \\"baseUrl\\": \\"./\\",
     \\"paths\\": {
-      \\"felrop4/*\\": [
+      \\"lropV2_ts/*\\": [
         \\"webapp/*\\"
       ]
     },
@@ -17779,7 +17779,7 @@ archive.zip
 
 specVersion: \\"2.5\\"
 metadata:
-  name: felrop4
+  name: lropV2_ts
 type: application
 framework:
   name: SAPUI5
@@ -17848,7 +17848,7 @@ builder:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: felrop4
+  name: lropV2_ts
 type: application
 server:
   customMiddleware:
@@ -17910,7 +17910,7 @@ builder:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: felrop4
+  name: lropV2_ts
 type: application
 server:
   customMiddleware:
@@ -17961,7 +17961,7 @@ builder:
     "contents": "import BaseComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
 
 /**
- * @namespace felrop4
+ * @namespace lropV2_ts
  */
 export default class Component extends BaseComponent {
 
@@ -18002,7 +18002,7 @@ export default class Component extends BaseComponent {
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for felrop4
+    "contents": "# This is the resource bundle for lropV2_ts
 
 #Texts for manifest.json
 
@@ -18031,7 +18031,7 @@ appDescription=A Fiori application.",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-resourceroots='{
-            \\"felrop4\\": \\"./\\"
+            \\"lropV2_ts\\": \\"./\\"
         }'
         data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
@@ -18042,9 +18042,9 @@ appDescription=A Fiori application.",
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"felrop4\\"
+        data-name=\\"lropV2_ts\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"felrop4\\"}'
+        data-settings='{\\"id\\" : \\"lropV2_ts\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -20667,7 +20667,7 @@ appDescription=A Fiori application.",
     "contents": "{
   \\"_version\\": \\"1.21.0\\",
   \\"sap.app\\": {
-    \\"id\\": \\"felrop4\\",
+    \\"id\\": \\"lropV2_ts\\",
     \\"type\\": \\"application\\",
     \\"i18n\\": \\"i18n/i18n.properties\\",
     \\"applicationVersion\\": {
@@ -20747,7 +20747,7 @@ appDescription=A Fiori application.",
       \\"i18n\\": {
         \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
         \\"settings\\": {
-          \\"bundleName\\": \\"felrop4.i18n.i18n\\"
+          \\"bundleName\\": \\"lropV2_ts.i18n.i18n\\"
         }
       },
       \\"\\": {
@@ -21065,7 +21065,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                             oResult.changes = aProcessedChanges;
                                             var oLrepChange = {
                                                 changes: oResult,
-                                                componentClassName: \\"felrop4\\"
+                                                componentClassName: \\"lropV2_ts\\"
                                             };
                                             resolve(oLrepChange);
                                         });
@@ -21076,7 +21076,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                         oResult.changes = aProcessedChanges;
                                         var oLrepChange = {
                                             changes: oResult,
-                                            componentClassName: \\"felrop4\\"
+                                            componentClassName: \\"lropV2_ts\\"
                                         };
                                         resolve(oLrepChange);
                                     }
@@ -21138,10 +21138,10 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 }
             },
             applications: {
-                \\"felrop4-tile\\": {
+                \\"lropV2_ts-tile\\": {
                     title: \\"App \\\\\\"Title\\\\\\" \\\\\\\\\\\\\\"\\",
                     description: \\"A Fiori application.\\",
-                    additionalInformation: \\"SAPUI5.Component=felrop4\\",
+                    additionalInformation: \\"SAPUI5.Component=lropV2_ts\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
                 }
@@ -21159,9 +21159,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"felrop4\\": \\"../\\"}'
+        data-sap-ui-resourceroots='{\\"lropV2_ts\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop4/test/changes_loader\\", \\"custom\\":true}]'>
+        data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_ts/test/changes_loader\\", \\"custom\\":true}]'>
     </script>
     <script>
         sap.ui.getCore().attachInit(function () {
