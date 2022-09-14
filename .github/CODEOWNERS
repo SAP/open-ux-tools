@@ -24,6 +24,12 @@
 # Module: yaml
 /packages/yaml/ @SAP/ux-tools-yaml
 
+# Modules: annotation api
+/packages/odata-annotation-core-types @SAP/ux-tools-annotations
+/packages/odata-annotation-core @SAP/ux-tools-annotations
+/packages/odata-metadata @SAP/ux-tools-annotations
+/packages/xml-annotation-converter @SAP/ux-tools-annotations
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin
