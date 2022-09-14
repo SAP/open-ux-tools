@@ -68,9 +68,11 @@ importers:
             '@sap-ux/fiori-freestyle-writer': workspace:*
             '@sap-ux/logger': workspace:*
             '@sap-ux/odata-service-writer': workspace:*
+            '@sap-ux/store': workspace:*
             '@sap-ux/ui5-application-writer': workspace:*
             '@types/yeoman-environment': 2.10.6
             '@types/yeoman-generator': 5.2.9
+            axios: 0.24.0
             yeoman-generator: 5.6.1
         dependencies:
             '@sap-ux/axios-extension': link:../../packages/axios-extension
@@ -78,12 +80,14 @@ importers:
             '@sap-ux/fiori-elements-writer': link:../../packages/fiori-elements-writer
             '@sap-ux/fiori-freestyle-writer': link:../../packages/fiori-freestyle-writer
             '@sap-ux/logger': link:../../packages/logger
+            '@sap-ux/store': link:../../packages/store
             yeoman-generator: 5.6.1
         devDependencies:
             '@sap-ux/odata-service-writer': link:../../packages/odata-service-writer
             '@sap-ux/ui5-application-writer': link:../../packages/ui5-application-writer
             '@types/yeoman-environment': 2.10.6
             '@types/yeoman-generator': 5.2.9
+            axios: 0.24.0
 
     packages/axios-extension:
         specifiers:
@@ -3071,7 +3075,6 @@ packages:
             follow-redirects: 1.14.9
         transitivePeerDependencies:
             - debug
-        dev: false
 
     /babel-jest/27.5.1_@babel+core@7.16.7:
         resolution:
@@ -5350,7 +5353,6 @@ packages:
         peerDependenciesMeta:
             debug:
                 optional: true
-        dev: false
 
     /for-in/1.0.2:
         resolution: { integrity: sha1-gQaNKVqBQuwKxybG4iAMMPttXoA= }
