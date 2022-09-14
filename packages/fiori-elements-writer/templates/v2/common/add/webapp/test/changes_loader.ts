@@ -1,3 +1,4 @@
+// @ts-nocheck
 //Loads and extends the openui5 FileListBaseConnector
 
 const parsedUI5Version = sap.ui.version.split('.');

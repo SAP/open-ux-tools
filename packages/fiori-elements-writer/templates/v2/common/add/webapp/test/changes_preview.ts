@@ -1,3 +1,4 @@
+// @ts-nocheck
 //Load the fake lrep connector only if ui5 version < 1.78
 var version = sap.ui.version.split(".");
 if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
