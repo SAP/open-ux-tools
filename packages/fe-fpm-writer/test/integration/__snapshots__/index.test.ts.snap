@@ -625,7 +625,7 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "ts/webapp/ext/sap.fs.d.ts": Object {
+  "ts/webapp/ext/sap.fe.d.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import Routing from 'sap/fe/core/controllerextensions/Routing';
 import EditFlow from 'sap/fe/core/controllerextensions/EditFlow';

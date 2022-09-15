@@ -53,7 +53,7 @@ export function insertTextAtPosition(text: string, content: string, position: Fi
 }
 
 export function addExtensionTypes(basePath: string, fs: Editor) {
-    const path = join(basePath, '/webapp/ext/sap.fs.d.ts');
+    const path = join(basePath, '/webapp/ext/sap.fe.d.ts');
     if (!fs.exists(path)) {
         fs.copy(getTemplatePath('common/sap.fe.d.ts'), path);
     }
