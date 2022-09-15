@@ -127,7 +127,7 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
  * @param minUI5Version the mininum UI5 version that needs to be supported
  * @returns semantic version representing the types version.
  */
-function getTypesVersion(minUI5Version?: string) {
+export function getTypesVersion(minUI5Version?: string) {
     const version = semVer.coerce(minUI5Version);
     if (!version) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
