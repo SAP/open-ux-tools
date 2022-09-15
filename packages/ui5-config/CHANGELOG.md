@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.15.0
+
+### Minor Changes
+
+-   83a7a1a: Enhancements to detect if a project is supporting typescript or not
+
 ## 0.14.5
 
 ### Patch Changes

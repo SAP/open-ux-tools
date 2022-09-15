@@ -23,9 +23,6 @@ server:
               metadataXmlPath: ./webapp/localService/metadata.xml
               mockdataRootPath: ./webapp/localService/mockdata
               generateMockData: true
-    - name: ui5-tooling-modules-middleware
-      afterMiddleware: compression
-      configuration: {}
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -34,9 +31,6 @@ server:
         transpileTypeScript: true
 builder:
   customTasks:
-    - name: ui5-tooling-modules-task
-      afterTask: replaceVersion
-      configuration: {}
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       configuration:
