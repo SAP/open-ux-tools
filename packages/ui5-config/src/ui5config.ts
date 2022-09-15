@@ -2,6 +2,7 @@ import type {
     AbapApp,
     AbapTarget,
     Configuration,
+    CustomItem,
     CustomMiddleware,
     CustomTask,
     FioriToolsProxyConfig,
@@ -9,7 +10,7 @@ import type {
     FioriToolsProxyConfigUI5,
     Resources
 } from './types';
-import type { NodeComment, YAMLMap } from '@sap-ux/yaml';
+import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
@@ -259,6 +260,66 @@ export class UI5Config {
             matcher: { key: 'name', value: name }
         });
         return this;
+    }
+
+    /**
+     * Remove a task form the UI5 config.
+     *
+     * @param name name of the task that is to be removed
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public removeCustomTask(name: string): UI5Config {
+        this.document.deleteAt({
+            path: 'builder.customTasks',
+            matcher: { key: 'name', value: name }
+        });
+        return this;
+    }
+
+    /**
+     * Find a custom item in the UI5 config.
+     *
+     * @param name name of the item (task or middlewre) that is to be looked for
+     * @param path path to the root of the sequence that is to be searched
+     * @returns the configuration as object or undefined if not found
+     * @memberof UI5Config
+     */
+    private findCustomActivity<C extends object = object>(name: string, path: string): CustomItem<C> | undefined {
+        let list: YAMLSeq<unknown> | undefined;
+        try {
+            list = this.document.getSequence({ path });
+        } catch (error) {
+            // if the document does not contain the builder > customTasks section and error is thrown
+        }
+        let item: YAMLMap | undefined;
+        if (list) {
+            item = this.document.findItem(list, (item: CustomItem<object>) => item.name === name) as YAMLMap;
+        }
+
+        return item ? item.toJSON() : undefined;
+    }
+
+    /**
+     * Find a middleware in the UI5 config.
+     *
+     * @param name name of the middleware that is to be looked for
+     * @returns the middleware configuration as object or undefined if not found
+     * @memberof UI5Config
+     */
+    public findCustomMiddleware<T extends object = object>(name: string): CustomMiddleware<T> | undefined {
+        return this.findCustomActivity<T>(name, 'server.customMiddleware');
+    }
+
+    /**
+     * Find a task in the UI5 config.
+     *
+     * @param name name of the task that is to be looked for
+     * @returns the middleware configuration as object or undefined if not found
+     * @memberof UI5Config
+     */
+    public findCustomTask<T extends object = object>(name: string): CustomTask<T> | undefined {
+        return this.findCustomActivity<T>(name, 'builder.customTasks');
     }
 
     /**

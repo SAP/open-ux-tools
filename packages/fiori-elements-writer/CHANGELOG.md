@@ -1,5 +1,29 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [83a7a1a]
+    -   @sap-ux/ui5-application-writer@0.17.0
+    -   @sap-ux/ui5-config@0.15.0
+    -   @sap-ux/fe-fpm-writer@0.17.0
+    -   @sap-ux/odata-service-writer@0.14.7
+
+## 0.6.3
+
+### Patch Changes
+
+-   3db7c81: Fix for https://github.com/SAP/open-ux-tools/issues/673. Include dot files in negative pattern when copying templates.
+
+## 0.6.2
+
+### Patch Changes
+
+-   b8d5315: Issues with typescript templates when testing the integration into SAP Fiori tools in BAS
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/ui5-application-writer@0.16.1
+
 ## 0.6.1
 
 ### Patch Changes

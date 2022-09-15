@@ -1,5 +1,13 @@
 # @sap-ux/axios-extension
 
+## 0.9.7
+
+### Patch Changes
+
+-   b8d5315: Relaxing interfaces when working with destinations.
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/btp-utils@0.11.1
+
 ## 0.9.6
 
 ### Patch Changes

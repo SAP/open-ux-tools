@@ -1,5 +1,22 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.0
+
+### Minor Changes
+
+-   83a7a1a: Enhancements to detect if a project is supporting typescript or not
+
+### Patch Changes
+
+-   Updated dependencies [83a7a1a]
+    -   @sap-ux/ui5-config@0.15.0
+
+## 0.16.1
+
+### Patch Changes
+
+-   b8d5315: Issues with typescript templates when testing the integration into SAP Fiori tools in BAS
+
 ## 0.16.0
 
 ### Minor Changes

@@ -163,6 +163,11 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
 }
 
 /**
+ * To create a destination provider only the destination name is absolutely required.
+ */
+export type MinimalDestinationConfig = Pick<Destination, 'Name'> & Partial<Destination>;
+
+/**
  * Create an instance of a service provider for the given destination.
  *
  * @param options axios config with additional extension specific properties
@@ -172,14 +177,17 @@ export function createForAbapOnCloud(options: AbapCloudOptions & Partial<Provide
  */
 export function createForDestination(
     options: AxiosRequestConfig & Partial<ProviderConfiguration>,
-    destination: Destination,
+    destination: MinimalDestinationConfig,
     destinationServiceInstance?: string
 ): ServiceProvider {
     const { cookies, ...config } = options;
 
     const providerConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         ...config,
-        baseURL: getDestinationUrlForAppStudio(destination.Name, new URL(destination.Host).pathname),
+        baseURL: getDestinationUrlForAppStudio(
+            destination.Name,
+            destination.Host ? new URL(destination.Host).pathname : undefined
+        ),
         cookies: cookies
     };
 

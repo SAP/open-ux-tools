@@ -1,5 +1,19 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.20
+
+### Patch Changes
+
+-   8f82b54: Make backend-proxy-middleware more robust
+
+## 0.6.19
+
+### Patch Changes
+
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/axios-extension@0.9.7
+    -   @sap-ux/btp-utils@0.11.1
+
 ## 0.6.18
 
 ### Patch Changes

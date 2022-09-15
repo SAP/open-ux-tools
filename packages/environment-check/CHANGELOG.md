@@ -1,5 +1,20 @@
 # @sap-ux/environment-check
 
+## 0.1.3
+
+### Patch Changes
+
+-   Updated dependencies [83a7a1a]
+    -   @sap-ux/ui5-config@0.15.0
+
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/axios-extension@0.9.7
+    -   @sap-ux/btp-utils@0.11.1
+
 ## 0.1.1
 
 ### Patch Changes

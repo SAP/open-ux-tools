@@ -52,7 +52,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
     // Common files
-    const ignore = feApp.appOptions?.typescript ? '**/*.js' : '**/*.ts';
+    const ignore = [feApp.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
@@ -63,7 +63,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
         },
         undefined,
         {
-            globOptions: { ignore }
+            globOptions: { ignore, dot: true }
         }
     );
 
@@ -84,7 +84,8 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
             {
                 entity: config.entityConfig.mainEntityName,
                 name: config.pageName,
-                minUI5Version: feApp.ui5?.minUI5Version
+                minUI5Version: feApp.ui5?.minUI5Version,
+                typescript: feApp.appOptions?.typescript
             },
             fs
         );
@@ -93,7 +94,13 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
         [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
             (templatePath) => {
-                fs!.copyTpl(join(templatePath, '**/*.*'), basePath, feApp, {}, { ignoreNoMatch: true });
+                fs!.copyTpl(
+                    join(templatePath, '**/*.*'),
+                    basePath,
+                    feApp,
+                    {},
+                    { ignoreNoMatch: true, globOptions: { ignore, dot: true } }
+                );
             }
         );
     }
