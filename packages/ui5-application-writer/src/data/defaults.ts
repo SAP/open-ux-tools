@@ -132,7 +132,6 @@ export function getTypesVersion(minUI5Version?: string) {
     if (!version) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
     } else {
-        const coerced = semVer.coerce(minUI5Version);
         if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
             return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
         } else {
