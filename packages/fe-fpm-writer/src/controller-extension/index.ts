@@ -236,7 +236,7 @@ export function generateControllerExtension(
     }
 
     if (controllerConfig.typescript) {
-        addExtensionTypes(basePath, fs);
+        addExtensionTypes(basePath, controllerConfig.minUI5Version, fs);
     }
 
     return fs;

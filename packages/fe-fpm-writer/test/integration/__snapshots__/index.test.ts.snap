@@ -471,6 +471,17 @@ export function onAppended() {
 import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
 
 /**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension {
+        base: {
+            getExtensionAPI(): ExtensionAPI;
+        }
+    }
+}
+
+/**
  * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
  */
 export default ControllerExtension.extend('v4travel.ext.myControllerExtension.MyControllerExtension', {
@@ -481,7 +492,7 @@ export default ControllerExtension.extend('v4travel.ext.myControllerExtension.My
 		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
 		 * @memberOf v4travel.ext.myControllerExtension.MyControllerExtension
 		 */
-		onInit(this: ControllerExtension<ExtensionAPI>) {
+		onInit(this: ControllerExtension) {
 			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
 			const model = this.base.getExtensionAPI().getModel();
 		}
@@ -669,17 +680,7 @@ declare module 'sap/fe/core/PageController' {
 		getExtensionAPI() : ExtensionAPI;
 	}
 }
-
-/**
- * Helper to be able to define how to get the extension API when writing a controller extension.
- */
-declare module 'sap/ui/core/mvc/ControllerExtension' {
-    export default interface ControllerExtension<API extends ExtensionAPIProperties = ExtensionAPIProperties> {
-        base: {
-            getExtensionAPI(): API;
-        }
-    }
-}",
+",
     "state": "modified",
   },
   "ts/webapp/manifest.json": Object {

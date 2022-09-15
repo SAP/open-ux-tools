@@ -41,14 +41,3 @@ declare module 'sap/fe/core/PageController' {
 		getExtensionAPI() : ExtensionAPI;
 	}
 }
-
-/**
- * Helper to be able to define how to get the extension API when writing a controller extension.
- */
-declare module 'sap/ui/core/mvc/ControllerExtension' {
-    export default interface ControllerExtension<API extends ExtensionAPIProperties = ExtensionAPIProperties> {
-        base: {
-            getExtensionAPI(): API;
-        }
-    }
-}
