@@ -14,7 +14,8 @@
     "private": false,
     "files": [
         "dist",
-        "LICENSE"
+        "LICENSE",
+        "storybook"
     ],
     "main": "dist/index.js",
     "scripts": {
