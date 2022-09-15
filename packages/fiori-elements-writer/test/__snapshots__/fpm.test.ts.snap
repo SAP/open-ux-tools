@@ -3669,7 +3669,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
-    \\"@sapui5/ts-types-esm\\": \\"1.102.x\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.96.11\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
@@ -4028,17 +4028,7 @@ declare module 'sap/fe/core/PageController' {
 		getExtensionAPI() : ExtensionAPI;
 	}
 }
-
-/**
- * Helper to be able to define how to get the extension API when writing a controller extension.
- */
-declare module 'sap/ui/core/mvc/ControllerExtension' {
-    export default interface ControllerExtension<API extends ExtensionAPIProperties = ExtensionAPIProperties> {
-        base: {
-            getExtensionAPI(): API;
-        }
-    }
-}",
+",
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
