@@ -3,7 +3,7 @@ export interface UIToggleGroupProps {
     labelId?: string;
     label?: string;
     ariaLabel?: string;
-    selectedKey?: string | undefined;
+    selectedKey?: string;
     required?: boolean;
     disabled?: boolean;
     onChange?: (itemKey: string, isSelected: boolean) => void;
