@@ -51,6 +51,22 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lropV4_addTests',
+            config: {
+                ...Object.assign(feBaseConfig('lropV4AddTests'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    app: {
+                        ...feBaseConfig('lropV4AddTests').app,
+                        addTests: true
+                    }
+                }),
+                service: v4Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lropV2',
             config: {
                 ...Object.assign(feBaseConfig('felrop2'), {
