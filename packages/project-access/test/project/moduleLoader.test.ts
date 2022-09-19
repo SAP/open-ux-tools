@@ -1,10 +1,10 @@
 import { join } from 'path';
-import { loadModuleFromProject } from '../../src/project/moduleLoader';
+import { loadModuleFromProject } from '../../src';
 
 describe('Test loadModuleFromProject()', () => {
-    test('Load module', () => {
-        const projectModule = loadModuleFromProject(join(__dirname, '..'), '@sap/cds');
-        expect(projectModule).toBeDefined();
+    test('Load module', async () => {
+        const projectModule = await loadModuleFromProject<{ compile: () => void }>(join(__dirname, '..'), '@sap/cds');
+        expect(typeof projectModule.compile).toEqual('function');
     });
 
     test('Module not install in project, should throw error', async () => {
