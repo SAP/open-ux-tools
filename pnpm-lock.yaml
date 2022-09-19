@@ -246,6 +246,7 @@ importers:
       '@sap-ux/odata-service-writer': workspace:*
       '@sap-ux/ui5-application-writer': workspace:*
       '@sap-ux/ui5-config': workspace:*
+      '@sap-ux/ui5-test-writer': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.176
@@ -265,6 +266,7 @@ importers:
       '@sap-ux/odata-service-writer': link:../odata-service-writer
       '@sap-ux/ui5-application-writer': link:../ui5-application-writer
       '@sap-ux/ui5-config': link:../ui5-config
+      '@sap-ux/ui5-test-writer': link:../ui5-test-writer
       ejs: 3.1.7
       i18next: 20.3.2
       lodash: 4.17.21

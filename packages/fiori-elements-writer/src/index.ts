@@ -5,6 +5,7 @@ import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
+import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp, FPMSettings } from './types';
@@ -109,11 +110,14 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     extendManifestJson(fs, basePath, rootTemplatesPath, feApp);
 
     const packageJson: Package = JSON.parse(fs.read(packagePath));
+    // Add tests only if v4, for now, and we have metadata (and therefore a mock server config)
+    const addTest = !!feApp.app.addTests && feApp.service?.version === OdataVersion.v4 && !!feApp.service?.metadata;
 
     packageJson.scripts = Object.assign(packageJson.scripts, {
         ...getPackageJsonTasks({
             localOnly: !feApp.service?.url,
             addMock: !!feApp.service?.metadata,
+            addTest,
             sapClient: feApp.service?.client,
             flpAppId: feApp.app.flpAppId,
             startFile: data?.app?.startFile,
@@ -122,6 +126,10 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     });
 
     fs.writeJSON(packagePath, packageJson);
+
+    if (addTest) {
+        generateOPAFiles(basePath, {}, fs);
+    }
 
     return fs;
 }

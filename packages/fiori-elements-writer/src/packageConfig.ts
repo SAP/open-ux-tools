@@ -6,6 +6,7 @@ import { t } from './i18n';
  * @param options Collection of mostly optional settings.
  * @param options.localOnly no server available
  * @param options.addMock add a script for using the mockserver
+ * @param options.addTest add a script for executing OPA tests
  * @param options.sapClient SAP client required for connecting to the backend
  * @param options.flpAppId local FLP id
  * @param options.startFile path that should be opened with the start script
@@ -16,6 +17,7 @@ import { t } from './i18n';
 export function getPackageJsonTasks({
     localOnly,
     addMock = true,
+    addTest = false,
     sapClient,
     flpAppId = '',
     startFile,
@@ -23,6 +25,7 @@ export function getPackageJsonTasks({
 }: {
     localOnly: boolean;
     addMock: boolean;
+    addTest: boolean;
     sapClient?: string;
     flpAppId?: string;
     startFile?: string;
@@ -53,6 +56,7 @@ export function getPackageJsonTasks({
         : `fiori run --open "${'index.html'}${searchParam}"`;
 
     const mockTask = `fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html${params}"`;
+    const testTask = 'fiori run --config ./ui5-mock.yaml --open "test/integration/opaTests.qunit.html"';
     return Object.assign(
         {
             start: startCommand,
@@ -62,6 +66,11 @@ export function getPackageJsonTasks({
         addMock
             ? {
                   'start-mock': mockTask
+              }
+            : {},
+        addTest
+            ? {
+                  'int-test': testTask
               }
             : {}
     );
