@@ -2,7 +2,6 @@ lockfileVersion: 5.4
 
 overrides:
     vm2@<3.9.11: '>=3.9.11'
-    mkdirp@<0.5.6: 0.5.6
 
 importers:
     .:
@@ -373,10 +372,10 @@ importers:
         specifiers:
             '@sap-ux/project-types': workspace:*
             '@sap/cds': 5.9.8
+            '@types/vscode': 1.39.0
             find-up: 5.0.0
             findit2: 2.2.3
             i18next: 20.3.2
-            vscode: 1.1.37
             yaml: 2.0.0-10
         dependencies:
             '@sap-ux/project-types': link:../project-types
@@ -386,7 +385,7 @@ importers:
             yaml: 2.0.0-10
         devDependencies:
             '@sap/cds': 5.9.8
-            vscode: 1.1.37
+            '@types/vscode': 1.39.0
 
     packages/project-types:
         specifiers: {}
@@ -2917,16 +2916,6 @@ packages:
         engines: { node: '>=0.4.0' }
         hasBin: true
 
-    /agent-base/4.3.0:
-        resolution:
-            {
-                integrity: sha512-salcGninV0nPrwpGNn4VTXBb1SOuXQBiqbrNXoeizJsHrsL6ERFM2Ne3JUSBWRE6aeNJI2ROP/WEEIDUiDe3cg==
-            }
-        engines: { node: '>= 4.0.0' }
-        dependencies:
-            es6-promisify: 5.0.0
-        dev: true
-
     /agent-base/6.0.2:
         resolution:
             {
@@ -3589,13 +3578,6 @@ packages:
             }
         dev: true
 
-    /browser-stdout/1.3.1:
-        resolution:
-            {
-                integrity: sha512-qhAVI1+Av2X7qelOfAIYwXONood6XlZE/fXaBSmW/T5SzLAmCgzi+eiWE7fUvbHaeNBQH13UftjpXxsfLkMpgw==
-            }
-        dev: true
-
     /browserslist/4.19.1:
         resolution:
             {
@@ -3989,13 +3971,6 @@ packages:
             delayed-stream: 1.0.0
         dev: true
 
-    /commander/2.15.1:
-        resolution:
-            {
-                integrity: sha512-VlfT9F3V0v+jr4yxPc5gg9s62/fIVWsd2Bk2iD435um1NlGMYdVCq+MjcXnhYq2icNOizHr1kK+5TI6H0Hy0ag==
-            }
-        dev: true
-
     /commander/7.2.0:
         resolution:
             {
@@ -4061,10 +4036,7 @@ packages:
         dev: false
 
     /concat-map/0.0.1:
-        resolution:
-            {
-                integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
-            }
+        resolution: { integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s= }
 
     /console-control-strings/1.1.0:
         resolution: { integrity: sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4= }
@@ -4285,35 +4257,6 @@ packages:
                 optional: true
         dependencies:
             ms: 2.0.0
-
-    /debug/3.1.0:
-        resolution:
-            {
-                integrity: sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
-            }
-        peerDependencies:
-            supports-color: '*'
-        peerDependenciesMeta:
-            supports-color:
-                optional: true
-        dependencies:
-            ms: 2.0.0
-        dev: true
-
-    /debug/3.1.0_supports-color@5.4.0:
-        resolution:
-            {
-                integrity: sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
-            }
-        peerDependencies:
-            supports-color: '*'
-        peerDependenciesMeta:
-            supports-color:
-                optional: true
-        dependencies:
-            ms: 2.0.0
-            supports-color: 5.4.0
-        dev: true
 
     /debug/3.2.7:
         resolution:
@@ -4595,14 +4538,6 @@ packages:
         engines: { node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0 }
         dev: true
 
-    /diff/3.5.0:
-        resolution:
-            {
-                integrity: sha512-A46qtFgd+g7pDZinpnwiRJtxbC1hpgf0uzP3iG89scHk0AUC7A1TGxf5OiiOUv/JMZR8GOt8hL900hV0bOy5xA==
-            }
-        engines: { node: '>=0.3.1' }
-        dev: true
-
     /dir-glob/3.0.1:
         resolution:
             {
@@ -4819,22 +4754,6 @@ packages:
             is-callable: 1.2.4
             is-date-object: 1.0.5
             is-symbol: 1.0.4
-        dev: true
-
-    /es6-promise/4.2.8:
-        resolution:
-            {
-                integrity: sha512-HJDGx5daxeIvxdBxvG2cb9g4tEvwIk3i8+nhX0yGrYmZUzbkdg8QbDevheDB8gd0//uPj4c1EQua8Q+MViT0/w==
-            }
-        dev: true
-
-    /es6-promisify/5.0.0:
-        resolution:
-            {
-                integrity: sha512-C+d6UdsYDk0lMebHNR4S2NybQMMngAOnOwYBQjTOiv0MkoJMP0Myw2mgpDLBcpfCmRLxyFqYhS/CfOENq4SJhQ==
-            }
-        dependencies:
-            es6-promise: 4.2.8
         dev: true
 
     /escalade/3.1.1:
@@ -6071,20 +5990,6 @@ packages:
             is-glob: 4.0.3
         dev: true
 
-    /glob/7.1.2:
-        resolution:
-            {
-                integrity: sha512-MJTUg1kjuLeQCJ+ccE4Vpa6kKVXkPYJ2mOCQyUuKLcLQsdrMCpBPUi8qVE6+YuaJkozeA9NusTAw3hLr8Xe5EQ==
-            }
-        dependencies:
-            fs.realpath: 1.0.0
-            inflight: 1.0.6
-            inherits: 2.0.4
-            minimatch: 3.1.2
-            once: 1.4.0
-            path-is-absolute: 1.0.1
-        dev: true
-
     /glob/7.2.0:
         resolution:
             {
@@ -6178,14 +6083,6 @@ packages:
             }
         dev: true
 
-    /growl/1.10.5:
-        resolution:
-            {
-                integrity: sha512-qBr4OuELkhPenW6goKVXiv47US3clb3/IbuWF9KNKEijAy9oeHxU9IgzjvJhHkUzhaj7rOUD7+YGWqUjLp5oSA==
-            }
-        engines: { node: '>=4.x' }
-        dev: true
-
     /hard-rejection/2.1.0:
         resolution:
             {
@@ -6202,10 +6099,7 @@ packages:
         dev: true
 
     /has-flag/3.0.0:
-        resolution:
-            {
-                integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==
-            }
+        resolution: { integrity: sha1-tdRU3CGZriJWmfNGfloH87lVuv0= }
         engines: { node: '>=4' }
 
     /has-flag/4.0.0:
@@ -6286,14 +6180,6 @@ packages:
         dependencies:
             function-bind: 1.1.1
 
-    /he/1.1.1:
-        resolution:
-            {
-                integrity: sha512-z/GDPjlRMNOa2XJiB4em8wJpuuBfrFOlYKTZxtpkdr1uPdibHI8rYA3MY0KDObpVyaes0e/aunid/t88ZI2EKA==
-            }
-        hasBin: true
-        dev: true
-
     /hexoid/1.0.0:
         resolution:
             {
@@ -6353,19 +6239,6 @@ packages:
             toidentifier: 1.0.1
         dev: false
 
-    /http-proxy-agent/2.1.0:
-        resolution:
-            {
-                integrity: sha512-qwHbBLV7WviBl0rQsOzH6o5lwyOIvwp/BdFnvVxXORldu5TmjFfjzBcWUWS5kWAZhmv+JtiDhSuQCp4sBfbIgg==
-            }
-        engines: { node: '>= 4.5.0' }
-        dependencies:
-            agent-base: 4.3.0
-            debug: 3.1.0
-        transitivePeerDependencies:
-            - supports-color
-        dev: true
-
     /http-proxy-agent/4.0.1:
         resolution:
             {
@@ -6423,19 +6296,6 @@ packages:
         transitivePeerDependencies:
             - debug
         dev: false
-
-    /https-proxy-agent/2.2.4:
-        resolution:
-            {
-                integrity: sha512-OmvfoQ53WLjtA9HeYP9RNrWMJzzAz1JGaSFr1nijg0PVR1JaD/xbJq1mdEIIlxGpXp9eSe/O2LgU9DJmTPd0Eg==
-            }
-        engines: { node: '>= 4.5.0' }
-        dependencies:
-            agent-base: 4.3.0
-            debug: 3.2.7
-        transitivePeerDependencies:
-            - supports-color
-        dev: true
 
     /https-proxy-agent/5.0.0:
         resolution:
@@ -8773,16 +8633,6 @@ packages:
         dev: false
         optional: true
 
-    /mkdirp/0.5.6:
-        resolution:
-            {
-                integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
-            }
-        hasBin: true
-        dependencies:
-            minimist: 1.2.6
-        dev: true
-
     /mkdirp/1.0.4:
         resolution:
             {
@@ -8791,27 +8641,6 @@ packages:
         engines: { node: '>=10' }
         hasBin: true
         dev: false
-
-    /mocha/5.2.0:
-        resolution:
-            {
-                integrity: sha512-2IUgKDhc3J7Uug+FxMXuqIyYzH7gJjXECKe/w43IGgQHTSj3InJi+yAA7T24L9bQMRKiUEHxEX37G5JpVUGLcQ==
-            }
-        engines: { node: '>= 4.0.0' }
-        hasBin: true
-        dependencies:
-            browser-stdout: 1.3.1
-            commander: 2.15.1
-            debug: 3.1.0_supports-color@5.4.0
-            diff: 3.5.0
-            escape-string-regexp: 1.0.5
-            glob: 7.1.2
-            growl: 1.10.5
-            he: 1.1.1
-            minimatch: 3.0.4
-            mkdirp: 0.5.6
-            supports-color: 5.4.0
-        dev: true
 
     /moment/2.29.4:
         resolution:
@@ -10919,16 +10748,6 @@ packages:
             - supports-color
         dev: true
 
-    /supports-color/5.4.0:
-        resolution:
-            {
-                integrity: sha512-zjaXglF5nnWpsq470jSv6P9DwPvgLkuapYmfDm3JWOm0vkNTVF2tI4UrN2r6jH1qM/uc/WtxYY1hYoA2dOKj5w==
-            }
-        engines: { node: '>=4' }
-        dependencies:
-            has-flag: 3.0.0
-        dev: true
-
     /supports-color/5.5.0:
         resolution:
             {
@@ -11635,40 +11454,6 @@ packages:
             {
                 integrity: sha512-8Xz4H3vhYRGbFupLtl6dHwMx0ojUcjt0HYkqZ9oBCfipd/5mD7Md58m2/dq7uPuZU/0T3Gb1m66KS9jn+I+14Q==
             }
-        dev: true
-
-    /vscode-test/0.4.3:
-        resolution:
-            {
-                integrity: sha512-EkMGqBSefZH2MgW65nY05rdRSko15uvzq4VAPM5jVmwYuFQKE7eikKXNJDRxL+OITXHB6pI+a3XqqD32Y3KC5w==
-            }
-        engines: { node: '>=8.9.3' }
-        deprecated: This package has been renamed to @vscode/test-electron, please update to the new name
-        dependencies:
-            http-proxy-agent: 2.1.0
-            https-proxy-agent: 2.2.4
-        transitivePeerDependencies:
-            - supports-color
-        dev: true
-
-    /vscode/1.1.37:
-        resolution:
-            {
-                integrity: sha512-vJNj6IlN7IJPdMavlQa1KoFB3Ihn06q1AiN3ZFI/HfzPNzbKZWPPuiU+XkpNOfGU5k15m4r80nxNPlM7wcc0wg==
-            }
-        engines: { node: '>=8.9.3' }
-        deprecated: 'This package is deprecated in favor of @types/vscode and vscode-test. For more information please read: https://code.visualstudio.com/updates/v1_36#_splitting-vscode-package-into-typesvscode-and-vscodetest'
-        hasBin: true
-        dependencies:
-            glob: 7.2.0
-            http-proxy-agent: 4.0.1
-            https-proxy-agent: 5.0.0
-            mocha: 5.2.0
-            semver: 5.7.1
-            source-map-support: 0.5.21
-            vscode-test: 0.4.3
-        transitivePeerDependencies:
-            - supports-color
         dev: true
 
     /w3c-hr-time/1.0.2:

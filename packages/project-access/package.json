@@ -24,7 +24,7 @@
     },
     "devDependencies": {
         "@sap/cds": "5.9.8",
-        "vscode": "1.1.37"
+        "@types/vscode": "1.39.0"
     },
     "files": [
         "dist",
