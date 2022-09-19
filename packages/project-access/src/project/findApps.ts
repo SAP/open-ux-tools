@@ -1,0 +1,188 @@
+import { dirname, join, parse, sep } from 'path';
+import type { WorkspaceFolder } from 'vscode';
+import findUp from 'find-up';
+import { FileName } from '@sap-ux/project-types';
+import type { Manifest, Package } from '@sap-ux/project-types';
+import { findAll } from './findFiles';
+import { hasDependency } from './dependencies';
+import { isCapProject } from './cap';
+import { t } from '../i18n';
+import type { AllAppResults } from '../types';
+import { fileExists, readJSON } from '../file';
+
+/**
+ * WorkspaceFolder type guard.
+ *
+ * @param value - value to type check
+ * @returns - true: is a vscode workspace array; no: not a vscode workspace array
+ */
+function isWorkspaceFolder(value: WorkspaceFolder[] | string[]): value is WorkspaceFolder[] {
+    return value && (value as WorkspaceFolder[]).length > 0 && (value as WorkspaceFolder[])[0].uri !== undefined;
+}
+
+/**
+ * Search all manifest.json files in given workspaces. This is used as starting point to find all tools
+ * supported apps.
+ *
+ * @param wsFolders - workspace folders
+ * @returns - array of path to manifest.json files
+ */
+async function findAllManifest(wsFolders: WorkspaceFolder[] | string[] | undefined): Promise<string[]> {
+    // extract root path if provided as VSCode folder
+    let wsRoots: string[];
+    if (wsFolders && isWorkspaceFolder(wsFolders)) {
+        wsRoots = [];
+        wsFolders
+            .filter((each) => each.uri.scheme === 'file')
+            .forEach((folder) => {
+                wsRoots.push(folder.uri.fsPath);
+            });
+    } else {
+        wsRoots = wsFolders || [];
+    }
+    // find all manifest files
+    const manifests: string[] = [];
+    for (const root of wsRoots) {
+        try {
+            await findAll(root, FileName.Manifest, manifests, ['.git', 'node_modules', 'dist']);
+        } catch {
+            // ignore exceptions during find
+        }
+    }
+    return manifests;
+}
+
+/**
+ * Find root folder of the project containing the given file.
+ *
+ * @param path path of a project file
+ * @param sapuxRequired if true, only find sapux projects
+ */
+export async function findProjectRoot(path: string, sapuxRequired = true): Promise<string> {
+    const packageJson = await findUp(FileName.Package, { cwd: path });
+    if (!packageJson) {
+        throw new Error(t('error.projectRootNotFound', { path, sapuxRequired: sapuxRequired ? 'true' : 'false' }));
+    }
+    let root = dirname(packageJson);
+    if (sapuxRequired) {
+        const sapux = (await readJSON<Package>(packageJson)).sapux;
+        if (!sapux) {
+            root = await findProjectRoot(dirname(root), sapuxRequired);
+        }
+    }
+    return root;
+}
+
+/**
+ * Find the app root and project root folder for a given path. In case of apps in non CAP projects they are the same.
+ * This function also validates if an app is supported by tools considering Fiori elements apps and SAPUI5
+ * freestyle apps. Only if project root and app root can be determined, they are returned, otherwise null is returned.
+ * This function is used e.g. to get a filtered list of all manifest.json files in a workspace for tools
+ * supported apps and retrieve the respective root paths.
+ *
+ * This function makes following assumptions:
+ * - All applications have a package.json in root folder.
+ * - If sapux=true in package.json the app is NOT inside a CAP project.
+ * - Freestyle application (non CAP) has in package.json dependency to @sap/ux-ui5-tooling and <appRoot>/ui5-local.yaml.
+ *
+ * @param path - path to check, e.g. to the manifest.json
+ * @returns - in case a supported app is found this function returns the appRoot and projectRoot path
+ */
+async function findRootsForPath(path: string): Promise<{ appRoot: string; projectRoot: string } | null> {
+    try {
+        // Get the root of the app, that is where the package.json is, otherwise not supported
+        const appRoot = await findProjectRoot(path, false);
+        if (!appRoot) {
+            return null;
+        }
+        const appPckJson = await readJSON<Package>(join(appRoot, FileName.Package));
+        // Check for most common app, Fiori elements with sapux=true in package.json
+        if (appPckJson.sapux) {
+            if (typeof appPckJson.sapux === 'boolean' && appPckJson.sapux === true) {
+                return {
+                    appRoot,
+                    projectRoot: appRoot
+                };
+            } else if (Array.isArray(appPckJson.sapux)) {
+                // Backward compatibility for FE apps in CAP projects that have no app package.json,
+                // but are listed in CAP root sapux array
+                const relAppPaths = appPckJson.sapux.map((a) => join(...a.split(/\\|\//)));
+                const relApp = relAppPaths.find((app) => path.startsWith(join(appRoot, app) + sep));
+                if (relApp) {
+                    return {
+                        appRoot: join(appRoot, relApp),
+                        projectRoot: appRoot
+                    };
+                }
+            }
+            // The first package.json we found when searching up contains sapux, but not true -> not supported
+            return null;
+        }
+        if (await isCapProject(appRoot, appPckJson)) {
+            // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
+            // in root -> not supported
+            return null;
+        }
+        // Now we have the app root folder. Check for freestyle non CAP
+        if (
+            (await fileExists(join(appRoot, FileName.Ui5LocalYaml))) &&
+            hasDependency(appPckJson, '@sap/ux-ui5-tooling')
+        ) {
+            return {
+                appRoot,
+                projectRoot: appRoot
+            };
+        }
+        // Project must be CAP, find project root
+        try {
+            const { root } = parse(appRoot);
+            let projectRoot = dirname(appRoot);
+            while (projectRoot !== root) {
+                if (await isCapProject(projectRoot)) {
+                    // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
+                    // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
+                    if (join(projectRoot, 'app') !== appRoot) {
+                        return {
+                            appRoot,
+                            projectRoot
+                        };
+                    }
+                }
+                projectRoot = dirname(projectRoot);
+            }
+        } catch {
+            // No project root can be found at parent folder.
+        }
+    } catch {
+        // Finding root should not throw error. Return null instead.
+    }
+    return null;
+}
+
+/**
+ * Find all app that are supported by Fiori tools for a given list of roots (workspace folders).
+ *
+ * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @returns - results as path to apps plus files already parsed, e.g. manifest.json
+ */
+export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | undefined): Promise<AllAppResults[]> {
+    const result: AllAppResults[] = [];
+    const manifestPaths = await findAllManifest(wsFolders);
+
+    for (const manifestPath of manifestPaths) {
+        try {
+            // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
+            const manifest = await readJSON<Manifest>(join(manifestPath, FileName.Manifest));
+            if (!manifest['sap.app'] || !manifest['sap.app'].id || manifest['sap.app'].type !== 'application') {
+                continue;
+            }
+            const roots = await findRootsForPath(manifestPath);
+            if (roots) {
+                result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
+            }
+        } catch {
+            // ignore exceptions for invalid manifests
+        }
+    }
+    return result;
+}

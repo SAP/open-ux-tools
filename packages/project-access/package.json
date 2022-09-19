@@ -1,0 +1,46 @@
+{
+    "name": "@sap-ux/project-access",
+    "version": "0.0.1",
+    "description": "Library to access SAP Fiori tools projects",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/project-access"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aproject-access"
+    },
+    "license": "Apache-2.0",
+    "private": false,
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "pnpm clean && tsc",
+        "clean": "rimraf dist coverage",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --watch"
+    },
+    "devDependencies": {
+        "@sap/cds": "5.9.8",
+        "vscode": "1.1.37"
+    },
+    "files": [
+        "dist",
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "engines": {
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+    },
+    "dependencies": {
+        "@sap-ux/project-types": "workspace:*",
+        "find-up": "5.0.0",
+        "findit2": "2.2.3",
+        "i18next": "20.3.2",
+        "yaml": "2.0.0-10"
+    }
+}
