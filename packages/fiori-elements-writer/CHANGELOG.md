@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.7.0
+
+### Minor Changes
+
+-   9240ec1: Adds optional generation of OPA tests to fiori-elements-writer
+
 ## 0.6.5
 
 ### Patch Changes
