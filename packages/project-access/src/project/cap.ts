@@ -1,7 +1,7 @@
 import { join } from 'path';
 import type { csn } from '@sap/cds/apis/csn';
 import { FileName } from '@sap-ux/project-types';
-import type { Package } from '@sap-ux/project-types';
+import type { CapCustomPaths, Package } from '@sap-ux/project-types';
 import { fileExists, readJSON } from '../file';
 import { loadModuleFromProject } from './moduleLoader';
 
@@ -43,12 +43,6 @@ export async function isCapNodeJsProject(projectRoot: string, packageJson?: Pack
  */
 export async function isCapJavaProject(projectRoot: string): Promise<boolean> {
     return fileExists(join(projectRoot, 'srv', 'src', 'main', 'resources', 'application.yaml'));
-}
-
-export interface CapCustomPaths {
-    app: string;
-    db: string;
-    srv: string;
 }
 
 interface CdsEnvFolders {

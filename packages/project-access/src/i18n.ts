@@ -2,7 +2,7 @@ import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/project-access.i18n.json';
 
-const NS = 'fiori-freestyle-writer';
+const NS = 'project-access';
 
 /**
  * Initialize i18next with the translations for this module.

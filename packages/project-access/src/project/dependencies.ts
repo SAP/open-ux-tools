@@ -8,5 +8,4 @@ import type { Package } from '@sap-ux/project-types';
  * @returns - true: has dependency; false: no dependency
  */
 export const hasDependency = (packageJson: Package, dependency: string): boolean =>
-    (typeof packageJson.dependencies === 'object' && packageJson.dependencies[dependency] !== undefined) ||
-    (typeof packageJson.devDependencies === 'object' && packageJson.devDependencies[dependency] !== undefined);
+    !!(packageJson.dependencies?.[dependency] || packageJson.devDependencies?.[dependency]);
