@@ -3,8 +3,11 @@ import { loadModuleFromProject } from '../../src';
 
 describe('Test loadModuleFromProject()', () => {
     test('Load module', async () => {
-        const projectModule = await loadModuleFromProject<{ compile: () => void }>(join(__dirname, '..'), '@sap/cds');
-        expect(typeof projectModule.compile).toEqual('function');
+        const projectModule = await loadModuleFromProject<{ FileName: {} }>(
+            join(__dirname, '..'),
+            '@sap-ux/project-types'
+        );
+        expect(typeof projectModule.FileName).toEqual('object');
     });
 
     test('Module not install in project, should throw error', async () => {

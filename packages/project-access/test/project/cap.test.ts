@@ -1,5 +1,4 @@
 import { join } from 'path';
-import { default as localDevDepCds } from '@sap/cds';
 import * as projectModuleMock from '../../src/project/moduleLoader';
 import {
     getCapModelAndServices,
@@ -59,19 +58,33 @@ describe('Test getCapModelAndServices()', () => {
     });
 
     test('Get valid model and services, mock cds with local cds from devDependencies', async () => {
-        const projectRoot = join(__dirname, '..', 'test-data', 'project', 'cap', 'fe-garage-demo');
-
         // Mock setup
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() =>
-            Promise.resolve(localDevDepCds)
-        );
+        const cdsMock = {
+            env: {
+                for: () => ({
+                    folders: {
+                        app: 'APP',
+                        db: 'DB',
+                        srv: 'SRV'
+                    }
+                })
+            },
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL')),
+            compile: { to: { serviceinfo: jest.fn().mockImplementation(() => 'SERVICES') } }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
-        const capMS = await getCapModelAndServices(projectRoot);
+        const capMS = await getCapModelAndServices('PROJECT_ROOT');
 
         // Check results
-        expect(capMS.services.find((s) => s.name === 'IncidentService')).toBeDefined();
-        expect(capMS.model).toBeDefined();
+        expect(capMS).toEqual({ model: 'MODEL', services: 'SERVICES' });
+        expect(cdsMock.load).toBeCalledWith([
+            join('PROJECT_ROOT', 'APP'),
+            join('PROJECT_ROOT', 'SRV'),
+            join('PROJECT_ROOT', 'DB')
+        ]);
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
     });
 });
 
@@ -80,19 +93,46 @@ describe('Test getCapCustomPaths()', () => {
         jest.clearAllMocks();
     });
 
-    test('Get env from project', async () => {
+    test('Test custom CAP folders', async () => {
         // Mock setup
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(
-            (projectRoot: string, moduleName: string) =>
-                Promise.resolve(moduleName === '@sap/cds' ? localDevDepCds : {})
-        );
+        const cdsMock = {
+            env: {
+                for: jest
+                    .fn()
+                    .mockImplementation(() => ({ folders: { app: 'CUSTOM_APP', db: 'CUSTOM_DB', srv: 'CUSTOM_SRV' } }))
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
 
         // Test execution
-        const path = await getCapCustomPaths(
-            join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_freestyle')
-        );
+        const path = await getCapCustomPaths('PROJECT_ROOT');
 
         // Check results
-        expect(path).toEqual({ app: 'any/folder/app', db: 'db/', srv: 'srv/' });
+        expect(path).toEqual({
+            app: 'CUSTOM_APP',
+            db: 'CUSTOM_DB',
+            srv: 'CUSTOM_SRV'
+        });
+        expect(cdsMock.env.for).toBeCalledWith('cds', 'PROJECT_ROOT');
+    });
+
+    test('Test fallback to default folders', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: {
+                for: () => null
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const path = await getCapCustomPaths('PROJECT_ROOT');
+
+        // Check results
+        expect(path).toEqual({
+            app: 'app/',
+            db: 'db/',
+            srv: 'srv/'
+        });
     });
 });

@@ -1,10 +1,5 @@
 {
     "dependencies": {
         "@sap/cds": "latest"
-    },
-    "cds": {
-        "folders": {
-            "app": "any/folder/app"
-        }
     }
 }
