@@ -81,6 +81,16 @@ describe('CustomApp', () => {
             expect(fs.read(join(target, 'webapp/Component.js'))).not.toBe(component);
         });
 
+        test('Missing dependencies', async () => {
+            const target = join(testDir, 'missing-dependencies');
+            const tempManifest = getTestManifest();
+            tempManifest['sap.ui5'] = {} as any;
+            fs.writeJSON(join(target, 'webapp/manifest.json'), tempManifest);
+            await enableFPM(target, {}, fs);
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
+            expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(undefined);
+        });
+
         test('Invalid/unknown version', async () => {
             const unknownVersion = '${sap.ui5.dist.version}';
             const target = join(testDir, 'unknown-version');
