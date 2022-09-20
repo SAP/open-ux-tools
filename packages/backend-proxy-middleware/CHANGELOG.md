@@ -1,5 +1,20 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.22
+
+### Patch Changes
+
+-   fac7a5a: Replaced usage of express with simple code to reduce installation size.
+-   Updated dependencies [fac7a5a]
+    -   @sap-ux/axios-extension@0.9.8
+
+## 0.6.21
+
+### Patch Changes
+
+-   Updated dependencies [dd98509]
+    -   @sap-ux/store@0.3.4
+
 ## 0.6.20
 
 ### Patch Changes

@@ -86,11 +86,14 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 /**
  * Checks if a host is excluded from user's corporate proxy.
  *
- * @param noProxyConfig - user's no_proxy configuration
  * @param url - url to be checked
+ * @param noProxyConfig - user's no_proxy configuration
  * @returns true if host is excluded from user's corporate server, false otherwise
  */
-export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, url: string): boolean => {
+export const isHostExcludedFromProxy = (
+    url: string,
+    noProxyConfig: string | undefined = process.env.no_proxy || process.env.npm_config_noproxy
+): boolean => {
     if (noProxyConfig === '*') {
         return true;
     } else {
