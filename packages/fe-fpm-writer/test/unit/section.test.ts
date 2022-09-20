@@ -236,7 +236,7 @@ describe('CustomSection', () => {
                     line: 8,
                     character: 9
                 },
-                190 + 14 * os.EOL.length
+                196 + 8 * os.EOL.length
             ];
             for (const position of positions) {
                 test(`"eventHandler" is object. Append new function to existing js file with position ${
