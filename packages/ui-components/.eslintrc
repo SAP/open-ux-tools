@@ -1,0 +1,43 @@
+{
+    "extends": ["../../.eslintrc", "plugin:react/recommended"],
+    "parserOptions": {
+        "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
+        "project": "./tsconfig-test.json"
+    },
+    "overrides": [
+        {
+            "parser": "@typescript-eslint/parser",
+            "files": ["./test/**/*.tsx"],
+            "rules": {
+                "no-loop-func": "off",
+                "space-before-function-paren": "off"
+            }
+        },
+        {
+            "parser": "@typescript-eslint/parser",
+            "files": ["./src/**/*.tsx"],
+            "rules": {
+                "space-before-function-paren": "off"
+            }
+        }
+    ],
+    "rules": {
+        "@typescript-eslint/no-use-before-define": [
+            "error",
+            {
+                "functions": false,
+                "typedefs": false,
+                "classes": false
+            }
+        ],
+        "jsdoc/require-param-description": "off",
+        "jsdoc/require-returns-description": "off",
+        "jsdoc/no-undefined-types": "off",
+        "jsdoc/newline-after-description": "off"
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    }
+}

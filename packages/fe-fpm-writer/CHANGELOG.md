@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.1
+
+### Patch Changes
+
+-   0bb70df: Adds sap.fe.macros namespace to fpm apps View.xml where ui5 version >= 1.94
+
 ## 0.17.0
 
 ### Minor Changes

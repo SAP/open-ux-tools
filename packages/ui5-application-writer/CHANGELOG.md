@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.1
+
+### Patch Changes
+
+-   d0b4660: Dont fail if unknown AppOptions are provided
+
 ## 0.17.0
 
 ### Minor Changes

@@ -1,4 +1,4 @@
-import type { Ui5App, App } from '@sap-ux/ui5-application-writer';
+import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 
 export enum TemplateType {
@@ -87,13 +87,27 @@ export interface Template<T = {}> {
     settings: T;
 }
 
+/**
+ * Additional configuration for Fiori Apps
+ */
 export interface FioriApp extends App {
+    /**
+     * Use the specified app id when generating the test Fiori launch pad config
+     */
     flpAppId?: string;
 }
+
 export interface FioriElementsApp<T> extends Ui5App {
     template: Template<T>;
     service: Omit<OdataService, 'model'>; // Model name will use defaults
     app: FioriApp;
+    appOptions: Partial<AppOptions> & {
+        /**
+         * Generate OPA based tests, if applicable to the specified template.
+         * This will eventually move up to {@link Ui5App.appOptions}
+         */
+        addTests?: boolean;
+    };
 }
 
 // We need this for the service version

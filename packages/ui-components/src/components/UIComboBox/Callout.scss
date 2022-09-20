@@ -1,0 +1,7 @@
+@import '../../styles/ui-components.scss';
+
+.ts-Callout {
+    button {
+        @include base-font;
+    }
+}

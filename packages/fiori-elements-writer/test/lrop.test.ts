@@ -51,6 +51,22 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
+            name: 'lropV4_addTests',
+            config: {
+                ...Object.assign(feBaseConfig('lropV4AddTests'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lropV4AddTests').appOptions,
+                        addTests: true
+                    }
+                }),
+                service: v4Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
             name: 'lropV2',
             config: {
                 ...Object.assign(feBaseConfig('felrop2'), {
@@ -100,13 +116,13 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         {
             name: 'lropV2_set_toolsId',
             config: {
-                ...Object.assign(feBaseConfig('felrop5'), {
+                ...Object.assign(feBaseConfig('lropV2_set_toolsId'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
                     },
                     app: {
-                        ...feBaseConfig('felrop4').app,
+                        ...feBaseConfig('lropV2_set_toolsId').app,
                         sourceTemplate: {
                             version: '1.2.3-test',
                             id: 'test-fe-template',
@@ -120,16 +136,34 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         {
             name: 'lropV2_set_toolsId_only',
             config: {
-                ...Object.assign(feBaseConfig('felrop5'), {
+                ...Object.assign(feBaseConfig('lropV2_set_toolsId_only'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
                     },
                     app: {
-                        ...feBaseConfig('felrop4').app,
+                        ...feBaseConfig('lropV2_set_toolsId_only').app,
                         sourceTemplate: {
                             toolsId: 'toolsId:1234abcd'
                         }
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_ts',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.77.2' // flex changes preview should be included with this version
+                    },
+                    appOptions: {
+                        typescript: true
                     }
                 }),
                 service: v2Service
