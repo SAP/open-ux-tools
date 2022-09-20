@@ -1,0 +1,49 @@
+{
+    "name": "@sap-ux/abap-deploy-task",
+    "description": "UI5 CLI tasks to deploy to ABAP systems",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/abap-deploy-task"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aabap-deploy-task"
+    },
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "author": "@SAP/ux-tools-team",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "pnpm clean && tsc",
+        "clean": "rimraf dist",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "watch": "tsc --watch"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "ui5.yaml",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "@ui5/fs": "2.0.6",
+        "dotenv": "16.0.0",
+        "i18next": "20.3.2"
+    },
+    "devDependencies": {
+        "nock": "13.2.4"
+    },
+    "ui5": {
+        "dependencies": []
+    },
+    "engines": {
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+    }
+}

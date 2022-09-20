@@ -1,0 +1,17 @@
+{
+    "name": "test-project",
+    "version": "0.0.1",
+    "private": true,
+    "devDependencies": {
+        "@ui5/cli": "2.14.1",
+        "@sap-ux/abap-deploy-task": "../../"
+    },
+    "scripts": {
+        "build": "ui5 build"
+    },
+    "ui5": {
+        "dependencies": [
+            "@sap-ux/abap-deploy-task"
+        ]
+    }
+}

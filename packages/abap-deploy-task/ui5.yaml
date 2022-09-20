@@ -1,0 +1,7 @@
+specVersion: '2.6'
+metadata:
+    name: abap-deploy-task
+kind: extension
+type: task
+task:
+    path: dist/ui5/task.js
