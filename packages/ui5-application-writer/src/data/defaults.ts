@@ -51,6 +51,21 @@ export function mergePackages(packageA: Partial<Package>, packageB: Partial<Pack
     }
     return mergedPackage;
 }
+
+export const enum UI5_DEFAULT {
+    DEFAULT_UI5_VERSION = '',
+    DEFAULT_LOCAL_UI5_VERSION = '1.95.0',
+    MIN_UI5_VERSION = '1.60.0',
+    MIN_LOCAL_SAPUI5_VERSION = '1.76.0',
+    MIN_LOCAL_OPENUI5_VERSION = '1.52.5',
+    SAPUI5_CDN = 'https://ui5.sap.com',
+    OPENUI5_CDN = 'https://openui5.hana.ondemand.com',
+    TYPES_VERSION_SINCE = '1.76.0',
+    TYPES_VERSION_PREVIOUS = '1.71.18',
+    MANIFEST_VERSION = '1.12.0',
+    BASE_COMPONENT = 'sap/ui/core/UIComponent'
+}
+
 /**
  * Returns an app instance merged with default properties.
  *
@@ -63,7 +78,7 @@ export function mergeApp(app: App): App {
             version: '0.0.1',
             title: t('text.defaultAppTitle', { id: app.id }),
             description: t('text.defaultAppDescription', { id: app.id }),
-            baseComponent: 'sap/ui/core/UIComponent',
+            baseComponent: UI5_DEFAULT.BASE_COMPONENT,
             sourceTemplate: {
                 id: app.sourceTemplate?.id ?? '',
                 version: app.sourceTemplate?.version ?? '',
@@ -72,19 +87,6 @@ export function mergeApp(app: App): App {
         },
         app
     ]) as App;
-}
-
-export enum UI5_DEFAULT {
-    DEFAULT_UI5_VERSION = '',
-    DEFAULT_LOCAL_UI5_VERSION = '1.95.0',
-    MIN_UI5_VERSION = '1.60.0',
-    MIN_LOCAL_SAPUI5_VERSION = '1.76.0',
-    MIN_LOCAL_OPENUI5_VERSION = '1.52.5',
-    SAPUI5_CDN = 'https://ui5.sap.com',
-    OPENUI5_CDN = 'https://openui5.hana.ondemand.com',
-    TYPES_VERSION_SINCE = '1.76.0',
-    TYPES_VERSION_PREVIOUS = '1.71.18',
-    MANIFEST_VERSION = '1.12.0'
 }
 
 // Required default libs

@@ -14,7 +14,7 @@ Object {
     \\"./node_modules/eslint-plugin-fiori-custom/configure.eslintrc\\"
   ],
   \\"ignorePatterns\\": [
-    \\"webapp/localservice/**\\",
+    \\"webapp/localService/**\\",
     \\"webapp/test/**\\",
     \\"dist/**\\"
   ]
@@ -54,7 +54,7 @@ archive.zip
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"1.92.2\\",
+    \\"@sapui5/ts-types\\": \\"1.102.x\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },
@@ -960,7 +960,118 @@ sap.registerComponentDependencyPaths(manifestUri);
 }
 `;
 
-exports[`UI5 templates option: \`typescript and Fiori tools\` 1`] = `
+exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 1`] = `
+"{
+  \\"name\\": \\"testpackagename\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"Test App Description\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"latest\\",
+    \\"@sapui5/ts-types-esm\\": \\"1.102.x\\",
+    \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
+    \\"typescript\\": \\"^4.6.3\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"eslint\\": \\"7.32.0\\",
+    \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
+    \\"@sapui5/ts-types\\": \\"1.102.x\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
+    \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"ts-typecheck\\": \\"tsc --noEmit\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
+      \\"ui5-tooling-transpile\\"
+    ]
+  }
+}
+"
+`;
+
+exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 2`] = `
+"{
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2015\\",
+    \\"module\\": \\"none\\",
+    \\"skipLibCheck\\": true,
+    \\"preserveConstEnums\\": true,
+    \\"inlineSourceMap\\": true,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictNullChecks\\": true,
+    \\"strictPropertyInitialization\\": false,
+    \\"moduleResolution\\": \\"node\\",
+    \\"rootDir\\": \\"webapp\\",
+    \\"outDir\\": \\"./dist\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"paths\\": {
+      \\"testAppId/*\\": [
+        \\"webapp/*\\"
+      ]
+    },
+    \\"types\\": [
+      \\"@sapui5/ts-types-esm\\",
+      \\"@sapui5/ts-types\\"
+    ],
+    \\"noEmit\\": true,
+    \\"checkJs\\": true
+  },
+  \\"include\\": [
+    \\"webapp/**/*\\"
+  ]
+}
+"
+`;
+
+exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 3`] = `
+"{
+  \\"root\\": true,
+  \\"env\\": {
+    \\"browser\\": true,
+    \\"es6\\": true,
+    \\"node\\": true
+  },
+  \\"extends\\": [
+    \\"eslint:recommended\\",
+    \\"plugin:@typescript-eslint/recommended\\",
+    \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\",
+    \\"plugin:@sap/ui5-jsdocs/recommended\\",
+    \\"eslint:recommended\\"
+  ],
+  \\"ignorePatterns\\": [
+    \\".eslintignore.js\\"
+  ],
+  \\"parser\\": \\"@typescript-eslint/parser\\",
+  \\"parserOptions\\": {
+    \\"project\\": [
+      \\"./tsconfig.json\\"
+    ],
+    \\"tsconfigRootDir\\": \\".\\",
+    \\"sourceType\\": \\"module\\"
+  },
+  \\"plugins\\": [
+    \\"@typescript-eslint\\",
+    \\"@sap/ui5-jsdocs\\"
+  ]
+}
+"
+`;
+
+exports[`UI5 templates option: \`typescript, npm modules and Fiori tools\` 1`] = `
 Object {
   ".babelrc.json": Object {
     "contents": "{
@@ -1025,12 +1136,12 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
-    \\"@sapui5/ts-types-esm\\": \\"latest\\",
-    \\"ui5-tooling-modules\\": \\"^0.6.0\\",
+    \\"@sapui5/ts-types-esm\\": \\"1.102.x\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.17.0\\"
+    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"ui5-tooling-modules\\": \\"^0.6.0\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
@@ -1041,8 +1152,8 @@ archive.zip
   \\"ui5\\": {
     \\"dependencies\\": [
       \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-modules\\",
-      \\"ui5-tooling-transpile\\"
+      \\"ui5-tooling-transpile\\",
+      \\"ui5-tooling-modules\\"
     ]
   },
   \\"sapux\\": true
@@ -1101,20 +1212,17 @@ server:
         port: 35729
         path: webapp
         delay: 300
-    - name: ui5-tooling-modules-middleware
-      afterMiddleware: compression
-      configuration: {}
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+    - name: ui5-tooling-modules-middleware
+      afterMiddleware: compression
+      configuration: {}
 builder:
   customTasks:
-    - name: ui5-tooling-modules-task
-      afterTask: replaceVersion
-      configuration: {}
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       configuration:
@@ -1122,6 +1230,9 @@ builder:
         removeConsoleStatements: true
         transpileAsync: true
         transpileTypeScript: true
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
 ",
     "state": "modified",
   },
@@ -1149,20 +1260,17 @@ server:
         port: 35729
         path: webapp
         delay: 300
-    - name: ui5-tooling-modules-middleware
-      afterMiddleware: compression
-      configuration: {}
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+    - name: ui5-tooling-modules-middleware
+      afterMiddleware: compression
+      configuration: {}
 builder:
   customTasks:
-    - name: ui5-tooling-modules-task
-      afterTask: replaceVersion
-      configuration: {}
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       configuration:
@@ -1170,6 +1278,9 @@ builder:
         removeConsoleStatements: true
         transpileAsync: true
         transpileTypeScript: true
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
 ",
     "state": "modified",
   },
