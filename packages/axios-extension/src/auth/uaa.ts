@@ -1,7 +1,6 @@
 import open = require('open');
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
-import express from 'express';
 import http from 'http';
 import type { AddressInfo } from 'net';
 import qs from 'qs';
@@ -179,24 +178,27 @@ export class Uaa {
      */
     protected async getAuthCode(timeout: number = defaultTimeout): Promise<{ authCode: string; redirect: Redirect }> {
         return new Promise((resolve, reject) => {
-            const app = express();
-            const server = http.createServer(app);
             // eslint-disable-next-line prefer-const
             let redirect: Redirect;
+            // eslint-disable-next-line prefer-const
+            let server: http.Server;
             const handleTimeout = (): void => {
-                server.close();
+                server?.close();
                 reject(new UAATimeoutError(`Timeout. Did not get a response within ${prettyPrintTimeInMs(timeout)}`));
             };
             const timer = setTimeout(handleTimeout, timeout);
-            app.get(Redirect.path, (req, res) => {
-                res.set('Content-Type', 'text/html');
-                res.send(Buffer.from(redirectSuccessHtml(this.logoutUrl, this.systemId)));
-                this.log.info('Got authCode');
-                resolve({ authCode: req.query.code + '', redirect });
-                if (timer) {
-                    clearTimeout(timer);
+            server = http.createServer((req, res) => {
+                const reqUrl = new URL(req.url, `http://${req.headers.host}`);
+                if (reqUrl.pathname === Redirect.path) {
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(Buffer.from(redirectSuccessHtml(this.logoutUrl, this.systemId)));
+                    this.log.info('Got authCode');
+                    resolve({ authCode: reqUrl.searchParams.get('code') + '', redirect });
+                    if (timer) {
+                        clearTimeout(timer);
+                    }
+                    server.close();
                 }
-                server.close();
             });
 
             // Start listening. Let the OS assign an available port
