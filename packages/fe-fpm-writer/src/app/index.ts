@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { lt } from 'semver';
+import { lt, valid } from 'semver';
 import type { Manifest } from '@sap-ux/ui5-config';
 import { FCL_ROUTER } from '../common/defaults';
 import { getTemplatePath } from '../templates';
@@ -61,10 +61,8 @@ export function enableFPM(basePath: string, config: FPMConfig = {}, fs?: Editor)
     }
 
     // if a minUI5Version is set and it is smaller than the minimum required, increase it
-    if (
-        manifest['sap.ui5']?.dependencies.minUI5Version &&
-        lt(manifest['sap.ui5']?.dependencies.minUI5Version, MIN_VERSION)
-    ) {
+    const minUI5Version = manifest['sap.ui5']?.dependencies?.minUI5Version;
+    if (minUI5Version && valid(minUI5Version) && lt(minUI5Version, MIN_VERSION)) {
         fs.extendJSON(manifestPath, {
             'sap.ui5': {
                 dependencies: {

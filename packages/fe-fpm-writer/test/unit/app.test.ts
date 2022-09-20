@@ -80,5 +80,14 @@ describe('CustomApp', () => {
             await enableFPM(target, { replaceAppComponent: true }, fs);
             expect(fs.read(join(target, 'webapp/Component.js'))).not.toBe(component);
         });
+
+        test('Invalid/unknown version', async () => {
+            const unknownVersion = '${sap.ui5.dist.version}';
+            const target = join(testDir, 'unknown-version');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest({ minVersion: unknownVersion }));
+            await enableFPM(target, {}, fs);
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
+            expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(unknownVersion);
+        });
     });
 });
