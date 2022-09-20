@@ -29,6 +29,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/project-types": "workspace:*",
         "@xmldom/xmldom": "0.8.2",
         "ejs": "3.1.7",
         "mem-fs": "2.1.0",
@@ -39,10 +40,9 @@
     },
     "devDependencies": {
         "@types/ejs": "3.1.0",
-        "@types/semver": "7.3.9",
-        "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
-        "@sap-ux/ui5-config": "workspace:*"
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/semver": "7.3.9"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",

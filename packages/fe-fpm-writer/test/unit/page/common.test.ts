@@ -9,7 +9,7 @@ import {
     PATTERN_SUFFIX,
     validatePageConfig
 } from '../../../src/page/common';
-import type { ManifestNamespace } from '@sap-ux/ui5-config';
+import type { ManifestNamespace } from '@sap-ux/project-types';
 import { CustomPage } from '../../../src/page/types';
 
 describe('common page functionality', () => {

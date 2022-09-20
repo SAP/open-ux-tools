@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create, Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { ManifestNamespace } from '@sap-ux/ui5-config';
+import { ManifestNamespace } from '@sap-ux/project-types';
 import { ObjectPage } from '../../../src/page';
 import { generate } from '../../../src/page/object';
 

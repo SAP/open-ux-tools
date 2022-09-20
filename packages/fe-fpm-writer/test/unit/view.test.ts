@@ -6,7 +6,7 @@ import { generateCustomView } from '../../src';
 import { CustomView } from '../../src/view/types';
 import * as manifest from './sample/view/webapp/manifest.json';
 import type { Views, EventHandlerConfiguration } from '../../src/common/types';
-import type { Manifest } from '@sap-ux/ui5-config';
+import type { Manifest } from '@sap-ux/project-types';
 
 const testDir = join(__dirname, 'sample/view');
 
