@@ -1,1 +1,1 @@
-export { fileExists, readFile, readJSON, readYAML } from './fileAccess';
+export { fileExists, readFile, readJSON } from './fileAccess';

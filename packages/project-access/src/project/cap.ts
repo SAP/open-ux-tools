@@ -1,7 +1,6 @@
 import { join } from 'path';
-import type { csn } from '@sap/cds/apis/csn';
 import { FileName } from '@sap-ux/project-types';
-import type { CapCustomPaths, Package } from '@sap-ux/project-types';
+import type { CapCustomPaths, csn, Package } from '@sap-ux/project-types';
 import { fileExists, readJSON } from '../file';
 import { loadModuleFromProject } from './moduleLoader';
 
@@ -45,19 +44,14 @@ export async function isCapJavaProject(projectRoot: string): Promise<boolean> {
     return fileExists(join(projectRoot, 'srv', 'src', 'main', 'resources', 'application.yaml'));
 }
 
-interface CdsEnvFolders {
-    db: string;
-    srv: string;
-    app: string;
-}
 /**
  * Get CAP CDS project custom paths for project root.
  *
  * @param capProjectPath - project root of cap project
  * @returns - Cap Custom Paths
  */
-export async function getCapCustomPaths(capProjectPath: string): Promise<Partial<CapCustomPaths>> {
-    const result: Partial<CapCustomPaths> = {
+export async function getCapCustomPaths(capProjectPath: string): Promise<CapCustomPaths> {
+    const result: CapCustomPaths = {
         app: 'app/',
         db: 'db/',
         srv: 'srv/'
@@ -82,8 +76,8 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<Partial
  * @param projectRoot - root of the project, where the package.json is
  * @returns - folder mappings for app, src, db, ...
  */
-async function getCdsEnvFolders(projectRoot: string): Promise<CdsEnvFolders> {
-    const capCustomPaths = (await getCapCustomPaths(projectRoot)) as CdsEnvFolders;
+async function getCdsEnvFolders(projectRoot: string): Promise<CapCustomPaths> {
+    const capCustomPaths = await getCapCustomPaths(projectRoot);
     return { ...capCustomPaths };
 }
 
@@ -98,9 +92,9 @@ export async function getCapModelAndServices(
     const cds = await loadModuleFromProject<any>(projectRoot, '@sap/cds');
     const capProjectPaths = await getCdsEnvFolders(projectRoot);
     const modelPaths = [
-        join(projectRoot, capProjectPaths?.app),
-        join(projectRoot, capProjectPaths?.srv),
-        join(projectRoot, capProjectPaths?.db)
+        join(projectRoot, capProjectPaths.app),
+        join(projectRoot, capProjectPaths.srv),
+        join(projectRoot, capProjectPaths.db)
     ];
     const model = await cds.load(modelPaths);
     const services = cds.compile.to['serviceinfo'](model, { root: projectRoot });

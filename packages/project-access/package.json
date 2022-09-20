@@ -23,7 +23,6 @@
         "watch": "tsc --watch"
     },
     "devDependencies": {
-        "@sap/cds": "5.9.8",
         "@types/vscode": "1.39.0"
     },
     "files": [
@@ -38,9 +37,9 @@
     },
     "dependencies": {
         "@sap-ux/project-types": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
         "find-up": "5.0.0",
         "findit2": "2.2.3",
-        "i18next": "20.3.2",
-        "yaml": "2.0.0-10"
+        "i18next": "20.3.2"
     }
 }

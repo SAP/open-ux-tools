@@ -1,10 +1,7 @@
 import { join, posix } from 'path';
 import { FileName } from '@sap-ux/project-types';
-import { fileExists, readYAML } from '../file';
-
-interface PartialUi5Yaml {
-    resources?: { configuration?: { paths?: { webapp?: string } } };
-}
+import { UI5Config } from '@sap-ux/ui5-config';
+import { fileExists, readFile } from '../file';
 
 /**
  * Get path to webapp.
@@ -16,10 +13,12 @@ export async function getWebappPath(projectRoot: string): Promise<string> {
     let webappPath = join(projectRoot, 'webapp');
     const ui5YamlPath = join(projectRoot, FileName.Ui5Yaml);
     if (await fileExists(ui5YamlPath)) {
-        const yamlDoc = await readYAML<PartialUi5Yaml>(ui5YamlPath);
-        const relativeWebappPath = yamlDoc?.resources?.configuration?.paths?.webapp;
+        const yamlString = await readFile(ui5YamlPath);
+        const ui5Config = await UI5Config.newInstance(yamlString);
+        const relativeWebappPath = ui5Config.getConfiguration()?.paths?.webapp;
         if (relativeWebappPath) {
             webappPath = join(projectRoot, ...relativeWebappPath.split(posix.sep));
+            webappPath = join(projectRoot, relativeWebappPath);
         }
     }
     return webappPath;

@@ -1,5 +1,4 @@
 import { promises as fs } from 'fs';
-import { parse as parseYaml } from 'yaml';
 
 /**
  * Read file asynchronously.
@@ -19,16 +18,6 @@ export async function readFile(path: string): Promise<string> {
  */
 export async function readJSON<T>(path: string): Promise<T> {
     return JSON.parse(await readFile(path)) as T;
-}
-
-/**
- * Read YAML file asynchronously.
- *
- * @param path - path to YAML file
- * @returns - file content as object of type T
- */
-export async function readYAML<T>(path: string) {
-    return parseYaml(await readFile(path)) as T;
 }
 
 /**
