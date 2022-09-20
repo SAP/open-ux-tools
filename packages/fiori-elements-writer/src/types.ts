@@ -87,9 +87,21 @@ export interface Template<T = {}> {
     settings: T;
 }
 
+/**
+ * Additional configuration for Fiori Apps
+ */
 export interface FioriApp extends App {
+    /**
+     * Use the specified app id when generating the test Fiori launch pad config
+     */
     flpAppId?: string;
+    /**
+     * Generate OPA based tests, if applicable to the specified template.
+     * This will eventually move to {@link Ui5App.appOptions}
+     */
+    addTests?: boolean;
 }
+
 export interface FioriElementsApp<T> extends Ui5App {
     template: Template<T>;
     service: Omit<OdataService, 'model'>; // Model name will use defaults

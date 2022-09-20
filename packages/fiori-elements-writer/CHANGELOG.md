@@ -1,5 +1,24 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [0bb70df]
+    -   @sap-ux/fe-fpm-writer@0.17.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   9240ec1: Adds optional generation of OPA tests to fiori-elements-writer
+
+## 0.6.5
+
+### Patch Changes
+
+-   2c85118: fix(fe-writer) Add missing JS files(changes_loader and changes_preview ) as ts files
+
 ## 0.6.4
 
 ### Patch Changes

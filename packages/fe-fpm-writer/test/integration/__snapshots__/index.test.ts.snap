@@ -107,7 +107,7 @@ Object {
     "state": "modified",
   },
   "lrop/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
-    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
     <Page id=\\"MyCustomPage\\" title=\\"MyCustomPage\\">
         <content></content>
@@ -562,7 +562,7 @@ export default class MyCustomPage extends Controller {
     "state": "modified",
   },
   "ts/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
-    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
     <Page id=\\"MyCustomPage\\" title=\\"MyCustomPage\\">
         <content></content>
