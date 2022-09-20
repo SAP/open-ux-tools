@@ -81,16 +81,6 @@ describe('CustomApp', () => {
             expect(fs.read(join(target, 'webapp/Component.js'))).not.toBe(component);
         });
 
-        test('Missing dependencies', async () => {
-            const target = join(testDir, 'missing-dependencies');
-            const tempManifest = getTestManifest();
-            tempManifest['sap.ui5'] = {} as any;
-            fs.writeJSON(join(target, 'webapp/manifest.json'), tempManifest);
-            await enableFPM(target, {}, fs);
-            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
-            expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(undefined);
-        });
-
         test('Invalid/unknown version', async () => {
             const unknownVersion = '${sap.ui5.dist.version}';
             const target = join(testDir, 'unknown-version');
@@ -99,5 +89,21 @@ describe('CustomApp', () => {
             const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
             expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(unknownVersion);
         });
+
+        const optionalPropertyCases = [
+            { name: '"sap.ui5" is undefined', value: undefined },
+            { name: '"sap.ui5/dependencies" is undefined', value: {} }
+        ];
+        for (const optionalPropertyCase of optionalPropertyCases) {
+            test(optionalPropertyCase.name, async () => {
+                const target = join(testDir, 'safe-check');
+                const tempManifest = getTestManifest();
+                tempManifest['sap.ui5'] = optionalPropertyCase.value as any;
+                fs.writeJSON(join(target, 'webapp/manifest.json'), tempManifest);
+                await enableFPM(target, {}, fs);
+                const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
+                expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(undefined);
+            });
+        }
     });
 });
