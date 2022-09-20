@@ -114,7 +114,7 @@ export function applyOptionalFeatures(
     if (ui5App.appOptions) {
         Object.entries(ui5App.appOptions).forEach(([key, value]) => {
             if (value === true) {
-                factories[key]({ ui5App, fs, basePath, tmplPath, ui5Configs });
+                factories[key]?.({ ui5App, fs, basePath, tmplPath, ui5Configs });
             }
         });
     }
