@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.3.4
+
+### Patch Changes
+
+-   dd98509: New module @sap-ux/ui-components. Remove unused dependencies from @sap-ux/store.
+
 ## 0.3.3
 
 ### Patch Changes
