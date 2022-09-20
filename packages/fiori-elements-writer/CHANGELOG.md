@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.7.2
+
+### Patch Changes
+
+-   d0b4660: Move AppOption `addTests` to avoid breaking change in future
+-   Updated dependencies [d0b4660]
+    -   @sap-ux/ui5-application-writer@0.17.1
+
 ## 0.7.1
 
 ### Patch Changes
