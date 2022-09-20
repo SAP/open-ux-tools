@@ -1,5 +1,12 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.34
+
+### Patch Changes
+
+-   Updated dependencies [dd98509]
+    -   @sap-ux/store@0.3.4
+
 ## 0.2.33
 
 ### Patch Changes
