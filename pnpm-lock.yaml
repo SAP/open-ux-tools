@@ -96,16 +96,20 @@ importers:
         specifiers:
             '@sap-ux/logger': workspace:*
             '@sap-ux/ui5-config': workspace:*
+            '@types/yazl': 2.4.2
             '@ui5/fs': 2.0.6
             dotenv: 16.0.0
             i18next: 20.3.2
             nock: 13.2.4
+            yazl: 2.5.1
         dependencies:
             '@sap-ux/logger': link:../logger
             '@sap-ux/ui5-config': link:../ui5-config
+            '@types/yazl': 2.4.2
             '@ui5/fs': 2.0.6
             dotenv: 16.0.0
             i18next: 20.3.2
+            yazl: 2.5.1
         devDependencies:
             nock: 13.2.4
 
@@ -6130,6 +6134,15 @@ packages:
         dependencies:
             '@types/yargs-parser': 20.2.1
         dev: true
+
+    /@types/yazl/2.4.2:
+        resolution:
+            {
+                integrity: sha512-T+9JH8O2guEjXNxqmybzQ92mJUh2oCwDDMSSimZSe1P+pceZiFROZLYmcbqkzV5EUwz6VwcKXCO2S2yUpra6XQ==
+            }
+        dependencies:
+            '@types/node': 17.0.9
+        dev: false
 
     /@types/yeoman-environment/2.10.6:
         resolution:
@@ -22695,6 +22708,15 @@ packages:
             y18n: 5.0.8
             yargs-parser: 21.0.1
         dev: true
+
+    /yazl/2.5.1:
+        resolution:
+            {
+                integrity: sha512-phENi2PLiHnHb6QBVot+dJnaAZ0xosj7p3fWl+znIjBDlnMI2PsZCJZ306BPTFOaHf5qdDEI8x5qFrSOBN5vrw==
+            }
+        dependencies:
+            buffer-crc32: 0.2.13
+        dev: false
 
     /yeoman-generator/5.6.1:
         resolution:

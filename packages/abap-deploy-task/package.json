@@ -34,9 +34,11 @@
         "@sap-ux/ui5-config": "workspace:*",
         "@ui5/fs": "2.0.6",
         "dotenv": "16.0.0",
-        "i18next": "20.3.2"
+        "i18next": "20.3.2",
+        "yazl": "2.5.1"
     },
     "devDependencies": {
+        "@types/yazl": "2.4.2",
         "nock": "13.2.4"
     },
     "ui5": {

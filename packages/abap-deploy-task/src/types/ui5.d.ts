@@ -3,7 +3,17 @@ declare module '@ui5/fs' {
      * https://sap.github.io/ui5-tooling/api/module-@ui5_fs.Resource.html
      */
     export class Resource {
+        /**
+         * Gets the resources path
+         */
         getPath(): string;
+
+        /**
+         * Gets a string with the resource content.
+         */
+        getString(): Promise<string>;
+
+        getBuffer(): Promise<Buffer>;
     }
 
     /**
