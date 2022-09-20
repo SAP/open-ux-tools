@@ -1,0 +1,16 @@
+@import '../../styles/ui-components.scss';
+
+.uiList {
+    &-group-entry {
+        padding: 0 20px 0 10px;
+        font-size: 13px;
+        font-weight: normal;
+        height: 20px;
+
+        &:hover {
+            cursor: pointer;
+            background-color: var(--vscode-dropdown-background);
+            color: var(--vscode-dropdown-foreground);
+        }
+    }
+}
