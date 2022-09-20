@@ -58,8 +58,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         type: TemplateType.ListReportObjectPage,
                         settings: v4TemplateSettings
                     },
-                    app: {
-                        ...feBaseConfig('lropV4AddTests').app,
+                    appOptions: {
+                        ...feBaseConfig('lropV4AddTests').appOptions,
                         addTests: true
                     }
                 }),
