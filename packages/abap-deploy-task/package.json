@@ -13,6 +13,9 @@
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
+    "bin": {
+        "deploy": "bin/deploy"
+    },
     "scripts": {
         "build": "pnpm clean && tsc",
         "clean": "rimraf dist",
@@ -20,24 +23,28 @@
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "watch": "tsc --watch"
+        "watch": "tsc --watch",
+        "cli": "tsc && node dist/cli/index.js"
     },
     "files": [
         "LICENSE",
         "dist",
         "ui5.yaml",
+        "bin",
         "!dist/*.map",
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@ui5/fs": "2.0.6",
+        "command-line-args": "5.2.1",
         "dotenv": "16.0.0",
-        "i18next": "20.3.2",
         "yazl": "2.5.1"
     },
     "devDependencies": {
+        "@types/command-line-args": "5.2.0",
         "@types/yazl": "2.4.2",
         "nock": "13.2.4"
     },

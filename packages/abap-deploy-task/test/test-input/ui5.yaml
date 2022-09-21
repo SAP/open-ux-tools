@@ -2,8 +2,3 @@ specVersion: '2.6'
 metadata:
     name: test-project
 type: application
-builder:
-    customTasks:
-        - name: abap-deploy-task
-          afterTask: generateVersionInfo
-          configuration: {}

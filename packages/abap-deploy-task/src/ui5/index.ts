@@ -1,21 +1,8 @@
 import { ZipFile } from 'yazl';
-import { createWriteStream } from 'fs';
-import { resolve as resolvePath } from 'path';
+import type { TaskParameters } from '@ui5/builder';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { TaskParameters } from '../types';
-
-/**
- * Create a zip file based on the given object.
- *
- * @param zip ZipFile as object
- */
-function writeZipFile(zip: ZipFile): Promise<string> {
-    return new Promise<string>((resolve) => {
-        const archive = resolvePath(process.cwd(), 'archive.zip');
-        zip.outputStream.pipe(createWriteStream(archive)).on('close', () => resolve(archive));
-        zip.end({ forceZip64Format: false });
-    });
-}
+import type { AbapDeployConfig } from '../types';
+import { createBuffer, deploy } from '../base';
 
 /**
  * Custom task to upload the build result to the UI5 ABAP Repository.
@@ -26,10 +13,14 @@ function writeZipFile(zip: ZipFile): Promise<string> {
  * @param params.taskUtil
  * @param params.options
  */
-async function task({ workspace, dependencies, taskUtil, options }: TaskParameters<object>): Promise<void> {
+async function task({ workspace, dependencies, taskUtil, options }: TaskParameters<AbapDeployConfig>): Promise<void> {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'abap-deploy-task' })]
     });
+
+    if (!options.configuration) {
+        throw new Error('TODO');
+    }
 
     logger.info(`Deploying ${options.projectName}`);
 
@@ -42,7 +33,9 @@ async function task({ workspace, dependencies, taskUtil, options }: TaskParamete
         const buffer = await resource.getBuffer();
         zip.addBuffer(buffer, path);
     }
-    await writeZipFile(zip);
+    const archive = await createBuffer(zip);
+
+    deploy(archive, options.configuration.target, options.configuration.app, options.configuration.test);
 }
 
 export = task;

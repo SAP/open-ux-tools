@@ -1,39 +1,29 @@
-import type { DuplexCollection, AbstractReader } from '@ui5/fs';
-import type { TaskUtil } from '@ui5/builder.tasks';
+export const NAME = 'abap-deploy-task';
 
-export interface TaskParameters<C> {
-    /**
-     * DuplexCollection to read and write files
-     */
-    workspace: DuplexCollection;
+export interface AbapDescriptor {
+    name: string;
+    desription: string;
+    package: string;
+    transport: string;
+}
 
-    /**
-     * Reader or Collection to read dependency files
-     */
-    dependencies: AbstractReader;
+export interface AbapTarget {
+    url?: string;
+    client?: string;
+    destination?: string;
+    scp?: boolean;
+}
 
-    /**
-     * Specification Version dependent interface to a @ui5/builder.tasks.TaskUtil instance
-     */
-    taskUtil: TaskUtil;
+export interface AbapDeployConfig {
+    target: AbapTarget;
+    app: AbapDescriptor;
+    test?: boolean;
+}
 
-    /**
-     * Project specific options
-     */
-    options: {
-        /**
-         * Project name
-         */
-        projectName: string;
-
-        /**
-         * Project namespace if available
-         */
-        projectNamespace?: string;
-
-        /**
-         * Optional task configuration if provided in ui5*.yaml
-         */
-        configuration?: C;
-    };
+export interface CliOptions {
+    config?: string;
+    distFolder?: string;
+    archivePath?: string;
+    archiveUrl?: string;
+    test?: boolean;
 }

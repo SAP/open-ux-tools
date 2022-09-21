@@ -4,4 +4,4 @@ metadata:
 kind: extension
 type: task
 task:
-    path: dist/ui5/task.js
+    path: dist/ui5/index.js

@@ -94,23 +94,29 @@ importers:
 
     packages/abap-deploy-task:
         specifiers:
+            '@sap-ux/axios-extension': workspace:*
+            '@sap-ux/btp-utils': workspace:*
             '@sap-ux/logger': workspace:*
             '@sap-ux/ui5-config': workspace:*
+            '@types/command-line-args': 5.2.0
             '@types/yazl': 2.4.2
-            '@ui5/fs': 2.0.6
+            command-line-args: 5.2.1
             dotenv: 16.0.0
             i18next: 20.3.2
             nock: 13.2.4
             yazl: 2.5.1
         dependencies:
+            '@sap-ux/axios-extension': link:../axios-extension
+            '@sap-ux/btp-utils': link:../btp-utils
             '@sap-ux/logger': link:../logger
             '@sap-ux/ui5-config': link:../ui5-config
-            '@types/yazl': 2.4.2
-            '@ui5/fs': 2.0.6
+            command-line-args: 5.2.1
             dotenv: 16.0.0
             i18next: 20.3.2
             yazl: 2.5.1
         devDependencies:
+            '@types/command-line-args': 5.2.0
+            '@types/yazl': 2.4.2
             nock: 13.2.4
 
     packages/axios-extension:
@@ -5402,6 +5408,13 @@ packages:
             '@types/node': 17.0.9
         dev: true
 
+    /@types/command-line-args/5.2.0:
+        resolution:
+            {
+                integrity: sha512-UuKzKpJJ/Ief6ufIaIzr3A/0XnluX7RvFgwkV89Yzvm77wCh1kFaFmqN8XEnGcN62EuHdedQjEMb8mYxFLGPyA==
+            }
+        dev: true
+
     /@types/connect/3.4.35:
         resolution:
             {
@@ -6142,7 +6155,7 @@ packages:
             }
         dependencies:
             '@types/node': 17.0.9
-        dev: false
+        dev: true
 
     /@types/yeoman-environment/2.10.6:
         resolution:
@@ -6379,34 +6392,6 @@ packages:
             '@typescript-eslint/types': 5.36.1
             eslint-visitor-keys: 3.3.0
         dev: true
-
-    /@ui5/fs/2.0.6:
-        resolution:
-            {
-                integrity: sha512-dBugwsHP7F7IrfVAaqf7FSDhknK6RhrLOpgkp7FmL/WRA02Q3FQzroFJc7CZEP4bOnAvWC3TpghOfHV2/RqR3A==
-            }
-        engines: { node: '>= 10', npm: '>= 5' }
-        dependencies:
-            '@ui5/logger': 2.0.1
-            clone: 2.1.2
-            globby: 11.1.0
-            graceful-fs: 4.2.9
-            make-dir: 3.1.0
-            micromatch: 4.0.4
-            minimatch: 3.1.2
-            pretty-hrtime: 1.0.3
-            random-int: 2.0.1
-        dev: false
-
-    /@ui5/logger/2.0.1:
-        resolution:
-            {
-                integrity: sha512-FU5moQF9HATZEIJVQxXWRsUKMveIRJNPSmH3Mptcuc05f6gKu1BWcamDaDHXmMSyoKRounY9Aok94NTQMi7eDw==
-            }
-        engines: { node: '>= 10', npm: '>= 5' }
-        dependencies:
-            npmlog: 4.1.2
-        dev: false
 
     /@webassemblyjs/ast/1.11.1:
         resolution:
@@ -7164,6 +7149,7 @@ packages:
             delegates: 1.0.0
             readable-stream: 2.3.7
         dev: false
+        optional: true
 
     /are-we-there-yet/2.0.0:
         resolution:
@@ -7207,6 +7193,14 @@ packages:
         resolution: { integrity: sha1-45sJrqne+Gao8gbiiK9jkZuuOcQ= }
         engines: { node: '>=0.10.0' }
         dev: true
+
+    /array-back/3.1.0:
+        resolution:
+            {
+                integrity: sha512-TkuxA4UCOvxuDK6NZYXCalszEzj+TLszyASooky+i742l9TqsOdYCMJJupxRic61hwquNtppB3hgcuq9SVSH1Q==
+            }
+        engines: { node: '>=6' }
+        dev: false
 
     /array-differ/3.0.0:
         resolution:
@@ -8913,6 +8907,7 @@ packages:
             }
         engines: { node: '>=0.10.0' }
         dev: false
+        optional: true
 
     /collapse-white-space/1.0.6:
         resolution:
@@ -9030,6 +9025,19 @@ packages:
                 integrity: sha512-GHuDRO12Sypu2cV70d1dkA2EUmXHgntrzbpvOB+Qy+49ypNfGgFQIC2fhhXbnyrJRynDCAARsT7Ou0M6hirpfw==
             }
         dev: true
+
+    /command-line-args/5.2.1:
+        resolution:
+            {
+                integrity: sha512-H4UfQhZyakIjC74I9d34fGYDwk3XpSr17QhEd0Q3I9Xq1CETHo4Hcuo87WyWHpAF1aSLjLRf5lD9ZGX2qStUvg==
+            }
+        engines: { node: '>=4.0.0' }
+        dependencies:
+            array-back: 3.1.0
+            find-replace: 3.0.0
+            lodash.camelcase: 4.3.0
+            typical: 4.0.0
+        dev: false
 
     /commander/2.20.3:
         resolution:
@@ -11990,6 +11998,16 @@ packages:
             pkg-dir: 4.2.0
         dev: true
 
+    /find-replace/3.0.0:
+        resolution:
+            {
+                integrity: sha512-6Tb2myMioCAgv5kfvP5/PkZZ/ntTpVK39fHY7WkWBgvbeE+VHd/tZuZ4mrC+bxh4cfOZeYKVPaJIZtZXV7GNCQ==
+            }
+        engines: { node: '>=4.0.0' }
+        dependencies:
+            array-back: 3.1.0
+        dev: false
+
     /find-up/1.1.2:
         resolution:
             {
@@ -12483,6 +12501,7 @@ packages:
             strip-ansi: 3.0.1
             wide-align: 1.1.5
         dev: false
+        optional: true
 
     /gauge/3.0.2:
         resolution:
@@ -13861,6 +13880,7 @@ packages:
         dependencies:
             number-is-nan: 1.0.1
         dev: false
+        optional: true
 
     /is-fullwidth-code-point/2.0.0:
         resolution:
@@ -15703,6 +15723,13 @@ packages:
             p-locate: 5.0.0
         dev: true
 
+    /lodash.camelcase/4.3.0:
+        resolution:
+            {
+                integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==
+            }
+        dev: false
+
     /lodash.clonedeep/4.5.0:
         resolution: { integrity: sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8= }
         dev: false
@@ -15907,6 +15934,7 @@ packages:
         engines: { node: '>=8' }
         dependencies:
             semver: 6.3.0
+        dev: true
 
     /make-error/1.3.6:
         resolution:
@@ -16913,6 +16941,7 @@ packages:
             gauge: 2.7.4
             set-blocking: 2.0.0
         dev: false
+        optional: true
 
     /npmlog/5.0.1:
         resolution:
@@ -16949,6 +16978,7 @@ packages:
             }
         engines: { node: '>=0.10.0' }
         dev: false
+        optional: true
 
     /nwsapi/2.2.0:
         resolution:
@@ -18167,6 +18197,7 @@ packages:
                 integrity: sha512-66hKPCr+72mlfiSjlEB1+45IjXSqvVAIy6mocupoww4tBFE9R9IhwwUGoI4G++Tc9Aq+2rxOt0RFU6gPcrte0A==
             }
         engines: { node: '>= 0.8' }
+        dev: true
 
     /pretty-quick/3.1.3_prettier@2.7.1:
         resolution:
@@ -18485,14 +18516,6 @@ packages:
             discontinuous-range: 1.0.0
             ret: 0.1.15
         dev: true
-
-    /random-int/2.0.1:
-        resolution:
-            {
-                integrity: sha512-YALjWK2Rt9EMIv9BF/3mvlzFWQathsvb5UZmN1QmhfIOfcQYXc/UcLzg0ablqesSBpBVLt2Tlwv/eTuBh4LXUQ==
-            }
-        engines: { node: '>=8' }
-        dev: false
 
     /randombytes/2.1.0:
         resolution:
@@ -19557,6 +19580,7 @@ packages:
                 integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
             }
         hasBin: true
+        dev: true
 
     /semver/7.3.5:
         resolution:
@@ -20272,6 +20296,7 @@ packages:
             is-fullwidth-code-point: 1.0.0
             strip-ansi: 3.0.1
         dev: false
+        optional: true
 
     /string-width/3.1.0:
         resolution:
@@ -21378,6 +21403,14 @@ packages:
         engines: { node: '>=4.2.0' }
         hasBin: true
         dev: true
+
+    /typical/4.0.0:
+        resolution:
+            {
+                integrity: sha512-VAH4IvQ7BDFYglMd7BPRDfLgxZZX4O4TFcRDA6EN5X7erNJJq+McIEp8np9aVtxrCJ6qx4GTYVfOWNjcqwZgRw==
+            }
+        engines: { node: '>=8' }
+        dev: false
 
     /uglify-js/3.17.0:
         resolution:
