@@ -74,6 +74,42 @@ export async function findProjectRoot(path: string, sapuxRequired = true): Promi
 }
 
 /**
+ * Find app root and project root from given paths and sapux entry.
+ *
+ *
+ * @param sapux - value of sapux in package.json, either boolean or string array
+ * @param path - path where the search started from
+ * @param root - root of the app or project, where package.json is located
+ * @returns - appRoot and projectRoot or null
+ */
+function findRootsWithSapux(
+    sapux: boolean | string[],
+    path: string,
+    root: string
+): { appRoot: string; projectRoot: string } | null {
+    if (typeof sapux === 'boolean' && sapux === true) {
+        return {
+            appRoot: root,
+            projectRoot: root
+        };
+    } else if (Array.isArray(sapux)) {
+        // Backward compatibility for FE apps in CAP projects that have no app package.json,
+        // but are listed in CAP root sapux array
+        const pathWithSep = path.endsWith(sep) ? path : path + sep;
+        const relAppPaths = sapux.map((a) => join(...a.split(/\\|\//)));
+        const relApp = relAppPaths.find((app) => pathWithSep.startsWith(join(root, app) + sep));
+        if (relApp) {
+            return {
+                appRoot: join(root, relApp),
+                projectRoot: root
+            };
+        }
+    }
+    // The first package.json we found when searching up contains sapux, but not true -> not supported
+    return null;
+}
+
+/**
  * Find the app root and project root folder for a given path. In case of apps in non CAP projects they are the same.
  * This function also validates if an app is supported by tools considering Fiori elements apps and SAPUI5
  * freestyle apps. Only if project root and app root can be determined, they are returned, otherwise null is returned.
@@ -98,25 +134,7 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
         const appPckJson = await readJSON<Package>(join(appRoot, FileName.Package));
         // Check for most common app, Fiori elements with sapux=true in package.json
         if (appPckJson.sapux) {
-            if (typeof appPckJson.sapux === 'boolean' && appPckJson.sapux === true) {
-                return {
-                    appRoot,
-                    projectRoot: appRoot
-                };
-            } else if (Array.isArray(appPckJson.sapux)) {
-                // Backward compatibility for FE apps in CAP projects that have no app package.json,
-                // but are listed in CAP root sapux array
-                const relAppPaths = appPckJson.sapux.map((a) => join(...a.split(/\\|\//)));
-                const relApp = relAppPaths.find((app) => path.startsWith(join(appRoot, app) + sep));
-                if (relApp) {
-                    return {
-                        appRoot: join(appRoot, relApp),
-                        projectRoot: appRoot
-                    };
-                }
-            }
-            // The first package.json we found when searching up contains sapux, but not true -> not supported
-            return null;
+            return findRootsWithSapux(appPckJson.sapux, path, appRoot);
         }
         if (await isCapProject(appRoot, appPckJson)) {
             // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
