@@ -1,4 +1,5 @@
-import { UI5Config, AbapApp, UI5ProxyConfig } from '../src';
+import type { AbapApp, UI5ProxyConfig } from '../src';
+import { UI5Config } from '../src';
 
 describe('UI5Config', () => {
     // values for testing
@@ -237,6 +238,7 @@ describe('UI5Config', () => {
         const app: AbapApp = {
             name: '~name',
             desription: '~description',
+            // eslint-disable-next-line quote-props
             package: '~package',
             transport: '~transport'
         };
