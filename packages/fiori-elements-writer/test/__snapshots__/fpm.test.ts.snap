@@ -3669,7 +3669,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
-    \\"@sapui5/ts-types-esm\\": \\"1.102.x\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.96.11\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
@@ -3982,6 +3982,53 @@ export default class Main extends Controller {
         <content></content>
     </Page>
 </mvc:View>",
+    "state": "modified",
+  },
+  "webapp/ext/sap.fe.d.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import Routing from 'sap/fe/core/controllerextensions/Routing';
+import EditFlow from 'sap/fe/core/controllerextensions/EditFlow';
+import IntentBasedNavigation from 'sap/fe/core/controllerextensions/IntentBasedNavigation';
+
+/**
+ * Missing public properties (https://ui5.sap.com/#/api/sap.fe.core.ExtensionAPI)
+ */
+interface ExtensionAPIProperties {
+    routing: Routing;
+    editFlow: EditFlow;
+    intentBasedNavigation: IntentBasedNavigation;
+}
+
+/**
+ * Add missing public properties
+ */
+declare module 'sap/fe/core/ExtensionAPI' {
+	export default interface ExtensionAPI extends ExtensionAPIProperties {}
+}
+
+/**
+ * Add missing public properties
+ */
+declare module 'sap/fe/templates/ObjectPage/ExtensionAPI' {
+	export default interface ExtensionAPI extends ExtensionAPIProperties {}
+}
+
+/**
+ * Add missing public properties
+ */
+declare module 'sap/fe/templates/ListReport/ExtensionAPI' {
+	export default interface ExtensionAPI extends ExtensionAPIProperties {}
+}
+
+/**
+ * Enhancing the PageController type to simplify the work with the extension API
+ */
+declare module 'sap/fe/core/PageController' {
+	export default interface PageController {
+		getExtensionAPI() : ExtensionAPI;
+	}
+}
+",
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
