@@ -13,7 +13,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -34,7 +34,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -55,7 +55,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -76,7 +76,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -100,7 +100,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -150,7 +150,7 @@ exports[`CustomSection generateCustomSection Versions 1.84, with handler, all pr
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -197,7 +197,7 @@ exports[`CustomSection generateCustomSection Versions 1.85, with handler, all pr
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -243,7 +243,7 @@ exports[`CustomSection generateCustomSection Versions 1.86, with handler, all pr
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -289,7 +289,7 @@ exports[`CustomSection generateCustomSection Versions 1.98, with handler, all pr
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -509,7 +509,7 @@ exports[`CustomSection generateCustomSection with handler, all properties 3`] = 
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };

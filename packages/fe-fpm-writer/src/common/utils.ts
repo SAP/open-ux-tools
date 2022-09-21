@@ -1,4 +1,8 @@
+import type { Editor } from 'mem-fs-editor';
 import os from 'os';
+import { join } from 'path';
+import { coerce, minor } from 'semver';
+import { getTemplatePath } from '../templates';
 import type { FileContentPosition } from '../common/types';
 
 /**
@@ -47,4 +51,20 @@ export function insertTextAtPosition(text: string, content: string, position: Fi
     // Update line with inserting passed text
     lines[position.line] = insertTextAtAbsolutePosition(text, lines[position.line], position.character);
     return lines.join(os.EOL);
+}
+
+/**
+ * Adds type extensions for sap.fe types if an older version is used.
+ * The types were fixed in 1.108 and downported to 1.102.
+ *
+ * @param basePath - the base path
+ * @param minUI5Version - minimal required UI5 version
+ * @param fs - the memfs editor instance
+ */
+export function addExtensionTypes(basePath: string, minUI5Version: string | undefined, fs: Editor) {
+    const version = minor(coerce(minUI5Version) ?? '1.108.0');
+    const path = join(basePath, '/webapp/ext/sap.fe.d.ts');
+    if (version < 108 && version !== 102 && !fs.exists(path)) {
+        fs.copyTpl(getTemplatePath('common/sap.fe.d.ts'), path, { version });
+    }
 }

@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.3
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+
+## 0.17.2
+
+### Patch Changes
+
+-   c9461f0: Fix: 'enableFPM' method throws 'Invalid Version' exception if unknown UI5 version stored in '["sap.ui5"]["dependencies"]["minUI5Version"]'. Like version '\${sap.ui5.dist.version}'
+
 ## 0.17.1
 
 ### Patch Changes

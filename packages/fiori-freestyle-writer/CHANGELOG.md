@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.14.5
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+-   Updated dependencies [b72abf0]
+    -   @sap-ux/ui5-application-writer@0.17.2
+
 ## 0.14.4
 
 ### Patch Changes
