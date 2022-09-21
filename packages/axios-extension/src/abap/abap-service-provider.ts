@@ -96,6 +96,9 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
         return this.s4Cloud;
     }
 
+    /**
+     * @returns AdtCatalogService
+     */
     private getAdtCatalogService(): AdtCatalogService {
         if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
             const adtCatalogSerivce = this.createService<AdtCatalogService>(

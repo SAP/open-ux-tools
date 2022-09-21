@@ -12,6 +12,13 @@ export const redirectErrorHtml = (systemId?: string): string => {
     return redirectHtml({ title, content });
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.title
+ * @param root0.content
+ * @returns string
+ */
 function redirectHtml({ title, content }: { title: string; content: string }): string {
     return `
 <html>

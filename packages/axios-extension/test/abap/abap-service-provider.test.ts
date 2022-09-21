@@ -234,6 +234,7 @@ describe('AbapServiceProvider', () => {
     });
 
     describe('Use existing connection session', () => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const attachUaaAuthInterceptorSpy = jest.spyOn(require('../../src/auth'), 'attachUaaAuthInterceptor');
 
         test('abap service provider', async () => {

@@ -11,6 +11,11 @@ export interface ODataError {
  * Error object that is to be thrown if an OData service responds with an error
  */
 export class ODataRequestError extends Error {
+    /**
+     *
+     * @param odata
+     * @returns boolean
+     */
     static containsError(odata: unknown): boolean {
         if (odata?.['error']) {
             return true;
@@ -19,6 +24,10 @@ export class ODataRequestError extends Error {
         }
     }
 
+    /**
+     *
+     * @param responseData
+     */
     constructor(responseData: unknown) {
         const error: ODataError = responseData['error'];
         super(`${error.message} (${error.code})`);
