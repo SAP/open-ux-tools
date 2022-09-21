@@ -1,4 +1,5 @@
-import { FioriElementsApp, generate, TemplateType, LROPSettings } from '../src';
+import type { FioriElementsApp, LROPSettings } from '../src';
+import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import {
@@ -150,8 +151,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }),
                 service: v2Service
             } as FioriElementsApp<LROPSettings>
-        }
-        ,
+        },
         {
             name: 'lropV2_ts',
             config: {

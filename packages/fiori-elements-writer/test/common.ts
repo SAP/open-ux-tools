@@ -1,9 +1,10 @@
-import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
+import type { OdataService } from '@sap-ux/odata-service-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFileSync } from 'fs';
 import { create as createStore } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
+import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
 
 export const testOutputDir = join(__dirname, 'test-output');
 
@@ -22,6 +23,7 @@ const sampleTestStore = create(createStore());
 
 /**
  * Get (and load to store) the specified service test data
+ *
  * @param serviceName
  * @param serviceType
  * @returns
@@ -59,7 +61,7 @@ export const feBaseConfig = (
             name: appId,
             description: 'A Fiori application.'
         }
-    };
+    } as Partial<FioriElementsApp<LROPSettings | FEOPSettings>>;
 
     if (addUi5Config) {
         config.ui5 = {
