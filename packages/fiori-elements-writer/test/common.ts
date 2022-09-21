@@ -57,6 +57,7 @@ export const feBaseConfig = (
         appOptions: {
             loadReuseLibs: true
         },
+        // eslint-disable-next-line quote-props
         package: {
             name: appId,
             description: 'A Fiori application.'
