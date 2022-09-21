@@ -22,6 +22,7 @@ const mockGetSecureStore = mocked(getSecureStore);
 const mockSecureStore = {
     save: jest.fn(),
     retrieve: jest.fn(),
+    // eslint-disable-next-line quote-props
     delete: jest.fn(),
     getAll: jest.fn()
 };

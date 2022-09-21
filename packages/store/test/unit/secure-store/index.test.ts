@@ -22,6 +22,7 @@ describe('getSecureStore', () => {
             jest.spyOn(appStudioUtils, 'isAppStudio').mockReturnValue(false);
         });
         it('returns KeytarStore if keytar can be required with no errors', () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             jest.mock('keytar', () => {});
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
