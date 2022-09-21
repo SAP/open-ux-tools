@@ -1,7 +1,9 @@
-import { OdataService, OdataVersion } from '../src/types';
+import type { OdataService } from '../src/types';
+import { OdataVersion } from '../src/types';
 import { generate } from '../src';
 import { join } from 'path';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { readFile, removeSync } from 'fs-extra';
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -41,6 +43,10 @@ describe('ODataService templates', () => {
         fs = create(createStorage());
     });
 
+    /**
+     *
+     * @param name testDir name
+     */
     async function createTestDir(name: string): Promise<string> {
         const testDir = join(outputDir, name);
         const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
