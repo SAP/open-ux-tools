@@ -8,7 +8,4 @@ export interface Package extends PackageJson {
     remarkConfig?: object;
 }
 
-export const enum UI5FlexLayer {
-    VENDOR = 'VENDOR',
-    CUSTOMER_BASE = 'CUSTOMER_BASE'
-}
+export type UI5FlexLayer = 'VENDOR' | 'CUSTOMER_BASE';
