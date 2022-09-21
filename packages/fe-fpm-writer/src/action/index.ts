@@ -8,7 +8,7 @@ import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
-import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
 import { getTemplatePath } from '../templates';
 
 /**
@@ -87,7 +87,14 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     // Apply event handler
     if (config.eventHandler) {
-        config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, false, config.typescript);
+        config.eventHandler = applyEventHandlerConfiguration(
+            fs,
+            config,
+            config.eventHandler,
+            false,
+            config.typescript,
+            contextParameter
+        );
     }
 
     // enhance manifest with action definition and controller reference

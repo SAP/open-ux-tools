@@ -193,8 +193,9 @@ describe('use FPM with existing apps', () => {
             );
             // Generate custom action by appending existing file
             const fragment = config.settings.typescript
-                ? `\nexport function onAppended() {\n            window.location.href += '/_Booking';\n        }`
+                ? `\nexport function onAppended() {\n\twindow.location.href += '/_Booking';\n}`
                 : `,\n        onAppended: function() {\n            window.location.href += '/_Booking';\n        }`;
+            const position = config.settings.typescript ? { line: 13, character: 9 } : { line: 8, character: 9 };
             generateCustomAction(
                 config.path,
                 {
@@ -211,10 +212,7 @@ describe('use FPM with existing apps', () => {
                         fnName: 'onAppended',
                         insertScript: {
                             fragment,
-                            position: {
-                                line: 8,
-                                character: 9
-                            }
+                            position
                         }
                     },
                     folder: join('ext', 'anotherCustomAction'),

@@ -1,5 +1,14 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.7.4
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+-   Updated dependencies [b72abf0]
+    -   @sap-ux/fe-fpm-writer@0.17.3
+    -   @sap-ux/ui5-application-writer@0.17.2
+
 ## 0.7.3
 
 ### Patch Changes
