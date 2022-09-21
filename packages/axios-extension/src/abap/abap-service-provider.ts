@@ -136,12 +136,13 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     /**
      * Create or get an existing instance of the UI5 ABAP repository service.
      *
+     * @param alias - optional alias path on which the UI5Repository service is exposed
      * @returns an instance of the UI5 ABAP repository service.
      */
-    public ui5AbapRepository(): Ui5AbapRepositoryService {
+    public getUi5AbapRepository(alias?: string): Ui5AbapRepositoryService {
         if (!this.services[Ui5AbapRepositoryService.PATH]) {
             this.services[Ui5AbapRepositoryService.PATH] = this.createService<Ui5AbapRepositoryService>(
-                Ui5AbapRepositoryService.PATH,
+                alias ?? Ui5AbapRepositoryService.PATH,
                 Ui5AbapRepositoryService
             );
         }
@@ -153,7 +154,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @returns an instance of the app index service.
      */
-    public appIndex(): AppIndexService {
+    public getAppIndex(): AppIndexService {
         if (!this.services[AppIndexService.PATH]) {
             this.services[AppIndexService.PATH] = this.createService<AppIndexService>(
                 AppIndexService.PATH,

@@ -73,15 +73,15 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Deploy the given archive either by creating a new BSP or updating an existing one.
      *
-     * @param archivePath path to a zip archive containing the application files
+     * @param archive zip archive containing the application files as buffer
      * @param app application configuration
      * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
      * @returns the Axios response object for futher processing
      */
-    public async deploy(archivePath: string, app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
+    public async deploy(archive: Buffer, app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
         const info: AppInfo = await this.getInfo(app.name);
         const payload = this.createPayload(
-            archivePath,
+            archive,
             app.name,
             app.description || 'Deployed with SAP Fiori tools',
             info ? info.Package : app.package
@@ -176,14 +176,14 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Create the request payload for a deploy request.
      *
-     * @param archive archive file path
+     * @param archive archive as buffer
      * @param name application name
      * @param description description for the deployed app
      * @param abapPackage ABAP package containing the app
      * @returns XML based request payload
      */
-    protected createPayload(archive: string, name: string, description: string, abapPackage: string): string {
-        const base64Data = readFileSync(archive, { encoding: 'base64' });
+    protected createPayload(archive: Buffer, name: string, description: string, abapPackage: string): string {
+        const base64Data = archive.toString('base64');
         const time = new Date().toISOString();
         const escapedName = encodeXmlValue(name);
         return (

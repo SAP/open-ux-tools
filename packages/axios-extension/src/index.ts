@@ -1,3 +1,4 @@
+export { AxiosRequestConfig } from 'axios';
 export * from './base/odata-service';
 export * from './base/service-provider';
 export * from './abap';
