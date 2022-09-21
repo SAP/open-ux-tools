@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.2
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+
 ## 0.17.1
 
 ### Patch Changes

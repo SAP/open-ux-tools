@@ -113,30 +113,30 @@ describe('Utils', () => {
         const host = 'http://www.host.example';
 
         test('no_proxy config does not exist', () => {
-            expect(isHostExcludedFromProxy(undefined, host)).toBeFalsy();
+            expect(isHostExcludedFromProxy(host, undefined)).toBeFalsy();
         });
 
         test('host is not excluded via no_proxy config', () => {
-            expect(isHostExcludedFromProxy('host,www', host)).toBeFalsy();
+            expect(isHostExcludedFromProxy(host, 'host,www')).toBeFalsy();
         });
 
         test('host is not excluded via no_proxy config but has similar ending', () => {
-            expect(isHostExcludedFromProxy('ample', host)).toBeFalsy();
-            expect(isHostExcludedFromProxy('ost.example', host)).toBeFalsy();
+            expect(isHostExcludedFromProxy(host, 'ample')).toBeFalsy();
+            expect(isHostExcludedFromProxy(host, 'ost.example')).toBeFalsy();
         });
 
         test('host is excluded via no_proxy config', () => {
-            expect(isHostExcludedFromProxy('host.example', host)).toBeTruthy();
-            expect(isHostExcludedFromProxy('example', host)).toBeTruthy();
+            expect(isHostExcludedFromProxy(host, 'host.example')).toBeTruthy();
+            expect(isHostExcludedFromProxy(host, 'example')).toBeTruthy();
         });
 
         test('host is excluded via no_proxy config, bit with leading .', () => {
-            expect(isHostExcludedFromProxy('.host.example', host)).toBeTruthy();
-            expect(isHostExcludedFromProxy('.example', host)).toBeTruthy();
+            expect(isHostExcludedFromProxy(host, '.host.example')).toBeTruthy();
+            expect(isHostExcludedFromProxy(host, '.example')).toBeTruthy();
         });
 
         test('all hosts are excluded from proxy', () => {
-            expect(isHostExcludedFromProxy('*', host)).toBeTruthy();
+            expect(isHostExcludedFromProxy(host, '*')).toBeTruthy();
         });
     });
 

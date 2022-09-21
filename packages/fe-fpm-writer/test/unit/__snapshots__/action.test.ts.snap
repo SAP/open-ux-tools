@@ -128,7 +128,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -143,7 +143,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -158,7 +158,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -173,7 +173,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -191,7 +191,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -323,7 +323,7 @@ exports[`CustomAction generateCustomAction specific target folder, event handler
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
