@@ -236,6 +236,7 @@ describe('Setting defaults', () => {
                 id: 'test_appId',
                 description: 'Should be default package description'
             },
+            // eslint-disable-next-line quote-props
             package: {
                 name: 'test-package-name',
                 dependencies: {
