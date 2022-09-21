@@ -28,10 +28,15 @@ describe('use FPM with existing apps', () => {
         }
     });
 
-    afterAll(() => {
-        if (debug) {
-            fs.commit(() => {});
-        }
+    afterAll(async () => {
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
     });
 
     describe('extend UI5 application with FPM', () => {

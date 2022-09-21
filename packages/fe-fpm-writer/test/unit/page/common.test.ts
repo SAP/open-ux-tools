@@ -1,7 +1,8 @@
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { Manifest } from '../../../src/common/types';
+import type { Manifest } from '../../../src/common/types';
 import {
     generateRoutePattern,
     generateRouteTarget,
@@ -10,7 +11,7 @@ import {
     validatePageConfig
 } from '../../../src/page/common';
 import type { ManifestNamespace } from '@sap-ux/ui5-config';
-import { CustomPage } from '../../../src/page/types';
+import type { CustomPage } from '../../../src/page/types';
 
 describe('common page functionality', () => {
     const mainEntity = 'Main';

@@ -1,8 +1,10 @@
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateControllerExtension } from '../../src';
-import { ControllerExtension, ControllerExtensionPageType } from '../../src/controller-extension/types';
+import type { ControllerExtension } from '../../src/controller-extension/types';
+import { ControllerExtensionPageType } from '../../src/controller-extension/types';
 import {
     UI5_CONTROLLER_EXTENSION_LIST_REPORT,
     UI5_CONTROLLER_EXTENSION_OBJECT_PAGE
@@ -41,6 +43,7 @@ describe('ControllerExtension', () => {
                             TestObjectPage: { name: 'sap.fe.templates.ObjectPage' }
                         }
                     },
+                    // eslint-disable-next-line  quote-props
                     extends: {
                         extensions
                     }
@@ -63,6 +66,7 @@ describe('ControllerExtension', () => {
         ];
 
         for (const pageType of pageTypeTests) {
+            // eslint-disable-next-line  no-loop-func
             test(`New controller extension - ${pageType}`, () => {
                 generateControllerExtension(
                     testDir,
@@ -198,6 +202,7 @@ describe('ControllerExtension', () => {
             ];
 
             for (const testCase of testCases) {
+                // eslint-disable-next-line  no-loop-func
                 test(testCase.name, () => {
                     const manifestWithExtensions = getManifest(getExtensions());
                     fs = create(createStorage());
@@ -233,6 +238,7 @@ describe('ControllerExtension', () => {
             ];
 
             for (const testCase of mixStateTestCases) {
+                // eslint-disable-next-line  no-loop-func
                 test(testCase.name, () => {
                     const extension = getExtensions();
                     extension['sap.ui.controllerExtensions'][
@@ -253,6 +259,7 @@ describe('ControllerExtension', () => {
             // Page types
             const expectedTestControllerPath = getControllerPath(controllerExtension, true);
             for (const pageType of pageTypeTests) {
+                // eslint-disable-next-line  no-loop-func
                 test(`New controller extension - ${pageType}`, () => {
                     generateControllerExtension(
                         testDir,
@@ -279,6 +286,7 @@ describe('ControllerExtension', () => {
             ];
 
             for (const extension of manualExtensionsTests) {
+                // eslint-disable-next-line  no-loop-func
                 test(`New controller extension with manual target - ${extension}`, () => {
                     generateControllerExtension(
                         testDir,

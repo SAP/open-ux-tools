@@ -1,10 +1,13 @@
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { BuildingBlockType, Chart, Field, FilterBar, generateBuildingBlock } from '../../src';
+import type { Chart, Field, FilterBar } from '../../src';
+import { BuildingBlockType, generateBuildingBlock } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
 import { promisify } from 'util';
+import { removeSync } from 'fs-extra';
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -12,10 +15,15 @@ describe('Building Blocks', () => {
     let testXmlViewContent: string;
     const manifestFilePath = 'webapp/manifest.json';
     const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
+    const testOutputRoot = 'test/unit/test-output/building-block';
+
+    beforeAll(() => {
+        removeSync(testOutputRoot); // even for in memory
+    });
 
     beforeEach(async () => {
         fs = create(createStorage());
-        testAppPath = join('test/unit/test-output/building-block', `${Date.now()}`);
+        testAppPath = join(testOutputRoot, `${Date.now()}`);
         fs.delete(testAppPath);
         if (!testXmlViewContent) {
             testXmlViewContent = (
@@ -27,11 +35,17 @@ describe('Building Blocks', () => {
         }
     });
 
+    /**
+     *
+     * @param fs
+     */
     async function writeFilesForDebugging(fs: Editor) {
         const debug = !!process.env['UX_DEBUG'];
         // Write the files to the `test-output` folder for debugging
-        const fsCommit = promisify(fs.commit);
-        await fsCommit.call(fs);
+        if (debug) {
+            const fsCommit = promisify(fs.commit);
+            await fsCommit.call(fs);
+        }
     }
 
     test('validate base and view paths', async () => {

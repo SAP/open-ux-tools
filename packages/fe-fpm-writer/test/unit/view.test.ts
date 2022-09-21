@@ -1,9 +1,10 @@
 import os from 'os';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomView } from '../../src';
-import { CustomView } from '../../src/view/types';
+import type { CustomView } from '../../src/view/types';
 import * as manifest from './sample/view/webapp/manifest.json';
 import type { Views, EventHandlerConfiguration } from '../../src/common/types';
 import type { Manifest } from '@sap-ux/ui5-config';
@@ -201,9 +202,11 @@ describe('CustomView', () => {
             190 + 8 * os.EOL.length
         ];
         for (const position of positions) {
-            test(`"eventHandler" is object. Append new function to existing js file with position ${
+            const testName = `"eventHandler" is object. Append new function to existing js file with position ${
                 typeof position === 'object' ? JSON.stringify(position) : 'absolute'
-            }`, () => {
+            }`;
+            // eslint-disable-next-line  no-loop-func
+            test(`${testName}`, () => {
                 const fileName = 'MyExistingAction';
                 // Create existing file with existing actions
                 const folder = join('extensions', 'custom');

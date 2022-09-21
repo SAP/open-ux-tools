@@ -1,12 +1,15 @@
 import os from 'os';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column';
-import { Availability, HorizontalAlign, CustomTableColumn } from '../../src/column/types';
+import type { CustomTableColumn } from '../../src/column/types';
+import { Availability, HorizontalAlign } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
-import { Placement, EventHandlerConfiguration } from '../../src/common/types';
+import type { EventHandlerConfiguration } from '../../src/common/types';
+import { Placement } from '../../src/common/types';
 
 const testDir = join(__dirname, 'sample/column');
 
@@ -196,9 +199,11 @@ describe('CustomAction', () => {
                 190 + 8 * os.EOL.length
             ];
             for (const position of positions) {
-                test(`"eventHandler" is object. Append new function to existing js file with position ${
+                const testName = `"eventHandler" is object. Append new function to existing js file with position ${
                     typeof position === 'object' ? JSON.stringify(position) : 'absolute'
-                }`, () => {
+                }`;
+                // eslint-disable-next-line  no-loop-func
+                test(`${testName}`, () => {
                     const fileName = 'MyExistingAction';
                     // Create existing file with existing actions
                     const folder = join('extensions', 'custom');

@@ -1,10 +1,12 @@
 import os from 'os';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomSection, getManifestRoot } from '../../src/section';
-import { CustomSection } from '../../src/section/types';
-import { Placement, EventHandlerConfiguration } from '../../src/common/types';
+import type { CustomSection } from '../../src/section/types';
+import type { EventHandlerConfiguration } from '../../src/common/types';
+import { Placement } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
 
 const testDir = join(__dirname, 'sample/section');
@@ -155,6 +157,7 @@ describe('CustomSection', () => {
 
         const testVersions = ['1.85', '1.84', '1.86', '1.98'];
         for (const minUI5Version of testVersions) {
+            // eslint-disable-next-line  no-loop-func
             test(`Versions ${minUI5Version}, with handler, all properties`, () => {
                 const testCustomSection: CustomSection = {
                     ...customSection,
@@ -174,6 +177,7 @@ describe('CustomSection', () => {
 
         const folderVariants = ['extensions/custom', 'extensions\\custom'];
         for (const folderVariant of folderVariants) {
+            // eslint-disable-next-line  no-loop-func
             test(`Existing folder variations - ${folderVariant}`, () => {
                 const testCustomSection = JSON.parse(JSON.stringify(customSection));
                 testCustomSection.folder = folderVariant;
@@ -239,9 +243,11 @@ describe('CustomSection', () => {
                 190 + 8 * os.EOL.length
             ];
             for (const position of positions) {
-                test(`"eventHandler" is object. Append new function to existing js file with position ${
+                const testName = `"eventHandler" is object. Append new function to existing js file with position ${
                     typeof position === 'object' ? JSON.stringify(position) : 'absolute'
-                }`, () => {
+                }`;
+                // eslint-disable-next-line  no-loop-func
+                test(`${testName}`, () => {
                     const fileName = 'MyExistingAction';
                     // Create existing file with existing actions
                     const folder = join('extensions', 'custom');
