@@ -122,7 +122,7 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
 
 /**
  * Get the best types version for the given minUI5Version.
- * For the latest versions the lates S/4 on-premise version (1.102.x) is used, for anything before we match the versions as far back as available.
+ * For the latest versions the LTS S/4 on-premise version (1.102.x) is used, for anything before we match the versions as far back as available.
  *
  * @param minUI5Version the mininum UI5 version that needs to be supported
  * @returns semantic version representing the types version.
