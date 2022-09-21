@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.3
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+
 ## 0.17.2
 
 ### Patch Changes
