@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.9.8
+
+### Patch Changes
+
+-   fac7a5a: Replaced usage of express with simple code to reduce installation size.
+
 ## 0.9.7
 
 ### Patch Changes

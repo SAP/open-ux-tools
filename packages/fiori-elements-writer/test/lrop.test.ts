@@ -150,8 +150,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }),
                 service: v2Service
             } as FioriElementsApp<LROPSettings>
-        }
-        ,
+        },
         {
             name: 'lropV2_ts',
             config: {
