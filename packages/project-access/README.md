@@ -1,6 +1,6 @@
 # @sap-ux/project-access
 
-Library that offers functions to find, read, and modify projects.
+Library that offers functions to find, read, and retrieve project information and artifacts.
 
 
 ## Installation
