@@ -7,6 +7,7 @@ import axios from 'axios';
 import { join } from 'path';
 
 jest.mock('axios');
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('@sap-ux/btp-utils', () => ({

@@ -7,6 +7,7 @@ jest.mock('fs');
 let zipMock;
 jest.mock('archiver', () => ({
     __esModule: true,
+    // eslint-disable-next-line  quote-props
     default: (): typeof zipMock => zipMock
 }));
 
