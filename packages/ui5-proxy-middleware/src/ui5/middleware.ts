@@ -25,7 +25,7 @@ import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Options {
     return {
         secure: config.secure !== undefined ? !!config.secure : true,
-        logLevel: !!config.debug ? 'debug' : 'info',
+        logLevel: config.debug ? 'debug' : 'info',
         logProvider: () => logger
     };
 }
