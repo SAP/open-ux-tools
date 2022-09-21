@@ -1,5 +1,6 @@
 import 'jest-extended';
-import { LogLevel, ToolsLogger, Transport } from '../../../src';
+import type { Transport } from '../../../src';
+import { LogLevel, ToolsLogger } from '../../../src';
 import type { ArrayTransportLogEntry } from '../../../src/transports';
 import {
     ConsoleTransport,
