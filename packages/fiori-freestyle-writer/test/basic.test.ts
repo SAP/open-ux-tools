@@ -1,9 +1,10 @@
-import { FreestyleApp, generate, TemplateType } from '../src';
+import type { FreestyleApp } from '../src';
+import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { BasicAppSettings } from '../src/types';
+import type { BasicAppSettings } from '../src/types';
 
 const TEST_NAME = 'basicTemplate';
 
@@ -30,6 +31,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 id: 'test-template'
             }
         },
+        // eslint-disable-next-line quote-props
         package: {
             name: 'nods1',
             description: 'A Fiori application.'
@@ -135,6 +137,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             app: {
                 id: 'my.demo.App'
             },
+            // eslint-disable-next-line quote-props
             package: {
                 name: 'my.demo.App'
             },
@@ -158,6 +161,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             app: {
                 id: 'someId'
             },
+            // eslint-disable-next-line quote-props
             package: {
                 name: 'someId'
             },

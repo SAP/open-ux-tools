@@ -1,7 +1,8 @@
-import { FreestyleApp, generate } from '../src';
+import type { FreestyleApp } from '../src';
+import { generate } from '../src';
 import { join } from 'path';
 import { TemplateType } from '../src/types';
-import { OdataService } from '@sap-ux/odata-service-writer';
+import type { OdataService } from '@sap-ux/odata-service-writer';
 import { removeSync } from 'fs-extra';
 import { sample } from './sample/metadata';
 import { testOutputDir, debug, northwind } from './common';
@@ -21,6 +22,7 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
                 id: 'test-template'
             }
         },
+        // eslint-disable-next-line quote-props
         package: {
             name: 'test.me'
         },
