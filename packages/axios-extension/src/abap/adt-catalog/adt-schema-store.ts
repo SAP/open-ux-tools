@@ -57,7 +57,7 @@ export class AdtSchemaStore {
     /**
      * Check if an schema has been loaded and cached.
      *
-     * @returns
+     * @returns boolean isAdtSchemaEmpty
      */
     public isAdtSchemaEmpty(): boolean {
         return !this.adtSchema;
@@ -65,8 +65,8 @@ export class AdtSchemaStore {
 
     /**
      *
-     * @param adtCategory
-     * @returns string
+     * @param adtCategory adtCategory
+     * @returns string serializeAdtCategory
      */
     private serializeAdtCategory(adtCategory: AdtCategory): string {
         return `${adtCategory.scheme},${adtCategory.term}`;

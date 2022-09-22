@@ -39,9 +39,9 @@ export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
 
     /**
      *
-     * @param adtCategory
-     * @param serviceSchema
-     * @returns boolean
+     * @param adtCategory adtCategory
+     * @param serviceSchema serviceSchema
+     * @returns boolean boolean result of schema validity
      */
     private validateServiceSchema(adtCategory: AdtCategory, serviceSchema: AdtCollection): boolean {
         if (!serviceSchema) {
@@ -59,7 +59,7 @@ export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
      * Check if discover schema is in the local cache. If not, fetch it by
      * calling discover service request.
      *
-     * @returns
+     * @returns Promise<void>
      */
     private async checkOrLoadAdtDiscoverySchema(): Promise<void> {
         if (!this.schemaStore.isAdtSchemaEmpty()) {

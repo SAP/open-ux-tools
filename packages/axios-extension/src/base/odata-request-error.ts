@@ -13,7 +13,7 @@ export interface ODataError {
 export class ODataRequestError extends Error {
     /**
      *
-     * @param odata
+     * @param odata odata object
      * @returns boolean
      */
     static containsError(odata: unknown): boolean {
@@ -26,7 +26,7 @@ export class ODataRequestError extends Error {
 
     /**
      *
-     * @param responseData
+     * @param responseData response Data
      */
     constructor(responseData: unknown) {
         const error: ODataError = responseData['error'];

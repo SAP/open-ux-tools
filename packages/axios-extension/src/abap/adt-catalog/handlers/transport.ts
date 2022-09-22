@@ -31,7 +31,7 @@ const enum AdtTransportStatus {
  * Might need to improve the error handling in the future to expose
  * the backend error messages to end user / API consumer in the future.
  *
- * @param doc
+ * @param doc document
  * @param xml Raw XML from reponse data for logging purpose
  * @param log Service provider logger
  * @returns available transport numbers
@@ -53,7 +53,7 @@ function getTransportChecksResponse(doc: Document, xml: string, log: Logger): st
  * Provide a list of transport numbers available for the input package name and project name
  * in a ADT CTS request.
  *
- * @param doc
+ * @param doc document
  * @returns
  * - For local package, an array list that contain a single empty string is returned.
  * - For errors or other unkonwn reasons no transport number found, an empty array list is returned.
@@ -78,8 +78,8 @@ function getTransportList(doc: Document): string[] {
  * This function processes ADT response for new project name that have not been deployed before,
  * all the available transport numbers are returned.
  *
- * @param doc
- * @returns
+ * @param doc document
+ * @returns transport numbers
  */
 function getTransportableList(doc: Document): string[] {
     const transportNums = xpath.select('//REQ_HEADER/TRKORR/text()', doc) as Element[];
@@ -99,8 +99,8 @@ function getTransportableList(doc: Document): string[] {
  * This function processes ADT response for existing project name that has been locked.
  * A single, previously provided transport number is returned in the list.
  *
- * @param doc
- * @returns
+ * @param doc document
+ * @returns transport numbers
  */
 function getLockedTransport(doc: Document): string[] {
     const transportNum = xpath.select1('//LOCKS//REQ_HEADER/TRKORR/text()', doc)?.toString();

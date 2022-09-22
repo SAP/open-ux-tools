@@ -185,7 +185,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @param packageName Package name for deployment
      * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
-     * @returns
+     * @returns array of transports id's
      */
     public async getTransportRequests(packageName: string, appName: string): Promise<string[]> {
         let serviceSchema: AdtCollection;
