@@ -332,7 +332,7 @@ export class YamlDocument {
      *
      * @private
      * @template T
-     * @param {Path<T>} path - the path object
+     * @param {T} path - the path object
      * @returns {string[]} - the path array
      * @memberof YamlDocument
      */
