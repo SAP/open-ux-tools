@@ -11,7 +11,9 @@ export const testOutputDir = join(__dirname, '/test-output');
 export const debug = prepareDebug();
 
 /**
- * @returns
+ * @returns object
+ *          object.enabled debug enabled boolean
+ *          object.outputDir output directory
  */
 export function prepareDebug(): { enabled: boolean; outputDir: string } {
     const debug = !!process.env['UX_DEBUG'];
