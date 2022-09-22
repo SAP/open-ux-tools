@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { UIIcon } from '../../UIIcon';
-import { UIGetId } from '../../../utilities';
+import { getUIId } from '../../../utilities';
 
 import type { UIToggleGroupOptionProps } from './UIToggleGroupOption.types';
 
@@ -44,7 +44,7 @@ export class UIToggleGroupOption extends React.Component<UIToggleGroupOptionProp
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const labelId = this.props.labelId ? this.props.labelId : UIGetId('ui-toggle-group-option-');
+        const labelId = this.props.labelId ? this.props.labelId : getUIId('ui-toggle-group-option-');
 
         return (
             <button

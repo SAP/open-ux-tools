@@ -125,11 +125,13 @@ describe('<UIDropdown />', () => {
     describe('Test "useDropdownAsMenuMinWidth" property', () => {
         const getCalloutStyles = (width: number): Partial<ICalloutContentStyles> | undefined => {
             const calloutProps = wrapper.find(Dropdown).prop('calloutProps');
+            let calloutStyles;
             if (calloutProps.styles) {
-                return (calloutProps.styles as IStyleFunction<{}, {}>)({
+                calloutStyles = (calloutProps.styles as IStyleFunction<{}, {}>)({
                     calloutWidth: width
                 });
             }
+            return calloutStyles;
         };
 
         it('Default', () => {

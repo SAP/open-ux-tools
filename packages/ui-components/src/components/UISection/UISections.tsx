@@ -625,7 +625,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             ? this.getVisibleSectionStyle(index)
             : this.getHiddenSectionStyle(index);
         if (!sectionStyle) {
-            return;
+            return undefined;
         }
         const splitterType = this.props.splitterType || UISplitterType.Resize;
         const splitterLayoutType = this.props.splitterLayoutType || UISplitterLayoutType.Standard;
