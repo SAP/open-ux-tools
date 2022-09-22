@@ -21,7 +21,7 @@ export interface AbapDeployConfig {
 }
 
 export interface CliOptions {
-    config?: string;
+    config: string;
     distFolder?: string;
     archivePath?: string;
     archiveUrl?: string;

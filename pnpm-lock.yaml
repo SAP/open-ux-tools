@@ -98,9 +98,8 @@ importers:
             '@sap-ux/btp-utils': workspace:*
             '@sap-ux/logger': workspace:*
             '@sap-ux/ui5-config': workspace:*
-            '@types/command-line-args': 5.2.0
             '@types/yazl': 2.4.2
-            command-line-args: 5.2.1
+            commander: 9.4.0
             dotenv: 16.0.0
             nock: 13.2.4
             yazl: 2.5.1
@@ -109,11 +108,10 @@ importers:
             '@sap-ux/btp-utils': link:../btp-utils
             '@sap-ux/logger': link:../logger
             '@sap-ux/ui5-config': link:../ui5-config
-            command-line-args: 5.2.1
+            commander: 9.4.0
             dotenv: 16.0.0
             yazl: 2.5.1
         devDependencies:
-            '@types/command-line-args': 5.2.0
             '@types/yazl': 2.4.2
             nock: 13.2.4
 
@@ -5404,13 +5402,6 @@ packages:
             '@types/node': 17.0.9
         dev: true
 
-    /@types/command-line-args/5.2.0:
-        resolution:
-            {
-                integrity: sha512-UuKzKpJJ/Ief6ufIaIzr3A/0XnluX7RvFgwkV89Yzvm77wCh1kFaFmqN8XEnGcN62EuHdedQjEMb8mYxFLGPyA==
-            }
-        dev: true
-
     /@types/connect/3.4.35:
         resolution:
             {
@@ -7190,14 +7181,6 @@ packages:
         resolution: { integrity: sha1-45sJrqne+Gao8gbiiK9jkZuuOcQ= }
         engines: { node: '>=0.10.0' }
         dev: true
-
-    /array-back/3.1.0:
-        resolution:
-            {
-                integrity: sha512-TkuxA4UCOvxuDK6NZYXCalszEzj+TLszyASooky+i742l9TqsOdYCMJJupxRic61hwquNtppB3hgcuq9SVSH1Q==
-            }
-        engines: { node: '>=6' }
-        dev: false
 
     /array-differ/3.0.0:
         resolution:
@@ -8997,19 +8980,6 @@ packages:
             }
         dev: true
 
-    /command-line-args/5.2.1:
-        resolution:
-            {
-                integrity: sha512-H4UfQhZyakIjC74I9d34fGYDwk3XpSr17QhEd0Q3I9Xq1CETHo4Hcuo87WyWHpAF1aSLjLRf5lD9ZGX2qStUvg==
-            }
-        engines: { node: '>=4.0.0' }
-        dependencies:
-            array-back: 3.1.0
-            find-replace: 3.0.0
-            lodash.camelcase: 4.3.0
-            typical: 4.0.0
-        dev: false
-
     /commander/2.20.3:
         resolution:
             {
@@ -9056,6 +9026,14 @@ packages:
             }
         engines: { node: ^12.20.0 || >=14 }
         dev: true
+
+    /commander/9.4.0:
+        resolution:
+            {
+                integrity: sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw==
+            }
+        engines: { node: ^12.20.0 || >=14 }
+        dev: false
 
     /comment-json/4.1.0:
         resolution:
@@ -11922,16 +11900,6 @@ packages:
             make-dir: 3.1.0
             pkg-dir: 4.2.0
         dev: true
-
-    /find-replace/3.0.0:
-        resolution:
-            {
-                integrity: sha512-6Tb2myMioCAgv5kfvP5/PkZZ/ntTpVK39fHY7WkWBgvbeE+VHd/tZuZ4mrC+bxh4cfOZeYKVPaJIZtZXV7GNCQ==
-            }
-        engines: { node: '>=4.0.0' }
-        dependencies:
-            array-back: 3.1.0
-        dev: false
 
     /find-up/1.1.2:
         resolution:
@@ -15639,13 +15607,6 @@ packages:
         dependencies:
             p-locate: 5.0.0
         dev: true
-
-    /lodash.camelcase/4.3.0:
-        resolution:
-            {
-                integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==
-            }
-        dev: false
 
     /lodash.clonedeep/4.5.0:
         resolution: { integrity: sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8= }
@@ -21277,14 +21238,6 @@ packages:
         engines: { node: '>=4.2.0' }
         hasBin: true
         dev: true
-
-    /typical/4.0.0:
-        resolution:
-            {
-                integrity: sha512-VAH4IvQ7BDFYglMd7BPRDfLgxZZX4O4TFcRDA6EN5X7erNJJq+McIEp8np9aVtxrCJ6qx4GTYVfOWNjcqwZgRw==
-            }
-        engines: { node: '>=8' }
-        dev: false
 
     /uglify-js/3.17.0:
         resolution:

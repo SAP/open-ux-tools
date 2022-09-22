@@ -39,12 +39,11 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "command-line-args": "5.2.1",
+        "commander": "9.4.0",
         "dotenv": "16.0.0",
         "yazl": "2.5.1"
     },
     "devDependencies": {
-        "@types/command-line-args": "5.2.0",
         "@types/yazl": "2.4.2",
         "nock": "13.2.4"
     },
