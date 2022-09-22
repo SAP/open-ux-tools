@@ -498,7 +498,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         if (e.key === 'Escape') {
             this.cancelEdit();
             focusEditedCell(this.state.editedCell, this.props);
-            return showFocus();
+            showFocus();
+            return;
         }
 
         if (this.state.editedCell?.errorMessage) {
@@ -549,7 +550,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             focusEditedCell(this.state.editedCell, this.props, direction)
                 .then(() => {
                     if (!direction) {
-                        return showFocus();
+                        showFocus();
+                        return;
                     }
                     hideFocus();
                     const { rowIndex, item, column } = this.activeElement;
@@ -815,7 +817,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     private _renderTextInput(item: UIDocument, rowIndex: number, column: UIColumn | undefined): any {
         const compRef = this._getInputRef(rowIndex, column) as React.RefObject<ITextField>;
         const newValue = this.state.editedCell?.newValue;
-
+        let element;
         let value;
         if (column?.fieldName) {
             value = item[column?.fieldName];
@@ -824,7 +826,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             value = newValue;
         }
         if (!item.hideCells) {
-            return (
+            element = (
                 <UITextInput
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
@@ -839,6 +841,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 />
             );
         }
+        return element;
     }
 
     /**

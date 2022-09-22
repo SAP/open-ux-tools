@@ -155,12 +155,14 @@ export async function waitFor(selector: string) {
     const el = document.querySelector(selector);
     return new Promise((resolve) => {
         if (el) {
-            return resolve(el);
+            resolve(el);
+            return;
         }
         setTimeout(async () => {
             const el2 = await waitFor(selector);
             if (el2) {
-                return resolve(el2);
+                resolve(el2);
+                return;
             }
         }, 100);
     });
@@ -261,12 +263,12 @@ export function getStylesForSelectedCell(state: UITableState): Partial<IDetailsL
     return styles;
 }
 
-export function showFocus() {
+export function showFocus(): void {
     document.body.classList.remove('ms-Fabric--isFocusHidden');
     document.body.classList.add('ms-Fabric--isFocusVisible');
 }
 
-export function hideFocus() {
+export function hideFocus(): void {
     document.body.classList.add('ms-Fabric--isFocusHidden');
     document.body.classList.remove('ms-Fabric--isFocusVisible');
 }
