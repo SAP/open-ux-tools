@@ -12,7 +12,10 @@ import { loadModuleFromProject } from './moduleLoader';
  * @returns - true if the project is a CAP project; false otherwise
  */
 export async function isCapProject(projectRoot: string, packageJson?: Package): Promise<boolean> {
-    return (await isCapNodeJsProject(projectRoot, packageJson)) || (await isCapJavaProject(projectRoot));
+    if ((await isCapNodeJsProject(projectRoot, packageJson)) || (await isCapJavaProject(projectRoot))) {
+        return true;
+    }
+    return false;
 }
 
 /**

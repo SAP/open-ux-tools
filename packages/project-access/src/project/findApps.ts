@@ -96,7 +96,7 @@ function findRootsWithSapux(
         // Backward compatibility for FE apps in CAP projects that have no app package.json,
         // but are listed in CAP root sapux array
         const pathWithSep = path.endsWith(sep) ? path : path + sep;
-        const relAppPaths = sapux.map((a) => join(...a.split(/\\|\//)));
+        const relAppPaths = sapux.map((a) => join(...a.split(/[\\/]/)));
         const relApp = relAppPaths.find((app) => pathWithSep.startsWith(join(root, app) + sep));
         if (relApp) {
             return {

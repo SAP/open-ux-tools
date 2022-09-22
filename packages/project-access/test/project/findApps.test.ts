@@ -1,6 +1,6 @@
 import { basename, dirname, join } from 'path';
 import type { WorkspaceFolder } from 'vscode';
-import { findAllApps } from '../../src/';
+import { findAllApps } from '../../src';
 import { findProjectRoot } from '../../src/project/findApps';
 
 describe('Test findAllApps()', () => {
@@ -49,11 +49,11 @@ describe('Test findAllApps()', () => {
                 ? `${basename(dirname(m.projectRoot))}-${basename(m.appRoot)}`
                 : `${basename(m.projectRoot)}-${basename(m.appRoot)}`
         );
-        expect(expectedApps.length).toEqual(findResults.length);
         for (const expectedApp of expectedApps) {
             expect(foundApps).toContain(expectedApp);
             expect(foundRoots).toContain(expectedApp);
         }
+        expect(expectedApps.length).toEqual(findResults.length);
     });
 
     test('Find all apps from path[]', async () => {

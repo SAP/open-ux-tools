@@ -50,9 +50,9 @@ export interface CSN {
 }
 
 interface DefinitionRegistry {
-    type: type;
-    struct: struct;
-    entity: entity;
+    type: Type;
+    struct: Struct;
+    entity: Entity;
     Association: Association;
 }
 type Definition = DefinitionRegistry[keyof DefinitionRegistry];
@@ -62,26 +62,26 @@ interface Definitions {
 }
 
 type kind = 'context' | 'service' | 'type' | 'entity' | 'element' | 'const' | 'annotation';
-type Element = type &
-    struct &
+type Element = Type &
+    Struct &
     Association & {
         kind: 'element' | undefined;
     };
 
-interface type {
+interface Type {
     kind?: kind;
     type?: string;
     name: string;
 }
 
-interface struct extends type {
+interface Struct extends Type {
     /** structs have elements which are in turn Definitions */
     elements: { [name: string]: Element };
     /** References to definitions to be included. Not available after extensions have been applied. */
     include?: string[];
 }
 
-interface entity extends struct {
+interface Entity extends Struct {
     kind: 'entity';
     /** Entities with a query signify a view */
     query?: SELECT & { cql: string };
@@ -99,7 +99,7 @@ interface entity extends struct {
     };
 }
 
-interface Association extends type {
+interface Association extends Type {
     type: 'cds.Association' | 'cds.Composition';
     /** The fully-qualified name of the Association's target entity */
     target: string;

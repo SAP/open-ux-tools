@@ -1,4 +1,4 @@
-import { join, posix } from 'path';
+import { join } from 'path';
 import { FileName } from '@sap-ux/project-types';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { fileExists, readFile } from '../file';
@@ -17,7 +17,6 @@ export async function getWebappPath(projectRoot: string): Promise<string> {
         const ui5Config = await UI5Config.newInstance(yamlString);
         const relativeWebappPath = ui5Config.getConfiguration()?.paths?.webapp;
         if (relativeWebappPath) {
-            webappPath = join(projectRoot, ...relativeWebappPath.split(posix.sep));
             webappPath = join(projectRoot, relativeWebappPath);
         }
     }
