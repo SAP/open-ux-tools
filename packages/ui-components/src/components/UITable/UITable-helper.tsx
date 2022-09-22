@@ -11,7 +11,6 @@ import type { UIColumn, EditedCell, UITableProps, UITableState } from '.';
  * @param {T[]} items
  * @param {string }columnKey
  * @param {boolean} isSortedDescending
- *
  * @returns {T[]}
  */
 export function _copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
@@ -25,7 +24,6 @@ export function _copyAndSort<T>(items: T[], columnKey: string, isSortedDescendin
  * @param {EditedCell | undefined} editedCell
  * @param {UITableProps} props
  * @param {string} direction
- *
  * @returns {Promise<void>}
  */
 export function focusEditedCell(
@@ -85,7 +83,6 @@ export function focusEditedCell(
  * @param {string} columnKey
  * @param {UIColumn} columns
  * @param {boolean} addOneToColIndex
- *
  * @returns {NodeListOf<Element>}
  */
 export function getCellFromCoords(rowIdx: number, columnKey: string, columns: UIColumn[], addOneToColIndex = false) {
@@ -174,7 +171,6 @@ export async function waitFor(selector: string) {
  *
  * @param {any} columns
  * @param {boolean} showRowNumbers
- *
  * @returns {any}
  */
 export function addRowNumbers(columns: any, showRowNumbers = false): any {

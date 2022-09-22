@@ -222,7 +222,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      *
      * @param props
      * @param defaultRender
-     *
      * @returns {null | JSX.Element}
      */
     private _onRenderField(
@@ -315,7 +314,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param {UIDocument} item
      * @param {number} index
      * @param {UIColumn} column
-     *
      * @returns {React.ReactNode}
      */
     private _onRenderItemColumn(item: UIDocument, index?: number, column?: UIColumn): React.ReactNode {
@@ -733,7 +731,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param item
      * @param rowIndex
      * @param column
-     *
      * @returns {any}
      */
     private _renderBooleanSelect(item: UIDocument, rowIndex?: number, column?: UIColumn): any {
@@ -778,7 +775,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param rowIndex
      * @param column
      * @param dateOnly
-     *
      * @returns {any}
      */
     private _renderDatePicker(item: UIDocument, rowIndex?: number, column?: UIColumn, dateOnly = true): any {
@@ -814,7 +810,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param item
      * @param rowIndex
      * @param column
-     *
      * @returns {any}
      */
     private _renderTextInput(item: UIDocument, rowIndex: number, column: UIColumn | undefined): any {

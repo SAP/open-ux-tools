@@ -19,7 +19,7 @@ describe('<UISplitButton />', () => {
     const getContextMenuProps = (id: string): UIContextualMenuProps => {
         return wrapper.find(`UIDefaultButton#${id}`).prop<UIContextualMenuProps>('menuProps');
     };
-    // eslint-disable-next-line jsdoc/require-returns
+    // eslint-disable-next-line jsdoc/require-returns,jsdoc/require-jsdoc
     function mockEvent(targetValue: string): React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement> {
         const target: EventTarget = {
             value: targetValue

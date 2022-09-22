@@ -88,7 +88,6 @@ const KEYBOARD_KEYS = {
  * @class UIVerticalDivider
  * @extends {React.Component<UITreeDropdownProps, UITreeDropdownState>}
  */
-
 export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeDropdownState> {
     private readonly UITreeDropdownRef = React.createRef<{ props: UITreeDropdownProps }>();
     private readonly UITreeDropdownFocusZoneRef = React.createRef<FocusZone>();
@@ -281,6 +280,8 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                     this.toggleMenu(true);
                 }
                 this.handleSelection(this.state.value ? this.state.value : '');
+                break;
+            default:
                 break;
         }
         this.lastKeyDown = event.key;
