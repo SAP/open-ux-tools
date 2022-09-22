@@ -3,12 +3,9 @@ import { checkEnvironment, getEnvironment } from '../../src/checks/environment';
 import { checkBASDestinations, needsUsernamePassword, checkBASDestination } from '../../src/checks/destination';
 import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import axios from 'axios';
 import { join } from 'path';
 
 jest.mock('axios');
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn(),

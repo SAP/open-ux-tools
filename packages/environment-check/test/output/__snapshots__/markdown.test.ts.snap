@@ -45,7 +45,6 @@ Dev Space Type: \`\`<br>
     \\"zlib\\": \\"1.2.11\\",
     \\"ares\\": \\"1.17.2\\",
     \\"modules\\": \\"72\\",
-    \\"http_parser\\": \\"2.9.4\\",
     \\"openssl\\": \\"1.1.1k\\"
 }
 </pre></details>
