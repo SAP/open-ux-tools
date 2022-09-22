@@ -44,7 +44,8 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
 
     const templateOptions: TemplateOptions = {
         changesPreview: feApp.ui5?.version
-            ? semVer.lt(semVer.coerce(feApp.ui5?.version)!, changesPreviewToVersion)
+            ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              semVer.lt(semVer.coerce(feApp.ui5?.version)!, changesPreviewToVersion)
             : false,
         changesLoader: feApp.service.version === OdataVersion.v2
     };
@@ -95,7 +96,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
         [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
             (templatePath) => {
-                fs!.copyTpl(
+                fs?.copyTpl(
                     join(templatePath, '**/*.*'),
                     basePath,
                     feApp,

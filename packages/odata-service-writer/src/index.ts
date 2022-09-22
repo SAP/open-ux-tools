@@ -108,7 +108,9 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         if (ui5Config) {
             const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
             ui5MockConfig.addMockServerMiddleware(service.path);
-            fs.write(join(dirname(paths.ui5Yaml!), 'ui5-mock.yaml'), ui5MockConfig.toString());
+            if (paths.ui5Yaml) {
+                fs.write(join(dirname(paths.ui5Yaml), 'ui5-mock.yaml'), ui5MockConfig.toString());
+            }
 
             // also add mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
@@ -134,12 +136,12 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     }
 
     // update package.json if required
-    if (paths.packageJson && paths.ui5Yaml) {
-        updatePackageJson(paths.packageJson, fs, !!service.metadata);
+    if (paths.packageJson && paths.ui5Yaml && service.metadata) {
+        updatePackageJson(paths.packageJson, fs, true);
     }
 
-    if (ui5LocalConfig) {
-        fs.write(ui5LocalConfigPath!, ui5LocalConfig.toString());
+    if (ui5LocalConfig && ui5LocalConfigPath) {
+        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
     if (service.annotations?.xml) {

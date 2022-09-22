@@ -79,7 +79,7 @@ async function storeCredentials(generator: Generator, provider: AbapServiceProvi
             type: 'input',
             name: 'name',
             message: 'System name:',
-            default: new URL(provider.defaults.baseURL!).hostname,
+            default: new URL(provider.defaults.baseURL!).hostname, // eslint-disable-line @typescript-eslint/no-non-null-assertion
             validate: (answer) => !!answer
         }
     ]);
@@ -88,7 +88,7 @@ async function storeCredentials(generator: Generator, provider: AbapServiceProvi
             const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
             const system = new BackendSystem({
                 name,
-                url: provider.defaults.baseURL!,
+                url: provider.defaults.baseURL!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
                 client: provider.defaults.params?.['sap-client'],
                 username: provider.defaults.auth?.username,
                 password: provider.defaults.auth?.password

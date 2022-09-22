@@ -161,6 +161,7 @@ function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
  * @returns - the manifest descriptor version
  */
 function getManifestVersion(ui5Version: string, manifestVersion?: string): string {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const ui5SemVer = semVer.coerce(ui5Version)!;
 
     /**
@@ -186,15 +187,17 @@ function getManifestVersion(ui5Version: string, manifestVersion?: string): strin
             const sortedSemVers = Object.keys(verToManifestVer)
                 .filter((ver) => ver !== 'latest')
                 .map((verStr) => semVer.coerce(verStr))
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 .sort((a, b) => semVer.rcompare(a!, b!));
 
             const latestUI5SemVer = sortedSemVers[0];
             // ui5 version is greater than the latest use the latest
-            if (semVer.gt(version, latestUI5SemVer!)) {
-                matchVersion = verToManifestVer[`${latestUI5SemVer!.major}.${latestUI5SemVer!.minor}`];
+            if (latestUI5SemVer && semVer.gt(version, latestUI5SemVer)) {
+                matchVersion = verToManifestVer[`${latestUI5SemVer?.major}.${latestUI5SemVer?.minor}`];
             } else {
                 // Find the nearest lower
                 const nearest = sortedSemVers.find((mapVer) => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     return semVer.gt(version, mapVer!);
                 });
                 if (nearest) {
@@ -237,8 +240,11 @@ function getLocalVersion({
 
     // If the ui5 `version` is higher than the min framework version 'result' then use that as the local version instead
     // Update to a valid coerced version string e.g. snapshot-1.80 -> 1.80.0. Cannot be null as previously validated.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const versionSemVer = semVer.coerce(version)!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (semVer.gt(versionSemVer, semVer.coerce(result)!)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         result = semVer.valid(versionSemVer)!;
     }
     return result;
