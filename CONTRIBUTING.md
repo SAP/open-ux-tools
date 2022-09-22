@@ -38,4 +38,4 @@ Another very important option to contribute is by reviewing open pull requests. 
 4. It is ok to only review parts of a pull requests if you do not feel comfortable reviewing everying, however, you must clearly explain what you reviewed and more importantly what you did not review e.g. "I have reviewed module ABC but not modules DEFs"
 5. Reviewing tests, test snapshots and configuration changes are as important as reviewing code.
 
-
+Please note that common sense always wins over guidelines e.g. if a pull request just fixes a typo somewhere, it is ok to approve without an explanation of what you did and did not review.
