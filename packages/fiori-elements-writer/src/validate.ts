@@ -37,7 +37,7 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
     }
 
     let minUI5Version: SemVer | null;
-
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const minRequiredUI5Version = TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
 
     if (feApp.ui5?.minUI5Version) {
@@ -61,7 +61,7 @@ export function validateApp<T>(feApp: FioriElementsApp<T>): void {
             })
         );
     }
-
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (semVer.lt(minUI5Version!, minRequiredUI5Version)) {
         throw new ValidationError(
             t('error.unsupportedUI5Version', {

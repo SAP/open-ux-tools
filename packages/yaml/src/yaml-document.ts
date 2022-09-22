@@ -223,8 +223,10 @@ export class YamlDocument {
         }
 
         const node = seq.items.find((nodeInput) => nodeInput.toJSON()[matcher.key] === matcher.value);
-        const newNode = this.document.createNode(merge(node!.toJSON(), value));
-        seq.items.splice(seq.items.indexOf(node!), 1, newNode);
+        const newNode = this.document.createNode(merge(node?.toJSON(), value));
+        if (node) {
+            seq.items.splice(seq.items.indexOf(node), 1, newNode);
+        }
 
         return this;
     }
