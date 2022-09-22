@@ -7,7 +7,6 @@ import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
 import { AdtServiceName, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt-catalog';
-import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
 import { getTransportNumberList } from './adt-catalog/handlers/transport';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
 import type { AdtCollection } from './types';
@@ -15,7 +14,7 @@ import type { AdtCollection } from './types';
 /**
  * Extension of the service provider for ABAP services.
  */
-export class AbapServiceProvider extends ServiceProvider implements AbapServiceProviderExtension {
+export class AbapServiceProvider extends ServiceProvider {
     public s4Cloud: boolean | undefined;
 
     protected atoSettings: AtoSettings;

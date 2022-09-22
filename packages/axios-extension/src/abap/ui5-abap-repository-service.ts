@@ -1,5 +1,4 @@
 import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import { readFileSync } from 'fs';
 import { prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
 
