@@ -429,6 +429,7 @@ export const InlineFlexTable = (): JSX.Element => {
                         reverseBackground={isReverseBackground}
                         onRenderPrimaryTableActions={onRenderPrimatyTableActions}
                         onRenderSecondaryTableActions={onRenderSecondaryTableActions}
+                        noDataText={'No data'}
                     />
                 </div>
             </div>
