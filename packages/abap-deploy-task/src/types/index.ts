@@ -18,12 +18,15 @@ export interface AbapDeployConfig {
     target: AbapTarget;
     app: AbapDescriptor;
     test?: boolean;
+    strictSsl?: boolean;
 }
 
-export interface CliOptions {
+export interface CliOptions extends Partial<AbapDescriptor>, Partial<AbapTarget> {
     config: string;
-    distFolder?: string;
+    yes?: boolean;
+    test?: AbapDeployConfig['test'];
+    strictSsl?: AbapDeployConfig['strictSsl'];
+    archiveFolder?: string;
     archivePath?: string;
     archiveUrl?: string;
-    test?: boolean;
 }

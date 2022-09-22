@@ -23,6 +23,16 @@ function getArchiveFromPath(path: string): Promise<Buffer> {
 }
 
 /**
+ * Fetch/get zip file from the given url.
+ *
+ * @param url - url to the zip file
+ * @returns Buffer containing the zip file
+ */
+async function fetchArchiveFromUrl(url: string): Promise<Buffer> {
+    throw new Error('TODO');
+}
+
+/**
  * Helper function to recursevely get a list of all files in a given folder and its sub folders.
  *
  * @param path - path to the folder that is to be searched
@@ -68,7 +78,9 @@ function createArchiveFromFolder(path: string): Promise<Buffer> {
 export async function getArchive(options: CliOptions): Promise<Buffer> {
     if (options.archivePath) {
         return getArchiveFromPath(options.archivePath);
+    } else if (options.archiveUrl) {
+        return fetchArchiveFromUrl(options.archiveUrl);
     } else {
-        return createArchiveFromFolder(options.distFolder ?? join(process.cwd(), 'dist'));
+        return createArchiveFromFolder(options.archiveFolder ?? join(process.cwd(), 'dist'));
     }
 }
