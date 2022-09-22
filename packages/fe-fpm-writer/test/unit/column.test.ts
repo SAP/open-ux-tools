@@ -8,7 +8,7 @@ import { getManifestRoot } from '../../src/column';
 import type { CustomTableColumn } from '../../src/column/types';
 import { Availability, HorizontalAlign } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
-import type { EventHandlerConfiguration } from '../../src/common/types';
+import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 
 const testDir = join(__dirname, 'sample/column');
@@ -191,19 +191,18 @@ describe('CustomAction', () => {
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             });
 
-            const positions = [
-                {
-                    line: 8,
-                    character: 9
-                },
-                196 + 8 * os.EOL.length
-            ];
-            for (const position of positions) {
-                const testName = `"eventHandler" is object. Append new function to existing js file with position ${
-                    typeof position === 'object' ? JSON.stringify(position) : 'absolute'
-                }`;
-                // eslint-disable-next-line  no-loop-func
-                test(`${testName}`, () => {
+            test.each([
+                [
+                    'position as object',
+                    {
+                        line: 8,
+                        character: 9
+                    }
+                ],
+                ['absolute position', 196 + 8 * os.EOL.length]
+            ])(
+                '"eventHandler" is object. Append new function to existing js file with %s',
+                (_desc: string, position: number | FileContentPosition) => {
                     const fileName = 'MyExistingAction';
                     // Create existing file with existing actions
                     const folder = join('extensions', 'custom');
@@ -227,8 +226,8 @@ describe('CustomAction', () => {
                     expect(fs.read(xmlPath)).toMatchSnapshot();
                     // Check update js file content
                     expect(fs.read(existingPath)).toMatchSnapshot();
-                });
-            }
+                }
+            );
         });
     });
 });

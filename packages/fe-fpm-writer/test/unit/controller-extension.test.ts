@@ -65,24 +65,21 @@ describe('ControllerExtension', () => {
             undefined
         ];
 
-        for (const pageType of pageTypeTests) {
-            // eslint-disable-next-line  no-loop-func
-            test(`New controller extension - ${pageType}`, () => {
-                generateControllerExtension(
-                    testDir,
-                    {
-                        ...controllerExtension,
-                        extension: {
-                            pageType
-                        }
-                    } as ControllerExtension,
-                    fs
-                );
-                expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-                expect(fs.exists(expectedControllerPath)).toBeTruthy();
-                expect(fs.read(expectedControllerPath)).toMatchSnapshot();
-            });
-        }
+        test.each(pageTypeTests)('New controller extension - %s', (pageType) => {
+            generateControllerExtension(
+                testDir,
+                {
+                    ...controllerExtension,
+                    extension: {
+                        pageType
+                    }
+                } as ControllerExtension,
+                fs
+            );
+            expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(expectedControllerPath)).toBeTruthy();
+            expect(fs.read(expectedControllerPath)).toMatchSnapshot();
+        });
 
         test('New controller extension with page id', () => {
             generateControllerExtension(
@@ -201,18 +198,15 @@ describe('ControllerExtension', () => {
                 }
             ];
 
-            for (const testCase of testCases) {
-                // eslint-disable-next-line  no-loop-func
-                test(testCase.name, () => {
-                    const manifestWithExtensions = getManifest(getExtensions());
-                    fs = create(createStorage());
-                    fs.delete(testDir);
-                    fs.write(join(testDir, 'webapp/manifest.json'), manifestWithExtensions);
-                    generateControllerExtension(testDir, testCase.controllerConfig, fs);
-                    expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-                    expect(fs.exists(getControllerPath(testCase.controllerConfig))).toBeTruthy();
-                });
-            }
+            test.each(testCases)('$name', ({ controllerConfig }) => {
+                const manifestWithExtensions = getManifest(getExtensions());
+                fs = create(createStorage());
+                fs.delete(testDir);
+                fs.write(join(testDir, 'webapp/manifest.json'), manifestWithExtensions);
+                generateControllerExtension(testDir, controllerConfig, fs);
+                expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+                expect(fs.exists(getControllerPath(controllerConfig))).toBeTruthy();
+            });
 
             const mixStateTestCases = [
                 {
@@ -237,46 +231,40 @@ describe('ControllerExtension', () => {
                 }
             ];
 
-            for (const testCase of mixStateTestCases) {
-                // eslint-disable-next-line  no-loop-func
-                test(testCase.name, () => {
-                    const extension = getExtensions();
-                    extension['sap.ui.controllerExtensions'][
-                        'sap.fe.templates.ListReport.ListReportController'
-                    ].controllerNames = ['my.test.App.ext.controller.LRExtension2'];
-                    const manifestWithExtensions = getManifest(extension);
-                    fs = create(createStorage());
-                    fs.delete(testDir);
-                    fs.write(join(testDir, 'webapp/manifest.json'), manifestWithExtensions);
-                    generateControllerExtension(testDir, testCase.controllerConfig, fs);
-                    expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-                    expect(fs.exists(getControllerPath(testCase.controllerConfig))).toBeTruthy();
-                });
-            }
+            test.each(mixStateTestCases)('$name', ({ controllerConfig }) => {
+                const extension = getExtensions();
+                extension['sap.ui.controllerExtensions'][
+                    'sap.fe.templates.ListReport.ListReportController'
+                ].controllerNames = ['my.test.App.ext.controller.LRExtension2'];
+                const manifestWithExtensions = getManifest(extension);
+                fs = create(createStorage());
+                fs.delete(testDir);
+                fs.write(join(testDir, 'webapp/manifest.json'), manifestWithExtensions);
+                generateControllerExtension(testDir, controllerConfig, fs);
+                expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+                expect(fs.exists(getControllerPath(controllerConfig))).toBeTruthy();
+            });
         });
 
         describe('Typescript controller', () => {
             // Page types
             const expectedTestControllerPath = getControllerPath(controllerExtension, true);
-            for (const pageType of pageTypeTests) {
-                // eslint-disable-next-line  no-loop-func
-                test(`New controller extension - ${pageType}`, () => {
-                    generateControllerExtension(
-                        testDir,
-                        {
-                            ...controllerExtension,
-                            extension: {
-                                pageType
-                            },
-                            typescript: true
-                        } as ControllerExtension,
-                        fs
-                    );
-                    expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-                    expect(fs.exists(expectedTestControllerPath)).toBeTruthy();
-                    expect(fs.read(expectedTestControllerPath)).toMatchSnapshot();
-                });
-            }
+            test.each(pageTypeTests)('New controller extension - %s', (pageType) => {
+                generateControllerExtension(
+                    testDir,
+                    {
+                        ...controllerExtension,
+                        extension: {
+                            pageType
+                        },
+                        typescript: true
+                    } as ControllerExtension,
+                    fs
+                );
+                expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+                expect(fs.exists(expectedTestControllerPath)).toBeTruthy();
+                expect(fs.read(expectedTestControllerPath)).toMatchSnapshot();
+            });
             // Manual extension name
             const manualExtensionsTests = [
                 UI5_CONTROLLER_EXTENSION_LIST_REPORT,
@@ -285,23 +273,20 @@ describe('ControllerExtension', () => {
                 'my.project.ext.view.Test'
             ];
 
-            for (const extension of manualExtensionsTests) {
-                // eslint-disable-next-line  no-loop-func
-                test(`New controller extension with manual target - ${extension}`, () => {
-                    generateControllerExtension(
-                        testDir,
-                        {
-                            ...controllerExtension,
-                            extension,
-                            typescript: true
-                        } as ControllerExtension,
-                        fs
-                    );
-                    expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-                    expect(fs.exists(expectedTestControllerPath)).toBeTruthy();
-                    expect(fs.read(expectedTestControllerPath)).toMatchSnapshot();
-                });
-            }
+            test.each(manualExtensionsTests)('New controller extension with manual target - %s', (extension) => {
+                generateControllerExtension(
+                    testDir,
+                    {
+                        ...controllerExtension,
+                        extension,
+                        typescript: true
+                    } as ControllerExtension,
+                    fs
+                );
+                expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+                expect(fs.exists(expectedTestControllerPath)).toBeTruthy();
+                expect(fs.read(expectedTestControllerPath)).toMatchSnapshot();
+            });
         });
     });
 });
