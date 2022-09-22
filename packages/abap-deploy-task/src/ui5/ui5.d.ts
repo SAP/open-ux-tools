@@ -18,6 +18,9 @@ declare module '@ui5/fs' {
      * https://sap.github.io/ui5-tooling/api/module-@ui5_fs.DuplexCollection.html
      */
     export class DuplexCollection {
+        /**
+         *
+         */
         byGlob(virPattern: string | string[], options?: object): Promise<Resource[]>;
     }
 

@@ -1,9 +1,10 @@
-import { ZipFile } from 'yazl';
+import type { ZipFile } from 'yazl';
 
 /**
  * Create a zip file based on the given object.
  *
  * @param zip ZipFile as object
+ * @returns the zipfile as buffer
  */
 export async function createBuffer(zip: ZipFile): Promise<Buffer> {
     await new Promise<void>((resolve) => {
@@ -13,7 +14,7 @@ export async function createBuffer(zip: ZipFile): Promise<Buffer> {
     });
 
     const chunks: Buffer[] = [];
-    for await (let chunk of zip.outputStream) {
+    for await (const chunk of zip.outputStream) {
         chunks.push(chunk as Buffer);
     }
 

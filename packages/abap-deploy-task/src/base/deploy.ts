@@ -7,8 +7,14 @@ import type {
 import { createForAbap, createForDestination, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { writeFileSync } from 'fs';
-import { AbapDescriptor, AbapTarget } from '../types';
+import type { AbapDescriptor, AbapTarget } from '../types';
 
+/**
+ * Create an instance of a UI5AbapRepository service connected to the given target configuration.
+ *
+ * @param target - target system for the deployments
+ * @returns service instance
+ */
 function createDeployService(target: AbapTarget): Ui5AbapRepositoryService {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
@@ -36,6 +42,14 @@ function createDeployService(target: AbapTarget): Ui5AbapRepositoryService {
     return provider.getUi5AbapRepository();
 }
 
+/**
+ * Deploy the given archive to the given target using the given app description.
+ *
+ * @param archive
+ * @param target
+ * @param app
+ * @param testMode - if set to true then only a test deployment is executed without deploying the actual archive in the backend
+ */
 export function deploy(archive: Buffer, target: AbapTarget, app: AbapDescriptor, testMode?: boolean) {
     //const service = createDeployService(target);
     //service.deploy(archive, app, testMode);
