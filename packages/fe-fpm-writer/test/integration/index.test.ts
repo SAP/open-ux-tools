@@ -14,29 +14,19 @@ import {
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
-import { rmdirSync, existsSync } from 'fs';
+import { clearTestOutput, writeFilesForDebugging } from '../common';
 
 describe('use FPM with existing apps', () => {
     const testInput = join(__dirname, '../test-input');
     const testOutput = join(__dirname, '../test-output');
-    const debug = !!process.env['UX_DEBUG'];
     const fs = create(createStorage());
 
     beforeAll(() => {
-        if (existsSync(testOutput)) {
-            rmdirSync(testOutput, { recursive: true });
-        }
+        clearTestOutput(testOutput);
     });
 
-    afterAll(async () => {
-        return new Promise((resolve) => {
-            // write out the files for debugging
-            if (debug) {
-                fs.commit(resolve);
-            } else {
-                resolve(true);
-            }
-        });
+    afterAll(() => {
+        return writeFilesForDebugging(fs);
     });
 
     describe('extend UI5 application with FPM', () => {

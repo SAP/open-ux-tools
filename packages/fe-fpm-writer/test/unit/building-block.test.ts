@@ -6,8 +6,7 @@ import type { Chart, Field, FilterBar } from '../../src';
 import { BuildingBlockType, generateBuildingBlock } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
-import { promisify } from 'util';
-import { removeSync } from 'fs-extra';
+import { clearTestOutput, writeFilesForDebugging } from '../common';
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -18,7 +17,7 @@ describe('Building Blocks', () => {
     const testOutputRoot = 'test/unit/test-output/building-block';
 
     beforeAll(() => {
-        removeSync(testOutputRoot); // even for in memory
+        clearTestOutput(testOutputRoot);
     });
 
     beforeEach(async () => {
@@ -34,19 +33,6 @@ describe('Building Blocks', () => {
             ).toLocaleString();
         }
     });
-
-    /**
-     *
-     * @param fs
-     */
-    async function writeFilesForDebugging(fs: Editor) {
-        const debug = !!process.env['UX_DEBUG'];
-        // Write the files to the `test-output` folder for debugging
-        if (debug) {
-            const fsCommit = promisify(fs.commit);
-            await fsCommit.call(fs);
-        }
-    }
 
     test('validate base and view paths', async () => {
         const basePath = join(testAppPath, 'validate-paths');
