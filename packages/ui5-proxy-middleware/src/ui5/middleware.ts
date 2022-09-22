@@ -37,6 +37,7 @@ function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Option
  * @returns handler function
  */
 function createRequestHandler(routes: { route: string; handler: RequestHandler }[]): RequestHandler {
+    // eslint-disable-next-line consistent-return
     return (req, res, next) => {
         for (const route of routes) {
             if (req.path.startsWith(route.route)) {

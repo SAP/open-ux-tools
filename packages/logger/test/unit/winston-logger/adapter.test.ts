@@ -32,7 +32,7 @@ jest.mock('winston', () => {
 
 describe('toWinstonLogLevel', () => {
     it('defaults to undefined', () => {
-        expect(toWinstonLogLevel()).toBeUndefined;
+        expect(toWinstonLogLevel()).toBeUndefined();
     });
     test.each([
         [LogLevel.Debug, 'debug'],

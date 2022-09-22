@@ -76,7 +76,7 @@ const data = {
             zlib: '1.2.11',
             ares: '1.17.2',
             modules: '72',
-            http_parser: '2.9.4',
+            http_parser: '2.9.4', // eslint-disable-line camelcase
             openssl: '1.1.1k'
         },
         platform: 'linux'

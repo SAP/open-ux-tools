@@ -3,20 +3,37 @@
         "node": true,
         "es6": true
     },
-    "plugins": ["promise", "prettier", "jsdoc", "@typescript-eslint", "import"],
-    "extends": ["plugin:jsdoc/recommended", "plugin:prettier/recommended"],
+    "plugins": [
+        "promise",
+        "prettier",
+        "jsdoc",
+        "@typescript-eslint",
+        "import"
+    ],
+    "extends": [
+        "plugin:jsdoc/recommended",
+        "plugin:prettier/recommended"
+    ],
     "overrides": [
         {
             "parser": "@typescript-eslint/parser",
-            "files": ["**/*.ts", "**/*.tsx"],
-            "extends": ["plugin:@typescript-eslint/recommended"],
+            "files": [
+                "**/*.ts",
+                "**/*.tsx"
+            ],
+            "extends": [
+                "plugin:@typescript-eslint/recommended"
+            ],
             "rules": {
                 "@typescript-eslint/ban-types": "off",
                 "@typescript-eslint/no-explicit-any": "off",
                 "@typescript-eslint/no-inferrable-types": "off",
                 "@typescript-eslint/no-unused-vars": [
                     "error",
-                    { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }
+                    {
+                        "varsIgnorePattern": "^_",
+                        "argsIgnorePattern": "^_"
+                    }
                 ],
                 "@typescript-eslint/consistent-type-imports": [
                     "error",
@@ -25,7 +42,10 @@
                         "disallowTypeAnnotations": true
                     }
                 ],
-                "@typescript-eslint/no-use-before-define": ["error", "nofunc"],
+                "@typescript-eslint/no-use-before-define": [
+                    "error",
+                    "nofunc"
+                ],
                 "jsdoc/require-param-type": "off",
                 "jsdoc/require-returns-type": "off",
                 "prefer-const": [
@@ -43,7 +63,11 @@
         },
         {
             "parser": "@typescript-eslint/parser",
-            "files": ["packages/*/test/**/*.js", "packages/*/test/**/*.ts", "packages/*/test/**/*.tsx"],
+            "files": [
+                "packages/*/test/**/*.js",
+                "packages/*/test/**/*.ts",
+                "packages/*/test/**/*.tsx"
+            ],
             "rules": {
                 "jsdoc/require-param": "off",
                 "jsdoc/require-param-description": "off",
@@ -77,12 +101,36 @@
                         "disallowTypeAnnotations": true
                     }
                 ],
-                "@typescript-eslint/no-use-before-define": ["error", "nofunc"]
+                "@typescript-eslint/no-use-before-define": [
+                    "error",
+                    "nofunc"
+                ],
+                "no-console": "off"
+            }
+        },
+        {
+            "files": [
+                "**/test/**/*.js",
+                "**/test/**/*.ts",
+                "**/test/**/*.tsx"
+            ],
+            "rules": {
+                "no-console": "off",
+                "jsdoc/require-returns-description": "off",
+                "jsdoc/require-param-description": "off",
+                "max-nested-callbacks": [
+                    "error",
+                    5
+                ],
+                "@typescript-eslint/no-non-null-assertion" : "off"
             }
         }
     ],
     "rules": {
-        "comma-dangle": ["error", "never"],
+        "comma-dangle": [
+            "error",
+            "never"
+        ],
         "jsdoc/require-param": "error",
         "jsdoc/require-param-description": "warn",
         "jsdoc/require-param-name": "error",
@@ -107,7 +155,11 @@
         "jsdoc/check-tag-names": [
             "error",
             {
-                "definedTags": ["ui5-restricted", "experimental", "final"]
+                "definedTags": [
+                    "ui5-restricted",
+                    "experimental",
+                    "final"
+                ]
             }
         ],
         "jsdoc/match-description": "error",
@@ -135,10 +187,16 @@
         "no-empty": "error",
         "no-ex-assign": "error",
         "no-extra-boolean-cast": "warn",
-        "no-extra-parens": ["error", "functions"],
+        "no-extra-parens": [
+            "error",
+            "functions"
+        ],
         "no-extra-semi": "error",
         "no-func-assign": "error",
-        "no-inner-declarations": ["error", "functions"],
+        "no-inner-declarations": [
+            "error",
+            "functions"
+        ],
         "no-invalid-regexp": "error",
         "no-irregular-whitespace": "error",
         "no-negated-in-lhs": "error",
@@ -151,7 +209,10 @@
         "accessor-pairs": "error",
         "block-scoped-var": "warn",
         "consistent-return": "warn",
-        "curly": ["error", "all"],
+        "curly": [
+            "error",
+            "all"
+        ],
         "default-case": "warn",
         "no-alert": "error",
         "no-caller": "error",
@@ -183,9 +244,15 @@
         "no-warning-comments": "warn",
         "no-with": "error",
         "radix": "error",
-        "wrap-iife": ["error", "any"],
+        "wrap-iife": [
+            "error",
+            "any"
+        ],
         "yoda": "error",
-        "strict": ["error", "function"],
+        "strict": [
+            "error",
+            "function"
+        ],
         "no-catch-shadow": "error",
         "no-delete-var": "error",
         "no-label-var": "error",
@@ -201,13 +268,22 @@
         ],
         "no-use-before-define": "off",
         "camelcase": "warn",
-        "consistent-this": ["warn", "that"],
-        "max-nested-callbacks": ["warn", 3],
+        "consistent-this": [
+            "warn",
+            "that"
+        ],
+        "max-nested-callbacks": [
+            "warn",
+            3
+        ],
         "new-cap": "warn",
         "new-parens": "error",
         "no-array-constructor": "error",
         "no-lonely-if": "warn",
-        "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+        "no-mixed-spaces-and-tabs": [
+            "error",
+            "smart-tabs"
+        ],
         "no-nested-ternary": "error",
         "no-new-object": "error",
         "no-spaced-func": "error",
@@ -271,7 +347,10 @@
         "import/resolver": {
             "typescript": {
                 "alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
-                "project": ["./packages/*/tsconfig.json", "./tsconfig.json"]
+                "project": [
+                    "./packages/*/tsconfig.json",
+                    "./tsconfig.json"
+                ]
             }
         }
     }

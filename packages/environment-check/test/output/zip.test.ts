@@ -33,6 +33,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
                 }
             }
         } as unknown as mockFs.WriteStream & { on: jest.Mock };
+        // eslint-disable-next-line consistent-return
         jest.spyOn(mockFs, 'createWriteStream').mockImplementation((filename) => {
             if (filename === 'envcheck-results.zip') {
                 return writeStreamMock;
@@ -68,6 +69,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
                 }
             }
         } as unknown as mockFs.WriteStream & { on: jest.Mock };
+        // eslint-disable-next-line consistent-return
         jest.spyOn(mockFs, 'createWriteStream').mockImplementation((filename) => {
             if (filename === 'ANY_NAME') {
                 return writeStreamMock;

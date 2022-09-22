@@ -113,7 +113,8 @@ describe('setupRedirectHandling()', () => {
     it('redirectUrl() returns a valid URL', () => {
         const isValidUrl = (url: string): boolean => {
             try {
-                new URL(url);
+                const result = new URL(url);
+                expect(result).toBeDefined();
             } catch (e) {
                 if (e?.code === 'ERR_INVALID_URL') {
                     return false;

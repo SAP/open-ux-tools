@@ -224,7 +224,7 @@ describe('Default (Winston) logger', () => {
 
         logger.warn('warning1');
         const nullTransport = logger.transports().find((t) => t instanceof NullTransport);
-        expect(nullTransport).not.toBeUndefined;
+        expect(nullTransport).not.toBeUndefined();
         logger.remove(nullTransport!);
         logger.debug('debug1');
 

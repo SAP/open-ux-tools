@@ -58,7 +58,7 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
 async function getCredentials(url: string, client?: string): Promise<AxiosBasicCredentials | undefined> {
     const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
     const system = await systemService.read(new BackendSystemKey({ url, client }));
-    return system?.username ? { username: system.username, password: system.password! } : undefined;
+    return system?.username && system.password ? { username: system.username, password: system.password } : undefined;
 }
 
 /**

@@ -20,6 +20,7 @@ export async function useCatalogAndFetchSomeMetadata(
     try {
         const atoSettings = await provider.getAtoInfo();
         if (!atoSettings || Object.keys(atoSettings).length === 0) {
+            // eslint-disable-next-line no-console
             console.warn('ATO setting is empty!');
         }
         // check v2 services
@@ -45,6 +46,7 @@ export async function useCatalogAndFetchSomeMetadata(
             });
         }
     } catch (error) {
+        // eslint-disable-next-line no-console
         console.error(error.cause || error.toString() || error);
     }
 }

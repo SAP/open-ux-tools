@@ -131,14 +131,12 @@ export function getTypesVersion(minUI5Version?: string) {
     const version = semVer.coerce(minUI5Version);
     if (!version) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
+    } else if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
+        return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
     } else {
-        if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
-            return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
-        } else {
-            return semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)
-                ? `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`
-                : UI5_DEFAULT.TYPES_VERSION_PREVIOUS;
-        }
+        return semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)
+            ? `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`
+            : UI5_DEFAULT.TYPES_VERSION_PREVIOUS;
     }
 }
 

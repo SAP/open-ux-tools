@@ -10,7 +10,7 @@ describe('message helpers', () => {
         const msg: SuccessMessage = {
             code: '200',
             message: '~message',
-            longtext_url: '/abc/de',
+            longtext_url: '/abc/de', // eslint-disable-line camelcase
             details: [
                 { code: '1', message: '~message', severity: 'info' },
                 { code: '2', message: '~message', severity: 'info' }
@@ -31,6 +31,7 @@ describe('message helpers', () => {
             innererror: {
                 transactionid: '~id',
                 timestamp: '~time',
+                // eslint-disable-next-line camelcase
                 Error_Resolution: {
                     abc: '~message',
                     def: '~message'

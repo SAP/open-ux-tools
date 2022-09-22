@@ -213,6 +213,7 @@ describe('<UIFlexibleTable />', () => {
 
         it('Render custom row content', () => {
             wrapper.setProps({
+                // eslint-disable-next-line consistent-return
                 onRenderRowDataContent: (params) => {
                     if (params.rowIndex === 1) {
                         return <div id="custom-row">This is too complex row</div>;
