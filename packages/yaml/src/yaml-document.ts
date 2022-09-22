@@ -202,8 +202,8 @@ export class YamlDocument {
      * @param {string} path.path - the path object's path
      * @param {object} path.matcher - key/value pair identifying the object
      * @param {object} path.value - the path object's value
-     * @param path.matcher.key
-     * @param path.matcher.value
+     * @param path.matcher.key - the key
+     * @param path.matcher.value - the value
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
      */
@@ -264,10 +264,10 @@ export class YamlDocument {
     }
 
     /**
-     * @param root0
-     * @param root0.start
-     * @param root0.path
-     * @returns {unknown}
+     * @param root0 - root0
+     * @param root0.start - start
+     * @param root0.path - path
+     * @returns {unknown} - yaml node
      */
     getNode({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): unknown {
         if (start) {
@@ -286,10 +286,10 @@ export class YamlDocument {
     }
 
     /**
-     * @param root0
-     * @param root0.start
-     * @param root0.path
-     * @returns {unknown}
+     * @param root0 - root0
+     * @param root0.start - start
+     * @param root0.path - path
+     * @returns {unknown}  - yaml sequence
      */
     getSequence({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLSeq {
         const a = this.getNode({ start, path });
@@ -301,10 +301,10 @@ export class YamlDocument {
     }
 
     /**
-     * @param root0
-     * @param root0.start
-     * @param root0.path
-     * @returns {YAMLMap}
+     * @param root0 - root0
+     * @param root0.start - start
+     * @param root0.path - path
+     * @returns {YAMLMap}  - yaml map
      */
     getMap({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLMap {
         const a = this.getNode({ start, path });
@@ -316,9 +316,9 @@ export class YamlDocument {
     }
 
     /**
-     * @param sequence
-     * @param predicate
-     * @returns {unknown}
+     * @param sequence - yaml sequence
+     * @param predicate - predicate
+     * @returns {unknown} - item
      */
     findItem(sequence: YAMLSeq, predicate: (o: any) => boolean): unknown {
         const toJson = (o: unknown) =>
