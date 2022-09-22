@@ -99,7 +99,7 @@ describe('Test for checkEnvironment()', () => {
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
         expect(warningMessage).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
     test('Destinations that need authentication and credentials are supplied, getEnvironmentCheck()', async () => {
@@ -199,7 +199,7 @@ describe('Test for checkEnvironment()', () => {
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
         expect(result.messages.find((m) => m.severity >= Severity.Warning)).toBeUndefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
 
@@ -241,7 +241,7 @@ describe('Test for checkEnvironment()', () => {
         // Result check
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
     test('No deep dive destination, getEnvironmentCheck()', async () => {
@@ -284,7 +284,7 @@ describe('Test for checkEnvironment()', () => {
         expect(warningMessage).toBeDefined();
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
     test('Checking for deep dive destination that does not exist in the list, getEnvironmentCheck()', async () => {
@@ -328,7 +328,7 @@ describe('Test for checkEnvironment()', () => {
         expect(warningMessage).toBeDefined();
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
     test('credentialCallBack is defined but no username and/or password is supplied while it is required, getEnvironmentCheck()', async () => {
@@ -370,7 +370,7 @@ describe('Test for checkEnvironment()', () => {
         // Result check
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
 });
