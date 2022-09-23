@@ -186,26 +186,26 @@ describe('common page functionality', () => {
             const target = join(testDir, 'invalidateNavigation');
 
             let manifest = JSON.parse(testAppManifest) as Manifest;
-
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             manifest['sap.ui5']!.routing!.routes = [];
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 
-            delete manifest['sap.ui5']!.routing!.routes;
+            delete manifest['sap.ui5']?.routing?.routes;
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 
             manifest = JSON.parse(testAppManifest) as Manifest;
 
-            delete manifest['sap.ui5']!.routing!.targets!['TestObjectPage'];
+            delete manifest['sap.ui5']?.routing?.targets?.['TestObjectPage'];
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 
-            delete manifest['sap.ui5']!.routing!.targets;
+            delete manifest['sap.ui5']?.routing?.targets;
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 
-            delete manifest['sap.ui5']!.routing;
+            delete manifest['sap.ui5']?.routing;
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 

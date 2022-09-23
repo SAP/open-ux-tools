@@ -118,10 +118,9 @@
                 "jsdoc/require-returns-description": "off",
                 "jsdoc/require-param-description": "off",
                 "max-nested-callbacks": [
-                    "error",
+                    "warn",
                     5
-                ],
-                "@typescript-eslint/no-non-null-assertion" : "off"
+                ]
             }
         }
     ],

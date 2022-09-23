@@ -49,7 +49,7 @@ describe('CustomSection', () => {
         const expectedFragmentPath = join(
             testDir,
             'webapp',
-            customSection.folder!,
+            customSection.folder!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
             `${customSection.name}.fragment.xml`
         );
         beforeEach(() => {
@@ -143,7 +143,7 @@ describe('CustomSection', () => {
             const fragmentPath = join(
                 testDir,
                 'webapp',
-                testCustomSection.folder!,
+                testCustomSection.folder!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
                 `${testCustomSection.name}.fragment.xml`
             );
             generateCustomSection(testDir, { ...testCustomSection }, fs);
@@ -206,6 +206,7 @@ describe('CustomSection', () => {
             test('"eventHandler" is empty "object" - create new file with default function name', () => {
                 const id = customSection.name;
                 generateCustomSectionWithEventHandler(id, {}, customSection.folder);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const xmlPath = join(testDir, 'webapp', customSection.folder!, `${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
@@ -219,6 +220,7 @@ describe('CustomSection', () => {
                 const id = customSection.name;
                 generateCustomSectionWithEventHandler(id, extension, customSection.folder);
                 const fragmentName = `${id}.fragment.xml`;
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const xmlPath = join(testDir, 'webapp', customSection.folder!, fragmentName);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.js`))).toMatchSnapshot();
@@ -230,6 +232,7 @@ describe('CustomSection', () => {
                 };
                 const id = customSection.name;
                 generateCustomSectionWithEventHandler(id, extension, customSection.folder);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const xmlPath = join(testDir, 'webapp', customSection.folder!, `${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
@@ -267,7 +270,7 @@ describe('CustomSection', () => {
 
                     const id = customSection.name;
                     generateCustomSectionWithEventHandler(id, extension, folder);
-                    const xmlPath = join(testDir, 'webapp', folder!, `${id}.fragment.xml`);
+                    const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);
                     expect(fs.read(xmlPath)).toMatchSnapshot();
                     // Check update js file content
                     expect(fs.read(existingPath)).toMatchSnapshot();

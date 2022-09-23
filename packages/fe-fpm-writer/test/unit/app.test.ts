@@ -27,8 +27,8 @@ function getTestManifest(settings?: { minVersion?: string }): Partial<Manifest> 
             }
         } as any
     };
-    if (settings?.minVersion) {
-        manifest['sap.ui5']!.dependencies!.minUI5Version = settings.minVersion;
+    if (settings?.minVersion && manifest['sap.ui5']) {
+        manifest['sap.ui5'].dependencies.minUI5Version = settings.minVersion;
     }
     return manifest;
 }

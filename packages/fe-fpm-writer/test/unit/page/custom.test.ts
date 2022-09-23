@@ -133,7 +133,7 @@ describe('CustomPage', () => {
             const target = join(testDir, 'with-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             generateCustomPage(target, inputWithNavigation, fs);
-            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
         test('inbound navigation defined as array (for FCL)', () => {
@@ -151,7 +151,7 @@ describe('CustomPage', () => {
             const target = join(testDir, 'target-as-array');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
             generateCustomPage(target, inputWithNavigation, fs);
-            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
         test('inbound navigation defined as array with max nesting for FCL', () => {
@@ -169,7 +169,7 @@ describe('CustomPage', () => {
             const target = join(testDir, 'target-as-nested-array');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
             generateCustomPage(target, inputWithNavigation, fs);
-            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
     });
 
@@ -190,7 +190,7 @@ describe('CustomPage', () => {
             const target = join(testDir, 'single-page-fcl');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
             generateCustomPage(target, { ...input }, fs);
-            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
         test('No FCL single page app', () => {
@@ -198,7 +198,7 @@ describe('CustomPage', () => {
             const target = join(testDir, 'single-page-no-fcl');
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
             generateCustomPage(target, input, fs);
-            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
     });
 });

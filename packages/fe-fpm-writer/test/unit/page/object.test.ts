@@ -96,7 +96,7 @@ describe('ObjectPage', () => {
                 },
                 fs
             );
-            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
         test('simple nested navigation', () => {
@@ -114,7 +114,7 @@ describe('ObjectPage', () => {
                 },
                 fs
             );
-            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)!['sap.ui5'].routing).toMatchSnapshot();
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
     });
 });
