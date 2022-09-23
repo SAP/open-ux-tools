@@ -23,6 +23,7 @@
         "watch": "tsc --watch"
     },
     "devDependencies": {
+        "@sap-ux/project-types": "workspace:*",
         "@types/vscode": "1.39.0"
     },
     "files": [
@@ -36,7 +37,6 @@
         "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     },
     "dependencies": {
-        "@sap-ux/project-types": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "find-up": "5.0.0",
         "findit2": "2.2.3",

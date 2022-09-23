@@ -7,7 +7,7 @@ describe('Test loadModuleFromProject()', () => {
             join(__dirname, '..'),
             '@sap-ux/project-types'
         );
-        expect(typeof projectModule.FileName).toEqual('object');
+        expect(typeof projectModule).toEqual('object');
     });
 
     test('Module not install in project, should throw error', async () => {
