@@ -1,5 +1,6 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { readFileSync } from 'fs';
+import { error } from '../messages';
 import type { AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 
@@ -14,7 +15,7 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
     const ui5Config = await UI5Config.newInstance(content);
     const config = ui5Config.findCustomTask<AbapDeployConfig>(NAME)?.configuration;
     if (!config) {
-        throw new Error('TODO');
+        throw new Error(error('NO_CONFIG'));
     }
     return config;
 }

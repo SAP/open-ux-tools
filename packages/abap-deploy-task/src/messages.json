@@ -1,8 +1,0 @@
-{
-    "info": {
-        "TBD": "Using UI5 version {{version}} based on {{-source}}"
-    },
-    "error": {
-        "TBD": "Error {{-error}} thrown for request {{-request}}"
-    }
-}
