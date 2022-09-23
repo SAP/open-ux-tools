@@ -16,7 +16,7 @@ module.exports = {
     jsxSingleQuote: false,
     printWidth: 120,
     proseWrap: 'preserve',
-    quoteProps: 'as-needed',
+    quoteProps: 'preserve',
     semi: true,
     singleQuote: true,
     tabWidth: 4,
