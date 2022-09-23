@@ -1,8 +1,7 @@
 import { dirname, join, parse, sep } from 'path';
-import type { WorkspaceFolder } from 'vscode';
 import findUp from 'find-up';
 import { FileName } from '@sap-ux/project-types';
-import type { Manifest, Package } from '@sap-ux/project-types';
+import type { Manifest, Package, WorkspaceFolder } from '@sap-ux/project-types';
 import { findAll } from './findFiles';
 import { hasDependency } from './dependencies';
 import { isCapProject } from './cap';

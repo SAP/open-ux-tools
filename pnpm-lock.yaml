@@ -373,24 +373,22 @@ importers:
         specifiers:
             '@sap-ux/project-types': workspace:*
             '@sap-ux/ui5-config': workspace:*
-            '@types/vscode': 1.39.0
             find-up: 5.0.0
             findit2: 2.2.3
-            i18next: 20.3.2
         dependencies:
             '@sap-ux/ui5-config': link:../ui5-config
             find-up: 5.0.0
             findit2: 2.2.3
-            i18next: 20.3.2
         devDependencies:
             '@sap-ux/project-types': link:../project-types
-            '@types/vscode': 1.39.0
 
     packages/project-types:
         specifiers:
             type-fest: 2.19.0
+            vscode-uri: 3.0.6
         devDependencies:
             type-fest: 2.19.0
+            vscode-uri: 3.0.6
 
     packages/store:
         specifiers:
@@ -8334,7 +8332,7 @@ packages:
             mississippi: 3.0.0
             mkdirp: 0.5.6
             move-concurrently: 1.0.1
-            promise-inflight: 1.0.1
+            promise-inflight: 1.0.1_bluebird@3.7.2
             rimraf: 2.7.1
             ssri: 6.0.2
             unique-filename: 1.1.1
@@ -18246,6 +18244,20 @@ packages:
                 optional: true
         dev: true
 
+    /promise-inflight/1.0.1_bluebird@3.7.2:
+        resolution:
+            {
+                integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==
+            }
+        peerDependencies:
+            bluebird: '*'
+        peerDependenciesMeta:
+            bluebird:
+                optional: true
+        dependencies:
+            bluebird: 3.7.2
+        dev: true
+
     /promise.allsettled/1.0.5:
         resolution:
             {
@@ -21925,6 +21937,13 @@ packages:
             acorn: 8.8.0
             acorn-walk: 8.2.0
         dev: false
+
+    /vscode-uri/3.0.6:
+        resolution:
+            {
+                integrity: sha512-fmL7V1eiDBFRRnu+gfRWTzyPpNIHJTc4mWnFkwBUmO9U3KPgJAmTx7oxi2bl/Rh6HLdU7+4C9wlj0k2E4AdKFQ==
+            }
+        dev: true
 
     /w3c-hr-time/1.0.2:
         resolution:

@@ -23,8 +23,7 @@
         "watch": "tsc --watch"
     },
     "devDependencies": {
-        "@sap-ux/project-types": "workspace:*",
-        "@types/vscode": "1.39.0"
+        "@sap-ux/project-types": "workspace:*"
     },
     "files": [
         "dist",
