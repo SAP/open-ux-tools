@@ -1,4 +1,13 @@
 {
     "extends": ["../../.eslintrc"],
-    "parserOptions": { "project": "./tsconfig.json" }
+    "parserOptions": { "project": "./tsconfig.json" },
+    "rules": {
+        "no-restricted-syntax": [
+            "error",
+            {
+                "selector": "TSEnumDeclaration:not([const=true])",
+                "message": "Don't declare non-const enums"
+            }
+        ]
+    }
 }
