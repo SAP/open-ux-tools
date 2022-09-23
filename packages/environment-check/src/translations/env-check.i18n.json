@@ -17,7 +17,19 @@
         "noDestinationDefinedForApp": "No destination defined for app {{- appRoot}} : {{- error}}",
         "jsonResults": "Full results written as JSON to file {{filename}}",
         "markdownResults": "Full results written as markdown to file {{filename}}",
-        "authRequired": "Authentication required for {{- destination}}"
+        "authRequired": "Authentication required for {{- destination}}",
+        "notInstalled": "Not installed",
+        "nodeVersion": "Node.js: {{- nodeVersion}}",
+        "cloudCli": "Cloud CLI tools: {{- cloudCli}}",
+        "fioriGenVersion": "SAP Fiori tools - Fiori generator: {{- fioriGenVersion}}",
+        "appWizard": "Application Wizard: {{- appWizard}}",
+        "ui5LanguageAssistant": "UI5 Language Assistant Support: {{- ui5LanguageAssistant}}",
+        "xmlToolkit": "XML Toolkit: {{- xmlToolkit}}",
+        "annotationMod": "SAP Fiori tools - XML Annotation Language Server: {{- annotationMod}}",
+        "appMod": "SAP Fiori tools - Application Modeler: {{- appMod}}",
+        "help": "SAP Fiori tools - Guided Development: {{- help}}",
+        "serviceMod": "SAP Fiori tools - Service Modeler: {{- serviceMod}}",
+        "cds": "SAP CDS Language Support: {{- cds}}"
     },
     "warning": {
         "reloadFailure": "Call to '/reload' service failed",
@@ -64,7 +76,8 @@
         "noDestinations": "No destinations",
         "messages": "Messages ({{numberOfMessages}})",
         "noMessages": "No messages",
-        "envCheckTitle": "SAP Fiori tools - Environment Check in SAP Business Application Studio",
+        "basEnvCheckTitle": "SAP Fiori tools - Environment Check in SAP Business Application Studio",
+        "vsCodeEnvCheckTitle": "SAP Fiori tools - Environment Check in Visual Studio Code",
         "createdAt": "created at"
     }
 }

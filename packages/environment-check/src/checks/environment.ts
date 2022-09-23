@@ -8,35 +8,96 @@ import type {
     DestinationResults,
     CheckEnvironmentOptions,
     Destination,
-    Environment,
+    BASEnvironment,
     EnvironmentCheckResult,
-    ResultMessage
+    ResultMessage,
+    VSCodeEnvironment
 } from '../types';
-import { DevelopmentEnvironment } from '../types';
+import { DevelopmentEnvironment, Extensions, NpmModules } from '../types';
+import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion } from './install';
 import { t } from '../i18n';
 
 /**
- * Return the environment.
+ * Returns the BAS environment.
  *
- * @returns environment, including ide, versions, ...
+ * @returns environment, including platform, versions ...
  */
-export async function getEnvironment(): Promise<{ environment: Environment; messages: ResultMessage[] }> {
+export async function getBASEnvironment(): Promise<{ environment: BASEnvironment; messages: ResultMessage[] }> {
     const logger = getLogger();
-    const environment: Environment = {
-        developmentEnvironment: isAppStudio() ? DevelopmentEnvironment.BAS : DevelopmentEnvironment.VSCode,
+    const environment: BASEnvironment = {
+        developmentEnvironment: DevelopmentEnvironment.BAS,
         versions: process.versions,
         platform: process.platform
     };
     logger.info(t('info.developmentEnvironment', { env: environment.developmentEnvironment }));
     logger.info(t('info.versions', { versions: JSON.stringify(environment.versions, null, 4) }));
-    logger.info(t('info.platform', { plaform: environment.platform }));
+    logger.info(t('info.platform', { platform: environment.platform }));
 
     try {
-        environment.basDevSpace = isAppStudio() ? await getSbasDevspace() : undefined;
+        environment.basDevSpace = await getSbasDevspace();
         logger.info(t('info.basDevSpace', { basDevSpace: environment.basDevSpace }));
     } catch (error) {
         logger.info(t('error.basDevSpace', { error: error.message }));
     }
+
+    return {
+        environment,
+        messages: logger.getMessages()
+    };
+}
+
+/**
+ * Returns the VSCode environment.
+ *
+ * @returns environment, including tools, extensions ...
+ */
+export async function getVSCodeEnvironment(): Promise<{
+    environment: VSCodeEnvironment;
+    messages: ResultMessage[];
+}> {
+    const logger = getLogger();
+
+    const extensions = await getInstalledExtensions();
+    const fioriGenVersion = await getFioriGenVersion(NpmModules.FioriGenerator);
+    const cloudCli = await getCFCliToolVersion(NpmModules.CloudCliTools);
+
+    const environment: VSCodeEnvironment = {
+        nodeVersion: process.versions.node,
+        platform: process.platform,
+        cloudCli: cloudCli,
+        appWizard: extensions[Extensions.AppWizard]
+            ? extensions[Extensions.AppWizard]['version']
+            : t('info.notInstalled'),
+        fioriGenVersion: fioriGenVersion,
+        appMod: extensions[Extensions.AppMod] ? extensions[Extensions.AppMod]['version'] : t('info.notInstalled'),
+        help: extensions[Extensions.Help]['version'] ? extensions[Extensions.Help]['version'] : t('info.notInstalled'),
+        serviceMod: extensions[Extensions.ServiceMod]
+            ? extensions[Extensions.ServiceMod]['version']
+            : t('info.notInstalled'),
+        annotationMod: extensions[Extensions.AnnotationMod]
+            ? extensions[Extensions.AnnotationMod]['version']
+            : t('info.notInstalled'),
+        xmlToolkit: extensions[Extensions.XMLToolkit]
+            ? extensions[Extensions.XMLToolkit]['version']
+            : t('info.notInstalled'),
+        cds: extensions[Extensions.CDS] ? extensions[Extensions.CDS]['version'] : t('info.notInstalled'),
+        ui5LanguageAssistant: extensions[Extensions.Ui5LanguageAssistant]
+            ? extensions[Extensions.Ui5LanguageAssistant]['version']
+            : t('info.notInstalled')
+    };
+
+    logger.info(t('info.nodeVersion', { nodeVersion: environment.nodeVersion }));
+    logger.info(t('info.platform', { platform: environment.platform }));
+    logger.info(t('info.cloudCli', { cloudCli: environment.cloudCli }));
+    logger.info(t('info.appWizard', { appWizard: environment.appWizard }));
+    logger.info(t('info.fioriGenVersion', { fioriGenVersion: environment.fioriGenVersion }));
+    logger.info(t('info.appMod', { appMod: environment.appMod }));
+    logger.info(t('info.help', { help: environment.help }));
+    logger.info(t('info.serviceMod', { serviceMod: environment.serviceMod }));
+    logger.info(t('info.annotationMod', { annotationMod: environment.annotationMod }));
+    logger.info(t('info.xmlToolkit', { xmlToolkit: environment.xmlToolkit }));
+    logger.info(t('info.cds', { cds: environment.cds }));
+    logger.info(t('info.ui5LanguageAssistant', { ui5LanguageAssistant: environment.ui5LanguageAssistant }));
 
     return {
         environment,
@@ -130,15 +191,35 @@ async function getDestinationsResults(
 }
 
 /**
+ * Return the environment.
+ *
+ * @returns environment, including ide, versions, ...
+ */
+export async function checkVSCodeEnvironment(): Promise<{
+    environment: VSCodeEnvironment;
+    messages: ResultMessage[];
+}> {
+    const logger = getLogger();
+
+    const { environment, messages } = await getVSCodeEnvironment();
+    logger.push(...messages);
+
+    return {
+        environment,
+        messages: logger.getMessages()
+    };
+}
+
+/**
  * Check environment includes process.env, list of destinations, details about destinations.
  *
  * @param options - see type CheckEnvironmentOptions, includes destination for deep dive, workspace roots, ...
  * @returns the result, currently as JSON
  */
-export async function checkEnvironment(options?: CheckEnvironmentOptions): Promise<EnvironmentCheckResult> {
+export async function checkBASEnvironment(options?: CheckEnvironmentOptions): Promise<EnvironmentCheckResult> {
     const logger = getLogger();
 
-    const { environment, messages } = await getEnvironment();
+    const { environment, messages } = await getBASEnvironment();
     logger.push(...messages);
 
     const deepDiveDestinations = options?.destinations ? new Set(options.destinations) : new Set<string>();

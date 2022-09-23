@@ -1,14 +1,16 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
 import { Severity, UrlServiceType } from '../types';
+import type { VSCodeEnvironment } from '../types';
 import type {
     Destination,
     DestinationResults,
-    Environment,
+    BASEnvironment,
     EnvironmentCheckResult,
     MarkdownWriter,
     ResultMessage
 } from '../types';
 import { t } from '../i18n';
+import { isAppStudio } from '@sap-ux/btp-utils';
 /**
  * Output mapping from severity -> icon + text
  */
@@ -18,6 +20,23 @@ const severityMap = {
     [Severity.Info]: '🟢 &nbsp; Info',
     [Severity.Debug]: 'ℹ Debug'
 };
+
+const toolsExtensionFields = ['Tools/Extensions', 'Version'];
+
+const toolsExtensionListVSCode = new Map<string, string>([
+    ['nodeVersion', 'Node.js'],
+    ['platform', 'Platform'],
+    ['cloudCli', 'Cloud CLI tools'],
+    ['appWizard', 'Application Wizard'],
+    ['fioriGenVersion', 'SAP Fiori tools - Fiori generator'],
+    ['appMod', 'SAP Fiori tools - Application Modeler'],
+    ['help', 'SAP Fiori tools - Guided Development'],
+    ['serviceMod', 'SAP Fiori tools - Service Modeler'],
+    ['annotationMod', 'SAP Fiori tools - XML Annotation Language Server'],
+    ['xmlToolkit', 'XML Toolkit'],
+    ['cds', 'SAP CDS Language Support'],
+    ['ui5LanguageAssistant', 'UI5 Language Assistant Support']
+]);
 
 /**
  * Column sequence of the destination table, first colun id, the column title
@@ -88,7 +107,7 @@ function getMarkdownWriter(): MarkdownWriter {
             result += `<details><summary>${description}</summary>\n<pre>\n${details}\n</pre></details>\n`;
         },
         addSub: (text: string): void => {
-            result += `<sub>${text}</sub>\n`;
+            result += `\n<sub>${text}</sub>\n`;
         },
         addTable: (table: Array<Array<string>>): void => {
             if (table.length > 0) {
@@ -110,13 +129,34 @@ function getMarkdownWriter(): MarkdownWriter {
  * @param writer - markdown writter
  * @param environment - environment results, like development environment, node version, etc
  */
-function writeEnvironment(writer: MarkdownWriter, environment?: Environment): void {
+function writeBASEnvironment(writer: MarkdownWriter, environment?: BASEnvironment): void {
     writer.addH2(`Environment`);
     if (environment) {
         writer.addLine(t('markdownText.platform', { platform: environment.platform }));
         writer.addLine(t('markdownText.devEnvironement', { devEnvironment: environment.developmentEnvironment }));
         writer.addLine(t('markdownText.devSpaceType', { basDevSpace: environment.basDevSpace }));
         writer.addDetails(`${t('markdownText.versions')}`, JSON.stringify(environment.versions, null, 4));
+    } else {
+        writer.addLine(t('markdownText.envNotChecked'));
+    }
+}
+
+/**
+ * Write the results for environment check.
+ *
+ * @param writer - markdown writter
+ * @param environment - environment results, like development environment, node version, etc
+ */
+function writeVSCodeEnvironment(writer: MarkdownWriter, environment?: VSCodeEnvironment): void {
+    writer.addH2(`Environment`);
+    if (environment) {
+        const results = [];
+        for (const toolExt of Object.keys(environment)) {
+            const toolExtName = toolsExtensionListVSCode.get(toolExt);
+            results.push([toolExtName, environment[toolExt]]);
+        }
+        const table = [toolsExtensionFields, ...results];
+        writer.addTable(table);
     } else {
         writer.addLine(t('markdownText.envNotChecked'));
     }
@@ -259,11 +299,16 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
 export function convertResultsToMarkdown(results: EnvironmentCheckResult): string {
     const writer = getMarkdownWriter();
 
-    writer.addH1(t('markdownText.envCheckTitle'));
-    writeEnvironment(writer, results.environment);
-    writeDestinationResults(writer, results.destinationResults, results.destinations);
-    writeDestinations(writer, results.destinations);
-    writeMessages(writer, results.messages);
+    if (isAppStudio()) {
+        writer.addH1(t('markdownText.basEnvCheckTitle'));
+        writeBASEnvironment(writer, results.environment);
+        writeDestinationResults(writer, results.destinationResults, results.destinations);
+        writeDestinations(writer, results.destinations);
+        writeMessages(writer, results.messages);
+    } else {
+        writer.addH1(t('markdownText.vsCodeEnvCheckTitle'));
+        writeVSCodeEnvironment(writer, results.environment);
+    }
 
     writer.addSub(
         `${t('markdownText.createdAt')} ${new Date().toISOString().replace('T', ' ').substring(0, 19)} (UTC)`

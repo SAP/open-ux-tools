@@ -5,8 +5,9 @@ import prompts from 'prompts';
 import type { CheckEnvironmentOptions, Destination, EnvironmentCheckResult } from '../types';
 import { OutputMode, Severity } from '../types';
 import { convertResultsToMarkdown } from '../output/markdown';
-import { checkEnvironment } from '../checks/environment';
+import { checkBASEnvironment, checkVSCodeEnvironment } from '../checks/environment';
 import { storeResultsZip } from '../output';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * Output usage information to console.
@@ -150,7 +151,7 @@ export async function cli(): Promise<void> {
         }
         const options = getOptions(cliArgs) || {};
         options.credentialCallback = credentialCallback;
-        const result = await checkEnvironment(options);
+        const result = isAppStudio() ? await checkBASEnvironment(options) : await checkVSCodeEnvironment();
         const outputMode = Object.keys(OutputMode).find((key) => OutputMode[key] === cliArgs.output)
             ? (cliArgs.output as OutputMode)
             : undefined;

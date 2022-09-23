@@ -14,11 +14,41 @@ export enum OutputMode {
     Zip = 'zip',
     UserDownload = 'userDownload'
 }
+export enum NpmModules {
+    CloudCliTools = 'cf',
+    FioriGenerator = '@sap/generator-fiori'
+}
+export enum Extensions {
+    AppWizard = 'SAPOS.yeoman-ui',
+    Ui5LanguageAssistant = 'SAPOSS.vscode-ui5-language-assistant',
+    XMLToolkit = 'SAPOSS.xml-toolkit',
+    AnnotationMod = 'SAPSE.sap-ux-annotation-modeler-extension',
+    AppMod = 'SAPSE.sap-ux-application-modeler-extension',
+    Help = 'SAPSE.sap-ux-help-extension',
+    ServiceMod = 'SAPSE.sap-ux-service-modeler-extension',
+    CDS = 'SAPSE.vscode-cds'
+}
 
-export interface Environment {
-    developmentEnvironment: DevelopmentEnvironment;
+interface Environment {
     platform: NodeJS.Platform;
-    versions: NodeJS.ProcessVersions;
+}
+
+export interface VSCodeEnvironment extends Environment {
+    nodeVersion?: string;
+    fioriGenVersion?: string;
+    cloudCli?: string;
+    appWizard?: string;
+    ui5LanguageAssistant?: string;
+    xmlToolkit?: string;
+    annotationMod?: string;
+    appMod?: string;
+    help?: string;
+    serviceMod?: string;
+    cds?: string;
+}
+export interface BASEnvironment extends Environment {
+    developmentEnvironment?: DevelopmentEnvironment;
+    versions?: NodeJS.ProcessVersions;
     basDevSpace?: string;
 }
 
@@ -63,7 +93,7 @@ export interface Destination extends BTPDestination {
 }
 
 export interface EnvironmentCheckResult {
-    environment?: Environment;
+    environment?: VSCodeEnvironment | BASEnvironment;
     destinations?: Destination[];
     destinationResults?: { [dest: string]: DestinationResults };
     messages?: ResultMessage[];
