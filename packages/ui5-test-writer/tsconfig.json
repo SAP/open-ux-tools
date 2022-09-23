@@ -1,5 +1,5 @@
 {
-    "include": ["src","test"],
+    "include": ["src", "test"],
     "exclude": ["dist", "templates", "coverage"],
     "compilerOptions": {
         "declaration": true,
