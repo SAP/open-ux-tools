@@ -6,7 +6,6 @@ import type { Manifest, Package } from '@sap-ux/project-types';
 import { findAll } from './findFiles';
 import { hasDependency } from './dependencies';
 import { isCapProject } from './cap';
-import { t } from '../i18n';
 import type { AllAppResults } from '../types';
 import { fileExists, readJSON } from '../file';
 
@@ -61,7 +60,11 @@ async function findAllManifest(wsFolders: WorkspaceFolder[] | string[] | undefin
 export async function findProjectRoot(path: string, sapuxRequired = true): Promise<string> {
     const packageJson = await findUp(FileName.Package, { cwd: path });
     if (!packageJson) {
-        throw new Error(t('error.projectRootNotFound', { path, sapuxRequired: sapuxRequired ? 'true' : 'false' }));
+        throw new Error(
+            `Could not find any project root for '${path}'. Search was done for ${
+                sapuxRequired ? 'Fiori elements' : 'All'
+            } projects.`
+        );
     }
     let root = dirname(packageJson);
     if (sapuxRequired) {

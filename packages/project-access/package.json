@@ -39,7 +39,6 @@
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
         "find-up": "5.0.0",
-        "findit2": "2.2.3",
-        "i18next": "20.3.2"
+        "findit2": "2.2.3"
     }
 }

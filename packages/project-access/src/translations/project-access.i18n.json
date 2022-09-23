@@ -1,6 +1,0 @@
-{
-    "error": {
-        "projectRootNotFound": "Could not find any project root for {{-path}}. Parameter 'sapuxRequired' was {{sapuxRequired}}",
-        "moduleNotInstalled": "Module {{moduleName}} not installed in project {{-projectRoot}}"
-    }
-}

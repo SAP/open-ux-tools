@@ -1,5 +1,3 @@
-import { t } from '../i18n';
-
 /**
  * Load module from project or app. Throws error if module is not installed.
  *
@@ -13,7 +11,7 @@ export async function loadModuleFromProject<T>(projectRoot: string, moduleName: 
         const modulePath = require.resolve(moduleName, { paths: [projectRoot] });
         module = (await import(modulePath)) as T;
     } catch (error) {
-        throw Error(t('error.moduleNotInstalled', { moduleName, projectRoot }));
+        throw Error(`Module '${moduleName}' not installed in project '${projectRoot}'`);
     }
     return module;
 }
