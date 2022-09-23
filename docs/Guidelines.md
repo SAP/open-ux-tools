@@ -53,6 +53,11 @@ describe('Fiori elements templates'), () => {
 * Preferably write tests first, when it makes sense. This is a judgement call
 * We use jest snapshots to validate the generated files. Please follow the documentation here: https://jestjs.io/docs/snapshot-testing
 
+
+## Internationalization (i18n)
+Messages and texts that are visible to the consumer and required to interact with or use the module should be translatable. This includes user dialogs, button texts, questions, labels, messages. 
+
+This does not include texts like technical log messages, tracing information, or exception texts that are not shown as message to the consumer.
 ## Git Guidelines
 
 We adhere to the [Conventional Commits](https://conventionalcommits.org) specification.
