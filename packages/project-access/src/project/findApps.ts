@@ -1,12 +1,11 @@
 import { dirname, join, parse, sep } from 'path';
-import findUp from 'find-up';
 import { FileName } from '@sap-ux/project-types';
 import type { Manifest, Package, WorkspaceFolder } from '@sap-ux/project-types';
-import { findAll } from './findFiles';
 import { hasDependency } from './dependencies';
 import { isCapProject } from './cap';
 import type { AllAppResults } from '../types';
-import { fileExists, readJSON } from '../file';
+import { fileExists, findFiles, findFileUp, readJSON } from '../file';
+import { getWebappPath } from './getWebapp';
 
 /**
  * WorkspaceFolder type guard.
@@ -42,7 +41,7 @@ async function findAllManifest(wsFolders: WorkspaceFolder[] | string[] | undefin
     const manifests: string[] = [];
     for (const root of wsRoots) {
         try {
-            await findAll(root, FileName.Manifest, manifests, ['.git', 'node_modules', 'dist']);
+            manifests.push(...(await findFiles(FileName.Manifest, root, ['.git', 'node_modules', 'dist'])));
         } catch {
             // ignore exceptions during find
         }
@@ -57,7 +56,7 @@ async function findAllManifest(wsFolders: WorkspaceFolder[] | string[] | undefin
  * @param sapuxRequired if true, only find sapux projects
  */
 export async function findProjectRoot(path: string, sapuxRequired = true): Promise<string> {
-    const packageJson = await findUp(FileName.Package, { cwd: path });
+    const packageJson = await findFileUp(FileName.Package, path);
     if (!packageJson) {
         throw new Error(
             `Could not find any project root for '${path}'. Search was done for ${
@@ -109,6 +108,25 @@ function findRootsWithSapux(
     }
     // The first package.json we found when searching up contains sapux, but not true -> not supported
     return null;
+}
+
+/**
+ * Get the application root for a given webapp path.
+ *
+ * @param webappPath - path to webapp folder, where manifest.json is
+ * @returns - root path of the application, where usually ui5.yaml and package.json are
+ */
+export async function getAppRootFromWebappPath(webappPath: string): Promise<string | null> {
+    const ui5YamlPath = await findFileUp(FileName.Ui5Yaml, webappPath);
+    let appRoot = dirname(webappPath);
+    if (ui5YamlPath) {
+        const candidate = dirname(ui5YamlPath);
+        const webapp = await getWebappPath(candidate);
+        if (webapp === webappPath) {
+            appRoot = candidate;
+        }
+    }
+    return appRoot;
 }
 
 /**

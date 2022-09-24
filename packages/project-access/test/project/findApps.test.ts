@@ -1,7 +1,9 @@
 import { basename, dirname, join } from 'path';
-import type { WorkspaceFolder } from 'vscode';
+import type { WorkspaceFolder } from '@sap-ux/project-types';
 import { findAllApps } from '../../src';
-import { findProjectRoot } from '../../src/project/findApps';
+import { findProjectRoot, getAppRootFromWebappPath } from '../../src/project/findApps';
+
+const testDataRoot = join(__dirname, '..', 'test-data');
 
 describe('Test findAllApps()', () => {
     test('Find all apps from workspace', async () => {
@@ -10,7 +12,7 @@ describe('Test findAllApps()', () => {
             uri: {
                 authority: '',
                 fragment: '',
-                fsPath: join(__dirname, '..', 'test-data', 'project', 'find-all-apps'),
+                fsPath: join(testDataRoot, 'project', 'find-all-apps'),
                 path: `${__dirname}/project/find-all-apps`,
                 query: '',
                 scheme: 'file'
@@ -59,8 +61,8 @@ describe('Test findAllApps()', () => {
     test('Find all apps from path[]', async () => {
         // Mock setup
         const paths = [
-            join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix'),
-            join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'single_apps', 'fiori_elements')
+            join(testDataRoot, 'project', 'find-all-apps', 'CAP', 'CAPnode_mix'),
+            join(testDataRoot, 'project', 'find-all-apps', 'single_apps', 'fiori_elements')
         ];
 
         // Test execution
@@ -142,5 +144,19 @@ describe('Test findProjectRoot()', () => {
             join(expectedProjectRoot, 'app', 'fiori_elements', 'webapp', 'manifest.json')
         );
         expect(projectRoot).toEqual(expectedProjectRoot);
+    });
+});
+
+describe('Test getAppRootFromManifestPath()', () => {
+    test('Fiori elements app with standard webapp folder', async () => {
+        const appRoot = join(testDataRoot, 'project', 'webapp-path', 'default-webapp-path');
+        const manifestPath = join(appRoot, 'webapp');
+        expect(await getAppRootFromWebappPath(manifestPath)).toBe(appRoot);
+    });
+
+    test('Freestyle app with custom webapp path.', async () => {
+        const appRoot = join(testDataRoot, 'project', 'webapp-path', 'custom-webapp-path');
+        const manifestPath = join(appRoot, 'src', 'webapp');
+        expect(await getAppRootFromWebappPath(manifestPath)).toBe(appRoot);
     });
 });
