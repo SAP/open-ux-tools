@@ -2,3 +2,10 @@ specVersion: '2.6'
 metadata:
   name: test-project
 type: application
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        transpileAsync: true
+        transpileTypeScript: true
