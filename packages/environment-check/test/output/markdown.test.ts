@@ -239,8 +239,8 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown() VSCOD
     });
     test('Check VSCode results table', () => {
         const results = {
-            nodeVersion: process.version,
-            platform: process.platform,
+            nodeVersion: 'v16.17.0',
+            platform: 'darwin' as any,
             fioriGenVersion: '1',
             cloudCli: '2',
             appWizard: '2',
