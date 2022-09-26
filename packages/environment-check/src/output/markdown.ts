@@ -1,13 +1,13 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
 import { Severity, UrlServiceType } from '../types';
-import type { VSCodeEnvironment } from '../types';
 import type {
     Destination,
     DestinationResults,
     BASEnvironment,
     EnvironmentCheckResult,
     MarkdownWriter,
-    ResultMessage
+    ResultMessage,
+    VSCodeEnvironment
 } from '../types';
 import { t } from '../i18n';
 import { isAppStudio } from '@sap-ux/btp-utils';
