@@ -112,6 +112,10 @@ The app descriptor version should be calculated based on the minimal supported U
 Fixes #42
 ```
 
+## Pull Requests
+
+- Fix one issue per PR and keep PRs as small as possible. It may be slightly more work, but it is much easier to understand and review a single clear fix. Focused PRs also give consumers of a module more control over which fixes and features are available in each version.
+
 ## Versioning
 To establish and increase versions for modules in this repository, we follow [Semantic Versioning (semver)](https://semver.org/). In essence, this means:
 
