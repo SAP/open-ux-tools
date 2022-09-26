@@ -208,6 +208,13 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      */
     render(): JSX.Element {
         const {
+            acceptButtonText,
+            cancelButtonText,
+            onAccept,
+            onCancel,
+            acceptButtonId,
+            cancelButtonId,
+            footer,
             closeButtonVisible,
             multiLineTitle,
             scrollArea = UIDialogScrollArea.Content,

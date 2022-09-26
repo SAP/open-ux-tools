@@ -7,7 +7,8 @@ const COLORS = {
     success: 'var(--vscode-charts-green, #84C881)',
     warning: 'var(--vscode-notificationsWarningIcon-foreground)',
     error: 'var( --vscode-notificationsErrorIcon-foreground)',
-    info: 'var(--vscode-notificationsInfoIcon-foreground)'
+    info: 'var(--vscode-notificationsInfoIcon-foreground)',
+    focus: 'var(--vscode-focusBorder)'
 };
 
 export enum UiIcons {
@@ -49,6 +50,7 @@ export enum UiIcons {
     ForeignKey = 'ForeignKey',
     FullscreenExpand = 'FullscreenExpand',
     FullscreenCollapse = 'FullscreenCollapse',
+    Ghost = 'Ghost',
     GuidedDevelopment = 'GuidedDevelopment',
     Grabber = 'grabber',
     Header = 'Header',
@@ -108,7 +110,8 @@ export enum UiIcons {
     ZoomOut = 'ZoomOut',
     Chevron = 'Chevron',
     GoToKey = 'GoToKey',
-    File = 'File'
+    File = 'File',
+    NoResults = 'NoResults'
 }
 
 export const initIcons = function (): void {
@@ -524,6 +527,19 @@ export const initIcons = function (): void {
                             />
                         </g>
                     </g>
+                </svg>
+            ),
+            [UiIcons.Ghost]: (
+                <svg width="52" height="57" viewBox="0 0 52 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M26 0C40.3594 0 52 11.6406 52 26V52C52 54.7614 49.7614 57 47 57C44.2386 57 42 54.7614 42 52C42 50.8954 41.1046 50 40 50C38.8954 50 38 50.8954 38 52C38 54.7614 35.7614 57 33 57C30.2386 57 28 54.7614 28 52C28 50.8954 27.1046 50 26 50C24.8954 50 24 50.8954 24 52C24 54.7614 21.7614 57 19 57C16.2386 57 14 54.7614 14 52C14 50.8954 13.1046 50 12 50C10.8954 50 10 50.8954 10 52C10 54.7614 7.76141 57 5 57C2.23859 57 0 54.7614 0 52V26C0 11.6406 11.6406 0 26 0ZM49 52V26C49 13.2975 38.7026 3 26 3C13.2974 3 3 13.2975 3 26V52C3 53.1046 3.89545 54 5 54C6.10455 54 7 53.1046 7 52C7 49.2386 9.23859 47 12 47C14.7614 47 17 49.2386 17 52C17 53.1046 17.8954 54 19 54C20.1046 54 21 53.1046 21 52C21 49.2386 23.2386 47 26 47C28.7614 47 31 49.2386 31 52C31 53.1046 31.8954 54 33 54C34.1046 54 35 53.1046 35 52C35 49.2386 37.2386 47 40 47C42.7614 47 45 49.2386 45 52C45 53.1046 45.8954 54 47 54C48.1046 54 49 53.1046 49 52Z"
+                        fill={COLORS.default}
+                    />
+                    <rect x="17" y="16" width="4" height="13" rx="2" fill={COLORS.focus} />
+                    <rect x="31" y="16" width="4" height="13" rx="2" fill={COLORS.focus} />
+                    <rect x="21" y="35" width="10" height="4" rx="2" fill={COLORS.focus} />
                 </svg>
             ),
             [UiIcons.GuidedDevelopment]: (
@@ -1225,6 +1241,30 @@ export const initIcons = function (): void {
                         clipRule="evenodd"
                         d="M5 8H11V7H5V8ZM5 11.998H11V10.998H5V11.998ZM11 9.998H5V8.998H11V9.998ZM13 14H3V2L9.001 2.002L8.997 5.509C8.997 5.643 9.049 5.77 9.144 5.863C9.237 5.957 9.364 6.01 9.497 6.01H9.498L13 6V14ZM10.001 1.953L13.048 5L9.997 5.009L10.001 1.953ZM13.993 5.463V4.533L13.994 4.532L13.993 4.531V4.528H13.99L10.462 1.001V1.001L10.461 1V1.001H9.387V1.002L2.5 1C2.367 1 2.24 1.053 2.146 1.146C2.053 1.24 2 1.367 2 1.5V14.5C2 14.776 2.224 15 2.5 15H13.5C13.776 15 14 14.776 14 14.5V5.499C14 5.486 13.994 5.476 13.993 5.463V5.463Z"
                         fill={COLORS.default}
+                    />
+                </svg>
+            ),
+            [UiIcons.NoResults]: (
+                <svg width="50" height="49" viewBox="0 0 50 49" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M20.626 40C31.6717 40 40.626 31.0457 40.626 20C40.626 8.9543 31.6717 0 20.626 0C9.58028 0 0.625977 8.9543 0.625977 20C0.625977 31.0457 9.58028 40 20.626 40ZM20.626 37C30.0148 37 37.626 29.3888 37.626 20C37.626 10.6112 30.0148 3 20.626 3C11.2371 3 3.62598 10.6112 3.62598 20C3.62598 29.3888 11.2371 37 20.626 37Z"
+                        fill={COLORS.default}
+                    />
+                    <rect
+                        x="33.626"
+                        y="35.1211"
+                        width="3"
+                        height="19.2712"
+                        transform="rotate(-45 33.626 35.1211)"
+                        fill={COLORS.default}
+                    />
+                    <rect x="15.626" y="13" width="2" height="7" fill="#007FD4" />
+                    <rect x="23.626" y="13" width="2" height="7" fill="#007FD4" />
+                    <path
+                        d="M13.2075 28C14.3943 25.0682 17.2686 23 20.626 23C23.9834 23 26.8577 25.0682 28.0445 28H25.8233C24.7859 26.2066 22.8468 25 20.626 25C18.4052 25 16.4661 26.2066 15.4287 28H13.2075Z"
+                        fill="#007FD4"
                     />
                 </svg>
             )

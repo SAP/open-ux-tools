@@ -70,7 +70,8 @@ $readonly-labels-opacity: 0.4;
                 }
             }
 
-            &-row {
+            &-row,
+            &-row-no-data {
                 &.even {
                     background: var(--vscode-editor-background);
                 }
@@ -86,7 +87,6 @@ $readonly-labels-opacity: 0.4;
                         background: var(--vscode-editor-background);
                     }
                 }
-
                 &.no-background {
                     background: none;
                     .flexible-table-content-table-row-header {
@@ -97,7 +97,9 @@ $readonly-labels-opacity: 0.4;
                         background-color: var(--vscode-editor-background);
                     }
                 }
+            }
 
+            &-row {
                 &:last-child {
                     border-bottom: none;
                 }
@@ -140,6 +142,9 @@ $readonly-labels-opacity: 0.4;
                 &-item-wrapper {
                     display: flex;
                     width: 100%;
+                }
+                &-no-data {
+                    padding: 5px;
                 }
             }
 

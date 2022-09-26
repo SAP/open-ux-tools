@@ -771,4 +771,57 @@ describe('<UIFlexibleTable />', () => {
             );
         });
     });
+
+    describe('InlineFlex layout', () => {
+        let wrapper: Enzyme.ReactWrapper<UIFlexibleTableProps<number>>;
+
+        beforeEach(() => {
+            wrapper = Enzyme.mount(
+                <UIFlexibleTable
+                    layout={UIFlexibleTableLayout.InlineFlex}
+                    id={tableId}
+                    columns={columns}
+                    rows={[]}
+                    onRenderCell={onRenderCell}
+                    onTableReorder={() => null}
+                />
+            );
+        });
+
+        it('"noDataText" as string', () => {
+            const noDataText = 'dummy no data';
+            wrapper.setProps({
+                noDataText
+            });
+            const noData = wrapper.find('.flexible-table-content-table-row-no-data');
+            expect(noData.length).toEqual(1);
+            expect(noData.text()).toEqual(noDataText);
+        });
+
+        it('"noDataText" as element', () => {
+            wrapper.setProps({
+                noDataText: <div className="customNoData"></div>
+            });
+            const noData = wrapper.find('.customNoData');
+            expect(noData.length).toEqual(1);
+        });
+
+        it('"noRowBackground"', () => {
+            const noDataText = 'dummy no data';
+            wrapper.setProps({
+                noRowBackground: true,
+                noDataText
+            });
+            expect(wrapper.find('.flexible-table-content-table-row-no-data.no-background').length).toEqual(1);
+        });
+
+        it('"reverseBackground" ', () => {
+            const noDataText = 'dummy no data';
+            wrapper.setProps({
+                reverseBackground: true,
+                noDataText
+            });
+            expect(wrapper.find('.flexible-table-content-table-row-no-data.reverse-background').length).toEqual(1);
+        });
+    });
 });
