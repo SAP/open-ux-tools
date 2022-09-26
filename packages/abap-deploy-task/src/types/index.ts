@@ -1,4 +1,4 @@
-import { LogLevel } from '@sap-ux/logger';
+import type { LogLevel } from '@sap-ux/logger';
 
 export const NAME = 'abap-deploy-task';
 

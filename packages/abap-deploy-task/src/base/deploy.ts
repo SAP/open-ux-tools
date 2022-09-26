@@ -4,10 +4,9 @@ import type {
     Ui5AbapRepositoryService,
     AxiosRequestConfig
 } from '@sap-ux/axios-extension';
-import { createForAbap, createForDestination, createForAbapOnCloud } from '@sap-ux/axios-extension';
+import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { writeFileSync } from 'fs';
-import { t } from '../messages';
 import type { AbapDescriptor, AbapTarget } from '../types';
 
 /**
@@ -16,7 +15,7 @@ import type { AbapDescriptor, AbapTarget } from '../types';
  * @param target - target system for the deployments
  * @returns service instance
  */
-function createDeployService(target: AbapTarget): Ui5AbapRepositoryService {
+function _createDeployService(target: AbapTarget): Ui5AbapRepositoryService {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
     if (isAppStudio() && target.destination) {
@@ -55,5 +54,7 @@ export function deploy(archive: Buffer, target: AbapTarget, app: AbapDescriptor,
     //const service = createDeployService(target);
     //service.deploy(archive, app, testMode);
     // for testing
-    if (!testMode) writeFileSync(`archive-${Date.now()}.zip`, archive);
+    if (!testMode) {
+        writeFileSync(`archive-${Date.now()}.zip`, archive);
+    }
 }

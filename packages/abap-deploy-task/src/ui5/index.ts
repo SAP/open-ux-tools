@@ -1,6 +1,7 @@
 import type { TaskParameters } from '@ui5/builder';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import { AbapDeployConfig, NAME } from '../types';
+import type { AbapDeployConfig } from '../types';
+import { NAME } from '../types';
 import { deploy, validateConfig } from '../base';
 import { t } from '../messages';
 import { createUi5Archive } from './archive';

@@ -1,9 +1,15 @@
 import { ZipFile } from 'yazl';
-import { ToolsLogger } from '@sap-ux/logger';
-import { TaskParameters } from '@ui5/builder';
-import { DuplexCollection } from '@ui5/fs';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { TaskParameters } from '@ui5/builder';
+import type { DuplexCollection } from '@ui5/fs';
 import { createBuffer } from '../base';
 
+/**
+ *
+ * @param logger
+ * @param workspace
+ * @param options
+ */
 export async function createUi5Archive(
     logger: ToolsLogger,
     workspace: DuplexCollection,

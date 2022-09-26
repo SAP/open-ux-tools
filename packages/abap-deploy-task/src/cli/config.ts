@@ -20,6 +20,12 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
     return config;
 }
 
+/**
+ *
+ * @param taskConfig
+ * @param options
+ * @returns the merged config
+ */
 export function mergeConfig(taskConfig: Partial<AbapDeployConfig>, options: CliOptions): AbapDeployConfig {
     const app = {
         name: taskConfig.app?.name ?? options.name,

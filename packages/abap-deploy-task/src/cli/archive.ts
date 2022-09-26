@@ -4,7 +4,7 @@ import { join, relative } from 'path';
 import type { CliOptions } from '../types';
 import { createBuffer } from '../base/archive';
 import { t } from '../messages';
-import { ToolsLogger } from '@sap-ux/logger';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Get/read zip file from the given path.
@@ -32,7 +32,7 @@ function getArchiveFromPath(path: string): Promise<Buffer> {
  */
 async function fetchArchiveFromUrl(url: string): Promise<Buffer> {
     // TODO
-    throw new Error(t('ACHIVE_FROM_EXTERNAL_URL_ERROR'));
+    throw new Error(t('ACHIVE_FROM_EXTERNAL_URL_ERROR', url));
 }
 
 /**
@@ -59,6 +59,7 @@ function getFileNames(path: string): string[] {
 /**
  * Create a zipped file containing all files in the given folder.
  *
+ * @param logger
  * @param path - path to the folder that is to be zipped
  * @returns Buffer containing the zip file
  */
@@ -75,6 +76,7 @@ function createArchiveFromFolder(logger: ToolsLogger, path: string): Promise<Buf
 /**
  * Get a zipped archived based on the given options.
  *
+ * @param logger
  * @param options
  * @returns Buffer containing the zip file
  */

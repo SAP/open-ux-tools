@@ -1,7 +1,8 @@
 import { program, Option } from 'commander';
 import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
 import { deploy, validateConfig } from '../base';
-import { CliOptions, NAME } from '../types';
+import type { CliOptions } from '../types';
+import { NAME } from '../types';
 import { getArchive } from './archive';
 import { t } from '../messages';
 import { getDeploymentConfig, mergeConfig } from './config';
