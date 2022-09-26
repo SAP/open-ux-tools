@@ -97,7 +97,9 @@ importers:
             '@sap-ux/axios-extension': workspace:*
             '@sap-ux/btp-utils': workspace:*
             '@sap-ux/logger': workspace:*
+            '@sap-ux/store': workspace:*
             '@sap-ux/ui5-config': workspace:*
+            '@types/axios': 0.14.0
             '@types/yazl': 2.4.2
             commander: 9.4.0
             dotenv: 16.0.0
@@ -107,11 +109,13 @@ importers:
             '@sap-ux/axios-extension': link:../axios-extension
             '@sap-ux/btp-utils': link:../btp-utils
             '@sap-ux/logger': link:../logger
+            '@sap-ux/store': link:../store
             '@sap-ux/ui5-config': link:../ui5-config
             commander: 9.4.0
             dotenv: 16.0.0
             yazl: 2.5.1
         devDependencies:
+            '@types/axios': 0.14.0
             '@types/yazl': 2.4.2
             nock: 13.2.4
 
@@ -5341,6 +5345,18 @@ packages:
         dependencies:
             '@types/glob': 7.2.0
         dev: false
+
+    /@types/axios/0.14.0:
+        resolution:
+            {
+                integrity: sha512-KqQnQbdYE54D7oa/UmYVMZKq7CO4l8DEENzOKc4aBRwxCXSlJXGz83flFx5L7AWrOQnmuN3kVsRdt+GZPPjiVQ==
+            }
+        deprecated: This is a stub types definition for axios (https://github.com/mzabriskie/axios). axios provides its own type definitions, so you don't need @types/axios installed!
+        dependencies:
+            axios: 0.24.0
+        transitivePeerDependencies:
+            - debug
+        dev: true
 
     /@types/babel__core/7.1.18:
         resolution:

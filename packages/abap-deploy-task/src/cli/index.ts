@@ -70,7 +70,7 @@ export async function run(): Promise<void> {
 
     try {
         const taskConfig = await getDeploymentConfig(options.config);
-        const config = mergeConfig(taskConfig, options);
+        const config = await mergeConfig(taskConfig, options);
         logger.debug(config);
         validateConfig(config);
 

@@ -1,7 +1,8 @@
 import { UI5Config } from '@sap-ux/ui5-config';
+import { updateCredentials } from '../base';
 import { readFileSync } from 'fs';
 import { t } from '../messages';
-import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
+import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions } from '../types';
 import { NAME } from '../types';
 
 /**
@@ -26,14 +27,25 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
  * @param options
  * @returns the merged config
  */
-export function mergeConfig(taskConfig: Partial<AbapDeployConfig>, options: CliOptions): AbapDeployConfig {
+export async function mergeConfig(
+    taskConfig: Partial<AbapDeployConfig>,
+    options: CliOptions
+): Promise<AbapDeployConfig> {
     const app = {
-        name: taskConfig.app?.name ?? options.name,
-        desription: taskConfig.app?.desription ?? options.desription,
-        package: taskConfig.app?.package ?? options.package,
-        transport: taskConfig.app?.transport ?? options.transport
-    } as AbapDeployConfig['app'];
+        name: options.name ?? taskConfig.app?.name,
+        desription: options.desription ?? taskConfig.app?.desription,
+        package: options.package ?? taskConfig.app?.package,
+        transport: options.transport ?? taskConfig.app?.transport
+    } as AbapDescriptor;
+    const target = {
+        url: options.url ?? taskConfig.target?.url,
+        client: options.client ?? taskConfig.target?.client,
+        destination: options.destination ?? taskConfig.target?.destination,
+        scp: options.scp !== undefined ? options.scp : taskConfig.target?.scp
+    } as AbapTarget;
     const test = options.test !== undefined ? options.test : taskConfig.test;
-
-    return { app, target: taskConfig.target as AbapTarget, test };
+    const yes = options.yes;
+    const config = { app, target, test, yes };
+    await updateCredentials(config);
+    return config;
 }

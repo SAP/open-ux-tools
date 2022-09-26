@@ -7,7 +7,7 @@ import type {
 import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { writeFileSync } from 'fs';
-import type { AbapDescriptor, AbapTarget } from '../types';
+import type { AbapDescriptor, AbapTarget, CommonOptions } from '../types';
 
 /**
  * Create an instance of a UI5AbapRepository service connected to the given target configuration.
@@ -15,9 +15,12 @@ import type { AbapDescriptor, AbapTarget } from '../types';
  * @param target - target system for the deployments
  * @returns service instance
  */
-function _createDeployService(target: AbapTarget): Ui5AbapRepositoryService {
+function _createDeployService(target: AbapTarget, config: CommonOptions): Ui5AbapRepositoryService {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
+    if (config.strictSsl === false) {
+        options.ignoreCertErrors = true;
+    }
     if (isAppStudio() && target.destination) {
         provider = createForDestination(options, {
             Name: target.destination

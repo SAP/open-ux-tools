@@ -66,9 +66,10 @@ function getFileNames(path: string): string[] {
 function createArchiveFromFolder(logger: ToolsLogger, path: string): Promise<Buffer> {
     const files = getFileNames(path);
     const zip = new ZipFile();
-    for (const file of files) {
-        logger.debug(file);
-        zip.addFile(file, relative(path, file));
+    for (const filePath of files) {
+        const relPath = relative(path, filePath);
+        logger.debug(relPath);
+        zip.addFile(filePath, relPath);
     }
     return createBuffer(zip);
 }

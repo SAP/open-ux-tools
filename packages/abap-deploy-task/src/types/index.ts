@@ -38,6 +38,7 @@ export interface CommonOptions {
 export interface AbapDeployConfig extends CommonOptions {
     target: AbapTarget;
     app: AbapDescriptor;
+    credentials?: any;
 }
 
 export interface CliOptions extends Partial<AbapDescriptor>, Partial<AbapTarget>, Partial<CommonOptions> {

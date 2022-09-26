@@ -2,7 +2,7 @@ import type { TaskParameters } from '@ui5/builder';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../types';
 import { NAME } from '../types';
-import { deploy, validateConfig } from '../base';
+import { deploy, replaceEnvVariables, updateCredentials, validateConfig } from '../base';
 import { t } from '../messages';
 import { createUi5Archive } from './archive';
 
@@ -19,8 +19,10 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
         logLevel: (options.configuration?.log as LogLevel) ?? LogLevel.Info
     });
 
-    logger.debug(options.configuration ?? {});
+    options.configuration && logger.debug(options.configuration);
     const config = validateConfig(options.configuration);
+    replaceEnvVariables(config);
+    updateCredentials(config);
 
     logger.info(t('CREATING_ARCHIVE_UI5'));
     const archive = await createUi5Archive(logger, workspace, options);

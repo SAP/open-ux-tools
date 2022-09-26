@@ -1,6 +1,41 @@
+import { config } from 'dotenv';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { getService, BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { t } from '../messages';
 import type { AbapDeployConfig } from '../types';
+
+export function replaceEnvVariables(obj: object): void {
+    config();
+    for (const key in obj) {
+        const value = (obj as Record<string, unknown>)[key];
+        if (typeof value === 'object') {
+            replaceEnvVariables(value as object);
+        } else if (typeof value === 'string' && (value as string).indexOf('env:') === 0) {
+            const varName = (value as string).split('env:')[1];
+            (obj as Record<string, unknown>)[key] = process.env[varName];
+        }
+    }
+}
+
+/**
+ * Check the secure storage if it has credentials for the given target.
+ * @param config
+ */
+export async function updateCredentials(config: AbapDeployConfig) {
+    if (!isAppStudio() && config.target.url) {
+        const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+        let system = await systemService.read(
+            new BackendSystemKey({ url: config.target.url, client: config.target.client })
+        );
+        if (!system && config.target.client) {
+            // check if there are credentials for the default client
+            system = await systemService.read(new BackendSystemKey({ url: config.target.url }));
+        }
+        if (system) {
+            config.credentials = { ...system, ...(config.credentials ?? {}) };
+        }
+    }
+}
 
 /**
  * Helper function for throwing a missing property error.
@@ -43,13 +78,6 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
     } else {
         throwConfigMissingError('app');
     }
-    /*    if (config.credentials) {
-        if (!config.credentials.serviceKeys && config.credentials.username) {
-            if (!config.credentials.password) {
-                throwConfigMissingError('password');
-            }
-        }
-    }
-*/
+
     return config;
 }
