@@ -79,7 +79,7 @@ export async function run(): Promise<void> {
         logger.info(t('ARCHIVE_CREATED'));
 
         logger.info(t('STARTING_DEPLOYMENT', config.test));
-        deploy(archive, config.target, config.app, config.test);
+        deploy(archive, config);
     } catch (error) {
         logger.error(t('DEPLOYMENT_FAILED'));
         logger.debug(error!);

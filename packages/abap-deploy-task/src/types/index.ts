@@ -1,3 +1,4 @@
+import { AxiosRequestConfig, ServiceInfo } from '@sap-ux/axios-extension';
 import type { LogLevel } from '@sap-ux/logger';
 
 export const NAME = 'abap-deploy-task';
@@ -38,7 +39,7 @@ export interface CommonOptions {
 export interface AbapDeployConfig extends CommonOptions {
     target: AbapTarget;
     app: AbapDescriptor;
-    credentials?: any;
+    credentials?: AxiosRequestConfig['auth'];
 }
 
 export interface CliOptions extends Partial<AbapDescriptor>, Partial<AbapTarget>, Partial<CommonOptions> {

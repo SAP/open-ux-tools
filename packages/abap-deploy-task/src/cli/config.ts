@@ -1,5 +1,4 @@
 import { UI5Config } from '@sap-ux/ui5-config';
-import { updateCredentials } from '../base';
 import { readFileSync } from 'fs';
 import { t } from '../messages';
 import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions } from '../types';
@@ -46,6 +45,5 @@ export async function mergeConfig(
     const test = options.test !== undefined ? options.test : taskConfig.test;
     const yes = options.yes;
     const config = { app, target, test, yes };
-    await updateCredentials(config);
     return config;
 }

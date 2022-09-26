@@ -2,7 +2,7 @@ import type { TaskParameters } from '@ui5/builder';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../types';
 import { NAME } from '../types';
-import { deploy, replaceEnvVariables, updateCredentials, validateConfig } from '../base';
+import { deploy, replaceEnvVariables, validateConfig } from '../base';
 import { t } from '../messages';
 import { createUi5Archive } from './archive';
 
@@ -22,7 +22,6 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     options.configuration && logger.debug(options.configuration);
     const config = validateConfig(options.configuration);
     replaceEnvVariables(config);
-    updateCredentials(config);
 
     logger.info(t('CREATING_ARCHIVE_UI5'));
     const archive = await createUi5Archive(logger, workspace, options);
@@ -30,7 +29,7 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
 
     try {
         logger.info(t('STARTING_DEPLOYMENT', config.test));
-        deploy(archive, config.target, config.app, config.test);
+        deploy(archive, config);
     } catch (e) {
         logger.error(t('DEPLOYMENT_FAILED'));
         logger.debug((e as Error).message);
