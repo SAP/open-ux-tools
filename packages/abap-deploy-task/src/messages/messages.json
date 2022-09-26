@@ -1,12 +1,8 @@
 {
-    "info": {
-        "STARTING_DEPLOYMENT": "Starting deployment${p[0] ? ' in test mode' : ''}.",
-        "SSL_IGNORE_WARNING": "You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html)."
-    },
-    "error": {
-        "NO_DIST": "Deployment has failed. Please ensure there is a valid deployment archive file in the dist folder of the application that can be deployed.",
-        "NO_CONFIG": "The deployment configuration is missing.",
-        "DEPLOYMENT_FAILED": "Deployment has failed. Please ensure there is a valid deployment archive file in the dist folder of the application that can be deployed.",
-        "ACHIVE_FROM_EXTERNAL_URL": "The archive url you provided could not be reached. Please ensure the URL is accessible and does not require authentication. ${p[0]}"
-    }
+    "STARTING_DEPLOYMENT": "Starting deployment${p[0] ? ' in test mode' : ''}.",
+    "SSL_IGNORE_WARNING": "You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).",
+    "NO_DIST_ERROR": "Deployment has failed. Please ensure there is a valid deployment archive file in the dist folder of the application that can be deployed.",
+    "NO_CONFIG_ERROR": "The deployment configuration is missing.",
+    "DEPLOYMENT_FAILED": "Deployment has failed. Please ensure there is a valid deployment archive file in the dist folder of the application that can be deployed.",
+    "ACHIVE_FROM_EXTERNAL_URL_ERROR": "The archive url you provided could not be reached. Please ensure the URL is accessible and does not require authentication. ${p[0]}"
 }

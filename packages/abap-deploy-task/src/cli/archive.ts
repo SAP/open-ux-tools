@@ -3,7 +3,7 @@ import { readdirSync, readFile, statSync } from 'fs';
 import { join, relative } from 'path';
 import type { CliOptions } from '../types';
 import { createBuffer } from '../base/archive';
-import { error } from '../messages';
+import { t } from '../messages';
 
 /**
  * Get/read zip file from the given path.
@@ -31,7 +31,7 @@ function getArchiveFromPath(path: string): Promise<Buffer> {
  */
 async function fetchArchiveFromUrl(url: string): Promise<Buffer> {
     // TODO
-    throw new Error(error('ACHIVE_FROM_EXTERNAL_URL'));
+    throw new Error(t('ACHIVE_FROM_EXTERNAL_URL_ERROR'));
 }
 
 /**

@@ -7,7 +7,7 @@ import type {
 import { createForAbap, createForDestination, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { writeFileSync } from 'fs';
-import { info, error } from '../messages';
+import { t } from '../messages';
 import type { AbapDescriptor, AbapTarget } from '../types';
 
 /**
@@ -55,11 +55,11 @@ export function deploy(archive: Buffer, target: AbapTarget, app: AbapDescriptor,
     //const service = createDeployService(target);
     //service.deploy(archive, app, testMode);
     try {
-        console.log(info('STARTING_DEPLOYMENT', testMode));
+        console.log(t('STARTING_DEPLOYMENT', testMode));
         // for testing
         writeFileSync(`archive-${Date.now()}.zip`, archive);
     } catch (e) {
-        console.error(error('DEPLOYMENT_FAILED'));
+        console.error(t('DEPLOYMENT_FAILED'));
         throw e;
     }
 }

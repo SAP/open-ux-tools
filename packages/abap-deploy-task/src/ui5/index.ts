@@ -3,7 +3,7 @@ import type { TaskParameters } from '@ui5/builder';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../types';
 import { createBuffer, deploy } from '../base';
-import { error } from '../messages';
+import { t } from '../messages';
 
 /**
  * Custom task to upload the build result to the UI5 ABAP Repository.
@@ -20,7 +20,7 @@ async function task({ workspace, dependencies, taskUtil, options }: TaskParamete
     });
 
     if (!options.configuration) {
-        throw new Error(error('NO_CONFIG'));
+        throw new Error(t('NO_CONFIG_ERROR'));
     }
 
     logger.info(`Deploying ${options.projectName}`);
