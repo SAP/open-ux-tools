@@ -1,3 +1,5 @@
+import { LogLevel } from '@sap-ux/logger';
+
 export const NAME = 'abap-deploy-task';
 
 export interface AbapDescriptor {
@@ -14,18 +16,34 @@ export interface AbapTarget {
     scp?: boolean;
 }
 
-export interface AbapDeployConfig {
-    target: AbapTarget;
-    app: AbapDescriptor;
+export interface CommonOptions {
     test?: boolean;
     strictSsl?: boolean;
+    /**
+     * Additional project files that are to be added to the zip
+     */
+    add?: string;
+
+    /**
+     * Optional: if set to true then the generated zip archive will be written to the filesystem
+     */
+    keep?: boolean;
+
+    /**
+     * Optional: set a specific log level, default is info
+     */
+    log?: LogLevel;
 }
 
-export interface CliOptions extends Partial<AbapDescriptor>, Partial<AbapTarget> {
+export interface AbapDeployConfig extends CommonOptions {
+    target: AbapTarget;
+    app: AbapDescriptor;
+}
+
+export interface CliOptions extends Partial<AbapDescriptor>, Partial<AbapTarget>, Partial<CommonOptions> {
     config: string;
     yes?: boolean;
-    test?: AbapDeployConfig['test'];
-    strictSsl?: AbapDeployConfig['strictSsl'];
+    verbose?: boolean;
     archiveFolder?: string;
     archivePath?: string;
     archiveUrl?: string;

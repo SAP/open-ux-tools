@@ -4,6 +4,7 @@ import { join, relative } from 'path';
 import type { CliOptions } from '../types';
 import { createBuffer } from '../base/archive';
 import { t } from '../messages';
+import { ToolsLogger } from '@sap-ux/logger';
 
 /**
  * Get/read zip file from the given path.
@@ -61,11 +62,11 @@ function getFileNames(path: string): string[] {
  * @param path - path to the folder that is to be zipped
  * @returns Buffer containing the zip file
  */
-function createArchiveFromFolder(path: string): Promise<Buffer> {
+function createArchiveFromFolder(logger: ToolsLogger, path: string): Promise<Buffer> {
     const files = getFileNames(path);
     const zip = new ZipFile();
     for (const file of files) {
-        console.log(file);
+        logger.debug(file);
         zip.addFile(file, relative(path, file));
     }
     return createBuffer(zip);
@@ -77,12 +78,12 @@ function createArchiveFromFolder(path: string): Promise<Buffer> {
  * @param options
  * @returns Buffer containing the zip file
  */
-export async function getArchive(options: CliOptions): Promise<Buffer> {
+export async function getArchive(logger: ToolsLogger, options: CliOptions): Promise<Buffer> {
     if (options.archivePath) {
         return getArchiveFromPath(options.archivePath);
     } else if (options.archiveUrl) {
         return fetchArchiveFromUrl(options.archiveUrl);
     } else {
-        return createArchiveFromFolder(options.archiveFolder ?? join(process.cwd(), 'dist'));
+        return createArchiveFromFolder(logger, options.archiveFolder ?? join(process.cwd(), 'dist'));
     }
 }

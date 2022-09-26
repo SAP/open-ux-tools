@@ -54,12 +54,6 @@ function createDeployService(target: AbapTarget): Ui5AbapRepositoryService {
 export function deploy(archive: Buffer, target: AbapTarget, app: AbapDescriptor, testMode?: boolean) {
     //const service = createDeployService(target);
     //service.deploy(archive, app, testMode);
-    try {
-        console.log(t('STARTING_DEPLOYMENT', testMode));
-        // for testing
-        writeFileSync(`archive-${Date.now()}.zip`, archive);
-    } catch (e) {
-        console.error(t('DEPLOYMENT_FAILED'));
-        throw e;
-    }
+    // for testing
+    if (!testMode) writeFileSync(`archive-${Date.now()}.zip`, archive);
 }

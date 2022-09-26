@@ -1,42 +1,38 @@
-import { ZipFile } from 'yazl';
 import type { TaskParameters } from '@ui5/builder';
-import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { AbapDeployConfig } from '../types';
-import { createBuffer, deploy } from '../base';
+import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { AbapDeployConfig, NAME } from '../types';
+import { deploy, validateConfig } from '../base';
 import { t } from '../messages';
+import { createUi5Archive } from './archive';
 
 /**
  * Custom task to upload the build result to the UI5 ABAP Repository.
  *
  * @param params
  * @param params.workspace
- * @param params.dependencies
- * @param params.taskUtil
  * @param params.options
  */
-async function task({ workspace, dependencies, taskUtil, options }: TaskParameters<AbapDeployConfig>): Promise<void> {
+async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): Promise<void> {
     const logger = new ToolsLogger({
-        transports: [new UI5ToolingTransport({ moduleName: 'abap-deploy-task' })]
+        transports: [new UI5ToolingTransport({ moduleName: `${NAME} ${options.projectName}` })],
+        logLevel: (options.configuration?.log as LogLevel) ?? LogLevel.Info
     });
 
-    if (!options.configuration) {
-        throw new Error(t('NO_CONFIG_ERROR'));
+    logger.debug(options.configuration ?? {});
+    const config = validateConfig(options.configuration);
+
+    logger.info(t('CREATING_ARCHIVE_UI5'));
+    const archive = await createUi5Archive(logger, workspace, options);
+    logger.info(t('ARCHIVE_CREATED'));
+
+    try {
+        logger.info(t('STARTING_DEPLOYMENT', config.test));
+        deploy(archive, config.target, config.app, config.test);
+    } catch (e) {
+        logger.error(t('DEPLOYMENT_FAILED'));
+        logger.debug((e as Error).message);
+        throw e;
     }
-
-    logger.info(`Deploying ${options.projectName}`);
-
-    const prefix = `/resources/${options.projectName}/`;
-    const zip = new ZipFile();
-    const resources = await workspace.byGlob(`${prefix}**/*`);
-    for (const resource of resources) {
-        const path = resource.getPath().replace(prefix, '');
-        logger.info(path);
-        const buffer = await resource.getBuffer();
-        zip.addBuffer(buffer, path);
-    }
-    const archive = await createBuffer(zip);
-
-    deploy(archive, options.configuration.target, options.configuration.app, options.configuration.test);
 }
 
 export = task;

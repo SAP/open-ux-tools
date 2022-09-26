@@ -1,12 +1,15 @@
 import { program, Option } from 'commander';
-import { deploy } from '../base';
-import type { CliOptions } from '../types';
+import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
+import { deploy, validateConfig } from '../base';
+import { CliOptions, NAME } from '../types';
 import { getArchive } from './archive';
-import { getDeploymentConfig } from './deploy';
+import { t } from '../messages';
+import { getDeploymentConfig, mergeConfig } from './config';
 
 program
     .requiredOption('-c, --config <path-to-yaml>', 'Path to deployment config yaml file, default ui5-deploy.yaml')
     .option('-y, --yes', 'yes to all questions', false)
+    .option('-v, --verbose', 'verbose log output', false)
     .version('0.0.1');
 
 // is this really required or was it a workaround for something in the past?
@@ -55,13 +58,30 @@ program
 /**
  * Function that is to be execute when the exposed deploy command is executed.
  */
-export async function run() {
+export async function run(): Promise<void> {
     program.parse();
-    const options = (program.opts() ?? {}) as CliOptions;
-    console.log(options);
+    const options = program.opts() as CliOptions;
+    const logger = new ToolsLogger({
+        transports: [new ConsoleTransport()],
+        logLevel: options.verbose ? LogLevel.Silly : LogLevel.Info,
+        logPrefix: NAME
+    });
 
-    const archive = await getArchive(options);
-    const config = await getDeploymentConfig(options.config);
+    try {
+        const taskConfig = await getDeploymentConfig(options.config);
+        const config = mergeConfig(taskConfig, options);
+        logger.debug(config);
+        validateConfig(config);
 
-    deploy(archive, config.target, config.app, config.test ?? options.test);
+        logger.info(t('CREATING_ARCHIVE_UI5'));
+        const archive = await getArchive(logger, options);
+        logger.info(t('ARCHIVE_CREATED'));
+
+        logger.info(t('STARTING_DEPLOYMENT', config.test));
+        deploy(archive, config.target, config.app, config.test);
+    } catch (error) {
+        logger.error(t('DEPLOYMENT_FAILED'));
+        logger.debug(error!);
+        program.error((error as Error).message, { exitCode: 1 });
+    }
 }

@@ -1,11 +1,15 @@
 specVersion: '2.6'
 metadata:
-    name: test-project
+  name: test-project
 type: application
 builder:
-    customTasks:
-        - name: abap-deploy-task
-          afterTask: generateVersionInfo
-          configuration:
-            app: TODO
-            target: TODO
+  customTasks:
+    - name: abap-deploy-task
+      afterTask: generateVersionInfo
+      configuration:
+        log: 4
+        app:
+          name: Z_TEST
+        target:
+          destination: EXAMPLE
+          url: https://target.example
