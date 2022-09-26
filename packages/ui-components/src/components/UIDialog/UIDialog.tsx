@@ -206,7 +206,6 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      */
     render(): JSX.Element {
         const {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             acceptButtonText,
             cancelButtonText,
             onAccept,
