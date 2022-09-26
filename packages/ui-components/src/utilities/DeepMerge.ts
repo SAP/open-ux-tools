@@ -1,3 +1,5 @@
+import React from 'react';
+
 /**
  * Performs deep merge on two objects.
  * Parameters are not mutated.
@@ -33,5 +35,5 @@ function isObject(item: unknown): boolean {
     if (!item) {
         return false;
     }
-    return typeof item === 'object' && !Array.isArray(item);
+    return typeof item === 'object' && !Array.isArray(item) && !React.isValidElement(item);
 }

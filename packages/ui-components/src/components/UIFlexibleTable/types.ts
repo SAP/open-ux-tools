@@ -86,6 +86,7 @@ export interface UIFlexibleTableProps<T> {
     showRowTitles?: boolean;
     lockVertically?: boolean;
     reverseBackground?: boolean;
+    noDataText?: string | React.ReactElement;
 }
 
 export interface NodeDragAndDropSortingParams {
@@ -95,4 +96,10 @@ export interface NodeDragAndDropSortingParams {
     isSelected: boolean;
     props: IItemProps;
     value: unknown;
+}
+
+export enum UIFlexibleTableNoDataAlignment {
+    Left = 'left',
+    Right = 'right',
+    Center = 'center'
 }
