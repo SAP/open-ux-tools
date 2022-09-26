@@ -8,7 +8,7 @@ import { spawnCommand, npmCommand } from '../command';
  *
  * @returns list of extension ids
  */
-export const getInstalledExtensions = async (): Promise<{ [id: string]: string }> => {
+export const getInstalledExtensions = async (): Promise<{ [id: string]: { version: string } }> => {
     const output = await spawnCommand('code', ['--list-extensions', '--show-versions']);
     const versions = output
         .split('\n')
@@ -32,9 +32,8 @@ export const getInstalledExtensions = async (): Promise<{ [id: string]: string }
 export const getCFCliToolVersion = async (module: string): Promise<string> => {
     let cfVersion: string;
     try {
-        await spawnCommand(module, ['-v'], (path) => {
-            cfVersion = path.replace(/\s/g, '').split('version')[1].slice(0, 5);
-        });
+        const ouput = await spawnCommand(module, ['-v']);
+        cfVersion = ouput.replace(/\s/g, '').split('version')[1].slice(0, 5);
     } catch (error) {
         return t('info.notInstalled');
     }
@@ -50,13 +49,13 @@ export const getCFCliToolVersion = async (module: string): Promise<string> => {
 export const getFioriGenVersion = async (module: string): Promise<string> => {
     let fioriGenVersion: string;
     try {
-        let globalNpmPath;
-        await spawnCommand(npmCommand, ['root', '-g'], (path) => {
-            globalNpmPath = path.trim();
-        });
+        let globalNpmPath = await spawnCommand(npmCommand, ['root', '-g']);
+        globalNpmPath = globalNpmPath.trim();
         const pathToPackageJson = join(globalNpmPath, module, 'package.json');
         if (existsSync(pathToPackageJson)) {
             fioriGenVersion = JSON.parse(await promises.readFile(pathToPackageJson, 'utf-8')).version;
+        } else {
+            fioriGenVersion = t('info.notInstalled');
         }
     } catch {
         return t('info.notInstalled');

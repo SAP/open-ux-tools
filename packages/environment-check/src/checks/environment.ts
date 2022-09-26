@@ -62,7 +62,7 @@ export async function getVSCodeEnvironment(): Promise<{
     const cloudCli = await getCFCliToolVersion(NpmModules.CloudCliTools);
 
     const environment: VSCodeEnvironment = {
-        nodeVersion: process.versions.node,
+        nodeVersion: process.version,
         platform: process.platform,
         cloudCli: cloudCli,
         appWizard: extensions[Extensions.AppWizard]
@@ -70,7 +70,7 @@ export async function getVSCodeEnvironment(): Promise<{
             : t('info.notInstalled'),
         fioriGenVersion: fioriGenVersion,
         appMod: extensions[Extensions.AppMod] ? extensions[Extensions.AppMod]['version'] : t('info.notInstalled'),
-        help: extensions[Extensions.Help]['version'] ? extensions[Extensions.Help]['version'] : t('info.notInstalled'),
+        help: extensions[Extensions.Help] ? extensions[Extensions.Help]['version'] : t('info.notInstalled'),
         serviceMod: extensions[Extensions.ServiceMod]
             ? extensions[Extensions.ServiceMod]['version']
             : t('info.notInstalled'),

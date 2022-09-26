@@ -1,5 +1,5 @@
-import { checkEnvironment } from '../src';
+import { checkBASEnvironment } from '../src';
 
 test('Smoke test', () => {
-    expect(typeof checkEnvironment === 'function').toBeTruthy();
+    expect(typeof checkBASEnvironment === 'function').toBeTruthy();
 });

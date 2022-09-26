@@ -1,5 +1,12 @@
 import type { EnvironmentCheckResult } from '../../src';
 import { convertResultsToMarkdown, UrlServiceType } from '../../src';
+import { isAppStudio } from '@sap-ux/btp-utils';
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...(jest.requireActual('@sap-ux/btp-utils') as object),
+    isAppStudio: jest.fn()
+}));
+
+const mockIsAppStudio = isAppStudio as jest.Mock;
 
 const data = {
     destinationResults: {
@@ -159,14 +166,18 @@ const data = {
     ]
 };
 
-describe('Test to check conversion to markdown, convertResultsToMarkdown()', () => {
+describe('Test to check conversion to markdown, convertResultsToMarkdown() BAS', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockIsAppStudio.mockReturnValue(true);
+    });
     test('Check if writer is creating output appropriately', () => {
         const result = convertResultsToMarkdown(data as unknown as EnvironmentCheckResult);
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
     test('Check output for empty results', () => {
         const result = convertResultsToMarkdown({});
-        expect(result).toMatch('# SAP Fiori tools - Environment Check');
+        expect(result).toMatch('# SAP Fiori tools - Environment Check in SAP Business Application Studio');
         expect(result).toMatch('## Environment');
         expect(result).toMatch('## Destination Details (0)');
         expect(result).toMatch('## All Destinations (0)');
@@ -209,6 +220,43 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check empty destination table', () => {
         const result = convertResultsToMarkdown({ destinations: [] });
+        expect(result.split('<sub>created at')[0]).toMatchSnapshot();
+    });
+});
+
+describe('Test to check conversion to markdown, convertResultsToMarkdown() VSCODE', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockIsAppStudio.mockReturnValue(false);
+    });
+
+    test('Check output for empty results', () => {
+        const result = convertResultsToMarkdown({});
+
+        expect(result).toMatch('# SAP Fiori tools - Environment Check in Visual Studio Code');
+        expect(result).toMatch('## Environment');
+        expect(result).toMatch('Environment not checked');
+    });
+    test('Check VSCode results table', () => {
+        const results = {
+            nodeVersion: process.version,
+            platform: process.platform,
+            fioriGenVersion: '1',
+            cloudCli: '2',
+            appWizard: '2',
+            ui5LanguageAssistant: '2',
+            xmlToolkit: '2',
+            annotationMod: '2.2',
+            appMod: '2',
+            help: '2',
+            serviceMod: '2.4',
+            cds: '2'
+        };
+        const envCheckResults = {
+            environment: results
+        };
+        const result = convertResultsToMarkdown(envCheckResults);
+
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
 });
