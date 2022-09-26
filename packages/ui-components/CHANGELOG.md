@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.1
+
+### Patch Changes
+
+-   c4fffe0: sync ui-components
+
 ## 1.0.0
 
 ### Major Changes
