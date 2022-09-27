@@ -44,6 +44,9 @@ describe('Test for checkEnvironment() (BAS)', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         mockIsAppStudio.mockReturnValue(true);
+        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
+        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
+        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
     });
 
     test('Destinations that need authentication and no credentials are supplied, getEnvironmentCheck()', async () => {
@@ -373,7 +376,7 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         jest.resetAllMocks();
         mockIsAppStudio.mockReturnValue(false);
     });
-    test('Testing getVSCodeEnvironment', async () => {
+    test('Testing getToolsExtensions', async () => {
         const extensionVersions = {
             'SAPOS.yeoman-ui': { version: '2' },
             'SAPOSS.vscode-ui5-language-assistant': { version: '2' },
@@ -407,7 +410,7 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         expect(result.toolsExtensions).toEqual(expectedData);
     });
 
-    test('Testing getVSCodeEnvironment (no extensions installed)', async () => {
+    test('Testing getToolsExtensions (no extensions installed)', async () => {
         const expectedData = {
             nodeVersion: process.version,
             fioriGenVersion: '1',
