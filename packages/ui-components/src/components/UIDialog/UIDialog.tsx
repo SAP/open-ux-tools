@@ -67,6 +67,7 @@ export enum UIDialogScrollArea {
 export class UIDialog extends React.Component<DialogProps, DialogState> {
     /**
      * Initializes component properties.
+     *
      * @param {DialogProps} props
      */
     public constructor(props: DialogProps) {
@@ -82,6 +83,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
 
     /**
      * Called when component is rerendered.
+     *
      * @param {Readonly<DialogProps>} prevProps
      */
     componentDidUpdate(prevProps: Readonly<DialogProps>): void {

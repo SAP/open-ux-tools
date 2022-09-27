@@ -6,6 +6,7 @@ import { CALLOUT_STYLES } from '../UICallout';
 
 /**
  * UITooltipUtil class for rendering content
+ *
  * @class UITooltipUtils
  */
 export class UITooltipUtils {
@@ -27,7 +28,6 @@ export class UITooltipUtils {
 
     public static renderContent = (content: string | React.ReactElement | null): ITooltipProps => {
         return {
-            // eslint-disable-next-line react/display-name
             onRenderContent: () => <span>{content ?? ''}</span>,
             styles: UITooltipUtils.getStyles()
         } as ITooltipProps;
@@ -37,7 +37,6 @@ export class UITooltipUtils {
         const sanitized = sanitizeHtml(content);
 
         return {
-            // eslint-disable-next-line react/display-name
             onRenderContent: () => <span dangerouslySetInnerHTML={{ __html: sanitized }} />,
             styles: UITooltipUtils.getStyles()
         } as ITooltipProps;

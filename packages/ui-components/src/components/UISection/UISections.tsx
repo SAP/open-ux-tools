@@ -60,6 +60,7 @@ interface SizeCalculationInfo {
 
 /**
  * UISections component.
+ *
  * @exports
  * @class {UISections}
  * @extends {React.Component<UISectionsProps, UISectionsState>}
@@ -165,7 +166,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      *
      * @param {UISectionProps} nextProps
      * @param {UISectionsState} prevState
-     *
      * @returns {UISectionsState | null}
      */
     static getDerivedStateFromProps(nextProps: UISectionsProps, prevState: UISectionsState): UISectionsState | null {
@@ -475,7 +475,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      *
      * @param {number} childrenCount
      * @param {string} value
-     *
      * @returns {string}
      */
     private getPositionStyleValue(childrenCount: number, value: string): string {

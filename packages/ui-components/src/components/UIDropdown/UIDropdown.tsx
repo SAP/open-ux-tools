@@ -42,6 +42,7 @@ const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
 export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState> {
     /**
      * Initializes component properties.
+     *
      * @param {UIDropdownProps} props
      */
     public constructor(props: UIDropdownProps) {

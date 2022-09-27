@@ -71,7 +71,6 @@ function getActionsContainer(
  *
  * @param {UIFlexibleTableProps<T>} props
  * @param {number} paddingRight
- *
  * @returns {React.ReactNode}
  */
 export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: number): React.ReactNode {
@@ -178,7 +177,6 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
  *
  * @exports
  * @param {UIFlexibleTableRowProps} props
- *
  * @returns {JSX.Element}
  */
 export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
