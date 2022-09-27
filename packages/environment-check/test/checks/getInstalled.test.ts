@@ -1,6 +1,5 @@
 import * as command from '../../src/command';
-import { getCFCliToolVersion, getFioriGenVersion, getInstalledExtensions } from '../../src/checks/install';
-import { NpmModules } from '../../src/types';
+import { getCFCliToolVersion, getFioriGenVersion, getInstalledExtensions } from '../../src/checks/getInstalled';
 import fs from 'fs';
 
 describe('Test install functions', () => {
@@ -26,7 +25,7 @@ describe('Test install functions', () => {
 
         const output = `cf version 7.2.0+be4a5ce2b.2020-12-10`;
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
-        const result = await getCFCliToolVersion(NpmModules.CloudCliTools);
+        const result = await getCFCliToolVersion();
         expect(result).toStrictEqual(expectedResult);
     });
 
@@ -34,7 +33,7 @@ describe('Test install functions', () => {
         jest.spyOn(command, 'spawnCommand').mockImplementation(async () => {
             throw new Error('Command not found');
         });
-        const result = await getCFCliToolVersion(NpmModules.CloudCliTools);
+        const result = await getCFCliToolVersion();
         expect(result).toStrictEqual('Not installed');
     });
 
@@ -47,7 +46,7 @@ describe('Test install functions', () => {
         jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
             `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
         );
-        const result = await getFioriGenVersion(NpmModules.FioriGenerator);
+        const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
 
@@ -56,7 +55,7 @@ describe('Test install functions', () => {
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
         jest.spyOn(fs, 'existsSync').mockReturnValue(false);
 
-        const result = await getFioriGenVersion(NpmModules.FioriGenerator);
+        const result = await getFioriGenVersion();
         expect(result).toStrictEqual('Not installed');
     });
 
@@ -64,7 +63,7 @@ describe('Test install functions', () => {
         jest.spyOn(command, 'spawnCommand').mockImplementation(async () => {
             throw new Error('Command not found');
         });
-        const result = await getFioriGenVersion(NpmModules.FioriGenerator);
+        const result = await getFioriGenVersion();
         expect(result).toStrictEqual('Not installed');
     });
 });

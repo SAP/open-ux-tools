@@ -1,7 +1,7 @@
 import * as mockFs from 'fs';
 import type { Destination } from '../../src';
 import { cli } from '../../src/cli/index';
-import { checkBASEnvironment, checkVSCodeEnvironment } from '../../src/checks/environment';
+import { checkEnvironment } from '../../src/checks/environment';
 import { Severity } from '../../src/types';
 import { storeResultsZip } from '../../src/output';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -12,13 +12,11 @@ jest.mock('@sap-ux/btp-utils', () => ({
 }));
 jest.mock('fs');
 jest.mock('../../src/checks/environment', () => ({
-    checkBASEnvironment: jest.fn(),
-    checkVSCodeEnvironment: jest.fn()
+    checkEnvironment: jest.fn()
 }));
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockCheckBASEnvironment = checkBASEnvironment as jest.Mock;
-const mockCheckVSCodeEnvironment = checkVSCodeEnvironment as jest.Mock;
+const mockCheckEnvironment = checkEnvironment as jest.Mock;
 
 jest.mock('../../src/output', () => ({
     storeResultsZip: jest.fn()
@@ -58,7 +56,7 @@ describe('Test for cli()', () => {
 
     test('Call cli() without parameters, message result should just write to console', async () => {
         // Mock setup
-        mockCheckBASEnvironment.mockImplementation(() =>
+        mockCheckEnvironment.mockImplementation(() =>
             Promise.resolve({
                 messages: [
                     { severity: Severity.Error, text: 'ERROR message' },
@@ -86,7 +84,7 @@ describe('Test for cli()', () => {
 
     test('Call cli() --output verbose, info should be writen to console', async () => {
         // Mock setup
-        mockCheckBASEnvironment.mockImplementation(() =>
+        mockCheckEnvironment.mockImplementation(() =>
             Promise.resolve({
                 messages: [{ severity: Severity.Debug, text: 'DEBUG message' }]
             })
@@ -105,7 +103,7 @@ describe('Test for cli()', () => {
     test('Call cli() --destination ONE, checkBASEnvironment() should be called with ONE', async () => {
         // Mock setup
         let checkDest;
-        mockCheckBASEnvironment.mockImplementation((options) => {
+        mockCheckEnvironment.mockImplementation((options) => {
             checkDest = options.destinations;
             return Promise.resolve({
                 messages: [],
@@ -126,7 +124,7 @@ describe('Test for cli()', () => {
         // Mock setup
         let checkDest;
         let checkWorkspace;
-        mockCheckBASEnvironment.mockImplementation((options) => {
+        mockCheckEnvironment.mockImplementation((options) => {
             checkDest = options.destinations.sort();
             checkWorkspace = options.workspaceRoots.sort();
             return Promise.resolve({
@@ -155,7 +153,7 @@ describe('Test for cli()', () => {
             destinations: ['DUMMYS' as unknown as Destination] as unknown as Destination[],
             destinationResults: { DUMMY: { v2: 'V2DUMMY', v4: 'V4DUMMY' } }
         };
-        mockCheckBASEnvironment.mockImplementation(() => Promise.resolve(result));
+        mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
 
         jest.spyOn(mockFs, 'writeFile').mockImplementation((options, content, callback) => {
             checkWriteOtions = options;
@@ -181,7 +179,7 @@ describe('Test for cli()', () => {
             destinations: ['DUMMYS' as unknown as Destination] as unknown as Destination[],
             destinationResults: { DUMMY: { v2: 'V2DUMMY', v4: 'V4DUMMY' } }
         };
-        mockCheckBASEnvironment.mockImplementation(() => Promise.resolve(result));
+        mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
 
         jest.spyOn(mockFs, 'writeFile').mockImplementation((options, content, callback) => {
             checkWriteOtions = options;
@@ -206,7 +204,7 @@ describe('Test for cli()', () => {
             destinations: ['DUMMYS' as unknown as Destination] as unknown as Destination[],
             destinationResults: { DUMMY: { v2: 'V2DUMMY', v4: 'V4DUMMY' } }
         };
-        mockCheckBASEnvironment.mockImplementation(() => Promise.resolve(result));
+        mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
         mockStoreResultsZip.mockImplementation((content) => {
             checkContent = content;
         });
@@ -238,7 +236,7 @@ describe('Test for cli()', () => {
             }
         };
         mockIsAppStudio.mockReturnValue(false);
-        mockCheckVSCodeEnvironment.mockImplementation(() => Promise.resolve(result));
+        mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
         mockStoreResultsZip.mockImplementation((content) => {
             checkContent = content;
         });
@@ -248,7 +246,7 @@ describe('Test for cli()', () => {
         await cli();
 
         // Result check
-        expect(mockCheckVSCodeEnvironment).toBeCalledTimes(1);
+        expect(mockCheckEnvironment).toBeCalledTimes(1);
         expect(checkContent).toEqual(result);
     });
 });

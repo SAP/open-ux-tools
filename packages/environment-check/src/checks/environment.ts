@@ -8,24 +8,24 @@ import type {
     DestinationResults,
     CheckEnvironmentOptions,
     Destination,
-    BASEnvironment,
+    Environment,
     EnvironmentCheckResult,
     ResultMessage,
-    VSCodeEnvironment
+    ToolsExtensions
 } from '../types';
-import { DevelopmentEnvironment, Extensions, NpmModules } from '../types';
-import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion } from './install';
+import { DevelopmentEnvironment, Extensions } from '../types';
+import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion } from './getInstalled';
 import { t } from '../i18n';
 
 /**
- * Returns the BAS environment.
+ * Return the environment.
  *
- * @returns environment, including platform, versions ...
+ * @returns environment, including ide, versions, ...
  */
-export async function getBASEnvironment(): Promise<{ environment: BASEnvironment; messages: ResultMessage[] }> {
+export async function getEnvironment(): Promise<{ environment: Environment; messages: ResultMessage[] }> {
     const logger = getLogger();
-    const environment: BASEnvironment = {
-        developmentEnvironment: DevelopmentEnvironment.BAS,
+    const environment: Environment = {
+        developmentEnvironment: isAppStudio() ? DevelopmentEnvironment.BAS : DevelopmentEnvironment.VSCode,
         versions: process.versions,
         platform: process.platform
     };
@@ -34,8 +34,10 @@ export async function getBASEnvironment(): Promise<{ environment: BASEnvironment
     logger.info(t('info.platform', { platform: environment.platform }));
 
     try {
-        environment.basDevSpace = await getSbasDevspace();
-        logger.info(t('info.basDevSpace', { basDevSpace: environment.basDevSpace }));
+        if (isAppStudio()) {
+            environment.basDevSpace = await getSbasDevspace();
+            logger.info(t('info.basDevSpace', { basDevSpace: environment.basDevSpace }));
+        }
     } catch (error) {
         logger.info(t('error.basDevSpace', { error: error.message }));
     }
@@ -51,19 +53,18 @@ export async function getBASEnvironment(): Promise<{ environment: BASEnvironment
  *
  * @returns environment, including tools, extensions ...
  */
-export async function getVSCodeEnvironment(): Promise<{
-    environment: VSCodeEnvironment;
+export async function getToolsExtensions(): Promise<{
+    toolsExtensions: ToolsExtensions;
     messages: ResultMessage[];
 }> {
     const logger = getLogger();
 
     const extensions = await getInstalledExtensions();
-    const fioriGenVersion = await getFioriGenVersion(NpmModules.FioriGenerator);
-    const cloudCli = await getCFCliToolVersion(NpmModules.CloudCliTools);
+    const fioriGenVersion = await getFioriGenVersion();
+    const cloudCli = await getCFCliToolVersion();
 
-    const environment: VSCodeEnvironment = {
+    const toolsExtensions: ToolsExtensions = {
         nodeVersion: process.version,
-        platform: process.platform,
         cloudCli: cloudCli,
         appWizard: extensions[Extensions.AppWizard]
             ? extensions[Extensions.AppWizard]['version']
@@ -86,23 +87,28 @@ export async function getVSCodeEnvironment(): Promise<{
             : t('info.notInstalled')
     };
 
-    logger.info(t('info.nodeVersion', { nodeVersion: environment.nodeVersion }));
-    logger.info(t('info.platform', { platform: environment.platform }));
-    logger.info(t('info.cloudCli', { cloudCli: environment.cloudCli }));
-    logger.info(t('info.appWizard', { appWizard: environment.appWizard }));
-    logger.info(t('info.fioriGenVersion', { fioriGenVersion: environment.fioriGenVersion }));
-    logger.info(t('info.appMod', { appMod: environment.appMod }));
-    logger.info(t('info.help', { help: environment.help }));
-    logger.info(t('info.serviceMod', { serviceMod: environment.serviceMod }));
-    logger.info(t('info.annotationMod', { annotationMod: environment.annotationMod }));
-    logger.info(t('info.xmlToolkit', { xmlToolkit: environment.xmlToolkit }));
-    logger.info(t('info.cds', { cds: environment.cds }));
-    logger.info(t('info.ui5LanguageAssistant', { ui5LanguageAssistant: environment.ui5LanguageAssistant }));
+    logger.info(t('info.nodeVersion', { nodeVersion: toolsExtensions.nodeVersion }));
+    logger.info(t('info.cloudCli', { cloudCli: toolsExtensions.cloudCli }));
+    logger.info(t('info.appWizard', { appWizard: toolsExtensions.appWizard }));
+    logger.info(t('info.fioriGenVersion', { fioriGenVersion: toolsExtensions.fioriGenVersion }));
+    logger.info(t('info.appMod', { appMod: toolsExtensions.appMod }));
+    logger.info(t('info.help', { help: toolsExtensions.help }));
+    logger.info(t('info.serviceMod', { serviceMod: toolsExtensions.serviceMod }));
+    logger.info(t('info.annotationMod', { annotationMod: toolsExtensions.annotationMod }));
+    logger.info(t('info.xmlToolkit', { xmlToolkit: toolsExtensions.xmlToolkit }));
+    logger.info(t('info.cds', { cds: toolsExtensions.cds }));
+    logger.info(t('info.ui5LanguageAssistant', { ui5LanguageAssistant: toolsExtensions.ui5LanguageAssistant }));
 
-    return {
-        environment,
-        messages: logger.getMessages()
-    };
+    return { toolsExtensions, messages: logger.getMessages() };
+}
+
+/**
+ * Returns the title used in the markdown file.
+ *
+ * @returns markdown title
+ */
+export function getMarkdownTitle(): string {
+    return isAppStudio() ? t('markdownText.basEnvCheckTitle') : t('markdownText.vsCodeEnvCheckTitle');
 }
 
 /**
@@ -191,58 +197,51 @@ async function getDestinationsResults(
 }
 
 /**
- * Return the environment.
- *
- * @returns environment, including ide, versions, ...
- */
-export async function checkVSCodeEnvironment(): Promise<{
-    environment: VSCodeEnvironment;
-    messages: ResultMessage[];
-}> {
-    const logger = getLogger();
-
-    const { environment, messages } = await getVSCodeEnvironment();
-    logger.push(...messages);
-
-    return {
-        environment,
-        messages: logger.getMessages()
-    };
-}
-
-/**
  * Check environment includes process.env, list of destinations, details about destinations.
  *
  * @param options - see type CheckEnvironmentOptions, includes destination for deep dive, workspace roots, ...
  * @returns the result, currently as JSON
  */
-export async function checkBASEnvironment(options?: CheckEnvironmentOptions): Promise<EnvironmentCheckResult> {
+export async function checkEnvironment(options?: CheckEnvironmentOptions): Promise<EnvironmentCheckResult> {
     const logger = getLogger();
+    let destinations: Destination[];
+    let destinationResults: { [dest: string]: DestinationResults };
 
-    const { environment, messages } = await getBASEnvironment();
+    const { environment, messages } = await getEnvironment();
     logger.push(...messages);
 
-    const deepDiveDestinations = options?.destinations ? new Set(options.destinations) : new Set<string>();
-    if (options?.workspaceRoots?.length > 0) {
-        const workspaceResults = await getDestinationsFromWorkspace(options?.workspaceRoots);
-        logger.push(...workspaceResults.messages);
-        workspaceResults.destinations.forEach((dest) => deepDiveDestinations.add(dest));
+    const markdownTitle = getMarkdownTitle();
+
+    if (isAppStudio()) {
+        const deepDiveDestinations = options?.destinations ? new Set(options.destinations) : new Set<string>();
+        if (options?.workspaceRoots?.length > 0) {
+            const workspaceResults = await getDestinationsFromWorkspace(options?.workspaceRoots);
+            logger.push(...workspaceResults.messages);
+            workspaceResults.destinations.forEach((dest) => deepDiveDestinations.add(dest));
+        }
+
+        const basDestResults = await checkBASDestinations();
+        destinations = basDestResults.destinations;
+        logger.push(...basDestResults.messages);
+
+        const destResults = await getDestinationsResults(
+            deepDiveDestinations,
+            destinations,
+            options?.credentialCallback
+        );
+        destinationResults = destResults.destinationResults;
+        logger.push(...destResults.messages);
     }
 
-    const { messages: destMessages, destinations } = await checkBASDestinations();
-    logger.push(...destMessages);
-
-    const { messages: destDetailsMessages, destinationResults } = await getDestinationsResults(
-        deepDiveDestinations,
-        destinations,
-        options?.credentialCallback
-    );
-    logger.push(...destDetailsMessages);
+    const toolsExtensionResults = await getToolsExtensions();
+    logger.push(...toolsExtensionResults.messages);
 
     return {
+        toolsExtensions: toolsExtensionResults.toolsExtensions,
         environment,
         destinations,
         destinationResults,
+        markdownTitle,
         messages: logger.getMessages()
     };
 }

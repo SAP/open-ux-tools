@@ -1,2 +1,2 @@
-export { checkBASEnvironment, getBASEnvironment, checkVSCodeEnvironment, getVSCodeEnvironment } from './environment';
+export { checkEnvironment, getEnvironment, getToolsExtensions } from './environment';
 export { checkBASDestination, checkBASDestinations, needsUsernamePassword } from './destination';

@@ -2,13 +2,14 @@ import { existsSync, promises } from 'fs';
 import { t } from '../i18n';
 import { join } from 'path';
 import { spawnCommand, npmCommand } from '../command';
+import { NpmModules } from '../types';
 
 /**
  * Reads the list of extensions installed in vscode.
  *
  * @returns list of extension ids
  */
-export const getInstalledExtensions = async (): Promise<{ [id: string]: { version: string } }> => {
+export async function getInstalledExtensions(): Promise<{ [id: string]: { version: string } }> {
     const output = await spawnCommand('code', ['--list-extensions', '--show-versions']);
     const versions = output
         .split('\n')
@@ -21,37 +22,35 @@ export const getInstalledExtensions = async (): Promise<{ [id: string]: { versio
             return returnObject;
         }, {});
     return versions;
-};
+}
 
 /**
  * Read the version of the cloud foundry CLI.
  *
- * @param module - module id
  * @returns version
  */
-export const getCFCliToolVersion = async (module: string): Promise<string> => {
+export async function getCFCliToolVersion(): Promise<string> {
     let cfVersion: string;
     try {
-        const ouput = await spawnCommand(module, ['-v']);
-        cfVersion = ouput.replace(/\s/g, '').split('version')[1].slice(0, 5);
+        const version = await spawnCommand(NpmModules.CloudCliTools, ['-v']);
+        cfVersion = version.replace(/\s/g, '').split('version')[1].slice(0, 5);
     } catch (error) {
         return t('info.notInstalled');
     }
     return cfVersion;
-};
+}
 
 /**
  * Read the version of the fiori generator.
  *
- * @param module - module id
  * @returns version
  */
-export const getFioriGenVersion = async (module: string): Promise<string> => {
+export async function getFioriGenVersion(): Promise<string> {
     let fioriGenVersion: string;
     try {
         let globalNpmPath = await spawnCommand(npmCommand, ['root', '-g']);
         globalNpmPath = globalNpmPath.trim();
-        const pathToPackageJson = join(globalNpmPath, module, 'package.json');
+        const pathToPackageJson = join(globalNpmPath, NpmModules.FioriGenerator, 'package.json');
         if (existsSync(pathToPackageJson)) {
             fioriGenVersion = JSON.parse(await promises.readFile(pathToPackageJson, 'utf-8')).version;
         } else {
@@ -61,4 +60,4 @@ export const getFioriGenVersion = async (module: string): Promise<string> => {
         return t('info.notInstalled');
     }
     return fioriGenVersion;
-};
+}

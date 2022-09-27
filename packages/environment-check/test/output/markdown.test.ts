@@ -1,6 +1,7 @@
 import type { EnvironmentCheckResult } from '../../src';
 import { convertResultsToMarkdown, UrlServiceType } from '../../src';
 import { isAppStudio } from '@sap-ux/btp-utils';
+
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as object),
     isAppStudio: jest.fn()
@@ -163,7 +164,8 @@ const data = {
         {
             Name: 'DUPLICATE'
         }
-    ]
+    ],
+    markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
 };
 
 describe('Test to check conversion to markdown, convertResultsToMarkdown() BAS', () => {
@@ -176,7 +178,10 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown() BAS',
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
     test('Check output for empty results', () => {
-        const result = convertResultsToMarkdown({});
+        const envCheckResults = {
+            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
+        };
+        const result = convertResultsToMarkdown(envCheckResults);
         expect(result).toMatch('# SAP Fiori tools - Environment Check in SAP Business Application Studio');
         expect(result).toMatch('## Environment');
         expect(result).toMatch('## Destination Details (0)');
@@ -184,7 +189,9 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown() BAS',
         expect(result).toMatch('## Messages (0)');
     });
     test('Check destination details with no v2 or v4 service', () => {
-        const result = convertResultsToMarkdown({ destinationResults: { ABC: { v2: {}, v4: {} } } });
+        const result = convertResultsToMarkdown({
+            destinationResults: { ABC: { v2: {}, v4: {} } }
+        });
         expect(result).toMatch('V2 catalog service not available');
         expect(result).toMatch('V4 catalog service not available');
     });
@@ -219,7 +226,10 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown() BAS',
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check empty destination table', () => {
-        const result = convertResultsToMarkdown({ destinations: [] });
+        const result = convertResultsToMarkdown({
+            destinations: [],
+            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
+        });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
 });
@@ -227,12 +237,13 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown() BAS',
 describe('Test to check conversion to markdown, convertResultsToMarkdown() VSCODE', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockIsAppStudio.mockReturnValue(false);
     });
 
     test('Check output for empty results', () => {
-        const result = convertResultsToMarkdown({});
-
+        const envCheckResults = {
+            markdownTitle: `SAP Fiori tools - Environment Check in Visual Studio Code`
+        };
+        const result = convertResultsToMarkdown(envCheckResults);
         expect(result).toMatch('# SAP Fiori tools - Environment Check in Visual Studio Code');
         expect(result).toMatch('## Environment');
         expect(result).toMatch('Environment not checked');
@@ -240,7 +251,6 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown() VSCOD
     test('Check VSCode results table', () => {
         const results = {
             nodeVersion: 'v16.17.0',
-            platform: 'darwin' as any,
             fioriGenVersion: '1',
             cloudCli: '2',
             appWizard: '2',
@@ -253,8 +263,9 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown() VSCOD
             cds: '2'
         };
         const envCheckResults = {
-            environment: results
-        };
+            toolsExtensions: results,
+            markdownTitle: 'SAP Fiori tools - Environment Check in Visual Studio Code'
+        } as EnvironmentCheckResult;
         const result = convertResultsToMarkdown(envCheckResults);
 
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();

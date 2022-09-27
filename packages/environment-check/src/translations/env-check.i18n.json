@@ -78,6 +78,7 @@
         "noMessages": "No messages",
         "basEnvCheckTitle": "SAP Fiori tools - Environment Check in SAP Business Application Studio",
         "vsCodeEnvCheckTitle": "SAP Fiori tools - Environment Check in Visual Studio Code",
-        "createdAt": "created at"
+        "createdAt": "created at",
+        "environmentTitle": "Environment"
     }
 }

@@ -1,11 +1,11 @@
 import type { CheckEnvironmentOptions, Destination } from '../../src';
-import { checkBASEnvironment, checkVSCodeEnvironment, getBASEnvironment } from '../../src/checks/environment';
+import { checkEnvironment, getEnvironment } from '../../src/checks/environment';
 import { checkBASDestinations, needsUsernamePassword, checkBASDestination } from '../../src/checks/destination';
 import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import axios from 'axios';
 import { join } from 'path';
-import * as install from '../../src/checks/install';
+import * as install from '../../src/checks/getInstalled';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -25,15 +25,16 @@ const mockCheckBASDestinations = checkBASDestinations as jest.Mock;
 const mockNeedsUsernamePassword = needsUsernamePassword as jest.Mock;
 const mockCheckBASDestination = checkBASDestination as jest.Mock;
 describe('Test for getEnvironmentCheck()', () => {
-    test('Ensure correct dev environment, getBASEnvironment()', async () => {
-        const { environment, messages } = await getBASEnvironment();
-        expect(environment.developmentEnvironment === DevelopmentEnvironment.BAS).toBeTruthy();
+    test('Ensure correct dev environment (VSCode)', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        const { environment, messages } = await getEnvironment();
+        expect(environment.developmentEnvironment === DevelopmentEnvironment.VSCode).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
     });
 
-    test('Ensure correct dev environment, getBASEnvironment()', async () => {
+    test('Ensure correct dev environment (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
-        const { environment, messages } = await getBASEnvironment();
+        const { environment, messages } = await getEnvironment();
         expect(environment.developmentEnvironment === DevelopmentEnvironment.BAS).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
     });
@@ -45,7 +46,7 @@ describe('Test for checkBASEnvironment()', () => {
     });
 
     test('Destinations that need authentication and no credentials are supplied, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
+        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -87,7 +88,7 @@ describe('Test for checkBASEnvironment()', () => {
         };
 
         // Test execution
-        const result = await checkBASEnvironment(options);
+        const result = await checkEnvironment(options);
         const warningMessage = result.messages?.find(
             (m) => m.text.includes('requires username/password') && m.severity === Severity.Warning
         );
@@ -100,7 +101,7 @@ describe('Test for checkBASEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('Destinations that need authentication and credentials are supplied, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
+        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -189,7 +190,7 @@ describe('Test for checkBASEnvironment()', () => {
             credentialCallback: mockCredentialCallback
         };
         // Test execution
-        const result = await checkBASEnvironment(options);
+        const result = await checkEnvironment(options);
 
         // Result check
         expect(mockCredentialCallback).toBeCalledWith(data[0]);
@@ -201,7 +202,7 @@ describe('Test for checkBASEnvironment()', () => {
     });
 
     test('Destinations that does not need authentication, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
+        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'EC1_NOAUTH',
@@ -233,7 +234,7 @@ describe('Test for checkBASEnvironment()', () => {
         };
 
         // Test execution
-        const result = await checkBASEnvironment(options);
+        const result = await checkEnvironment(options);
 
         // Result check
         expect(result.destinations).toEqual(data);
@@ -242,7 +243,7 @@ describe('Test for checkBASEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('No deep dive destination, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
+        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -272,7 +273,7 @@ describe('Test for checkBASEnvironment()', () => {
         };
 
         // Test execution
-        const result = await checkBASEnvironment(options);
+        const result = await checkEnvironment(options);
         const warningMessage = result.messages?.find(
             (m) => m.text.includes('No destinations details requested') && m.severity === Severity.Info
         );
@@ -285,7 +286,7 @@ describe('Test for checkBASEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('Checking for deep dive destination that does not exist in the list, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
+        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -316,7 +317,7 @@ describe('Test for checkBASEnvironment()', () => {
         };
 
         // Test execution
-        const result = await checkBASEnvironment(options);
+        const result = await checkEnvironment(options);
         const warningMessage = result.messages?.find(
             (m) => m.text.includes(`Couldn't find destination`) && m.severity === Severity.Warning
         );
@@ -329,7 +330,7 @@ describe('Test for checkBASEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('credentialCallBack is defined but no username and/or password is supplied while it is required, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
+        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -362,7 +363,7 @@ describe('Test for checkBASEnvironment()', () => {
         };
 
         // Test execution
-        const result = await checkBASEnvironment(options);
+        const result = await checkEnvironment(options);
 
         // Result check
         expect(result.destinations).toEqual(data);
@@ -377,6 +378,7 @@ describe('Test for checkVSCodeEnvironment()', () => {
         jest.resetAllMocks();
     });
     test('Testing getVSCodeEnvironment', async () => {
+        mockIsAppStudio.mockReturnValue(false);
         const extensionVersions = {
             'SAPOS.yeoman-ui': { version: '2' },
             'SAPOSS.vscode-ui5-language-assistant': { version: '2' },
@@ -390,7 +392,6 @@ describe('Test for checkVSCodeEnvironment()', () => {
 
         const expectedData = {
             nodeVersion: process.version,
-            platform: process.platform,
             fioriGenVersion: '1',
             cloudCli: '2',
             appWizard: '2',
@@ -407,14 +408,14 @@ describe('Test for checkVSCodeEnvironment()', () => {
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce(extensionVersions);
         // Test execution
-        const result = await checkVSCodeEnvironment();
-        expect(result.environment).toEqual(expectedData);
+        const result = await checkEnvironment();
+        expect(result.toolsExtensions).toEqual(expectedData);
     });
 
     test('Testing getVSCodeEnvironment (no extensions installed)', async () => {
+        mockIsAppStudio.mockReturnValue(false);
         const expectedData = {
             nodeVersion: process.version,
-            platform: process.platform,
             fioriGenVersion: '1',
             cloudCli: '2',
             appWizard: 'Not installed',
@@ -431,7 +432,7 @@ describe('Test for checkVSCodeEnvironment()', () => {
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
         // Test execution
-        const result = await checkVSCodeEnvironment();
-        expect(result.environment).toEqual(expectedData);
+        const result = await checkEnvironment();
+        expect(result.toolsExtensions).toEqual(expectedData);
     });
 });

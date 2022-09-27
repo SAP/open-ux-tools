@@ -171,7 +171,6 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() VSCODE
 |Tools/Extensions|Version|
 |--|--|
 |Node.js|v16.17.0|
-|Platform|darwin|
 |SAP Fiori tools - Fiori generator|1|
 |Cloud CLI tools|2|
 |Application Wizard|2|

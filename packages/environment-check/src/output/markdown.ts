@@ -3,14 +3,14 @@ import { Severity, UrlServiceType } from '../types';
 import type {
     Destination,
     DestinationResults,
-    BASEnvironment,
+    Environment,
     EnvironmentCheckResult,
     MarkdownWriter,
     ResultMessage,
-    VSCodeEnvironment
+    ToolsExtensions
 } from '../types';
 import { t } from '../i18n';
-import { isAppStudio } from '@sap-ux/btp-utils';
+
 /**
  * Output mapping from severity -> icon + text
  */
@@ -129,8 +129,8 @@ function getMarkdownWriter(): MarkdownWriter {
  * @param writer - markdown writter
  * @param environment - environment results, like development environment, node version, etc
  */
-function writeBASEnvironment(writer: MarkdownWriter, environment?: BASEnvironment): void {
-    writer.addH2(`Environment`);
+function writeBASEnvironment(writer: MarkdownWriter, environment?: Environment): void {
+    writer.addH2(t('markdownText.environmentTitle'));
     if (environment) {
         writer.addLine(t('markdownText.platform', { platform: environment.platform }));
         writer.addLine(t('markdownText.devEnvironement', { devEnvironment: environment.developmentEnvironment }));
@@ -145,21 +145,18 @@ function writeBASEnvironment(writer: MarkdownWriter, environment?: BASEnvironmen
  * Write the results for environment check.
  *
  * @param writer - markdown writter
- * @param environment - environment results, like development environment, node version, etc
+ * @param toolsExts - environment results - node version, extension versions etc
  */
-function writeVSCodeEnvironment(writer: MarkdownWriter, environment?: VSCodeEnvironment): void {
-    writer.addH2(`Environment`);
-    if (environment) {
-        const results = [];
-        for (const toolExt of Object.keys(environment)) {
-            const toolExtName = toolsExtensionListVSCode.get(toolExt);
-            results.push([toolExtName, environment[toolExt]]);
-        }
-        const table = [toolsExtensionFields, ...results];
-        writer.addTable(table);
-    } else {
-        writer.addLine(t('markdownText.envNotChecked'));
+function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsExtensions): void {
+    writer.addH2(t('markdownText.environmentTitle'));
+
+    const results = [];
+    for (const toolExt of Object.keys(toolsExts)) {
+        const toolExtName = toolsExtensionListVSCode.get(toolExt);
+        results.push([toolExtName, toolsExts[toolExt]]);
     }
+    const table = [toolsExtensionFields, ...results];
+    writer.addTable(table);
 }
 
 /**
@@ -299,15 +296,14 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
 export function convertResultsToMarkdown(results: EnvironmentCheckResult): string {
     const writer = getMarkdownWriter();
 
-    if (isAppStudio()) {
-        writer.addH1(t('markdownText.basEnvCheckTitle'));
+    writer.addH1(results.markdownTitle);
+    if (results.toolsExtensions) {
+        writeToolsExtensionsResults(writer, results.toolsExtensions);
+    } else {
         writeBASEnvironment(writer, results.environment);
         writeDestinationResults(writer, results.destinationResults, results.destinations);
         writeDestinations(writer, results.destinations);
         writeMessages(writer, results.messages);
-    } else {
-        writer.addH1(t('markdownText.vsCodeEnvCheckTitle'));
-        writeVSCodeEnvironment(writer, results.environment);
     }
 
     writer.addSub(

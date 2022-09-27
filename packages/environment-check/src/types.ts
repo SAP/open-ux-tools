@@ -29,11 +29,14 @@ export enum Extensions {
     CDS = 'SAPSE.vscode-cds'
 }
 
-interface Environment {
+export interface Environment {
+    developmentEnvironment: DevelopmentEnvironment;
     platform: NodeJS.Platform;
+    versions: NodeJS.ProcessVersions;
+    basDevSpace?: string;
 }
 
-export interface VSCodeEnvironment extends Environment {
+export interface ToolsExtensions {
     nodeVersion?: string;
     fioriGenVersion?: string;
     cloudCli?: string;
@@ -45,11 +48,6 @@ export interface VSCodeEnvironment extends Environment {
     help?: string;
     serviceMod?: string;
     cds?: string;
-}
-export interface BASEnvironment extends Environment {
-    developmentEnvironment?: DevelopmentEnvironment;
-    versions?: NodeJS.ProcessVersions;
-    basDevSpace?: string;
 }
 
 export const enum DevelopmentEnvironment {
@@ -93,9 +91,11 @@ export interface Destination extends BTPDestination {
 }
 
 export interface EnvironmentCheckResult {
-    environment?: VSCodeEnvironment | BASEnvironment;
+    toolsExtensions?: ToolsExtensions;
+    environment?: Environment;
     destinations?: Destination[];
     destinationResults?: { [dest: string]: DestinationResults };
+    markdownTitle?: string;
     messages?: ResultMessage[];
 }
 
