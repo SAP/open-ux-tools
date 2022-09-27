@@ -62,7 +62,7 @@ function enhanceConfig(
 
     // generate section content
     config.content = config.control || getDefaultFragmentContent(config.name, config.eventHandler);
-    // Additional dependencies to include
+    // Additional dependencies to include into 'Fragment.xml'
     config.dependencies = getAdditionalDependencies(config.minUI5Version);
 
     return config as InternalCustomSection;
