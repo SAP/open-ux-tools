@@ -27,10 +27,10 @@ export function getManifestRoot(ui5Version?: string): string {
 }
 
 /**
- * Get additional dependencies for fragment of section based on passed version.
+ * Get additional dependencies for fragment.xml template based on passed ui5 version.
  *
  * @param ui5Version required UI5 version.
- * @returns Additional dependencies for fragment
+ * @returns Additional dependencies for fragment.xml
  */
 function getAdditionalDependencies(ui5Version?: string): CustomSectionDependencies | undefined {
     const minVersion = coerce(ui5Version);
