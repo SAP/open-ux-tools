@@ -219,8 +219,7 @@ export function getFilesystemWatcherFor(
             callback(entityName);
         });
     } else {
-        // eslint-disable-next-line no-console
-        console.warn(`File Not Found: ${watchPath}`); //
+        console.warn(`File Not Found: ${watchPath}`);
         return undefined;
     }
 }
