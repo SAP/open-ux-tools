@@ -1,4 +1,4 @@
-import { create, Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { addExtensionTypes } from '../../src/common/utils';
