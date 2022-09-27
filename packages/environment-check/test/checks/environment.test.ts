@@ -40,13 +40,13 @@ describe('Test for getEnvironmentCheck()', () => {
     });
 });
 
-describe('Test for checkBASEnvironment()', () => {
+describe('Test for checkEnvironment() (BAS)', () => {
     beforeEach(() => {
         jest.resetAllMocks();
+        mockIsAppStudio.mockReturnValue(true);
     });
 
     test('Destinations that need authentication and no credentials are supplied, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -101,7 +101,6 @@ describe('Test for checkBASEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('Destinations that need authentication and credentials are supplied, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -202,7 +201,6 @@ describe('Test for checkBASEnvironment()', () => {
     });
 
     test('Destinations that does not need authentication, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'EC1_NOAUTH',
@@ -243,7 +241,6 @@ describe('Test for checkBASEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('No deep dive destination, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -286,7 +283,6 @@ describe('Test for checkBASEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('Checking for deep dive destination that does not exist in the list, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -330,7 +326,6 @@ describe('Test for checkBASEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('credentialCallBack is defined but no username and/or password is supplied while it is required, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValue(true);
         const data = [
             {
                 Name: 'ONE',
@@ -373,12 +368,12 @@ describe('Test for checkBASEnvironment()', () => {
     });
 });
 
-describe('Test for checkVSCodeEnvironment()', () => {
+describe('Test for checkEnvironment() (VSCODE)', () => {
     beforeEach(() => {
         jest.resetAllMocks();
+        mockIsAppStudio.mockReturnValue(false);
     });
     test('Testing getVSCodeEnvironment', async () => {
-        mockIsAppStudio.mockReturnValue(false);
         const extensionVersions = {
             'SAPOS.yeoman-ui': { version: '2' },
             'SAPOSS.vscode-ui5-language-assistant': { version: '2' },
@@ -413,7 +408,6 @@ describe('Test for checkVSCodeEnvironment()', () => {
     });
 
     test('Testing getVSCodeEnvironment (no extensions installed)', async () => {
-        mockIsAppStudio.mockReturnValue(false);
         const expectedData = {
             nodeVersion: process.version,
             fioriGenVersion: '1',
