@@ -378,7 +378,6 @@ describe('<UITreeDropdown />', () => {
 
     describe('Circular navigation should be disabled', () => {
         const clossestMock = (at: number) => {
-            // eslint-disable-next-line consistent-return
             return (selector: string) => {
                 if (selector === 'ul') {
                     return wrapper.find('ul.ms-ContextualMenu-list').getDOMNode();

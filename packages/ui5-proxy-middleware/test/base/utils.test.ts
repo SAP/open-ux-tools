@@ -69,10 +69,8 @@ describe('Utils', () => {
         expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
 
         const envProxy = process.env.npm_config_https_proxy;
-        // eslint-disable-next-line camelcase
         process.env.npm_config_https_proxy = corporateProxy;
         expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
-        // eslint-disable-next-line camelcase
         process.env.npm_config_https_proxy = envProxy;
     });
 
