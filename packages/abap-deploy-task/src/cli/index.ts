@@ -78,7 +78,7 @@ export async function run(): Promise<void> {
         const archive = await getArchive(logger, options);
         logger.info(t('ARCHIVE_CREATED'));
 
-        logger.info(t('STARTING_DEPLOYMENT', config.test));
+        logger.info(t('STARTING_DEPLOYMENT', { test: config.test }));
         deploy(archive, config);
     } catch (error) {
         logger.error(t('DEPLOYMENT_FAILED'));

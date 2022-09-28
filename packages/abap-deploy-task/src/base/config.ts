@@ -26,7 +26,7 @@ export function replaceEnvVariables(obj: object): void {
  * @param property Invalid missing property
  */
 function throwConfigMissingError(property: string): void {
-    throw new Error(t('INVALID_DEPLOYMENT_CONFIGURATION_ERROR', property));
+    throw new Error(t('INVALID_DEPLOYMENT_CONFIGURATION_ERROR', { property }));
 }
 
 /**

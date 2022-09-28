@@ -32,7 +32,7 @@ function getArchiveFromPath(path: string): Promise<Buffer> {
  */
 async function fetchArchiveFromUrl(url: string): Promise<Buffer> {
     // TODO
-    throw new Error(t('ACHIVE_FROM_EXTERNAL_URL_ERROR', url));
+    throw new Error(t('ACHIVE_FROM_EXTERNAL_URL_ERROR', { url }));
 }
 
 /**

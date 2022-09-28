@@ -28,7 +28,7 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     logger.info(t('ARCHIVE_CREATED'));
 
     try {
-        logger.info(t('STARTING_DEPLOYMENT', config.test));
+        logger.info(t('STARTING_DEPLOYMENT', { test: config.test }));
         deploy(archive, config);
     } catch (e) {
         logger.error(t('DEPLOYMENT_FAILED'));
