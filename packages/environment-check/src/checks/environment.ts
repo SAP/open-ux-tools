@@ -99,7 +99,7 @@ async function getToolsExtensions(): Promise<{
     const cloudCli = await getCFCliToolVersion();
 
     let toolsExtensions: ToolsExtensions = {
-        nodeVersion: process.version,
+        nodeVersion: process.versions.node,
         cloudCli: cloudCli,
         fioriGenVersion: fioriGenVersion
     };

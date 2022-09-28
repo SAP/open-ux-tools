@@ -395,7 +395,7 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         };
 
         const expectedData = {
-            nodeVersion: process.version,
+            nodeVersion: process.versions.node,
             fioriGenVersion: '1',
             cloudCli: '2',
             appWizard: '2',
@@ -418,7 +418,7 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
 
     test('Testing getToolsExtensions (no extensions installed)', async () => {
         const expectedData = {
-            nodeVersion: process.version,
+            nodeVersion: process.versions.node,
             fioriGenVersion: '1',
             cloudCli: '2',
             appWizard: 'Not installed',
