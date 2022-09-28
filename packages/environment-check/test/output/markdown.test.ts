@@ -188,14 +188,14 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         mockIsAppStudio.mockReturnValue(true);
     });
     test('Check if writer is creating output appropriately', () => {
-        const result = convertResultsToMarkdown(data as unknown as EnvironmentCheckResult, true);
+        const result = convertResultsToMarkdown(data as unknown as EnvironmentCheckResult);
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
     test('Check output for empty results', () => {
         const envCheckResults = {
             markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
         };
-        const result = convertResultsToMarkdown(envCheckResults, true);
+        const result = convertResultsToMarkdown(envCheckResults);
         expect(result).toMatch('# SAP Fiori tools - Environment Check in SAP Business Application Studio');
         expect(result).toMatch('## Environment');
         expect(result).toMatch('## Destination Details (0)');
@@ -203,65 +203,45 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('## Messages (0)');
     });
     test('Check destination details with no v2 or v4 service', () => {
-        const result = convertResultsToMarkdown(
-            {
-                destinationResults: { ABC: { v2: {}, v4: {} } }
-            },
-            true
-        );
+        const result = convertResultsToMarkdown({
+            destinationResults: { ABC: { v2: {}, v4: {} } }
+        });
         expect(result).toMatch('V2 catalog service not available');
         expect(result).toMatch('V4 catalog service not available');
     });
     test('Check destination details with v4 service but not v2 service', () => {
-        const result = convertResultsToMarkdown(
-            {
-                destinationResults: {
-                    ABC: {
-                        v2: {},
-                        v4: {
-                            results: []
-                        }
+        const result = convertResultsToMarkdown({
+            destinationResults: {
+                ABC: {
+                    v2: {},
+                    v4: {
+                        results: []
                     }
                 }
-            },
-            true
-        );
+            }
+        });
         expect(result).toMatch('V2 catalog service not available');
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check destination details with both v2 and v4 services available', () => {
-        const result = convertResultsToMarkdown(
-            {
-                destinationResults: {
-                    ABC: {
-                        v2: {
-                            results: []
-                        },
-                        v4: {
-                            results: []
-                        }
+        const result = convertResultsToMarkdown({
+            destinationResults: {
+                ABC: {
+                    v2: {
+                        results: []
+                    },
+                    v4: {
+                        results: []
                     }
                 }
-            },
-            true
-        );
+            }
+        });
         expect(result).toMatch('V2 catalog call returned');
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check empty destination table', () => {
-        const result = convertResultsToMarkdown(
-            {
-                destinations: [],
-                markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
-            },
-            true
-        );
-        expect(result.split('<sub>created at')[0]).toMatchSnapshot();
-    });
-
-    test('Check markdown without destination check', () => {
         const result = convertResultsToMarkdown({
-            environment: data.environment as any,
+            destinations: [],
             markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
