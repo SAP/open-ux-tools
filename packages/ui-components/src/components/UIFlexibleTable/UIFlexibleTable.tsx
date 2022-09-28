@@ -4,6 +4,7 @@ import { List } from 'react-movable';
 import { UIDefaultButton, UILoader } from '..';
 import { renderTitleRow, UIFlexibleTableRow } from './UIFlexibleTableRow';
 import type { UIFlexibleTableRowProps } from './UIFlexibleTableRow';
+import { UIFlexibleTableRowNoData } from './UIFlexibleTableRowNoData';
 import { UIFlexibleTableLayout } from './types';
 import type { NodeDragAndDropSortingParams, UIFlexibleTableProps, UIFlexibleTableRowType } from './types';
 
@@ -167,9 +168,19 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
         };
     }): React.ReactNode => {
         const ulElement = params.props.ref?.current;
+        let { children } = params;
         if (ulElement && scrollableElement.current !== ulElement) {
             scrollableElement.current = ulElement;
             scrollBarObserver.current.observe(ulElement);
+        }
+        if (props.rows.length === 0 && props.noDataText) {
+            children = (
+                <UIFlexibleTableRowNoData
+                    noRowBackground={props.noRowBackground}
+                    reverseBackground={props.reverseBackground}>
+                    {props.noDataText}
+                </UIFlexibleTableRowNoData>
+            );
         }
         return (
             <ul
@@ -179,7 +190,7 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
                     cursor: params.isDragged ? 'grabbing' : 'default',
                     maxHeight: props.maxScrollableContentHeight ? `${props.maxScrollableContentHeight}px` : undefined
                 }}>
-                {params.children}
+                {children}
             </ul>
         );
     };
@@ -192,7 +203,7 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
     ]);
 
     const contentClasses = composeClassNames('flexible-table-content', [
-        props.rows.length === 0 ? 'empty-table' : '',
+        props.rows.length === 0 && !props.noDataText ? 'empty-table' : '',
         props.isContentLoading ? 'loading' : ''
     ]);
 
@@ -318,7 +329,7 @@ function getTableBody<T>(
 }
 
 /**
- * Restore focus.
+ * Restores focus.
  *
  * @param {string} currentFocusedRowAction
  * @param {number | undefined} currentFocusedRowIndex
