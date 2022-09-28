@@ -84,11 +84,11 @@ const KEYBOARD_KEYS = {
 
 /**
  * UITreeDropdown component.
+ *
  * @exports
  * @class UIVerticalDivider
  * @extends {React.Component<UITreeDropdownProps, UITreeDropdownState>}
  */
-
 export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeDropdownState> {
     private readonly UITreeDropdownRef = React.createRef<{ props: UITreeDropdownProps }>();
     private readonly UITreeDropdownFocusZoneRef = React.createRef<FocusZone>();
@@ -108,6 +108,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     private originalValue?: string;
     /**
      * Initializes component properties.
+     *
      * @param {UITreeDropdownProps} props
      */
     public constructor(props: UITreeDropdownProps) {
@@ -282,6 +283,9 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                 }
                 this.handleSelection(this.state.value ? this.state.value : '');
                 break;
+            default: {
+                // do nothing
+            }
         }
         this.lastKeyDown = event.key;
     };

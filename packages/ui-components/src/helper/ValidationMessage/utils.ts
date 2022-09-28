@@ -136,9 +136,7 @@ const getMessageType = (props?: UIComponentMessagesProps): ErrorMessageType => {
  * @returns {string | undefined} Message string.
  */
 const getErrorMessage = (props?: UIComponentMessagesProps): string | undefined => {
-    if (props) {
-        return props.errorMessage || props.warningMessage || props.infoMessage;
-    }
+    return props?.errorMessage || props?.warningMessage || props?.infoMessage;
 };
 
 /**

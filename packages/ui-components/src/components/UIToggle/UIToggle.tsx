@@ -94,6 +94,7 @@ const COLORS = {
 export class UIToggle extends React.Component<UIToggleProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {UIToggleProps} props
      */
     public constructor(props: UIToggleProps) {

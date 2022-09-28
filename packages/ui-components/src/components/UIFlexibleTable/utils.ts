@@ -4,7 +4,6 @@
  * @param {string} tableId
  * @param {number | undefined} rowNumber
  * @param {string} actionName
- *
  * @returns {string}
  */
 export function getRowActionButtonId(tableId: string, rowNumber: number | undefined, actionName: string): string {
@@ -16,7 +15,6 @@ export function getRowActionButtonId(tableId: string, rowNumber: number | undefi
  *
  * @param {string} tableId
  * @param {string} actionName
- *
  * @returns {string}
  */
 export function getTableActionButtonId(tableId: string, actionName: string): string {
@@ -28,7 +26,6 @@ export function getTableActionButtonId(tableId: string, actionName: string): str
  *
  * @param {string} initialClass
  * @param {string | string[]} additionalClassNames
- *
  * @returns {string}
  */
 export function composeClassNames(

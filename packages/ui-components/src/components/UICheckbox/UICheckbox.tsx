@@ -28,6 +28,7 @@ export class UICheckbox extends React.Component<UICheckboxProps, {}> {
 
     /**
      * Initializes component properties.
+     *
      * @param {UICheckboxProps} props
      */
     public constructor(props: UICheckboxProps) {
