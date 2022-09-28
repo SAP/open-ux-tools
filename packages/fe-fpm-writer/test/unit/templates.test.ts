@@ -2,7 +2,6 @@ import { join } from 'path';
 import { getTemplatePath } from '../../src/templates';
 
 describe('getTemplatePath', () => {
-
     const localTemplatesPath = join(__dirname, '../../templates');
 
     test('Returns root if template not specified', () => {

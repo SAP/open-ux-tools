@@ -166,7 +166,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 1`] = `
+exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -184,7 +184,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 1`] = `
+exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {

@@ -13,8 +13,8 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc",
-        "clean": "rimraf dist",
+        "build": "pnpm clean && tsc -p tsconfig-build.json",
+        "clean": "rimraf dist test/test-output",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",

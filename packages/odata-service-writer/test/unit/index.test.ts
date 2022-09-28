@@ -1,6 +1,8 @@
-import { generate, OdataService, OdataVersion, findProjectFiles } from '../../src';
+import type { OdataService } from '../../src';
+import { generate, OdataVersion } from '../../src';
 import { join } from 'path';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { enhanceData } from '../../src/data';
 import cloneDeep from 'lodash/cloneDeep';
