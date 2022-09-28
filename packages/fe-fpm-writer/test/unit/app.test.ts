@@ -1,10 +1,17 @@
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { enableFPM, MIN_VERSION } from '../../src/app';
 import type { Manifest } from '../../src/common/types';
 
-function getTestManifest(settings?: { minVersion?: string }) {
+/**
+ *
+ * @param settings
+ * @param settings.minVersion
+ * @returns  Partial<Manifest>
+ */
+function getTestManifest(settings?: { minVersion?: string }): Partial<Manifest> {
     const manifest: Partial<Manifest> = {
         'sap.app': {
             id: 'my.test.App'
@@ -20,8 +27,8 @@ function getTestManifest(settings?: { minVersion?: string }) {
             }
         } as any
     };
-    if (settings?.minVersion) {
-        manifest['sap.ui5']!.dependencies!.minUI5Version = settings.minVersion;
+    if (settings?.minVersion && manifest['sap.ui5']) {
+        manifest['sap.ui5'].dependencies.minUI5Version = settings.minVersion;
     }
     return manifest;
 }
@@ -95,6 +102,7 @@ describe('CustomApp', () => {
             { name: '"sap.ui5/dependencies" is undefined', value: {} }
         ];
         for (const optionalPropertyCase of optionalPropertyCases) {
+            // eslint-disable-next-line  no-loop-func
             test(optionalPropertyCase.name, async () => {
                 const target = join(testDir, 'safe-check');
                 const tempManifest = getTestManifest();

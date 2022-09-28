@@ -1,7 +1,8 @@
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { Manifest } from '../../../src/common/types';
+import type { Manifest } from '../../../src/common/types';
 import {
     generateRoutePattern,
     generateRouteTarget,
@@ -10,7 +11,7 @@ import {
     validatePageConfig
 } from '../../../src/page/common';
 import type { ManifestNamespace } from '@sap-ux/project-types';
-import { CustomPage } from '../../../src/page/types';
+import type { CustomPage } from '../../../src/page/types';
 
 describe('common page functionality', () => {
     const mainEntity = 'Main';
@@ -185,26 +186,26 @@ describe('common page functionality', () => {
             const target = join(testDir, 'invalidateNavigation');
 
             let manifest = JSON.parse(testAppManifest) as Manifest;
-
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             manifest['sap.ui5']!.routing!.routes = [];
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 
-            delete manifest['sap.ui5']!.routing!.routes;
+            delete manifest['sap.ui5']?.routing?.routes;
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 
             manifest = JSON.parse(testAppManifest) as Manifest;
 
-            delete manifest['sap.ui5']!.routing!.targets!['TestObjectPage'];
+            delete manifest['sap.ui5']?.routing?.targets?.['TestObjectPage'];
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 
-            delete manifest['sap.ui5']!.routing!.targets;
+            delete manifest['sap.ui5']?.routing?.targets;
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 
-            delete manifest['sap.ui5']!.routing;
+            delete manifest['sap.ui5']?.routing;
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 

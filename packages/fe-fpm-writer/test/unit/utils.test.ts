@@ -56,6 +56,7 @@ describe('insertTextAtPosition', () => {
         }
     ];
     for (const negativeValue of negativeValues) {
+        // eslint-disable-next-line  no-loop-func
         test(`Negative values - line=${negativeValue.line}, character=${negativeValue.character}`, () => {
             const text = 'dummy';
             const newContent = insertTextAtPosition(text, content, negativeValue);

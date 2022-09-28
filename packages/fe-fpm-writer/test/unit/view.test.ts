@@ -1,9 +1,10 @@
 import os from 'os';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomView } from '../../src';
-import { CustomView } from '../../src/view/types';
+import type { CustomView } from '../../src/view/types';
 import * as manifest from './sample/view/webapp/manifest.json';
 import type { Views, EventHandlerConfiguration } from '../../src/common/types';
 import type { Manifest } from '@sap-ux/project-types';
@@ -21,6 +22,7 @@ describe('CustomView', () => {
         name: 'NewCustomView',
         folder: 'extensions/custom'
     };
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const expectedFragmentPath = join(testDir, 'webapp', customView.folder!, `${customView.name}.fragment.xml`);
 
     const getManifestExtension = () => {
@@ -164,6 +166,7 @@ describe('CustomView', () => {
         test('"eventHandler" is empty "object" - create new file with default function name', () => {
             const id = customView.name;
             generateCustomViewWithEventHandler(id, {}, customView.folder);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const xmlPath = join(testDir, 'webapp', customView.folder!, `${id}.fragment.xml`);
             expect(fs.read(xmlPath)).toMatchSnapshot();
             expect(fs.read(xmlPath.replace('.fragment.xml', '.controller.js'))).toMatchSnapshot();
@@ -177,6 +180,7 @@ describe('CustomView', () => {
             const id = customView.name;
             generateCustomViewWithEventHandler(id, extension, customView.folder);
             const fragmentName = `${id}.fragment.xml`;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const xmlPath = join(testDir, 'webapp', customView.folder!, fragmentName);
             expect(fs.read(xmlPath)).toMatchSnapshot();
             expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.controller.js`))).toMatchSnapshot();
@@ -188,6 +192,7 @@ describe('CustomView', () => {
             };
             const id = customView.name;
             generateCustomViewWithEventHandler(id, extension, customView.folder);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const xmlPath = join(testDir, 'webapp', customView.folder!, `${id}.fragment.xml`);
             expect(fs.read(xmlPath)).toMatchSnapshot();
             expect(fs.read(xmlPath.replace('.fragment.xml', '.controller.js'))).toMatchSnapshot();
@@ -201,9 +206,11 @@ describe('CustomView', () => {
             196 + 8 * os.EOL.length
         ];
         for (const position of positions) {
-            test(`"eventHandler" is object. Append new function to existing js file with position ${
+            const testName = `"eventHandler" is object. Append new function to existing js file with position ${
                 typeof position === 'object' ? JSON.stringify(position) : 'absolute'
-            }`, () => {
+            }`;
+            // eslint-disable-next-line  no-loop-func
+            test(`${testName}`, () => {
                 const fileName = 'MyExistingAction';
                 // Create existing file with existing actions
                 const folder = join('extensions', 'custom');
@@ -223,7 +230,7 @@ describe('CustomView', () => {
 
                 const id = customView.name;
                 generateCustomViewWithEventHandler(id, extension, folder);
-                const xmlPath = join(testDir, 'webapp', folder!, `${id}.fragment.xml`);
+                const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 // Check update js file content
                 expect(fs.read(existingPath)).toMatchSnapshot();

@@ -1,12 +1,15 @@
 import os from 'os';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column';
-import { Availability, HorizontalAlign, CustomTableColumn } from '../../src/column/types';
+import type { CustomTableColumn } from '../../src/column/types';
+import { Availability, HorizontalAlign } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
-import { Placement, EventHandlerConfiguration } from '../../src/common/types';
+import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
+import { Placement } from '../../src/common/types';
 
 const testDir = join(__dirname, 'sample/column');
 
@@ -44,6 +47,7 @@ describe('CustomAction', () => {
                 placement: Placement.After
             }
         };
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const expectedFragmentPath = join(testDir, 'webapp', customColumn.folder!, `${customColumn.name}.fragment.xml`);
         const testVersions = ['1.86', '1.85', '1.84'];
         beforeEach(() => {
@@ -159,6 +163,7 @@ describe('CustomAction', () => {
             test('"eventHandler" is empty "object" - create new file with default function name', () => {
                 const id = customColumn.name;
                 generateCustomColumnWithEventHandler(id, {}, customColumn.folder);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const xmlPath = join(testDir, 'webapp', customColumn.folder!, `${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
@@ -172,6 +177,7 @@ describe('CustomAction', () => {
                 const id = customColumn.name;
                 generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
                 const fragmentName = `${id}.fragment.xml`;
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const xmlPath = join(testDir, 'webapp', customColumn.folder!, fragmentName);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.js`))).toMatchSnapshot();
@@ -183,22 +189,24 @@ describe('CustomAction', () => {
                 };
                 const id = customColumn.name;
                 generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const xmlPath = join(testDir, 'webapp', customColumn.folder!, `${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             });
 
-            const positions = [
-                {
-                    line: 8,
-                    character: 9
-                },
-                196 + 8 * os.EOL.length
-            ];
-            for (const position of positions) {
-                test(`"eventHandler" is object. Append new function to existing js file with position ${
-                    typeof position === 'object' ? JSON.stringify(position) : 'absolute'
-                }`, () => {
+            test.each([
+                [
+                    'position as object',
+                    {
+                        line: 8,
+                        character: 9
+                    }
+                ],
+                ['absolute position', 196 + 8 * os.EOL.length]
+            ])(
+                '"eventHandler" is object. Append new function to existing js file with %s',
+                (_desc: string, position: number | FileContentPosition) => {
                     const fileName = 'MyExistingAction';
                     // Create existing file with existing actions
                     const folder = join('extensions', 'custom');
@@ -218,12 +226,12 @@ describe('CustomAction', () => {
 
                     const id = customColumn.name;
                     generateCustomColumnWithEventHandler(id, extension, folder);
-                    const xmlPath = join(testDir, 'webapp', folder!, `${id}.fragment.xml`);
+                    const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);
                     expect(fs.read(xmlPath)).toMatchSnapshot();
                     // Check update js file content
                     expect(fs.read(existingPath)).toMatchSnapshot();
-                });
-            }
+                }
+            );
         });
     });
 });
