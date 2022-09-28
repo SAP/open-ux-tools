@@ -18,7 +18,7 @@ import { clearTestOutput, writeFilesForDebugging } from '../common';
 
 describe('use FPM with existing apps', () => {
     const testInput = join(__dirname, '../test-input');
-    const testOutput = join(__dirname, '../test-output');
+    const testOutput = join(__dirname, '../test-output/integration');
     const fs = create(createStorage());
 
     beforeAll(() => {
@@ -246,7 +246,7 @@ describe('use FPM with existing apps', () => {
 
         afterAll(() => {
             expect(
-                (fs as any).dump(testOutput, '**/test-output/*/webapp/{manifest.json,Component.ts,ext/**/*}')
+                (fs as any).dump(testOutput, '**/test-output/**/webapp/{manifest.json,Component.ts,ext/**/*}')
             ).toMatchSnapshot();
         });
     });

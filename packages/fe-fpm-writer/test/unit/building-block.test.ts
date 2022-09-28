@@ -14,7 +14,7 @@ describe('Building Blocks', () => {
     let testXmlViewContent: string;
     const manifestFilePath = 'webapp/manifest.json';
     const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
-    const testOutputRoot = 'test/unit/test-output/building-block';
+    const testOutputRoot = join(__dirname, '../test-output/unit/building-block');
 
     beforeAll(() => {
         clearTestOutput(testOutputRoot);
