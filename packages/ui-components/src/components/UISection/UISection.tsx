@@ -31,7 +31,7 @@ export interface UISectionProps {
  * @class {UISection}
  * @extends {React.Component<UISectionProps>}
  */
-export class UISection extends React.Component<UISectionProps> {
+export class UISection extends React.Component<UISectionProps & Readonly<{ children?: React.ReactNode }>> {
     private onScroll(): void {
         if (this.props.onScroll) {
             this.props.onScroll();
@@ -63,10 +63,7 @@ export class UISection extends React.Component<UISectionProps> {
                     </div>
                 )}
                 <div className="section__body" onScroll={this.onScroll.bind(this)}>
-                    {
-                        // eslint-disable-next-line  react/prop-types
-                        this.props.children
-                    }
+                    {this.props.children}
                 </div>
             </div>
         );

@@ -19,6 +19,7 @@ export interface UITabsProps extends IPivotProps {
 export class UITabs extends React.Component<UITabsProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {UITabsProps} props
      */
     public constructor(props: UITabsProps) {

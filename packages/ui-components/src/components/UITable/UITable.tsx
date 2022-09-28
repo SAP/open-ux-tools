@@ -222,7 +222,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      *
      * @param props
      * @param defaultRender
-     *
      * @returns {null | JSX.Element}
      */
     private _onRenderField(
@@ -315,7 +314,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param {UIDocument} item
      * @param {number} index
      * @param {UIColumn} column
-     *
      * @returns {React.ReactNode}
      */
     private _onRenderItemColumn(item: UIDocument, index?: number, column?: UIColumn): React.ReactNode {
@@ -500,7 +498,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         if (e.key === 'Escape') {
             this.cancelEdit();
             focusEditedCell(this.state.editedCell, this.props);
-            return showFocus();
+            showFocus();
+            return;
         }
 
         if (this.state.editedCell?.errorMessage) {
@@ -551,7 +550,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             focusEditedCell(this.state.editedCell, this.props, direction)
                 .then(() => {
                     if (!direction) {
-                        return showFocus();
+                        showFocus();
+                        return;
                     }
                     hideFocus();
                     const { rowIndex, item, column } = this.activeElement;
@@ -589,14 +589,10 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         requestAnimationFrame(() => {
             // check the checkbox & focus the clicked cell
             if (el) {
-                // the eslint comments below are necessary.
-                // If removed - eslint will show another error, that click/focus don't exist...
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                 const fz = el.closest('.ms-FocusZone') as HTMLElement;
                 if (fz && fz.click) {
                     fz.click();
                 }
-                // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                 const cell = el.closest('.ms-DetailsRow-cell') as HTMLElement;
                 if (cell && cell.focus) {
                     cell.focus();
@@ -615,6 +611,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
     /**
      * Validates cell.
+     *
      * @param value
      */
     private validateCell(value: string): void {
@@ -667,11 +664,12 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         column: UIColumn | undefined
     ): void => {
         const newValue = selectedOption.key;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (typeof this.props.onSave === 'function' && Number.isInteger(rowIndex) && column) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+        if (
+            typeof this.props.onSave === 'function' &&
+            typeof rowIndex === 'number' &&
+            Number.isInteger(rowIndex) &&
+            column
+        ) {
             const currentValue = this.props.items[rowIndex][column.key];
             const editedCell = { rowIndex, item, column, errorMessage: undefined } as EditedCell;
             if (currentValue !== newValue) {
@@ -697,9 +695,9 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         rowIndex: number | undefined,
         column: UIColumn | undefined
     ): React.RefObject<ITextField | IDropdown | UIComboBox> | undefined {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return this?.inputRefs?.[rowIndex]?.[column.key];
+        return typeof rowIndex === 'number' && typeof column?.key === 'string'
+            ? this?.inputRefs?.[rowIndex]?.[column.key]
+            : undefined;
     }
 
     /**
@@ -718,9 +716,11 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 placeholder="Select an option"
                 componentRef={compRef}
                 options={column?.data.dropdownOptions}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                defaultSelectedKey={item[column?.key] || column?.data.defaultSelectedKey}
+                defaultSelectedKey={
+                    typeof column?.key === 'string' && item[column?.key]
+                        ? item[column?.key]
+                        : column?.data.defaultSelectedKey
+                }
                 onChange={(ev, text) => this.onDropdownCellValueChange(text, item, rowIndex, column)}
                 onKeyDown={this.onKeyDown}
             />
@@ -733,7 +733,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param item
      * @param rowIndex
      * @param column
-     *
      * @returns {any}
      */
     private _renderBooleanSelect(item: UIDocument, rowIndex?: number, column?: UIColumn): any {
@@ -778,7 +777,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param rowIndex
      * @param column
      * @param dateOnly
-     *
      * @returns {any}
      */
     private _renderDatePicker(item: UIDocument, rowIndex?: number, column?: UIColumn, dateOnly = true): any {
@@ -814,13 +812,12 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param item
      * @param rowIndex
      * @param column
-     *
      * @returns {any}
      */
     private _renderTextInput(item: UIDocument, rowIndex: number, column: UIColumn | undefined): any {
         const compRef = this._getInputRef(rowIndex, column) as React.RefObject<ITextField>;
         const newValue = this.state.editedCell?.newValue;
-
+        let element;
         let value;
         if (column?.fieldName) {
             value = item[column?.fieldName];
@@ -829,10 +826,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             value = newValue;
         }
         if (!item.hideCells) {
-            return (
+            element = (
                 <UITextInput
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
                     defaultValue={value}
                     componentRef={compRef}
                     errorMessage={this.state.editedCell?.errorMessage}
@@ -844,6 +839,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 />
             );
         }
+        return element;
     }
 
     /**
