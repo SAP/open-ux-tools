@@ -2,7 +2,8 @@ import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { generate, isTypescriptEnabled, enableTypescript, Ui5App } from '../src';
+import type { Ui5App } from '../src';
+import { generate, isTypescriptEnabled, enableTypescript } from '../src';
 
 describe('UI5 templates', () => {
     const fs = create(createStorage());
@@ -37,7 +38,7 @@ describe('UI5 templates', () => {
         ui5: {
             framework: 'OpenUI5'
         },
-        package: {
+        'package': {
             name: 'testPackageName'
         }
     } as Ui5App;
