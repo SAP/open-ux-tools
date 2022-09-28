@@ -1,4 +1,15 @@
 {
     "extends": ["../../.eslintrc"],
-    "parserOptions": { "project": "./tsconfig.json" }
+    "parserOptions": { "project": "./tsconfig.json" },
+    "overrides": [
+        {
+            "files": ["**/test/**/*.js", "**/test/**/*.ts", "**/test/**/*.tsx"],
+            "rules": {
+                "no-console": "off",
+                "jsdoc/require-returns-description": "off",
+                "jsdoc/require-param-description": "off",
+                "max-nested-callbacks": ["warn", 5]
+            }
+        }
+    ]
 }
