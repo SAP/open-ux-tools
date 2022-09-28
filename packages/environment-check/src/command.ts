@@ -17,7 +17,7 @@ const spawnOptions = /^win/.test(process.platform) ? { windowsVerbatimArguments:
  * @param commandArgs - command arguments, like --global
  * @returns output
  */
-export const spawnCommand = (command: string, commandArgs: string[]): Promise<string> => {
+export function spawnCommand(command: string, commandArgs: string[]): Promise<string> {
     return new Promise((resolve, reject) => {
         let output = '';
         const spawnProcess = spawn(command, commandArgs, spawnOptions);
@@ -36,4 +36,4 @@ export const spawnCommand = (command: string, commandArgs: string[]): Promise<st
             reject(error);
         });
     });
-};
+}

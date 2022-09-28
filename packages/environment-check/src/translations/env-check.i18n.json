@@ -19,6 +19,7 @@
         "markdownResults": "Full results written as markdown to file {{filename}}",
         "authRequired": "Authentication required for {{- destination}}",
         "notInstalled": "Not installed",
+        "notInstalledOrNotFound": "Not installed or not found",
         "nodeVersion": "Node.js: {{- nodeVersion}}",
         "cloudCli": "Cloud CLI tools: {{- cloudCli}}",
         "fioriGenVersion": "SAP Fiori tools - Fiori generator: {{- fioriGenVersion}}",
@@ -49,7 +50,8 @@
         "basDevSpace": "Couldn't read Business Application Studio Dev environment. Error: {{- error}}",
         "invalidPkgJson": "Found invalid package.json. Error : {{- error}}",
         "checkingEnv": "Error checking environment: {{- error}}",
-        "noProjectRoot": "Project root {{- projectRoot}} does not exist"
+        "noProjectRoot": "Project root {{- projectRoot}} does not exist",
+        "retrievingExtensions": "Error retrieving installed extensions: {{- error}}"
     },
     "markdownText": {
         "fullServiceUrlConfig": "Configured to be used by Fiori Generator as Full Service URL",

@@ -49,9 +49,9 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
 }
 
 /**
- * Returns the VSCode environment.
+ * Returns the tools and extensions installed.
  *
- * @returns environment, including tools, extensions ...
+ * @returns tools and extension versions
  */
 export async function getToolsExtensions(): Promise<{
     toolsExtensions: ToolsExtensions;

@@ -378,14 +378,14 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
     });
     test('Testing getToolsExtensions', async () => {
         const extensionVersions = {
-            'SAPOS.yeoman-ui': { version: '2' },
-            'SAPOSS.vscode-ui5-language-assistant': { version: '2' },
-            'SAPOSS.xml-toolkit': { version: '2' },
-            'SAPSE.sap-ux-annotation-modeler-extension': { version: '2.2' },
-            'SAPSE.sap-ux-application-modeler-extension': { version: '2' },
-            'SAPSE.sap-ux-help-extension': { version: '2' },
-            'SAPSE.sap-ux-service-modeler-extension': { version: '2.4' },
-            'SAPSE.vscode-cds': { version: '2' }
+            'yeoman-ui': { version: '2' },
+            'vscode-ui5-language-assistant': { version: '2' },
+            'xml-toolkit': { version: '2' },
+            'sap-ux-annotation-modeler-extension': { version: '2.2' },
+            'sap-ux-application-modeler-extension': { version: '2' },
+            'sap-ux-help-extension': { version: '2' },
+            'sap-ux-service-modeler-extension': { version: '2.4' },
+            'vscode-cds': { version: '2' }
         };
 
         const expectedData = {

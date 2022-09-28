@@ -19,14 +19,14 @@ export enum NpmModules {
     FioriGenerator = '@sap/generator-fiori'
 }
 export enum Extensions {
-    AppWizard = 'SAPOS.yeoman-ui',
-    Ui5LanguageAssistant = 'SAPOSS.vscode-ui5-language-assistant',
-    XMLToolkit = 'SAPOSS.xml-toolkit',
-    AnnotationMod = 'SAPSE.sap-ux-annotation-modeler-extension',
-    AppMod = 'SAPSE.sap-ux-application-modeler-extension',
-    Help = 'SAPSE.sap-ux-help-extension',
-    ServiceMod = 'SAPSE.sap-ux-service-modeler-extension',
-    CDS = 'SAPSE.vscode-cds'
+    AppWizard = 'yeoman-ui',
+    Ui5LanguageAssistant = 'vscode-ui5-language-assistant',
+    XMLToolkit = 'xml-toolkit',
+    AnnotationMod = 'sap-ux-annotation-modeler-extension',
+    AppMod = 'sap-ux-application-modeler-extension',
+    Help = 'sap-ux-help-extension',
+    ServiceMod = 'sap-ux-service-modeler-extension',
+    CDS = 'vscode-cds'
 }
 
 export interface Environment {

@@ -149,14 +149,17 @@ function writeBASEnvironment(writer: MarkdownWriter, environment?: Environment):
  */
 function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsExtensions): void {
     writer.addH2(t('markdownText.environmentTitle'));
-
-    const results = [];
-    for (const toolExt of Object.keys(toolsExts)) {
-        const toolExtName = toolsExtensionListVSCode.get(toolExt);
-        results.push([toolExtName, toolsExts[toolExt]]);
+    if (toolsExts) {
+        const results = [];
+        for (const toolExt of Object.keys(toolsExts)) {
+            const toolExtName = toolsExtensionListVSCode.get(toolExt);
+            results.push([toolExtName, toolsExts[toolExt]]);
+        }
+        const table = [toolsExtensionFields, ...results];
+        writer.addTable(table);
+    } else {
+        writer.addLine(t('markdownText.envNotChecked'));
     }
-    const table = [toolsExtensionFields, ...results];
-    writer.addTable(table);
 }
 
 /**
@@ -297,14 +300,11 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
     const writer = getMarkdownWriter();
 
     writer.addH1(results.markdownTitle);
-    if (results.toolsExtensions) {
-        writeToolsExtensionsResults(writer, results.toolsExtensions);
-    } else {
-        writeBASEnvironment(writer, results.environment);
-        writeDestinationResults(writer, results.destinationResults, results.destinations);
-        writeDestinations(writer, results.destinations);
-        writeMessages(writer, results.messages);
-    }
+    writeToolsExtensionsResults(writer, results.toolsExtensions);
+    writeBASEnvironment(writer, results.environment);
+    writeDestinationResults(writer, results.destinationResults, results.destinations);
+    writeDestinations(writer, results.destinations);
+    writeMessages(writer, results.messages);
 
     writer.addSub(
         `${t('markdownText.createdAt')} ${new Date().toISOString().replace('T', ' ').substring(0, 19)} (UTC)`
