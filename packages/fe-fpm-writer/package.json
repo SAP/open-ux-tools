@@ -43,8 +43,7 @@
         "@types/semver": "7.3.9",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
-        "@sap-ux/ui5-config": "workspace:*",
-        "fs-extra": "10.0.0"
+        "@sap-ux/ui5-config": "workspace:*"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
