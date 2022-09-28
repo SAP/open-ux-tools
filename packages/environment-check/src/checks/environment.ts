@@ -55,6 +55,35 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
 }
 
 /**
+ * Returns extensions and versions.
+ *
+ * @param extensions to be checked
+ * @returns extension with version numbers
+ */
+function __getExtVersions(extensions: { [id: string]: { version: string } }): { [id: string]: string } {
+    return {
+        appWizard: extensions[Extensions.AppWizard]
+            ? extensions[Extensions.AppWizard]['version']
+            : t('info.notInstalled'),
+        appMod: extensions[Extensions.AppMod] ? extensions[Extensions.AppMod]['version'] : t('info.notInstalled'),
+        help: extensions[Extensions.Help] ? extensions[Extensions.Help]['version'] : t('info.notInstalled'),
+        serviceMod: extensions[Extensions.ServiceMod]
+            ? extensions[Extensions.ServiceMod]['version']
+            : t('info.notInstalled'),
+        annotationMod: extensions[Extensions.AnnotationMod]
+            ? extensions[Extensions.AnnotationMod]['version']
+            : t('info.notInstalled'),
+        xmlToolkit: extensions[Extensions.XMLToolkit]
+            ? extensions[Extensions.XMLToolkit]['version']
+            : t('info.notInstalled'),
+        cds: extensions[Extensions.CDS] ? extensions[Extensions.CDS]['version'] : t('info.notInstalled'),
+        ui5LanguageAssistant: extensions[Extensions.Ui5LanguageAssistant]
+            ? extensions[Extensions.Ui5LanguageAssistant]['version']
+            : t('info.notInstalled')
+    };
+}
+
+/**
  * Returns the tools and extensions installed.
  *
  * @returns tools and extension versions
@@ -76,30 +105,10 @@ async function getToolsExtensions(): Promise<{
     };
 
     if (extensions) {
-        const exts = {
-            appWizard: extensions[Extensions.AppWizard]
-                ? extensions[Extensions.AppWizard]['version']
-                : t('info.notInstalled'),
-            appMod: extensions[Extensions.AppMod] ? extensions[Extensions.AppMod]['version'] : t('info.notInstalled'),
-            help: extensions[Extensions.Help] ? extensions[Extensions.Help]['version'] : t('info.notInstalled'),
-            serviceMod: extensions[Extensions.ServiceMod]
-                ? extensions[Extensions.ServiceMod]['version']
-                : t('info.notInstalled'),
-            annotationMod: extensions[Extensions.AnnotationMod]
-                ? extensions[Extensions.AnnotationMod]['version']
-                : t('info.notInstalled'),
-            xmlToolkit: extensions[Extensions.XMLToolkit]
-                ? extensions[Extensions.XMLToolkit]['version']
-                : t('info.notInstalled'),
-            cds: extensions[Extensions.CDS] ? extensions[Extensions.CDS]['version'] : t('info.notInstalled'),
-            ui5LanguageAssistant: extensions[Extensions.Ui5LanguageAssistant]
-                ? extensions[Extensions.Ui5LanguageAssistant]['version']
-                : t('info.notInstalled')
-        };
-
+        const extVersions = __getExtVersions(extensions);
         toolsExtensions = {
             ...toolsExtensions,
-            ...exts
+            ...extVersions
         };
     }
 

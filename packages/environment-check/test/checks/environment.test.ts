@@ -27,6 +27,9 @@ const mockCheckBASDestination = checkBASDestination as jest.Mock;
 describe('Test for getEnvironmentCheck()', () => {
     test('Ensure correct dev environment (VSCode)', async () => {
         mockIsAppStudio.mockReturnValue(false);
+        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
+        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
+        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
         const { environment, messages } = await getEnvironment();
         expect(environment.developmentEnvironment === DevelopmentEnvironment.VSCode).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
@@ -34,6 +37,9 @@ describe('Test for getEnvironmentCheck()', () => {
 
     test('Ensure correct dev environment (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
+        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
+        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
+        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
         const { environment, messages } = await getEnvironment();
         expect(environment.developmentEnvironment === DevelopmentEnvironment.BAS).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
