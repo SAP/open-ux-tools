@@ -53,6 +53,11 @@ describe('Fiori elements templates'), () => {
 * Preferably write tests first, when it makes sense. This is a judgement call
 * We use jest snapshots to validate the generated files. Please follow the documentation here: https://jestjs.io/docs/snapshot-testing
 
+
+## Internationalization (i18n)
+Messages and texts that are visible to the consumer and required to interact with or use the module should be translatable. This includes user dialogs, button texts, questions, labels, messages. 
+
+This does not include texts like technical log messages, tracing information, or exception texts that are not shown as message to the consumer.
 ## Git Guidelines
 
 We adhere to the [Conventional Commits](https://conventionalcommits.org) specification.
@@ -106,6 +111,10 @@ The app descriptor version should be calculated based on the minimal supported U
 
 Fixes #42
 ```
+
+## Pull Requests
+
+- Fix one issue per PR and keep PRs as small as possible. It may be slightly more work, but it is much easier to understand and review a single clear fix. Focused PRs also give consumers of a module more control over which fixes and features are available in each published version.
 
 ## Versioning
 To establish and increase versions for modules in this repository, we follow [Semantic Versioning (semver)](https://semver.org/). In essence, this means:

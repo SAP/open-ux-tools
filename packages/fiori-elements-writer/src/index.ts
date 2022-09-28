@@ -44,8 +44,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
 
     const templateOptions: TemplateOptions = {
         changesPreview: feApp.ui5?.version
-            ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              semVer.lt(semVer.coerce(feApp.ui5?.version)!, changesPreviewToVersion)
+            ? semVer.lt(semVer.coerce(feApp.ui5?.version)!, changesPreviewToVersion)
             : false,
         changesLoader: feApp.service.version === OdataVersion.v2
     };

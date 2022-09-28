@@ -85,7 +85,6 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     feApp.ui5 = feApp.ui5 ?? {};
     if (!feApp.ui5.minUI5Version) {
         feApp.ui5.minUI5Version =
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             feApp.ui5.version ?? TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
     }
 

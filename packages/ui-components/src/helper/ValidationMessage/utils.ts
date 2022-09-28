@@ -135,7 +135,6 @@ const getMessageType = (props?: UIComponentMessagesProps): ErrorMessageType => {
  *  @param {UIComponentMessagesProps} [props] Component props.
  * @returns {string | undefined} Message string.
  */
-// eslint-disable-next-line consistent-return
 const getErrorMessage = (props?: UIComponentMessagesProps): string | undefined => {
     if (props) {
         return props.errorMessage || props.warningMessage || props.infoMessage;

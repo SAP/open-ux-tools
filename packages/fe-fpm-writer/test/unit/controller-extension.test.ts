@@ -22,7 +22,6 @@ describe('ControllerExtension', () => {
             }
         };
         const getControllerPath = (controller: ControllerExtension, isTs = false): string => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return join(testDir, 'webapp', controller.folder!, `${controller.name}.controller.${isTs ? 'ts' : 'js'}`);
         };
         const expectedControllerPath = getControllerPath(controllerExtension);
