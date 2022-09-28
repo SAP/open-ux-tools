@@ -14,24 +14,19 @@ import {
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
-import { rmdirSync, existsSync } from 'fs';
+import { clearTestOutput, writeFilesForDebugging } from '../common';
 
 describe('use FPM with existing apps', () => {
     const testInput = join(__dirname, '../test-input');
-    const testOutput = join(__dirname, '../test-output');
-    const debug = !!process.env['UX_DEBUG'];
+    const testOutput = join(__dirname, '../test-output/integration');
     const fs = create(createStorage());
 
     beforeAll(() => {
-        if (existsSync(testOutput)) {
-            rmdirSync(testOutput, { recursive: true });
-        }
+        clearTestOutput(testOutput);
     });
 
     afterAll(() => {
-        if (debug) {
-            fs.commit(() => {});
-        }
+        return writeFilesForDebugging(fs);
     });
 
     describe('extend UI5 application with FPM', () => {
@@ -251,7 +246,7 @@ describe('use FPM with existing apps', () => {
 
         afterAll(() => {
             expect(
-                (fs as any).dump(testOutput, '**/test-output/*/webapp/{manifest.json,Component.ts,ext/**/*}')
+                (fs as any).dump(testOutput, '**/test-output/**/webapp/{manifest.json,Component.ts,ext/**/*}')
             ).toMatchSnapshot();
         });
     });
