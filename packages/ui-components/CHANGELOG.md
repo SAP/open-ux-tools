@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.2
+
+### Patch Changes
+
+-   cf49b22: update package dependencies
+
 ## 1.0.1
 
 ### Patch Changes
