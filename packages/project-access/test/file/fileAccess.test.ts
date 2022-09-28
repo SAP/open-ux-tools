@@ -1,6 +1,6 @@
 import { Package } from '@sap-ux/project-types';
 import { join } from 'path';
-import { readFile, readJSON, fileExists } from '../../src';
+import { readFile, readJSON, fileExists } from '../../src/file';
 
 describe('readFile()', () => {
     test('Read existing file, should return content', async () => {
