@@ -47,7 +47,7 @@ describe('CustomAction', () => {
                 placement: Placement.After
             }
         };
-
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const expectedFragmentPath = join(testDir, 'webapp', customColumn.folder!, `${customColumn.name}.fragment.xml`);
         const testVersions = ['1.86', '1.85', '1.84'];
         beforeEach(() => {
@@ -163,7 +163,7 @@ describe('CustomAction', () => {
             test('"eventHandler" is empty "object" - create new file with default function name', () => {
                 const id = customColumn.name;
                 generateCustomColumnWithEventHandler(id, {}, customColumn.folder);
-
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const xmlPath = join(testDir, 'webapp', customColumn.folder!, `${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
@@ -177,7 +177,7 @@ describe('CustomAction', () => {
                 const id = customColumn.name;
                 generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
                 const fragmentName = `${id}.fragment.xml`;
-
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const xmlPath = join(testDir, 'webapp', customColumn.folder!, fragmentName);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.js`))).toMatchSnapshot();
@@ -189,7 +189,7 @@ describe('CustomAction', () => {
                 };
                 const id = customColumn.name;
                 generateCustomColumnWithEventHandler(id, extension, customColumn.folder);
-
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const xmlPath = join(testDir, 'webapp', customColumn.folder!, `${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
