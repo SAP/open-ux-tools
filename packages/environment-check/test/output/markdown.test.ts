@@ -246,4 +246,15 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
+
+    test('Check markdown with no destinations checked', () => {
+        const result = convertResultsToMarkdown(
+            {
+                environment: data.environment as any,
+                markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
+            },
+            false
+        );
+        expect(result.split('<sub>created at')[0]).toMatchSnapshot();
+    });
 });

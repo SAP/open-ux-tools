@@ -129,7 +129,7 @@ function getMarkdownWriter(): MarkdownWriter {
  * @param writer - markdown writter
  * @param environment - environment results, like development environment, node version, etc
  */
-function writeBASEnvironment(writer: MarkdownWriter, environment?: Environment): void {
+function writeEnvironment(writer: MarkdownWriter, environment?: Environment): void {
     writer.addH2(t('markdownText.environmentTitle'));
     if (environment) {
         writer.addLine(t('markdownText.platform', { platform: environment.platform }));
@@ -294,15 +294,18 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
  * Converts the envcheck results to markdown report.
  *
  * @param results - envcheck results
+ * @param isDestinationsChecked - has destinations been checked, default is true
  * @returns - markdown report
  */
-export function convertResultsToMarkdown(results: EnvironmentCheckResult): string {
+export function convertResultsToMarkdown(results: EnvironmentCheckResult, isDestinationsChecked = true): string {
     const writer = getMarkdownWriter();
 
     writer.addH1(results.markdownTitle ?? t('markdownText.envCheckTitle'));
-    writeBASEnvironment(writer, results.environment);
-    writeDestinationResults(writer, results.destinationResults, results.destinations);
-    writeDestinations(writer, results.destinations);
+    writeEnvironment(writer, results.environment);
+    if (isDestinationsChecked) {
+        writeDestinationResults(writer, results.destinationResults, results.destinations);
+        writeDestinations(writer, results.destinations);
+    }
     writeMessages(writer, results.messages);
 
     writer.addSub(
