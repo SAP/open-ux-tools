@@ -3,6 +3,10 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { t } from '../messages';
 import type { AbapDeployConfig } from '../types';
 
+/**
+ *
+ * @param obj
+ */
 export function replaceEnvVariables(obj: object): void {
     config();
     for (const key in obj) {

@@ -1,13 +1,17 @@
-import {
+import type {
     AbapServiceProvider,
     ProviderConfiguration,
     Ui5AbapRepositoryService,
-    AxiosRequestConfig,
-    createForAbapOnCloud,
-    AbapCloudEnvironment
+    AxiosRequestConfig
 } from '@sap-ux/axios-extension';
-import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
-import { isAppStudio, ServiceInfo } from '@sap-ux/btp-utils';
+import {
+    AbapCloudEnvironment,
+    createForAbap,
+    createForDestination,
+    createForAbapOnCloud
+} from '@sap-ux/axios-extension';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { writeFileSync } from 'fs';
@@ -18,7 +22,9 @@ type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'refreshToken'>>
 
 /**
  * Check the secure storage if it has credentials for the given target.
+ *
  * @param config
+ * @param target
  */
 export async function getCredentials<T extends BasicAuth | ServiceAuth | undefined>(
     target: AbapTarget
@@ -38,6 +44,7 @@ export async function getCredentials<T extends BasicAuth | ServiceAuth | undefin
  * Create an instance of a UI5AbapRepository service connected to the given target configuration.
  *
  * @param target - target system for the deployments
+ * @param config
  * @returns service instance
  */
 async function createDeployService(target: AbapTarget, config: CommonOptions): Promise<Ui5AbapRepositoryService> {
@@ -90,6 +97,7 @@ async function createDeployService(target: AbapTarget, config: CommonOptions): P
  * @param target
  * @param app
  * @param testMode - if set to true then only a test deployment is executed without deploying the actual archive in the backend
+ * @param config
  */
 export async function deploy(archive: Buffer, config: AbapDeployConfig) {
     if (config.keep) {

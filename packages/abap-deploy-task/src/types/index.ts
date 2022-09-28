@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, ServiceInfo } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { LogLevel } from '@sap-ux/logger';
 
 export const NAME = 'abap-deploy-task';
@@ -18,8 +18,16 @@ export interface AbapTarget {
 }
 
 export interface CommonOptions {
+    /**
+     * Deploy with test mode true i.e. everything is sent to the backend but the backend only checks the inputs without a real deployment
+     */
     test?: boolean;
+
+    /**
+     * If set to true only only servers with validatated idtenities are accepted
+     */
     strictSsl?: boolean;
+
     /**
      * Additional project files that are to be added to the zip
      */
