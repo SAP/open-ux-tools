@@ -34,6 +34,7 @@ export interface Environment {
     platform: NodeJS.Platform;
     versions: NodeJS.ProcessVersions;
     basDevSpace?: string;
+    toolsExtensions?: ToolsExtensions;
 }
 
 export interface ToolsExtensions {
@@ -91,7 +92,6 @@ export interface Destination extends BTPDestination {
 }
 
 export interface EnvironmentCheckResult {
-    toolsExtensions?: ToolsExtensions;
     environment?: Environment;
     destinations?: Destination[];
     destinationResults?: { [dest: string]: DestinationResults };

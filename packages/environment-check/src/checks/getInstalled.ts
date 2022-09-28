@@ -111,8 +111,6 @@ async function _getFioriGenBAS(): Promise<string> {
     if (existsSync(pathToPackageJson)) {
         const dependencies = JSON.parse(await promises.readFile(pathToPackageJson, 'utf-8')).dependencies;
         version = dependencies[NpmModules.FioriGenerator];
-    } else {
-        version = t('info.notInstalledOrNotFound');
     }
     return version;
 }
@@ -122,9 +120,9 @@ async function _getFioriGenBAS(): Promise<string> {
  *
  * @returns version
  */
-async function _getFioriGenVSCode(): Promise<string> {
+async function _getFioriGenGlobalRoot(): Promise<string> {
     let version;
-    let globalNpmPath = await spawnCommand(npmCommand, ['root', '-g']);
+    let globalNpmPath = await spawnCommand(npmCommand, ['root', '--location=global']);
     globalNpmPath = globalNpmPath.trim();
     const pathToPackageJson = join(globalNpmPath, NpmModules.FioriGenerator, 'package.json');
     if (existsSync(pathToPackageJson)) {
@@ -145,8 +143,9 @@ export async function getFioriGenVersion(): Promise<string> {
     try {
         if (isAppStudio()) {
             fioriGenVersion = await _getFioriGenBAS();
-        } else {
-            fioriGenVersion = await _getFioriGenVSCode();
+        }
+        if (!fioriGenVersion) {
+            fioriGenVersion = await _getFioriGenGlobalRoot();
         }
     } catch {
         return t('info.notInstalledOrNotFound');

@@ -134,7 +134,10 @@ function writeBASEnvironment(writer: MarkdownWriter, environment?: Environment):
     if (environment) {
         writer.addLine(t('markdownText.platform', { platform: environment.platform }));
         writer.addLine(t('markdownText.devEnvironement', { devEnvironment: environment.developmentEnvironment }));
-        writer.addLine(t('markdownText.devSpaceType', { basDevSpace: environment.basDevSpace }));
+        if (environment.basDevSpace) {
+            writer.addLine(t('markdownText.devSpaceType', { basDevSpace: environment.basDevSpace }));
+        }
+        writeToolsExtensionsResults(writer, environment.toolsExtensions);
         writer.addDetails(`${t('markdownText.versions')}`, JSON.stringify(environment.versions, null, 4));
     } else {
         writer.addLine(t('markdownText.envNotChecked'));
@@ -148,7 +151,6 @@ function writeBASEnvironment(writer: MarkdownWriter, environment?: Environment):
  * @param toolsExts - environment results - node version, extension versions etc
  */
 function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsExtensions): void {
-    writer.addH2(t('markdownText.environmentTitle'));
     if (toolsExts) {
         const results = [];
         for (const toolExt of Object.keys(toolsExts)) {
@@ -157,8 +159,6 @@ function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsEx
         }
         const table = [toolsExtensionFields, ...results];
         writer.addTable(table);
-    } else {
-        writer.addLine(t('markdownText.envNotChecked'));
     }
 }
 
@@ -299,8 +299,7 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
 export function convertResultsToMarkdown(results: EnvironmentCheckResult): string {
     const writer = getMarkdownWriter();
 
-    writer.addH1(results.markdownTitle);
-    writeToolsExtensionsResults(writer, results.toolsExtensions);
+    writer.addH1(results.markdownTitle ?? t('markdownText.envCheckTitle'));
     writeBASEnvironment(writer, results.environment);
     writeDestinationResults(writer, results.destinationResults, results.destinations);
     writeDestinations(writer, results.destinations);

@@ -407,7 +407,7 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce(extensionVersions);
         // Test execution
         const result = await checkEnvironment();
-        expect(result.toolsExtensions).toEqual(expectedData);
+        expect(result.environment?.toolsExtensions).toEqual(expectedData);
     });
 
     test('Testing getToolsExtensions (no extensions installed)', async () => {
@@ -430,6 +430,6 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
         // Test execution
         const result = await checkEnvironment();
-        expect(result.toolsExtensions).toEqual(expectedData);
+        expect(result.environment?.toolsExtensions).toEqual(expectedData);
     });
 });

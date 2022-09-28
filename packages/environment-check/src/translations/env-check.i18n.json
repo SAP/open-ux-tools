@@ -78,6 +78,7 @@
         "noDestinations": "No destinations",
         "messages": "Messages ({{numberOfMessages}})",
         "noMessages": "No messages",
+        "envCheckTitle": "SAP Fiori tools - Environment Check",
         "basEnvCheckTitle": "SAP Fiori tools - Environment Check in SAP Business Application Studio",
         "vsCodeEnvCheckTitle": "SAP Fiori tools - Environment Check in Visual Studio Code",
         "createdAt": "created at",

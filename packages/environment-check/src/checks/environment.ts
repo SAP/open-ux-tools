@@ -29,9 +29,9 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
         versions: process.versions,
         platform: process.platform
     };
-    logger.info(t('info.developmentEnvironment', { env: environment.developmentEnvironment }));
-    logger.info(t('info.versions', { versions: JSON.stringify(environment.versions, null, 4) }));
+
     logger.info(t('info.platform', { platform: environment.platform }));
+    logger.info(t('info.developmentEnvironment', { env: environment.developmentEnvironment }));
 
     try {
         if (isAppStudio()) {
@@ -41,6 +41,12 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
     } catch (error) {
         logger.info(t('error.basDevSpace', { error: error.message }));
     }
+
+    const toolsExtensionResults = await getToolsExtensions();
+    environment.toolsExtensions = toolsExtensionResults.toolsExtensions;
+    logger.push(...toolsExtensionResults.messages);
+
+    logger.info(t('info.versions', { versions: JSON.stringify(environment.versions, null, 4) }));
 
     return {
         environment,
@@ -53,7 +59,7 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
  *
  * @returns tools and extension versions
  */
-export async function getToolsExtensions(): Promise<{
+async function getToolsExtensions(): Promise<{
     toolsExtensions: ToolsExtensions;
     messages: ResultMessage[];
 }> {
@@ -63,29 +69,39 @@ export async function getToolsExtensions(): Promise<{
     const fioriGenVersion = await getFioriGenVersion();
     const cloudCli = await getCFCliToolVersion();
 
-    const toolsExtensions: ToolsExtensions = {
+    let toolsExtensions: ToolsExtensions = {
         nodeVersion: process.version,
         cloudCli: cloudCli,
-        appWizard: extensions[Extensions.AppWizard]
-            ? extensions[Extensions.AppWizard]['version']
-            : t('info.notInstalled'),
-        fioriGenVersion: fioriGenVersion,
-        appMod: extensions[Extensions.AppMod] ? extensions[Extensions.AppMod]['version'] : t('info.notInstalled'),
-        help: extensions[Extensions.Help] ? extensions[Extensions.Help]['version'] : t('info.notInstalled'),
-        serviceMod: extensions[Extensions.ServiceMod]
-            ? extensions[Extensions.ServiceMod]['version']
-            : t('info.notInstalled'),
-        annotationMod: extensions[Extensions.AnnotationMod]
-            ? extensions[Extensions.AnnotationMod]['version']
-            : t('info.notInstalled'),
-        xmlToolkit: extensions[Extensions.XMLToolkit]
-            ? extensions[Extensions.XMLToolkit]['version']
-            : t('info.notInstalled'),
-        cds: extensions[Extensions.CDS] ? extensions[Extensions.CDS]['version'] : t('info.notInstalled'),
-        ui5LanguageAssistant: extensions[Extensions.Ui5LanguageAssistant]
-            ? extensions[Extensions.Ui5LanguageAssistant]['version']
-            : t('info.notInstalled')
+        fioriGenVersion: fioriGenVersion
     };
+
+    if (extensions) {
+        const exts = {
+            appWizard: extensions[Extensions.AppWizard]
+                ? extensions[Extensions.AppWizard]['version']
+                : t('info.notInstalled'),
+            appMod: extensions[Extensions.AppMod] ? extensions[Extensions.AppMod]['version'] : t('info.notInstalled'),
+            help: extensions[Extensions.Help] ? extensions[Extensions.Help]['version'] : t('info.notInstalled'),
+            serviceMod: extensions[Extensions.ServiceMod]
+                ? extensions[Extensions.ServiceMod]['version']
+                : t('info.notInstalled'),
+            annotationMod: extensions[Extensions.AnnotationMod]
+                ? extensions[Extensions.AnnotationMod]['version']
+                : t('info.notInstalled'),
+            xmlToolkit: extensions[Extensions.XMLToolkit]
+                ? extensions[Extensions.XMLToolkit]['version']
+                : t('info.notInstalled'),
+            cds: extensions[Extensions.CDS] ? extensions[Extensions.CDS]['version'] : t('info.notInstalled'),
+            ui5LanguageAssistant: extensions[Extensions.Ui5LanguageAssistant]
+                ? extensions[Extensions.Ui5LanguageAssistant]['version']
+                : t('info.notInstalled')
+        };
+
+        toolsExtensions = {
+            ...toolsExtensions,
+            ...exts
+        };
+    }
 
     logger.info(t('info.nodeVersion', { nodeVersion: toolsExtensions.nodeVersion }));
     logger.info(t('info.cloudCli', { cloudCli: toolsExtensions.cloudCli }));
@@ -233,11 +249,7 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
         logger.push(...destResults.messages);
     }
 
-    const toolsExtensionResults = await getToolsExtensions();
-    logger.push(...toolsExtensionResults.messages);
-
     return {
-        toolsExtensions: toolsExtensionResults.toolsExtensions,
         environment,
         destinations,
         destinationResults,
