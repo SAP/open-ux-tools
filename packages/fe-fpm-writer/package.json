@@ -39,7 +39,6 @@
     },
     "devDependencies": {
         "@types/ejs": "3.1.0",
-        "@types/fs-extra": "9.0.13",
         "@types/semver": "7.3.9",
         "@types/mem-fs-editor": "7.0.1",
         "@types/mem-fs": "1.1.2",
