@@ -1,6 +1,6 @@
 import { dirname, join, parse, sep } from 'path';
-import { FileName } from '@sap-ux/project-types';
-import type { Manifest, Package, WorkspaceFolder } from '@sap-ux/project-types';
+import { FileName } from '../constants';
+import type { Manifest, Package, WorkspaceFolder } from '../types';
 import { hasDependency } from './dependencies';
 import { isCapProject } from './cap';
 import type { AllAppResults } from '../types';

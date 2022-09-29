@@ -1,5 +1,5 @@
 import { basename, dirname, join } from 'path';
-import type { WorkspaceFolder } from '@sap-ux/project-types';
+import type { WorkspaceFolder } from '../../src';
 import { findAllApps } from '../../src';
 import { findProjectRoot, getAppRootFromWebappPath } from '../../src/project/findApps';
 

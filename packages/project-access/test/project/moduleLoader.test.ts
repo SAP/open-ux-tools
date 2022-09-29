@@ -5,7 +5,7 @@ describe('Test loadModuleFromProject()', () => {
     test('Load module', async () => {
         const projectModule = await loadModuleFromProject<{ FileName: {} }>(
             join(__dirname, '..'),
-            '@sap-ux/project-types'
+            '@sap-ux/ui5-config'
         );
         expect(typeof projectModule).toEqual('object');
     });

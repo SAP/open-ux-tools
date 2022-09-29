@@ -1,4 +1,4 @@
-import { Package } from '@sap-ux/project-types';
+import type { Package } from '../../src';
 import { hasDependency } from '../../src/project/dependencies';
 
 describe('Test hasDependency()', () => {

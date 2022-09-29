@@ -38,7 +38,7 @@
         "i18next": "20.3.2"
     },
     "devDependencies": {
-        "@sap-ux/project-types": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
         "@types/express": "4.17.13",
         "express": "4.17.2",
         "nock": "13.2.4",

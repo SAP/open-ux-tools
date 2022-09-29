@@ -1,6 +1,6 @@
 import { join } from 'path';
-import { FileName } from '@sap-ux/project-types';
-import type { CapCustomPaths, csn, Package } from '@sap-ux/project-types';
+import { FileName } from '../constants';
+import type { CapCustomPaths, csn, Package } from '../types';
 import { fileExists, readJSON } from '../file';
 import { loadModuleFromProject } from './moduleLoader';
 

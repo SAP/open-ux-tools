@@ -18,9 +18,6 @@
 # Module: project-access
 /packages/project-access/ @SAP/ux-tools-project-access
 
-# Module: project-types
-/packages/project-types/ @SAP/ux-tools-project-access
-
 # Module: odata-service-writer
 /packages/odata-service-writer/ @SAP/ux-tools-odata-service-writer
 

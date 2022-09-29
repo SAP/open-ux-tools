@@ -1,5 +1,5 @@
-import { Package } from '@sap-ux/project-types';
 import { join } from 'path';
+import type { Package } from '../../src';
 import { readFile, readJSON, fileExists } from '../../src/file';
 
 describe('readFile()', () => {
