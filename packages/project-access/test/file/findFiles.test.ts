@@ -12,26 +12,27 @@ describe('Tests for findFiles()', () => {
 
     test('Find files', async () => {
         const result = await findFiles('child', root, []);
-        expect(result.length).toBe(2);
+        expect(result.length).toBe(4);
     });
 
     test('Find files with folder exclusion (stop folder)', async () => {
-        const result = await findFiles('child', root, ['childB']);
+        const result = await findFiles('child', root, ['childB', 'childC']);
         expect(result).toEqual([join(root, 'childA')]);
     });
 
     test('Find files with deleted folders in mem-fs', async () => {
         const fs = create(createStorage());
         fs.delete(join(root, 'childB'));
+        fs.delete(join(root, 'childC'));
         const result = await findFiles('child', root, [], fs);
         expect(result).toEqual([join(root, 'childA')]);
     });
 
     test('Find files with added files in mem-fs', async () => {
         const fs = create(createStorage());
-        const addedFolder = join(root, 'childC');
+        const addedFolder = join(root, 'childD');
         fs.write(join(addedFolder, 'child'), '');
-        const result = await findFiles('child', root, [], fs);
+        const result = await findFiles('child', root, ['childC'], fs);
         expect(result.length).toBe(3);
         expect(result.includes(addedFolder)).toBe(true);
     });
@@ -40,6 +41,6 @@ describe('Tests for findFiles()', () => {
         const fs = create(createStorage());
         fs.append(join(root, 'childB/child'), '...');
         const result = await findFiles('child', root, [], fs);
-        expect(result.length).toBe(2);
+        expect(result.length).toBe(4);
     });
 });
