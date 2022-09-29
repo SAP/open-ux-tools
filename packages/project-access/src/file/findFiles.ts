@@ -21,6 +21,7 @@ declare module 'mem-fs-editor' {
  * @param filename - filename to search
  * @param root - root folder to start search
  * @param stopFolders - list of folder names to exclude (search doesn't traverse into these folders)
+ * @param fs - optional mem-fs-editor instance
  * @returns - array of path that contain the filename
  */
 export function findFiles(filename: string, root: string, stopFolders: string[], fs?: Editor): string[] {
@@ -50,12 +51,21 @@ export function findFiles(filename: string, root: string, stopFolders: string[],
  *
  * @param fileName - file name to look for
  * @param startPath - path for start searching up
+ * @param fs - optional mem-fs-editor instance
  * @returns - path to file name if found, otherwise undefined
  */
 export function findFileUp(fileName: string, startPath: string, fs?: Editor): string | undefined {
     return findUp(fileName, startPath, fs ?? create(createStorage()));
 }
 
+/**
+ * Internal find a file by name function for recursive iteration.
+ *
+ * @param fileName - file name to look for
+ * @param pathName - path for start searching up
+ * @param fs - mem-fs-editor instance
+ * @returns - path to file name if found, otherwise undefined
+ */
 function findUp(fileName: string, pathName: string, fs: Editor): string | undefined {
     const filePath = join(pathName, fileName);
     if (fs.exists(filePath)) {
