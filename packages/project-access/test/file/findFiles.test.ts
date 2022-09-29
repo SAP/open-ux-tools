@@ -60,5 +60,11 @@ describe('file', () => {
         test('no match', () => {
             expect(findFileUp(file, root)).toBeUndefined();
         });
+
+        test('file in mem-fs', () => {
+            const fs = create(createStorage());
+            fs.write(join(root, file), '...');
+            expect(findFileUp(file, root, fs)).toBe(join(root, file));
+        });
     });
 });
