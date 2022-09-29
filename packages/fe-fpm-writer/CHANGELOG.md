@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.4
+
+### Patch Changes
+
+-   4f17a53: Add 'sap.se.macros' namespace to custom section's 'Fragment.xml' when ui5 version >= 1.90
+
 ## 0.17.3
 
 ### Patch Changes
