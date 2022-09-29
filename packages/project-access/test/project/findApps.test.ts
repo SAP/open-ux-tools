@@ -1,7 +1,6 @@
 import { basename, dirname, join } from 'path';
 import type { WorkspaceFolder } from '../../src';
-import { findAllApps } from '../../src';
-import { findProjectRoot, getAppRootFromWebappPath } from '../../src/project/findApps';
+import { findAllApps, findProjectRoot, getAppRootFromWebappPath } from '../../src';
 
 const testDataRoot = join(__dirname, '..', 'test-data');
 
