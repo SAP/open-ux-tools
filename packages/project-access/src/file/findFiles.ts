@@ -3,6 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { dirname, join } from 'path';
 import { sync as searchGlob } from 'glob';
+import { existsSync as exists } from 'fs';
 
 /**
  * Add missing dump properties
@@ -25,25 +26,29 @@ declare module 'mem-fs-editor' {
  * @returns - array of path that contain the filename
  */
 export function findFiles(filename: string, root: string, stopFolders: string[], fs?: Editor): string[] {
-    const memFiles = fs ? fs.dump(root) : {};
-    const modified = Object.keys(memFiles)
-        .filter((file) => memFiles[file].state === 'modified' && file.endsWith(filename))
-        .map((file) => join(root, file));
-    const ignore = Object.keys(memFiles)
-        .filter((file) => memFiles[file].state === 'deleted')
-        .map((file) => join(root, file))
-        .concat(...modified);
-
     const files = searchGlob(filename, {
         cwd: root,
         matchBase: true,
         absolute: true,
         ignore: stopFolders.map((folder) => `**/${folder}/**`)
-    })
-        .filter((match) => !ignore.includes(match))
-        .map((match) => dirname(match));
+    });
 
-    return files.concat(...modified.map((file) => dirname(file)));
+    if (fs) {
+        const memFiles = fs.dump(root);
+        const modified = Object.keys(memFiles)
+            .filter((file) => memFiles[file].state === 'modified' && file.endsWith(filename))
+            .map((file) => join(root, file));
+        const ignore = Object.keys(memFiles)
+            .filter((file) => memFiles[file].state === 'deleted')
+            .map((file) => join(root, file))
+            .concat(...modified);
+        return files
+            .filter((match) => !ignore.includes(match))
+            .map((match) => dirname(match))
+            .concat(...modified.map((file) => dirname(file)));
+    } else {
+        return files.map((match) => dirname(match));
+    }
 }
 
 /**
@@ -55,7 +60,7 @@ export function findFiles(filename: string, root: string, stopFolders: string[],
  * @returns - path to file name if found, otherwise undefined
  */
 export function findFileUp(fileName: string, startPath: string, fs?: Editor): string | undefined {
-    return findUp(fileName, startPath, fs ?? create(createStorage()));
+    return findUp(fileName, startPath, fs ?? { exists });
 }
 
 /**
@@ -66,7 +71,7 @@ export function findFileUp(fileName: string, startPath: string, fs?: Editor): st
  * @param fs - mem-fs-editor instance
  * @returns - path to file name if found, otherwise undefined
  */
-function findUp(fileName: string, pathName: string, fs: Editor): string | undefined {
+function findUp(fileName: string, pathName: string, fs: { exists: Editor['exists'] }): string | undefined {
     const filePath = join(pathName, fileName);
     if (fs.exists(filePath)) {
         return filePath;
