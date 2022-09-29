@@ -1,8 +1,6 @@
-import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
-import { create } from 'mem-fs-editor';
 import { dirname, join } from 'path';
-import { sync as searchGlob, glob } from 'glob';
+import { glob } from 'glob';
 import { existsSync as exists } from 'fs';
 
 /**
@@ -79,6 +77,7 @@ export function findFileUp(fileName: string, startPath: string, fs?: Editor): Pr
  * @param fileName - file name to look for
  * @param pathName - path for start searching up
  * @param fs - mem-fs-editor instance
+ * @param fs.exists - function to be used to check the file existence
  * @returns - path to file name if found, otherwise undefined
  */
 function findUp(fileName: string, pathName: string, fs: { exists: Editor['exists'] }): string | undefined {
