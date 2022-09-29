@@ -13,6 +13,7 @@ import { Modal } from '@fluentui/react';
 export class UIModal extends React.Component<IModalProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IModalProps} props
      */
     public constructor(props: IModalProps) {

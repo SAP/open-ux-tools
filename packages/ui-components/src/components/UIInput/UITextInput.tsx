@@ -21,6 +21,7 @@ export type UITextInputProps = ITextFieldProps & UIMessagesExtendedProps;
 export class UITextInput extends React.Component<UITextInputProps> {
     /**
      * Initializes component properties.
+     *
      * @param {UITextInputProps} props
      */
     public constructor(props: UITextInputProps) {

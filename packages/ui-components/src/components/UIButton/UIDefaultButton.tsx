@@ -14,6 +14,7 @@ import { UIContextualMenu } from '../UIContextualMenu';
 export class UIDefaultButton extends React.Component<IButtonProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IButtonProps} props
      */
     public constructor(props: IButtonProps) {

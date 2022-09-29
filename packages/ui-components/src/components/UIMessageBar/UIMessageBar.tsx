@@ -17,6 +17,7 @@ export { MessageBarType as UIMessageBarType };
 export class UIMessageBar extends React.Component<IMessageBarProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IMessageBarProps} props
      */
     public constructor(props: IMessageBarProps) {

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { UIToggleGroupOption } from './UIToggleGroupOption';
 import { UILabel } from '../UILabel';
 import { UIFocusZone, UIFocusZoneDirection } from '../UIFocusZone';
-import { UIGetId } from '../../utilities';
+import { getUIId } from '../../utilities';
 
 import type { UIToggleGroupProps, ToggleGroupOption } from './UIToggleGroup.types';
 import type { UIToggleGroupOptionProps } from './UIToggleGroupOption/UIToggleGroupOption.types';
@@ -22,10 +22,11 @@ interface UIToggleGroupState {
  * @extends {React.Component<UIToggleGroupProps, UIToggleGroupState>}
  */
 export class UIToggleGroup extends React.Component<UIToggleGroupProps, UIToggleGroupState> {
-    labelId = this.props.labelId ? this.props.labelId : UIGetId('ui-toggle-group-option-');
+    labelId = this.props.labelId ? this.props.labelId : getUIId('ui-toggle-group-option-');
 
     /**
      * Initializes component properties.
+     *
      * @param {UIToggleGroupProps} props
      */
     public constructor(props: UIToggleGroupProps) {

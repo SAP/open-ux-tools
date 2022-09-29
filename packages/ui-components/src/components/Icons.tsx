@@ -2,8 +2,7 @@ import React from 'react';
 import { registerIcons, initializeIcons } from '@fluentui/react';
 
 const COLORS = {
-    // eslint-disable-next-line quote-props
-    default: 'var(--vscode-icon-foreground, var(--vscode-foreground))',
+    'default': 'var(--vscode-icon-foreground, var(--vscode-foreground))',
     success: 'var(--vscode-charts-green, #84C881)',
     warning: 'var(--vscode-notificationsWarningIcon-foreground)',
     error: 'var( --vscode-notificationsErrorIcon-foreground)',
@@ -114,7 +113,7 @@ export enum UiIcons {
     NoResults = 'NoResults'
 }
 
-export const initIcons = function (): void {
+export function initIcons(): void {
     registerIcons({
         icons: {
             [UiIcons.Chevron]: (
@@ -1272,7 +1271,7 @@ export const initIcons = function (): void {
     });
 
     initializeIcons(undefined, { disableWarnings: true });
-};
+}
 
 export { registerIcons as UIregisterIcons };
 export { initializeIcons as UIinitializeIcons };

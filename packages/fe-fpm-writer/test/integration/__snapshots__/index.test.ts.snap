@@ -116,7 +116,7 @@ Object {
     "state": "modified",
   },
   "lrop/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
-    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
@@ -571,7 +571,7 @@ export default class MyCustomPage extends Controller {
     "state": "modified",
   },
   "ts/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
-    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",

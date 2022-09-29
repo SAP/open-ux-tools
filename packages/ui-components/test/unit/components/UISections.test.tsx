@@ -224,10 +224,10 @@ describe('<Sections />', () => {
 
     it('Test window resize', () => {
         const mockWidth = (windowWidth: number) => {
-            jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function () {
+            jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => {
                 return windowWidth;
             });
-            jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
+            jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => {
                 return {
                     top: 0,
                     height: 1000,

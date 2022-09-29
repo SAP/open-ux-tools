@@ -1,3 +1,4 @@
+import type { JSONSchemaForSAPUI5Namespace as SAPUI5 } from '@sap-ux/ui5-config/dist/types/manifest';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -99,19 +100,16 @@ describe('CustomApp', () => {
 
         const optionalPropertyCases = [
             { name: '"sap.ui5" is undefined', value: undefined },
-            { name: '"sap.ui5/dependencies" is undefined', value: {} }
+            { name: '"sap.ui5/dependencies" is undefined', value: {} as SAPUI5 }
         ];
-        for (const optionalPropertyCase of optionalPropertyCases) {
-            // eslint-disable-next-line  no-loop-func
-            test(optionalPropertyCase.name, async () => {
-                const target = join(testDir, 'safe-check');
-                const tempManifest = getTestManifest();
-                tempManifest['sap.ui5'] = optionalPropertyCase.value as any;
-                fs.writeJSON(join(target, 'webapp/manifest.json'), tempManifest);
-                await enableFPM(target, {}, fs);
-                const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
-                expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(undefined);
-            });
-        }
+        test.each(optionalPropertyCases)('$name', async ({ value }) => {
+            const target = join(testDir, 'safe-check');
+            const tempManifest = getTestManifest();
+            tempManifest['sap.ui5'] = value;
+            fs.writeJSON(join(target, 'webapp/manifest.json'), tempManifest);
+            await enableFPM(target, {}, fs);
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
+            expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(undefined);
+        });
     });
 });
