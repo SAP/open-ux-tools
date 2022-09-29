@@ -23,7 +23,7 @@ declare module 'mem-fs-editor' {
  * @param stopFolders - list of folder names to exclude (search doesn't traverse into these folders)
  * @returns - array of path that contain the filename
  */
-export async function findFiles(filename: string, root: string, stopFolders: string[], fs?: Editor): Promise<string[]> {
+export function findFiles(filename: string, root: string, stopFolders: string[], fs?: Editor): string[] {
     const memFiles = fs ? fs.dump(root) : {};
     const modified = Object.keys(memFiles)
         .filter((file) => memFiles[file].state === 'modified' && file.endsWith(filename))
@@ -52,7 +52,7 @@ export async function findFiles(filename: string, root: string, stopFolders: str
  * @param startPath - path for start searching up
  * @returns - path to file name if found, otherwise undefined
  */
-export async function findFileUp(fileName: string, startPath: string, fs?: Editor): Promise<string | undefined> {
+export function findFileUp(fileName: string, startPath: string, fs?: Editor): string | undefined {
     return findUp(fileName, startPath, fs ?? create(createStorage()));
 }
 
@@ -61,6 +61,6 @@ function findUp(fileName: string, pathName: string, fs: Editor): string | undefi
     if (fs.exists(filePath)) {
         return filePath;
     } else {
-        return findUp(fileName, dirname(pathName), fs);
+        return dirname(pathName) !== pathName ? findUp(fileName, dirname(pathName), fs) : undefined;
     }
 }
