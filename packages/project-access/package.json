@@ -22,9 +22,6 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
-    "devDependencies": {
-        "@sap-ux/project-types": "workspace:*"
-    },
     "files": [
         "dist",
         "LICENSE",
@@ -37,7 +34,16 @@
     },
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
+        "@types/glob": "8.0.0",
         "find-up": "5.0.0",
-        "findit2": "2.2.3"
+        "findit2": "2.2.3",
+        "glob": "8.0.3",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0"
+    },
+    "devDependencies": {
+        "@sap-ux/project-types": "workspace:*",
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1"
     }
 }

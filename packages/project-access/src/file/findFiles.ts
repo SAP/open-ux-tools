@@ -1,6 +1,19 @@
-import { basename, dirname, sep } from 'path';
-import { default as find } from 'findit2';
-import findUp from 'find-up';
+import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { dirname, join } from 'path';
+import { sync as searchGlob } from 'glob';
+
+/**
+ * Add missing dump properties
+ */
+declare module 'mem-fs-editor' {
+    type FileMap = { [key: string]: { state: 'modified' | 'deleted' } };
+
+    export interface Editor {
+        dump(cwd: string): FileMap;
+    }
+}
 
 /**
  * Search for 'filename' starting from 'root'. Returns array of paths that contain the file.
@@ -10,28 +23,26 @@ import findUp from 'find-up';
  * @param stopFolders - list of folder names to exclude (search doesn't traverse into these folders)
  * @returns - array of path that contain the filename
  */
-export async function findFiles(filename: string, root: string, stopFolders: string[]): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-        const results: string[] = [];
-        const finder = find(root);
-        finder.on('directory', (dir: string, stat: any, stop: () => void) => {
-            const base = basename(dir);
-            if (stopFolders.includes(base)) {
-                stop();
-            }
-        });
-        finder.on('file', (file: string) => {
-            if (file.endsWith(sep + filename)) {
-                results.push(dirname(file));
-            }
-        });
-        finder.on('end', () => {
-            resolve(results);
-        });
-        finder.on('error', (error: any) => {
-            reject(error);
-        });
-    });
+export async function findFiles(filename: string, root: string, stopFolders: string[], fs?: Editor): Promise<string[]> {
+    const memFiles = fs ? fs.dump(root) : {};
+    const modified = Object.keys(memFiles)
+        .filter((file) => memFiles[file].state === 'modified' && file.endsWith(filename))
+        .map((file) => join(root, file));
+    const ignore = Object.keys(memFiles)
+        .filter((file) => memFiles[file].state === 'deleted')
+        .map((file) => join(root, file))
+        .concat(...modified);
+
+    const files = searchGlob(filename, {
+        cwd: root,
+        matchBase: true,
+        absolute: true,
+        ignore: stopFolders.map((folder) => `**/${folder}/**`)
+    })
+        .filter((match) => !ignore.includes(match))
+        .map((match) => dirname(match));
+
+    return files.concat(...modified.map((file) => dirname(file)));
 }
 
 /**
@@ -41,6 +52,15 @@ export async function findFiles(filename: string, root: string, stopFolders: str
  * @param startPath - path for start searching up
  * @returns - path to file name if found, otherwise undefined
  */
-export async function findFileUp(fileName: string, startPath: string): Promise<string | undefined> {
-    return findUp(fileName, { cwd: startPath });
+export async function findFileUp(fileName: string, startPath: string, fs?: Editor): Promise<string | undefined> {
+    return findUp(fileName, startPath, fs ?? create(createStorage()));
+}
+
+function findUp(fileName: string, pathName: string, fs: Editor): string | undefined {
+    const filePath = join(pathName, fileName);
+    if (fs.exists(filePath)) {
+        return filePath;
+    } else {
+        return findUp(fileName, dirname(pathName), fs);
+    }
 }
