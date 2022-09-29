@@ -155,7 +155,7 @@ describe('CustomSection', () => {
             expect(fs.read(fragmentPath)).toMatchSnapshot();
         });
 
-        const testVersions = ['1.85', '1.84', '1.86', '1.98'];
+        const testVersions = ['1.85', '1.84', '1.86', '1.89', '1.90', '1.98'];
         for (const minUI5Version of testVersions) {
             // eslint-disable-next-line  no-loop-func
             test(`Versions ${minUI5Version}, with handler, all properties`, () => {
