@@ -24,6 +24,7 @@ export interface ButtonProps extends IBaseButtonProps {
 export class UIIconButton extends React.Component<ButtonProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {ButtonProps} props
      */
     public constructor(props: ButtonProps) {

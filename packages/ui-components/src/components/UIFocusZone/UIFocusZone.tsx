@@ -19,6 +19,7 @@ export {
 export class UIFocusZone extends React.Component<IFocusZoneProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IFocusZoneProps} props
      */
     public constructor(props: IFocusZoneProps) {

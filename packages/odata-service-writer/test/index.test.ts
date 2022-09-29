@@ -27,7 +27,6 @@ describe('ODataService templates', () => {
     beforeAll(() => {
         if (debug) {
             removeSync(outputDir);
-            console.log(outputDir);
         } else {
             fs.delete(outputDir);
         }
@@ -44,6 +43,7 @@ describe('ODataService templates', () => {
     });
 
     /**
+     * Helper function to create app directories for testing in mem-fs.
      *
      * @param name testDir name
      */

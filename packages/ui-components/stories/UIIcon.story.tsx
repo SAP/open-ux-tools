@@ -1,4 +1,3 @@
-/* eslint-disable react/display-name */
 import React from 'react';
 import type { IColumn } from '@fluentui/react';
 import { DetailsList, SelectionMode } from '@fluentui/react';

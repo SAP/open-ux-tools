@@ -5,9 +5,6 @@ import { removeSync } from 'fs-extra';
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];
     const outputDir = join(__dirname, '/test-output');
-    if (debug) {
-        console.log(outputDir);
-    }
 
     const baseAppConfig = {
         app: {
@@ -15,8 +12,7 @@ describe('UI5 templates', () => {
             title: 'Test App Title',
             description: 'Test App Description'
         },
-        // eslint-disable-next-line quote-props
-        package: {
+        'package': {
             name: 'testPackageName'
         }
     };

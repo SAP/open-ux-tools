@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.3
+
+### Patch Changes
+
+-   583a009: Fixing eslint issues
+
 ## 1.0.2
 
 ### Patch Changes

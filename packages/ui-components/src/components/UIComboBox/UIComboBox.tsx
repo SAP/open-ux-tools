@@ -79,6 +79,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Initializes component properties.
+     *
      * @param {UIComboBoxProps} props
      */
     public constructor(props: UIComboBoxProps) {

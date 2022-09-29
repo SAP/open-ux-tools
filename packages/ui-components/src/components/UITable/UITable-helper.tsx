@@ -189,7 +189,6 @@ export function addRowNumbers(columns: any, showRowNumbers = false): any {
     return columns;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const _onHeaderRender: IRenderFunction<IDetailsHeaderProps> = (props, defaultRender?) => {
     if (!props || !defaultRender) {
         return null;
@@ -197,7 +196,6 @@ export const _onHeaderRender: IRenderFunction<IDetailsHeaderProps> = (props, def
 
     const customProps: IDetailsHeaderProps = {
         ...props,
-        // eslint-disable-next-line react/display-name
         onRenderColumnHeaderTooltip: (item?, tooltipDefaultRender?) => {
             if (item?.column) {
                 const column: UIColumn = item.column;
@@ -216,7 +214,6 @@ export const _onHeaderRender: IRenderFunction<IDetailsHeaderProps> = (props, def
             }
 
             const isCheckTooltip = item?.hostClassName === 'ms-DetailsHeader-checkTooltip';
-            // eslint-disable-next-line react/prop-types
             if (props.selection && isCheckTooltip && tooltipDefaultRender) {
                 return tooltipDefaultRender(item);
             }

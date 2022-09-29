@@ -24,6 +24,7 @@ export const labelGlobalStyle = {
 export class UILabel extends React.Component<UILabelProps> {
     /**
      * Initializes component properties.
+     *
      * @param {UILabelProps} props
      */
     public constructor(props: UILabelProps) {

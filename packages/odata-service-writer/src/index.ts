@@ -105,12 +105,10 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     // Add mockserver entries
     if (service.metadata) {
         // copy existing `ui5.yaml` as starting point for ui5-mock.yaml
-        if (ui5Config) {
+        if (paths.ui5Yaml && ui5Config) {
             const ui5MockConfig = await UI5Config.newInstance(ui5Config.toString());
             ui5MockConfig.addMockServerMiddleware(service.path);
-            if (paths.ui5Yaml) {
-                fs.write(join(dirname(paths.ui5Yaml), 'ui5-mock.yaml'), ui5MockConfig.toString());
-            }
+            fs.write(join(dirname(paths.ui5Yaml), 'ui5-mock.yaml'), ui5MockConfig.toString());
 
             // also add mockserver middleware to ui5-local.yaml
             if (ui5LocalConfig) {
@@ -136,11 +134,11 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     }
 
     // update package.json if required
-    if (paths.packageJson && paths.ui5Yaml && service.metadata) {
-        updatePackageJson(paths.packageJson, fs, true);
+    if (paths.packageJson && paths.ui5Yaml) {
+        updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
 
-    if (ui5LocalConfig && ui5LocalConfigPath) {
+    if (ui5LocalConfigPath && ui5LocalConfig) {
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 

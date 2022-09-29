@@ -23,6 +23,7 @@ export class UIVirtualList extends React.Component<ListProps, {}> {
     private listRef = React.createRef<List>();
     /**
      * Initializes component properties.
+     *
      * @param {CellMeasurerProps} props
      */
     public constructor(props: ListProps) {

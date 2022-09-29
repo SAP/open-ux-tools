@@ -57,6 +57,7 @@ const UI_CHOICE_GROUP_STYLES = {
 export class UIChoiceGroup extends React.Component<ChoiceGroupProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {ChoiceGroupProps} props
      */
     public constructor(props: ChoiceGroupProps) {

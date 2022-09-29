@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -22,7 +22,7 @@
         "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
         "clean": "rimraf ./storybook",
         "build": "npm-run-all -l -s clean -p build:extension build:copyfiles build:storybook",
-        "build:extension": "tsc  --build ./tsconfig-build.json --pretty",
+        "build:extension": "tsc  --build ./tsconfig.build.json --pretty",
         "build:copyfiles": "copyfiles --up 1 \"./src/**/*.scss\" ./dist/",
         "lint": "eslint . --ext .ts,.tsx",
         "lint:fix": "eslint --fix",

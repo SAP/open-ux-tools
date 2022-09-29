@@ -60,6 +60,7 @@ interface SizeCalculationInfo {
 
 /**
  * UISections component.
+ *
  * @exports
  * @class {UISections}
  * @extends {React.Component<UISectionsProps, UISectionsState>}

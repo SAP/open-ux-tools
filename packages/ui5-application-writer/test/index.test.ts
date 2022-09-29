@@ -38,8 +38,7 @@ describe('UI5 templates', () => {
         ui5: {
             framework: 'OpenUI5'
         },
-        // eslint-disable-next-line quote-props
-        package: {
+        'package': {
             name: 'testPackageName'
         }
     } as Ui5App;
