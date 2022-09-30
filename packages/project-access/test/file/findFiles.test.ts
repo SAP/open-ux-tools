@@ -3,7 +3,7 @@ import { findFiles, findFileUp } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
-describe('file', () => {
+describe('findFiles', () => {
     const root = join(__dirname, '../test-data/file');
 
     describe('findFiles', () => {

@@ -1,6 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
-import { dirname, join } from 'path';
-import { glob } from 'glob';
+import { basename, dirname, join, sep } from 'path';
+import { default as find } from 'findit2';
 import { existsSync as exists } from 'fs';
 
 /**
@@ -15,47 +15,61 @@ declare module 'mem-fs-editor' {
 }
 
 /**
+ * Search for 'filename' starting from 'root' in the list of virtual (not committed) files. Returns array of paths that contain the file.
+ *
+ * @param files - - array of paths that contain the filename found on the filesystem
+ * @param filename - filename to search
+ * @param root - root folder to start search
+ * @param stopFolders - list of folder names to exclude (search doesn't traverse into these folders)
+ * @param fs - mem-fs-editor instance
+ * @returns - enhanced array of paths that contain the filename
+ */
+function checkVirtualFiles(files: string[], filename: string, root: string, stopFolders: string[], fs: Editor) {
+    const memFiles = fs.dump(root);
+    const modified = Object.keys(memFiles)
+        .filter((file) => memFiles[file].state === 'modified' && file.endsWith(filename))
+        .map((file) => dirname(join(root, file)));
+    const ignore = Object.keys(memFiles)
+        .filter(
+            (file) =>
+                memFiles[file].state === 'deleted' ||
+                stopFolders.find((folder) => file.includes(`${sep}${folder}${sep}`))
+        )
+        .map((file) => dirname(join(root, file)))
+        .concat(...modified);
+    return files.filter((match) => !ignore.includes(match)).concat(...modified);
+}
+
+/**
  * Search for 'filename' starting from 'root'. Returns array of paths that contain the file.
  *
  * @param filename - filename to search
  * @param root - root folder to start search
  * @param stopFolders - list of folder names to exclude (search doesn't traverse into these folders)
  * @param fs - optional mem-fs-editor instance
- * @returns - array of path that contain the filename
+ * @returns - array of paths that contain the filename
  */
 export function findFiles(filename: string, root: string, stopFolders: string[], fs?: Editor): Promise<string[]> {
-    return new Promise<string[]>((resolve, reject) => {
-        glob(
-            filename,
-            {
-                cwd: root,
-                matchBase: true,
-                absolute: true,
-                ignore: stopFolders.map((folder) => `**/${folder}/**`)
-            },
-            (err, files) => {
-                if (err) {
-                    reject(err);
-                } else if (fs) {
-                    const memFiles = fs.dump(root);
-                    const modified = Object.keys(memFiles)
-                        .filter((file) => memFiles[file].state === 'modified' && file.endsWith(filename))
-                        .map((file) => join(root, file));
-                    const ignore = Object.keys(memFiles)
-                        .filter((file) => memFiles[file].state === 'deleted')
-                        .map((file) => join(root, file))
-                        .concat(...modified);
-                    resolve(
-                        files
-                            .filter((match) => !ignore.includes(match))
-                            .map((match) => dirname(match))
-                            .concat(...modified.map((file) => dirname(file)))
-                    );
-                } else {
-                    resolve(files.map((match) => dirname(match)));
-                }
+    return new Promise((resolve, reject) => {
+        const results: string[] = [];
+        const finder = find(root);
+        finder.on('directory', (dir: string, _stat: unknown, stop: () => void) => {
+            const base = basename(dir);
+            if (stopFolders.includes(base)) {
+                stop();
             }
-        );
+        });
+        finder.on('file', (file: string) => {
+            if (file.endsWith(sep + filename)) {
+                results.push(dirname(file));
+            }
+        });
+        finder.on('end', () => {
+            resolve(fs ? checkVirtualFiles(results, filename, root, stopFolders, fs) : results);
+        });
+        finder.on('error', (error: Error) => {
+            reject(error);
+        });
     });
 }
 
