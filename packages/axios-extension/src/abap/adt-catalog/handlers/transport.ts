@@ -117,12 +117,8 @@ function convertTransportRequest(transportReqEle: Element): TransportRequest {
     return {
         transportNumber: transportNumber,
         user: xpath.select1('AS4USER/text()', transportReqEle)?.toString(),
-        date: xpath.select1('AS4DATE/text()', transportReqEle)?.toString(),
-        time: xpath.select1('AS4TIME/text()', transportReqEle)?.toString(),
         description: xpath.select1('AS4TEXT/text()', transportReqEle)?.toString(),
         client: xpath.select1('CLIENT/text()', transportReqEle)?.toString(),
-        targetSystem: xpath.select1('TARSYSTEM/text()', transportReqEle)?.toString(),
-        transportRequestStatus: xpath.select1('TRSTATUS/text()', transportReqEle)?.toString(),
-        transportRequestFunction: xpath.select1('TRFUNCTION/text()', transportReqEle)?.toString()
+        targetSystem: xpath.select1('TARSYSTEM/text()', transportReqEle)?.toString()
     };
 }
