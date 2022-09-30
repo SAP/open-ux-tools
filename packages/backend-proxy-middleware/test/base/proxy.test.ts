@@ -23,7 +23,7 @@ jest.mock('@sap-ux/store/dist/services/backend-system', () => ({
 const mockGetService = getInstance as jest.Mock;
 
 // mock required axios-extension functions
-import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
+import { AbapCloudEnvironment, createForAbapOnCloud, ErrorMessage } from '@sap-ux/axios-extension';
 jest.mock('@sap-ux/axios-extension', () => ({
     ...(jest.requireActual('@sap-ux/axios-extension') as object),
     createForAbapOnCloud: jest.fn()
@@ -478,9 +478,9 @@ describe('proxy', () => {
             const backend = { url: '', path: '/my/path' } as LocalBackendConfig;
             try {
                 await generateProxyMiddlewareOptions(backend);
-            } catch (error) {
+            } catch (error: any) {
                 expect(error).toBeDefined();
-                expect(error.message).toEqual(
+                expect(error?.message).toEqual(
                     `Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`
                 );
             }

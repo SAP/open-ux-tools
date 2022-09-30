@@ -25,7 +25,7 @@ import semVer from 'semver';
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
-async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
+async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
     // Clone rather than modifying callers refs
     const feApp: FioriElementsApp<T> = cloneDeep(data);
     // Ensure input data contains at least the manadatory properties required for app genertation
@@ -114,7 +114,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     const addTest =
         !!feApp.appOptions.addTests && feApp.service?.version === OdataVersion.v4 && !!feApp.service?.metadata;
 
-    packageJson.scripts = Object.assign(packageJson.scripts, {
+    packageJson.scripts = Object.assign(packageJson.scripts || {}, {
         ...getPackageJsonTasks({
             localOnly: !feApp.service?.url,
             addMock: !!feApp.service?.metadata,

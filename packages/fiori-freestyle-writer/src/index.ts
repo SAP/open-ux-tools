@@ -65,7 +65,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     );
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
-    packageJson.scripts = Object.assign(packageJson.scripts, {
+    packageJson.scripts = {
+        ...packageJson.scripts,
         ...getPackageJsonTasks({
             localOnly: !ffApp.service?.url,
             addMock: !!ffApp.service?.metadata,
@@ -74,7 +75,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             startFile: data?.app?.startFile,
             localStartFile: data?.app?.localStartFile
         })
-    });
+    };
 
     fs.writeJSON(packagePath, packageJson);
 
