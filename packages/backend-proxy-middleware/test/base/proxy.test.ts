@@ -23,7 +23,7 @@ jest.mock('@sap-ux/store/dist/services/backend-system', () => ({
 const mockGetService = getInstance as jest.Mock;
 
 // mock required axios-extension functions
-import { AbapCloudEnvironment, createForAbapOnCloud, ErrorMessage } from '@sap-ux/axios-extension';
+import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
 jest.mock('@sap-ux/axios-extension', () => ({
     ...(jest.requireActual('@sap-ux/axios-extension') as object),
     createForAbapOnCloud: jest.fn()
