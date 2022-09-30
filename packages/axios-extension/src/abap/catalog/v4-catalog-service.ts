@@ -1,6 +1,7 @@
 import type { Annotations, ODataServiceInfo } from './base';
 import { CatalogService } from './base';
 import { ODataVersion } from '../../base/odata-service';
+import { ODataRequestError } from '../../base/odata-request-error';
 
 const V4_RECOMMENDED_ENTITYSET = 'RecommendedServices';
 const V4_CLASSIC_ENTITYSET = 'Services';
@@ -81,13 +82,18 @@ export class V4CatalogService extends CatalogService {
 
         let response = await this.get<ServiceGroup[]>('/ServiceGroups', { params });
         const serviceGroups = response.odata() || [];
-
         // paging required
         while (response.data['@odata.nextLink']) {
             const nextLink = new URL(response.data['@odata.nextLink']);
             response = await super.get('/ServiceGroups', { params: { ...params, ...nextLink.searchParams } });
             serviceGroups.push(...response.odata());
         }
+
+        // check if the service responded with an odata error
+        if (ODataRequestError.containsError(serviceGroups)) {
+            throw new ODataRequestError(serviceGroups);
+        }
+
         return this.mapServices(serviceGroups, this.entitySet);
     }
 

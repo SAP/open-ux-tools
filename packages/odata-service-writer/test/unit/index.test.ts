@@ -1,6 +1,8 @@
-import { generate, OdataService, OdataVersion, findProjectFiles } from '../../src';
+import type { OdataService } from '../../src';
+import { generate, OdataVersion } from '../../src';
 import { join } from 'path';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { enhanceData } from '../../src/data';
 import cloneDeep from 'lodash/cloneDeep';
@@ -94,7 +96,7 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
             expect(fs.readJSON(packagePath)).toMatchObject({
                 ui5: {
-                    dependencies: ['@sap/ux-ui5-tooling', '@sap/ux-ui5-fe-mockserver-middleware']
+                    dependencies: ['@sap/ux-ui5-tooling', '@sap-ux/ui5-middleware-fe-mockserver']
                 }
             });
             expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
@@ -113,7 +115,7 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
             expect(fs.readJSON(packagePath)).toMatchObject({
                 ui5: {
-                    dependencies: ['@sap/ux-ui5-tooling', '@sap/ux-ui5-fe-mockserver-middleware']
+                    dependencies: ['@sap/ux-ui5-tooling', '@sap-ux/ui5-middleware-fe-mockserver']
                 }
             });
             expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);

@@ -51,6 +51,22 @@ export function mergePackages(packageA: Partial<Package>, packageB: Partial<Pack
     }
     return mergedPackage;
 }
+
+export const enum UI5_DEFAULT {
+    DEFAULT_UI5_VERSION = '',
+    DEFAULT_LOCAL_UI5_VERSION = '1.95.0',
+    MIN_UI5_VERSION = '1.60.0',
+    MIN_LOCAL_SAPUI5_VERSION = '1.76.0',
+    MIN_LOCAL_OPENUI5_VERSION = '1.52.5',
+    SAPUI5_CDN = 'https://ui5.sap.com',
+    OPENUI5_CDN = 'https://openui5.hana.ondemand.com',
+    TYPES_VERSION_SINCE = '1.76.0',
+    TYPES_VERSION_PREVIOUS = '1.71.18',
+    TYPES_VERSION_BEST = '1.102.7',
+    MANIFEST_VERSION = '1.12.0',
+    BASE_COMPONENT = 'sap/ui/core/UIComponent'
+}
+
 /**
  * Returns an app instance merged with default properties.
  *
@@ -63,7 +79,7 @@ export function mergeApp(app: App): App {
             version: '0.0.1',
             title: t('text.defaultAppTitle', { id: app.id }),
             description: t('text.defaultAppDescription', { id: app.id }),
-            baseComponent: 'sap/ui/core/UIComponent',
+            baseComponent: UI5_DEFAULT.BASE_COMPONENT,
             sourceTemplate: {
                 id: app.sourceTemplate?.id ?? '',
                 version: app.sourceTemplate?.version ?? '',
@@ -72,19 +88,6 @@ export function mergeApp(app: App): App {
         },
         app
     ]) as App;
-}
-
-export enum UI5_DEFAULT {
-    DEFAULT_UI5_VERSION = '',
-    DEFAULT_LOCAL_UI5_VERSION = '1.95.0',
-    MIN_UI5_VERSION = '1.60.0',
-    MIN_LOCAL_SAPUI5_VERSION = '1.76.0',
-    MIN_LOCAL_OPENUI5_VERSION = '1.52.5',
-    SAPUI5_CDN = 'https://ui5.sap.com',
-    OPENUI5_CDN = 'https://openui5.hana.ondemand.com',
-    TYPES_VERSION_SINCE = '1.76.0',
-    TYPES_VERSION_PREVIOUS = '1.71.18',
-    MANIFEST_VERSION = '1.12.0'
 }
 
 // Required default libs
@@ -108,18 +111,33 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
         framework,
         frameworkUrl: ui5.frameworkUrl ?? defaultFrameworkUrl
     };
-    // typesVersion must be a valid npm semantic version, we know they cannot be null as already validated
-    const localSemVer = semVer.valid(semVer.coerce(merged.localVersion))!;
-    const typesVersion = semVer.gte(localSemVer, UI5_DEFAULT.TYPES_VERSION_SINCE)
-        ? localSemVer
-        : UI5_DEFAULT.TYPES_VERSION_PREVIOUS;
 
     merged.descriptorVersion = getManifestVersion(merged.minUI5Version, ui5.descriptorVersion);
-    merged.typesVersion = ui5.typesVersion ?? typesVersion;
+    merged.typesVersion = ui5.typesVersion ?? getTypesVersion(merged.minUI5Version);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
     return Object.assign({}, ui5, merged) as UI5;
+}
+
+/**
+ * Get the best types version for the given minUI5Version.
+ * For the latest versions the LTS S/4 on-premise version (1.102.x) is used, for anything before we match the versions as far back as available.
+ *
+ * @param minUI5Version the mininum UI5 version that needs to be supported
+ * @returns semantic version representing the types version.
+ */
+export function getTypesVersion(minUI5Version?: string) {
+    const version = semVer.coerce(minUI5Version);
+    if (!version) {
+        return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
+    } else if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
+        return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
+    } else {
+        return semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)
+            ? `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`
+            : UI5_DEFAULT.TYPES_VERSION_PREVIOUS;
+    }
 }
 
 /**
@@ -143,7 +161,7 @@ function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
  * @returns - the manifest descriptor version
  */
 function getManifestVersion(ui5Version: string, manifestVersion?: string): string {
-    const ui5SemVer = semVer.coerce(ui5Version)!;
+    const ui5SemVer = semVer.coerce(ui5Version) as SemVer;
 
     /**
      * Finds the closest manifest version for the specified ui5 version. This is determined
@@ -167,17 +185,17 @@ function getManifestVersion(ui5Version: string, manifestVersion?: string): strin
         if (!matchVersion) {
             const sortedSemVers = Object.keys(verToManifestVer)
                 .filter((ver) => ver !== 'latest')
-                .map((verStr) => semVer.coerce(verStr))
-                .sort((a, b) => semVer.rcompare(a!, b!));
+                .map((verStr) => semVer.coerce(verStr) as SemVer)
+                .sort((a, b) => semVer.rcompare(a, b));
 
             const latestUI5SemVer = sortedSemVers[0];
             // ui5 version is greater than the latest use the latest
-            if (semVer.gt(version, latestUI5SemVer!)) {
-                matchVersion = verToManifestVer[`${latestUI5SemVer!.major}.${latestUI5SemVer!.minor}`];
+            if (semVer.gt(version, latestUI5SemVer)) {
+                matchVersion = verToManifestVer[`${latestUI5SemVer.major}.${latestUI5SemVer.minor}`];
             } else {
                 // Find the nearest lower
                 const nearest = sortedSemVers.find((mapVer) => {
-                    return semVer.gt(version, mapVer!);
+                    return semVer.gt(version, mapVer);
                 });
                 if (nearest) {
                     matchVersion = verToManifestVer[`${nearest.major}.${nearest.minor}`];
@@ -214,14 +232,35 @@ function getLocalVersion({
         return UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION;
     }
 
-    let result: string =
-        framework === 'SAPUI5' ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION; // minimum version available as local libs
+    // minimum version available as local libs
+    const minVersion =
+        framework === 'SAPUI5' ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION;
 
     // If the ui5 `version` is higher than the min framework version 'result' then use that as the local version instead
     // Update to a valid coerced version string e.g. snapshot-1.80 -> 1.80.0. Cannot be null as previously validated.
-    const versionSemVer = semVer.coerce(version)!;
-    if (semVer.gt(versionSemVer, semVer.coerce(result)!)) {
-        result = semVer.valid(versionSemVer)!;
+    const versionSemVer = semVer.coerce(version);
+    const minSemVer = semVer.coerce(minVersion);
+    if (versionSemVer && minSemVer && semVer.gt(versionSemVer, minSemVer)) {
+        return semVer.valid(versionSemVer) as string;
+    } else {
+        return minVersion;
     }
-    return result;
+}
+
+/**
+ * Retrieve the tag version of the @sap/ux-specification based on the given version.
+ *
+ * @param ui5Version UI5 version used in the project
+ * @returns version tag
+ */
+export function getSpecTagVersion(ui5Version: string | undefined): string {
+    if (ui5Version) {
+        if (semVer.valid(ui5Version)) {
+            return `UI5-${semVer.major(ui5Version)}.${semVer.minor(ui5Version)}`;
+        } else if (ui5Version.includes('snapshot') && ui5Version.includes('.')) {
+            const snaphotVersion = ui5Version.split('snapshot-')[1];
+            return `UI5-${snaphotVersion}`;
+        }
+    }
+    return 'latest';
 }

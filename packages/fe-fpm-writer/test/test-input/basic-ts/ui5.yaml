@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+specVersion: "2.5"
+metadata:
+  name: 'v4-travel-ts'
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+          ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+          ui5:
+              path:
+                  - /resources
+                  - /test-resources
+              url: https://ui5.sap.com
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+          service:
+              urlBasePath: /sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001
+              name: ''
+              metadataXmlPath: ./webapp/localService/metadata.xml
+              mockdataRootPath: ./webapp/localService/mockdata
+              generateMockData: true
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        transpileAsync: true
+        transpileTypeScript: true
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        removeConsoleStatements: true
+        transpileAsync: true
+        transpileTypeScript: true

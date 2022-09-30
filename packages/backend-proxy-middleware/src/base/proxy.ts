@@ -314,17 +314,22 @@ export async function generateProxyMiddlewareOptions(
     } else {
         const localBackend = backend as LocalBackendConfig;
         // check if system credentials are stored in the store
-        const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
-        const system = await systemStore.read(
-            new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
-        );
-        if (system) {
-            await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
-                if (refreshToken) {
-                    logger.info('Updating refresh token for: ' + localBackend.url);
-                    systemStore.write({ ...system, refreshToken });
-                }
-            });
+        try {
+            const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
+            const system = await systemStore.read(
+                new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
+            );
+            if (system) {
+                await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
+                    if (refreshToken) {
+                        logger.info('Updating refresh token for: ' + localBackend.url);
+                        systemStore.write({ ...system, refreshToken });
+                    }
+                });
+            }
+        } catch (error) {
+            logger.warn('Accessing the credentials store failed.');
+            logger.debug(error as object);
         }
     }
 

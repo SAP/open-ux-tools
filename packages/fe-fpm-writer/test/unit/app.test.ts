@@ -1,10 +1,18 @@
+import type { JSONSchemaForSAPUI5Namespace as SAPUI5 } from '@sap-ux/ui5-config/dist/types/manifest';
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { enableFPM, MIN_VERSION } from '../../src/app';
 import type { Manifest } from '../../src/common/types';
 
-function getTestManifest(settings?: { minVersion?: string }) {
+/**
+ *
+ * @param settings
+ * @param settings.minVersion
+ * @returns  Partial<Manifest>
+ */
+function getTestManifest(settings?: { minVersion?: string }): Partial<Manifest> {
     const manifest: Partial<Manifest> = {
         'sap.app': {
             id: 'my.test.App'
@@ -20,8 +28,8 @@ function getTestManifest(settings?: { minVersion?: string }) {
             }
         } as any
     };
-    if (settings?.minVersion) {
-        manifest['sap.ui5']!.dependencies!.minUI5Version = settings.minVersion;
+    if (settings?.minVersion && manifest['sap.ui5']) {
+        manifest['sap.ui5'].dependencies.minUI5Version = settings.minVersion;
     }
     return manifest;
 }
@@ -79,6 +87,29 @@ describe('CustomApp', () => {
 
             await enableFPM(target, { replaceAppComponent: true }, fs);
             expect(fs.read(join(target, 'webapp/Component.js'))).not.toBe(component);
+        });
+
+        test('Invalid/unknown version', async () => {
+            const unknownVersion = '${sap.ui5.dist.version}';
+            const target = join(testDir, 'unknown-version');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), getTestManifest({ minVersion: unknownVersion }));
+            await enableFPM(target, {}, fs);
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
+            expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(unknownVersion);
+        });
+
+        const optionalPropertyCases = [
+            { name: '"sap.ui5" is undefined', value: undefined },
+            { name: '"sap.ui5/dependencies" is undefined', value: {} as SAPUI5 }
+        ];
+        test.each(optionalPropertyCases)('$name', async ({ value }) => {
+            const target = join(testDir, 'safe-check');
+            const tempManifest = getTestManifest();
+            tempManifest['sap.ui5'] = value;
+            fs.writeJSON(join(target, 'webapp/manifest.json'), tempManifest);
+            await enableFPM(target, {}, fs);
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as Manifest;
+            expect(manifest['sap.ui5']?.dependencies?.minUI5Version).toBe(undefined);
         });
     });
 });

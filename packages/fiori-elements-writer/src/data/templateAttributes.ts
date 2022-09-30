@@ -84,6 +84,10 @@ const templateLibs: TemplateLibs = {
         [TemplateType.OverviewPage]: {
             baseComponent: appComponentLibOVP,
             ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
+        },
+        [TemplateType.FlexibleProgrammingModel]: {
+            baseComponent: appComponentLibFioriElements,
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
         }
     }
 };
@@ -153,6 +157,12 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         supportedODataVersions: [OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v4]: '1.90.0'
+        }
+    },
+    [TemplateType.FlexibleProgrammingModel]: {
+        supportedODataVersions: [OdataVersion.v4],
+        minimumUi5Version: {
+            [OdataVersion.v4]: '1.94.0'
         }
     }
 };

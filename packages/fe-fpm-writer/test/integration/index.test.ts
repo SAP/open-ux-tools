@@ -1,4 +1,4 @@
-import { join, relative } from 'path';
+import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import {
@@ -7,71 +7,92 @@ import {
     generateCustomPage,
     TargetControl,
     generateCustomSection,
-    generateCustomView
+    generateCustomView,
+    enableFPM,
+    generateControllerExtension,
+    ControllerExtensionPageType
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
+import { clearTestOutput, writeFilesForDebugging } from '../common';
 
 describe('use FPM with existing apps', () => {
     const testInput = join(__dirname, '../test-input');
-    const testOutput = join(__dirname, '../test-output');
-    const debug = !!process.env['UX_DEBUG'];
+    const testOutput = join(__dirname, '../test-output/integration');
     const fs = create(createStorage());
 
     beforeAll(() => {
-        fs.delete(testOutput);
+        clearTestOutput(testOutput);
     });
 
     afterAll(() => {
-        if (debug) {
-            fs.commit(() => {});
-        }
+        return writeFilesForDebugging(fs);
     });
 
     describe('extend UI5 application with FPM', () => {
-        const targetPath = join(testOutput, 'lrop');
         const mainEntity = 'Travel';
+
+        const basicConfig = {
+            path: join(testOutput, 'lrop'),
+            settings: {}
+        };
+        const tsConfig = {
+            path: join(testOutput, 'ts'),
+            settings: {
+                replaceAppComponent: true,
+                typescript: true
+            }
+        };
+        const configs: { path: string; settings: { typescript?: boolean } }[] = [basicConfig, tsConfig];
+
         beforeAll(() => {
-            fs.copy(join(testInput, 'basic-lrop'), targetPath);
+            fs.copy(join(testInput, 'basic-lrop'), basicConfig.path);
+            fs.copy(join(testInput, 'basic-ts'), tsConfig.path);
         });
 
-        test('generateListReport', () => {
-            generateListReport(targetPath, { entity: mainEntity }, fs);
+        test.each(configs)('enableFpm', (config) => {
+            enableFPM(config.path, config.settings, fs);
         });
 
-        test('generateObjectPage with navigation from ListReport', () => {
+        test.each(configs)('generateListReport', (config) => {
+            generateListReport(config.path, { entity: mainEntity, ...config.settings }, fs);
+        });
+
+        test.each(configs)('generateObjectPage with navigation from ListReport', (config) => {
             generateObjectPage(
-                targetPath,
+                config.path,
                 {
                     entity: mainEntity,
                     navigation: {
                         navEntity: mainEntity,
                         sourcePage: 'TravelListReport',
                         navKey: true
-                    }
+                    },
+                    ...config.settings
                 },
                 fs
             );
         });
 
-        test('generateCustomPage with navigation from ObjectPage', () => {
+        test.each(configs)('generateCustomPage with navigation from ObjectPage', (config) => {
             generateCustomPage(
-                targetPath,
+                config.path,
                 {
                     name: 'MyCustomPage',
                     entity: 'Booking',
                     navigation: {
                         sourcePage: 'TravelObjectPage',
                         navEntity: '_Booking'
-                    }
+                    },
+                    ...config.settings
                 },
                 fs
             );
         });
 
-        test('generateCustomColumn in ListReport', () => {
+        test.each(configs)('generateCustomColumn in ListReport', (config) => {
             generateCustomColumn(
-                targetPath,
+                config.path,
                 {
                     target: 'TravelListReport',
                     targetEntity: '@com.sap.vocabularies.UI.v1.LineItem',
@@ -82,15 +103,16 @@ describe('use FPM with existing apps', () => {
                         placement: Placement.After,
                         anchor: 'DataField::TravelID'
                     },
-                    properties: ['TotalPrice', 'CurrencyCode']
+                    properties: ['TotalPrice', 'CurrencyCode'],
+                    ...config.settings
                 },
                 fs
             );
         });
 
-        test('generateCustomView in ListReport', () => {
+        test.each(configs)('generateCustomView in ListReport', (config) => {
             //pre-requisite is at least one view based on annotations
-            fs.extendJSON(join(targetPath, 'webapp/manifest.json'), {
+            fs.extendJSON(join(config.path, 'webapp/manifest.json'), {
                 'sap.ui5': {
                     routing: {
                         targets: {
@@ -113,21 +135,22 @@ describe('use FPM with existing apps', () => {
                 }
             });
             generateCustomView(
-                targetPath,
+                config.path,
                 {
                     target: 'TravelListReport',
                     key: 'CustomViewKey',
                     label: 'Custom View',
                     name: 'NewCustomView',
-                    eventHandler: true
+                    eventHandler: true,
+                    ...config.settings
                 },
                 fs
             );
         });
 
-        test('generateCustomAction in ListReport and ObjectPage', () => {
+        test.each(configs)('generateCustomAction in ListReport and ObjectPage', (config) => {
             generateCustomAction(
-                targetPath,
+                config.path,
                 {
                     name: 'MyCustomAction',
                     target: {
@@ -137,12 +160,13 @@ describe('use FPM with existing apps', () => {
                     settings: {
                         text: 'My Custom Action'
                     },
-                    eventHandler: true
+                    eventHandler: true,
+                    ...config.settings
                 },
                 fs
             );
             generateCustomAction(
-                targetPath,
+                config.path,
                 {
                     name: 'AnotherCustomAction',
                     target: {
@@ -152,13 +176,18 @@ describe('use FPM with existing apps', () => {
                     settings: {
                         text: 'My other Action'
                     },
-                    eventHandler: true
+                    eventHandler: true,
+                    ...config.settings
                 },
                 fs
             );
             // Generate custom action by appending existing file
+            const fragment = config.settings.typescript
+                ? `\nexport function onAppended() {\n\twindow.location.href += '/_Booking';\n}`
+                : `,\n        onAppended: function() {\n            window.location.href += '/_Booking';\n        }`;
+            const position = config.settings.typescript ? { line: 13, character: 9 } : { line: 8, character: 9 };
             generateCustomAction(
-                targetPath,
+                config.path,
                 {
                     name: 'AppendedAction',
                     target: {
@@ -166,28 +195,26 @@ describe('use FPM with existing apps', () => {
                         control: TargetControl.header
                     },
                     settings: {
-                        text: 'My other Action'
+                        text: 'Navigate to CustomPage (appended action)'
                     },
                     eventHandler: {
                         fileName: 'AnotherCustomAction',
-                        fnName: 'OnAppendedFn',
+                        fnName: 'onAppended',
                         insertScript: {
-                            fragment: `,\n        OnAppendedFn: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
-                            position: {
-                                line: 8,
-                                character: 9
-                            }
+                            fragment,
+                            position
                         }
                     },
-                    folder: join('ext', 'anotherCustomAction')
+                    folder: join('ext', 'anotherCustomAction'),
+                    ...config.settings
                 },
                 fs
             );
         });
 
-        test('generateCustomSection in ObjectPage', () => {
+        test.each(configs)('generateCustomSection in ObjectPage', (config) => {
             generateCustomSection(
-                targetPath,
+                config.path,
                 {
                     name: 'MyCustomSection',
                     target: 'TravelObjectPage',
@@ -196,14 +223,31 @@ describe('use FPM with existing apps', () => {
                         placement: Placement.After,
                         anchor: 'DummyFacet'
                     },
-                    eventHandler: true
+                    eventHandler: true,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateControllerExtension in ObjectPage', (config) => {
+            generateControllerExtension(
+                config.path,
+                {
+                    name: 'MyControllerExtension',
+                    extension: {
+                        pageType: ControllerExtensionPageType.ObjectPage
+                    },
+                    ...config.settings
                 },
                 fs
             );
         });
 
         afterAll(() => {
-            expect((fs as any).dump(targetPath, '**/test-output/*/webapp/{manifest.json,ext/**/*}')).toMatchSnapshot();
+            expect(
+                (fs as any).dump(testOutput, '**/test-output/**/webapp/{manifest.json,Component.ts,ext/**/*}')
+            ).toMatchSnapshot();
         });
     });
 });

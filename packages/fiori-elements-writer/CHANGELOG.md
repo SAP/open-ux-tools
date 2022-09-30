@@ -1,5 +1,166 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [4f17a53]
+    -   @sap-ux/fe-fpm-writer@0.17.4
+
+## 0.7.5
+
+### Patch Changes
+
+-   Updated dependencies [0fc1499]
+    -   @sap-ux/odata-service-writer@0.14.8
+    -   @sap-ux/ui5-application-writer@0.17.3
+
+## 0.7.4
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+-   Updated dependencies [b72abf0]
+    -   @sap-ux/fe-fpm-writer@0.17.3
+    -   @sap-ux/ui5-application-writer@0.17.2
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [c9461f0]
+    -   @sap-ux/fe-fpm-writer@0.17.2
+
+## 0.7.2
+
+### Patch Changes
+
+-   d0b4660: Move AppOption `addTests` to avoid breaking change in future
+-   Updated dependencies [d0b4660]
+    -   @sap-ux/ui5-application-writer@0.17.1
+
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [0bb70df]
+    -   @sap-ux/fe-fpm-writer@0.17.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   9240ec1: Adds optional generation of OPA tests to fiori-elements-writer
+
+## 0.6.5
+
+### Patch Changes
+
+-   2c85118: fix(fe-writer) Add missing JS files(changes_loader and changes_preview ) as ts files
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [83a7a1a]
+    -   @sap-ux/ui5-application-writer@0.17.0
+    -   @sap-ux/ui5-config@0.15.0
+    -   @sap-ux/fe-fpm-writer@0.17.0
+    -   @sap-ux/odata-service-writer@0.14.7
+
+## 0.6.3
+
+### Patch Changes
+
+-   3db7c81: Fix for https://github.com/SAP/open-ux-tools/issues/673. Include dot files in negative pattern when copying templates.
+
+## 0.6.2
+
+### Patch Changes
+
+-   b8d5315: Issues with typescript templates when testing the integration into SAP Fiori tools in BAS
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/ui5-application-writer@0.16.1
+
+## 0.6.1
+
+### Patch Changes
+
+-   7b31c68: Breaking fix of API to properly support minimum UI5 version as input
+-   Updated dependencies [7b31c68]
+    -   @sap-ux/fe-fpm-writer@0.17.0
+
+## 0.6.0
+
+### Minor Changes
+
+-   4fb53ce: Fix sonar warnings
+
+### Patch Changes
+
+-   Updated dependencies [4fb53ce]
+    -   @sap-ux/fe-fpm-writer@0.16.0
+    -   @sap-ux/ui5-application-writer@0.16.0
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [e00e583]
+    -   @sap-ux/fe-fpm-writer@0.15.0
+
+## 0.5.3
+
+### Patch Changes
+
+-   a1dc069: Improves template path handling for bundling consumers. Fixes minor issue. TBI: #650
+-   Updated dependencies [a1dc069]
+    -   @sap-ux/fe-fpm-writer@0.14.3
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [b76323d]
+    -   @sap-ux/fe-fpm-writer@0.14.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+-   Updated dependencies [c86bfaf]
+    -   @sap-ux/fe-fpm-writer@0.14.1
+    -   @sap-ux/ui5-application-writer@0.15.1
+
+## 0.5.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+### Patch Changes
+
+-   Updated dependencies [d351f81]
+    -   @sap-ux/fe-fpm-writer@0.14.0
+    -   @sap-ux/ui5-application-writer@0.15.0
+
+## 0.4.8
+
+### Patch Changes
+
+-   Updated dependencies [b6d0c67]
+    -   @sap-ux/odata-service-writer@0.14.6
+    -   @sap-ux/ui5-config@0.14.5
+    -   @sap-ux/ui5-application-writer@0.14.6
+
+## 0.4.7
+
+### Patch Changes
+
+-   Updated dependencies [238f401]
+    -   @sap-ux/ui5-application-writer@0.14.5
+
 ## 0.4.6
 
 ### Patch Changes

@@ -1,0 +1,3308 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ui5-test-writer generateOPAFiles FCL LR-OP 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"ui5-test-writer.test.employees\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {},
+                \\"sap.f\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"EmployeesList\\",
+                    \\"target\\": [
+                        \\"EmployeesList\\"
+                    ]
+                },
+                {
+                    \\"pattern\\": \\"Employees({key}):?query:\\",
+                    \\"name\\": \\"EmployeesObjectPage\\",
+                    \\"target\\": [
+                        \\"EmployeesList\\",
+                        \\"EmployeesObjectPage\\"
+                    ]
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesList\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\",
+                            \\"variantManagement\\": \\"Page\\",
+                            \\"navigation\\": {
+                                \\"Employees\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"EmployeesObjectPage\\"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    \\"controlAggregation\\": \\"beginColumnPages\\",
+                    \\"contextPattern\\": \\"\\"
+                },
+                \\"EmployeesObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"editableHeaderContent\\": false,
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    },
+                    \\"controlAggregation\\": \\"midColumnPages\\",
+                    \\"contextPattern\\": \\"/Employees({key})\\"
+                }
+            },
+            \\"config\\": {
+                \\"flexibleColumnLayout\\": {
+                    \\"defaultTwoColumnLayoutType\\": \\"TwoColumnsMidExpanded\\",
+                    \\"defaultThreeColumnLayoutType\\": \\"ThreeColumnsMidExpanded\\"
+                },
+                \\"routerClass\\": \\"sap.f.routing.Router\\"
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        },
+        \\"rootView\\": {
+            \\"viewName\\": \\"sap.fe.templates.RootContainer.view.Fcl\\",
+            \\"type\\": \\"XML\\",
+            \\"async\\": true,
+            \\"id\\": \\"appRootView\\"
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/test/integration/myOPATest.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+                When.onTheEmployeesList.onTable().iPressRow(0);
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'ui5-test-writer/test/employees/test/integration/myOPATest',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesList',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesList, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList,
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles FCL start on OP 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"ui5-test-writer.test.employees\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {},
+                \\"sap.f\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"EmployeesList\\",
+                    \\"target\\": [
+                        \\"EmployeesList\\",
+                        \\"EmployeesObjectPage\\"
+                    ]
+                },
+                {
+                    \\"pattern\\": \\"Employees({key}):?query:\\",
+                    \\"name\\": \\"EmployeesObjectPage\\",
+                    \\"target\\": [
+                        \\"EmployeesList\\",
+                        \\"EmployeesObjectPage\\"
+                    ]
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesList\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\",
+                            \\"variantManagement\\": \\"Page\\",
+                            \\"navigation\\": {
+                                \\"Employees\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"EmployeesObjectPage\\"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    \\"controlAggregation\\": \\"beginColumnPages\\",
+                    \\"contextPattern\\": \\"\\"
+                },
+                \\"EmployeesObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"editableHeaderContent\\": false,
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    },
+                    \\"controlAggregation\\": \\"midColumnPages\\",
+                    \\"contextPattern\\": \\"/Employees({key})\\"
+                }
+            },
+            \\"config\\": {
+                \\"flexibleColumnLayout\\": {
+                    \\"defaultTwoColumnLayoutType\\": \\"TwoColumnsMidExpanded\\",
+                    \\"defaultThreeColumnLayoutType\\": \\"ThreeColumnsMidExpanded\\"
+                },
+                \\"routerClass\\": \\"sap.f.routing.Router\\"
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        },
+        \\"rootView\\": {
+            \\"viewName\\": \\"sap.fe.templates.RootContainer.view.Fcl\\",
+            \\"type\\": \\"XML\\",
+            \\"async\\": true,
+            \\"id\\": \\"appRootView\\"
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+                When.onTheEmployeesList.onTable().iPressRow(0);
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'ui5-test-writer/test/employees/test/integration/FirstJourney',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesList',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesList, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList,
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen LR-OP 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"ui5-test-writer.test.employees\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"EmployeesList\\",
+                    \\"target\\": \\"EmployeesList\\"
+                },
+                {
+                    \\"pattern\\": \\"Employees({key}):?query:\\",
+                    \\"name\\": \\"EmployeesObjectPage\\",
+                    \\"target\\": \\"EmployeesObjectPage\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesList\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\",
+                            \\"variantManagement\\": \\"Page\\",
+                            \\"navigation\\": {
+                                \\"Employees\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"EmployeesObjectPage\\"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                \\"EmployeesObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"editableHeaderContent\\": false,
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+                When.onTheEmployeesList.onTable().iPressRow(0);
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'ui5-test-writer/test/employees/test/integration/FirstJourney',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesList',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesList, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList,
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen With LR only 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"ui5-test-writer.test.employees\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"EmployeesList\\",
+                    \\"target\\": \\"EmployeesList\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesList\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\",
+                            \\"variantManagement\\": \\"Page\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'ui5-test-writer/test/employees/test/integration/FirstJourney',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesList'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesList) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen only OP without start page 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"ui5-test-writer.test.employees\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {},
+                \\"sap.f\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\"Employees({key}):?query:\\",
+                    \\"name\\": \\"EmployeesObjectPage\\",
+                    \\"target\\": \\"EmployeesObjectPage\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"editableHeaderContent\\": false,
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+            });
+
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'ui5-test-writer/test/employees/test/integration/FirstJourney',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen start on OP 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"ui5-test-writer.test.employees\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {},
+                \\"sap.f\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"EmployeesObjectPage\\",
+                    \\"target\\": \\"EmployeesObjectPage\\"
+                },
+                {
+                    \\"pattern\\": \\"Employees({key}):?query:\\",
+                    \\"name\\": \\"EmployeesObjectPage\\",
+                    \\"target\\": \\"EmployeesObjectPage\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"editableHeaderContent\\": false,
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"ui5-test-writer.test.employees\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'ui5-test-writer/test/employees/test/integration/FirstJourney',
+		'ui5-test-writer/test/employees/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('ui5-test-writer/test/employees') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'ui5-test-writer.test.employees',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen with 2 Sub-OP 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"vesc.demo.employee.project2\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"EmployeesList\\",
+                    \\"target\\": \\"EmployeesList\\"
+                },
+                {
+                    \\"pattern\\": \\"Employees({key}):?query:\\",
+                    \\"name\\": \\"EmployeesObjectPage\\",
+                    \\"target\\": \\"EmployeesObjectPage\\"
+                },
+                {
+                    \\"pattern\\": \\"Employees({key})/_Positions({key2}):?query:\\",
+                    \\"name\\": \\"PositionsObjectPage\\",
+                    \\"target\\": \\"PositionsObjectPage\\"
+                },
+                {
+                    \\"pattern\\": \\"Employees({key})/_Trainings({key2}):?query:\\",
+                    \\"name\\": \\"TrainingsObjectPage\\",
+                    \\"target\\": \\"TrainingsObjectPage\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesList\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\",
+                            \\"variantManagement\\": \\"Page\\",
+                            \\"navigation\\": {
+                                \\"Employees\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"EmployeesObjectPage\\"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                \\"EmployeesObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"editableHeaderContent\\": false,
+                            \\"entitySet\\": \\"Employees\\",
+                            \\"navigation\\": {
+                                \\"_Positions\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"PositionsObjectPage\\"
+                                    }
+                                },
+                                \\"_Trainings\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"TrainingsObjectPage\\"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                \\"PositionsObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"PositionsObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"editableHeaderContent\\": false,
+                            \\"entitySet\\": \\"Positions\\"
+                        }
+                    }
+                },
+                \\"TrainingsObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"TrainingsObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Trainings\\",
+                            \\"navigation\\": {}
+                        }
+                    }
+                }
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesList.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesList.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesList.onTable().iCheckRows();
+
+                When.onTheEmployeesList.onTable().iPressRow(0);
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"vesc.demo.employee.project2\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'vesc/demo/employee/project2/test/integration/FirstJourney',
+		'vesc/demo/employee/project2/test/integration/pages/EmployeesList',
+		'vesc/demo/employee/project2/test/integration/pages/EmployeesObjectPage',
+		'vesc/demo/employee/project2/test/integration/pages/PositionsObjectPage',
+		'vesc/demo/employee/project2/test/integration/pages/TrainingsObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesList, EmployeesObjectPage, PositionsObjectPage, TrainingsObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('vesc/demo/employee/project2') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesList: EmployeesList,
+					onTheEmployeesObjectPage: EmployeesObjectPage,
+					onThePositionsObjectPage: PositionsObjectPage,
+					onTheTrainingsObjectPage: TrainingsObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesList.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'vesc.demo.employee.project2',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.demo.employee.project2',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/PositionsObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.demo.employee.project2',
+            componentId: 'PositionsObjectPage',
+            entitySet: 'Positions'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/TrainingsObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'vesc.demo.employee.project2',
+            componentId: 'TrainingsObjectPage',
+            entitySet: 'Trainings'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Fullscreen with custom FPM page 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"projectservice\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"annotations\\": [
+                        \\"annotation\\"
+                    ],
+                    \\"odataVersion\\": \\"4.0\\",
+                    \\"localUri\\": \\"localService/metadata.xml\\"
+                }
+            },
+            \\"annotation\\": {
+                \\"type\\": \\"ODataAnnotation\\",
+                \\"uri\\": \\"annotations/annotation.xml\\",
+                \\"settings\\": {
+                    \\"localUri\\": \\"annotations/annotation.xml\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"EmployeesListRoute\\",
+                    \\"target\\": \\"EmployeesListTarget\\"
+                },
+                {
+                    \\"pattern\\": \\"Employees({key}):?query:\\",
+                    \\"name\\": \\"EmployeesObjectPageRoute\\",
+                    \\"target\\": \\"EmployeesCustomPageTarget\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesListTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\",
+                            \\"variantManagement\\": \\"Page\\",
+                            \\"navigation\\": {
+                                \\"Employees\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"EmployeesObjectPageRoute\\"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                \\"EmployeesObjectPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"editableHeaderContent\\": false,
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"EmployeesCustomPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesCustomPage\\",
+                    \\"name\\": \\"sap.fe.core.fpm\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"projectservice.ext.view.MyCustomPage\\",
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesListTarget.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+                // Note: this test will fail if the ListReport page doesn't show any data
+                When.onTheEmployeesListTarget.onFilterBar().iExecuteSearch();
+                Then.onTheEmployeesListTarget.onTable().iCheckRows();
+
+                When.onTheEmployeesListTarget.onTable().iPressRow(0);
+                Then.onTheEmployeesCustomPageTarget.iSeeThisPage();
+
+            });
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"projectservice\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'projectservice/test/integration/FirstJourney',
+		'projectservice/test/integration/pages/EmployeesListTarget',
+		'projectservice/test/integration/pages/EmployeesObjectPageTarget',
+		'projectservice/test/integration/pages/EmployeesCustomPageTarget'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesListTarget, EmployeesObjectPageTarget, EmployeesCustomPageTarget) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('projectservice') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesListTarget: EmployeesListTarget,
+					onTheEmployeesObjectPageTarget: EmployeesObjectPageTarget,
+					onTheEmployeesCustomPageTarget: EmployeesCustomPageTarget
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesCustomPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new TemplatePage(
+        'projectservice::EmployeesCustomPage',
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesListTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generateOPAFiles Providing an app ID 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
+        },
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        },
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.103.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {},
+                \\"sap.f\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"@i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"pattern\\": \\":?query:\\",
+                    \\"name\\": \\"EmployeesObjectPage\\",
+                    \\"target\\": \\"EmployeesObjectPage\\"
+                },
+                {
+                    \\"pattern\\": \\"Employees({key}):?query:\\",
+                    \\"name\\": \\"EmployeesObjectPage\\",
+                    \\"target\\": \\"EmployeesObjectPage\\"
+                }
+            ],
+            \\"targets\\": {
+                \\"EmployeesObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"editableHeaderContent\\": false,
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                }
+            }
+        },
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        }
+    },
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
+    }
+}",
+    "state": "modified",
+  },
+  "webapp/test/integration/FirstJourney.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/ui/test/opaQunit\\"
+], function (opaTest) {
+    \\"use strict\\";
+
+    var Journey = {
+        run: function() {
+            QUnit.module(\\"First journey\\");
+
+            opaTest(\\"Start application\\", function (Given, When, Then) {
+                Given.iStartMyApp();
+
+                Then.onTheEmployeesObjectPage.iSeeThisPage();
+
+            });
+
+
+            opaTest(\\"Teardown\\", function (Given, When, Then) { 
+                // Cleanup
+                Given.iTearDownMyApp();
+            });
+        }
+    }
+
+    return Journey;
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+    <title>Integration tests</title>
+    <meta charset=\\"utf-8\\">
+
+    <script id=\\"sap-ui-bootstrap\\"
+            src=\\"/resources/sap-ui-core.js\\"
+            data-sap-ui-theme='sap_fiori_3'
+            data-sap-ui-resourceroots='{
+                \\"test.ui5-test-writer\\": \\"../../\\"
+            }'
+            data-sap-ui-animation=\\"false\\"
+            data-sap-ui-compatVersion=\\"edge\\"
+            data-sap-ui-async=\\"true\\">
+    </script>
+
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+
+    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+
+    <script src=\\"opaTests.qunit.js\\"></script>
+
+</head>
+<body>
+    <div id=\\"qunit\\"></div>
+    <div id=\\"qunit-fixture\\"></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.js": Object {
+    "contents": "sap.ui.require(
+    [
+        'sap/fe/test/JourneyRunner',
+        'test/ui5-test-writer/test/integration/FirstJourney',
+		'test/ui5-test-writer/test/integration/pages/EmployeesObjectPage'
+    ],
+    function(JourneyRunner, opaJourney, EmployeesObjectPage) {
+        'use strict';
+        var JourneyRunner = new JourneyRunner({
+            // start index.html in web folder
+            launchUrl: sap.ui.require.toUrl('test/ui5-test-writer') + '/index.html'
+        });
+
+       
+        JourneyRunner.run(
+            {
+                pages: { 
+					onTheEmployeesObjectPage: EmployeesObjectPage
+                }
+            },
+            opaJourney.run
+        );
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'test.ui5-test-writer',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generatePageObjectFile FPM custom 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"projectservice\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"models\\": {
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"targets\\": {
+                \\"EmployeesListTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"EmployeesObjectPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"EmployeesCustomPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesCustomPage\\",
+                    \\"name\\": \\"sap.fe.core.fpm\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"projectservice.ext.view.MyCustomPage\\",
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"AnotherCustomPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesCustomPage\\",
+                    \\"name\\": \\"another.component.name\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"projectservice.ext.view.MyCustomPage\\",
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"XMLView\\": {
+                    \\"type\\": \\"View\\",
+                    \\"name\\": \\"myView\\"
+                },
+                \\"NoID\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"NoEntitySet\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"variantManagement\\": \\"Page\\"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesCustomPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/TemplatePage'], function(TemplatePage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new TemplatePage(
+        'projectservice::EmployeesCustomPage',
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generatePageObjectFile ListReport 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"projectservice\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"models\\": {
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"targets\\": {
+                \\"EmployeesListTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"EmployeesObjectPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"EmployeesCustomPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesCustomPage\\",
+                    \\"name\\": \\"sap.fe.core.fpm\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"projectservice.ext.view.MyCustomPage\\",
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"AnotherCustomPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesCustomPage\\",
+                    \\"name\\": \\"another.component.name\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"projectservice.ext.view.MyCustomPage\\",
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"XMLView\\": {
+                    \\"type\\": \\"View\\",
+                    \\"name\\": \\"myView\\"
+                },
+                \\"NoID\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"NoEntitySet\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"variantManagement\\": \\"Page\\"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesListTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generatePageObjectFile Object Page 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"projectservice\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"models\\": {
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"targets\\": {
+                \\"EmployeesListTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"EmployeesObjectPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"EmployeesCustomPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesCustomPage\\",
+                    \\"name\\": \\"sap.fe.core.fpm\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"projectservice.ext.view.MyCustomPage\\",
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"AnotherCustomPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesCustomPage\\",
+                    \\"name\\": \\"another.component.name\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"projectservice.ext.view.MyCustomPage\\",
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"XMLView\\": {
+                    \\"type\\": \\"View\\",
+                    \\"name\\": \\"myView\\"
+                },
+                \\"NoID\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"NoEntitySet\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"variantManagement\\": \\"Page\\"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesObjectPageTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ObjectPage(
+        {
+            appId: 'projectservice',
+            componentId: 'EmployeesObjectPage',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`ui5-test-writer generatePageObjectFile Providing an app ID 1`] = `
+Object {
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"projectservice\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/employee/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"odataVersion\\": \\"4.0\\"
+                }
+            }
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"models\\": {
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
+                }
+            }
+        },
+        \\"routing\\": {
+            \\"targets\\": {
+                \\"EmployeesListTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"EmployeesObjectPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"EmployeesCustomPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesCustomPage\\",
+                    \\"name\\": \\"sap.fe.core.fpm\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"projectservice.ext.view.MyCustomPage\\",
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"AnotherCustomPageTarget\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesCustomPage\\",
+                    \\"name\\": \\"another.component.name\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"projectservice.ext.view.MyCustomPage\\",
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"XMLView\\": {
+                    \\"type\\": \\"View\\",
+                    \\"name\\": \\"myView\\"
+                },
+                \\"NoID\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Employees\\"
+                        }
+                    }
+                },
+                \\"NoEntitySet\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"EmployeesList\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"variantManagement\\": \\"Page\\"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/EmployeesListTarget.js": Object {
+    "contents": "sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
+    'use strict';
+
+    var CustomPageDefinitions = {
+        actions: {},
+        assertions: {}
+    };
+
+    return new ListReport(
+        {
+            appId: 'test.ui5-test-writer',
+            componentId: 'EmployeesList',
+            entitySet: 'Employees'
+        },
+        CustomPageDefinitions
+    );
+});",
+    "state": "modified",
+  },
+}
+`;

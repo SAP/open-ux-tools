@@ -196,9 +196,9 @@ Object {
 `;
 
 exports[`CustomPage generateCustomPage: different versions or target folder latest version with minimal input 2`] = `
-"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
-    <Page title=\\"CustomPage\\">
+    <Page id=\\"CustomPage\\" title=\\"CustomPage\\">
         <content></content>
     </Page>
 </mvc:View>"
@@ -298,9 +298,9 @@ Object {
 `;
 
 exports[`CustomPage generateCustomPage: different versions or target folder latest version with minimal input but different target folder 2`] = `
-"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.different.CustomPage\\">
-    <Page title=\\"CustomPage\\">
+    <Page id=\\"CustomPage\\" title=\\"CustomPage\\">
         <content></content>
     </Page>
 </mvc:View>"
@@ -444,7 +444,7 @@ Object {
 exports[`CustomPage generateCustomPage: different versions or target folder with older but supported UI5 version 2`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
-    <Page title=\\"CustomPage\\">
+    <Page id=\\"CustomPage\\" title=\\"CustomPage\\">
         <content></content>
     </Page>
 </mvc:View>"

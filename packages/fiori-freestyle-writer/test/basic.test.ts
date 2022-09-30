@@ -35,7 +35,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             description: 'A Fiori application.'
         },
         ui5: {
-            version: '1.78.16',
+            version: '1.78.11',
             descriptorVersion: '1.22.0',
             ui5Libs: [
                 'sap.f',
@@ -58,7 +58,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         service: {
             path: '/sap/opu/odata/',
             url: 'http://localhost',
-            version: OdataVersion.v2
+            version: OdataVersion.v2,
+            metadata: '<metadata />'
         }
     };
 
@@ -92,6 +93,17 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     sourceTemplate: {
                         toolsId: 'testToolsId:abcd1234'
                     }
+                }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_typescript',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    loadReuseLibs: false,
+                    typescript: true
                 }
             },
             settings: {}

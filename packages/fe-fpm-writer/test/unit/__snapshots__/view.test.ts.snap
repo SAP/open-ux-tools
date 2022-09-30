@@ -13,7 +13,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - cr
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -34,7 +34,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - cr
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -55,7 +55,7 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is empty "object
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -63,20 +63,20 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is empty "object
 "
 `;
 
-exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 1`] = `
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 2`] = `
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 2`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -87,20 +87,20 @@ exports[`CustomView Test property "eventHandler" "eventHandler" is object. Appen
 "
 `;
 
-exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 1`] = `
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 2`] = `
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 2`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -271,7 +271,7 @@ exports[`CustomView with new handler 4`] = `
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -319,7 +319,7 @@ exports[`CustomView with new handler and new table fragment (all properties) 4`]
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };

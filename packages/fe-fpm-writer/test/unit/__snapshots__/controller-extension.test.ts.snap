@@ -1,0 +1,1110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ControllerExtension generateControllerExtension Controller extension exists "controllerName" and "controllerNames" exists - append new value 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerNames": Array [
+              "my.test.App.ext.controller.LRExtension2",
+              "my.test.App.ext.controller.LRExtension",
+              "my.test.App.ext.controller.LRExtension3",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerNames": Array [
+              "my.test.App.ext.controller.OPExtension",
+              "my.test.App.ext.controller.OPExtension2",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
+            "controllerName": "my.test.App.ext.controller.OPBookingExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Controller extension exists "controllerName" and "controllerNames" exists - duplicate 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerNames": Array [
+              "my.test.App.ext.controller.LRExtension2",
+              "my.test.App.ext.controller.LRExtension",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerNames": Array [
+              "my.test.App.ext.controller.OPExtension",
+              "my.test.App.ext.controller.OPExtension2",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
+            "controllerName": "my.test.App.ext.controller.OPBookingExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Controller extension exists "controllerName" exists - append new value 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerNames": Array [
+              "my.test.App.ext.controller.LRExtension",
+              "my.test.App.ext.controller.Dummy",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerNames": Array [
+              "my.test.App.ext.controller.OPExtension",
+              "my.test.App.ext.controller.OPExtension2",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
+            "controllerName": "my.test.App.ext.controller.OPBookingExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Controller extension exists "controllerName" exists - duplication 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.LRExtension",
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerNames": Array [
+              "my.test.App.ext.controller.OPExtension",
+              "my.test.App.ext.controller.OPExtension2",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
+            "controllerName": "my.test.App.ext.controller.OPBookingExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Controller extension exists "controllerName" exists - overwrite 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.Dummy",
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerNames": Array [
+              "my.test.App.ext.controller.OPExtension",
+              "my.test.App.ext.controller.OPExtension2",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
+            "controllerName": "my.test.App.ext.controller.OPBookingExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Controller extension exists "controllerNames" exists - append new value 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.LRExtension",
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerNames": Array [
+              "my.test.App.ext.controller.OPExtension",
+              "my.test.App.ext.controller.OPExtension2",
+              "my.test.App.ext.controller.OPExtensionNew",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
+            "controllerName": "my.test.App.ext.controller.OPBookingExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Controller extension exists "controllerNames" exists - duplication 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.LRExtension",
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerName": "my.test.App.ext.controller.OPExtension2",
+            "controllerNames": Array [
+              "my.test.App.ext.controller.OPExtension",
+              "my.test.App.ext.controller.OPExtension2",
+            ],
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
+            "controllerName": "my.test.App.ext.controller.OPBookingExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Controller extension exists "controllerNames" exists - overwrite 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.LRExtension",
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerName": "my.test.App.ext.controller.Dummy",
+          },
+          "sap.fe.templates.ObjectPage.ObjectPageController#project4::BookingObjectPage": Object {
+            "controllerName": "my.test.App.ext.controller.OPBookingExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension - ListReport 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension - ListReport 2`] = `
+"sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExtension) {
+	'use strict';
+
+	return ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+		// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+		override: {
+			/**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf my.test.App.ext.controller.NewExtension
+             */
+			onInit: function () {
+				// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+				var oModel = this.base.getExtensionAPI().getModel();
+			}
+		}
+	});
+});
+"
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension - ObjectPage 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension - ObjectPage 2`] = `
+"sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExtension) {
+	'use strict';
+
+	return ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+		// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+		override: {
+			/**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf my.test.App.ext.controller.NewExtension
+             */
+			onInit: function () {
+				// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+				var oModel = this.base.getExtensionAPI().getModel();
+			}
+		}
+	});
+});
+"
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension - undefined 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension - undefined 2`] = `
+"sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExtension) {
+	'use strict';
+
+	return ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+		// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+		override: {
+			/**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf my.test.App.ext.controller.NewExtension
+             */
+			onInit: function () {
+				// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+				var oModel = this.base.getExtensionAPI().getModel();
+			}
+		}
+	});
+});
+"
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension with manual target 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "my.project.ext.view.Test": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension with manual target 2`] = `
+"sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExtension) {
+	'use strict';
+
+	return ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+		// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+		override: {
+			/**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf my.test.App.ext.controller.NewExtension
+             */
+			onInit: function () {
+				// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+				var oModel = this.base.getExtensionAPI().getModel();
+			}
+		}
+	});
+});
+"
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension with page id 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController#my.test.App::TestListReport": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension New controller extension with page id 2`] = `
+"sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExtension) {
+	'use strict';
+
+	return ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+		// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+		override: {
+			/**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf my.test.App.ext.controller.NewExtension
+             */
+			onInit: function () {
+				// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+				var oModel = this.base.getExtensionAPI().getModel();
+			}
+		}
+	});
+});
+"
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension - ListReport 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension - ListReport 2`] = `
+"import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
+import ExtensionAPI from 'sap/fe/templates/ListReport/ExtensionAPI';
+
+/**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension {
+        base: {
+            getExtensionAPI(): ExtensionAPI;
+        }
+    }
+}
+
+/**
+ * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
+ */
+export default ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+	override: {
+		/**
+		 * Called when a controller is instantiated and its View controls (if available) are already created.
+		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+		 * @memberOf my.test.App.ext.controller.NewExtension
+		 */
+		onInit(this: ControllerExtension) {
+			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+			const model = this.base.getExtensionAPI().getModel();
+		}
+	}
+});"
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension - ObjectPage 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension - ObjectPage 2`] = `
+"import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
+import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
+
+/**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension {
+        base: {
+            getExtensionAPI(): ExtensionAPI;
+        }
+    }
+}
+
+/**
+ * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
+ */
+export default ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+	override: {
+		/**
+		 * Called when a controller is instantiated and its View controls (if available) are already created.
+		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+		 * @memberOf my.test.App.ext.controller.NewExtension
+		 */
+		onInit(this: ControllerExtension) {
+			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+			const model = this.base.getExtensionAPI().getModel();
+		}
+	}
+});"
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension - undefined 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension - undefined 2`] = `
+"import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
+import ExtensionAPI from 'sap/fe/templates/ListReport/ExtensionAPI';
+
+/**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension {
+        base: {
+            getExtensionAPI(): ExtensionAPI;
+        }
+    }
+}
+
+/**
+ * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
+ */
+export default ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+	override: {
+		/**
+		 * Called when a controller is instantiated and its View controls (if available) are already created.
+		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+		 * @memberOf my.test.App.ext.controller.NewExtension
+		 */
+		onInit(this: ControllerExtension) {
+			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+			const model = this.base.getExtensionAPI().getModel();
+		}
+	}
+});"
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension with manual target - my.project.ext.view.Test 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "my.project.ext.view.Test": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension with manual target - my.project.ext.view.Test 2`] = `
+"import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
+import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+
+/**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension {
+        base: {
+            getExtensionAPI(): ExtensionAPI;
+        }
+    }
+}
+
+/**
+ * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
+ */
+export default ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+	override: {
+		/**
+		 * Called when a controller is instantiated and its View controls (if available) are already created.
+		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+		 * @memberOf my.test.App.ext.controller.NewExtension
+		 */
+		onInit(this: ControllerExtension) {
+			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+			const model = this.base.getExtensionAPI().getModel();
+		}
+	}
+});"
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension with manual target - sap.fe.templates.ListReport.ListReportController 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension with manual target - sap.fe.templates.ListReport.ListReportController 2`] = `
+"import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
+import ExtensionAPI from 'sap/fe/templates/ListReport/ExtensionAPI';
+
+/**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension {
+        base: {
+            getExtensionAPI(): ExtensionAPI;
+        }
+    }
+}
+
+/**
+ * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
+ */
+export default ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+	override: {
+		/**
+		 * Called when a controller is instantiated and its View controls (if available) are already created.
+		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+		 * @memberOf my.test.App.ext.controller.NewExtension
+		 */
+		onInit(this: ControllerExtension) {
+			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+			const model = this.base.getExtensionAPI().getModel();
+		}
+	}
+});"
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension with manual target - sap.fe.templates.ListReport.ListReportController#dummy.project::BookingSupplementObjectPage 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ListReport.ListReportController#dummy.project::BookingSupplementObjectPage": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension with manual target - sap.fe.templates.ListReport.ListReportController#dummy.project::BookingSupplementObjectPage 2`] = `
+"import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
+import ExtensionAPI from 'sap/fe/templates/ListReport/ExtensionAPI';
+
+/**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension {
+        base: {
+            getExtensionAPI(): ExtensionAPI;
+        }
+    }
+}
+
+/**
+ * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
+ */
+export default ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+	override: {
+		/**
+		 * Called when a controller is instantiated and its View controls (if available) are already created.
+		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+		 * @memberOf my.test.App.ext.controller.NewExtension
+		 */
+		onInit(this: ControllerExtension) {
+			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+			const model = this.base.getExtensionAPI().getModel();
+		}
+	}
+});"
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension with manual target - sap.fe.templates.ObjectPage.ObjectPageController 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "extends": Object {
+      "extensions": Object {
+        "sap.ui.controllerExtensions": Object {
+          "sap.fe.templates.ObjectPage.ObjectPageController": Object {
+            "controllerName": "my.test.App.ext.controller.NewExtension",
+          },
+        },
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension with manual target - sap.fe.templates.ObjectPage.ObjectPageController 2`] = `
+"import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
+import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
+
+/**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension {
+        base: {
+            getExtensionAPI(): ExtensionAPI;
+        }
+    }
+}
+
+/**
+ * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
+ */
+export default ControllerExtension.extend('my.test.App.ext.controller.NewExtension', {
+	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+	override: {
+		/**
+		 * Called when a controller is instantiated and its View controls (if available) are already created.
+		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+		 * @memberOf my.test.App.ext.controller.NewExtension
+		 */
+		onInit(this: ControllerExtension) {
+			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+			const model = this.base.getExtensionAPI().getModel();
+		}
+	}
+});"
+`;

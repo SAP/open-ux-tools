@@ -19,3 +19,6 @@ export { validateBasePath, validateVersion } from './common/validate';
 
 export { BuildingBlockType, FilterBar, Chart, Field, FieldFormatOptions } from './building-block/types';
 export { generateBuildingBlock } from './building-block';
+
+export { ControllerExtension, ControllerExtensionPageType } from './controller-extension/types';
+export { generateControllerExtension } from './controller-extension';

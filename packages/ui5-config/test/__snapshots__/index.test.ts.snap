@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UI5Config add/removeCustomMiddleware addCustomMiddleware 1`] = `
+exports[`UI5Config add/find/removeCustomMiddleware addCustomMiddleware 1`] = `
 "server:
   customMiddleware:
     - name: custom-middleware
@@ -16,9 +16,25 @@ exports[`UI5Config add/removeCustomMiddleware addCustomMiddleware 1`] = `
 "
 `;
 
-exports[`UI5Config add/removeCustomMiddleware removeMiddleware 1`] = `
+exports[`UI5Config add/find/removeCustomMiddleware removeMiddleware 1`] = `
 "server:
   customMiddleware: []
+"
+`;
+
+exports[`UI5Config add/find/removeCustomTask addCustomTask 1`] = `
+"builder:
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: my-archive
+"
+`;
+
+exports[`UI5Config add/find/removeCustomTask removeCustomTask 1`] = `
+"builder:
+  customTasks: []
 "
 `;
 
@@ -79,16 +95,6 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out 
         backend:
           - url: http://localhost:8080
             path: /~testpath~
-"
-`;
-
-exports[`UI5Config addCustomTask 1`] = `
-"builder:
-  customTasks:
-    - name: ui5-task-zipper
-      afterTask: generateCachebusterInfo
-      configuration:
-        archiveName: my-archive
 "
 `;
 
@@ -217,11 +223,13 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /~testpath~
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 "
 `;
 
@@ -231,11 +239,13 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: ''
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: ''
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 "
 `;
 

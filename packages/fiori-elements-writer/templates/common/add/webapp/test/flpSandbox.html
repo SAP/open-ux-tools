@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -67,9 +67,14 @@
         data-sap-ui-resourceroots='{"<%- app.id  %>": "../"}'
         data-sap-ui-frameOptions="allow"<% if (templateOptions.changesLoader) {%>
         data-sap-ui-flexibilityServices='[{"applyConnector":"<%= app.id.replace(/\./g, "/") %>/test/changes_loader", "custom":true}]'<% } %>>
-        </script><% if (appOptions.loadReuseLibs) { %>
-        <script id="locate-reuse-libs" src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
-        </script><% } %><% if (templateOptions.changesPreview) { %>
+    </script><% if (appOptions.loadReuseLibs) { %>
+    <script id="locate-reuse-libs" src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
+    </script><% } else { %>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt("content");
+        });
+    </script><% } %><% if (templateOptions.changesPreview) { %>
     <!-- relevant for version < 1.78.0 only -->
 	<script src="changes_preview.js"></script><% } %>
 </head>

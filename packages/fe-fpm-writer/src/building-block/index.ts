@@ -8,6 +8,7 @@ import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
 import { getErrorMessage, validateBasePath } from '../common/validate';
+import { getTemplatePath } from '../templates';
 
 /**
  * Generates a building block into the provided xml view file.
@@ -80,6 +81,7 @@ function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
     const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
     if (!macrosNamespaceEntry) {
         (ui5XmlDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
+        ui5XmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
     }
     return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macros';
 }
@@ -98,7 +100,7 @@ function getTemplateDocument<T extends BuildingBlock>(
     fs: Editor
 ): Document {
     const templateFolderName = buildingBlockData.buildingBlockType;
-    const templateFilePath = join(__dirname, `../../templates/building-block/${templateFolderName}/View.xml`);
+    const templateFilePath = getTemplatePath(`/building-block/${templateFolderName}/View.xml`);
     const templateContent = render(
         fs.read(templateFilePath),
         {

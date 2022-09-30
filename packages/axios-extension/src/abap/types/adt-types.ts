@@ -61,11 +61,7 @@ export interface AdtCategory {
 export interface TransportRequest {
     transportNumber: string;
     user: string;
-    date: string;
-    time: string;
     description: string;
     client: string;
     targetSystem: string;
-    transportRequestFunction: string;
-    transportRequestStatus: string;
 }

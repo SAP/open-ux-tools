@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/dummyAction'}\\" text=\\"NewCustomSection\\" press=\\"handler.DummyOnAction\\" />
 </core:FragmentDefinition>"
 `;
@@ -13,7 +13,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -22,7 +22,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
 `;
 
 exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.DummyOnAction\\" />
 </core:FragmentDefinition>"
 `;
@@ -34,7 +34,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -43,7 +43,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
 `;
 
 exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>"
 `;
@@ -55,7 +55,7 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -63,20 +63,20 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
 "
 `;
 
-exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 1`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"NewCustomSection\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 2`] = `
+exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 2`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -87,69 +87,23 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
 "
 `;
 
-exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 1`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"NewCustomSection\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 2`] = `
+exports[`CustomSection generateCustomSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 2`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomSection generateCustomSection Versions 1.9, with handler, all properties 1`] = `
-Object {
-  "body": Object {
-    "sections": Object {
-      "ExistingCustomSection": Object {
-        "position": Object {
-          "anchor": "IncidentOverviewFacet",
-          "placement": "Before",
-        },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
-        "title": "Custom Title",
-      },
-      "NewCustomSection": Object {
-        "position": Object {
-          "anchor": "DummyFacet",
-          "placement": "After",
-        },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
-        "title": "New Custom Section",
-      },
-    },
-  },
-}
-`;
-
-exports[`CustomSection generateCustomSection Versions 1.9, with handler, all properties 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomSection generateCustomSection Versions 1.9, with handler, all properties 3`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function() {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -196,7 +150,7 @@ exports[`CustomSection generateCustomSection Versions 1.84, with handler, all pr
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -243,7 +197,7 @@ exports[`CustomSection generateCustomSection Versions 1.85, with handler, all pr
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -289,7 +243,99 @@ exports[`CustomSection generateCustomSection Versions 1.86, with handler, all pr
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomSection generateCustomSection Versions 1.89, with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingCustomSection": Object {
+        "position": Object {
+          "anchor": "IncidentOverviewFacet",
+          "placement": "Before",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+        "title": "Custom Title",
+      },
+      "NewCustomSection": Object {
+        "position": Object {
+          "anchor": "DummyFacet",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "title": "New Custom Section",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomSection generateCustomSection Versions 1.89, with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomSection generateCustomSection Versions 1.89, with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomSection generateCustomSection Versions 1.90, with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingCustomSection": Object {
+        "position": Object {
+          "anchor": "IncidentOverviewFacet",
+          "placement": "Before",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+        "title": "Custom Title",
+      },
+      "NewCustomSection": Object {
+        "position": Object {
+          "anchor": "DummyFacet",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "title": "New Custom Section",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomSection generateCustomSection Versions 1.90, with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomSection generateCustomSection Versions 1.90, with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -323,7 +369,7 @@ Object {
 `;
 
 exports[`CustomSection generateCustomSection Versions 1.98, with handler, all properties 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>"
 `;
@@ -335,7 +381,7 @@ exports[`CustomSection generateCustomSection Versions 1.98, with handler, all pr
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -369,7 +415,7 @@ Object {
 `;
 
 exports[`CustomSection generateCustomSection custom control 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<CustomXML text=\\"\\" />
 </core:FragmentDefinition>"
 `;
@@ -425,7 +471,7 @@ Object {
 `;
 
 exports[`CustomSection generateCustomSection different data and not existing target 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Text text=\\"DummySection\\" />
 </core:FragmentDefinition>"
 `;
@@ -456,7 +502,7 @@ Object {
 `;
 
 exports[`CustomSection generateCustomSection no handler, all properties 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Text text=\\"NewCustomSection\\" />
 </core:FragmentDefinition>"
 `;
@@ -487,7 +533,7 @@ Object {
 `;
 
 exports[`CustomSection generateCustomSection no handler, no fs, all properties 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Text text=\\"NewCustomSection\\" />
 </core:FragmentDefinition>"
 `;
@@ -543,7 +589,7 @@ Object {
 `;
 
 exports[`CustomSection generateCustomSection with handler, all properties 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\" text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>"
 `;
@@ -555,7 +601,7 @@ exports[`CustomSection generateCustomSection with handler, all properties 3`] = 
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };

@@ -1,11 +1,13 @@
 import os from 'os';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
-import { EventHandlerConfiguration, Placement } from '../../src/common/types';
+import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
+import { Placement } from '../../src/common/types';
 
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
@@ -282,17 +284,18 @@ describe('CustomAction', () => {
             });
 
             // Test with both position interfaces
-            const positions = [
-                {
-                    line: 8,
-                    character: 9
-                },
-                190 + 8 * os.EOL.length
-            ];
-            for (const position of positions) {
-                test(`"eventHandler" is object. Append new function to existing js file with position ${
-                    typeof position === 'object' ? JSON.stringify(position) : 'absolute'
-                }`, () => {
+            test.each([
+                [
+                    'position as object',
+                    {
+                        line: 8,
+                        character: 9
+                    }
+                ],
+                ['absolute position', 196 + 8 * os.EOL.length]
+            ])(
+                '"eventHandler" is object. Append new function to existing js file with %s',
+                (_desc: string, position: number | FileContentPosition) => {
                     const fileName = 'MyExistingAction';
                     // Create existing file with existing actions
                     const folder = join('ext', 'fragments');
@@ -321,8 +324,8 @@ describe('CustomAction', () => {
                     expect(action['press']).toEqual(`my.test.App.ext.fragments.${fileName}.${fnName}`);
                     // Check update js file content
                     expect(fs.read(existingPath)).toMatchSnapshot();
-                });
-            }
+                }
+            );
         });
     });
 });

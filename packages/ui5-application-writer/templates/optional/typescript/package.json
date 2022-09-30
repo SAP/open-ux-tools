@@ -1,0 +1,17 @@
+{
+    "scripts": {
+        "ts-typecheck": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@sapui5/ts-types-esm": "<%- ui5.typesVersion %>",
+        "ui5-tooling-transpile": "^0.2.0",
+        "typescript": "^4.6.3",
+        "@typescript-eslint/eslint-plugin": "^5.17.0",
+        "@typescript-eslint/parser": "^5.17.0"
+    },
+    "ui5": {
+        "dependencies": [
+            "ui5-tooling-transpile"
+        ]
+    }
+}

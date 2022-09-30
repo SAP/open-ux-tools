@@ -1,5 +1,32 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.10
+
+### Patch Changes
+
+-   fac7a5a: Replaced usage of express with simple code to reduce installation size.
+
+## 1.1.9
+
+### Patch Changes
+
+-   Updated dependencies [83a7a1a]
+    -   @sap-ux/ui5-config@0.15.0
+
+## 1.1.8
+
+### Patch Changes
+
+-   Updated dependencies [bc4cb3a]
+    -   @sap-ux/logger@0.3.0
+
+## 1.1.7
+
+### Patch Changes
+
+-   Updated dependencies [b6d0c67]
+    -   @sap-ux/ui5-config@0.14.5
+
 ## 1.1.6
 
 ### Patch Changes

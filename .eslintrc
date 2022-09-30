@@ -8,7 +8,7 @@
     "overrides": [
         {
             "parser": "@typescript-eslint/parser",
-            "files": ["**/*.ts"],
+            "files": ["**/*.ts", "**/*.tsx"],
             "extends": ["plugin:@typescript-eslint/recommended"],
             "rules": {
                 "@typescript-eslint/ban-types": "off",
@@ -43,7 +43,7 @@
         },
         {
             "parser": "@typescript-eslint/parser",
-            "files": ["packages/*/test/**/*.js", "packages/*/test/**/*.ts"],
+            "files": ["packages/*/test/**/*.js", "packages/*/test/**/*.ts", "packages/*/test/**/*.tsx"],
             "rules": {
                 "jsdoc/require-param": "off",
                 "jsdoc/require-param-description": "off",
@@ -255,7 +255,8 @@
         "prettier/prettier": [
             "error",
             {
-                "endOfLine": "auto"
+                "endOfLine": "auto",
+                "quoteProps": "preserve"
             }
         ]
     },

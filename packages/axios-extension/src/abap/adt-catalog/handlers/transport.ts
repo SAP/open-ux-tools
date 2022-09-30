@@ -65,6 +65,7 @@ function getTransportList(doc: Document): TransportRequest[] {
 /**
  * This function processes ADT response for new project name that have not been deployed before,
  * all the available transport requests are returned.
+ *
  * @param doc
  * @returns
  */
@@ -84,7 +85,8 @@ function getTransportListForNewProject(doc: Document): TransportRequest[] {
 
 /**
  * This function processes ADT response for existing project name that has been locked.
- * A single, previously provided transport request is returned in the list.
+ * A single, previously provided transport requests is returned in the list.
+ *
  * @param doc
  * @returns
  */

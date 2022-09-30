@@ -1,5 +1,83 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.4
+
+### Patch Changes
+
+-   4f17a53: Add 'sap.se.macros' namespace to custom section's 'Fragment.xml' when ui5 version >= 1.90
+
+## 0.17.3
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+
+## 0.17.2
+
+### Patch Changes
+
+-   c9461f0: Fix: 'enableFPM' method throws 'Invalid Version' exception if unknown UI5 version stored in '["sap.ui5"]["dependencies"]["minUI5Version"]'. Like version '\${sap.ui5.dist.version}'
+
+## 0.17.1
+
+### Patch Changes
+
+-   0bb70df: Adds sap.fe.macros namespace to fpm apps View.xml where ui5 version >= 1.94
+
+## 0.17.0
+
+### Minor Changes
+
+-   7b31c68: Breaking fix of API to properly support minimum UI5 version as input
+
+## 0.16.0
+
+### Minor Changes
+
+-   4fb53ce: Fix sonar warnings
+
+## 0.15.0
+
+### Minor Changes
+
+-   e00e583: Controller Extension support
+
+## 0.14.3
+
+### Patch Changes
+
+-   a1dc069: Improves template path handling for bundling consumers. Fixes minor issue. TBI: #650
+
+## 0.14.2
+
+### Patch Changes
+
+-   b76323d: Fix for generating a Component.ts using enableFpm
+
+## 0.14.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+
+## 0.14.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+## 0.13.6
+
+### Patch Changes
+
+-   9e6d402: Add id to page in generated custom page
+
+## 0.13.5
+
+### Patch Changes
+
+-   aee31b4: Fix issue with fe-fpm-writer module's building block generator to add macros namespace if it is not found in the xml view.
+
 ## 0.13.4
 
 ### Patch Changes

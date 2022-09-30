@@ -1,10 +1,12 @@
 import { create as createStorage } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { BuildingBlockType, Chart, Field, FilterBar, generateBuildingBlock } from '../../src';
+import type { Chart, Field, FilterBar } from '../../src';
+import { BuildingBlockType, generateBuildingBlock } from '../../src';
 import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 import { promises as fsPromises } from 'fs';
-import { promisify } from 'util';
+import { clearTestOutput, writeFilesForDebugging } from '../common';
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -12,10 +14,15 @@ describe('Building Blocks', () => {
     let testXmlViewContent: string;
     const manifestFilePath = 'webapp/manifest.json';
     const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
+    const testOutputRoot = join(__dirname, '../test-output/unit/building-block');
+
+    beforeAll(() => {
+        clearTestOutput(testOutputRoot);
+    });
 
     beforeEach(async () => {
         fs = create(createStorage());
-        testAppPath = join('test/unit/test-output/building-block', `${Date.now()}`);
+        testAppPath = join(testOutputRoot, `${Date.now()}`);
         fs.delete(testAppPath);
         if (!testXmlViewContent) {
             testXmlViewContent = (
@@ -26,13 +33,6 @@ describe('Building Blocks', () => {
             ).toLocaleString();
         }
     });
-
-    async function writeFilesForDebugging(fs: Editor) {
-        const debug = !!process.env['UX_DEBUG'];
-        // Write the files to the `test-output` folder for debugging
-        const fsCommit = promisify(fs.commit);
-        await fsCommit.call(fs);
-    }
 
     test('validate base and view paths', async () => {
         const basePath = join(testAppPath, 'validate-paths');
@@ -166,6 +166,60 @@ describe('Building Blocks', () => {
                 fs
             )
         ).toThrowError(/Unable to parse xml view file/);
+    });
+
+    describe('Generate with just ID and xml view without macros namespace', () => {
+        const testInput = [
+            {
+                buildingBlockData: {
+                    id: 'testFilterBar',
+                    buildingBlockType: BuildingBlockType.FilterBar
+                } as FilterBar
+            },
+            {
+                buildingBlockData: {
+                    id: 'testChart',
+                    buildingBlockType: BuildingBlockType.Chart
+                } as Chart
+            },
+            {
+                buildingBlockData: {
+                    id: 'testField',
+                    buildingBlockType: BuildingBlockType.Field
+                } as Field
+            }
+        ];
+
+        test.each(testInput)('generate $buildingBlockData.buildingBlockType building block', async (testData) => {
+            const basePath = join(
+                testAppPath,
+                `generate-${testData.buildingBlockData.buildingBlockType}-with-id-no-macros-ns`
+            );
+            const xmlViewContentWithoutMacrosNs = (
+                await fsPromises.readFile(
+                    join('test/unit/sample/building-block/webapp-without-macros-ns-xml-view/ext/main/Main.view.xml'),
+                    'utf-8'
+                )
+            ).toLocaleString();
+            const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+            fs.write(join(basePath, xmlViewFilePath), xmlViewContentWithoutMacrosNs);
+
+            // Test generator with valid manifest.json, view.xml files and build block data with just id
+            generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: testData.buildingBlockData
+                },
+                fs
+            );
+            expect((fs as any).dump(testAppPath)).toMatchSnapshot(
+                `generate-${testData.buildingBlockData.buildingBlockType}-with-id-no-macros-ns`
+            );
+            await writeFilesForDebugging(fs);
+        });
     });
 
     describe('Generate with just ID', () => {

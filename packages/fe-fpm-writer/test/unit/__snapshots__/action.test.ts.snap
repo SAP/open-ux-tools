@@ -128,7 +128,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -143,7 +143,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -158,7 +158,7 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -166,14 +166,14 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 1`] = `
+exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -184,14 +184,14 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 1`] = `
+exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -323,7 +323,7 @@ exports[`CustomAction generateCustomAction specific target folder, event handler
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };

@@ -13,7 +13,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -34,7 +34,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function() {
+        DummyOnAction: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -55,7 +55,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -63,20 +63,20 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 1`] = `
+exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"Sample Text\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position {"line":8,"character":9} 2`] = `
+exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 2`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -87,20 +87,20 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 1`] = `
+exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"Sample Text\\" press=\\"handler.onHandleSecondAction\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position absolute 2`] = `
+exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 2`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         },
         onHandleSecondAction: function() {
@@ -433,7 +433,7 @@ exports[`CustomAction generateCustomColumn version 1.86, with new handler, all p
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };

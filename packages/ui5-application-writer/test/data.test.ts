@@ -1,6 +1,19 @@
-import { UI5_DEFAULT, mergeUi5, defaultUI5Libs, mergeApp } from '../src/data/defaults';
+import { UI5_DEFAULT, mergeUi5, defaultUI5Libs, mergeApp, getSpecTagVersion } from '../src/data/defaults';
 import { mergeWithDefaults } from '../src/data/index';
 import type { App, UI5, Ui5App } from '../src/types';
+
+const mockSpecVersions = JSON.stringify({ latest: '1.102.3', 'UI5-1.71': '1.71.64', 'UI5-1.92': '1.92.1' });
+jest.mock('child_process', () => ({
+    spawn: () => ({
+        stdout: {
+            on: (_event: string, fn: Function) => fn(mockSpecVersions)
+        },
+        stderr: {
+            on: (_event: string, fn: Function) => fn('test')
+        },
+        on: (_event: string, fn: Function) => fn(0)
+    })
+}));
 
 describe('Setting defaults', () => {
     const testData: { input: Partial<UI5>; expected: UI5 }[] = [
@@ -12,9 +25,9 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://ui5.sap.com',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
-                minUI5Version: '1.60.0',
+                minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
                 descriptorVersion: '1.12.0',
-                typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
+                typesVersion: UI5_DEFAULT.TYPES_VERSION_PREVIOUS,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -27,9 +40,9 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://openui5.hana.ondemand.com',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
-                minUI5Version: '1.60.0',
+                minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
                 descriptorVersion: '1.12.0',
-                typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
+                typesVersion: UI5_DEFAULT.TYPES_VERSION_PREVIOUS,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -59,9 +72,9 @@ describe('Setting defaults', () => {
                 frameworkUrl: 'https://ui5.sap.com',
                 version: UI5_DEFAULT.DEFAULT_UI5_VERSION,
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
-                minUI5Version: '1.60.0',
+                minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
                 descriptorVersion: '1.12.0',
-                typesVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
+                typesVersion: UI5_DEFAULT.TYPES_VERSION_PREVIOUS,
                 ui5Theme: 'sap_fiori_3_dark',
                 ui5Libs: defaultUI5Libs
             }
@@ -100,7 +113,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.95.0',
                 minUI5Version: '1.80.1',
                 descriptorVersion: '1.24.0',
-                typesVersion: '1.95.0',
+                typesVersion: '~1.80.1',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -117,7 +130,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.80.0',
                 minUI5Version: '1.80.0',
                 descriptorVersion: '1.24.0',
-                typesVersion: '1.80.0',
+                typesVersion: '~1.80.0',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -135,7 +148,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.80.0',
                 minUI5Version: 'snapshot-1.80',
                 descriptorVersion: '1.24.0',
-                typesVersion: '1.80.0',
+                typesVersion: '~1.80.0',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -155,7 +168,7 @@ describe('Setting defaults', () => {
                 localVersion: 'snapshot-1.98',
                 minUI5Version: 'snapshot-1.78.6',
                 descriptorVersion: '1.22.0',
-                typesVersion: '1.98.0',
+                typesVersion: '~1.78.6',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -171,8 +184,8 @@ describe('Setting defaults', () => {
                 version: '1.199.0',
                 localVersion: '1.199.0',
                 minUI5Version: '1.199.0',
-                descriptorVersion: '1.40.0',
-                typesVersion: '1.199.0',
+                descriptorVersion: '1.45.0',
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_BEST}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -189,7 +202,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.97.2',
                 minUI5Version: '1.97.2',
                 descriptorVersion: '1.37.0',
-                typesVersion: '1.97.2',
+                typesVersion: '~1.97.2',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -206,14 +219,14 @@ describe('Setting defaults', () => {
                 localVersion: '1.76.0',
                 minUI5Version: '1.28.0',
                 descriptorVersion: '1.12.0',
-                typesVersion: '1.76.0',
+                typesVersion: UI5_DEFAULT.TYPES_VERSION_PREVIOUS,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
         }
     ];
 
-    test.each(testData)(`mergeUi5 testData index: $#`, (test) => {
+    test.each(testData)(`mergeUi5 testData index: $#`, async (test) => {
         expect(mergeUi5(test.input)).toEqual(test.expected);
     });
 
@@ -223,7 +236,7 @@ describe('Setting defaults', () => {
                 id: 'test_appId',
                 description: 'Should be default package description'
             },
-            package: {
+            'package': {
                 name: 'test-package-name',
                 dependencies: {
                     depA: '1.2.3',
@@ -274,8 +287,8 @@ describe('Setting defaults', () => {
     });
 
     // Test function `mergeApp` sets the correct defaults
-    test('mergApp', () => {
-        const app: App = {
+    describe('mergeApp', () => {
+        const baseInput: App = {
             id: 'test_appId',
             description: 'Should be default package description'
         };
@@ -292,31 +305,46 @@ describe('Setting defaults', () => {
             version: '0.0.1'
         } as App;
 
-        expect(mergeApp(app)).toEqual(expectedApp);
+        test('minimal input', async () => {
+            expect(mergeApp(baseInput)).toEqual(expectedApp);
+        });
 
-        // Test toolsId is correctly set, sourceTemplate.id and sourceTemplate.version are set if not provided.
-        const toolsId = 'guid:abcd1234';
-        app.sourceTemplate = {
-            toolsId
-        };
-        expectedApp.sourceTemplate = {
-            id: '',
-            toolsId,
-            version: ''
-        };
-        expect(mergeApp(app)).toEqual(expectedApp);
+        test('toolsId provided but not id/version of source template', async () => {
+            const toolsId = 'guid:abcd1234';
+            const merged = mergeApp({
+                ...baseInput,
+                sourceTemplate: {
+                    toolsId
+                }
+            });
+            expect(merged.sourceTemplate).toEqual({ ...expectedApp.sourceTemplate, toolsId });
+        });
 
-        // Test toolsId is correctly set, sourceTemplate.id and sourceTemplate.version are set to provided value.
-        app.sourceTemplate = {
-            id: 'test-source-template-id',
-            version: '9.9.9',
-            toolsId
-        };
-        expectedApp.sourceTemplate = {
-            id: 'test-source-template-id',
-            version: '9.9.9',
-            toolsId
-        };
-        expect(mergeApp(app)).toEqual(expectedApp);
+        test('source template provided', async () => {
+            const sourceTemplate = {
+                id: 'test-source-template-id',
+                version: '9.9.9',
+                toolsId: 'guid:abcd1234'
+            };
+            const merged = mergeApp({
+                ...baseInput,
+                sourceTemplate
+            });
+            expect(merged.sourceTemplate).toEqual(sourceTemplate);
+        });
+    });
+
+    describe('getSpecTagVersion', () => {
+        test('get latest version', async () => {
+            expect(getSpecTagVersion('')).toBe('latest');
+        });
+
+        test('get specific version', async () => {
+            expect(getSpecTagVersion('1.92.1')).toBe('UI5-1.92');
+        });
+
+        test('get snapshot version', async () => {
+            expect(getSpecTagVersion('snapshot-1.71')).toBe('UI5-1.71');
+        });
     });
 });

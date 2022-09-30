@@ -76,7 +76,7 @@ export const feBaseConfig = (
 };
 
 export const v4Service: OdataService = {
-    path: 'sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/',
+    path: '/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/',
     url: 'http://example.feop.v4',
     version: OdataVersion.v4,
     metadata: getTestData('travel_v4', 'metadata'),
