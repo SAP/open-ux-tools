@@ -1,12 +1,7 @@
 import { join } from 'path';
 import * as projectModuleMock from '../../src/project/moduleLoader';
-import {
-    getCapModelAndServices,
-    getCapCustomPaths,
-    isCapProject,
-    isCapNodeJsProject,
-    isCapJavaProject
-} from '../../src/project/cap';
+import { isCapProject, isCapNodeJsProject, isCapJavaProject } from '../../src';
+import { getCapModelAndServices, getCapCustomPaths } from '../../src/project/cap';
 
 describe('Test isCapProject()', () => {
     test('Test if valid CAP project is recognized', async () => {

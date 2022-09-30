@@ -67,6 +67,7 @@ export enum UIDialogScrollArea {
 export class UIDialog extends React.Component<DialogProps, DialogState> {
     /**
      * Initializes component properties.
+     *
      * @param {DialogProps} props
      */
     public constructor(props: DialogProps) {
@@ -82,6 +83,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
 
     /**
      * Called when component is rerendered.
+     *
      * @param {Readonly<DialogProps>} prevProps
      */
     componentDidUpdate(prevProps: Readonly<DialogProps>): void {
@@ -139,6 +141,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      * @returns {JSX.Element | null} Footer element to render.
      */
     getFooter(): JSX.Element | undefined {
+        let element;
         const { acceptButtonText, cancelButtonText, onAccept, onCancel, acceptButtonId, cancelButtonId, footer } =
             this.props;
         const dialogFooterProps: IDialogFooterProps = {
@@ -159,9 +162,9 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
         };
 
         if (footer) {
-            return <DialogFooter {...dialogFooterProps}>{footer}</DialogFooter>;
+            element = <DialogFooter {...dialogFooterProps}>{footer}</DialogFooter>;
         } else if (onAccept || onCancel) {
-            return (
+            element = (
                 <DialogFooter {...dialogFooterProps}>
                     {onAccept ? (
                         <UIDefaultButton onClick={onAccept} primary style={{ height: '26px' }} id={acceptButtonId}>
@@ -180,6 +183,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 </DialogFooter>
             );
         }
+        return element;
     }
 
     /**

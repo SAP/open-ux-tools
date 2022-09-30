@@ -79,6 +79,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
 
     /**
      * Initializes component properties.
+     *
      * @param {UIComboBoxProps} props
      */
     public constructor(props: UIComboBoxProps) {
@@ -257,7 +258,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private getCurrentSelectedIndex = (): number | undefined => {
         const baseCombobox = this.comboBox.current;
         if (!baseCombobox) {
-            return;
+            return undefined;
         }
         if (baseCombobox.state.currentPendingValueValidIndex !== -1) {
             return baseCombobox.state.currentPendingValueValidIndex;
@@ -424,7 +425,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     public handleChange: IComboBoxProps['onChange'] = (event, option): void => {
-        option && this.props.onHandleChange && this.props.onHandleChange(option.key);
+        if (option && this.props.onHandleChange) {
+            this.props.onHandleChange(option.key);
+        }
     };
 
     private onRenderListLoading = (): JSX.Element | null => {

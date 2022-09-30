@@ -18,6 +18,7 @@ const searchIcon = { iconName: UiIcons.Search };
 export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {ISearchBoxProps} props
      */
     public constructor(props: ISearchBoxProps) {

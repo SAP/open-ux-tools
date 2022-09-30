@@ -1,4 +1,4 @@
-import type { Package } from '@sap-ux/project-types';
+import type { Package } from '../types';
 
 /**
  * Helper to check for dependency/devDependency.

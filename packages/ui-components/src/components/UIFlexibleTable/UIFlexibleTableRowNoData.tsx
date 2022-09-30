@@ -9,6 +9,12 @@ export interface UIFlexibleTableRowNoDataProps {
     reverseBackground?: boolean;
 }
 
+/**
+ * Visualize a table row without data.
+ *
+ * @param props {UIFlexibleTableRowNoDataProps}
+ * @returns {React.Component}
+ */
 export function UIFlexibleTableRowNoData(props: UIFlexibleTableRowNoDataProps) {
     const { align = UIFlexibleTableNoDataAlignment.Center, noRowBackground, reverseBackground } = props;
     const rowClassName = composeClassNames('flexible-table-content-table-row-no-data', [

@@ -1,4 +1,4 @@
-import type { Manifest } from '@sap-ux/project-types';
+import type { Manifest } from '../webapp';
 
 export interface AllAppResults {
     appRoot: string;

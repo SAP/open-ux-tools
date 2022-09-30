@@ -211,7 +211,7 @@ importers:
 
   packages/fe-fpm-writer:
     specifiers:
-      '@sap-ux/project-types': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
@@ -232,7 +232,7 @@ importers:
       xml-formatter: 2.6.1
       xpath: 0.0.32
     devDependencies:
-      '@sap-ux/project-types': link:../project-types
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
@@ -372,31 +372,21 @@ importers:
 
   packages/project-access:
     specifiers:
-      '@sap-ux/project-types': workspace:*
       '@sap-ux/ui5-config': workspace:*
-      '@types/glob': 8.0.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
-      glob: 8.0.3
+      findit2: 2.2.3
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
+      vscode-uri: 3.0.6
     dependencies:
       '@sap-ux/ui5-config': link:../ui5-config
-      glob: 8.0.3
+      findit2: 2.2.3
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
     devDependencies:
-      '@sap-ux/project-types': link:../project-types
-      '@types/glob': 8.0.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
-
-  packages/project-types:
-    specifiers:
-      type-fest: 2.19.0
-      vscode-uri: 3.0.6
-    devDependencies:
-      type-fest: 2.19.0
       vscode-uri: 3.0.6
 
   packages/store:
@@ -514,7 +504,7 @@ importers:
 
   packages/ui5-application-writer:
     specifiers:
-      '@sap-ux/project-types': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
@@ -537,7 +527,7 @@ importers:
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
       semver: 7.3.5
     devDependencies:
-      '@sap-ux/project-types': link:../project-types
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -559,7 +549,7 @@ importers:
   packages/ui5-proxy-middleware:
     specifiers:
       '@sap-ux/logger': workspace:*
-      '@sap-ux/project-types': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/express': 4.17.13
       '@types/supertest': 2.0.12
@@ -578,7 +568,7 @@ importers:
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
     devDependencies:
-      '@sap-ux/project-types': link:../project-types
+      '@sap-ux/project-access': link:../project-access
       '@types/express': 4.17.13
       '@types/supertest': 2.0.12
       express: 4.17.2
@@ -587,7 +577,7 @@ importers:
 
   packages/ui5-test-writer:
     specifiers:
-      '@sap-ux/project-types': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -603,7 +593,7 @@ importers:
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
     devDependencies:
-      '@sap-ux/project-types': link:../project-types
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -9744,17 +9734,6 @@ packages:
       once: 1.4.0
       path-is-absolute: 1.0.1
 
-  /glob/8.0.3:
-    resolution: {integrity: sha512-ull455NHSHI/Y1FqGaaYFaLGkNMMJbavMrEGFXG/PGrg6y7sutWHUHrz6gy6WEBH6akM1M414dWKCNs+IhKdiQ==}
-    engines: {node: '>=12'}
-    dependencies:
-      fs.realpath: 1.0.0
-      inflight: 1.0.6
-      inherits: 2.0.4
-      minimatch: 5.1.0
-      once: 1.4.0
-    dev: false
-
   /global/4.4.0:
     resolution: {integrity: sha512-wv/LAoHdRE3BeTGz53FAamhGlPLhlssK45usmGFThIi4XqnBmjKQ16u+RNbP7WvigRZDxUsM0J3gcQ5yicaL0w==}
     dependencies:
@@ -15932,11 +15911,6 @@ packages:
   /type-fest/0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
-
-  /type-fest/2.19.0:
-    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
-    engines: {node: '>=12.20'}
-    dev: true
 
   /type-is/1.6.18:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}

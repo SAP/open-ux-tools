@@ -10,7 +10,7 @@ import {
     PATTERN_SUFFIX,
     validatePageConfig
 } from '../../../src/page/common';
-import type { ManifestNamespace } from '@sap-ux/project-types';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { CustomPage } from '../../../src/page/types';
 
 describe('common page functionality', () => {
@@ -185,9 +185,10 @@ describe('common page functionality', () => {
         test('provided navigation config is not valid for existing manifest', () => {
             const target = join(testDir, 'invalidateNavigation');
 
-            let manifest = JSON.parse(testAppManifest) as Manifest;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            manifest['sap.ui5']!.routing!.routes = [];
+            let manifest = JSON.parse(testAppManifest);
+            manifest['sap.ui5'] = manifest['sap.ui5'] ?? {};
+            manifest['sap.ui5'].routing = manifest['sap.ui5'].routing ?? {};
+            manifest['sap.ui5'].routing.routes = [];
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
 

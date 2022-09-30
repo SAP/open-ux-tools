@@ -88,6 +88,7 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
 export class UICallout extends React.Component<UICalloutProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {UICalloutProps} props
      */
     public constructor(props: UICalloutProps) {

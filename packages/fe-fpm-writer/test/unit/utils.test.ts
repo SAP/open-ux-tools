@@ -55,14 +55,11 @@ describe('insertTextAtPosition', () => {
             character: -1
         }
     ];
-    for (const negativeValue of negativeValues) {
-        // eslint-disable-next-line  no-loop-func
-        test(`Negative values - line=${negativeValue.line}, character=${negativeValue.character}`, () => {
-            const text = 'dummy';
-            const newContent = insertTextAtPosition(text, content, negativeValue);
-            expect(newContent).toEqual(content);
-        });
-    }
+    test.each(negativeValues)('Negative values - line=$line, character=$character', (negativeValue) => {
+        const text = 'dummy';
+        const newContent = insertTextAtPosition(text, content, negativeValue);
+        expect(newContent).toEqual(content);
+    });
 });
 
 describe('insertTextAtAbsolutePosition', () => {

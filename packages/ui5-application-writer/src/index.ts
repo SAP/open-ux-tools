@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { App, AppOptions, Package, UI5 } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
-import type { Manifest } from '@sap-ux/project-types';
+import type { Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';

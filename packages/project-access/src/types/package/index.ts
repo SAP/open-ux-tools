@@ -1,6 +1,6 @@
-import type { PackageJson } from 'type-fest';
+import type { PackageJson } from './package-json';
 
-export interface Package extends PackageJson {
+interface SapUxPackage {
     sapux: boolean | string[];
     sapuxLayer?: UI5FlexLayer;
     cds?: object;
@@ -9,3 +9,4 @@ export interface Package extends PackageJson {
 }
 
 export type UI5FlexLayer = 'VENDOR' | 'CUSTOMER_BASE';
+export type Package = PackageJson & SapUxPackage;

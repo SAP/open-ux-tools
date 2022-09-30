@@ -1,6 +1,6 @@
 import { join } from 'path';
-import { FileName } from '@sap-ux/project-types';
 import { UI5Config } from '@sap-ux/ui5-config';
+import { FileName } from '../constants';
 import { fileExists, readFile } from '../file';
 
 /**

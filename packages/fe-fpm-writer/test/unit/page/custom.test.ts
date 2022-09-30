@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import type { ManifestNamespace } from '@sap-ux/project-types';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { CustomPage } from '../../../src';
 import { generateCustomPage, validateBasePath } from '../../../src';
 import { FCL_ROUTER } from '../../../src/common/defaults';

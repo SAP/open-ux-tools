@@ -14,6 +14,7 @@ import { Breadcrumb } from '@fluentui/react';
 export class UIBreadcrumb extends React.Component<IBreadcrumbProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IBreadcrumbProps} props
      */
     public constructor(props: IBreadcrumbProps) {
