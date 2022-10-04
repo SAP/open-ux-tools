@@ -225,7 +225,9 @@ describe('Default (Winston) logger', () => {
         logger.warn('warning1');
         const nullTransport = logger.transports().find((t) => t instanceof NullTransport);
         expect(nullTransport).not.toBeUndefined();
-        logger.remove(nullTransport!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
+        if (nullTransport) {
+            logger.remove(nullTransport);
+        }
         logger.debug('debug1');
 
         expect(consoleLog).toBeCalledTimes(2);

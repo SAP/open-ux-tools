@@ -17,8 +17,9 @@ export const debug = prepareDebug();
  */
 export function prepareDebug(): { enabled: boolean; outputDir: string } {
     const debug = !!process.env['UX_DEBUG'];
-    // eslint-disable-next-line no-console
+
     if (debug) {
+        // eslint-disable-next-line no-console
         console.log(testOutputDir);
     }
     return { enabled: debug, outputDir: testOutputDir };
@@ -34,7 +35,6 @@ export const commonConfig = {
             id: 'test-template'
         }
     },
-    // eslint-disable-next-line quote-props
     package: {
         name: 'test.me'
     },

@@ -31,7 +31,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 id: 'test-template'
             }
         },
-        // eslint-disable-next-line quote-props
         package: {
             name: 'nods1',
             description: 'A Fiori application.'
@@ -137,7 +136,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             app: {
                 id: 'my.demo.App'
             },
-            // eslint-disable-next-line quote-props
             package: {
                 name: 'my.demo.App'
             },
@@ -161,7 +159,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             app: {
                 id: 'someId'
             },
-            // eslint-disable-next-line quote-props
             package: {
                 name: 'someId'
             },

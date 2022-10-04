@@ -59,8 +59,8 @@ describe('UAA', () => {
         const refreshToken = 'refreshToken';
         const mockedResponse = {
             data: {
-                access_token: accessToken, // eslint-disable-line camelcase
-                refresh_token: refreshToken // eslint-disable-line camelcase
+                access_token: accessToken,
+                refresh_token: refreshToken
             }
         };
 

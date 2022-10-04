@@ -13,16 +13,14 @@ describe('migration', () => {
         const mockSecureStore: jest.Mocked<SecureStore> = {
             save: jest.fn(),
             retrieve: jest.fn(),
-            // eslint-disable-next-line quote-props
-            delete: jest.fn(),
+            'delete': jest.fn(),
             getAll: jest.fn()
         };
 
         const mockDataProvider: jest.Mocked<DataProvider<ApiHubSettings, ApiHubSettingsKey>> = {
             read: jest.fn(),
             write: jest.fn(),
-            // eslint-disable-next-line quote-props
-            delete: jest.fn(),
+            'delete': jest.fn(),
             getAll: jest.fn()
         };
 

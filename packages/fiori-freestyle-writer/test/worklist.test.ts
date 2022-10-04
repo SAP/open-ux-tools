@@ -21,8 +21,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 id: 'test-template'
             }
         },
-        // eslint-disable-next-line quote-props
-        package: {
+        'package': {
             name: 'nods1',
             description: 'A Fiori application.'
         },

@@ -98,9 +98,9 @@ export class Uaa {
             this.url +
             '/oauth/authorize?' +
             qs.stringify({
-                response_type: 'code', // eslint-disable-line camelcase
-                redirect_uri: redirectUri, // eslint-disable-line camelcase
-                client_id: this.clientid // eslint-disable-line camelcase
+                response_type: 'code',
+                redirect_uri: redirectUri,
+                client_id: this.clientid
             })
         );
     }
@@ -120,9 +120,9 @@ export class Uaa {
             method: 'POST',
             data: qs.stringify({
                 code: authCode,
-                grant_type: 'authorization_code', // eslint-disable-line camelcase
-                redirect_uri: redirectUri, // eslint-disable-line camelcase
-                response_type: 'token' // eslint-disable-line camelcase
+                grant_type: 'authorization_code',
+                redirect_uri: redirectUri,
+                response_type: 'token'
             }),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -143,8 +143,8 @@ export class Uaa {
             auth: { username: this.clientid, password: this.clientsecret },
             method: 'POST',
             data: qs.stringify({
-                grant_type: 'refresh_token', // eslint-disable-line camelcase
-                refresh_token: refreshToken // eslint-disable-line camelcase
+                grant_type: 'refresh_token',
+                refresh_token: refreshToken
             }),
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

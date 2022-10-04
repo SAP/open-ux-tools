@@ -9,7 +9,6 @@ describe('LayeredRepositoryService', () => {
     const service = createForAbap({ baseURL: server }).layeredRepository();
     const config: AdaptationConfig = {
         namespace: 'apps/my.base.app/appVariants/customer.variant/',
-        // eslint-disable-next-line quote-props
         package: 'MY_PACKAGE',
         transport: 'MYTRANSPORT'
     } as AdaptationConfig;

@@ -12,8 +12,8 @@ export const debug = prepareDebug();
 
 export function prepareDebug(): { enabled: boolean; outputDir: string } {
     const debug = !!process.env['UX_DEBUG'];
-    // eslint-disable-next-line no-console
     if (debug) {
+        // eslint-disable-next-line no-console
         console.log(testOutputDir);
     }
     return { enabled: debug, outputDir: testOutputDir };
@@ -57,7 +57,6 @@ export const feBaseConfig = (
         appOptions: {
             loadReuseLibs: true
         },
-        // eslint-disable-next-line quote-props
         package: {
             name: appId,
             description: 'A Fiori application.'

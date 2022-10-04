@@ -227,7 +227,7 @@
             "error",
             "as-needed",
             {
-                "keywords": true,
+                "keywords": false,
                 "unnecessary": false
             }
         ],

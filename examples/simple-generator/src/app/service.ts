@@ -58,7 +58,7 @@ export async function getServiceInfo(generator: Generator): Promise<ServiceInfo>
 async function getCredentials(url: string, client?: string): Promise<AxiosBasicCredentials | undefined> {
     const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
     const system = await systemService.read(new BackendSystemKey({ url, client }));
-    return system?.username && system.password ? { username: system.username, password: system.password } : undefined;
+    return system?.username ? { username: system.username, password: system.password || '' } : undefined;
 }
 
 /**
@@ -79,7 +79,7 @@ async function storeCredentials(generator: Generator, provider: AbapServiceProvi
             type: 'input',
             name: 'name',
             message: 'System name:',
-            default: new URL(provider.defaults.baseURL!).hostname, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+            default: new URL(provider.defaults.baseURL!).hostname,
             validate: (answer) => !!answer
         }
     ]);
@@ -88,7 +88,7 @@ async function storeCredentials(generator: Generator, provider: AbapServiceProvi
             const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
             const system = new BackendSystem({
                 name,
-                url: provider.defaults.baseURL!, // eslint-disable-line @typescript-eslint/no-non-null-assertion
+                url: provider.defaults.baseURL!,
                 client: provider.defaults.params?.['sap-client'],
                 username: provider.defaults.auth?.username,
                 password: provider.defaults.auth?.password
