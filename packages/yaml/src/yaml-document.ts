@@ -202,8 +202,8 @@ export class YamlDocument {
      * @param {string} path.path - the path object's path
      * @param {object} path.matcher - key/value pair identifying the object
      * @param {object} path.value - the path object's value
-     * @param path.matcher.key - the key
-     * @param path.matcher.value - the value
+     * @param path.matcher.key - name of the key
+     * @param path.matcher.value - value of the key
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
      */
@@ -223,10 +223,12 @@ export class YamlDocument {
         }
 
         const node = seq.items.find((nodeInput) => nodeInput.toJSON()[matcher.key] === matcher.value);
-        const newNode = this.document.createNode(merge(node?.toJSON(), value));
-        if (node) {
-            seq.items.splice(seq.items.indexOf(node), 1, newNode);
+        if (!node) {
+            throw new Error(t('error.nodeNotFoundMatching', { path, key: matcher.key, value: matcher.value }));
         }
+
+        const newNode = this.document.createNode(merge(node.toJSON(), value));
+        seq.items.splice(seq.items.indexOf(node), 1, newNode);
 
         return this;
     }
@@ -266,10 +268,10 @@ export class YamlDocument {
     }
 
     /**
-     * @param root0 - root0
-     * @param root0.start - start
-     * @param root0.path - path
-     * @returns {unknown} - yaml node
+     * @param options - Options
+     * @param options.start - Optional collection type to start looking from
+     * @param options.path - String path of the node
+     * @returns {unknown} - Node, if found. Will throw an error if not
      */
     getNode({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): unknown {
         if (start) {
@@ -288,10 +290,10 @@ export class YamlDocument {
     }
 
     /**
-     * @param root0 - root0
-     * @param root0.start - start
-     * @param root0.path - path
-     * @returns {unknown}  - yaml sequence
+     * @param options - Options
+     * @param options.start - Optional collection type to start looking from
+     * @param options.path - String path of the sequence
+     * @returns {YAMLSeq} - Sequence, if found. Will throw an error if not
      */
     getSequence({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLSeq {
         const a = this.getNode({ start, path });
@@ -303,10 +305,10 @@ export class YamlDocument {
     }
 
     /**
-     * @param root0 - root0
-     * @param root0.start - start
-     * @param root0.path - path
-     * @returns {YAMLMap}  - yaml map
+     * @param options - Options
+     * @param options.start - Optional collection type to start looking from
+     * @param options.path - String path of the map
+     * @returns {YAMLMap} - Map, if found. Will throw an error if not
      */
     getMap({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLMap {
         const a = this.getNode({ start, path });
@@ -318,9 +320,9 @@ export class YamlDocument {
     }
 
     /**
-     * @param sequence - yaml sequence
-     * @param predicate - predicate
-     * @returns {unknown} - item
+     * @param sequence - Sequence to find the item in
+     * @param predicate - predicate function to determine the match
+     * @returns {unknown} - Item node if found. Or undefined if not
      */
     findItem(sequence: YAMLSeq, predicate: (o: any) => boolean): unknown {
         const toJson = (o: unknown) =>
@@ -334,12 +336,11 @@ export class YamlDocument {
      *
      * @private
      * @template T
-     * @param {T} path - the path object
+     * @param {string} path - string path
      * @returns {string[]} - the path array
      * @memberof YamlDocument
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    private toPathArray<T>(path: string): string[] {
+    private toPathArray(path: string): string[] {
         const result = path
             ?.toString()
             .split('.')
