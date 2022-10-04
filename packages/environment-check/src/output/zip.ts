@@ -25,7 +25,6 @@ function byteNumberToSizeString(byteNumber: number): string {
  *
  * @param results - environment check results
  * @param targetFile - path and filename of target zip archive. Default is 'envcheck-results.zip'.
- * @param markdownOnly - only include markdown in the zip
  */
 export function storeResultsZip(results: EnvironmentCheckResult, targetFile = 'envcheck-results.zip'): void {
     const zip = archiver.default('zip', { zlib: { level: 9 } });

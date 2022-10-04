@@ -294,7 +294,6 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
  * Converts the envcheck results to markdown report.
  *
  * @param results - envcheck results
- * @param isDestinationsChecked - has destinations been checked, default is true
  * @returns - markdown report
  */
 export function convertResultsToMarkdown(results: EnvironmentCheckResult): string {

@@ -1,9 +1,8 @@
-import axios from 'axios';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from './destination';
 import { getDestinationsFromWorkspace } from './workspace';
 import { getLogger } from '../logger';
-import { core as basCoreApi, devspace } from '@sap/bas-sdk';
+import { devspace } from '@sap/bas-sdk';
 import type {
     DestinationResults,
     CheckEnvironmentOptions,
