@@ -2,7 +2,7 @@
 
 exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check empty destination table 1`] = `
 "
-# SAP Fiori tools - Environment Check in SAP Business Application Studio
+# SAP Fiori tools - Environment Check
 
 <br>
 
@@ -29,7 +29,7 @@ No messages<br>
 
 exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check if writer is creating output appropriately 1`] = `
 "
-# SAP Fiori tools - Environment Check in SAP Business Application Studio
+# SAP Fiori tools - Environment Check
 
 <br>
 
@@ -176,7 +176,7 @@ Request to URL: 'http://SYS.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catal
 
 exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check markdown with no checks 1`] = `
 "
-# SAP Fiori tools - Environment Check in SAP Business Application Studio
+# SAP Fiori tools - Environment Check
 
 <br>
 
@@ -188,7 +188,7 @@ No messages<br>
 
 exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check markdown with no destinations checked 1`] = `
 "
-# SAP Fiori tools - Environment Check in SAP Business Application Studio
+# SAP Fiori tools - Environment Check
 
 <br>
 

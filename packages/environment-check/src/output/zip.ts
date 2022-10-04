@@ -2,6 +2,7 @@ import { createWriteStream, existsSync } from 'fs';
 import { basename, dirname, join } from 'path';
 import * as archiver from 'archiver';
 import type { EnvironmentCheckResult } from '..';
+import { Check } from '..';
 import { convertResultsToMarkdown } from '.';
 import { t } from '../i18n';
 
@@ -18,6 +19,32 @@ function byteNumberToSizeString(byteNumber: number): string {
     const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log(byteNumber) / Math.log(1024));
     return `${parseFloat((byteNumber / Math.pow(1024, i)).toFixed(2))} ${units[i]}`;
+}
+
+/**
+ * Convert results to JSON.
+ *
+ * @param results - environment check results
+ * @returns json string
+ */
+function convertResultsToJson(results: EnvironmentCheckResult): string {
+    const envCheckResults = {
+        messages: results.messages
+    } as EnvironmentCheckResult;
+
+    if (results.requestedChecks?.has(Check.Environment)) {
+        envCheckResults.environment = results.environment;
+    }
+
+    if (results.requestedChecks?.has(Check.DestResults)) {
+        envCheckResults.destinationResults = results.destinationResults;
+    }
+
+    if (results.requestedChecks?.has(Check.Destinations)) {
+        envCheckResults.destinations = results.destinations;
+    }
+
+    return JSON.stringify(envCheckResults, null, 4);
 }
 
 /**
@@ -48,7 +75,7 @@ export function storeResultsZip(results: EnvironmentCheckResult, targetFile = 'e
     const markdown = Buffer.from(convertResultsToMarkdown(results));
     zip.append(markdown, { name: 'envcheck-results.md' });
 
-    const jsonString = Buffer.from(JSON.stringify(results, null, 4));
+    const jsonString = Buffer.from(convertResultsToJson(results));
     zip.append(jsonString, { name: 'envcheck-results.json' });
 
     zip.finalize();

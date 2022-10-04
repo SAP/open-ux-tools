@@ -299,7 +299,7 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
 export function convertResultsToMarkdown(results: EnvironmentCheckResult): string {
     const writer = getMarkdownWriter();
 
-    writer.addH1(results.markdownTitle ?? t('markdownText.envCheckTitle'));
+    writer.addH1(t('markdownText.envCheckTitle'));
 
     if (results.requestedChecks?.has(Check.Environment)) {
         writeEnvironment(writer, results.environment);
@@ -309,7 +309,7 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
         writeDestinationResults(writer, results.destinationResults, results.destinations);
     }
 
-    if (results.requestedChecks?.has(Check.Destination)) {
+    if (results.requestedChecks?.has(Check.Destinations)) {
         writeDestinations(writer, results.destinations);
     }
 

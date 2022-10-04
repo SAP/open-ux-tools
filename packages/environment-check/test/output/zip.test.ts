@@ -1,6 +1,7 @@
 import * as mockFs from 'fs';
 import type * as archiver from 'archiver';
 import { archiveProject, storeResultsZip } from '../../src/output';
+import { Check } from '../../src';
 
 // Need to mock fs and archiver on top level before any test is run
 jest.mock('fs');
@@ -38,9 +39,10 @@ describe('Test to check zip save, storeResultsZip()', () => {
             }
         });
         console.log = jest.fn();
+        const requestedChecksSet = new Set([Check.Environment, Check.Destinations, Check.DestResults]);
 
         // Test execution
-        storeResultsZip({});
+        storeResultsZip({ requestedChecks: requestedChecksSet });
         writeStreamCloseCallback();
 
         // Result check

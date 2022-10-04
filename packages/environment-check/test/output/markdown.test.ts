@@ -9,7 +9,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
-const requestedChecksSet = new Set([Check.Environment, Check.Destination, Check.DestResults]);
+const requestedChecksSet = new Set([Check.Environment, Check.Destinations, Check.DestResults]);
 
 const data = {
     destinationResults: {
@@ -196,11 +196,11 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check output for empty results', () => {
         const envCheckResults = {
-            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
+            markdownTitle: `SAP Fiori tools - Environment Check`,
             requestedChecks: requestedChecksSet
         };
         const result = convertResultsToMarkdown(envCheckResults);
-        expect(result).toMatch('# SAP Fiori tools - Environment Check in SAP Business Application Studio');
+        expect(result).toMatch('# SAP Fiori tools - Environment Check');
         expect(result).toMatch('## Environment');
         expect(result).toMatch('## Destination Details (0)');
         expect(result).toMatch('## All Destinations (0)');
@@ -250,7 +250,6 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     test('Check empty destination table', () => {
         const result = convertResultsToMarkdown({
             destinations: [],
-            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
             requestedChecks: requestedChecksSet
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
@@ -260,7 +259,6 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         const envCheck = new Set([Check.Environment]);
         const result = convertResultsToMarkdown({
             environment: data.environment as any,
-            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
             requestedChecks: envCheck
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
@@ -269,7 +267,6 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     test('Check markdown with no checks', () => {
         const result = convertResultsToMarkdown({
             environment: data.environment as any,
-            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
             requestedChecks: new Set([])
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();

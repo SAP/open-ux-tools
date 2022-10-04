@@ -127,15 +127,6 @@ async function getToolsExtensions(): Promise<{
 }
 
 /**
- * Returns the title used in the markdown file.
- *
- * @returns markdown title
- */
-export function getMarkdownTitle(): string {
-    return isAppStudio() ? t('markdownText.basEnvCheckTitle') : t('markdownText.vsCodeEnvCheckTitle');
-}
-
-/**
  * Internal function to check a destination.
  *
  * @param destination - the destination to get detailed results for
@@ -234,8 +225,6 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
     const { environment, messages } = await getEnvironment();
     logger.push(...messages);
 
-    const markdownTitle = getMarkdownTitle();
-
     if (isAppStudio()) {
         const deepDiveDestinations = options?.destinations ? new Set(options.destinations) : new Set<string>();
         if (options?.workspaceRoots?.length > 0) {
@@ -261,7 +250,6 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
         environment,
         destinations,
         destinationResults,
-        markdownTitle,
         messages: logger.getMessages()
     };
 }

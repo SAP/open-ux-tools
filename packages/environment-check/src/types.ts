@@ -9,8 +9,8 @@ export interface CheckEnvironmentOptions {
 
 export enum Check {
     Environment = 'environment',
-    Destination = 'destination',
-    DestResults = 'destinationResults'
+    DestResults = 'destinationResults',
+    Destinations = 'destinations'
 }
 
 export enum OutputMode {
@@ -101,7 +101,6 @@ export interface EnvironmentCheckResult {
     environment?: Environment;
     destinations?: Destination[];
     destinationResults?: { [dest: string]: DestinationResults };
-    markdownTitle?: string;
     requestedChecks?: Set<Check>;
     messages?: ResultMessage[];
 }
