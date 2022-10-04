@@ -12,7 +12,7 @@ import type {
     ResultMessage,
     ToolsExtensions
 } from '../types';
-import { DevelopmentEnvironment, Extensions } from '../types';
+import { Check, DevelopmentEnvironment, Extensions } from '../types';
 import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion } from './getInstalled';
 import { t } from '../i18n';
 
@@ -222,6 +222,8 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
     let destinations: Destination[];
     let destinationResults: { [dest: string]: DestinationResults };
 
+    const requestedChecks: Set<Check> = new Set();
+    requestedChecks.add(Check.Environment);
     const { environment, messages } = await getEnvironment();
     logger.push(...messages);
 
@@ -233,9 +235,14 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
             workspaceResults.destinations.forEach((dest) => deepDiveDestinations.add(dest));
         }
 
+        requestedChecks.add(Check.Destinations);
         const basDestResults = await checkBASDestinations();
         destinations = basDestResults.destinations;
         logger.push(...basDestResults.messages);
+
+        if (deepDiveDestinations.size > 0) {
+            requestedChecks.add(Check.DestResults);
+        }
 
         const destResults = await getDestinationsResults(
             deepDiveDestinations,
@@ -250,6 +257,7 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
         environment,
         destinations,
         destinationResults,
-        messages: logger.getMessages()
+        messages: logger.getMessages(),
+        requestedChecks: requestedChecks
     };
 }
