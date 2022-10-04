@@ -12,6 +12,7 @@ import {
 } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import type { Logger } from '@sap-ux/logger';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { writeFileSync } from 'fs';
@@ -99,10 +100,24 @@ async function createDeployService(target: AbapTarget, config: CommonOptions): P
  * @param testMode - if set to true then only a test deployment is executed without deploying the actual archive in the backend
  * @param config
  */
-export async function deploy(archive: Buffer, config: AbapDeployConfig) {
+export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger) {
     if (config.keep) {
         writeFileSync(`archive-${Date.now()}.zip`, archive);
     }
     const service = await createDeployService(config.target, config);
-    await service.deploy(archive, config.app, config.test);
+    try {
+        if (!config.strictSsl) {
+            logger.warn(
+                'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'
+            );
+        }
+        logger.info(`Starting deployment${config.test === true ? ' in test mode' : ''}.`);
+        await service.deploy(archive, config.app, config.test);
+    } catch (e) {
+        logger.error(
+            'Deployment has failed. Please ensure there is a valid deployment archive file in the dist folder of the application that can be deployed.'
+        );
+        logger.debug((e as Error).message);
+        throw e;
+    }
 }

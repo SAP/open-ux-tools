@@ -1,6 +1,5 @@
 import { config } from 'dotenv';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { t } from '../messages';
 import type { AbapDeployConfig } from '../types';
 
 /**
@@ -26,7 +25,7 @@ export function replaceEnvVariables(obj: object): void {
  * @param property Invalid missing property
  */
 function throwConfigMissingError(property: string): void {
-    throw new Error(t('INVALID_DEPLOYMENT_CONFIGURATION_ERROR', { property }));
+    throw new Error(`Invalid deployment configuration. Property ${property} is missing.`);
 }
 
 /**
@@ -36,7 +35,7 @@ function throwConfigMissingError(property: string): void {
  */
 export function validateConfig(config: AbapDeployConfig | undefined): AbapDeployConfig {
     if (!config) {
-        throw new Error(t('NO_CONFIG_ERROR'));
+        throw new Error('The deployment configuration is missing.');
     }
 
     if (config.target) {

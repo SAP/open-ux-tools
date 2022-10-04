@@ -4,7 +4,6 @@ import { deploy, validateConfig } from '../base';
 import type { CliOptions } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
-import { t } from '../messages';
 import { getDeploymentConfig, mergeConfig } from './config';
 
 program
@@ -74,15 +73,9 @@ export async function run(): Promise<void> {
         logger.debug(config);
         validateConfig(config);
 
-        logger.info(t('CREATING_ARCHIVE_UI5'));
         const archive = await getArchive(logger, options);
-        logger.info(t('ARCHIVE_CREATED'));
-
-        logger.info(t('STARTING_DEPLOYMENT', { test: config.test }));
-        deploy(archive, config);
+        deploy(archive, config, logger);
     } catch (error) {
-        logger.error(t('DEPLOYMENT_FAILED'));
-        logger.debug(error!);
         program.error((error as Error).message, { exitCode: 1 });
     }
 }

@@ -1,6 +1,5 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { readFileSync } from 'fs';
-import { t } from '../messages';
 import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions } from '../types';
 import { NAME } from '../types';
 
@@ -15,7 +14,7 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
     const ui5Config = await UI5Config.newInstance(content);
     const config = ui5Config.findCustomTask<AbapDeployConfig>(NAME)?.configuration;
     if (!config) {
-        throw new Error(t('NO_CONFIG_ERROR'));
+        throw new Error('The deployment configuration is missing.');
     }
     return config;
 }

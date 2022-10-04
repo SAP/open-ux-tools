@@ -15,6 +15,7 @@ export async function createUi5Archive(
     workspace: DuplexCollection,
     options: TaskParameters<unknown>['options']
 ) {
+    logger.info('Creating archive with UI5 build result.');
     const prefix = `/resources/${options.projectName}/`;
     const zip = new ZipFile();
     const resources = await workspace.byGlob(`${prefix}**/*`);
@@ -24,5 +25,6 @@ export async function createUi5Archive(
         const buffer = await resource.getBuffer();
         zip.addBuffer(buffer, path);
     }
+    logger.info('Archive created.');
     return createBuffer(zip);
 }

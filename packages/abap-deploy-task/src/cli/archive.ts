@@ -3,7 +3,6 @@ import { readdirSync, readFile, statSync } from 'fs';
 import { join, relative } from 'path';
 import type { CliOptions } from '../types';
 import { createBuffer } from '../base/archive';
-import { t } from '../messages';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 /**
@@ -12,12 +11,14 @@ import type { ToolsLogger } from '@sap-ux/logger';
  * @param path - path to the zip file
  * @returns Buffer containing the zip file
  */
-function getArchiveFromPath(path: string): Promise<Buffer> {
+function getArchiveFromPath(logger: ToolsLogger, path: string): Promise<Buffer> {
     return new Promise((resolve, reject) => {
+        logger.info(`Loading archive from ${path}`);
         readFile(path, (err, data) => {
             if (err) {
-                reject(err);
+                reject(`Archive loading has failed. Please ensure ${path} is valid and accesible.`);
             } else {
+                logger.info('Archive loaded.');
                 resolve(data);
             }
         });
@@ -32,7 +33,9 @@ function getArchiveFromPath(path: string): Promise<Buffer> {
  */
 async function fetchArchiveFromUrl(url: string): Promise<Buffer> {
     // TODO
-    throw new Error(t('ACHIVE_FROM_EXTERNAL_URL_ERROR', { url }));
+    throw new Error(
+        `The archive url you provided could not be reached. Please ensure the URL is accessible and does not require authentication. ${url}`
+    );
 }
 
 /**
@@ -64,14 +67,20 @@ function getFileNames(path: string): string[] {
  * @returns Buffer containing the zip file
  */
 function createArchiveFromFolder(logger: ToolsLogger, path: string): Promise<Buffer> {
-    const files = getFileNames(path);
-    const zip = new ZipFile();
-    for (const filePath of files) {
-        const relPath = relative(path, filePath);
-        logger.debug(relPath);
-        zip.addFile(filePath, relPath);
+    try {
+        logger.info(`Creating archive from ${path}.`);
+        const files = getFileNames(path);
+        const zip = new ZipFile();
+        for (const filePath of files) {
+            const relPath = relative(path, filePath);
+            logger.debug(relPath);
+            zip.addFile(filePath, relPath);
+        }
+        logger.info('Archive created.');
+        return createBuffer(zip);
+    } catch (error) {
+        throw new Error(`Archive creation has failed. Please ensure ${path} is valid and accesible.`);
     }
-    return createBuffer(zip);
 }
 
 /**
@@ -83,7 +92,7 @@ function createArchiveFromFolder(logger: ToolsLogger, path: string): Promise<Buf
  */
 export async function getArchive(logger: ToolsLogger, options: CliOptions): Promise<Buffer> {
     if (options.archivePath) {
-        return getArchiveFromPath(options.archivePath);
+        return getArchiveFromPath(logger, options.archivePath);
     } else if (options.archiveUrl) {
         return fetchArchiveFromUrl(options.archiveUrl);
     } else {
