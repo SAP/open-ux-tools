@@ -28,9 +28,7 @@ function byteNumberToSizeString(byteNumber: number): string {
  * @returns json string
  */
 function convertResultsToJson(results: EnvironmentCheckResult): string {
-    const envCheckResults = {
-        messages: results.messages
-    } as EnvironmentCheckResult;
+    const envCheckResults = {} as EnvironmentCheckResult;
 
     if (results.requestedChecks?.has(Check.Environment)) {
         envCheckResults.environment = results.environment;
@@ -43,6 +41,8 @@ function convertResultsToJson(results: EnvironmentCheckResult): string {
     if (results.requestedChecks?.has(Check.Destinations)) {
         envCheckResults.destinations = results.destinations;
     }
+
+    envCheckResults.messages = results.messages;
 
     return JSON.stringify(envCheckResults, null, 4);
 }
