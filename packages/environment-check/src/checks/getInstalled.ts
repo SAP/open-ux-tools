@@ -14,7 +14,7 @@ const globalNpmBAS = join('/extbin/npm/globals/lib');
  * @param vsixFile - file to be checked
  * @returns boolean if file is required
  */
-function _isExtensionRequired(vsixFile: string): boolean {
+function isExtensionRequired(vsixFile: string): boolean {
     for (const reqExt of Object.values(Extensions)) {
         if (vsixFile.includes(reqExt)) {
             return true;
@@ -28,10 +28,10 @@ function _isExtensionRequired(vsixFile: string): boolean {
  *
  * @returns list of extension ids and versions
  */
-async function _getExtensionsBAS(): Promise<{ [id: string]: { version: string } }> {
+async function getExtensionsBAS(): Promise<{ [id: string]: { version: string } }> {
     const files = readdirSync(pluginsDirBAS);
     const versions = files
-        .filter((vsixFile) => _isExtensionRequired(vsixFile))
+        .filter((vsixFile) => isExtensionRequired(vsixFile))
         .reduce((returnObject, current) => {
             const lastIndex = current.lastIndexOf('-');
             const id = current.slice(0, lastIndex);
@@ -49,7 +49,7 @@ async function _getExtensionsBAS(): Promise<{ [id: string]: { version: string } 
  *
  * @returns list of extension ids and versions
  */
-async function _getExtensionsVSCode(): Promise<{ [id: string]: { version: string } }> {
+async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string } }> {
     const output = await spawnCommand('code', ['--list-extensions', '--show-versions']);
     const versions = output
         .split('\n')
@@ -74,9 +74,9 @@ export async function getInstalledExtensions(): Promise<{ [id: string]: { versio
     let versions;
     try {
         if (isAppStudio()) {
-            versions = await _getExtensionsBAS();
+            versions = await getExtensionsBAS();
         } else {
-            versions = await _getExtensionsVSCode();
+            versions = await getExtensionsVSCode();
         }
     } catch (e) {
         console.error(t('error.retrievingExtensions', { error: e.message }));
@@ -105,7 +105,7 @@ export async function getCFCliToolVersion(): Promise<string> {
  *
  * @returns version
  */
-async function _getFioriGenBAS(): Promise<string> {
+async function getFioriGenBAS(): Promise<string> {
     let version;
     const pathToPackageJson = join(globalNpmBAS, 'package.json');
     if (existsSync(pathToPackageJson)) {
@@ -120,7 +120,7 @@ async function _getFioriGenBAS(): Promise<string> {
  *
  * @returns version
  */
-async function _getFioriGenGlobalRoot(): Promise<string> {
+async function getFioriGenGlobalRoot(): Promise<string> {
     let version;
     let globalNpmPath = await spawnCommand(npmCommand, ['root', '--location=global']);
     globalNpmPath = globalNpmPath.trim();
@@ -142,10 +142,10 @@ export async function getFioriGenVersion(): Promise<string> {
     let fioriGenVersion: string;
     try {
         if (isAppStudio()) {
-            fioriGenVersion = await _getFioriGenBAS();
+            fioriGenVersion = await getFioriGenBAS();
         }
         if (!fioriGenVersion) {
-            fioriGenVersion = await _getFioriGenGlobalRoot();
+            fioriGenVersion = await getFioriGenGlobalRoot();
         }
     } catch {
         return t('info.notInstalledOrNotFound');

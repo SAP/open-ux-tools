@@ -50,41 +50,6 @@ describe('Test to check zip save, storeResultsZip()', () => {
         expect(console.log).toBeCalledWith(`Results written to file 'envcheck-results.zip' 117.74 MB`);
     });
 
-    test('Check if writer is creating output appropriately (markdown only)', () => {
-        // Mock setup
-        zipMock = {
-            on: jest.fn(),
-            pipe: jest.fn(),
-            append: jest.fn(),
-            finalize: jest.fn(),
-            pointer: () => 123456789
-        } as unknown as archiver.Archiver;
-        let writeStreamCloseCallback;
-        const writeStreamMock = {
-            on: (name, callback) => {
-                if (name === 'close') {
-                    writeStreamCloseCallback = callback;
-                }
-            }
-        } as unknown as mockFs.WriteStream & { on: jest.Mock };
-        jest.spyOn(mockFs, 'createWriteStream').mockImplementation((filename) => {
-            if (filename === 'envcheck-results.zip') {
-                return writeStreamMock;
-            }
-        });
-        console.log = jest.fn();
-
-        // Test execution
-        storeResultsZip({}, undefined, true);
-        writeStreamCloseCallback();
-
-        // Result check
-        expect(zipMock.pipe).toBeCalledWith(writeStreamMock);
-        expect(zipMock.append).toBeCalledTimes(1);
-        expect(zipMock.finalize).toBeCalled();
-        expect(console.log).toBeCalledWith(`Results written to file 'envcheck-results.zip' 117.74 MB`);
-    });
-
     test('Check writer for file size 0 bytes, different filename, and ENONT warning', () => {
         // Mock setup
         zipMock = {

@@ -1,5 +1,5 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
-import { Severity, UrlServiceType } from '../types';
+import { Severity, UrlServiceType, Check } from '../types';
 import type {
     Destination,
     DestinationResults,
@@ -297,15 +297,23 @@ function writeMessages(writer: MarkdownWriter, messages: ResultMessage[] = []): 
  * @param isDestinationsChecked - has destinations been checked, default is true
  * @returns - markdown report
  */
-export function convertResultsToMarkdown(results: EnvironmentCheckResult, isDestinationsChecked = true): string {
+export function convertResultsToMarkdown(results: EnvironmentCheckResult): string {
     const writer = getMarkdownWriter();
 
     writer.addH1(results.markdownTitle ?? t('markdownText.envCheckTitle'));
-    writeEnvironment(writer, results.environment);
-    if (isDestinationsChecked) {
+
+    if (results.requestedChecks?.has(Check.Environment)) {
+        writeEnvironment(writer, results.environment);
+    }
+
+    if (results.requestedChecks?.has(Check.DestResults)) {
         writeDestinationResults(writer, results.destinationResults, results.destinations);
+    }
+
+    if (results.requestedChecks?.has(Check.Destination)) {
         writeDestinations(writer, results.destinations);
     }
+
     writeMessages(writer, results.messages);
 
     writer.addSub(

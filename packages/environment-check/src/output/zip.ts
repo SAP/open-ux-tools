@@ -27,11 +27,7 @@ function byteNumberToSizeString(byteNumber: number): string {
  * @param targetFile - path and filename of target zip archive. Default is 'envcheck-results.zip'.
  * @param markdownOnly - only include markdown in the zip
  */
-export function storeResultsZip(
-    results: EnvironmentCheckResult,
-    targetFile = 'envcheck-results.zip',
-    markdownOnly = false
-): void {
+export function storeResultsZip(results: EnvironmentCheckResult, targetFile = 'envcheck-results.zip'): void {
     const zip = archiver.default('zip', { zlib: { level: 9 } });
     const writeStream = createWriteStream(targetFile);
     writeStream.on('close', () => {
@@ -53,10 +49,8 @@ export function storeResultsZip(
     const markdown = Buffer.from(convertResultsToMarkdown(results));
     zip.append(markdown, { name: 'envcheck-results.md' });
 
-    if (!markdownOnly) {
-        const jsonString = Buffer.from(JSON.stringify(results, null, 4));
-        zip.append(jsonString, { name: 'envcheck-results.json' });
-    }
+    const jsonString = Buffer.from(JSON.stringify(results, null, 4));
+    zip.append(jsonString, { name: 'envcheck-results.json' });
 
     zip.finalize();
 }

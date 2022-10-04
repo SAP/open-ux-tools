@@ -7,6 +7,12 @@ export interface CheckEnvironmentOptions {
     credentialCallback?: (destination: Destination) => Promise<{ username: string; password: string }>;
 }
 
+export enum Check {
+    Environment = 'environment',
+    Destination = 'destination',
+    DestResults = 'destinationResults'
+}
+
 export enum OutputMode {
     Json = 'json',
     Markdown = 'markdown',
@@ -96,6 +102,7 @@ export interface EnvironmentCheckResult {
     destinations?: Destination[];
     destinationResults?: { [dest: string]: DestinationResults };
     markdownTitle?: string;
+    requestedChecks?: Set<Check>;
     messages?: ResultMessage[];
 }
 

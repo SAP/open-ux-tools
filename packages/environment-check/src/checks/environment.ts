@@ -3,7 +3,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from './destination';
 import { getDestinationsFromWorkspace } from './workspace';
 import { getLogger } from '../logger';
-import { core as basCoreApi } from '@sap/bas-sdk';
+import { core as basCoreApi, devspace } from '@sap/bas-sdk';
 import type {
     DestinationResults,
     CheckEnvironmentOptions,
@@ -35,7 +35,7 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
 
     try {
         if (isAppStudio()) {
-            environment.basDevSpace = await getSbasDevspace();
+            environment.basDevSpace = (await devspace.getDevspaceInfo()).packDisplayName;
             logger.info(t('info.basDevSpace', { basDevSpace: environment.basDevSpace }));
         }
     } catch (error) {
@@ -60,7 +60,7 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
  * @param extensions to be checked
  * @returns extension with version numbers
  */
-function __getExtVersions(extensions: { [id: string]: { version: string } }): { [id: string]: string } {
+function getExtVersions(extensions: { [id: string]: { version: string } }): { [id: string]: string } {
     return {
         appWizard: extensions[Extensions.AppWizard]
             ? extensions[Extensions.AppWizard]['version']
@@ -105,7 +105,7 @@ async function getToolsExtensions(): Promise<{
     };
 
     if (extensions) {
-        const extVersions = __getExtVersions(extensions);
+        const extVersions = getExtVersions(extensions);
         toolsExtensions = {
             ...toolsExtensions,
             ...extVersions
@@ -265,27 +265,4 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
         markdownTitle,
         messages: logger.getMessages()
     };
-}
-
-/**
- * Obtain dev space type from SBAS rest api.
- *
- * @returns SBAS Dev Space Name. Empty string is returned if unable to fetch workspace type or the environment is not SBAS
- */
-async function getSbasDevspace(): Promise<string> {
-    if (isAppStudio()) {
-        const h20Url = basCoreApi.getEnvValue('H2O_URL');
-        let workspaceId = '';
-        if (process.env.WORKSPACE_ID) {
-            workspaceId = process.env.WORKSPACE_ID.replace('workspaces-', '');
-        }
-        const url = `${h20Url}/ws-manager/api/v1/workspace/${workspaceId}`;
-        const response = await axios.get(url);
-        if (response.data) {
-            const workspaceConfig = response.data;
-            const devspace = workspaceConfig?.config?.annotations?.pack;
-            return devspace ? devspace : '';
-        }
-    }
-    return '';
 }

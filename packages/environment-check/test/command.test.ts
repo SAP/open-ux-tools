@@ -1,24 +1,3 @@
-// import { spawnCommand } from '../src/command';
-// import { spawn } from 'child_process';
-
-// jest.mock('child_process', () => ({
-//     spawn: jest.fn()
-// }));
-// const mockSpawn = spawn as jest.Mock;
-// describe('Test command functions', () => {
-//     beforeEach(() => {
-//         jest.resetAllMocks();
-//     });
-
-//     test('spawnCommand', async () => {
-//         mockSpawn.mockImplementationOnce(() => {
-//             return 'some/path/lib';
-//         });
-//         const output = await spawnCommand('npm', ['root', '-g']);
-
-//     });
-// });
-
 import { spawnCommand } from '../src/command';
 import * as cp from 'child_process';
 

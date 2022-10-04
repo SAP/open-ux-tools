@@ -1,4 +1,4 @@
-import type { EnvironmentCheckResult } from '../../src';
+import { Check, EnvironmentCheckResult } from '../../src';
 import { convertResultsToMarkdown, UrlServiceType } from '../../src';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
@@ -8,6 +8,8 @@ jest.mock('@sap-ux/btp-utils', () => ({
 }));
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
+
+const requestedChecksSet = new Set([Check.Environment, Check.Destination, Check.DestResults]);
 
 const data = {
     destinationResults: {
@@ -179,7 +181,8 @@ const data = {
             Name: 'DUPLICATE'
         }
     ],
-    markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
+    markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
+    requestedChecks: requestedChecksSet
 };
 
 describe('Test to check conversion to markdown, convertResultsToMarkdown()', () => {
@@ -193,7 +196,8 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check output for empty results', () => {
         const envCheckResults = {
-            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
+            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
+            requestedChecks: requestedChecksSet
         };
         const result = convertResultsToMarkdown(envCheckResults);
         expect(result).toMatch('# SAP Fiori tools - Environment Check in SAP Business Application Studio');
@@ -204,7 +208,8 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check destination details with no v2 or v4 service', () => {
         const result = convertResultsToMarkdown({
-            destinationResults: { ABC: { v2: {}, v4: {} } }
+            destinationResults: { ABC: { v2: {}, v4: {} } },
+            requestedChecks: requestedChecksSet
         });
         expect(result).toMatch('V2 catalog service not available');
         expect(result).toMatch('V4 catalog service not available');
@@ -218,12 +223,14 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
                         results: []
                     }
                 }
-            }
+            },
+            requestedChecks: requestedChecksSet
         });
         expect(result).toMatch('V2 catalog service not available');
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check destination details with both v2 and v4 services available', () => {
+        const destResultsCheck = new Set([Check.DestResults]);
         const result = convertResultsToMarkdown({
             destinationResults: {
                 ABC: {
@@ -234,7 +241,8 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
                         results: []
                     }
                 }
-            }
+            },
+            requestedChecks: destResultsCheck
         });
         expect(result).toMatch('V2 catalog call returned');
         expect(result).toMatch('V4 catalog call returned');
@@ -242,19 +250,28 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     test('Check empty destination table', () => {
         const result = convertResultsToMarkdown({
             destinations: [],
-            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
+            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
+            requestedChecks: requestedChecksSet
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
 
     test('Check markdown with no destinations checked', () => {
-        const result = convertResultsToMarkdown(
-            {
-                environment: data.environment as any,
-                markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`
-            },
-            false
-        );
+        const envCheck = new Set([Check.Environment]);
+        const result = convertResultsToMarkdown({
+            environment: data.environment as any,
+            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
+            requestedChecks: envCheck
+        });
+        expect(result.split('<sub>created at')[0]).toMatchSnapshot();
+    });
+
+    test('Check markdown with no checks', () => {
+        const result = convertResultsToMarkdown({
+            environment: data.environment as any,
+            markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
+            requestedChecks: new Set([])
+        });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
 });
