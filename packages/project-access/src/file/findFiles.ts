@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { basename, dirname, join, sep } from 'path';
 import { default as find } from 'findit2';
-import { existsSync as exists } from 'fs';
+import { fileExists } from './fileAccess';
 
 /**
  * Add missing dump properties
@@ -81,24 +81,11 @@ export function findFiles(filename: string, root: string, stopFolders: string[],
  * @param fs - optional mem-fs-editor instance
  * @returns - path to file name if found, otherwise undefined
  */
-export function findFileUp(fileName: string, startPath: string, fs?: Editor): Promise<string | undefined> {
-    return Promise.resolve(findUp(fileName, startPath, fs ?? { exists }));
-}
-
-/**
- * Internal find a file by name function for recursive iteration.
- *
- * @param fileName - file name to look for
- * @param pathName - path for start searching up
- * @param fs - mem-fs-editor instance
- * @param fs.exists - function to be used to check the file existence
- * @returns - path to file name if found, otherwise undefined
- */
-function findUp(fileName: string, pathName: string, fs: { exists: Editor['exists'] }): string | undefined {
-    const filePath = join(pathName, fileName);
-    if (fs.exists(filePath)) {
+export async function findFileUp(fileName: string, startPath: string, fs?: Editor): Promise<string | undefined> {
+    const filePath = join(startPath, fileName);
+    if (await fileExists(filePath, fs)) {
         return filePath;
     } else {
-        return dirname(pathName) !== pathName ? findUp(fileName, dirname(pathName), fs) : undefined;
+        return dirname(startPath) !== startPath ? findFileUp(fileName, dirname(startPath), fs) : undefined;
     }
 }
