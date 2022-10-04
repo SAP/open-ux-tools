@@ -95,7 +95,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
         [join(templateVersionPath, 'common', 'add'), join(templateVersionPath, feApp.template.type, 'add')].forEach(
             (templatePath) => {
-                fs?.copyTpl(
+                fs!.copyTpl(
                     join(templatePath, '**/*.*'),
                     basePath,
                     feApp,
