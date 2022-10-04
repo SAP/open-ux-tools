@@ -234,7 +234,7 @@ key1: 42
 seq1:
   - name: name1
     config:
-      prop1: a      
+      prop1: a
   - name: name2
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
@@ -248,6 +248,22 @@ seq1:
   - name: name2
 `;
             expect(doc.toString()).toEqual(expectedValue);
+        });
+
+        it('will throw an error if matching node is not found', async () => {
+            const serializedYaml = `key1: 42
+seq1:
+  - name: name2
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            expect(() => {
+                doc.updateAt({
+                    path: 'seq1',
+                    matcher: { key: 'name', value: 'name1' },
+                    value: { config: { prop2: 'b' } }
+                });
+            }).toThrowError();
+            expect(doc.toString()).toEqual(serializedYaml);
         });
     });
 
@@ -609,7 +625,7 @@ l1: # level 1
     l3: # level 3
       l4: # level 4
         seq1: []
-        
+
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
@@ -646,7 +662,7 @@ l1: # level 1
       l4: # level 4
         seq1:
           - 13
-        
+
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
@@ -681,7 +697,7 @@ l1: # level 1
     l3: # level 3
       l4: # level 4
         seq1: []
-        
+
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
@@ -718,7 +734,7 @@ l1: # level 1
       l4: # level 4
         seq1:
           - item: 13
-        
+
 #End comment
 `;
             const doc = await YamlDocument.newInstance(serializedYaml);
@@ -837,7 +853,7 @@ seq1:
     it('adds comments to object properties, existing seq', async () => {
         const serializedYaml = `seq1:
   - a: 13
-  - a: 
+  - a:
       b:
         c: 42
         d:
