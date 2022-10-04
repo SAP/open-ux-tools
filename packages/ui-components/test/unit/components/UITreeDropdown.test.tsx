@@ -378,15 +378,16 @@ describe('<UITreeDropdown />', () => {
 
     describe('Circular navigation should be disabled', () => {
         const clossestMock = (at: number) => {
-            return (selector: string) => {
+            return (selector: string): HTMLElement | undefined => {
                 if (selector === 'ul') {
-                    return wrapper.find('ul.ms-ContextualMenu-list').getDOMNode();
+                    return wrapper.find('ul.ms-ContextualMenu-list').getDOMNode() as HTMLElement;
                 } else if (selector === 'li') {
-                    return wrapper.find('li.ms-ContextualMenu-item').at(at).getDOMNode();
+                    return wrapper.find('li.ms-ContextualMenu-item').at(at).getDOMNode() as HTMLElement;
                 } else if (selector.indexOf('ui-tree-callout') !== -1) {
                     // Just dummy element is enough
                     return document.createElement('div');
                 }
+                return undefined;
             };
         };
         it('Ordinary scenario', async () => {

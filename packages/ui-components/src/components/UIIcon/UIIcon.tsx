@@ -14,6 +14,7 @@ import './UIIcon.scss';
 export class UIIcon extends React.Component<IIconProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IIconProps} props
      */
     public constructor(props: IIconProps) {

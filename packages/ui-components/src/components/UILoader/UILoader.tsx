@@ -20,6 +20,7 @@ export interface UILoaderProps extends ISpinnerProps {
 export class UILoader extends React.Component<UILoaderProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {UILoaderProps} props
      */
     public constructor(props: UILoaderProps) {

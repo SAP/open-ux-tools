@@ -14,6 +14,7 @@ import { Link } from '@fluentui/react';
 export class UILink extends React.Component<ILinkProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {ILinkProps} props
      */
     public constructor(props: ILinkProps) {

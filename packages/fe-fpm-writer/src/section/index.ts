@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomSection, InternalCustomSection } from './types';
+import type { CustomSection, InternalCustomSection, CustomSectionDependencies } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
@@ -24,6 +24,17 @@ export function getManifestRoot(ui5Version?: string): string {
     } else {
         return getTemplatePath('/section/1.85');
     }
+}
+
+/**
+ * Get additional dependencies for fragment.xml template based on passed ui5 version.
+ *
+ * @param ui5Version required UI5 version.
+ * @returns Additional dependencies for fragment.xml
+ */
+function getAdditionalDependencies(ui5Version?: string): CustomSectionDependencies | undefined {
+    const minVersion = coerce(ui5Version);
+    return !minVersion || minVersion.minor >= 90 ? { 'xmlns:macros': 'sap.fe.macros' } : undefined;
 }
 
 /**
@@ -51,6 +62,8 @@ function enhanceConfig(
 
     // generate section content
     config.content = config.control || getDefaultFragmentContent(config.name, config.eventHandler);
+    // Additional dependencies to include into 'Fragment.xml'
+    config.dependencies = getAdditionalDependencies(config.minUI5Version);
 
     return config as InternalCustomSection;
 }

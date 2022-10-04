@@ -1,8 +1,10 @@
 import { updateManifest } from '../../src/updates';
 import { join } from 'path';
-import { create, Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { OdataService, OdataVersion } from '../../src';
+import type { OdataService } from '../../src';
+import { OdataVersion } from '../../src';
 import * as ejs from 'ejs';
 
 jest.mock('ejs', () => ({
