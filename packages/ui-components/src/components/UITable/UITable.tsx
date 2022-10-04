@@ -459,10 +459,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     private onDocumentMousedown(e: React.MouseEvent): void {
         const target = e.target as HTMLElement; // needed for TSC
         if (
-            target.closest('.ms-TextField') ||
-            target.closest('.ms-ComboBox') ||
-            target.closest('.ms-ComboBox-option') ||
-            target.closest('.ui-DatePicker')
+            target.closest('.ms-TextField, .ms-ComboBox, .ms-ComboBox-option, .ui-DatePicker') &&
+            !this.props.renderInputs
         ) {
             return;
         }
@@ -712,6 +710,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         const compRef = this._getInputRef(rowIndex, column) as React.RefObject<IDropdown>;
         return (
             <UIDropdown
+                id={`dropdown_row${rowIndex}_col${column?.key}`}
                 hidden={item.hideCells ?? false}
                 placeholder="Select an option"
                 componentRef={compRef}

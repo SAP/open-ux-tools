@@ -9,13 +9,13 @@ import { UiIcons } from '../src/components/Icons';
 import type { UIColumn } from '../src/components/UITable/types';
 import { ColumnControlType, RenderInputs } from '../src/components/UITable/types';
 
-import { items } from '../test/__mock__/table-data';
+import { items, items2 } from '../test/__mock__/table-data';
 
 export default { title: 'Tables/UITable' };
 
 const columns: UIColumn[] = Array.from({ length: 10 }).map((item, index) => {
     const col = {
-        key: 'column' + (index + 1),
+        key: 'test' + (index + 1),
         name: 'Test ' + (index + 1),
         fieldName: 'test' + (index + 1),
         minWidth: 100,
@@ -61,7 +61,11 @@ export const ReadOnlyTable = (): JSX.Element => {
 // *** EDITABLE GRID (DATA EDITOR) *****************************************************************
 
 function onSave(editedCell: any, newValue: any) {
-    console.log('saving ', newValue, editedCell);
+    if (editedCell) {
+        console.log('saving ', newValue, editedCell);
+        items[editedCell?.rowIndex][editedCell?.column?.key] = newValue;
+        console.log('saving ', items);
+    }
 }
 
 function onSelectionChange(items: []) {
@@ -108,14 +112,7 @@ export const EditableTable = (): JSX.Element => {
 
 // *** EDITABLE GRID (DM MIGRATION) ****************************************************************
 
-const _onHeaderRender: IRenderFunction<IDetailsHeaderProps> = (props, defaultRender?) => {
-    if (!defaultRender) {
-        return null;
-    }
-    return <Sticky>{defaultRender(props)}</Sticky>;
-};
-
-const dropdownOptions: UIDropdownOption[] = [
+const dropdownOptions2: UIDropdownOption[] = [
     { key: '', text: '' },
     { key: 'DZ', text: 'Algeria' },
     { key: 'AR', text: 'Argentina' },
@@ -124,15 +121,48 @@ const dropdownOptions: UIDropdownOption[] = [
     { key: 'BH', text: 'Bahrain' }
 ];
 
-const columnsWithDropdown = columns.map((c, idx) => {
-    if (idx === 1) {
-        return Object.assign({}, c, {
-            columnControlType: ColumnControlType.UIDropdown,
-            data: { dropdownOptions }
-        });
+const columnsWithDropdown: UIColumn[] = Array.from({ length: 5 }).map((item, index) => {
+    const col: any = {
+        key: 'test' + (index + 1),
+        name: 'Test ' + (index + 1),
+        fieldName: 'test' + (index + 1),
+        minWidth: 100,
+        maxWidth: 200,
+        isResizable: true,
+        editable: false,
+        validate: undefined as any,
+        iconName: undefined as any,
+        iconTooltip: undefined as any,
+        columnControlType: ColumnControlType.UITextInput
+    };
+    if (index >= 1) {
+        col.name += ' (editable)';
+        col.editable = true;
+        col.validate = validate;
     }
-    return Object.assign({}, c);
+    if (index === 1) {
+        col.columnControlType = ColumnControlType.UIDropdown;
+        col.data = {
+            dropdownOptions: dropdownOptions2
+        };
+    }
+    return col;
 });
+
+const _onHeaderRender: IRenderFunction<IDetailsHeaderProps> = (props, defaultRender?) => {
+    if (!defaultRender) {
+        return null;
+    }
+    return <Sticky>{defaultRender(props)}</Sticky>;
+};
+
+function onSave2(editedCell: any, newValue: any) {
+    if (editedCell) {
+        console.log('saving ', newValue, editedCell);
+        items2[editedCell?.rowIndex][editedCell?.column?.key] = newValue;
+        console.log('saving ', items2);
+    }
+}
 
 export const EditableTable2 = (): JSX.Element => {
     return (
@@ -140,9 +170,9 @@ export const EditableTable2 = (): JSX.Element => {
             <div className={mergeStyles({ height: '90vh', width: '100vw', position: 'relative' })}>
                 <UITable
                     dataSetKey={'datasetkey'}
-                    items={items}
+                    items={items2}
                     columns={columnsWithDropdown}
-                    onSave={onSave}
+                    onSave={onSave2}
                     onSelectionChange={onSelectionChange}
                     checkboxVisibility={CheckboxVisibility.always}
                     headerRenderer={_onHeaderRender}
