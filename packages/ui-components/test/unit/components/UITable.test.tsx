@@ -56,6 +56,28 @@ describe('<UITable />', () => {
         columnControlType: ColumnControlType.UIDatePicker
     };
 
+    const columnDropdown = {
+        key: 'dropdowncolumn',
+        name: 'dropdowncolumn',
+        fieldName: 'dropdowncolumn',
+        minWidth: 100,
+        maxWidth: 200,
+        isResizable: true,
+        editable: true,
+        validate: undefined as any,
+        iconName: undefined as any,
+        iconTooltip: undefined as any,
+        columnControlType: ColumnControlType.UIDropdown,
+        data: {
+            dropdownOptions: [
+                { key: 'IE', text: 'Ireland' },
+                { key: 'DE', text: 'Germany' },
+                { key: 'US', text: 'United States' },
+                { key: 'LV', text: 'Latvia' }
+            ]
+        }
+    };
+
     beforeEach(() => {
         jest.useFakeTimers();
         jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
@@ -176,5 +198,29 @@ describe('<UITable />', () => {
         jest.runOnlyPendingTimers();
         expect(onSaveSpy).toBeCalledTimes(1);
         expect(onSaveSpy.mock.calls[0][1]).toBe('false');
+    });
+
+    it('Cell navigation in edit mode with dropdown and renderinputs', () => {
+        const wrapper = Enzyme.mount(
+            <UITable
+                {...defaultProps}
+                columns={[columnBool, columnText, columnDropdown]}
+                items={[{ bool: 'true', text: 'apple', dropdowncolumn: 'IE' }]}
+                renderInputs={true}
+            />
+        );
+
+        expect(wrapper.find('Dropdown').first().text()).toEqual('Ireland');
+        wrapper.find('.ms-DetailsRow-cell span').first().simulate('click');
+        wrapper.find('input').first().simulate('keyDown', { key: 'Tab' });
+        jest.runOnlyPendingTimers();
+        wrapper.find('input').first().simulate('keyDown', { key: 'Enter' });
+        jest.runOnlyPendingTimers();
+        wrapper.find('input').first().simulate('keyDown', { key: 'Tab', shiftKey: true });
+        jest.runOnlyPendingTimers();
+        wrapper.find('input').first().simulate('keyDown', { key: 'Enter', shiftKey: true });
+        jest.runOnlyPendingTimers();
+
+        wrapper.find('Dropdown').first().simulate('click');
     });
 });
