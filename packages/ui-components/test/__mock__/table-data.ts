@@ -29,3 +29,12 @@ export const items = Array.from({ length: 200 }).map((item, index) => ({
     test9: lorem(),
     test10: lorem()
 }));
+
+export const items2 = Array.from({ length: 4 }).map((item, index) => ({
+    key: index,
+    test1: `test 1 row ${index}`,
+    test2: `test 2 row ${index}`,
+    test3: `test 3 row ${index}`,
+    test4: `test 4 row ${index}`,
+    test5: `test 5 row ${index}`
+}));
