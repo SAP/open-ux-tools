@@ -69,13 +69,14 @@ export async function useAdtServices(
         if (!atoSettings || Object.keys(atoSettings).length === 0) {
             logger.warn('ATO setting is empty!');
         }
-
         const transportNumList = await provider.getTransportRequests(env.TEST_PACKAGE, env.TEST_APP);
         if (transportNumList.length === 0) {
             logger.info(`Transport number is empty for package name ${env.TEST_PACKAGE}, app name ${env.TEST_APP}`);
         } else {
             logger.info(JSON.stringify(transportNumList));
         }
+
+        await provider.createTransportRequest('Test from odata-cli');
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
     }

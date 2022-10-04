@@ -5,7 +5,8 @@ import type { AdtCategory } from 'abap/types';
  */
 export enum AdtServiceName {
     AtoSettings,
-    TransportChecks
+    TransportChecks,
+    CreateTransport
 }
 
 export const AdtServiceConfigs: Record<AdtServiceName, AdtCategory> = {
@@ -16,5 +17,9 @@ export const AdtServiceConfigs: Record<AdtServiceName, AdtCategory> = {
     [AdtServiceName.TransportChecks]: {
         scheme: 'http://www.sap.com/adt/categories/cts',
         term: 'transportchecks'
+    },
+    [AdtServiceName.CreateTransport]: {
+        scheme: 'http://www.sap.com/adt/categories/cts',
+        term: 'transportmanagement'
     }
 };

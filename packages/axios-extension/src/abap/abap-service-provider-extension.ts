@@ -10,4 +10,5 @@ export interface AbapServiceProviderExtension {
     ui5AbapRepository(): Ui5AbapRepositoryService;
     getAtoInfo(): Promise<AtoSettings>;
     getTransportRequests(packageName: string, appName: string): Promise<string[]>;
+    createTransportRequest(description: string): Promise<string>;
 }
