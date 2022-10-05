@@ -13,7 +13,6 @@ export const debug = prepareDebug();
 export function prepareDebug(): { enabled: boolean; outputDir: string } {
     const debug = !!process.env['UX_DEBUG'];
     if (debug) {
-        // eslint-disable-next-line no-console
         console.log(testOutputDir);
     }
     return { enabled: debug, outputDir: testOutputDir };
