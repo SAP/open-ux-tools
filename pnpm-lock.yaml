@@ -1,5 +1,5 @@
 lockfileVersion: 5.4
-
+  
 overrides:
   vm2@<3.9.11: '>=3.9.11'
   trim@<0.0.3: '>=0.0.3'
