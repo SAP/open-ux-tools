@@ -107,6 +107,9 @@ describe('proxy', () => {
         test('onProxyReq', () => {
             const mockSetHeader = jest.fn();
 
+            onProxyReq({ setHeader: mockSetHeader as unknown } as ClientRequest);
+            expect(mockSetHeader).not.toBeCalled();
+
             onProxyReq({ path: 'hello/world', setHeader: mockSetHeader as unknown } as ClientRequest);
             expect(mockSetHeader).not.toBeCalled();
 
