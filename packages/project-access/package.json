@@ -22,9 +22,6 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "watch": "tsc --watch"
     },
-    "devDependencies": {
-        "vscode-uri": "3.0.6"
-    },
     "files": [
         "dist",
         "LICENSE",
@@ -37,7 +34,13 @@
     },
     "dependencies": {
         "@sap-ux/ui5-config": "workspace:*",
-        "find-up": "5.0.0",
-        "findit2": "2.2.3"
+        "findit2": "2.2.3",
+        "mem-fs": "2.1.0",
+        "mem-fs-editor": "9.4.0"
+    },
+    "devDependencies": {
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
+        "vscode-uri": "3.0.6"
     }
 }

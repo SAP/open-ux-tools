@@ -372,14 +372,20 @@ importers:
     packages/project-access:
         specifiers:
             '@sap-ux/ui5-config': workspace:*
-            find-up: 5.0.0
+            '@types/mem-fs': 1.1.2
+            '@types/mem-fs-editor': 7.0.1
             findit2: 2.2.3
+            mem-fs: 2.1.0
+            mem-fs-editor: 9.4.0
             vscode-uri: 3.0.6
         dependencies:
             '@sap-ux/ui5-config': link:../ui5-config
-            find-up: 5.0.0
             findit2: 2.2.3
+            mem-fs: 2.1.0
+            mem-fs-editor: 9.4.0_mem-fs@2.1.0
         devDependencies:
+            '@types/mem-fs': 1.1.2
+            '@types/mem-fs-editor': 7.0.1
             vscode-uri: 3.0.6
 
     packages/store:
@@ -8313,7 +8319,7 @@ packages:
             mississippi: 3.0.0
             mkdirp: 0.5.6
             move-concurrently: 1.0.1
-            promise-inflight: 1.0.1_bluebird@3.7.2
+            promise-inflight: 1.0.1
             rimraf: 2.7.1
             ssri: 6.0.2
             unique-filename: 1.1.1
@@ -11939,6 +11945,7 @@ packages:
         dependencies:
             locate-path: 6.0.0
             path-exists: 4.0.0
+        dev: true
 
     /find-yarn-workspace-root2/1.2.16:
         resolution:
@@ -15582,6 +15589,7 @@ packages:
         engines: { node: '>=10' }
         dependencies:
             p-locate: 5.0.0
+        dev: true
 
     /lodash.clonedeep/4.5.0:
         resolution: { integrity: sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8= }
@@ -16565,8 +16573,8 @@ packages:
                 integrity: sha512-TIOtI4iqkQrUM1tiM76AtTQem0c7e56SkDZ7sj1d1MfUsqRcq2ZWQvej/O+HBTZV7u/VKnwlKTDugK/75IRPPw==
             }
         dependencies:
-            nimn-date-parser: 1.0.0
             nimn_schema_builder: 1.1.0
+            nimn-date-parser: 1.0.0
         dev: false
 
     /no-case/3.0.4:
@@ -17190,6 +17198,7 @@ packages:
         engines: { node: '>=10' }
         dependencies:
             yocto-queue: 0.1.0
+        dev: true
 
     /p-locate/2.0.0:
         resolution:
@@ -17228,6 +17237,7 @@ packages:
         engines: { node: '>=10' }
         dependencies:
             p-limit: 3.1.0
+        dev: true
 
     /p-map/2.1.0:
         resolution:
@@ -18093,20 +18103,6 @@ packages:
         peerDependenciesMeta:
             bluebird:
                 optional: true
-        dev: true
-
-    /promise-inflight/1.0.1_bluebird@3.7.2:
-        resolution:
-            {
-                integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==
-            }
-        peerDependencies:
-            bluebird: '*'
-        peerDependenciesMeta:
-            bluebird:
-                optional: true
-        dependencies:
-            bluebird: 3.7.2
         dev: true
 
     /promise.allsettled/1.0.5:
@@ -22564,6 +22560,7 @@ packages:
                 integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
             }
         engines: { node: '>=10' }
+        dev: true
 
     /zip-stream/4.1.0:
         resolution:
