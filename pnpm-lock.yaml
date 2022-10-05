@@ -101,7 +101,6 @@ importers:
             axios: 0.24.0
             detect-content-type: 1.2.0
             fast-xml-parser: 3.12.20
-            i18next: 21.6.11
             lodash.clonedeep: 4.5.0
             nock: 13.2.1
             open: 7.0.3
@@ -115,7 +114,6 @@ importers:
             axios: 0.24.0
             detect-content-type: 1.2.0
             fast-xml-parser: 3.12.20
-            i18next: 21.6.11
             lodash.clonedeep: 4.5.0
             open: 7.0.3
             qs: 6.7.0

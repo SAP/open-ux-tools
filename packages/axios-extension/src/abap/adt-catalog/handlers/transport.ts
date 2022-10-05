@@ -3,7 +3,6 @@ import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 import type { Logger } from '@sap-ux/logger';
 import type { TransportRequest } from '../../types';
-import { t } from '../../../i18n';
 
 const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
 const enum AdtTransportStatus {
@@ -58,7 +57,7 @@ function getTransportList(doc: Document): TransportRequest[] {
     } else if (LocalPackageText.includes(localPackage)) {
         return [];
     } else {
-        throw new Error(t('error.unableToParseAdtResponse'));
+        throw new Error('Unable to parse ADT response');
     }
 }
 
