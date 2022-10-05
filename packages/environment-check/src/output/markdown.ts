@@ -1,14 +1,16 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
-import { Severity, UrlServiceType } from '../types';
+import { Severity, UrlServiceType, Check } from '../types';
 import type {
     Destination,
     DestinationResults,
     Environment,
     EnvironmentCheckResult,
     MarkdownWriter,
-    ResultMessage
+    ResultMessage,
+    ToolsExtensions
 } from '../types';
 import { t } from '../i18n';
+
 /**
  * Output mapping from severity -> icon + text
  */
@@ -18,6 +20,23 @@ const severityMap = {
     [Severity.Info]: '🟢 &nbsp; Info',
     [Severity.Debug]: 'ℹ Debug'
 };
+
+const toolsExtensionFields = ['Tools/Extensions', 'Version'];
+
+const toolsExtensionListVSCode = new Map<string, string>([
+    ['nodeVersion', 'Node.js'],
+    ['platform', 'Platform'],
+    ['cloudCli', 'Cloud CLI tools'],
+    ['appWizard', 'Application Wizard'],
+    ['fioriGenVersion', 'SAP Fiori tools - Fiori generator'],
+    ['appMod', 'SAP Fiori tools - Application Modeler'],
+    ['help', 'SAP Fiori tools - Guided Development'],
+    ['serviceMod', 'SAP Fiori tools - Service Modeler'],
+    ['annotationMod', 'SAP Fiori tools - XML Annotation Language Server'],
+    ['xmlToolkit', 'XML Toolkit'],
+    ['cds', 'SAP CDS Language Support'],
+    ['ui5LanguageAssistant', 'UI5 Language Assistant Support']
+]);
 
 /**
  * Column sequence of the destination table, first colun id, the column title
@@ -88,7 +107,7 @@ function getMarkdownWriter(): MarkdownWriter {
             result += `<details><summary>${description}</summary>\n<pre>\n${details}\n</pre></details>\n`;
         },
         addSub: (text: string): void => {
-            result += `<sub>${text}</sub>\n`;
+            result += `\n<sub>${text}</sub>\n`;
         },
         addTable: (table: Array<Array<string>>): void => {
             if (table.length > 0) {
@@ -111,14 +130,35 @@ function getMarkdownWriter(): MarkdownWriter {
  * @param environment - environment results, like development environment, node version, etc
  */
 function writeEnvironment(writer: MarkdownWriter, environment?: Environment): void {
-    writer.addH2(`Environment`);
+    writer.addH2(t('markdownText.environmentTitle'));
     if (environment) {
         writer.addLine(t('markdownText.platform', { platform: environment.platform }));
         writer.addLine(t('markdownText.devEnvironement', { devEnvironment: environment.developmentEnvironment }));
-        writer.addLine(t('markdownText.devSpaceType', { basDevSpace: environment.basDevSpace }));
+        if (environment.basDevSpace) {
+            writer.addLine(t('markdownText.devSpaceType', { basDevSpace: environment.basDevSpace }));
+        }
+        writeToolsExtensionsResults(writer, environment.toolsExtensions);
         writer.addDetails(`${t('markdownText.versions')}`, JSON.stringify(environment.versions, null, 4));
     } else {
         writer.addLine(t('markdownText.envNotChecked'));
+    }
+}
+
+/**
+ * Write the results for environment check.
+ *
+ * @param writer - markdown writter
+ * @param toolsExts - environment results - node version, extension versions etc
+ */
+function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsExtensions): void {
+    if (toolsExts) {
+        const results = [];
+        for (const toolExt of Object.keys(toolsExts)) {
+            const toolExtName = toolsExtensionListVSCode.get(toolExt);
+            results.push([toolExtName, toolsExts[toolExt]]);
+        }
+        const table = [toolsExtensionFields, ...results];
+        writer.addTable(table);
     }
 }
 
@@ -260,9 +300,19 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
     const writer = getMarkdownWriter();
 
     writer.addH1(t('markdownText.envCheckTitle'));
-    writeEnvironment(writer, results.environment);
-    writeDestinationResults(writer, results.destinationResults, results.destinations);
-    writeDestinations(writer, results.destinations);
+
+    if (results.requestedChecks?.includes(Check.Environment)) {
+        writeEnvironment(writer, results.environment);
+    }
+
+    if (results.requestedChecks?.includes(Check.DestResults)) {
+        writeDestinationResults(writer, results.destinationResults, results.destinations);
+    }
+
+    if (results.requestedChecks?.includes(Check.Destinations)) {
+        writeDestinations(writer, results.destinations);
+    }
+
     writeMessages(writer, results.messages);
 
     writer.addSub(
