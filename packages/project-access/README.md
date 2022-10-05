@@ -17,4 +17,6 @@ Pnpm
 See usage in `test/` folder.
 
 ## Keywords
-SAP Project Fiori Freestyle
+* SAP Fiori tools
+* SAP Fiori elements
+* SAP Fiori freestyle

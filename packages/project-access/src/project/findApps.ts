@@ -1,10 +1,9 @@
 import { dirname, join, parse, sep } from 'path';
+import type { AllAppResults, Manifest, Package, WorkspaceFolder } from '../types';
 import { FileName } from '../constants';
-import type { Manifest, Package, WorkspaceFolder } from '../types';
+import { fileExists, findFiles, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
 import { isCapProject } from './cap';
-import type { AllAppResults } from '../types';
-import { fileExists, findFiles, findFileUp, readJSON } from '../file';
 import { getWebappPath } from './getWebapp';
 
 /**
