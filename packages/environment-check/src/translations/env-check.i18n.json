@@ -17,7 +17,20 @@
         "noDestinationDefinedForApp": "No destination defined for app {{- appRoot}} : {{- error}}",
         "jsonResults": "Full results written as JSON to file {{filename}}",
         "markdownResults": "Full results written as markdown to file {{filename}}",
-        "authRequired": "Authentication required for {{- destination}}"
+        "authRequired": "Authentication required for {{- destination}}",
+        "notInstalled": "Not installed",
+        "notInstalledOrNotFound": "Not installed or not found",
+        "nodeVersion": "Node.js: {{- nodeVersion}}",
+        "cloudCli": "Cloud CLI tools: {{- cloudCli}}",
+        "fioriGenVersion": "SAP Fiori tools - Fiori generator: {{- fioriGenVersion}}",
+        "appWizard": "Application Wizard: {{- appWizard}}",
+        "ui5LanguageAssistant": "UI5 Language Assistant Support: {{- ui5LanguageAssistant}}",
+        "xmlToolkit": "XML Toolkit: {{- xmlToolkit}}",
+        "annotationMod": "SAP Fiori tools - XML Annotation Language Server: {{- annotationMod}}",
+        "appMod": "SAP Fiori tools - Application Modeler: {{- appMod}}",
+        "help": "SAP Fiori tools - Guided Development: {{- help}}",
+        "serviceMod": "SAP Fiori tools - Service Modeler: {{- serviceMod}}",
+        "cds": "SAP CDS Language Support: {{- cds}}"
     },
     "warning": {
         "reloadFailure": "Call to '/reload' service failed",
@@ -37,7 +50,8 @@
         "basDevSpace": "Couldn't read Business Application Studio Dev environment. Error: {{- error}}",
         "invalidPkgJson": "Found invalid package.json. Error : {{- error}}",
         "checkingEnv": "Error checking environment: {{- error}}",
-        "noProjectRoot": "Project root {{- projectRoot}} does not exist"
+        "noProjectRoot": "Project root {{- projectRoot}} does not exist",
+        "retrievingExtensions": "Error retrieving installed extensions: {{- error}}"
     },
     "markdownText": {
         "fullServiceUrlConfig": "Configured to be used by Fiori Generator as Full Service URL",
@@ -64,7 +78,8 @@
         "noDestinations": "No destinations",
         "messages": "Messages ({{numberOfMessages}})",
         "noMessages": "No messages",
-        "envCheckTitle": "SAP Fiori tools - Environment Check in SAP Business Application Studio",
-        "createdAt": "created at"
+        "envCheckTitle": "SAP Fiori tools - Environment Check",
+        "createdAt": "created at",
+        "environmentTitle": "Environment"
     }
 }

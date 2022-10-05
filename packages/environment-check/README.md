@@ -1,6 +1,6 @@
 # @sap-ux/environment-check
 
-Environment check for Business Application Studio destinations.
+Environment check for Business Application Studio and Visual Studio Code.
 
 ## Installation
 Npm
@@ -22,7 +22,7 @@ import {
 } from '@sap/ux-environment-check';
 
 /**
- * Returns the environment, including ide, versions ...
+ * Returns the environment, including ide, versions, extensions ...
  */
 const environmentResults = await getEnvironment();
 
@@ -48,7 +48,7 @@ A CLI application is also available to investigate the environment and destinati
 $ envcheck --help
 
 Usage 
-    $ envheck --destination <DESTINATION> --output <OUTPUT> <WORKSPACE_ROOT>
+    $ envcheck --destination <DESTINATION> --output <OUTPUT> <WORKSPACE_ROOT>
 
 Options
     --destination       destination to perform deep check, multiple destionations can be passed

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IButtonProps, IButtonStyles } from '@fluentui/react';
+import type { IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
 import { UIContextualMenu } from '../UIContextualMenu';
 
@@ -22,6 +22,14 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
     }
 
     protected setStyle = (props: IButtonProps): IButtonStyles => {
+        const dividerStyle: IStyle = {
+            position: 'absolute',
+            width: 1,
+            right: 21,
+            top: 0,
+            bottom: 0,
+            backgroundColor: 'var(--vscode-editor-background)'
+        };
         return {
             root: {
                 minWidth: 'initial',
@@ -208,14 +216,8 @@ export class UIDefaultButton extends React.Component<IButtonProps, {}> {
                     }
                 }
             },
-            splitButtonDivider: {
-                position: 'absolute',
-                width: 1,
-                right: 21,
-                top: 0,
-                bottom: 0,
-                backgroundColor: 'var(--vscode-editor-background)'
-            }
+            splitButtonDivider: dividerStyle,
+            splitButtonDividerDisabled: dividerStyle
         };
     };
 

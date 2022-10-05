@@ -157,8 +157,16 @@ describe('AbapServiceProvider', () => {
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-1.xml'));
             expect(await provider.getTransportRequests(testPackage, testNewProject)).toStrictEqual([
-                'EC1K900294',
-                'EC1K900295'
+                expect.objectContaining({
+                    transportNumber: 'EC1K900294',
+                    user: 'TESTUSER',
+                    description: 'Fiori tools'
+                }),
+                expect.objectContaining({
+                    transportNumber: 'EC1K900295',
+                    user: 'TESTUSER2',
+                    description: 'Fiori tools'
+                })
             ]);
         });
 
@@ -168,7 +176,13 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-2.xml'));
-            expect(await provider.getTransportRequests(testPackage, testExistProject)).toStrictEqual(['EC1K900294']);
+            expect(await provider.getTransportRequests(testPackage, testExistProject)).toStrictEqual([
+                expect.objectContaining({
+                    transportNumber: 'EC1K900294',
+                    user: 'TESTUSER',
+                    description: 'Fiori tools'
+                })
+            ]);
         });
 
         test('Valid package name, existing project name - no transport number', async () => {
@@ -180,13 +194,13 @@ describe('AbapServiceProvider', () => {
             expect(await provider.getTransportRequests(testPackage, testExistProject)).toStrictEqual([]);
         });
 
-        test('Local package: no transport number requested for deploy for both new and exist project', async () => {
+        test('Local package: no transport number required for deploy for both new and exist project', async () => {
             nock(server)
                 .get(AdtServices.DISCOVERY)
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-3.xml'));
-            expect(await provider.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual(['']);
+            expect(await provider.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual([]);
         });
 
         test('New package name: no transport number available', async () => {

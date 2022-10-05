@@ -4,6 +4,7 @@ import { checkBASDestinations, needsUsernamePassword, checkBASDestination } from
 import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { join } from 'path';
+import * as install from '../../src/checks/getInstalled';
 
 jest.mock('axios');
 
@@ -22,30 +23,37 @@ const mockCheckBASDestinations = checkBASDestinations as jest.Mock;
 const mockNeedsUsernamePassword = needsUsernamePassword as jest.Mock;
 const mockCheckBASDestination = checkBASDestination as jest.Mock;
 describe('Test for getEnvironmentCheck()', () => {
-    test('Ensure correct dev environment, getEnvironmentCheck()', async () => {
+    test('Ensure correct dev environment (VSCode)', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
+        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
+        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
         const { environment, messages } = await getEnvironment();
-        expect(
-            environment.developmentEnvironment === DevelopmentEnvironment.BAS ||
-                environment.developmentEnvironment === DevelopmentEnvironment.VSCode
-        ).toBeTruthy();
+        expect(environment.developmentEnvironment === DevelopmentEnvironment.VSCode).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
     });
 
-    test('Ensure correct dev environment, getEnvironmentCheck()', async () => {
+    test('Ensure correct dev environment (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
+        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
+        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
+        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
         const { environment, messages } = await getEnvironment();
         expect(environment.developmentEnvironment === DevelopmentEnvironment.BAS).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
     });
 });
 
-describe('Test for checkEnvironment()', () => {
+describe('Test for checkEnvironment() (BAS)', () => {
     beforeEach(() => {
         jest.resetAllMocks();
+        mockIsAppStudio.mockReturnValue(true);
+        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
+        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
+        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
     });
 
     test('Destinations that need authentication and no credentials are supplied, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
                 Name: 'ONE',
@@ -100,7 +108,6 @@ describe('Test for checkEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('Destinations that need authentication and credentials are supplied, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
                 Name: 'ONE',
@@ -201,7 +208,6 @@ describe('Test for checkEnvironment()', () => {
     });
 
     test('Destinations that does not need authentication, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
                 Name: 'EC1_NOAUTH',
@@ -242,7 +248,6 @@ describe('Test for checkEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('No deep dive destination, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
                 Name: 'ONE',
@@ -285,7 +290,6 @@ describe('Test for checkEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('Checking for deep dive destination that does not exist in the list, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
                 Name: 'ONE',
@@ -329,7 +333,6 @@ describe('Test for checkEnvironment()', () => {
         expect(result.destinationResults).toBeDefined();
     });
     test('credentialCallBack is defined but no username and/or password is supplied while it is required, getEnvironmentCheck()', async () => {
-        mockIsAppStudio.mockReturnValueOnce(true);
         const data = [
             {
                 Name: 'ONE',
@@ -369,5 +372,68 @@ describe('Test for checkEnvironment()', () => {
         expect(result.messages).toBeDefined();
         expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
+    });
+});
+
+describe('Test for checkEnvironment() (VSCODE)', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+        mockIsAppStudio.mockReturnValue(false);
+    });
+    test('Testing getToolsExtensions', async () => {
+        const extensionVersions = {
+            'yeoman-ui': { version: '2' },
+            'vscode-ui5-language-assistant': { version: '2' },
+            'xml-toolkit': { version: '2' },
+            'sap-ux-annotation-modeler-extension': { version: '2.2' },
+            'sap-ux-application-modeler-extension': { version: '2' },
+            'sap-ux-help-extension': { version: '2' },
+            'sap-ux-service-modeler-extension': { version: '2.4' },
+            'vscode-cds': { version: '2' }
+        };
+
+        const expectedData = {
+            nodeVersion: process.versions.node,
+            fioriGenVersion: '1',
+            cloudCli: '2',
+            appWizard: '2',
+            ui5LanguageAssistant: '2',
+            xmlToolkit: '2',
+            annotationMod: '2.2',
+            appMod: '2',
+            help: '2',
+            serviceMod: '2.4',
+            cds: '2'
+        };
+
+        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
+        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
+        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce(extensionVersions);
+        // Test execution
+        const result = await checkEnvironment();
+        expect(result.environment?.toolsExtensions).toEqual(expectedData);
+    });
+
+    test('Testing getToolsExtensions (no extensions installed)', async () => {
+        const expectedData = {
+            nodeVersion: process.versions.node,
+            fioriGenVersion: '1',
+            cloudCli: '2',
+            appWizard: 'Not installed',
+            ui5LanguageAssistant: 'Not installed',
+            xmlToolkit: 'Not installed',
+            annotationMod: 'Not installed',
+            appMod: 'Not installed',
+            help: 'Not installed',
+            serviceMod: 'Not installed',
+            cds: 'Not installed'
+        };
+
+        jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
+        jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
+        jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
+        // Test execution
+        const result = await checkEnvironment();
+        expect(result.environment?.toolsExtensions).toEqual(expectedData);
     });
 });

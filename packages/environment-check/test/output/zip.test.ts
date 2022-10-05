@@ -1,6 +1,7 @@
 import * as mockFs from 'fs';
 import type * as archiver from 'archiver';
 import { archiveProject, storeResultsZip } from '../../src/output';
+import { Check } from '../../src';
 
 // Need to mock fs and archiver on top level before any test is run
 jest.mock('fs');
@@ -36,14 +37,15 @@ describe('Test to check zip save, storeResultsZip()', () => {
             return filename === 'envcheck-results.zip' ? writeStreamMock : undefined;
         });
         console.log = jest.fn();
+        const requestedChecksSet = [Check.Environment, Check.Destinations, Check.DestResults];
 
         // Test execution
-        storeResultsZip({});
+        storeResultsZip({ requestedChecks: requestedChecksSet });
         writeStreamCloseCallback();
 
         // Result check
         expect(zipMock.pipe).toBeCalledWith(writeStreamMock);
-        expect(zipMock.append).toBeCalled();
+        expect(zipMock.append).toBeCalledTimes(2);
         expect(zipMock.finalize).toBeCalled();
         expect(console.log).toBeCalledWith(`Results written to file 'envcheck-results.zip' 117.74 MB`);
     });

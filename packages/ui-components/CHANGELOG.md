@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.5
+
+### Patch Changes
+
+-   0024d55: chore(ui-components) cherrypick UIDefaultButton fix tools-suite/pull/21665
+
 ## 1.0.4
 
 ### Patch Changes
