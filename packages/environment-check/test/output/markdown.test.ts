@@ -1,4 +1,5 @@
-import { Check, EnvironmentCheckResult } from '../../src';
+import type { EnvironmentCheckResult } from '../../src';
+import { Check } from '../../src';
 import { convertResultsToMarkdown, UrlServiceType } from '../../src';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
