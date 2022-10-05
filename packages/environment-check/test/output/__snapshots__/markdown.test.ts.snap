@@ -2,7 +2,7 @@
 
 exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check empty destination table 1`] = `
 "
-# SAP Fiori tools - Environment Check in SAP Business Application Studio
+# SAP Fiori tools - Environment Check
 
 <br>
 
@@ -23,19 +23,33 @@ No destinations<br>
 
 ## Messages (0)
 No messages<br>
+
 "
 `;
 
 exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check if writer is creating output appropriately 1`] = `
 "
-# SAP Fiori tools - Environment Check in SAP Business Application Studio
+# SAP Fiori tools - Environment Check
 
 <br>
 
 ## Environment
 Platform: \`linux\`<br>
 Development environment: \`Business Application Studio\`<br>
-Dev Space Type: \`\`<br>
+Dev Space Type: \`SAP Fiori\`<br>
+|Tools/Extensions|Version|
+|--|--|
+|Node.js|v16.17.0|
+|SAP Fiori tools - Fiori generator|1|
+|Cloud CLI tools|2|
+|Application Wizard|2|
+|UI5 Language Assistant Support|2|
+|XML Toolkit|2|
+|SAP Fiori tools - XML Annotation Language Server|2.2|
+|SAP Fiori tools - Application Modeler|2|
+|SAP Fiori tools - Guided Development|2|
+|SAP Fiori tools - Service Modeler|2.4|
+|SAP CDS Language Support|2|
 <details><summary>Versions</summary>
 <pre>
 {
@@ -156,5 +170,63 @@ Request to URL: 'http://SYS.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catal
     }
 }
 </pre></details>
+
+"
+`;
+
+exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check markdown with no checks 1`] = `
+"
+# SAP Fiori tools - Environment Check
+
+<br>
+
+## Messages (0)
+No messages<br>
+
+"
+`;
+
+exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check markdown with no destinations checked 1`] = `
+"
+# SAP Fiori tools - Environment Check
+
+<br>
+
+## Environment
+Platform: \`linux\`<br>
+Development environment: \`Business Application Studio\`<br>
+Dev Space Type: \`SAP Fiori\`<br>
+|Tools/Extensions|Version|
+|--|--|
+|Node.js|v16.17.0|
+|SAP Fiori tools - Fiori generator|1|
+|Cloud CLI tools|2|
+|Application Wizard|2|
+|UI5 Language Assistant Support|2|
+|XML Toolkit|2|
+|SAP Fiori tools - XML Annotation Language Server|2.2|
+|SAP Fiori tools - Application Modeler|2|
+|SAP Fiori tools - Guided Development|2|
+|SAP Fiori tools - Service Modeler|2.4|
+|SAP CDS Language Support|2|
+<details><summary>Versions</summary>
+<pre>
+{
+    \\"node\\": \\"12.22.5\\",
+    \\"v8\\": \\"7.8.279.23-node.56\\",
+    \\"uv\\": \\"1.40.0\\",
+    \\"zlib\\": \\"1.2.11\\",
+    \\"ares\\": \\"1.17.2\\",
+    \\"modules\\": \\"72\\",
+    \\"http_parser\\": \\"2.9.4\\",
+    \\"openssl\\": \\"1.1.1k\\"
+}
+</pre></details>
+
+<br>
+
+## Messages (0)
+No messages<br>
+
 "
 `;
