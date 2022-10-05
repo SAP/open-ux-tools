@@ -4,7 +4,6 @@ import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 let openMockCallback: (url: string) => void;
 jest.mock('open', () => jest.fn((url: string) => openMockCallback && openMockCallback(url)));
-jest.setTimeout(10000);
 
 describe('UAA', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
