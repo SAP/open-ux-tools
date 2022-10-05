@@ -1,18 +1,19 @@
-import axios from 'axios';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from './destination';
 import { getDestinationsFromWorkspace } from './workspace';
 import { getLogger } from '../logger';
-import { core as basCoreApi } from '@sap/bas-sdk';
+import { devspace } from '@sap/bas-sdk';
 import type {
     DestinationResults,
     CheckEnvironmentOptions,
     Destination,
     Environment,
     EnvironmentCheckResult,
-    ResultMessage
+    ResultMessage,
+    ToolsExtensions
 } from '../types';
-import { DevelopmentEnvironment } from '../types';
+import { Check, DevelopmentEnvironment, Extensions } from '../types';
+import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion } from './getInstalled';
 import { t } from '../i18n';
 
 /**
@@ -27,21 +28,102 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
         versions: process.versions,
         platform: process.platform
     };
+
+    logger.info(t('info.platform', { platform: environment.platform }));
     logger.info(t('info.developmentEnvironment', { env: environment.developmentEnvironment }));
-    logger.info(t('info.versions', { versions: JSON.stringify(environment.versions, null, 4) }));
-    logger.info(t('info.platform', { plaform: environment.platform }));
 
     try {
-        environment.basDevSpace = isAppStudio() ? await getSbasDevspace() : undefined;
-        logger.info(t('info.basDevSpace', { basDevSpace: environment.basDevSpace }));
+        if (isAppStudio()) {
+            environment.basDevSpace = (await devspace.getDevspaceInfo()).packDisplayName;
+            logger.info(t('info.basDevSpace', { basDevSpace: environment.basDevSpace }));
+        }
     } catch (error) {
         logger.info(t('error.basDevSpace', { error: error.message }));
     }
+
+    const toolsExtensionResults = await getToolsExtensions();
+    environment.toolsExtensions = toolsExtensionResults.toolsExtensions;
+    logger.push(...toolsExtensionResults.messages);
+
+    logger.info(t('info.versions', { versions: JSON.stringify(environment.versions, null, 4) }));
 
     return {
         environment,
         messages: logger.getMessages()
     };
+}
+
+/**
+ * Returns extensions and versions.
+ *
+ * @param extensions to be checked
+ * @returns extension with version numbers
+ */
+function getExtVersions(extensions: { [id: string]: { version: string } }): { [id: string]: string } {
+    return {
+        appWizard: extensions[Extensions.AppWizard]
+            ? extensions[Extensions.AppWizard]['version']
+            : t('info.notInstalled'),
+        appMod: extensions[Extensions.AppMod] ? extensions[Extensions.AppMod]['version'] : t('info.notInstalled'),
+        help: extensions[Extensions.Help] ? extensions[Extensions.Help]['version'] : t('info.notInstalled'),
+        serviceMod: extensions[Extensions.ServiceMod]
+            ? extensions[Extensions.ServiceMod]['version']
+            : t('info.notInstalled'),
+        annotationMod: extensions[Extensions.AnnotationMod]
+            ? extensions[Extensions.AnnotationMod]['version']
+            : t('info.notInstalled'),
+        xmlToolkit: extensions[Extensions.XMLToolkit]
+            ? extensions[Extensions.XMLToolkit]['version']
+            : t('info.notInstalled'),
+        cds: extensions[Extensions.CDS] ? extensions[Extensions.CDS]['version'] : t('info.notInstalled'),
+        ui5LanguageAssistant: extensions[Extensions.Ui5LanguageAssistant]
+            ? extensions[Extensions.Ui5LanguageAssistant]['version']
+            : t('info.notInstalled')
+    };
+}
+
+/**
+ * Returns the tools and extensions installed.
+ *
+ * @returns tools and extension versions
+ */
+async function getToolsExtensions(): Promise<{
+    toolsExtensions: ToolsExtensions;
+    messages: ResultMessage[];
+}> {
+    const logger = getLogger();
+
+    const extensions = await getInstalledExtensions();
+    const fioriGenVersion = await getFioriGenVersion();
+    const cloudCli = await getCFCliToolVersion();
+
+    let toolsExtensions: ToolsExtensions = {
+        nodeVersion: process.versions.node,
+        cloudCli: cloudCli,
+        fioriGenVersion: fioriGenVersion
+    };
+
+    if (extensions) {
+        const extVersions = getExtVersions(extensions);
+        toolsExtensions = {
+            ...toolsExtensions,
+            ...extVersions
+        };
+    }
+
+    logger.info(t('info.nodeVersion', { nodeVersion: toolsExtensions.nodeVersion }));
+    logger.info(t('info.cloudCli', { cloudCli: toolsExtensions.cloudCli }));
+    logger.info(t('info.appWizard', { appWizard: toolsExtensions.appWizard }));
+    logger.info(t('info.fioriGenVersion', { fioriGenVersion: toolsExtensions.fioriGenVersion }));
+    logger.info(t('info.appMod', { appMod: toolsExtensions.appMod }));
+    logger.info(t('info.help', { help: toolsExtensions.help }));
+    logger.info(t('info.serviceMod', { serviceMod: toolsExtensions.serviceMod }));
+    logger.info(t('info.annotationMod', { annotationMod: toolsExtensions.annotationMod }));
+    logger.info(t('info.xmlToolkit', { xmlToolkit: toolsExtensions.xmlToolkit }));
+    logger.info(t('info.cds', { cds: toolsExtensions.cds }));
+    logger.info(t('info.ui5LanguageAssistant', { ui5LanguageAssistant: toolsExtensions.ui5LanguageAssistant }));
+
+    return { toolsExtensions, messages: logger.getMessages() };
 }
 
 /**
@@ -137,54 +219,45 @@ async function getDestinationsResults(
  */
 export async function checkEnvironment(options?: CheckEnvironmentOptions): Promise<EnvironmentCheckResult> {
     const logger = getLogger();
+    let destinations: Destination[];
+    let destinationResults: { [dest: string]: DestinationResults };
 
+    const requestedChecks: Check[] = [];
+    requestedChecks.push(Check.Environment);
     const { environment, messages } = await getEnvironment();
     logger.push(...messages);
 
-    const deepDiveDestinations = options?.destinations ? new Set(options.destinations) : new Set<string>();
-    if (options?.workspaceRoots?.length > 0) {
-        const workspaceResults = await getDestinationsFromWorkspace(options?.workspaceRoots);
-        logger.push(...workspaceResults.messages);
-        workspaceResults.destinations.forEach((dest) => deepDiveDestinations.add(dest));
+    if (isAppStudio()) {
+        const deepDiveDestinations = options?.destinations ? new Set(options.destinations) : new Set<string>();
+        if (options?.workspaceRoots?.length > 0) {
+            const workspaceResults = await getDestinationsFromWorkspace(options?.workspaceRoots);
+            logger.push(...workspaceResults.messages);
+            workspaceResults.destinations.forEach((dest) => deepDiveDestinations.add(dest));
+        }
+
+        requestedChecks.push(Check.Destinations);
+        const basDestResults = await checkBASDestinations();
+        destinations = basDestResults.destinations;
+        logger.push(...basDestResults.messages);
+
+        if (deepDiveDestinations.size > 0) {
+            requestedChecks.push(Check.DestResults);
+        }
+
+        const destResults = await getDestinationsResults(
+            deepDiveDestinations,
+            destinations,
+            options?.credentialCallback
+        );
+        destinationResults = destResults.destinationResults;
+        logger.push(...destResults.messages);
     }
-
-    const { messages: destMessages, destinations } = await checkBASDestinations();
-    logger.push(...destMessages);
-
-    const { messages: destDetailsMessages, destinationResults } = await getDestinationsResults(
-        deepDiveDestinations,
-        destinations,
-        options?.credentialCallback
-    );
-    logger.push(...destDetailsMessages);
 
     return {
         environment,
         destinations,
         destinationResults,
-        messages: logger.getMessages()
+        messages: logger.getMessages(),
+        requestedChecks: requestedChecks
     };
-}
-
-/**
- * Obtain dev space type from SBAS rest api.
- *
- * @returns SBAS Dev Space Name. Empty string is returned if unable to fetch workspace type or the environment is not SBAS
- */
-async function getSbasDevspace(): Promise<string> {
-    if (isAppStudio()) {
-        const h20Url = basCoreApi.getEnvValue('H2O_URL');
-        let workspaceId = '';
-        if (process.env.WORKSPACE_ID) {
-            workspaceId = process.env.WORKSPACE_ID.replace('workspaces-', '');
-        }
-        const url = `${h20Url}/ws-manager/api/v1/workspace/${workspaceId}`;
-        const response = await axios.get(url);
-        if (response.data) {
-            const workspaceConfig = response.data;
-            const devspace = workspaceConfig?.config?.annotations?.pack;
-            return devspace ? devspace : '';
-        }
-    }
-    return '';
 }

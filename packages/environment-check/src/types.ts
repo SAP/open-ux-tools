@@ -7,6 +7,12 @@ export interface CheckEnvironmentOptions {
     credentialCallback?: (destination: Destination) => Promise<{ username: string; password: string }>;
 }
 
+export enum Check {
+    Environment = 'environment',
+    DestResults = 'destinationResults',
+    Destinations = 'destinations'
+}
+
 export enum OutputMode {
     Json = 'json',
     Markdown = 'markdown',
@@ -14,12 +20,41 @@ export enum OutputMode {
     Zip = 'zip',
     UserDownload = 'userDownload'
 }
+export enum NpmModules {
+    CloudCliTools = 'cf',
+    FioriGenerator = '@sap/generator-fiori'
+}
+export enum Extensions {
+    AppWizard = 'yeoman-ui',
+    Ui5LanguageAssistant = 'vscode-ui5-language-assistant',
+    XMLToolkit = 'xml-toolkit',
+    AnnotationMod = 'sap-ux-annotation-modeler-extension',
+    AppMod = 'sap-ux-application-modeler-extension',
+    Help = 'sap-ux-help-extension',
+    ServiceMod = 'sap-ux-service-modeler-extension',
+    CDS = 'vscode-cds'
+}
 
 export interface Environment {
     developmentEnvironment: DevelopmentEnvironment;
     platform: NodeJS.Platform;
     versions: NodeJS.ProcessVersions;
     basDevSpace?: string;
+    toolsExtensions?: ToolsExtensions;
+}
+
+export interface ToolsExtensions {
+    nodeVersion?: string;
+    fioriGenVersion?: string;
+    cloudCli?: string;
+    appWizard?: string;
+    ui5LanguageAssistant?: string;
+    xmlToolkit?: string;
+    annotationMod?: string;
+    appMod?: string;
+    help?: string;
+    serviceMod?: string;
+    cds?: string;
 }
 
 export const enum DevelopmentEnvironment {
@@ -66,6 +101,7 @@ export interface EnvironmentCheckResult {
     environment?: Environment;
     destinations?: Destination[];
     destinationResults?: { [dest: string]: DestinationResults };
+    requestedChecks?: Check[];
     messages?: ResultMessage[];
 }
 
