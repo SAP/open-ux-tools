@@ -24,6 +24,11 @@ export interface CommonOptions {
     test?: boolean;
 
     /**
+     * Deploy the app with safe mode deactivated if set to false i.e. issues like duplicate app id are ignored
+     */
+    safe?: boolean;
+
+    /**
      * If set to true only only servers with validatated idtenities are accepted
      */
     strictSsl?: boolean;

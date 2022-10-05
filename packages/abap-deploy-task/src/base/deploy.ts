@@ -2,13 +2,15 @@ import type {
     AbapServiceProvider,
     ProviderConfiguration,
     Ui5AbapRepositoryService,
-    AxiosRequestConfig
+    AxiosRequestConfig,
+    AxiosError
 } from '@sap-ux/axios-extension';
 import {
     AbapCloudEnvironment,
     createForAbap,
     createForDestination,
-    createForAbapOnCloud
+    createForAbapOnCloud,
+    isAxiosError
 } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -17,6 +19,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { writeFileSync } from 'fs';
 import type { AbapDeployConfig, AbapTarget, CommonOptions } from '../types';
+import { promptConfirmation, promptCredentials } from './prompt';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
 type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'refreshToken'>>;
@@ -105,19 +108,65 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
         writeFileSync(`archive-${Date.now()}.zip`, archive);
     }
     const service = await createDeployService(config.target, config);
+    if (!config.strictSsl) {
+        logger.warn(
+            'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'
+        );
+    }
+    logger.info(`Starting deployment${config.test === true ? ' in test mode' : ''}.`);
+    await tryDeploy(archive, service, config, logger);
+    logger.info('Deployment successful.');
+}
+
+async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, config: AbapDeployConfig, logger: Logger) {
     try {
-        if (!config.strictSsl) {
-            logger.warn(
-                'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'
-            );
-        }
-        logger.info(`Starting deployment${config.test === true ? ' in test mode' : ''}.`);
         await service.deploy(archive, config.app, config.test);
     } catch (e) {
-        logger.error(
-            'Deployment has failed. Please ensure there is a valid deployment archive file in the dist folder of the application that can be deployed.'
-        );
-        logger.debug((e as Error).message);
+        if (isAxiosError(e)) {
+            const success = await handleAxiosError(e.response, archive, service, config, logger);
+            if (success) {
+                return;
+            }
+        }
+        logger.error('Deployment has failed.');
         throw e;
+    }
+}
+
+/**
+ * Main function for different deploy retry handling
+ */
+async function handleAxiosError(
+    response: AxiosError['response'],
+    archive: Buffer,
+    service: Ui5AbapRepositoryService,
+    config: AbapDeployConfig,
+    logger: Logger
+): Promise<boolean> {
+    switch (response?.status) {
+        case 401:
+            logger.warn('Deployment failed with authentication error.');
+            logger.info(
+                'Please maintain correct credentials to avoid seeing this error\n\t(see help: https://www.npmjs.com/package/@sap/ux-ui5-tooling#setting-environment-variables-in-a-env-file)'
+            );
+            logger.info('Please enter your credentials for this deployment.');
+            const credentials = await promptCredentials(service.defaults.auth?.username);
+            if (credentials) {
+                service.defaults.auth = credentials;
+            } else {
+                return false;
+            }
+            await tryDeploy(archive, service, config, logger);
+            return true;
+        case 412:
+            logger.warn('An app in the same repository with different sap app id found.');
+            if (await promptConfirmation('Do you want to overwrite (Y/n)?')) {
+                await tryDeploy(archive, service, { ...config, safe: false }, logger);
+                return true;
+            } else {
+                return false;
+            }
+        default:
+            return false;
     }
 }

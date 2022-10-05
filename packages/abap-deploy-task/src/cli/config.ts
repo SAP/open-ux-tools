@@ -32,7 +32,7 @@ export async function mergeConfig(
     const app = {
         name: options.name ?? taskConfig.app?.name,
         desription: options.desription ?? taskConfig.app?.desription,
-        package: options.package ?? taskConfig.app?.package,
+        'package': options.package ?? taskConfig.app?.package,
         transport: options.transport ?? taskConfig.app?.transport
     } as AbapDescriptor;
     const target = {

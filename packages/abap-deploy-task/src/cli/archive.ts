@@ -3,15 +3,16 @@ import { readdirSync, readFile, statSync } from 'fs';
 import { join, relative } from 'path';
 import type { CliOptions } from '../types';
 import { createBuffer } from '../base/archive';
-import type { ToolsLogger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Get/read zip file from the given path.
  *
+ * @param logger - reference to the logger instance
  * @param path - path to the zip file
  * @returns Buffer containing the zip file
  */
-function getArchiveFromPath(logger: ToolsLogger, path: string): Promise<Buffer> {
+function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer> {
     return new Promise((resolve, reject) => {
         logger.info(`Loading archive from ${path}`);
         readFile(path, (err, data) => {
@@ -86,11 +87,11 @@ function createArchiveFromFolder(logger: ToolsLogger, path: string): Promise<Buf
 /**
  * Get a zipped archived based on the given options.
  *
- * @param logger
+ * @param logger - reference to the logger instance
  * @param options
  * @returns Buffer containing the zip file
  */
-export async function getArchive(logger: ToolsLogger, options: CliOptions): Promise<Buffer> {
+export async function getArchive(logger: Logger, options: CliOptions): Promise<Buffer> {
     if (options.archivePath) {
         return getArchiveFromPath(logger, options.archivePath);
     } else if (options.archiveUrl) {
