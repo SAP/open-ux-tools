@@ -5,7 +5,7 @@ import { UIContextualMenu } from '../UIContextualMenu';
 import { UiIcons } from '../Icons';
 import type { UIContextualMenuProps, UIContextualMenuItem } from '../UIContextualMenu';
 
-import { UIGetId } from '../../utilities';
+import { getUIId } from '../../utilities';
 
 export interface UISplitButtonProps {
     button: UIContextualMenuItem;
@@ -29,9 +29,10 @@ export interface UISplitButtonState {
  * @extends {React.Component<UISplitButtonProps, UISplitButtonState>}
  */
 export class UISplitButton extends React.Component<UISplitButtonProps, UISplitButtonState> {
-    id = this.props.id ? this.props.id : UIGetId('ui-split-button-');
+    id = this.props.id ? this.props.id : getUIId('ui-split-button-');
     /**
      * Initializes component properties.
+     *
      * @param {UISplitButtonProps} props
      */
     public constructor(props: UISplitButtonProps) {

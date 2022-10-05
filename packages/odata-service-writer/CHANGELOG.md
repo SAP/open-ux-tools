@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.9
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.1
+
+## 0.14.8
+
+### Patch Changes
+
+-   0fc1499: Code quality improvements but no functionality change
+
 ## 0.14.7
 
 ### Patch Changes

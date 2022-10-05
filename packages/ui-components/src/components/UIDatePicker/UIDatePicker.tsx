@@ -33,6 +33,7 @@ export class UIDatePicker extends React.Component<UIDatePickerProps> {
 
     /**
      * Initializes component properties.
+     *
      * @param {UIDatePickerProps} props
      */
     public constructor(props: UIDatePickerProps) {

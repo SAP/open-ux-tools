@@ -9,11 +9,11 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-service-writer"
     },
-    "version": "0.14.7",
+    "version": "0.14.9",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc",
+        "build": "pnpm clean && tsc -p tsconfig-build.json",
         "clean": "rimraf dist test/test-output coverage",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",

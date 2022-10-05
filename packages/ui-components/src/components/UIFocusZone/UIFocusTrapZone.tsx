@@ -14,6 +14,7 @@ import { FocusTrapZone } from '@fluentui/react';
 export class UIFocusTrapZone extends React.Component<IFocusTrapZoneProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {IFocusTrapZoneProps} props
      */
     public constructor(props: IFocusTrapZoneProps) {

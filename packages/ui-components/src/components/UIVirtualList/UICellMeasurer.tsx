@@ -13,6 +13,7 @@ export { Index, OnScrollParams } from 'react-virtualized';
 export class UICellMeasurer extends React.Component<CellMeasurerProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {CellMeasurerProps} props
      */
     public constructor(props: CellMeasurerProps) {

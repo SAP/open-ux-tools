@@ -13,6 +13,7 @@ import { AutoSizer } from 'react-virtualized';
 export class UIAutoSizer extends React.Component<AutoSizerProps, {}> {
     /**
      * Initializes component properties.
+     *
      * @param {AutoSizerProps} props
      */
     public constructor(props: AutoSizerProps) {

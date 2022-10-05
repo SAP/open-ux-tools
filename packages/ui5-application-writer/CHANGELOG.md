@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.4
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.1
+
+## 0.17.3
+
+### Patch Changes
+
+-   0fc1499: Code quality improvements but no functionality change
+
 ## 0.17.2
 
 ### Patch Changes

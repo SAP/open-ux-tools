@@ -131,14 +131,12 @@ export function getTypesVersion(minUI5Version?: string) {
     const version = semVer.coerce(minUI5Version);
     if (!version) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
+    } else if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
+        return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
     } else {
-        if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
-            return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
-        } else {
-            return semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)
-                ? `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`
-                : UI5_DEFAULT.TYPES_VERSION_PREVIOUS;
-        }
+        return semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)
+            ? `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`
+            : UI5_DEFAULT.TYPES_VERSION_PREVIOUS;
     }
 }
 
@@ -163,7 +161,7 @@ function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
  * @returns - the manifest descriptor version
  */
 function getManifestVersion(ui5Version: string, manifestVersion?: string): string {
-    const ui5SemVer = semVer.coerce(ui5Version)!;
+    const ui5SemVer = semVer.coerce(ui5Version) as SemVer;
 
     /**
      * Finds the closest manifest version for the specified ui5 version. This is determined
@@ -187,17 +185,17 @@ function getManifestVersion(ui5Version: string, manifestVersion?: string): strin
         if (!matchVersion) {
             const sortedSemVers = Object.keys(verToManifestVer)
                 .filter((ver) => ver !== 'latest')
-                .map((verStr) => semVer.coerce(verStr))
-                .sort((a, b) => semVer.rcompare(a!, b!));
+                .map((verStr) => semVer.coerce(verStr) as SemVer)
+                .sort((a, b) => semVer.rcompare(a, b));
 
             const latestUI5SemVer = sortedSemVers[0];
             // ui5 version is greater than the latest use the latest
-            if (semVer.gt(version, latestUI5SemVer!)) {
-                matchVersion = verToManifestVer[`${latestUI5SemVer!.major}.${latestUI5SemVer!.minor}`];
+            if (semVer.gt(version, latestUI5SemVer)) {
+                matchVersion = verToManifestVer[`${latestUI5SemVer.major}.${latestUI5SemVer.minor}`];
             } else {
                 // Find the nearest lower
                 const nearest = sortedSemVers.find((mapVer) => {
-                    return semVer.gt(version, mapVer!);
+                    return semVer.gt(version, mapVer);
                 });
                 if (nearest) {
                     matchVersion = verToManifestVer[`${nearest.major}.${nearest.minor}`];
@@ -234,16 +232,19 @@ function getLocalVersion({
         return UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION;
     }
 
-    let result: string =
-        framework === 'SAPUI5' ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION; // minimum version available as local libs
+    // minimum version available as local libs
+    const minVersion =
+        framework === 'SAPUI5' ? UI5_DEFAULT.MIN_LOCAL_SAPUI5_VERSION : UI5_DEFAULT.MIN_LOCAL_OPENUI5_VERSION;
 
     // If the ui5 `version` is higher than the min framework version 'result' then use that as the local version instead
     // Update to a valid coerced version string e.g. snapshot-1.80 -> 1.80.0. Cannot be null as previously validated.
-    const versionSemVer = semVer.coerce(version)!;
-    if (semVer.gt(versionSemVer, semVer.coerce(result)!)) {
-        result = semVer.valid(versionSemVer)!;
+    const versionSemVer = semVer.coerce(version);
+    const minSemVer = semVer.coerce(minVersion);
+    if (versionSemVer && minSemVer && semVer.gt(versionSemVer, minSemVer)) {
+        return semVer.valid(versionSemVer) as string;
+    } else {
+        return minVersion;
     }
-    return result;
 }
 
 /**
