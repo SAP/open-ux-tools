@@ -301,15 +301,15 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
 
     writer.addH1(t('markdownText.envCheckTitle'));
 
-    if (results.requestedChecks?.has(Check.Environment)) {
+    if (results.requestedChecks?.includes(Check.Environment)) {
         writeEnvironment(writer, results.environment);
     }
 
-    if (results.requestedChecks?.has(Check.DestResults)) {
+    if (results.requestedChecks?.includes(Check.DestResults)) {
         writeDestinationResults(writer, results.destinationResults, results.destinations);
     }
 
-    if (results.requestedChecks?.has(Check.Destinations)) {
+    if (results.requestedChecks?.includes(Check.Destinations)) {
         writeDestinations(writer, results.destinations);
     }
 

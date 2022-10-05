@@ -101,7 +101,7 @@ export interface EnvironmentCheckResult {
     environment?: Environment;
     destinations?: Destination[];
     destinationResults?: { [dest: string]: DestinationResults };
-    requestedChecks?: Set<Check>;
+    requestedChecks?: Check[];
     messages?: ResultMessage[];
 }
 

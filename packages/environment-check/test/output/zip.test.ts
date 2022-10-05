@@ -39,7 +39,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
             }
         });
         console.log = jest.fn();
-        const requestedChecksSet = new Set([Check.Environment, Check.Destinations, Check.DestResults]);
+        const requestedChecksSet = [Check.Environment, Check.Destinations, Check.DestResults];
 
         // Test execution
         storeResultsZip({ requestedChecks: requestedChecksSet });

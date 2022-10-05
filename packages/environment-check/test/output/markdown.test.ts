@@ -9,7 +9,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
-const requestedChecksSet = new Set([Check.Environment, Check.Destinations, Check.DestResults]);
+const requestedChecksSet = [Check.Environment, Check.Destinations, Check.DestResults];
 
 const data = {
     destinationResults: {
@@ -230,7 +230,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check destination details with both v2 and v4 services available', () => {
-        const destResultsCheck = new Set([Check.DestResults]);
+        const destResultsCheck = [Check.DestResults];
         const result = convertResultsToMarkdown({
             destinationResults: {
                 ABC: {
@@ -256,7 +256,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
 
     test('Check markdown with no destinations checked', () => {
-        const envCheck = new Set([Check.Environment]);
+        const envCheck = [Check.Environment];
         const result = convertResultsToMarkdown({
             environment: data.environment as any,
             requestedChecks: envCheck
@@ -267,7 +267,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     test('Check markdown with no checks', () => {
         const result = convertResultsToMarkdown({
             environment: data.environment as any,
-            requestedChecks: new Set([])
+            requestedChecks: []
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });

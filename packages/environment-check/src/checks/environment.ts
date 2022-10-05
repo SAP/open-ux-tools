@@ -222,8 +222,8 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
     let destinations: Destination[];
     let destinationResults: { [dest: string]: DestinationResults };
 
-    const requestedChecks: Set<Check> = new Set();
-    requestedChecks.add(Check.Environment);
+    const requestedChecks: Check[] = [];
+    requestedChecks.push(Check.Environment);
     const { environment, messages } = await getEnvironment();
     logger.push(...messages);
 
@@ -235,13 +235,13 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
             workspaceResults.destinations.forEach((dest) => deepDiveDestinations.add(dest));
         }
 
-        requestedChecks.add(Check.Destinations);
+        requestedChecks.push(Check.Destinations);
         const basDestResults = await checkBASDestinations();
         destinations = basDestResults.destinations;
         logger.push(...basDestResults.messages);
 
         if (deepDiveDestinations.size > 0) {
-            requestedChecks.add(Check.DestResults);
+            requestedChecks.push(Check.DestResults);
         }
 
         const destResults = await getDestinationsResults(
