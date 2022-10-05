@@ -129,11 +129,13 @@ describe('Ui5AbapRepositoryService', () => {
             }
         });
 
-        test('testMode', async () => {
+        test('testMode and safeMode', async () => {
             nock(server)
-                .put(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true`)
+                .put(
+                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true&SafeMode=false`
+                )
                 .reply(200);
-            const response = await service.deploy(archive, { name: validApp }, true);
+            const response = await service.deploy(archive, { name: validApp }, true, false);
             expect(response.data).toBeDefined();
         });
     });

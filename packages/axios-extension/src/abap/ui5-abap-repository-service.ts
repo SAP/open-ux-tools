@@ -75,9 +75,15 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param archive zip archive containing the application files as buffer
      * @param app application configuration
      * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     * @param safeMode if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
      * @returns the Axios response object for futher processing
      */
-    public async deploy(archive: Buffer, app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
+    public async deploy(
+        archive: Buffer,
+        app: ApplicationConfig,
+        testMode = false,
+        safeMode?: boolean
+    ): Promise<AxiosResponse> {
         const info: AppInfo = await this.getInfo(app.name);
         const payload = this.createPayload(
             archive,
@@ -85,7 +91,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             app.description || 'Deployed with SAP Fiori tools',
             info ? info.Package : app.package
         );
-        const config = this.createConfig(app.transport, testMode);
+        const config = this.createConfig(app.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl(this.defaults.baseURL);
         try {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, app.name, payload, config);
@@ -148,10 +154,11 @@ export class Ui5AbapRepositoryService extends ODataService {
      * Internal helper method to generate a request configuration (headers, parameters).
      *
      * @param transport optional transport request id
-     * @param testMode test mode enabled or not
+     * @param testMode optional url parameter to enable test mode
+     * @param safeMode optional url paramater to disable the safe model (safemode=false)
      * @returns the Axios response object for futher processing
      */
-    protected createConfig(transport?: string, testMode?: boolean): AxiosRequestConfig {
+    protected createConfig(transport?: string, testMode?: boolean, safeMode?: boolean): AxiosRequestConfig {
         const headers = {
             'Content-Type': 'application/atom+xml',
             type: 'entry',
@@ -167,6 +174,9 @@ export class Ui5AbapRepositoryService extends ODataService {
         }
         if (testMode) {
             params.TestMode = true;
+        }
+        if (safeMode !== undefined) {
+            params.SafeMode = safeMode;
         }
 
         return { headers, params };
