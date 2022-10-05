@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.12.3
+
+### Patch Changes
+
+-   86fc1cd: Fix lint warnings
+
 ## 0.12.2
 
 ### Patch Changes
