@@ -67,7 +67,7 @@ function getFileNames(path: string): string[] {
  * @param path - path to the folder that is to be zipped
  * @returns Buffer containing the zip file
  */
-function createArchiveFromFolder(logger: ToolsLogger, path: string): Promise<Buffer> {
+function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> {
     try {
         logger.info(`Creating archive from ${path}.`);
         const files = getFileNames(path);

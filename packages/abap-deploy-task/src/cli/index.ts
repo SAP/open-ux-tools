@@ -10,6 +10,7 @@ program
     .requiredOption('-c, --config <path-to-yaml>', 'Path to deployment config yaml file, default ui5-deploy.yaml')
     .option('-y, --yes', 'yes to all questions', false)
     .option('-v, --verbose', 'verbose log output', false)
+    .option('-n, --no-retry', 'do not retry if a deployment fails for any reason', false)
     .version('0.0.1');
 
 // is this really required or was it a workaround for something in the past?
@@ -58,7 +59,7 @@ program
 /**
  * Function that is to be execute when the exposed deploy command is executed.
  */
-export async function run(): Promise<void> {
+async function run(): Promise<void> {
     program.parse();
     const options = program.opts() as CliOptions;
     const logger = new ToolsLogger({
@@ -79,3 +80,5 @@ export async function run(): Promise<void> {
         program.error((error as Error).message, { exitCode: 1 });
     }
 }
+
+export { program, run };

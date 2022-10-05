@@ -122,13 +122,14 @@ async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, con
     try {
         await service.deploy(archive, config.app, config.test);
     } catch (e) {
-        if (isAxiosError(e)) {
+        if (!config.noRetry && isAxiosError(e)) {
             const success = await handleAxiosError(e.response, archive, service, config, logger);
             if (success) {
                 return;
             }
         }
         logger.error('Deployment has failed.');
+        logger.debug(config);
         throw e;
     }
 }
@@ -160,7 +161,7 @@ async function handleAxiosError(
             return true;
         case 412:
             logger.warn('An app in the same repository with different sap app id found.');
-            if (await promptConfirmation('Do you want to overwrite (Y/n)?')) {
+            if (config.yes || (await promptConfirmation('Do you want to overwrite (Y/n)?'))) {
                 await tryDeploy(archive, service, { ...config, safe: false }, logger);
                 return true;
             } else {

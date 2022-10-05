@@ -47,6 +47,21 @@ export interface CommonOptions {
      * Optional: set a specific log level, default is info
      */
     log?: LogLevel;
+
+    /**
+     * If set to true, skip confirmation prompts and assume yes as answer.
+     */
+    yes?: boolean;
+
+    /**
+     * Enable verbose logging.
+     */
+    verbose?: boolean;
+
+    /**
+     * If set to try then do not retry if a deployment fails.
+     */
+    noRetry?: boolean;
 }
 
 export interface AbapDeployConfig extends CommonOptions {
@@ -57,8 +72,6 @@ export interface AbapDeployConfig extends CommonOptions {
 
 export interface CliOptions extends Partial<AbapDescriptor>, Partial<AbapTarget>, Partial<CommonOptions> {
     config: string;
-    yes?: boolean;
-    verbose?: boolean;
     archiveFolder?: string;
     archivePath?: string;
     archiveUrl?: string;
