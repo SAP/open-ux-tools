@@ -74,7 +74,7 @@ function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> 
         const zip = new ZipFile();
         for (const filePath of files) {
             const relPath = relative(path, filePath);
-            logger.debug(relPath);
+            logger.debug(`Adding ${relPath}`);
             zip.addFile(filePath, relPath);
         }
         logger.info('Archive created.');
@@ -88,7 +88,7 @@ function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> 
  * Get a zipped archived based on the given options.
  *
  * @param logger - reference to the logger instance
- * @param options
+ * @param options - options provided via CLI
  * @returns Buffer containing the zip file
  */
 export async function getArchive(logger: Logger, options: CliOptions): Promise<Buffer> {
@@ -97,6 +97,6 @@ export async function getArchive(logger: Logger, options: CliOptions): Promise<B
     } else if (options.archiveUrl) {
         return fetchArchiveFromUrl(options.archiveUrl);
     } else {
-        return createArchiveFromFolder(logger, options.archiveFolder ?? join(process.cwd(), 'dist'));
+        return createArchiveFromFolder(logger, options.archiveFolder ?? process.cwd());
     }
 }

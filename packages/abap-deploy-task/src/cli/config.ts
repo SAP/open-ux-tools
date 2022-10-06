@@ -1,5 +1,6 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { readFileSync } from 'fs';
+import { dirname, isAbsolute, join } from 'path';
 import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions } from '../types';
 import { NAME } from '../types';
 
@@ -44,5 +45,18 @@ export async function mergeConfig(
     const test = options.test !== undefined ? options.test : taskConfig.test;
     const yes = options.yes;
     const config = { app, target, test, yes };
+
+    if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
+        options.archiveFolder = 'dist';
+    }
+
+    if (options.archiveFolder && !isAbsolute(options.archiveFolder)) {
+        options.archiveFolder = join(dirname(options.config), options.archiveFolder);
+    }
+
+    if (options.archivePath && !isAbsolute(options.archivePath)) {
+        options.archivePath = join(dirname(options.config), options.archivePath);
+    }
+
     return config;
 }

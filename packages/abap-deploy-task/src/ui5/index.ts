@@ -13,17 +13,20 @@ import { createUi5Archive } from './archive';
  * @param params.options
  */
 async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): Promise<void> {
+    const logLevel = (options.configuration?.log as LogLevel) ?? LogLevel.Info;
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: `${NAME} ${options.projectName}` })],
         logLevel: (options.configuration?.log as LogLevel) ?? LogLevel.Info
     });
 
-    options.configuration && logger.debug(options.configuration);
+    if (logLevel >= LogLevel.Debug) {
+        logger.debug({ ...options.configuration, credentials: undefined });
+    }
     const config = validateConfig(options.configuration);
     replaceEnvVariables(config);
 
     const archive = await createUi5Archive(logger, workspace, options);
-    deploy(archive, config, logger);
+    await deploy(archive, config, logger);
 }
 
 export = task;

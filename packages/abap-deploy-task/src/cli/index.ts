@@ -1,12 +1,12 @@
-import { program, Option } from 'commander';
+import { Option, Command } from 'commander';
 import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
-import { deploy, validateConfig } from '../base';
+import { deploy, replaceEnvVariables, validateConfig } from '../base';
 import type { CliOptions } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, mergeConfig } from './config';
 
-program
+const program = new Command()
     .requiredOption('-c, --config <path-to-yaml>', 'Path to deployment config yaml file, default ui5-deploy.yaml')
     .option('-y, --yes', 'yes to all questions', false)
     .option('-v, --verbose', 'verbose log output', false)
@@ -60,22 +60,27 @@ program
  * Function that is to be execute when the exposed deploy command is executed.
  */
 async function run(): Promise<void> {
-    program.parse();
-    const options = program.opts() as CliOptions;
+    const cmd = program.parse();
+    const options = cmd.opts() as CliOptions;
+
+    const logLevel = options.verbose ? LogLevel.Silly : LogLevel.Info;
     const logger = new ToolsLogger({
         transports: [new ConsoleTransport()],
-        logLevel: options.verbose ? LogLevel.Silly : LogLevel.Info,
+        logLevel,
         logPrefix: NAME
     });
 
     try {
         const taskConfig = await getDeploymentConfig(options.config);
         const config = await mergeConfig(taskConfig, options);
-        logger.debug(config);
+        if (logLevel >= LogLevel.Debug) {
+            logger.debug(config.credentials ? { ...config, credentials: 'hidden' } : config);
+        }
         validateConfig(config);
+        replaceEnvVariables(config);
 
         const archive = await getArchive(logger, options);
-        deploy(archive, config, logger);
+        await deploy(archive, config, logger);
     } catch (error) {
         program.error((error as Error).message);
     }
