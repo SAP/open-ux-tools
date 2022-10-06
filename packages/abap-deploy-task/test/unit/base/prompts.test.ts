@@ -6,7 +6,7 @@ describe('prompts', () => {
 
     describe('promptConfirmation', () => {
         test('Default answer.', async () => {
-            prompts.inject(['\n']);
+            prompts.inject([undefined]);
             expect(await promptConfirmation(message)).toBe(true);
         });
 
@@ -30,7 +30,7 @@ describe('prompts', () => {
         });
 
         test('default provided', async () => {
-            prompts.inject(['\n', password]);
+            prompts.inject([undefined, password]);
             const providedUser = '~other';
             const creds = await promptCredentials(providedUser);
             expect(creds.username).toBe(providedUser);
