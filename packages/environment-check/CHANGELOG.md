@@ -1,5 +1,18 @@
 # @sap-ux/environment-check
 
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [8778cbd]
+    -   @sap-ux/axios-extension@0.10.0
+
+## 0.2.0
+
+### Minor Changes
+
+-   08b1c6e: added vscode functionality to environment check
+
 ## 0.1.5
 
 ### Patch Changes
