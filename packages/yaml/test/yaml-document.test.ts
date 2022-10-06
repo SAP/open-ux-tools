@@ -1,11 +1,7 @@
-import { initI18n, t } from '../src/i18n';
+import { interpolate, texts } from '../src/texts';
 import { YamlDocument } from '../src';
 
 describe('YamlDocument', () => {
-    beforeAll(async () => {
-        await initI18n();
-    });
-
     it('throws an error when instatiated with malformed YAML contents', async () => {
         const serializedYaml = `
 foo:
@@ -31,7 +27,7 @@ foo:
         it("throws an error when path is empty ('')", async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.setIn({ path: '', value: 42 })).toThrow(t('error.pathCannotBeEmpty'));
+            expect(() => doc.setIn({ path: '', value: 42 })).toThrow(interpolate(texts.error.pathCannotBeEmpty));
         });
 
         it("'new key' at root without createParent true works for scalars", async () => {
@@ -377,7 +373,7 @@ seq1:
             expect(doc.toString()).toEqual(expectedValue);
         });
 
-        it('error if trying to append to non-sequence', async () => {
+        it('texts.error if trying to append to non-sequence', async () => {
             const serializedYaml = `key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
             expect(() => doc.appendTo({ path: 'key1', value: 42 })).toThrow();
