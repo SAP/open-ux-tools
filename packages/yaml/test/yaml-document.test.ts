@@ -1,4 +1,4 @@
-import { interpolate, texts } from '../src/texts';
+import { texts } from '../src/texts';
 import { YamlDocument } from '../src';
 
 describe('YamlDocument', () => {
