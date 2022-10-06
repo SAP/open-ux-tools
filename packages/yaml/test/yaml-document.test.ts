@@ -1,4 +1,4 @@
-import { texts } from '../src/texts';
+import { errors } from '../src/errors';
 import { YamlDocument } from '../src';
 
 describe('YamlDocument', () => {
@@ -27,7 +27,7 @@ foo:
         it("throws an error when path is empty ('')", async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.setIn({ path: '', value: 42 })).toThrow(texts.error.pathCannotBeEmpty);
+            expect(() => doc.setIn({ path: '', value: 42 })).toThrow(errors.pathCannotBeEmpty.messageTemplate);
         });
 
         it("'new key' at root without createParent true works for scalars", async () => {
