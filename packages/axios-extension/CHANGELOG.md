@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.10.0
+
+### Minor Changes
+
+-   8778cbd: Change API of ADT request getTransportRequests to return transport req metadata associated with transport numbers
+
 ## 0.9.8
 
 ### Patch Changes
