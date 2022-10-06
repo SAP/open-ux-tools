@@ -1,39 +1,16 @@
 import { join } from 'path';
 import { FileName } from '../constants';
-import type { CapCustomPaths, csn, Package } from '../types';
+import type { CapCustomPaths, CapProjectType, csn, Package } from '../types';
 import { fileExists, readJSON } from '../file';
 import { loadModuleFromProject } from './moduleLoader';
 
 /**
- * Returns true if the project is either a CAP Node.js or a CAP Java project.
- *
- * @param projectRoot - the root path of the project
- * @param [packageJson] - optional: the parsed package.json object
- * @returns - true if the project is a CAP project; false otherwise
- */
-export async function isCapProject(projectRoot: string, packageJson?: Package): Promise<boolean> {
-    if ((await isCapNodeJsProject(projectRoot, packageJson)) || (await isCapJavaProject(projectRoot))) {
-        return true;
-    }
-    return false;
-}
-
-/**
  * Returns true if the project is a CAP Node.js project.
  *
- * @param projectRoot - the root path of the project
- * @param [packageJson] - the parsed package.json object
+ * @param packageJson - the parsed package.json object
  * @returns - true if the project is a CAP Node.js project
  */
-export async function isCapNodeJsProject(projectRoot: string, packageJson?: Package): Promise<boolean> {
-    // Parse package.json file if not provided
-    if (!packageJson) {
-        try {
-            packageJson = await readJSON<Package>(join(projectRoot, FileName.Package));
-        } catch {
-            // Ignore errors while reading the package.json file
-        }
-    }
+export function isCapNodeJsProject(packageJson: Package): boolean {
     return !!(packageJson?.cds || packageJson?.dependencies?.['@sap/cds']);
 }
 
@@ -44,7 +21,30 @@ export async function isCapNodeJsProject(projectRoot: string, packageJson?: Pack
  * @returns - true if the project is a CAP project
  */
 export async function isCapJavaProject(projectRoot: string): Promise<boolean> {
-    return fileExists(join(projectRoot, 'srv', 'src', 'main', 'resources', 'application.yaml'));
+    const { srv } = await getCapCustomPaths(projectRoot);
+    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', 'application.yaml'));
+}
+
+/**
+ * Returns the CAP project type, undefined if it is not a CAP project.
+ *
+ * @param projectRoot - root of the project, where the package.json resides.
+ * @returns - CAPJava for Java based CAP projects; CAPNodejs for node.js based CAP projects; undefined if it is no CAP project
+ */
+export async function getCapProjectType(projectRoot: string): Promise<CapProjectType | undefined> {
+    if (await isCapJavaProject(projectRoot)) {
+        return 'CAPJava';
+    }
+    let packageJson;
+    try {
+        packageJson = await readJSON<Package>(join(projectRoot, FileName.Package));
+    } catch {
+        // Ignore errors while reading the package.json file
+    }
+    if (packageJson && isCapNodeJsProject(packageJson)) {
+        return 'CAPNodejs';
+    }
+    return undefined;
 }
 
 /**

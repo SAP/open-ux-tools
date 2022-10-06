@@ -1,35 +1,44 @@
 import { join } from 'path';
 import * as projectModuleMock from '../../src/project/moduleLoader';
-import { isCapProject, isCapNodeJsProject, isCapJavaProject } from '../../src';
-import { getCapModelAndServices, getCapCustomPaths } from '../../src/project/cap';
+import type { Package } from '../../src';
+import { FileName } from '../../src/constants';
+import { isCapNodeJsProject, isCapJavaProject, getCapModelAndServices, getCapProjectType } from '../../src';
+import { getCapCustomPaths } from '../../src/project/cap';
+import { readJSON } from '../../src/file';
 
-describe('Test isCapProject()', () => {
-    test('Test if valid CAP project is recognized', async () => {
+describe('Test getCapProjectType()', () => {
+    test('Test if valid CAP Node.js project is recognized', async () => {
         expect(
-            await isCapProject(join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix'))
-        ).toBeTruthy();
+            await getCapProjectType(
+                join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix')
+            )
+        ).toBe('CAPNodejs');
+    });
+
+    test('Test if valid CAP Java project is recognized', async () => {
+        expect(
+            await getCapProjectType(
+                join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPJava_mix')
+            )
+        ).toBe('CAPJava');
     });
 
     test('Test if invalid CAP project is recognized', async () => {
-        expect(await isCapProject('INVALID_PROJECT')).toBeFalsy();
+        expect(await getCapProjectType('INVALID_PROJECT')).toBeUndefined();
     });
 });
 
 describe('Test isCapNodeJsProject()', () => {
     test('Test if valid CAP node.js project is recognized', async () => {
-        expect(
-            await isCapNodeJsProject(
-                join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix')
-            )
-        ).toBeTruthy();
+        const packageJson = await readJSON<Package>(
+            join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix', FileName.Package)
+        );
+        expect(isCapNodeJsProject(packageJson)).toBeTruthy();
     });
 
     test('Test if invalid CAP node.js project is recognized', async () => {
-        expect(
-            await isCapNodeJsProject(
-                join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPJava_mix')
-            )
-        ).toBeFalsy();
+        const packageJson: Package = {};
+        expect(isCapNodeJsProject(packageJson)).toBeFalsy();
     });
 });
 

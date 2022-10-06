@@ -3,7 +3,7 @@ import type { AllAppResults, Manifest, Package, WorkspaceFolder } from '../types
 import { FileName } from '../constants';
 import { fileExists, findFiles, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
-import { isCapProject } from './cap';
+import { getCapProjectType, isCapJavaProject, isCapNodeJsProject } from './cap';
 import { getWebappPath } from './getWebapp';
 
 /**
@@ -155,7 +155,7 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
         if (appPckJson.sapux) {
             return findRootsWithSapux(appPckJson.sapux, path, appRoot);
         }
-        if (await isCapProject(appRoot, appPckJson)) {
+        if (isCapNodeJsProject(appPckJson) || (await isCapJavaProject(appRoot))) {
             // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
             // in root -> not supported
             return null;
@@ -175,7 +175,7 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
             const { root } = parse(appRoot);
             let projectRoot = dirname(appRoot);
             while (projectRoot !== root) {
-                if (await isCapProject(projectRoot)) {
+                if (await getCapProjectType(projectRoot)) {
                     // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
                     // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
                     if (join(projectRoot, 'app') !== appRoot) {

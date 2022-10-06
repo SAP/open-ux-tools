@@ -1,7 +1,7 @@
 import type { PackageJson } from './package-json';
 
 interface SapUxPackage {
-    sapux: boolean | string[];
+    sapux?: boolean | string[];
     sapuxLayer?: UI5FlexLayer;
     cds?: object;
     ui5?: object;

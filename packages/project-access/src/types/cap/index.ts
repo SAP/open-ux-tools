@@ -1,3 +1,5 @@
+export type CapProjectType = 'CAPJava' | 'CAPNodejs';
+
 export interface CapCustomPaths {
     app: string;
     db: string;

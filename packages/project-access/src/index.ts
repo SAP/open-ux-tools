@@ -3,10 +3,10 @@ export {
     findProjectRoot,
     getAppRootFromWebappPath,
     getCapModelAndServices,
+    getCapProjectType,
     getWebappPath,
     isCapJavaProject,
     isCapNodeJsProject,
-    isCapProject,
     loadModuleFromProject
 } from './project';
 export * from './types';
