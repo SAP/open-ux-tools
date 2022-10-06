@@ -163,18 +163,20 @@ export class YamlDocument {
         comments?: Array<NodeComment<T>>;
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
-        let seq = this.document.getIn(pathArray) as YAMLSeq;
+        // Create a copy to work to modify
+        const documentCopy = this.document.clone();
+        let seq = documentCopy.getIn(pathArray) as YAMLSeq;
         if (!seq) {
             if (!createIntermediateKeys) {
                 throw newError({ error: errors.seqDoesNotExist, templateReplacements: { path } });
             }
 
             seq = new YAMLSeq();
-            this.document.setIn(pathArray, seq);
+            documentCopy.setIn(pathArray, seq);
         } else if (!isSeq(seq)) {
             throw newError({ error: errors.tryingToAppendToNonSequence, templateReplacements: { path } });
         }
-        const newNode = this.document.createNode(value);
+        const newNode = documentCopy.createNode(value);
         if (nodeComment) {
             newNode.commentBefore = nodeComment;
         }
@@ -187,13 +189,16 @@ export class YamlDocument {
             const index = seq.items.length - 1;
             for (const c of comments) {
                 const propPathArray = this.toPathArray(c.path);
-                const n = this.document.getIn([...pathArray, index, ...propPathArray], true) as yaml.Node;
+                const n = documentCopy.getIn([...pathArray, index, ...propPathArray], true) as yaml.Node;
                 if (!n) {
                     throw newError({ error: errors.propertyNotFound, templateReplacements: { path: c.path } });
                 }
                 n.comment = c.comment;
             }
         }
+
+        // Modification succeeded, replace document with modified copy
+        this.document = documentCopy;
         return this;
     }
 
