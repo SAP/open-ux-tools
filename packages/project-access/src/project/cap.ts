@@ -51,7 +51,7 @@ export async function isCapJavaProject(projectRoot: string): Promise<boolean> {
  * Get CAP CDS project custom paths for project root.
  *
  * @param capProjectPath - project root of cap project
- * @returns - Cap Custom Paths
+ * @returns - paths to app, db, and srv for CAP project
  */
 export async function getCapCustomPaths(capProjectPath: string): Promise<CapCustomPaths> {
     const result: CapCustomPaths = {
@@ -74,17 +74,6 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 }
 
 /**
- * Returns the project specific values for cds.env.folders.
- *
- * @param projectRoot - root of the project, where the package.json is
- * @returns - folder mappings for app, src, db, ...
- */
-async function getCdsEnvFolders(projectRoot: string): Promise<CapCustomPaths> {
-    const capCustomPaths = await getCapCustomPaths(projectRoot);
-    return { ...capCustomPaths };
-}
-
-/**
  * Return the CAP model and all services.
  *
  * @param projectRoot - CAP project root where package.json resides
@@ -93,7 +82,7 @@ export async function getCapModelAndServices(
     projectRoot: string
 ): Promise<{ model: csn; services: { name: string; urlPath: string }[] }> {
     const cds = await loadModuleFromProject<any>(projectRoot, '@sap/cds');
-    const capProjectPaths = await getCdsEnvFolders(projectRoot);
+    const capProjectPaths = await getCapCustomPaths(projectRoot);
     const modelPaths = [
         join(projectRoot, capProjectPaths.app),
         join(projectRoot, capProjectPaths.srv),
