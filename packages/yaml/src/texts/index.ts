@@ -13,7 +13,7 @@ export type StringMap = { [key: string]: any };
 export function interpolate(template: string, options?: StringMap): string {
     return !options
         ? template
-        : template.replace(/\{\{-?([^{}]*)\}\}/g, (match, captureGroup1) => {
+        : template.replace(/{{-?([^{}]*)}}/g, (match, captureGroup1) => {
               const key = captureGroup1?.trim();
               // Use replacement only if it can be converted to a string
               return options[key]?.toString() || match;
