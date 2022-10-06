@@ -27,7 +27,7 @@ foo:
         it("throws an error when path is empty ('')", async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.setIn({ path: '', value: 42 })).toThrow(interpolate(texts.error.pathCannotBeEmpty));
+            expect(() => doc.setIn({ path: '', value: 42 })).toThrow(texts.error.pathCannotBeEmpty);
         });
 
         it("'new key' at root without createParent true works for scalars", async () => {
@@ -373,7 +373,7 @@ seq1:
             expect(doc.toString()).toEqual(expectedValue);
         });
 
-        it('texts.error if trying to append to non-sequence', async () => {
+        it('error if trying to append to non-sequence', async () => {
             const serializedYaml = `key1: 42`;
             const doc = await YamlDocument.newInstance(serializedYaml);
             expect(() => doc.appendTo({ path: 'key1', value: 42 })).toThrow();
