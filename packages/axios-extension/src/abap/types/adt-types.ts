@@ -57,3 +57,11 @@ export interface AdtCategory {
     term: AdtCategoryTerm;
     scheme: string;
 }
+
+export interface TransportRequest {
+    transportNumber: string;
+    user: string;
+    description: string;
+    client: string;
+    targetSystem: string;
+}
