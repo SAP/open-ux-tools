@@ -77,7 +77,7 @@ async function run(): Promise<void> {
         const archive = await getArchive(logger, options);
         deploy(archive, config, logger);
     } catch (error) {
-        program.error((error as Error).message, { exitCode: 1 });
+        program.error((error as Error).message);
     }
 }
 
