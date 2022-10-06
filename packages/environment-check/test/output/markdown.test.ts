@@ -1,5 +1,15 @@
-import type { EnvironmentCheckResult } from '../../src';
+import { Check, EnvironmentCheckResult } from '../../src';
 import { convertResultsToMarkdown, UrlServiceType } from '../../src';
+import { isAppStudio } from '@sap-ux/btp-utils';
+
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...(jest.requireActual('@sap-ux/btp-utils') as object),
+    isAppStudio: jest.fn()
+}));
+
+const mockIsAppStudio = isAppStudio as jest.Mock;
+
+const requestedChecksSet = [Check.Environment, Check.Destinations, Check.DestResults];
 
 const data = {
     destinationResults: {
@@ -68,6 +78,7 @@ const data = {
         }
     ],
     environment: {
+        basDevSpace: 'SAP Fiori',
         developmentEnvironment: 'Business Application Studio',
         versions: {
             node: '12.22.5',
@@ -79,7 +90,20 @@ const data = {
             http_parser: '2.9.4',
             openssl: '1.1.1k'
         },
-        platform: 'linux'
+        platform: 'linux',
+        toolsExtensions: {
+            nodeVersion: 'v16.17.0',
+            fioriGenVersion: '1',
+            cloudCli: '2',
+            appWizard: '2',
+            ui5LanguageAssistant: '2',
+            xmlToolkit: '2',
+            annotationMod: '2.2',
+            appMod: '2',
+            help: '2',
+            serviceMod: '2.4',
+            cds: '2'
+        }
     },
     destinations: [
         {
@@ -156,16 +180,26 @@ const data = {
         {
             Name: 'DUPLICATE'
         }
-    ]
+    ],
+    markdownTitle: `SAP Fiori tools - Environment Check in SAP Business Application Studio`,
+    requestedChecks: requestedChecksSet
 };
 
 describe('Test to check conversion to markdown, convertResultsToMarkdown()', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockIsAppStudio.mockReturnValue(true);
+    });
     test('Check if writer is creating output appropriately', () => {
         const result = convertResultsToMarkdown(data as unknown as EnvironmentCheckResult);
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
     test('Check output for empty results', () => {
-        const result = convertResultsToMarkdown({});
+        const envCheckResults = {
+            markdownTitle: `SAP Fiori tools - Environment Check`,
+            requestedChecks: requestedChecksSet
+        };
+        const result = convertResultsToMarkdown(envCheckResults);
         expect(result).toMatch('# SAP Fiori tools - Environment Check');
         expect(result).toMatch('## Environment');
         expect(result).toMatch('## Destination Details (0)');
@@ -173,7 +207,10 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('## Messages (0)');
     });
     test('Check destination details with no v2 or v4 service', () => {
-        const result = convertResultsToMarkdown({ destinationResults: { ABC: { v2: {}, v4: {} } } });
+        const result = convertResultsToMarkdown({
+            destinationResults: { ABC: { v2: {}, v4: {} } },
+            requestedChecks: requestedChecksSet
+        });
         expect(result).toMatch('V2 catalog service not available');
         expect(result).toMatch('V4 catalog service not available');
     });
@@ -186,12 +223,14 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
                         results: []
                     }
                 }
-            }
+            },
+            requestedChecks: requestedChecksSet
         });
         expect(result).toMatch('V2 catalog service not available');
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check destination details with both v2 and v4 services available', () => {
+        const destResultsCheck = [Check.DestResults];
         const result = convertResultsToMarkdown({
             destinationResults: {
                 ABC: {
@@ -202,13 +241,34 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
                         results: []
                     }
                 }
-            }
+            },
+            requestedChecks: destResultsCheck
         });
         expect(result).toMatch('V2 catalog call returned');
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check empty destination table', () => {
-        const result = convertResultsToMarkdown({ destinations: [] });
+        const result = convertResultsToMarkdown({
+            destinations: [],
+            requestedChecks: requestedChecksSet
+        });
+        expect(result.split('<sub>created at')[0]).toMatchSnapshot();
+    });
+
+    test('Check markdown with no destinations checked', () => {
+        const envCheck = [Check.Environment];
+        const result = convertResultsToMarkdown({
+            environment: data.environment as any,
+            requestedChecks: envCheck
+        });
+        expect(result.split('<sub>created at')[0]).toMatchSnapshot();
+    });
+
+    test('Check markdown with no checks', () => {
+        const result = convertResultsToMarkdown({
+            environment: data.environment as any,
+            requestedChecks: []
+        });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
 });
