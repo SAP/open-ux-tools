@@ -27,7 +27,6 @@ type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'refreshToken'>>
 /**
  * Check the secure storage if it has credentials for the given target.
  *
- * @param config
  * @param target
  */
 export async function getCredentials<T extends BasicAuth | ServiceAuth | undefined>(
@@ -98,10 +97,8 @@ async function createDeployService(target: AbapTarget, config: CommonOptions): P
  * Deploy the given archive to the given target using the given app description.
  *
  * @param archive
- * @param target
- * @param app
- * @param testMode - if set to true then only a test deployment is executed without deploying the actual archive in the backend
  * @param config
+ * @param logger - reference to the logger instance
  */
 export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger) {
     if (config.keep) {
@@ -135,7 +132,14 @@ async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, con
 }
 
 /**
- * Main function for different deploy retry handling
+ * Main function for different deploy retry handling.
+ *
+ * @param response - response of that trigged and axios error
+ * @param archive - archive file that is to be deployed
+ * @param service - instance of the axios-extension deployment service
+ * @param config - configuration used for the previous request
+ * @param logger - reference to the logger instance
+ * @returns true if the error was handled otherwise false is return or an error is raised
  */
 async function handleAxiosError(
     response: AxiosError['response'],
