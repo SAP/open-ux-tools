@@ -43,7 +43,7 @@
     "devDependencies": {
         "@types/ejs": "3.1.0",
         "@types/fs-extra": "9.0.13",
-        "@types/lodash.mergewith": "4.6.7",
+        "@types/lodash": "4.14.186",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.3.9",

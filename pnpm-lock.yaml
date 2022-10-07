@@ -487,14 +487,14 @@ importers:
       '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
-      '@types/lodash.mergewith': 4.6.7
+      '@types/lodash': 4.14.186
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/semver': 7.3.9
       ejs: 3.1.7
       fs-extra: 10.0.0
       i18next: 21.6.11
-      lodash.mergewith: 4.6.2
+      lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
       semver: 7.3.5
@@ -502,14 +502,14 @@ importers:
       '@sap-ux/ui5-config': link:../ui5-config
       ejs: 3.1.7
       i18next: 21.6.11
-      lodash.mergewith: 4.6.2
+      lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
       semver: 7.3.5
     devDependencies:
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
-      '@types/lodash.mergewith': 4.6.7
+      '@types/lodash': 4.14.186
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/semver': 7.3.9
@@ -4675,18 +4675,16 @@ packages:
       '@types/lodash': 4.14.178
     dev: true
 
-  /@types/lodash.mergewith/4.6.7:
-    resolution: {integrity: sha512-3m+lkO5CLRRYU0fhGRp7zbsGi6+BZj0uTVSwvcKU+nSlhjA9/QRNfuSGnD2mX6hQA7ZbmcCkzk5h4ZYGOtk14A==}
-    dependencies:
-      '@types/lodash': 4.14.178
-    dev: true
-
   /@types/lodash/4.14.176:
     resolution: {integrity: sha512-xZmuPTa3rlZoIbtDUyJKZQimJV3bxCmzMIO2c9Pz9afyDro6kr7R79GwcB6mRhuoPmV2p1Vb66WOJH7F886WKQ==}
     dev: true
 
   /@types/lodash/4.14.178:
     resolution: {integrity: sha512-0d5Wd09ItQWH1qFbEyQ7oTQ3GZrMfth5JkbN3EvTKLXcHLRDSXeLnlvlOn0wvxVIwK5o2M8JzP/OWz7T3NRsbw==}
+    dev: true
+
+  /@types/lodash/4.14.186:
+    resolution: {integrity: sha512-eHcVlLXP0c2FlMPm56ITode2AgLMSa6aJ05JTTbYbI+7EMkCEE5qk2E41d5g2lCVTqRe0GnnRFurmlCsDODrPw==}
     dev: true
 
   /@types/mdast/3.0.10:
@@ -11915,10 +11913,6 @@ packages:
 
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
-
-  /lodash.mergewith/4.6.2:
-    resolution: {integrity: sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==}
-    dev: false
 
   /lodash.set/4.3.2:
     resolution: {integrity: sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=}
