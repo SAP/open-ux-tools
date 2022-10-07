@@ -1,12 +1,11 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { mergeObjects } from 'json-merger';
 import type { Ui5App } from './types';
 import { getFilePaths } from './files';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
-import { UI5_DEFAULT } from 'data/defaults';
+import { mergeObjects, UI5_DEFAULT } from './data/defaults';
 
 /**
  * Input required to enable optional features.
@@ -36,15 +35,15 @@ function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: Feature
         const relPath = optTmplFilePath.replace(optTmplDirPath, '');
         const outPath = join(basePath, relPath);
         // Extend or add
-        if (!fs?.exists(outPath)) {
-            fs?.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
+        if (!fs.exists(outPath)) {
+            fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
                 globOptions: { dot: true }
             });
         } else {
-            const add = JSON.parse(render(fs?.read(optTmplFilePath), ui5App, {}));
-            const existingFile = JSON.parse(fs?.read(outPath));
-            const merged = mergeObjects([existingFile, add], { defaultArrayMergeOperation: 'concat' });
-            fs?.writeJSON(outPath, merged);
+            const add = JSON.parse(render(fs.read(optTmplFilePath), ui5App, {}));
+            const existingFile = JSON.parse(fs.read(outPath));
+            const merged = mergeObjects(existingFile, add);
+            fs.writeJSON(outPath, merged);
         }
     });
 }

@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig } from 'axios';
-import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash/cloneDeep';
 import type { Destination } from '@sap-ux/btp-utils';
 import {
     getDestinationUrlForAppStudio,
