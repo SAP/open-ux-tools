@@ -30,10 +30,11 @@ export class UILink extends React.Component<ILinkProps, {}> {
                 root: {
                     color: 'var(--vscode-textLink-foreground)',
                     fontFamily: 'var(--vscode-font-family)',
+                    textDecoration: 'underline',
                     selectors: {
                         '&:hover, &:hover:focus, &:hover:active': {
                             color: 'var(--vscode-textLink-activeForeground)',
-                            textDecoration: 'underline'
+                            textDecoration: 'none'
                         },
                         '&:active, &:focus': {
                             color: 'var(--vscode-textLink-activeForeground)',
