@@ -19,7 +19,7 @@ import {
     getEnvironment,
     checkBASDestinations,
     checkBASDestination
-} from '@sap/ux-environment-check';
+} from '@sap-ux/environment-check';
 
 /**
  * Returns the environment, including ide, versions, extensions ...
