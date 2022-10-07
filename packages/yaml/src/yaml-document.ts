@@ -2,7 +2,7 @@ import { initI18n, t } from './i18n';
 import type { Document, Node, YAMLMap } from 'yaml';
 import yaml, { isMap, isSeq, YAMLSeq } from 'yaml';
 
-import merge = require('lodash.merge');
+import merge from 'lodash/merge';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface NodeComment<T> {
