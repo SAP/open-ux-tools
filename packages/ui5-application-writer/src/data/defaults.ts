@@ -4,7 +4,7 @@ import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
 import type { SemVer } from 'semver';
 import { t } from '../i18n';
-import { mergeObjects } from 'json-merger';
+import merge from 'lodash.mergewith';
 
 /**
  * Returns a package instance with default properties.
@@ -33,23 +33,22 @@ export function packageDefaults(version?: string, description?: string): Partial
 }
 
 /**
- * Merges 2 package definitions. All properties from A and from B will be present.
- * Overlapping properties will be replaced from B. Arrays will be concatenated.
- * `ui5.dependencies` will be de-duped.
+ * Merges two objects. All properties from base and from extension will be present.
+ * Overlapping properties will be used from extension. Arrays will be concatenated and de-duped.
  *
- * @param packageA - a partial package definition
- * @param packageB - a partial package definition
+ * @param base - any object definition
+ * @param extension - another object definition
  * @returns - a merged package defintion
  */
-export function mergePackages(packageA: Partial<Package>, packageB: Partial<Package>): Package {
-    const mergedPackage = mergeObjects([packageA, packageB], {
-        defaultArrayMergeOperation: 'concat'
+export function mergeObjects<B, E>(base: B, extension: E): B & E {
+    return merge({}, base, extension, (objValue: unknown, srcValue: unknown) => {
+        // merge and de-dup arrays
+        if (objValue instanceof Array && srcValue instanceof Array) {
+            return [...new Set([...objValue, ...srcValue])];
+        } else {
+            return undefined;
+        }
     });
-    // de-dup package.ui5.dependencies
-    if (mergedPackage.ui5?.dependencies) {
-        mergedPackage.ui5.dependencies = Array.from(new Set(mergedPackage.ui5.dependencies));
-    }
-    return mergedPackage;
 }
 
 export const enum UI5_DEFAULT {
@@ -74,7 +73,7 @@ export const enum UI5_DEFAULT {
  * @returns {Partial<App>} the App instance
  */
 export function mergeApp(app: App): App {
-    return mergeObjects([
+    return merge(
         {
             version: '0.0.1',
             title: t('text.defaultAppTitle', { id: app.id }),
@@ -87,7 +86,7 @@ export function mergeApp(app: App): App {
             }
         },
         app
-    ]) as App;
+    );
 }
 
 // Required default libs
