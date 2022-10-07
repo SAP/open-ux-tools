@@ -114,8 +114,8 @@ function isHtmlLoginForm(response: AxiosResponse): boolean {
 }
 
 /**
- * @param contentTypeHeader contentTypeHeader
- * @param responseData responseData
+ * @param contentTypeHeader contents of Content-Type header (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type)
+ * @param responseData data receievd in HTTP response. This is used to infer the Content-Type, if the header is missing or ambiguous
  * @returns content type
  */
 function getContentType(contentTypeHeader: string | undefined, responseData: any): string {

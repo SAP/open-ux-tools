@@ -17,7 +17,7 @@ const ADT_REENTRANCE_ENDPOINT = '/sap/bc/adt/core/http/reentranceticket';
  * @param options options
  * @param options.backendUrl backend Url
  * @param options.logger  logger
- * @param options.timeout timeout
+ * @param options.timeout timeout in milliseconds
  */
 export async function getReentranceTicket({
     backendUrl,
