@@ -105,22 +105,22 @@ describe('proxy', () => {
         const { onProxyReq, onProxyRes } = ProxyEventHandlers;
 
         test('onProxyReq', () => {
-            const mockSetHeader = jest.fn();
+            const mockSetHeader = jest.fn() as unknown;
 
-            onProxyReq({ setHeader: mockSetHeader as unknown } as ClientRequest);
+            onProxyReq({ setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).not.toBeCalled();
 
-            onProxyReq({ path: 'hello/world', setHeader: mockSetHeader as unknown } as ClientRequest);
+            onProxyReq({ path: 'hello/world', setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).not.toBeCalled();
 
             onProxyReq({
                 path: 'hello/Fiorilaunchpad.html',
                 headersSent: true,
-                setHeader: mockSetHeader as unknown
+                setHeader: mockSetHeader
             } as ClientRequest);
             expect(mockSetHeader).not.toBeCalled();
 
-            onProxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader as unknown } as ClientRequest);
+            onProxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).toBeCalled();
         });
 
