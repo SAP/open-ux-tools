@@ -35,7 +35,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.7",
         "i18next": "21.6.11",
-        "lodash.mergewith": "4.6.2",
+        "lodash": "4.17.21",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "semver": "7.3.5"
