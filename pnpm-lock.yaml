@@ -96,12 +96,12 @@ importers:
     specifiers:
       '@sap-ux/btp-utils': workspace:*
       '@sap-ux/logger': workspace:*
-      '@types/lodash.clonedeep': 4.5.6
+      '@types/lodash': 4.14.176
       '@xmldom/xmldom': 0.8.2
       axios: 0.24.0
       detect-content-type: 1.2.0
       fast-xml-parser: 3.12.20
-      lodash.clonedeep: 4.5.0
+      lodash: 4.17.21
       nock: 13.2.1
       open: 7.0.3
       qs: 6.7.0
@@ -114,12 +114,12 @@ importers:
       axios: 0.24.0
       detect-content-type: 1.2.0
       fast-xml-parser: 3.12.20
-      lodash.clonedeep: 4.5.0
+      lodash: 4.17.21
       open: 7.0.3
       qs: 6.7.0
       xpath: 0.0.32
     devDependencies:
-      '@types/lodash.clonedeep': 4.5.6
+      '@types/lodash': 4.14.176
       nock: 13.2.1
       supertest: 6.2.2
 
@@ -487,14 +487,14 @@ importers:
       '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
-      '@types/lodash.mergewith': 4.6.7
+      '@types/lodash': 4.14.176
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/semver': 7.3.9
       ejs: 3.1.7
       fs-extra: 10.0.0
       i18next: 21.6.11
-      lodash.mergewith: 4.6.2
+      lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
       semver: 7.3.5
@@ -502,14 +502,14 @@ importers:
       '@sap-ux/ui5-config': link:../ui5-config
       ejs: 3.1.7
       i18next: 21.6.11
-      lodash.mergewith: 4.6.2
+      lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
       semver: 7.3.5
     devDependencies:
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
-      '@types/lodash.mergewith': 4.6.7
+      '@types/lodash': 4.14.176
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/semver': 7.3.9
@@ -583,19 +583,19 @@ importers:
   packages/yaml:
     specifiers:
       '@types/i18next-fs-backend': 1.0.0
-      '@types/lodash.merge': 4.6.6
+      '@types/lodash': 4.14.176
       i18next: 20.3.2
       i18next-fs-backend: 1.1.1
-      lodash.merge: 4.6.2
+      lodash: 4.17.21
       yaml: 2.0.0-10
     dependencies:
       i18next: 20.3.2
       i18next-fs-backend: 1.1.1
-      lodash.merge: 4.6.2
+      lodash: 4.17.21
       yaml: 2.0.0-10
     devDependencies:
       '@types/i18next-fs-backend': 1.0.0
-      '@types/lodash.merge': 4.6.6
+      '@types/lodash': 4.14.176
 
 packages:
 
@@ -4661,24 +4661,6 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-    dev: true
-
-  /@types/lodash.clonedeep/4.5.6:
-    resolution: {integrity: sha512-cE1jYr2dEg1wBImvXlNtp0xDoS79rfEdGozQVgliDZj1uERH4k+rmEMTudP9b4VQ8O6nRb5gPqft0QzEQGMQgA==}
-    dependencies:
-      '@types/lodash': 4.14.178
-    dev: true
-
-  /@types/lodash.merge/4.6.6:
-    resolution: {integrity: sha512-IB90krzMf7YpfgP3u/EvZEdXVvm4e3gJbUvh5ieuI+o+XqiNEt6fCzqNRaiLlPVScLI59RxIGZMQ3+Ko/DJ8vQ==}
-    dependencies:
-      '@types/lodash': 4.14.178
-    dev: true
-
-  /@types/lodash.mergewith/4.6.7:
-    resolution: {integrity: sha512-3m+lkO5CLRRYU0fhGRp7zbsGi6+BZj0uTVSwvcKU+nSlhjA9/QRNfuSGnD2mX6hQA7ZbmcCkzk5h4ZYGOtk14A==}
-    dependencies:
-      '@types/lodash': 4.14.178
     dev: true
 
   /@types/lodash/4.14.176:
@@ -11873,10 +11855,6 @@ packages:
       p-locate: 5.0.0
     dev: true
 
-  /lodash.clonedeep/4.5.0:
-    resolution: {integrity: sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=}
-    dev: false
-
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
     dev: true
@@ -11915,10 +11893,7 @@ packages:
 
   /lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
-
-  /lodash.mergewith/4.6.2:
-    resolution: {integrity: sha512-GK3g5RPZWTRSeLSpgP8Xhra+pnjBC56q9FZYe1d5RN3TJ35dbkGy3YqBSMbyCrlbi+CM9Z3Jk5yTL7RCsqboyQ==}
-    dev: false
+    dev: true
 
   /lodash.set/4.3.2:
     resolution: {integrity: sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=}
