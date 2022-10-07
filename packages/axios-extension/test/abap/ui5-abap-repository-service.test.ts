@@ -174,7 +174,7 @@ describe('Ui5AbapRepositoryService', () => {
     describe('createPayload', () => {
         test('ensure special characters are encoded', async () => {
             /**
-             *
+             * Extension of Ui5AbapRespository class to make `createPayload` public and available for testing.
              */
             class ServiceForTesting extends Ui5AbapRepositoryService {
                 defaults = {
