@@ -2,7 +2,7 @@ import type { Document, Node, YAMLMap } from 'yaml';
 import yaml, { isMap, isSeq, YAMLSeq } from 'yaml';
 
 import merge = require('lodash.merge');
-import { errors, newError } from './errors';
+import { errorCode, errorTemplate, newError } from './errors';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface NodeComment<T> {
@@ -40,8 +40,8 @@ export class YamlDocument {
         this.document = yaml.parseDocument(serializedYaml);
         if (this.document.errors?.length > 0) {
             throw newError({
-                error: errors.yamlParsing,
-                message: errors.yamlParsing.messageTemplate + '\n' + this.document.errors.map((e) => e.message).join('')
+                code: errorCode.yamlParsing,
+                message: errorTemplate.yamlParsing + '\n' + this.document.errors.map((e) => e.message).join('')
             });
         }
     }
@@ -126,7 +126,7 @@ export class YamlDocument {
             const parentNode = this.document.getIn(parentPath);
             if (!parentNode && !createIntermediateKeys) {
                 // Not at root and we're not asked to create the intermediate keys
-                throw newError({ error: errors.pathDoesNotExist, templateReplacements: { path: parentPath } });
+                throw newError({ code: errorCode.pathDoesNotExist, templateReplacements: { path: parentPath } });
             }
         }
         const newNode = this.document.createNode(value);
@@ -168,13 +168,13 @@ export class YamlDocument {
         let seq = documentCopy.getIn(pathArray) as YAMLSeq;
         if (!seq) {
             if (!createIntermediateKeys) {
-                throw newError({ error: errors.seqDoesNotExist, templateReplacements: { path } });
+                throw newError({ code: errorCode.seqDoesNotExist, templateReplacements: { path } });
             }
 
             seq = new YAMLSeq();
             documentCopy.setIn(pathArray, seq);
         } else if (!isSeq(seq)) {
-            throw newError({ error: errors.tryingToAppendToNonSequence, templateReplacements: { path } });
+            throw newError({ code: errorCode.tryingToAppendToNonSequence, templateReplacements: { path } });
         }
         const newNode = documentCopy.createNode(value);
         if (nodeComment) {
@@ -184,14 +184,14 @@ export class YamlDocument {
 
         if (comments && comments.length > 0) {
             if (typeof value !== 'object') {
-                throw newError({ error: errors.scalarValuesDoNotHaveProperties });
+                throw newError({ code: errorCode.scalarValuesDoNotHaveProperties });
             }
             const index = seq.items.length - 1;
             for (const c of comments) {
                 const propPathArray = this.toPathArray(c.path);
                 const n = documentCopy.getIn([...pathArray, index, ...propPathArray], true) as yaml.Node;
                 if (!n) {
-                    throw newError({ error: errors.propertyNotFound, templateReplacements: { path: c.path } });
+                    throw newError({ code: errorCode.propertyNotFound, templateReplacements: { path: c.path } });
                 }
                 n.comment = c.comment;
             }
@@ -226,13 +226,13 @@ export class YamlDocument {
         const pathArray = this.toPathArray(path);
         const seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq) {
-            throw newError({ error: errors.seqDoesNotExist, templateReplacements: { path } });
+            throw newError({ code: errorCode.seqDoesNotExist, templateReplacements: { path } });
         }
 
         const node = seq.items.find((nodeInput) => nodeInput.toJSON()[matcher.key] === matcher.value);
         if (!node) {
             throw newError({
-                error: errors.nodeNotFoundMatching,
+                code: errorCode.nodeNotFoundMatching,
                 templateReplacements: { path, key: matcher.key, value: matcher.value }
             });
         }
@@ -258,7 +258,7 @@ export class YamlDocument {
         const pathArray = this.toPathArray(path);
         const seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq || !seq.items) {
-            throw newError({ error: errors.seqDoesNotExist, templateReplacements: { path } });
+            throw newError({ code: errorCode.seqDoesNotExist, templateReplacements: { path } });
         }
 
         const deletedNode = seq.items.find((node, index) => {
@@ -271,7 +271,7 @@ export class YamlDocument {
         });
 
         if (!deletedNode) {
-            throw newError({ error: errors.propertyNotFound, templateReplacements: { path } });
+            throw newError({ code: errorCode.propertyNotFound, templateReplacements: { path } });
         }
 
         return this;
@@ -286,14 +286,14 @@ export class YamlDocument {
     getNode({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): unknown {
         if (start) {
             if (!(isSeq(start) || isMap(start))) {
-                throw newError({ error: errors.startNodeMustBeCollection });
+                throw newError({ code: errorCode.startNodeMustBeCollection });
             }
         }
         const pathArray = this.toPathArray(path);
         const node = start || this.document;
         const targetNode = node?.getIn(pathArray);
         if (!targetNode) {
-            throw newError({ error: errors.nodeNotFound, templateReplacements: { path } });
+            throw newError({ code: errorCode.nodeNotFound, templateReplacements: { path } });
         } else {
             return targetNode;
         }
@@ -308,7 +308,7 @@ export class YamlDocument {
     getSequence({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLSeq {
         const a = this.getNode({ start, path });
         if (!isSeq(a)) {
-            throw newError({ error: errors.seqDoesNotExist, templateReplacements: { path } });
+            throw newError({ code: errorCode.seqDoesNotExist, templateReplacements: { path } });
         } else {
             return a as YAMLSeq<Node>;
         }
@@ -323,7 +323,7 @@ export class YamlDocument {
     getMap({ start, path }: { start?: YAMLMap | YAMLSeq; path: string }): YAMLMap {
         const a = this.getNode({ start, path });
         if (!isMap(a)) {
-            throw newError({ error: errors.nodeNotAMap, templateReplacements: { path } });
+            throw newError({ code: errorCode.nodeNotAMap, templateReplacements: { path } });
         } else {
             return a as YAMLMap<Node>;
         }
@@ -357,7 +357,7 @@ export class YamlDocument {
             .filter((p) => p !== '');
 
         if (!result || result.length === 0) {
-            throw newError({ error: errors.pathCannotBeEmpty });
+            throw newError({ code: errorCode.pathCannotBeEmpty });
         }
 
         return result;

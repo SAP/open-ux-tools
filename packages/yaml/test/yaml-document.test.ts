@@ -1,4 +1,4 @@
-import { errors } from '../src/errors';
+import { errorTemplate } from '../src/errors';
 import { YamlDocument } from '../src';
 import type { YAMLMap, YAMLSeq } from '../src';
 import { interpolate } from '../src/texts';
@@ -29,7 +29,7 @@ foo:
         it("throws an error when path is empty ('')", async () => {
             const serializedYaml = 'key1: 42';
             const doc = await YamlDocument.newInstance(serializedYaml);
-            expect(() => doc.setIn({ path: '', value: 42 })).toThrow(errors.pathCannotBeEmpty.messageTemplate);
+            expect(() => doc.setIn({ path: '', value: 42 })).toThrow(errorTemplate.pathCannotBeEmpty);
         });
 
         it("'new key' at root without createParent true works for scalars", async () => {
@@ -277,7 +277,7 @@ seq1:
                     matcher: { key: 'name', value: 'name1' },
                     value: { config: { prop2: 'b' } }
                 });
-            }).toThrowError(interpolate(errors.seqDoesNotExist.messageTemplate, { path }));
+            }).toThrowError(interpolate(errorTemplate.seqDoesNotExist, { path }));
             expect(doc.toString()).toEqual(serializedYaml);
         });
     });
@@ -854,7 +854,7 @@ l1:
                         { path: 'b.c.d', comment: 'The answer!' }
                     ]
                 })
-            ).toThrow(errors.scalarValuesDoNotHaveProperties.messageTemplate);
+            ).toThrow(errorTemplate.scalarValuesDoNotHaveProperties);
 
             expect(doc.toString().trim()).toEqual(serializedYaml);
         });
@@ -928,7 +928,7 @@ seq1:
                     { path: 'b.c.d', comment: 'The answer!' }
                 ]
             })
-        ).toThrow(errors.scalarValuesDoNotHaveProperties.messageTemplate);
+        ).toThrow(errorTemplate.scalarValuesDoNotHaveProperties);
 
         expect(doc.toString().trim()).toEqual(serializedYaml);
     });
@@ -944,7 +944,7 @@ seq1:
                 value: { a: 42 },
                 comments: [{ path, comment: 'The answer!' }]
             })
-        ).toThrow(interpolate(errors.propertyNotFound.messageTemplate, { path }));
+        ).toThrow(interpolate(errorTemplate.propertyNotFound, { path }));
 
         expect(doc.toString().trim()).toEqual(serializedYaml);
     });
@@ -1000,7 +1000,7 @@ seq1:
                     path,
                     start
                 })
-            ).toThrow(interpolate(errors.startNodeMustBeCollection.messageTemplate, { path }));
+            ).toThrow(interpolate(errorTemplate.startNodeMustBeCollection, { path }));
 
             expect(doc.toString().trim()).toEqual(serializedYaml);
         });
@@ -1015,7 +1015,7 @@ seq1:
                 doc.getNode({
                     path
                 })
-            ).toThrow(interpolate(errors.nodeNotFound.messageTemplate, { path }));
+            ).toThrow(interpolate(errorTemplate.nodeNotFound, { path }));
 
             expect(doc.toString().trim()).toEqual(serializedYaml);
         });
@@ -1045,7 +1045,7 @@ seq1:
                 doc.getSequence({
                     path
                 })
-            ).toThrow(interpolate(errors.seqDoesNotExist.messageTemplate, { path }));
+            ).toThrow(interpolate(errorTemplate.seqDoesNotExist, { path }));
 
             expect(doc.toString().trim()).toEqual(serializedYaml);
         });
@@ -1075,7 +1075,7 @@ seq1:
                 doc.getMap({
                     path
                 })
-            ).toThrow(interpolate(errors.nodeNotAMap.messageTemplate, { path }));
+            ).toThrow(interpolate(errorTemplate.nodeNotAMap, { path }));
 
             expect(doc.toString().trim()).toEqual(serializedYaml);
         });

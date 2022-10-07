@@ -14,4 +14,4 @@ export {
     UI5ProxyConfigTarget
 } from './types';
 
-export { errors as yamlErrors } from '@sap-ux/yaml';
+export { errorCode as yamlErrorCode, YAMLError } from '@sap-ux/yaml';
