@@ -1,10 +1,9 @@
 import { ParseOptions } from 'commander';
 import { join } from 'path';
 import nock from 'nock';
-import { program, run } from '../../../src/cli';
+import { createCommand, run } from '../../../src/cli';
 
 describe('cli', () => {
-    const errorMock = jest.spyOn(program, 'error').mockImplementation();
     const fixture = join(__dirname, '../../test-input/');
 
     beforeAll(() => {
@@ -16,14 +15,10 @@ describe('cli', () => {
         nock.enableNetConnect();
     });
 
-    afterEach(() => {
-        errorMock.mockClear();
-    });
-
     describe('run', () => {
         test('successful run', async () => {
             const target = 'https://target.example';
-            nock(target)
+            const post = nock(target)
                 .post((url) => url.startsWith('/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV'))
                 .reply(200);
 
@@ -40,29 +35,30 @@ describe('cli', () => {
                 target
             ];
             await run();
-            expect(errorMock).not.toBeCalled();
-        });
-
-        test('error occured', async () => {
-            process.argv = ['node', 'test'];
-            await run();
-            expect(errorMock).toBeCalled();
+            expect(post.isDone()).toBe(true);
         });
     });
 
-    describe('program', () => {
+    describe('createCommand', () => {
+        const cmd = createCommand();
+        const errorMock = jest.spyOn(cmd, 'error').mockImplementation();
         // parse options for testing
         const opts: ParseOptions = { from: 'user' };
 
+        afterEach(() => {
+            errorMock.mockClear();
+        });
+
         test('missing mandatory parameter --config', () => {
-            program.parse([], opts);
+            process.argv = ['node', 'test'];
+            cmd.parse([], opts);
             expect(errorMock).toBeCalled();
             expect(errorMock.mock.calls[0][1]).toBeDefined();
         });
 
         test('minimum parameters', () => {
             const config = join(fixture, 'ui5-deploy.yaml');
-            const cmd = program.parse(['-c', config], opts);
+            cmd.parse(['-c', config], opts);
             expect(errorMock).not.toBeCalled();
             expect(cmd.opts().config).toBe(config);
         });
@@ -72,7 +68,7 @@ describe('cli', () => {
             { params: ['--client', '001', '--destination', '~dest'] },
             { params: ['--scp', '--destination', '~dest'] }
         ])('conflicting options $params', ({ params }) => {
-            program.parse(params, opts);
+            cmd.parse(params, opts);
             expect(errorMock).toBeCalled();
             errorMock.mockClear();
         });
