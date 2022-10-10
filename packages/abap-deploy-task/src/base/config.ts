@@ -12,8 +12,8 @@ export function replaceEnvVariables(obj: object): void {
         const value = (obj as Record<string, unknown>)[key];
         if (typeof value === 'object') {
             replaceEnvVariables(value as object);
-        } else if (typeof value === 'string' && (value as string).indexOf('env:') === 0) {
-            const varName = (value as string).split('env:')[1];
+        } else if (typeof value === 'string' && value.startsWith('env:')) {
+            const varName = value.split('env:')[1];
             (obj as Record<string, unknown>)[key] = process.env[varName];
         }
     }
@@ -43,12 +43,7 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
             throwConfigMissingError('target-url');
         }
         if (config.target.client) {
-            config.target.client = config.target.client + '';
-            if (config.target.client.length === 1) {
-                config.target.client = `00${config.target.client}`;
-            } else if (config.target.client.length === 2) {
-                config.target.client = `0${config.target.client}`;
-            }
+            config.target.client = (config.target.client + '').padStart(3, '0');
         }
     } else {
         throwConfigMissingError('target');
