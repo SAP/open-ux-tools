@@ -1,5 +1,18 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.24
+
+### Patch Changes
+
+-   ba34b64: Makes the proxy request handler more robust
+
+## 0.6.23
+
+### Patch Changes
+
+-   Updated dependencies [8778cbd]
+    -   @sap-ux/axios-extension@0.10.0
+
 ## 0.6.22
 
 ### Patch Changes

@@ -2,6 +2,13 @@ import XmlParser from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 import type { Logger } from '@sap-ux/logger';
+import type { TransportRequest } from '../../types';
+
+const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
+const enum AdtTransportStatus {
+    Success = 'S',
+    Error = 'E'
+}
 
 export function getTransportNumberFromResponse(xml: string, log: Logger): string {
     log.warn(xml);
@@ -14,41 +21,21 @@ export function getTransportNumberFromResponse(xml: string, log: Logger): string
 }
 
 /**
- * Get a list of valid transport numbers
+ * Get a list of valid transport requests
  * from ADT transportcheckes response response.
  *
  * @param xml Raw XML string from ADT transportcheckes reponse data
  * @param log Service provider logger
- * @returns a list of valid transport numbers can be used for deploy config
+ * @returns a list of valid transport requests can be used for deploy config
  */
-export function getTransportNumberList(xml: string, log: Logger): string[] {
+export function getTransportRequestList(xml: string, log: Logger): TransportRequest[] {
     if (XmlParser.validate(xml) !== true) {
         log.warn(`Invalid XML: ${xml}`);
         return [];
     }
     const doc = new DOMParser().parseFromString(xml);
-    return getTransportChecksResponse(doc, xml, log);
-}
 
-const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
-const enum AdtTransportStatus {
-    Success = 'S',
-    Error = 'E'
-}
-
-/**
- * Implementation based on WebIDE with simplified error handling.
- * Might need to improve the error handling in the future to expose
- * the backend error messages to end user / API consumer in the future.
- *
- * @param doc
- * @param xml Raw XML from reponse data for logging purpose
- * @param log Service provider logger
- * @returns available transport numbers
- */
-function getTransportChecksResponse(doc: Document, xml: string, log: Logger): string[] {
     const status = xpath.select1('//RESULT/text()', doc)?.toString();
-
     switch (status) {
         case AdtTransportStatus.Success:
             return getTransportList(doc);
@@ -60,45 +47,45 @@ function getTransportChecksResponse(doc: Document, xml: string, log: Logger): st
 }
 
 /**
- * Provide a list of transport numbers available for the input package name and project name
+ * Provide a list of transport requests available for the input package name and project name
  * in a ADT CTS request.
  *
  * @param doc
  * @returns
- * - For local package, an array list that contain a single empty string is returned.
- * - For errors or other unkonwn reasons no transport number found, an empty array list is returned.
+ * - For local package, return [].
+ * - For errors or other unkonwn reasons no transport number found, an error is thrown.
  */
-function getTransportList(doc: Document): string[] {
+function getTransportList(doc: Document): TransportRequest[] {
     const recording = xpath.select1('//RECORDING/text()', doc)?.toString();
     const locked = (xpath.select1('//LOCKS', doc) as Element)?.textContent;
     const localPackage = xpath.select1('//DLVUNIT/text()', doc)?.toString();
 
     if (recording && !locked) {
-        return getTransportableList(doc);
+        return getTransportListForNewProject(doc);
     } else if (locked) {
         return getLockedTransport(doc);
     } else if (LocalPackageText.includes(localPackage)) {
-        return [''];
-    } else {
         return [];
+    } else {
+        throw new Error('Unable to parse ADT response');
     }
 }
 
 /**
  * This function processes ADT response for new project name that have not been deployed before,
- * all the available transport numbers are returned.
+ * all the available transport requests are returned.
  *
  * @param doc
  * @returns
  */
-function getTransportableList(doc: Document): string[] {
-    const transportNums = xpath.select('//REQ_HEADER/TRKORR/text()', doc) as Element[];
+function getTransportListForNewProject(doc: Document): TransportRequest[] {
+    const transportReqs = xpath.select('//REQ_HEADER', doc) as Element[];
     const list = [];
-    if (transportNums && transportNums.length > 0) {
-        for (const transportNumElement of transportNums) {
-            const transportNum = transportNumElement?.toString();
-            if (transportNum) {
-                list.push(transportNum);
+    if (transportReqs && transportReqs.length > 0) {
+        for (const transportReqEle of transportReqs) {
+            const transportReq = convertTransportRequest(transportReqEle);
+            if (transportReq) {
+                list.push(transportReq);
             }
         }
     }
@@ -107,16 +94,40 @@ function getTransportableList(doc: Document): string[] {
 
 /**
  * This function processes ADT response for existing project name that has been locked.
- * A single, previously provided transport number is returned in the list.
+ * A single, previously provided transport requests is returned in the list.
  *
  * @param doc
  * @returns
  */
-function getLockedTransport(doc: Document): string[] {
-    const transportNum = xpath.select1('//LOCKS//REQ_HEADER/TRKORR/text()', doc)?.toString();
-    if (transportNum) {
-        return [transportNum];
+function getLockedTransport(doc: Document): TransportRequest[] {
+    const transportReqEle = xpath.select1('//LOCKS//REQ_HEADER', doc) as Element;
+
+    const transportReq = convertTransportRequest(transportReqEle);
+    if (transportReq) {
+        return [transportReq];
     } else {
         return [];
     }
+}
+
+/**
+ * Convert transport request in XML element of ADT response to typed object.
+ * @param transportReqEle XML element of transport request data in ADT response
+ * @returns
+ */
+function convertTransportRequest(transportReqEle: Element): TransportRequest {
+    if (!transportReqEle) {
+        return undefined;
+    }
+    const transportNumber = xpath.select1('TRKORR/text()', transportReqEle)?.toString();
+    if (!transportNumber) {
+        return undefined;
+    }
+    return {
+        transportNumber: transportNumber,
+        user: xpath.select1('AS4USER/text()', transportReqEle)?.toString(),
+        description: xpath.select1('AS4TEXT/text()', transportReqEle)?.toString(),
+        client: xpath.select1('CLIENT/text()', transportReqEle)?.toString(),
+        targetSystem: xpath.select1('TARSYSTEM/text()', transportReqEle)?.toString()
+    };
 }
