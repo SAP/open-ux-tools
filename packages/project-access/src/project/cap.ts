@@ -11,7 +11,7 @@ import { loadModuleFromProject } from './module-loader';
  * @returns - true if the project is a CAP Node.js project
  */
 export function isCapNodeJsProject(packageJson: Package): boolean {
-    return !!(packageJson?.cds || packageJson?.dependencies?.['@sap/cds']);
+    return !!(packageJson.cds || packageJson.dependencies?.['@sap/cds']);
 }
 
 /**
