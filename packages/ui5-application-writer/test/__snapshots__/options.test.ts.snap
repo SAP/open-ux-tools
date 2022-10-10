@@ -1049,8 +1049,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"eslint:recommended\\",
     \\"plugin:@typescript-eslint/recommended\\",
     \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\",
-    \\"plugin:@sap/ui5-jsdocs/recommended\\",
-    \\"eslint:recommended\\"
+    \\"plugin:@sap/ui5-jsdocs/recommended\\"
   ],
   \\"ignorePatterns\\": [
     \\".eslintignore.js\\"
