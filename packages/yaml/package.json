@@ -31,12 +31,12 @@
     "dependencies": {
         "i18next": "20.3.2",
         "i18next-fs-backend": "1.1.1",
-        "lodash.merge": "4.6.2",
+        "lodash": "4.17.21",
         "yaml": "2.0.0-10"
     },
     "devDependencies": {
         "@types/i18next-fs-backend": "1.0.0",
-        "@types/lodash.merge": "4.6.6"
+        "@types/lodash": "4.14.176"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
