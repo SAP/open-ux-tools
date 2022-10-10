@@ -2,7 +2,7 @@ import { join } from 'path';
 import { FileName } from '../constants';
 import type { CapCustomPaths, CapProjectType, csn, Package } from '../types';
 import { fileExists, readJSON } from '../file';
-import { loadModuleFromProject } from './moduleLoader';
+import { loadModuleFromProject } from './module-loader';
 
 /**
  * Returns true if the project is a CAP Node.js project.

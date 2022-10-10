@@ -1,5 +1,5 @@
 import { join } from 'path';
-import * as projectModuleMock from '../../src/project/moduleLoader';
+import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
 import { isCapNodeJsProject, isCapJavaProject, getCapModelAndServices, getCapProjectType } from '../../src';

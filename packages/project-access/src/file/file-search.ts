@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { basename, dirname, join, sep } from 'path';
 import { default as find } from 'findit2';
-import { fileExists } from './fileAccess';
+import { fileExists } from './file-access';
 
 /**
  * Add missing dump properties

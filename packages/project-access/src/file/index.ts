@@ -1,2 +1,2 @@
-export { fileExists, readFile, readJSON } from './fileAccess';
-export { findFiles, findFileUp } from './findFiles';
+export { fileExists, readFile, readJSON } from './file-access';
+export { findFiles, findFileUp } from './file-search';

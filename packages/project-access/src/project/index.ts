@@ -1,4 +1,4 @@
 export { getCapModelAndServices, getCapProjectType, isCapJavaProject, isCapNodeJsProject } from './cap';
-export { findAllApps, findProjectRoot, getAppRootFromWebappPath } from './findApps';
-export { getWebappPath } from './getWebapp';
-export { loadModuleFromProject } from './moduleLoader';
+export { loadModuleFromProject } from './module-loader';
+export { findAllApps, findProjectRoot, getAppRootFromWebappPath } from './search';
+export { getWebappPath } from './ui5-config';
