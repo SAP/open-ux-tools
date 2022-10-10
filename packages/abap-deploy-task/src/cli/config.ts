@@ -1,7 +1,6 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join } from 'path';
-import { isUrlTarget } from '../base';
 import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions } from '../types';
 import { NAME } from '../types';
 
