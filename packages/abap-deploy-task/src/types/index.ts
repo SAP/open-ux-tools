@@ -20,7 +20,9 @@ export interface DestinationAbapTarget {
     destination: string;
 }
 
-export type AbapTarget = UrlAbapTarget | DestinationAbapTarget;
+export type AbapTarget =
+    | (UrlAbapTarget & Partial<DestinationAbapTarget>)
+    | (DestinationAbapTarget & Partial<UrlAbapTarget>);
 
 export interface CommonOptions {
     /**

@@ -13,8 +13,9 @@ export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
 }
 
 /**
+ * Replace environment variable references of pattern `env:VAR_NAME` with the value of the corresponding environment variable.
  *
- * @param obj
+ * @param obj - any object structure
  */
 export function replaceEnvVariables(obj: object): void {
     config();
@@ -53,10 +54,10 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
             if (config.target.client) {
                 config.target.client = (config.target.client + '').padStart(3, '0');
             }
-        } else if (isAppStudio() && !config.target.destination) {
-            throwConfigMissingError('target-destination');
         } else {
-            throwConfigMissingError('target-url');
+            if (!config.target.destination) {
+                isAppStudio() ? throwConfigMissingError('target-destination') : throwConfigMissingError('target-url');
+            }
         }
     } else {
         throwConfigMissingError('target');

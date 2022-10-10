@@ -34,13 +34,13 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
         'package': options.package ?? taskConfig.app?.package,
         transport: options.transport ?? taskConfig.app?.transport
     };
-    const target: AbapTarget = isUrlTarget(taskConfig.target)
-        ? {
-              url: options.url ?? taskConfig.target?.url,
-              client: options.client ?? taskConfig.target?.client,
-              scp: options.scp !== undefined ? options.scp : taskConfig.target?.scp
-          }
-        : { destination: options.destination ?? taskConfig.target?.destination };
+    const target = {
+        url: options.url ?? taskConfig.target?.url,
+        client: options.client ?? taskConfig.target?.client,
+        scp: options.scp !== undefined ? options.scp : taskConfig.target?.scp,
+        destination: options.destination ?? taskConfig.target?.destination
+    } as AbapTarget;
+
     const test = options.test !== undefined ? options.test : taskConfig.test;
     const yes = options.yes;
     const config = { app, target, test, yes };
