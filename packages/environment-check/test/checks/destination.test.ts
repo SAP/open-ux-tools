@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
-import { Destination, FileName, Severity } from '../../src/types';
+import { Destination, Severity } from '../../src/types';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
 import { UrlServiceType } from '../../src/types';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
