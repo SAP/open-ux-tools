@@ -65,7 +65,7 @@ describe('Test getCapModelAndServices()', () => {
         // Mock setup
         const cdsMock = {
             env: {
-                for: () => ({
+                'for': () => ({
                     folders: {
                         app: 'APP',
                         db: 'DB',
@@ -101,7 +101,7 @@ describe('Test getCapCustomPaths()', () => {
         // Mock setup
         const cdsMock = {
             env: {
-                for: jest
+                'for': jest
                     .fn()
                     .mockImplementation(() => ({ folders: { app: 'CUSTOM_APP', db: 'CUSTOM_DB', srv: 'CUSTOM_SRV' } }))
             }
@@ -124,7 +124,7 @@ describe('Test getCapCustomPaths()', () => {
         // Mock setup
         const cdsMock = {
             env: {
-                for: () => null
+                'for': () => null
             }
         };
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
