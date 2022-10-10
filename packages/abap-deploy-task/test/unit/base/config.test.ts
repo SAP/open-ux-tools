@@ -1,9 +1,9 @@
 import { validateConfig } from '../../../src/base/config';
-import { AbapDeployConfig } from '../../../src/types';
+import { UrlAbapTarget } from '../../../src/types';
 
 describe('config', () => {
     describe('validateConfig', () => {
-        const validConfig: AbapDeployConfig = {
+        const validConfig = {
             app: {
                 name: '~name',
                 desription: '~description',
@@ -12,22 +12,38 @@ describe('config', () => {
             },
             target: {
                 url: 'http://target.example'
-            }
+            } as UrlAbapTarget
         };
 
         test('valid config', () => {
             expect(() => validateConfig(validConfig)).not.toThrowError();
         });
 
-        test('target missing', () => {
-            const config = { app: validConfig.app } as AbapDeployConfig;
+        test('config missing', () => {
+            expect(() => validateConfig(undefined)).toThrowError();
+        });
+
+        test('incorrect app', () => {
+            const config = { app: { ...validConfig.app }, target: validConfig.target };
+            delete (config.app as any).name;
+            expect(() => validateConfig(config)).toThrowError();
+            delete (config as any).app;
+            expect(() => validateConfig(config)).toThrowError();
+        });
+
+        test('incorrect target', () => {
+            const config = { app: validConfig.app, target: { ...validConfig.target } };
+            delete (config.target as any).url;
+            expect(() => validateConfig(config)).toThrowError();
+            delete (config as any).target;
             expect(() => validateConfig(config)).toThrowError();
         });
 
         test('zeros added to client', () => {
-            const config = { ...validConfig };
+            const config = { app: validConfig.app, target: { ...validConfig.target } };
             config.target.client = '1';
-            expect(validateConfig(config).target.client).toBe('001');
+            validateConfig(config);
+            expect(config.target.client).toBe('001');
         });
     });
 });

@@ -10,12 +10,17 @@ export interface AbapDescriptor {
     transport: string;
 }
 
-export interface AbapTarget {
-    url?: string;
+export interface UrlAbapTarget {
+    url: string;
     client?: string;
-    destination?: string;
     scp?: boolean;
 }
+
+export interface DestinationAbapTarget {
+    destination: string;
+}
+
+export type AbapTarget = UrlAbapTarget | DestinationAbapTarget;
 
 export interface CommonOptions {
     /**
@@ -70,7 +75,11 @@ export interface AbapDeployConfig extends CommonOptions {
     credentials?: AxiosRequestConfig['auth'];
 }
 
-export interface CliOptions extends Partial<AbapDescriptor>, Partial<AbapTarget>, Partial<CommonOptions> {
+export interface CliOptions
+    extends Partial<AbapDescriptor>,
+        Partial<DestinationAbapTarget>,
+        Partial<UrlAbapTarget>,
+        Partial<CommonOptions> {
     config: string;
     archiveFolder?: string;
     archivePath?: string;

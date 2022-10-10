@@ -1,9 +1,11 @@
-import { ZipFile } from 'yazl';
+import axios from 'axios';
 import { readdirSync, readFile, statSync } from 'fs';
+import { ZipFile } from 'yazl';
 import { join, relative } from 'path';
 import type { CliOptions } from '../types';
 import { createBuffer } from '../base/archive';
 import type { Logger } from '@sap-ux/logger';
+import { Agent } from 'https';
 
 /**
  * Get/read zip file from the given path.
@@ -30,13 +32,21 @@ function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer> {
  * Fetch/get zip file from the given url.
  *
  * @param url - url to the zip file
+ * @param rejectUnauthorized - strict SSL handling or not
  * @returns Buffer containing the zip file
  */
-async function fetchArchiveFromUrl(url: string): Promise<Buffer> {
-    // TODO
-    throw new Error(
-        `The archive url you provided could not be reached. Please ensure the URL is accessible and does not require authentication. ${url}`
-    );
+async function fetchArchiveFromUrl(url: string, rejectUnauthorized?: boolean): Promise<Buffer> {
+    try {
+        const response = await axios.get(url, {
+            httpsAgent: new Agent({ rejectUnauthorized }),
+            responseType: 'arraybuffer'
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error(
+            `The archive url you provided could not be reached. Please ensure the URL is accessible and does not require authentication. ${error}`
+        );
+    }
 }
 
 /**
@@ -95,7 +105,7 @@ export async function getArchive(logger: Logger, options: CliOptions): Promise<B
     if (options.archivePath) {
         return getArchiveFromPath(logger, options.archivePath);
     } else if (options.archiveUrl) {
-        return fetchArchiveFromUrl(options.archiveUrl);
+        return fetchArchiveFromUrl(options.archiveUrl, options.strictSsl);
     } else {
         return createArchiveFromFolder(logger, options.archiveFolder ?? process.cwd());
     }

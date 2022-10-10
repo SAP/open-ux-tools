@@ -1,6 +1,16 @@
 import { config } from 'dotenv';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { AbapDeployConfig } from '../types';
+import type { AbapDeployConfig, AbapTarget, UrlAbapTarget } from '../types';
+
+/**
+ * Check if it is a url or destination target.
+ *
+ * @param target target configuration
+ * @returns true is it is a UrlAbapTarget
+ */
+export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
+    return (<UrlAbapTarget>target).url !== undefined;
+}
 
 /**
  *
@@ -39,11 +49,14 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
     }
 
     if (config.target) {
-        if (!config.target.url && !isAppStudio()) {
+        if (isUrlTarget(config.target)) {
+            if (config.target.client) {
+                config.target.client = (config.target.client + '').padStart(3, '0');
+            }
+        } else if (isAppStudio() && !config.target.destination) {
+            throwConfigMissingError('target-destination');
+        } else {
             throwConfigMissingError('target-url');
-        }
-        if (config.target.client) {
-            config.target.client = (config.target.client + '').padStart(3, '0');
         }
     } else {
         throwConfigMissingError('target');

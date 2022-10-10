@@ -18,7 +18,8 @@ import type { Logger } from '@sap-ux/logger';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { writeFileSync } from 'fs';
-import type { AbapDeployConfig, AbapTarget, CommonOptions } from '../types';
+import type { AbapDeployConfig, AbapTarget, CommonOptions, UrlAbapTarget } from '../types';
+import { isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials } from './prompt';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
@@ -30,9 +31,9 @@ type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'refreshToken'>>
  * @param target
  */
 export async function getCredentials<T extends BasicAuth | ServiceAuth | undefined>(
-    target: AbapTarget
+    target: UrlAbapTarget
 ): Promise<T | undefined> {
-    if (!isAppStudio() && target.url) {
+    if (!isAppStudio()) {
         const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
         let system = await systemService.read(new BackendSystemKey({ url: target.url, client: target.client }));
         if (!system && target.client) {
@@ -41,6 +42,30 @@ export async function getCredentials<T extends BasicAuth | ServiceAuth | undefin
         }
         return system as T;
     }
+}
+
+/**
+ * Enhance axios options and create a service provided instance.
+ *
+ * @param options - predefined axios options
+ * @param target - url target configuration
+ */
+async function createAbapServiceProvider(
+    options: AxiosRequestConfig,
+    target: UrlAbapTarget
+): Promise<AbapServiceProvider> {
+    options.baseURL = target.url;
+    if (target.client) {
+        options.params = { 'sap-client': target.client };
+    }
+    const storedOpts = await getCredentials<BasicAuth>(target);
+    if (storedOpts?.password) {
+        options.auth = {
+            username: storedOpts.username,
+            password: storedOpts.password
+        };
+    }
+    return createForAbap(options);
 }
 
 /**
@@ -56,11 +81,8 @@ async function createDeployService(target: AbapTarget, config: CommonOptions): P
     if (config.strictSsl === false) {
         options.ignoreCertErrors = true;
     }
-    if (isAppStudio() && target.destination) {
-        provider = createForDestination(options, {
-            Name: target.destination
-        }) as AbapServiceProvider;
-    } else if (target.url) {
+
+    if (isUrlTarget(target)) {
         if (target.scp) {
             const storedOpts = await getCredentials<ServiceAuth>(target);
             if (storedOpts) {
@@ -74,19 +96,12 @@ async function createDeployService(target: AbapTarget, config: CommonOptions): P
                 throw new Error('TODO');
             }
         } else {
-            options.baseURL = target.url;
-            if (target.client) {
-                options.params = { 'sap-client': target.client };
-            }
-            const storedOpts = await getCredentials<BasicAuth>(target);
-            if (storedOpts?.password) {
-                options.auth = {
-                    username: storedOpts.username,
-                    password: storedOpts.password
-                };
-            }
-            provider = createForAbap(options);
+            provider = await createAbapServiceProvider(options, target);
         }
+    } else if (isAppStudio()) {
+        provider = createForDestination(options, {
+            Name: target.destination
+        }) as AbapServiceProvider;
     } else {
         throw new Error('TODO');
     }
@@ -115,6 +130,13 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
     logger.info('Deployment successful.');
 }
 
+/**
+ *
+ * @param archive
+ * @param service
+ * @param config
+ * @param logger
+ */
 async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, config: AbapDeployConfig, logger: Logger) {
     try {
         await service.deploy(archive, config.app, config.test);

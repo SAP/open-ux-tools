@@ -70,7 +70,7 @@ export function createCommand(): Command {
  */
 export async function run(): Promise<void> {
     const cmd = createCommand();
-    const options = cmd.parse().opts() as CliOptions;
+    const options = cmd.parse().opts<CliOptions>();
 
     const logLevel = options.verbose ? LogLevel.Silly : LogLevel.Info;
     const logger = new ToolsLogger({

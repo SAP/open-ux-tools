@@ -101,6 +101,7 @@ importers:
       '@sap-ux/ui5-config': workspace:*
       '@types/prompts': 2.0.14
       '@types/yazl': 2.4.2
+      axios: 0.24.0
       commander: 9.4.0
       dotenv: 16.0.0
       nock: 13.2.4
@@ -112,6 +113,7 @@ importers:
       '@sap-ux/logger': link:../logger
       '@sap-ux/store': link:../store
       '@sap-ux/ui5-config': link:../ui5-config
+      axios: 0.24.0
       commander: 9.4.0
       dotenv: 16.0.0
       yazl: 2.5.1
