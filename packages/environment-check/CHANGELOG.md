@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.3.0
+
+### Minor Changes
+
+-   f0a2114: fix readme and spawn command for windows
+
 ## 0.2.1
 
 ### Patch Changes

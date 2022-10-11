@@ -4,7 +4,7 @@ import { checkBASDestinations, needsUsernamePassword, checkBASDestination } from
 import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { join } from 'path';
-import * as install from '../../src/checks/getInstalled';
+import * as install from '../../src/checks/get-installed';
 
 jest.mock('axios');
 
