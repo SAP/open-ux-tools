@@ -443,13 +443,14 @@ importers:
       uuid: 3.4.0
       webpack: 5.74.0
     dependencies:
+      '@fluentui/react': 8.66.2_xcycjaol2m3tfnicwh7yl4p4jq
       react-movable: 2.4.0_wcqkhtmu7mswc6yz4uyexck3ty
       react-virtualized: 9.22.3_wcqkhtmu7mswc6yz4uyexck3ty
       sanitize-html: 2.7.1
+      uuid: 3.4.0
     devDependencies:
       '@babel/core': 7.14.8
       '@babel/helper-define-map': 7.14.5
-      '@fluentui/react': 8.66.2_xcycjaol2m3tfnicwh7yl4p4jq
       '@storybook/builder-webpack5': 6.5.10_hzwzqzox2cwlsnaqlmgmtwugva
       '@storybook/manager-webpack5': 6.5.10_hzwzqzox2cwlsnaqlmgmtwugva
       '@storybook/react': 6.5.10_awrnpscw3nbcxcayj6yikkyjom
@@ -479,7 +480,6 @@ importers:
       style-loader: 0.23.1
       ts-loader: 9.2.3_actwkd5w3rxts7lmypgqrtezda
       typescript: 4.3.5
-      uuid: 3.4.0
       webpack: 5.74.0
 
   packages/ui5-application-writer:
@@ -2633,14 +2633,14 @@ packages:
     dependencies:
       '@fluentui/set-version': 8.2.2
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/dom-utilities/2.2.2:
     resolution: {integrity: sha512-puklLc6Jvg279OGagqkSfuHML6ckBhw3gJakdvIZHKeJiduh+34U4Finl3K24yBSXzG2WsN+LwLTd1Vcociy+g==}
     dependencies:
       '@fluentui/set-version': 8.2.2
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/font-icons-mdl2/8.4.13_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-rXJpRKxHg68zCKTrcmouklGpE/laXlTQaLyBuft8EcPczZX3aupYPZda9sp+Kknolmd3Lvypn2D9Vf+McJDtwg==}
@@ -2652,7 +2652,7 @@ packages:
     transitivePeerDependencies:
       - '@types/react'
       - react
-    dev: true
+    dev: false
 
   /@fluentui/foundation-legacy/8.2.20_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-iyJSr5Y/yYt0x9yBLP+aIy5U9tiDlgbxJZo6enNwFo0zEuBeWg/2L2IgAUzAwJB2vb73oQBlQt8In602R0Vj8w==}
@@ -2667,20 +2667,20 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/keyboard-key/0.4.2:
     resolution: {integrity: sha512-6WdMrnFpY94uWefUGGRqO4WiS6R+Kso6/FR95SxXMuS6kfnjGJCHzywFGZcN5OU1fX067Zna4aPQ/nDwYMgBPw==}
     dependencies:
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/merge-styles/8.5.3:
     resolution: {integrity: sha512-bHWftN3zTp1bbBfmAEH8YK9UURWj2mffw7b7VaW2Og1qxwv3GMSza1cyv/d3EVqpMJ8AVwFv3mbi9p1ieMN9mw==}
     dependencies:
       '@fluentui/set-version': 8.2.2
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/react-focus/8.8.5_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-+BNjLHKpA0IqUToY9MMARGpYg3ngBmW+1KhJeVxCUnAESNMwnzJ6hx/3MOYUA/FPbYfBvs8QnpTZrrOd7sLG/A==}
@@ -2696,7 +2696,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/react-hooks/8.6.11_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-qQAg/Hqchz0BGL1KJhg211uhhBDxF0bvMCdVKVoeeJNj4q3Cdvam87zHi7/W5gP8i6jgCILr7MrV3dH9umA/Sw==}
@@ -2710,7 +2710,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/react-window-provider/2.2.2_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-/1uQ01HqGRpUOMozUy1FYmxp6blZZvtKN50rqxnQJr8O1bcpg8lJzhq064E8EjOXfdNh47zKSloP4ebbDI5vrw==}
@@ -2722,7 +2722,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/react/8.66.2_xcycjaol2m3tfnicwh7yl4p4jq:
     resolution: {integrity: sha512-uHCBPpMD9TD0+Aevk1ixjYuCLGdzsZbnb607sc9jjMi9yV6HgnzfMsZXiZoW0mAaHnIGdpjgjWG66iT5U3uGgw==}
@@ -2749,13 +2749,13 @@ packages:
       react: 16.14.0
       react-dom: 16.14.0_react@16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/set-version/8.2.2:
     resolution: {integrity: sha512-Vg20KZ0ufgWjxx6GFbqC5wiVxXZDUWgNT0r0By/Eyj4bUSb1jG6lmf5z1oY1dUX0YS6Cp5e6GnvbNdXg5E7orA==}
     dependencies:
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/style-utilities/8.7.12_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-Ayxyo5brZxNI3CK4la+esJ5yDUQFAD26+BqjbIZvXemKq6ZsZDb2875H//saSVHc+dRq8R6J80A1GGV0fJpIEA==}
@@ -2769,7 +2769,7 @@ packages:
     transitivePeerDependencies:
       - '@types/react'
       - react
-    dev: true
+    dev: false
 
   /@fluentui/theme/2.6.16_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-Ml2oMVvoOxRYD9HPjEkGCWvnQnzDyrufa5k8bPYN8xjJbbEGtDjjswcfrSVfHx1fCR1CFgybHR8jj3pvXRTXUQ==}
@@ -2783,7 +2783,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/utilities/8.13.1_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-BpLa0lSYnZ3YoTGB6T/pQ0vUVq0PEr6gF+daptyeiLUkEXVoy3HYgX6ZanA62wJ89ycIwI8A+1aUEbmtDMupYg==}
@@ -2797,7 +2797,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@gar/promisify/1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -3216,7 +3216,7 @@ packages:
 
   /@microsoft/load-themed-styles/1.10.295:
     resolution: {integrity: sha512-W+IzEBw8a6LOOfRJM02dTT7BDZijxm+Z7lhtOAz1+y9vQm1Kdz9jlAO+qCEKsfxtUOmKilW8DIRqFw2aUgKeGg==}
-    dev: true
+    dev: false
 
   /@mrmlnc/readdir-enhanced/2.2.1:
     resolution: {integrity: sha512-bPHp6Ji8b41szTOcaP63VlnbbO5Ny6dwAATtY6JTjh5N2OLrb5Qk/Th5cRkRQhkWCt+EJsYrNB0MiL+Gpn6e3g==}
@@ -4771,7 +4771,6 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
-    dev: true
 
   /@types/qs/6.9.1:
     resolution: {integrity: sha512-lhbQXx9HKZAPgBkISrBcmAcMpZsmpe/Cd/hY7LGZS5OfkySUBItnPZHgQPssWYUET8elF+yCFBbP1Q0RZPTdaw==}
@@ -4789,7 +4788,6 @@ packages:
     resolution: {integrity: sha512-idCEjROZ2cqh29+trmTmZhsBAUNQuYrF92JHKzZ5+aiFM1mlSk3bb23CK7HhYuOY75Apgap5y2jTyHzaM2AJGA==}
     dependencies:
       '@types/react': 16.14.0
-    dev: true
 
   /@types/react-virtualized/9.21.11:
     resolution: {integrity: sha512-ngNe2AY/2CHuZQstOS0Jo5jnSjeyKTdSgqrXCQEltRMXLp9rwPUpJdgkoWzES6wn427Z8zo8dkBN8Sx7hlRmig==}
@@ -4803,7 +4801,6 @@ packages:
     dependencies:
       '@types/prop-types': 15.7.5
       csstype: 3.1.1
-    dev: true
 
   /@types/sanitize-html/2.3.2:
     resolution: {integrity: sha512-DnmoXsiqG2/RoSf6/lD3Hrs+TCM8ILtzNuuSjmOtRaP/ud9Sy3M3ctwD+SB50EIDs5GzVFF1dJk2Fq/ID/PNCQ==}
@@ -12527,8 +12524,8 @@ packages:
   /nimnjs/1.3.2:
     resolution: {integrity: sha512-TIOtI4iqkQrUM1tiM76AtTQem0c7e56SkDZ7sj1d1MfUsqRcq2ZWQvej/O+HBTZV7u/VKnwlKTDugK/75IRPPw==}
     dependencies:
-      nimn_schema_builder: 1.1.0
       nimn-date-parser: 1.0.0
+      nimn_schema_builder: 1.1.0
     dev: false
 
   /no-case/3.0.4:
@@ -13900,7 +13897,6 @@ packages:
       prop-types: 15.8.1
       react: 16.14.0
       scheduler: 0.19.1
-    dev: true
 
   /react-element-to-jsx-string/14.3.4_wcqkhtmu7mswc6yz4uyexck3ty:
     resolution: {integrity: sha512-t4ZwvV6vwNxzujDQ+37bspnLwA4JlgUPWhLjBJWsNIDceAf6ZKUTCjdm08cN6WeZ5pTMKiCJkmAYnpmR4Bm+dg==}
@@ -13976,7 +13972,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       prop-types: 15.8.1
-    dev: true
 
   /read-pkg-up/1.0.1:
     resolution: {integrity: sha512-WD9MTlNtI55IwYUS27iHh9tK3YoIVhxis8yKhLpTqWtml739uXc9NWTpxoHkfZf3+DkCCsXox94/VWZniuZm6A==}
@@ -14535,7 +14530,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: true
 
   /schema-utils/1.0.0:
     resolution: {integrity: sha512-i27Mic4KovM/lnGsy8whRCHhc7VicJajAjTrYg11K9zfZXnYIt4k5F+kZkwjnrhKzLic/HLU4j11mjsz2G/75g==}
@@ -15745,7 +15739,6 @@ packages:
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
-    dev: true
 
   /tsutils/3.21.0_typescript@4.3.5:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -16137,7 +16130,6 @@ packages:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
     deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
     hasBin: true
-    dev: true
 
   /v8-compile-cache/2.3.0:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}
