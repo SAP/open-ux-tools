@@ -22,7 +22,7 @@ const mockGetSecureStore = mocked(getSecureStore);
 const mockSecureStore = {
     save: jest.fn(),
     retrieve: jest.fn(),
-    delete: jest.fn(),
+    'delete': jest.fn(),
     getAll: jest.fn()
 };
 mockGetSecureStore.mockReturnValue(mockSecureStore);

@@ -17,7 +17,7 @@ import { logger } from './types';
  * @param env.TEST_SYSTEM base url of the test system
  * @param env.TEST_USER optional username
  * @param env.TEST_PASSWORD optional password
- * @param activity
+ * @param activity Test Activity
  * @returns a promise recolving to an AbapServiceProvider instance
  */
 export async function testWithAbapSystem(
@@ -46,7 +46,7 @@ export async function testWithAbapSystem(
  * @param env.TEST_SERVICE_INFO_PATH path to a local copy of the service configuration file
  * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
  * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
- * @param activity
+ * @param activity Test Activity
  * @returns Promise<void>
  */
 export async function testWithAbapBtpSystem(
@@ -86,7 +86,7 @@ export async function testWithAbapBtpSystem(
  * @param env object reprensenting the content of the .env file.
  * @param env.TEST_SYSTEM base url of the test system
  * @param env.TEST_IGNORE_CERT_ERRORS optional, ignore certifcate errors or not
- * @param activity
+ * @param activity Test Activity
  * @returns Promise<void>
  */
 export async function testWithCloudAbapSystem(
@@ -108,7 +108,7 @@ export async function testWithCloudAbapSystem(
  * @param env.TEST_DESTINATION name of destination
  * @param env.TEST_USER optional username
  * @param env.TEST_PASSWORD optional password
- * @param activity
+ * @param activity Test Activity
  * @returns Promise<void>
  */
 export async function testWithDestination(

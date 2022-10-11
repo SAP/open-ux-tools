@@ -41,7 +41,7 @@ export interface ErrorMessage {
 /**
  * Log a Gateway response.
  *
- * @param options
+ * @param options  options
  * @param options.msg message returned from gateway
  * @param options.log logger to be used
  * @param options.host optional url that should logged as clickable url
@@ -57,10 +57,10 @@ export function prettyPrintMessage({ msg, log, host }: { msg: SuccessMessage; lo
 }
 
 /**
- * @param root0
- * @param root0.host
- * @param root0.path
- * @param root0.log
+ * @param root0 root0
+ * @param root0.host hostname
+ * @param root0.path path
+ * @param root0.log log
  */
 function logFullURL({ host, path, log }: { host: string; path?: string; log: Logger }): void {
     if (host && path) {
@@ -75,7 +75,7 @@ function logFullURL({ host, path, log }: { host: string; path?: string; log: Log
 /**
  * Log a Gateway error.
  *
- * @param  options
+ * @param  options options
  * @param options.error error message returned from gateway
  * @param options.log logger to be used
  * @param options.host optional host name to pretty print links

@@ -11,6 +11,7 @@ export class AdtSchemaStore {
 
     /**
      * Given the ID of a particular ADT service, return the schema of this service.
+     *
      * @param adtCategory ADT service serves as unique id of a service schema
      * @returns Schema of an ADT service
      */
@@ -26,6 +27,7 @@ export class AdtSchemaStore {
      * Convert the raw ADT schema data structure toP
      *
      * key-value map for fast access.
+     *
      * @param schemaData Raw ADT schema data structure that matches the XML schema
      *                   received from backend
      */
@@ -54,13 +56,19 @@ export class AdtSchemaStore {
 
     /**
      * Check if an schema has been loaded and cached.
-     * @returns
+     *
+     * @returns boolean isAdtSchemaEmpty
      */
     public isAdtSchemaEmpty(): boolean {
         return !this.adtSchema;
     }
 
-    private serializeAdtCategory(adtCategory: AdtCategory) {
+    /**
+     *
+     * @param adtCategory adtCategory
+     * @returns string serializeAdtCategory
+     */
+    private serializeAdtCategory(adtCategory: AdtCategory): string {
         return `${adtCategory.scheme},${adtCategory.term}`;
     }
 }

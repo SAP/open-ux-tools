@@ -1,4 +1,5 @@
-import { FioriElementsApp, generate, TemplateType } from '../src';
+import type { FioriElementsApp } from '../src';
+import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import {
@@ -10,7 +11,7 @@ import {
     v4TemplateSettings,
     v4Service
 } from './common';
-import { WorklistSettings } from '../src/types';
+import type { WorklistSettings } from '../src/types';
 
 const TEST_NAME = 'worklistTemplate';
 
