@@ -8,7 +8,7 @@ export class ABAPSystem {
 
     /**
      *
-     * @param backendUrl
+     * @param backendUrl backend Url
      */
     constructor(backendUrl: string) {
         this.systemURL = new URL(backendUrl);

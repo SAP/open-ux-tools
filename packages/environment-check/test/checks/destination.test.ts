@@ -1,6 +1,7 @@
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
-import { Destination, Severity } from '../../src/types';
+import type { Destination } from '../../src/types';
+import { Severity } from '../../src/types';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
 import { UrlServiceType } from '../../src/types';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
@@ -170,7 +171,7 @@ describe('Destinaton tests, function checkBASDestination()', () => {
         // Result check
         expect(result.destinationResults.v2.results).toEqual(['V2_S1', 'V2_S2', 'V2_S3']);
         expect(result.destinationResults.v4.results).toEqual(v4catalogResponse);
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
     });
 
     test('Catalog services return 401, HTML5.DynamicDestination missing', async () => {

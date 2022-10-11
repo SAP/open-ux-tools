@@ -1,26 +1,26 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { DataProvider } from 'data-provider';
-import { ApiHubSettings, ApiHubSettingsKey } from 'index';
+import type { DataProvider } from 'data-provider';
+import type { ApiHubSettings, ApiHubSettingsKey } from 'index';
 import {
     LEGACY_API_HUB_API_KEY,
     LEGACY_API_HUB_API_SERVICE,
     migrateToLatestVersion
 } from '../../../../src/services/api-hub/migration';
-import { SecureStore } from '../../../../src/secure-store';
+import type { SecureStore } from '../../../../src/secure-store';
 
 describe('migration', () => {
     describe('migrateToLatestVersion', () => {
         const mockSecureStore: jest.Mocked<SecureStore> = {
             save: jest.fn(),
             retrieve: jest.fn(),
-            delete: jest.fn(),
+            'delete': jest.fn(),
             getAll: jest.fn()
         };
 
         const mockDataProvider: jest.Mocked<DataProvider<ApiHubSettings, ApiHubSettingsKey>> = {
             read: jest.fn(),
             write: jest.fn(),
-            delete: jest.fn(),
+            'delete': jest.fn(),
             getAll: jest.fn()
         };
 

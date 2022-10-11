@@ -11,6 +11,7 @@ import {
     createForAbapOnCloud,
     AbapCloudEnvironment
 } from '../../src';
+import * as auth from '../../src/auth';
 
 /**
  * URL are specific to the discovery schema.
@@ -248,7 +249,7 @@ describe('AbapServiceProvider', () => {
     });
 
     describe('Use existing connection session', () => {
-        const attachUaaAuthInterceptorSpy = jest.spyOn(require('../../src/auth'), 'attachUaaAuthInterceptor');
+        const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
 
         test('abap service provider', async () => {
             const provider = createForAbap(existingCookieConfig);

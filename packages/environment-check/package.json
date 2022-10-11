@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "SAP Fiori environment check",
     "license": "Apache-2.0",
     "bin": {
@@ -10,7 +10,7 @@
     "private": false,
     "scripts": {
         "test:bin": "./bin/envcheck",
-        "build": "rimraf dist && tsc",
+        "build": "rimraf dist && tsc -p tsconfig-build.json",
         "clean": "rimraf dist test/test-output coverage",
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",

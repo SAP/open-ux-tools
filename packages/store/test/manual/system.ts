@@ -1,11 +1,5 @@
-import {
-    getService,
-    BackendSystem,
-    BackendSystemKey,
-    ServiceOptions,
-    ApiHubSettingsKey,
-    ApiHubSettings
-} from '../../src';
+import type { ServiceOptions, ApiHubSettingsKey, ApiHubSettings } from '../../src';
+import { getService, BackendSystem, BackendSystemKey } from '../../src';
 import os from 'os';
 import path from 'path';
 import { ConsoleTransport, ToolsLogger } from '@sap-ux/logger';

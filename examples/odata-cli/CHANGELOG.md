@@ -1,5 +1,15 @@
 # @sap-ux/odata-cli
 
+## 0.10.15
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/axios-extension@0.10.1
+    -   @sap-ux/btp-utils@0.11.2
+    -   @sap-ux/logger@0.3.1
+
 ## 0.10.14
 
 ### Patch Changes
