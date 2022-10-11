@@ -5,7 +5,7 @@ import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import axios from 'axios';
 import { join } from 'path';
-import * as install from '../../src/checks/getInstalled';
+import * as install from '../../src/checks/get-installed';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
