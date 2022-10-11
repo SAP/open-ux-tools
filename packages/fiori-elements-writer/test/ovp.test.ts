@@ -1,9 +1,11 @@
-import { FioriElementsApp, generate, TemplateType } from '../src';
+import type { FioriElementsApp } from '../src';
+import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, getTestData, debug, feBaseConfig } from './common';
-import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
-import { OVPSettings } from '../src/types';
+import type { OdataService } from '@sap-ux/odata-service-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { OVPSettings } from '../src/types';
 
 const TEST_NAME = 'ovpTemplate';
 

@@ -1,4 +1,5 @@
-import { Check, EnvironmentCheckResult } from '../../src';
+import type { EnvironmentCheckResult } from '../../src';
+import { Check } from '../../src';
 import { convertResultsToMarkdown, UrlServiceType } from '../../src';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
@@ -87,7 +88,6 @@ const data = {
             zlib: '1.2.11',
             ares: '1.17.2',
             modules: '72',
-            http_parser: '2.9.4',
             openssl: '1.1.1k'
         },
         platform: 'linux',

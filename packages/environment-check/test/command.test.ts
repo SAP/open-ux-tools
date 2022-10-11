@@ -26,7 +26,7 @@ describe('Test commandRunner functions', () => {
             };
         });
 
-        const spawnedCmd = await spawnCommand('fakeCmd', ['arg']).catch((e) => {
+        await spawnCommand('fakeCmd', ['arg']).catch((e) => {
             expect(e).toEqual(new Error('spawn ENOENT'));
         });
     });

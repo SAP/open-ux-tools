@@ -2,9 +2,10 @@ import 'jest-extended';
 import { vol } from 'memfs';
 import { basedir, getFilesystemStore, getFilesystemWatcherFor } from '../../../src/data-access/filesystem';
 import path from 'path';
-import fs, { FSWatcher } from 'fs';
+import type { FSWatcher } from 'fs';
+import fs from 'fs';
 import { mocked } from 'ts-jest/utils';
-import { Entity } from '../../../src';
+import type { Entity } from '../../../src';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 
 jest.mock('fs', () => {
@@ -502,7 +503,7 @@ describe('getFilesystemWatcherFor', () => {
             return path.endsWith(fileName) ? true : jest.requireActual('fs').existsSync(path);
         });
 
-        expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => void 0)).toBeTruthy();
+        expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => jest.fn())).toBeTruthy();
         expect(mockWatcher).toBeCalledTimes(1);
     });
 
@@ -513,7 +514,7 @@ describe('getFilesystemWatcherFor', () => {
             return path.endsWith(fileName) ? false : jest.requireActual('fs').existsSync(path);
         });
 
-        expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => void 0)).toBeUndefined();
+        expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => jest.fn())).toBeUndefined();
         expect(mockWatcher).toBeCalledTimes(0);
     });
 });
