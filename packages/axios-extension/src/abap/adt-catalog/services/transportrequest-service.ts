@@ -23,10 +23,6 @@ export class TransportRequestService extends AdtService {
             return '';
         }
 
-        if (!serviceSchema || !serviceSchema.href) {
-            return '';
-        }
-        const urlPath = serviceSchema.href;
         const acceptHeaders = {
             headers: {
                 Accept: 'application/vnd.sap.adt.transportorganizer.v1+xml',
@@ -42,7 +38,7 @@ export class TransportRequestService extends AdtService {
                     </tm:request>
                 </tm:root>
             `;
-        const response = await this.post(urlPath, data, acceptHeaders);
+        const response = await this.post(serviceSchema.href, data, acceptHeaders);
         return getTransportNumberFromResponse(response.data, this.log);
     }
 }
