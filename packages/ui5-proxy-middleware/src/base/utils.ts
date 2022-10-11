@@ -94,13 +94,23 @@ export const isHostExcludedFromProxy = (
     url: string,
     noProxyConfig: string | undefined = process.env.no_proxy || process.env.npm_config_noproxy
 ): boolean => {
+    const defaultPorts: { [key: string]: string } = {
+        'http:': '80',
+        'https:': '443',
+        'ws:': '80',
+        'wss:': '443'
+    };
     if (noProxyConfig === '*') {
         return true;
     } else {
-        const host = new URL(url).host;
+        const urlInstance = new URL(url);
+        const hostname = urlInstance.hostname;
+        const port = urlInstance.port ? urlInstance.port : defaultPorts[urlInstance.protocol];
         const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
         return !!noProxyList.find((entry) =>
-            entry.startsWith('.') ? host.endsWith(entry) : host.endsWith(`.${entry}`)
+            entry.startsWith('.')
+                ? hostname.endsWith(entry) || `${hostname}:${port}`.endsWith(entry)
+                : hostname.endsWith(`.${entry}`) || `${hostname}:${port}`.endsWith(`.${entry}`)
         );
     }
 };
