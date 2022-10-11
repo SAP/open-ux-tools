@@ -43,6 +43,10 @@
         "sanitize-html": "2.7.1",
         "uuid": "3.4.0"
     },
+    "peerDependencies": {
+        "react": ">16.14.0",
+        "react-dom": ">16.14.0"
+        },
     "devDependencies": {
         "storybook-addon-turbo-build": "1.1.0",
         "@babel/core": "7.14.8",
