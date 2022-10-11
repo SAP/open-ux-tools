@@ -1,7 +1,7 @@
 import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
-import type { AtoSettings } from './adt-catalog';
+import type { AdtServices } from './adt-catalog';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
@@ -15,10 +15,8 @@ import type { AdtCollection, TransportRequest } from './types';
 /**
  * Extension of the service provider for ABAP services.
  */
-export class AbapServiceProvider extends ServiceProvider implements AbapServiceProviderExtension {
+export class AbapServiceProvider extends ServiceProvider {
     public s4Cloud: boolean | undefined;
-
-    protected atoSettings: AtoSettings;
 
     /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
@@ -138,7 +136,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @returns an instance of the UI5 ABAP repository service.
      */
-    public ui5AbapRepository(): Ui5AbapRepositoryService {
+    public get ui5AbapRepository(): Ui5AbapRepositoryService {
         if (!this.services[Ui5AbapRepositoryService.PATH]) {
             this.services[Ui5AbapRepositoryService.PATH] = this.createService<Ui5AbapRepositoryService>(
                 Ui5AbapRepositoryService.PATH,
@@ -153,7 +151,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @returns an instance of the app index service.
      */
-    public appIndex(): AppIndexService {
+    public get appIndex(): AppIndexService {
         if (!this.services[AppIndexService.PATH]) {
             this.services[AppIndexService.PATH] = this.createService<AppIndexService>(
                 AppIndexService.PATH,
@@ -168,7 +166,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @returns an instance of the design time adaptation service.
      */
-    public layeredRepository(): LayeredRepositoryService {
+    public get layeredRepository(): LayeredRepositoryService {
         if (!this.services[LayeredRepositoryService.PATH]) {
             this.services[LayeredRepositoryService.PATH] = this.createService<LayeredRepositoryService>(
                 LayeredRepositoryService.PATH,
@@ -176,6 +174,18 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             );
         }
         return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
+    }
+
+    public getAdtService<T extends AdtService>(serviceName: AdtServiceName): T {
+        if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
+            const adtCatalogSerivce = this.createService<AdtCatalogService>(
+                AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
+                AdtCatalogService
+            );
+            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = new AdtServices(adtCatalogSerivce);
+        }
+
+        return this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtServices;
     }
 
     /**
@@ -259,7 +269,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
                 <?xml version="1.0" encoding="ASCII"?>
                 <tm:root xmlns:tm="http://www.sap.com/cts/adt/tm" tm:useraction="newrequest">
                     <tm:request tm:desc="${description}" tm:type="K" tm:target="LOCAL" tm:cts_project="">
-                        <tm:task tm:owner="CB9980000010"/>
+                        <tm:task tm:owner=""/>
                     </tm:request>
                 </tm:root>
             `;

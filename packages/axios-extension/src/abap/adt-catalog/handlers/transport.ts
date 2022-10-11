@@ -11,13 +11,14 @@ const enum AdtTransportStatus {
 }
 
 export function getTransportNumberFromResponse(xml: string, log: Logger): string {
-    log.warn(xml);
     if (XmlParser.validate(xml) !== true) {
         log.warn(`Invalid XML: ${xml}`);
         return '';
     }
     const doc = new DOMParser().parseFromString(xml);
-    return '';
+    const createdTransportNumber = (xpath.select1('//request', doc) as Element)?.attributes['number'];
+    log.warn('Create TR number: ' + createdTransportNumber);
+    return createdTransportNumber;
 }
 
 /**
