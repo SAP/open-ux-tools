@@ -51,7 +51,7 @@ export function getTransportRequestList(xml: string, log: Logger): TransportRequ
  * Provide a list of transport requests available for the input package name and project name
  * in a ADT CTS request.
  *
- * @param doc
+ * @param doc document
  * @returns
  * - For local package, return [].
  * - For errors or other unkonwn reasons no transport number found, an error is thrown.
@@ -76,8 +76,8 @@ function getTransportList(doc: Document): TransportRequest[] {
  * This function processes ADT response for new project name that have not been deployed before,
  * all the available transport requests are returned.
  *
- * @param doc
- * @returns
+ * @param doc document
+ * @returns transport numbers
  */
 function getTransportListForNewProject(doc: Document): TransportRequest[] {
     const transportReqs = xpath.select('//REQ_HEADER', doc) as Element[];
@@ -97,8 +97,8 @@ function getTransportListForNewProject(doc: Document): TransportRequest[] {
  * This function processes ADT response for existing project name that has been locked.
  * A single, previously provided transport requests is returned in the list.
  *
- * @param doc
- * @returns
+ * @param doc document
+ * @returns transport numbers
  */
 function getLockedTransport(doc: Document): TransportRequest[] {
     const transportReqEle = xpath.select1('//LOCKS//REQ_HEADER', doc) as Element;

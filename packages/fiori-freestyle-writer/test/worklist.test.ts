@@ -1,9 +1,10 @@
-import { FreestyleApp, generate, TemplateType } from '../src';
+import type { FreestyleApp } from '../src';
+import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, getMetadata } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { WorklistSettings } from '../src/types';
+import type { WorklistSettings } from '../src/types';
 
 const TEST_NAME = 'worklistTemplate';
 
@@ -20,7 +21,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 id: 'test-template'
             }
         },
-        package: {
+        'package': {
             name: 'nods1',
             description: 'A Fiori application.'
         },

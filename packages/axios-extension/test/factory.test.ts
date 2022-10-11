@@ -1,9 +1,5 @@
-import {
-    Destination,
-    getDestinationUrlForAppStudio,
-    WebIDEUsage,
-    BAS_DEST_INSTANCE_CRED_HEADER
-} from '@sap-ux/btp-utils';
+import type { Destination } from '@sap-ux/btp-utils';
+import { getDestinationUrlForAppStudio, WebIDEUsage, BAS_DEST_INSTANCE_CRED_HEADER } from '@sap-ux/btp-utils';
 import axios from 'axios';
 import nock from 'nock';
 import { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } from '../src';

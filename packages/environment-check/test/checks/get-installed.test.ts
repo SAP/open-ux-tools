@@ -1,5 +1,5 @@
 import * as command from '../../src/command';
-import { getCFCliToolVersion, getFioriGenVersion, getInstalledExtensions } from '../../src/checks/getInstalled';
+import { getCFCliToolVersion, getFioriGenVersion, getInstalledExtensions } from '../../src/checks/get-installed';
 import fs from 'fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
 

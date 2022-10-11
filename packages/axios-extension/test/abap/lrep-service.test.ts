@@ -1,7 +1,8 @@
 import nock from 'nock';
 import fs from 'fs';
 import type { Message } from '../../src/abap/lrep-service';
-import { LayeredRepositoryService, createForAbap, AdaptationConfig } from '../../src';
+import type { AdaptationConfig } from '../../src';
+import { LayeredRepositoryService, createForAbap } from '../../src';
 
 describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';
@@ -10,7 +11,7 @@ describe('LayeredRepositoryService', () => {
         namespace: 'apps/my.base.app/appVariants/customer.variant/',
         package: 'MY_PACKAGE',
         transport: 'MYTRANSPORT'
-    };
+    } as AdaptationConfig;
 
     beforeAll(() => {
         nock.disableNetConnect();

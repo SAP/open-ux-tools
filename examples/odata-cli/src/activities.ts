@@ -108,8 +108,7 @@ export async function testDeployUndeployDTA(
 
         response = await service.deploy(env.TEST_ZIP, {
             namespace: env.TEST_NAMESPACE,
-            // eslint-disable-next-line quote-props
-            package: env.TEST_PACKAGE,
+            'package': env.TEST_PACKAGE,
             transport: env.TEST_TRANSPORT
         });
         logger.info(response.request.url);
@@ -121,8 +120,7 @@ export async function testDeployUndeployDTA(
 
             response = await service.undeploy({
                 namespace: env.TEST_NAMESPACE,
-                // eslint-disable-next-line quote-props
-                package: env.TEST_PACKAGE,
+                'package': env.TEST_PACKAGE,
                 transport: env.TEST_TRANSPORT
             });
             logger.info(`undeploy: ${response.status}`);
