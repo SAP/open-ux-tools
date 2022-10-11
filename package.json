@@ -38,7 +38,9 @@
         "prepare": "husky install",
         "cset": "changeset",
         "ci:version": "changeset version && pnpm install --lockfile-only",
-        "ci:publish": "changeset publish"
+        "ci:publish": "changeset publish",
+        "run:pretty-quick": "pretty-quick --ignore-path .prettierignore",
+        "run:pretty": "prettier --write ."
     },
     "engines": {
         "npm": "please-use-pnpm",

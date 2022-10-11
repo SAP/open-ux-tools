@@ -1,4 +1,5 @@
-import { FioriElementsApp, generate, TemplateType, FPMSettings, ValidationError } from '../src';
+import type { FioriElementsApp, FPMSettings } from '../src';
+import { generate, TemplateType, ValidationError } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, feBaseConfig, v4Service, v2Service } from './common';

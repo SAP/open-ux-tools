@@ -11,7 +11,7 @@ export * from './error';
 export { ServiceInfo, RefreshTokenChanged, Uaa };
 
 /**
- * @param provider
+ * @param provider Basic Auth Provider
  */
 export function attachBasicAuthInterceptor(provider: Axios): void {
     const oneTimeInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
@@ -22,10 +22,10 @@ export function attachBasicAuthInterceptor(provider: Axios): void {
 }
 
 /**
- * @param provider
- * @param service
- * @param refreshToken
- * @param refreshTokenUpdateCb
+ * @param provider  Abap Service Provider
+ * @param service Service Information
+ * @param refreshToken refreshToken
+ * @param refreshTokenUpdateCb refreshTokenUpdate callback function
  */
 export function attachUaaAuthInterceptor(
     provider: AbapServiceProvider,
@@ -55,7 +55,7 @@ export function attachUaaAuthInterceptor(
 /**
  * Get the reentrace ticket from the backend and add it to the header.
  *
- * @param options
+ * @param options options
  * @param options.provider an instance of an ABAP service provider
  */
 export function attachReentranceTicketAuthInterceptor({ provider }: { provider: ServiceProvider }): void {
@@ -71,9 +71,9 @@ export function attachReentranceTicketAuthInterceptor({ provider }: { provider: 
 /**
  * Get the interceptor that fetches and uses reentrance tickets from the backend.
  *
- * @param options
+ * @param options options
  * @param options.provider an instance of an ABAP service provider
- * @param options.ejectCallback
+ * @param options.ejectCallback  eject Callback Function
  * @returns the interceptor function to fetch and use reentrace tickets
  */
 export function getReentranceTicketAuthInterceptor({

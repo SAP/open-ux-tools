@@ -17,7 +17,7 @@ import type { Response } from 'express';
 import YAML from 'yaml';
 import fs from 'fs';
 import * as baseUtils from '../../src/base/utils';
-import { ProxyConfig } from '../../src/base/types';
+import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
