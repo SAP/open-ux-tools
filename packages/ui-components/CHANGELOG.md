@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.7
+
+### Patch Changes
+
+-   6f204c0: move devDependencies to dependencies
+
 ## 1.0.6
 
 ### Patch Changes
