@@ -1,8 +1,8 @@
 import nock from 'nock';
 import fs from 'fs';
-import { Ui5AbapRepositoryService, createForAbap, AppInfo } from '../../src';
-
-nock.disableNetConnect();
+import type { AppInfo } from '../../src';
+import { Ui5AbapRepositoryService, createForAbap } from '../../src';
+import type { HeadersDefaults } from 'axios';
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -21,6 +21,7 @@ describe('Ui5AbapRepositoryService', () => {
     const service = createForAbap({ baseURL: server }).ui5AbapRepository();
 
     beforeAll(() => {
+        nock.disableNetConnect();
         // mock an existing and not existing app
         nock(server)
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?$format=json`)
@@ -30,6 +31,11 @@ describe('Ui5AbapRepositoryService', () => {
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${notExistingApp}%27)?$format=json`)
             .replyWithError('the app does not exist')
             .persist();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
     });
 
     beforeEach(() => {
@@ -162,6 +168,28 @@ describe('Ui5AbapRepositoryService', () => {
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .replyWithError('Failed');
             await expect(service.undeploy({ name: validApp })).rejects.toThrowError();
+        });
+    });
+
+    describe('createPayload', () => {
+        test('ensure special characters are encoded', async () => {
+            /**
+             * Extension of Ui5AbapRespository class to make `createPayload` public and available for testing.
+             */
+            class ServiceForTesting extends Ui5AbapRepositoryService {
+                defaults = {
+                    headers: {} as HeadersDefaults,
+                    baseUrl: ''
+                };
+                public createPayload = super.createPayload;
+            }
+            const service = new ServiceForTesting();
+            const inputDescription = `<my&special"'decription>`;
+            const xmlPayload = service.createPayload(__filename, 'special&name', inputDescription, '');
+            expect(xmlPayload).not.toContain('special&name');
+            expect(xmlPayload).toContain('special&amp;name');
+            expect(xmlPayload).not.toContain(inputDescription);
+            expect(xmlPayload).toContain('&lt;my&amp;special&quot;&apos;decription&gt;');
         });
     });
 });

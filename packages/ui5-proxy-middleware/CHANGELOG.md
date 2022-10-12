@@ -1,5 +1,109 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.12
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/logger@0.3.1
+    -   @sap-ux/ui5-config@0.15.2
+
+## 1.1.11
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.1
+
+## 1.1.10
+
+### Patch Changes
+
+-   fac7a5a: Replaced usage of express with simple code to reduce installation size.
+
+## 1.1.9
+
+### Patch Changes
+
+-   Updated dependencies [83a7a1a]
+    -   @sap-ux/ui5-config@0.15.0
+
+## 1.1.8
+
+### Patch Changes
+
+-   Updated dependencies [bc4cb3a]
+    -   @sap-ux/logger@0.3.0
+
+## 1.1.7
+
+### Patch Changes
+
+-   Updated dependencies [b6d0c67]
+    -   @sap-ux/ui5-config@0.14.5
+
+## 1.1.6
+
+### Patch Changes
+
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/ui5-config@0.14.4
+
+## 1.1.5
+
+### Patch Changes
+
+-   5b46c30: Improve error handling of proxy middlewares
+
+## 1.1.4
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/logger@0.2.2
+    -   @sap-ux/ui5-config@0.14.3
+
+## 1.1.3
+
+### Patch Changes
+
+-   Updated dependencies [7c4a4df]
+    -   @sap-ux/ui5-config@0.14.2
+
+## 1.1.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/logger@0.2.1
+    -   @sap-ux/ui5-config@0.14.1
+
+## 1.1.1
+
+### Patch Changes
+
+-   5c5c904: Add author to package.json
+
+## 1.1.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/logger@0.2.0
+    -   @sap-ux/ui5-config@0.14.0
+
+## 1.0.9
+
+### Patch Changes
+
+-   47538c6: Read FIORI_TOOLS_UI5\* env variables of a run configuration
+
 ## 1.0.8
 
 ### Patch Changes

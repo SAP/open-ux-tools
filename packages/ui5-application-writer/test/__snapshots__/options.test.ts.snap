@@ -14,7 +14,7 @@ Object {
     \\"./node_modules/eslint-plugin-fiori-custom/configure.eslintrc\\"
   ],
   \\"ignorePatterns\\": [
-    \\"webapp/localservice/**\\",
+    \\"webapp/localService/**\\",
     \\"webapp/test/**\\",
     \\"dist/**\\"
   ]
@@ -51,9 +51,10 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"latest\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"1.92.2\\",
+    \\"@sapui5/ts-types\\": \\"1.71.18\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },
@@ -181,7 +182,7 @@ appDescription=Test App Description",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -255,6 +256,255 @@ appDescription=Test App Description",
       \\"flexEnabled\\": true,
       \\"dependencies\\": {
         \\"minUI5Version\\": \\"1.60.0\\",
+        \\"libs\\": {
+          \\"sap.m\\": {},
+          \\"sap.ui.core\\": {}
+        }
+      },
+      \\"contentDensities\\": {
+        \\"compact\\": true,
+        \\"cozy\\": true
+      },
+      \\"models\\": {
+        \\"i18n\\": {
+          \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+          \\"settings\\": {
+            \\"bundleName\\": \\"testAppId.i18n.i18n\\"
+          }
+        }
+      },
+      \\"resources\\": {
+        \\"css\\": []
+      },
+      \\"routing\\": {
+        \\"config\\": {},
+        \\"routes\\": [],
+        \\"targets\\": {}
+      }
+    }
+  }
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`UI5 templates generates options: \`sapux\` with specific version 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"testpackagename\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"Test App Description\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.92\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
+    \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\"
+    ]
+  },
+  \\"sapux\\": true
+}
+",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: testAppId
+type: application
+framework:
+  name: SAPUI5
+  version: 1.92.1
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: testAppId
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+",
+    "state": "modified",
+  },
+  "webapp/Component.js": Object {
+    "contents": "sap.ui.define(
+    [\\"sap/ui/core/UIComponent\\"],
+    function (UIComponent) {
+        \\"use strict\\";
+
+        return UIComponent.extend(\\"testAppId.Component\\", {
+            metadata: {
+                manifest: \\"json\\"
+            },
+
+            /**
+             * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+             * @public
+             * @override
+             */
+            init: function () {
+                // call the base component's init function
+                UIComponent.prototype.init.apply(this, arguments);
+
+                // enable routing
+                this.getRouter().initialize();
+            }
+        });
+    }
+);",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for testAppId
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=Test App Title
+
+#YDES: Application description
+appDescription=Test App Description",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>Test App Title</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-resourceroots='{
+            \\"testAppId\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"testAppId\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"testAppId\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.34.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"testAppId\\",
+      \\"type\\": \\"application\\",
+      \\"i18n\\": \\"i18n/i18n.properties\\",
+      \\"applicationVersion\\": {
+        \\"version\\": \\"0.0.1\\"
+      },
+      \\"title\\": \\"{{appTitle}}\\",
+      \\"description\\": \\"{{appDescription}}\\",
+      \\"resources\\": \\"resources.json\\",
+      \\"sourceTemplate\\": {
+          \\"id\\": \\"\\",
+          \\"version\\": \\"\\"
+      }
+    },
+    \\"sap.ui\\": {
+      \\"technology\\": \\"UI5\\",
+      \\"icons\\": {
+        \\"icon\\": \\"\\",
+        \\"favIcon\\": \\"\\",
+        \\"phone\\": \\"\\",
+        \\"phone@2\\": \\"\\",
+        \\"tablet\\": \\"\\",
+        \\"tablet@2\\": \\"\\"
+      },
+      \\"deviceTypes\\": {
+        \\"desktop\\": true,
+        \\"tablet\\": true,
+        \\"phone\\": true
+      }
+    },
+    \\"sap.ui5\\": {
+      \\"flexEnabled\\": true,
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.92.1\\",
         \\"libs\\": {
           \\"sap.m\\": {},
           \\"sap.ui.core\\": {}
@@ -428,7 +678,7 @@ appDescription=Test App Description",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -538,177 +788,643 @@ appDescription=Test App Description",
   "webapp/utils/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
-  var fioriToolsGetManifestLibs = function (manifestPath) {
-    var url = manifestPath;
-    var result = \\"\\";
-    // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
-    var ui5Libs = [
-      \\"sap.apf\\",
-      \\"sap.base\\",
-      \\"sap.chart\\",
-      \\"sap.collaboration\\",
-      \\"sap.f\\",
-      \\"sap.fe\\",
-      \\"sap.fileviewer\\",
-      \\"sap.gantt\\",
-      \\"sap.landvisz\\",
-      \\"sap.m\\",
-      \\"sap.ndc\\",
-      \\"sap.ovp\\",
-      \\"sap.rules\\",
-      \\"sap.suite\\",
-      \\"sap.tnt\\",
-      \\"sap.ui\\",
-      \\"sap.uiext\\",
-      \\"sap.ushell\\",
-      \\"sap.uxap\\",
-      \\"sap.viz\\",
-      \\"sap.webanalytics\\",
-      \\"sap.zen\\"
-    ];
-    function getKeys(libOrComp,libOrCompKeysString) {
-      Object.keys(libOrComp).forEach(function (libOrCompKey) {
-        // ignore libs or Components that start with SAPUI5 delivered namespaces
-        if (!ui5Libs.some(function (substring) { return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\"); })) {
-          if (libOrCompKeysString.length > 0) {
-            libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
-          } else {
-            libOrCompKeysString = libOrCompKey;
-          }
-        }
-      });
-      return libOrCompKeysString;
-    }
-    return new Promise(function (resolve, reject) {
-      $.ajax(url)
-        .done(function (manifest) {
-          if (manifest) {
+    var getKeys = function (libOrComp, libOrCompKeysString) {
+        // SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
+        var ui5Libs = [
+            \\"sap.apf\\",
+            \\"sap.base\\",
+            \\"sap.chart\\",
+            \\"sap.collaboration\\",
+            \\"sap.f\\",
+            \\"sap.fe\\",
+            \\"sap.fileviewer\\",
+            \\"sap.gantt\\",
+            \\"sap.landvisz\\",
+            \\"sap.m\\",
+            \\"sap.ndc\\",
+            \\"sap.ovp\\",
+            \\"sap.rules\\",
+            \\"sap.suite\\",
+            \\"sap.tnt\\",
+            \\"sap.ui\\",
+            \\"sap.uiext\\",
+            \\"sap.ushell\\",
+            \\"sap.uxap\\",
+            \\"sap.viz\\",
+            \\"sap.webanalytics\\",
+            \\"sap.zen\\"
+        ];
+        Object.keys(libOrComp).forEach(function (libOrCompKey) {
+            // ignore libs or Components that start with SAPUI5 delivered namespaces
             if (
-              manifest[\\"sap.ui5\\"] &&
-              manifest[\\"sap.ui5\\"].dependencies
+                !ui5Libs.some(function (substring) {
+                    return libOrCompKey === substring || libOrCompKey.startsWith(substring + \\".\\");
+                })
             ) {
-              if (manifest[\\"sap.ui5\\"].dependencies.libs){
-                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result)
-              }
-              if (manifest[\\"sap.ui5\\"].dependencies.components){
-                result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result)
-              }
+                if (libOrCompKeysString.length > 0) {
+                    libOrCompKeysString = libOrCompKeysString + \\",\\" + libOrCompKey;
+                } else {
+                    libOrCompKeysString = libOrCompKey;
+                }
             }
-            if (
-              manifest[\\"sap.ui5\\"] &&
-              manifest[\\"sap.ui5\\"].componentUsages
-            ) {
-              result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result)
-            }
-          }
-          resolve(result);
-        })
-        .fail(function (error) {
-          reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
         });
-    });
-  };
-  /**
-   * Registers the module paths for dependencies of the given component.
-   * @param {string} manifestPath The the path to the app manifest path
-   * for which the dependencies should be registered.
-   * @returns {Promise} A promise which is resolved when the ajax request for
-   * the app-index was successful and the module paths were registered.
-   */
-  sap.registerComponentDependencyPaths = function (manifestPath) {
-    /*eslint-disable semi, consistent-return*/
-    return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
-      if (libs && libs.length > 0) {
-        var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
-        var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
-        if (sapClient && sapClient.length === 3) {
-          url = url + \\"&sap-client=\\" + sapClient;
+        return libOrCompKeysString;
+    };
+
+    var updateManifest = function (manifest) {
+        var result = \\"\\";
+        if (manifest) {
+            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].dependencies) {
+                if (manifest[\\"sap.ui5\\"].dependencies.libs) {
+                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.libs, result);
+                }
+                if (manifest[\\"sap.ui5\\"].dependencies.components) {
+                    result = getKeys(manifest[\\"sap.ui5\\"].dependencies.components, result);
+                }
+            }
+            if (manifest[\\"sap.ui5\\"] && manifest[\\"sap.ui5\\"].componentUsages) {
+                result = getKeys(manifest[\\"sap.ui5\\"].componentUsages, result);
+            }
         }
-        return $.ajax(url).done(function (data) {
-          if (data) {
-            Object.keys(data).forEach(function (moduleDefinitionKey) {
-              var moduleDefinition = data[moduleDefinitionKey];
-              if (moduleDefinition && moduleDefinition.dependencies) {
-                moduleDefinition.dependencies.forEach(function (dependency) {
-                  if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
-                    jQuery.sap.log.info(
-                      \\"Registering Library \\" +
-                      dependency.componentId +
-                      \\" from server \\" +
-                      dependency.url
-                    );
-                    jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
-                  }
+        return result;
+    };
+
+    var fioriToolsGetManifestLibs = function (manifestPath) {
+        var url = manifestPath;
+        return new Promise(function (resolve, reject) {
+            $.ajax(url)
+                .done(function (manifest) {
+                    resolve(updateManifest(manifest));
+                })
+                .fail(function () {
+                    reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
-              }
-            });
-          }
         });
-      }
-    });
-  };
+    };
+
+    var updateModuleDefinition = function (data) {
+        if (data) {
+            Object.keys(data).forEach(function (moduleDefinitionKey) {
+                var moduleDefinition = data[moduleDefinitionKey];
+                if (moduleDefinition && moduleDefinition.dependencies) {
+                    moduleDefinition.dependencies.forEach(function (dependency) {
+                        if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
+                            jQuery.sap.log.info(
+                                \\"Registering Library \\" + dependency.componentId + \\" from server \\" + dependency.url
+                            );
+                            jQuery.sap.registerModulePath(dependency.componentId, dependency.url);
+                        }
+                    });
+                }
+            });
+        }
+    };
+
+    /**
+     * Registers the module paths for dependencies of the given component.
+     * @param {string} manifestPath The the path to the app manifest path
+     * for which the dependencies should be registered.
+     * @returns {Promise} A promise which is resolved when the ajax request for
+     * the app-index was successful and the module paths were registered.
+     */
+    sap.registerComponentDependencyPaths = function (manifestPath) {
+        /*eslint-disable semi, consistent-return*/
+        return fioriToolsGetManifestLibs(manifestPath).then(function (libs) {
+            if (libs && libs.length > 0) {
+                var url = \\"/sap/bc/ui2/app_index/ui5_app_info?id=\\" + libs;
+                var sapClient = jQuery.sap.getUriParameters().get(\\"sap-client\\");
+                if (sapClient && sapClient.length === 3) {
+                    url = url + \\"&sap-client=\\" + sapClient;
+                }
+                return $.ajax(url).done(updateModuleDefinition);
+            }
+        });
+    };
 })(sap);
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
 var scripts = document.getElementsByTagName(\\"script\\");
-var currentScript = document.getElementById('locate-reuse-libs');
-if(!currentScript){
+var currentScript = document.getElementById(\\"locate-reuse-libs\\");
+if (!currentScript) {
     currentScript = document.currentScript;
-};
+}
 var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
 var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
 var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-sap.registerComponentDependencyPaths(manifestUri)
-  .catch(function (error) {
-    jQuery.sap.log.error(error);
-  })
-  .finally(function () {
-
-    // setting the app title with internationalization
-    sap.ui.getCore().attachInit(function () {
-      jQuery.sap.require(\\"jquery.sap.resources\\");
-      var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-      var oBundle = jQuery.sap.resources({
+var bundleResources = function () {
+    jQuery.sap.require(\\"jquery.sap.resources\\");
+    var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
+    var oBundle = jQuery.sap.resources({
         url: \\"i18n/i18n.properties\\",
         locale: sLocale
-      });
-      document.title = oBundle.getText(\\"appTitle\\");
+    });
+    document.title = oBundle.getText(\\"appTitle\\");
+};
+sap.registerComponentDependencyPaths(manifestUri)
+    .catch(function (error) {
+        jQuery.sap.log.error(error);
+    })
+    .finally(function () {
+        // setting the app title with internationalization
+        sap.ui.getCore().attachInit(bundleResources);
+
+        if (componentName && componentName.length > 0) {
+            if (useMockserver && useMockserver === \\"true\\") {
+                sap.ui.getCore().attachInit(function () {
+                    sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
+                        // set up test service for local testing
+                        server.init();
+                        // initialize the ushell sandbox component
+                        sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+                    });
+                });
+            } else {
+                // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
+                sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
+
+                // setting the app title with the i18n text
+                sap.ui.getCore().attachInit(bundleResources);
+            }
+        } else {
+            sap.ui.getCore().attachInit(function () {
+                // initialize the ushell sandbox component
+                sap.ushell.Container.createRenderer().placeAt(\\"content\\");
+            });
+        }
     });
 
-    if (componentName && componentName.length > 0) {
-      if (useMockserver && useMockserver === \\"true\\") {
-        sap.ui.getCore().attachInit(function () {
-          sap.ui.require([componentName.replace(/\\\\./g, \\"/\\") + \\"/localService/mockserver\\"], function (server) {
-            // set up test service for local testing
-            server.init();
-            // initialize the ushell sandbox component
-            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
-          });
-        });
-      } else {
-        // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
-        sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
-
-        // setting the app title with the i18n text
-        sap.ui.getCore().attachInit(function () {
-          jQuery.sap.require(\\"jquery.sap.resources\\");
-          var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
-          var oBundle = jQuery.sap.resources({
-            url: \\"i18n/i18n.properties\\",
-            locale: sLocale
-          });
-          document.title = oBundle.getText(\\"appTitle\\");
-        });
-      }
-    } else {
-      sap.ui.getCore().attachInit(function () {
-        // initialize the ushell sandbox component
-        sap.ushell.Container.createRenderer().placeAt(\\"content\\");
-      });
-    }
-  });
-
 sap.registerComponentDependencyPaths(manifestUri);
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 1`] = `
+"{
+  \\"name\\": \\"testpackagename\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"Test App Description\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"latest\\",
+    \\"@sapui5/ts-types-esm\\": \\"1.71.18\\",
+    \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
+    \\"typescript\\": \\"^4.6.3\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"eslint\\": \\"7.32.0\\",
+    \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
+    \\"@sapui5/ts-types\\": \\"1.71.18\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
+    \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"ts-typecheck\\": \\"tsc --noEmit\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
+      \\"ui5-tooling-transpile\\"
+    ]
+  }
+}
+"
+`;
+
+exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 2`] = `
+"{
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2015\\",
+    \\"module\\": \\"none\\",
+    \\"skipLibCheck\\": true,
+    \\"preserveConstEnums\\": true,
+    \\"inlineSourceMap\\": true,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictNullChecks\\": true,
+    \\"strictPropertyInitialization\\": false,
+    \\"moduleResolution\\": \\"node\\",
+    \\"rootDir\\": \\"webapp\\",
+    \\"outDir\\": \\"./dist\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"paths\\": {
+      \\"testAppId/*\\": [
+        \\"webapp/*\\"
+      ]
+    },
+    \\"types\\": [
+      \\"@sapui5/ts-types-esm\\",
+      \\"@sapui5/ts-types\\"
+    ],
+    \\"noEmit\\": true,
+    \\"checkJs\\": true
+  },
+  \\"include\\": [
+    \\"webapp/**/*\\"
+  ]
+}
+"
+`;
+
+exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 3`] = `
+"{
+  \\"root\\": true,
+  \\"env\\": {
+    \\"browser\\": true,
+    \\"es6\\": true,
+    \\"node\\": true
+  },
+  \\"extends\\": [
+    \\"eslint:recommended\\",
+    \\"plugin:@typescript-eslint/recommended\\",
+    \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\",
+    \\"plugin:@sap/ui5-jsdocs/recommended\\"
+  ],
+  \\"ignorePatterns\\": [
+    \\".eslintignore.js\\"
+  ],
+  \\"parser\\": \\"@typescript-eslint/parser\\",
+  \\"parserOptions\\": {
+    \\"project\\": [
+      \\"./tsconfig.json\\"
+    ],
+    \\"tsconfigRootDir\\": \\".\\",
+    \\"sourceType\\": \\"module\\"
+  },
+  \\"plugins\\": [
+    \\"@typescript-eslint\\",
+    \\"@sap/ui5-jsdocs\\"
+  ]
+}
+"
+`;
+
+exports[`UI5 templates option: \`typescript, npm modules and Fiori tools\` 1`] = `
+Object {
+  ".babelrc.json": Object {
+    "contents": "{
+    \\"ignore\\": [\\"**/*.d.ts\\"],
+    \\"presets\\": [\\"transform-ui5\\", \\"@babel/preset-typescript\\"]
+}",
+    "state": "modified",
+  },
+  ".eslintrc": Object {
+    "contents": "{
+    \\"root\\": true,
+    \\"env\\": {
+        \\"browser\\": true,
+        \\"es6\\": true,
+        \\"node\\": true
+    },
+    \\"extends\\": [
+        \\"eslint:recommended\\",
+        \\"plugin:@typescript-eslint/recommended\\",
+        \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\"
+    ],
+	\\"ignorePatterns\\": [\\".eslintignore.js\\"],
+    \\"parser\\": \\"@typescript-eslint/parser\\",
+    \\"parserOptions\\": {
+        \\"project\\": [\\"./tsconfig.json\\"],
+        \\"tsconfigRootDir\\": \\".\\",
+        \\"sourceType\\": \\"module\\"
+    },
+    \\"plugins\\": [
+        \\"@typescript-eslint\\"
+    ]
+}",
+    "state": "modified",
+  },
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"testpackagename\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"private\\": true,
+  \\"description\\": \\"Test App Description\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ux-specification\\": \\"latest\\",
+    \\"@sapui5/ts-types-esm\\": \\"1.71.18\\",
+    \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
+    \\"typescript\\": \\"^4.6.3\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"ui5-tooling-modules\\": \\"^0.6.0\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
+    \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
+    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"ts-typecheck\\": \\"tsc --noEmit\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"@sap/ux-ui5-tooling\\",
+      \\"ui5-tooling-transpile\\",
+      \\"ui5-tooling-modules\\"
+    ]
+  },
+  \\"sapux\\": true
+}
+",
+    "state": "modified",
+  },
+  "tsconfig.json": Object {
+    "contents": "{
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2015\\",
+    \\"module\\": \\"es2015\\",
+    \\"skipLibCheck\\": true,
+    \\"preserveConstEnums\\": true,
+    \\"inlineSourceMap\\": true,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictNullChecks\\": true,
+    \\"strictPropertyInitialization\\": false,
+    \\"moduleResolution\\": \\"node\\",
+    \\"rootDir\\": \\"webapp\\",
+    \\"outDir\\": \\"./dist\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"paths\\": {
+      \\"testAppId/*\\": [
+        \\"webapp/*\\"
+      ]
+    },
+    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
+  },
+  \\"include\\": [
+    \\"webapp/**/*\\"
+  ]
+}",
+    "state": "modified",
+  },
+  "ui5-local.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: testAppId
+type: application
+framework:
+  name: SAPUI5
+  version: 1.95.0
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        transpileAsync: true
+        transpileTypeScript: true
+    - name: ui5-tooling-modules-middleware
+      afterMiddleware: compression
+      configuration: {}
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        removeConsoleStatements: true
+        transpileAsync: true
+        transpileTypeScript: true
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"2.5\\"
+metadata:
+  name: testAppId
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        transpileAsync: true
+        transpileTypeScript: true
+    - name: ui5-tooling-modules-middleware
+      afterMiddleware: compression
+      configuration: {}
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        removeConsoleStatements: true
+        transpileAsync: true
+        transpileTypeScript: true
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
+",
+    "state": "modified",
+  },
+  "webapp/Component.ts": Object {
+    "contents": "import UIComponent from \\"sap/ui/core/UIComponent\\";
+
+/**
+ * @namespace testAppId
+ */
+export default class Component extends UIComponent {
+
+	public static metadata = {
+		manifest: \\"json\\"
+	};
+
+    /**
+     * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
+     * @public
+     * @override
+     */
+	public init() : void {
+		// call the base component's init function
+		super.init();
+
+        // enable routing
+        this.getRouter().initialize();
+	}
+}",
+    "state": "modified",
+  },
+  "webapp/i18n/i18n.properties": Object {
+    "contents": "# This is the resource bundle for testAppId
+
+#Texts for manifest.json
+
+#XTIT: Application name
+appTitle=Test App Title
+
+#YDES: Application description
+appDescription=Test App Description",
+    "state": "modified",
+  },
+  "webapp/index.html": Object {
+    "contents": "<!DOCTYPE html>
+<html lang=\\"en\\">
+<head>
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <title>Test App Title</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id=\\"sap-ui-bootstrap\\"
+        src=\\"resources/sap-ui-core.js\\"
+        data-sap-ui-theme=\\"sap_fiori_3\\"
+        data-sap-ui-resourceroots='{
+            \\"testAppId\\": \\"./\\"
+        }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
+    ></script>
+</head>
+<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
+    <div
+        data-sap-ui-component
+        data-name=\\"testAppId\\"
+        data-id=\\"container\\"
+        data-settings='{\\"id\\" : \\"testAppId\\"}'
+        data-handle-validation=\\"true\\"
+    ></div>
+</body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/manifest.json": Object {
+    "contents": "{
+    \\"_version\\": \\"1.12.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"testAppId\\",
+      \\"type\\": \\"application\\",
+      \\"i18n\\": \\"i18n/i18n.properties\\",
+      \\"applicationVersion\\": {
+        \\"version\\": \\"0.0.1\\"
+      },
+      \\"title\\": \\"{{appTitle}}\\",
+      \\"description\\": \\"{{appDescription}}\\",
+      \\"resources\\": \\"resources.json\\",
+      \\"sourceTemplate\\": {
+          \\"id\\": \\"\\",
+          \\"version\\": \\"\\"
+      }
+    },
+    \\"sap.ui\\": {
+      \\"technology\\": \\"UI5\\",
+      \\"icons\\": {
+        \\"icon\\": \\"\\",
+        \\"favIcon\\": \\"\\",
+        \\"phone\\": \\"\\",
+        \\"phone@2\\": \\"\\",
+        \\"tablet\\": \\"\\",
+        \\"tablet@2\\": \\"\\"
+      },
+      \\"deviceTypes\\": {
+        \\"desktop\\": true,
+        \\"tablet\\": true,
+        \\"phone\\": true
+      }
+    },
+    \\"sap.ui5\\": {
+      \\"flexEnabled\\": true,
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.60.0\\",
+        \\"libs\\": {
+          \\"sap.m\\": {},
+          \\"sap.ui.core\\": {}
+        }
+      },
+      \\"contentDensities\\": {
+        \\"compact\\": true,
+        \\"cozy\\": true
+      },
+      \\"models\\": {
+        \\"i18n\\": {
+          \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+          \\"settings\\": {
+            \\"bundleName\\": \\"testAppId.i18n.i18n\\"
+          }
+        }
+      },
+      \\"resources\\": {
+        \\"css\\": []
+      },
+      \\"routing\\": {
+        \\"config\\": {},
+        \\"routes\\": [],
+        \\"targets\\": {}
+      }
+    }
+  }
 ",
     "state": "modified",
   },

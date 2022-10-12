@@ -6,7 +6,7 @@ import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { createForAbapOnBtp } from '@sap-ux/axios-extension';
+import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import {
     isAppStudio,
     getDestinationUrlForAppStudio,
@@ -15,6 +15,7 @@ import {
     isFullUrlDestination,
     BAS_DEST_INSTANCE_CRED_HEADER
 } from '@sap-ux/btp-utils';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 import translations from './i18n.json';
 
@@ -22,6 +23,7 @@ import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendS
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
 import { getCorporateProxyServer, isHostExcludedFromProxy } from './config';
 import type { Url } from 'url';
+import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 
 /**
  * Collection of custom event handler for the proxy.
@@ -36,7 +38,7 @@ export const ProxyEventHandlers = {
      * @param _options (not used)
      */
     onProxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions) {
-        if (proxyReq.path.indexOf('Fiorilaunchpad.html') !== -1 && !proxyReq.headersSent) {
+        if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
             proxyReq.setHeader('accept-encoding', 'br');
         }
     },
@@ -56,37 +58,41 @@ export const ProxyEventHandlers = {
                 header[i] = cookie;
             }
         }
-    },
-
-    /**
-     * Specifically handling errors due to unsigned certificates.
-     *
-     * @param err the error thrown when proxying the request or processing the response
-     * @param req request causing the error
-     * @param _res (not used)
-     * @param _target (not used)
-     */
-    onError(
-        err: Error & { code?: string },
-        req: IncomingMessage & { next?: Function },
-        _res?: ServerResponse,
-        _target?: string | Partial<Url>
-    ) {
-        if (err) {
-            let error: Error;
-            if (err.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY') {
-                error = new Error(i18n.t('error.sslProxy'));
-            } else {
-                error = err;
-            }
-            if (typeof req.next === 'function') {
-                req.next(error);
-            } else {
-                throw error;
-            }
-        }
     }
 };
+
+/**
+ * Specifically handling errors due to unsigned certificates and empty errors.
+ *
+ * @param err the error thrown when proxying the request or processing the response
+ * @param req request causing the error
+ * @param logger logger instance
+ * @param _res (not used)
+ * @param _target (not used)
+ */
+export function proxyErrorHandler(
+    err: Error & { code?: string },
+    req: IncomingMessage & { next?: Function; originalUrl?: string },
+    logger: ToolsLogger,
+    _res?: ServerResponse,
+    _target?: string | Partial<Url>
+): void {
+    if (err && err.stack?.toLowerCase() !== 'error') {
+        let error: Error;
+        if (err.code === 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY') {
+            error = new Error(i18n.t('error.sslProxy'));
+        } else {
+            error = err;
+        }
+        if (typeof req.next === 'function') {
+            req.next(error);
+        } else {
+            throw error;
+        }
+    } else {
+        logger.debug(i18n.t('error.noCodeError', { error: JSON.stringify(err, null, 2), request: req.originalUrl }));
+    }
+}
 
 /**
  * Return the SAP API Hub key either provided as environment variable (including .env file) or from the secure store when not running in AppStudio.
@@ -166,7 +172,11 @@ export const PathRewriters = {
                 return newPath;
             };
         } else {
-            return undefined;
+            // Display request path even if it was not rewritten
+            return (path: string) => {
+                log.info(path);
+                return path;
+            };
         }
     }
 };
@@ -210,10 +220,8 @@ export async function enhanceConfigsForDestination(
         if (destination) {
             // in case of a full url destination remove the path defined in the destination from the forwarded call
             if (isFullUrlDestination(destination)) {
-                const destPath = new URL(destination.Host).pathname.replace(/\/$/, '');
-                if (backend.path.startsWith(destPath) && !backend.pathReplace) {
-                    backend.pathReplace = backend.path.replace(destPath, '');
-                }
+                backend.path = new URL(destination.Host).pathname.replace(/\/$/, '');
+                backend.pathReplace = backend.pathReplace ?? '/';
             }
         } else {
             throw new Error();
@@ -237,11 +245,12 @@ export async function enhanceConfigForSystem(
 ): Promise<void> {
     if (oAuthRequired) {
         if (system.serviceKeys) {
-            const provider = createForAbapOnBtp(
-                JSON.parse(system.serviceKeys as string),
-                system.refreshToken,
-                tokenChangedCallback
-            );
+            const provider = createForAbapOnCloud({
+                environment: AbapCloudEnvironment.Standalone,
+                service: system.serviceKeys as ServiceInfo,
+                refreshToken: system.refreshToken,
+                refreshTokenChangedCb: tokenChangedCallback
+            });
             // sending a request to the backend to get cookies
             await provider.getAtoInfo();
             proxyOptions.headers['cookie'] = provider.cookies.toString();
@@ -249,22 +258,15 @@ export async function enhanceConfigForSystem(
             throw new Error('Cannot connect to ABAP Environment on BTP without service keys.');
         }
     } else if (system.authenticationType === AuthenticationType.ReentranceTicket) {
-        throw new Error('Feature comes with https://github.com/SAP/open-ux-tools/pull/485');
-        /*
-        const provider = createForAbapOnBtp(
-            ...
-        );
+        const provider = createForAbapOnCloud({
+            environment: AbapCloudEnvironment.EmbeddedSteampunk,
+            url: system.url
+        });
         // sending a request to the backend to get cookies
         await provider.getAtoInfo();
         proxyOptions.headers['cookie'] = provider.cookies.toString();
-        */
-    } else if (
-        (system.username || process.env.FIORI_TOOLS_USER) &&
-        (system.password || process.env.FIORI_TOOLS_PASSWORD)
-    ) {
-        proxyOptions.auth = `${system.username || process.env.FIORI_TOOLS_USER}:${
-            system.password || process.env.FIORI_TOOLS_PASSWORD
-        }`;
+    } else if (system.username && system.password) {
+        proxyOptions.auth = `${system.username}:${system.password}`;
     }
 }
 
@@ -279,16 +281,27 @@ export async function enhanceConfigForSystem(
 export async function generateProxyMiddlewareOptions(
     backend: BackendConfig,
     options: Options = {},
-    logger: Logger = new ToolsLogger()
+    logger: ToolsLogger = new ToolsLogger()
 ): Promise<Options> {
     // add required options
     const proxyOptions: Options & { headers: object } = {
         headers: {},
         ...ProxyEventHandlers,
+        onError: (
+            err: Error & { code?: string },
+            req: IncomingMessage & { next?: Function; originalUrl?: string },
+            res: ServerResponse,
+            target: string | Partial<Url> | undefined
+        ) => {
+            proxyErrorHandler(err, req, logger, res, target);
+        },
         ...options
     };
     proxyOptions.changeOrigin = true;
     proxyOptions.logProvider = () => logger;
+
+    // always set the target to the url provided in yaml
+    proxyOptions.target = backend.url;
 
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
@@ -300,23 +313,35 @@ export async function generateProxyMiddlewareOptions(
         }
     } else {
         const localBackend = backend as LocalBackendConfig;
-        proxyOptions.target = localBackend.url;
         // check if system credentials are stored in the store
-        const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
-        const system = await systemStore.read(
-            new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
-        );
-        if (system) {
-            await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
-                if (refreshToken) {
-                    logger.info('Updating refresh token for: ' + localBackend.url);
-                    systemStore.write({ ...system, refreshToken });
-                }
-            });
+        try {
+            const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
+            const system = await systemStore.read(
+                new BackendSystemKey({ url: localBackend.url, client: localBackend.client })
+            );
+            if (system) {
+                await enhanceConfigForSystem(proxyOptions, system, backend.scp, (refreshToken?: string) => {
+                    if (refreshToken) {
+                        logger.info('Updating refresh token for: ' + localBackend.url);
+                        systemStore.write({ ...system, refreshToken });
+                    }
+                });
+            }
+        } catch (error) {
+            logger.warn('Accessing the credentials store failed.');
+            logger.debug(error as object);
         }
     }
 
+    if (!proxyOptions.auth && process.env.FIORI_TOOLS_USER && process.env.FIORI_TOOLS_PASSWORD) {
+        proxyOptions.auth = `${process.env.FIORI_TOOLS_USER}:${process.env.FIORI_TOOLS_PASSWORD}`;
+    }
+
     proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
+
+    if (backend.bsp) {
+        await addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);
+    }
 
     if (backend.apiHub) {
         const apiHubKey = await getApiHubKey(logger);
@@ -325,16 +350,16 @@ export async function generateProxyMiddlewareOptions(
         }
     }
 
+    if (!proxyOptions.target) {
+        throw new Error(`Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`);
+    }
+
     backend.proxy = getCorporateProxyServer(backend.proxy);
-    if (backend.proxy && !isHostExcludedFromProxy(proxyOptions.target as string)) {
+    if (backend.proxy && !isHostExcludedFromProxy(proxyOptions.target)) {
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 
-    logger.info(
-        `Backend proxy created for ${proxyOptions.target ? proxyOptions.target : ''} ${
-            backend.path ? backend.path : ''
-        }`
-    );
+    logger.info(`Backend proxy created for ${proxyOptions.target} ${backend.path ? backend.path : ''}`);
     return proxyOptions;
 }
 
@@ -346,6 +371,10 @@ export async function generateProxyMiddlewareOptions(
  * @param logger optional logger instance
  * @returns an instance of http-proxy-middleware
  */
-export async function createProxy(backend: BackendConfig, options?: Options, logger?: Logger): Promise<RequestHandler> {
+export async function createProxy(
+    backend: BackendConfig,
+    options?: Options,
+    logger?: ToolsLogger
+): Promise<RequestHandler> {
     return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, options, logger));
 }

@@ -1,9 +1,13 @@
-import { create, Editor } from 'mem-fs-editor';
+import os from 'os';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
-import { generateCustomAction, CustomAction } from '../../src';
+import { generateCustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
+import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
+import { Placement } from '../../src/common/types';
 
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
@@ -76,9 +80,9 @@ describe('CustomAction', () => {
                 {
                     name,
                     target,
+                    eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction',
                     settings: {
-                        ...settings,
-                        eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction'
+                        ...settings
                     }
                 },
                 fs
@@ -94,9 +98,9 @@ describe('CustomAction', () => {
                 {
                     name,
                     target,
+                    eventHandler: controllerPath,
                     settings: {
-                        ...settings,
-                        eventHandler: controllerPath
+                        ...settings
                     }
                 },
                 fs
@@ -113,9 +117,9 @@ describe('CustomAction', () => {
                     name,
                     folder: 'ext',
                     target,
+                    eventHandler: true,
                     settings: {
-                        ...settings,
-                        eventHandler: true
+                        ...settings
                     }
                 },
                 fs
@@ -141,6 +145,187 @@ describe('CustomAction', () => {
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(join(testDir, 'webapp/ext/myCustomAction/MyCustomAction.js'))).toBeFalsy();
+        });
+
+        const positionTests = [
+            {
+                name: 'Create with anchor',
+                position: {
+                    placement: Placement.Before,
+                    anchor: 'Dummy'
+                }
+            },
+            {
+                name: 'Create without anchor',
+                position: {
+                    placement: Placement.Before
+                }
+            },
+            {
+                name: 'Create without position',
+                position: undefined
+            }
+        ];
+        positionTests.forEach((testCase) => {
+            test(`Test 'position' property. ${testCase.name}`, () => {
+                generateCustomAction(
+                    testDir,
+                    {
+                        name,
+                        target,
+                        eventHandler: 'my.test.App.ext.ExistingHandler.onCustomAction',
+                        settings: {
+                            ...settings,
+                            position: testCase.position
+                        }
+                    },
+                    fs
+                );
+                expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            });
+        });
+
+        const requiresSelectionValues = [undefined, true, false];
+        requiresSelectionValues.forEach((value?: boolean) => {
+            test(`Test property "requiresSelection" with value "${value}"`, () => {
+                generateCustomAction(
+                    testDir,
+                    {
+                        name,
+                        target,
+                        settings: {
+                            ...settings,
+                            requiresSelection: value
+                        }
+                    },
+                    fs
+                );
+                const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action =
+                    manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content']['header'][
+                        'actions'
+                    ][name];
+                // "requiresSelection" property should not be added if it is undefined
+                expect('requiresSelection' in action).toEqual(value === undefined ? false : true);
+                expect(action['requiresSelection']).toEqual(value);
+            });
+        });
+
+        describe('Test property "eventHandler"', () => {
+            const generateCustomActionWithEventHandler = (
+                actionId: string,
+                eventHandler: string | EventHandlerConfiguration,
+                folder?: string
+            ) => {
+                generateCustomAction(
+                    testDir,
+                    {
+                        name: actionId,
+                        target,
+                        folder,
+                        eventHandler,
+                        settings: {
+                            ...settings
+                        }
+                    },
+                    fs
+                );
+            };
+            const getActionByName = (manifest: any, actionId: string) => {
+                return manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content'][
+                    'header'
+                ]['actions'][actionId];
+            };
+
+            test('"eventHandler" is empty "object" - create new file with default function name', () => {
+                generateCustomActionWithEventHandler(name, {});
+
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action = getActionByName(manifest, name);
+                expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.onPress');
+                expect(
+                    fs.read(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))
+                ).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+                const extension = {
+                    fnName: 'DummyOnAction',
+                    fileName: 'dummyAction'
+                };
+                const folder = join('ext', 'custom');
+                generateCustomActionWithEventHandler(name, extension, folder);
+
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action = getActionByName(manifest, name);
+                expect(action['press']).toEqual('my.test.App.ext.custom.dummyAction.DummyOnAction');
+                expect(fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object" - create new file with custom function name', () => {
+                generateCustomActionWithEventHandler(name, {
+                    fnName: 'DummyOnAction'
+                });
+
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action = getActionByName(manifest, name);
+                expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.DummyOnAction');
+                expect(
+                    fs.read(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))
+                ).toMatchSnapshot();
+            });
+
+            test(`"eventHandler" is String - no changes to handler file`, () => {
+                generateCustomActionWithEventHandler(name, 'my.test.App.ext.ExistingHandler.onCustomAction');
+                const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
+                const action = getActionByName(manifest, name);
+                expect(action['press']).toEqual('my.test.App.ext.ExistingHandler.onCustomAction');
+                expect(fs.exists(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))).toBeFalsy();
+            });
+
+            // Test with both position interfaces
+            test.each([
+                [
+                    'position as object',
+                    {
+                        line: 8,
+                        character: 9
+                    }
+                ],
+                ['absolute position', 196 + 8 * os.EOL.length]
+            ])(
+                '"eventHandler" is object. Append new function to existing js file with %s',
+                (_desc: string, position: number | FileContentPosition) => {
+                    const fileName = 'MyExistingAction';
+                    // Create existing file with existing actions
+                    const folder = join('ext', 'fragments');
+                    const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
+                    // Generate handler with single method - content should be updated during generating of custom action
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                    // Create third action - append existing js file
+                    const actionName = 'CustomAction2';
+                    const fnName = 'onHandleSecondAction';
+                    generateCustomActionWithEventHandler(
+                        actionName,
+                        {
+                            fnName,
+                            fileName,
+                            insertScript: {
+                                fragment:
+                                    ',\n        onHandleSecondAction: function() {\n            MessageToast.show("Custom handler invoked.");\n        }',
+                                position
+                            }
+                        },
+                        folder
+                    );
+
+                    const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
+                    const action = getActionByName(manifest, actionName);
+                    expect(action['press']).toEqual(`my.test.App.ext.fragments.${fileName}.${fnName}`);
+                    // Check update js file content
+                    expect(fs.read(existingPath)).toMatchSnapshot();
+                }
+            );
         });
     });
 });

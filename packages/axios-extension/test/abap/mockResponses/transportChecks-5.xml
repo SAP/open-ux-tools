@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<asx:abap version="1.0"
+    xmlns:asx="http://www.sap.com/abapxml">
+    <asx:values>
+        <DATA>
+            <PGMID>R3TR</PGMID>
+            <OBJECT>WAPA</OBJECT>
+            <OBJECTNAME>ZDUMMYEXIST</OBJECTNAME>
+            <OPERATION>I</OPERATION>
+            <DEVCLASS>ZSPD</DEVCLASS>
+            <CTEXT>test</CTEXT>
+            <KORRFLAG>X</KORRFLAG>
+            <AS4USER />
+            <PDEVCLASS>ZDMY</PDEVCLASS>
+            <DLVUNIT>HOME</DLVUNIT>
+            <NAMESPACE>/0CUST/</NAMESPACE>
+            <SUPER_PACKAGE />
+            <RESULT>S</RESULT>
+            <RECORDING />
+            <EXISTING_REQ_ONLY />
+            <MESSAGES />
+            <REQUESTS />
+            <LOCKS>
+                <CTS_OBJECT_LOCK>
+                    <OBJECT_KEY >
+                        <PGMID>R3TR</PGMID>
+                        <OBJECT>WAPA</OBJECT>
+                        <OBJ_NAME>ZDUMMYEXIST</OBJ_NAME>
+                    </OBJECT_KEY>
+                    <LOCK_HOLDER>
+                        <REQ_HEADER>
+                            <TRFUNCTION>K</TRFUNCTION>
+                            <TRSTATUS>D</TRSTATUS>
+                            <TARSYSTEM>DMY</TARSYSTEM>
+                            <AS4USER>TESTUSER</AS4USER>
+                            <AS4DATE>2021-06-29</AS4DATE>
+                            <AS4TIME>18:11:41</AS4TIME>
+                            <AS4TEXT>Fiori tools</AS4TEXT>
+                            <CLIENT>100</CLIENT>
+                            <REPOID />
+                        </REQ_HEADER>
+                        <REQ_ATTRS />
+                        <TASK_HEADERS>
+                            <CTS_TASK_HEADER>
+                                <TRKORR>EC1K900301</TRKORR>
+                                <TRFUNCTION>S</TRFUNCTION>
+                                <TRSTATUS>D</TRSTATUS>
+                                <AS4USER>TESTUSER</AS4USER>
+                                <AS4DATE>2021-07-06</AS4DATE>
+                                <AS4TIME>17:08:22</AS4TIME>
+                                <AS4TEXT>Fiori tools</AS4TEXT>
+                            </CTS_TASK_HEADER>
+                        </TASK_HEADERS>
+                    </LOCK_HOLDER>
+                </CTS_OBJECT_LOCK>
+            </LOCKS>
+            <TADIRDEVC>ZSPD</TADIRDEVC>
+            <URI>/sap/bc/adt/filestore/ui5-bsp/objects/zdummyexist/$create</URI>
+            <CTS_PROJECTS />
+        </DATA>
+    </asx:values>
+</asx:abap>

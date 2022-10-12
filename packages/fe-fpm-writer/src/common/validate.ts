@@ -2,6 +2,7 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
+import { coerce } from 'semver';
 
 /**
  * Validate that the UI5 version requirement is valid.
@@ -9,8 +10,9 @@ import { create } from 'mem-fs-editor';
  * @param ui5Version - optional minimum required UI5 version
  * @returns true if the version is supported otherwise throws an error
  */
-export function validateVersion(ui5Version?: number): boolean {
-    if (ui5Version && ui5Version < 1.84) {
+export function validateVersion(ui5Version?: string): boolean {
+    const minVersion = coerce(ui5Version);
+    if (minVersion && minVersion.minor < 84) {
         throw new Error('SAP Fiori elements for OData v4 is only supported starting with SAPUI5 1.84.');
     }
     return true;
@@ -41,4 +43,14 @@ export function validateBasePath(basePath: string, fs?: Editor): boolean {
     }
 
     return true;
+}
+
+/**
+ * Returns the message property if the error is an instance of `Error` else a string representation of the error.
+ *
+ * @param error {Error | unknown} - the error instance
+ * @returns {string} the error message
+ */
+export function getErrorMessage(error: Error | unknown): string {
+    return error instanceof Error ? error.message : String(error);
 }

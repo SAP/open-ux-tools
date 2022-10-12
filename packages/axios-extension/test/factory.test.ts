@@ -1,9 +1,5 @@
-import {
-    Destination,
-    getDestinationUrlForAppStudio,
-    WebIDEUsage,
-    BAS_DEST_INSTANCE_CRED_HEADER
-} from '@sap-ux/btp-utils';
+import type { Destination } from '@sap-ux/btp-utils';
+import { getDestinationUrlForAppStudio, WebIDEUsage, BAS_DEST_INSTANCE_CRED_HEADER } from '@sap-ux/btp-utils';
 import axios from 'axios';
 import nock from 'nock';
 import { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } from '../src';
@@ -25,12 +21,15 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
-nock.disableNetConnect();
-
 beforeAll(() => {
+    nock.disableNetConnect();
     nock(server).get(`${servicePath}${metadataPath}?sap-client=${client}`).reply(200, expectedMetadata).persist(true);
 });
 
+afterAll(() => {
+    nock.cleanAll();
+    nock.enableNetConnect();
+});
 test('create', async () => {
     const response = await axios.get(`${server}${servicePath}${metadataPath}`, {
         params: { 'sap-client': client }

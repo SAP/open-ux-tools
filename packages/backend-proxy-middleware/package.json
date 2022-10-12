@@ -9,11 +9,12 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Abackend-proxy-middleware"
     },
-    "version": "0.5.1",
+    "version": "0.6.26",
     "license": "Apache-2.0",
+    "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc",
+        "build": "pnpm clean && tsc -p tsconfig-build.json",
         "clean": "rimraf dist",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
@@ -24,7 +25,9 @@
     "files": [
         "LICENSE",
         "dist",
-        "ui5.yaml"
+        "ui5.yaml",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
         "@sap-ux/axios-extension": "workspace:*",
@@ -33,7 +36,6 @@
         "@sap-ux/store": "workspace:*",
         "chalk": "4.1.2",
         "dotenv": "16.0.0",
-        "express": "4.17.2",
         "http-proxy-middleware": "2.0.1",
         "https-proxy-agent": "5.0.0",
         "i18next": "20.3.2",
@@ -41,11 +43,12 @@
     },
     "devDependencies": {
         "@types/express": "4.17.13",
-        "@types/prompts": "2.0.14",
         "@types/http-proxy": "^1.17.5",
+        "@types/prompts": "2.0.14",
+        "@types/supertest": "2.0.12",
+        "express": "4.17.2",
         "nock": "13.2.4",
         "supertest": "6.2.2",
-        "@types/supertest": "2.0.12",
         "yaml": "2.0.0-10"
     },
     "ui5": {
@@ -53,6 +56,6 @@
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     }
 }

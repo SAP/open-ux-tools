@@ -1,0 +1,8 @@
+<<%- macrosNamespace %>:Field
+    id="<%- data.id %>"<% if (data.metaPath) { %>
+    metaPath="<%- data.metaPath %>"<% } %><% if (data.contextPath) { %>
+    contextPath="<%- data.contextPath %>"<% } %><% if (data.formatOptions) { %>
+    formatOptions="<%- data.formatOptions %>"<% } %><% if (data.readOnly) { %>
+    readOnly="<%- data.readOnly %>"<% } %><% if (data.semanticObject) { %>
+    semanticObject="<%- data.semanticObject %>"<% } %>
+/>

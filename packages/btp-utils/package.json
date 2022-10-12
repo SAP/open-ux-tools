@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/btp-utils",
-    "version": "0.9.2",
+    "version": "0.11.2",
     "description": "Library to simplify working with SAP BTP specific features especially in SAP Business Application",
     "repository": {
         "type": "git",
@@ -14,7 +14,7 @@
     "private": false,
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc",
+        "build": "pnpm clean && tsc -p tsconfig-build.json",
         "watch": "tsc --watch",
         "clean": "rimraf dist coverage",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -34,10 +34,12 @@
     },
     "files": [
         "dist",
-        "LICENSE"
+        "LICENSE",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
-        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
+        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     }
 }

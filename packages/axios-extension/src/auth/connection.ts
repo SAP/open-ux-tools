@@ -8,6 +8,8 @@ export enum CSRF {
     RequestHeaderValue = 'Fetch',
     ResponseHeaderName = 'x-csrf-token'
 }
+/** Default connection timeout (milliseconds) */
+export const defaultTimeout = 60 * 1000; // 1 minute
 
 /**
  * Helper class for managing cookies.
@@ -96,7 +98,7 @@ function throwIfHtmlLoginForm(response: AxiosResponse): void {
 }
 
 /**
- * @param response
+ * @param response AxiosResponse
  * @returns true if the contents are determined to be HTML
  */
 function isHtmlResponse(response: AxiosResponse): boolean {
@@ -104,7 +106,7 @@ function isHtmlResponse(response: AxiosResponse): boolean {
 }
 
 /**
- * @param response
+ * @param response AxiosResponse
  * @returns true if we get an HTML login form
  */
 function isHtmlLoginForm(response: AxiosResponse): boolean {
@@ -112,8 +114,8 @@ function isHtmlLoginForm(response: AxiosResponse): boolean {
 }
 
 /**
- * @param contentTypeHeader
- * @param responseData
+ * @param contentTypeHeader contents of Content-Type header (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type)
+ * @param responseData data receievd in HTTP response. This is used to infer the Content-Type, if the header is missing or ambiguous
  * @returns content type
  */
 function getContentType(contentTypeHeader: string | undefined, responseData: any): string {
@@ -145,22 +147,20 @@ export function attachConnectionHandler(provider: ServiceProvider) {
     const oneTimeRespInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
         if (response.status === 401) {
             throw new ConnectionError(response.statusText, response);
+        }
+        // if a redirect to a SAML login page happened try again with disable saml param
+        else if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
+            provider.defaults.params = provider.defaults.params ?? {};
+            provider.defaults.params.saml2 = 'disabled';
+            return provider.request(response.config);
         } else {
-            // if a redirect to a SAML login page happened try again with disable saml param
-            if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
-                provider.defaults.params = provider.defaults.params ?? {};
-                provider.defaults.params.saml2 = 'disabled';
-                return provider.request(response.config);
-            } else {
-                throwIfHtmlLoginForm(response);
-                // remember xsrf token
-                if (response.headers?.[CSRF.ResponseHeaderName]) {
-                    provider.defaults.headers.common[CSRF.RequestHeaderName] =
-                        response.headers[CSRF.ResponseHeaderName];
-                }
-                provider.interceptors.response.eject(oneTimeRespInterceptorId);
-                return response;
+            throwIfHtmlLoginForm(response);
+            // remember xsrf token
+            if (response.headers?.[CSRF.ResponseHeaderName]) {
+                provider.defaults.headers.common[CSRF.RequestHeaderName] = response.headers[CSRF.ResponseHeaderName];
             }
+            provider.interceptors.response.eject(oneTimeRespInterceptorId);
+            return response;
         }
     });
 

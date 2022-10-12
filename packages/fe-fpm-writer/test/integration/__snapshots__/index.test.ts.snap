@@ -1,161 +1,55 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`use FPM with existing apps extend Fiori elements for OData v4 ListReport ObjectPage generateCustomSection in ObjectPage 1`] = `
+exports[`use FPM with existing apps extend UI5 application with FPM generateControllerExtension in ObjectPage 1`] = `
 Object {
-  "../../test-input/basic-lrop/webapp/manifest.json": Object {
-    "contents": "{
-    \\"_version\\": \\"1.32.0\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"v4travel\\",
-        \\"type\\": \\"application\\",
-        \\"i18n\\": \\"i18n/i18n.properties\\",
-        \\"applicationVersion\\": {
-            \\"version\\": \\"1.0.0\\"
-        },
-        \\"title\\": \\"{{appTitle}}\\",
-        \\"description\\": \\"{{appDescription}}\\",
-        \\"dataSources\\": {
-            \\"mainService\\": {
-                \\"uri\\": \\"/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/\\",
-                \\"type\\": \\"OData\\",
-                \\"settings\\": {
-                    \\"annotations\\": [\\"annotation\\"],
-                    \\"odataVersion\\": \\"4.0\\",
-                    \\"localUri\\": \\"localService/metadata.xml\\"
-                }
-            },
-            \\"annotation\\": {
-                \\"type\\": \\"ODataAnnotation\\",
-                \\"uri\\": \\"annotations/annotation.xml\\",
-                \\"settings\\": {
-                    \\"localUri\\": \\"annotations/annotation.xml\\"
-                }
-            }
-        },
-        \\"offline\\": false,
-        \\"resources\\": \\"resources.json\\",
-        \\"sourceTemplate\\": {
-            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
-            \\"version\\": \\"1.0.0\\"
-        }
-    },
-    \\"sap.ui\\": {
-        \\"technology\\": \\"UI5\\",
-        \\"icons\\": {
-            \\"icon\\": \\"\\",
-            \\"favIcon\\": \\"\\",
-            \\"phone\\": \\"\\",
-            \\"phone@2\\": \\"\\",
-            \\"tablet\\": \\"\\",
-            \\"tablet@2\\": \\"\\"
-        },
-        \\"deviceTypes\\": {
-            \\"desktop\\": true,
-            \\"tablet\\": true,
-            \\"phone\\": true
-        }
-    },
-    \\"sap.ui5\\": {
-        \\"resources\\": {
-            \\"js\\": [],
-            \\"css\\": []
-        },
-        \\"dependencies\\": {
-            \\"minUI5Version\\": \\"1.76.0\\",
-            \\"libs\\": {
-                \\"sap.ui.core\\": {},
-                \\"sap.fe.templates\\": {}
-            }
-        },
-        \\"models\\": {
-            \\"i18n\\": {
-                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-                \\"uri\\": \\"i18n/i18n.properties\\"
-            },
-            \\"\\": {
-                \\"dataSource\\": \\"mainService\\",
-                \\"preload\\": true,
-                \\"settings\\": {
-                    \\"synchronizationMode\\": \\"None\\",
-                    \\"operationMode\\": \\"Server\\",
-                    \\"autoExpandSelect\\": true,
-                    \\"earlyRequests\\": true
-                }
-            }
-        },
-        \\"routing\\": {
-            \\"routes\\": [
-                {
-                    \\"pattern\\": \\":?query:\\",
-                    \\"name\\": \\"TravelList\\",
-                    \\"target\\": \\"TravelList\\"
-                },
-                {
-                    \\"pattern\\": \\"Travel({key}):?query:\\",
-                    \\"name\\": \\"TravelObjectPage\\",
-                    \\"target\\": \\"TravelObjectPage\\"
-                }
-            ],
-            \\"targets\\": {
-                \\"TravelList\\": {
-                    \\"type\\": \\"Component\\",
-                    \\"id\\": \\"TravelList\\",
-                    \\"name\\": \\"sap.fe.templates.ListReport\\",
-                    \\"options\\": {
-                        \\"settings\\": {
-                            \\"entitySet\\": \\"Travel\\",
-                            \\"variantManagement\\": \\"Page\\",
-                            \\"navigation\\": {
-                                \\"Travel\\": {
-                                    \\"detail\\": {
-                                        \\"route\\": \\"TravelObjectPage\\"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"TravelObjectPage\\": {
-                    \\"type\\": \\"Component\\",
-                    \\"id\\": \\"TravelObjectPage\\",
-                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
-                    \\"options\\": {
-                        \\"settings\\": {
-                            \\"entitySet\\": \\"Travel\\"
-                        }
-                    }
-                }
-            }
-        },
-        \\"contentDensities\\": {
-            \\"compact\\": true,
-            \\"cozy\\": true
-        }
-    },
-    \\"sap.platform.abap\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"uri\\": \\"\\"
-    },
-    \\"sap.platform.hcp\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"uri\\": \\"\\"
-    },
-    \\"sap.fiori\\": {
-        \\"_version\\": \\"1.1.0\\",
-        \\"registrationIds\\": [],
-        \\"archeType\\": \\"transactional\\"
-    }
-}
-",
-  },
-  "webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
+  "lrop/webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onAppended: function() {
+            window.location.href += '/_Booking';
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/myControllerExtension/MyControllerExtension.controller.js": Object {
+    "contents": "sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExtension) {
+	'use strict';
+
+	return ControllerExtension.extend('v4travel.ext.myControllerExtension.MyControllerExtension', {
+		// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+		override: {
+			/**
+             * Called when a controller is instantiated and its View controls (if available) are already created.
+             * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+             * @memberOf v4travel.ext.myControllerExtension.MyControllerExtension
+             */
+			onInit: function () {
+				// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+				var oModel = this.base.getExtensionAPI().getModel();
+			}
+		}
+	});
+});
+",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/myCustomAction/MyCustomAction.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -163,22 +57,7 @@ Object {
 ",
     "state": "modified",
   },
-  "webapp/ext/myCustomAction/MyCustomAction.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function() {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-",
-    "state": "modified",
-  },
-  "webapp/ext/myCustomPage/MyCustomPage.controller.js": Object {
+  "lrop/webapp/ext/myCustomPage/MyCustomPage.controller.js": Object {
     "contents": "sap.ui.define(
     [
         'sap/fe/core/PageController'
@@ -227,29 +106,29 @@ Object {
 ",
     "state": "modified",
   },
-  "webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
-    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
+  "lrop/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
-    <Page title=\\"MyCustomPage\\">
+    <Page id=\\"MyCustomPage\\" title=\\"MyCustomPage\\">
         <content></content>
     </Page>
 </mvc:View>",
     "state": "modified",
   },
-  "webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
-    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+  "lrop/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "webapp/ext/myCustomSection/MyCustomSection.js": Object {
+  "lrop/webapp/ext/myCustomSection/MyCustomSection.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -257,20 +136,20 @@ Object {
 ",
     "state": "modified",
   },
-  "webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
+  "lrop/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "webapp/ext/newCustomColumn/NewCustomColumn.js": Object {
+  "lrop/webapp/ext/newCustomColumn/NewCustomColumn.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
     'use strict';
 
     return {
-        onPress: function() {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -278,7 +157,28 @@ Object {
 ",
     "state": "modified",
   },
-  "webapp/manifest.json": Object {
+  "lrop/webapp/ext/newCustomView/NewCustomView.controller.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/newCustomView/NewCustomView.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomView/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "lrop/webapp/manifest.json": Object {
     "contents": "{
   \\"_version\\": \\"1.32.0\\",
   \\"sap.app\\": {
@@ -339,7 +239,7 @@ Object {
       \\"css\\": []
     },
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.76.0\\",
+      \\"minUI5Version\\": \\"1.94.0\\",
       \\"libs\\": {
         \\"sap.ui.core\\": {},
         \\"sap.fe.templates\\": {}
@@ -364,30 +264,29 @@ Object {
     \\"routing\\": {
       \\"routes\\": [
         {
+          \\"name\\": \\"TravelListReport\\",
           \\"pattern\\": \\":?query:\\",
-          \\"name\\": \\"TravelList\\",
-          \\"target\\": \\"TravelList\\"
+          \\"target\\": \\"TravelListReport\\"
         },
         {
-          \\"pattern\\": \\"Travel({key}):?query:\\",
           \\"name\\": \\"TravelObjectPage\\",
+          \\"pattern\\": \\"Travel({TravelKey}):?query:\\",
           \\"target\\": \\"TravelObjectPage\\"
         },
         {
           \\"name\\": \\"BookingMyCustomPage\\",
-          \\"pattern\\": \\"Travel({key})/_Booking:?query:\\",
+          \\"pattern\\": \\"Travel({TravelKey})/_Booking:?query:\\",
           \\"target\\": \\"BookingMyCustomPage\\"
         }
       ],
       \\"targets\\": {
-        \\"TravelList\\": {
+        \\"TravelListReport\\": {
           \\"type\\": \\"Component\\",
-          \\"id\\": \\"TravelList\\",
+          \\"id\\": \\"TravelListReport\\",
           \\"name\\": \\"sap.fe.templates.ListReport\\",
           \\"options\\": {
             \\"settings\\": {
               \\"entitySet\\": \\"Travel\\",
-              \\"variantManagement\\": \\"Page\\",
               \\"navigation\\": {
                 \\"Travel\\": {
                   \\"detail\\": {
@@ -420,6 +319,19 @@ Object {
                     }
                   }
                 }
+              },
+              \\"views\\": {
+                \\"paths\\": [
+                  {
+                    \\"key\\": \\"LineItemView\\",
+                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                  },
+                  {
+                    \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                  }
+                ]
               }
             }
           }
@@ -446,6 +358,12 @@ Object {
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My other Action\\"
+                    },
+                    \\"AppendedAction\\": {
+                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onAppended\\",
+                      \\"visible\\": true,
+                      \\"enabled\\": true,
+                      \\"text\\": \\"Navigate to CustomPage (appended action)\\"
                     }
                   }
                 },
@@ -482,6 +400,523 @@ Object {
     \\"contentDensities\\": {
       \\"compact\\": true,
       \\"cozy\\": true
+    },
+    \\"extends\\": {
+      \\"extensions\\": {
+        \\"sap.ui.controllerExtensions\\": {
+          \\"sap.fe.templates.ListReport.ListReportController\\": {
+            \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+          },
+          \\"sap.fe.templates.ObjectPage.ObjectPageController\\": {
+            \\"controllerName\\": \\"v4travel.ext.myControllerExtension.MyControllerExtension\\"
+          }
+        }
+      }
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"_version\\": \\"1.1.0\\",
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "ts/webapp/Component.ts": Object {
+    "contents": "import AppComponent from 'sap/fe/core/AppComponent';
+
+/**
+ * @namespace v4travel
+ */
+export default class Component extends AppComponent {
+
+	public static metadata = {
+		manifest: \\"json\\"
+	};
+}
+",
+    "state": "modified",
+  },
+  "ts/webapp/ext/anotherCustomAction/AnotherCustomAction.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import Context from 'sap/ui/model/odata/v4/Context';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param pageContext the context of the page on which the event was fired
+ */
+export function onPress(this: ExtensionAPI, pageContext: Context) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}
+         
+export function onAppended() {
+	window.location.href += '/_Booking';
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myControllerExtension/MyControllerExtension.controller.ts": Object {
+    "contents": "import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
+import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
+
+/**
+ * Helper to be able to define how to get the extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default interface ControllerExtension {
+        base: {
+            getExtensionAPI(): ExtensionAPI;
+        }
+    }
+}
+
+/**
+ * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
+ */
+export default ControllerExtension.extend('v4travel.ext.myControllerExtension.MyControllerExtension', {
+	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
+	override: {
+		/**
+		 * Called when a controller is instantiated and its View controls (if available) are already created.
+		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+		 * @memberOf v4travel.ext.myControllerExtension.MyControllerExtension
+		 */
+		onInit(this: ControllerExtension) {
+			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
+			const model = this.base.getExtensionAPI().getModel();
+		}
+	}
+});",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomAction/MyCustomAction.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import Context from 'sap/ui/model/odata/v4/Context';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param pageContext the context of the page on which the event was fired
+ */
+export function onPress(this: ExtensionAPI, pageContext: Context) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomPage/MyCustomPage.controller.ts": Object {
+    "contents": "import Controller from 'sap/fe/core/PageController';
+
+/**
+ * @namespace v4travel.ext.myCustomPage.MyCustomPage.controller
+ */
+export default class MyCustomPage extends Controller {
+
+    /**
+     * Called when a controller is instantiated and its View controls (if available) are already created.
+     * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
+     * @memberOf v4travel.ext.myCustomPage.MyCustomPage
+     */
+    // public onInit(): void {
+    //
+    //}
+
+    /**
+     * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
+     * (NOT before the first rendering! onInit() is used for that one!).
+     * @memberOf v4travel.ext.myCustomPage.MyCustomPage
+     */
+    // public  onBeforeRendering(): void {
+    //
+    //  },
+
+    /**
+     * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
+     * This hook is the same one that SAPUI5 controls get after being rendered.
+     * @memberOf v4travel.ext.myCustomPage.MyCustomPage
+     */
+    // public  onAfterRendering(): void {
+    //
+    //  },
+
+    /**
+     * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
+     * @memberOf v4travel.ext.myCustomPage.MyCustomPage
+     */
+    // public onExit(): void {
+    //
+    //  }
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
+    <Page id=\\"MyCustomPage\\" title=\\"MyCustomPage\\">
+        <content></content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomSection/MyCustomSection.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider
+ */
+export function onPress(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/newCustomColumn/NewCustomColumn.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider
+ */
+export function onPress(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/newCustomView/NewCustomView.controller.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider
+ */
+export function onPress(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/newCustomView/NewCustomView.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomView/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/sap.fe.d.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import Routing from 'sap/fe/core/controllerextensions/Routing';
+import EditFlow from 'sap/fe/core/controllerextensions/EditFlow';
+import IntentBasedNavigation from 'sap/fe/core/controllerextensions/IntentBasedNavigation';
+
+/**
+ * Missing public properties (https://ui5.sap.com/#/api/sap.fe.core.ExtensionAPI)
+ */
+interface ExtensionAPIProperties {
+    routing: Routing;
+    editFlow: EditFlow;
+    intentBasedNavigation: IntentBasedNavigation;
+}
+
+/**
+ * Add missing public properties
+ */
+declare module 'sap/fe/core/ExtensionAPI' {
+	export default interface ExtensionAPI extends ExtensionAPIProperties {}
+}
+
+/**
+ * Add missing public properties
+ */
+declare module 'sap/fe/templates/ObjectPage/ExtensionAPI' {
+	export default interface ExtensionAPI extends ExtensionAPIProperties {}
+}
+
+/**
+ * Add missing public properties
+ */
+declare module 'sap/fe/templates/ListReport/ExtensionAPI' {
+	export default interface ExtensionAPI extends ExtensionAPIProperties {}
+}
+
+/**
+ * Enhancing the PageController type to simplify the work with the extension API
+ */
+declare module 'sap/fe/core/PageController' {
+	export default interface PageController {
+		getExtensionAPI() : ExtensionAPI;
+	}
+}
+",
+    "state": "modified",
+  },
+  "ts/webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.32.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"v4travel\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"annotation\\"
+          ],
+          \\"odataVersion\\": \\"4.0\\",
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    },
+    \\"offline\\": false,
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+      \\"version\\": \\"1.0.0\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.94.0\\",
+      \\"libs\\": {
+        \\"sap.ui.core\\": {},
+        \\"sap.fe.templates\\": {}
+      }
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"synchronizationMode\\": \\"None\\",
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      }
+    },
+    \\"routing\\": {
+      \\"routes\\": [
+        {
+          \\"name\\": \\"TravelListReport\\",
+          \\"pattern\\": \\":?query:\\",
+          \\"target\\": \\"TravelListReport\\"
+        },
+        {
+          \\"name\\": \\"TravelObjectPage\\",
+          \\"pattern\\": \\"Travel({TravelKey}):?query:\\",
+          \\"target\\": \\"TravelObjectPage\\"
+        },
+        {
+          \\"name\\": \\"BookingMyCustomPage\\",
+          \\"pattern\\": \\"Travel({TravelKey})/_Booking:?query:\\",
+          \\"target\\": \\"BookingMyCustomPage\\"
+        }
+      ],
+      \\"targets\\": {
+        \\"TravelListReport\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelListReport\\",
+          \\"name\\": \\"sap.fe.templates.ListReport\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Travel\\",
+              \\"navigation\\": {
+                \\"Travel\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"TravelObjectPage\\"
+                  }
+                }
+              },
+              \\"controlConfiguration\\": {
+                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                  \\"columns\\": {
+                    \\"NewCustomColumn\\": {
+                      \\"header\\": \\"Custom Price and Currency\\",
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DataField::TravelID\\"
+                      },
+                      \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
+                      \\"properties\\": [
+                        \\"TotalPrice\\",
+                        \\"CurrencyCode\\"
+                      ]
+                    }
+                  },
+                  \\"actions\\": {
+                    \\"MyCustomAction\\": {
+                      \\"press\\": \\"v4travel.ext.myCustomAction.MyCustomAction.onPress\\",
+                      \\"visible\\": true,
+                      \\"enabled\\": true,
+                      \\"text\\": \\"My Custom Action\\"
+                    }
+                  }
+                }
+              },
+              \\"views\\": {
+                \\"paths\\": [
+                  {
+                    \\"key\\": \\"LineItemView\\",
+                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                  },
+                  {
+                    \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        \\"TravelObjectPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"TravelObjectPage\\",
+          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"entitySet\\": \\"Travel\\",
+              \\"navigation\\": {
+                \\"_Booking\\": {
+                  \\"detail\\": {
+                    \\"route\\": \\"BookingMyCustomPage\\"
+                  }
+                }
+              },
+              \\"content\\": {
+                \\"header\\": {
+                  \\"actions\\": {
+                    \\"AnotherCustomAction\\": {
+                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onPress\\",
+                      \\"visible\\": true,
+                      \\"enabled\\": true,
+                      \\"text\\": \\"My other Action\\"
+                    },
+                    \\"AppendedAction\\": {
+                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onAppended\\",
+                      \\"visible\\": true,
+                      \\"enabled\\": true,
+                      \\"text\\": \\"Navigate to CustomPage (appended action)\\"
+                    }
+                  }
+                },
+                \\"body\\": {
+                  \\"sections\\": {
+                    \\"MyCustomSection\\": {
+                      \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyFacet\\"
+                      },
+                      \\"title\\": \\"My Custom Section\\"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        \\"BookingMyCustomPage\\": {
+          \\"type\\": \\"Component\\",
+          \\"id\\": \\"BookingMyCustomPage\\",
+          \\"name\\": \\"sap.fe.core.fpm\\",
+          \\"options\\": {
+            \\"settings\\": {
+              \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\",
+              \\"entitySet\\": \\"Booking\\",
+              \\"navigation\\": {}
+            }
+          }
+        }
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"extends\\": {
+      \\"extensions\\": {
+        \\"sap.ui.controllerExtensions\\": {
+          \\"sap.fe.templates.ListReport.ListReportController\\": {
+            \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+          },
+          \\"sap.fe.templates.ObjectPage.ObjectPageController\\": {
+            \\"controllerName\\": \\"v4travel.ext.myControllerExtension.MyControllerExtension\\"
+          }
+        }
+      }
     }
   },
   \\"sap.platform.abap\\": {

@@ -30,6 +30,25 @@ export const abapUrlReplaceMap = new Map([
     [/-api\.saps4hanacloud\.cn/, '.saps4hanacloud.cn']
 ]);
 
+const xmlReplaceMap = {
+    '&': '&amp;',
+    '"': '&quot;',
+    "'": '&apos;',
+    '<': '&lt;',
+    '>': '&gt;'
+};
+const xmlReplaceRegex = /[<>&"']/g;
+
+/**
+ * Escape invalid characters for XML values.
+ *
+ * @param xmlValue xml string
+ * @returns escaped xml value
+ */
+function encodeXmlValue(xmlValue: string): string {
+    return xmlValue.replace(xmlReplaceRegex, (c) => xmlReplaceMap[c]);
+}
+
 /**
  * Extension of the generic OData client simplifying the consumption of the UI5 repository service
  */
@@ -166,21 +185,22 @@ export class Ui5AbapRepositoryService extends ODataService {
     protected createPayload(archive: string, name: string, description: string, abapPackage: string): string {
         const base64Data = readFileSync(archive, { encoding: 'base64' });
         const time = new Date().toISOString();
+        const escapedName = encodeXmlValue(name);
         return (
             `<entry xmlns="http://www.w3.org/2005/Atom"` +
             `       xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"` +
             `       xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"` +
             `       xml:base="${this.defaults.baseURL}">` +
-            `  <id>${this.defaults.baseURL}/Repositories('${name}')</id>` +
-            `  <title type="text">Repositories('${name}')</title>` +
+            `  <id>${this.defaults.baseURL}/Repositories('${escapedName}')</id>` +
+            `  <title type="text">Repositories('${escapedName}')</title>` +
             `  <updated>${time}</updated>` +
             `  <category term="/UI5/ABAP_REPOSITORY_SRV.Repository" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>` +
-            `  <link href="Repositories('${name}')" rel="edit" title="Repository"/>` +
+            `  <link href="Repositories('${escapedName}')" rel="edit" title="Repository"/>` +
             `  <content type="application/xml">` +
             `    <m:properties>` +
-            `      <d:Name>${name}</d:Name>` +
+            `      <d:Name>${escapedName}</d:Name>` +
             `      <d:Package>${abapPackage?.toUpperCase()}</d:Package>` +
-            `      <d:Description>${description}</d:Description>` +
+            `      <d:Description>${encodeXmlValue(description)}</d:Description>` +
             `      <d:ZipArchive>${base64Data}</d:ZipArchive>` +
             `      <d:Info/>` +
             `    </m:properties>` +
@@ -270,8 +290,8 @@ export class Ui5AbapRepositoryService extends ODataService {
      * Log errors more user friendly if it is a standard Gateway error.
      *
      * @param e error thrown by Axios after sending a request
-     * @param e.error
-     * @param e.host
+     * @param e.error error from Axios
+     * @param e.host hostname
      */
     protected logError({ error, host }: { error: AxiosError; host?: string }): void {
         this.log.error(error.message);

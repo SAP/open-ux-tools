@@ -1,5 +1,132 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.6
+
+### Patch Changes
+
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/ui5-config@0.15.2
+
+## 0.17.5
+
+### Patch Changes
+
+-   e3e1275: Replacing json-merger with lodash.mergewith internally
+
+## 0.17.4
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.1
+
+## 0.17.3
+
+### Patch Changes
+
+-   0fc1499: Code quality improvements but no functionality change
+
+## 0.17.2
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+
+## 0.17.1
+
+### Patch Changes
+
+-   d0b4660: Dont fail if unknown AppOptions are provided
+
+## 0.17.0
+
+### Minor Changes
+
+-   83a7a1a: Enhancements to detect if a project is supporting typescript or not
+
+### Patch Changes
+
+-   Updated dependencies [83a7a1a]
+    -   @sap-ux/ui5-config@0.15.0
+
+## 0.16.1
+
+### Patch Changes
+
+-   b8d5315: Issues with typescript templates when testing the integration into SAP Fiori tools in BAS
+
+## 0.16.0
+
+### Minor Changes
+
+-   4fb53ce: Fix sonar warnings
+
+## 0.15.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+
+## 0.15.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+## 0.14.6
+
+### Patch Changes
+
+-   Updated dependencies [b6d0c67]
+    -   @sap-ux/ui5-config@0.14.5
+
+## 0.14.5
+
+### Patch Changes
+
+-   238f401: Fix: corrected minVersion calculation and handling of sapux setting
+
+## 0.14.4
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/ui5-config@0.14.4
+
+## 0.14.3
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/ui5-config@0.14.3
+
+## 0.14.2
+
+### Patch Changes
+
+-   Updated dependencies [7c4a4df]
+    -   @sap-ux/ui5-config@0.14.2
+
+## 0.14.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/ui5-config@0.14.1
+
+## 0.14.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/ui5-config@0.14.0
+
 ## 0.13.1
 
 ### Patch Changes

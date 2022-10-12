@@ -1,5 +1,69 @@
 # @sap-ux/ui5-config
 
+## 0.15.2
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+
+## 0.15.1
+
+### Patch Changes
+
+-   Updated dependencies [86fc1cd]
+    -   @sap-ux/yaml@0.12.3
+
+## 0.15.0
+
+### Minor Changes
+
+-   83a7a1a: Enhancements to detect if a project is supporting typescript or not
+
+## 0.14.5
+
+### Patch Changes
+
+-   b6d0c67: Replaced used mockserver middleware
+
+## 0.14.4
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+
+## 0.14.3
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/yaml@0.12.2
+
+## 0.14.2
+
+### Patch Changes
+
+-   7c4a4df: trim themelib theme names
+
+## 0.14.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/yaml@0.12.1
+
+## 0.14.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/yaml@0.12.0
+
 ## 0.13.3
 
 ### Patch Changes

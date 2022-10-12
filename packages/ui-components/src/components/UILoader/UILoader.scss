@@ -1,0 +1,32 @@
+@import '../../styles/ui-components.scss';
+
+.uiLoaderXLarge {
+    .ms-Spinner-circle {
+        width: 50px;
+        height: 50px;
+    }
+}
+.uiLoaderXSmall {
+    .ms-Spinner-circle {
+        border-width: 1px;
+        width: 12px;
+        height: 12px;
+    }
+}
+
+.ui-loader {
+    &--delayed {
+        opacity: 0;
+        animation: 1s ease-in 0.3s normal forwards 1 ui-loader-fade-in;
+        z-index: 1;
+    }
+}
+
+@keyframes ui-loader-fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

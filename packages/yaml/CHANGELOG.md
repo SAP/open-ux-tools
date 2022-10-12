@@ -1,5 +1,29 @@
 # @sap-ux/yaml
 
+## 0.12.3
+
+### Patch Changes
+
+-   86fc1cd: Fix lint warnings
+
+## 0.12.2
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+
+## 0.12.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+
+## 0.12.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
 ## 0.11.5
 
 ### Patch Changes

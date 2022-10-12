@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig } from 'axios';
-import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash/cloneDeep';
 import type { Destination } from '@sap-ux/btp-utils';
 import {
     getDestinationUrlForAppStudio,
@@ -9,11 +9,17 @@ import {
 } from '@sap-ux/btp-utils';
 import { Agent as HttpsAgent } from 'https';
 import type { ServiceInfo, RefreshTokenChanged } from './auth';
-import { attachConnectionHandler, attachBasicAuthInterceptor, attachUaaAuthInterceptor } from './auth';
+import {
+    attachConnectionHandler,
+    attachBasicAuthInterceptor,
+    attachUaaAuthInterceptor,
+    attachReentranceTicketAuthInterceptor
+} from './auth';
 import type { ProviderConfiguration } from './base/service-provider';
 import { ServiceProvider } from './base/service-provider';
 import type { ODataService } from './base/odata-service';
 import { AbapServiceProvider } from './abap';
+import { inspect } from 'util';
 
 type Class<T> = new (...args: any[]) => T;
 
@@ -38,8 +44,7 @@ function createInstance<T extends ServiceProvider>(
     const instance = new ProviderType(providerConfig);
     instance.defaults.headers = instance.defaults.headers ?? {
         common: {},
-        // eslint-disable-next-line quote-props
-        delete: {},
+        'delete': {},
         put: {},
         get: {},
         post: {},
@@ -51,6 +56,11 @@ function createInstance<T extends ServiceProvider>(
         attachBasicAuthInterceptor(instance);
     }
 
+    if (config.cookies) {
+        config.cookies.split(';').forEach((singleCookieStr: string) => {
+            instance.cookies.addCookie(singleCookieStr.trim());
+        });
+    }
     return instance;
 }
 
@@ -80,42 +90,104 @@ export function createForAbap(config: AxiosRequestConfig & Partial<ProviderConfi
     return createInstance(AbapServiceProvider, config);
 }
 
+/** Supported ABAP environments on the cloud */
+export enum AbapCloudEnvironment {
+    Standalone = 'Standalone',
+    EmbeddedSteampunk = 'EmbeddedSteampunk'
+}
+
+/** Cloud Foundry OAuth 2.0 options */
+export interface CFAOauthOptions {
+    service: ServiceInfo;
+    refreshToken?: string;
+    refreshTokenChangedCb?: RefreshTokenChanged;
+}
+
+export interface ReentranceTicketOptions {
+    /** Backend API hostname */
+    url: string;
+}
+
+/** Options for an ABAP Standalone Cloud system  (ABAP on BTP) */
+export interface AbapCloudStandaloneOptions extends CFAOauthOptions {
+    environment: AbapCloudEnvironment.Standalone;
+}
+
+/** Options for an ABAP Embedded Steampunk system */
+export interface AbapEmbeddedSteampunkOptions extends ReentranceTicketOptions {
+    environment: AbapCloudEnvironment.EmbeddedSteampunk;
+}
+
+/** Discriminated union of supported environments - {@link AbapCloudStandaloneOptions} and {@link AbapEmbeddedSteampunkOptions} */
+type AbapCloudOptions = AbapCloudStandaloneOptions | AbapEmbeddedSteampunkOptions;
+
 /**
- * Create an instance of an ABAP service provider for an ABAP environment on SAP BTP.
+ * Create an instance of an ABAP service provider for a Cloud ABAP system.
  *
- * @param service ABAP environment service
- * @param refreshToken optional refresh token
- * @param refreshTokenChangedCb option callback for refresh token updates
- * @returns instance of an ABAP service provider
+ * @param options {@link AbapCloudOptions}
+ * @returns instance of an {@link AbapServiceProvider}
  */
-export function createForAbapOnBtp(
-    service: ServiceInfo,
-    refreshToken?: string,
-    refreshTokenChangedCb?: RefreshTokenChanged
-): AbapServiceProvider {
-    const provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
-        baseURL: service.url
-    });
-    attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
+export function createForAbapOnCloud(options: AbapCloudOptions & Partial<ProviderConfiguration>): AbapServiceProvider {
+    let provider: AbapServiceProvider;
+
+    switch (options.environment) {
+        case AbapCloudEnvironment.Standalone: {
+            const { service, refreshToken, refreshTokenChangedCb, cookies, ...config } = options;
+            provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
+                baseURL: service.url,
+                cookies,
+                ...config
+            });
+            if (!cookies) {
+                attachUaaAuthInterceptor(provider, service, refreshToken, refreshTokenChangedCb);
+            }
+            break;
+        }
+        case AbapCloudEnvironment.EmbeddedSteampunk: {
+            const { url, cookies, ...config } = options;
+            provider = createInstance<AbapServiceProvider>(AbapServiceProvider, {
+                baseURL: url,
+                ...config
+            });
+            if (!cookies) {
+                attachReentranceTicketAuthInterceptor({ provider });
+            }
+            break;
+        }
+        default:
+            const opts: never = options;
+            throw new Error(`Unknown environment type supplied: ${inspect(opts)}`);
+    }
     return provider;
 }
 
 /**
+ * To create a destination provider only the destination name is absolutely required.
+ */
+export type MinimalDestinationConfig = Pick<Destination, 'Name'> & Partial<Destination>;
+
+/**
  * Create an instance of a service provider for the given destination.
  *
- * @param config axios config with additional extension specific properties
+ * @param options axios config with additional extension specific properties
  * @param destination destination config
  * @param destinationServiceInstance optional id of a destination service instance providing the destination
  * @returns instance of a service provider
  */
 export function createForDestination(
-    config: AxiosRequestConfig,
-    destination: Destination,
+    options: AxiosRequestConfig & Partial<ProviderConfiguration>,
+    destination: MinimalDestinationConfig,
     destinationServiceInstance?: string
 ): ServiceProvider {
-    const providerConfig: AxiosRequestConfig = {
+    const { cookies, ...config } = options;
+
+    const providerConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         ...config,
-        baseURL: getDestinationUrlForAppStudio(destination.Name, new URL(destination.Host).pathname)
+        baseURL: getDestinationUrlForAppStudio(
+            destination.Name,
+            destination.Host ? new URL(destination.Host).pathname : undefined
+        ),
+        cookies: cookies
     };
 
     // SAML in AppStudio is not yet supported

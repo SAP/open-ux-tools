@@ -1,0 +1,23 @@
+$combobox-list-option-highlighted-color: var(--vscode-editorSuggestWidget-highlightForeground);
+// Two vars because one exists in VSCode Insiders only so far - it can be removed to single var when it will be officially released
+$combobox-list-option-selected-highlighted-color: var(
+    --vscode-editorSuggestWidget-focusHighlightForeground,
+    var(--vscode-list-focusHighlightForeground)
+);
+.ts-Menu-option {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    &--highlighted {
+        color: $combobox-list-option-highlighted-color;
+        font-weight: bold;
+    }
+}
+
+.ts-ComboBox--selected,
+.ts-ContextualMenu .ms-ContextualMenu-item > .ms-ContextualMenu-link:focus,
+.ts-ContextualMenu .ms-ContextualMenu-item > div:focus {
+    .ts-Menu-option--highlighted {
+        color: $combobox-list-option-selected-highlighted-color;
+    }
+}

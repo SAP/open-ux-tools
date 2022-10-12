@@ -1,8 +1,11 @@
-import { create, Editor } from 'mem-fs-editor';
+import os from 'os';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomSection, getManifestRoot } from '../../src/section';
-import { CustomSection } from '../../src/section/types';
+import type { CustomSection } from '../../src/section/types';
+import type { EventHandlerConfiguration } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
 
@@ -12,19 +15,19 @@ describe('CustomSection', () => {
     describe('getTemplateRoot', () => {
         const root = join(__dirname, '../../templates');
         const testInput = [
-            { version: 1.9, expected: join(root, 'section', '1.86') },
-            { version: 1.96, expected: join(root, 'section', '1.86') },
-            { version: 1.84, expected: join(root, 'section', '1.85') },
+            { version: '1.100', expected: join(root, 'section', '1.86') },
+            { version: '1.96', expected: join(root, 'section', '1.86') },
+            { version: '1.84', expected: join(root, 'section', '1.85') },
             { version: undefined, expected: join(root, 'section', '1.86') },
-            { version: 1.85, expected: join(root, 'section', '1.85') },
-            { version: 1.86, expected: join(root, 'section', '1.86') }
+            { version: '1.85', expected: join(root, 'section', '1.85') },
+            { version: '1.86', expected: join(root, 'section', '1.86') }
         ];
         test.each(testInput)('get root path of template', ({ version, expected }) => {
-            expect(getManifestRoot(root, version)).toEqual(expected);
+            expect(getManifestRoot(version)).toEqual(expected);
         });
         test('invalid version', () => {
             try {
-                getManifestRoot(root, 1.8);
+                getManifestRoot('1.8');
                 expect(true).toBeFalsy();
             } catch (error) {
                 expect(error).toBeDefined();
@@ -43,12 +46,7 @@ describe('CustomSection', () => {
                 anchor: 'DummyFacet'
             }
         };
-        const expectedFragmentPath = join(
-            testDir,
-            'webapp',
-            customSection.folder!,
-            `${customSection.name}.fragment.xml`
-        );
+        const expectedFragmentPath = join(testDir, `webapp/${customSection.folder}/${customSection.name}.fragment.xml`);
         beforeEach(() => {
             fs = create(createStorage());
             fs.delete(testDir);
@@ -139,9 +137,7 @@ describe('CustomSection', () => {
             };
             const fragmentPath = join(
                 testDir,
-                'webapp',
-                testCustomSection.folder!,
-                `${testCustomSection.name}.fragment.xml`
+                `webapp/${testCustomSection.folder}/${testCustomSection.name}.fragment.xml`
             );
             generateCustomSection(testDir, { ...testCustomSection }, fs);
             const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
@@ -152,41 +148,118 @@ describe('CustomSection', () => {
             expect(fs.read(fragmentPath)).toMatchSnapshot();
         });
 
-        const testVersions = [1.9, 1.85, 1.84, 1.86, 1.98];
-        for (const ui5Version of testVersions) {
-            test(`Versions ${ui5Version}, with handler, all properties`, () => {
-                const testCustomSection: CustomSection = {
-                    ...customSection,
-                    eventHandler: true,
-                    ui5Version
-                };
-                generateCustomSection(testDir, { ...testCustomSection }, fs);
-                const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+        const testVersions = ['1.85', '1.84', '1.86', '1.89', '1.90', '1.98'];
+        test.each(testVersions)('Versions %s, with handler, all properties', (minUI5Version) => {
+            const testCustomSection: CustomSection = {
+                ...customSection,
+                eventHandler: true,
+                minUI5Version
+            };
+            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
-                const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
-                expect(settings.content).toMatchSnapshot();
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.content).toMatchSnapshot();
 
-                expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
-                expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
-            });
-        }
+            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+            expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+        });
 
         const folderVariants = ['extensions/custom', 'extensions\\custom'];
-        for (const folderVariant of folderVariants) {
-            test(`Existing folder variations - ${folderVariant}`, () => {
-                const testCustomSection = JSON.parse(JSON.stringify(customSection));
-                testCustomSection.folder = folderVariant;
-                generateCustomSection(testDir, { ...testCustomSection }, fs);
-                const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+        test.each(folderVariants)('Existing folder variations - %s', (folderVariant) => {
+            const testCustomSection = JSON.parse(JSON.stringify(customSection));
+            testCustomSection.folder = folderVariant;
+            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
-                const section =
-                    updatedManifest['sap.ui5']['routing']['targets'][testCustomSection.target]['options']['settings'][
-                        'content'
-                    ]['body']['sections'][testCustomSection.name];
-                expect(section.template).toEqual(
-                    `sapux.fe.fpm.writer.test.extensions.custom.${testCustomSection.name}`
-                );
+            const section =
+                updatedManifest['sap.ui5']['routing']['targets'][testCustomSection.target]['options']['settings'][
+                    'content'
+                ]['body']['sections'][testCustomSection.name];
+            expect(section.template).toEqual(`sapux.fe.fpm.writer.test.extensions.custom.${testCustomSection.name}`);
+        });
+
+        describe('Test property "eventHandler"', () => {
+            const generateCustomSectionWithEventHandler = (
+                sectionId: string,
+                eventHandler: string | EventHandlerConfiguration,
+                folder?: string
+            ) => {
+                generateCustomSection(testDir, { ...customSection, name: sectionId, folder, eventHandler }, fs);
+            };
+
+            test('"eventHandler" is empty "object" - create new file with default function name', () => {
+                const id = customSection.name;
+                generateCustomSectionWithEventHandler(id, {}, customSection.folder);
+                const xmlPath = join(testDir, `webapp/${customSection.folder}/${id}.fragment.xml`);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             });
-        }
+
+            test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+                const extension = {
+                    fnName: 'DummyOnAction',
+                    fileName: 'dummyAction'
+                };
+                const id = customSection.name;
+                generateCustomSectionWithEventHandler(id, extension, customSection.folder);
+                const fragmentName = `${id}.fragment.xml`;
+                const xmlPath = join(testDir, `webapp/${customSection.folder}/${fragmentName}`);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.js`))).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object" - create new file with custom function name', () => {
+                const extension = {
+                    fnName: 'DummyOnAction'
+                };
+                const id = customSection.name;
+                generateCustomSectionWithEventHandler(id, extension, customSection.folder);
+                const xmlPath = join(testDir, `webapp/${customSection.folder}/${id}.fragment.xml`);
+                expect(fs.read(xmlPath)).toMatchSnapshot();
+                expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            });
+
+            const folder = join('extensions', 'custom');
+            const fileName = 'MyExistingAction';
+            const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
+
+            const fnName = 'onHandleSecondAction';
+            const id = customSection.name;
+            const positions = [
+                {
+                    name: 'position as object',
+                    position: {
+                        line: 8,
+                        character: 9
+                    }
+                },
+                {
+                    name: 'absolute position',
+                    position: 196 + 8 * os.EOL.length
+                }
+            ];
+            test.each(positions)(
+                '"eventHandler" is object. Append new function to existing js file with $name',
+                ({ position }) => {
+                    const extension = {
+                        fnName,
+                        fileName,
+                        insertScript: {
+                            fragment: `,\n        ${fnName}: function() {\n            MessageToast.show("Custom handler invoked.");\n        }`,
+                            position
+                        }
+                    };
+                    // Generate handler with single method - content should be updated during generating of custom section
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+
+                    generateCustomSectionWithEventHandler(id, extension, folder);
+                    const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);
+                    expect(fs.read(xmlPath)).toMatchSnapshot();
+                    // Check update js file content
+                    expect(fs.read(existingPath)).toMatchSnapshot();
+                }
+            );
+        });
     });
 });

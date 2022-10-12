@@ -1,9 +1,10 @@
-import { FreestyleApp, generate, TemplateType } from '../src';
+import type { FreestyleApp } from '../src';
+import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { BasicAppSettings } from '../src/types';
+import type { BasicAppSettings } from '../src/types';
 
 const TEST_NAME = 'basicTemplate';
 
@@ -35,7 +36,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             description: 'A Fiori application.'
         },
         ui5: {
-            version: '1.78.16',
+            version: '1.78.11',
             descriptorVersion: '1.22.0',
             ui5Libs: [
                 'sap.f',
@@ -58,7 +59,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         service: {
             path: '/sap/opu/odata/',
             url: 'http://localhost',
-            version: OdataVersion.v2
+            version: OdataVersion.v2,
+            metadata: '<metadata />'
         }
     };
 
@@ -92,6 +94,17 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     sourceTemplate: {
                         toolsId: 'testToolsId:abcd1234'
                     }
+                }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_typescript',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    loadReuseLibs: false,
+                    typescript: true
                 }
             },
             settings: {}
@@ -169,10 +182,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             const fs = await generate(testPath, freestyleApp);
             const manifest = { json: fs.readJSON(join(testPath, 'webapp', 'manifest.json')) as any };
             expect(manifest.json['sap.ui5'].rootView.viewName.startsWith(freestyleApp.app.id)).toBe(true);
+            expect(manifest.json['sap.ui5'].routing.routes[0].pattern).toBe(':?query:');
             expect(
                 [
                     manifest.json['sap.ui5'].routing.routes[0].name,
-                    manifest.json['sap.ui5'].routing.routes[0].pattern,
                     manifest.json['sap.ui5'].routing.routes[0].target[0],
                     manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewId,
                     manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewName

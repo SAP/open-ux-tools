@@ -1,0 +1,74 @@
+.ui-toggle-group-option {
+    height: 22px;
+    width: 22px;
+    border-radius: 1px;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 18px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    color: var(--vscode-foreground);
+    border: none;
+    background-color: transparent;
+    position: relative;
+
+    &:not(:last-child) {
+        margin: 0 3px 0 0;
+    }
+    &:hover {
+        cursor: pointer;
+        background-color: var(--vscode-menubar-selectionBackground);
+        outline: 1px dashed var(--vscode-contrastActiveBorder);
+    }
+    &:focus {
+        border-radius: 0;
+        outline: transparent;
+    }
+    &--focused {
+        &:focus-visible {
+            &::after {
+                content: '';
+                position: absolute;
+                border: none;
+                z-index: 1;
+                outline: 1px solid var(--vscode-contrastActiveBorder, var(--vscode-button-background));
+                inset: -1px;
+            }
+        }
+    }
+    &--selected {
+        background-color: var(--vscode-button-background);
+        color: var(--vscode-button-foreground);
+        outline: 1px solid var(--vscode-contrastActiveBorder);
+
+        &:hover {
+            background-color: var(--vscode-button-hoverBackground);
+            outline: 1px dashed var(--vscode-contrastActiveBorder);
+        }
+
+        .ui-toggle-group-option-content-icon {
+            svg > path,
+            svg > rect {
+                fill: var(--vscode-button-foreground);
+            }
+        }
+    }
+
+    &--disabled {
+        opacity: 0.5;
+        background-color: transparent;
+
+        &:hover {
+            background-color: transparent;
+            cursor: initial;
+        }
+    }
+    &-content {
+        &-icon {
+            display: flex;
+        }
+    }
+}

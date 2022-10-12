@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Building Blocks Generate with just ID and xml view without macros namespace generate chart building block: generate-chart-with-id-no-macros-ns 1`] = `
+Object {
+  "generate-chart-with-id-no-macros-ns/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Chart id=\\"testChart\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-chart-with-id-no-macros-ns/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with just ID and xml view without macros namespace generate field building block: generate-field-with-id-no-macros-ns 1`] = `
+Object {
+  "generate-field-with-id-no-macros-ns/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Field id=\\"testField\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-field-with-id-no-macros-ns/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with just ID and xml view without macros namespace generate filter-bar building block: generate-filter-bar-with-id-no-macros-ns 1`] = `
+Object {
+  "generate-filter-bar-with-id-no-macros-ns/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-filter-bar-with-id-no-macros-ns/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with just ID generate chart building block: generate-chart-with-id 1`] = `
+Object {
+  "generate-chart-with-id/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Chart id=\\"testChart\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-chart-with-id/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with just ID generate field building block: generate-field-with-id 1`] = `
+Object {
+  "generate-field-with-id/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Field id=\\"testField\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-field-with-id/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with just ID generate filter-bar building block: generate-filter-bar-with-id 1`] = `
+Object {
+  "generate-filter-bar-with-id/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-filter-bar-with-id/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with optional parameters generate chart building block: generate-chart-with-optional-params 1`] = `
+Object {
+  "generate-chart-with-optional-params/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Chart id=\\"testChart\\" metaPath=\\"testMetaPath\\" contextPath=\\"testContextPath\\" filterBar=\\"testFilterBar\\" personalization=\\"testPersonalization\\" selectionMode=\\"MULTIPLE\\" selectionChange=\\"testOnSelectionChange\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-chart-with-optional-params/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with optional parameters generate field building block: generate-field-with-optional-params 1`] = `
+Object {
+  "generate-field-with-optional-params/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Field id=\\"testField\\" metaPath=\\"testMetaPath\\" contextPath=\\"testContextPath\\" formatOptions=\\"{'displayMode':'Value'}\\" readOnly=\\"true\\" semanticObject=\\"testSemanticObject\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-field-with-optional-params/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with optional parameters generate filter-bar building block: generate-filter-bar-with-optional-params 1`] = `
+Object {
+  "generate-filter-bar-with-optional-params/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"testMetaPath\\" contextPath=\\"testContextPath\\" search=\\"testOnSearch\\" filterChanged=\\"testOnFilterChanged\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-filter-bar-with-optional-params/webapp/manifest.json": Object {
+    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "state": "modified",
+  },
+}
+`;

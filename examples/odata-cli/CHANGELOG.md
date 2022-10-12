@@ -1,5 +1,155 @@
 # @sap-ux/odata-cli
 
+## 0.10.16
+
+### Patch Changes
+
+-   Updated dependencies [9820cef]
+    -   @sap-ux/axios-extension@0.10.2
+
+## 0.10.15
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/axios-extension@0.10.1
+    -   @sap-ux/btp-utils@0.11.2
+    -   @sap-ux/logger@0.3.1
+
+## 0.10.14
+
+### Patch Changes
+
+-   Updated dependencies [8778cbd]
+    -   @sap-ux/axios-extension@0.10.0
+
+## 0.10.13
+
+### Patch Changes
+
+-   Updated dependencies [fac7a5a]
+    -   @sap-ux/axios-extension@0.9.8
+
+## 0.10.12
+
+### Patch Changes
+
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/axios-extension@0.9.7
+    -   @sap-ux/btp-utils@0.11.1
+
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [12e4686]
+    -   @sap-ux/axios-extension@0.9.6
+
+## 0.10.10
+
+### Patch Changes
+
+-   Updated dependencies [bc4cb3a]
+    -   @sap-ux/btp-utils@0.11.0
+    -   @sap-ux/logger@0.3.0
+    -   @sap-ux/axios-extension@0.9.5
+
+## 0.10.9
+
+### Patch Changes
+
+-   Updated dependencies [2896b77]
+    -   @sap-ux/axios-extension@0.9.4
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [4342e1a]
+    -   @sap-ux/axios-extension@0.9.3
+
+## 0.10.7
+
+### Patch Changes
+
+-   Updated dependencies [d7b3e4f]
+    -   @sap-ux/axios-extension@0.9.2
+
+## 0.10.6
+
+### Patch Changes
+
+-   Updated dependencies [5710cfa]
+    -   @sap-ux/btp-utils@0.10.4
+    -   @sap-ux/axios-extension@0.9.1
+
+## 0.10.5
+
+### Patch Changes
+
+-   Updated dependencies [49dcf36]
+    -   @sap-ux/axios-extension@0.9.0
+
+## 0.10.4
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/axios-extension@0.8.1
+    -   @sap-ux/btp-utils@0.10.3
+    -   @sap-ux/logger@0.2.2
+
+## 0.10.3
+
+### Patch Changes
+
+-   Updated dependencies [732171b]
+    -   @sap-ux/axios-extension@0.8.0
+
+## 0.10.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/axios-extension@0.7.2
+    -   @sap-ux/btp-utils@0.10.2
+    -   @sap-ux/logger@0.2.1
+
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [6f0f217]
+    -   @sap-ux/btp-utils@0.10.1
+    -   @sap-ux/axios-extension@0.7.1
+
+## 0.10.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/axios-extension@0.7.0
+    -   @sap-ux/btp-utils@0.10.0
+    -   @sap-ux/logger@0.2.0
+
+## 0.9.0
+
+### Minor Changes
+
+-   9864fb5: Add support for login with reentrance tickets
+
+### Patch Changes
+
+-   Updated dependencies [9864fb5]
+    -   @sap-ux/axios-extension@0.6.0
+
 ## 0.8.4
 
 ### Patch Changes

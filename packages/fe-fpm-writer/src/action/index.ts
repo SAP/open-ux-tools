@@ -8,6 +8,8 @@ import { render } from 'ejs';
 import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
+import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
+import { getTemplatePath } from '../templates';
 
 /**
  * Enhances the provided custom action configuration with default data.
@@ -72,7 +74,7 @@ export function enhanceManifestAndGetActionsElementReference(manifest: any, targ
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
 export function generateCustomAction(basePath: string, actionConfig: CustomAction, fs?: Editor): Editor {
-    validateVersion(actionConfig.ui5Version);
+    validateVersion(actionConfig.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
     }
@@ -83,20 +85,21 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
 
     const config = enhanceConfig(actionConfig, manifestPath, manifest);
 
-    const root = join(__dirname, '../../templates');
-
-    // add event handler if requested
-    if (config.settings.eventHandler === true) {
-        const controllerPath = join(config.path, `${config.name}.js`);
-        if (!fs.exists(controllerPath)) {
-            fs.copyTpl(join(root, 'common/EventHandler.js'), controllerPath, config);
-        }
-        config.settings.eventHandler = `${config.ns}.${config.name}.onPress`;
+    // Apply event handler
+    if (config.eventHandler) {
+        config.eventHandler = applyEventHandlerConfiguration(
+            fs,
+            config,
+            config.eventHandler,
+            false,
+            config.typescript,
+            contextParameter
+        );
     }
 
     // enhance manifest with action definition and controller reference
     const actions = enhanceManifestAndGetActionsElementReference(manifest, config.target);
-    Object.assign(actions, JSON.parse(render(fs.read(join(root, `action/manifest.action.json`)), config)));
+    Object.assign(actions, JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action.json`)), config, {})));
     fs.writeJSON(manifestPath, manifest);
 
     return fs;
