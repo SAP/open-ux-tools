@@ -13,6 +13,22 @@ export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
 }
 
 /**
+ * Clones the given config and removes secrets so that it can be printed to a log file.
+ *
+ * @param config - config object
+ * @returns config object that can be logged
+ */
+export function getConfigForLogging(config: AbapDeployConfig): AbapDeployConfig {
+    if (config.credentials?.password) {
+        let configForLogging = JSON.parse(JSON.stringify(config));
+        configForLogging.credentials = { username: 'hidden', password: '********' };
+        return configForLogging;
+    } else {
+        return config;
+    }
+}
+
+/**
  * Replace environment variable references of pattern `env:VAR_NAME` with the value of the corresponding environment variable.
  *
  * @param obj - any object structure

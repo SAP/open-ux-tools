@@ -1,6 +1,6 @@
 import { Option, Command } from 'commander';
 import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
-import { deploy, replaceEnvVariables, validateConfig } from '../base';
+import { deploy, getConfigForLogging, replaceEnvVariables, validateConfig } from '../base';
 import type { CliOptions } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
@@ -83,7 +83,7 @@ export async function run(): Promise<void> {
         const taskConfig = await getDeploymentConfig(options.config);
         const config = await mergeConfig(taskConfig, options);
         if (logLevel >= LogLevel.Debug) {
-            logger.debug(config.credentials ? { ...config, credentials: 'hidden' } : config);
+            logger.debug(getConfigForLogging(config));
         }
         validateConfig(config);
         replaceEnvVariables(config);

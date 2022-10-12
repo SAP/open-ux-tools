@@ -19,7 +19,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { writeFileSync } from 'fs';
 import type { AbapDeployConfig, AbapTarget, CommonOptions, UrlAbapTarget } from '../types';
-import { isUrlTarget } from './config';
+import { getConfigForLogging, isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials } from './prompt';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
@@ -58,12 +58,14 @@ async function createAbapServiceProvider(
     if (target.client) {
         options.params = { 'sap-client': target.client };
     }
-    const storedOpts = await getCredentials<BasicAuth>(target);
-    if (storedOpts?.password) {
-        options.auth = {
-            username: storedOpts.username,
-            password: storedOpts.password
-        };
+    if (!options.auth) {
+        const storedOpts = await getCredentials<BasicAuth>(target);
+        if (storedOpts?.password) {
+            options.auth = {
+                username: storedOpts.username,
+                password: storedOpts.password
+            };
+        }
     }
     return createForAbap(options);
 }
@@ -75,16 +77,22 @@ async function createAbapServiceProvider(
  * @param config
  * @returns service instance
  */
-async function createDeployService(target: AbapTarget, config: CommonOptions): Promise<Ui5AbapRepositoryService> {
+async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRepositoryService> {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
     if (config.strictSsl === false) {
         options.ignoreCertErrors = true;
     }
+    if (config.credentials?.password) {
+        options.auth = {
+            username: config.credentials?.username,
+            password: config.credentials?.password
+        };
+    }
 
-    if (isUrlTarget(target)) {
-        if (target.scp) {
-            const storedOpts = await getCredentials<ServiceAuth>(target);
+    if (isUrlTarget(config.target)) {
+        if (config.target.scp) {
+            const storedOpts = await getCredentials<ServiceAuth>(config.target);
             if (storedOpts) {
                 provider = createForAbapOnCloud({
                     ...options,
@@ -96,11 +104,11 @@ async function createDeployService(target: AbapTarget, config: CommonOptions): P
                 throw new Error('TODO');
             }
         } else {
-            provider = await createAbapServiceProvider(options, target);
+            provider = await createAbapServiceProvider(options, config.target);
         }
     } else if (isAppStudio()) {
         provider = createForDestination(options, {
-            Name: target.destination
+            Name: config.target.destination
         }) as AbapServiceProvider;
     } else {
         throw new Error('TODO');
@@ -119,7 +127,7 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
     if (config.keep) {
         writeFileSync(`archive-${Date.now()}.zip`, archive);
     }
-    const service = await createDeployService(config.target, config);
+    const service = await createDeployService(config);
     if (!config.strictSsl) {
         logger.warn(
             'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'
@@ -148,7 +156,7 @@ async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, con
             }
         }
         logger.error('Deployment has failed.');
-        logger.debug(config);
+        logger.debug(getConfigForLogging(config));
         throw e;
     }
 }

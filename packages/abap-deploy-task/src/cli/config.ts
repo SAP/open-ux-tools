@@ -41,8 +41,9 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     } as AbapTarget;
 
     const test = options.test !== undefined ? options.test : taskConfig.test;
+    const strictSsl = options.strictSsl !== undefined ? options.strictSsl : taskConfig.strictSsl;
     const yes = options.yes;
-    const config = { app, target, test, yes };
+    const config = { app, target, test, yes, credentials: taskConfig.credentials, strictSsl };
 
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';

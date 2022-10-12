@@ -12,7 +12,7 @@ builder:
     - name: abap-deploy-task
       afterTask: ui5-tooling-transpile-task
       configuration:
-        log: 4
+        strictSsl: true
         app:
           name: Z_TEST
         target:
