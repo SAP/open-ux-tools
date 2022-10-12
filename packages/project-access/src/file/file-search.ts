@@ -4,13 +4,19 @@ import { default as find } from 'findit2';
 import { fileExists } from './file-access';
 
 /**
- * Add missing dump function, mem-fs-editor types do not expose this.
+ * Add missing dump function declaration as mem-fs-editor types do not expose this.
  */
 declare module 'mem-fs-editor' {
     type FileMap = { [key: string]: { state: 'modified' | 'deleted' } };
 
     export interface Editor {
-        dump(cwd: string): FileMap;
+        /**
+         * Dump files to compare expected result. Provide a cwd for relative path.
+         * See also https://github.com/SBoudrias/mem-fs-editor#dumpcwd-filter for further details.
+         *
+         * @param [cwd] - optional, relative path
+         */
+        dump(cwd?: string): FileMap;
     }
 }
 
