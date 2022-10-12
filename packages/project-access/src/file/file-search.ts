@@ -4,7 +4,7 @@ import { default as find } from 'findit2';
 import { fileExists } from './file-access';
 
 /**
- * Add missing dump properties
+ * Add missing dump function, mem-fs-editor types do not expose this.
  */
 declare module 'mem-fs-editor' {
     type FileMap = { [key: string]: { state: 'modified' | 'deleted' } };
