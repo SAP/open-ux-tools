@@ -127,6 +127,7 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
         writeFileSync(`archive-${Date.now()}.zip`, archive);
     }
     const service = await createDeployService(config);
+    service.log = logger;
     if (!config.strictSsl) {
         logger.warn(
             'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'

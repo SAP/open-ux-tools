@@ -63,7 +63,7 @@ export class Ui5AbapRepositoryService extends ODataService {
     public async getInfo(app: string): Promise<AppInfo> {
         try {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
-            return response.odata();
+            return response.status === 404 ? undefined : response.odata();
         } catch (error) {
             return undefined;
         }
@@ -247,9 +247,14 @@ export class Ui5AbapRepositoryService extends ODataService {
                 // We've nothing to return as we dont want to show the exception to the user!
                 return Promise.resolve(undefined);
             } else {
-                return isExisting
+                const response = isExisting
                     ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
                     : await this.post('/Repositories', payload, config);
+
+                if (response.status >= 400) {
+                    throw { message: response.statusText, response, isAxiosError: true };
+                }
+                return response;
             }
         } catch (error) {
             if (error?.response?.status === 504) {
@@ -304,8 +309,13 @@ export class Ui5AbapRepositoryService extends ODataService {
      */
     protected logError({ error, host }: { error: AxiosError; host?: string }): void {
         this.log.error(error.message);
-        if (error.isAxiosError && error.response?.data?.['error']) {
-            prettyPrintError({ error: error.response.data['error'], host, log: this.log });
+        if (error.isAxiosError && error.response?.data) {
+            if (error.response.data['error']) {
+                prettyPrintError({ error: error.response.data['error'], host, log: this.log });
+            } else {
+                this.log.error(error.response.data);
+            }
+            
         }
     }
 }
