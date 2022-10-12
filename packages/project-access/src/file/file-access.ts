@@ -10,7 +10,7 @@ import type { Editor } from 'mem-fs-editor';
  */
 export async function readFile(path: string, memFs?: Editor): Promise<string> {
     if (memFs) {
-        return Promise.resolve(memFs.read(path));
+        return memFs.read(path);
     } else {
         return fs.readFile(path, { encoding: 'utf8' });
     }
@@ -25,7 +25,7 @@ export async function readFile(path: string, memFs?: Editor): Promise<string> {
  */
 export async function readJSON<T>(path: string, memFs?: Editor): Promise<T> {
     if (memFs) {
-        return Promise.resolve(memFs.readJSON(path) as unknown as T);
+        return memFs.readJSON(path) as unknown as T;
     } else {
         return JSON.parse(await readFile(path)) as T;
     }
@@ -41,7 +41,7 @@ export async function readJSON<T>(path: string, memFs?: Editor): Promise<T> {
 export async function fileExists(path: string, memFs?: Editor): Promise<boolean> {
     try {
         if (memFs) {
-            return Promise.resolve(memFs.exists(path));
+            return memFs.exists(path);
         } else {
             await fs.access(path);
             return true;
