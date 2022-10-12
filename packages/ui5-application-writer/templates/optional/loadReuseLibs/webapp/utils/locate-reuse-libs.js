@@ -115,7 +115,6 @@
 })(sap);
 
 /*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
-var scripts = document.getElementsByTagName("script");
 var currentScript = document.getElementById("locate-reuse-libs");
 if (!currentScript) {
     currentScript = document.currentScript;
