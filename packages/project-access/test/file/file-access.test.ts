@@ -6,14 +6,14 @@ import { create } from 'mem-fs-editor';
 
 describe('fileAccess', () => {
     const memFs = create(createStorage());
-    const memFilePath = join(__dirname, 'fileAccess.test.ts.mem');
+    const memFilePath = join(__dirname, 'file-access.test.ts.mem');
     const memFileContent = { hello: 'world' };
     memFs.writeJSON(memFilePath, memFileContent);
 
     describe('readFile', () => {
         test('Read existing file, should return content', async () => {
-            const content = await readFile(join(__dirname, 'fileAccess.test.ts'));
-            expect(content).toContain('fileAccess.test.ts');
+            const content = await readFile(join(__dirname, 'file-access.test.ts'));
+            expect(content).toContain('file-access.test.ts');
         });
 
         test('Read non existing file, should throw error', async () => {
@@ -55,7 +55,7 @@ describe('fileAccess', () => {
 
     describe('fileExists', () => {
         test('Check existing file, should return true', () => {
-            expect(fileExists(join(__dirname, 'fileAccess.test.ts'))).resolves.toBe(true);
+            expect(fileExists(join(__dirname, 'file-access.test.ts'))).resolves.toBe(true);
         });
 
         test('Check non existing file, should return false', () => {
