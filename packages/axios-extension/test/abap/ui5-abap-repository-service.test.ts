@@ -1,5 +1,4 @@
 import nock from 'nock';
-import fs from 'fs';
 import type { AppInfo } from '../../src';
 import { Ui5AbapRepositoryService, createForAbap } from '../../src';
 import type { HeadersDefaults } from 'axios';
