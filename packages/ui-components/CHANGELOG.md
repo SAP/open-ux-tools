@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.0.8
+
+### Patch Changes
+
+-   117ba24: chore(UI-Components) Export fluentui types used in UITable
+
+## 1.0.7
+
+### Patch Changes
+
+-   6f204c0: move devDependencies to dependencies
+
+## 1.0.6
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+
 ## 1.0.5
 
 ### Patch Changes

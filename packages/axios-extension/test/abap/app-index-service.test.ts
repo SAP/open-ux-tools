@@ -13,16 +13,16 @@ describe('AppIndexService', () => {
     beforeAll(() => {
         nock(server)
             .get((path) => path.startsWith(AppIndexService.PATH))
-            .reply(200, function () {
+            .reply(200, (path) => {
                 let results: any[];
-                if (!this.req.path.includes('?')) {
+                if (!path.includes('?')) {
                     results = appIndexMock.results;
-                } else if (this.req.path.includes('type=application')) {
+                } else if (path.includes('type=application')) {
                     results = appIndexMock.results.filter((item) => item['sap.app/type'] === 'application');
                 } else {
                     results = [];
                 }
-                if (this.req.path.includes('fields=url')) {
+                if (path.includes('fields=url')) {
                     return { results };
                 } else {
                     return {

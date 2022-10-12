@@ -1,8 +1,9 @@
-import { FioriElementsApp, generate, TemplateType } from '../src';
+import type { FioriElementsApp } from '../src';
+import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, feBaseConfig, v4TemplateSettings, v4Service } from './common';
-import { FEOPSettings } from '../src/types';
+import type { FEOPSettings } from '../src/types';
 
 const TEST_NAME = 'feopTemplate';
 

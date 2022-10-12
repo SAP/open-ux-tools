@@ -1,5 +1,6 @@
 import 'jest-extended';
-import { LogLevel, ToolsLogger, Transport } from '../../../src';
+import type { Transport } from '../../../src';
+import { LogLevel, ToolsLogger } from '../../../src';
 import type { ArrayTransportLogEntry } from '../../../src/transports';
 import {
     ConsoleTransport,
@@ -223,8 +224,10 @@ describe('Default (Winston) logger', () => {
 
         logger.warn('warning1');
         const nullTransport = logger.transports().find((t) => t instanceof NullTransport);
-        expect(nullTransport).not.toBeUndefined;
-        logger.remove(nullTransport!);
+        expect(nullTransport).not.toBeUndefined();
+        if (nullTransport) {
+            logger.remove(nullTransport);
+        }
         logger.debug('debug1');
 
         expect(consoleLog).toBeCalledTimes(2);

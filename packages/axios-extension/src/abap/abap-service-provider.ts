@@ -95,6 +95,9 @@ export class AbapServiceProvider extends ServiceProvider {
         return this.s4Cloud;
     }
 
+    /**
+     * @returns AdtCatalogService
+     */
     private getAdtCatalogService(): AdtCatalogService {
         if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
             const adtCatalogSerivce = this.createService<AdtCatalogService>(
@@ -182,7 +185,7 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @param packageName Package name for deployment
      * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
-     * @returns
+     * @returns array of transports id's
      */
     public async getTransportRequests(packageName: string, appName: string): Promise<TransportRequest[]> {
         let serviceSchema: AdtCollection;

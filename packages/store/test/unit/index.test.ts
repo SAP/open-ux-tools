@@ -1,4 +1,5 @@
-import { EnityName, getService } from '../../src';
+import type { EnityName } from '../../src';
+import { getService } from '../../src';
 import { Entities } from '../../src/data-provider/constants';
 import * as i18n from '../../src/i18n';
 

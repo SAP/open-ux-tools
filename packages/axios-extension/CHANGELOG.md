@@ -1,5 +1,20 @@
 # @sap-ux/axios-extension
 
+## 0.10.2
+
+### Patch Changes
+
+-   9820cef: Upgrade @xmldom/xmldom dependency to fix security vulnerability CVE-2022-37616
+
+## 0.10.1
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/btp-utils@0.11.2
+    -   @sap-ux/logger@0.3.1
+
 ## 0.10.0
 
 ### Minor Changes

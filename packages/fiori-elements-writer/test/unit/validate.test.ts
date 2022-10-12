@@ -1,7 +1,8 @@
-import { FioriElementsApp, LROPSettings, OdataVersion, TemplateType } from '../../src';
+import type { FioriElementsApp, LROPSettings } from '../../src';
+import { OdataVersion, TemplateType } from '../../src';
 import { TemplateTypeAttributes } from '../../src/data/templateAttributes';
 import { t } from '../../src/i18n';
-import { ALPSettings } from '../../src/types';
+import type { ALPSettings } from '../../src/types';
 import { validateApp, validateRequiredProperties } from '../../src/validate';
 import { feBaseConfig, v4TemplateSettings } from '../common';
 

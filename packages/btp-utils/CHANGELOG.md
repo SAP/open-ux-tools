@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.11.2
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+
 ## 0.11.1
 
 ### Patch Changes
