@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.8
+
+### Patch Changes
+
+-   117ba24: chore(UI-Components) Export fluentui types used in UITable
+
 ## 1.0.7
 
 ### Patch Changes
