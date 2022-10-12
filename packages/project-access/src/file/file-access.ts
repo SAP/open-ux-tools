@@ -2,7 +2,7 @@ import { promises as fs } from 'fs';
 import type { Editor } from 'mem-fs-editor';
 
 /**
- * Read file asynchronously.
+ * Read file asynchronously. Throws error if file does not exist.
  *
  * @param path - path to file
  * @param memFs - optional mem-fs-editor instance
@@ -17,7 +17,7 @@ export async function readFile(path: string, memFs?: Editor): Promise<string> {
 }
 
 /**
- * Read JSON file asynchronously.
+ * Read JSON file asynchronously. Throws error if file does not exist.
  *
  * @param path - path to JSON file
  * @param memFs - optional mem-fs-editor instance
