@@ -1,4 +1,4 @@
-import { ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 import { countNumberOfServices, getServiceCountText } from '../src/formatter';
 
 /**

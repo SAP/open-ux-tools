@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig } from 'axios';
-import cloneDeep from 'lodash.clonedeep';
+import cloneDeep from 'lodash/cloneDeep';
 import type { Destination } from '@sap-ux/btp-utils';
 import {
     getDestinationUrlForAppStudio,
@@ -44,8 +44,7 @@ function createInstance<T extends ServiceProvider>(
     const instance = new ProviderType(providerConfig);
     instance.defaults.headers = instance.defaults.headers ?? {
         common: {},
-        // eslint-disable-next-line quote-props
-        delete: {},
+        'delete': {},
         put: {},
         get: {},
         post: {},

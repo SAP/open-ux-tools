@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-elements-writer",
     "description": "SAP Fiori elements application writer",
-    "version": "0.7.7",
+    "version": "0.7.10",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -13,7 +13,7 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rimraf dist && tsc",
+        "build": "rimraf dist && tsc -p tsconfig-build.json",
         "clean": "rimraf dist test/test-output coverage",
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",

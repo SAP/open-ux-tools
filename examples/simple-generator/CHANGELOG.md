@@ -1,5 +1,33 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.44
+
+### Patch Changes
+
+-   Updated dependencies [9820cef]
+    -   @sap-ux/axios-extension@0.10.2
+    -   @sap-ux/fiori-elements-writer@0.7.10
+
+## 0.2.43
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/axios-extension@0.10.1
+    -   @sap-ux/btp-utils@0.11.2
+    -   @sap-ux/fiori-elements-writer@0.7.9
+    -   @sap-ux/fiori-freestyle-writer@0.14.9
+    -   @sap-ux/logger@0.3.1
+    -   @sap-ux/store@0.3.5
+
+## 0.2.42
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.7.8
+-   @sap-ux/fiori-freestyle-writer@0.14.8
+
 ## 0.2.41
 
 ### Patch Changes

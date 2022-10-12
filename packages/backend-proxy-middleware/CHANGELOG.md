@@ -1,5 +1,29 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.26
+
+### Patch Changes
+
+-   Updated dependencies [9820cef]
+    -   @sap-ux/axios-extension@0.10.2
+
+## 0.6.25
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/axios-extension@0.10.1
+    -   @sap-ux/btp-utils@0.11.2
+    -   @sap-ux/logger@0.3.1
+    -   @sap-ux/store@0.3.5
+
+## 0.6.24
+
+### Patch Changes
+
+-   ba34b64: Makes the proxy request handler more robust
+
 ## 0.6.23
 
 ### Patch Changes

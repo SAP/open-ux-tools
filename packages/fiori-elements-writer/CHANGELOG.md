@@ -1,5 +1,31 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [9820cef]
+    -   @sap-ux/fe-fpm-writer@0.17.6
+
+## 0.7.9
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/fe-fpm-writer@0.17.5
+    -   @sap-ux/ui5-config@0.15.2
+    -   @sap-ux/ui5-test-writer@0.1.3
+    -   @sap-ux/odata-service-writer@0.14.10
+    -   @sap-ux/ui5-application-writer@0.17.6
+
+## 0.7.8
+
+### Patch Changes
+
+-   Updated dependencies [e3e1275]
+    -   @sap-ux/ui5-application-writer@0.17.5
+
 ## 0.7.7
 
 ### Patch Changes

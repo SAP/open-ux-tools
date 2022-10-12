@@ -21,8 +21,8 @@ export class Uaa {
     protected readonly serviceInfo: ServiceInfo;
 
     /**
-     * @param serviceInfo
-     * @param log
+     * @param serviceInfo service Information
+     * @param log logger
      */
     constructor(serviceInfo: ServiceInfo, protected log: Logger) {
         this.validatePropertyExists(serviceInfo.uaa.clientid, 'Client ID missing');
@@ -32,8 +32,8 @@ export class Uaa {
     }
 
     /**
-     * @param property
-     * @param errMsg
+     * @param property property
+     * @param errMsg error message
      */
     protected validatePropertyExists(property: string, errMsg: string): void {
         if (!property) {
@@ -173,7 +173,7 @@ export class Uaa {
     /**
      * Get an authentication code.
      *
-     * @param timeout
+     * @param timeout timeout
      * @returns an object containing an authentication code and a redirect object
      */
     protected async getAuthCode(timeout: number = defaultTimeout): Promise<{ authCode: string; redirect: Redirect }> {
@@ -210,8 +210,8 @@ export class Uaa {
     }
 
     /**
-     * @param refreshToken
-     * @param refreshTokenChangedCb
+     * @param refreshToken refreshToken
+     * @param refreshTokenChangedCb refreshTokenChanged callback function
      * @returns an access token.
      */
     public async getAccessToken(refreshToken?: string, refreshTokenChangedCb?: RefreshTokenChanged): Promise<string> {

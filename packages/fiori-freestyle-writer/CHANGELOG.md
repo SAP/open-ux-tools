@@ -1,5 +1,22 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.14.9
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/ui5-config@0.15.2
+    -   @sap-ux/odata-service-writer@0.14.10
+    -   @sap-ux/ui5-application-writer@0.17.6
+
+## 0.14.8
+
+### Patch Changes
+
+-   Updated dependencies [e3e1275]
+    -   @sap-ux/ui5-application-writer@0.17.5
+
 ## 0.14.7
 
 ### Patch Changes

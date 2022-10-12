@@ -16,7 +16,10 @@
                 "@typescript-eslint/no-inferrable-types": "off",
                 "@typescript-eslint/no-unused-vars": [
                     "error",
-                    { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }
+                    {
+                        "varsIgnorePattern": "^_",
+                        "argsIgnorePattern": "^_"
+                    }
                 ],
                 "@typescript-eslint/consistent-type-imports": [
                     "error",
@@ -78,6 +81,15 @@
                     }
                 ],
                 "@typescript-eslint/no-use-before-define": ["error", "nofunc"]
+            }
+        },
+        {
+            "files": ["**/test/**/*.js", "**/test/**/*.ts", "**/test/**/*.tsx"],
+            "rules": {
+                "no-console": "off",
+                "jsdoc/require-returns-description": "off",
+                "jsdoc/require-param-description": "off",
+                "max-nested-callbacks": ["warn", 5]
             }
         }
     ],
@@ -215,7 +227,7 @@
             "error",
             "as-needed",
             {
-                "keywords": true,
+                "keywords": false,
                 "unnecessary": false
             }
         ],

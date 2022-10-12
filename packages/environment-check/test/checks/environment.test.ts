@@ -3,12 +3,10 @@ import { checkEnvironment, getEnvironment } from '../../src/checks/environment';
 import { checkBASDestinations, needsUsernamePassword, checkBASDestination } from '../../src/checks/destination';
 import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import axios from 'axios';
 import { join } from 'path';
-import * as install from '../../src/checks/getInstalled';
+import * as install from '../../src/checks/get-installed';
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn(),
@@ -106,7 +104,7 @@ describe('Test for checkEnvironment() (BAS)', () => {
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
         expect(warningMessage).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
     test('Destinations that need authentication and credentials are supplied, getEnvironmentCheck()', async () => {
@@ -205,7 +203,7 @@ describe('Test for checkEnvironment() (BAS)', () => {
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
         expect(result.messages.find((m) => m.severity >= Severity.Warning)).toBeUndefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
 
@@ -246,7 +244,7 @@ describe('Test for checkEnvironment() (BAS)', () => {
         // Result check
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
     test('No deep dive destination, getEnvironmentCheck()', async () => {
@@ -288,7 +286,7 @@ describe('Test for checkEnvironment() (BAS)', () => {
         expect(warningMessage).toBeDefined();
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
     test('Checking for deep dive destination that does not exist in the list, getEnvironmentCheck()', async () => {
@@ -331,7 +329,7 @@ describe('Test for checkEnvironment() (BAS)', () => {
         expect(warningMessage).toBeDefined();
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
     test('credentialCallBack is defined but no username and/or password is supplied while it is required, getEnvironmentCheck()', async () => {
@@ -372,7 +370,7 @@ describe('Test for checkEnvironment() (BAS)', () => {
         // Result check
         expect(result.destinations).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length > 0);
+        expect(result.messages.length).toBeGreaterThan(0);
         expect(result.destinationResults).toBeDefined();
     });
 });

@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.6
+
+### Patch Changes
+
+-   9820cef: Upgrade @xmldom/xmldom dependency to fix security vulnerability CVE-2022-37616
+
+## 0.17.5
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+
 ## 0.17.4
 
 ### Patch Changes

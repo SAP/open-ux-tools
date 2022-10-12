@@ -1,5 +1,13 @@
 # @sap-ux/store
 
+## 0.3.5
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/logger@0.3.1
+
 ## 0.3.4
 
 ### Patch Changes

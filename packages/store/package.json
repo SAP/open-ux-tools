@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/store",
-    "version": "0.3.4",
+    "version": "0.3.5",
     "description": "NPM module for storing persistent data",
     "repository": {
         "type": "git",
@@ -14,7 +14,7 @@
     "private": false,
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc",
+        "build": "pnpm clean && tsc -p tsconfig-build.json",
         "watch": "tsc --watch",
         "clean": "rimraf dist coverage",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

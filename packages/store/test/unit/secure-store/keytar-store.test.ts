@@ -73,7 +73,7 @@ describe('KeytarStore', () => {
             });
             await fc.assert(
                 fc.asyncProperty(fc.string(), fc.string(), fc.anything(), async (service, key, value) => {
-                    (await new KeytarStore(nullLogger, mockedKeytar).save(service, key, value)) === false;
+                    return (await new KeytarStore(nullLogger, mockedKeytar).save(service, key, value)) === false;
                 })
             );
         });
@@ -84,7 +84,7 @@ describe('KeytarStore', () => {
             });
             await fc.assert(
                 fc.asyncProperty(fc.string(), fc.string(), async (service, key) => {
-                    (await new KeytarStore(nullLogger, mockedKeytar).retrieve(service, key)) === undefined;
+                    return (await new KeytarStore(nullLogger, mockedKeytar).retrieve(service, key)) === undefined;
                 })
             );
         });
@@ -95,7 +95,7 @@ describe('KeytarStore', () => {
             });
             await fc.assert(
                 fc.asyncProperty(fc.string(), fc.string(), async (service, key) => {
-                    (await new KeytarStore(nullLogger, mockedKeytar).delete(service, key)) === false;
+                    return (await new KeytarStore(nullLogger, mockedKeytar).delete(service, key)) === false;
                 })
             );
         });
@@ -106,7 +106,7 @@ describe('KeytarStore', () => {
             });
             await fc.assert(
                 fc.asyncProperty(fc.string(), async (service) => {
-                    Object.keys(await new KeytarStore(nullLogger, mockedKeytar).getAll(service)).length === 0;
+                    return Object.keys(await new KeytarStore(nullLogger, mockedKeytar).getAll(service)).length === 0;
                 })
             );
         });
