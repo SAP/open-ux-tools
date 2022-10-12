@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.4.0
+
+### Minor Changes
+
+-   a414e64: fix spawn command to locate global modules install location
+
 ## 0.3.2
 
 ### Patch Changes
