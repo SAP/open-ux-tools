@@ -15,6 +15,6 @@ Pnpm
 See examples in `ui-components/stories`.
 
 ## Keywords
-VSCode Webview
+VSCode Webviews
 SAP Application Studio (BAS)
 SAP Business Technology Platform (BTP)
