@@ -17,14 +17,14 @@ declare module 'mem-fs-editor' {
 /**
  * Search for 'filename' starting from 'root' in the list of virtual (not committed) files. Returns array of paths that contain the file.
  *
- * @param files - - array of paths that contain the filename found on the filesystem
+ * @param files - array of paths that contain the filename found on the filesystem
  * @param filename - filename to search
  * @param root - root folder to start search
- * @param stopFolders - list of folder names to exclude (search doesn't traverse into these folders)
+ * @param excludeFolders - list of folder names to exclude (search doesn't traverse into these folders)
  * @param fs - mem-fs-editor instance
  * @returns - enhanced array of paths that contain the filename
  */
-function checkVirtualFiles(files: string[], filename: string, root: string, stopFolders: string[], fs: Editor) {
+function checkVirtualFiles(files: string[], filename: string, root: string, excludeFolders: string[], fs: Editor) {
     const memFiles = fs.dump(root);
     const modified = Object.keys(memFiles)
         .filter((file) => memFiles[file].state === 'modified' && file.endsWith(filename))
@@ -33,7 +33,7 @@ function checkVirtualFiles(files: string[], filename: string, root: string, stop
         .filter(
             (file) =>
                 memFiles[file].state === 'deleted' ||
-                stopFolders.find((folder) => file.includes(`${sep}${folder}${sep}`))
+                excludeFolders.find((folder) => file.includes(`${sep}${folder}${sep}`))
         )
         .map((file) => dirname(join(root, file)))
         .concat(...modified);
@@ -45,17 +45,17 @@ function checkVirtualFiles(files: string[], filename: string, root: string, stop
  *
  * @param filename - filename to search
  * @param root - root folder to start search
- * @param stopFolders - list of folder names to exclude (search doesn't traverse into these folders)
+ * @param excludeFolders - list of folder names to exclude (search doesn't traverse into these folders)
  * @param fs - optional mem-fs-editor instance
  * @returns - array of paths that contain the filename
  */
-export function findFiles(filename: string, root: string, stopFolders: string[], fs?: Editor): Promise<string[]> {
+export function findFiles(filename: string, root: string, excludeFolders: string[], fs?: Editor): Promise<string[]> {
     return new Promise((resolve, reject) => {
         const results: string[] = [];
         const finder = find(root);
         finder.on('directory', (dir: string, _stat: unknown, stop: () => void) => {
             const base = basename(dir);
-            if (stopFolders.includes(base)) {
+            if (excludeFolders.includes(base)) {
                 stop();
             }
         });
@@ -65,7 +65,7 @@ export function findFiles(filename: string, root: string, stopFolders: string[],
             }
         });
         finder.on('end', () => {
-            resolve(fs ? checkVirtualFiles(results, filename, root, stopFolders, fs) : results);
+            resolve(fs ? checkVirtualFiles(results, filename, root, excludeFolders, fs) : results);
         });
         finder.on('error', (error: Error) => {
             reject(error);
