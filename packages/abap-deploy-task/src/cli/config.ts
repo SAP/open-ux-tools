@@ -1,7 +1,7 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join } from 'path';
-import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions, CommonOptions } from '../types';
+import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions } from '../types';
 import { NAME } from '../types';
 
 /**
@@ -28,7 +28,7 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
  * @returns merged flag
  */
 function mergeFlag(cli?: boolean, file?: boolean): boolean | undefined {
-    return cli !== undefined ? cli : file
+    return cli !== undefined ? cli : file;
 }
 
 /**
@@ -57,7 +57,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     config.keep = mergeFlag(options.keep, taskConfig.keep);
     config.strictSsl = mergeFlag(options.strictSsl, taskConfig.strictSsl);
     config.yes = mergeFlag(options.yes, taskConfig.yes);
-    
+
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';
     }

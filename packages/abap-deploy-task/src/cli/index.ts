@@ -35,7 +35,7 @@ export function createCommand(): Command {
         .option('--package <abap-package>', 'Package name for deploy target ABAP system')
         .option('--description <description>', 'Project description of the app')
         .option('--strict-ssl', ' Perform certificate validation on archive url')
-        .option('--test', 'Run deploy in test mode. ABAP backend reports deploy error without actual deploy the bundle.')
+        .option('--test', 'Run in test mode. ABAP backend reports deploy error without actual deploy the bundle.')
         .option('--no-test', 'Disable test-mode if set via config file.')
         .option('--keep', 'Keep a copy of the deployed archive in the project folder.');
 
