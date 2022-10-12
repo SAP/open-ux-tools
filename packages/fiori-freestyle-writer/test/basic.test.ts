@@ -71,7 +71,13 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         },
         {
             name: 'basic_with_custom_view_name',
-            config: commonConfig,
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    eslint: true,
+                    codeAssist: true
+                }
+            },
             settings: {
                 viewName: 'CustomViewName'
             }

@@ -297,7 +297,7 @@ server:
          * @public
          * @param {sap.ui.model.Model} oModel the model instance
          * @param {string} sName the model name
-         * @returns {sap.ui.mvc.View} the view instance
+         * @returns {sap.ui.core.mvc.View} the view instance
          */
         setModel : function (oModel, sName) {
             return this.getView().setModel(oModel, sName);
@@ -6685,6 +6685,26 @@ sap.registerComponentDependencyPaths(manifestUri);
 
 exports[`Fiori freestyle template: worklistTemplate Generate files for template: worklist_service_url_v2 1`] = `
 Object {
+  ".eslintrc": Object {
+    "contents": "{
+  \\"plugins\\": [
+    \\"eslint-plugin-fiori-custom\\",
+    \\"@sap/ui5-jsdocs\\"
+  ],
+  \\"extends\\": [
+    \\"./node_modules/eslint-plugin-fiori-custom/configure.eslintrc\\",
+    \\"plugin:@sap/ui5-jsdocs/recommended\\",
+    \\"eslint:recommended\\"
+  ],
+  \\"ignorePatterns\\": [
+    \\"webapp/localService/**\\",
+    \\"webapp/test/**\\",
+    \\"dist/**\\"
+  ]
+}
+",
+    "state": "modified",
+  },
   ".gitignore": Object {
     "contents": "node_modules/
 dist/
@@ -6714,12 +6734,18 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"eslint\\": \\"7.32.0\\",
+    \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
+    \\"@babel/eslint-parser\\": \\"7.14.7\\",
+    \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
+    \\"@sapui5/ts-types\\": \\"~1.78.16\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
@@ -6733,6 +6759,20 @@ archive.zip
   }
 }
 ",
+    "state": "modified",
+  },
+  "tsconfig.json": Object {
+    "contents": "{
+  \\"compilerOptions\\": {
+    \\"module\\": \\"none\\",
+    \\"noEmit\\": true,
+    \\"checkJs\\": true,
+    \\"allowJs\\": true,
+    \\"types\\": [
+      \\"@sapui5/ts-types\\"
+    ]
+  }
+}",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -6989,7 +7029,7 @@ server:
          * @public
          * @param {sap.ui.model.Model} oModel the model instance
          * @param {string} sName the model name
-         * @returns {sap.ui.mvc.View} the view instance
+         * @returns {sap.ui.core.mvc.View} the view instance
          */
         setModel : function (oModel, sName) {
             return this.getView().setModel(oModel, sName);
@@ -10273,7 +10313,7 @@ server:
          * @public
          * @param {sap.ui.model.Model} oModel the model instance
          * @param {string} sName the model name
-         * @returns {sap.ui.mvc.View} the view instance
+         * @returns {sap.ui.core.mvc.View} the view instance
          */
         setModel : function (oModel, sName) {
             return this.getView().setModel(oModel, sName);

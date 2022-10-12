@@ -74,7 +74,11 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                         }
                     } as WorklistSettings
                 },
-                service: v2Service
+                service: v2Service,
+                appOptions: {
+                    eslint: true,
+                    codeAssist: true
+                }
             }
         },
         {
