@@ -92,7 +92,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             info ? info.Package : app.package
         );
         const config = this.createConfig(app.transport, testMode, safeMode);
-        const frontendUrl = this.getAbapFrontendUrl(this.defaults.baseURL);
+        const frontendUrl = this.getAbapFrontendUrl();
         try {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, app.name, payload, config);
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
@@ -123,7 +123,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      */
     public async undeploy(app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
         const config = this.createConfig(app.transport, testMode);
-        const host = this.getAbapFrontendUrl(this.defaults.baseURL);
+        const host = this.getAbapFrontendUrl();
         try {
             const response = await this.deleteRepoRequest(app.name, config);
             if (response?.headers?.['sap-message']) {
@@ -140,14 +140,14 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Translate the technical ABAP on BTP URL to the frontend URL.
      *
-     * @param technicalUrl Technical URL of the ABAP system from service keys
      * @returns url to be used in the browser.
      */
-    protected getAbapFrontendUrl(technicalUrl: string): string {
+    protected getAbapFrontendUrl(): string {
+        const url = new URL(this.defaults.baseURL);
         abapUrlReplaceMap.forEach((value, key) => {
-            technicalUrl = technicalUrl.replace(key, value);
+            url.hostname = url.hostname.replace(key, value);
         });
-        return technicalUrl;
+        return `${url.protocol}//${url.host}`;
     }
 
     /**

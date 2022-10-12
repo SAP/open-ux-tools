@@ -1,7 +1,7 @@
 import { UI5Config } from '@sap-ux/ui5-config';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join } from 'path';
-import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions } from '../types';
+import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions, CommonOptions } from '../types';
 import { NAME } from '../types';
 
 /**
@@ -21,9 +21,21 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
 }
 
 /**
+ * Boolean merger.
  *
- * @param taskConfig
- * @param options
+ * @param cli - optional flag from CLI
+ * @param file - optional flag from file
+ * @returns merged flag
+ */
+function mergeFlag(cli?: boolean, file?: boolean): boolean | undefined {
+    return cli !== undefined ? cli : file
+}
+
+/**
+ * Merge the configuration from the ui5*.yaml with CLI options.
+ *
+ * @param taskConfig - base configuration from the file
+ * @param options - CLI options
  * @returns the merged config
  */
 export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOptions): Promise<AbapDeployConfig> {
@@ -40,11 +52,12 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
         destination: options.destination ?? taskConfig.target?.destination
     } as AbapTarget;
 
-    const test = options.test !== undefined ? options.test : taskConfig.test;
-    const strictSsl = options.strictSsl !== undefined ? options.strictSsl : taskConfig.strictSsl;
-    const yes = options.yes;
-    const config = { app, target, test, yes, credentials: taskConfig.credentials, strictSsl };
-
+    const config: AbapDeployConfig = { app, target, credentials: taskConfig.credentials };
+    config.test = mergeFlag(options.test, taskConfig.test);
+    config.keep = mergeFlag(options.keep, taskConfig.keep);
+    config.strictSsl = mergeFlag(options.strictSsl, taskConfig.strictSsl);
+    config.yes = mergeFlag(options.yes, taskConfig.yes);
+    
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';
     }
