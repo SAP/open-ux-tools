@@ -20,9 +20,10 @@ export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
  */
 export function getConfigForLogging(config: AbapDeployConfig): AbapDeployConfig {
     if (config.credentials?.password) {
-        let configForLogging = JSON.parse(JSON.stringify(config));
-        configForLogging.credentials = { username: 'hidden', password: '********' };
-        return configForLogging;
+        return {
+            ...config,
+            credentials: { username: 'hidden', password: '********' }
+        };
     } else {
         return config;
     }
@@ -56,9 +57,10 @@ function throwConfigMissingError(property: string): void {
 }
 
 /**
+ * Validate the given config. If anything mandatory is missing throw an error.
  *
- * @param config
- * @returns
+ * @param config - the config to be validated
+ * @returns reference to the given config
  */
 export function validateConfig(config: AbapDeployConfig | undefined): AbapDeployConfig {
     if (!config) {
@@ -70,10 +72,8 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
             if (config.target.client) {
                 config.target.client = (config.target.client + '').padStart(3, '0');
             }
-        } else {
-            if (!config.target.destination) {
-                isAppStudio() ? throwConfigMissingError('target-destination') : throwConfigMissingError('target-url');
-            }
+        } else if (!config.target.destination) {
+            throwConfigMissingError(isAppStudio() ? 'target-destination' : 'target-url');
         }
     } else {
         throwConfigMissingError('target');

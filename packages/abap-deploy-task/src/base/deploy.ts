@@ -18,7 +18,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
 import { writeFileSync } from 'fs';
-import type { AbapDeployConfig, AbapTarget, CommonOptions, UrlAbapTarget } from '../types';
+import type { AbapDeployConfig, UrlAbapTarget } from '../types';
 import { getConfigForLogging, isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials } from './prompt';
 
@@ -73,8 +73,7 @@ async function createAbapServiceProvider(
 /**
  * Create an instance of a UI5AbapRepository service connected to the given target configuration.
  *
- * @param target - target system for the deployments
- * @param config
+ * @param config - deployment configuration
  * @returns service instance
  */
 async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRepositoryService> {
