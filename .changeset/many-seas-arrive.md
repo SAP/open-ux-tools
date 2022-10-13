@@ -2,4 +2,4 @@
 '@sap-ux/ui-components': patch
 ---
 
-UIMessageBar cleanup
+New storybook story for UIMessageBar and cleanup in UIMessageBar component
