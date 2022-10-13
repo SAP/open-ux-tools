@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.11
+
+### Patch Changes
+
+-   7c0ae60: Added CustomFPMPage icon
+
 ## 1.0.10
 
 ### Patch Changes
