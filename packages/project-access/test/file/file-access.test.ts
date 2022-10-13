@@ -54,16 +54,19 @@ describe('fileAccess', () => {
     });
 
     describe('fileExists', () => {
-        test('Check existing file, should return true', () => {
-            expect(fileExists(join(__dirname, 'file-access.test.ts'))).resolves.toBe(true);
+        test('Check existing file, should return true', async () => {
+            const exists = await fileExists(join(__dirname, 'file-access.test.ts'));
+            expect(exists).toBe(true);
         });
 
-        test('Check non existing file, should return false', () => {
-            expect(fileExists('DOES_NOT_EXIST')).resolves.toBe(false);
+        test('Check non existing file, should return false', async () => {
+            const exists = await fileExists('DOES_NOT_EXIST');
+            expect(exists).toBe(false);
         });
 
-        test('Check existing file in memf-fs, should return true', () => {
-            expect(fileExists(memFilePath, memFs)).resolves.toBe(true);
+        test('Check existing file in memf-fs, should return true', async () => {
+            const exists = await fileExists(memFilePath, memFs);
+            expect(exists).toBe(true);
         });
     });
 });
