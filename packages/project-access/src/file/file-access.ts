@@ -17,7 +17,7 @@ export async function readFile(path: string, memFs?: Editor): Promise<string> {
 }
 
 /**
- * Read JSON file asynchronously. Throws error if file does not exist.
+ * Read JSON file asynchronously. Throws error if file does not exist or is malformatted.
  *
  * @param path - path to JSON file
  * @param memFs - optional mem-fs-editor instance

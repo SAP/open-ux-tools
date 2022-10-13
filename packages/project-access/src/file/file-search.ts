@@ -1,4 +1,4 @@
-import type { Editor } from 'mem-fs-editor';
+import type { Editor, FileMap } from 'mem-fs-editor';
 import { basename, dirname, join, sep } from 'path';
 import { default as find } from 'findit2';
 import { fileExists } from './file-access';
@@ -21,29 +21,32 @@ declare module 'mem-fs-editor' {
 }
 
 /**
- * Search for 'filename' starting from 'root' in the list of virtual (not committed) files. Returns array of paths that contain the file.
+ * Creates a filter function that removes files that have been deleted in an instance of a mem-fs-editor.
  *
- * @param files - array of paths that contain the filename found on the filesystem
- * @param filename - filename to search
- * @param root - root folder to start search
- * @param excludeFolders - list of folder names to exclude (search doesn't traverse into these folders)
- * @param fs - mem-fs-editor instance
- * @returns - enhanced array of paths that contain the filename
+ * @param changes - changes recorded in an instance of a mem-fs-editor
+ * @param filename - relevant filename
+ * @returns a filter function for string arrays
  */
-function checkVirtualFiles(files: string[], filename: string, root: string, excludeFolders: string[], fs: Editor) {
-    const memFiles = fs.dump(root);
-    const modified = Object.keys(memFiles)
-        .filter((file) => memFiles[file].state === 'modified' && file.endsWith(filename))
-        .map((file) => dirname(join(root, file)));
-    const ignore = Object.keys(memFiles)
-        .filter(
-            (file) =>
-                memFiles[file].state === 'deleted' ||
-                excludeFolders.find((folder) => file.includes(`${sep}${folder}${sep}`))
-        )
-        .map((file) => dirname(join(root, file)))
-        .concat(...modified);
-    return files.filter((match) => !ignore.includes(match)).concat(...modified);
+function getMemFsFilter(changes: FileMap, filename: string) {
+    const deleted = Object.entries(changes)
+        .filter(([, info]) => info.state === 'deleted')
+        .map(([file]) => (basename(file) === filename ? dirname(file) : file));
+    return (path: string) => !deleted.find((entry) => path.startsWith(entry));
+}
+
+/**
+ * Concatanates the given list of files with additional files that have been created using a mem-fs-editor and matching the filename.
+ *
+ * @param folders - existing list of folders
+ * @param changes - changes recorded in an instance of a mem-fs-editor
+ * @param filename - relevant filename
+ * @returns Concatanated and deduped list of folders containing the given filename
+ */
+function concatNewFoldersFromMemFs(folders: string[], changes: FileMap, filename: string): string[] {
+    const modified = Object.entries(changes)
+        .filter(([file, info]) => info.state === 'modified' && basename(file) === filename)
+        .map(([file]) => dirname(file));
+    return [...new Set([...folders, ...modified])];
 }
 
 /**
@@ -71,7 +74,14 @@ export function findFiles(filename: string, root: string, excludeFolders: string
             }
         });
         finder.on('end', () => {
-            resolve(fs ? checkVirtualFiles(results, filename, root, excludeFolders, fs) : results);
+            if (fs) {
+                const changes = fs.dump('');
+                resolve(
+                    concatNewFoldersFromMemFs(results, changes, filename).filter(getMemFsFilter(changes, filename))
+                );
+            } else {
+                resolve(results);
+            }
         });
         finder.on('error', (error: Error) => {
             reject(error);
