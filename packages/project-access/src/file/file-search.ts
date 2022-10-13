@@ -27,10 +27,10 @@ declare module 'mem-fs-editor' {
  * @param filename - relevant filename
  * @returns a filter function for string arrays
  */
- function getMemFsFilter(changes: FileMap, filename: string) {
+function getMemFsFilter(changes: FileMap, filename: string) {
     const deleted = Object.entries(changes)
         .filter(([, info]) => info.state === 'deleted')
-        .map(([file]) => join((basename(join(file)) === filename ? dirname(file) : file)));
+        .map(([file]) => join(basename(join(file)) === filename ? dirname(file) : file));
     return (path: string) => !deleted.find((entry) => path.startsWith(entry));
 }
 
