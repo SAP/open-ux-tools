@@ -25,9 +25,10 @@ export class UIMessageBar extends React.Component<IMessageBarProps, {}> {
     }
 
     protected setStyle = (props: IMessageBarProps): IMessageBarStyles => {
+        const { messageBarType } = props;
         return {
             root: {
-                ...([MessageBarType.error, MessageBarType.success].includes(props.messageBarType) && {
+                ...((messageBarType === MessageBarType.error || messageBarType === MessageBarType.success) && {
                     backgroundColor: 'transparent'
                 })
             },
