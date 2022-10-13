@@ -27,10 +27,10 @@ declare module 'mem-fs-editor' {
  * @param filename - relevant filename
  * @returns a filter function for string arrays
  */
-function getMemFsFilter(changes: FileMap, filename: string) {
+ function getMemFsFilter(changes: FileMap, filename: string) {
     const deleted = Object.entries(changes)
         .filter(([, info]) => info.state === 'deleted')
-        .map(([file]) => (basename(file) === filename ? dirname(file) : file));
+        .map(([file]) => join((basename(join(file)) === filename ? dirname(file) : file)));
     return (path: string) => !deleted.find((entry) => path.startsWith(entry));
 }
 
@@ -44,11 +44,10 @@ function getMemFsFilter(changes: FileMap, filename: string) {
  */
 function concatNewFoldersFromMemFs(folders: string[], changes: FileMap, filename: string): string[] {
     const modified = Object.entries(changes)
-        .filter(([file, info]) => info.state === 'modified' && basename(file) === filename)
-        .map(([file]) => dirname(file));
+        .filter(([file, info]) => info.state === 'modified' && basename(join(file)) === filename)
+        .map(([file]) => dirname(join(file)));
     return [...new Set([...folders, ...modified])];
 }
-
 /**
  * Search for 'filename' starting from 'root'. Returns array of paths that contain the file.
  *
