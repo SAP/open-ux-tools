@@ -3,21 +3,36 @@ import React from 'react';
 import type { ILinkProps, ILinkStyles } from '@fluentui/react';
 import { Link } from '@fluentui/react';
 
+export interface UILinkProps extends ILinkProps {
+    secondary?: boolean;
+}
+
+const linkStyle = {
+    primary: {
+        color: 'var(--vscode-textLink-foreground)',
+        hoverColor: 'var(--vscode-textLink-activeForeground)'
+    },
+    secondary: {
+        color: 'var(--vscode-foreground)',
+        hoverColor: 'var(--vscode-foreground)'
+    }
+};
+
 /**
  * UILink component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/link
  *
  * @exports
  * @class UILink
- * @extends {React.Component<ILinkProps, {}>}
+ * @extends {React.Component<UILinkProps, {}>}
  */
-export class UILink extends React.Component<ILinkProps, {}> {
+export class UILink extends React.Component<UILinkProps, {}> {
     /**
      * Initializes component properties.
      *
-     * @param {ILinkProps} props
+     * @param {UILinkProps} props
      */
-    public constructor(props: ILinkProps) {
+    public constructor(props: UILinkProps) {
         super(props);
     }
 
@@ -25,18 +40,21 @@ export class UILink extends React.Component<ILinkProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
+        const { secondary } = this.props;
+        const styles = secondary ? linkStyle.secondary : linkStyle.primary;
         const linkStyles = (): Partial<ILinkStyles> => {
             return {
                 root: {
-                    color: 'var(--vscode-textLink-foreground)',
+                    color: styles.color,
                     fontFamily: 'var(--vscode-font-family)',
+                    textDecoration: 'underline',
                     selectors: {
                         '&:hover, &:hover:focus, &:hover:active': {
-                            color: 'var(--vscode-textLink-activeForeground)',
-                            textDecoration: 'underline'
+                            color: styles.hoverColor,
+                            textDecoration: 'none'
                         },
                         '&:active, &:focus': {
-                            color: 'var(--vscode-textLink-activeForeground)',
+                            color: styles.hoverColor,
                             textDecoration: 'none',
                             outline: 'none'
                         },
