@@ -122,7 +122,7 @@ async function getFioriGenBAS(): Promise<string> {
  */
 async function getFioriGenGlobalRoot(): Promise<string> {
     let version;
-    let globalNpmPath = await spawnCommand(npmCommand, ['root', '--location=global']);
+    let globalNpmPath = await spawnCommand(npmCommand, ['root', '-g']);
     globalNpmPath = globalNpmPath.trim();
     const pathToPackageJson = join(globalNpmPath, NpmModules.FioriGenerator, 'package.json');
     if (existsSync(pathToPackageJson)) {

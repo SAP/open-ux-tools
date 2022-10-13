@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.9
+
+### Patch Changes
+
+-   41813bd: fix - Reversed logic for underline in plaintext links. It's now underlined by default, and on hover underline is removed.
+
 ## 1.0.8
 
 ### Patch Changes
