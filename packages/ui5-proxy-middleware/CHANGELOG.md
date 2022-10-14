@@ -1,5 +1,13 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.13
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-config@0.15.3
+
 ## 1.1.12
 
 ### Patch Changes
