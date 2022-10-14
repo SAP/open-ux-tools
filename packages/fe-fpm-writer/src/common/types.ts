@@ -1,4 +1,4 @@
-import type { ManifestNamespace } from '@sap-ux/ui5-config';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 

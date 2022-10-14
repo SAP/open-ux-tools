@@ -210,7 +210,7 @@ importers:
 
   packages/fe-fpm-writer:
     specifiers:
-      '@sap-ux/ui5-config': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
@@ -231,7 +231,7 @@ importers:
       xml-formatter: 2.6.1
       xpath: 0.0.32
     devDependencies:
-      '@sap-ux/ui5-config': link:../ui5-config
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
@@ -369,6 +369,25 @@ importers:
       fs-extra: 10.0.0
       lodash: 4.17.21
 
+  packages/project-access:
+    specifiers:
+      '@sap-ux/ui5-config': workspace:*
+      '@types/mem-fs': 1.1.2
+      '@types/mem-fs-editor': 7.0.1
+      findit2: 2.2.3
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0
+      vscode-uri: 3.0.6
+    dependencies:
+      '@sap-ux/ui5-config': link:../ui5-config
+      findit2: 2.2.3
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0_mem-fs@2.1.0
+    devDependencies:
+      '@types/mem-fs': 1.1.2
+      '@types/mem-fs-editor': 7.0.1
+      vscode-uri: 3.0.6
+
   packages/store:
     specifiers:
       '@sap-ux/logger': workspace:*
@@ -484,6 +503,7 @@ importers:
 
   packages/ui5-application-writer:
     specifiers:
+      '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
@@ -507,6 +527,7 @@ importers:
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
       semver: 7.3.5
     devDependencies:
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.176
@@ -529,6 +550,7 @@ importers:
   packages/ui5-proxy-middleware:
     specifiers:
       '@sap-ux/logger': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/express': 4.17.13
       '@types/supertest': 2.0.12
@@ -538,7 +560,6 @@ importers:
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
       nock: 13.2.4
-      supertest: 6.2.2
       yaml: 2.0.0-10
     dependencies:
       '@sap-ux/logger': link:../logger
@@ -548,16 +569,16 @@ importers:
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
     devDependencies:
+      '@sap-ux/project-access': link:../project-access
       '@types/express': 4.17.13
       '@types/supertest': 2.0.12
       express: 4.17.2
       nock: 13.2.4
-      supertest: 6.2.2
       yaml: 2.0.0-10
 
   packages/ui5-test-writer:
     specifiers:
-      '@sap-ux/ui5-config': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -568,12 +589,12 @@ importers:
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
     dependencies:
-      '@sap-ux/ui5-config': link:../ui5-config
       ejs: 3.1.7
       i18next: 20.3.2
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
     devDependencies:
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -7077,7 +7098,7 @@ packages:
     dev: true
 
   /concat-map/0.0.1:
-    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
 
   /concat-stream/1.6.2:
     resolution: {integrity: sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==}
@@ -11630,7 +11651,7 @@ packages:
     dev: true
 
   /json-stringify-safe/5.0.1:
-    resolution: {integrity: sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=}
+    resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
     dev: true
 
   /json5/1.0.1:
@@ -11896,7 +11917,7 @@ packages:
     dev: true
 
   /lodash.set/4.3.2:
-    resolution: {integrity: sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=}
+    resolution: {integrity: sha512-4hNPN5jlm/N/HLMCO43v8BXKq9Z7QdAGc/VGrRD61w8gN9g/6jF9A4L1pbUgBLCffi0w9VsXfTOij5x8iTyFvg==}
     dev: true
 
   /lodash.startcase/4.4.0:
@@ -13900,7 +13921,6 @@ packages:
       prop-types: 15.8.1
       react: 16.14.0
       scheduler: 0.19.1
-    dev: true
 
   /react-element-to-jsx-string/14.3.4_wcqkhtmu7mswc6yz4uyexck3ty:
     resolution: {integrity: sha512-t4ZwvV6vwNxzujDQ+37bspnLwA4JlgUPWhLjBJWsNIDceAf6ZKUTCjdm08cN6WeZ5pTMKiCJkmAYnpmR4Bm+dg==}
@@ -13976,7 +13996,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       prop-types: 15.8.1
-    dev: true
 
   /read-pkg-up/1.0.1:
     resolution: {integrity: sha512-WD9MTlNtI55IwYUS27iHh9tK3YoIVhxis8yKhLpTqWtml739uXc9NWTpxoHkfZf3+DkCCsXox94/VWZniuZm6A==}
@@ -14535,7 +14554,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: true
 
   /schema-utils/1.0.0:
     resolution: {integrity: sha512-i27Mic4KovM/lnGsy8whRCHhc7VicJajAjTrYg11K9zfZXnYIt4k5F+kZkwjnrhKzLic/HLU4j11mjsz2G/75g==}
@@ -15910,7 +15928,6 @@ packages:
   /unified/9.2.0:
     resolution: {integrity: sha512-vx2Z0vY+a3YoTj8+pttM3tiJHCwY5UFbYdiWrwBEbHmK8pvsPj2rtAX2BFfgXen8T39CJWblWRDT4L5WGXtDdg==}
     dependencies:
-      '@types/unist': 2.0.6
       bail: 1.0.5
       extend: 3.0.2
       is-buffer: 2.0.5
@@ -16213,6 +16230,19 @@ packages:
 
   /vm-browserify/1.1.2:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==}
+    dev: true
+
+  /vm2/3.9.11:
+    resolution: {integrity: sha512-PFG8iJRSjvvBdisowQ7iVF580DXb1uCIiGaXgm7tynMR1uTBlv7UJlB1zdv5KJ+Tmq1f0Upnj3fayoEOPpCBKg==}
+    engines: {node: '>=6.0'}
+    hasBin: true
+    dependencies:
+      acorn: 8.8.0
+      acorn-walk: 8.2.0
+    dev: false
+
+  /vscode-uri/3.0.6:
+    resolution: {integrity: sha512-fmL7V1eiDBFRRnu+gfRWTzyPpNIHJTc4mWnFkwBUmO9U3KPgJAmTx7oxi2bl/Rh6HLdU7+4C9wlj0k2E4AdKFQ==}
     dev: true
 
   /w3c-hr-time/1.0.2:

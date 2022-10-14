@@ -2,7 +2,7 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { Manifest } from '@sap-ux/ui5-config';
+import type { Manifest } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
