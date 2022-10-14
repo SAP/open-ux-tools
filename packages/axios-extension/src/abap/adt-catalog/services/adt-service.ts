@@ -1,15 +1,25 @@
 import { Logger } from '@sap-ux/logger';
-import { AdtServiceConfigs, AdtServiceName } from './supported-services';
+import { AdtCategory, AdtCollection } from 'abap/types';
 import { Axios } from 'axios';
-import { AdtCatalogService } from '../adt-catalog-service';
-import { AdtCollection } from 'abap/types';
 
-export abstract class AdtService extends Axios {
+interface AdtServiceExtension {
+    attachAdtCollection(serviceSchema: AdtCollection): void;
+}
+
+export abstract class AdtService extends Axios implements AdtServiceExtension {
     // Instantiated by calling ServiceProvider.createService()
     public log: Logger;
+    serviceSchema: AdtCollection;
 
-    constructor(public readonly catalog: AdtCatalogService) {
-        super();
-        this.log = this.catalog.log;
+    /**
+     * Subclass that implements each specific ADT service
+     * should provide AdtCatagory to retrive the schema.
+     */
+    public static getAdtCatagory(): AdtCategory {
+        throw 'AdtService subclasses to implement';
+    }
+
+    public attachAdtCollection(serviceSchema: AdtCollection): void {
+        this.serviceSchema = serviceSchema;
     }
 }

@@ -1,12 +1,17 @@
-import { AdtServiceConfigs, AdtServiceName } from '../supported-services';
 import { AdtService } from './adt-service';
-import { AdtCatalogService } from '../adt-catalog-service';
-import { AdtCollection } from '../../types';
-import { getTransportNumberFromResponse } from '../handlers/transport';
+import { AdtCategory } from '../../types';
+import XmlParser from 'fast-xml-parser';
+import * as xpath from 'xpath';
+import { DOMParser } from '@xmldom/xmldom';
 
 export class TransportRequestService extends AdtService {
-    constructor(public readonly catalog: AdtCatalogService) {
-        super(catalog);
+    private static AdtCategory = {
+        scheme: 'http://www.sap.com/adt/categories/cts',
+        term: 'transportmanagement'
+    };
+
+    public static getAdtCatagory(): AdtCategory {
+        return TransportRequestService.AdtCategory;
     }
 
     /**
@@ -15,14 +20,6 @@ export class TransportRequestService extends AdtService {
      * @returns Newly created transport request number
      */
     public async createTransportRequest(description: string): Promise<string> {
-        let serviceSchema: AdtCollection;
-        try {
-            serviceSchema = await this.catalog.getServiceDefinition(AdtServiceConfigs[AdtServiceName.CreateTransport]);
-        } catch {
-            // Service not available on target ABAP backend version, return empty string
-            return '';
-        }
-
         const acceptHeaders = {
             headers: {
                 Accept: 'application/vnd.sap.adt.transportorganizer.v1+xml',
@@ -38,7 +35,18 @@ export class TransportRequestService extends AdtService {
                     </tm:request>
                 </tm:root>
             `;
-        const response = await this.post(serviceSchema.href, data, acceptHeaders);
-        return getTransportNumberFromResponse(response.data, this.log);
+        const response = await this.post(this.serviceSchema.href, data, acceptHeaders);
+        return this.getTransportNumberFromResponse(response.data);
+    }
+
+    private getTransportNumberFromResponse(xml: string): string {
+        if (XmlParser.validate(xml) !== true) {
+            this.log.warn(`Invalid XML: ${xml}`);
+            return '';
+        }
+        const doc = new DOMParser().parseFromString(xml);
+        const createdTransportNumber = (xpath.select1('//request', doc) as Element)?.attributes['number'];
+        this.log.warn('Create TR number: ' + createdTransportNumber);
+        return createdTransportNumber;
     }
 }

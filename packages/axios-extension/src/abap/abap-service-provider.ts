@@ -1,22 +1,23 @@
 import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
-import type { AdtServices } from './adt-catalog';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
-import { AdtServiceName, AdtServiceConfigs, parseAtoResponse, TenantType } from './adt-catalog';
-import type { AbapServiceProviderExtension } from './abap-service-provider-extension';
-import { getTransportNumberFromResponse, getTransportRequestList } from './adt-catalog/handlers/transport';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import type { AdtCollection, TransportRequest } from './types';
+import type { AdtCollection, AtoSettings } from './types';
+import { TenantType } from './types';
+import { AdtService } from './adt-catalog/services/adt-service';
+import { AtoService } from './adt-catalog/services/ato-service';
 
 /**
  * Extension of the service provider for ABAP services.
  */
 export class AbapServiceProvider extends ServiceProvider {
     public s4Cloud: boolean | undefined;
+
+    protected atoSettings: AtoSettings;
 
     /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
@@ -43,30 +44,16 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns ABAP Transport Organizer settings
      */
     public async getAtoInfo(): Promise<AtoSettings> {
-        let serviceSchema: AdtCollection;
+        let atoService: AtoService;
         try {
-            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
-                AdtServiceConfigs[AdtServiceName.AtoSettings]
-            );
-        } catch {
-            // Service not available on target ABAP backend version, return empty setting config
-            this.atoSettings = {};
-            return this.atoSettings;
-        }
-
-        if (!this.atoSettings) {
-            try {
-                const acceptHeaders = {
-                    headers: {
-                        Accept: 'application/*'
-                    }
-                };
-                const response = await this.get(serviceSchema.href, acceptHeaders);
-                this.atoSettings = parseAtoResponse(response.data);
-            } catch (error) {
+            atoService = await this.getAdtService<AtoService>(AtoService);
+            if (atoService) {
+                this.atoSettings = await atoService.getAtoInfo();
+            } else {
                 this.atoSettings = {};
-                throw error;
             }
+        } catch (error) {
+            this.atoSettings = {};
         }
         return this.atoSettings;
     }
@@ -179,104 +166,30 @@ export class AbapServiceProvider extends ServiceProvider {
         return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
     }
 
-    public getAdtService<T extends AdtService>(serviceName: AdtServiceName): T {
-        if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
-            const adtCatalogSerivce = this.createService<AdtCatalogService>(
-                AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
-                AdtCatalogService
-            );
-            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = new AdtServices(adtCatalogSerivce);
-        }
-
-        return this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtServices;
-    }
-
     /**
-     *
-     * @param packageName Package name for deployment
-     * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
-     * @returns array of transports id's
+     * Retrieve singleton instance of AdtService subclass to serve the specific ADT request query.
+     * @example
+     * ```ts
+     * const transportRequestSerivce = abapServiceProvider.getAdtService<TransportRequestService>(TransportRequestService);
+     * ```
+     * @param adtServiceSubclass Subclass of class AdtService, type is specified by using AdtService class constructor signature.
+     * @returns Subclass type of class AdtService
      */
-    public async getTransportRequests(packageName: string, appName: string): Promise<TransportRequest[]> {
-        let serviceSchema: AdtCollection;
-        try {
-            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
-                AdtServiceConfigs[AdtServiceName.TransportChecks]
-            );
-        } catch {
-            // Service not available on target ABAP backend version, return empty setting config
-            return [];
-        }
-
-        if (!serviceSchema || !serviceSchema.href) {
-            return [];
-        }
-        const urlPath = serviceSchema.href;
-        const acceptHeaders = {
-            headers: {
-                Accept: 'application/vnd.sap.as+xml; dataname=com.sap.adt.transport.service.checkData',
-                'content-type':
-                    'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.transport.service.checkData'
+    public async getAdtService<T extends AdtService>(adtServiceSubclass: any): Promise<T> {
+        const subclassName = adtServiceSubclass.name;
+        if (!this.services[subclassName]) {
+            // Retrieve ADT schema for the specific input AdtService subclass
+            const adtCatalogSerivce = this.getAdtCatalogService();
+            const adtCollection = await adtCatalogSerivce.getServiceDefinition(adtServiceSubclass.getAdtCatagory());
+            // No ADT schema available neither locally nor from service query.
+            if (!adtCollection) {
+                return null;
             }
-        };
-
-        const data = `
-                <?xml version="1.0" encoding="UTF-8"?>
-                <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
-                    <asx:values>
-                        <DATA>
-                        <PGMID/>
-                        <OBJECT/>
-                        <OBJECTNAME/>
-                        <DEVCLASS>${packageName}</DEVCLASS>
-                        <SUPER_PACKAGE/>
-                        <OPERATION>I</OPERATION>
-                        <URI>/sap/bc/adt/filestore/ui5-bsp/objects/${appName}/$create</URI>
-                        </DATA>
-                    </asx:values>
-                </asx:abap>
-            `;
-
-        const response = await this.post(urlPath, data, acceptHeaders);
-        return getTransportRequestList(response.data, this.log);
-    }
-
-    /**
-     *
-     * @param description Description of the new transport request to be created
-     * @returns Newly created transport request number
-     */
-    public async createTransportRequest(description: string): Promise<string> {
-        let serviceSchema: AdtCollection;
-        try {
-            serviceSchema = await this.getAdtCatalogService().getServiceDefinition(
-                AdtServiceConfigs[AdtServiceName.CreateTransport]
-            );
-        } catch {
-            // Service not available on target ABAP backend version, return empty string
-            return '';
+            // Create singleton instance of AdtService subclass
+            this.services[subclassName] = this.createService(adtCollection.href, adtServiceSubclass);
+            (this.services[subclassName] as AdtService).attachAdtCollection(adtCollection);
         }
 
-        if (!serviceSchema || !serviceSchema.href) {
-            return '';
-        }
-        const urlPath = serviceSchema.href;
-        const acceptHeaders = {
-            headers: {
-                Accept: 'application/vnd.sap.adt.transportorganizer.v1+xml',
-                'content-type': 'text/plain'
-            }
-        };
-
-        const data = `
-                <?xml version="1.0" encoding="ASCII"?>
-                <tm:root xmlns:tm="http://www.sap.com/cts/adt/tm" tm:useraction="newrequest">
-                    <tm:request tm:desc="${description}" tm:type="K" tm:target="LOCAL" tm:cts_project="">
-                        <tm:task tm:owner=""/>
-                    </tm:request>
-                </tm:root>
-            `;
-        const response = await this.post(urlPath, data, acceptHeaders);
-        return getTransportNumberFromResponse(response.data, this.log);
+        return this.services[subclassName] as T;
     }
 }

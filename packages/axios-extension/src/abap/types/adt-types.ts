@@ -58,6 +58,9 @@ export interface AdtCategory {
     scheme: string;
 }
 
+/**
+ * Transport request data available in response.
+ */
 export interface TransportRequest {
     transportNumber: string;
     user: string;
@@ -65,3 +68,26 @@ export interface TransportRequest {
     client: string;
     targetSystem: string;
 }
+
+export enum TenantType {
+    SAP = 'SAP',
+    Customer = 'CUSTOMER'
+}
+
+/**
+ * Possible values for operations type property: (C)loud and on-(P)remise.
+ */
+export type OperationsType = 'C' | 'P';
+
+export interface AtoSettings {
+    developmentPackage?: string;
+    developmentPrefix?: string;
+    operationsType?: OperationsType;
+    isExtensibilityDevelopmentSystem?: boolean;
+    tenantType?: TenantType;
+    isTransportRequestRequired?: boolean;
+}
+
+export type AdtTransportStatus = 'S' | 'E';
+
+export const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];

@@ -1,30 +1,45 @@
-import { AdtServiceConfigs, AdtServiceName } from '../supported-services';
-import { AdtCatalogService } from '../adt-catalog-service';
 import { AdtService } from './adt-service';
-import { AtoSettings, parseAtoResponse } from '../handlers/ato';
-import { AdtCollection } from 'abap/types';
+import { AdtCategory, AtoSettings } from 'abap/types';
+import XmlParser from 'fast-xml-parser';
 
 export class AtoService extends AdtService {
-    constructor(public readonly catalog: AdtCatalogService) {
-        super(catalog);
+    private static AdtCategory = {
+        scheme: 'http://www.sap.com/adt/categories/ato',
+        term: 'settings'
+    };
+
+    public static getAdtCatagory(): AdtCategory {
+        return AtoService.AdtCategory;
     }
 
     public async getAtoInfo(): Promise<AtoSettings> {
-        let serviceSchema: AdtCollection;
-        try {
-            serviceSchema = await this.catalog.getServiceDefinition(AdtServiceConfigs[AdtServiceName.AtoSettings]);
-        } catch (error) {
-            // Service not available on target ABAP backend version, return empty setting config
-            this.log.error(error);
-            return {};
-        }
-
         const acceptHeaders = {
             headers: {
                 Accept: 'application/*'
             }
         };
-        const response = await this.get(serviceSchema.href, acceptHeaders);
-        return parseAtoResponse(response.data);
+        const response = await this.get(this.serviceSchema.href, acceptHeaders);
+        return this.parseAtoResponse(response.data);
+    }
+
+    /**
+     * Parse an XML document for ATO (Adaptation Transport Organizer) settings.
+     *
+     * @param xml xml document containing ATO settings
+     * @returns parsed ATO settings
+     */
+    private parseAtoResponse(xml: string): AtoSettings {
+        if (XmlParser.validate(xml) !== true) {
+            return {};
+        }
+        const options = {
+            attributeNamePrefix: '',
+            ignoreAttributes: false,
+            ignoreNameSpace: true,
+            parseAttributeValue: true
+        };
+        const obj = XmlParser.getTraversalObj(xml, options);
+        const parsed = XmlParser.convertToJson(obj, options);
+        return parsed.settings ? (parsed.settings as AtoSettings) : {};
     }
 }
