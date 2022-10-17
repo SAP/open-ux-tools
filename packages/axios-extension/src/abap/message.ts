@@ -55,12 +55,11 @@ export function prettyPrintMessage({ msg, log, host }: { msg: string; log: Logge
             jsonMsg.details.forEach((entry) => {
                 log.info(entry.message);
             });
-        }      
+        }
     } catch (error) {
         // if for some reason the backend doesn't return proper JSON, just print it plain text.
         log.debug(msg);
     }
-    
 }
 
 /**

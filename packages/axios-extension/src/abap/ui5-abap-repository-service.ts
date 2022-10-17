@@ -54,10 +54,14 @@ function encodeXmlValue(xmlValue: string): string {
 export class Ui5AbapRepositoryService extends ODataService {
     public static readonly PATH = '/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV';
 
+    /**
+     * Extension of the base constructor to set preferred response format if not provided by caller.
+     *
+     * @param config
+     */
     public constructor(config: AxiosRequestConfig) {
-        // set preferred response format if not provided by caller
-        // @see https://axios-http.com/docs/config_defaults
         config.headers = config.headers ?? {};
+        // @see https://axios-http.com/docs/config_defaults
         config.headers['Accept'] = config.headers['Accept'] ?? 'application/json,application/xml,text/plain,*/*';
         super(config);
     }
@@ -193,7 +197,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         // Set both to infinity. It's the backend's responsibilty to reject messages sizes it cannot handle
         const maxBodyLength = Infinity;
         const maxContentLength = Infinity;
-        
+
         return { headers, params, maxBodyLength, maxContentLength };
     }
 
@@ -330,7 +334,6 @@ export class Ui5AbapRepositoryService extends ODataService {
             } else {
                 this.log.error(error.response.data);
             }
-            
         }
     }
 }
