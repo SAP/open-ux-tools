@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 1.0.11
+
+### Patch Changes
+
+-   7c0ae60: Added CustomFPMPage icon
+
+## 1.0.10
+
+### Patch Changes
+
+-   b5c89da: feat - new property "secondary" for UILink component
+
+## 1.0.9
+
+### Patch Changes
+
+-   41813bd: fix - Reversed logic for underline in plaintext links. It's now underlined by default, and on hover underline is removed.
+
+## 1.0.8
+
+### Patch Changes
+
+-   117ba24: chore(UI-Components) Export fluentui types used in UITable
+
 ## 1.0.7
 
 ### Patch Changes

@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "CAPnode_mix-fiori_elements",
+        "type": "application"
+    }
+}
