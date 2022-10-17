@@ -104,5 +104,17 @@ describe('config', () => {
             expect(isProxyRequired(`${host}:80`)).toBeFalsy();
             expect(isProxyRequired(`${host}`)).toBeFalsy();
         });
+
+        test('ip address is excluded from proxy', () => {
+            const host = 'http://123.156.255.101';
+            process.env.no_proxy = '123.156.255.101';
+            expect(isProxyRequired(host)).toBeFalsy();
+        });
+
+        test('ip address is not excluded from proxy', () => {
+            const host = 'http://123.156.255.101';
+            process.env.no_proxy = '127.0.0.1';
+            expect(isProxyRequired(host)).toBeTruthy();
+        });
     });
 });
