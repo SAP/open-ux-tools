@@ -57,9 +57,10 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Extension of the base constructor to set preferred response format if not provided by caller.
      *
-     * @param config
+     * @param config optional base configuration for Axios
      */
-    public constructor(config: AxiosRequestConfig) {
+    public constructor(config?: AxiosRequestConfig) {
+        config = config ?? {};
         config.headers = config.headers ?? {};
         // @see https://axios-http.com/docs/config_defaults
         config.headers['Accept'] = config.headers['Accept'] ?? 'application/json,application/xml,text/plain,*/*';
@@ -176,7 +177,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             charset: 'UTF8'
         };
         const params: { [key: string]: string | boolean } = {
-            CodePage: 'UTF8',
+            CodePage: `'UTF8'`,
             CondenseMessagesInHttpResponseHeader: 'X',
             format: 'json'
         };

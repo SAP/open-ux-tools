@@ -1,7 +1,6 @@
 import nock from 'nock';
 import type { AppInfo } from '../../src';
 import { Ui5AbapRepositoryService, createForAbap } from '../../src';
-import type { HeadersDefaults } from 'axios';
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -174,10 +173,6 @@ describe('Ui5AbapRepositoryService', () => {
              * Extension of Ui5AbapRespository class to make `createPayload` public and available for testing.
              */
             class ServiceForTesting extends Ui5AbapRepositoryService {
-                defaults = {
-                    headers: {} as HeadersDefaults,
-                    baseUrl: ''
-                };
                 public createPayload = super.createPayload;
             }
             const service = new ServiceForTesting();

@@ -50,7 +50,7 @@ export function prettyPrintMessage({ msg, log, host }: { msg: string; log: Logge
     try {
         const jsonMsg = JSON.parse(msg) as SuccessMessage;
         log.info(jsonMsg.message);
-        logFullURL({ host, path: msg['longtext_url'], log });
+        logFullURL({ host, path: jsonMsg['longtext_url'], log });
         if (jsonMsg.details) {
             jsonMsg.details.forEach((entry) => {
                 log.info(entry.message);
