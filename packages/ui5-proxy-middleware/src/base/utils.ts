@@ -9,6 +9,7 @@ import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
+import { shouldProxy } from 'proxy-from-env';
 
 /**
  * Handler for the proxy response event.
@@ -90,29 +91,18 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
  * @param noProxyConfig - user's no_proxy configuration
  * @returns true if host is excluded from user's corporate server, false otherwise
  */
-export const isHostExcludedFromProxy = (
-    url: string,
-    noProxyConfig: string | undefined = process.env.no_proxy || process.env.npm_config_noproxy
-): boolean => {
+export const shouldProxyHost = (url: string): boolean => {
     const defaultPorts: { [key: string]: string } = {
-        'http:': '80',
-        'https:': '443',
-        'ws:': '80',
-        'wss:': '443'
+        'http': '80',
+        'https': '443',
+        'ws': '80',
+        'wss': '443'
     };
-    if (noProxyConfig === '*') {
-        return true;
-    } else {
-        const urlInstance = new URL(url);
-        const hostname = urlInstance.hostname;
-        const port = urlInstance.port ? urlInstance.port : defaultPorts[urlInstance.protocol];
-        const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
-        return !!noProxyList.find((entry) =>
-            entry.startsWith('.')
-                ? hostname.endsWith(entry) || `${hostname}:${port}`.endsWith(entry)
-                : hostname.endsWith(`.${entry}`) || `${hostname}:${port}`.endsWith(`.${entry}`)
-        );
-    }
+    const urlInstance = new URL(url);
+    const hostname = urlInstance.hostname;
+    const port = urlInstance.port ? urlInstance.port : defaultPorts[urlInstance.protocol.split(':', 1)[0]];
+
+    return shouldProxy(hostname, parseInt(port, 10));
 };
 
 /**

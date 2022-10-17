@@ -23,7 +23,7 @@ describe('config', () => {
         });
     });
 
-    describe('isHostExcludedFromProxy', () => {
+    describe('shouldProxyHost', () => {
         const host = 'http://www.host.example';
         const noProxyConfig = process.env.no_proxy;
 
