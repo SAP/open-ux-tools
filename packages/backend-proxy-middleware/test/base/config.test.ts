@@ -1,4 +1,4 @@
-import { getCorporateProxyServer, isHostExcludedFromProxy } from '../../src/base/config';
+import { getCorporateProxyServer, shouldProxyHost } from '../../src/base/config';
 
 describe('config', () => {
     const corporateProxy = 'https://myproxy.example:8443';
@@ -32,66 +32,77 @@ describe('config', () => {
         });
 
         test('no_proxy config does not exist', () => {
-            process.env.no_proxy = undefined;
-            expect(isHostExcludedFromProxy(host)).toBeFalsy();
+            delete process.env.no_proxy;
+            expect(shouldProxyHost(host)).toBeTruthy();
         });
 
         test('host is not excluded via no_proxy config', () => {
             process.env.no_proxy = 'host,www';
-            expect(isHostExcludedFromProxy(host)).toBeFalsy();
+            expect(shouldProxyHost(host)).toBeTruthy();
         });
 
         test('host is not excluded via no_proxy config but has similar ending', () => {
             process.env.no_proxy = 'ample';
-            expect(isHostExcludedFromProxy(host)).toBeFalsy();
+            expect(shouldProxyHost(host)).toBeTruthy();
             process.env.no_proxy = 'ost.example';
-            expect(isHostExcludedFromProxy(host)).toBeFalsy();
+            expect(shouldProxyHost(host)).toBeTruthy();
         });
 
-        test('host is excluded via no_proxy config', () => {
+        test('host is not excluded via no_proxy config, because no leading dot', () => {
             process.env.no_proxy = 'host.example';
-            expect(isHostExcludedFromProxy(host)).toBeTruthy();
+            expect(shouldProxyHost(host)).toBeTruthy();
             process.env.no_proxy = 'example';
-            expect(isHostExcludedFromProxy(host)).toBeTruthy();
+            expect(shouldProxyHost(host)).toBeTruthy();
         });
 
-        test('host is excluded via no_proxy config, but with leading .', () => {
+        test('host is excluded via no_proxy config, with leading .', () => {
             process.env.no_proxy = '.host.example';
-            expect(isHostExcludedFromProxy(host)).toBeTruthy();
+            expect(shouldProxyHost(host)).toBeFalsy();
             process.env.no_proxy = '.example';
-            expect(isHostExcludedFromProxy(host)).toBeTruthy();
+            expect(shouldProxyHost(host)).toBeFalsy();
+        });
+
+        test('host is excluded via no_proxy config, full host', () => {
+            process.env.no_proxy = 'www.host.example';
+            expect(shouldProxyHost(host)).toBeFalsy();
         });
 
         test('all hosts are excluded from proxy', () => {
             process.env.no_proxy = '*';
-            expect(isHostExcludedFromProxy(host)).toBeTruthy();
+            expect(shouldProxyHost(host)).toBeFalsy();
         });
 
-        test('host with port is excluded from proxy, when all ports are excluded', () => {
+        test('host with port is not excluded from proxy, no leading dot', () => {
             process.env.no_proxy = 'host.example';
-            expect(isHostExcludedFromProxy(`${host}:3333`)).toBeTruthy();
+            expect(shouldProxyHost(`${host}:3333`)).toBeTruthy();
         });
 
-        test('host with port is excluded from proxy, when all ports are excluded, but with leading dot', () => {
+        test('host with port is excluded from proxy, when all ports are excluded, with leading dot', () => {
             process.env.no_proxy = '.host.example';
-            expect(isHostExcludedFromProxy(`${host}:3333`)).toBeTruthy();
+            expect(shouldProxyHost(`${host}:3333`)).toBeFalsy();
         });
 
-        test('only host with specific port is excluded from proxy', () => {
-            process.env.no_proxy = 'host.example:3333';
-            expect(isHostExcludedFromProxy(`${host}:3333`)).toBeTruthy();
-            expect(isHostExcludedFromProxy(host)).toBeFalsy();
+        test('host with port is excluded from proxy, when all ports are excluded, full host', () => {
+            process.env.no_proxy = 'www.host.example';
+            expect(shouldProxyHost(`${host}:3333`)).toBeFalsy();
         });
 
-        test('only host with specific port is excluded from proxy, but with leading dot', () => {
+        test('only host with specific port is excluded from proxy, with leading dot', () => {
             process.env.no_proxy = '.host.example:3333';
-            expect(isHostExcludedFromProxy(`${host}:3333`)).toBeTruthy();
-            expect(isHostExcludedFromProxy(host)).toBeFalsy();
+            expect(shouldProxyHost(`${host}:3333`)).toBeFalsy();
+            expect(shouldProxyHost(host)).toBeTruthy();
+        });
+
+        test('only host with specific port is excluded from proxy, full host', () => {
+            process.env.no_proxy = 'www.host.example:3333';
+            expect(shouldProxyHost(`${host}:3333`)).toBeFalsy();
+            expect(shouldProxyHost(host)).toBeTruthy();
         });
 
         test('host with default port is excluded from proxy', () => {
-            process.env.no_proxy = 'host.example:80';
-            expect(isHostExcludedFromProxy(`${host}:80`)).toBeTruthy();
+            process.env.no_proxy = '.host.example:80';
+            expect(shouldProxyHost(`${host}:80`)).toBeFalsy();
+            expect(shouldProxyHost(`${host}`)).toBeFalsy();
         });
     });
 });

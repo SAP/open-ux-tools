@@ -1,3 +1,4 @@
+import { shouldProxy } from 'proxy-from-env';
 /**
  * Get the effective proxy string from runtime args (highest priority), given config value or environment variables.
  *
@@ -30,26 +31,16 @@ export function getCorporateProxyServer(proxyFromConfig?: string): string | unde
  * @param url - url to be checked
  * @returns true if host is excluded from user's corporate server, false otherwise
  */
-export const isHostExcludedFromProxy = (url: string): boolean => {
-    const noProxyConfig = process.env.no_proxy || process.env.npm_config_noproxy;
+export const shouldProxyHost = (url: string): boolean => {
     const defaultPorts: { [key: string]: string } = {
-        'http:': '80',
-        'https:': '443',
-        'ws:': '80',
-        'wss:': '443'
+        'http': '80',
+        'https': '443',
+        'ws': '80',
+        'wss': '443'
     };
+    const urlInstance = new URL(url);
+    const hostname = urlInstance.hostname;
+    const port = urlInstance.port ? urlInstance.port : defaultPorts[urlInstance.protocol.split(':', 1)[0]];
 
-    if (noProxyConfig === '*') {
-        return true;
-    } else {
-        const urlInstance = new URL(url);
-        const hostname = urlInstance.hostname;
-        const port = urlInstance.port ? urlInstance.port : defaultPorts[urlInstance.protocol];
-        const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
-        return !!noProxyList.find((entry) =>
-            entry.startsWith('.')
-                ? hostname.endsWith(entry) || `${hostname}:${port}`.endsWith(entry)
-                : hostname.endsWith(`.${entry}`) || `${hostname}:${port}`.endsWith(`.${entry}`)
-        );
-    }
+    return shouldProxy(hostname, parseInt(port, 10));
 };
