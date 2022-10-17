@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "CAPJava_mix-invalid_freestyle_no_package_json",
+        "type": "application"
+    }
+}

@@ -15,6 +15,9 @@
 # Module: logger
 /packages/logger/ @SAP/ux-tools-logger
 
+# Module: project-access
+/packages/project-access/ @SAP/ux-tools-project-access
+
 # Module: odata-service-writer
 /packages/odata-service-writer/ @SAP/ux-tools-odata-service-writer
 
