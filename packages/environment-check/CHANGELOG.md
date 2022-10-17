@@ -1,5 +1,18 @@
 # @sap-ux/environment-check
 
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-config@0.15.3
+
+## 0.4.0
+
+### Minor Changes
+
+-   a414e64: fix spawn command to locate global modules install location
+
 ## 0.3.2
 
 ### Patch Changes
