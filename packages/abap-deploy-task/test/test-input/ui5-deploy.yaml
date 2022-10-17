@@ -12,9 +12,10 @@ builder:
     - name: abap-deploy-task
       afterTask: ui5-tooling-transpile-task
       configuration:
-        strictSsl: true
+        strictSsl: false
         app:
           name: Z_TEST
+          package: $TMP
         target:
           destination: EXAMPLE
           url: https://target.example
