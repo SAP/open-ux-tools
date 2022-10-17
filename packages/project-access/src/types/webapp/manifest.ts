@@ -1316,6 +1316,7 @@ export interface Command {
      */
     shortcut?: string;
 }
+type targetType = [] | [string | RouteTargetObject] | string | RouteTargetObject;
 /**
  * Represents the configuration of routing
  */
@@ -1339,7 +1340,7 @@ export interface RoutingFlexEnabled {
             /**
              * Represents one or multiple names of targets that are displayed when no route is matched
              */
-            target: [] | [string | RouteTargetObject] | string | RouteTargetObject;
+            target: targetType;
         };
         /**
          * Represents a prefix that is prepended in front of the viewName
@@ -1559,7 +1560,7 @@ export interface Routing {
             /**
              * Represents one or multiple names of targets that are displayed when no route is matched
              */
-            target: [] | [string | RouteTargetObject] | string | RouteTargetObject;
+            target: targetType;
         };
         /**
          * Represents a prefix that is prepended in front of the viewName
