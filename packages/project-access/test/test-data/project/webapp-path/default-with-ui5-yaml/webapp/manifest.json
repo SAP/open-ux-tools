@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "default-with-ui5-yaml",
+        "type": "application"
+    }
+}

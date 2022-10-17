@@ -1,6 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import type { ManifestNamespace } from '@sap-ux/ui5-config';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { validateBasePath } from '../common/validate';
 import type {
     CustomPage,
