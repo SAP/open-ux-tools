@@ -54,6 +54,14 @@ function encodeXmlValue(xmlValue: string): string {
 export class Ui5AbapRepositoryService extends ODataService {
     public static readonly PATH = '/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV';
 
+    public constructor(config: AxiosRequestConfig) {
+        // set preferred response format if not provided by caller
+        // @see https://axios-http.com/docs/config_defaults
+        config.headers = config.headers ?? {};
+        config.headers['Accept'] = config.headers['Accept'] ?? 'application/json,application/xml,text/plain,*/*';
+        super(config);
+    }
+
     /**
      * Get information about a deployed application. Returns undefined if the application cannot be found.
      *
@@ -91,14 +99,14 @@ export class Ui5AbapRepositoryService extends ODataService {
             app.description || 'Deployed with SAP Fiori tools',
             info ? info.Package : app.package
         );
+        this.log.debug(`Payload:\n${payload}`);
         const config = this.createConfig(app.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl();
         try {
             const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, app.name, payload, config);
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
             if (response?.headers?.['sap-message']) {
-                const message = JSON.parse(response.headers['sap-message']);
-                prettyPrintMessage({ msg: message, log: this.log, host: frontendUrl });
+                prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host: frontendUrl });
             }
             // log url of created/updated app
             const path = '/sap/bc/ui5_ui5' + (!app.name.startsWith('/') ? '/sap/' : '') + app.name.toLowerCase();
@@ -127,8 +135,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         try {
             const response = await this.deleteRepoRequest(app.name, config);
             if (response?.headers?.['sap-message']) {
-                const message = JSON.parse(response.headers['sap-message']);
-                prettyPrintMessage({ msg: message, log: this.log, host });
+                prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host });
             }
             return response;
         } catch (error) {
@@ -165,7 +172,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             charset: 'UTF8'
         };
         const params: { [key: string]: string | boolean } = {
-            CodePage: "'UTF8'",
+            CodePage: 'UTF8',
             CondenseMessagesInHttpResponseHeader: 'X',
             format: 'json'
         };
@@ -179,7 +186,15 @@ export class Ui5AbapRepositoryService extends ODataService {
             params.SafeMode = safeMode;
         }
 
-        return { headers, params };
+        // `axios` does not properly pass the default values of `maxBodyLength` and `maxContentLength`
+        // to `follow-redirects`: https://github.com/axios/axios/issues/4263
+        // Without this `follow-redirects` limits the max body length to 10MB and fails with the following
+        // message: “Request body larger than maxBodyLength limit”.
+        // Set both to infinity. It's the backend's responsibilty to reject messages sizes it cannot handle
+        const maxBodyLength = Infinity;
+        const maxContentLength = Infinity;
+        
+        return { headers, params, maxBodyLength, maxContentLength };
     }
 
     /**
