@@ -31,7 +31,7 @@ Object {
         "settings": Object {
           "entitySet": "ChildEntity",
           "navigation": Object {},
-          "viewName": "my.test.App.ext.customPage.CustomPage",
+          "viewName": "my.test.App.ext.CustomPage.CustomPage",
         },
       },
       "type": "Component",
@@ -85,7 +85,7 @@ Object {
         "settings": Object {
           "entitySet": "ChildEntity",
           "navigation": Object {},
-          "viewName": "my.test.App.ext.customPage.CustomPage",
+          "viewName": "my.test.App.ext.CustomPage.CustomPage",
         },
       },
       "type": "Component",
@@ -129,7 +129,7 @@ Object {
         "settings": Object {
           "entitySet": "ChildEntity",
           "navigation": Object {},
-          "viewName": "my.test.App.ext.customPage.CustomPage",
+          "viewName": "my.test.App.ext.CustomPage.CustomPage",
         },
       },
       "type": "Component",
@@ -170,20 +170,20 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEnityCustomPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityCustomPage",
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
         },
       ],
       "targets": Object {
-        "RootEnityCustomPage": Object {
-          "id": "RootEnityCustomPage",
+        "RootEntityCustomPage": Object {
+          "id": "RootEntityCustomPage",
           "name": "sap.fe.core.fpm",
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "RootEntity",
               "navigation": Object {},
-              "viewName": "my.test.App.ext.customPage.CustomPage",
+              "viewName": "my.test.App.ext.CustomPage.CustomPage",
             },
           },
           "type": "Component",
@@ -197,7 +197,7 @@ Object {
 
 exports[`CustomPage generateCustomPage: different versions or target folder latest version with minimal input 2`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.CustomPage.CustomPage\\">
     <Page id=\\"CustomPage\\" title=\\"CustomPage\\">
         <content></content>
     </Page>
@@ -212,11 +212,11 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
     function(PageController) {
         'use strict';
 
-        return PageController.extend('my.test.App.ext.customPage.CustomPage', {
+        return PageController.extend('my.test.App.ext.CustomPage.CustomPage', {
             /**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.CustomPage.CustomPage
              */
             //  onInit: function () {
             //
@@ -225,7 +225,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
             /**
              * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
              * (NOT before the first rendering! onInit() is used for that one!).
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.CustomPage.CustomPage
              */
             //  onBeforeRendering: function() {
             //
@@ -234,7 +234,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
             /**
              * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
              * This hook is the same one that SAPUI5 controls get after being rendered.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.CustomPage.CustomPage
              */
             //  onAfterRendering: function() {
             //
@@ -242,7 +242,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder late
 
             /**
              * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.CustomPage.CustomPage
              */
             //  onExit: function() {
             //
@@ -272,18 +272,18 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEnityCustomPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityCustomPage",
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
         },
       ],
       "targets": Object {
-        "RootEnityCustomPage": Object {
-          "id": "RootEnityCustomPage",
+        "RootEntityCustomPage": Object {
+          "id": "RootEntityCustomPage",
           "name": "sap.fe.core.fpm",
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "RootEntity",
               "navigation": Object {},
               "viewName": "my.test.App.ext.different.CustomPage",
             },
@@ -374,18 +374,18 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEnityCustomPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityCustomPage",
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
         },
       ],
       "targets": Object {
-        "RootEnityCustomPage": Object {
-          "id": "RootEnityCustomPage",
+        "RootEntityCustomPage": Object {
+          "id": "RootEntityCustomPage",
           "name": "sap.fe.core.fpm",
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "RootEntity",
               "navigation": Object {},
               "viewName": "my.test.App.ext.different.CustomPage",
             },
@@ -418,21 +418,21 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEnityCustomPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityCustomPage",
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
         },
       ],
       "targets": Object {
-        "RootEnityCustomPage": Object {
+        "RootEntityCustomPage": Object {
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "RootEntity",
               "navigation": Object {},
             },
           },
           "viewId": "CustomPageView",
-          "viewName": "my.test.App.ext.customPage.CustomPage",
+          "viewName": "my.test.App.ext.CustomPage.CustomPage",
         },
         "TestObjectPage": Object {},
       },
@@ -443,7 +443,7 @@ Object {
 
 exports[`CustomPage generateCustomPage: different versions or target folder with older but supported UI5 version 2`] = `
 "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.customPage.CustomPage\\">
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"my.test.App.ext.CustomPage.CustomPage\\">
     <Page id=\\"CustomPage\\" title=\\"CustomPage\\">
         <content></content>
     </Page>
@@ -458,11 +458,11 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
     function(PageController) {
         'use strict';
 
-        return PageController.extend('my.test.App.ext.customPage.CustomPage', {
+        return PageController.extend('my.test.App.ext.CustomPage.CustomPage', {
             /**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.CustomPage.CustomPage
              */
             //  onInit: function () {
             //
@@ -471,7 +471,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
             /**
              * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
              * (NOT before the first rendering! onInit() is used for that one!).
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.CustomPage.CustomPage
              */
             //  onBeforeRendering: function() {
             //
@@ -480,7 +480,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
             /**
              * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
              * This hook is the same one that SAPUI5 controls get after being rendered.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.CustomPage.CustomPage
              */
             //  onAfterRendering: function() {
             //
@@ -488,7 +488,7 @@ exports[`CustomPage generateCustomPage: different versions or target folder with
 
             /**
              * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-             * @memberOf my.test.App.ext.customPage.CustomPage
+             * @memberOf my.test.App.ext.CustomPage.CustomPage
              */
             //  onExit: function() {
             //
@@ -522,7 +522,7 @@ Object {
         "settings": Object {
           "entitySet": "MainEntity",
           "navigation": Object {},
-          "viewName": "my.test.App.ext.customPage.CustomPage",
+          "viewName": "my.test.App.ext.CustomPage.CustomPage",
         },
       },
       "type": "Component",
@@ -548,7 +548,7 @@ Object {
         "settings": Object {
           "entitySet": "MainEntity",
           "navigation": Object {},
-          "viewName": "my.test.App.ext.customPage.CustomPage",
+          "viewName": "my.test.App.ext.CustomPage.CustomPage",
         },
       },
       "type": "Component",
