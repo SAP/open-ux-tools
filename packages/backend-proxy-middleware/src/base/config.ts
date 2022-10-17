@@ -31,7 +31,7 @@ export function getCorporateProxyServer(proxyFromConfig?: string): string | unde
  * @param url - url to be checked
  * @returns false if host is excluded from user's corporate server, true otherwise
  */
-export const shouldProxyHost = (url: string): boolean => {
+export const isProxyRequired = (url: string): boolean => {
     const defaultPorts: { [key: string]: string } = {
         'http': '80',
         'https': '443',

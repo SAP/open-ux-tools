@@ -21,7 +21,7 @@ import translations from './i18n.json';
 
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
-import { getCorporateProxyServer, shouldProxyHost } from './config';
+import { getCorporateProxyServer, isProxyRequired } from './config';
 import type { Url } from 'url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 
@@ -355,7 +355,7 @@ export async function generateProxyMiddlewareOptions(
     }
 
     backend.proxy = getCorporateProxyServer(backend.proxy);
-    if (backend.proxy && shouldProxyHost(proxyOptions.target)) {
+    if (backend.proxy && isProxyRequired(proxyOptions.target)) {
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 
