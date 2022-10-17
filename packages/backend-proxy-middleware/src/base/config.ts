@@ -26,10 +26,10 @@ export function getCorporateProxyServer(proxyFromConfig?: string): string | unde
 }
 
 /**
- * Checks if a host is excluded from user's corporate proxy.
+ * Checks if a host should be proxied through user's corporate proxy.
  *
  * @param url - url to be checked
- * @returns true if host is excluded from user's corporate server, false otherwise
+ * @returns false if host is excluded from user's corporate server, true otherwise
  */
 export const shouldProxyHost = (url: string): boolean => {
     const defaultPorts: { [key: string]: string } = {

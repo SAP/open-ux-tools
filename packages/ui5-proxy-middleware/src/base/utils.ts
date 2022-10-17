@@ -85,11 +85,10 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 };
 
 /**
- * Checks if a host is excluded from user's corporate proxy.
+ * Checks if a host should be proxied through user's corporate proxy.
  *
  * @param url - url to be checked
- * @param noProxyConfig - user's no_proxy configuration
- * @returns true if host is excluded from user's corporate server, false otherwise
+ * @returns false if host is excluded from user's corporate server, true otherwise
  */
 export const shouldProxyHost = (url: string): boolean => {
     const defaultPorts: { [key: string]: string } = {
