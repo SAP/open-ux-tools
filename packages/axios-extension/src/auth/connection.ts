@@ -145,11 +145,8 @@ export function attachConnectionHandler(provider: ServiceProvider) {
 
     // throw error if the user is unauthorized otherwise, remove interceptor if successfully connected
     const oneTimeRespInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
-        if (response.status === 401) {
-            throw new ConnectionError(response.statusText, response);
-        }
         // if a redirect to a SAML login page happened try again with disable saml param
-        else if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
+        if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
             provider.defaults.params = provider.defaults.params ?? {};
             provider.defaults.params.saml2 = 'disabled';
             return provider.request(response.config);
@@ -161,6 +158,11 @@ export function attachConnectionHandler(provider: ServiceProvider) {
             }
             provider.interceptors.response.eject(oneTimeRespInterceptorId);
             return response;
+        }
+    }, (error: AxiosError) => {
+        // remember xsrf token if provided even on error
+        if (error.response.headers?.[CSRF.ResponseHeaderName]) {
+            provider.defaults.headers.common[CSRF.RequestHeaderName] = error.response.headers[CSRF.ResponseHeaderName];
         }
     });
 

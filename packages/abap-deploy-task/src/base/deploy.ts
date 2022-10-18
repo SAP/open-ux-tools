@@ -116,29 +116,6 @@ async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRep
 }
 
 /**
- * Deploy the given archive to the given target using the given app description.
- *
- * @param archive
- * @param config
- * @param logger - reference to the logger instance
- */
-export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger) {
-    if (config.keep) {
-        writeFileSync(`archive-${Date.now()}.zip`, archive);
-    }
-    const service = await createDeployService(config);
-    service.log = logger;
-    if (!config.strictSsl) {
-        logger.warn(
-            'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'
-        );
-    }
-    logger.info(`Starting deployment${config.test === true ? ' in test mode' : ''}.`);
-    await tryDeploy(archive, service, config, logger);
-    logger.info('Deployment successful.');
-}
-
-/**
  *
  * @param archive
  * @param service
@@ -147,7 +124,7 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
  */
 async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, config: AbapDeployConfig, logger: Logger) {
     try {
-        await service.deploy(archive, config.app, config.test);
+        await service.deploy(archive, config.app, config.test, config.safe);
     } catch (e) {
         if (!config.noRetry && isAxiosError(e)) {
             const success = await handleAxiosError(e.response, archive, service, config, logger);
@@ -204,4 +181,49 @@ async function handleAxiosError(
         default:
             return false;
     }
+}
+
+/**
+ * Deploy the given archive to the given target using the given app description.
+ *
+ * @param archive
+ * @param config
+ * @param logger - reference to the logger instance
+ */
+ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger) {
+    if (config.keep) {
+        writeFileSync(`archive-${Date.now()}.zip`, archive);
+    }
+    const service = await createDeployService(config);
+    service.log = logger;
+    if (!config.strictSsl) {
+        logger.warn(
+            'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'
+        );
+    }
+    logger.info(`Starting deployment${config.test === true ? ' in test mode' : ''}.`);
+    await tryDeploy(archive, service, config, logger);
+    logger.info('Deployment successful.');
+}
+
+
+/**
+ * Deploy the given archive to the given target using the given app description.
+ *
+ * @param config
+ * @param logger - reference to the logger instance
+ */
+ export async function undeploy(config: AbapDeployConfig, logger: Logger) {
+    const service = await createDeployService(config);
+    service.log = logger;
+    if (!config.strictSsl) {
+        logger.warn(
+            'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'
+        );
+    }
+    logger.info(`Starting undeployment${config.test === true ? ' in test mode' : ''}.`);
+    if (await service.undeploy(config.app, config.test)) {
+        logger.info('Undeployment successful.');
+    }
+    
 }

@@ -41,6 +41,9 @@ function createInstance<T extends ServiceProvider>(
     delete providerConfig.ignoreCertErrors;
     providerConfig.withCredentials = providerConfig?.auth && Object.keys(providerConfig.auth).length > 0;
 
+    /** Make axios throw an error for 4xx errors as well */
+    providerConfig.validateStatus = status => status < 400;
+
     const instance = new ProviderType(providerConfig);
     instance.defaults.headers = instance.defaults.headers ?? {
         common: {},

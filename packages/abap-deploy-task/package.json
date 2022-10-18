@@ -14,7 +14,8 @@
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
     "bin": {
-        "deploy": "bin/deploy"
+        "deploy": "bin/deploy",
+        "undeploy": "bin/undeploy"
     },
     "scripts": {
         "build": "pnpm clean && tsc",

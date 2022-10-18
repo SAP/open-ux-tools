@@ -1,3 +1,15 @@
+import type { AxiosError } from 'axios';
+
+/**
+ * Casts an unknown error to an AxiosError.
+ *
+ * @param e unknown error
+ * @returns exception casted to AxiosError if it is one
+ */
+ export function isAxiosError(e: unknown): e is AxiosError {
+    return typeof e === 'object' && e !== null && 'isAxiosError' in e;
+}
+
 /**
  * Interface describing the structure of an odata error.
  */

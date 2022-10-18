@@ -1,9 +1,10 @@
 import type { Service } from '../base/service-provider';
-import type { AxiosResponse } from 'axios';
+import type { AxiosError, AxiosResponse } from 'axios';
 import { Axios } from 'axios';
 import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
+import { isAxiosError } from '../base/odata-request-error';
 
 /**
  * Object structure representing a namespace: containing an id (variant id) and a reference (base application id).
@@ -91,16 +92,24 @@ export class LayeredRepositoryService extends Axios implements Service {
      * @returns the Axios response object for futher processing
      */
     public async isExistingVariant(namespace: Namespace): Promise<AxiosResponse> {
-        const response = await this.get(DTA_PATH_SUFFIX, {
-            params: {
-                name: getNamespaceAsString(namespace),
-                layer: 'CUSTOMER_BASE' as Layer,
-                timestamp: Date.now()
+        try {
+            const response = await this.get(DTA_PATH_SUFFIX, {
+                params: {
+                    name: getNamespaceAsString(namespace),
+                    layer: 'CUSTOMER_BASE' as Layer,
+                    timestamp: Date.now()
+                }
+            });
+            this.tryLogResponse(response);
+            return response;
+        } catch (error) {
+            if (isAxiosError(error) && error.response?.status === 404) {
+                return error.response;
+            } else {
+                throw error;
             }
-        });
-        this.tryLogResponse(response);
-
-        return response;
+        }
+        
     }
 
     /**

@@ -76,7 +76,7 @@ export class Ui5AbapRepositoryService extends ODataService {
     public async getInfo(app: string): Promise<AppInfo> {
         try {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
-            return response.status === 404 ? undefined : response.odata();
+            return response.odata();
         } catch (error) {
             return undefined;
         }
@@ -132,17 +132,22 @@ export class Ui5AbapRepositoryService extends ODataService {
      *
      * @param app application configuration
      * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
-     * @returns the Axios response object for futher processing
+     * @returns the Axios response object for futher processing or undefined if no request is sent
      */
     public async undeploy(app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
         const config = this.createConfig(app.transport, testMode);
         const host = this.getAbapFrontendUrl();
         try {
-            const response = await this.deleteRepoRequest(app.name, config);
-            if (response?.headers?.['sap-message']) {
-                prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host });
+            const info: AppInfo = await this.getInfo(app.name);
+            if (info) {
+                const response = await this.deleteRepoRequest(app.name, config);
+                if (response?.headers?.['sap-message']) {
+                    prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host });
+                }
+                return response;
+            } else {
+                this.log.warn(`Application ${app.name} not found, nothing to undeploy.`);
             }
-            return response;
         } catch (error) {
             this.logError({ error, host });
             throw error;
@@ -271,9 +276,6 @@ export class Ui5AbapRepositoryService extends ODataService {
                     ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
                     : await this.post('/Repositories', payload, config);
 
-                if (response.status >= 400) {
-                    throw { message: response.statusText, response, isAxiosError: true };
-                }
                 return response;
             }
         } catch (error) {

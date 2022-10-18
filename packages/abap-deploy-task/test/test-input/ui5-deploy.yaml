@@ -13,6 +13,7 @@ builder:
       afterTask: ui5-tooling-transpile-task
       configuration:
         strictSsl: false
+        test: true
         app:
           name: Z_TEST
           package: $TMP

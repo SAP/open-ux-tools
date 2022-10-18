@@ -1,7 +1,7 @@
 import { ParseOptions } from 'commander';
 import { join } from 'path';
 import nock from 'nock';
-import { createCommand, run } from '../../../src/cli';
+import { createCommand, runDeploy } from '../../../src/cli';
 
 describe('cli', () => {
     const fixture = join(__dirname, '../../test-input/');
@@ -34,13 +34,13 @@ describe('cli', () => {
                 '--url',
                 target
             ];
-            await run();
+            await runDeploy();
             expect(post.isDone()).toBe(true);
         });
     });
 
     describe('createCommand', () => {
-        const cmd = createCommand();
+        const cmd = createCommand('deploy');
         const errorMock = jest.spyOn(cmd, 'error').mockImplementation();
         // parse options for testing
         const opts: ParseOptions = { from: 'user' };
