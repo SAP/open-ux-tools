@@ -5,3 +5,4 @@ export { AppIndex, AppIndexService } from './app-index-service';
 export * from './message';
 export * from './catalog';
 export * from './adt-catalog';
+export { TenantType } from './types';

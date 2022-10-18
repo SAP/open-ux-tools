@@ -31,7 +31,7 @@ export class TransportRequestService extends AdtService {
                 <?xml version="1.0" encoding="ASCII"?>
                 <tm:root xmlns:tm="http://www.sap.com/cts/adt/tm" tm:useraction="newrequest">
                     <tm:request tm:desc="${description}" tm:type="K" tm:target="LOCAL" tm:cts_project="">
-                        <tm:task tm:owner=""/>
+                        <tm:task tm:owner="PRIYADARSHIS"/>
                     </tm:request>
                 </tm:root>
             `;
@@ -45,8 +45,8 @@ export class TransportRequestService extends AdtService {
             return '';
         }
         const doc = new DOMParser().parseFromString(xml);
-        const createdTransportNumber = (xpath.select1('//request', doc) as Element)?.attributes['number'];
-        this.log.warn('Create TR number: ' + createdTransportNumber);
+        console.log(xml);
+        const createdTransportNumber = (xpath.select1('//tm:request', doc) as Element)?.attributes['number'];
         return createdTransportNumber;
     }
 }

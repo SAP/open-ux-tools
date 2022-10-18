@@ -45,6 +45,9 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns ABAP Transport Organizer settings
      */
     public async getAtoInfo(): Promise<AtoSettings> {
+        if (this.atoSettings) {
+            return this.atoSettings;
+        }
         let atoService: AtoService;
         try {
             atoService = await this.getAdtService<AtoService>(AtoService);
