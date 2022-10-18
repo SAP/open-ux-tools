@@ -88,7 +88,6 @@ export class TransportChecksService extends AdtService {
         const recording = xpath.select1('//RECORDING/text()', doc)?.toString();
         const locked = (xpath.select1('//LOCKS', doc) as Element)?.textContent;
         const localPackage = xpath.select1('//DLVUNIT/text()', doc)?.toString();
-
         if (recording && !locked) {
             return this.getTransportListForNewProject(doc);
         } else if (locked) {
