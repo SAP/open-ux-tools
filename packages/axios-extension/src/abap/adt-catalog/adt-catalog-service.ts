@@ -32,7 +32,8 @@ export class AdtCatalogService extends Axios {
         if (isValidSchema) {
             return serviceSchema;
         } else {
-            throw new Error('Invalid Discovery Schema');
+            this.log.warn('Invalid Discovery Schema');
+            return null;
         }
     }
 

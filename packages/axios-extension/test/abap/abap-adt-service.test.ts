@@ -2,13 +2,10 @@ import { join } from 'path';
 import nock from 'nock';
 import {
     createForAbap,
-    V2CatalogService,
-    ODataVersion,
-    V4CatalogService,
-    Ui5AbapRepositoryService,
-    AppIndexService,
     createForAbapOnCloud,
-    AbapCloudEnvironment
+    AbapCloudEnvironment,
+    TransportRequestService,
+    TransportChecksService
 } from '../../src';
 import * as auth from '../../src/auth';
 
@@ -71,7 +68,14 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-2.xml'));
 
             expect(await provider.getAtoInfo()).toStrictEqual({});
-            expect(await provider.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
+
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(transportChecksService).toStrictEqual(null);
+
+            const transportRequestService = await provider.getAdtService<TransportRequestService>(
+                TransportRequestService
+            );
+            expect(transportRequestService).toStrictEqual(null);
         });
     });
 
@@ -90,12 +94,14 @@ describe('AbapServiceProvider', () => {
 
         test('CTS service - Invalid discovery schema format', async () => {
             nock(server).get(AdtServices.DISCOVERY).reply(200, 'Invalid non-XML text');
-            expect(await provider.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(await transportChecksService.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
         });
 
         test('CTS service - Invalid discovery schema content', async () => {
             nock(server).get(AdtServices.DISCOVERY).reply(200, '<root>Error message</root>');
-            expect(await provider.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(await transportChecksService.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
         });
     });
 
@@ -108,7 +114,8 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .reply(200, 'Some error message from backend');
-            expect(await provider.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(await transportChecksService.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
         });
 
         test('Unexpected response - error or unknown XML', async () => {
@@ -117,7 +124,8 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .reply(200, '<unknown></unknown>');
-            expect(await provider.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(await transportChecksService.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
         });
 
         test('Valid package name, new project name', async () => {
@@ -126,7 +134,8 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-1.xml'));
-            expect(await provider.getTransportRequests(testPackage, testNewProject)).toStrictEqual([
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(await transportChecksService.getTransportRequests(testPackage, testNewProject)).toStrictEqual([
                 expect.objectContaining({
                     transportNumber: 'EC1K900294',
                     user: 'TESTUSER',
@@ -146,7 +155,8 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-2.xml'));
-            expect(await provider.getTransportRequests(testPackage, testExistProject)).toStrictEqual([
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(await transportChecksService.getTransportRequests(testPackage, testExistProject)).toStrictEqual([
                 expect.objectContaining({
                     transportNumber: 'EC1K900294',
                     user: 'TESTUSER',
@@ -161,7 +171,8 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-5.xml'));
-            expect(await provider.getTransportRequests(testPackage, testExistProject)).toStrictEqual([]);
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(await transportChecksService.getTransportRequests(testPackage, testExistProject)).toStrictEqual([]);
         });
 
         test('Local package: no transport number required for deploy for both new and exist project', async () => {
@@ -170,7 +181,10 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-3.xml'));
-            expect(await provider.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual([]);
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(await transportChecksService.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual(
+                []
+            );
         });
 
         test('New package name: no transport number available', async () => {
@@ -179,42 +193,8 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .post(AdtServices.TRANSPORT_CHECKS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-4.xml'));
-            expect(await provider.getTransportRequests(testNewPakcage, testNewProject)).toStrictEqual([]);
-        });
-    });
-
-    describe('isS4Cloud', () => {
-        test('S/4Cloud system', async () => {
-            nock(server)
-                .get(AdtServices.DISCOVERY)
-                .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
-                .get(AdtServices.ATO_SETTINGS)
-                .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
-            expect(await createForAbap(config).isS4Cloud()).toBe(true);
-        });
-
-        test('On premise system', async () => {
-            nock(server)
-                .get(AdtServices.DISCOVERY)
-                .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
-                .get(AdtServices.ATO_SETTINGS)
-                .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsNotS4C.xml'));
-            expect(await createForAbap(config).isS4Cloud()).toBe(false);
-        });
-
-        test('No request if known', async () => {
-            const provider = createForAbap(config);
-            provider.s4Cloud = false;
-            expect(await provider.isS4Cloud()).toBe(provider.s4Cloud);
-        });
-
-        test('Request failed', async () => {
-            nock(server)
-                .get(AdtServices.DISCOVERY)
-                .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
-                .get(AdtServices.ATO_SETTINGS)
-                .replyWithError('Something went wrong');
-            expect(await createForAbap(config).isS4Cloud()).toBe(false);
+            const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+            expect(await transportChecksService.getTransportRequests(testNewPakcage, testNewProject)).toStrictEqual([]);
         });
     });
 
@@ -249,51 +229,6 @@ describe('AbapServiceProvider', () => {
             const provider = createForAbapOnCloud(configForAbapOnCloud as any);
             expect(await provider.isS4Cloud()).toBe(false);
             expect(attachUaaAuthInterceptorSpy.mockImplementation(jest.fn())).toBeCalledTimes(1);
-        });
-    });
-
-    describe('catalog', () => {
-        test('V2', () => {
-            const provider = createForAbap(config);
-            provider.s4Cloud = false;
-
-            const catalog = provider.catalog(ODataVersion.v2);
-            expect(catalog).toBeDefined();
-            expect(catalog.defaults.baseURL).toBe(`${server}${V2CatalogService.PATH}`);
-            expect(provider.catalog(ODataVersion.v2)).toEqual(catalog);
-        });
-
-        test('V4', () => {
-            const provider = createForAbap(config);
-            provider.s4Cloud = false;
-
-            const catalog = provider.catalog(ODataVersion.v4);
-            expect(catalog).toBeDefined();
-            expect(catalog.defaults.baseURL).toBe(`${server}${V4CatalogService.PATH}`);
-            expect(provider.catalog(ODataVersion.v4)).toEqual(catalog);
-        });
-
-        test('Invalid version', async () => {
-            const provider = createForAbap(config);
-            provider.s4Cloud = false;
-            try {
-                provider.catalog('v9' as ODataVersion);
-                fail('Error should have been thrown');
-            } catch (error) {
-                expect(error).toBeDefined();
-            }
-        });
-    });
-
-    describe('services', () => {
-        const provider = createForAbap(config);
-        test('ui5AbapRepository', () => {
-            const service = provider.ui5AbapRepository;
-            expect(service).toBe(provider.service(Ui5AbapRepositoryService.PATH));
-        });
-        test('appIndex', () => {
-            const service = provider.appIndex;
-            expect(service).toBe(provider.service(AppIndexService.PATH));
         });
     });
 });
