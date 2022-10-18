@@ -18,7 +18,7 @@ export class AtoService extends AdtService {
                 Accept: 'application/*'
             }
         };
-        const response = await this.get(this.serviceSchema.href, acceptHeaders);
+        const response = await this.get('', acceptHeaders);
         return this.parseAtoResponse(response.data);
     }
 
@@ -30,6 +30,7 @@ export class AtoService extends AdtService {
      */
     private parseAtoResponse(xml: string): AtoSettings {
         if (XmlParser.validate(xml) !== true) {
+            this.log.warn(`Invalid XML: ${xml}`);
             return {};
         }
         const options = {

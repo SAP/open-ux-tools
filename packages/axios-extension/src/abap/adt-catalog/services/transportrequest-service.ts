@@ -35,7 +35,7 @@ export class TransportRequestService extends AdtService {
                     </tm:request>
                 </tm:root>
             `;
-        const response = await this.post(this.serviceSchema.href, data, acceptHeaders);
+        const response = await this.post('', data, acceptHeaders);
         return this.getTransportNumberFromResponse(response.data);
     }
 

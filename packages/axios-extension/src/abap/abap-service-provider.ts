@@ -6,10 +6,11 @@ import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
 import { LayeredRepositoryService } from './lrep-service';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import type { AdtCollection, AtoSettings } from './types';
+import type { AtoSettings } from './types';
 import { TenantType } from './types';
 import { AdtService } from './adt-catalog/services/adt-service';
 import { AtoService } from './adt-catalog/services/ato-service';
+
 
 /**
  * Extension of the service provider for ABAP services.
@@ -180,14 +181,14 @@ export class AbapServiceProvider extends ServiceProvider {
         if (!this.services[subclassName]) {
             // Retrieve ADT schema for the specific input AdtService subclass
             const adtCatalogSerivce = this.getAdtCatalogService();
-            const adtCollection = await adtCatalogSerivce.getServiceDefinition(adtServiceSubclass.getAdtCatagory());
+            const adtSchema = await adtCatalogSerivce.getServiceDefinition(adtServiceSubclass.getAdtCatagory());
             // No ADT schema available neither locally nor from service query.
-            if (!adtCollection) {
+            if (!adtSchema) {
                 return null;
             }
             // Create singleton instance of AdtService subclass
-            this.services[subclassName] = this.createService(adtCollection.href, adtServiceSubclass);
-            (this.services[subclassName] as AdtService).attachAdtCollection(adtCollection);
+            this.services[subclassName] = this.createService<T>(adtSchema.href, adtServiceSubclass);
+            (this.services[subclassName] as AdtService).attachAdtSchema(adtSchema);
         }
 
         return this.services[subclassName] as T;

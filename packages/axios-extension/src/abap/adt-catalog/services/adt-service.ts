@@ -3,7 +3,7 @@ import { AdtCategory, AdtCollection } from 'abap/types';
 import { Axios } from 'axios';
 
 interface AdtServiceExtension {
-    attachAdtCollection(serviceSchema: AdtCollection): void;
+    attachAdtSchema(serviceSchema: AdtCollection): void;
 }
 
 export abstract class AdtService extends Axios implements AdtServiceExtension {
@@ -16,10 +16,10 @@ export abstract class AdtService extends Axios implements AdtServiceExtension {
      * should provide AdtCatagory to retrive the schema.
      */
     public static getAdtCatagory(): AdtCategory {
-        throw 'AdtService subclasses to implement';
+        throw 'NEEDS TO BE IMPLEMENTED BY AdtService SUBCLASSES';
     }
 
-    public attachAdtCollection(serviceSchema: AdtCollection): void {
+    public attachAdtSchema(serviceSchema: AdtCollection): void {
         this.serviceSchema = serviceSchema;
     }
 }

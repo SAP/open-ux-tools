@@ -45,7 +45,7 @@ export class TransportChecksService extends AdtService {
                 </asx:abap>
             `;
 
-        const response = await this.post(this.serviceSchema.href, data, acceptHeaders);
+        const response = await this.post('', data, acceptHeaders);
         return this.getTransportRequestList(response.data);
     }
 
