@@ -2,7 +2,7 @@
 
 exports[`use FPM with existing apps extend UI5 application with FPM generateControllerExtension in ObjectPage 1`] = `
 Object {
-  "lrop/webapp/ext/AnotherCustomAction/AnotherCustomAction.js": Object {
+  "lrop/webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -11,23 +11,26 @@ Object {
     return {
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onAppended: function() {
+            window.location.href += '/_Booking';
         }
     };
 });
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/MyControllerExtension/MyControllerExtension.controller.js": Object {
+  "lrop/webapp/ext/myControllerExtension/MyControllerExtension.controller.js": Object {
     "contents": "sap.ui.define(['sap/ui/core/mvc/ControllerExtension'], function (ControllerExtension) {
 	'use strict';
 
-	return ControllerExtension.extend('v4travel.ext.MyControllerExtension.MyControllerExtension', {
+	return ControllerExtension.extend('v4travel.ext.myControllerExtension.MyControllerExtension', {
 		// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
 		override: {
 			/**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf v4travel.ext.MyControllerExtension.MyControllerExtension
+             * @memberOf v4travel.ext.myControllerExtension.MyControllerExtension
              */
 			onInit: function () {
 				// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
@@ -39,7 +42,7 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/MyCustomAction/MyCustomAction.js": Object {
+  "lrop/webapp/ext/myCustomAction/MyCustomAction.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -54,7 +57,7 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/MyCustomPage/MyCustomPage.controller.js": Object {
+  "lrop/webapp/ext/myCustomPage/MyCustomPage.controller.js": Object {
     "contents": "sap.ui.define(
     [
         'sap/fe/core/PageController'
@@ -62,11 +65,11 @@ Object {
     function(PageController) {
         'use strict';
 
-        return PageController.extend('v4travel.ext.MyCustomPage.MyCustomPage', {
+        return PageController.extend('v4travel.ext.myCustomPage.MyCustomPage', {
             /**
              * Called when a controller is instantiated and its View controls (if available) are already created.
              * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-             * @memberOf v4travel.ext.MyCustomPage.MyCustomPage
+             * @memberOf v4travel.ext.myCustomPage.MyCustomPage
              */
             //  onInit: function () {
             //
@@ -75,7 +78,7 @@ Object {
             /**
              * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
              * (NOT before the first rendering! onInit() is used for that one!).
-             * @memberOf v4travel.ext.MyCustomPage.MyCustomPage
+             * @memberOf v4travel.ext.myCustomPage.MyCustomPage
              */
             //  onBeforeRendering: function() {
             //
@@ -84,7 +87,7 @@ Object {
             /**
              * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
              * This hook is the same one that SAPUI5 controls get after being rendered.
-             * @memberOf v4travel.ext.MyCustomPage.MyCustomPage
+             * @memberOf v4travel.ext.myCustomPage.MyCustomPage
              */
             //  onAfterRendering: function() {
             //
@@ -92,7 +95,7 @@ Object {
 
             /**
              * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-             * @memberOf v4travel.ext.MyCustomPage.MyCustomPage
+             * @memberOf v4travel.ext.myCustomPage.MyCustomPage
              */
             //  onExit: function() {
             //
@@ -103,22 +106,22 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/MyCustomPage/MyCustomPage.view.xml": Object {
+  "lrop/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.MyCustomPage.MyCustomPage\\">
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
     <Page id=\\"MyCustomPage\\" title=\\"MyCustomPage\\">
         <content></content>
     </Page>
 </mvc:View>",
     "state": "modified",
   },
-  "lrop/webapp/ext/MyCustomSection/MyCustomSection.fragment.xml": Object {
+  "lrop/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/MyCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "lrop/webapp/ext/MyCustomSection/MyCustomSection.js": Object {
+  "lrop/webapp/ext/myCustomSection/MyCustomSection.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -133,13 +136,13 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/NewCustomColumn/NewCustomColumn.fragment.xml": Object {
+  "lrop/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/NewCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "lrop/webapp/ext/NewCustomColumn/NewCustomColumn.js": Object {
+  "lrop/webapp/ext/newCustomColumn/NewCustomColumn.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -154,7 +157,7 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/NewCustomView/NewCustomView.controller.js": Object {
+  "lrop/webapp/ext/newCustomView/NewCustomView.controller.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -169,25 +172,10 @@ Object {
 ",
     "state": "modified",
   },
-  "lrop/webapp/ext/NewCustomView/NewCustomView.fragment.xml": Object {
+  "lrop/webapp/ext/newCustomView/NewCustomView.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/NewCustomView/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomView/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
-    "state": "modified",
-  },
-  "lrop/webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onAppended: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-",
     "state": "modified",
   },
   "lrop/webapp/manifest.json": Object {
@@ -315,7 +303,7 @@ Object {
                         \\"placement\\": \\"After\\",
                         \\"anchor\\": \\"DataField::TravelID\\"
                       },
-                      \\"template\\": \\"v4travel.ext.NewCustomColumn.NewCustomColumn\\",
+                      \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
                       \\"properties\\": [
                         \\"TotalPrice\\",
                         \\"CurrencyCode\\"
@@ -324,7 +312,7 @@ Object {
                   },
                   \\"actions\\": {
                     \\"MyCustomAction\\": {
-                      \\"press\\": \\"v4travel.ext.MyCustomAction.MyCustomAction.onPress\\",
+                      \\"press\\": \\"v4travel.ext.myCustomAction.MyCustomAction.onPress\\",
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My Custom Action\\"
@@ -341,7 +329,7 @@ Object {
                   {
                     \\"key\\": \\"CustomViewKey\\",
                     \\"label\\": \\"Custom View\\",
-                    \\"template\\": \\"v4travel.ext.NewCustomView.NewCustomView\\"
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
                   }
                 ]
               }
@@ -366,7 +354,7 @@ Object {
                 \\"header\\": {
                   \\"actions\\": {
                     \\"AnotherCustomAction\\": {
-                      \\"press\\": \\"v4travel.ext.AnotherCustomAction.AnotherCustomAction.onPress\\",
+                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onPress\\",
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My other Action\\"
@@ -382,7 +370,7 @@ Object {
                 \\"body\\": {
                   \\"sections\\": {
                     \\"MyCustomSection\\": {
-                      \\"template\\": \\"v4travel.ext.MyCustomSection.MyCustomSection\\",
+                      \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
                       \\"position\\": {
                         \\"placement\\": \\"After\\",
                         \\"anchor\\": \\"DummyFacet\\"
@@ -401,7 +389,7 @@ Object {
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"viewName\\": \\"v4travel.ext.MyCustomPage.MyCustomPage\\",
+              \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\",
               \\"entitySet\\": \\"Booking\\",
               \\"navigation\\": {}
             }
@@ -417,10 +405,10 @@ Object {
       \\"extensions\\": {
         \\"sap.ui.controllerExtensions\\": {
           \\"sap.fe.templates.ListReport.ListReportController\\": {
-            \\"controllerName\\": \\"v4travel.ext.NewCustomView.NewCustomView\\"
+            \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
           },
           \\"sap.fe.templates.ObjectPage.ObjectPageController\\": {
-            \\"controllerName\\": \\"v4travel.ext.MyControllerExtension.MyControllerExtension\\"
+            \\"controllerName\\": \\"v4travel.ext.myControllerExtension.MyControllerExtension\\"
           }
         }
       }
@@ -458,7 +446,7 @@ export default class Component extends AppComponent {
 ",
     "state": "modified",
   },
-  "ts/webapp/ext/AnotherCustomAction/AnotherCustomAction.ts": Object {
+  "ts/webapp/ext/anotherCustomAction/AnotherCustomAction.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import Context from 'sap/ui/model/odata/v4/Context';
 import MessageToast from 'sap/m/MessageToast';
@@ -471,10 +459,14 @@ import MessageToast from 'sap/m/MessageToast';
  */
 export function onPress(this: ExtensionAPI, pageContext: Context) {
     MessageToast.show(\\"Custom handler invoked.\\");
+}
+         
+export function onAppended() {
+	window.location.href += '/_Booking';
 }",
     "state": "modified",
   },
-  "ts/webapp/ext/MyControllerExtension/MyControllerExtension.controller.ts": Object {
+  "ts/webapp/ext/myControllerExtension/MyControllerExtension.controller.ts": Object {
     "contents": "import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
 import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
 
@@ -492,13 +484,13 @@ declare module 'sap/ui/core/mvc/ControllerExtension' {
 /**
  * Cannot change to class syntax until https://github.com/SAP/ui5-typescript/issues/332 is fixed.
  */
-export default ControllerExtension.extend('v4travel.ext.MyControllerExtension.MyControllerExtension', {
+export default ControllerExtension.extend('v4travel.ext.myControllerExtension.MyControllerExtension', {
 	// this section allows to extend lifecycle hooks or hooks provided by Fiori elements
 	override: {
 		/**
 		 * Called when a controller is instantiated and its View controls (if available) are already created.
 		 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-		 * @memberOf v4travel.ext.MyControllerExtension.MyControllerExtension
+		 * @memberOf v4travel.ext.myControllerExtension.MyControllerExtension
 		 */
 		onInit(this: ControllerExtension) {
 			// you can access the Fiori elements extensionAPI via this.base.getExtensionAPI
@@ -508,7 +500,7 @@ export default ControllerExtension.extend('v4travel.ext.MyControllerExtension.My
 });",
     "state": "modified",
   },
-  "ts/webapp/ext/MyCustomAction/MyCustomAction.ts": Object {
+  "ts/webapp/ext/myCustomAction/MyCustomAction.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import Context from 'sap/ui/model/odata/v4/Context';
 import MessageToast from 'sap/m/MessageToast';
@@ -524,18 +516,18 @@ export function onPress(this: ExtensionAPI, pageContext: Context) {
 }",
     "state": "modified",
   },
-  "ts/webapp/ext/MyCustomPage/MyCustomPage.controller.ts": Object {
+  "ts/webapp/ext/myCustomPage/MyCustomPage.controller.ts": Object {
     "contents": "import Controller from 'sap/fe/core/PageController';
 
 /**
- * @namespace v4travel.ext.MyCustomPage.MyCustomPage.controller
+ * @namespace v4travel.ext.myCustomPage.MyCustomPage.controller
  */
 export default class MyCustomPage extends Controller {
 
     /**
      * Called when a controller is instantiated and its View controls (if available) are already created.
      * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
-     * @memberOf v4travel.ext.MyCustomPage.MyCustomPage
+     * @memberOf v4travel.ext.myCustomPage.MyCustomPage
      */
     // public onInit(): void {
     //
@@ -544,7 +536,7 @@ export default class MyCustomPage extends Controller {
     /**
      * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
      * (NOT before the first rendering! onInit() is used for that one!).
-     * @memberOf v4travel.ext.MyCustomPage.MyCustomPage
+     * @memberOf v4travel.ext.myCustomPage.MyCustomPage
      */
     // public  onBeforeRendering(): void {
     //
@@ -553,7 +545,7 @@ export default class MyCustomPage extends Controller {
     /**
      * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
      * This hook is the same one that SAPUI5 controls get after being rendered.
-     * @memberOf v4travel.ext.MyCustomPage.MyCustomPage
+     * @memberOf v4travel.ext.myCustomPage.MyCustomPage
      */
     // public  onAfterRendering(): void {
     //
@@ -561,7 +553,7 @@ export default class MyCustomPage extends Controller {
 
     /**
      * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
-     * @memberOf v4travel.ext.MyCustomPage.MyCustomPage
+     * @memberOf v4travel.ext.myCustomPage.MyCustomPage
      */
     // public onExit(): void {
     //
@@ -569,22 +561,22 @@ export default class MyCustomPage extends Controller {
 }",
     "state": "modified",
   },
-  "ts/webapp/ext/MyCustomPage/MyCustomPage.view.xml": Object {
+  "ts/webapp/ext/myCustomPage/MyCustomPage.view.xml": Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\"
-    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.MyCustomPage.MyCustomPage\\">
+    xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"v4travel.ext.myCustomPage.MyCustomPage\\">
     <Page id=\\"MyCustomPage\\" title=\\"MyCustomPage\\">
         <content></content>
     </Page>
 </mvc:View>",
     "state": "modified",
   },
-  "ts/webapp/ext/MyCustomSection/MyCustomSection.fragment.xml": Object {
+  "ts/webapp/ext/myCustomSection/MyCustomSection.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/MyCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSection/MyCustomSection'}\\" text=\\"MyCustomSection\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "ts/webapp/ext/MyCustomSection/MyCustomSection.ts": Object {
+  "ts/webapp/ext/myCustomSection/MyCustomSection.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import UI5Event from 'sap/ui/base/Event';
 import MessageToast from 'sap/m/MessageToast';
@@ -600,13 +592,13 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
 }",
     "state": "modified",
   },
-  "ts/webapp/ext/NewCustomColumn/NewCustomColumn.fragment.xml": Object {
+  "ts/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/NewCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
     "state": "modified",
   },
-  "ts/webapp/ext/NewCustomColumn/NewCustomColumn.ts": Object {
+  "ts/webapp/ext/newCustomColumn/NewCustomColumn.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import UI5Event from 'sap/ui/base/Event';
 import MessageToast from 'sap/m/MessageToast';
@@ -622,7 +614,7 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
 }",
     "state": "modified",
   },
-  "ts/webapp/ext/NewCustomView/NewCustomView.controller.ts": Object {
+  "ts/webapp/ext/newCustomView/NewCustomView.controller.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import UI5Event from 'sap/ui/base/Event';
 import MessageToast from 'sap/m/MessageToast';
@@ -638,26 +630,10 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
 }",
     "state": "modified",
   },
-  "ts/webapp/ext/NewCustomView/NewCustomView.fragment.xml": Object {
+  "ts/webapp/ext/newCustomView/NewCustomView.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'v4travel/ext/NewCustomView/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomView/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
 </core:FragmentDefinition>",
-    "state": "modified",
-  },
-  "ts/webapp/ext/anotherCustomAction/AnotherCustomAction.ts": Object {
-    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
-import Context from 'sap/ui/model/odata/v4/Context';
-import MessageToast from 'sap/m/MessageToast';
-
-/**
- * Generated event handler.
- *
- * @param this reference to the 'this' that the event handler is bound to.
- * @param pageContext the context of the page on which the event was fired
- */
-export function onAppended(this: ExtensionAPI, pageContext: Context) {
-    MessageToast.show(\\"Custom handler invoked.\\");
-}",
     "state": "modified",
   },
   "ts/webapp/ext/sap.fe.d.ts": Object {
@@ -832,7 +808,7 @@ declare module 'sap/fe/core/PageController' {
                         \\"placement\\": \\"After\\",
                         \\"anchor\\": \\"DataField::TravelID\\"
                       },
-                      \\"template\\": \\"v4travel.ext.NewCustomColumn.NewCustomColumn\\",
+                      \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
                       \\"properties\\": [
                         \\"TotalPrice\\",
                         \\"CurrencyCode\\"
@@ -841,7 +817,7 @@ declare module 'sap/fe/core/PageController' {
                   },
                   \\"actions\\": {
                     \\"MyCustomAction\\": {
-                      \\"press\\": \\"v4travel.ext.MyCustomAction.MyCustomAction.onPress\\",
+                      \\"press\\": \\"v4travel.ext.myCustomAction.MyCustomAction.onPress\\",
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My Custom Action\\"
@@ -858,7 +834,7 @@ declare module 'sap/fe/core/PageController' {
                   {
                     \\"key\\": \\"CustomViewKey\\",
                     \\"label\\": \\"Custom View\\",
-                    \\"template\\": \\"v4travel.ext.NewCustomView.NewCustomView\\"
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
                   }
                 ]
               }
@@ -883,7 +859,7 @@ declare module 'sap/fe/core/PageController' {
                 \\"header\\": {
                   \\"actions\\": {
                     \\"AnotherCustomAction\\": {
-                      \\"press\\": \\"v4travel.ext.AnotherCustomAction.AnotherCustomAction.onPress\\",
+                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onPress\\",
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My other Action\\"
@@ -899,7 +875,7 @@ declare module 'sap/fe/core/PageController' {
                 \\"body\\": {
                   \\"sections\\": {
                     \\"MyCustomSection\\": {
-                      \\"template\\": \\"v4travel.ext.MyCustomSection.MyCustomSection\\",
+                      \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
                       \\"position\\": {
                         \\"placement\\": \\"After\\",
                         \\"anchor\\": \\"DummyFacet\\"
@@ -918,7 +894,7 @@ declare module 'sap/fe/core/PageController' {
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"viewName\\": \\"v4travel.ext.MyCustomPage.MyCustomPage\\",
+              \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\",
               \\"entitySet\\": \\"Booking\\",
               \\"navigation\\": {}
             }
@@ -934,10 +910,10 @@ declare module 'sap/fe/core/PageController' {
       \\"extensions\\": {
         \\"sap.ui.controllerExtensions\\": {
           \\"sap.fe.templates.ListReport.ListReportController\\": {
-            \\"controllerName\\": \\"v4travel.ext.NewCustomView.NewCustomView\\"
+            \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
           },
           \\"sap.fe.templates.ObjectPage.ObjectPageController\\": {
-            \\"controllerName\\": \\"v4travel.ext.MyControllerExtension.MyControllerExtension\\"
+            \\"controllerName\\": \\"v4travel.ext.myControllerExtension.MyControllerExtension\\"
           }
         }
       }

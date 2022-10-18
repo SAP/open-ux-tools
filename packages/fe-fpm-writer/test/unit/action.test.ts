@@ -242,9 +242,9 @@ describe('CustomAction', () => {
 
                 const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
                 const action = getActionByName(manifest, name);
-                expect(action['press']).toEqual('my.test.App.ext.MyCustomAction.MyCustomAction.onPress');
+                expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.onPress');
                 expect(
-                    fs.read(join(testDir, 'webapp', 'ext', 'MyCustomAction', 'MyCustomAction.js'))
+                    fs.read(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))
                 ).toMatchSnapshot();
             });
 
@@ -269,9 +269,9 @@ describe('CustomAction', () => {
 
                 const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
                 const action = getActionByName(manifest, name);
-                expect(action['press']).toEqual('my.test.App.ext.MyCustomAction.MyCustomAction.DummyOnAction');
+                expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.DummyOnAction');
                 expect(
-                    fs.read(join(testDir, 'webapp', 'ext', 'MyCustomAction', 'MyCustomAction.js'))
+                    fs.read(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))
                 ).toMatchSnapshot();
             });
 

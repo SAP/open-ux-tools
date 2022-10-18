@@ -16,7 +16,7 @@ export function setCommonDefaults<T extends CustomElement & Partial<InternalCust
     manifest: Manifest
 ): InternalCustomElement & T {
     // set target folder if not provided
-    config.folder = config.folder || `ext/${config.name}`;
+    config.folder = config.folder || `ext/${config.name[0].toLocaleLowerCase() + config.name.substring(1)}`;
 
     // calculate namespace and path for generated artifacts
     config.ns = `${manifest['sap.app'].id}.${config.folder.replace(/[\/\\]/g, '.')}`;

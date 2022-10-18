@@ -70,8 +70,8 @@ describe('CustomPage', () => {
             generateCustomPage(target, minimalInput, fs);
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/CustomPage/CustomPage.view.xml'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/CustomPage/CustomPage.controller.js'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
         });
 
         test('with older but supported UI5 version', () => {
@@ -80,8 +80,8 @@ describe('CustomPage', () => {
             generateCustomPage(target, { ...minimalInput, minUI5Version: '1.84' }, fs);
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/CustomPage/CustomPage.view.xml'))).toMatchSnapshot();
-            expect(fs.read(join(target, 'webapp/ext/CustomPage/CustomPage.controller.js'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
         });
 
         test('with not supported version', () => {
