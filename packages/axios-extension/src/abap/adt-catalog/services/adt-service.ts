@@ -1,5 +1,5 @@
-import { Logger } from '@sap-ux/logger';
-import { AdtCategory, AdtCollection } from 'abap/types';
+import type { Logger } from '@sap-ux/logger';
+import type { AdtCategory, AdtCollection } from 'abap/types';
 import { Axios } from 'axios';
 
 interface AdtServiceExtension {

@@ -4,7 +4,6 @@ import {
     createForAbap,
     V2CatalogService,
     ODataVersion,
-    TenantType,
     V4CatalogService,
     Ui5AbapRepositoryService,
     AppIndexService,
@@ -17,11 +16,11 @@ import * as auth from '../../src/auth';
  * URL are specific to the discovery schema.
  * Keep the URL paths same as those in packages/axios-extension/test/abap/mockResponses/discovery.xml
  */
- enum AdtServices {
+enum AdtServices {
     DISCOVERY = '/sap/bc/adt/discovery',
     ATO_SETTINGS = '/sap/bc/adt/ato/settings',
     TRANSPORT_CHECKS = '/sap/bc/adt/cts/transportchecks',
-    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transportrequest',
+    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transportrequest'
 }
 
 describe('AbapServiceProvider', () => {

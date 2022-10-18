@@ -1,5 +1,5 @@
 import { AdtService } from './adt-service';
-import { AdtCategory, AtoSettings } from 'abap/types';
+import type { AdtCategory, AtoSettings } from 'abap/types';
 import XmlParser from 'fast-xml-parser';
 
 export class AtoService extends AdtService {

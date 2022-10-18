@@ -1,5 +1,5 @@
 import { AdtService } from './adt-service';
-import { AdtCategory } from '../../types';
+import type { AdtCategory } from '../../types';
 import XmlParser from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';

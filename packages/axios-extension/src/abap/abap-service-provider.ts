@@ -8,9 +8,8 @@ import { LayeredRepositoryService } from './lrep-service';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
 import type { AtoSettings } from './types';
 import { TenantType } from './types';
-import { AdtService } from './adt-catalog/services/adt-service';
-import { AtoService } from './adt-catalog/services/ato-service';
-
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { AdtService, AtoService } from './adt-catalog/services';
 
 /**
  * Extension of the service provider for ABAP services.

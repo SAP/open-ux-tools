@@ -1,5 +1,6 @@
 import { AdtService } from './adt-service';
-import { AdtCategory, AdtTransportStatus, LocalPackageText, TransportRequest } from '../../types';
+import { LocalPackageText } from '../../types';
+import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types';
 import XmlParser from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
@@ -54,7 +55,6 @@ export class TransportChecksService extends AdtService {
      * from ADT transportcheckes response response.
      *
      * @param xml Raw XML string from ADT transportcheckes reponse data
-     * @param log Service provider logger
      * @returns a list of valid transport requests can be used for deploy config
      */
     private getTransportRequestList(xml: string): TransportRequest[] {
