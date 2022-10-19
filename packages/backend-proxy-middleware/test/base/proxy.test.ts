@@ -511,6 +511,56 @@ describe('proxy', () => {
             const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
         });
+
+        test('host is excluded from proxy', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const noProxyConfig = process.env.no_proxy;
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example',
+                path: '/my/path',
+                proxy: 'http://proxy.example'
+            };
+            process.env.no_proxy = '.example';
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options.agent).toBeUndefined();
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
+            process.env.no_proxy = noProxyConfig;
+        });
+
+        test('host with port is excluded from proxy', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const noProxyConfig = process.env.no_proxy;
+            const backend: LocalBackendConfig = {
+                url: 'http://backend.example:3333',
+                path: '/my/path',
+                proxy: 'http://proxy.example'
+            };
+            process.env.no_proxy = '.example';
+
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options.agent).toBeUndefined();
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
+            process.env.no_proxy = noProxyConfig;
+        });
+
+        test('ip address is excluded from proxy', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            const noProxyConfig = process.env.no_proxy;
+            process.env.no_proxy = '123.156.255.101';
+            const backend: LocalBackendConfig = {
+                url: 'http://123.156.255.101',
+                path: '/my/path',
+                proxy: 'http://proxy.example'
+            };
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            expect(options.agent).toBeUndefined();
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
+            process.env.no_proxy = noProxyConfig;
+        });
     });
 
     describe('createProxy', () => {
