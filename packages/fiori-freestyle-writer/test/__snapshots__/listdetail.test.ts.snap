@@ -53,7 +53,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"~1.90.0\\",
+    \\"@sapui5/ts-types\\": \\"~1.71.18\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -2582,8 +2582,6 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"prestart\\": \\"npm run ts-typecheck\\",
-    \\"prebuild\\": \\"npm run ts-typecheck\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",

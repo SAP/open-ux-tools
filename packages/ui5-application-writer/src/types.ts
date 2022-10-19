@@ -47,6 +47,7 @@ export interface UI5 {
     version: string;
     localVersion: string;
     typesVersion: string;
+    esmTypesVersion: string;
     descriptorVersion: string;
     ui5Libs: string | string[];
     ui5Theme: string;

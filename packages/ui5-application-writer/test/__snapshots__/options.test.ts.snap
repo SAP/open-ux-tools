@@ -54,7 +54,7 @@ archive.zip
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"~1.90.0\\",
+    \\"@sapui5/ts-types\\": \\"~1.71.18\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },
@@ -984,14 +984,12 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"~1.90.0\\"
+    \\"@sapui5/ts-types\\": \\"~1.71.18\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"prestart\\": \\"npm run ts-typecheck\\",
-    \\"prebuild\\": \\"npm run ts-typecheck\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\"
   },
   \\"ui5\\": {
@@ -1148,8 +1146,6 @@ archive.zip
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"prestart\\": \\"npm run ts-typecheck\\",
-    \\"prebuild\\": \\"npm run ts-typecheck\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\"
   },
   \\"ui5\\": {
