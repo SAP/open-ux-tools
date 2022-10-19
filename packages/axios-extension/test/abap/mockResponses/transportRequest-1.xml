@@ -3,7 +3,7 @@
     <tm:request
         tm:number="EC1K900436"
         tm:parent=""
-        tm:desc="Test from odata-cli"
+        tm:desc="Created from axios-extension unit test"
         tm:type="K"
         tm:target="LOCAL"
         tm:target_desc=""

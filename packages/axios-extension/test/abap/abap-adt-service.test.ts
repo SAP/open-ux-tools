@@ -111,7 +111,7 @@ describe('Create new transport number', () => {
     });
 
     const provider = createForAbap(config);
-
+    const dummyComment = 'Created from axios-extension unit test';
     test('Create new transport number succeed', async () => {
         nock(server)
             .get(AdtServices.DISCOVERY)
@@ -119,7 +119,17 @@ describe('Create new transport number', () => {
             .post(AdtServices.TRANSPORT_REQUEST)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportRequest-1.xml'));
         const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
-        expect(await transportRequestService.createTransportRequest('Create transport number comment')).toStrictEqual('EC1K900436');
+        expect(await transportRequestService.createTransportRequest(dummyComment)).toStrictEqual('EC1K900436');
+    });
+
+    test('Create new transport number failed', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_REQUEST)
+            .reply(200, '<unknown></unknown>');
+        const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
+        expect(await transportRequestService.createTransportRequest(dummyComment)).toStrictEqual(null);
     });
 });
 
