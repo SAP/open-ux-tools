@@ -1,5 +1,7 @@
 {
     "scripts": {
+        "prestart": "npm run ts-typecheck",
+        "prebuild": "npm run ts-typecheck",
         "ts-typecheck": "tsc --noEmit"
     },
     "devDependencies": {
