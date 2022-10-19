@@ -17,7 +17,7 @@ enum AdtServices {
     DISCOVERY = '/sap/bc/adt/discovery',
     ATO_SETTINGS = '/sap/bc/adt/ato/settings',
     TRANSPORT_CHECKS = '/sap/bc/adt/cts/transportchecks',
-    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transportrequest'
+    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transportrequests'
 }
 
 const server = 'https://server.example';
@@ -97,6 +97,29 @@ describe('ADT discovery service errors', () => {
         nock(server).get(AdtServices.DISCOVERY).reply(200, '<root>Error message</root>');
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         expect(transportChecksService).toStrictEqual(null);
+    });
+});
+
+describe('Create new transport number', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('Create new transport number succeed', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .post(AdtServices.TRANSPORT_REQUEST)
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportRequest-1.xml'));
+        const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
+        expect(await transportRequestService.createTransportRequest('Create transport number comment')).toStrictEqual('EC1K900436');
     });
 });
 

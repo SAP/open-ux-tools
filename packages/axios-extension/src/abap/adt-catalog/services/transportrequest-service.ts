@@ -38,14 +38,19 @@ export class TransportRequestService extends AdtService {
         return this.getTransportNumberFromResponse(response.data);
     }
 
-    private getTransportNumberFromResponse(xml: string): string {
-        console.log(xml);
+    private getTransportNumberFromResponse(xml: string): string | null {
         if (XmlParser.validate(xml) !== true) {
             this.log.warn(`Invalid XML: ${xml}`);
             return '';
         }
         const doc = new DOMParser().parseFromString(xml);
-        const createdTransportNumber = (xpath.select1('//tm:request', doc) as Element)?.attributes['number'];
-        return createdTransportNumber;
+        const select = xpath.useNamespaces({ 'tm': 'http://www.sap.com/cts/adt/tm' });
+        const attrElement = select('//tm:request/@tm:number', doc) as Element[];
+        if (attrElement && attrElement.length === 1) {
+            const createdTransportNumber = attrElement[0].nodeValue;
+            return createdTransportNumber;
+        } else {
+            return null;
+        }
     }
 }
