@@ -40,12 +40,12 @@ describe('Defaults', () => {
         ['1.103-snapshot', typesVersionBest]
     ];
     // Tests validation of versions against known versions https://www.npmjs.com/package/@sapui5/ts-types-esm
-    test.each(tesTSTypesEsmData)(`Types version for @sapui5/ts-types-esm: (%p, %p)`, (input, expected) => {
+    test.each(tesTSTypesEsmData)('Types version for @sapui5/ts-types-esm: (%p, %p)', (input, expected) => {
         expect(getEsmTypesVersion(input)).toEqual(expected);
     });
 
     // Tests validation of versions against known versions https://www.npmjs.com/package/@sapui5/ts-types
-    test.each(tesTSTypesData)(`Types version for @sapui5/ts-types: (%p, %p)`, (input, expected) => {
+    test.each(tesTSTypesData)('Types version for @sapui5/ts-types: (%p, %p)', (input, expected) => {
         expect(getTypesVersion(input)).toEqual(expected);
     });
 });
