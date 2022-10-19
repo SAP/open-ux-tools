@@ -31,7 +31,6 @@ export class TransportRequestService extends AdtService {
                 <?xml version="1.0" encoding="ASCII"?>
                 <tm:root xmlns:tm="http://www.sap.com/cts/adt/tm" tm:useraction="newrequest">
                     <tm:request tm:desc="${description}" tm:type="K" tm:target="LOCAL" tm:cts_project="">
-                        <tm:task tm:owner=""/>
                     </tm:request>
                 </tm:root>
             `;
@@ -40,6 +39,7 @@ export class TransportRequestService extends AdtService {
     }
 
     private getTransportNumberFromResponse(xml: string): string {
+        console.log(xml);
         if (XmlParser.validate(xml) !== true) {
             this.log.warn(`Invalid XML: ${xml}`);
             return '';

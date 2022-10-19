@@ -16,7 +16,7 @@ export abstract class AdtService extends Axios implements AdtServiceExtension {
      * should provide AdtCatagory to retrive the schema.
      */
     public static getAdtCatagory(): AdtCategory {
-        throw 'NEEDS TO BE IMPLEMENTED BY AdtService SUBCLASSES';
+        throw new Error('NEEDS TO BE IMPLEMENTED BY AdtService SUBCLASSES');
     }
 
     public attachAdtSchema(serviceSchema: AdtCollection): void {
