@@ -9,7 +9,6 @@ import {
     proxyErrorHandler
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
-import { getCorporateProxyServer } from '../../src/base/config';
 import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import { getInstance } from '@sap-ux/store/dist/services/backend-system';
@@ -371,15 +370,6 @@ describe('proxy', () => {
     });
 
     describe('generateProxyMiddlewareOptions', () => {
-        afterEach(() => {
-            delete process.env.http_proxy;
-            delete process.env.HTTP_PROXY;
-            delete process.env.https_proxy;
-            delete process.env.HTTPS_PROXY;
-            delete process.env.npm_config_proxy;
-            delete process.env.npm_config_https_proxy;
-        });
-
         test('generate proxy middleware outside of BAS with all parameters', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const backend: LocalBackendConfig = {
@@ -405,6 +395,8 @@ describe('proxy', () => {
             expect(options.ws).toBe(true);
             expect(options.xfwd).toBe(true);
             expect(options.secure).toBe(true);
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
         });
 
         test('generate proxy middleware inside of BAS with minimal parameters', async () => {
@@ -421,11 +413,7 @@ describe('proxy', () => {
             expect(options).toBeDefined();
             expect(options.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(options.changeOrigin).toBe(true);
-            if (getCorporateProxyServer()) {
-                expect(options.agent).toBeDefined();
-            } else {
-                expect(options.agent).toBeUndefined();
-            }
+            expect(options.agent).toBeUndefined();
             expect(options.ws).toBeUndefined();
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();
@@ -442,11 +430,7 @@ describe('proxy', () => {
             expect(options).toBeDefined();
             expect(options.target).toBe(backend.url);
             expect(options.changeOrigin).toBe(true);
-            if (getCorporateProxyServer()) {
-                expect(options.agent).toBeDefined();
-            } else {
-                expect(options.agent).toBeUndefined();
-            }
+            expect(options.agent).toBeUndefined();
             expect(options.ws).toBeUndefined();
             expect(options.xfwd).toBeUndefined();
             expect(options.secure).toBeUndefined();

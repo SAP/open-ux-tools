@@ -21,9 +21,10 @@ import translations from './i18n.json';
 
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
-import { getCorporateProxyServer, isProxyRequired } from './config';
+import { updateProxyEnv } from './config';
 import type { Url } from 'url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
+import { getProxyForUrl } from 'proxy-from-env';
 
 /**
  * Collection of custom event handler for the proxy.
@@ -354,8 +355,10 @@ export async function generateProxyMiddlewareOptions(
         throw new Error(`Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`);
     }
 
-    backend.proxy = getCorporateProxyServer(backend.proxy);
-    if (backend.proxy && isProxyRequired(proxyOptions.target)) {
+    // update proxy config with values coming from args or ui5.yaml
+    updateProxyEnv(backend.proxy);
+    backend.proxy = getProxyForUrl(proxyOptions.target);
+    if (backend.proxy) {
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 

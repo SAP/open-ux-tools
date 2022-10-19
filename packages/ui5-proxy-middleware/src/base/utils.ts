@@ -69,10 +69,6 @@ export const getCorporateProxyServer = (yamlProxyServer: string | undefined): st
         process.env.npm_config_https_proxy;
 
     if (proxyFromFioriToolsConfig) {
-        process.env.http_proxy = proxyFromFioriToolsConfig;
-        process.env.HTTP_PROXY = proxyFromFioriToolsConfig;
-        process.env.https_proxy = proxyFromFioriToolsConfig;
-        process.env.HTTPS_PROXY = proxyFromFioriToolsConfig;
         process.env.npm_config_proxy = proxyFromFioriToolsConfig;
         process.env.npm_config_https_proxy = proxyFromFioriToolsConfig;
 
