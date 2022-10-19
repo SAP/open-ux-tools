@@ -10,7 +10,6 @@ import type { AtoSettings } from './types';
 import { TenantType } from './types';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AdtService, AtoService } from './adt-catalog/services';
-import { AxiosRequestConfig } from 'axios';
 
 /**
  * Extension of the service provider for ABAP services.

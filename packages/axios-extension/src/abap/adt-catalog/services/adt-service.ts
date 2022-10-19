@@ -16,7 +16,7 @@ export abstract class AdtService extends Axios implements AdtServiceExtension {
      * Subclass that implements each specific ADT service
      * should provide AdtCatagory for the corresponding AdtService.
      * The AdtCatagory properties combined to identify a particular
-     * ADT service schema in ADT schema. 
+     * ADT service schema in ADT schema.
      */
     public static getAdtCatagory(): AdtCategory {
         throw new Error('NEEDS TO BE IMPLEMENTED BY AdtService SUBCLASSES');
@@ -24,7 +24,7 @@ export abstract class AdtService extends Axios implements AdtServiceExtension {
 
     /**
      * Attach schema to AdtService subclass.
-     * @param serviceSchema 
+     * @param serviceSchema
      */
     attachAdtSchema(serviceSchema: AdtCollection): void {
         this.serviceSchema = serviceSchema;
