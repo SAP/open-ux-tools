@@ -4,6 +4,15 @@ describe('config', () => {
     const corporateProxy = 'https://myproxy.example:8443';
 
     describe('getCorporateProxyServer', () => {
+        afterEach(() => {
+            delete process.env.http_proxy;
+            delete process.env.HTTP_PROXY;
+            delete process.env.https_proxy;
+            delete process.env.HTTPS_PROXY;
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
+        });
+
         test('get value from CLI (wins over input)', () => {
             process.argv.push(`proxy=${corporateProxy}`);
             expect(getCorporateProxyServer('~not.used')).toEqual(corporateProxy);
@@ -27,8 +36,18 @@ describe('config', () => {
         const host = 'http://www.host.example';
         const noProxyConfig = process.env.no_proxy;
 
+        beforeAll(() => {
+            process.env.npm_config_proxy = corporateProxy;
+            process.env.npm_config_https_proxy = corporateProxy;
+        });
+
         afterEach(() => {
             process.env.no_proxy = noProxyConfig;
+        });
+
+        afterAll(() => {
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
         });
 
         test('no_proxy config does not exist', () => {

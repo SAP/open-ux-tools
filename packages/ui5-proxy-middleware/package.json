@@ -36,7 +36,7 @@
         "http-proxy-middleware": "2.0.1",
         "https-proxy-agent": "5.0.0",
         "i18next": "20.3.2",
-        "proxy-from-env": "https://github.com/zdravko-georgiev/proxy-from-env"
+        "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",

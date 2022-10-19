@@ -9,7 +9,7 @@ import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
-import { shouldProxy } from 'proxy-from-env';
+import { getProxyForUrl } from 'proxy-from-env';
 
 /**
  * Handler for the proxy response event.
@@ -53,16 +53,33 @@ export const proxyRequestHandler = (
  * @returns User's proxy configuration or undefined
  */
 export const getCorporateProxyServer = (yamlProxyServer: string | undefined): string | undefined => {
-    return (
-        yamlProxyServer ||
-        process.env.FIORI_TOOLS_PROXY ||
+    let proxyFromArgs: string | undefined;
+    process.argv.forEach((arg) => {
+        if (arg.match(/proxy=/g)) {
+            proxyFromArgs = arg.split('=')[1];
+        }
+    });
+    const proxyFromFioriToolsConfig = proxyFromArgs || yamlProxyServer || process.env.FIORI_TOOLS_PROXY;
+    const proxyFromOSEnvConfig =
         process.env.http_proxy ||
         process.env.HTTP_PROXY ||
         process.env.https_proxy ||
         process.env.HTTPS_PROXY ||
         process.env.npm_config_proxy ||
-        process.env.npm_config_https_proxy
-    );
+        process.env.npm_config_https_proxy;
+
+    if (proxyFromFioriToolsConfig) {
+        process.env.http_proxy = proxyFromFioriToolsConfig;
+        process.env.HTTP_PROXY = proxyFromFioriToolsConfig;
+        process.env.https_proxy = proxyFromFioriToolsConfig;
+        process.env.HTTPS_PROXY = proxyFromFioriToolsConfig;
+        process.env.npm_config_proxy = proxyFromFioriToolsConfig;
+        process.env.npm_config_https_proxy = proxyFromFioriToolsConfig;
+
+        return proxyFromFioriToolsConfig;
+    } else {
+        return proxyFromOSEnvConfig;
+    }
 };
 
 /**
@@ -91,17 +108,7 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
  * @returns false if host is excluded from user's corporate server, true otherwise
  */
 export const isProxyRequired = (url: string): boolean => {
-    const defaultPorts: { [key: string]: string } = {
-        'http': '80',
-        'https': '443',
-        'ws': '80',
-        'wss': '443'
-    };
-    const urlInstance = new URL(url);
-    const hostname = urlInstance.hostname;
-    const port = urlInstance.port ? urlInstance.port : defaultPorts[urlInstance.protocol.split(':', 1)[0]];
-
-    return shouldProxy(hostname, parseInt(port, 10));
+    return getProxyForUrl(url) ? true : false;
 };
 
 /**

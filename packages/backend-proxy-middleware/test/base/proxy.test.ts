@@ -371,6 +371,15 @@ describe('proxy', () => {
     });
 
     describe('generateProxyMiddlewareOptions', () => {
+        afterEach(() => {
+            delete process.env.http_proxy;
+            delete process.env.HTTP_PROXY;
+            delete process.env.https_proxy;
+            delete process.env.HTTPS_PROXY;
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
+        });
+
         test('generate proxy middleware outside of BAS with all parameters', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const backend: LocalBackendConfig = {

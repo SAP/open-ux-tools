@@ -1,4 +1,4 @@
-import { shouldProxy } from 'proxy-from-env';
+import { getProxyForUrl } from 'proxy-from-env';
 /**
  * Get the effective proxy string from runtime args (highest priority), given config value or environment variables.
  *
@@ -12,17 +12,27 @@ export function getCorporateProxyServer(proxyFromConfig?: string): string | unde
             proxyFromArgs = arg.split('=')[1];
         }
     });
-    return (
-        proxyFromArgs ||
-        proxyFromConfig ||
-        process.env.FIORI_TOOLS_PROXY ||
+    const proxyFromFioriToolsConfig = proxyFromArgs || proxyFromConfig || process.env.FIORI_TOOLS_PROXY;
+    const proxyFromOSEnvConfig =
         process.env.http_proxy ||
         process.env.HTTP_PROXY ||
         process.env.https_proxy ||
         process.env.HTTPS_PROXY ||
         process.env.npm_config_proxy ||
-        process.env.npm_config_https_proxy
-    );
+        process.env.npm_config_https_proxy;
+
+    if (proxyFromFioriToolsConfig) {
+        process.env.http_proxy = proxyFromFioriToolsConfig;
+        process.env.HTTP_PROXY = proxyFromFioriToolsConfig;
+        process.env.https_proxy = proxyFromFioriToolsConfig;
+        process.env.HTTPS_PROXY = proxyFromFioriToolsConfig;
+        process.env.npm_config_proxy = proxyFromFioriToolsConfig;
+        process.env.npm_config_https_proxy = proxyFromFioriToolsConfig;
+
+        return proxyFromFioriToolsConfig;
+    } else {
+        return proxyFromOSEnvConfig;
+    }
 }
 
 /**
@@ -32,15 +42,5 @@ export function getCorporateProxyServer(proxyFromConfig?: string): string | unde
  * @returns false if host is excluded from user's corporate server, true otherwise
  */
 export const isProxyRequired = (url: string): boolean => {
-    const defaultPorts: { [key: string]: string } = {
-        'http': '80',
-        'https': '443',
-        'ws': '80',
-        'wss': '443'
-    };
-    const urlInstance = new URL(url);
-    const hostname = urlInstance.hostname;
-    const port = urlInstance.port ? urlInstance.port : defaultPorts[urlInstance.protocol.split(':', 1)[0]];
-
-    return shouldProxy(hostname, parseInt(port, 10));
+    return getProxyForUrl(url) ? true : false;
 };

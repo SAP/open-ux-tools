@@ -64,16 +64,6 @@ describe('Utils', () => {
         expect(res.end).toHaveBeenCalledTimes(1);
     });
 
-    test('getCorporateProxyServer: gets proxy configuration of user', () => {
-        const corporateProxy = 'https://myproxy:8443';
-        expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
-
-        const envProxy = process.env.npm_config_https_proxy;
-        process.env.npm_config_https_proxy = corporateProxy;
-        expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
-        process.env.npm_config_https_proxy = envProxy;
-    });
-
     test('proxyErrorHandler', () => {
         const mockNext = jest.fn();
         const request = {} as IncomingMessage;
@@ -109,12 +99,54 @@ describe('Utils', () => {
         );
     });
 
+    describe('getCorporateProxyServer', () => {
+        const corporateProxy = 'https://myproxy.example:8443';
+
+        afterEach(() => {
+            delete process.env.http_proxy;
+            delete process.env.HTTP_PROXY;
+            delete process.env.https_proxy;
+            delete process.env.HTTPS_PROXY;
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
+        });
+
+        test('get value from CLI (wins over input)', () => {
+            process.argv.push(`proxy=${corporateProxy}`);
+            expect(getCorporateProxyServer('~not.used')).toEqual(corporateProxy);
+            process.argv.pop();
+        });
+        test('get value from input (wins over env)', () => {
+            const envProxy = process.env.FIORI_TOOLS_PROXY;
+            process.env.FIORI_TOOLS_PROXY = '~not.used';
+            expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
+            process.env.FIORI_TOOLS_PROXY = envProxy;
+        });
+        test('get value from env if there is no input', () => {
+            const envProxy = process.env.FIORI_TOOLS_PROXY;
+            process.env.FIORI_TOOLS_PROXY = corporateProxy;
+            expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
+            process.env.FIORI_TOOLS_PROXY = envProxy;
+        });
+    });
+
     describe('isProxyRequired', () => {
         const host = 'http://www.host.example';
         const noProxyConfig = process.env.no_proxy;
+        const corporateProxy = 'https://myproxy.example:8443';
+
+        beforeAll(() => {
+            process.env.npm_config_proxy = corporateProxy;
+            process.env.npm_config_https_proxy = corporateProxy;
+        });
 
         afterEach(() => {
             process.env.no_proxy = noProxyConfig;
+        });
+
+        afterAll(() => {
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
         });
 
         test('no_proxy config does not exist', () => {
