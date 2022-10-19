@@ -9,17 +9,24 @@ interface AdtServiceExtension {
 export abstract class AdtService extends Axios implements AdtServiceExtension {
     // Instantiated by calling ServiceProvider.createService()
     public log: Logger;
+    // ADT schema for the corresponding AdtService subclass
     serviceSchema: AdtCollection;
 
     /**
      * Subclass that implements each specific ADT service
-     * should provide AdtCatagory to retrive the schema.
+     * should provide AdtCatagory for the corresponding AdtService.
+     * The AdtCatagory properties combined to identify a particular
+     * ADT service schema in ADT schema. 
      */
     public static getAdtCatagory(): AdtCategory {
         throw new Error('NEEDS TO BE IMPLEMENTED BY AdtService SUBCLASSES');
     }
 
-    public attachAdtSchema(serviceSchema: AdtCollection): void {
+    /**
+     * Attach schema to AdtService subclass.
+     * @param serviceSchema 
+     */
+    attachAdtSchema(serviceSchema: AdtCollection): void {
         this.serviceSchema = serviceSchema;
     }
 }

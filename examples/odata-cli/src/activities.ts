@@ -104,7 +104,7 @@ export async function testDeployUndeployDTA(
         TEST_TRANSPORT?: string;
     }
 ): Promise<void> {
-    const service = provider.layeredRepository;
+    const service = provider.getLayeredRepository();
     try {
         let response = await service.isExistingVariant(env.TEST_NAMESPACE);
         logger.info(`isExistingVariant: ${response.status}`);

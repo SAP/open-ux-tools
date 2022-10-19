@@ -10,6 +10,7 @@ import type { AtoSettings } from './types';
 import { TenantType } from './types';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AdtService, AtoService } from './adt-catalog/services';
+import { AxiosRequestConfig } from 'axios';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -85,6 +86,7 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
+     * Create or get an existing instance of AdtCatalogService for fetching ADT schema.
      * @returns AdtCatalogService
      */
     private getAdtCatalogService(): AdtCatalogService {
@@ -129,7 +131,7 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @returns an instance of the UI5 ABAP repository service.
      */
-    public get ui5AbapRepository(): Ui5AbapRepositoryService {
+    public getUi5AbapRepository(): Ui5AbapRepositoryService {
         if (!this.services[Ui5AbapRepositoryService.PATH]) {
             this.services[Ui5AbapRepositoryService.PATH] = this.createService<Ui5AbapRepositoryService>(
                 Ui5AbapRepositoryService.PATH,
@@ -144,7 +146,7 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @returns an instance of the app index service.
      */
-    public get appIndex(): AppIndexService {
+    public getAppIndex(): AppIndexService {
         if (!this.services[AppIndexService.PATH]) {
             this.services[AppIndexService.PATH] = this.createService<AppIndexService>(
                 AppIndexService.PATH,
@@ -159,7 +161,7 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @returns an instance of the design time adaptation service.
      */
-    public get layeredRepository(): LayeredRepositoryService {
+    public getLayeredRepository(): LayeredRepositoryService {
         if (!this.services[LayeredRepositoryService.PATH]) {
             this.services[LayeredRepositoryService.PATH] = this.createService<LayeredRepositoryService>(
                 LayeredRepositoryService.PATH,
@@ -178,7 +180,7 @@ export class AbapServiceProvider extends ServiceProvider {
      * @param adtServiceSubclass Subclass of class AdtService, type is specified by using AdtService class constructor signature.
      * @returns Subclass type of class AdtService
      */
-    public async getAdtService<T extends AdtService>(adtServiceSubclass: any): Promise<T> {
+    public async getAdtService<T extends AdtService>(adtServiceSubclass: typeof AdtService): Promise<T> {
         const subclassName = adtServiceSubclass.name;
         if (!this.services[subclassName]) {
             // Retrieve ADT schema for the specific input AdtService subclass

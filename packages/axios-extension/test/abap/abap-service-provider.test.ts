@@ -141,11 +141,11 @@ describe('AbapServiceProvider', () => {
     describe('services', () => {
         const provider = createForAbap(config);
         test('ui5AbapRepository', () => {
-            const service = provider.ui5AbapRepository;
+            const service = provider.getUi5AbapRepository();
             expect(service).toBe(provider.service(Ui5AbapRepositoryService.PATH));
         });
         test('appIndex', () => {
-            const service = provider.appIndex;
+            const service = provider.getAppIndex();
             expect(service).toBe(provider.service(AppIndexService.PATH));
         });
     });
