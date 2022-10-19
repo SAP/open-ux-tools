@@ -1,6 +1,0 @@
-{
-  "scripts": {
-    "prestart": "npm run ts-typecheck",
-    "prebuild": "npm run ts-typecheck"
-  }
-}
