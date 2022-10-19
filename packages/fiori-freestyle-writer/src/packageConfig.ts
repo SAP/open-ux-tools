@@ -19,7 +19,8 @@ export function getPackageJsonTasks({
     sapClient,
     flpAppId = '',
     startFile,
-    localStartFile
+    localStartFile,
+    addTypeScript = false
 }: {
     localOnly: boolean;
     addMock: boolean;
@@ -27,6 +28,7 @@ export function getPackageJsonTasks({
     flpAppId?: string;
     startFile?: string;
     localStartFile?: string;
+    addTypeScript?: boolean;
 }): { start: string; 'start-local': string; 'start-noflp': string; 'start-mock'?: string } {
     // Build search param part of preview launch url
     const searchParamList = [];
@@ -63,6 +65,7 @@ export function getPackageJsonTasks({
             ? {
                   'start-mock': mockTask
               }
-            : {}
+            : {},
+        addTypeScript ? { prestart: 'npm run ts-typecheck', prebuild: 'npm run ts-typecheck' } : {}
     );
 }
