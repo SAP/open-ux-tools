@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.12
+
+### Patch Changes
+
+-   5becde5: New storybook story for UIMessageBar and cleanup in UIMessageBar component
+
 ## 1.0.11
 
 ### Patch Changes
