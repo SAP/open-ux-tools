@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.4.2
+
+### Patch Changes
+
+-   6925538: Update @sap/bas-sdk dependency
+
 ## 0.4.1
 
 ### Patch Changes
