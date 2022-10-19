@@ -54,7 +54,7 @@ archive.zip
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"1.71.18\\",
+    \\"@sapui5/ts-types\\": \\"~1.90.0\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },
@@ -977,19 +977,21 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
-    \\"@sapui5/ts-types-esm\\": \\"1.71.18\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.90.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"1.71.18\\"
+    \\"@sapui5/ts-types\\": \\"~1.90.0\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"prestart\\": \\"npm run ts-typecheck\\",
+    \\"prebuild\\": \\"npm run ts-typecheck\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\"
   },
   \\"ui5\\": {
@@ -1135,7 +1137,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
-    \\"@sapui5/ts-types-esm\\": \\"1.71.18\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.90.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
@@ -1146,6 +1148,8 @@ archive.zip
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"prestart\\": \\"npm run ts-typecheck\\",
+    \\"prebuild\\": \\"npm run ts-typecheck\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\"
   },
   \\"ui5\\": {
