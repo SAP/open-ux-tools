@@ -51,9 +51,9 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
 
     // update proxy config with values coming from args or ui5.yaml
     updateProxyEnv(config.proxy);
-    config.proxy = getProxyForUrl(config.url);
-    if (config.proxy) {
-        proxyConfig.agent = new HttpsProxyAgent(config.proxy);
+    const corporateProxy = getProxyForUrl(config.url);
+    if (corporateProxy) {
+        proxyConfig.agent = new HttpsProxyAgent(corporateProxy);
     }
 
     Object.assign(proxyConfig, options);
