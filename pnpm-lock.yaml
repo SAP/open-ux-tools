@@ -132,6 +132,7 @@ importers:
       '@types/express': 4.17.13
       '@types/http-proxy': ^1.17.5
       '@types/prompts': 2.0.14
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       chalk: 4.1.2
       dotenv: 16.0.0
@@ -141,6 +142,7 @@ importers:
       i18next: 20.3.2
       nock: 13.2.4
       prompts: 2.4.2
+      proxy-from-env: 1.1.0
       supertest: 6.2.2
       yaml: 2.0.0-10
     dependencies:
@@ -154,10 +156,12 @@ importers:
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
       prompts: 2.4.2
+      proxy-from-env: 1.1.0
     devDependencies:
       '@types/express': 4.17.13
       '@types/http-proxy': 1.17.8
       '@types/prompts': 2.0.14
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       express: 4.17.2
       nock: 13.2.4
@@ -553,6 +557,7 @@ importers:
       '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/express': 4.17.13
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       dotenv: 16.0.0
       express: 4.17.2
@@ -560,6 +565,8 @@ importers:
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
       nock: 13.2.4
+      proxy-from-env: 1.1.0
+      supertest: 6.2.2
       yaml: 2.0.0-10
     dependencies:
       '@sap-ux/logger': link:../logger
@@ -568,12 +575,15 @@ importers:
       http-proxy-middleware: 2.0.1
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
+      proxy-from-env: 1.1.0
     devDependencies:
       '@sap-ux/project-access': link:../project-access
       '@types/express': 4.17.13
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       express: 4.17.2
       nock: 13.2.4
+      supertest: 6.2.2
       yaml: 2.0.0-10
 
   packages/ui5-test-writer:
@@ -4795,6 +4805,12 @@ packages:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
     dev: true
 
+  /@types/proxy-from-env/1.0.1:
+    resolution: {integrity: sha512-luG++TFHyS61eKcfkR1CVV6a1GMNXDjtqEQIIfaSHax75xp0HU3SlezjOi1yqubJwrG8e9DeW59n6wTblIDwFg==}
+    dependencies:
+      '@types/node': 17.0.9
+    dev: true
+
   /@types/qs/6.9.1:
     resolution: {integrity: sha512-lhbQXx9HKZAPgBkISrBcmAcMpZsmpe/Cd/hY7LGZS5OfkySUBItnPZHgQPssWYUET8elF+yCFBbP1Q0RZPTdaw==}
     dev: true
@@ -7685,7 +7701,7 @@ packages:
     dev: true
 
   /dezalgo/1.0.3:
-    resolution: {integrity: sha1-f3Qt4Gb8dIvI24IFad3c5Jvw1FY=}
+    resolution: {integrity: sha512-K7i4zNfT2kgQz3GylDw40ot9GAE47sFZ9EXHFSPP6zONLgH6kWXE0KWJchkbQJLBkRazq4APwZ4OwiFFlT95OQ==}
     dependencies:
       asap: 2.0.6
       wrappy: 1.0.2
@@ -12206,7 +12222,7 @@ packages:
     engines: {node: '>= 8'}
 
   /methods/1.1.2:
-    resolution: {integrity: sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=}
+    resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
     dev: true
 
@@ -13720,6 +13736,10 @@ packages:
       ipaddr.js: 1.9.1
     dev: true
 
+  /proxy-from-env/1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
+
   /prr/1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
     dev: true
@@ -14613,6 +14633,7 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+    dev: false
 
   /semver/7.3.7:
     resolution: {integrity: sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g==}
@@ -15307,7 +15328,7 @@ packages:
       mime: 2.6.0
       qs: 6.10.3
       readable-stream: 3.6.0
-      semver: 7.3.5
+      semver: 7.3.7
     transitivePeerDependencies:
       - supports-color
     dev: true

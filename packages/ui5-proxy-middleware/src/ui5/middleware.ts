@@ -7,7 +7,7 @@ import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
     injectScripts,
-    isHostExcludedFromProxy,
+    isProxyRequired,
     ui5Proxy,
     resolveUI5Version,
     hideProxyCredentials
@@ -77,7 +77,7 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
                 url: envUI5Url || ui5.url,
                 version: ui5Version
             };
-            if (corporateProxyServer && !isHostExcludedFromProxy(ui5Config.url)) {
+            if (corporateProxyServer && isProxyRequired(ui5Config.url)) {
                 proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
             }
             routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });
