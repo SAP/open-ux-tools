@@ -4,12 +4,13 @@ import * as utils from '../../src/base/utils';
 import { ToolsLogger } from '@sap-ux/logger';
 
 describe('ui5Proxy', () => {
+    const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, default params', () => {
-        const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
             url: 'https://example.example',
@@ -32,7 +33,6 @@ describe('ui5Proxy', () => {
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, additional params', () => {
-        const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
             url: 'https://example.example',
@@ -62,7 +62,6 @@ describe('ui5Proxy', () => {
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, custom filter function', () => {
-        const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
             url: 'https://example.example',
@@ -80,7 +79,6 @@ describe('ui5Proxy', () => {
     });
 
     test('ui5Proxy: calling onProxyReq calls proxyRequestHandler', () => {
-        const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const proxyRequestHandlerSpy = jest.spyOn(utils, 'proxyRequestHandler').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
@@ -98,7 +96,6 @@ describe('ui5Proxy', () => {
     });
 
     test('ui5Proxy: calling onProxyRes calls proxyResponseHandler', () => {
-        const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const proxyResponseHandlerSpy = jest.spyOn(utils, 'proxyResponseHandler').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
@@ -116,7 +113,6 @@ describe('ui5Proxy', () => {
     });
 
     test('ui5Proxy: calling onError calls proxyErrorHandler', () => {
-        const createProxyMiddlewareSpy = jest.spyOn(hpm, 'createProxyMiddleware').mockImplementation(jest.fn());
         const proxyErrorHandlerSpy = jest.spyOn(utils, 'proxyErrorHandler').mockImplementation(jest.fn());
         const config = {
             path: '/mypath',
@@ -132,5 +128,112 @@ describe('ui5Proxy', () => {
             expect(proxyErrorHandlerSpy).toHaveBeenCalledTimes(1);
             expect(proxyErrorHandlerSpy).toHaveBeenCalledWith(err, {}, expect.any(ToolsLogger), {}, undefined);
         }
+    });
+
+    test('ui5Proxy: host is not excluded from proxy', async () => {
+        const config = {
+            path: '/mypath',
+            url: 'https://ui5.example',
+            version: '1.0.0',
+            proxy: 'http://proxy.example'
+        };
+        ui5Proxy(config);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
+        delete process.env.npm_config_proxy;
+        delete process.env.npm_config_https_proxy;
+    });
+
+    test('ui5Proxy: host is excluded from proxy', async () => {
+        const noProxyConfig = process.env.no_proxy;
+        const config = {
+            path: '/mypath',
+            url: 'https://ui5.example',
+            version: '1.0.0',
+            proxy: 'http://proxy.example'
+        };
+        process.env.no_proxy = '.example';
+        ui5Proxy(config);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
+        delete process.env.npm_config_proxy;
+        delete process.env.npm_config_https_proxy;
+        process.env.no_proxy = noProxyConfig;
+    });
+
+    test('ui5Proxy: host with port is excluded from proxy', async () => {
+        const noProxyConfig = process.env.no_proxy;
+        const config = {
+            path: '/mypath',
+            url: 'https://ui5.example:3333',
+            version: '1.0.0',
+            proxy: 'http://proxy.example'
+        };
+        process.env.no_proxy = '.example';
+        ui5Proxy(config);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
+        delete process.env.npm_config_proxy;
+        delete process.env.npm_config_https_proxy;
+        process.env.no_proxy = noProxyConfig;
+    });
+
+    test('ui5Proxy: ip address is excluded from proxy', async () => {
+        const noProxyConfig = process.env.no_proxy;
+        const config = {
+            path: '/mypath',
+            url: 'http://123.156.255.101',
+            version: '1.0.0',
+            proxy: 'http://proxy.example'
+        };
+        process.env.no_proxy = '123.156.255.101';
+        ui5Proxy(config);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
+        delete process.env.npm_config_proxy;
+        delete process.env.npm_config_https_proxy;
+        process.env.no_proxy = noProxyConfig;
+    });
+
+    test('ui5Proxy: ip address with port is excluded from proxy', async () => {
+        const noProxyConfig = process.env.no_proxy;
+        const config = {
+            path: '/mypath',
+            url: 'http://123.156.255.101:3333',
+            version: '1.0.0',
+            proxy: 'http://proxy.example'
+        };
+        process.env.no_proxy = '123.156.255.101';
+        ui5Proxy(config);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
+        delete process.env.npm_config_proxy;
+        delete process.env.npm_config_https_proxy;
+        process.env.no_proxy = noProxyConfig;
     });
 });
