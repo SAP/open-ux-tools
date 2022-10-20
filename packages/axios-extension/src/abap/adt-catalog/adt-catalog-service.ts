@@ -23,7 +23,7 @@ export class AdtCatalogService extends Axios {
      * @param adtCategory Adt service Id
      * @returns Service schema of the input Adt service
      */
-    public async getServiceDefinition(adtCategory: AdtCategory): Promise<AdtCollection> {
+    public async getServiceDefinition(adtCategory: AdtCategory): Promise<AdtCollection | null> {
         await this.checkOrLoadAdtDiscoverySchema();
         // Find the schema for the input service url path
         const serviceSchema = this.schemaStore.getAdtCollection(adtCategory);

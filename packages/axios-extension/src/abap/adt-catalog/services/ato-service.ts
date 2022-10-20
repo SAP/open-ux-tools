@@ -2,16 +2,31 @@ import { AdtService } from './adt-service';
 import type { AdtCategory, AtoSettings } from 'abap/types';
 import XmlParser from 'fast-xml-parser';
 
+/**
+ * AtoService implements ADT requests for fetching ATO settings.
+ */
 export class AtoService extends AdtService {
+    /**
+     * @see AdtService.getAdtCatagory()
+     */
     private static AdtCategory = {
         scheme: 'http://www.sap.com/adt/categories/ato',
         term: 'settings'
     };
 
+    /**
+     * @see AdtService.getAdtCatagory()
+     * @returns AdtCategory
+     */
     public static getAdtCatagory(): AdtCategory {
         return AtoService.AdtCategory;
     }
 
+    /**
+     * Send ADT request to fetch ATO settings.
+     *
+     * @returns AtoSettings
+     */
     public async getAtoInfo(): Promise<AtoSettings> {
         const acceptHeaders = {
             headers: {

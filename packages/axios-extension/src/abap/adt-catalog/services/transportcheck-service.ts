@@ -4,12 +4,24 @@ import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../ty
 import XmlParser from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
+
+/**
+ * TransportChecksService implements ADT requests for fetching a list of available transport requests
+ * for a given package name and a give app name.
+ */
 export class TransportChecksService extends AdtService {
+    /**
+     * @see AdtService.getAdtCatagory()
+     */
     private static AdtCategory = {
         scheme: 'http://www.sap.com/adt/categories/cts',
         term: 'transportchecks'
     };
 
+    /**
+     * @see AdtService.getAdtCatagory()
+     * @returns AdtCategory
+     */
     public static getAdtCatagory(): AdtCategory {
         return TransportChecksService.AdtCategory;
     }
@@ -140,10 +152,11 @@ export class TransportChecksService extends AdtService {
 
     /**
      * Convert transport request in XML element of ADT response to typed object.
+     *
      * @param transportReqEle XML element of transport request data in ADT response
-     * @returns
+     * @returns JSON object format of input XML element
      */
-    private convertTransportRequest(transportReqEle: Element): TransportRequest {
+    private convertTransportRequest(transportReqEle: Element): TransportRequest | undefined {
         if (!transportReqEle) {
             return undefined;
         }

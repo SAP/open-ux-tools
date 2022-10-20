@@ -4,12 +4,23 @@ import XmlParser from 'fast-xml-parser';
 import * as xpath from 'xpath';
 import { DOMParser } from '@xmldom/xmldom';
 
+/**
+ * TransportRequestService implements ADT requests for creating a new transport request number
+ * that can be used for deploying Fiori project to ABAP backend.
+ */
 export class TransportRequestService extends AdtService {
+    /**
+     * @see AdtService.getAdtCatagory()
+     */
     private static AdtCategory = {
         scheme: 'http://www.sap.com/adt/categories/cts',
         term: 'transportmanagement'
     };
 
+    /**
+     * @see AdtService.getAdtCatagory()
+     * @returns AdtCategory
+     */
     public static getAdtCatagory(): AdtCategory {
         return TransportRequestService.AdtCategory;
     }
@@ -38,6 +49,12 @@ export class TransportRequestService extends AdtService {
         return this.getTransportNumberFromResponse(response.data);
     }
 
+    /**
+     * Read the newly created transport number from response XML data.
+     *
+     * @param xml XML response of create transport request.
+     * @returns Newly created transport number or null
+     */
     private getTransportNumberFromResponse(xml: string): string | null {
         if (XmlParser.validate(xml) !== true) {
             this.log.warn(`Invalid XML: ${xml}`);

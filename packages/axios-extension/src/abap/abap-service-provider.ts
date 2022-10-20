@@ -8,6 +8,7 @@ import { LayeredRepositoryService } from './lrep-service';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
 import type { AtoSettings } from './types';
 import { TenantType } from './types';
+// eslint gives conflict errors when these classes are declared as type / non-type
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AdtService, AtoService } from './adt-catalog/services';
 
@@ -86,6 +87,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Create or get an existing instance of AdtCatalogService for fetching ADT schema.
+     *
      * @returns AdtCatalogService
      */
     private getAdtCatalogService(): AdtCatalogService {
@@ -172,6 +174,7 @@ export class AbapServiceProvider extends ServiceProvider {
 
     /**
      * Retrieve singleton instance of AdtService subclass to serve the specific ADT request query.
+     *
      * @example
      * ```ts
      * const transportRequestSerivce = abapServiceProvider.getAdtService<TransportRequestService>(TransportRequestService);
@@ -179,7 +182,7 @@ export class AbapServiceProvider extends ServiceProvider {
      * @param adtServiceSubclass Subclass of class AdtService, type is specified by using AdtService class constructor signature.
      * @returns Subclass type of class AdtService
      */
-    public async getAdtService<T extends AdtService>(adtServiceSubclass: typeof AdtService): Promise<T> {
+    public async getAdtService<T extends AdtService>(adtServiceSubclass: typeof AdtService): Promise<T | null> {
         const subclassName = adtServiceSubclass.name;
         if (!this.services[subclassName]) {
             // Retrieve ADT schema for the specific input AdtService subclass
