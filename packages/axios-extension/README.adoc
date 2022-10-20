@@ -1,6 +1,6 @@
 # Axios Extension
 
-The `@sap-ux/axios-extension` module is an extension of the [axios](https://github.com/axios/axios) framework adding convenience methods to interact with SAP systems especially with OData services..
+The `@sap-ux/axios-extension` module is an extension of the link:https://github.com/axios/axios[axios] framework adding convenience methods to interact with SAP systems especially with OData services..
 
 ## Features
 
@@ -68,7 +68,7 @@ const transportRequestSerivce = provider.getAdtService<TransportRequestService>(
 const newTrNumber = await transportRequestSerivce.createTransportRequest('A new transport request number for deployment');
 ```
 
-Supported ADT services are implemented in [src/abap/adt-catalog/services](https://github.com/SAP/open-ux-tools/tree/main/packages/axios-extension/src/abap/adt-catalog/services).
+Supported ADT services are implemented in link:./src/abap/adt-catalog/services[src/abap/adt-catalog/services]..
 
 ## Installation
 Npm
@@ -95,4 +95,4 @@ const service = provider.service('/ns/my_service');
 const metadata = await service.metadata();
 
 ```
-See more examples in [`/test/factory.test.ts`](./test/factory.test.ts)
+See more examples in link:./test/factory.test.ts[/test/factory.test.ts]
