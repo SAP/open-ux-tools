@@ -8,7 +8,7 @@ import { LayeredRepositoryService } from './lrep-service';
 import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
 import type { AtoSettings } from './types';
 import { TenantType } from './types';
-// eslint gives conflict errors when these classes are declared as type / non-type
+// Can't use an `import type` here. We need the classname at runtime to create object instances:
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AdtService, AtoService } from './adt-catalog/services';
 
