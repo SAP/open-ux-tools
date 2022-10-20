@@ -1,2 +1,4 @@
-test
+test/test-output
+test/test-input
 dist
+test

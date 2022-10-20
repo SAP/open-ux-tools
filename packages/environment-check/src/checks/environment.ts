@@ -13,7 +13,7 @@ import type {
     ToolsExtensions
 } from '../types';
 import { Check, DevelopmentEnvironment, Extensions } from '../types';
-import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion } from './getInstalled';
+import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion } from './get-installed';
 import { t } from '../i18n';
 
 /**

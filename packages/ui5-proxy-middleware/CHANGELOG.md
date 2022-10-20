@@ -1,5 +1,28 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.14
+
+### Patch Changes
+
+-   748d24f: Consider ports when checking if a host is excluded from corporate proxy
+
+## 1.1.13
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-config@0.15.3
+
+## 1.1.12
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/logger@0.3.1
+    -   @sap-ux/ui5-config@0.15.2
+
 ## 1.1.11
 
 ### Patch Changes

@@ -7,7 +7,7 @@ import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
     injectScripts,
-    isHostExcludedFromProxy,
+    isProxyRequired,
     ui5Proxy,
     resolveUI5Version,
     hideProxyCredentials
@@ -25,7 +25,7 @@ import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Options {
     return {
         secure: config.secure !== undefined ? !!config.secure : true,
-        logLevel: !!config.debug ? 'debug' : 'info',
+        logLevel: config.debug ? 'debug' : 'info',
         logProvider: () => logger
     };
 }
@@ -37,10 +37,11 @@ function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Option
  * @returns handler function
  */
 function createRequestHandler(routes: { route: string; handler: RequestHandler }[]): RequestHandler {
-    return (req, res, next) => {
+    return (req, res, next): void => {
         for (const route of routes) {
             if (req.path.startsWith(route.route)) {
-                return route.handler(req, res, next);
+                route.handler(req, res, next);
+                return;
             }
         }
         next();
@@ -76,7 +77,7 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
                 url: envUI5Url || ui5.url,
                 version: ui5Version
             };
-            if (corporateProxyServer && !isHostExcludedFromProxy(ui5Config.url)) {
+            if (corporateProxyServer && isProxyRequired(ui5Config.url)) {
                 proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
             }
             routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });

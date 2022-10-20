@@ -42,7 +42,7 @@ const xmlReplaceRegex = /[<>&"']/g;
 /**
  * Escape invalid characters for XML values.
  *
- * @param xmlValue
+ * @param xmlValue xml string
  * @returns escaped xml value
  */
 function encodeXmlValue(xmlValue: string): string {
@@ -290,8 +290,8 @@ export class Ui5AbapRepositoryService extends ODataService {
      * Log errors more user friendly if it is a standard Gateway error.
      *
      * @param e error thrown by Axios after sending a request
-     * @param e.error
-     * @param e.host
+     * @param e.error error from Axios
+     * @param e.host hostname
      */
     protected logError({ error, host }: { error: AxiosError; host?: string }): void {
         this.log.error(error.message);

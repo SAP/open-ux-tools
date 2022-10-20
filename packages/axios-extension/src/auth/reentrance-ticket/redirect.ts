@@ -20,12 +20,12 @@ export interface SetupRedirectOptions {
 
 /**
  *
- * @param root0
- * @param root0.resolve
- * @param root0.reject
- * @param root0.timeout
- * @param root0.backend
- * @param root0.logger
+ * @param options options object
+ * @param options.resolve Callback for when redirect is successful
+ * @param options.reject Callback for when redirect fails
+ * @param options.timeout timeout in milliseconds
+ * @param options.backend backend ABAP System
+ * @param options.logger logger
  * @returns a `Redirect` object
  */
 export function setupRedirectHandling({ resolve, reject, timeout, backend, logger }: SetupRedirectOptions): Redirect {

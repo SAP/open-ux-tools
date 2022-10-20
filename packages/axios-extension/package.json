@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/axios-extension",
-    "version": "0.10.0",
+    "version": "0.10.2",
     "description": "Extension of the Axios module adding convinience methods to interact with SAP systems especially with OData services.",
     "repository": {
         "type": "git",
@@ -14,7 +14,7 @@
     "private": false,
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc",
+        "build": "pnpm clean && tsc -p tsconfig-build.json",
         "watch": "tsc --watch",
         "clean": "rimraf dist coverage",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -35,7 +35,7 @@
         "open": "7.0.3",
         "qs": "6.7.0",
         "xpath": "0.0.32",
-        "@xmldom/xmldom": "0.8.2"
+        "@xmldom/xmldom": "0.8.3"
     },
     "devDependencies": {
         "@types/lodash": "4.14.176",

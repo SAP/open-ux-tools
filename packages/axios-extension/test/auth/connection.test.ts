@@ -1,4 +1,4 @@
-import { AxiosRequestHeaders, AxiosResponse, AxiosResponseHeaders } from 'axios';
+import type { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import { Cookies } from '../../src/auth/connection';
 
 describe('Cookies', () => {

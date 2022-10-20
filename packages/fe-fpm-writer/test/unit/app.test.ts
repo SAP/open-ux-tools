@@ -1,10 +1,12 @@
-import type { JSONSchemaForSAPUI5Namespace as SAPUI5 } from '@sap-ux/ui5-config/dist/types/manifest';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { enableFPM, MIN_VERSION } from '../../src/app';
 import type { Manifest } from '../../src/common/types';
+
+type SAPUI5 = ManifestNamespace.JSONSchemaForSAPUI5Namespace;
 
 /**
  *

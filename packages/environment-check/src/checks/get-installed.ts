@@ -33,9 +33,9 @@ async function getExtensionsBAS(): Promise<{ [id: string]: { version: string } }
     const versions = files
         .filter((vsixFile) => isExtensionRequired(vsixFile))
         .reduce((returnObject, current) => {
-            const lastIndex = current.lastIndexOf('-');
-            const id = current.slice(0, lastIndex);
-            const version = current.slice(lastIndex + 1).split('.vsix')[0];
+            const idVersion = current.split('.vsix')[0];
+            const firstNumeric = idVersion.search(/\d/);
+            const [id, version] = [idVersion.slice(0, firstNumeric - 1), idVersion.slice(firstNumeric)];
             returnObject[id] = {
                 version
             };
@@ -122,7 +122,7 @@ async function getFioriGenBAS(): Promise<string> {
  */
 async function getFioriGenGlobalRoot(): Promise<string> {
     let version;
-    let globalNpmPath = await spawnCommand(npmCommand, ['root', '--location=global']);
+    let globalNpmPath = await spawnCommand(npmCommand, ['root', '-g']);
     globalNpmPath = globalNpmPath.trim();
     const pathToPackageJson = join(globalNpmPath, NpmModules.FioriGenerator, 'package.json');
     if (existsSync(pathToPackageJson)) {

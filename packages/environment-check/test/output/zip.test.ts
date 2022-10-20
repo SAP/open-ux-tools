@@ -8,7 +8,7 @@ jest.mock('fs');
 let zipMock;
 jest.mock('archiver', () => ({
     __esModule: true,
-    default: (): typeof zipMock => zipMock
+    'default': (): typeof zipMock => zipMock
 }));
 
 describe('Test to check zip save, storeResultsZip()', () => {
@@ -34,9 +34,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
             }
         } as unknown as mockFs.WriteStream & { on: jest.Mock };
         jest.spyOn(mockFs, 'createWriteStream').mockImplementation((filename) => {
-            if (filename === 'envcheck-results.zip') {
-                return writeStreamMock;
-            }
+            return filename === 'envcheck-results.zip' ? writeStreamMock : undefined;
         });
         console.log = jest.fn();
         const requestedChecksSet = [Check.Environment, Check.Destinations, Check.DestResults];
@@ -52,7 +50,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
         expect(console.log).toBeCalledWith(`Results written to file 'envcheck-results.zip' 117.74 MB`);
     });
 
-    test('Check writer for file size 0 bytes, different filename, and ENONT warning', () => {
+    test('Check writer for file size 0 bytes, different filename, and ENOENT warning', () => {
         // Mock setup
         zipMock = {
             on: jest.fn(),
@@ -70,9 +68,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
             }
         } as unknown as mockFs.WriteStream & { on: jest.Mock };
         jest.spyOn(mockFs, 'createWriteStream').mockImplementation((filename) => {
-            if (filename === 'ANY_NAME') {
-                return writeStreamMock;
-            }
+            return filename === 'ANY_NAME' ? writeStreamMock : undefined;
         });
         console.log = jest.fn();
         console.warn = jest.fn();

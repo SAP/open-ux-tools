@@ -1,5 +1,19 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.4
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+
+## 0.1.3
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/ui5-config@0.15.2
+
 ## 0.1.2
 
 ### Patch Changes

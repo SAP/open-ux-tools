@@ -97,7 +97,7 @@ importers:
       '@sap-ux/btp-utils': workspace:*
       '@sap-ux/logger': workspace:*
       '@types/lodash': 4.14.176
-      '@xmldom/xmldom': 0.8.2
+      '@xmldom/xmldom': 0.8.3
       axios: 0.24.0
       detect-content-type: 1.2.0
       fast-xml-parser: 3.12.20
@@ -110,7 +110,7 @@ importers:
     dependencies:
       '@sap-ux/btp-utils': link:../btp-utils
       '@sap-ux/logger': link:../logger
-      '@xmldom/xmldom': 0.8.2
+      '@xmldom/xmldom': 0.8.3
       axios: 0.24.0
       detect-content-type: 1.2.0
       fast-xml-parser: 3.12.20
@@ -132,6 +132,7 @@ importers:
       '@types/express': 4.17.13
       '@types/http-proxy': ^1.17.5
       '@types/prompts': 2.0.14
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       chalk: 4.1.2
       dotenv: 16.0.0
@@ -141,6 +142,7 @@ importers:
       i18next: 20.3.2
       nock: 13.2.4
       prompts: 2.4.2
+      proxy-from-env: 1.1.0
       supertest: 6.2.2
       yaml: 2.0.0-10
     dependencies:
@@ -154,10 +156,12 @@ importers:
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
       prompts: 2.4.2
+      proxy-from-env: 1.1.0
     devDependencies:
       '@types/express': 4.17.13
       '@types/http-proxy': 1.17.8
       '@types/prompts': 2.0.14
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       express: 4.17.2
       nock: 13.2.4
@@ -181,7 +185,7 @@ importers:
       '@sap-ux/btp-utils': workspace:*
       '@sap-ux/logger': workspace:*
       '@sap-ux/ui5-config': workspace:*
-      '@sap/bas-sdk': 2.1.1
+      '@sap/bas-sdk': 2.1.2
       '@types/archiver': 5.1.1
       '@types/vscode': 1.39.0
       archiver: 5.3.0
@@ -196,7 +200,7 @@ importers:
       '@sap-ux/btp-utils': link:../btp-utils
       '@sap-ux/logger': link:../logger
       '@sap-ux/ui5-config': link:../ui5-config
-      '@sap/bas-sdk': 2.1.1
+      '@sap/bas-sdk': 2.1.2
       '@types/archiver': 5.1.1
       archiver: 5.3.0
       axios: 0.24.0
@@ -210,12 +214,12 @@ importers:
 
   packages/fe-fpm-writer:
     specifiers:
-      '@sap-ux/ui5-config': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/semver': 7.3.9
-      '@xmldom/xmldom': 0.8.2
+      '@xmldom/xmldom': 0.8.3
       ejs: 3.1.7
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
@@ -223,7 +227,7 @@ importers:
       xml-formatter: 2.6.1
       xpath: 0.0.32
     dependencies:
-      '@xmldom/xmldom': 0.8.2
+      '@xmldom/xmldom': 0.8.3
       ejs: 3.1.7
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
@@ -231,7 +235,7 @@ importers:
       xml-formatter: 2.6.1
       xpath: 0.0.32
     devDependencies:
-      '@sap-ux/ui5-config': link:../ui5-config
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
@@ -369,6 +373,25 @@ importers:
       fs-extra: 10.0.0
       lodash: 4.17.21
 
+  packages/project-access:
+    specifiers:
+      '@sap-ux/ui5-config': workspace:*
+      '@types/mem-fs': 1.1.2
+      '@types/mem-fs-editor': 7.0.1
+      findit2: 2.2.3
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0
+      vscode-uri: 3.0.6
+    dependencies:
+      '@sap-ux/ui5-config': link:../ui5-config
+      findit2: 2.2.3
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0_mem-fs@2.1.0
+    devDependencies:
+      '@types/mem-fs': 1.1.2
+      '@types/mem-fs-editor': 7.0.1
+      vscode-uri: 3.0.6
+
   packages/store:
     specifiers:
       '@sap-ux/logger': workspace:*
@@ -443,13 +466,14 @@ importers:
       uuid: 3.4.0
       webpack: 5.74.0
     dependencies:
+      '@fluentui/react': 8.66.2_xcycjaol2m3tfnicwh7yl4p4jq
       react-movable: 2.4.0_wcqkhtmu7mswc6yz4uyexck3ty
       react-virtualized: 9.22.3_wcqkhtmu7mswc6yz4uyexck3ty
       sanitize-html: 2.7.1
+      uuid: 3.4.0
     devDependencies:
       '@babel/core': 7.14.8
       '@babel/helper-define-map': 7.14.5
-      '@fluentui/react': 8.66.2_xcycjaol2m3tfnicwh7yl4p4jq
       '@storybook/builder-webpack5': 6.5.10_hzwzqzox2cwlsnaqlmgmtwugva
       '@storybook/manager-webpack5': 6.5.10_hzwzqzox2cwlsnaqlmgmtwugva
       '@storybook/react': 6.5.10_awrnpscw3nbcxcayj6yikkyjom
@@ -479,11 +503,11 @@ importers:
       style-loader: 0.23.1
       ts-loader: 9.2.3_actwkd5w3rxts7lmypgqrtezda
       typescript: 4.3.5
-      uuid: 3.4.0
       webpack: 5.74.0
 
   packages/ui5-application-writer:
     specifiers:
+      '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
@@ -507,6 +531,7 @@ importers:
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
       semver: 7.3.5
     devDependencies:
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.176
@@ -529,8 +554,10 @@ importers:
   packages/ui5-proxy-middleware:
     specifiers:
       '@sap-ux/logger': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/express': 4.17.13
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       dotenv: 16.0.0
       express: 4.17.2
@@ -538,6 +565,7 @@ importers:
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
       nock: 13.2.4
+      proxy-from-env: 1.1.0
       supertest: 6.2.2
       yaml: 2.0.0-10
     dependencies:
@@ -547,8 +575,11 @@ importers:
       http-proxy-middleware: 2.0.1
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
+      proxy-from-env: 1.1.0
     devDependencies:
+      '@sap-ux/project-access': link:../project-access
       '@types/express': 4.17.13
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       express: 4.17.2
       nock: 13.2.4
@@ -557,7 +588,7 @@ importers:
 
   packages/ui5-test-writer:
     specifiers:
-      '@sap-ux/ui5-config': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -568,12 +599,12 @@ importers:
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
     dependencies:
-      '@sap-ux/ui5-config': link:../ui5-config
       ejs: 3.1.7
       i18next: 20.3.2
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
     devDependencies:
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -2629,14 +2660,14 @@ packages:
     dependencies:
       '@fluentui/set-version': 8.2.2
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/dom-utilities/2.2.2:
     resolution: {integrity: sha512-puklLc6Jvg279OGagqkSfuHML6ckBhw3gJakdvIZHKeJiduh+34U4Finl3K24yBSXzG2WsN+LwLTd1Vcociy+g==}
     dependencies:
       '@fluentui/set-version': 8.2.2
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/font-icons-mdl2/8.4.13_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-rXJpRKxHg68zCKTrcmouklGpE/laXlTQaLyBuft8EcPczZX3aupYPZda9sp+Kknolmd3Lvypn2D9Vf+McJDtwg==}
@@ -2648,7 +2679,7 @@ packages:
     transitivePeerDependencies:
       - '@types/react'
       - react
-    dev: true
+    dev: false
 
   /@fluentui/foundation-legacy/8.2.20_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-iyJSr5Y/yYt0x9yBLP+aIy5U9tiDlgbxJZo6enNwFo0zEuBeWg/2L2IgAUzAwJB2vb73oQBlQt8In602R0Vj8w==}
@@ -2663,20 +2694,20 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/keyboard-key/0.4.2:
     resolution: {integrity: sha512-6WdMrnFpY94uWefUGGRqO4WiS6R+Kso6/FR95SxXMuS6kfnjGJCHzywFGZcN5OU1fX067Zna4aPQ/nDwYMgBPw==}
     dependencies:
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/merge-styles/8.5.3:
     resolution: {integrity: sha512-bHWftN3zTp1bbBfmAEH8YK9UURWj2mffw7b7VaW2Og1qxwv3GMSza1cyv/d3EVqpMJ8AVwFv3mbi9p1ieMN9mw==}
     dependencies:
       '@fluentui/set-version': 8.2.2
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/react-focus/8.8.5_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-+BNjLHKpA0IqUToY9MMARGpYg3ngBmW+1KhJeVxCUnAESNMwnzJ6hx/3MOYUA/FPbYfBvs8QnpTZrrOd7sLG/A==}
@@ -2692,7 +2723,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/react-hooks/8.6.11_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-qQAg/Hqchz0BGL1KJhg211uhhBDxF0bvMCdVKVoeeJNj4q3Cdvam87zHi7/W5gP8i6jgCILr7MrV3dH9umA/Sw==}
@@ -2706,7 +2737,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/react-window-provider/2.2.2_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-/1uQ01HqGRpUOMozUy1FYmxp6blZZvtKN50rqxnQJr8O1bcpg8lJzhq064E8EjOXfdNh47zKSloP4ebbDI5vrw==}
@@ -2718,7 +2749,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/react/8.66.2_xcycjaol2m3tfnicwh7yl4p4jq:
     resolution: {integrity: sha512-uHCBPpMD9TD0+Aevk1ixjYuCLGdzsZbnb607sc9jjMi9yV6HgnzfMsZXiZoW0mAaHnIGdpjgjWG66iT5U3uGgw==}
@@ -2745,13 +2776,13 @@ packages:
       react: 16.14.0
       react-dom: 16.14.0_react@16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/set-version/8.2.2:
     resolution: {integrity: sha512-Vg20KZ0ufgWjxx6GFbqC5wiVxXZDUWgNT0r0By/Eyj4bUSb1jG6lmf5z1oY1dUX0YS6Cp5e6GnvbNdXg5E7orA==}
     dependencies:
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/style-utilities/8.7.12_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-Ayxyo5brZxNI3CK4la+esJ5yDUQFAD26+BqjbIZvXemKq6ZsZDb2875H//saSVHc+dRq8R6J80A1GGV0fJpIEA==}
@@ -2765,7 +2796,7 @@ packages:
     transitivePeerDependencies:
       - '@types/react'
       - react
-    dev: true
+    dev: false
 
   /@fluentui/theme/2.6.16_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-Ml2oMVvoOxRYD9HPjEkGCWvnQnzDyrufa5k8bPYN8xjJbbEGtDjjswcfrSVfHx1fCR1CFgybHR8jj3pvXRTXUQ==}
@@ -2779,7 +2810,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@fluentui/utilities/8.13.1_vshvapmxg47tngu7tvrsqpq55u:
     resolution: {integrity: sha512-BpLa0lSYnZ3YoTGB6T/pQ0vUVq0PEr6gF+daptyeiLUkEXVoy3HYgX6ZanA62wJ89ycIwI8A+1aUEbmtDMupYg==}
@@ -2793,7 +2824,7 @@ packages:
       '@types/react': 16.14.0
       react: 16.14.0
       tslib: 2.4.0
-    dev: true
+    dev: false
 
   /@gar/promisify/1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
@@ -3212,7 +3243,7 @@ packages:
 
   /@microsoft/load-themed-styles/1.10.295:
     resolution: {integrity: sha512-W+IzEBw8a6LOOfRJM02dTT7BDZijxm+Z7lhtOAz1+y9vQm1Kdz9jlAO+qCEKsfxtUOmKilW8DIRqFw2aUgKeGg==}
-    dev: true
+    dev: false
 
   /@mrmlnc/readdir-enhanced/2.2.1:
     resolution: {integrity: sha512-bPHp6Ji8b41szTOcaP63VlnbbO5Ny6dwAATtY6JTjh5N2OLrb5Qk/Th5cRkRQhkWCt+EJsYrNB0MiL+Gpn6e3g==}
@@ -3418,10 +3449,11 @@ packages:
       webpack: 5.74.0
     dev: true
 
-  /@sap/bas-sdk/2.1.1:
-    resolution: {integrity: sha512-6EpF/6jY+IeDGSR/DpiIOtmld2JfAX+ybuZFMfr8ZdIK9+sxYn1TtiDxidQrs6+Wltqtd33cOnmhWy8mrQ1abg==}
+  /@sap/bas-sdk/2.1.2:
+    resolution: {integrity: sha512-c1WcA4u59eM3f5z0QjFAN8KJPaGuYfdUFIyqF2LXgpDySnxHsexa3+JU+5z4HSmQ1YlJkpdAxkRRTtyTgXgpDA==}
     dependencies:
       axios: 0.21.4
+      cross-spawn: 7.0.3
       lodash: 4.17.21
       minimatch: 3.0.4
       url-join: 4.0.1
@@ -4769,6 +4801,12 @@ packages:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
     dev: true
 
+  /@types/proxy-from-env/1.0.1:
+    resolution: {integrity: sha512-luG++TFHyS61eKcfkR1CVV6a1GMNXDjtqEQIIfaSHax75xp0HU3SlezjOi1yqubJwrG8e9DeW59n6wTblIDwFg==}
+    dependencies:
+      '@types/node': 17.0.9
+    dev: true
+
   /@types/qs/6.9.1:
     resolution: {integrity: sha512-lhbQXx9HKZAPgBkISrBcmAcMpZsmpe/Cd/hY7LGZS5OfkySUBItnPZHgQPssWYUET8elF+yCFBbP1Q0RZPTdaw==}
     dev: true
@@ -5362,8 +5400,8 @@ packages:
       '@xtuc/long': 4.2.2
     dev: true
 
-  /@xmldom/xmldom/0.8.2:
-    resolution: {integrity: sha512-+R0juSseERyoPvnBQ/cZih6bpF7IpCXlWbHRoCRzYzqpz6gWHOgf8o4MOEf6KBVuOyqU+gCNLkCWVIJAro8XyQ==}
+  /@xmldom/xmldom/0.8.3:
+    resolution: {integrity: sha512-Lv2vySXypg4nfa51LY1nU8yDAGo/5YwF+EY/rUZgIbfvwVARcd67ttCM8SMsTeJy51YhHYavEq+FS6R0hW9PFQ==}
     engines: {node: '>=10.0.0'}
     dev: false
 
@@ -6239,6 +6277,7 @@ packages:
 
   /bindings/1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
+    requiresBuild: true
     dependencies:
       file-uri-to-path: 1.0.0
     dev: true
@@ -7658,7 +7697,7 @@ packages:
     dev: true
 
   /dezalgo/1.0.3:
-    resolution: {integrity: sha1-f3Qt4Gb8dIvI24IFad3c5Jvw1FY=}
+    resolution: {integrity: sha512-K7i4zNfT2kgQz3GylDw40ot9GAE47sFZ9EXHFSPP6zONLgH6kWXE0KWJchkbQJLBkRazq4APwZ4OwiFFlT95OQ==}
     dependencies:
       asap: 2.0.6
       wrappy: 1.0.2
@@ -9093,6 +9132,7 @@ packages:
 
   /file-uri-to-path/1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -12178,7 +12218,7 @@ packages:
     engines: {node: '>= 8'}
 
   /methods/1.1.2:
-    resolution: {integrity: sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=}
+    resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
     dev: true
 
@@ -12449,6 +12489,7 @@ packages:
 
   /nan/2.16.0:
     resolution: {integrity: sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -13691,6 +13732,10 @@ packages:
       ipaddr.js: 1.9.1
     dev: true
 
+  /proxy-from-env/1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
+
   /prr/1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
     dev: true
@@ -14581,6 +14626,7 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+    dev: false
 
   /semver/7.3.7:
     resolution: {integrity: sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g==}
@@ -15275,7 +15321,7 @@ packages:
       mime: 2.6.0
       qs: 6.10.3
       readable-stream: 3.6.0
-      semver: 7.3.5
+      semver: 7.3.7
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -15738,7 +15784,6 @@ packages:
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
-    dev: true
 
   /tsutils/3.21.0_typescript@4.3.5:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -16130,7 +16175,6 @@ packages:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
     deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
     hasBin: true
-    dev: true
 
   /v8-compile-cache/2.3.0:
     resolution: {integrity: sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==}
@@ -16208,6 +16252,10 @@ packages:
 
   /vm-browserify/1.1.2:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==}
+    dev: true
+
+  /vscode-uri/3.0.6:
+    resolution: {integrity: sha512-fmL7V1eiDBFRRnu+gfRWTzyPpNIHJTc4mWnFkwBUmO9U3KPgJAmTx7oxi2bl/Rh6HLdU7+4C9wlj0k2E4AdKFQ==}
     dev: true
 
   /w3c-hr-time/1.0.2:
