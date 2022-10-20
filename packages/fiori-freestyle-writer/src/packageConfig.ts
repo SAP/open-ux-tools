@@ -9,7 +9,8 @@ import { t } from './i18n';
  * @param options.sapClient SAP client required for connecting to the backend
  * @param options.flpAppId local FLP id
  * @param options.startFile path that should be opened with the start script
- * @param options.localStartFile path that should be opend with the start-local script
+ * @param options.localStartFile path that should be oppend with the start-local script
+ * @param options.addTypeScript add Typescript scripts for build and start commands
  * @description Generates the package.json scripts
  * @returns package.json scripts
  */
