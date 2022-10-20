@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.14
+
+### Patch Changes
+
+-   748d24f: Consider ports when checking if a host is excluded from corporate proxy
+
 ## 1.1.13
 
 ### Patch Changes

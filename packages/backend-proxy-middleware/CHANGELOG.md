@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.27
+
+### Patch Changes
+
+-   748d24f: Consider ports when checking if a host is excluded from corporate proxy
+
 ## 0.6.26
 
 ### Patch Changes
