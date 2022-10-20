@@ -92,7 +92,7 @@ server:
 ```
 
 ### Adding corporate proxy configuration
-If you are behind a corporate proxy then you can provide your corporate proxy configuration as follows.
+By default the `ui5-proxy-middleware` will read the proxy configuration from the OS environment variables `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` or from the Node.js environment variables `proxy`, `https-proxy`, and `noproxy`. If those variables are not set, then you can also provide the proxy configuration in the `ui5.yaml` file.
 
 ```Yaml
 server:
@@ -107,6 +107,7 @@ server:
         url: https://ui5.sap.com
       proxy: https://my.corporate.proxy.example
 ```
+**Please note:** if you want to exclude any domains from the proxy then you will need to set the `noproxy` variable. E.g. if you want to exclude the `https://ui5.sap.com` from the proxy you will need to set `noproxy` to `npm config set noproxy ".sap.com"`. Note the leading `.`, if you provide only `sap.com`, then it will not work.
 
 ## Programmatic Usage
 Alternatively you can only use the underlying proxy function, e.g. for the case when you want to incorporate the `ui5-proxy-middleware` functionality in your own middleware.

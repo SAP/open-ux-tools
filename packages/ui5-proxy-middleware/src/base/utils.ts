@@ -9,6 +9,7 @@ import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
+import { getProxyForUrl } from 'proxy-from-env';
 
 /**
  * Handler for the proxy response event.
@@ -52,16 +53,29 @@ export const proxyRequestHandler = (
  * @returns User's proxy configuration or undefined
  */
 export const getCorporateProxyServer = (yamlProxyServer: string | undefined): string | undefined => {
-    return (
-        yamlProxyServer ||
-        process.env.FIORI_TOOLS_PROXY ||
+    let proxyFromArgs: string | undefined;
+    process.argv.forEach((arg) => {
+        if (arg.match(/proxy=/g)) {
+            proxyFromArgs = arg.split('=')[1];
+        }
+    });
+    const proxyFromFioriToolsConfig = proxyFromArgs || yamlProxyServer || process.env.FIORI_TOOLS_PROXY;
+    const proxyFromOSEnvConfig =
         process.env.http_proxy ||
         process.env.HTTP_PROXY ||
         process.env.https_proxy ||
         process.env.HTTPS_PROXY ||
         process.env.npm_config_proxy ||
-        process.env.npm_config_https_proxy
-    );
+        process.env.npm_config_https_proxy;
+
+    if (proxyFromFioriToolsConfig) {
+        process.env.npm_config_proxy = proxyFromFioriToolsConfig;
+        process.env.npm_config_https_proxy = proxyFromFioriToolsConfig;
+
+        return proxyFromFioriToolsConfig;
+    } else {
+        return proxyFromOSEnvConfig;
+    }
 };
 
 /**
@@ -84,25 +98,13 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 };
 
 /**
- * Checks if a host is excluded from user's corporate proxy.
+ * Checks if a host should be proxied through user's corporate proxy.
  *
  * @param url - url to be checked
- * @param noProxyConfig - user's no_proxy configuration
- * @returns true if host is excluded from user's corporate server, false otherwise
+ * @returns false if host is excluded from user's corporate server, true otherwise
  */
-export const isHostExcludedFromProxy = (
-    url: string,
-    noProxyConfig: string | undefined = process.env.no_proxy || process.env.npm_config_noproxy
-): boolean => {
-    if (noProxyConfig === '*') {
-        return true;
-    } else {
-        const host = new URL(url).host;
-        const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
-        return !!noProxyList.find((entry) =>
-            entry.startsWith('.') ? host.endsWith(entry) : host.endsWith(`.${entry}`)
-        );
-    }
+export const isProxyRequired = (url: string): boolean => {
+    return getProxyForUrl(url) ? true : false;
 };
 
 /**
