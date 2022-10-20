@@ -7,6 +7,7 @@ describe('Defaults', () => {
     const tesTSTypesEsmData: [any, string][] = [
         [UI5_DEFAULT.MIN_UI5_VERSION, esmTypesVersionSince],
         ['1', esmTypesVersionSince],
+        ['1.78.11', esmTypesVersionSince],
         ['1.90.0', esmTypesVersionSince],
         ['1.90.1', esmTypesVersionSince],
         ['1.78.11', esmTypesVersionSince],

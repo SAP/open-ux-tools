@@ -114,7 +114,6 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
 
     merged.descriptorVersion = getManifestVersion(merged.minUI5Version, ui5.descriptorVersion);
     merged.typesVersion = ui5.typesVersion ?? getTypesVersion(merged.minUI5Version);
-    merged.esmTypesVersion = ui5.esmTypesVersion ?? getEsmTypesVersion(merged.minUI5Version);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
@@ -131,18 +130,16 @@ export function getTypesVersion(minUI5Version?: string) {
     const version = semVer.coerce(minUI5Version);
     if (!version || semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
-    } else {
-        if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)) {
-            if (semVer.satisfies(version, '1.83.0')) {
-                return `~${semVer.major(version)}.84.0`;
-            } else {
-                return `~${semVer.major(version)}.${semVer.minor(version)}.0`;
-            }
-        } else if (semVer.satisfies(version, '1.72.0 - 1.75.0')) {
-            return `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`;
+    } else if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)) {
+        if (semVer.satisfies(version, '1.83.0')) {
+            return `~${semVer.major(version)}.84.0`;
         } else {
-            return `~${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`;
+            return `~${semVer.major(version)}.${semVer.minor(version)}.0`;
         }
+    } else if (semVer.satisfies(version, '1.72.0 - 1.75.0')) {
+        return `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`;
+    } else {
+        return `~${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`;
     }
 }
 

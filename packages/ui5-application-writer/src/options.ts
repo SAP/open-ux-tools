@@ -5,13 +5,13 @@ import type { Ui5App } from './types';
 import { getFilePaths } from './files';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
-import { mergeObjects, UI5_DEFAULT } from './data/defaults';
+import { getEsmTypesVersion, mergeObjects, UI5_DEFAULT } from './data/defaults';
 
 /**
  * Input required to enable optional features.
  */
 export interface FeatureInput {
-    ui5App: { app: { id: string; baseComponent?: string } };
+    ui5App: { app: { id: string; baseComponent?: string }; ui5?: { esmTypesVersion?: string; minUI5Version?: string } };
     fs: Editor;
     basePath: string;
     tmplPath: string;
@@ -68,6 +68,10 @@ const factories: { [key: string]: (input: FeatureInput) => void } = {
  */
 export function enableTypescript(input: FeatureInput, keepOldComponent: boolean = false) {
     input.ui5App.app.baseComponent = input.ui5App.app.baseComponent ?? UI5_DEFAULT.BASE_COMPONENT;
+    // Handle specific esm version
+    if (input.ui5App.ui5?.minUI5Version) {
+        input.ui5App.ui5.esmTypesVersion = getEsmTypesVersion(input.ui5App.ui5.minUI5Version);
+    }
     copyTemplates('typescript', input);
     input.ui5Configs.forEach((ui5Config) => {
         ui5Config.addCustomMiddleware([ui5TSSupport.middleware]);
