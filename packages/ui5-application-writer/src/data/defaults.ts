@@ -122,7 +122,7 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
 }
 
 /**
- * Get the best types version for the given minUI5Version for https://www.npmjs.com/package/@sapui5/ts-types where specific versions are missing
+ * Get the best types version for the given minUI5Version for https://www.npmjs.com/package/@sapui5/ts-types where specific versions are missing.
  *
  * @param minUI5Version the minimum UI5 version that needs to be supported
  * @returns semantic version representing the types version.
