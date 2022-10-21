@@ -30,6 +30,12 @@ describe('ui5Proxy', () => {
                 pathRewrite: { '/mypath': '/1.0.0/mypath' }
             })
         );
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, additional params', () => {
@@ -59,6 +65,12 @@ describe('ui5Proxy', () => {
                 pathRewrite: { '/mypath': '/mypath' }
             })
         );
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
     });
 
     test('ui5Proxy: creates an ui5 proxy middleware, custom filter function', () => {
@@ -76,6 +88,12 @@ describe('ui5Proxy', () => {
         ui5Proxy(config, {}, customFilterFn);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledTimes(1);
         expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(customFilterFn, expect.any(Object));
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            customFilterFn,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
     });
 
     test('ui5Proxy: calling onProxyReq calls proxyRequestHandler', () => {
@@ -93,6 +111,12 @@ describe('ui5Proxy', () => {
             expect(proxyRequestHandlerSpy).toHaveBeenCalledTimes(1);
             expect(proxyRequestHandlerSpy).toHaveBeenCalledWith({}, {}, 'W/"1.0.0"', expect.any(ToolsLogger));
         }
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
     });
 
     test('ui5Proxy: calling onProxyRes calls proxyResponseHandler', () => {
@@ -110,6 +134,12 @@ describe('ui5Proxy', () => {
             expect(proxyResponseHandlerSpy).toHaveBeenCalledTimes(1);
             expect(proxyResponseHandlerSpy).toHaveBeenCalledWith({}, 'W/"1.0.0"');
         }
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
     });
 
     test('ui5Proxy: calling onError calls proxyErrorHandler', () => {
@@ -128,6 +158,12 @@ describe('ui5Proxy', () => {
             expect(proxyErrorHandlerSpy).toHaveBeenCalledTimes(1);
             expect(proxyErrorHandlerSpy).toHaveBeenCalledWith(err, {}, expect.any(ToolsLogger), {}, undefined);
         }
+        expect(createProxyMiddlewareSpy).toHaveBeenCalledWith(
+            utils.filterCompressedHtmlFiles,
+            expect.not.objectContaining({
+                agent: expect.objectContaining({})
+            })
+        );
     });
 
     test('ui5Proxy: host is not excluded from proxy', async () => {
