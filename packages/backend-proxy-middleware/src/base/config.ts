@@ -3,7 +3,7 @@
  *
  * @param proxyFromConfig - optional proxy string from configuration
  */
-export function updateProxyEnv(proxyFromConfig?: string | undefined): void {
+export function updateProxyEnv(proxyFromConfig?: string): void {
     let proxyFromArgs: string | undefined;
     process.argv.forEach((arg) => {
         if (arg.match(/proxy=/g)) {
