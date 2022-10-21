@@ -38,7 +38,7 @@ export enum Extensions {
 export interface Environment {
     developmentEnvironment: DevelopmentEnvironment;
     platform: NodeJS.Platform;
-    versions: NodeJS.ProcessVersions;
+    versions: { [id: string]: string };
     basDevSpace?: string;
     toolsExtensions?: ToolsExtensions;
 }

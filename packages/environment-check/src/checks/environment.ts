@@ -13,7 +13,7 @@ import type {
     ToolsExtensions
 } from '../types';
 import { Check, DevelopmentEnvironment, Extensions } from '../types';
-import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion } from './get-installed';
+import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions } from './get-installed';
 import { t } from '../i18n';
 
 /**
@@ -23,9 +23,10 @@ import { t } from '../i18n';
  */
 export async function getEnvironment(): Promise<{ environment: Environment; messages: ResultMessage[] }> {
     const logger = getLogger();
+    const processVersions = await getProcessVersions();
     const environment: Environment = {
         developmentEnvironment: isAppStudio() ? DevelopmentEnvironment.BAS : DevelopmentEnvironment.VSCode,
-        versions: process.versions,
+        versions: processVersions,
         platform: process.platform
     };
 
@@ -41,7 +42,7 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
         logger.info(t('error.basDevSpace', { error: error.message }));
     }
 
-    const toolsExtensionResults = await getToolsExtensions();
+    const toolsExtensionResults = await getToolsExtensions(processVersions['node']);
     environment.toolsExtensions = toolsExtensionResults.toolsExtensions;
     logger.push(...toolsExtensionResults.messages);
 
@@ -85,9 +86,10 @@ function getExtVersions(extensions: { [id: string]: { version: string } }): { [i
 /**
  * Returns the tools and extensions installed.
  *
+ * @param nodeVersion version of node
  * @returns tools and extension versions
  */
-async function getToolsExtensions(): Promise<{
+async function getToolsExtensions(nodeVersion: string): Promise<{
     toolsExtensions: ToolsExtensions;
     messages: ResultMessage[];
 }> {
@@ -98,7 +100,7 @@ async function getToolsExtensions(): Promise<{
     const cloudCli = await getCFCliToolVersion();
 
     let toolsExtensions: ToolsExtensions = {
-        nodeVersion: process.versions.node,
+        nodeVersion: nodeVersion,
         cloudCli: cloudCli,
         fioriGenVersion: fioriGenVersion
     };
