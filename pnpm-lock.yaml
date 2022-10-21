@@ -4,7 +4,8 @@ overrides:
   trim@<0.0.3: '>=0.0.3'
   trim-newlines@<3.0.1: '>=3.0.1'
   glob-parent@<5.1.2: '>=5.1.2'
-  minimatch@<3.0.5: 3.0.5
+  '@sap/bas-sdk@2.1.2>minimatch': 3.0.5
+  multimatch@4.0.0>minimatch: 3.0.5
 
 importers:
 
@@ -3428,7 +3429,7 @@ packages:
     dependencies:
       axios: 0.21.4
       lodash: 4.17.21
-      minimatch: 3.0.5
+      minimatch: 3.0.4
       url-join: 4.0.1
       ws: 8.8.1
     transitivePeerDependencies:
@@ -7075,7 +7076,7 @@ packages:
     dev: true
 
   /concat-map/0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   /concat-stream/1.6.2:
     resolution: {integrity: sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==}
@@ -12282,6 +12283,12 @@ packages:
     resolution: {integrity: sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==}
     dev: true
 
+  /minimatch/3.0.4:
+    resolution: {integrity: sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==}
+    dependencies:
+      brace-expansion: 1.1.11
+    dev: false
+
   /minimatch/3.0.5:
     resolution: {integrity: sha512-tUpxzX0VAzJHjLu0xUfFv1gwVp9ba3IOuRAVH2EGuRW8a5emA2FlACLqiT/lDVtS1W+TGNwqz3sWaNyLgDJWuw==}
     dependencies:
@@ -12436,7 +12443,7 @@ packages:
       array-differ: 3.0.0
       array-union: 2.1.0
       arrify: 2.0.1
-      minimatch: 3.1.2
+      minimatch: 3.0.5
     dev: true
 
   /multimatch/5.0.0:
