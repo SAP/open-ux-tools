@@ -1,5 +1,13 @@
 # @sap-ux/odata-cli
 
+## 0.10.17
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+-   Updated dependencies [f3cbe4d]
+    -   @sap-ux/axios-extension@0.10.3
+
 ## 0.10.16
 
 ### Patch Changes

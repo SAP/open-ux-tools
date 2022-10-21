@@ -1,5 +1,18 @@
 # @sap-ux/ui5-config
 
+## 0.15.4
+
+### Patch Changes
+
+-   Updated dependencies [f3cbe4d]
+    -   @sap-ux/yaml@0.12.4
+
+## 0.15.3
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+
 ## 0.15.2
 
 ### Patch Changes

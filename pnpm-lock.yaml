@@ -134,6 +134,7 @@ importers:
       '@types/express': 4.17.13
       '@types/http-proxy': ^1.17.5
       '@types/prompts': 2.0.14
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       chalk: 4.1.2
       dotenv: 16.0.0
@@ -143,6 +144,7 @@ importers:
       i18next: 20.3.2
       nock: 13.2.4
       prompts: 2.4.2
+      proxy-from-env: 1.1.0
       supertest: 6.2.2
       yaml: 2.0.0-10
     dependencies:
@@ -156,10 +158,12 @@ importers:
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
       prompts: 2.4.2
+      proxy-from-env: 1.1.0
     devDependencies:
       '@types/express': 4.17.13
       '@types/http-proxy': 1.17.8
       '@types/prompts': 2.0.14
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       express: 4.17.2
       nock: 13.2.4
@@ -183,7 +187,7 @@ importers:
       '@sap-ux/btp-utils': workspace:*
       '@sap-ux/logger': workspace:*
       '@sap-ux/ui5-config': workspace:*
-      '@sap/bas-sdk': 2.1.1
+      '@sap/bas-sdk': 2.1.2
       '@types/archiver': 5.1.1
       '@types/vscode': 1.39.0
       archiver: 5.3.0
@@ -198,7 +202,7 @@ importers:
       '@sap-ux/btp-utils': link:../btp-utils
       '@sap-ux/logger': link:../logger
       '@sap-ux/ui5-config': link:../ui5-config
-      '@sap/bas-sdk': 2.1.1
+      '@sap/bas-sdk': 2.1.2
       '@types/archiver': 5.1.1
       archiver: 5.3.0
       axios: 0.24.0
@@ -212,7 +216,7 @@ importers:
 
   packages/fe-fpm-writer:
     specifiers:
-      '@sap-ux/ui5-config': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
@@ -233,7 +237,7 @@ importers:
       xml-formatter: 2.6.1
       xpath: 0.0.32
     devDependencies:
-      '@sap-ux/ui5-config': link:../ui5-config
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
@@ -371,6 +375,25 @@ importers:
       fs-extra: 10.0.0
       lodash: 4.17.21
 
+  packages/project-access:
+    specifiers:
+      '@sap-ux/ui5-config': workspace:*
+      '@types/mem-fs': 1.1.2
+      '@types/mem-fs-editor': 7.0.1
+      findit2: 2.2.3
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0
+      vscode-uri: 3.0.6
+    dependencies:
+      '@sap-ux/ui5-config': link:../ui5-config
+      findit2: 2.2.3
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0_mem-fs@2.1.0
+    devDependencies:
+      '@types/mem-fs': 1.1.2
+      '@types/mem-fs-editor': 7.0.1
+      vscode-uri: 3.0.6
+
   packages/store:
     specifiers:
       '@sap-ux/logger': workspace:*
@@ -486,6 +509,7 @@ importers:
 
   packages/ui5-application-writer:
     specifiers:
+      '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
@@ -509,6 +533,7 @@ importers:
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
       semver: 7.3.5
     devDependencies:
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.176
@@ -531,8 +556,10 @@ importers:
   packages/ui5-proxy-middleware:
     specifiers:
       '@sap-ux/logger': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/express': 4.17.13
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       dotenv: 16.0.0
       express: 4.17.2
@@ -540,6 +567,7 @@ importers:
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
       nock: 13.2.4
+      proxy-from-env: 1.1.0
       supertest: 6.2.2
       yaml: 2.0.0-10
     dependencies:
@@ -549,8 +577,11 @@ importers:
       http-proxy-middleware: 2.0.1
       https-proxy-agent: 5.0.0
       i18next: 20.3.2
+      proxy-from-env: 1.1.0
     devDependencies:
+      '@sap-ux/project-access': link:../project-access
       '@types/express': 4.17.13
+      '@types/proxy-from-env': 1.0.1
       '@types/supertest': 2.0.12
       express: 4.17.2
       nock: 13.2.4
@@ -559,7 +590,7 @@ importers:
 
   packages/ui5-test-writer:
     specifiers:
-      '@sap-ux/ui5-config': workspace:*
+      '@sap-ux/project-access': workspace:*
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -570,12 +601,12 @@ importers:
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
     dependencies:
-      '@sap-ux/ui5-config': link:../ui5-config
       ejs: 3.1.7
       i18next: 20.3.2
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
     devDependencies:
+      '@sap-ux/project-access': link:../project-access
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/mem-fs': 1.1.2
@@ -586,13 +617,9 @@ importers:
     specifiers:
       '@types/i18next-fs-backend': 1.0.0
       '@types/lodash': 4.14.176
-      i18next: 20.3.2
-      i18next-fs-backend: 1.1.1
       lodash: 4.17.21
       yaml: 2.0.0-10
     dependencies:
-      i18next: 20.3.2
-      i18next-fs-backend: 1.1.1
       lodash: 4.17.21
       yaml: 2.0.0-10
     devDependencies:
@@ -3424,10 +3451,11 @@ packages:
       webpack: 5.74.0
     dev: true
 
-  /@sap/bas-sdk/2.1.1:
-    resolution: {integrity: sha512-6EpF/6jY+IeDGSR/DpiIOtmld2JfAX+ybuZFMfr8ZdIK9+sxYn1TtiDxidQrs6+Wltqtd33cOnmhWy8mrQ1abg==}
+  /@sap/bas-sdk/2.1.2:
+    resolution: {integrity: sha512-c1WcA4u59eM3f5z0QjFAN8KJPaGuYfdUFIyqF2LXgpDySnxHsexa3+JU+5z4HSmQ1YlJkpdAxkRRTtyTgXgpDA==}
     dependencies:
       axios: 0.21.4
+      cross-spawn: 7.0.3
       lodash: 4.17.21
       minimatch: 3.0.4
       url-join: 4.0.1
@@ -4773,6 +4801,12 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
+
+  /@types/proxy-from-env/1.0.1:
+    resolution: {integrity: sha512-luG++TFHyS61eKcfkR1CVV6a1GMNXDjtqEQIIfaSHax75xp0HU3SlezjOi1yqubJwrG8e9DeW59n6wTblIDwFg==}
+    dependencies:
+      '@types/node': 17.0.9
+    dev: true
 
   /@types/qs/6.9.1:
     resolution: {integrity: sha512-lhbQXx9HKZAPgBkISrBcmAcMpZsmpe/Cd/hY7LGZS5OfkySUBItnPZHgQPssWYUET8elF+yCFBbP1Q0RZPTdaw==}
@@ -6242,6 +6276,7 @@ packages:
 
   /bindings/1.5.0:
     resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
+    requiresBuild: true
     dependencies:
       file-uri-to-path: 1.0.0
     dev: true
@@ -7661,7 +7696,7 @@ packages:
     dev: true
 
   /dezalgo/1.0.3:
-    resolution: {integrity: sha1-f3Qt4Gb8dIvI24IFad3c5Jvw1FY=}
+    resolution: {integrity: sha512-K7i4zNfT2kgQz3GylDw40ot9GAE47sFZ9EXHFSPP6zONLgH6kWXE0KWJchkbQJLBkRazq4APwZ4OwiFFlT95OQ==}
     dependencies:
       asap: 2.0.6
       wrappy: 1.0.2
@@ -9096,6 +9131,7 @@ packages:
 
   /file-uri-to-path/1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -11629,7 +11665,7 @@ packages:
     dev: true
 
   /json-stringify-safe/5.0.1:
-    resolution: {integrity: sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=}
+    resolution: {integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA==}
     dev: true
 
   /json5/1.0.1:
@@ -11895,7 +11931,7 @@ packages:
     dev: true
 
   /lodash.set/4.3.2:
-    resolution: {integrity: sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=}
+    resolution: {integrity: sha512-4hNPN5jlm/N/HLMCO43v8BXKq9Z7QdAGc/VGrRD61w8gN9g/6jF9A4L1pbUgBLCffi0w9VsXfTOij5x8iTyFvg==}
     dev: true
 
   /lodash.startcase/4.4.0:
@@ -12181,7 +12217,7 @@ packages:
     engines: {node: '>= 8'}
 
   /methods/1.1.2:
-    resolution: {integrity: sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=}
+    resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
     dev: true
 
@@ -12458,6 +12494,7 @@ packages:
 
   /nan/2.16.0:
     resolution: {integrity: sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -13700,6 +13737,10 @@ packages:
       ipaddr.js: 1.9.1
     dev: true
 
+  /proxy-from-env/1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
+
   /prr/1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
     dev: true
@@ -14590,6 +14631,7 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+    dev: false
 
   /semver/7.3.7:
     resolution: {integrity: sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g==}
@@ -15284,7 +15326,7 @@ packages:
       mime: 2.6.0
       qs: 6.10.3
       readable-stream: 3.6.0
-      semver: 7.3.5
+      semver: 7.3.7
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -16215,6 +16257,10 @@ packages:
 
   /vm-browserify/1.1.2:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==}
+    dev: true
+
+  /vscode-uri/3.0.6:
+    resolution: {integrity: sha512-fmL7V1eiDBFRRnu+gfRWTzyPpNIHJTc4mWnFkwBUmO9U3KPgJAmTx7oxi2bl/Rh6HLdU7+4C9wlj0k2E4AdKFQ==}
     dev: true
 
   /w3c-hr-time/1.0.2:

@@ -1,5 +1,27 @@
 # @sap-ux/environment-check
 
+## 0.4.3
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+-   Updated dependencies [f3cbe4d]
+    -   @sap-ux/axios-extension@0.10.3
+    -   @sap-ux/ui5-config@0.15.4
+
+## 0.4.2
+
+### Patch Changes
+
+-   6925538: Update @sap/bas-sdk dependency
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-config@0.15.3
+
 ## 0.4.0
 
 ### Minor Changes

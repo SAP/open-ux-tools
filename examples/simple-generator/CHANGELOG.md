@@ -1,5 +1,22 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.46
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+-   Updated dependencies [f3cbe4d]
+    -   @sap-ux/axios-extension@0.10.3
+    -   @sap-ux/fiori-elements-writer@0.7.12
+    -   @sap-ux/fiori-freestyle-writer@0.14.11
+
+## 0.2.45
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.7.11
+-   @sap-ux/fiori-freestyle-writer@0.14.10
+
 ## 0.2.44
 
 ### Patch Changes

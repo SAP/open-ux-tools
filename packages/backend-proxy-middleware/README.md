@@ -123,8 +123,7 @@ If you want to configure the proxy to send requests from a certain path `/servic
 ```
 
 ### [Providing Proxy Configuration](#providing-proxy-configuration)
-By default the `backend-proxy-middleware` will read the proxy configuration from the Node.js environment variables `proxy`, `https-proxy` and `noproxy`. If those variables are not set, then you can also provide the proxy configuration in the `ui5.yaml` file. 
-**Please note: if you want to exclude any domains from the proxy then you will need to set the `noproxy` variable, e.g. `npm config set noproxy "sap.com"`**.
+By default the `backend-proxy-middleware` will read the proxy configuration from the OS environment variables `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` or from the Node.js environment variables `proxy`, `https-proxy` and `noproxy`. If those variables are not set, then you can also provide the proxy configuration in the `ui5.yaml` file.
 
 ```
 - name: backend-proxy-middleware
@@ -136,6 +135,7 @@ By default the `backend-proxy-middleware` will read the proxy configuration from
       url: https://my.backend.example:1234
 
 ```
+**Please note:** if you want to exclude any domains from the proxy then you will need to set the `noproxy` variable. E.g. if you want to exclude the `https://my.backend.example:1234` from the proxy you will need to set `noproxy` to `npm config set noproxy ".backend.example"`. Note the leading `.`, if you provide only `backend.example`, then it will not work.
 ## Programmatic Usage
 Alternatively you can only use the underlying proxy function, e.g. for the case when you want to use the `backend-proxy-middleware` functionality in your `express` server.
 

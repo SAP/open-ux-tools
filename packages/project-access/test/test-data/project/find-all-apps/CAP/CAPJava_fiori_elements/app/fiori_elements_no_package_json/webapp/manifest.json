@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "CAPJava_fiori_elements-fiori_elements_no_package_json",
+        "type": "application"
+    }
+}

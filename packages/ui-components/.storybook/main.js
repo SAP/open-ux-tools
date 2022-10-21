@@ -41,8 +41,6 @@ module.exports = {
             include: path.resolve(__dirname, '../')
         });
         config.resolve.extensions.push('.ts', '.tsx');
-        // Temporary fix, while root issue is not fixed in webpack 5 - https://github.com/webpack/webpack/issues/13691
-        config.cache = false;
         return config;
     }
 };

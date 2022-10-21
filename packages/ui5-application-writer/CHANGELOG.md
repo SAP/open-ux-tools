@@ -1,5 +1,19 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.4
+
+## 0.17.7
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-config@0.15.3
+
 ## 0.17.6
 
 ### Patch Changes

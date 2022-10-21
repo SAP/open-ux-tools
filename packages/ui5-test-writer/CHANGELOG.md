@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.4
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+
 ## 0.1.3
 
 ### Patch Changes

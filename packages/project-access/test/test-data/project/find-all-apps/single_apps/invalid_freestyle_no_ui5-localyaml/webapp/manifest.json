@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "single_apps-invalid_freestyle_no_ui5-localyaml",
+        "type": "application"
+    }
+}

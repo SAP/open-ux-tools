@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 1.0.13
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+
+## 1.0.12
+
+### Patch Changes
+
+-   5becde5: New storybook story for UIMessageBar and cleanup in UIMessageBar component
+
+## 1.0.11
+
+### Patch Changes
+
+-   7c0ae60: Added CustomFPMPage icon
+
+## 1.0.10
+
+### Patch Changes
+
+-   b5c89da: feat - new property "secondary" for UILink component
+
 ## 1.0.9
 
 ### Patch Changes

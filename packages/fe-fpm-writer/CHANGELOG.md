@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.7
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+
 ## 0.17.6
 
 ### Patch Changes
