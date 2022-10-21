@@ -3457,7 +3457,7 @@ packages:
       axios: 0.21.4
       cross-spawn: 7.0.3
       lodash: 4.17.21
-      minimatch: 3.0.4
+      minimatch: 3.0.5
       url-join: 4.0.1
       ws: 8.8.1
     transitivePeerDependencies:
@@ -12318,12 +12318,6 @@ packages:
   /minimalistic-crypto-utils/1.0.1:
     resolution: {integrity: sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==}
     dev: true
-
-  /minimatch/3.0.4:
-    resolution: {integrity: sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==}
-    dependencies:
-      brace-expansion: 1.1.11
-    dev: false
 
   /minimatch/3.0.5:
     resolution: {integrity: sha512-tUpxzX0VAzJHjLu0xUfFv1gwVp9ba3IOuRAVH2EGuRW8a5emA2FlACLqiT/lDVtS1W+TGNwqz3sWaNyLgDJWuw==}
