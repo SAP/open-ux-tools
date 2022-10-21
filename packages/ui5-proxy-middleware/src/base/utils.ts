@@ -61,14 +61,14 @@ export const getCorporateProxyServer = (yamlProxyServer: string | undefined): st
 
     return (
         proxyFromArgs ||
-        yamlProxyServer ||
         process.env.FIORI_TOOLS_PROXY ||
+        process.env.npm_config_proxy ||
+        process.env.npm_config_https_proxy ||
         process.env.http_proxy ||
         process.env.HTTP_PROXY ||
         process.env.https_proxy ||
         process.env.HTTPS_PROXY ||
-        process.env.npm_config_proxy ||
-        process.env.npm_config_https_proxy
+        yamlProxyServer
     );
 };
 
@@ -92,7 +92,7 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 };
 
 /**
- * Updates the proxy configuration with values from runtime args (highest priority), given config value or environment variables.
+ * Updates the proxy configuration with values from runtime args (highest priority), environment variables or given config value.
  *
  * @param proxyFromConfig - optional proxy string from configuration
  */
@@ -103,11 +103,13 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
             proxyFromArgs = arg.split('=')[1];
         }
     });
-    const proxyFromFioriToolsConfig = proxyFromArgs || proxyFromConfig || process.env.FIORI_TOOLS_PROXY;
 
-    if (proxyFromFioriToolsConfig) {
-        process.env.npm_config_proxy = proxyFromFioriToolsConfig;
-        process.env.npm_config_https_proxy = proxyFromFioriToolsConfig;
+    if (proxyFromArgs || process.env.FIORI_TOOLS_PROXY) {
+        process.env.npm_config_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env.npm_config_https_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+    } else {
+        process.env.npm_config_proxy = process.env.npm_config_proxy || process.env.http_proxy || process.env.HTTP_PROXY || proxyFromConfig;
+        process.env.npm_config_https_proxy = process.env.npm_config_https_proxy || process.env.https_proxy || process.env.HTTPS_PROXY || proxyFromConfig
     }
 }
 

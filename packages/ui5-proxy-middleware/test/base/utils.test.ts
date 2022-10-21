@@ -102,22 +102,43 @@ describe('Utils', () => {
     describe('getCorporateProxyServer', () => {
         const corporateProxy = 'https://myproxy.example:8443';
 
-        test('get value from CLI (wins over input)', () => {
+        test('get value from CLI (wins over input and env)', () => {
+            const envProxy = process.env.npm_config_proxy;
+            const envHttpsProxy = process.env.npm_config_https_proxy;
+            process.env.npm_config_proxy = '~not.used';
+            process.env.npm_config_https_proxy = '~not.used';
             process.argv.push(`proxy=${corporateProxy}`);
             expect(getCorporateProxyServer('~not.used')).toEqual(corporateProxy);
             process.argv.pop();
+            process.env.npm_config_proxy = envProxy;
+            process.env.npm_config_https_proxy = envHttpsProxy;
         });
-        test('get value from input (wins over env)', () => {
-            const envProxy = process.env.FIORI_TOOLS_PROXY;
-            process.env.FIORI_TOOLS_PROXY = '~not.used';
-            expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
-            process.env.FIORI_TOOLS_PROXY = envProxy;
+        test('get value from env (wins over input)', () => {
+            const envProxy = process.env.npm_config_proxy;
+            const envHttpsProxy = process.env.npm_config_https_proxy;
+            process.env.npm_config_proxy = corporateProxy;
+            process.env.npm_config_https_proxy = corporateProxy;
+            expect(getCorporateProxyServer('~not.used')).toEqual(corporateProxy);
+            process.env.npm_config_proxy = envProxy;
+            process.env.npm_config_https_proxy = envHttpsProxy;
         });
         test('get value from env if there is no input', () => {
-            const envProxy = process.env.FIORI_TOOLS_PROXY;
-            process.env.FIORI_TOOLS_PROXY = corporateProxy;
+            const envProxy = process.env.npm_config_proxy;
+            const envHttpsProxy = process.env.npm_config_https_proxy;
+            process.env.npm_config_proxy = corporateProxy;
+            process.env.npm_config_https_proxy = corporateProxy;
             expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
-            process.env.FIORI_TOOLS_PROXY = envProxy;
+            process.env.npm_config_proxy = envProxy;
+            process.env.npm_config_https_proxy = envHttpsProxy;
+        });
+        test('get value from input if there is no env', () => {
+            const envProxy = process.env.npm_config_proxy;
+            const envHttpsProxy = process.env.npm_config_https_proxy;
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
+            expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
+            process.env.npm_config_proxy = envProxy;
+            process.env.npm_config_https_proxy = envHttpsProxy;
         });
     });
 
@@ -135,7 +156,7 @@ describe('Utils', () => {
             expect(process.env.npm_config_https_proxy).toEqual(corporateProxy);
             process.argv.pop();
         });
-        test('set value from input (wins over env)', () => {
+        test('set value from input if there is no env)', () => {
             updateProxyEnv(corporateProxy);
             expect(process.env.npm_config_proxy).toEqual(corporateProxy);
             expect(process.env.npm_config_https_proxy).toEqual(corporateProxy);
