@@ -1,4 +1,4 @@
-import type { App, Package, UI5, UI5Framework } from '../types';
+import type { App, AppOptions, Package, UI5, UI5Framework } from '../types';
 import versionToManifestDescMapping from './version-to-descriptor-mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
@@ -98,9 +98,10 @@ export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
  * Coerces provided UI5 versions to valid semantic versions.
  *
  * @param {UI5} [ui5] - the UI5 instance
+ * @param options - application options
  * @returns {UI5} the updated copy of UI5 instance (does not change `ui5`)
  */
-export function mergeUi5(ui5: Partial<UI5>): UI5 {
+export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 {
     const version = ui5.version ?? UI5_DEFAULT.DEFAULT_UI5_VERSION; // Undefined or null indicates the latest available should be used
     const framework = ui5.framework ?? 'SAPUI5';
     const defaultFrameworkUrl = framework === 'SAPUI5' ? UI5_DEFAULT.SAPUI5_CDN : UI5_DEFAULT.OPENUI5_CDN;
@@ -113,7 +114,7 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
     };
 
     merged.descriptorVersion = getManifestVersion(merged.minUI5Version, ui5.descriptorVersion);
-    merged.typesVersion = ui5.typesVersion ?? getTypesVersion(merged.minUI5Version);
+    merged.typesVersion = ui5.typesVersion ?? (options?.typescript ? getEsmTypesVersion : getTypesVersion)(merged.minUI5Version);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 

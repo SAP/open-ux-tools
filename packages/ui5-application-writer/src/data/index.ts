@@ -18,7 +18,7 @@ export function mergeWithDefaults(ui5App: Ui5App): {
     validate(ui5App);
     ui5App.app = mergeApp(ui5App.app);
     ui5App.appOptions = ui5App.appOptions || {};
-    ui5App.ui5 = mergeUi5(ui5App.ui5 || {});
+    ui5App.ui5 = mergeUi5(ui5App.ui5 || {}, ui5App.appOptions);
     ui5App.package = mergeObjects(packageDefaults(ui5App.package.version, ui5App.app.description), ui5App.package);
 
     if (ui5App.appOptions.sapux) {
