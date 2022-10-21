@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.4.4
+
+### Patch Changes
+
+-   8945555: SECURITY: replaced nesteded dependency of problematic module
+
 ## 0.4.3
 
 ### Patch Changes
