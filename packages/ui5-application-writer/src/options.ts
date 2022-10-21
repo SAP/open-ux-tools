@@ -5,7 +5,7 @@ import type { Ui5App } from './types';
 import { getFilePaths } from './files';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
-import { getEsmTypesVersion, mergeObjects, UI5_DEFAULT } from './data/defaults';
+import { mergeObjects, UI5_DEFAULT } from './data/defaults';
 
 /**
  * Input required to enable optional features.
