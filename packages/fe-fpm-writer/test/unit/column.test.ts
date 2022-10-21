@@ -150,6 +150,66 @@ describe('CustomAction', () => {
             expect(testFS.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
+        test('version 1.102, no handler, filename lowercase', () => {
+            const testCustomColumn: CustomTableColumn = {
+                ...customColumn,
+                name: 'newCustomColumn',
+                folder: 'extensions/custom'
+            };
+
+            const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
+            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.controlConfiguration).toMatchSnapshot();
+
+            const fragmentPath = join(testDir, `webapp/${customColumn.folder}/${testCustomColumn.name}.fragment.xml`);
+            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+        });
+
+        test('version 1.102, no handler, filename lowercase, no folder passed', () => {
+            const testCustomColumn: CustomTableColumn = {
+                ...customColumn,
+                name: 'newCustomColumn',
+                folder: undefined
+            };
+
+            const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
+            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.controlConfiguration).toMatchSnapshot();
+
+            const fragmentPath = join(
+                testDir,
+                `webapp`,
+                `ext`,
+                `newCustomColumn`,
+                `${testCustomColumn.name}.fragment.xml`
+            );
+            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+        });
+
+        test('version 1.102, no handler, filename lowercase, folder uppercase', () => {
+            const testCustomColumn: CustomTableColumn = {
+                ...customColumn,
+                name: 'newCustomColumn',
+                folder: 'extensions/Custom'
+            };
+
+            const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
+            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.controlConfiguration).toMatchSnapshot();
+
+            const fragmentPath = join(
+                testDir,
+                `webapp/${testCustomColumn.folder}/${testCustomColumn.name}.fragment.xml`
+            );
+            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+        });
+
         describe('Test property "eventHandler"', () => {
             const generateCustomColumnWithEventHandler = (
                 columnId: string,

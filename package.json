@@ -50,6 +50,7 @@
     },
     "pnpm": {
         "overrides": {
+            "minimatch": ">=3.0.5",
             "trim@<0.0.3": ">=0.0.3",
             "trim-newlines@<3.0.1": ">=3.0.1",
             "glob-parent@<5.1.2": ">=5.1.2"

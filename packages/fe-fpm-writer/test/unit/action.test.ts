@@ -275,6 +275,19 @@ describe('CustomAction', () => {
                 ).toMatchSnapshot();
             });
 
+            test('"eventHandler" is "object", action with lowercase first letter', () => {
+                generateCustomActionWithEventHandler(name, {
+                    fnName: 'dummyOnAction'
+                });
+
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const action = getActionByName(manifest, name);
+                expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.dummyOnAction');
+                expect(
+                    fs.read(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))
+                ).toMatchSnapshot();
+            });
+
             test(`"eventHandler" is String - no changes to handler file`, () => {
                 generateCustomActionWithEventHandler(name, 'my.test.App.ext.ExistingHandler.onCustomAction');
                 const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));

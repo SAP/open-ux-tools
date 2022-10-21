@@ -124,6 +124,100 @@ describe('CustomSection', () => {
             expect(testFS.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
+        test('no handler, no fs, no folder, section name uppercase', () => {
+            const testCustomSection: CustomSection = {
+                ...customSection,
+                folder: undefined
+            };
+
+            const testFS = generateCustomSection(testDir, { ...testCustomSection });
+            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.content).toMatchSnapshot();
+
+            const fragmentPath = join(
+                testDir,
+                `webapp`,
+                `ext`,
+                `newCustomSection`,
+                `${testCustomSection.name}.fragment.xml`
+            );
+
+            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+        });
+
+        test('no handler, no fs, no folder, section name lowercase', () => {
+            const testCustomSection: CustomSection = {
+                ...customSection,
+                folder: undefined,
+                name: 'newCustomSection'
+            };
+
+            const testFS = generateCustomSection(testDir, { ...testCustomSection });
+            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.content).toMatchSnapshot();
+
+            const fragmentPath = join(
+                testDir,
+                `webapp`,
+                `ext`,
+                `${testCustomSection.name}`,
+                `${testCustomSection.name}.fragment.xml`
+            );
+
+            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+        });
+
+        test('no handler, no fs, no folder, section name uppercase', () => {
+            const testCustomSection: CustomSection = {
+                ...customSection,
+                folder: undefined,
+                name: 'NewCustomSection'
+            };
+
+            const testFS = generateCustomSection(testDir, { ...testCustomSection });
+            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.content).toMatchSnapshot();
+
+            const fragmentPath = join(
+                testDir,
+                `webapp`,
+                `ext`,
+                'newCustomSection',
+                `${testCustomSection.name}.fragment.xml`
+            );
+
+            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+        });
+
+        test('no handler, no fs, folder upper case, section name lowercase', () => {
+            const testCustomSection: CustomSection = {
+                ...customSection,
+                folder: 'Any',
+                name: 'newCustomSection'
+            };
+
+            const testFS = generateCustomSection(testDir, { ...testCustomSection });
+            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
+
+            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            expect(settings.content).toMatchSnapshot();
+
+            const fragmentPath = join(
+                testDir,
+                `webapp`,
+                `${testCustomSection.folder}`,
+                `${testCustomSection.name}.fragment.xml`
+            );
+
+            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+        });
+
         test('different data and not existing target', () => {
             const testCustomSection: CustomSection = {
                 target: 'dummy',
