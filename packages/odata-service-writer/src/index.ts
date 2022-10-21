@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { updateManifest, updatePackageJson } from './updates';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
-import { UI5Config } from '@sap-ux/ui5-config';
+import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
@@ -85,7 +85,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
         try {
             ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
         } catch (error: any) {
-            if (error.message === 'error.nodeNotFound') {
+            if (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) {
                 ui5Config.addFioriToolsProxydMiddleware({ backend: [service.previewSettings as ProxyBackend] });
             } else {
                 throw error;

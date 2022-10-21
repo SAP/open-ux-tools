@@ -615,13 +615,9 @@ importers:
     specifiers:
       '@types/i18next-fs-backend': 1.0.0
       '@types/lodash': 4.14.176
-      i18next: 20.3.2
-      i18next-fs-backend: 1.1.1
       lodash: 4.17.21
       yaml: 2.0.0-10
     dependencies:
-      i18next: 20.3.2
-      i18next-fs-backend: 1.1.1
       lodash: 4.17.21
       yaml: 2.0.0-10
     devDependencies:

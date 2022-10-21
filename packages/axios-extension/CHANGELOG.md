@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.10.3
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+
 ## 0.10.2
 
 ### Patch Changes
