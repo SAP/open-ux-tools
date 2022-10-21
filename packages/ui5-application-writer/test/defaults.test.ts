@@ -23,17 +23,18 @@ describe('Defaults', () => {
         ['1.91.0', '~1.91.0']
     ];
     const tesTSTypesData: [any, string][] = [
-        [UI5_DEFAULT.MIN_UI5_VERSION, `~${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`],
-        ['1', `~${minU5Version}`],
-        ['1.70.0', `~${minU5Version}`],
-        ['1.71.1', `~${minU5Version}`],
+        [UI5_DEFAULT.MIN_UI5_VERSION, minU5Version],
+        ['1', minU5Version],
+        ['1.70.0', minU5Version],
+        ['1.71.1', minU5Version],
         ['metadata', typesVersionBest],
         [undefined, typesVersionBest],
-        ['1.72.0', '~1.76.0'],
-        ['1.73.0', '~1.76.0'],
-        ['1.74.0', '~1.76.0'],
-        ['1.75.0', '~1.76.0'],
-        ['1.83.0', '~1.84.0'],
+        // Following versions dont exist
+        ['1.72.0', minU5Version],
+        ['1.73.0', minU5Version],
+        ['1.74.0', minU5Version],
+        ['1.75.0', minU5Version],
+        ['1.83.0', '~1.83.0'],
         ['1.102.9', typesVersionBest],
         ['1.103.1', typesVersionBest],
         ['1.80-snapshot', '~1.80.0'],

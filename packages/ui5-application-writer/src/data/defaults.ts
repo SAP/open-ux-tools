@@ -128,18 +128,14 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
  */
 export function getTypesVersion(minUI5Version?: string) {
     const version = semVer.coerce(minUI5Version);
-    if (!version || semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
+    if (!version) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
-    } else if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)) {
-        if (semVer.satisfies(version, '1.83.0')) {
-            return `~${semVer.major(version)}.84.0`;
-        } else {
-            return `~${semVer.major(version)}.${semVer.minor(version)}.0`;
-        }
-    } else if (semVer.satisfies(version, '1.72.0 - 1.75.0')) {
-        return `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`;
+    } else if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
+        return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
     } else {
-        return `~${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`;
+        return semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)
+            ? `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`
+            : UI5_DEFAULT.TYPES_VERSION_PREVIOUS;
     }
 }
 
