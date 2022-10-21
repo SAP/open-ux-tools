@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.12.4
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+
 ## 0.12.3
 
 ### Patch Changes
