@@ -264,6 +264,7 @@
         //		"sap-no-jquery": 2
         // turn on errors for missing imports
         "import/no-unresolved": "error",
+        "import/no-extraneous-dependencies": ["error", {"devDependencies": true, "optionalDependencies": true, "peerDependencies": true}],
         "prettier/prettier": [
             "error",
             {
