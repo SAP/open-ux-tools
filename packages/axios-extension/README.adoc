@@ -67,8 +67,25 @@ const provider = createForAbap({
 const transportRequestSerivce = provider.getAdtService<TransportRequestService>(TransportRequestService);
 const newTrNumber = await transportRequestSerivce.createTransportRequest('A new transport request number for deployment');
 ```
+#### ADT Service Implementation
+Supported ADT services are implemented in link:./src/abap/adt-catalog/services[src/abap/adt-catalog/services].
 
-Supported ADT services are implemented in link:./src/abap/adt-catalog/services[src/abap/adt-catalog/services]
+Take link:./src/abap/adt-catalog/services/ato-service.ts[AtoService] as an example to illustrate how to implement an ADT service.
+A specific ADT service implementation like AtoService is implemented as a subclass of link:./src/abap/adt-catalog/services/adt-service.ts[AdtService]. 
+
+```Typescript
+export class AtoService extends AdtService {
+    // ...
+}
+```
+
+As a subclass of AdtService, AtoService implements the `getAdtCatagory()` static method to provide the AdtCatagory properties. 
+AdtCatagory properties is used as unique ID to
+obtain service schema from ADT discovery schema. See link:./src/abap/adt-catalog/adt-catalog-service.ts[AdtCatalogService] and 
+link:./src/abap/adt-catalog/adt-schema-store.ts[AdtSchemaStore] for details.
+
+Finally, AtoService implements the request for fetching ATO settings and the parsing of response data. See `getAtoInfo()` and
+`parseAtoResponse(xml: string)` in AtoService implementation.
 
 ## Installation
 Npm
