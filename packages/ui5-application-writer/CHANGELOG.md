@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.9
+
+### Patch Changes
+
+-   324b802: Handle Typscript build step for Freestyle Simple templates
+
 ## 0.17.8
 
 ### Patch Changes
