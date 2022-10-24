@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.7.13
+
+### Patch Changes
+
+-   324b802: Handle Typscript build step for Freestyle Simple templates
+-   Updated dependencies [324b802]
+    -   @sap-ux/ui5-application-writer@0.17.9
+
 ## 0.7.12
 
 ### Patch Changes
