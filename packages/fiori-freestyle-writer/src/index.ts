@@ -23,13 +23,13 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     const ffApp = cloneDeep(data);
     // set defaults
     setDefaults(ffApp);
-
+    const isTypeScriptEnabled = ffApp.appOptions?.typescript;
     fs = await generateUi5Project(basePath, ffApp, fs);
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
     // Common files
-    const ignore = [ffApp.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
+    const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
     fs.copyTpl(join(tmplPath, 'common', 'add'), basePath, { ...ffApp, escapeFLPText }, undefined, {
         globOptions: { ignore, dot: true }
     });
@@ -41,7 +41,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         const viewName = (ffApp.template.settings as BasicAppSettings).viewName;
         const viewTarget = join(basePath, 'webapp', 'view', `${viewName}.view.xml`);
         fs.copyTpl(join(tmplPath, ffApp.template.type, 'custom/View.xml'), viewTarget, ffApp);
-        const ext = ffApp.appOptions?.typescript ? 'ts' : 'js';
+        const ext = isTypeScriptEnabled ? 'ts' : 'js';
         const controllerTarget = join(basePath, `webapp/controller/${viewName}.controller.${ext}`);
         fs.copyTpl(join(tmplPath, ffApp.template.type, `custom/Controller.${ext}`), controllerTarget, ffApp);
     }
@@ -72,7 +72,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             sapClient: ffApp.service?.client,
             flpAppId: ffApp.app.flpAppId,
             startFile: data?.app?.startFile,
-            localStartFile: data?.app?.localStartFile
+            localStartFile: data?.app?.localStartFile,
+            addTypeScript: ffApp.template.type === TemplateType.Basic && isTypeScriptEnabled
         })
     });
 
