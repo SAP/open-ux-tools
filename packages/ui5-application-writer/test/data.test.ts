@@ -71,7 +71,7 @@ describe('Setting defaults', () => {
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
                 descriptorVersion: '1.12.0',
-                typesVersion: UI5_DEFAULT.TYPES_VERSION_PREVIOUS,
+                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -86,7 +86,7 @@ describe('Setting defaults', () => {
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
                 descriptorVersion: '1.12.0',
-                typesVersion: UI5_DEFAULT.TYPES_VERSION_PREVIOUS,
+                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -101,7 +101,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.72.0',
                 minUI5Version: '1.72.0',
                 descriptorVersion: '1.17.0',
-                typesVersion: '1.71.18',
+                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -118,18 +118,18 @@ describe('Setting defaults', () => {
                 localVersion: UI5_DEFAULT.DEFAULT_LOCAL_UI5_VERSION,
                 minUI5Version: UI5_DEFAULT.MIN_UI5_VERSION,
                 descriptorVersion: '1.12.0',
-                typesVersion: UI5_DEFAULT.TYPES_VERSION_PREVIOUS,
+                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
                 ui5Theme: 'sap_fiori_3_dark',
                 ui5Libs: defaultUI5Libs
             }
         },
-        // 4
+        // 4 - types version passed in, this validates the values being passed in rather than being determined programmatically
         {
             input: {
                 ui5Libs: ['sap.m', 'sap.fe'],
                 frameworkUrl: 'https://sapui5.hana.ondemand.com/',
                 descriptorVersion: '1.12.1',
-                typesVersion: '1.95.5',
+                typesVersion: '1.95.0',
                 minUI5Version: '1.80.0',
                 localVersion: '1.95.6'
             },
@@ -140,7 +140,7 @@ describe('Setting defaults', () => {
                 localVersion: '1.95.6',
                 minUI5Version: '1.80.0',
                 descriptorVersion: '1.12.1',
-                typesVersion: '1.95.5',
+                typesVersion: '1.95.0',
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs.concat('sap.fe')
             }
@@ -263,14 +263,14 @@ describe('Setting defaults', () => {
                 localVersion: '1.76.0',
                 minUI5Version: '1.28.0',
                 descriptorVersion: '1.12.0',
-                typesVersion: UI5_DEFAULT.TYPES_VERSION_PREVIOUS,
+                typesVersion: `${UI5_DEFAULT.TYPES_VERSION_PREVIOUS}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
         }
     ];
 
-    test.each(testData)(`mergeUi5 testData index: $#`, async (test) => {
+    test.each(testData)('mergeUi5 testData index: $#', async (test) => {
         expect(mergeUi5(test.input)).toEqual(test.expected);
     });
 
