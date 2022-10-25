@@ -129,4 +129,28 @@ describe('UI5 templates', () => {
             }
         });
     });
+
+    it('option: `typescript with namespace added`', async () => {
+        const projectDir = join(outputDir, 'testapp_typescript');
+        const fs = await generate(projectDir, {
+            ...baseAppConfig,
+            app: {
+                id: `TestApp.With.NameSpace`
+            },
+            appOptions: {
+                typescript: true,
+                sapux: true,
+                npmPackageConsumption: true
+            }
+        });
+        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
 });

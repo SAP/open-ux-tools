@@ -13,7 +13,11 @@
     "rootDir": "webapp",
     "outDir": "./dist",
     "baseUrl": "./",
-    "paths": {
+    "paths": {<% if (app.id.includes('.')) { %>
+      "<%=app.id.replaceAll(/\./g, '/')%>/*": [
+        "webapp/*"
+      ],
+      <% } %>
       "<%- app.id %>/*": [
         "webapp/*"
       ]
