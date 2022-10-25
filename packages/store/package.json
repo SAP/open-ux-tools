@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/store",
-    "version": "0.3.5",
+    "version": "0.3.6",
     "description": "NPM module for storing persistent data",
     "repository": {
         "type": "git",
@@ -33,7 +33,7 @@
         "reflect-metadata": "0.1.13"
     },
     "optionalDependencies": {
-        "keytar": "7.8.0"
+        "keytar": "7.9.0"
     },
     "devDependencies": {
         "@types/i18next-fs-backend": "1.0.0",
