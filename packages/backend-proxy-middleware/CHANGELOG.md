@@ -1,5 +1,18 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.30
+
+### Patch Changes
+
+-   ee7f9a9: Refactor to use getProxyForUrl directly
+
+## 0.6.29
+
+### Patch Changes
+
+-   Updated dependencies [0439760]
+    -   @sap-ux/store@0.3.6
+
 ## 0.6.28
 
 ### Patch Changes
