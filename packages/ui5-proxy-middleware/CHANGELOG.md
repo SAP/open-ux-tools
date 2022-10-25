@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.16
+
+### Patch Changes
+
+-   ee7f9a9: Refactor to use getProxyForUrl directly
+
 ## 1.1.15
 
 ### Patch Changes
