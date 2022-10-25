@@ -33,7 +33,7 @@
         "reflect-metadata": "0.1.13"
     },
     "optionalDependencies": {
-        "keytar": "7.8.0"
+        "keytar": "7.9.0"
     },
     "devDependencies": {
         "@types/i18next-fs-backend": "1.0.0",
