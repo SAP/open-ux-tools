@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.14
+
+### Patch Changes
+
+-   4bdcbdc: Fix peer dependencies
+
 ## 1.0.13
 
 ### Patch Changes
