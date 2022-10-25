@@ -9,7 +9,6 @@ import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
-import { getProxyForUrl } from 'proxy-from-env';
 
 /**
  * Handler for the proxy response event.
@@ -59,23 +58,18 @@ export const getCorporateProxyServer = (yamlProxyServer: string | undefined): st
             proxyFromArgs = arg.split('=')[1];
         }
     });
-    const proxyFromFioriToolsConfig = proxyFromArgs || yamlProxyServer || process.env.FIORI_TOOLS_PROXY;
-    const proxyFromOSEnvConfig =
+
+    return (
+        proxyFromArgs ||
+        process.env.FIORI_TOOLS_PROXY ||
+        process.env.npm_config_proxy ||
+        process.env.npm_config_https_proxy ||
         process.env.http_proxy ||
         process.env.HTTP_PROXY ||
         process.env.https_proxy ||
         process.env.HTTPS_PROXY ||
-        process.env.npm_config_proxy ||
-        process.env.npm_config_https_proxy;
-
-    if (proxyFromFioriToolsConfig) {
-        process.env.npm_config_proxy = proxyFromFioriToolsConfig;
-        process.env.npm_config_https_proxy = proxyFromFioriToolsConfig;
-
-        return proxyFromFioriToolsConfig;
-    } else {
-        return proxyFromOSEnvConfig;
-    }
+        yamlProxyServer
+    );
 };
 
 /**
@@ -98,14 +92,36 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 };
 
 /**
- * Checks if a host should be proxied through user's corporate proxy.
+ * Updates the proxy configuration with values from runtime args (highest priority), environment variables or given config value.
  *
- * @param url - url to be checked
- * @returns false if host is excluded from user's corporate server, true otherwise
+ * @param proxyFromConfig - optional proxy string from configuration
  */
-export const isProxyRequired = (url: string): boolean => {
-    return getProxyForUrl(url) ? true : false;
-};
+export function updateProxyEnv(proxyFromConfig?: string): void {
+    let proxyFromArgs: string | undefined;
+    process.argv.forEach((arg) => {
+        if (arg.match(/proxy=/g)) {
+            proxyFromArgs = arg.split('=')[1];
+        }
+    });
+
+    if (proxyFromArgs || process.env.FIORI_TOOLS_PROXY) {
+        process.env.npm_config_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env.npm_config_https_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+    } else {
+        const proxyFromEnv =
+            process.env.npm_config_proxy ||
+            process.env.npm_config_https_proxy ||
+            process.env.http_proxy ||
+            process.env.HTTP_PROXY ||
+            process.env.https_proxy ||
+            process.env.HTTPS_PROXY;
+
+        if (!proxyFromEnv && proxyFromConfig) {
+            process.env.npm_config_proxy = proxyFromConfig;
+            process.env.npm_config_https_proxy = proxyFromConfig;
+        }
+    }
+}
 
 /**
  * Returns the name of html file, which is used to preview the application, from the URL.
