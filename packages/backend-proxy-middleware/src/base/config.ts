@@ -10,10 +10,22 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
             proxyFromArgs = arg.split('=')[1];
         }
     });
-    const proxyFromFioriToolsConfig = proxyFromArgs || proxyFromConfig || process.env.FIORI_TOOLS_PROXY;
 
-    if (proxyFromFioriToolsConfig) {
-        process.env.npm_config_proxy = proxyFromFioriToolsConfig;
-        process.env.npm_config_https_proxy = proxyFromFioriToolsConfig;
+    if (proxyFromArgs || process.env.FIORI_TOOLS_PROXY) {
+        process.env.npm_config_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env.npm_config_https_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+    } else {
+        const proxyFromEnv =
+            process.env.npm_config_proxy ||
+            process.env.npm_config_https_proxy ||
+            process.env.http_proxy ||
+            process.env.HTTP_PROXY ||
+            process.env.https_proxy ||
+            process.env.HTTPS_PROXY;
+
+        if (!proxyFromEnv && proxyFromConfig) {
+            process.env.npm_config_proxy = proxyFromConfig;
+            process.env.npm_config_https_proxy = proxyFromConfig;
+        }
     }
 }
