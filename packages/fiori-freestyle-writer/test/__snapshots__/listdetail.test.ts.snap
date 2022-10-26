@@ -2616,7 +2616,7 @@ archive.zip
     \\"outDir\\": \\"./dist\\",
     \\"baseUrl\\": \\"./\\",
     \\"paths\\": {
-      \\"test.me/*\\": [
+      \\"test/me/*\\": [
         \\"webapp/*\\"
       ]
     },
