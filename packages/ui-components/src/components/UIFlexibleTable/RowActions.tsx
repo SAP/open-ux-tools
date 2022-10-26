@@ -22,12 +22,12 @@ export interface RowActionsProps<T> {
  * @returns {React.ReactElement}
  */
 export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
-    const { rowIndex, tableProps, reorderConstraint } = props;
+    const { rowIndex, tableProps } = props;
     const rows = props.tableProps.rows;
     const rowKey = rows[rowIndex].key;
     const cells = rows[rowIndex].cells;
-    const upArrowDisabled = reorderConstraint ? rowIndex <= reorderConstraint.start : rowIndex <= 0;
-    const downArrowDisabled = reorderConstraint ? rowIndex >= reorderConstraint.end : rowIndex >= rows.length - 1;
+    const isTableTop = rowIndex <= 0;
+    const isTableBottom = rowIndex >= rows.length - 1;
     const isShowReorderButtons = !tableProps.readonly && tableProps.onTableReorder;
     const additionalActions: React.ReactNode[] = [];
     const isShowDeleteAction = tableProps.onDeleteRow && !tableProps.readonly;
@@ -51,13 +51,23 @@ export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
         );
     }
 
+    const { isMoveDownDisabled, isMoveUpDisabled, moveDownTooltip, moveUpTooltip } =
+        isShowReorderButtons && tableProps.onRenderReorderActions
+            ? tableProps.onRenderReorderActions({ rowIndex, rowKey, cells, readonly: !!tableProps.readonly })
+            : {
+                  isMoveUpDisabled: undefined,
+                  isMoveDownDisabled: undefined,
+                  moveUpTooltip: undefined,
+                  moveDownTooltip: undefined
+              };
+
     const reorderButtons = isShowReorderButtons && (
         <div className="flexible-table-content-table-row-item-actions-item-wrapper">
             {/* Up Arrow */}
             <UIFlexibleTableRowActionButton
                 key="up-action"
                 actionName="up"
-                disabled={upArrowDisabled || tableProps.isContentLoading}
+                disabled={isTableTop || tableProps.isContentLoading || isMoveUpDisabled}
                 iconName={UiIcons.ArrowUp}
                 rowNumber={rowIndex}
                 tableId={tableProps.id}
@@ -65,13 +75,14 @@ export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
                 onFocus={(): void => {
                     props.onFocusRowAction('up');
                 }}
+                title={moveUpTooltip}
             />
 
             {/* Down Arrow */}
             <UIFlexibleTableRowActionButton
                 key="down-action"
                 actionName="down"
-                disabled={downArrowDisabled || tableProps.isContentLoading}
+                disabled={isTableBottom || tableProps.isContentLoading || isMoveDownDisabled}
                 iconName={UiIcons.ArrowDown}
                 rowNumber={rowIndex}
                 tableId={tableProps.id}
@@ -79,6 +90,7 @@ export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
                 onFocus={(): void => {
                     props.onFocusRowAction('down');
                 }}
+                title={moveDownTooltip}
             />
         </div>
     );
@@ -108,9 +120,9 @@ export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
  * @returns {React.ReactNode}
  */
 function getDeleteRowAction<T>(props: UIFlexibleTableProps<T>, params: TableRowEventHandlerParameters<T>) {
-    const { isDeleteDisabled } = props.onRenderDeleteAction
+    const { isDeleteDisabled, tooltip } = props.onRenderDeleteAction
         ? props.onRenderDeleteAction(params)
-        : { isDeleteDisabled: false };
+        : { isDeleteDisabled: false, tooltip: undefined };
     return (
         <UIFlexibleTableRowActionButton
             key="delete-action"
@@ -124,6 +136,7 @@ function getDeleteRowAction<T>(props: UIFlexibleTableProps<T>, params: TableRowE
                 }
             }}
             tableId={props.id}
+            title={tooltip}
         />
     );
 }

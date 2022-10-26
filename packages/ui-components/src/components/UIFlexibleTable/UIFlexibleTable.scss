@@ -1,5 +1,6 @@
 $valid-drop-color: var(--vscode-notebookStatusSuccessIcon-foreground, var(--vscode-successBackground, #84c881));
 $invalid-drop-color: var(--vscode-notificationsWarningIcon-foreground, var(--vscode-warningBackground, #cca700));
+$warning-highlight-color: var(--vscode-notificationsWarningIcon-foreground, var(--vscode-warningBackground, #cca700));
 $readonly-labels-opacity: 0.4;
 
 .flexible-table {
@@ -219,6 +220,7 @@ $readonly-labels-opacity: 0.4;
                         border-top: 0;
                     }
                 }
+                
 
                 &-item {
                     &-title {
@@ -318,8 +320,23 @@ $readonly-labels-opacity: 0.4;
                 }
             }
         }
+
+        &-table.dragged {
+            .flexible-table-content-table-row.highlight-drop-warning {
+                .flexible-table-content-table-row-wrapper::before {
+                    position: absolute;
+                    width: calc(100% - 2px);
+                    height: calc(100% - 2px);
+                    content: " ";
+                    border: 1px solid $warning-highlight-color;
+                }
+            }
+        }
     }
+    
 }
+
+
 
 $wrapping-table-space-between-scrollbar-and-border: 5px;
 .flexible-table.wrapping-layout {

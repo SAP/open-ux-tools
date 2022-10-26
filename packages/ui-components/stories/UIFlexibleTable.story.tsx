@@ -153,7 +153,7 @@ function TextInputWrapper(props: { readonly?: boolean; onChange: (value: string)
         <UITextInput
             value={value}
             readOnly={props.readonly}
-            onChange={(event, value) => onChange(value)}
+            onChange={(event, value) => onChange(value || '')}
             onBlur={() => {
                 if (props.value !== value) {
                     setTimeout(() => {
@@ -230,6 +230,7 @@ export const InlineFlexTable = (): JSX.Element => {
     const [isFixedMaxWidth, setIsFixedMaxWidth] = useState(false);
     const [isLockVertically, setIsLockVertically] = useState(false);
     const [isReverseBackground, setIsReverseBackground] = useState(false);
+    const [isRowReorderingDisabled, setIsRowReorderingDisabled] = useState(false);
 
     // Prevent cell editor click propagation
     const cellRefs = useRef<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
@@ -274,10 +275,21 @@ export const InlineFlexTable = (): JSX.Element => {
         setRows(model);
     };
 
-    const onReorder = (params: { oldIndex: number; newIndex: number }): void => {
-        const model2 = arrayMove(model, params.oldIndex, params.newIndex);
-        setModel(model2);
-        setRows(model2);
+    const onReorder = (params: {
+        oldIndex: number;
+        newIndex: number;
+    }): {
+        isDropDisabled: boolean;
+    } => {
+        const isDropDisabled = isRowReorderingDisabled && params.oldIndex === 0 && params.newIndex > 1;
+        if (!isDropDisabled) {
+            const model2 = arrayMove(model, params.oldIndex, params.newIndex);
+            setModel(model2);
+            setRows(model2);
+        }
+        return {
+            isDropDisabled
+        };
     };
 
     const option = (label: string, value: boolean, setter: (value: React.SetStateAction<boolean>) => void) => (
@@ -377,6 +389,7 @@ export const InlineFlexTable = (): JSX.Element => {
                 {option('Show custom content', showSpecialContent, setShowSpecialContent)}
                 {option('Span cells', showSpanned, setShowSpanned)}
                 {option('Reorder enabled', isReorderable, setIsReorderable)}
+                {option('Reorder restrictions', isRowReorderingDisabled, setIsRowReorderingDisabled)}
                 {option('Disable Adding', isAddDisabled, setIsAddDisabled)}
                 {option('Disable Deletion', isDeleteDisabled, setIsDeleteDisabled)}
                 {option('Readonly', isReadonly, setIsReadonly)}
@@ -418,10 +431,46 @@ export const InlineFlexTable = (): JSX.Element => {
                         showIndexColumn={showIndex}
                         readonly={isReadonly}
                         onRenderDeleteAction={(params) => ({
-                            isDeleteDisabled: isDeleteDisabled && params.rowIndex === 0
+                            isDeleteDisabled: isDeleteDisabled && params.rowIndex === 0,
+                            tooltip:
+                                isDeleteDisabled && params.rowIndex === 0
+                                    ? 'Disabled for demo purposes'
+                                    : 'Click to delete the row'
                         })}
                         onRenderActions={onRenderActions}
                         onRenderRowDataContent={showSpecialContent ? rowSpecial : undefined}
+                        onRenderReorderActions={
+                            isRowReorderingDisabled
+                                ? (params) => {
+                                      return {
+                                          isMoveDownDisabled: params.rowIndex === 1,
+                                          isMoveUpDisabled: params.rowIndex === 1,
+                                          moveUpTooltip:
+                                              params.rowIndex === 1 ? 'Move up disabled for demo purposes' : undefined,
+                                          moveDownTooltip:
+                                              params.rowIndex === 1 ? 'Move down disabled for demo purposes' : undefined
+                                      };
+                                  }
+                                : undefined
+                        }
+                        onBeforeTableRender={
+                            isRowReorderingDisabled
+                                ? (params) => {
+                                      return {
+                                          rows: params.rows.map((row, index) => ({ ...row, disabled: index === 1 }))
+                                      };
+                                  }
+                                : undefined
+                        }
+                        onRenderRowContainer={
+                            isRowReorderingDisabled
+                                ? (params) => {
+                                      return {
+                                          isDropWarning: !params.isDragged && !!params.rowIndex && params.rowIndex > 1
+                                      };
+                                  }
+                                : undefined
+                        }
                         maxScrollableContentHeight={isCompact ? 700 : 220}
                         showRowTitles={showRowHeaders}
                         maxWidth={isFixedMaxWidth ? 800 : undefined}

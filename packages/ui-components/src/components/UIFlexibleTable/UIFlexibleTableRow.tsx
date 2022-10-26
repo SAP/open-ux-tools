@@ -11,6 +11,7 @@ export interface UIFlexibleTableRowProps<T> {
     rowData: React.ReactElement;
     rowRef?: React.RefObject<HTMLDivElement>;
     tableProps: UIFlexibleTableProps<T>;
+    className?: string;
 }
 
 /**
@@ -180,7 +181,7 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
  * @returns {JSX.Element}
  */
 export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
-    const { dragAndDropParams: params, rowData, rowActions, rowRef, tableProps } = props;
+    const { dragAndDropParams: params, rowData, rowActions, rowRef, tableProps, className: dynamicClassName } = props;
     const row = params.value as UIFlexibleTableRowType<T>;
     const rowIndex = params.index;
     const rowCells: Array<React.ReactElement> = [];
@@ -211,7 +212,8 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
         row.className ?? '',
         tableProps.lockVertically ? 'locked-axis' : 'unlocked-axis',
         parityClassName,
-        tableProps.reverseBackground && !tableProps.noRowBackground ? 'reverse-background' : ''
+        tableProps.reverseBackground && !tableProps.noRowBackground ? 'reverse-background' : '',
+        dynamicClassName
     ]);
 
     const rowWrapperClassNames = [

@@ -95,7 +95,10 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
 
     const reorderTable = (oldIndex: number, newIndex: number): void => {
         if (props.onTableReorder) {
-            props.onTableReorder({ oldIndex, newIndex });
+            const result = props.onTableReorder({ oldIndex, newIndex });
+            if (typeof result === 'object' && result.isDropDisabled) {
+                return;
+            }
             setCurrentFocusedRowIndex(newIndex);
         }
     };
@@ -148,6 +151,14 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
         params: NodeDragAndDropSortingParams
     ): React.ReactElement<UIFlexibleTableRowProps<T>, 'UIFlexibleTableRow'> {
         const rowIndex: number | undefined = params.index;
+        const { isDropWarning } = props.onRenderRowContainer
+            ? props.onRenderRowContainer({
+                  readonly: !!props.readonly,
+                  rowIndex,
+                  isDragged: params.isDragged
+              })
+            : { isDropWarning: false };
+
         return (
             <UIFlexibleTableRow
                 key={`row-${rowIndex}`}
@@ -156,6 +167,7 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
                 rowData={renderRowData(params)}
                 tableProps={props}
                 rowRef={typeof rowToNavigate === 'number' && rowIndex === rowToNavigate ? scrollTargetRef : undefined}
+                className={isDropWarning ? 'highlight-drop-warning' : ''}
             />
         );
     }
@@ -169,6 +181,7 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
     }): React.ReactNode => {
         const ulElement = params.props.ref?.current;
         let { children } = params;
+
         if (ulElement && scrollableElement.current !== ulElement) {
             scrollableElement.current = ulElement;
             scrollBarObserver.current.observe(ulElement);
@@ -295,17 +308,17 @@ function getTableBody<T>(
     tableBodyElementRef: React.MutableRefObject<any>
 ): React.ReactNode {
     let tableBody: React.ReactNode;
+    const { rows } = props.onBeforeTableRender ? props.onBeforeTableRender({ rows: props.rows }) : { rows: props.rows };
     if (props.onTableReorder && !props.readonly) {
         tableBody = (
             <List
-                values={props.rows}
+                values={rows}
                 lockVertically={props.lockVertically}
-                onChange={({ oldIndex, newIndex }): void => {
-                    reorderTable(oldIndex, newIndex);
-                }}
+                onChange={(params): void => reorderTable(params.oldIndex, params.newIndex)}
                 renderList={(params): React.ReactNode => renderTable(params)}
                 renderItem={(params): React.ReactNode => renderRow(params)}
                 removableByMove={true}
+                beforeDrag={props.onStartDragging}
             />
         );
     } else {

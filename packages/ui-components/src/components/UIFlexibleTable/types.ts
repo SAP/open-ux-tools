@@ -18,10 +18,6 @@ export interface UIFlexibleTableRowType<T> {
     cells: TableRowCells<T>;
     title?: string;
     className?: string;
-    reorderConstraint?: {
-        start: number;
-        end: number;
-    };
 }
 
 export interface TableRowEventHandlerParameters<T> {
@@ -69,18 +65,35 @@ export interface UIFlexibleTableProps<T> {
     maxScrollableContentHeight?: number;
     maxWidth?: number;
     noRowBackground?: boolean; // disables zebra-colored row background
+    onBeforeTableRender?: (params: { rows: UIFlexibleTableRowType<T>[] }) => {
+        rows: (UIFlexibleTableRowType<T> & { disabled: boolean })[];
+    }; // should be used to disable certain rows dragging - just remaps rows with additional flag dragDisabled
     onDeleteRow?: (params: TableRowEventHandlerParameters<T>) => void;
     onRenderPrimaryTableActions?: (params: { readonly: boolean }) => React.ReactElement[];
     onRenderSecondaryTableActions?: (params: { readonly: boolean }) => React.ReactElement[];
     onRenderActions?: (params: TableRowEventHandlerParameters<T>) => React.ReactElement[];
+    onRenderReorderActions?: (params: TableRowEventHandlerParameters<T>) => {
+        // allows dynamic disabling row reordering
+        isMoveUpDisabled?: boolean;
+        isMoveDownDisabled?: boolean;
+        moveUpTooltip?: string;
+        moveDownTooltip?: string;
+    };
     onRenderDeleteAction?: (params: TableRowEventHandlerParameters<T>) => {
         // allows dynamic disabling row deletion
         isDeleteDisabled: boolean;
+        tooltip?: string;
+    };
+    onStartDragging?: (params: { elements: Element[]; index: number }) => void;
+    onRenderRowContainer?: (params: { readonly: boolean; rowIndex?: number; isDragged: boolean }) => {
+        isDropWarning?: boolean;
     };
     onRenderCell: (params: CellRendererParams<T>) => CellRendererResult;
     onRenderRowDataContent?: (params: TableRowEventHandlerParameters<T>) => React.ReactNode | undefined; // allows to substitute entire row data with alternative content (index cell and row actions are not affected)
     onRenderTitleColumnCell?: (params: TitleCellRendererParams) => CellRendererResult;
-    onTableReorder?: (params: { oldIndex: number; newIndex: number }) => void;
+    onTableReorder?: (params: { oldIndex: number; newIndex: number }) => void | {
+        isDropDisabled: boolean;
+    };
     onContentSizeChange?: (params: { height: number; width: number }) => void;
     readonly?: boolean;
     rows: UIFlexibleTableRowType<T>[];

@@ -86,7 +86,9 @@ describe('<UIFlexibleTable />', () => {
                     columns={columns}
                     rows={rows}
                     onRenderCell={onRenderCell}
-                    onTableReorder={() => null}
+                    onTableReorder={() => {
+                        return;
+                    }}
                 />
             );
         });
@@ -428,6 +430,25 @@ describe('<UIFlexibleTable />', () => {
                 expect(onDeleteClick.mock.calls.length).toEqual(1);
                 expect(onDeleteClick.mock.calls[0][0].rowIndex).toEqual(2);
             });
+            it('tooltip', () => {
+                wrapper.setProps({
+                    addRowButton: { label: 'Add New Item', onClick: onAddClick },
+                    onDeleteRow: onDeleteClick,
+                    onRenderDeleteAction: ({ rowIndex }) => {
+                        return {
+                            isDeleteDisabled: rowIndex > 0,
+                            tooltip: rowIndex > 0 ? 'Tooltip for disabled' : 'Tooltip for enabled'
+                        };
+                    }
+                });
+                const foundButtons = wrapper.find(selectors.deleteButton);
+                expect(foundButtons.length).toEqual(3);
+                foundButtons.forEach((button, idx) => {
+                    expect(button.getElement().props.title).toBe(
+                        idx > 0 ? 'Tooltip for disabled' : 'Tooltip for enabled'
+                    );
+                });
+            });
             it('readonly - off', () => {
                 wrapper.setProps({
                     addRowButton: { label: 'Add', onClick: onAddClick },
@@ -457,7 +478,9 @@ describe('<UIFlexibleTable />', () => {
         describe('reorder buttons', () => {
             it('render', () => {
                 wrapper.setProps({
-                    onTableReorder: () => null
+                    onTableReorder: () => {
+                        return;
+                    }
                 });
                 const upButtonsFound = wrapper.find(selectors.upArrow);
                 const downButtonsFound = wrapper.find(selectors.downArrow);
@@ -472,7 +495,9 @@ describe('<UIFlexibleTable />', () => {
             });
             it('readonly - off', () => {
                 wrapper.setProps({
-                    onTableReorder: () => null,
+                    onTableReorder: () => {
+                        return;
+                    },
                     readonly: true
                 });
                 const upButtonsFound = wrapper.find(selectors.upArrow);
@@ -667,7 +692,9 @@ describe('<UIFlexibleTable />', () => {
                     columns={columns}
                     rows={rows}
                     onRenderCell={onRenderCell}
-                    onTableReorder={() => null}
+                    onTableReorder={() => {
+                        return;
+                    }}
                     showColumnTitles={true}
                 />
             );
@@ -780,7 +807,9 @@ describe('<UIFlexibleTable />', () => {
                     columns={columns}
                     rows={[]}
                     onRenderCell={onRenderCell}
-                    onTableReorder={() => null}
+                    onTableReorder={() => {
+                        return;
+                    }}
                 />
             );
         });
