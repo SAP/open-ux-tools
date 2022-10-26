@@ -283,9 +283,7 @@ describe('CustomAction', () => {
                 const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
                 const action = getActionByName(manifest, name);
                 expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.dummyOnAction');
-                expect(
-                    fs.read(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))
-                ).toMatchSnapshot();
+                expect(fs.exists(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))).toBeTruthy();
             });
 
             test(`"eventHandler" is String - no changes to handler file`, () => {

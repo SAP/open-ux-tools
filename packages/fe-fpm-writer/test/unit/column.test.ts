@@ -158,13 +158,13 @@ describe('CustomAction', () => {
             };
 
             const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
-            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
-
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
-            expect(settings.controlConfiguration).toMatchSnapshot();
-
-            const fragmentPath = join(testDir, `webapp/${customColumn.folder}/${testCustomColumn.name}.fragment.xml`);
-            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+            const fragmentPath = join(
+                testDir,
+                `webapp`,
+                `${customColumn.folder}`,
+                `${testCustomColumn.name}.fragment.xml`
+            );
+            expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
         test('version 1.102, no handler, filename lowercase, no folder passed', () => {
@@ -175,11 +175,6 @@ describe('CustomAction', () => {
             };
 
             const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
-            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
-
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
-            expect(settings.controlConfiguration).toMatchSnapshot();
-
             const fragmentPath = join(
                 testDir,
                 `webapp`,
@@ -187,7 +182,7 @@ describe('CustomAction', () => {
                 `newCustomColumn`,
                 `${testCustomColumn.name}.fragment.xml`
             );
-            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+            expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
         test('version 1.102, no handler, filename lowercase, folder uppercase', () => {
@@ -198,16 +193,13 @@ describe('CustomAction', () => {
             };
 
             const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.102' });
-            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
-
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
-            expect(settings.controlConfiguration).toMatchSnapshot();
-
             const fragmentPath = join(
                 testDir,
-                `webapp/${testCustomColumn.folder}/${testCustomColumn.name}.fragment.xml`
+                `webapp`,
+                `${testCustomColumn.folder}`,
+                `${testCustomColumn.name}.fragment.xml`
             );
-            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+            expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
         describe('Test property "eventHandler"', () => {

@@ -151,21 +151,6 @@ exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is "object", action with lowercase first letter 1`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        dummyOnAction: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
 exports[`CustomAction generateCustomAction Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
