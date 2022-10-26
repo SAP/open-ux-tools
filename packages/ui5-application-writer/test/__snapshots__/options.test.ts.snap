@@ -93,7 +93,7 @@ archive.zip
 
 specVersion: \\"2.5\\"
 metadata:
-  name: testAppId
+  name: app.with.namespace
 type: application
 framework:
   name: SAPUI5
@@ -118,7 +118,7 @@ server:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: testAppId
+  name: app.with.namespace
 type: application
 server:
   customMiddleware:
@@ -146,7 +146,7 @@ server:
     function (UIComponent) {
         \\"use strict\\";
 
-        return UIComponent.extend(\\"testAppId.Component\\", {
+        return UIComponent.extend(\\"app.with.namespace.Component\\", {
             metadata: {
                 manifest: \\"json\\"
             },
@@ -169,7 +169,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for testAppId
+    "contents": "# This is the resource bundle for app.with.namespace
 
 #Texts for manifest.json
 
@@ -198,7 +198,7 @@ appDescription=Test App Description",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-resourceroots='{
-            \\"testAppId\\": \\"./\\"
+            \\"app.with.namespace\\": \\"./\\"
         }'
         data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
@@ -209,9 +209,9 @@ appDescription=Test App Description",
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"testAppId\\"
+        data-name=\\"app.with.namespace\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"testAppId\\"}'
+        data-settings='{\\"id\\" : \\"app.with.namespace\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -222,7 +222,7 @@ appDescription=Test App Description",
     "contents": "{
     \\"_version\\": \\"1.12.0\\",
     \\"sap.app\\": {
-        \\"id\\": \\"testAppId\\",
+        \\"id\\": \\"app.with.namespace\\",
       \\"type\\": \\"application\\",
       \\"i18n\\": \\"i18n/i18n.properties\\",
       \\"applicationVersion\\": {
@@ -269,7 +269,7 @@ appDescription=Test App Description",
         \\"i18n\\": {
           \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
           \\"settings\\": {
-            \\"bundleName\\": \\"testAppId.i18n.i18n\\"
+            \\"bundleName\\": \\"app.with.namespace.i18n.i18n\\"
           }
         }
       },
@@ -342,7 +342,7 @@ archive.zip
 
 specVersion: \\"2.5\\"
 metadata:
-  name: testAppId
+  name: app.with.namespace
 type: application
 framework:
   name: SAPUI5
@@ -367,7 +367,7 @@ server:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: testAppId
+  name: app.with.namespace
 type: application
 server:
   customMiddleware:
@@ -395,7 +395,7 @@ server:
     function (UIComponent) {
         \\"use strict\\";
 
-        return UIComponent.extend(\\"testAppId.Component\\", {
+        return UIComponent.extend(\\"app.with.namespace.Component\\", {
             metadata: {
                 manifest: \\"json\\"
             },
@@ -418,7 +418,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for testAppId
+    "contents": "# This is the resource bundle for app.with.namespace
 
 #Texts for manifest.json
 
@@ -447,7 +447,7 @@ appDescription=Test App Description",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-resourceroots='{
-            \\"testAppId\\": \\"./\\"
+            \\"app.with.namespace\\": \\"./\\"
         }'
         data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
@@ -458,9 +458,9 @@ appDescription=Test App Description",
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"testAppId\\"
+        data-name=\\"app.with.namespace\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"testAppId\\"}'
+        data-settings='{\\"id\\" : \\"app.with.namespace\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -471,7 +471,7 @@ appDescription=Test App Description",
     "contents": "{
     \\"_version\\": \\"1.34.0\\",
     \\"sap.app\\": {
-        \\"id\\": \\"testAppId\\",
+        \\"id\\": \\"app.with.namespace\\",
       \\"type\\": \\"application\\",
       \\"i18n\\": \\"i18n/i18n.properties\\",
       \\"applicationVersion\\": {
@@ -518,7 +518,7 @@ appDescription=Test App Description",
         \\"i18n\\": {
           \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
           \\"settings\\": {
-            \\"bundleName\\": \\"testAppId.i18n.i18n\\"
+            \\"bundleName\\": \\"app.with.namespace.i18n.i18n\\"
           }
         }
       },
@@ -589,7 +589,7 @@ archive.zip
 
 specVersion: \\"2.5\\"
 metadata:
-  name: testAppId
+  name: app.with.namespace
 type: application
 framework:
   name: SAPUI5
@@ -614,7 +614,7 @@ server:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: testAppId
+  name: app.with.namespace
 type: application
 server:
   customMiddleware:
@@ -642,7 +642,7 @@ server:
     function (UIComponent) {
         \\"use strict\\";
 
-        return UIComponent.extend(\\"testAppId.Component\\", {
+        return UIComponent.extend(\\"app.with.namespace.Component\\", {
             metadata: {
                 manifest: \\"json\\"
             },
@@ -665,7 +665,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for testAppId
+    "contents": "# This is the resource bundle for app.with.namespace
 
 #Texts for manifest.json
 
@@ -694,7 +694,7 @@ appDescription=Test App Description",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-resourceroots='{
-            \\"testAppId\\": \\"./\\"
+            \\"app.with.namespace\\": \\"./\\"
         }'
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
@@ -702,15 +702,15 @@ appDescription=Test App Description",
     ></script>
     <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
         data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"testAppId\\">
+        data-sap-ui-componentName=\\"app.with.namespace\\">
     </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"testAppId\\"
+        data-name=\\"app.with.namespace\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"testAppId\\"}'
+        data-settings='{\\"id\\" : \\"app.with.namespace\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -721,7 +721,7 @@ appDescription=Test App Description",
     "contents": "{
     \\"_version\\": \\"1.12.0\\",
     \\"sap.app\\": {
-        \\"id\\": \\"testAppId\\",
+        \\"id\\": \\"app.with.namespace\\",
       \\"type\\": \\"application\\",
       \\"i18n\\": \\"i18n/i18n.properties\\",
       \\"applicationVersion\\": {
@@ -768,7 +768,7 @@ appDescription=Test App Description",
         \\"i18n\\": {
           \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
           \\"settings\\": {
-            \\"bundleName\\": \\"testAppId.i18n.i18n\\"
+            \\"bundleName\\": \\"app.with.namespace.i18n.i18n\\"
           }
         }
       },
@@ -1019,7 +1019,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"outDir\\": \\"./dist\\",
     \\"baseUrl\\": \\"./\\",
     \\"paths\\": {
-      \\"testAppId/*\\": [
+      \\"app.with.namespace/*\\": [
         \\"webapp/*\\"
       ]
     },
@@ -1068,371 +1068,6 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
   ]
 }
 "
-`;
-
-exports[`UI5 templates option: \`typescript with namespace added\` 1`] = `
-Object {
-  ".babelrc.json": Object {
-    "contents": "{
-    \\"ignore\\": [\\"**/*.d.ts\\"],
-    \\"presets\\": [\\"transform-ui5\\", \\"@babel/preset-typescript\\"]
-}",
-    "state": "modified",
-  },
-  ".eslintrc": Object {
-    "contents": "{
-    \\"root\\": true,
-    \\"env\\": {
-        \\"browser\\": true,
-        \\"es6\\": true,
-        \\"node\\": true
-    },
-    \\"extends\\": [
-        \\"eslint:recommended\\",
-        \\"plugin:@typescript-eslint/recommended\\",
-        \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\"
-    ],
-	\\"ignorePatterns\\": [\\".eslintignore.js\\"],
-    \\"parser\\": \\"@typescript-eslint/parser\\",
-    \\"parserOptions\\": {
-        \\"project\\": [\\"./tsconfig.json\\"],
-        \\"tsconfigRootDir\\": \\".\\",
-        \\"sourceType\\": \\"module\\"
-    },
-    \\"plugins\\": [
-        \\"@typescript-eslint\\"
-    ]
-}",
-    "state": "modified",
-  },
-  ".gitignore": Object {
-    "contents": "node_modules/
-dist/
-.scp/
-.env
-Makefile*.mta
-mta_archives
-mta-*
-resources
-archive.zip
-.*_mta_build_tmp",
-    "state": "modified",
-  },
-  "package.json": Object {
-    "contents": "{
-  \\"name\\": \\"testpackagename\\",
-  \\"version\\": \\"0.0.1\\",
-  \\"private\\": true,
-  \\"description\\": \\"Test App Description\\",
-  \\"keywords\\": [
-    \\"ui5\\",
-    \\"openui5\\",
-    \\"sapui5\\"
-  ],
-  \\"main\\": \\"webapp/index.html\\",
-  \\"dependencies\\": {},
-  \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
-    \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"latest\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.90.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
-    \\"typescript\\": \\"^4.6.3\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
-    \\"ui5-tooling-modules\\": \\"^0.6.0\\"
-  },
-  \\"scripts\\": {
-    \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
-    \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
-    \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"ts-typecheck\\": \\"tsc --noEmit\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"ui5-tooling-modules\\"
-    ]
-  },
-  \\"sapux\\": true
-}
-",
-    "state": "modified",
-  },
-  "tsconfig.json": Object {
-    "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"TestApp/With/NameSpace/*\\": [
-        \\"webapp/*\\"
-      ],
-      
-      \\"TestApp.With.NameSpace/*\\": [
-        \\"webapp/*\\"
-      ]
-    },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
-}",
-    "state": "modified",
-  },
-  "ui5-local.yaml": Object {
-    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: \\"2.5\\"
-metadata:
-  name: TestApp.With.NameSpace
-type: application
-framework:
-  name: SAPUI5
-  version: 1.95.0
-  libraries:
-    - name: sap.m
-    - name: sap.ui.core
-    - name: themelib_sap_fiori_3
-server:
-  customMiddleware:
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
-    - name: ui5-tooling-transpile-middleware
-      afterMiddleware: compression
-      configuration:
-        debug: true
-        transpileAsync: true
-        transpileTypeScript: true
-    - name: ui5-tooling-modules-middleware
-      afterMiddleware: compression
-      configuration: {}
-builder:
-  customTasks:
-    - name: ui5-tooling-transpile-task
-      afterTask: replaceVersion
-      configuration:
-        debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
-    - name: ui5-tooling-modules-task
-      afterTask: replaceVersion
-      configuration: {}
-",
-    "state": "modified",
-  },
-  "ui5.yaml": Object {
-    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-
-specVersion: \\"2.5\\"
-metadata:
-  name: TestApp.With.NameSpace
-type: application
-server:
-  customMiddleware:
-    - name: fiori-tools-proxy
-      afterMiddleware: compression
-      configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-    - name: fiori-tools-appreload
-      afterMiddleware: compression
-      configuration:
-        port: 35729
-        path: webapp
-        delay: 300
-    - name: ui5-tooling-transpile-middleware
-      afterMiddleware: compression
-      configuration:
-        debug: true
-        transpileAsync: true
-        transpileTypeScript: true
-    - name: ui5-tooling-modules-middleware
-      afterMiddleware: compression
-      configuration: {}
-builder:
-  customTasks:
-    - name: ui5-tooling-transpile-task
-      afterTask: replaceVersion
-      configuration:
-        debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
-    - name: ui5-tooling-modules-task
-      afterTask: replaceVersion
-      configuration: {}
-",
-    "state": "modified",
-  },
-  "webapp/Component.ts": Object {
-    "contents": "import UIComponent from \\"sap/ui/core/UIComponent\\";
-
-/**
- * @namespace TestApp.With.NameSpace
- */
-export default class Component extends UIComponent {
-
-	public static metadata = {
-		manifest: \\"json\\"
-	};
-
-    /**
-     * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-     * @public
-     * @override
-     */
-	public init() : void {
-		// call the base component's init function
-		super.init();
-
-        // enable routing
-        this.getRouter().initialize();
-	}
-}",
-    "state": "modified",
-  },
-  "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for TestApp.With.NameSpace
-
-#Texts for manifest.json
-
-#XTIT: Application name
-appTitle=Title of TestApp.With.NameSpace
-
-#YDES: Application description
-appDescription=Description of TestApp.With.NameSpace",
-    "state": "modified",
-  },
-  "webapp/index.html": Object {
-    "contents": "<!DOCTYPE html>
-<html lang=\\"en\\">
-<head>
-    <meta charset=\\"UTF-8\\">
-    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <title>Title of TestApp.With.NameSpace</title>
-    <style>
-        html, body, body > div, #container, #container-uiarea {
-            height: 100%;
-        }
-    </style>
-    <script
-        id=\\"sap-ui-bootstrap\\"
-        src=\\"resources/sap-ui-core.js\\"
-        data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-resourceroots='{
-            \\"TestApp.With.NameSpace\\": \\"./\\"
-        }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
-    ></script>
-</head>
-<body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
-    <div
-        data-sap-ui-component
-        data-name=\\"TestApp.With.NameSpace\\"
-        data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"TestApp.With.NameSpace\\"}'
-        data-handle-validation=\\"true\\"
-    ></div>
-</body>
-</html>",
-    "state": "modified",
-  },
-  "webapp/manifest.json": Object {
-    "contents": "{
-    \\"_version\\": \\"1.12.0\\",
-    \\"sap.app\\": {
-        \\"id\\": \\"TestApp.With.NameSpace\\",
-      \\"type\\": \\"application\\",
-      \\"i18n\\": \\"i18n/i18n.properties\\",
-      \\"applicationVersion\\": {
-        \\"version\\": \\"0.0.1\\"
-      },
-      \\"title\\": \\"{{appTitle}}\\",
-      \\"description\\": \\"{{appDescription}}\\",
-      \\"resources\\": \\"resources.json\\",
-      \\"sourceTemplate\\": {
-          \\"id\\": \\"\\",
-          \\"version\\": \\"\\"
-      }
-    },
-    \\"sap.ui\\": {
-      \\"technology\\": \\"UI5\\",
-      \\"icons\\": {
-        \\"icon\\": \\"\\",
-        \\"favIcon\\": \\"\\",
-        \\"phone\\": \\"\\",
-        \\"phone@2\\": \\"\\",
-        \\"tablet\\": \\"\\",
-        \\"tablet@2\\": \\"\\"
-      },
-      \\"deviceTypes\\": {
-        \\"desktop\\": true,
-        \\"tablet\\": true,
-        \\"phone\\": true
-      }
-    },
-    \\"sap.ui5\\": {
-      \\"flexEnabled\\": true,
-      \\"dependencies\\": {
-        \\"minUI5Version\\": \\"1.60.0\\",
-        \\"libs\\": {
-          \\"sap.m\\": {},
-          \\"sap.ui.core\\": {}
-        }
-      },
-      \\"contentDensities\\": {
-        \\"compact\\": true,
-        \\"cozy\\": true
-      },
-      \\"models\\": {
-        \\"i18n\\": {
-          \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-          \\"settings\\": {
-            \\"bundleName\\": \\"TestApp.With.NameSpace.i18n.i18n\\"
-          }
-        }
-      },
-      \\"resources\\": {
-        \\"css\\": []
-      },
-      \\"routing\\": {
-        \\"config\\": {},
-        \\"routes\\": [],
-        \\"targets\\": {}
-      }
-    }
-  }
-",
-    "state": "modified",
-  },
-}
 `;
 
 exports[`UI5 templates option: \`typescript, npm modules and Fiori tools\` 1`] = `
@@ -1542,7 +1177,7 @@ archive.zip
     \\"outDir\\": \\"./dist\\",
     \\"baseUrl\\": \\"./\\",
     \\"paths\\": {
-      \\"testAppId/*\\": [
+      \\"app.with.namespace/*\\": [
         \\"webapp/*\\"
       ]
     },
@@ -1559,7 +1194,7 @@ archive.zip
 
 specVersion: \\"2.5\\"
 metadata:
-  name: testAppId
+  name: app.with.namespace
 type: application
 framework:
   name: SAPUI5
@@ -1605,7 +1240,7 @@ builder:
 
 specVersion: \\"2.5\\"
 metadata:
-  name: testAppId
+  name: app.with.namespace
 type: application
 server:
   customMiddleware:
@@ -1652,7 +1287,7 @@ builder:
     "contents": "import UIComponent from \\"sap/ui/core/UIComponent\\";
 
 /**
- * @namespace testAppId
+ * @namespace app.with.namespace
  */
 export default class Component extends UIComponent {
 
@@ -1676,7 +1311,7 @@ export default class Component extends UIComponent {
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for testAppId
+    "contents": "# This is the resource bundle for app.with.namespace
 
 #Texts for manifest.json
 
@@ -1705,7 +1340,7 @@ appDescription=Test App Description",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-resourceroots='{
-            \\"testAppId\\": \\"./\\"
+            \\"app.with.namespace\\": \\"./\\"
         }'
         data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
@@ -1716,9 +1351,9 @@ appDescription=Test App Description",
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"testAppId\\"
+        data-name=\\"app.with.namespace\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"testAppId\\"}'
+        data-settings='{\\"id\\" : \\"app.with.namespace\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -1729,7 +1364,7 @@ appDescription=Test App Description",
     "contents": "{
     \\"_version\\": \\"1.12.0\\",
     \\"sap.app\\": {
-        \\"id\\": \\"testAppId\\",
+        \\"id\\": \\"app.with.namespace\\",
       \\"type\\": \\"application\\",
       \\"i18n\\": \\"i18n/i18n.properties\\",
       \\"applicationVersion\\": {
@@ -1776,7 +1411,7 @@ appDescription=Test App Description",
         \\"i18n\\": {
           \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
           \\"settings\\": {
-            \\"bundleName\\": \\"testAppId.i18n.i18n\\"
+            \\"bundleName\\": \\"app.with.namespace.i18n.i18n\\"
           }
         }
       },

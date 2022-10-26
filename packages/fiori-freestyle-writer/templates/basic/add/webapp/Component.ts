@@ -1,5 +1,5 @@
-import BaseComponent from "<%- app.baseComponent %>";
-import { createDeviceModel } from "<%=app.id.replace(/\./g, '/')%>/model/models";
+import BaseComponent from '<%- app.baseComponent %>';
+import { createDeviceModel } from './model/models';
 
 /**
  * @namespace <%- app.id %>
