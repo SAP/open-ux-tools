@@ -22,13 +22,24 @@ jest.mock('../../src/checks/destination', () => ({
 const mockCheckBASDestinations = checkBASDestinations as jest.Mock;
 const mockNeedsUsernamePassword = needsUsernamePassword as jest.Mock;
 const mockCheckBASDestination = checkBASDestination as jest.Mock;
+
+const nodeJSProcessVersions = {
+    'node': '16.17.0',
+    'v8': '9.4.146.26-node.22',
+    'uv': '1.43.0',
+    'zlib': '1.2.11',
+    'ares': '1.18.1',
+    'modules': '93',
+    'openssl': '1.1.1q+quic',
+    'http_parser': '1'
+};
 describe('Test for getEnvironmentCheck()', () => {
     test('Ensure correct dev environment (VSCode)', async () => {
         mockIsAppStudio.mockReturnValue(false);
         jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce({});
+        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
         const { environment, messages } = await getEnvironment();
         expect(environment.developmentEnvironment === DevelopmentEnvironment.VSCode).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
@@ -39,7 +50,7 @@ describe('Test for getEnvironmentCheck()', () => {
         jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce({});
+        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
         const { environment, messages } = await getEnvironment();
         expect(environment.developmentEnvironment === DevelopmentEnvironment.BAS).toBeTruthy();
         expect(messages.length).toBeGreaterThan(0);
@@ -53,7 +64,7 @@ describe('Test for checkEnvironment() (BAS)', () => {
         jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce({});
+        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
     });
 
     test('Destinations that need authentication and no credentials are supplied, getEnvironmentCheck()', async () => {
@@ -396,7 +407,6 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         };
 
         const expectedData = {
-            nodeVersion: '16',
             fioriGenVersion: '1',
             cloudCli: '2',
             appWizard: '2',
@@ -412,7 +422,7 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce(extensionVersions);
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce({ 'node': '16' });
+        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
         // Test execution
         const result = await checkEnvironment();
         expect(result.environment?.toolsExtensions).toEqual(expectedData);
@@ -420,7 +430,6 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
 
     test('Testing getToolsExtensions (no extensions installed)', async () => {
         const expectedData = {
-            nodeVersion: '16',
             fioriGenVersion: '1',
             cloudCli: '2',
             appWizard: 'Not installed',
@@ -436,7 +445,7 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce({ 'node': '16' });
+        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
         // Test execution
         const result = await checkEnvironment();
         expect(result.environment?.toolsExtensions).toEqual(expectedData);

@@ -42,7 +42,7 @@ export async function getEnvironment(): Promise<{ environment: Environment; mess
         logger.info(t('error.basDevSpace', { error: error.message }));
     }
 
-    const toolsExtensionResults = await getToolsExtensions(processVersions['node']);
+    const toolsExtensionResults = await getToolsExtensions();
     environment.toolsExtensions = toolsExtensionResults.toolsExtensions;
     logger.push(...toolsExtensionResults.messages);
 
@@ -86,10 +86,9 @@ function getExtVersions(extensions: { [id: string]: { version: string } }): { [i
 /**
  * Returns the tools and extensions installed.
  *
- * @param nodeVersion version of node
  * @returns tools and extension versions
  */
-async function getToolsExtensions(nodeVersion: string): Promise<{
+async function getToolsExtensions(): Promise<{
     toolsExtensions: ToolsExtensions;
     messages: ResultMessage[];
 }> {
@@ -100,7 +99,6 @@ async function getToolsExtensions(nodeVersion: string): Promise<{
     const cloudCli = await getCFCliToolVersion();
 
     let toolsExtensions: ToolsExtensions = {
-        nodeVersion: nodeVersion,
         cloudCli: cloudCli,
         fioriGenVersion: fioriGenVersion
     };
@@ -113,7 +111,6 @@ async function getToolsExtensions(nodeVersion: string): Promise<{
         };
     }
 
-    logger.info(t('info.nodeVersion', { nodeVersion: toolsExtensions.nodeVersion }));
     logger.info(t('info.cloudCli', { cloudCli: toolsExtensions.cloudCli }));
     logger.info(t('info.appWizard', { appWizard: toolsExtensions.appWizard }));
     logger.info(t('info.fioriGenVersion', { fioriGenVersion: toolsExtensions.fioriGenVersion }));

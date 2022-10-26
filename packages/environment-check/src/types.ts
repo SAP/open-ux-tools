@@ -38,13 +38,12 @@ export enum Extensions {
 export interface Environment {
     developmentEnvironment: DevelopmentEnvironment;
     platform: NodeJS.Platform;
-    versions: { [id: string]: string };
+    versions: NodeJS.ProcessVersions;
     basDevSpace?: string;
     toolsExtensions?: ToolsExtensions;
 }
 
 export interface ToolsExtensions {
-    nodeVersion?: string;
     fioriGenVersion?: string;
     cloudCli?: string;
     appWizard?: string;

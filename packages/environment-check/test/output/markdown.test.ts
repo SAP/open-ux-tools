@@ -82,7 +82,7 @@ const data = {
         basDevSpace: 'SAP Fiori',
         developmentEnvironment: 'Business Application Studio',
         versions: {
-            node: '12.22.5',
+            node: '16.17.0',
             v8: '7.8.279.23-node.56',
             uv: '1.40.0',
             zlib: '1.2.11',
@@ -92,7 +92,6 @@ const data = {
         },
         platform: 'linux',
         toolsExtensions: {
-            nodeVersion: 'v16.17.0',
             fioriGenVersion: '1',
             cloudCli: '2',
             appWizard: '2',

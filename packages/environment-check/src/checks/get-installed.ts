@@ -158,7 +158,7 @@ export async function getFioriGenVersion(): Promise<string> {
  *
  * @returns modules and versions
  */
-export async function getProcessVersions(): Promise<{ [id: string]: string }> {
+export async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
     const output = await spawnCommand('node', ['-p', 'process.versions']);
     const versions = output.split('\n');
     const processVersions = versions.slice(1, versions.length - 2).reduce((returnObject, current) => {
@@ -169,5 +169,5 @@ export async function getProcessVersions(): Promise<{ [id: string]: string }> {
         return returnObject;
     }, {});
 
-    return processVersions;
+    return processVersions as NodeJS.ProcessVersions;
 }
