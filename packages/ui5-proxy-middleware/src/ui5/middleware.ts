@@ -1,13 +1,11 @@
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
 import type { Options } from 'http-proxy-middleware';
-import { HttpsProxyAgent } from 'https-proxy-agent';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { MiddlewareParameters, Ui5MiddlewareConfig, ProxyConfig } from '../base';
 import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
     injectScripts,
-    isHostExcludedFromProxy,
     ui5Proxy,
     resolveUI5Version,
     hideProxyCredentials
@@ -75,11 +73,10 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
             const ui5Config: ProxyConfig = {
                 path: ui5Path,
                 url: envUI5Url || ui5.url,
-                version: ui5Version
+                version: ui5Version,
+                proxy: config.proxy
             };
-            if (corporateProxyServer && !isHostExcludedFromProxy(ui5Config.url)) {
-                proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
-            }
+
             routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });
             ui5Configs.push(ui5Config);
         }

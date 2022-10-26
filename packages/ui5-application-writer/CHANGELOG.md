@@ -1,5 +1,23 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.10
+
+### Patch Changes
+
+-   672b40b: Fix issue with tsconfig paths
+
+## 0.17.9
+
+### Patch Changes
+
+-   324b802: Handle Typscript build step for Freestyle Simple templates
+
+## 0.17.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.4
+
 ## 0.17.7
 
 ### Patch Changes

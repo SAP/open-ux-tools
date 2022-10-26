@@ -2571,7 +2571,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sapui5/ts-types-esm\\": \\"1.71.18\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.90.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
@@ -2616,7 +2616,7 @@ archive.zip
     \\"outDir\\": \\"./dist\\",
     \\"baseUrl\\": \\"./\\",
     \\"paths\\": {
-      \\"test.me/*\\": [
+      \\"test/me/*\\": [
         \\"webapp/*\\"
       ]
     },

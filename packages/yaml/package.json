@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Ayaml"
     },
-    "version": "0.12.3",
+    "version": "0.12.4",
     "main": "dist/index.js",
     "scripts": {
         "build": "pnpm clean && tsc -p tsconfig-build.json",
@@ -29,8 +29,6 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "i18next": "20.3.2",
-        "i18next-fs-backend": "1.1.1",
         "lodash": "4.17.21",
         "yaml": "2.0.0-10"
     },

@@ -1,5 +1,29 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.14.13
+
+### Patch Changes
+
+-   672b40b: Fix issue with tsconfig paths
+-   Updated dependencies [672b40b]
+    -   @sap-ux/ui5-application-writer@0.17.10
+
+## 0.14.12
+
+### Patch Changes
+
+-   324b802: Handle Typscript build step for Freestyle Simple templates
+-   Updated dependencies [324b802]
+    -   @sap-ux/ui5-application-writer@0.17.9
+
+## 0.14.11
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.4
+-   @sap-ux/odata-service-writer@0.14.12
+-   @sap-ux/ui5-application-writer@0.17.8
+
 ## 0.14.10
 
 ### Patch Changes

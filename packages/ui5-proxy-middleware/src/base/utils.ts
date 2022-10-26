@@ -52,15 +52,23 @@ export const proxyRequestHandler = (
  * @returns User's proxy configuration or undefined
  */
 export const getCorporateProxyServer = (yamlProxyServer: string | undefined): string | undefined => {
+    let proxyFromArgs: string | undefined;
+    process.argv.forEach((arg) => {
+        if (arg.match(/proxy=/g)) {
+            proxyFromArgs = arg.split('=')[1];
+        }
+    });
+
     return (
-        yamlProxyServer ||
+        proxyFromArgs ||
         process.env.FIORI_TOOLS_PROXY ||
+        process.env.npm_config_proxy ||
+        process.env.npm_config_https_proxy ||
         process.env.http_proxy ||
         process.env.HTTP_PROXY ||
         process.env.https_proxy ||
         process.env.HTTPS_PROXY ||
-        process.env.npm_config_proxy ||
-        process.env.npm_config_https_proxy
+        yamlProxyServer
     );
 };
 
@@ -84,26 +92,36 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 };
 
 /**
- * Checks if a host is excluded from user's corporate proxy.
+ * Updates the proxy configuration with values from runtime args (highest priority), environment variables or given config value.
  *
- * @param url - url to be checked
- * @param noProxyConfig - user's no_proxy configuration
- * @returns true if host is excluded from user's corporate server, false otherwise
+ * @param proxyFromConfig - optional proxy string from configuration
  */
-export const isHostExcludedFromProxy = (
-    url: string,
-    noProxyConfig: string | undefined = process.env.no_proxy || process.env.npm_config_noproxy
-): boolean => {
-    if (noProxyConfig === '*') {
-        return true;
+export function updateProxyEnv(proxyFromConfig?: string): void {
+    let proxyFromArgs: string | undefined;
+    process.argv.forEach((arg) => {
+        if (arg.match(/proxy=/g)) {
+            proxyFromArgs = arg.split('=')[1];
+        }
+    });
+
+    if (proxyFromArgs || process.env.FIORI_TOOLS_PROXY) {
+        process.env.npm_config_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env.npm_config_https_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
     } else {
-        const host = new URL(url).host;
-        const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
-        return !!noProxyList.find((entry) =>
-            entry.startsWith('.') ? host.endsWith(entry) : host.endsWith(`.${entry}`)
-        );
+        const proxyFromEnv =
+            process.env.npm_config_proxy ||
+            process.env.npm_config_https_proxy ||
+            process.env.http_proxy ||
+            process.env.HTTP_PROXY ||
+            process.env.https_proxy ||
+            process.env.HTTPS_PROXY;
+
+        if (!proxyFromEnv && proxyFromConfig) {
+            process.env.npm_config_proxy = proxyFromConfig;
+            process.env.npm_config_https_proxy = proxyFromConfig;
+        }
     }
-};
+}
 
 /**
  * Returns the name of html file, which is used to preview the application, from the URL.
