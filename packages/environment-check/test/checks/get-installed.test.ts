@@ -133,9 +133,9 @@ describe('Test install functions', () => {
         expect(result).toStrictEqual('Not installed or not found');
     });
 
-    test('getProcessVersions() (throw error) (VSCODE)', async () => {
+    test('getProcessVersions() (VSCODE)', async () => {
         jest.spyOn(command, 'spawnCommand').mockImplementationOnce(async () => {
-            return `{\n node: '16.17.0',\n v8: '9.4.146.26-node.22',\n uv: '1.43.0',\n  zlib: '1.2.11',\n  brotli: '1.0.9'\n}\n`;
+            return `{"node":"16.17.0","v8":"9.4.146.26-node.22","uv":"1.43.0","zlib":"1.2.11","brotli":"1.0.9"}`;
         });
         const result = await getProcessVersions();
         expect(result).toStrictEqual({
