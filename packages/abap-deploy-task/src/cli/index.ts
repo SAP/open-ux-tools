@@ -9,6 +9,7 @@ import { getDeploymentConfig, mergeConfig } from './config';
 /**
  * Create an instance of a command runner for deployment.
  *
+ * @param name
  * @returns instance of the command
  */
 export function createCommand(name: 'deploy' | 'undeploy'): Command {
@@ -71,7 +72,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
  * Prepare the run of the task based on on the configured command i.e. read and validate configuration and create logger.
  *
  * @param cmd - CLI command condiguration to be executed
- * @returns 
+ * @returns
  */
 async function prepareRun(cmd: Command) {
     const options = cmd.parse().opts<CliOptions>();
@@ -89,7 +90,7 @@ async function prepareRun(cmd: Command) {
         logger.debug(getConfigForLogging(config));
     }
     validateConfig(config);
-    replaceEnvVariables(config);    
+    replaceEnvVariables(config);
 
     return { cmd, logger, config, options };
 }
@@ -111,7 +112,7 @@ export async function runDeploy(): Promise<void> {
 /**
  * Function that is to be execute when the exposed undeploy command is executed.
  */
- export async function runUndeploy(): Promise<void> {
+export async function runUndeploy(): Promise<void> {
     const cmd = createCommand('undeploy');
     try {
         const { logger, config } = await prepareRun(cmd);

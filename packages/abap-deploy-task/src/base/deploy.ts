@@ -190,7 +190,7 @@ async function handleAxiosError(
  * @param config
  * @param logger - reference to the logger instance
  */
- export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger) {
+export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger) {
     if (config.keep) {
         writeFileSync(`archive-${Date.now()}.zip`, archive);
     }
@@ -206,14 +206,13 @@ async function handleAxiosError(
     logger.info('Deployment successful.');
 }
 
-
 /**
  * Deploy the given archive to the given target using the given app description.
  *
  * @param config
  * @param logger - reference to the logger instance
  */
- export async function undeploy(config: AbapDeployConfig, logger: Logger) {
+export async function undeploy(config: AbapDeployConfig, logger: Logger) {
     const service = await createDeployService(config);
     service.log = logger;
     if (!config.strictSsl) {
@@ -225,5 +224,4 @@ async function handleAxiosError(
     if (await service.undeploy(config.app, config.test)) {
         logger.info('Undeployment successful.');
     }
-    
 }

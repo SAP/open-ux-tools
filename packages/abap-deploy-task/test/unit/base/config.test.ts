@@ -1,5 +1,5 @@
-import { isUrlTarget, replaceEnvVariables, validateConfig } from '../../../src/base/config';
-import { UrlAbapTarget } from '../../../src/types';
+import { getConfigForLogging, isUrlTarget, replaceEnvVariables, validateConfig } from '../../../src/base/config';
+import { AbapDeployConfig, UrlAbapTarget } from '../../../src/types';
 
 // mock isAppStudio function
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -34,6 +34,32 @@ describe('config', () => {
             replaceEnvVariables(config);
             expect(config.hello.world).toBe(envVal);
             expect(config.world).toBe(envVal);
+        });
+    });
+
+    describe('getConfigForLogging', () => {
+        test('no credentials included', () => {
+            const config = {
+                app: {
+                    name: 'world'
+                }
+            } as AbapDeployConfig;
+            const configForLogging = getConfigForLogging(config);
+            expect(configForLogging).toBe(config);
+        });
+        test('credentials are being removed', () => {
+            const config = {
+                app: {
+                    name: 'world'
+                },
+                credentials: {
+                    username: '~user',
+                    password: '~password'
+                }
+            } as AbapDeployConfig;
+            const configForLogging = getConfigForLogging(config);
+            expect(configForLogging.credentials).toBe('hidden');
+            expect(configForLogging.app.name).toBe(config.app.name);
         });
     });
 

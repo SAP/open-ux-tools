@@ -18,7 +18,9 @@ export function isUrlTarget(target: AbapTarget): target is UrlAbapTarget {
  * @param config - config object
  * @returns config object that can be logged
  */
-export function getConfigForLogging(config: AbapDeployConfig): object {
+export function getConfigForLogging(
+    config: AbapDeployConfig
+): AbapDeployConfig | (Omit<AbapDeployConfig, 'credentials'> & { credentials: 'hidden' }) {
     if (config.credentials?.password) {
         return {
             ...config,
