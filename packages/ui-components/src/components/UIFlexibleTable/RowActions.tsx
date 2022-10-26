@@ -5,10 +5,6 @@ import { UiIcons, UIVerticalDivider } from '..';
 
 export interface RowActionsProps<T> {
     rowIndex: number;
-    reorderConstraint?: {
-        start: number;
-        end: number;
-    };
     onMoveDownClick?: () => void;
     onMoveUpClick?: () => void;
     onFocusRowAction: (name: string) => void;
