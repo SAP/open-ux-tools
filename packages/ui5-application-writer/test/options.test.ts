@@ -8,7 +8,7 @@ describe('UI5 templates', () => {
 
     const baseAppConfig = {
         app: {
-            id: 'testAppId',
+            id: 'app.with.namespace',
             title: 'Test App Title',
             description: 'Test App Description'
         },
