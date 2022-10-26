@@ -9,6 +9,7 @@ export interface ProxyConfig {
     path: string;
     url: string;
     version?: string;
+    proxy?: string;
 }
 
 export interface MiddlewareParameters<T> {

@@ -1,4 +1,4 @@
-import type { App, Package, UI5, UI5Framework } from '../types';
+import type { App, AppOptions, Package, UI5, UI5Framework } from '../types';
 import versionToManifestDescMapping from './version-to-descriptor-mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
@@ -61,7 +61,8 @@ export const enum UI5_DEFAULT {
     OPENUI5_CDN = 'https://openui5.hana.ondemand.com',
     TYPES_VERSION_SINCE = '1.76.0',
     TYPES_VERSION_PREVIOUS = '1.71.18',
-    TYPES_VERSION_BEST = '1.102.7',
+    TYPES_VERSION_BEST = '1.102.9',
+    ESM_TYPES_VERSION_SINCE = '1.90.0',
     MANIFEST_VERSION = '1.12.0',
     BASE_COMPONENT = 'sap/ui/core/UIComponent'
 }
@@ -97,9 +98,10 @@ export const defaultUI5Libs = ['sap.m', 'sap.ui.core'];
  * Coerces provided UI5 versions to valid semantic versions.
  *
  * @param {UI5} [ui5] - the UI5 instance
+ * @param options - application options
  * @returns {UI5} the updated copy of UI5 instance (does not change `ui5`)
  */
-export function mergeUi5(ui5: Partial<UI5>): UI5 {
+export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 {
     const version = ui5.version ?? UI5_DEFAULT.DEFAULT_UI5_VERSION; // Undefined or null indicates the latest available should be used
     const framework = ui5.framework ?? 'SAPUI5';
     const defaultFrameworkUrl = framework === 'SAPUI5' ? UI5_DEFAULT.SAPUI5_CDN : UI5_DEFAULT.OPENUI5_CDN;
@@ -112,7 +114,8 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
     };
 
     merged.descriptorVersion = getManifestVersion(merged.minUI5Version, ui5.descriptorVersion);
-    merged.typesVersion = ui5.typesVersion ?? getTypesVersion(merged.minUI5Version);
+    merged.typesVersion =
+        ui5.typesVersion ?? (options?.typescript ? getEsmTypesVersion : getTypesVersion)(merged.minUI5Version);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
@@ -120,10 +123,9 @@ export function mergeUi5(ui5: Partial<UI5>): UI5 {
 }
 
 /**
- * Get the best types version for the given minUI5Version.
- * For the latest versions the LTS S/4 on-premise version (1.102.x) is used, for anything before we match the versions as far back as available.
+ * Get the best types version for the given minUI5Version for https://www.npmjs.com/package/@sapui5/ts-types where specific versions are missing.
  *
- * @param minUI5Version the mininum UI5 version that needs to be supported
+ * @param minUI5Version the minimum UI5 version that needs to be supported
  * @returns semantic version representing the types version.
  */
 export function getTypesVersion(minUI5Version?: string) {
@@ -136,6 +138,24 @@ export function getTypesVersion(minUI5Version?: string) {
         return semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_SINCE)
             ? `~${semVer.major(version)}.${semVer.minor(version)}.${semVer.patch(version)}`
             : UI5_DEFAULT.TYPES_VERSION_PREVIOUS;
+    }
+}
+
+/**
+ * Get the best types version for the given minUI5Version within a selective range, starting at 1.90.0 for https://www.npmjs.com/package/@sapui5/ts-types-esm
+ * For the latest versions the LTS S/4 on-premise version (1.102.x) is used, for anything before we match the versions as far back as available.
+ *
+ * @param minUI5Version the minimum UI5 version that needs to be supported
+ * @returns semantic version representing the types version.
+ */
+export function getEsmTypesVersion(minUI5Version?: string) {
+    const version = semVer.coerce(minUI5Version);
+    if (!version || semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
+        return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
+    } else {
+        return semVer.gte(version, UI5_DEFAULT.ESM_TYPES_VERSION_SINCE)
+            ? `~${semVer.major(version)}.${semVer.minor(version)}.0`
+            : `~${UI5_DEFAULT.ESM_TYPES_VERSION_SINCE}`;
     }
 }
 

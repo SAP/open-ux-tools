@@ -136,8 +136,8 @@ describe('Set optional properties', () => {
             proxy: 'http://proxy.example'
         });
         expect(ui5ProxySpy).toBeCalledWith(
-            expect.objectContaining({}),
-            expect.objectContaining({ agent: expect.objectContaining({}) })
+            expect.objectContaining({ proxy: 'http://proxy.example' }),
+            expect.objectContaining({})
         );
     });
 
