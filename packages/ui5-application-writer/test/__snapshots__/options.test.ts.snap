@@ -1019,7 +1019,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"outDir\\": \\"./dist\\",
     \\"baseUrl\\": \\"./\\",
     \\"paths\\": {
-      \\"app.with.namespace/*\\": [
+      \\"app/with/namespace/*\\": [
         \\"webapp/*\\"
       ]
     },
@@ -1177,7 +1177,7 @@ archive.zip
     \\"outDir\\": \\"./dist\\",
     \\"baseUrl\\": \\"./\\",
     \\"paths\\": {
-      \\"app.with.namespace/*\\": [
+      \\"app/with/namespace/*\\": [
         \\"webapp/*\\"
       ]
     },
