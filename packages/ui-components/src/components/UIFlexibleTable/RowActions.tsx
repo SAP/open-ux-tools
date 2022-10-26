@@ -5,6 +5,10 @@ import { UiIcons, UIVerticalDivider } from '..';
 
 export interface RowActionsProps<T> {
     rowIndex: number;
+    reorderConstraint?: {
+        start: number;
+        end: number;
+    };
     onMoveDownClick?: () => void;
     onMoveUpClick?: () => void;
     onFocusRowAction: (name: string) => void;
@@ -18,12 +22,12 @@ export interface RowActionsProps<T> {
  * @returns {React.ReactElement}
  */
 export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
-    const { rowIndex, tableProps } = props;
+    const { rowIndex, tableProps, reorderConstraint } = props;
     const rows = props.tableProps.rows;
     const rowKey = rows[rowIndex].key;
     const cells = rows[rowIndex].cells;
-    const upArrowDisabled = rowIndex <= 0;
-    const downArrowDisabled = rowIndex >= rows.length - 1;
+    const upArrowDisabled = reorderConstraint ? rowIndex <= reorderConstraint.start : rowIndex <= 0;
+    const downArrowDisabled = reorderConstraint ? rowIndex >= reorderConstraint.end : rowIndex >= rows.length - 1;
     const isShowReorderButtons = !tableProps.readonly && tableProps.onTableReorder;
     const additionalActions: React.ReactNode[] = [];
     const isShowDeleteAction = tableProps.onDeleteRow && !tableProps.readonly;

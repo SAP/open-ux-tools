@@ -18,6 +18,10 @@ export interface UIFlexibleTableRowType<T> {
     cells: TableRowCells<T>;
     title?: string;
     className?: string;
+    reorderConstraint?: {
+        start: number;
+        end: number;
+    };
 }
 
 export interface TableRowEventHandlerParameters<T> {
