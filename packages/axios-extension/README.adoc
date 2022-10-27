@@ -1,6 +1,6 @@
 # Axios Extension
 
-The `@sap-ux/axios-extension` module is an extension of the [axios](https://github.com/axios/axios) framework adding convenience methods to interact with SAP systems especially with OData services..
+The `@sap-ux/axios-extension` module is an extension of the link:https://github.com/axios/axios[axios] framework adding convenience methods to interact with SAP systems especially with OData services..
 
 ## Features
 
@@ -44,13 +44,48 @@ const provider = createForAbap({
     baseURL: 'https://sap.example',
     params: { 'sap-client': client }
 });
-const service = provider.layeredRepository();
+const service = provider.getLayeredRepository();
 await service.deploy('./dist/my-variant-webapp.zip', {
     namespace: 'apps/my.base.app/appVariants/customer.variant/',
     package: 'MY_PACKAGE',
     transport: 'ABC123'
 });
 ```
+
+#### ADT Service
+Services that supports Fiori project deployment configuration. The following example shows the usage
+of loading ADT service ```TransportRequestService``` for creating a new transport request number.
+
+Usage:
+```Typescript
+import { createForAbap } from '@sap-ux/axios-extension';
+
+const provider = createForAbap({
+    baseURL: 'https://sap.example',
+    params: { 'sap-client': client }
+});
+const transportRequestSerivce = provider.getAdtService<TransportRequestService>(TransportRequestService);
+const newTrNumber = await transportRequestSerivce.createTransportRequest('A new transport request number for deployment');
+```
+#### ADT Service Implementation
+Supported ADT services are implemented in link:./src/abap/adt-catalog/services[src/abap/adt-catalog/services].
+
+Take link:./src/abap/adt-catalog/services/ato-service.ts[AtoService] as an example to illustrate how to implement an ADT service.
+A specific ADT service implementation like AtoService is implemented as a subclass of link:./src/abap/adt-catalog/services/adt-service.ts[AdtService]. 
+
+```Typescript
+export class AtoService extends AdtService {
+    // ...
+}
+```
+
+As a subclass of AdtService, AtoService implements the `getAdtCatagory()` static method to provide the AdtCatagory properties. 
+AdtCatagory properties is used as unique ID to
+obtain service schema from ADT discovery schema. See link:./src/abap/adt-catalog/adt-catalog-service.ts[AdtCatalogService] and 
+link:./src/abap/adt-catalog/adt-schema-store.ts[AdtSchemaStore] for details.
+
+Finally, AtoService implements the request for fetching ATO settings and the parsing of response data. See `getAtoInfo()` and
+`parseAtoResponse(xml: string)` in AtoService implementation.
 
 ## Installation
 Npm
@@ -77,4 +112,4 @@ const service = provider.service('/ns/my_service');
 const metadata = await service.metadata();
 
 ```
-See more examples in [`/test/factory.test.ts`](./test/factory.test.ts)
+See more examples in link:./test/factory.test.ts[/test/factory.test.ts]
