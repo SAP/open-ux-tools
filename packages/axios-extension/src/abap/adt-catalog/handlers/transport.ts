@@ -104,7 +104,7 @@ function getLockedTransport(doc: Document): TransportRequest[] {
  * Convert transport request in XML element of ADT response to typed object.
  *
  * @param transportReqEle XML element of transport request data in ADT response
- * @returns
+ * @returns transport request details
  */
 function convertTransportRequest(transportReqEle: Element): TransportRequest {
     if (!transportReqEle) {

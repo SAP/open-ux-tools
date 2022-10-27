@@ -134,7 +134,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
      * @returns the Axios response object for futher processing or undefined if no request is sent
      */
-    public async undeploy(app: ApplicationConfig, testMode = false): Promise<AxiosResponse> {
+    public async undeploy(app: ApplicationConfig, testMode = false): Promise<AxiosResponse | undefined> {
         const config = this.createConfig(app.transport, testMode);
         const host = this.getAbapFrontendUrl();
         try {
@@ -147,6 +147,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 return response;
             } else {
                 this.log.warn(`Application ${app.name} not found, nothing to undeploy.`);
+                return undefined;
             }
         } catch (error) {
             this.logError({ error, host });
