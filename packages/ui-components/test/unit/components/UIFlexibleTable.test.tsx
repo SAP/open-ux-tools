@@ -89,6 +89,9 @@ describe('<UIFlexibleTable />', () => {
                     onTableReorder={() => {
                         return;
                     }}
+                    onRenderReorderActions={() => {
+                        return {};
+                    }}
                 />
             );
         });
@@ -276,6 +279,27 @@ describe('<UIFlexibleTable />', () => {
                   "maxWidth": "100%",
                 }
             `);
+        });
+
+        it('onRenderRowContainer ', () => {
+            wrapper.setProps({
+                onRenderRowContainer: (params) => {
+                    return params.rowIndex === 2 ? { isDropWarning: true } : { isDropWarning: false };
+                }
+            });
+
+            const rowDataObjects = wrapper.find(selectors.rowDataCells);
+            expect(rowDataObjects.length).toEqual(3);
+
+            const rowObjects = wrapper.find(selectors.row);
+            expect(rowObjects.length).toEqual(3);
+
+            // check warning class added
+            rowObjects.forEach((row, rowIndex) => {
+                expect(
+                    row.getElement().props.className.includes('highlight-drop-warning') === (rowIndex === 2)
+                ).toBeTruthy();
+            });
         });
 
         it('Property "reverseBackground"', () => {
@@ -491,6 +515,48 @@ describe('<UIFlexibleTable />', () => {
                 });
                 downButtonsFound.forEach((button, idx) => {
                     expect(button.getElement().props.className.includes('is-disabled') === (idx === 2)).toBeTruthy();
+                });
+            });
+            it('move up/down not rendered', () => {
+                wrapper.setProps({
+                    onTableReorder: undefined
+                });
+                const upButtonsFound = wrapper.find(selectors.upArrow);
+                const downButtonsFound = wrapper.find(selectors.downArrow);
+                expect(upButtonsFound.length).toBe(0);
+                expect(downButtonsFound.length).toBe(0);
+            });
+
+            it('move up/down disabled for new line item index 1(2nd row) with tooltip', () => {
+                wrapper.setProps({
+                    onTableReorder: () => {
+                        return;
+                    },
+                    onRenderReorderActions: (params) => {
+                        const isRow2 = params.rowIndex === 1;
+                        return {
+                            isMoveDownDisabled: isRow2,
+                            moveDownTooltip: isRow2 ? 'Testing move down disabled' : '',
+                            isMoveUpDisabled: isRow2,
+                            moveUpTooltip: isRow2 ? 'Testing move up disabled' : ''
+                        };
+                    }
+                });
+                const upButtonsFound = wrapper.find(selectors.upArrow);
+                const downButtonsFound = wrapper.find(selectors.downArrow);
+                expect(upButtonsFound.length).toBe(3);
+                expect(downButtonsFound.length).toBe(3);
+                upButtonsFound.forEach((button, idx) => {
+                    expect(
+                        button.getElement().props.className.includes('is-disabled') === [0, 1].includes(idx)
+                    ).toBeTruthy();
+                    expect(button.getElement().props.title).toBe(idx === 1 ? 'Testing move up disabled' : '');
+                });
+                downButtonsFound.forEach((button, idx) => {
+                    expect(
+                        button.getElement().props.className.includes('is-disabled') === [1, 2].includes(idx)
+                    ).toBeTruthy();
+                    expect(button.getElement().props.title).toBe(idx === 1 ? 'Testing move down disabled' : '');
                 });
             });
             it('readonly - off', () => {
