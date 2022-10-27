@@ -1,7 +1,7 @@
 import React from 'react';
 import type { IStackTokens } from '@fluentui/react';
-import { Stack, MessageBarType } from '@fluentui/react';
-import { UIPersona, UIPersonaSize } from '../src/components/UIPersona';
+import { Stack } from '@fluentui/react';
+import { UIPersona, UIPersonaSize, UIPersonaPresence } from '../src/components/UIPersona';
 
 export default { title: 'Utilities/Persona' };
 const stackTokens: IStackTokens = { childrenGap: 40 };
@@ -42,6 +42,15 @@ export const defaultUsage = (): JSX.Element => {
                 size={UIPersonaSize.size120}
             />
             <UIPersona text="John Doe" size={UIPersonaSize.size72} />
+            <UIPersona
+                imageUrl={`https://static2.sharepointonline.com/files/fabric/office-ui-fabric-react-assets/persona-male.png`}
+                size={UIPersonaSize.size120}
+                text={'John Doe'}
+                presence={UIPersonaPresence.online}
+                secondaryText={'Software Engineer'}
+                tertiaryText={'In a meeting'}
+                optionalText={'Available at 4:00pm'}
+            />
         </Stack>
     );
 };

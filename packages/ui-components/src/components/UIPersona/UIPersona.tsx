@@ -1,9 +1,11 @@
 import React from 'react';
 import type { IPersonaProps, IPersonaStyles, IPersonaStyleProps } from '@fluentui/react';
-import { Persona, PersonaSize } from '@fluentui/react';
+import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react';
 
 export { PersonaSize as UIPersonaSize };
+export { PersonaPresence as UIPersonaPresence };
 export type UIPersonaProps = IPersonaProps;
+
 /**
  * UIPersona component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/persona
