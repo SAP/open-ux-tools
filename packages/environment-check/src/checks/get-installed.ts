@@ -152,3 +152,13 @@ export async function getFioriGenVersion(): Promise<string> {
     }
     return fioriGenVersion;
 }
+
+/**
+ * Returns the versions of node.js modules.
+ *
+ * @returns modules and versions
+ */
+export async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
+    const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
+    return JSON.parse(output);
+}

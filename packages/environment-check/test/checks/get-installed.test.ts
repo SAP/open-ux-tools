@@ -1,5 +1,10 @@
 import * as command from '../../src/command';
-import { getCFCliToolVersion, getFioriGenVersion, getInstalledExtensions } from '../../src/checks/get-installed';
+import {
+    getCFCliToolVersion,
+    getFioriGenVersion,
+    getInstalledExtensions,
+    getProcessVersions
+} from '../../src/checks/get-installed';
 import fs from 'fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
@@ -126,5 +131,19 @@ describe('Test install functions', () => {
 
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual('Not installed or not found');
+    });
+
+    test('getProcessVersions() (VSCODE)', async () => {
+        jest.spyOn(command, 'spawnCommand').mockImplementationOnce(async () => {
+            return `{"node":"16.17.0","v8":"9.4.146.26-node.22","uv":"1.43.0","zlib":"1.2.11","brotli":"1.0.9"}`;
+        });
+        const result = await getProcessVersions();
+        expect(result).toStrictEqual({
+            node: '16.17.0',
+            v8: '9.4.146.26-node.22',
+            uv: '1.43.0',
+            zlib: '1.2.11',
+            brotli: '1.0.9'
+        });
     });
 });
