@@ -6,7 +6,7 @@ import { join } from 'path';
 import { generateCustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
-import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
+import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 
 describe('CustomAction', () => {
@@ -200,11 +200,11 @@ describe('CustomAction', () => {
                     },
                     fs
                 );
-                const manifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
-                const action =
-                    manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content']['header'][
-                        'actions'
-                    ][name];
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+                const manifestSettings = (
+                    manifest['sap.ui5']?.['routing']?.['targets']?.[target.page]?.['options'] as Record<string, any>
+                )['settings'];
+                const action = manifestSettings['content']['header']['actions'][name];
                 // "requiresSelection" property should not be added if it is undefined
                 expect('requiresSelection' in action).toEqual(value === undefined ? false : true);
                 expect(action['requiresSelection']).toEqual(value);
@@ -231,16 +231,18 @@ describe('CustomAction', () => {
                     fs
                 );
             };
-            const getActionByName = (manifest: any, actionId: string) => {
-                return manifest['sap.ui5']['routing']['targets'][target.page]['options']['settings']['content'][
-                    'header'
-                ]['actions'][actionId];
+            const getActionByName = (manifest: Manifest, actionId: string) => {
+                const settings = (
+                    manifest['sap.ui5']?.['routing']?.['targets']?.[target.page]?.['options'] as Record<string, any>
+                )['settings'];
+
+                return settings['content']['header']['actions'][actionId];
             };
 
             test('"eventHandler" is empty "object" - create new file with default function name', () => {
                 generateCustomActionWithEventHandler(name, {});
 
-                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
                 const action = getActionByName(manifest, name);
                 expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.onPress');
                 expect(
@@ -256,7 +258,7 @@ describe('CustomAction', () => {
                 const folder = join('ext', 'custom');
                 generateCustomActionWithEventHandler(name, extension, folder);
 
-                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
                 const action = getActionByName(manifest, name);
                 expect(action['press']).toEqual('my.test.App.ext.custom.dummyAction.DummyOnAction');
                 expect(fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))).toMatchSnapshot();
@@ -267,7 +269,7 @@ describe('CustomAction', () => {
                     fnName: 'DummyOnAction'
                 });
 
-                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
                 const action = getActionByName(manifest, name);
                 expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.DummyOnAction');
                 expect(
@@ -280,7 +282,7 @@ describe('CustomAction', () => {
                     fnName: 'dummyOnAction'
                 });
 
-                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+                const manifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
                 const action = getActionByName(manifest, name);
                 expect(action['press']).toEqual('my.test.App.ext.myCustomAction.MyCustomAction.dummyOnAction');
                 expect(fs.exists(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))).toBeTruthy();
@@ -288,7 +290,7 @@ describe('CustomAction', () => {
 
             test(`"eventHandler" is String - no changes to handler file`, () => {
                 generateCustomActionWithEventHandler(name, 'my.test.App.ext.ExistingHandler.onCustomAction');
-                const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
+                const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Manifest;
                 const action = getActionByName(manifest, name);
                 expect(action['press']).toEqual('my.test.App.ext.ExistingHandler.onCustomAction');
                 expect(fs.exists(join(testDir, 'webapp', 'ext', 'myCustomAction', 'MyCustomAction.js'))).toBeFalsy();
@@ -330,7 +332,7 @@ describe('CustomAction', () => {
                         folder
                     );
 
-                    const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json'));
+                    const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Manifest;
                     const action = getActionByName(manifest, actionName);
                     expect(action['press']).toEqual(`my.test.App.ext.fragments.${fileName}.${fnName}`);
                     // Check update js file content

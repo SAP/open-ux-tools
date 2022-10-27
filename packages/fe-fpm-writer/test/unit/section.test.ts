@@ -5,7 +5,7 @@ import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateCustomSection, getManifestRoot } from '../../src/section';
 import type { CustomSection } from '../../src/section/types';
-import type { EventHandlerConfiguration } from '../../src/common/types';
+import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
 
@@ -58,9 +58,10 @@ describe('CustomSection', () => {
                 eventHandler: true
             };
             generateCustomSection(testDir, { ...testCustomSection }, fs);
-            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
-
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
             expect(settings.content).toMatchSnapshot();
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
@@ -74,9 +75,11 @@ describe('CustomSection', () => {
             fs.write(expectedFragmentPath, 'dummyContent');
 
             generateCustomSection(testDir, { ...testCustomSection }, fs);
-            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
             expect(settings.content).toMatchSnapshot();
 
             expect(fs.exists(expectedFragmentPath)).toBe(true);
@@ -88,9 +91,11 @@ describe('CustomSection', () => {
                 ...customSection
             };
             generateCustomSection(testDir, { ...testCustomSection }, fs);
-            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
             expect(settings.content).toMatchSnapshot();
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
@@ -102,9 +107,11 @@ describe('CustomSection', () => {
                 control: '<CustomXML text="" />'
             };
             generateCustomSection(testDir, { ...testCustomSection }, fs);
-            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
             expect(settings.content).toMatchSnapshot();
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
@@ -116,9 +123,10 @@ describe('CustomSection', () => {
             };
 
             const testFS = generateCustomSection(testDir, { ...testCustomSection });
-            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
-
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            const updatedManifest = testFS.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
             expect(settings.content).toMatchSnapshot();
 
             expect(testFS.read(expectedFragmentPath)).toMatchSnapshot();
@@ -167,10 +175,6 @@ describe('CustomSection', () => {
             };
 
             const testFS = generateCustomSection(testDir, { ...testCustomSection });
-            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
-
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
-            expect(settings.content).toMatchSnapshot();
 
             const fragmentPath = join(
                 testDir,
@@ -179,8 +183,7 @@ describe('CustomSection', () => {
                 'newCustomSection',
                 `${testCustomSection.name}.fragment.xml`
             );
-
-            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+            expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
         test('no handler, no fs, folder upper case, section name lowercase', () => {
@@ -191,19 +194,13 @@ describe('CustomSection', () => {
             };
 
             const testFS = generateCustomSection(testDir, { ...testCustomSection });
-            const updatedManifest: any = testFS.readJSON(join(testDir, 'webapp/manifest.json'));
-
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
-            expect(settings.content).toMatchSnapshot();
-
             const fragmentPath = join(
                 testDir,
                 `webapp`,
                 `${testCustomSection.folder}`,
                 `${testCustomSection.name}.fragment.xml`
             );
-
-            expect(testFS.read(fragmentPath)).toMatchSnapshot();
+            expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
         test('different data and not existing target', () => {
@@ -222,10 +219,10 @@ describe('CustomSection', () => {
                 `webapp/${testCustomSection.folder}/${testCustomSection.name}.fragment.xml`
             );
             generateCustomSection(testDir, { ...testCustomSection }, fs);
-            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
-            const settings = updatedManifest['sap.ui5']['routing']['targets'];
-            expect(settings).toMatchSnapshot();
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const targets = updatedManifest['sap.ui5']?.['routing']?.['targets'];
+            expect(targets).toMatchSnapshot();
 
             expect(fs.read(fragmentPath)).toMatchSnapshot();
         });
@@ -237,10 +234,13 @@ describe('CustomSection', () => {
                 eventHandler: true,
                 minUI5Version
             };
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
-            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
-            const settings = updatedManifest['sap.ui5']['routing']['targets']['sample']['options']['settings'];
+            generateCustomSection(testDir, { ...testCustomSection }, fs);
+
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
             expect(settings.content).toMatchSnapshot();
 
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
@@ -251,13 +251,17 @@ describe('CustomSection', () => {
         test.each(folderVariants)('Existing folder variations - %s', (folderVariant) => {
             const testCustomSection = JSON.parse(JSON.stringify(customSection));
             testCustomSection.folder = folderVariant;
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
-            const updatedManifest: any = fs.readJSON(join(testDir, 'webapp/manifest.json'));
 
-            const section =
-                updatedManifest['sap.ui5']['routing']['targets'][testCustomSection.target]['options']['settings'][
-                    'content'
-                ]['body']['sections'][testCustomSection.name];
+            generateCustomSection(testDir, { ...testCustomSection }, fs);
+
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.[testCustomSection.target]?.['options'] as Record<
+                    string,
+                    any
+                >
+            )['settings'];
+            const section = settings['content']['body']['sections'][testCustomSection.name];
             expect(section.template).toEqual(`sapux.fe.fpm.writer.test.extensions.custom.${testCustomSection.name}`);
         });
 
