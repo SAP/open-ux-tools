@@ -66,18 +66,18 @@ export async function testWithAbapBtpSystem(
             logger.info(`New refresh token issued ${newToken}`);
         }
     });
-    activity(provider, env);
+    await activity(provider, env);
 
     // provider2 uses existing cookies from provider and doesn't launches browser for second time uaa authentication
     const provider2 = createForAbapOnCloud({
         environment: AbapCloudEnvironment.Standalone,
         service: serviceInfo,
         cookies: provider.cookies.toString(),
-        refreshTokenChangedCb: (newToken: string) => {
-            logger.info(`New refresh token issued ${newToken}`);
+        refreshTokenChangedCb: () => {
+            logger.error(`Live connection session exists. This token refresh callback should not be called!`);
         }
     });
-    activity(provider2, env);
+    await activity(provider2, env);
 }
 
 /**
