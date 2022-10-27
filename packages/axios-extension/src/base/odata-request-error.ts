@@ -6,7 +6,7 @@ import type { AxiosError } from 'axios';
  * @param e unknown error
  * @returns exception casted to AxiosError if it is one
  */
- export function isAxiosError(e: unknown): e is AxiosError {
+export function isAxiosError(e: unknown): e is AxiosError {
     return typeof e === 'object' && e !== null && 'isAxiosError' in e;
 }
 

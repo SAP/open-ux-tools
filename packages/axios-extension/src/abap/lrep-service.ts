@@ -1,5 +1,5 @@
 import type { Service } from '../base/service-provider';
-import type { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { Axios } from 'axios';
 import { LogLevel } from '@sap-ux/logger';
 import type { Logger } from '@sap-ux/logger';
@@ -109,7 +109,6 @@ export class LayeredRepositoryService extends Axios implements Service {
                 throw error;
             }
         }
-        
     }
 
     /**
