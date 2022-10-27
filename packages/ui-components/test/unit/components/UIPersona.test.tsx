@@ -17,6 +17,6 @@ describe('<UIPersona />', () => {
 
     it('Should render a UIPersona component', () => {
         expect(wrapper.find('.ms-Persona').length).toEqual(1);
-        expect(wrapper.find('.ms-Persona--size72').length).toEqual(1);
+        expect(wrapper.find('.ms-Persona--size72').length).toEqual(2);
     });
 });
