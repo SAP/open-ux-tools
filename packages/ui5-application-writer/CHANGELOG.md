@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.10
+
+### Patch Changes
+
+-   672b40b: Fix issue with tsconfig paths
+
 ## 0.17.9
 
 ### Patch Changes

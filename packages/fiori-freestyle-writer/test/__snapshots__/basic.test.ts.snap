@@ -1025,7 +1025,7 @@ builder:
   },
   "webapp/Component.ts": Object {
     "contents": "import BaseComponent from \\"sap/ui/core/UIComponent\\";
-import { createDeviceModel } from \\"nods1/model/models\\";
+import { createDeviceModel } from \\"./model/models\\";
 
 /**
  * @namespace nods1
