@@ -43,6 +43,8 @@ jobs:
             node-version: ${{ matrix.node-version }}
       - name: Install pnpm modules
         run: pnpm install
+      - name: Run build
+        run: pnpm run build
       - name: Run lint:fix
         run: pnpm run lint:fix
       - name: Commit lint fixes if any
