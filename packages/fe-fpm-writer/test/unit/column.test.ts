@@ -151,7 +151,7 @@ describe('CustomAction', () => {
 
             const testFS = generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.85' });
 
-            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const updatedManifest = testFS.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
             )['settings'];

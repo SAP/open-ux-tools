@@ -291,6 +291,20 @@ exports[`CustomAction generateCustomColumn version 1.85, no handler, all propert
 
 exports[`CustomAction generateCustomColumn version 1.85, no handler, no fs, all properties 1`] = `
 Object {
+  "@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "NewCustomColumn": Object {
+        "availability": "Adaptation",
+        "header": "col header",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
+        "width": "150px",
+      },
+    },
+  },
   "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
       "ExistingCustomColumn": Object {
