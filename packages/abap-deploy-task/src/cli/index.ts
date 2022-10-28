@@ -9,7 +9,7 @@ import { getDeploymentConfig, mergeConfig } from './config';
 /**
  * Create an instance of a command runner for deployment.
  *
- * @param name
+ * @param name - command name
  * @returns instance of the command
  */
 export function createCommand(name: 'deploy' | 'undeploy'): Command {
@@ -72,7 +72,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
  * Prepare the run of the task based on on the configured command i.e. read and validate configuration and create logger.
  *
  * @param cmd - CLI command condiguration to be executed
- * @returns
+ * @returns a set of objects required for the command execution
  */
 async function prepareRun(cmd: Command) {
     const options = cmd.parse().opts<CliOptions>();

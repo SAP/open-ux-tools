@@ -73,7 +73,7 @@ function getFileNames(path: string): string[] {
 /**
  * Create a zipped file containing all files in the given folder.
  *
- * @param logger
+ * @param logger - reference to the logger instance
  * @param path - path to the folder that is to be zipped
  * @returns Buffer containing the zip file
  */

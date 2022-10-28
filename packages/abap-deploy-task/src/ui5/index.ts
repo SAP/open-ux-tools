@@ -8,9 +8,9 @@ import { createUi5Archive } from './archive';
 /**
  * Custom task to upload the build result to the UI5 ABAP Repository.
  *
- * @param params
- * @param params.workspace
- * @param params.options
+ * @param params - destructured input parameters
+ * @param params.workspace - reference to the UI5 tooling workspace object
+ * @param params.options - project properties and configuration
  */
 async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): Promise<void> {
     const logLevel = (options.configuration?.log as LogLevel) ?? LogLevel.Info;
@@ -25,7 +25,7 @@ async function task({ workspace, options }: TaskParameters<AbapDeployConfig>): P
     const config = validateConfig(options.configuration);
     replaceEnvVariables(config);
 
-    const archive = await createUi5Archive(logger, workspace, options);
+    const archive = await createUi5Archive(logger, workspace, options.projectName);
     await deploy(archive, config, logger);
 }
 

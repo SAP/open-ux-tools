@@ -59,6 +59,23 @@ function throwConfigMissingError(property: string): void {
 }
 
 /**
+ * Validate the given target config. If anything mandatory is missing throw an error.
+ *
+ * @param target - target configuration to be validated
+ * @returns referenc to the given target config
+ */
+function validateTarget(target: AbapTarget): AbapTarget {
+    if (isUrlTarget(target)) {
+        if (target.client) {
+            target.client = (target.client + '').padStart(3, '0');
+        }
+    } else if (!target.destination) {
+        throwConfigMissingError(isAppStudio() ? 'target-destination' : 'target-url');
+    }
+    return target;
+}
+
+/**
  * Validate the given config. If anything mandatory is missing throw an error.
  *
  * @param config - the config to be validated
@@ -70,13 +87,7 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
     }
 
     if (config.target) {
-        if (isUrlTarget(config.target)) {
-            if (config.target.client) {
-                config.target.client = (config.target.client + '').padStart(3, '0');
-            }
-        } else if (!config.target.destination) {
-            throwConfigMissingError(isAppStudio() ? 'target-destination' : 'target-url');
-        }
+        config.target = validateTarget(config.target);
     } else {
         throwConfigMissingError('target');
     }

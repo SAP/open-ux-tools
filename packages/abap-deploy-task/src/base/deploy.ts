@@ -28,7 +28,7 @@ type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'refreshToken'>>
 /**
  * Check the secure storage if it has credentials for the given target.
  *
- * @param target
+ * @param target - ABAP target
  */
 export async function getCredentials<T extends BasicAuth | ServiceAuth | undefined>(
     target: UrlAbapTarget
@@ -41,6 +41,8 @@ export async function getCredentials<T extends BasicAuth | ServiceAuth | undefin
             system = await systemService.read(new BackendSystemKey({ url: target.url }));
         }
         return system as T;
+    } else {
+        return undefined;
     }
 }
 
@@ -116,11 +118,12 @@ async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRep
 }
 
 /**
+ * Try executing the deployment command and handle known errors.
  *
- * @param archive
- * @param service
- * @param config
- * @param logger
+ * @param archive - archive file that is to be deployed
+ * @param service - instance of the axios-extension deployment service
+ * @param config - deployment configuration
+ * @param logger - reference to the logger instance
  */
 async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, config: AbapDeployConfig, logger: Logger) {
     try {
@@ -186,8 +189,8 @@ async function handleAxiosError(
 /**
  * Deploy the given archive to the given target using the given app description.
  *
- * @param archive
- * @param config
+ * @param archive - archive file that is to be deployed
+ * @param config - deployment configuration
  * @param logger - reference to the logger instance
  */
 export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger) {
@@ -209,7 +212,7 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
 /**
  * Deploy the given archive to the given target using the given app description.
  *
- * @param config
+ * @param config - deployment configuration
  * @param logger - reference to the logger instance
  */
 export async function undeploy(config: AbapDeployConfig, logger: Logger) {
