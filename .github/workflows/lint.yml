@@ -1,0 +1,52 @@
+name: Lint
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-linters:
+    name: Run linters
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+                node-version: [14.x]
+        runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code repository
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+            version: 7.1.0
+            run_install: true
+      - name: Cache pnpm modules
+        uses: actions/cache@v3
+        env:
+            cache-name: cache-pnpm-modules
+        with:
+            path: ~/.pnpm-store
+            key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+            restore-keys: |
+                ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+            node-version: ${{ matrix.node-version }}
+      - name: Install pnpm modules
+        run: pnpm install
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          eslint: true
+          auto_fix: true
