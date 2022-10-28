@@ -1,11 +1,8 @@
 import { getConfigForLogging, isUrlTarget, replaceEnvVariables, validateConfig } from '../../../src/base/config';
 import { AbapDeployConfig, UrlAbapTarget } from '../../../src/types';
 
-// mock isAppStudio function
 import { isAppStudio } from '@sap-ux/btp-utils';
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn().mockReturnValue(false)
-}));
+jest.mock('@sap-ux/btp-utils');
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('config', () => {

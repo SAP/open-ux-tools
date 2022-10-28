@@ -106,7 +106,6 @@ importers:
       axios: 0.24.0
       commander: 9.4.0
       dotenv: 16.0.0
-      nock: 13.2.4
       prompts: 2.4.2
       yazl: 2.5.1
     dependencies:
@@ -118,12 +117,11 @@ importers:
       axios: 0.24.0
       commander: 9.4.0
       dotenv: 16.0.0
+      prompts: 2.4.2
       yazl: 2.5.1
     devDependencies:
       '@types/prompts': 2.0.14
       '@types/yazl': 2.4.2
-      nock: 13.2.4
-      prompts: 2.4.2
 
   packages/axios-extension:
     specifiers:

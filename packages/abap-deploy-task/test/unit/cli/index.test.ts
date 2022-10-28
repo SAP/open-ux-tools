@@ -1,27 +1,18 @@
 import { ParseOptions } from 'commander';
 import { join } from 'path';
-import nock from 'nock';
 import { createCommand, runDeploy } from '../../../src/cli';
+import { mockedUi5RepoService } from '../../__mocks__';
 
 describe('cli', () => {
     const fixture = join(__dirname, '../../test-input/');
 
-    beforeAll(() => {
-        nock.disableNetConnect();
-    });
-
-    afterAll(() => {
-        nock.cleanAll();
-        nock.enableNetConnect();
+    beforeEach(() => {
+        mockedUi5RepoService.deploy.mockReset();
     });
 
     describe('run', () => {
         test('successful run', async () => {
             const target = 'https://target.example';
-            const post = nock(target)
-                .post((url) => url.startsWith('/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV'))
-                .reply(200);
-
             process.argv = [
                 'node',
                 'test',
@@ -35,7 +26,7 @@ describe('cli', () => {
                 target
             ];
             await runDeploy();
-            expect(post.isDone()).toBe(true);
+            expect(mockedUi5RepoService.deploy).toBeCalled();
         });
     });
 

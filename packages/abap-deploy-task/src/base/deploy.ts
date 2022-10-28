@@ -165,15 +165,15 @@ async function handleAxiosError(
             const credentials = await promptCredentials(service.defaults.auth?.username);
             if (credentials) {
                 service.defaults.auth = credentials;
+                await tryDeploy(archive, service, config, logger);
+                return true;
             } else {
                 return false;
             }
-            await tryDeploy(archive, service, config, logger);
-            return true;
         case 412:
             logger.warn('An app in the same repository with different sap app id found.');
             if (config.yes || (await promptConfirmation('Do you want to overwrite (Y/n)?'))) {
-                await tryDeploy(archive, service, { ...config, safe: false }, logger);
+                await tryDeploy(archive, service, { ...config, safe: false, noRetry: true }, logger);
                 return true;
             } else {
                 return false;
