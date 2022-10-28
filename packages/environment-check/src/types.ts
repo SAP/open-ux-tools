@@ -44,7 +44,6 @@ export interface Environment {
 }
 
 export interface ToolsExtensions {
-    nodeVersion?: string;
     fioriGenVersion?: string;
     cloudCli?: string;
     appWizard?: string;

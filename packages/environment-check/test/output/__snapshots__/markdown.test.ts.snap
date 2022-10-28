@@ -39,7 +39,7 @@ Development environment: \`Business Application Studio\`<br>
 Dev Space Type: \`SAP Fiori\`<br>
 |Tools/Extensions|Version|
 |--|--|
-|Node.js|v16.17.0|
+|Node.js|16.17.0|
 |SAP Fiori tools - Fiori generator|1|
 |Cloud CLI tools|2|
 |Application Wizard|2|
@@ -53,7 +53,7 @@ Dev Space Type: \`SAP Fiori\`<br>
 <details><summary>Versions</summary>
 <pre>
 {
-    \\"node\\": \\"12.22.5\\",
+    \\"node\\": \\"16.17.0\\",
     \\"v8\\": \\"7.8.279.23-node.56\\",
     \\"uv\\": \\"1.40.0\\",
     \\"zlib\\": \\"1.2.11\\",
@@ -197,7 +197,7 @@ Development environment: \`Business Application Studio\`<br>
 Dev Space Type: \`SAP Fiori\`<br>
 |Tools/Extensions|Version|
 |--|--|
-|Node.js|v16.17.0|
+|Node.js|16.17.0|
 |SAP Fiori tools - Fiori generator|1|
 |Cloud CLI tools|2|
 |Application Wizard|2|
@@ -211,7 +211,7 @@ Dev Space Type: \`SAP Fiori\`<br>
 <details><summary>Versions</summary>
 <pre>
 {
-    \\"node\\": \\"12.22.5\\",
+    \\"node\\": \\"16.17.0\\",
     \\"v8\\": \\"7.8.279.23-node.56\\",
     \\"uv\\": \\"1.40.0\\",
     \\"zlib\\": \\"1.2.11\\",
