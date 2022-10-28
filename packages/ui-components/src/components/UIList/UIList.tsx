@@ -87,7 +87,7 @@ export class UIList extends React.Component<ListProps, {}> {
                     fontWeight: 'normal',
                     paddingLeft: 0,
                     height: 20,
-                    color: 'var(--vscuie-settings-textInputForeground)'
+                    color: 'var(--vscode-settings-textInputForeground)'
                 }
             }
         });

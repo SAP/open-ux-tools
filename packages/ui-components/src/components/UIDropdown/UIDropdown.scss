@@ -61,13 +61,13 @@
         }
     }
     &--error {
-        @include apply-dropdown-error-border(var(--vscuie-inputValidation-errorBorder));
+        @include apply-dropdown-error-border(var(--vscode-inputValidation-errorBorder));
     }
     &--warning {
-        @include apply-dropdown-error-border(var(--vscuie-inputValidation-warningBorder));
+        @include apply-dropdown-error-border(var(--vscode-inputValidation-warningBorder));
     }
     &--info {
-        @include apply-dropdown-error-border(var(--vscuie-inputValidation-infoBorder));
+        @include apply-dropdown-error-border(var(--vscode-inputValidation-infoBorder));
     }
 }
 
