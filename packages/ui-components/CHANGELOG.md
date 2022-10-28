@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.15
+
+### Patch Changes
+
+-   57ed473: Add UIPersona
+
 ## 1.0.14
 
 ### Patch Changes
