@@ -20,9 +20,9 @@ jobs:
 
     steps:
       - name: Checkout code repository
-              uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
+        uses: actions/checkout@v3
+        with:
+            fetch-depth: 0
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.2
         with:
