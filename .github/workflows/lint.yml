@@ -12,12 +12,11 @@ on:
 
 jobs:
   run-linters:
-    name: Run linters
-        strategy:
-            matrix:
-                os: [ubuntu-latest]
-                node-version: [14.x]
-        runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+          os: [ubuntu-latest]
+          node-version: [14.x]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code repository
