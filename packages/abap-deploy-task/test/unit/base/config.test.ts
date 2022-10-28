@@ -5,7 +5,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 jest.mock('@sap-ux/btp-utils');
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
-describe('config', () => {
+describe('base/config', () => {
     test('isUrlTarget', () => {
         expect(isUrlTarget({ url: '~url' })).toBe(true);
         expect(isUrlTarget({ destination: '~destination' })).toBe(false);

@@ -1,6 +1,6 @@
 import { ParseOptions } from 'commander';
 import { join } from 'path';
-import { createCommand, runDeploy } from '../../../src/cli';
+import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
 import { mockedUi5RepoService } from '../../__mocks__';
 
 describe('cli', () => {
@@ -10,7 +10,7 @@ describe('cli', () => {
         mockedUi5RepoService.deploy.mockReset();
     });
 
-    describe('run', () => {
+    describe('runDeploy', () => {
         test('successful run', async () => {
             const target = 'https://target.example';
             process.argv = [
@@ -27,6 +27,24 @@ describe('cli', () => {
             ];
             await runDeploy();
             expect(mockedUi5RepoService.deploy).toBeCalled();
+        });
+    });
+
+    describe('runUndeploy', () => {
+        test('successful run', async () => {
+            const target = 'https://target.example';
+            process.argv = [
+                'node',
+                'test',
+                '-c',
+                join(fixture, 'ui5-deploy.yaml'),
+                '--test',
+                '--yes',
+                '--url',
+                target
+            ];
+            await runUndeploy();
+            expect(mockedUi5RepoService.undeploy).toBeCalled();
         });
     });
 

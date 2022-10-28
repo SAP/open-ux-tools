@@ -1,7 +1,7 @@
 import prompts from 'prompts';
 import { promptConfirmation, promptCredentials } from '../../../src/base/prompt';
 
-describe('prompts', () => {
+describe('base/prompts', () => {
     const message = 'Test question?';
 
     describe('promptConfirmation', () => {
