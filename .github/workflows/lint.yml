@@ -49,3 +49,6 @@ jobs:
         with:
           eslint: true
           auto_fix: true
+          commit: true
+          commit_message: "Fix code style issues with ${linter}"
+          
