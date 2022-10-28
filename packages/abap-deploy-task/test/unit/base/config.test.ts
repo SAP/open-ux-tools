@@ -1,5 +1,5 @@
 import { getConfigForLogging, isUrlTarget, replaceEnvVariables, validateConfig } from '../../../src/base/config';
-import { AbapDeployConfig, UrlAbapTarget } from '../../../src/types';
+import type { AbapDeployConfig, UrlAbapTarget } from '../../../src/types';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 jest.mock('@sap-ux/btp-utils');

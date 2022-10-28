@@ -1,4 +1,4 @@
-import { ParseOptions } from 'commander';
+import type { ParseOptions } from 'commander';
 import { join } from 'path';
 import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
 import { mockedUi5RepoService } from '../../__mocks__';
@@ -33,16 +33,7 @@ describe('cli', () => {
     describe('runUndeploy', () => {
         test('successful run', async () => {
             const target = 'https://target.example';
-            process.argv = [
-                'node',
-                'test',
-                '-c',
-                join(fixture, 'ui5-deploy.yaml'),
-                '--test',
-                '--yes',
-                '--url',
-                target
-            ];
+            process.argv = ['node', 'test', '-c', join(fixture, 'ui5-deploy.yaml'), '--test', '--yes', '--url', target];
             await runUndeploy();
             expect(mockedUi5RepoService.undeploy).toBeCalled();
         });

@@ -13,4 +13,4 @@ module.exports = {
     ...axiosExt,
     mockedUi5AbapRepositoryService,
     createForAbap: jest.fn().mockReturnValue(mockedProvider)
-}
+};

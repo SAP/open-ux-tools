@@ -1,5 +1,5 @@
-import { NullTransport, ToolsLogger } from "@sap-ux/logger";
-import { dirname, relative } from "path";
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { dirname, relative } from 'path';
 import { getArchive } from '../../../src/cli/archive';
 import axios from 'axios';
 
@@ -7,14 +7,13 @@ jest.mock('axios');
 
 describe('cli/archive', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
-    
+
     describe('createArchiveFromFolder', () => {
-        
         test('existing folder', async () => {
             const archiveFolder = relative(process.cwd(), dirname(__dirname));
             await getArchive(nullLogger, { archiveFolder } as any);
         });
-        
+
         test('not existing folder', async () => {
             const archiveFolder = relative(process.cwd(), __dirname) + '.does.not.exist';
             try {
@@ -27,12 +26,11 @@ describe('cli/archive', () => {
     });
 
     describe('getArchiveFromPath', () => {
-        
         test('existing file', async () => {
             const archivePath = __filename;
             await getArchive(nullLogger, { archivePath } as any);
         });
-        
+
         test('not existing folder', async () => {
             const archivePath = __filename + '.does.not.exist';
             try {
@@ -47,12 +45,12 @@ describe('cli/archive', () => {
     describe('fetchArchiveFromUrl', () => {
         const archiveUrl = 'http://test.example';
         const axiosGetMock = axios.get as jest.Mock;
-        
+
         test('existing url', async () => {
-            axiosGetMock.mockResolvedValueOnce({ date: {}});
+            axiosGetMock.mockResolvedValueOnce({ date: {} });
             await getArchive(nullLogger, { archiveUrl } as any);
         });
-        
+
         test('not existing url', async () => {
             axiosGetMock.mockRejectedValueOnce({});
             try {
@@ -63,5 +61,4 @@ describe('cli/archive', () => {
             }
         });
     });
-    
 });

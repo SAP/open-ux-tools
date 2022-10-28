@@ -1,7 +1,7 @@
 const store = jest.requireActual('@sap-ux/store');
 
-const mockedService = { 
-    read: jest.fn().mockReturnValue({}) 
+const mockedService = {
+    read: jest.fn().mockReturnValue({})
 };
 
 module.exports = {
@@ -9,5 +9,3 @@ module.exports = {
     mockedService,
     getService: jest.fn().mockResolvedValue(mockedService)
 };
-
-
