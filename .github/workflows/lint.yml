@@ -1,4 +1,4 @@
-name: Lint
+name: Lint with auto fix
 
 on:
   # Trigger the workflow on push or pull request,
