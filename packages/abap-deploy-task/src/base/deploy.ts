@@ -20,10 +20,10 @@ import { getService, BackendSystemKey } from '@sap-ux/store';
 import { writeFileSync } from 'fs';
 import type { AbapDeployConfig, UrlAbapTarget } from '../types';
 import { getConfigForLogging, isUrlTarget } from './config';
-import { promptConfirmation, promptCredentials } from './prompt';
+import { promptConfirmation, promptCredentials, promptServiceKeys } from './prompt';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
-type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'refreshToken'>>;
+type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys'>> & { refreshToken?: string };
 
 /**
  * Check the secure storage if it has credentials for the given target.
@@ -93,7 +93,7 @@ async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRep
 
     if (isUrlTarget(config.target)) {
         if (config.target.scp) {
-            const storedOpts = await getCredentials<ServiceAuth>(config.target);
+            const storedOpts = (await getCredentials<ServiceAuth>(config.target)) ?? (await promptServiceKeys());
             if (storedOpts) {
                 provider = createForAbapOnCloud({
                     ...options,
@@ -102,7 +102,7 @@ async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRep
                     refreshToken: storedOpts.refreshToken
                 });
             } else {
-                throw new Error('TODO');
+                throw new Error('Service keys required for deployment to an ABAP environment on SAP BTP');
             }
         } else {
             provider = await createAbapServiceProvider(options, config.target);

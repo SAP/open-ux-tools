@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from 'fs';
 import prompts from 'prompts';
 
 /**
@@ -46,4 +47,27 @@ export async function promptCredentials(username?: string) {
         }
     ]);
     return credentials;
+}
+
+/**
+ * Prompt for the location of the service keys.
+ *
+ * @returns credentials object with service keys
+ */
+export async function promptServiceKeys() {
+    const { path } = await prompts([
+        {
+            type: 'text',
+            name: 'path',
+            message: 'Please provide the service keys as file:',
+            validate: (input) => existsSync(input)
+        }
+    ]);
+    const serviceKeys = JSON.parse(readFileSync(path, 'utf-8'));
+
+    return {
+        serviceKeys,
+        url: serviceKeys.url,
+        refreshToken: undefined
+    };
 }
