@@ -43,12 +43,12 @@ jobs:
             node-version: ${{ matrix.node-version }}
       - name: Install pnpm modules
         run: pnpm install
-
-      - name: Run linters
-        uses: wearerequired/lint-action@v2
-        with:
-          eslint: true
-          auto_fix: true
-          commit: true
-          commit_message: "Fix code style issues with ${linter}"
-          
+      - name: Run lint:fix
+        run: pnpm run lint:fix
+      - name: Commit lint fixes if any
+        run: |
+                git config --global user.name github-actions[bot]
+                git config --global user.email github-actions[bot]@users.noreply.github.com
+                git add pnpm-lock.yaml
+                git commit -m "Update pnpm-lock.yaml" || true
+                git push  || true
