@@ -64,13 +64,13 @@
         }
     }
     &--error {
-        @include apply-combobox-error-border(var(--vscuie-inputValidation-errorBorder));
+        @include apply-combobox-error-border(var(--vscode-inputValidation-errorBorder));
     }
     &--warning {
-        @include apply-combobox-error-border(var(--vscuie-inputValidation-warningBorder));
+        @include apply-combobox-error-border(var(--vscode-inputValidation-warningBorder));
     }
     &--info {
-        @include apply-combobox-error-border(var(--vscuie-inputValidation-infoBorder));
+        @include apply-combobox-error-border(var(--vscode-inputValidation-infoBorder));
     }
 }
 

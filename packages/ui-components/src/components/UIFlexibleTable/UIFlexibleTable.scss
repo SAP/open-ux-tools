@@ -76,12 +76,12 @@ $readonly-labels-opacity: 0.4;
                     background: var(--vscode-editor-background);
                 }
                 &.odd {
-                    background: var(--vscuie-sideBar-background);
+                    background: var(--vscode-sideBar-background);
                 }
                 // Reverse background for zebra pattern
                 &.reverse-background {
                     &.even {
-                        background: var(--vscuie-sideBar-background);
+                        background: var(--vscode-sideBar-background);
                     }
                     &.odd {
                         background: var(--vscode-editor-background);
