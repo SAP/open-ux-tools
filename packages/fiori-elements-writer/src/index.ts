@@ -31,6 +31,8 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     // Ensure input data contains at least the manadatory properties required for app genertation
     validateRequiredProperties(feApp);
 
+    const test = 1 ? 1 : 1 ? 2 : 2;
+    
     setAppDefaults(feApp);
 
     fs = await generateUi5Project(basePath, feApp, fs);
