@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.17.8
+
+### Patch Changes
+
+-   703dc96: Upgrade @xmldom/xmldom dependency to fix security vulnerability CVE-2022-39353
+
 ## 0.17.7
 
 ### Patch Changes
