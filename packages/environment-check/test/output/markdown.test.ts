@@ -265,7 +265,8 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
 
     test('Check markdown with no process versions', () => {
         const envCheck = [Check.Environment];
-        const { versions, ...newEnv } = data.environment;
+        const newEnv = data.environment;
+        delete newEnv.versions;
         const result = convertResultsToMarkdown({
             environment: newEnv as any,
             requestedChecks: envCheck
