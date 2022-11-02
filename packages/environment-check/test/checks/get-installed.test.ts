@@ -148,12 +148,10 @@ describe('Test install functions', () => {
     });
 
     test('getProcessVersions() errror', async () => {
-        const consoleSpy = jest.spyOn(console, 'error');
         jest.spyOn(command, 'spawnCommand').mockImplementation(() => {
             throw new Error('spawn error');
         });
         const result = await getProcessVersions();
         expect(result).toStrictEqual({});
-        expect(consoleSpy).toHaveBeenCalledWith('Error retrieving process versions: spawn error');
     });
 });

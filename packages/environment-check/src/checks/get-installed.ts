@@ -4,6 +4,7 @@ import { join } from 'path';
 import { spawnCommand, npmCommand } from '../command';
 import { Extensions, NpmModules } from '../types';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { getLogger } from '../logger';
 
 const pluginsDirBAS = join('/extbin/plugins');
 const globalNpmBAS = join('/extbin/npm/globals/lib');
@@ -159,11 +160,12 @@ export async function getFioriGenVersion(): Promise<string> {
  * @returns modules and versions
  */
 export async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
+    const logger = getLogger();
     try {
         const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
         return JSON.parse(output);
     } catch (e) {
-        console.error(t('error.retrievingProcessVersions', { error: e.message }));
+        logger.error(t('error.retrievingProcessVersions', { error: e.message }));
         return {} as NodeJS.ProcessVersions;
     }
 }
