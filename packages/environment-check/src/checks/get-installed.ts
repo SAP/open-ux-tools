@@ -159,6 +159,11 @@ export async function getFioriGenVersion(): Promise<string> {
  * @returns modules and versions
  */
 export async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
-    const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
-    return JSON.parse(output);
+    try {
+        const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
+        return JSON.parse(output);
+    } catch (e) {
+        console.error(t('error.retrievingProcessVersions', { error: e.message }));
+        return {} as NodeJS.ProcessVersions;
+    }
 }

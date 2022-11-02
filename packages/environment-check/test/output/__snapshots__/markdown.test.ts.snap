@@ -228,3 +228,39 @@ No messages<br>
 
 "
 `;
+
+exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check markdown with no process versions 1`] = `
+"
+# SAP Fiori tools - Environment Check
+
+<br>
+
+## Environment
+Platform: \`linux\`<br>
+Development environment: \`Business Application Studio\`<br>
+Dev Space Type: \`SAP Fiori\`<br>
+|Tools/Extensions|Version|
+|--|--|
+|Node.js|Not installed or not found|
+|SAP Fiori tools - Fiori generator|1|
+|Cloud CLI tools|2|
+|Application Wizard|2|
+|UI5 Language Assistant Support|2|
+|XML Toolkit|2|
+|SAP Fiori tools - XML Annotation Language Server|2.2|
+|SAP Fiori tools - Application Modeler|2|
+|SAP Fiori tools - Guided Development|2|
+|SAP Fiori tools - Service Modeler|2.4|
+|SAP CDS Language Support|2|
+<details><summary>Versions</summary>
+<pre>
+undefined
+</pre></details>
+
+<br>
+
+## Messages (0)
+No messages<br>
+
+"
+`;
