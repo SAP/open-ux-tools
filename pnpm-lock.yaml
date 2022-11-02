@@ -99,7 +99,7 @@ importers:
       '@sap-ux/btp-utils': workspace:*
       '@sap-ux/logger': workspace:*
       '@types/lodash': 4.14.176
-      '@xmldom/xmldom': 0.8.3
+      '@xmldom/xmldom': 0.8.4
       axios: 0.24.0
       detect-content-type: 1.2.0
       fast-xml-parser: 3.12.20
@@ -112,7 +112,7 @@ importers:
     dependencies:
       '@sap-ux/btp-utils': link:../btp-utils
       '@sap-ux/logger': link:../logger
-      '@xmldom/xmldom': 0.8.3
+      '@xmldom/xmldom': 0.8.4
       axios: 0.24.0
       detect-content-type: 1.2.0
       fast-xml-parser: 3.12.20
@@ -221,7 +221,7 @@ importers:
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/semver': 7.3.9
-      '@xmldom/xmldom': 0.8.3
+      '@xmldom/xmldom': 0.8.4
       ejs: 3.1.7
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
@@ -229,7 +229,7 @@ importers:
       xml-formatter: 2.6.1
       xpath: 0.0.32
     dependencies:
-      '@xmldom/xmldom': 0.8.3
+      '@xmldom/xmldom': 0.8.4
       ejs: 3.1.7
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
@@ -4805,7 +4805,6 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
-    dev: true
 
   /@types/proxy-from-env/1.0.1:
     resolution: {integrity: sha512-luG++TFHyS61eKcfkR1CVV6a1GMNXDjtqEQIIfaSHax75xp0HU3SlezjOi1yqubJwrG8e9DeW59n6wTblIDwFg==}
@@ -4829,7 +4828,6 @@ packages:
     resolution: {integrity: sha512-idCEjROZ2cqh29+trmTmZhsBAUNQuYrF92JHKzZ5+aiFM1mlSk3bb23CK7HhYuOY75Apgap5y2jTyHzaM2AJGA==}
     dependencies:
       '@types/react': 16.14.0
-    dev: true
 
   /@types/react-virtualized/9.21.11:
     resolution: {integrity: sha512-ngNe2AY/2CHuZQstOS0Jo5jnSjeyKTdSgqrXCQEltRMXLp9rwPUpJdgkoWzES6wn427Z8zo8dkBN8Sx7hlRmig==}
@@ -4843,7 +4841,6 @@ packages:
     dependencies:
       '@types/prop-types': 15.7.5
       csstype: 3.1.1
-    dev: true
 
   /@types/sanitize-html/2.3.2:
     resolution: {integrity: sha512-DnmoXsiqG2/RoSf6/lD3Hrs+TCM8ILtzNuuSjmOtRaP/ud9Sy3M3ctwD+SB50EIDs5GzVFF1dJk2Fq/ID/PNCQ==}
@@ -5406,8 +5403,8 @@ packages:
       '@xtuc/long': 4.2.2
     dev: true
 
-  /@xmldom/xmldom/0.8.3:
-    resolution: {integrity: sha512-Lv2vySXypg4nfa51LY1nU8yDAGo/5YwF+EY/rUZgIbfvwVARcd67ttCM8SMsTeJy51YhHYavEq+FS6R0hW9PFQ==}
+  /@xmldom/xmldom/0.8.4:
+    resolution: {integrity: sha512-JIsjTbWBWJHb2t1D4UNZIJ6ohlRYCdoGzeHSzTorMH2zOq3UKlSBzFBMBdFK3xnUD/ANHw/SUzl/vx0z0JrqRw==}
     engines: {node: '>=10.0.0'}
     dev: false
 
@@ -6570,7 +6567,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -12570,8 +12567,8 @@ packages:
   /nimnjs/1.3.2:
     resolution: {integrity: sha512-TIOtI4iqkQrUM1tiM76AtTQem0c7e56SkDZ7sj1d1MfUsqRcq2ZWQvej/O+HBTZV7u/VKnwlKTDugK/75IRPPw==}
     dependencies:
-      nimn_schema_builder: 1.1.0
       nimn-date-parser: 1.0.0
+      nimn_schema_builder: 1.1.0
     dev: false
 
   /no-case/3.0.4:
@@ -13669,6 +13666,17 @@ packages:
         optional: true
     dev: true
 
+  /promise-inflight/1.0.1_bluebird@3.7.2:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dependencies:
+      bluebird: 3.7.2
+    dev: true
+
   /promise.allsettled/1.0.5:
     resolution: {integrity: sha512-tVDqeZPoBC0SlzJHzWGZ2NKAguVq2oiYj7gbggbiTvH2itHohijTp7njOUA0aQ/nl+0lr/r6egmhoYu63UZ/pQ==}
     engines: {node: '>= 0.4'}
@@ -13947,7 +13955,6 @@ packages:
       prop-types: 15.8.1
       react: 16.14.0
       scheduler: 0.19.1
-    dev: true
 
   /react-element-to-jsx-string/14.3.4_wcqkhtmu7mswc6yz4uyexck3ty:
     resolution: {integrity: sha512-t4ZwvV6vwNxzujDQ+37bspnLwA4JlgUPWhLjBJWsNIDceAf6ZKUTCjdm08cN6WeZ5pTMKiCJkmAYnpmR4Bm+dg==}
@@ -14023,7 +14030,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       prop-types: 15.8.1
-    dev: true
 
   /read-pkg-up/1.0.1:
     resolution: {integrity: sha512-WD9MTlNtI55IwYUS27iHh9tK3YoIVhxis8yKhLpTqWtml739uXc9NWTpxoHkfZf3+DkCCsXox94/VWZniuZm6A==}
@@ -14582,7 +14588,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: true
 
   /schema-utils/1.0.0:
     resolution: {integrity: sha512-i27Mic4KovM/lnGsy8whRCHhc7VicJajAjTrYg11K9zfZXnYIt4k5F+kZkwjnrhKzLic/HLU4j11mjsz2G/75g==}
