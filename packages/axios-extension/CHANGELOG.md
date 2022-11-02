@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.11.1
+
+### Patch Changes
+
+-   703dc96: Upgrade @xmldom/xmldom dependency to fix security vulnerability CVE-2022-39353
+
 ## 0.11.0
 
 ### Minor Changes
