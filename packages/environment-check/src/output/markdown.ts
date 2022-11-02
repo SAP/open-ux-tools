@@ -136,7 +136,7 @@ function writeEnvironment(writer: MarkdownWriter, environment?: Environment): vo
         if (environment.basDevSpace) {
             writer.addLine(t('markdownText.devSpaceType', { basDevSpace: environment.basDevSpace }));
         }
-        writeToolsExtensionsResults(writer, environment.toolsExtensions, environment.versions?.node);
+        writeToolsExtensionsResults(writer, environment.toolsExtensions, environment.versions.node);
         writer.addDetails(`${t('markdownText.versions')}`, JSON.stringify(environment.versions, null, 4));
     } else {
         writer.addLine(t('markdownText.envNotChecked'));
