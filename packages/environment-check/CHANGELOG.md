@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.6.0
+
+### Minor Changes
+
+-   be7d36c: fix error retreiving process versions
+
 ## 0.5.1
 
 ### Patch Changes
