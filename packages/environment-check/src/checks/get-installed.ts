@@ -3,8 +3,8 @@ import { t } from '../i18n';
 import { join } from 'path';
 import { spawnCommand, npmCommand } from '../command';
 import { Extensions, NpmModules } from '../types';
+import type { ILogger } from '../types';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { getLogger } from '../logger';
 
 const pluginsDirBAS = join('/extbin/plugins');
 const globalNpmBAS = join('/extbin/npm/globals/lib');
@@ -69,9 +69,10 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
 /**
  * Reads the list of extensions installed and returns the id and version.
  *
+ * @param logger - logger to report errors
  * @returns list of extension ids and versions
  */
-export async function getInstalledExtensions(): Promise<{ [id: string]: { version: string } }> {
+export async function getInstalledExtensions(logger?: ILogger): Promise<{ [id: string]: { version: string } }> {
     let versions;
     try {
         if (isAppStudio()) {
@@ -80,7 +81,7 @@ export async function getInstalledExtensions(): Promise<{ [id: string]: { versio
             versions = await getExtensionsVSCode();
         }
     } catch (e) {
-        console.error(t('error.retrievingExtensions', { error: e.message }));
+        logger?.error(t('error.retrievingExtensions', { error: e.message }));
     }
     return versions;
 }
@@ -157,15 +158,15 @@ export async function getFioriGenVersion(): Promise<string> {
 /**
  * Returns the versions of node.js modules.
  *
+ * @param logger - logger to report errors
  * @returns modules and versions
  */
-export async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
-    const logger = getLogger();
+export async function getProcessVersions(logger?: ILogger): Promise<NodeJS.ProcessVersions> {
     try {
         const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
         return JSON.parse(output);
     } catch (e) {
-        logger.error(t('error.retrievingProcessVersions', { error: e.message }));
+        logger?.error(t('error.retrievingProcessVersions', { error: e.message }));
         return {} as NodeJS.ProcessVersions;
     }
 }
