@@ -9,7 +9,12 @@ const connectorPath =
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
 sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
-    var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
+    var trustedHosts = [
+        /^localhost$/,
+        /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+applicationstudio\.cloud\.sap$/,
+        /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+applicationstudio\.sapcloud\.cn$/,
+        /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+applicationstudio\.vlab-sapcloudplatformdev\.cn$/
+    ];
     var url = new URL(window.location.toString());
     var isValidHost = trustedHosts.some((host) => {
         return host.test(url.hostname);
