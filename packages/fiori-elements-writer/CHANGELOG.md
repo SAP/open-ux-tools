@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.8.0
+
+### Minor Changes
+
+-   287439e: update trusted hosts
+
 ## 0.7.15
 
 ### Patch Changes
