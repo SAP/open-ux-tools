@@ -1,11 +1,11 @@
 import { ArrayTransport, ToolsLogger } from '@sap-ux/logger';
 import type { ArrayTransportLogEntry } from '@sap-ux/logger';
-import type { ResultMessage, Severity } from './types';
+import type { ILogger, ResultMessage, Severity } from './types';
 
 /**
  * Logger to collect messages while performing checks
  */
-class Logger extends ToolsLogger {
+class Logger extends ToolsLogger implements ILogger {
     constructor() {
         super({ transports: [new ArrayTransport()] });
     }

@@ -152,7 +152,7 @@ function writeEnvironment(writer: MarkdownWriter, environment?: Environment): vo
  */
 function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsExtensions, nodeVersion?: string): void {
     if (toolsExts) {
-        const results = [['Node.js', nodeVersion]];
+        const results = [['Node.js', nodeVersion ?? t('markdownText.notInstalledOrNotFound')]];
         for (const toolExt of Object.keys(toolsExts)) {
             const toolExtName = toolsExtensionListVSCode.get(toolExt);
             results.push([toolExtName, toolsExts[toolExt]]);
