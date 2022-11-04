@@ -23,7 +23,7 @@ import { t } from '../i18n';
  */
 export async function getEnvironment(): Promise<{ environment: Environment; messages: ResultMessage[] }> {
     const logger = getLogger();
-    const processVersions = await getProcessVersions();
+    const processVersions = await getProcessVersions(logger);
     const environment: Environment = {
         developmentEnvironment: isAppStudio() ? DevelopmentEnvironment.BAS : DevelopmentEnvironment.VSCode,
         versions: processVersions,
@@ -94,7 +94,7 @@ async function getToolsExtensions(): Promise<{
 }> {
     const logger = getLogger();
 
-    const extensions = await getInstalledExtensions();
+    const extensions = await getInstalledExtensions(logger);
     const fioriGenVersion = await getFioriGenVersion();
     const cloudCli = await getCFCliToolVersion();
 
