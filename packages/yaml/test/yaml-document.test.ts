@@ -248,6 +248,31 @@ seq1:
             expect(doc.toString()).toEqual(expectedValue);
         });
 
+        it('will update node and overwrite existing values', async () => {
+            const serializedYaml = `key1: 42
+seq1:
+  - name: name1
+    config:
+      prop1: a
+  - name: name2
+`;
+            const doc = await YamlDocument.newInstance(serializedYaml);
+            doc.updateAt({
+                path: 'seq1',
+                matcher: { key: 'name', value: 'name1' },
+                value: { name: 'name1', config: { prop2: 'b' } },
+                mode: 'overwrite'
+            });
+            const expectedValue = `key1: 42
+seq1:
+  - name: name1
+    config:
+      prop2: b
+  - name: name2
+`;
+            expect(doc.toString()).toEqual(expectedValue);
+        });
+
         it('will throw an error if matching node is not found', async () => {
             const serializedYaml = `key1: 42
 seq1:
