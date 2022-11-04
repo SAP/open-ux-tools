@@ -10,7 +10,7 @@ export const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
  */
 const spawnOptions = /^win/.test(process.platform)
     ? { windowsVerbatimArguments: true, shell: true, cwd: os.homedir() }
-    : {};
+    : { cwd: os.homedir() };
 
 /**
  * Execute a command with arguments.

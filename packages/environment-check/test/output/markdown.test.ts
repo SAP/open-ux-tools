@@ -263,6 +263,17 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
     });
 
+    test('Check markdown with no process versions', () => {
+        const envCheck = [Check.Environment];
+        const newEnv = data.environment;
+        newEnv.versions = {} as any;
+        const result = convertResultsToMarkdown({
+            environment: newEnv as any,
+            requestedChecks: envCheck
+        });
+        expect(result.split('<sub>created at')[0]).toMatchSnapshot();
+    });
+
     test('Check markdown with no checks', () => {
         const result = convertResultsToMarkdown({
             environment: data.environment as any,

@@ -1,8 +1,8 @@
 // Typography
 
-$font-family-base: var(--vscuie-font-family);
-$font-size-base: var(--vscuie-font-size);
-$font-weight-base: var(--vscuie-font-weight);
+$font-family-base: var(--vscode-font-family);
+$font-size-base: var(--vscode-font-size);
+$font-weight-base: var(--vscode-font-weight);
 
 $base-element-height: 26px;
 $button-font-size: $font-size-base;
@@ -10,10 +10,10 @@ $button-font-size: $font-size-base;
 // Dropdowns
 // colors
 $dropdown-input-height: $base-element-height;
-$dropdown-input-color: var(--vscuie-foreground);
-$dropdown-input-background: var(--vscuie-input-background);
-$dropdown-input-border-color: var(--vscuie-editorWidget-border);
-$dropdown-input-focus-border-color: var(--vscuie-focusBorder);
+$dropdown-input-color: var(--vscode-foreground);
+$dropdown-input-background: var(--vscode-input-background);
+$dropdown-input-border-color: var(--vscode-editorWidget-border);
+$dropdown-input-focus-border-color: var(--vscode-focusBorder);
 // misc
 $dropdown-input-border-radius: 0;
 $dropdown-input-expand-icon-size: 16px;

@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.0.16
+
+### Patch Changes
+
+-   1f3d134: chore(uie): replace vscuie prefix in css vars with vscode
+
+## 1.0.15
+
+### Patch Changes
+
+-   57ed473: Add UIPersona
+
 ## 1.0.14
 
 ### Patch Changes

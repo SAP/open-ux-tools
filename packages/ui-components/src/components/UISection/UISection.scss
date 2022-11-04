@@ -8,7 +8,7 @@
     &__header {
         > div {
             flex: 0 1 auto;
-            background: var(--vscuie-sideBarSectionHeader-background);
+            background: var(--vscode-sideBarSectionHeader-background);
             min-height: 40px;
             display: flex;
             align-items: center;
@@ -16,7 +16,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: var(--vscuie-sideBarTitle-foreground);
+            color: var(--vscode-sideBarTitle-foreground);
         }
 
         &__title {
@@ -57,7 +57,7 @@
 
     &--extended {
         .section__header {
-            background-color: var(--vscuie-sideBar-background);
+            background-color: var(--vscode-sideBar-background);
         }
     }
 

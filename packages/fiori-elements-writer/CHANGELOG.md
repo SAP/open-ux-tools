@@ -1,5 +1,18 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.8.0
+
+### Minor Changes
+
+-   287439e: update trusted hosts
+
+## 0.7.15
+
+### Patch Changes
+
+-   Updated dependencies [703dc96]
+    -   @sap-ux/fe-fpm-writer@0.17.8
+
 ## 0.7.14
 
 ### Patch Changes
