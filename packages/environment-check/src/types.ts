@@ -1,5 +1,6 @@
 import type { Destination as BTPDestination } from '@sap-ux/btp-utils';
 import type { ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { Logger } from '@sap-ux/logger';
 
 export interface CheckEnvironmentOptions {
     workspaceRoots?: string[];
@@ -44,7 +45,6 @@ export interface Environment {
 }
 
 export interface ToolsExtensions {
-    nodeVersion?: string;
     fioriGenVersion?: string;
     cloudCli?: string;
     appWizard?: string;
@@ -144,4 +144,9 @@ export const enum UI5FlexLayer {
 export enum DirName {
     Sapux = 'src',
     Webapp = 'webapp'
+}
+
+export interface ILogger extends Logger {
+    push(...newMessages: ResultMessage[]): void;
+    getMessages(): ResultMessage[];
 }

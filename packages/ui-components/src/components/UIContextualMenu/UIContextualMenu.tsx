@@ -22,7 +22,7 @@ export function getUIcontextualMenuStyles(): Partial<IContextualMenuStyles> {
     return {
         root: {
             minWidth: 190,
-            background: 'var(--vscuie-input-background)',
+            background: 'var(--vscode-input-background)',
             border: 0
         }
     };
@@ -47,7 +47,7 @@ export function getUIContextualMenuItemStyles(): Partial<IContextualMenuItemStyl
             marginRight: 6
         },
         label: {
-            fontFamily: 'var(--vscuie-font-family)',
+            fontFamily: 'var(--vscode-font-family)',
             lineHeight: 18,
             height: 18
         },

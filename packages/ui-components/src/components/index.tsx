@@ -19,6 +19,7 @@ export * from './UILoader';
 export * from './UIMessageBar';
 export * from './UIModal';
 export * from './UIOverlay';
+export * from './UIPersona';
 export * from './UISearchBox';
 export * from './UISection';
 export * from './UITable';

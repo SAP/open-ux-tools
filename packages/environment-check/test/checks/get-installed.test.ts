@@ -1,7 +1,13 @@
 import * as command from '../../src/command';
-import { getCFCliToolVersion, getFioriGenVersion, getInstalledExtensions } from '../../src/checks/get-installed';
+import {
+    getCFCliToolVersion,
+    getFioriGenVersion,
+    getInstalledExtensions,
+    getProcessVersions
+} from '../../src/checks/get-installed';
 import fs from 'fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { getLogger } from '../../src/logger';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
@@ -49,13 +55,25 @@ describe('Test install functions', () => {
 
     test('getInstalledExtensions() (throw error)', async () => {
         mockIsAppStudio.mockReturnValue(true);
-        const consoleSpy = jest.spyOn(console, 'error');
         jest.spyOn(fs, 'readdirSync').mockImplementation(() => {
             throw new Error('Could not read directory');
         });
         const result = await getInstalledExtensions();
         expect(result).toBe(undefined);
-        expect(consoleSpy).toHaveBeenCalledWith('Error retrieving installed extensions: Could not read directory');
+    });
+
+    test('getInstalledExtensions() (throw error with logger)', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        const logger = getLogger();
+        jest.spyOn(fs, 'readdirSync').mockImplementation(() => {
+            throw new Error('Could not read directory');
+        });
+        const result = await getInstalledExtensions(logger);
+        const messages = logger.getMessages();
+        expect(result).toBe(undefined);
+        expect(messages).toStrictEqual([
+            { 'severity': 'error', 'text': 'Error retrieving installed extensions: Could not read directory' }
+        ]);
     });
 
     test('getCFCliToolVersion()', async () => {
@@ -126,5 +144,40 @@ describe('Test install functions', () => {
 
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual('Not installed or not found');
+    });
+
+    test('getProcessVersions() (VSCODE)', async () => {
+        jest.spyOn(command, 'spawnCommand').mockImplementationOnce(async () => {
+            return `{"node":"16.17.0","v8":"9.4.146.26-node.22","uv":"1.43.0","zlib":"1.2.11","brotli":"1.0.9"}`;
+        });
+        const result = await getProcessVersions();
+        expect(result).toStrictEqual({
+            node: '16.17.0',
+            v8: '9.4.146.26-node.22',
+            uv: '1.43.0',
+            zlib: '1.2.11',
+            brotli: '1.0.9'
+        });
+    });
+
+    test('getProcessVersions() errror', async () => {
+        jest.spyOn(command, 'spawnCommand').mockImplementation(() => {
+            throw new Error('spawn error');
+        });
+        const result = await getProcessVersions();
+        expect(result).toStrictEqual({});
+    });
+
+    test('getProcessVersions() (error with logger)', async () => {
+        jest.spyOn(command, 'spawnCommand').mockImplementation(() => {
+            throw new Error('spawn error');
+        });
+        const logger = getLogger();
+        const result = await getProcessVersions(logger);
+        const messages = logger.getMessages();
+        expect(result).toStrictEqual({});
+        expect(messages).toStrictEqual([
+            { 'severity': 'error', 'text': 'Error retrieving process versions: spawn error' }
+        ]);
     });
 });

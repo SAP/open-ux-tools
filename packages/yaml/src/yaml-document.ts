@@ -224,17 +224,20 @@ export class YamlDocument {
      * @param {object} path.value - the path object's value
      * @param path.matcher.key - name of the key
      * @param path.matcher.value - value of the key
+     * @param {'merge' | 'overwrite'} [path.mode] - optional update mode: merge or overwrite, default is merge
      * @returns {YamlDocument} the YamlDocument instance
      * @memberof YamlDocument
      */
     updateAt<T = unknown>({
         path,
         matcher,
-        value
+        value,
+        mode = 'merge'
     }: {
         path: string;
         matcher: { key: string; value: string };
         value: T;
+        mode?: 'merge' | 'overwrite';
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
         const seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
@@ -249,8 +252,8 @@ export class YamlDocument {
                 errorCode.nodeNotFoundMatching
             );
         }
-
-        const newNode = this.document.createNode(merge(node.toJSON(), value));
+        const newValue = mode === 'merge' ? merge(node.toJSON(), value) : value;
+        const newNode = this.document.createNode(newValue);
         seq.items.splice(seq.items.indexOf(node), 1, newNode);
 
         return this;

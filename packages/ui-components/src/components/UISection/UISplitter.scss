@@ -13,10 +13,10 @@
 
 $splitter-contrast-border: 1px solid var(--vscode-contrastBorder);
 $splitter-hover-contrast-border: 1px dashed var(--vscode-contrastActiveBorder);
-$splitter-focus-border: 1px solid var(--vscuie-focusBorder);
+$splitter-focus-border: 1px solid var(--vscode-focusBorder);
 
 .splitter {
-    background-color: var(--vscuie-splitter-background);
+    background-color: var(--vscode-splitter-background);
     position: absolute;
     outline: none;
 
