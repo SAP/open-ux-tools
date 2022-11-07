@@ -34,8 +34,9 @@ const tableIds = ['table1', 'table2'];
 
 const columns: UIFlexibleTableColumnType[] = Array.from({ length: 10 }).map((item, index) => {
     const col: UIFlexibleTableColumnType = {
-        key: 'column' + (index + 1),
-        title: 'Column ' + (index + 1)
+        key: `column${index + 1}`,
+        title: `Column ${index + 1}`,
+        tooltip: `Tooltip for column #${index + 1}`
     };
     return col;
 });
@@ -78,7 +79,8 @@ const getRows = (
             key: rIdx.toFixed(0),
             title: `Row ${rIdx + 1}`,
             className: actionRow === rIdx || actionRow === 100 ? 'active-row' : isPreferred ? 'preferred-row' : '',
-            cells
+            cells,
+            tooltip: `Tooltip for row #${rIdx + 1}`
         };
     });
     return rows;
@@ -92,6 +94,7 @@ function cellRenderer(
 ): CellRendererResult {
     const value = params.value.value;
     const isSpannedCell = params.colIndex === 1 && params.rowIndex === 2 && withSpan;
+    const column = columns[params.colIndex];
     switch (params.value.type) {
         case 'dropdown': {
             const options: IDropdownOption[] = ['a', 'b', 'c'].map((key) => ({
@@ -112,6 +115,7 @@ function cellRenderer(
                         selectedKey={value}
                         disabled={readonly}
                         onChange={(event, option, index) => onChange(option?.key.toString() ?? '')}
+                        title={column.tooltip}
                     />
                 )
             };
@@ -127,18 +131,34 @@ function cellRenderer(
                         ? 'not-spanned-cell'
                         : ''
                 ],
-                content: <TextInputWrapper value={value} readonly={readonly} onChange={(value) => onChange(value)} />
+                content: (
+                    <TextInputWrapper
+                        value={value}
+                        readonly={readonly}
+                        onChange={(value) => onChange(value)}
+                        title={column.tooltip}
+                    />
+                )
             };
         }
         default: {
             return {
-                content: <UILink href="">Link</UILink>
+                content: (
+                    <UILink href="" title="Tooltip for navigation">
+                        Link
+                    </UILink>
+                )
             };
         }
     }
 }
 
-function TextInputWrapper(props: { readonly?: boolean; onChange: (value: string) => void; value: string }) {
+function TextInputWrapper(props: {
+    readonly?: boolean;
+    onChange: (value: string) => void;
+    value: string;
+    title?: string;
+}) {
     const [value, setValue] = useState('');
 
     useEffect(() => {
@@ -161,6 +181,7 @@ function TextInputWrapper(props: { readonly?: boolean; onChange: (value: string)
                     }, 0);
                 }
             }}
+            title={props.title}
         />
     );
 }

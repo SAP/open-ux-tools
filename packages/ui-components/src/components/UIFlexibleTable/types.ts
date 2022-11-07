@@ -9,6 +9,7 @@ export interface UIFlexibleTableColumnType {
     key: string;
     className?: string;
     hidden?: boolean;
+    tooltip?: string;
 }
 
 export type TableRowCells<T> = { [key: string]: T };
@@ -18,6 +19,7 @@ export interface UIFlexibleTableRowType<T> {
     cells: TableRowCells<T>;
     title?: string;
     className?: string;
+    tooltip?: string;
 }
 
 export interface TableRowEventHandlerParameters<T> {
@@ -46,6 +48,7 @@ export interface CellRendererResult {
     title?: string | React.ReactNode;
     isSpan?: boolean;
     cellClassNames?: string | string[];
+    tooltip?: string;
 }
 
 export type AddRowResultType = { scrollToRow?: number } | undefined;

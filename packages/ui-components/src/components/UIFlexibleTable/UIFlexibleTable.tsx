@@ -215,11 +215,6 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
         props.readonly ? 'readonly' : ''
     ]);
 
-    const contentClasses = composeClassNames('flexible-table-content', [
-        props.rows.length === 0 && !props.noDataText ? 'empty-table' : '',
-        props.isContentLoading ? 'loading' : ''
-    ]);
-
     const showTitleRow = props.showColumnTitles && isInRowLayout && !props.showColumnTitlesInCells;
     const tableRootElementStyle: CSSProperties = {
         maxWidth: props.maxWidth ? `${props.maxWidth}px` : '100%'
@@ -241,6 +236,14 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
         const customActions = props.onRenderSecondaryTableActions({ readonly: !!props.readonly });
         secondaryTableActions.push(...customActions.map((item) => getActionFragment(item)));
     }
+
+    const isEmptyHeader = !props.addRowButton && primaryTableActions.length === 0 && secondaryTableActions.length === 0;
+    const contentClasses = composeClassNames('flexible-table-content', [
+        props.rows.length === 0 && !props.noDataText ? 'empty-table' : '',
+        props.isContentLoading ? 'loading' : '',
+        isEmptyHeader ? 'empty-table-header' : ''
+    ]);
+
     return (
         <div
             className={tableClasses}
@@ -250,26 +253,30 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
             onBlur={() => {
                 onFocusRowAction();
             }}>
-            <div className="flexible-table-header">
-                <div className="flexible-table-header-primary-actions">
-                    {props.addRowButton && (
-                        <div className="flexible-table-header-action">
-                            <UIDefaultButton
-                                iconProps={{ iconName: 'Add' }}
-                                className="flexible-table-btn-add"
-                                id={getTableActionButtonId(props.id, 'add-row')}
-                                primary
-                                disabled={props.isAddItemDisabled || props.isContentLoading || props.readonly}
-                                onClick={addNewRow}
-                                title={props.addRowButton.title}>
-                                {props.addRowButton.label}
-                            </UIDefaultButton>
-                        </div>
-                    )}
-                    {primaryTableActions}
+            {isEmptyHeader ? (
+                <></>
+            ) : (
+                <div className="flexible-table-header">
+                    <div className="flexible-table-header-primary-actions">
+                        {props.addRowButton && (
+                            <div className="flexible-table-header-action">
+                                <UIDefaultButton
+                                    iconProps={{ iconName: 'Add' }}
+                                    className="flexible-table-btn-add"
+                                    id={getTableActionButtonId(props.id, 'add-row')}
+                                    primary
+                                    disabled={props.isAddItemDisabled || props.isContentLoading || props.readonly}
+                                    onClick={addNewRow}
+                                    title={props.addRowButton.title}>
+                                    {props.addRowButton.label}
+                                </UIDefaultButton>
+                            </div>
+                        )}
+                        {primaryTableActions}
+                    </div>
+                    <div className="flexible-table-header-secondary-actions">{secondaryTableActions}</div>
                 </div>
-                <div className="flexible-table-header-secondary-actions">{secondaryTableActions}</div>
-            </div>
+            )}
 
             <div className={contentClasses} ref={contentElementRef}>
                 {showTitleRow && renderTitleRow(props, titleRowRightPadding)}
