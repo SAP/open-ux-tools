@@ -8,7 +8,8 @@ import type {
     FioriToolsProxyConfig,
     FioriToolsProxyConfigBackend,
     FioriToolsProxyConfigUI5,
-    Resources
+    Resources,
+    Ui5Document
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -68,6 +69,32 @@ export class UI5Config {
             path: 'resources',
             value: { configuration: config }
         });
+        return this;
+    }
+
+    /**
+     * Set the metadata object in the yaml file.
+     * See also https://sap.github.io/ui5-tooling/pages/Configuration/#metadata for reference.
+     *
+     * @param {Ui5Document['metadata']} value metadata of the project or application
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public setMetadata(value: Ui5Document['metadata']): UI5Config {
+        this.document.setIn({ path: 'metadata', value });
+        return this;
+    }
+
+    /**
+     * Set the type in the yaml file.
+     * See also https://sap.github.io/ui5-tooling/pages/Configuration/#general-configuration for reference.
+     *
+     * @param {Ui5Document['type']} value - type of the application
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public setType(value: Ui5Document['type']): UI5Config {
+        this.document.setIn({ path: 'type', value });
         return this;
     }
 
@@ -320,6 +347,29 @@ export class UI5Config {
      */
     public findCustomTask<T extends object = object>(name: string): CustomTask<T> | undefined {
         return this.findCustomActivity<T>(name, 'builder.customTasks');
+    }
+
+    /**
+     * Update an existing custom middleware or create it. Existing custom middleware be overwritten, not merged.
+     * If the custom middleware doesn't exist, it will be added.
+     *
+     * @param middleware - middleware config
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public updateCustomMiddleware(middleware: CustomMiddleware<unknown>): UI5Config {
+        const name = middleware.name;
+        if (this.findCustomMiddleware(name)) {
+            this.document.updateAt({
+                path: 'server.customMiddleware',
+                matcher: { key: 'name', value: name },
+                value: middleware,
+                mode: 'overwrite'
+            });
+        } else {
+            this.addCustomMiddleware([middleware]);
+        }
+        return this;
     }
 
     /**

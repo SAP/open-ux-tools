@@ -24,7 +24,6 @@ const severityMap = {
 const toolsExtensionFields = ['Tools/Extensions', 'Version'];
 
 const toolsExtensionListVSCode = new Map<string, string>([
-    ['nodeVersion', 'Node.js'],
     ['platform', 'Platform'],
     ['cloudCli', 'Cloud CLI tools'],
     ['appWizard', 'Application Wizard'],
@@ -137,7 +136,7 @@ function writeEnvironment(writer: MarkdownWriter, environment?: Environment): vo
         if (environment.basDevSpace) {
             writer.addLine(t('markdownText.devSpaceType', { basDevSpace: environment.basDevSpace }));
         }
-        writeToolsExtensionsResults(writer, environment.toolsExtensions);
+        writeToolsExtensionsResults(writer, environment.toolsExtensions, environment.versions.node);
         writer.addDetails(`${t('markdownText.versions')}`, JSON.stringify(environment.versions, null, 4));
     } else {
         writer.addLine(t('markdownText.envNotChecked'));
@@ -149,10 +148,11 @@ function writeEnvironment(writer: MarkdownWriter, environment?: Environment): vo
  *
  * @param writer - markdown writter
  * @param toolsExts - environment results - node version, extension versions etc
+ * @param nodeVersion version of node
  */
-function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsExtensions): void {
+function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsExtensions, nodeVersion?: string): void {
     if (toolsExts) {
-        const results = [];
+        const results = [['Node.js', nodeVersion ?? t('markdownText.notInstalledOrNotFound')]];
         for (const toolExt of Object.keys(toolsExts)) {
             const toolExtName = toolsExtensionListVSCode.get(toolExt);
             results.push([toolExtName, toolsExts[toolExt]]);

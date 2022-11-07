@@ -13,7 +13,7 @@ import type {
     ToolsExtensions
 } from '../types';
 import { Check, DevelopmentEnvironment, Extensions } from '../types';
-import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion } from './get-installed';
+import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions } from './get-installed';
 import { t } from '../i18n';
 
 /**
@@ -23,9 +23,10 @@ import { t } from '../i18n';
  */
 export async function getEnvironment(): Promise<{ environment: Environment; messages: ResultMessage[] }> {
     const logger = getLogger();
+    const processVersions = await getProcessVersions(logger);
     const environment: Environment = {
         developmentEnvironment: isAppStudio() ? DevelopmentEnvironment.BAS : DevelopmentEnvironment.VSCode,
-        versions: process.versions,
+        versions: processVersions,
         platform: process.platform
     };
 
@@ -93,12 +94,11 @@ async function getToolsExtensions(): Promise<{
 }> {
     const logger = getLogger();
 
-    const extensions = await getInstalledExtensions();
+    const extensions = await getInstalledExtensions(logger);
     const fioriGenVersion = await getFioriGenVersion();
     const cloudCli = await getCFCliToolVersion();
 
     let toolsExtensions: ToolsExtensions = {
-        nodeVersion: process.versions.node,
         cloudCli: cloudCli,
         fioriGenVersion: fioriGenVersion
     };
@@ -111,7 +111,6 @@ async function getToolsExtensions(): Promise<{
         };
     }
 
-    logger.info(t('info.nodeVersion', { nodeVersion: toolsExtensions.nodeVersion }));
     logger.info(t('info.cloudCli', { cloudCli: toolsExtensions.cloudCli }));
     logger.info(t('info.appWizard', { appWizard: toolsExtensions.appWizard }));
     logger.info(t('info.fioriGenVersion', { fioriGenVersion: toolsExtensions.fioriGenVersion }));

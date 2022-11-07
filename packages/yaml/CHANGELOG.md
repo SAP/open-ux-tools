@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.13.0
+
+### Minor Changes
+
+-   d760b69: Additional update mode 'overwrite' for yaml nodes
+
 ## 0.12.4
 
 ### Patch Changes
