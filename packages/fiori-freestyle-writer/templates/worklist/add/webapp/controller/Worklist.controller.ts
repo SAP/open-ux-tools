@@ -41,7 +41,7 @@ export default class Worklist extends BaseController {
         const total = event.getParameter("total") as number;
         // only update the counter if the length is final and
         // the table is not empty
-        let title: string;
+        let title: string | undefined;
         if (total && (table.getBinding("items") as ListBinding).isLengthFinal()) {
             title = this.getResourceBundle().getText("worklistTableTitleCount", [total]);
         } else {
@@ -84,7 +84,7 @@ export default class Worklist extends BaseController {
      *
      */
     public onRefresh() {
-        this.byId("table")!.getBinding("items").refresh(false);
+        this.byId("table")?.getBinding("items")?.refresh(false);
     }
 
     /**
