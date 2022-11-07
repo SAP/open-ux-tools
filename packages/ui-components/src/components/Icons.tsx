@@ -519,7 +519,7 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.FullscreenExpand]: (
-                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="Icon16/Expand">
                         <path
                             id="ico_export"
@@ -532,7 +532,7 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.FullscreenCollapse]: (
-                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="Icon16/Collapse">
                         <g id="collapse">
                             <path
