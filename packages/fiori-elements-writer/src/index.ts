@@ -33,8 +33,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
 
     setAppDefaults(feApp);
 
-    fs = 
-        await generateUi5Project(basePath, feApp, fs);
+    fs = await generateUi5Project(basePath, feApp, fs);
 
     feApp.template.settings = setDefaultTemplateSettings(feApp.template, feApp.service.version);
 
