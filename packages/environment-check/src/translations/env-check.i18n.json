@@ -51,7 +51,8 @@
         "invalidPkgJson": "Found invalid package.json. Error : {{- error}}",
         "checkingEnv": "Error checking environment: {{- error}}",
         "noProjectRoot": "Project root {{- projectRoot}} does not exist",
-        "retrievingExtensions": "Error retrieving installed extensions: {{- error}}"
+        "retrievingExtensions": "Error retrieving installed extensions: {{- error}}",
+        "retrievingProcessVersions": "Error retrieving process versions: {{- error}}"
     },
     "markdownText": {
         "fullServiceUrlConfig": "Configured to be used by Fiori Generator as Full Service URL",
@@ -80,6 +81,7 @@
         "noMessages": "No messages",
         "envCheckTitle": "SAP Fiori tools - Environment Check",
         "createdAt": "created at",
-        "environmentTitle": "Environment"
+        "environmentTitle": "Environment",
+        "notInstalledOrNotFound": "Not installed or not found"
     }
 }

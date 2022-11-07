@@ -43,7 +43,12 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 //Get the content of the changes folder.
                 var aPromises = [];
                 var sCacheBusterFilePath = "/sap-ui-cachebuster-info.json";
-                var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
+                var trustedHosts = [
+                    /^localhost$/,
+                    /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+applicationstudio\.cloud\.sap$/,
+                    /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+applicationstudio\.sapcloud\.cn$/,
+                    /^((?!-)[A-Za-z0-9-]{1,63}(?<!-)\.)+applicationstudio\.vlab-sapcloudplatformdev\.cn$/
+                ];                
                 var url = new URL(window.location.toString());
                 var isValidHost = trustedHosts.some((host) => {
                     return host.test(url.hostname);
