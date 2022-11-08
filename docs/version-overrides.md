@@ -34,21 +34,23 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 ## minimatch
 | Override:           | >=3.0.5 |
 |:--------------------| :-------------|
-│ **high**            │ minimatch ReDoS vulnerability                     │
-│ Package             │ minimatch                                         │
-│ Vulnerable versions │ <3.0.5                                            │
-│ Patched versions    │ >=3.0.5                                           │
-│ More info           │ https://github.com/advisories/GHSA-f8q6-p94x-37v3 │
+|                     | |
+| **high**            | minimatch ReDoS vulnerability                     |
+| Package             | minimatch                                         |
+| Vulnerable versions | <3.0.5                                            |
+| Patched versions    | >=3.0.5                                           |
+| More info           | https://github.com/advisories/GHSA-f8q6-p94x-37v3 |
 
 ## loader-utils
 | Override:           | 2.0.3; 1.4.1 |
 |:--------------------| :-------------|
-│ **high**            │ minimatch ReDoS vulnerability                     │
-│ Package             │ minimatch                                         │
-│ Vulnerable versions │ >= 2.0.0, < 2.0.3;  < 1.4.1                       │
-│ Patched versions    │ 2.0.3; 1.4.1                                      │
-│ More info           │ https://github.com/advisories/GHSA-76p3-8jx3-jpfq │
+|                     | |
+| **high**            | minimatch ReDoS vulnerability                     |
+| Package             | minimatch                                         |
+| Vulnerable versions | >= 2.0.0, < 2.0.3;  < 1.4.1                       |
+| Patched versions    | 2.0.3; 1.4.1                                      |
+| More info           | https://github.com/advisories/GHSA-76p3-8jx3-jpfq |
 
-WATCH: 
+:warning: Attention :warning: 
 * `trim`, `trim-newlines` and `glob-parent` and `loader-utils` are dependencies of `storybook` that is used in `@sap-ux/ui-components`. Once a new version without the vulnerable dependency is available, it is to be used and this override can be removed.
 * the `minimatch` override can be removed as soon as `@sap/bas-sdk` and `pretty-quick` are updated
