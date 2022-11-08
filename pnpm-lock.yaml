@@ -6,6 +6,8 @@ overrides:
   glob-parent@<5.1.2: '>=5.1.2'
   '@sap/bas-sdk@2.1.2>minimatch': 3.0.5
   multimatch@4.0.0>minimatch: 3.0.5
+  loader-utils@<1.4.1: 1.4.1
+  loader-utils@2.0.x: 2.0.3
 
 importers:
 
@@ -3208,7 +3210,7 @@ packages:
       error-stack-parser: 2.1.4
       find-up: 5.0.0
       html-entities: 2.3.3
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       react-refresh: 0.11.0
       schema-utils: 3.1.1
       source-map: 0.7.3
@@ -3956,7 +3958,7 @@ packages:
       '@mdx-js/mdx': 1.6.22
       '@types/lodash': 4.14.178
       js-string-escape: 1.0.1
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       lodash: 4.17.21
       prettier: 2.3.0
       ts-dedent: 2.2.0
@@ -5791,7 +5793,7 @@ packages:
     dependencies:
       '@babel/core': 7.20.2
       find-cache-dir: 2.1.0
-      loader-utils: 1.4.0
+      loader-utils: 1.4.1
       mkdirp: 0.5.6
       pify: 4.0.1
       schema-utils: 2.7.1
@@ -5807,7 +5809,7 @@ packages:
     dependencies:
       '@babel/core': 7.20.2
       find-cache-dir: 2.1.0
-      loader-utils: 1.4.0
+      loader-utils: 1.4.1
       mkdirp: 0.5.6
       pify: 4.0.1
       schema-utils: 2.7.1
@@ -7132,7 +7134,7 @@ packages:
       camelcase: 5.3.1
       cssesc: 3.0.0
       icss-utils: 4.1.1
-      loader-utils: 1.4.0
+      loader-utils: 1.4.1
       normalize-path: 3.0.0
       postcss: 7.0.39
       postcss-modules-extract-imports: 2.0.0
@@ -7152,7 +7154,7 @@ packages:
       webpack: ^4.27.0 || ^5.0.0
     dependencies:
       icss-utils: 5.1.0_postcss@8.4.16
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       postcss: 8.4.16
       postcss-modules-extract-imports: 3.0.0_postcss@8.4.16
       postcss-modules-local-by-default: 4.0.0_postcss@8.4.16
@@ -8090,7 +8092,7 @@ packages:
       esbuild: 0.15.8
       joycon: 3.1.1
       json5: 2.2.1
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       tapable: 2.2.1
       webpack: 5.74.0
       webpack-sources: 2.3.1
@@ -8852,7 +8854,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       schema-utils: 3.1.1
       webpack: 4.46.0
     dev: true
@@ -9792,7 +9794,7 @@ packages:
       '@types/tapable': 1.0.8
       '@types/webpack': 4.41.32
       html-minifier-terser: 5.1.1
-      loader-utils: 1.4.0
+      loader-utils: 1.4.1
       lodash: 4.17.21
       pretty-error: 2.1.2
       tapable: 1.1.3
@@ -11555,8 +11557,8 @@ packages:
     engines: {node: '>=6.11.5'}
     dev: true
 
-  /loader-utils/1.4.0:
-    resolution: {integrity: sha512-qH0WSMBtn/oHuwjy/NucEgbx5dbxxnxup9s4PVXJUDHZBQY+s0NWA9rJf53RBnQZxfch7euUui7hpoAPvALZdA==}
+  /loader-utils/1.4.1:
+    resolution: {integrity: sha512-1Qo97Y2oKaU+Ro2xnDMR26g1BwMT29jNbem1EvcujW2jqt+j5COXyscjM7bLQkM9HaxI7pkWeW7gnI072yMI9Q==}
     engines: {node: '>=4.0.0'}
     dependencies:
       big.js: 5.2.2
@@ -11564,8 +11566,8 @@ packages:
       json5: 1.0.1
     dev: true
 
-  /loader-utils/2.0.2:
-    resolution: {integrity: sha512-TM57VeHptv569d/GKh6TAYdzKblwDNiumOdkFnejjD0XwTH87K90w3O7AiJRqdQoXygvi1VQTJTLGhJl7WqA7A==}
+  /loader-utils/2.0.3:
+    resolution: {integrity: sha512-THWqIsn8QRnvLl0shHYVBN9syumU8pYWEHPTmkiVGd+7K5eFNVSY6AJhRvgGF70gg1Dz+l/k8WicvFCxdEs60A==}
     engines: {node: '>=8.9.0'}
     dependencies:
       big.js: 5.2.2
@@ -12275,8 +12277,8 @@ packages:
   /nimnjs/1.3.2:
     resolution: {integrity: sha512-TIOtI4iqkQrUM1tiM76AtTQem0c7e56SkDZ7sj1d1MfUsqRcq2ZWQvej/O+HBTZV7u/VKnwlKTDugK/75IRPPw==}
     dependencies:
-      nimn-date-parser: 1.0.0
       nimn_schema_builder: 1.1.0
+      nimn-date-parser: 1.0.0
     dev: false
 
   /no-case/3.0.4:
@@ -13089,7 +13091,7 @@ packages:
     dependencies:
       cosmiconfig: 7.0.1
       klona: 2.0.5
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       postcss: 7.0.39
       schema-utils: 3.1.1
       semver: 7.3.7
@@ -13590,7 +13592,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       schema-utils: 3.1.1
       webpack: 4.46.0
     dev: true
@@ -14948,7 +14950,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       schema-utils: 2.7.1
       webpack: 4.46.0
     dev: true
@@ -14959,7 +14961,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       schema-utils: 3.1.1
       webpack: 5.74.0
     dev: true
@@ -15815,7 +15817,7 @@ packages:
         optional: true
     dependencies:
       file-loader: 6.2.0_webpack@4.46.0
-      loader-utils: 2.0.2
+      loader-utils: 2.0.3
       mime-types: 2.1.34
       schema-utils: 3.1.1
       webpack: 4.46.0
@@ -16139,7 +16141,7 @@ packages:
       eslint-scope: 4.0.3
       json-parse-better-errors: 1.0.2
       loader-runner: 2.4.0
-      loader-utils: 1.4.0
+      loader-utils: 1.4.1
       memory-fs: 0.4.1
       micromatch: 3.1.10
       mkdirp: 0.5.6
