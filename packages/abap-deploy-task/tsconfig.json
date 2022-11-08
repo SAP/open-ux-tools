@@ -1,6 +1,7 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "test/unit"],
+    "include": ["src", "test"],
+    "exclude": ["test/test-input"],
     "compilerOptions": {
         "declaration": true,
         "outDir": "dist",
