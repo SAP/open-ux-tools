@@ -26,11 +26,11 @@ export class TransportRequestService extends AdtService {
      * TransportRequestService API function to create a new transport number.
      *
      * @param packageName Package name for deployment
-     * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
+     * @param ui5AppName Fiori UI5 app name for deployment
      * @param description Description of the new transport request to be created
      * @returns Newly created transport request number
      */
-    public async createTransportRequest(packageName: string, appName: string, description: string): Promise<string> {
+    public async createTransportRequest(packageName: string, ui5AppName: string, description: string): Promise<string> {
         const acceptHeaders = {
             headers: {
                 Accept: 'text/plain',
@@ -47,7 +47,7 @@ export class TransportRequestService extends AdtService {
                             <OPERATION>I</OPERATION>
                             <DEVCLASS>${packageName}</DEVCLASS>
                             <REQUEST_TEXT>${description}</REQUEST_TEXT>
-                            <REF>/sap/bc/adt/filestore/ui5-bsp/objects/${appName}/$create</REF>
+                            <REF>/sap/bc/adt/filestore/ui5-bsp/objects/${ui5AppName}/$create</REF>
                         </DATA>
                     </asx:values>
                 </asx:abap>
