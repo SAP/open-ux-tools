@@ -1,8 +1,5 @@
 import { AdtService } from './adt-service';
 import type { AdtCategory } from '../../types';
-import XmlParser from 'fast-xml-parser';
-import * as xpath from 'xpath';
-import { DOMParser } from '@xmldom/xmldom';
 
 /**
  * TransportRequestService implements ADT requests for creating a new transport request number
@@ -14,7 +11,7 @@ export class TransportRequestService extends AdtService {
      */
     private static AdtCategory = {
         scheme: 'http://www.sap.com/adt/categories/cts',
-        term: 'transportmanagement'
+        term: 'transports'
     };
 
     /**
@@ -26,24 +23,34 @@ export class TransportRequestService extends AdtService {
     }
 
     /**
+     * TransportRequestService API function to create a new transport number.
      *
+     * @param packageName Package name for deployment
+     * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed
      * @param description Description of the new transport request to be created
      * @returns Newly created transport request number
      */
-    public async createTransportRequest(description: string): Promise<string> {
+    public async createTransportRequest(packageName: string, appName: string, description: string): Promise<string> {
         const acceptHeaders = {
             headers: {
-                Accept: 'application/vnd.sap.adt.transportorganizer.v1+xml',
-                'content-type': 'text/plain'
+                Accept: 'text/plain',
+                'content-type':
+                    'application/vnd.sap.as+xml; charset=UTF-8; dataname=com.sap.adt.CreateCorrectionRequest'
             }
         };
 
         const data = `
-                <?xml version="1.0" encoding="ASCII"?>
-                <tm:root xmlns:tm="http://www.sap.com/cts/adt/tm" tm:useraction="newrequest">
-                    <tm:request tm:desc="${description}" tm:type="K" tm:target="LOCAL" tm:cts_project="">
-                    </tm:request>
-                </tm:root>
+                <?xml version="1.0" encoding="UTF-8"?>
+                <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+                    <asx:values>
+                        <DATA>
+                            <OPERATION>I</OPERATION>
+                            <DEVCLASS>${packageName}</DEVCLASS>
+                            <REQUEST_TEXT>${description}</REQUEST_TEXT>
+                            <REF>/sap/bc/adt/filestore/ui5-bsp/objects/${appName}/$create</REF>
+                        </DATA>
+                    </asx:values>
+                </asx:abap>
             `;
         const response = await this.post('', data, acceptHeaders);
         return this.getTransportNumberFromResponse(response.data);
@@ -52,22 +59,16 @@ export class TransportRequestService extends AdtService {
     /**
      * Read the newly created transport number from response XML data.
      *
-     * @param xml XML response of create transport request.
+     * @param text XML response of create transport request.
      * @returns Newly created transport number or null
      */
-    private getTransportNumberFromResponse(xml: string): string | null {
-        if (XmlParser.validate(xml) !== true) {
-            this.log.warn(`Invalid XML: ${xml}`);
-            return '';
-        }
-        const doc = new DOMParser().parseFromString(xml);
-        const select = xpath.useNamespaces({ 'tm': 'http://www.sap.com/cts/adt/tm' });
-        const attrElement = select('//tm:request/@tm:number', doc) as Element[];
-        if (attrElement && attrElement.length === 1) {
-            const createdTransportNumber = attrElement[0].nodeValue;
-            return createdTransportNumber;
-        } else {
+    private getTransportNumberFromResponse(text: string): string | null {
+        const responseStringPrefix = '/com.sap.cts/object_record/';
+        if (!text || !text.startsWith(responseStringPrefix)) {
             return null;
+        } else {
+            const newTransportNumber = text.replace(responseStringPrefix, '');
+            return newTransportNumber;
         }
     }
 }

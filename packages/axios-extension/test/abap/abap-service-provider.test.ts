@@ -18,7 +18,7 @@ enum AdtServices {
     DISCOVERY = '/sap/bc/adt/discovery',
     ATO_SETTINGS = '/sap/bc/adt/ato/settings',
     TRANSPORT_CHECKS = '/sap/bc/adt/cts/transportchecks',
-    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transportrequest'
+    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transports'
 }
 
 describe('AbapServiceProvider', () => {

@@ -27,6 +27,7 @@ export class TransportChecksService extends AdtService {
     }
 
     /**
+     * TransportChecksService API function to fetch a list of available transport requests.
      *
      * @param packageName Package name for deployment
      * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed

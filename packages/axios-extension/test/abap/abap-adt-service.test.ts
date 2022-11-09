@@ -17,7 +17,7 @@ enum AdtServices {
     DISCOVERY = '/sap/bc/adt/discovery',
     ATO_SETTINGS = '/sap/bc/adt/ato/settings',
     TRANSPORT_CHECKS = '/sap/bc/adt/cts/transportchecks',
-    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transportrequests'
+    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transports'
 }
 
 const server = 'https://server.example';
@@ -119,7 +119,9 @@ describe('Create new transport number', () => {
             .post(AdtServices.TRANSPORT_REQUEST)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportRequest-1.xml'));
         const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
-        expect(await transportRequestService.createTransportRequest(dummyComment)).toStrictEqual('EC1K900436');
+        expect(
+            await transportRequestService.createTransportRequest('dummyPackage', 'dummyAppName', dummyComment)
+        ).toStrictEqual('EC1K900436');
     });
 
     test('Create new transport number failed', async () => {
@@ -127,9 +129,11 @@ describe('Create new transport number', () => {
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .post(AdtServices.TRANSPORT_REQUEST)
-            .reply(200, '<unknown></unknown>');
+            .reply(200, 'unknown');
         const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
-        expect(await transportRequestService.createTransportRequest(dummyComment)).toStrictEqual(null);
+        expect(
+            await transportRequestService.createTransportRequest('dummyPackage', 'dummyAppName', dummyComment)
+        ).toStrictEqual(null);
     });
 });
 
