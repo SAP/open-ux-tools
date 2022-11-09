@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.17
+
+### Patch Changes
+
+-   e4a9572: Update dependencies
+
 ## 1.0.16
 
 ### Patch Changes
