@@ -15,9 +15,9 @@ describe('Defaults', () => {
         ['1.80-snapshot', esmTypesVersionSince],
         ['metadata', typesVersionBest],
         [undefined, typesVersionBest],
-        ['1.103.1', typesVersionBest],
-        ['1.102.9', typesVersionBest],
-        ['1.103-snapshot', typesVersionBest],
+        ['1.109.1', typesVersionBest],
+        [UI5_DEFAULT.TYPES_VERSION_BEST, typesVersionBest],
+        ['1.109-snapshot', typesVersionBest],
         ['1.80-snapshot', esmTypesVersionSince],
         ['1.102-snapshot', '~1.102.0'],
         ['1.91.0', '~1.91.0']
@@ -35,11 +35,11 @@ describe('Defaults', () => {
         ['1.74.0', minU5Version],
         ['1.75.0', minU5Version],
         ['1.83.0', '~1.83.0'],
-        ['1.102.9', typesVersionBest],
-        ['1.103.1', typesVersionBest],
+        [UI5_DEFAULT.TYPES_VERSION_BEST, typesVersionBest],
+        ['1.109.1', typesVersionBest],
         ['1.80-snapshot', '~1.80.0'],
         ['1.102-snapshot', '~1.102.0'],
-        ['1.103-snapshot', typesVersionBest]
+        ['1.109-snapshot', typesVersionBest]
     ];
     // Tests validation of versions against known versions https://www.npmjs.com/package/@sapui5/ts-types-esm
     test.each(tesTSTypesEsmData)('Types version for @sapui5/ts-types-esm: (%p, %p)', (input, expected) => {

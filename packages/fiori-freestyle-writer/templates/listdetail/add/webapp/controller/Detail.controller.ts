@@ -49,7 +49,7 @@ export default class Detail extends BaseController {
      public onListUpdateFinished(event: Event) {
         const viewModel = this.getModel<JSONModel>("detailView");
         const totalItems = event.getParameter("total") as number;
-        let title: string;
+        let title: string | undefined;
         // only update the counter if the length is final
         if ((this.byId("lineItemsList")!.getBinding("items") as ListBinding).isLengthFinal()) {
             if (totalItems) {
@@ -111,7 +111,7 @@ export default class Detail extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (!elementBinding.getBoundContext()) {
+        if (!elementBinding?.getBoundContext()) {
             this.getRouter().getTargets()!.display("detailObjectNotFound");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
@@ -121,7 +121,7 @@ export default class Detail extends BaseController {
 
         const path = elementBinding.getPath();
         const resourceBundle = this.getResourceBundle();
-        const detailObject = view.getModel().getObject(path);
+        const detailObject = this.getModel().getObject(path);
         const viewModel = this.getModel<JSONModel>("detailView");
 
         this.getUIComponent().listSelector.selectAListItem(path);
