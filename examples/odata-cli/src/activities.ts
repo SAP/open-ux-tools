@@ -78,7 +78,11 @@ export async function useAdtServices(
         }
 
         const trasnportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
-        const newTransportNumber = await trasnportRequestService.createTransportRequest(env.TEST_PACKAGE, env.TEST_APP, 'Test from odata-cli');
+        const newTransportNumber = await trasnportRequestService.createTransportRequest(
+            env.TEST_PACKAGE,
+            env.TEST_APP,
+            'Test from odata-cli'
+        );
         logger.info(`Created transport number: ${newTransportNumber}`);
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
