@@ -1,7 +1,7 @@
 {
     "extends": "../../tsconfig.json",
     "include": ["src", "test"],
-    "exclude": ["dist", "templates", "coverage", "test/sample"],
+    "exclude": ["test/sample", "test/__snapshots__"],
     "compilerOptions": {
         "baseUrl": "./src",
         "outDir": "dist"
