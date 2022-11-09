@@ -4,6 +4,10 @@ module.exports = {
     },
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
+    coverageReporters: [
+        'text', 
+        ['lcov', { projectRoot: '../../' }]
+    ],
     reporters: [
         'default',
         [
