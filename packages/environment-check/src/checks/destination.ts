@@ -284,7 +284,5 @@ function transformDestination(destinationInfo): Destination[] {
         destinations.push(answerDestination);
     }
 
-    destinations.sort((a, b) => a.Name.localeCompare(b.Name, undefined, { numeric: true, caseFirst: 'lower' }));
-
     return destinations;
 }
