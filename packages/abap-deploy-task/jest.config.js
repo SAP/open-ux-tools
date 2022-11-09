@@ -7,14 +7,7 @@ module.exports = {
     coverageReporters: ['text', ['lcov', { projectRoot: '../../' }]],
     reporters: [
         'default',
-        [
-            'jest-sonar',
-            {
-                reportedFilePath: 'relative',
-                relativeRootDir: '<rootDir>/../../../'
-            }
-        ]
+        'jest-sonar'
     ],
-    modulePathIgnorePatterns: ['<rootDir>/dist', '<rootDir>/test/test-output'],
     verbose: true
 };
