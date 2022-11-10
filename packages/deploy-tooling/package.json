@@ -1,13 +1,13 @@
 {
-    "name": "@sap-ux/abap-deploy-task",
+    "name": "@sap-ux/deploy-tooling",
     "description": "UI5 CLI tasks to deploy to ABAP systems",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/abap-deploy-task"
+        "directory": "packages/deploy-tooling"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aabap-deploy-task"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Adeploy-tooling"
     },
     "version": "0.0.1",
     "license": "Apache-2.0",

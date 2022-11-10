@@ -1,4 +1,4 @@
-#  `@sap-ux/abap-deploy-task`
+#  `@sap-ux/deploy-tooling`
 
 ## ui5-task
 
