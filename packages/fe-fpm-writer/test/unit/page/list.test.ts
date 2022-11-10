@@ -37,7 +37,7 @@ describe('ListReport', () => {
 
     describe('generate', () => {
         const minimalInput: ListReport = {
-            entity: 'RootEnity'
+            entity: 'RootEntity'
         };
 
         test('minimal input', () => {

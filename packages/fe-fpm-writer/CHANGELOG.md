@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.0
+
+### Minor Changes
+
+-   b0553a0: If a given file is specified in the API of the FPM writer, no implicit conversion of the name shall take place. Only if no file name get passed, the default value now follows the naming convention of uppercase first letter.
+
 ## 0.17.8
 
 ### Patch Changes
