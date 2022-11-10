@@ -4,5 +4,5 @@
         "noImplicitThis": false,
         "rootDir": "."
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts", "test/**/*.tsx", "stories/**/*.ts", "stories/**/*.tsx"]
+    "include": ["src", "test", "stories"]
 }
