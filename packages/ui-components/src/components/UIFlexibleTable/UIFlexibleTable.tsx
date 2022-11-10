@@ -220,24 +220,23 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
         maxWidth: props.maxWidth ? `${props.maxWidth}px` : '100%'
     };
 
-    const primaryTableActions: React.ReactNode[] = [];
-    const secondaryTableActions: React.ReactNode[] = [];
-    const getActionFragment = (actionElement: React.ReactElement) => (
-        <React.Fragment key={`table-action-${actionElement.key}`}>
-            <div className="flexible-table-header-action">{actionElement}</div>
-        </React.Fragment>
-    );
+    const getCustomTableActions = (
+        actionsGenerator?: (params: { readonly: boolean }) => React.ReactElement[]
+    ): JSX.Element[] => {
+        if (actionsGenerator) {
+            const customActions = actionsGenerator({ readonly: !!props.readonly });
+            return customActions.map((actionElement) => (
+                <React.Fragment key={`table-action-${actionElement.key}`}>
+                    <div className="flexible-table-header-action">{actionElement}</div>
+                </React.Fragment>
+            ));
+        }
+        return [];
+    };
 
-    if (props.onRenderPrimaryTableActions) {
-        const customActions = props.onRenderPrimaryTableActions({ readonly: !!props.readonly });
-        primaryTableActions.push(...customActions.map((item) => getActionFragment(item)));
-    }
-    if (props.onRenderSecondaryTableActions) {
-        const customActions = props.onRenderSecondaryTableActions({ readonly: !!props.readonly });
-        secondaryTableActions.push(...customActions.map((item) => getActionFragment(item)));
-    }
-
-    const isEmptyHeader = !props.addRowButton && primaryTableActions.length === 0 && secondaryTableActions.length === 0;
+    const primaryTableActions: React.ReactNode[] = getCustomTableActions(props.onRenderPrimaryTableActions);
+    const secondaryTableActions: React.ReactNode[] = getCustomTableActions(props.onRenderSecondaryTableActions);
+    const isEmptyHeader = !props.addRowButton && primaryTableActions.length + secondaryTableActions.length === 0;
     const contentClasses = composeClassNames('flexible-table-content', [
         props.rows.length === 0 && !props.noDataText ? 'empty-table' : '',
         props.isContentLoading ? 'loading' : '',

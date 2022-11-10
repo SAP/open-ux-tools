@@ -460,20 +460,22 @@ export const InlineFlexTable = (): JSX.Element => {
                         })}
                         onRenderActions={onRenderActions}
                         onRenderRowDataContent={showSpecialContent ? rowSpecial : undefined}
-                        onRenderReorderActions={
-                            isRowReorderingDisabled
-                                ? (params) => {
-                                      return {
-                                          isMoveDownDisabled: params.rowIndex === 1,
-                                          isMoveUpDisabled: params.rowIndex === 1,
-                                          moveUpTooltip:
-                                              params.rowIndex === 1 ? 'Move up disabled for demo purposes' : undefined,
-                                          moveDownTooltip:
+                        onRenderReorderActions={(params) => {
+                            return isRowReorderingDisabled
+                                ? {
+                                      up: {
+                                          disabled: params.rowIndex === 1,
+                                          tooltip:
+                                              params.rowIndex === 1 ? 'Move up disabled for demo purposes' : undefined
+                                      },
+                                      down: {
+                                          disabled: params.rowIndex === 1,
+                                          tooltip:
                                               params.rowIndex === 1 ? 'Move down disabled for demo purposes' : undefined
-                                      };
+                                      }
                                   }
-                                : undefined
-                        }
+                                : {};
+                        }}
                         onBeforeTableRender={
                             isRowReorderingDisabled
                                 ? (params) => {
@@ -566,6 +568,7 @@ export const WrappingTable = (): JSX.Element => {
     const [actionRow, setActionRow] = useState(-1);
     const [isLockVertically, setIsLockVertically] = useState(false);
     const [isReverseBackground, setIsReverseBackground] = useState(false);
+    const [isRowReorderingDisabled, setIsRowReorderingDisabled] = useState(false);
 
     // Prevent cell editor click propagation
     const cellRefs = useRef<{ [key: string]: React.RefObject<HTMLDivElement> }>({});
@@ -610,11 +613,22 @@ export const WrappingTable = (): JSX.Element => {
         setRows(model);
     };
 
-    const onReorder = (params: { oldIndex: number; newIndex: number }): void => {
-        const model2 = arrayMove(model, params.oldIndex, params.newIndex);
-        setModel(model2);
-        setRows(model2);
-    };
+    const onReorder = (params: {
+        oldIndex: number;
+        newIndex: number;
+    }): {
+        isDropDisabled: boolean;
+    } => {
+        const isDropDisabled = isRowReorderingDisabled && params.oldIndex === 0 && params.newIndex > 1;
+        if (!isDropDisabled) {
+            const model2 = arrayMove(model, params.oldIndex, params.newIndex);
+            setModel(model2);
+            setRows(model2);
+        }
+        return {
+            isDropDisabled
+        };
+    };;
 
     const option = (label: string, value: boolean, setter: (value: React.SetStateAction<boolean>) => void) => (
         <UICheckbox
@@ -720,11 +734,12 @@ export const WrappingTable = (): JSX.Element => {
             <h3>Wrapping layout</h3>
             <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '20px', maxWidth: '1200px' }}>
                 {option('Compact size', isCompact, setIsCompact)}
-                {option('Reorder enabled', isReorderable, setIsReorderable)}
                 {option('Show titles', showTitleRow, setShowTitleRow)}
                 {option('Show Index', showIndex, setShowIndex)}
                 {option('Show custom content', showSpecialContent, setShowSpecialContent)}
                 {option('Span cells', showSpanned, setShowSpanned)}
+                {option('Reorder enabled', isReorderable, setIsReorderable)}
+                {option('Reorder restrictions', isRowReorderingDisabled, setIsRowReorderingDisabled)}
                 {option('Disable Adding', isAddDisabled, setIsAddDisabled)}
                 {option('Disable Deletion', isDeleteDisabled, setIsDeleteDisabled)}
                 {option('Readonly', isReadonly, setIsReadonly)}
@@ -763,6 +778,40 @@ export const WrappingTable = (): JSX.Element => {
                         onRenderDeleteAction={(params) => ({
                             isDeleteDisabled: isDeleteDisabled && params.rowIndex === 0
                         })}
+                        onRenderReorderActions={(params) => {
+                            return isRowReorderingDisabled
+                                ? {
+                                      up: {
+                                          disabled: params.rowIndex === 1,
+                                          tooltip:
+                                              params.rowIndex === 1 ? 'Move up disabled for demo purposes' : undefined
+                                      },
+                                      down: {
+                                          disabled: params.rowIndex === 1,
+                                          tooltip:
+                                              params.rowIndex === 1 ? 'Move down disabled for demo purposes' : undefined
+                                      }
+                                  }
+                                : {};
+                        }}
+                        onBeforeTableRender={
+                            isRowReorderingDisabled
+                                ? (params) => {
+                                      return {
+                                          rows: params.rows.map((row, index) => ({ ...row, disabled: index === 1 }))
+                                      };
+                                  }
+                                : undefined
+                        }
+                        onRenderRowContainer={
+                            isRowReorderingDisabled
+                                ? (params) => {
+                                      return {
+                                          isDropWarning: !params.isDragged && !!params.rowIndex && params.rowIndex > 1
+                                      };
+                                  }
+                                : undefined
+                        }
                         onRenderRowDataContent={showSpecialContent ? rowSpecial : undefined}
                         onRenderActions={onRenderActions}
                         maxScrollableContentHeight={isCompact ? 700 : 400}

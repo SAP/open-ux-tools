@@ -535,10 +535,14 @@ describe('<UIFlexibleTable />', () => {
                     onRenderReorderActions: (params) => {
                         const isRow2 = params.rowIndex === 1;
                         return {
-                            isMoveDownDisabled: isRow2,
-                            moveDownTooltip: isRow2 ? 'Testing move down disabled' : '',
-                            isMoveUpDisabled: isRow2,
-                            moveUpTooltip: isRow2 ? 'Testing move up disabled' : ''
+                            up: {
+                                disabled: isRow2,
+                                tooltip: isRow2 ? 'Testing move up disabled' : ''
+                            },
+                            down: {
+                                disabled: isRow2,
+                                tooltip: isRow2 ? 'Testing move down disabled' : ''
+                            }
                         };
                     }
                 });

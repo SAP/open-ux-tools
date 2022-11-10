@@ -47,14 +47,12 @@ export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
         );
     }
 
-    const { isMoveDownDisabled, isMoveUpDisabled, moveDownTooltip, moveUpTooltip } =
+    const { up, down } =
         isShowReorderButtons && tableProps.onRenderReorderActions
-            ? tableProps.onRenderReorderActions({ rowIndex, rowKey, cells, readonly: !!tableProps.readonly })
+            ? tableProps.onRenderReorderActions({ rowIndex, rowKey, cells, readonly: !!tableProps.readonly }) || {}
             : {
-                  isMoveUpDisabled: undefined,
-                  isMoveDownDisabled: undefined,
-                  moveUpTooltip: undefined,
-                  moveDownTooltip: undefined
+                  up: undefined,
+                  down: undefined
               };
 
     const reorderButtons = isShowReorderButtons && (
@@ -63,7 +61,7 @@ export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
             <UIFlexibleTableRowActionButton
                 key="up-action"
                 actionName="up"
-                disabled={isTableTop || tableProps.isContentLoading || isMoveUpDisabled}
+                disabled={isTableTop || tableProps.isContentLoading || up?.disabled}
                 iconName={UiIcons.ArrowUp}
                 rowNumber={rowIndex}
                 tableId={tableProps.id}
@@ -71,14 +69,14 @@ export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
                 onFocus={(): void => {
                     props.onFocusRowAction('up');
                 }}
-                title={moveUpTooltip}
+                title={up?.tooltip}
             />
 
             {/* Down Arrow */}
             <UIFlexibleTableRowActionButton
                 key="down-action"
                 actionName="down"
-                disabled={isTableBottom || tableProps.isContentLoading || isMoveDownDisabled}
+                disabled={isTableBottom || tableProps.isContentLoading || down?.disabled}
                 iconName={UiIcons.ArrowDown}
                 rowNumber={rowIndex}
                 tableId={tableProps.id}
@@ -86,7 +84,7 @@ export function RowActions<T>(props: RowActionsProps<T>): React.ReactElement {
                 onFocus={(): void => {
                     props.onFocusRowAction('down');
                 }}
-                title={moveDownTooltip}
+                title={down?.tooltip}
             />
         </div>
     );

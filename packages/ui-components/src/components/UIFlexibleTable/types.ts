@@ -75,13 +75,19 @@ export interface UIFlexibleTableProps<T> {
     onRenderPrimaryTableActions?: (params: { readonly: boolean }) => React.ReactElement[];
     onRenderSecondaryTableActions?: (params: { readonly: boolean }) => React.ReactElement[];
     onRenderActions?: (params: TableRowEventHandlerParameters<T>) => React.ReactElement[];
-    onRenderReorderActions?: (params: TableRowEventHandlerParameters<T>) => {
-        // allows dynamic disabling row reordering
-        isMoveUpDisabled?: boolean;
-        isMoveDownDisabled?: boolean;
-        moveUpTooltip?: string;
-        moveDownTooltip?: string;
-    };
+    onRenderReorderActions?: (params: TableRowEventHandlerParameters<T>) =>
+        | undefined
+        | {
+              // allows dynamic disabling row reordering
+              up?: {
+                  disabled: boolean;
+                  tooltip?: string;
+              };
+              down?: {
+                  disabled: boolean;
+                  tooltip?: string;
+              };
+          };
     onRenderDeleteAction?: (params: TableRowEventHandlerParameters<T>) => {
         // allows dynamic disabling row deletion
         isDeleteDisabled: boolean;
