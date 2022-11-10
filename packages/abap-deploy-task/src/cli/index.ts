@@ -14,7 +14,7 @@ import { getDeploymentConfig, mergeConfig } from './config';
  */
 export function createCommand(name: 'deploy' | 'undeploy'): Command {
     const command = new Command()
-        .requiredOption('-c, --config <path-to-yaml>', 'Path to config yaml file, default ui5-deploy.yaml')
+        .requiredOption('-c, --config <path-to-yaml>', 'Path to config yaml file')
         .option('-y, --yes', 'yes to all questions', false)
         .option('-v, --verbose', 'verbose log output', false)
         .option('-n, --no-retry', `do not retry if the ${name}ment fails for any reason`, false)

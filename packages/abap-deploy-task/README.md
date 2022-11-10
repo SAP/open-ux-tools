@@ -29,7 +29,7 @@ The `deploy` command executes the same functionality as the `abap-deploy` UI5 ta
 Usage: deploy [options]
 
 Options:
-  -c, --config <path-to-yaml>      Path to config yaml file, default ui5-deploy.yaml
+  -c, --config <path-to-yaml>      Path to config yaml file
   -y, --yes                        yes to all questions (default: false)
   -v, --verbose                    verbose log output (default: false)
   -n, --no-retry                   do not retry if the deployment fails for any reason
@@ -58,7 +58,7 @@ The `undeploy` command allows undeploying a previously deployed application. Thi
 Usage: undeploy [options]
 
 Options:
-  -c, --config <path-to-yaml>      Path to config yaml file, default ui5-deploy.yaml
+  -c, --config <path-to-yaml>      Path to config yaml file
   -y, --yes                        yes to all questions (default: false)
   -v, --verbose                    verbose log output (default: false)
   -n, --no-retry                   do not retry if the undeployment fails for any reason
