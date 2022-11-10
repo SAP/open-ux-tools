@@ -14,14 +14,14 @@ Object {
     "routing": Object {
       "routes": Array [
         Object {
-          "name": "RootEnityListReport",
+          "name": "RootEntityListReport",
           "pattern": ":?query:",
-          "target": "RootEnityListReport",
+          "target": "RootEntityListReport",
         },
       ],
       "targets": Object {
-        "RootEnityListReport": Object {
-          "id": "RootEnityListReport",
+        "RootEntityListReport": Object {
+          "id": "RootEntityListReport",
           "name": "sap.fe.templates.ListReport",
           "options": Object {
             "settings": Object {
@@ -34,8 +34,8 @@ Object {
                   },
                 },
               },
-              "enhanceI18n": "i18n/customRootEnityListReport.properties",
-              "entitySet": "RootEnity",
+              "enhanceI18n": "i18n/customRootEntityListReport.properties",
+              "entitySet": "RootEntity",
               "navigation": Object {},
               "variantManagement": "Page",
             },
@@ -62,18 +62,18 @@ Object {
     "routing": Object {
       "routes": Array [
         Object {
-          "name": "RootEnityListReport",
+          "name": "RootEntityListReport",
           "pattern": ":?query:",
-          "target": "RootEnityListReport",
+          "target": "RootEntityListReport",
         },
       ],
       "targets": Object {
-        "RootEnityListReport": Object {
-          "id": "RootEnityListReport",
+        "RootEntityListReport": Object {
+          "id": "RootEntityListReport",
           "name": "sap.fe.templates.ListReport",
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "RootEntity",
               "navigation": Object {},
             },
           },
