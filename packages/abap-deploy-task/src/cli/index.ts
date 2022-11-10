@@ -33,9 +33,8 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .addOption(new Option('--scp', `true for ${name}ments to ABAP on BTP`).conflicts('destination'))
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
-        .option('--strict-ssl', 'Perform certificate validation on archive url')
-        .option('--test', `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing.`)
-        .option('--no-test', 'Disable test-mode if set via config file.');
+        .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
+        .option('--test', `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing. (use --no-test to deactivate it)`);
 
     if (name === 'deploy') {
         // additional parameters for deployment

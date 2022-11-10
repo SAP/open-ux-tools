@@ -40,9 +40,8 @@ Options:
   --scp                            true for deployments to ABAP on BTP
   --transport <transport-request>  Transport number to record the change in the ABAP system
   --name <bsp-name>                Project name of the app
-  --strict-ssl                     Perform certificate validation on archive url
-  --test                           Run in test mode. ABAP backend reports deployment errors without actually deploying.
-  --no-test                        Disable test-mode if set via config file.
+  --strict-ssl                     Perform certificate validation (use --no-strict-ssl to deactivate it)
+  --test                           Run in test mode. ABAP backend reports deployment errors without actually deploying (use --no-test to deactivate it)
   --package <abap-package>         Package name for deploy target ABAP system
   --description <description>      Project description of the app
   --keep                           Keep a copy of the deployed archive in the project folder.
@@ -70,8 +69,7 @@ Options:
   --scp                            true for undeployments to ABAP on BTP
   --transport <transport-request>  Transport number to record the change in the ABAP system
   --name <bsp-name>                Project name of the app
-  --strict-ssl                      Perform certificate validation on archive url
-  --test                           Run in test mode. ABAP backend reports undeployment errors without actually undeploying.
-  --no-test                        Disable test-mode if set via config file.
+  --strict-ssl                     Perform certificate validation (use --no-strict-ssl to deactivate it)
+  --test                           Run in test mode. ABAP backend reports deployment errors without actually deploying (use --no-test to deactivate it)
   -h, --help                       display help for command
 ```
