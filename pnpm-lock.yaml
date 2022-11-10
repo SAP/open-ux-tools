@@ -95,35 +95,6 @@ importers:
       '@types/yeoman-generator': 5.2.9
       axios: 0.24.0
 
-  packages/abap-deploy-task:
-    specifiers:
-      '@sap-ux/axios-extension': workspace:*
-      '@sap-ux/btp-utils': workspace:*
-      '@sap-ux/logger': workspace:*
-      '@sap-ux/store': workspace:*
-      '@sap-ux/ui5-config': workspace:*
-      '@types/prompts': 2.0.14
-      '@types/yazl': 2.4.2
-      axios: 0.24.0
-      commander: 9.4.0
-      dotenv: 16.0.0
-      prompts: 2.4.2
-      yazl: 2.5.1
-    dependencies:
-      '@sap-ux/axios-extension': link:../axios-extension
-      '@sap-ux/btp-utils': link:../btp-utils
-      '@sap-ux/logger': link:../logger
-      '@sap-ux/store': link:../store
-      '@sap-ux/ui5-config': link:../ui5-config
-      axios: 0.24.0
-      commander: 9.4.0
-      dotenv: 16.0.0
-      prompts: 2.4.2
-      yazl: 2.5.1
-    devDependencies:
-      '@types/prompts': 2.0.14
-      '@types/yazl': 2.4.2
-
   packages/axios-extension:
     specifiers:
       '@sap-ux/btp-utils': workspace:*
@@ -210,6 +181,35 @@ importers:
       axios: 0.24.0
     devDependencies:
       nock: 13.2.1
+
+  packages/deploy-tooling:
+    specifiers:
+      '@sap-ux/axios-extension': workspace:*
+      '@sap-ux/btp-utils': workspace:*
+      '@sap-ux/logger': workspace:*
+      '@sap-ux/store': workspace:*
+      '@sap-ux/ui5-config': workspace:*
+      '@types/prompts': 2.0.14
+      '@types/yazl': 2.4.2
+      axios: 0.24.0
+      commander: 9.4.0
+      dotenv: 16.0.0
+      prompts: 2.4.2
+      yazl: 2.5.1
+    dependencies:
+      '@sap-ux/axios-extension': link:../axios-extension
+      '@sap-ux/btp-utils': link:../btp-utils
+      '@sap-ux/logger': link:../logger
+      '@sap-ux/store': link:../store
+      '@sap-ux/ui5-config': link:../ui5-config
+      axios: 0.24.0
+      commander: 9.4.0
+      dotenv: 16.0.0
+      prompts: 2.4.2
+      yazl: 2.5.1
+    devDependencies:
+      '@types/prompts': 2.0.14
+      '@types/yazl': 2.4.2
 
   packages/environment-check:
     specifiers:
