@@ -38,7 +38,10 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
         .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
-        .option('--test', `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing. (use --no-test to deactivate it)`);
+        .option(
+            '--test',
+            `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing. (use --no-test to deactivate it)`
+        );
 
     if (name === 'deploy') {
         // additional parameters for deployment
