@@ -62,7 +62,7 @@ describe('CustomPage', () => {
     describe('generateCustomPage: different versions or target folder', () => {
         const minimalInput: CustomPage = {
             name: 'CustomPage',
-            entity: 'RootEnity'
+            entity: 'RootEntity'
         };
         test('latest version with minimal input', () => {
             const target = join(testDir, 'minimal-input');
