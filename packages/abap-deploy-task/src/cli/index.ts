@@ -25,7 +25,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
 
     // options to set (or overwrite) values that are otherwise read from the `ui5*.yaml`
     command
-        .addOption(new Option('--destination  <destination>', 'Destination of BTP system').conflicts('url'))
+        .addOption(new Option('--destination  <destination>', 'Destination in SAP BTP pointing to an ABAP system').conflicts('url'))
         .addOption(new Option('--url <target-url>', 'URL of deploy target ABAP system').conflicts('destination'))
         .addOption(
             new Option('--client <sap-client>', 'Client number of deploy target ABAP system').conflicts('destination')
@@ -33,7 +33,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .addOption(new Option('--scp', `true for ${name}ments to ABAP on BTP`).conflicts('destination'))
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
-        .option('--strict-ssl', ' Perform certificate validation on archive url')
+        .option('--strict-ssl', 'Perform certificate validation on archive url')
         .option('--test', `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing.`)
         .option('--no-test', 'Disable test-mode if set via config file.');
 
