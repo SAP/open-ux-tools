@@ -25,7 +25,11 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
 
     // options to set (or overwrite) values that are otherwise read from the `ui5*.yaml`
     command
-        .addOption(new Option('--destination  <destination>', 'Destination in SAP BTP pointing to an ABAP system').conflicts('url'))
+        .addOption(
+            new Option('--destination  <destination>', 'Destination in SAP BTP pointing to an ABAP system').conflicts(
+                'url'
+            )
+        )
         .addOption(new Option('--url <target-url>', 'URL of deploy target ABAP system').conflicts('destination'))
         .addOption(
             new Option('--client <sap-client>', 'Client number of deploy target ABAP system').conflicts('destination')
