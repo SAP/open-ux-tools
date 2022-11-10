@@ -5,7 +5,7 @@ import { attachConnectionHandler, Cookies, CSRF } from '../../src/auth/connectio
 interface AxiosInterceptor<T> {
     fulfilled(response: T);
     rejected?(error: AxiosError);
-};
+}
 
 describe('connection', () => {
     describe('Cookies', () => {
@@ -15,7 +15,7 @@ describe('connection', () => {
                 status: undefined,
                 statusText: undefined,
                 config: undefined,
-                headers: cookies ? { 'set-cookie': cookies } as unknown as AxiosRequestHeaders : undefined
+                headers: cookies ? ({ 'set-cookie': cookies } as unknown as AxiosRequestHeaders) : undefined
                 // Casting to unknown first as the TS compiler complains about `set-cookie` not having the correct type
                 // despite the definition
             };
@@ -41,7 +41,7 @@ describe('connection', () => {
         });
     });
 
-    describe('attachConnectionHandler', () => { 
+    describe('attachConnectionHandler', () => {
         let testProvider: ServiceProvider;
         let respHandlers: AxiosInterceptor<AxiosResponse>[];
         let reqHandlers: AxiosInterceptor<AxiosRequestConfig>[];
@@ -50,12 +50,11 @@ describe('connection', () => {
             testProvider = new ServiceProvider();
             testProvider.defaults = { headers: { common: {} } as HeadersDefaults };
             attachConnectionHandler(testProvider);
-    
+
             respHandlers = (testProvider.interceptors.response as unknown)['handlers'];
-            reqHandlers = (testProvider.interceptors.request as unknown)['handlers']
+            reqHandlers = (testProvider.interceptors.request as unknown)['handlers'];
         });
-        
-        
+
         it('handlers correctly attached', () => {
             expect(reqHandlers.length).toBe(2);
             expect(respHandlers.length).toBe(2);
@@ -80,15 +79,16 @@ describe('connection', () => {
         });
 
         it('response: extract CSRF header even if the backend returned an error', () => {
-            const response = { headers: { [CSRF.ResponseHeaderName]: '~test' }} as unknown as AxiosResponse;
+            const response = { headers: { [CSRF.ResponseHeaderName]: '~test' } } as unknown as AxiosResponse;
             const error = { response, message: 'test' } as AxiosError;
             respHandlers.forEach((handler) => {
                 if (handler.rejected) {
                     expect(() => handler.rejected(error)).toThrow(error);
                 }
             });
-            expect(testProvider.defaults.headers.common[CSRF.RequestHeaderName]).toBe(response.headers[CSRF.ResponseHeaderName])
+            expect(testProvider.defaults.headers.common[CSRF.RequestHeaderName]).toBe(
+                response.headers[CSRF.ResponseHeaderName]
+            );
         });
-
     });
 });
