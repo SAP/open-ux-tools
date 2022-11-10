@@ -1,6 +1,5 @@
 import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
-import { ConnectionError } from './error';
 import detectContentType from 'detect-content-type';
 
 export enum CSRF {
@@ -23,7 +22,7 @@ export class Cookies {
      * @returns cookies object
      */
     public setCookies(response: AxiosResponse): Cookies {
-        if (response.headers && response.headers['set-cookie']) {
+        if (response.headers?.['set-cookie']) {
             response.headers['set-cookie'].forEach((cookieString) => this.addCookie(cookieString));
         }
         return this;
@@ -144,25 +143,33 @@ export function attachConnectionHandler(provider: ServiceProvider) {
     });
 
     // throw error if the user is unauthorized otherwise, remove interceptor if successfully connected
-    const oneTimeRespInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
-        if (response.status === 401) {
-            throw new ConnectionError(response.statusText, response);
-        }
-        // if a redirect to a SAML login page happened try again with disable saml param
-        else if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
-            provider.defaults.params = provider.defaults.params ?? {};
-            provider.defaults.params.saml2 = 'disabled';
-            return provider.request(response.config);
-        } else {
-            throwIfHtmlLoginForm(response);
-            // remember xsrf token
-            if (response.headers?.[CSRF.ResponseHeaderName]) {
-                provider.defaults.headers.common[CSRF.RequestHeaderName] = response.headers[CSRF.ResponseHeaderName];
+    const oneTimeRespInterceptorId = provider.interceptors.response.use(
+        (response: AxiosResponse) => {
+            // if a redirect to a SAML login page happened try again with disable saml param
+            if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
+                provider.defaults.params = provider.defaults.params ?? {};
+                provider.defaults.params.saml2 = 'disabled';
+                return provider.request(response.config);
+            } else {
+                throwIfHtmlLoginForm(response);
+                // remember xsrf token
+                if (response.headers?.[CSRF.ResponseHeaderName]) {
+                    provider.defaults.headers.common[CSRF.RequestHeaderName] =
+                        response.headers[CSRF.ResponseHeaderName];
+                }
+                provider.interceptors.response.eject(oneTimeRespInterceptorId);
+                return response;
             }
-            provider.interceptors.response.eject(oneTimeRespInterceptorId);
-            return response;
+        },
+        (error: AxiosError) => {
+            // remember xsrf token if provided even on error
+            if (error.response.headers?.[CSRF.ResponseHeaderName]) {
+                provider.defaults.headers.common[CSRF.RequestHeaderName] =
+                    error.response.headers[CSRF.ResponseHeaderName];
+            }
+            throw error;
         }
-    });
+    );
 
     // always add cookies to outgoing requests
     provider.interceptors.request.use((request: AxiosRequestConfig) => {
