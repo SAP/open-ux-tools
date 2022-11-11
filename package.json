@@ -42,7 +42,8 @@
         "ci:publish": "changeset publish",
         "run:pretty-quick": "pretty-quick --ignore-path .prettierignore",
         "run:pretty": "prettier --write .",
-        "graph-deps": "nx graph"
+        "graph-deps": "nx graph",
+        "clean:nx:cache": "nx reset"
     },
     "engines": {
         "npm": "please-use-pnpm",
