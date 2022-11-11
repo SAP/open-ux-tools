@@ -1,8 +1,5 @@
 {
-    "include": ["global.d.ts"],
-    "exclude": ["node_modules/"],
     "compilerOptions": {
-        "baseUrl": ".",
         "declaration": true,
         "declarationMap": true,
         "esModuleInterop": true,
@@ -12,11 +9,11 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "noEmit": false,
-        "outDir": "./dist",
         "sourceMap": true,
         "strict": true,
         "strictPropertyInitialization": false,
         "target": "ES6",
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "resolveJsonModule": true
     }
 }
