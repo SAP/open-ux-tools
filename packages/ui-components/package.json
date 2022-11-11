@@ -19,10 +19,9 @@
     ],
     "main": "dist/index.js",
     "scripts": {
-        "clean:dist": "rimraf ./dist ./generators *.tsbuildinfo",
-        "clean": "rimraf ./storybook",
+        "clean": "rimraf dist coverage *.tsbuildinfo storybook",
         "build": "npm-run-all -l -s clean -p build:extension build:copyfiles build:storybook",
-        "build:extension": "tsc  --build ./tsconfig-build.json --pretty",
+        "build:extension": "tsc --pretty",
         "build:copyfiles": "copyfiles --up 1 \"./src/**/*.scss\" ./dist/",
         "lint": "eslint . --ext .ts,.tsx",
         "lint:fix": "eslint --fix",
