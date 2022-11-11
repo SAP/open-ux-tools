@@ -22,7 +22,7 @@ describe('cli/config', () => {
         const config: AbapDeployConfig = {
             app: {
                 name: '~name',
-                desription: '~description',
+                description: '~description',
                 package: '~package',
                 transport: '~transport'
             },
@@ -41,7 +41,7 @@ describe('cli/config', () => {
         test('some overrides', async () => {
             const appOverrides: Partial<CliOptions> = {
                 name: '~new-name',
-                desription: '~new-description',
+                description: '~new-description',
                 package: '~new-package',
                 transport: '~new-transport'
             };

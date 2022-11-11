@@ -127,7 +127,7 @@ async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRep
  */
 async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, config: AbapDeployConfig, logger: Logger) {
     try {
-        await service.deploy(archive, config.app, config.test, config.safe);
+        await service.deploy({ archive, bsp: config.app, testMode: config.test, safeMode: config.safe });
     } catch (e) {
         if (!config.noRetry && isAxiosError(e)) {
             const success = await handleAxiosError(e.response, archive, service, config, logger);
@@ -224,7 +224,7 @@ export async function undeploy(config: AbapDeployConfig, logger: Logger) {
         );
     }
     logger.info(`Starting undeployment${config.test === true ? ' in test mode' : ''}.`);
-    if (await service.undeploy(config.app, config.test)) {
+    if (await service.undeploy({ bsp: config.app, testMode: config.test })) {
         logger.info('Undeployment successful.');
     }
 }

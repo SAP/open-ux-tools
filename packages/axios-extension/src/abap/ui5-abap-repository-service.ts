@@ -3,6 +3,61 @@ import { prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
 
 /**
+ * Required configuration for the BSP hosting an app.
+ */
+export interface BspConfig {
+    /**
+     * Name of the BSP, additionally, the last part of the exposed service path
+     */
+    name: string;
+
+    /**
+     * Optional description of the ABAP development object representing the BSP
+     */
+    description?: string;
+
+    /**
+     * Optional package for the ABAP development object
+     */
+    package?: string;
+
+    /**
+     * Optional transport request to record the changes
+     */
+    transport?: string;
+}
+
+/**
+ * Configuration required for deploying an app.
+ */
+export interface DeployConfig {
+    /**
+     * archive zip archive containing the application files as buffer
+     */
+    archive: Buffer;
+    /**
+     * app application configuration
+     */
+    bsp: BspConfig;
+    /**
+     * if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     */
+    testMode?: boolean;
+    /**
+     * if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
+     */
+    safeMode?: boolean;
+}
+
+/**
+ * Configuration required for undeploying an app.
+ */
+export interface UndeployConfig {
+    bsp: Pick<BspConfig, 'name' | 'transport'>;
+    testMode?: DeployConfig['testMode'];
+}
+
+/**
  * Application information object returned by the UI5 Repository service
  */
 export interface AppInfo {
@@ -11,16 +66,6 @@ export interface AppInfo {
     Description?: string;
     Info?: string;
     ZipArchive?: string;
-}
-
-/**
- * Required configuration to deploy an application using the UI5 Repository service.
- */
-export interface ApplicationConfig {
-    name: string;
-    description?: string;
-    package?: string;
-    transport?: string;
 }
 
 export const abapUrlReplaceMap = new Map([
@@ -85,36 +130,32 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Deploy the given archive either by creating a new BSP or updating an existing one.
      *
-     * @param archive zip archive containing the application files as buffer
-     * @param app application configuration
-     * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
-     * @param safeMode if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
+     * @param config deployment config
+     * @param config.archive zip archive containing the application files as buffer
+     * @param config.bsp BSP configuration
+     * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     * @param config.safeMode if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
      * @returns the Axios response object for futher processing
      */
-    public async deploy(
-        archive: Buffer,
-        app: ApplicationConfig,
-        testMode = false,
-        safeMode?: boolean
-    ): Promise<AxiosResponse> {
-        const info: AppInfo = await this.getInfo(app.name);
+    public async deploy({ archive, bsp, testMode = false, safeMode }: DeployConfig): Promise<AxiosResponse> {
+        const info: AppInfo = await this.getInfo(bsp.name);
         const payload = this.createPayload(
             archive,
-            app.name,
-            app.description || 'Deployed with SAP Fiori tools',
-            info ? info.Package : app.package
+            bsp.name,
+            bsp.description || 'Deployed with SAP Fiori tools',
+            info ? info.Package : bsp.package
         );
         this.log.debug(`Payload:\n${payload}`);
-        const config = this.createConfig(app.transport, testMode, safeMode);
+        const config = this.createConfig(bsp.transport, testMode, safeMode);
         const frontendUrl = this.getAbapFrontendUrl();
         try {
-            const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, app.name, payload, config);
+            const response: AxiosResponse | undefined = await this.updateRepoRequest(!!info, bsp.name, payload, config);
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
             if (response?.headers?.['sap-message']) {
                 prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host: frontendUrl });
             }
             // log url of created/updated app
-            const path = '/sap/bc/ui5_ui5' + (!app.name.startsWith('/') ? '/sap/' : '') + app.name.toLowerCase();
+            const path = '/sap/bc/ui5_ui5' + (!bsp.name.startsWith('/') ? '/sap/' : '') + bsp.name.toLowerCase();
             const query = this.defaults.params?.['sap-client']
                 ? '?sap-client=' + this.defaults.params['sap-client']
                 : '';
@@ -130,23 +171,24 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Undeploy an existing app.
      *
-     * @param app application configuration
-     * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     * @param config undeployment config
+     * @param config.bsp BSP configuration
+     * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
      * @returns the Axios response object for futher processing or undefined if no request is sent
      */
-    public async undeploy(app: ApplicationConfig, testMode = false): Promise<AxiosResponse | undefined> {
-        const config = this.createConfig(app.transport, testMode);
+    public async undeploy({ bsp, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
+        const config = this.createConfig(bsp.transport, testMode);
         const host = this.getAbapFrontendUrl();
         try {
-            const info: AppInfo = await this.getInfo(app.name);
+            const info: AppInfo = await this.getInfo(bsp.name);
             if (info) {
-                const response = await this.deleteRepoRequest(app.name, config);
+                const response = await this.deleteRepoRequest(bsp.name, config);
                 if (response?.headers?.['sap-message']) {
                     prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host });
                 }
                 return response;
             } else {
-                this.log.warn(`Application ${app.name} not found, nothing to undeploy.`);
+                this.log.warn(`Application ${bsp.name} not found, nothing to undeploy.`);
                 return undefined;
             }
         } catch (error) {

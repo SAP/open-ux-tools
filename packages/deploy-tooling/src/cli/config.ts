@@ -1,7 +1,8 @@
 import { UI5Config } from '@sap-ux/ui5-config';
+import type { BspConfig } from '@sap-ux/axios-extension';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join } from 'path';
-import type { AbapDeployConfig, AbapTarget, AbapDescriptor, CliOptions } from '../types';
+import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
 import { NAME } from '../types';
 
 /**
@@ -39,9 +40,9 @@ function mergeFlag(cli?: boolean, file?: boolean): boolean | undefined {
  * @returns the merged config
  */
 export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOptions): Promise<AbapDeployConfig> {
-    const app: AbapDescriptor = {
+    const app: BspConfig = {
         name: options.name ?? taskConfig.app?.name,
-        desription: options.desription ?? taskConfig.app?.desription,
+        description: options.description ?? taskConfig.app?.description,
         'package': options.package ?? taskConfig.app?.package,
         transport: options.transport ?? taskConfig.app?.transport
     };

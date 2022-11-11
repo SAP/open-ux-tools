@@ -8,7 +8,7 @@ describe('ui5', () => {
     const configuration: AbapDeployConfig = {
         app: {
             name: '~name',
-            desription: '~description',
+            description: '~description',
             package: '~package',
             transport: '~transport'
         },
