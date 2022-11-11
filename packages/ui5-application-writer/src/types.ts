@@ -65,6 +65,7 @@ export interface AppOptions {
 
     /**
      * Enable Typescript support and generate all files in Typescript instead of Javascript
+     * Enabling Typescript will disable JavaScript codeAssist if also enabled. Typescript code assist will be used instead
      */
     typescript: boolean;
 
