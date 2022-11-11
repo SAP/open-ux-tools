@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.13
+
+### Patch Changes
+
+-   fdfa554: Disable codeAssist when Typescript is also selected. Since Typescript includes it's own code assist config.
+
 ## 0.17.12
 
 ### Patch Changes
