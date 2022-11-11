@@ -68,7 +68,7 @@ describe('Ui5AbapRepositoryService', () => {
                 )
                 .reply(200);
 
-            const response = await service.deploy({ archive, app: { name: notExistingApp } });
+            const response = await service.deploy({ archive, bsp: { name: notExistingApp } });
             expect(response.data).toBeDefined();
         });
 
@@ -84,7 +84,7 @@ describe('Ui5AbapRepositoryService', () => {
                 )
                 .reply(200);
 
-            const response = await service.deploy({ archive, app: { name: notExistingApp, transport } });
+            const response = await service.deploy({ archive, bsp: { name: notExistingApp, transport } });
             expect(response.data).toBeDefined();
         });
 
@@ -96,7 +96,7 @@ describe('Ui5AbapRepositoryService', () => {
                 )
                 .reply(200);
 
-            const response = await service.deploy({ archive, app: { name: validApp } });
+            const response = await service.deploy({ archive, bsp: { name: validApp } });
             expect(response.data).toBeDefined();
         });
 
@@ -107,7 +107,7 @@ describe('Ui5AbapRepositoryService', () => {
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .replyWithError('Deployment failed');
-            await expect(service.deploy({ archive, app: { name: validApp } })).rejects.toThrowError();
+            await expect(service.deploy({ archive, bsp: { name: validApp } })).rejects.toThrowError();
         });
 
         test('retry deployment on 504', async () => {
@@ -119,7 +119,7 @@ describe('Ui5AbapRepositoryService', () => {
             });
             badService.put = mockPut;
             try {
-                await badService.deploy({ archive, app: { name: validApp } });
+                await badService.deploy({ archive, bsp: { name: validApp } });
                 fail('Function should have thrown an error');
             } catch (error) {
                 expect(error.response?.status).toBe(504);
@@ -136,7 +136,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .reply(200);
             const response = await service.deploy({
                 archive,
-                app: { name: validApp },
+                bsp: { name: validApp },
                 testMode: true,
                 safeMode: false
             });
@@ -149,7 +149,7 @@ describe('Ui5AbapRepositoryService', () => {
             nock(server)
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .reply(200);
-            const response = await service.undeploy({ app: { name: validApp } });
+            const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response.status).toBe(200);
         });
 
@@ -160,7 +160,7 @@ describe('Ui5AbapRepositoryService', () => {
                 })
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .reply(200);
-            const response = await service.undeploy({ app: { name: validApp } });
+            const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response.status).toBe(200);
         });
 
@@ -168,7 +168,7 @@ describe('Ui5AbapRepositoryService', () => {
             nock(server)
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .replyWithError('Failed');
-            await expect(service.undeploy({ app: { name: validApp } })).rejects.toThrowError();
+            await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrowError();
         });
     });
 
