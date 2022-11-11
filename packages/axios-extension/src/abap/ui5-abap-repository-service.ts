@@ -3,6 +3,46 @@ import { prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
 
 /**
+ * Required configuration to deploy an application using the UI5 Repository service.
+ */
+export interface ApplicationConfig {
+    name: string;
+    description?: string;
+    package?: string;
+    transport?: string;
+}
+
+/**
+ * Configuration required for deploying an app.
+ */
+export interface DeployConfig {
+    /**
+     * archive zip archive containing the application files as buffer
+     */
+    archive: Buffer;
+    /**
+     * app application configuration
+     */
+    app: ApplicationConfig;
+    /**
+     * if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     */
+    testMode?: boolean;
+    /**
+     * if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
+     */
+    safeMode?: boolean;
+}
+
+/**
+ * Configuration required for undeploying an app.
+ */
+export interface UndeployConfig {
+    app: Pick<ApplicationConfig, 'name' | 'transport'>;
+    testMode?: DeployConfig['testMode'];
+}
+
+/**
  * Application information object returned by the UI5 Repository service
  */
 export interface AppInfo {
@@ -11,16 +51,6 @@ export interface AppInfo {
     Description?: string;
     Info?: string;
     ZipArchive?: string;
-}
-
-/**
- * Required configuration to deploy an application using the UI5 Repository service.
- */
-export interface ApplicationConfig {
-    name: string;
-    description?: string;
-    package?: string;
-    transport?: string;
 }
 
 export const abapUrlReplaceMap = new Map([
@@ -85,18 +115,14 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Deploy the given archive either by creating a new BSP or updating an existing one.
      *
-     * @param archive zip archive containing the application files as buffer
-     * @param app application configuration
-     * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
-     * @param safeMode if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
+     * @param config deployment config
+     * @param config.archive zip archive containing the application files as buffer
+     * @param config.app application configuration
+     * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     * @param config.safeMode if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
      * @returns the Axios response object for futher processing
      */
-    public async deploy(
-        archive: Buffer,
-        app: ApplicationConfig,
-        testMode = false,
-        safeMode?: boolean
-    ): Promise<AxiosResponse> {
+    public async deploy({ archive, app, testMode = false, safeMode }: DeployConfig): Promise<AxiosResponse> {
         const info: AppInfo = await this.getInfo(app.name);
         const payload = this.createPayload(
             archive,
@@ -130,11 +156,12 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Undeploy an existing app.
      *
-     * @param app application configuration
-     * @param testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     * @param config undeployment config
+     * @param config.app application configuration
+     * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
      * @returns the Axios response object for futher processing or undefined if no request is sent
      */
-    public async undeploy(app: ApplicationConfig, testMode = false): Promise<AxiosResponse | undefined> {
+    public async undeploy({ app, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
         const config = this.createConfig(app.transport, testMode);
         const host = this.getAbapFrontendUrl();
         try {
