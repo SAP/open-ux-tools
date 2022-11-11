@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "1.0.17",
+    "version": "1.0.18",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -31,8 +31,8 @@
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "start-storybook -s ./.storybook/static",
         "build:storybook": "npm-run-all -l -p build:storybook:bundle build:storybook:compile",
-        "build:storybook:bundle": "yarn build-storybook -o ./storybook",
-        "build:storybook:compile": "tsc  --build ./tsconfig-test.json --pretty --dry",
+        "build:storybook:bundle": "build-storybook -o ./storybook",
+        "build:storybook:compile": "tsc  --build ./tsconfig-storybook.json --pretty --dry",
         "test": "jest --ci --forceExit --colors --silent",
         "test-u": "jest --ci --forceExit --colors  --silent -u"
     },
