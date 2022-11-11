@@ -1,8 +1,5 @@
 {
     "extends": ["../../.eslintrc"],
-    "parserOptions": {
-        "project": "./tsconfig.json"
-    },
     "rules": {
         "jsdoc/require-returns": 0,
         "jsdoc/require-param": 0,
