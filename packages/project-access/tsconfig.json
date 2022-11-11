@@ -1,11 +1,9 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src/**/*.ts", "test/**/*.ts"],
+    "include": ["src", "test"],
+    "exclude": ["test/test-data", "test/__snapshots__"],
     "compilerOptions": {
-        "declaration": true,
-        "outDir": "dist",
-        "sourceMap": true,
         "baseUrl": "./src",
-        "resolveJsonModule": true
+        "outDir": "dist"
     }
 }

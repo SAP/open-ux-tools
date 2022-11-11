@@ -44,7 +44,7 @@ export default class ErrorHandler extends UI5Object {
             // Due to batching there can be more than one technical message. However the UX
             // guidelines say "display a single message in a message box" assuming that there
             // will be only one at a time.
-            const errorTitle = resourceBundle.getText(messages.length === 1 ? "errorText" : "multipleErrorsText");
+            const errorTitle = resourceBundle.getText(messages.length === 1 ? "errorText" : "multipleErrorsText") || "";
             this.showServiceError(errorTitle, messages[0].getMessage());
         }, this);
     }
