@@ -1,14 +1,9 @@
 {
     "extends": "./tsconfig.json",
+    "exclude": ["test"],
     "compilerOptions": {
-        "composite": true,
-        "declaration": true,
-        "declarationMap": true,
-        "incremental": true,
         "outDir": "dist",
         "rootDir": "./src",
         "strict": true
-    },
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
-    "exclude": ["dist", "node_modules", "test", "src/**/*.story.tsx", "src/**/*.test.tsx"]
+    }
 }

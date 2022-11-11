@@ -20,7 +20,7 @@ module.exports = {
                 {
                     loader: require.resolve('ts-loader'),
                     options: {
-                        configFile: 'tsconfig-test.json',
+                        configFile: 'tsconfig-storybook.json',
                         transpileOnly: true
                     }
                 }

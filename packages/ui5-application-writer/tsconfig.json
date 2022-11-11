@@ -1,12 +1,9 @@
 {
+    "extends": "../../tsconfig.json",
     "include": ["src", "test"],
+    "exclude": ["test/__snapshots__"],
     "compilerOptions": {
-        "declaration": true,
-        "outDir": "dist",
-        "sourceMap": true,
         "baseUrl": "./src",
-        "resolveJsonModule": true,
-        "target": "ES6"
-    },
-    "extends": "../../tsconfig.json"
+        "outDir": "dist"
+    }
 }
