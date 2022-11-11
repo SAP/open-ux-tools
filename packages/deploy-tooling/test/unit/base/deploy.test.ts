@@ -60,7 +60,12 @@ describe('base/deploy', () => {
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             await deploy(archive, { app, target }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: undefined, safeMode: undefined });
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
             await deploy(archive, { app, target, test: true, safe: false, credentials }, nullLogger);
             expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
         });
@@ -69,7 +74,12 @@ describe('base/deploy', () => {
             mockIsAppStudio.mockReturnValueOnce(true);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             await deploy(archive, { app, target: { destination: '~destination' } }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: undefined, safeMode: undefined });
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
         });
 
         test('No errors locally with ABAP on BTP', async () => {
@@ -86,7 +96,12 @@ describe('base/deploy', () => {
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             await deploy(archive, { app, target: { ...target, scp: true } }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: undefined, safeMode: undefined });
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
         });
 
         test('Handle missing service keys with ABAP on BTP', async () => {
@@ -94,7 +109,12 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             prompts.inject([join(__dirname, '../../test-input/service-keys.json')]);
             await deploy(archive, { app, target: { ...target, scp: true } }, nullLogger);
-            expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: undefined, safeMode: undefined });
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
         });
 
         test('Successful retry after known axios error', async () => {
