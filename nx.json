@@ -1,0 +1,53 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "build:extension",
+          "build:storybook",
+          "build:storybook:bundle"
+        ]
+      }
+    }
+  },
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+    "prod": [
+      "!{projectRoot}/**/*.spec.tsx",
+      "!{projectRoot}/**/*.test.tsx",
+      "!{projectRoot}/**/*.spec.ts",
+      "!{projectRoot}/**/*.test.ts"
+    ]
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "{projectRoot}/dist"
+      ]
+    },
+    "test": {
+      "inputs": ["default", "^prod", "{workspaceRoot}/jest.config.ts"],
+      "outputs": [
+        "{projectRoot}/coverage"
+      ]
+    },
+    "build:extension": {
+      "outputs": [
+        "{projectRoot}/*.vsix"
+      ]
+    },
+    "build:storybook": {
+      "outputs": [
+        "{projectRoot}/storybook"
+      ]
+    }
+  },
+  "defaultBase": "main"
+}
