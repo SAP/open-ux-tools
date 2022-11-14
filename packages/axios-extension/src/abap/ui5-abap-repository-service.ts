@@ -44,7 +44,7 @@ export interface DeployConfig {
      */
     testMode?: boolean;
     /**
-     * if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
+     * if set then the SafeMode url parameter will be set. SafeMode is by default active, to deactivate provide false
      */
     safeMode?: boolean;
 }
