@@ -7,7 +7,9 @@ import type {
     EnvironmentCheckResult,
     MarkdownWriter,
     ResultMessage,
-    ToolsExtensions
+    ToolsExtensions,
+    CatalogServiceResult,
+    SapSystemResults
 } from '../types';
 import { t } from '../i18n';
 
@@ -166,6 +168,33 @@ function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsEx
  * Write the details of one destination.
  *
  * @param writer - markdown writter
+ * @param catalogService - results of catalog service request v2/v4
+ */
+function writeCatalogServiceResults(writer: MarkdownWriter, catalogService: CatalogServiceResult): void {
+    if (catalogService.v2 && Array.isArray(catalogService.v2.results)) {
+        writer.addLine(
+            `✅ &nbsp; ${t('markdownText.v2CatalogReturned')} ${getServiceCountText(
+                countNumberOfServices(catalogService.v2.results)
+            )}`
+        );
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.v2CatalogNotAvailable')}`);
+    }
+    if (catalogService.v4 && Array.isArray(catalogService.v4.results)) {
+        writer.addLine(
+            `✅ &nbsp; ${t('markdownText.v4CatalogReturned')} ${getServiceCountText(
+                countNumberOfServices(catalogService.v4.results)
+            )}`
+        );
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.v4CatalogNotAvailable')}`);
+    }
+}
+
+/**
+ * Write the details of one destination.
+ *
+ * @param writer - markdown writter
  * @param destName - name of the destination
  * @param destDetails - details, like V2/V4 catalog results
  * @param urlServiceType - (optional) type of service
@@ -176,25 +205,10 @@ function writeDestinationDetails(
     destDetails: DestinationResults,
     urlServiceType?: UrlServiceType
 ): void {
-    writer.addH3(t('markdownText.detailsFor', { destName }));
-    if (destDetails.v2 && Array.isArray(destDetails.v2.results)) {
-        writer.addLine(
-            `✅ &nbsp; ${t('markdownText.v2CatalogReturned')} ${getServiceCountText(
-                countNumberOfServices(destDetails.v2.results)
-            )}`
-        );
-    } else {
-        writer.addLine(`🚫 &nbsp; ${t('markdownText.v2CatalogNotAvailable')}`);
-    }
-    if (destDetails.v4 && Array.isArray(destDetails.v4.results)) {
-        writer.addLine(
-            `✅ &nbsp; ${t('markdownText.v4CatalogReturned')} ${getServiceCountText(
-                countNumberOfServices(destDetails.v4.results)
-            )}`
-        );
-    } else {
-        writer.addLine(`🚫 &nbsp; ${t('markdownText.v4CatalogNotAvailable')}`);
-    }
+    writer.addH3(t('markdownText.detailsFor', { systemName: destName }));
+
+    writeCatalogServiceResults(writer, destDetails.catalogService);
+
     if (destDetails.HTML5DynamicDestination) {
         writer.addLine(`✅ &nbsp; ${t('markdownText.html5DynamicDestTrue')}`);
     } else {
@@ -208,6 +222,61 @@ function writeDestinationDetails(
         );
     } else {
         writer.addLine(`🟡 &nbsp; ${t('markdownText.noUrlServiceType')}`);
+    }
+}
+
+/**
+ * Write the details of one SAP system.
+ *
+ * @param writer - markdown writter
+ * @param sapSystemName - name of the SAP system
+ * @param sapSystemDetails - details, like V2/V4 catalog results, ato catalog
+ */
+function writeSapSystemDetails(
+    writer: MarkdownWriter,
+    sapSystemName: string,
+    sapSystemDetails: SapSystemResults
+): void {
+    writer.addH3(t('markdownText.detailsFor', { systemName: sapSystemName }));
+    writeCatalogServiceResults(writer, sapSystemDetails.catalogService);
+
+    if (sapSystemDetails.isAtoCatalog) {
+        writer.addLine(`✅ &nbsp; ${t('markdownText.atoCatalogAvailable')}`);
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.atoCatalogNotAvailable')}`);
+    }
+
+    if (sapSystemDetails.isSapUi5Repo) {
+        writer.addLine(`✅ &nbsp; ${t('markdownText.sapUI5RepoAvailable')}`);
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.sapUI5RepoNotAvailable')}`);
+    }
+
+    if (sapSystemDetails.isTransportRequests) {
+        writer.addLine(`✅ &nbsp; ${t('markdownText.getTransportRequestsAvailable')}`);
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.getTransportRequestsoNotAvailable')}`);
+    }
+}
+
+/**
+ * Write the results for SAP system checks.
+ *
+ * @param writer - markdown writter
+ * @param sapSystemResults - results of SAP system checks that include the catalog services
+ */
+function writeSapSystemResults(
+    writer: MarkdownWriter,
+    sapSystemResults: { [sapSys: string]: SapSystemResults } = {}
+): void {
+    const numberOfSystemDetails = Object.keys(sapSystemResults).length;
+    writer.addH2(`${t('markdownText.sapSystemDetails')} (${numberOfSystemDetails})`);
+    if (numberOfSystemDetails > 0) {
+        for (const sysName of Object.keys(sapSystemResults)) {
+            writeSapSystemDetails(writer, sysName, sapSystemResults[sysName]);
+        }
+    } else {
+        writer.addLine(t('markdownText.noSapSystemDetails'));
     }
 }
 
@@ -311,6 +380,10 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
 
     if (results.requestedChecks?.includes(Check.Destinations)) {
         writeDestinations(writer, results.destinations);
+    }
+
+    if (results.requestedChecks?.includes(Check.SapSystemResults)) {
+        writeSapSystemResults(writer, results.sapSystemResults);
     }
 
     writeMessages(writer, results.messages);

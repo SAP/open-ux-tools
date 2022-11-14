@@ -1,17 +1,19 @@
-import type { Destination as BTPDestination } from '@sap-ux/btp-utils';
+import type { Destination as BTPDestination, ServiceInfo } from '@sap-ux/btp-utils';
 import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
 
 export interface CheckEnvironmentOptions {
     workspaceRoots?: string[];
     destinations?: string[];
+    sapSystems?: string[];
     credentialCallback?: (destination: Destination) => Promise<{ username: string; password: string }>;
 }
 
 export enum Check {
     Environment = 'environment',
     DestResults = 'destinationResults',
-    Destinations = 'destinations'
+    Destinations = 'destinations',
+    SapSystemResults = 'sapSystemResults'
 }
 
 export enum OutputMode {
@@ -87,20 +89,53 @@ interface CatalogResult {
     status?: number;
 }
 
-export interface DestinationResults {
+export interface CatalogServiceResult {
     v2: CatalogResult;
     v4: CatalogResult;
+}
+
+interface SystemResults {
+    catalogService: CatalogServiceResult;
+}
+
+export interface DestinationResults extends SystemResults {
     HTML5DynamicDestination?: boolean;
+}
+
+export interface SapSystemResults extends SystemResults {
+    isAtoCatalog?: boolean; // ATO catalog available
+    isSapUi5Repo?: boolean; // SAPUI5 repository service for deployment available
+    isTransportRequests?: boolean; // Ability to retrieve available Transport Requests
 }
 
 export interface Destination extends BTPDestination {
     UrlServiceType?: UrlServiceType;
 }
 
+interface Credentials {
+    [key: string]: unknown;
+    username?: string;
+    password?: string;
+    serviceKeysContents?: string | ServiceInfo;
+    serviceKeys?: string;
+    refreshToken?: string;
+}
+
+export interface SapSystem {
+    name: string;
+    url: string;
+    client?: string;
+    userDisplayName?: string;
+    credentials?: Credentials;
+    scp?: boolean;
+}
+
 export interface EnvironmentCheckResult {
     environment?: Environment;
     destinations?: Destination[];
     destinationResults?: { [dest: string]: DestinationResults };
+    sapSystems?: SapSystem[];
+    sapSystemResults?: { [system: string]: SapSystemResults };
     requestedChecks?: Check[];
     messages?: ResultMessage[];
 }

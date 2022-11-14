@@ -169,8 +169,8 @@ describe('Destinaton tests, function checkBASDestination()', () => {
         const result = await checkBASDestination(destination as Destination, 'testUsername', 'testPassword');
 
         // Result check
-        expect(result.destinationResults.v2.results).toEqual(['V2_S1', 'V2_S2', 'V2_S3']);
-        expect(result.destinationResults.v4.results).toEqual(v4catalogResponse);
+        expect(result.destinationResults.catalogService.v2.results).toEqual(['V2_S1', 'V2_S2', 'V2_S3']);
+        expect(result.destinationResults.catalogService.v4.results).toEqual(v4catalogResponse);
         expect(result.messages.length).toBeGreaterThan(0);
     });
 

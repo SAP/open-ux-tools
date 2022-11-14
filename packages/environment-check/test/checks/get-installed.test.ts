@@ -129,10 +129,28 @@ describe('Test install functions', () => {
     test('getFioriGenVersion() (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
         const expectedResult = '1.7.5';
+        const output = `some/path/to/lib/node_modules`;
+        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
+        jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
+            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
+        );
+        const result = await getFioriGenVersion();
+        expect(result).toStrictEqual(expectedResult);
+    });
+
+    test('getFioriGenVersion() (npm --location=global WARN BAS)', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        const expectedResult = '1.7.5';
+        const outputWarning = `npm WARN config global --global, --local are deprecated. Use --location=global instead --some/path/to/lib/node_modules`;
+        const output = `some/path/to/lib/node_modules`;
+
+        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(outputWarning);
+        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
 
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
         jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-            `{  "dependencies": { "@sap/generator-fiori": "1.7.5"  }}`
+            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
         );
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);

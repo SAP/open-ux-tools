@@ -1,16 +1,19 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from './destination';
+import { checkBASDestinations, getDestinationsResults } from './destination';
+import { checkSapSystems, getSapSystemsResults } from './sap-systems';
 import { getDestinationsFromWorkspace } from './workspace';
 import { getLogger } from '../logger';
 import { devspace } from '@sap/bas-sdk';
 import type {
-    DestinationResults,
     CheckEnvironmentOptions,
     Destination,
     Environment,
     EnvironmentCheckResult,
     ResultMessage,
-    ToolsExtensions
+    ToolsExtensions,
+    SapSystem,
+    SapSystemResults,
+    DestinationResults
 } from '../types';
 import { Check, DevelopmentEnvironment, Extensions } from '../types';
 import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions } from './get-installed';
@@ -126,91 +129,6 @@ async function getToolsExtensions(): Promise<{
 }
 
 /**
- * Internal function to check a destination.
- *
- * @param destination - the destination to get detailed results for
- * @param credentialCallback - callback in case user credentials are required to query a destination
- * @returns - messages and detailed destination check results
- */
-async function getDestinationResults(
-    destination: Destination,
-    credentialCallback: (destination: Destination) => Promise<{
-        username: string;
-        password: string;
-    }>
-): Promise<{ messages: ResultMessage[]; destResults: DestinationResults }> {
-    const logger = getLogger();
-    let username: string;
-    let password: string;
-
-    if (needsUsernamePassword(destination)) {
-        if (typeof credentialCallback === 'function') {
-            const credentials = await credentialCallback(destination);
-            if (credentials && credentials.username && credentials.password) {
-                username = credentials.username;
-                password = credentials.password;
-            }
-        } else {
-            logger.warn(
-                t('warning.basicAuthRequired', {
-                    destination: destination.Name
-                })
-            );
-        }
-    }
-
-    const destDetails = await checkBASDestination(destination, username, password);
-    logger.push(...destDetails.messages);
-
-    return {
-        messages: logger.getMessages(),
-        destResults: destDetails.destinationResults
-    };
-}
-
-/**
- * Internal function to check a set of destinations (deep dive into them).
- *
- * @param deepDiveDestinations - destinations selected for a closer look
- * @param destinations - array of all destinations that contains url and destination type information
- * @param credentialCallback - callback in case user credentials are required to query a destination
- * @returns - messages and the map of detailed destination check results
- */
-async function getDestinationsResults(
-    deepDiveDestinations: Set<string>,
-    destinations: Destination[],
-    credentialCallback?: (destination: Destination) => Promise<{
-        username: string;
-        password: string;
-    }>
-): Promise<{ messages: ResultMessage[]; destinationResults: { [dest: string]: DestinationResults } }> {
-    const logger = getLogger();
-    const destinationResults: { [dest: string]: DestinationResults } = {};
-    logger.info(
-        deepDiveDestinations.size > 0
-            ? t('info.detailsForDestinations', { destinations: Array.from(deepDiveDestinations).join(', ') })
-            : t('info.noDetailsRequested')
-    );
-
-    for (const deepDiveDestination of Array.from(deepDiveDestinations)) {
-        const checkDest = destinations.find((d) => d.Name === deepDiveDestination);
-        if (checkDest) {
-            const { messages: destMessages, destResults } = await getDestinationResults(checkDest, credentialCallback);
-            logger.push(...destMessages);
-
-            destinationResults[checkDest.Name] = destResults;
-        } else {
-            logger.warn(t('warning.destinationsNotFound', { deepDiveDestination, destNumber: destinations.length }));
-        }
-    }
-
-    return {
-        messages: logger.getMessages(),
-        destinationResults
-    };
-}
-
-/**
  * Check environment includes process.env, list of destinations, details about destinations.
  *
  * @param options - see type CheckEnvironmentOptions, includes destination for deep dive, workspace roots, ...
@@ -220,6 +138,9 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
     const logger = getLogger();
     let destinations: Destination[];
     let destinationResults: { [dest: string]: DestinationResults };
+
+    let sapSystems: SapSystem[];
+    let sapSystemResults: { [dest: string]: SapSystemResults };
 
     const requestedChecks: Check[] = [];
     requestedChecks.push(Check.Environment);
@@ -250,12 +171,27 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
         );
         destinationResults = destResults.destinationResults;
         logger.push(...destResults.messages);
+    } else {
+        const deepDiveSapSystems = options?.sapSystems ? new Set(options.sapSystems) : new Set<string>();
+
+        const savedSystemResults = await checkSapSystems();
+        sapSystems = savedSystemResults.sapSystems;
+        logger.push(...savedSystemResults.messages);
+
+        if (deepDiveSapSystems.size > 0) {
+            requestedChecks.push(Check.SapSystemResults);
+        }
+        const sapSysResults = await getSapSystemsResults(deepDiveSapSystems, sapSystems);
+        sapSystemResults = sapSysResults.systemResults;
+        logger.push(...sapSysResults.messages);
     }
 
     return {
         environment,
         destinations,
         destinationResults,
+        sapSystems,
+        sapSystemResults,
         messages: logger.getMessages(),
         requestedChecks: requestedChecks
     };

@@ -41,6 +41,9 @@ function getOptions(cliArgs: minimist.ParsedArgs): CheckEnvironmentOptions | und
     if (cliArgs.destination) {
         options.destinations = Array.isArray(cliArgs.destination) ? cliArgs.destination : [cliArgs.destination];
     }
+    if (cliArgs.sapSystem) {
+        options.sapSystems = Array.isArray(cliArgs.sapSystem) ? cliArgs.sapSystem : [cliArgs.sapSystem];
+    }
     return Object.keys(options).length > 0 ? options : undefined;
 }
 

@@ -1,21 +1,14 @@
 import type { AxiosRequestConfig } from 'axios';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
 import axios from 'axios';
-import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
+import { getAppStudioProxyURL } from '@sap-ux/btp-utils';
 import { getLogger } from '../logger';
-import { countNumberOfServices, getServiceCountText } from '../formatter';
 import type { Destination, DestinationResults, ResultMessage } from '../types';
-import { Severity, UrlServiceType } from '../types';
+import { UrlServiceType, Severity } from '../types';
 import { t } from '../i18n';
-import { createForDestination, ODataVersion } from '@sap-ux/axios-extension';
-import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
-
-const catalogMessages = {
-    401: (destination: Destination, odataVersion: ODataVersion): string =>
-        t('error.401', { odataVersion, destination: destination.Name }),
-    403: (destination: Destination, odataVersion: ODataVersion): string =>
-        t('error.403', { odataVersion, destination: destination.Name })
-};
+import { checkCatalogServices } from './catalog-service';
+import { createForDestination } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 /**
  * Check a BAS destination, like catalog service v2 & v4.
@@ -31,40 +24,25 @@ export async function checkBASDestination(
     password?: string | undefined
 ): Promise<{ messages: ResultMessage[]; destinationResults: DestinationResults }> {
     const logger = getLogger();
-    logger.info(t('checkingDestination', { destination: destination.Name }));
+    logger.info(t('info.checkingDestination', { destination: destination.Name }));
 
-    const { messages, result: destinationResults } = await checkCatalogServices(destination, username, password);
+    const auth =
+        username !== undefined && password !== undefined
+            ? {
+                  username,
+                  password
+              }
+            : undefined;
 
-    logger.push(...messages);
-    return {
-        messages: logger.getMessages(),
-        destinationResults
+    const axiosConfig: AxiosRequestConfig = {
+        baseURL: destination.Host,
+        auth: auth
     };
-}
 
-/**
- * Checks for services from catalog requests.
- *
- * @param destination sap detination
- * @param username username
- * @param password password
- * @returns Result messages and results of catalog requests
- */
-async function checkCatalogServices(
-    destination: Destination,
-    username?: string | undefined,
-    password?: string | undefined
-): Promise<{ messages: ResultMessage[]; result: DestinationResults }> {
-    const messages: ResultMessage[] = [];
-
-    const v2results = await catalogRequest(ODataVersion.v2, destination, username, password);
-    messages.push(...v2results.messages);
-
-    const v4results = await catalogRequest(ODataVersion.v4, destination, username, password);
-    messages.push(...v4results.messages);
+    const provider: AbapServiceProvider = createForDestination(axiosConfig, destination) as AbapServiceProvider;
+    const { messages, result: catalogServiceResult } = await checkCatalogServices(provider, destination.Name);
 
     const html5DynamicDestination = !!destination['HTML5.DynamicDestination'];
-
     if (!html5DynamicDestination) {
         messages.push({
             severity: Severity.Error,
@@ -72,81 +50,16 @@ async function checkCatalogServices(
         });
     }
 
-    const result: DestinationResults = {
-        v2: { results: v2results.result, status: v2results.responseStatus },
-        v4: { results: v4results.result, status: v4results.responseStatus },
+    const destinationResults: DestinationResults = {
+        catalogService: catalogServiceResult,
         HTML5DynamicDestination: html5DynamicDestination
     };
 
-    return {
-        messages,
-        result
-    };
-}
+    logger.push(...messages);
 
-/**
- * Performs a catalog request for the given odata version and destination.
- *
- * @param odataVersion odataVersion to be used
- * @param destination destination to be checked
- * @param username username
- * @param password password
- * @returns messages, catalog results, response status
- */
-async function catalogRequest(
-    odataVersion: ODataVersion,
-    destination: Destination,
-    username?: string | undefined,
-    password?: string | undefined
-): Promise<{ messages: ResultMessage[]; result: ODataServiceInfo[]; responseStatus: number }> {
-    const logger = getLogger();
-    let result: ODataServiceInfo[];
-    let url: string;
-    let responseStatus: number;
-    try {
-        const auth =
-            username !== undefined && password !== undefined
-                ? {
-                      username,
-                      password
-                  }
-                : undefined;
-
-        const axiosConfig: AxiosRequestConfig = {
-            baseURL: destination.Host,
-            auth: auth
-        };
-
-        const provider: AbapServiceProvider = createForDestination(axiosConfig, destination) as AbapServiceProvider;
-        const catalog = provider.catalog(odataVersion);
-        result = await catalog.listServices();
-        if (result.length > 0) {
-            const numberOfServices = countNumberOfServices(result);
-            logger.info(
-                t('info.numServicesForDestination', {
-                    odataVersion,
-                    destination: destination.Name,
-                    numServicesForDest: getServiceCountText(numberOfServices)
-                })
-            );
-        }
-    } catch (error) {
-        responseStatus = error?.response?.status || error?.cause?.status;
-        logger.error(
-            catalogMessages[responseStatus]
-                ? catalogMessages[responseStatus](destination, odataVersion)
-                : t('error.queryFailure', { odataVersion, destination: destination.Name })
-        );
-        const errorJson = error.toJSON ? error.toJSON() : {};
-        if (errorJson?.config?.auth?.password) {
-            delete errorJson.config.auth.password;
-        }
-        logger.debug(t('error.urlRequestFailure', { url, error: error.message, errorObj: error }));
-    }
     return {
         messages: logger.getMessages(),
-        result,
-        responseStatus
+        destinationResults
     };
 }
 
@@ -186,16 +99,11 @@ export async function checkBASDestinations(): Promise<{
             })
         );
     }
+
     // Destinations request
     try {
-        let retrievedDestinations: Destination[] = [];
-
-        if (isAppStudio()) {
-            const response = await destinationsApi.getDestinations();
-            retrievedDestinations = transformDestination(response);
-        } else {
-            // Destination check for VSCode would go here
-        }
+        const response = await destinationsApi.getDestinations();
+        const retrievedDestinations = transformDestination(response);
 
         for (const destination of retrievedDestinations) {
             destination.UrlServiceType = getUrlServiceTypeForDest(destination);
@@ -284,4 +192,92 @@ function transformDestination(destinationInfo): Destination[] {
         destinations.push(answerDestination);
     }
     return destinations;
+}
+
+/**
+ * Internal function to check a destination.
+ *
+ * @param destination - the destination to get detailed results for
+ * @param credentialCallback - callback in case user credentials are required to query a destination
+ * @returns - messages and detailed destination check results
+ */
+async function getDestinationResults(
+    destination: Destination,
+    credentialCallback: (destination: Destination) => Promise<{
+        username: string;
+        password: string;
+    }>
+): Promise<{ messages: ResultMessage[]; destinationResults: DestinationResults }> {
+    const logger = getLogger();
+    let username: string;
+    let password: string;
+
+    if (needsUsernamePassword(destination)) {
+        if (typeof credentialCallback === 'function') {
+            const credentials = await credentialCallback(destination);
+            if (credentials && credentials.username && credentials.password) {
+                username = credentials.username;
+                password = credentials.password;
+            }
+        } else {
+            logger.warn(
+                t('warning.basicAuthRequired', {
+                    destination: destination.Name
+                })
+            );
+        }
+    }
+
+    const destDetails = await checkBASDestination(destination, username, password);
+    logger.push(...destDetails.messages);
+
+    return {
+        messages: logger.getMessages(),
+        destinationResults: destDetails.destinationResults
+    };
+}
+
+/**
+ * Internal function to check a set of destinations (deep dive into them).
+ *
+ * @param deepDiveDestinations - destinations selected for a closer look
+ * @param destinations - array of all destinations that contains url and destination type information
+ * @param credentialCallback - callback in case user credentials are required to query a destination
+ * @returns - messages and the map of detailed destination check results
+ */
+export async function getDestinationsResults(
+    deepDiveDestinations: Set<string>,
+    destinations: Destination[],
+    credentialCallback?: (destination: Destination) => Promise<{
+        username: string;
+        password: string;
+    }>
+): Promise<{ messages: ResultMessage[]; destinationResults: { [dest: string]: DestinationResults } }> {
+    const logger = getLogger();
+    const destinationResults: { [dest: string]: DestinationResults } = {};
+    logger.info(
+        deepDiveDestinations.size > 0
+            ? t('info.detailsForDestinations', { destinations: Array.from(deepDiveDestinations).join(', ') })
+            : t('info.noDetailsRequested')
+    );
+
+    for (const deepDiveDestination of Array.from(deepDiveDestinations)) {
+        const checkDest = destinations.find((d) => d.Name === deepDiveDestination);
+        if (checkDest) {
+            const { messages: destMessages, destinationResults } = await getDestinationResults(
+                checkDest,
+                credentialCallback
+            );
+            logger.push(...destMessages);
+
+            destinationResults[checkDest.Name] = destinationResults;
+        } else {
+            logger.warn(t('warning.destinationsNotFound', { deepDiveDestination, destNumber: destinations.length }));
+        }
+    }
+
+    return {
+        messages: logger.getMessages(),
+        destinationResults
+    };
 }
