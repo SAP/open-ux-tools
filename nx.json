@@ -1,7 +1,7 @@
 {
   "tasksRunnerOptions": {
     "default": {
-      "runner": "nx/tasks-runners/default",
+      "runner": "@nrwl/nx-cloud",
       "options": {
         "cacheableOperations": [
           "build",
@@ -10,12 +10,15 @@
           "build:extension",
           "build:storybook",
           "build:storybook:bundle"
-        ]
+        ],
+        "accessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU="
       }
     }
   },
   "namedInputs": {
-    "default": ["{projectRoot}/**/*"],
+    "default": [
+      "{projectRoot}/**/*"
+    ],
     "prod": [
       "!{projectRoot}/**/*.spec.tsx",
       "!{projectRoot}/**/*.test.tsx",
@@ -33,7 +36,11 @@
       ]
     },
     "test": {
-      "inputs": ["default", "^prod", "{workspaceRoot}/jest.config.ts"],
+      "inputs": [
+        "default",
+        "^prod",
+        "{workspaceRoot}/jest.config.ts"
+      ],
       "outputs": [
         "{projectRoot}/coverage"
       ]
