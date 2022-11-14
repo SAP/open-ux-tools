@@ -11,7 +11,9 @@
           "build:storybook",
           "build:storybook:bundle"
         ],
-        "accessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU="
+        "accessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU=",
+        "canTrackAnalytics": false,
+        "showUsageWarnings": true
       }
     }
   },
@@ -39,7 +41,8 @@
       "inputs": [
         "default",
         "^prod",
-        "{workspaceRoot}/jest.config.ts"
+        "{workspaceRoot}/jest.base.js",
+        "{projectRoot}/jest.config.js"
       ],
       "outputs": [
         "{projectRoot}/coverage"
