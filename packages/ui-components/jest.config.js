@@ -9,7 +9,7 @@ config.transform = {
 };
 config.globals = {
     'ts-jest': {
-        tsconfig: 'tsconfig-test.json'
+        tsconfig: 'test/tsconfig.json'
     }
 };
 module.exports = config;
