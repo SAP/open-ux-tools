@@ -29,9 +29,7 @@ jobs:
               env:
                   cache-name: cache-pnpm-modules
               with:
-                  path:  |
-                    ~/.pnpm-store
-                    **/node_modules
+                  path: ~/.pnpm-store
                   key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
@@ -74,9 +72,7 @@ jobs:
               env:
                   cache-name: cache-pnpm-modules
               with:
-                  path:  |
-                    ~/.pnpm-store
-                    **/node_modules
+                  path: ~/.pnpm-store
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -122,9 +118,7 @@ jobs:
               env:
                   cache-name: cache-pnpm-modules
               with:
-                  path: |
-                    ~/.pnpm-store
-                    **/node_modules
+                  path: ~/.pnpm-store
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
