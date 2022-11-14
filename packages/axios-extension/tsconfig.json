@@ -7,8 +7,5 @@
         "baseUrl": "./src",
         "strict": false
     },
-    "references": [
-        { "path": "../btp-utils"},
-        { "path": "../logger"}
-    ]
+    "references": [{ "path": "../btp-utils" }, { "path": "../logger" }]
 }

@@ -1,13 +1,14 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "test"],
+    "include": ["src"],
     "compilerOptions": {
         "baseUrl": "./src",
+        "rootDir": "src",
         "outDir": "dist",
-        "strict": false,
         "paths": {
             "types/*": ["types/*"],
             "utils/*": ["utils/*"]
         }
-    }
+    },
+    "references": [{ "path": "../logger" }]
 }

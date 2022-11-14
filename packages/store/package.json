@@ -14,9 +14,9 @@
     "private": false,
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc -p tsconfig-build.json",
+        "build": "pnpm clean && tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf dist coverage",
+        "clean": "rimraf dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
