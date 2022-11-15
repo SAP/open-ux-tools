@@ -2,13 +2,8 @@
     "extends": "../../tsconfig.json",
     "include": ["src"],
     "compilerOptions": {
-        "baseUrl": "./src",
         "rootDir": "src",
-        "outDir": "dist",
-        "paths": {
-            "types/*": ["types/*"],
-            "utils/*": ["utils/*"]
-        }
+        "outDir": "dist"
     },
     "references": [{ "path": "../logger" }]
 }
