@@ -34,7 +34,8 @@
         "^build"
       ],
       "outputs": [
-        "{projectRoot}/dist"
+        "{projectRoot}/dist",
+        "{projectRoot}/storybook"
       ]
     },
     "test": {
