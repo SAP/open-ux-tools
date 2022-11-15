@@ -1,7 +1,7 @@
 {
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/nx-cloud",
+      "runner": "nx/tasks-runners/default",
       "options": {
         "cacheableOperations": [
           "build",
@@ -10,17 +10,12 @@
           "build:extension",
           "build:storybook",
           "build:storybook:bundle"
-        ],
-        "accessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU=",
-        "canTrackAnalytics": false,
-        "showUsageWarnings": true
+        ]
       }
     }
   },
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*"
-    ],
+    "default": ["{projectRoot}/**/*"],
     "prod": [
       "!{projectRoot}/**/*.spec.tsx",
       "!{projectRoot}/**/*.test.tsx",
