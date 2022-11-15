@@ -1,9 +1,12 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "test"],
-    "exclude": ["test/__snapshots__"],
+    "include": ["src", "src/**/*.json"],
     "compilerOptions": {
-        "baseUrl": "./src",
+        "rootDir": "src",
         "outDir": "dist"
-    }
+    },
+    "references": [
+        { "path": "../project-access" },
+        { "path": "../ui5-config" }
+    ]
 }
