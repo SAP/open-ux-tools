@@ -2,6 +2,19 @@ import { AdtService } from './adt-service';
 import type { AdtCategory } from '../../types';
 
 /**
+ * Input parameter for creating a new transport request for an UI5 app object.
+ *
+ * @param packageName Package name for deployment
+ * @param ui5AppName Fiori UI5 app name for deployment
+ * @param description Description of the new transport request to be created
+ */
+export interface NewUi5ObjectRequestParams {
+    packageName: string;
+    ui5AppName: string;
+    description: string;
+}
+
+/**
  * TransportRequestService implements ADT requests for creating a new transport request number
  * that can be used for deploying Fiori project to ABAP backend.
  */
@@ -25,12 +38,10 @@ export class TransportRequestService extends AdtService {
     /**
      * TransportRequestService API function to create a new transport number.
      *
-     * @param packageName Package name for deployment
-     * @param ui5AppName Fiori UI5 app name for deployment
-     * @param description Description of the new transport request to be created
+     * @param reqParam Request parameter for creating a new transport request for an UI5 app object.
      * @returns Newly created transport request number
      */
-    public async createTransportRequest(packageName: string, ui5AppName: string, description: string): Promise<string> {
+    public async createTransportRequest(reqParam: NewUi5ObjectRequestParams): Promise<string> {
         const acceptHeaders = {
             headers: {
                 Accept: 'text/plain',
@@ -45,9 +56,9 @@ export class TransportRequestService extends AdtService {
                     <asx:values>
                         <DATA>
                             <OPERATION>I</OPERATION>
-                            <DEVCLASS>${packageName}</DEVCLASS>
-                            <REQUEST_TEXT>${description}</REQUEST_TEXT>
-                            <REF>/sap/bc/adt/filestore/ui5-bsp/objects/${ui5AppName}/$create</REF>
+                            <DEVCLASS>${reqParam.packageName}</DEVCLASS>
+                            <REQUEST_TEXT>${reqParam.description}</REQUEST_TEXT>
+                            <REF>/sap/bc/adt/filestore/ui5-bsp/objects/${reqParam.ui5AppName}/$create</REF>
                         </DATA>
                     </asx:values>
                 </asx:abap>

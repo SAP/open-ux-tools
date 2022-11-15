@@ -120,7 +120,11 @@ describe('Create new transport number', () => {
             .replyWithFile(200, join(__dirname, 'mockResponses/transportRequest-1.xml'));
         const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
         expect(
-            await transportRequestService.createTransportRequest('dummyPackage', 'dummyAppName', dummyComment)
+            await transportRequestService.createTransportRequest({
+                packageName: 'dummyPackage',
+                ui5AppName: 'dummyAppName',
+                description: dummyComment
+            })
         ).toStrictEqual('EC1K900436');
     });
 
@@ -132,7 +136,11 @@ describe('Create new transport number', () => {
             .reply(200, 'unknown');
         const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
         expect(
-            await transportRequestService.createTransportRequest('dummyPackage', 'dummyAppName', dummyComment)
+            await transportRequestService.createTransportRequest({
+                packageName: 'dummyPackage',
+                ui5AppName: 'dummyAppName',
+                description: dummyComment
+            })
         ).toStrictEqual(null);
     });
 });
