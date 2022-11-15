@@ -24,6 +24,7 @@ export interface ODataError {
  */
 export class ODataRequestError extends Error {
     /**
+     * Helper function to check if a parsed OData response contains an error.
      *
      * @param odata odata object
      * @returns boolean
@@ -37,11 +38,13 @@ export class ODataRequestError extends Error {
     }
 
     /**
+     * Constructor extracting message and code from the error and putting them into an error message.
      *
      * @param responseData response Data
      */
     constructor(responseData: unknown) {
         const error: ODataError = responseData['error'];
         super(`${error.message} (${error.code})`);
+        this.name = this.constructor.name;
     }
 }
