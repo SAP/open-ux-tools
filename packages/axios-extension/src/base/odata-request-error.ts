@@ -1,7 +1,7 @@
 import type { AxiosError } from 'axios';
 
 /**
- * Casts an unknown error to an AxiosError.
+ * Type guard to narrow an unknown exception to the AxiosError type if it is compatible.
  *
  * @param e unknown error
  * @returns exception cast to AxiosError if it is one
