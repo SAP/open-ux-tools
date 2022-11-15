@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.7.0
+
+### Minor Changes
+
+-   63ad559: bump bas-sdk version
+
 ## 0.6.1
 
 ### Patch Changes
