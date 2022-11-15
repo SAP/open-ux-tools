@@ -1,10 +1,8 @@
 import type { EnvironmentCheckResult } from '../../src';
-import { Check } from '../../src';
-import { convertResultsToMarkdown, UrlServiceType } from '../../src';
+import { Check, convertResultsToMarkdown, UrlServiceType } from '../../src';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 jest.mock('@sap-ux/btp-utils', () => ({
-    ...(jest.requireActual('@sap-ux/btp-utils') as object),
     isAppStudio: jest.fn()
 }));
 
@@ -15,44 +13,54 @@ const requestedChecksSet = [Check.Environment, Check.Destinations, Check.DestRes
 const data = {
     destinationResults: {
         ABC: {
-            v2: { results: [] },
-            v4: {},
+            catalogService: {
+                v2: { results: [] },
+                v4: {}
+            },
             HTML5DynamicDestination: true
         },
         DEF: {
-            v2: { results: [] },
-            v4: {},
+            catalogService: {
+                v2: { results: [] },
+                v4: {}
+            },
             HTML5DynamicDestination: true
         },
         JUST_WRONG: {
-            v2: { results: [] },
-            v4: {},
+            catalogService: {
+                v2: { results: [] },
+                v4: {}
+            },
             HTML5DynamicDestination: true
         },
         SYS: {
-            v2: {
-                results: [
-                    {
-                        id: 'SERVICE_ID',
-                        name: 'SERVICE_NAME',
-                        path: 'odata/SERVICE',
-                        odataVersion: '2',
-                        serviceVersion: '2'
-                    },
-                    {
-                        id: 'OTHER_SERVICE_ID',
-                        name: 'OTHER_SERVICE_NAME',
-                        path: '/odata/CATALOGSERVICE;v=2/ServiceCollection',
-                        serviceVersion: '2',
-                        odataVersion: '2'
-                    }
-                ]
-            },
-            v4: {}
+            catalogService: {
+                v2: {
+                    results: [
+                        {
+                            id: 'SERVICE_ID',
+                            name: 'SERVICE_NAME',
+                            path: 'odata/SERVICE',
+                            odataVersion: '2',
+                            serviceVersion: '2'
+                        },
+                        {
+                            id: 'OTHER_SERVICE_ID',
+                            name: 'OTHER_SERVICE_NAME',
+                            path: '/odata/CATALOGSERVICE;v=2/ServiceCollection',
+                            serviceVersion: '2',
+                            odataVersion: '2'
+                        }
+                    ]
+                },
+                v4: {}
+            }
         },
         XYZ: {
-            v2: { results: [] },
-            v4: {},
+            catalogService: {
+                v2: { results: [] },
+                v4: {}
+            },
             HTML5DynamicDestination: true
         }
     },
@@ -207,7 +215,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check destination details with no v2 or v4 service', () => {
         const result = convertResultsToMarkdown({
-            destinationResults: { ABC: { v2: {}, v4: {} } },
+            destinationResults: { ABC: { catalogService: { v2: {}, v4: {} } } },
             requestedChecks: requestedChecksSet
         });
         expect(result).toMatch('V2 catalog service not available');
@@ -217,9 +225,11 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         const result = convertResultsToMarkdown({
             destinationResults: {
                 ABC: {
-                    v2: {},
-                    v4: {
-                        results: []
+                    catalogService: {
+                        v2: {},
+                        v4: {
+                            results: []
+                        }
                     }
                 }
             },
@@ -233,11 +243,13 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         const result = convertResultsToMarkdown({
             destinationResults: {
                 ABC: {
-                    v2: {
-                        results: []
-                    },
-                    v4: {
-                        results: []
+                    catalogService: {
+                        v2: {
+                            results: []
+                        },
+                        v4: {
+                            results: []
+                        }
                     }
                 }
             },

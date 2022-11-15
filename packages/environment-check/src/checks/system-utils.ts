@@ -75,7 +75,7 @@ export async function checkTransportRequests(
     let isTransportRequests = false;
     try {
         const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        if (typeof adtService?.getTransportRequests === 'function') {
+        if (adtService?.getTransportRequests && typeof adtService.getTransportRequests === 'function') {
             isTransportRequests = true;
             logger.info(t('info.getTransportRequestsAvailable'));
         } else {

@@ -6,7 +6,7 @@ import { t } from '../i18n';
 import { checkCatalogServices } from './catalog-service';
 import { AbapCloudEnvironment, createForAbap, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { checkAtoCatalog, checkUi5AbapRepository, checkTransportRequests } from './system-info';
+import { checkAtoCatalog, checkUi5AbapRepository, checkTransportRequests } from './system-utils';
 
 /**
  * Internal function to create a service provider.
