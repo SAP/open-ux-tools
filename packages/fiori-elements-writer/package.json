@@ -13,8 +13,8 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rimraf dist && tsc -p tsconfig-build.json",
-        "clean": "rimraf dist test/test-output coverage",
+        "build": "tsc --build",
+        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
