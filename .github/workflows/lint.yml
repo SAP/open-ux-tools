@@ -33,9 +33,7 @@ jobs:
         env:
             cache-name: cache-pnpm-modules
         with:
-            path:  |
-                    ~/.pnpm-store
-                    **/node_modules/.cache/nx/
+            path: ~/.pnpm-store
             key: ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
             restore-keys: |
                 ${{ matrix.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
