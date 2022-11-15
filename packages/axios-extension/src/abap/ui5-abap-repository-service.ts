@@ -1,6 +1,7 @@
-import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
+import { isAxiosError } from 'base/odata-request-error';
 
 /**
  * Required configuration for the BSP hosting an app.
@@ -372,9 +373,9 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param e.error error from Axios
      * @param e.host hostname
      */
-    protected logError({ error, host }: { error: AxiosError; host?: string }): void {
+    protected logError({ error, host }: { error: Error; host?: string }): void {
         this.log.error(error.message);
-        if (error.isAxiosError && error.response?.data) {
+        if (isAxiosError(error) && error.response?.data) {
             if (error.response.data['error']) {
                 prettyPrintError({ error: error.response.data['error'], host, log: this.log });
             } else {
