@@ -117,7 +117,7 @@ describe('Create new transport number', () => {
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .post(AdtServices.TRANSPORT_REQUEST)
-            .replyWithFile(200, join(__dirname, 'mockResponses/transportRequest-1.xml'));
+            .replyWithFile(200, join(__dirname, 'mockResponses/transportRequest-1.txt'));
         const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
         expect(
             await transportRequestService.createTransportRequest({

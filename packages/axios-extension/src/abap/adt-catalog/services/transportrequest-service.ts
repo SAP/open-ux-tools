@@ -3,14 +3,19 @@ import type { AdtCategory } from '../../types';
 
 /**
  * Input parameter for creating a new transport request for an UI5 app object.
- *
- * @param packageName Package name for deployment
- * @param ui5AppName Fiori UI5 app name for deployment
- * @param description Description of the new transport request to be created
  */
 export interface NewUi5ObjectRequestParams {
+    /**
+     * Package name for deployment
+     */
     packageName: string;
+    /**
+     * Fiori UI5 app name for deployment
+     */
     ui5AppName: string;
+    /**
+     * Description of the new transport request to be created
+     */
     description: string;
 }
 
