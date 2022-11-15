@@ -206,7 +206,6 @@ importers:
       '@sap-ux/logger': link:../logger
       '@sap-ux/ui5-config': link:../ui5-config
       '@sap/bas-sdk': 3.1.0
-      '@types/minimist': 1.2.2
       archiver: 5.3.0
       axios: 0.24.0
       findit2: 2.2.3
@@ -216,6 +215,7 @@ importers:
       yamljs: 0.3.0
     devDependencies:
       '@types/archiver': 5.1.1
+      '@types/minimist': 1.2.2
       '@types/prompts': 2.0.14
       '@types/vscode': 1.39.0
 
@@ -4503,6 +4503,7 @@ packages:
 
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
+    dev: true
 
   /@types/ms/0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
