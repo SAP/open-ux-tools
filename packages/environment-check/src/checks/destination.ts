@@ -191,6 +191,7 @@ function transformDestination(destinationInfo): Destination[] {
 
         destinations.push(answerDestination);
     }
+
     return destinations;
 }
 
