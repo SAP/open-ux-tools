@@ -55,7 +55,7 @@ async function addMockserverConfig(
         const webappPath = await getWebappPath(basePath);
         const config: MockserverConfig = { webappPath };
         if (interactive) {
-            const questions = await getMockserverConfigQuestions(webappPath);
+            const questions = await getMockserverConfigQuestions({ webappPath });
             config.ui5MockYamlConfig = await prompt(questions);
         }
         const fs = await generateMockserverConfig(basePath, config);
