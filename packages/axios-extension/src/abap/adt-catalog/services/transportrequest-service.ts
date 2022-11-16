@@ -6,11 +6,12 @@ import type { AdtCategory } from '../../types';
  */
 export interface NewUi5ObjectRequestParams {
     /**
-     * Package name for deployment
+     * A valid package name is required to create a new transport request
      */
     packageName: string;
     /**
-     * Fiori UI5 app name for deployment
+     * Name of a Fiori UI5 app to be deployed.
+     * It is acceptable to use a new app name that does not exist.
      */
     ui5AppName: string;
     /**

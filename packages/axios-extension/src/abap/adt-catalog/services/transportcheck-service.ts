@@ -7,7 +7,7 @@ import { DOMParser } from '@xmldom/xmldom';
 
 /**
  * TransportChecksService implements ADT requests for fetching a list of available transport requests
- * for a given package name and a give app name.
+ * for a given package name and a given app name.
  */
 export class TransportChecksService extends AdtService {
     /**
