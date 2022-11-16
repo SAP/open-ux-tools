@@ -13,13 +13,13 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc -p tsconfig-build.json",
-        "clean": "rimraf dist test/test-output",
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "watch": "tsc --watch"
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "files": [
         "LICENSE",

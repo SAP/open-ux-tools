@@ -1,8 +1,11 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "src/**/*.json", "test"],
-    "exclude": ["test/test-input"],
+    "include": ["src", "src/**/*.json"],
     "compilerOptions": {
+        "rootDir": "src",
         "outDir": "dist"
-    }
+    },
+    "references": [
+        { "path": "../project-access" }
+    ]
 }

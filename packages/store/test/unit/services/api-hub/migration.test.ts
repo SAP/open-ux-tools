@@ -1,6 +1,6 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import type { DataProvider } from 'data-provider';
-import type { ApiHubSettings, ApiHubSettingsKey } from 'index';
+import type { DataProvider } from '../../../../src/data-provider';
+import type { ApiHubSettings, ApiHubSettingsKey } from '../../../../src';
 import {
     LEGACY_API_HUB_API_KEY,
     LEGACY_API_HUB_API_SERVICE,

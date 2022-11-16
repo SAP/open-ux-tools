@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.0.21
+
+### Patch Changes
+
+-   a1ec78c: New icon for Foreign Key and 2 new icons added - Guided Answers and Chat Bubbles
+
+## 1.0.20
+
+### Patch Changes
+
+-   d5431e7: Update to Info icon svg made larger
+
+## 1.0.19
+
+### Patch Changes
+
+-   4ab13f2: UIFlexiblaTeble row reordering restricitions support, tooltips for cell and row headers and reordering actions
+
 ## 1.0.18
 
 ### Patch Changes

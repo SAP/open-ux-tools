@@ -18,6 +18,6 @@ module.exports = {
             }
         ]
     ],
-    modulePathIgnorePatterns: ['<rootDir>/dist'],
+    modulePathIgnorePatterns: ['<rootDir>/dist', '<rootDir>/coverage'],
     verbose: true
 };
