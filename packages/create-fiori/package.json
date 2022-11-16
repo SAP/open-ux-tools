@@ -19,8 +19,8 @@
         "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     },
     "scripts": {
-        "build": "pnpm clean && tsc",
-        "clean": "rimraf dist",
+        "build": "tsc --build",
+        "clean": "rimraf dist coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
@@ -38,7 +38,6 @@
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "chalk": "4.1.2",
-        "colorts": "0.1.63",
         "commander": "9.4.0",
         "diff": "5.1.0",
         "prompts": "2.4.2"

@@ -197,7 +197,6 @@ importers:
       '@types/mem-fs-editor': 7.0.1
       '@types/prompts': 2.0.14
       chalk: 4.1.2
-      colorts: 0.1.63
       commander: 9.4.0
       diff: 5.1.0
       prompts: 2.4.2
@@ -206,7 +205,6 @@ importers:
       '@sap-ux/mockserver-config-writer': link:../mockserver-config-writer
       '@sap-ux/project-access': link:../project-access
       chalk: 4.1.2
-      colorts: 0.1.63
       commander: 9.4.0
       diff: 5.1.0
       prompts: 2.4.2
@@ -6961,11 +6959,6 @@ packages:
     dependencies:
       color: 3.2.1
       text-hex: 1.0.0
-    dev: false
-
-  /colorts/0.1.63:
-    resolution: {integrity: sha512-prWZKocUjLYvt9Jx4j+KEkeQSm9rvGA2ZB90Je6odMyXPthpb1pTW9/0RxUZ/CRXc+DsydMLOQIrDBgdx5jjOg==}
-    engines: {node: '>=8.1.90'}
     dev: false
 
   /combined-stream/1.0.8:

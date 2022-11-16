@@ -1,6 +1,6 @@
 import { diffJson, diffTrimmedLines } from 'diff';
 import type { Change } from 'diff';
-import color from 'colorts';
+import { green, grey, red } from 'chalk';
 import { getLogger } from './logger';
 
 /**
@@ -39,11 +39,12 @@ function getDiffResultString(diffChanges: Change[]): string {
     let diffResults: string = '';
     for (const diffChange of diffChanges) {
         if (diffChange.added) {
-            diffResults += color(diffChange.value).green.toString();
+            diffResults += green(diffChange.value);
         } else if (diffChange.removed) {
-            diffResults += color(diffChange.value).red.toString();
+            // diffResults += color(diffChange.value).red.toString();
+            diffResults += red(diffChange.value);
         } else {
-            diffResults += color(diffChange.value).grey.toString();
+            diffResults += grey(diffChange.value);
         }
     }
     return diffResults;
