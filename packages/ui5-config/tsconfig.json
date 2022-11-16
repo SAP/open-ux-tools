@@ -1,9 +1,9 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "test"],
-    "exclude": ["test/__snapshots__"],
+    "include": ["src"],
     "compilerOptions": {
-        "baseUrl": "./src",
+        "rootDir": "src",
         "outDir": "dist"
-    }
+    },
+    "references": [{ "path": "../yaml" }]
 }

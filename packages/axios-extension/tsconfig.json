@@ -1,9 +1,14 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "test"],
+    "include": ["src"],
     "compilerOptions": {
+        "rootDir": "src",
         "outDir": "dist",
         "baseUrl": "./src",
         "strict": false
-    }
+    },
+    "references": [
+        { "path": "../btp-utils" }, 
+        { "path": "../logger" }
+    ]
 }
