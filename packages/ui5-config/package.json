@@ -13,9 +13,9 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc -p tsconfig-build.json",
+        "build": "tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf dist test/test-output coverage",
+        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
