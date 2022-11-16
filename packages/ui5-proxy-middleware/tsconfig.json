@@ -1,13 +1,22 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "src/**/*.json"],
+    "include": [
+        "src",
+        "src/**/*.json"
+    ],
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist"
     },
     "references": [
-        { "path": "../logger" }, 
-        { "path": "../project-access" }, 
-        { "path": "../ui5-config" }
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../ui5-config"
+        }
     ]
 }
