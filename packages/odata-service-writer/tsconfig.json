@@ -1,10 +1,12 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "test"],
-    "exclude": ["test/test-data", "test/__snapshots__"],
+    "include": ["src", "src/**/*.json"],
     "compilerOptions": {
-        "baseUrl": "./src",
+        "rootDir": "src",
         "outDir": "dist",
         "noImplicitAny": false
-    }
+    },
+    "references": [
+        { "path": "../ui5-config" }
+    ]
 }

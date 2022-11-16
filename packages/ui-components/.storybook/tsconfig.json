@@ -4,5 +4,5 @@
         "noImplicitThis": false,
         "rootDir": "."
     },
-    "include": ["src", "test", "stories"]
+    "include": ["stories"]
 }

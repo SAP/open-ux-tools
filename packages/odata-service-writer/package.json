@@ -13,15 +13,14 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc -p tsconfig-build.json",
-        "clean": "rimraf dist test/test-output coverage",
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-        "test:local": "node -r ts-node/register test/index.ts",
-        "watch": "tsc --watch",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },

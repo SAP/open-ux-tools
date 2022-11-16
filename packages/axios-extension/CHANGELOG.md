@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.12.0
+
+### Minor Changes
+
+-   116ff5e: Changing API for deployment to be more flexible for different consumer use cases
+
 ## 0.11.1
 
 ### Patch Changes
