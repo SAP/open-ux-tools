@@ -5,14 +5,14 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/packages/create-fiori"
+        "directory": "packages/create-fiori"
     },
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acreate-fiori"
     },
     "license": "Apache-2.0",
     "bin": {
-        "create-fiori": "./dist/create-fiori.js"
+        "create-fiori": "./dist/index.js"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",

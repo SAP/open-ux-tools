@@ -1,1 +1,1 @@
-export { handleCreateFioriCommand } from './create-fiori-handler';
+export { handleCreateFioriCommand } from './create-fiori';
