@@ -27,7 +27,7 @@ export default class ListSelector extends UI5Object {
         this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, list: List) {
-                    list.getBinding("items").attachEventOnce("dataReceived",
+                    list.getBinding("items")?.attachEventOnce("dataReceived",
                         function (this: ListSelector) {
                             if (this.list.getItems().length) {
                                 resolve({ list });

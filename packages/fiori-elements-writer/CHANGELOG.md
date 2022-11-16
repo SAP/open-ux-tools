@@ -1,5 +1,50 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.8.4
+
+### Patch Changes
+
+-   Updated dependencies [fdfa554]
+    -   @sap-ux/ui5-application-writer@0.17.13
+
+## 0.8.3
+
+### Patch Changes
+
+-   Updated dependencies [b0553a0]
+    -   @sap-ux/fe-fpm-writer@0.18.0
+
+## 0.8.2
+
+### Patch Changes
+
+-   Updated dependencies [964ab8e]
+    -   @sap-ux/ui5-application-writer@0.17.12
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/ui5-config@0.16.0
+    -   @sap-ux/odata-service-writer@0.14.13
+    -   @sap-ux/ui5-application-writer@0.17.11
+    -   @sap-ux/fe-fpm-writer@0.17.8
+    -   @sap-ux/ui5-test-writer@0.1.4
+
+## 0.8.0
+
+### Minor Changes
+
+-   287439e: update trusted hosts
+
+## 0.7.15
+
+### Patch Changes
+
+-   Updated dependencies [703dc96]
+    -   @sap-ux/fe-fpm-writer@0.17.8
+
 ## 0.7.14
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @sap-ux/ui5-config
 
+## 0.16.0
+
+### Minor Changes
+
+-   d760b69: Add functionality to set metadata, type, and update custom middleware
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/yaml@0.13.0
+
 ## 0.15.4
 
 ### Patch Changes

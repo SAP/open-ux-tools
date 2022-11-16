@@ -1,5 +1,24 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.13
+
+### Patch Changes
+
+-   fdfa554: Disable codeAssist when Typescript is also selected. Since Typescript includes it's own code assist config.
+
+## 0.17.12
+
+### Patch Changes
+
+-   964ab8e: Increased best (recommended) version of UI5 types modules to latest LTS version.
+
+## 0.17.11
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/ui5-config@0.16.0
+
 ## 0.17.10
 
 ### Patch Changes

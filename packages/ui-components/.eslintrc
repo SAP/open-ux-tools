@@ -2,7 +2,7 @@
     "extends": ["../../.eslintrc", "plugin:react/recommended"],
     "parserOptions": {
         "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
-        "project": "./tsconfig-test.json"
+        "project": "./tsconfig-storybook.json"
     },
     "overrides": [
         {

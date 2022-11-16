@@ -1,5 +1,31 @@
 # @sap-ux/environment-check
 
+## 0.7.0
+
+### Minor Changes
+
+-   63ad559: bump bas-sdk version
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/ui5-config@0.16.0
+
+## 0.6.0
+
+### Minor Changes
+
+-   be7d36c: fix error retreiving process versions
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [703dc96]
+    -   @sap-ux/axios-extension@0.11.1
+
 ## 0.5.0
 
 ### Minor Changes

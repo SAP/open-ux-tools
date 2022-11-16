@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.0.19
+
+### Patch Changes
+
+-   4ab13f2: UIFlexiblaTeble row reordering restricitions support, tooltips for cell and row headers and reordering actions
+
+## 1.0.18
+
+### Patch Changes
+
+-   d893805: fix: transparent splitter issue, apply lost background color variable for splitter component
+
+## 1.0.17
+
+### Patch Changes
+
+-   e4a9572: Update dependencies
+
 ## 1.0.16
 
 ### Patch Changes

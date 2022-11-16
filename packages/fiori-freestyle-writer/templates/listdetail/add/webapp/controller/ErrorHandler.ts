@@ -45,7 +45,7 @@ export default class ErrorHandler extends UI5Object {
         }
         this.messageOpen = true;
         MessageBox.error(
-            ((this.component.getModel("i18n") as ResourceModel).getResourceBundle() as ResourceBundle).getText("errorText"),
+            ((this.component.getModel("i18n") as ResourceModel).getResourceBundle() as ResourceBundle).getText("errorText") || "",
             {
                 id: "serviceErrorMessageBox",
                 details: (event.getParameters() as XMLHttpRequest['response']).response,

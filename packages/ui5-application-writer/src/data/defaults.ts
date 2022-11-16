@@ -61,7 +61,7 @@ export const enum UI5_DEFAULT {
     OPENUI5_CDN = 'https://openui5.hana.ondemand.com',
     TYPES_VERSION_SINCE = '1.76.0',
     TYPES_VERSION_PREVIOUS = '1.71.18',
-    TYPES_VERSION_BEST = '1.102.9',
+    TYPES_VERSION_BEST = '1.108.0',
     ESM_TYPES_VERSION_SINCE = '1.90.0',
     MANIFEST_VERSION = '1.12.0',
     BASE_COMPONENT = 'sap/ui/core/UIComponent'
