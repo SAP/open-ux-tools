@@ -1,6 +1,5 @@
 {
     "extends": ["../../.eslintrc"],
-    "parserOptions": { "project": "./tsconfig.json" },
     "rules": {
         "quote-props": 0
     }
