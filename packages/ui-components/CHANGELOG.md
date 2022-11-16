@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.20
+
+### Patch Changes
+
+-   d5431e7: Update to Info icon svg made larger
+
 ## 1.0.19
 
 ### Patch Changes
