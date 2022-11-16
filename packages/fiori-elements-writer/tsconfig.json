@@ -1,9 +1,28 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src", "test"],
-    "exclude": ["test/sample", "test/__snapshots__"],
+    "include": [
+        "src",
+        "src/**/*.json"
+    ],
     "compilerOptions": {
-        "baseUrl": "./src",
+        "rootDir": "src",
         "outDir": "dist"
-    }
+    },
+    "references": [
+        {
+            "path": "../fe-fpm-writer"
+        },
+        {
+            "path": "../odata-service-writer"
+        },
+        {
+            "path": "../ui5-application-writer"
+        },
+        {
+            "path": "../ui5-config"
+        },
+        {
+            "path": "../ui5-test-writer"
+        }
+    ]
 }

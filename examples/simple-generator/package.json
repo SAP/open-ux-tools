@@ -8,9 +8,9 @@
     "scripts": {
         "install:yo": "npm install -g yo",
         "start": "yo ./generators/app",
-        "build": "pnpm clean && tsc",
+        "build": "pnpm clean && tsc --build",
         "watch": "tsc --watch",
-        "clean": "rimraf generators coverage",
+        "clean": "rimraf generators coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix"
