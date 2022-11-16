@@ -1,0 +1,33 @@
+{
+    "prompts": {
+        "chart": {
+            "id": "Enter an ID for the chart building block",
+            "contextPath": "Enter the context path used in the page",
+            "metaPath": "Enter the relative path of the property in the meta model",
+            "filterBar": "Enter the ID of the filter bar building block associated with the chart",
+            "personalization": {
+                "message": "Select chart personalization",
+                "choices": {
+                    "type": "Type",
+                    "item": "Item",
+                    "sort": "Sort"
+                }
+            },
+            "selectionMode": {
+                "message": "Select chart selection mode",
+                "choices": {
+                    "single": "Single",
+                    "multiple": "Multiple"
+                }
+            },
+            "selectionChange": "Enter a function to be called when the selection has changed"
+        },
+        "filterBar": {
+            "id": "Enter an ID for the filter bar building block",
+            "contextPath": "Enter the context path used in the page",
+            "metaPath": "Enter the relative path of the property in the meta model",
+            "filterChanged": "Enter a function to be called when the filter value has changed",
+            "search": "Enter a function to be called when the go button is pressed"
+        }
+    }
+}

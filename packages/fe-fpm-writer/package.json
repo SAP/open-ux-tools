@@ -31,8 +31,11 @@
     "dependencies": {
         "@xmldom/xmldom": "0.8.4",
         "ejs": "3.1.7",
+        "i18next": "21.6.11",
+        "i18next-fs-backend": "1.1.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
+        "prompts": "2.4.2",
         "semver": "7.3.5",
         "xml-formatter": "2.6.1",
         "xpath": "0.0.32"
@@ -40,8 +43,10 @@
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
         "@types/ejs": "3.1.0",
+        "@types/i18next-fs-backend": "1.0.0",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
+        "@types/prompts": "2.0.14",
         "@types/semver": "7.3.9"
     },
     "engines": {

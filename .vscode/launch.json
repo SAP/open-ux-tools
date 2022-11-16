@@ -23,6 +23,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "examples/fe-fpm-cli: Run Example",
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": ["start"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/examples/fe-fpm-cli"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "fe-fpm-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
