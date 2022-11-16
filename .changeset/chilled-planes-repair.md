@@ -1,5 +1,5 @@
 ---
-'@sap-ux/create-fiori': patch
+'@sap-ux/create': patch
 '@sap-ux/mockserver-config-writer': patch
 '@sap-ux/project-access': patch
 ---

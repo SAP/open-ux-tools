@@ -1,14 +1,14 @@
 {
-    "name": "@sap-ux/create-fiori",
+    "name": "@sap-ux/create",
     "description": "SAP Fiori tools module to add or remove features",
     "version": "0.0.1",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/create-fiori"
+        "directory": "packages/create"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acreate-fiori"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Acreate"
     },
     "license": "Apache-2.0",
     "bin": {

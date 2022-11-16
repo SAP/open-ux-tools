@@ -188,7 +188,7 @@ importers:
     devDependencies:
       nock: 13.2.1
 
-  packages/create-fiori:
+  packages/create:
     specifiers:
       '@sap-ux/logger': workspace:*
       '@sap-ux/mockserver-config-writer': workspace:*
