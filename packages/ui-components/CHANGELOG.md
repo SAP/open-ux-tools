@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.21
+
+### Patch Changes
+
+-   a1ec78c: New icon for Foreign Key and 2 new icons added - Guided Answers and Chat Bubbles
+
 ## 1.0.20
 
 ### Patch Changes
