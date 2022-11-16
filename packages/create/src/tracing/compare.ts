@@ -41,7 +41,6 @@ function getDiffResultString(diffChanges: Change[]): string {
         if (diffChange.added) {
             diffResults += green(diffChange.value);
         } else if (diffChange.removed) {
-            // diffResults += color(diffChange.value).red.toString();
             diffResults += red(diffChange.value);
         } else {
             diffResults += grey(diffChange.value);

@@ -1,6 +1,5 @@
 import chalk from 'chalk';
-import { LogLevel } from '@sap-ux/logger';
-import { ConsoleTransport, ToolsLogger } from '@sap-ux/logger';
+import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
 
 const levelColor: { [level: string]: string } = {
     warn: 'yellow',
@@ -31,19 +30,20 @@ export function getLogger(): ToolsLogger {
  */
 function setCustomFormatter(logger: ToolsLogger): void {
     const transports = (logger as any)?._logger?.transports;
-    if (Array.isArray(transports)) {
-        const consoleTransport = transports.find((t) => t?.name === 'console');
-        if (consoleTransport?.format) {
-            consoleTransport.format.transform = (info: any) => {
-                const colorFn = levelColor[info.level] ? chalk.keyword(levelColor[info.level]) : (m: string) => m;
-                const formattedMessage = colorFn ? colorFn(info.message) : info.message;
-                const symbol = Object.getOwnPropertySymbols(info).find((s: any) => s?.description === 'message');
-                if (symbol) {
-                    info[symbol] = formattedMessage;
-                }
-                return info;
-            };
-        }
+    if (!Array.isArray(transports)) {
+        return;
+    }
+    const consoleTransport = transports.find((t) => t?.name === 'console');
+    if (consoleTransport?.format) {
+        consoleTransport.format.transform = (info: any) => {
+            const colorFn = levelColor[info.level] ? chalk.keyword(levelColor[info.level]) : (m: string) => m;
+            const formattedMessage = colorFn ? colorFn(info.message) : info.message;
+            const symbol = Object.getOwnPropertySymbols(info).find((s: any) => s?.description === 'message');
+            if (symbol) {
+                info[symbol] = formattedMessage;
+            }
+            return info;
+        };
     }
 }
 

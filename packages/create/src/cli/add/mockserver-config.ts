@@ -1,4 +1,4 @@
-import { execSync } from 'child_process';
+import { spawnSync } from 'child_process';
 import type { Command } from 'commander';
 import { prompt } from 'prompts';
 import { getWebappPath } from '@sap-ux/project-access';
@@ -55,7 +55,7 @@ async function addMockserverConfig(
         const webappPath = await getWebappPath(basePath);
         const config: MockserverConfig = { webappPath };
         if (interactive) {
-            const questions = await getMockserverConfigQuestions({ webappPath });
+            const questions = getMockserverConfigQuestions({ webappPath });
             config.ui5MockYamlConfig = await prompt(questions);
         }
         const fs = await generateMockserverConfig(basePath, config);
@@ -71,6 +71,7 @@ async function addMockserverConfig(
                     }
                     logger.info('npm install -D @sap-ux/ui5-middleware-fe-mockserver');
                 } else {
+                    logger.debug('Running npm install command');
                     runNpmInstall(basePath);
                 }
             });
@@ -88,11 +89,8 @@ async function addMockserverConfig(
  */
 function runNpmInstall(basePath: string): void {
     const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
-    const dir = process.cwd();
-    try {
-        process.chdir(basePath);
-        execSync(`${npmCommand} install -D @sap-ux/ui5-middleware-fe-mockserver`, { stdio: [0, 1, 2] });
-    } finally {
-        process.chdir(dir);
-    }
+    spawnSync(npmCommand, ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'], {
+        cwd: basePath,
+        stdio: [0, 1, 2]
+    });
 }
