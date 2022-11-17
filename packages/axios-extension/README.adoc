@@ -65,7 +65,11 @@ const provider = createForAbap({
     params: { 'sap-client': client }
 });
 const transportRequestSerivce = provider.getAdtService<TransportRequestService>(TransportRequestService);
-const newTrNumber = await transportRequestSerivce.createTransportRequest('A new transport request number for deployment');
+const newTrNumber = await transportRequestSerivce.createTransportRequest({
+    packageName: 'Z_PACKAGE',
+    ui5AppName: 'zappname',
+    description: 'A new transport request number for deployment'
+});
 ```
 #### ADT Service Implementation
 Supported ADT services are implemented in link:./src/abap/adt-catalog/services[src/abap/adt-catalog/services].
