@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { checkBASDestinations } from './destination';
+import { checkBASDestinations, needsUsernamePassword } from './destination';
 import { checkSapSystem } from './sap-system';
 import { checkStoredSystems } from './stored-system';
 import { getDestinationsFromWorkspace } from './utils';
@@ -134,11 +134,33 @@ async function getToolsExtensions(): Promise<{
  * @returns - messages and detailed destination check results
  */
 async function getSapSystemResults(
-    sapSystem: SapSystem
+    sapSystem: SapSystem,
+    credentialCallback: (destination: SapSystem) => Promise<{
+        username: string;
+        password: string;
+    }>
 ): Promise<{ messages: ResultMessage[]; sapSystemResults: SapSystemResults }> {
     const logger = getLogger();
+    let username: string;
+    let password: string;
 
-    const sapSystemDetails = await checkSapSystem(sapSystem);
+    if (isAppStudio && needsUsernamePassword(sapSystem)) {
+        if (typeof credentialCallback === 'function') {
+            const credentials = await credentialCallback(sapSystem);
+            if (credentials && credentials.username && credentials.password) {
+                username = credentials.username;
+                password = credentials.password;
+            }
+        } else {
+            logger.warn(
+                t('warning.basicAuthRequired', {
+                    sapSystem: sapSystem.Name
+                })
+            );
+        }
+    }
+
+    const sapSystemDetails = await checkSapSystem(sapSystem, username, password);
     logger.push(...sapSystemDetails.messages);
 
     return {
@@ -156,7 +178,11 @@ async function getSapSystemResults(
  */
 export async function getSapSystemsResults(
     deepDiveSapSystems: Set<string>,
-    sapSystems: SapSystem[]
+    sapSystems: SapSystem[],
+    credentialCallback?: (destination: SapSystem) => Promise<{
+        username: string;
+        password: string;
+    }>
 ): Promise<{ messages: ResultMessage[]; systemResults: { [dest: string]: SapSystemResults } }> {
     const logger = getLogger();
     const systemResults: { [system: string]: SapSystemResults } = {};
@@ -169,7 +195,10 @@ export async function getSapSystemsResults(
     for (const deepDiveSapSystem of Array.from(deepDiveSapSystems)) {
         const checkDest = sapSystems.find((d) => d.Name === deepDiveSapSystem);
         if (checkDest) {
-            const { messages: destMessages, sapSystemResults } = await getSapSystemResults(checkDest);
+            const { messages: destMessages, sapSystemResults } = await getSapSystemResults(
+                checkDest,
+                credentialCallback
+            );
             logger.push(...destMessages);
 
             systemResults[checkDest.Name] = sapSystemResults;
@@ -225,7 +254,7 @@ export async function checkEnvironment(options?: CheckEnvironmentOptions): Promi
         requestedChecks.push(Check.SapSystemResults);
     }
 
-    const sapSysResults = await getSapSystemsResults(deepDiveSapSystems, sapSystems);
+    const sapSysResults = await getSapSystemsResults(deepDiveSapSystems, sapSystems, options?.credentialCallback);
     const sapSystemResults = sapSysResults.systemResults;
     logger.push(...sapSysResults.messages);
 

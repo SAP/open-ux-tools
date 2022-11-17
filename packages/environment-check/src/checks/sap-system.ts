@@ -43,7 +43,7 @@ function getServiceProvider(
             auth: auth
         };
 
-        abapServiceProvider = createForDestination(axiosConfig, { Name: sapSystem.Name }) as AbapServiceProvider;
+        abapServiceProvider = createForDestination(axiosConfig, sapSystem) as AbapServiceProvider;
     } else if (sapSystem.Scp) {
         // btp service provier if scp is true
         abapServiceProvider = createForAbapOnCloud({

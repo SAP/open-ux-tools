@@ -111,6 +111,7 @@ interface Credentials {
 }
 
 export interface SapSystem extends Partial<BTPDestination> {
+    Name: string;
     Url?: string;
     Client?: string;
     Credentials?: Credentials;

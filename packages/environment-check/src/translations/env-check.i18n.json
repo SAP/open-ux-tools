@@ -40,7 +40,7 @@
     },
     "warning": {
         "atoCatalogNotAvailable": "ATO catalog is not available",
-        "basicAuthRequired": "Destination {{- destination}} requires username/password, no callback for user input provided",
+        "basicAuthRequired": "Destination {{- sapSystem}} requires username/password, no callback for user input provided",
         "destinationsNotFound": "Couldn't find destination {{deepDiveDestination}} in list of {{destNumber}} destinations(s)",
         "getTransportRequestsoNotAvailable": "Unable to retrieve available Transport Requests",
         "noDestinationsFound": "No destinations found",
