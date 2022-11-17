@@ -1,7 +1,19 @@
 {
     "prompts": {
+        "super": {
+            "buildingBlockType": {
+                "message": "Select a building block",
+                "choices": {
+                    "chart": "Chart",
+                    "filterBar": "Filter Bar"
+                }
+            }
+        },
         "chart": {
-            "id": "Enter an ID for the chart building block",
+            "id": {
+                "message": "Enter an ID for the chart building block",
+                "validation": "An ID is required to generate the chart building block"
+            },
             "contextPath": "Enter the context path used in the page",
             "metaPath": "Enter the relative path of the property in the meta model",
             "filterBar": "Enter the ID of the filter bar building block associated with the chart",
@@ -23,7 +35,10 @@
             "selectionChange": "Enter a function to be called when the selection has changed"
         },
         "filterBar": {
-            "id": "Enter an ID for the filter bar building block",
+            "id": {
+                "message": "Enter an ID for the filter bar building block",
+                "validation": "An ID is required to generate the filter bar building block"
+            },
             "contextPath": "Enter the context path used in the page",
             "metaPath": "Enter the relative path of the property in the meta model",
             "filterChanged": "Enter a function to be called when the filter value has changed",

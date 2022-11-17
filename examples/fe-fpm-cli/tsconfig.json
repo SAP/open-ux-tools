@@ -1,9 +1,18 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src"],
-    "exclude": ["sample"],
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "sample"
+    ],
     "compilerOptions": {
         "outDir": "dist",
-        "rootDir": "./src"
-    }
+        "rootDir": "src"
+    },
+    "references": [
+        {
+            "path": "../../packages/fe-fpm-writer"
+        }
+    ]
 }

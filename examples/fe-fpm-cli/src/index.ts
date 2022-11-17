@@ -1,6 +1,11 @@
 import prompts from 'prompts';
-import { Chart, FilterBar, getFilterBarBuildingBlockPrompts } from '@sap-ux/fe-fpm-writer';
-import { BuildingBlockType, generateBuildingBlock } from '@sap-ux/fe-fpm-writer';
+import {
+    BuildingBlockType,
+    generateBuildingBlock,
+    getBuildingBlockTypePrompts,
+    getFilterBarBuildingBlockPrompts
+} from '@sap-ux/fe-fpm-writer';
+import type { FilterBarPromptsAnswer, ChartPromptsAnswer, BuildingBlockTypePromptsAnswer } from '@sap-ux/fe-fpm-writer';
 import { getChartBuildingBlockPrompts } from '@sap-ux/fe-fpm-writer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -29,6 +34,7 @@ async function initialize(): Promise<Editor> {
     fs.write(join(testAppPath, manifestFilePath), manifestContent);
     const xmlViewContent = (await fsPromises.readFile(join(sampleAppPath, xmlViewFilePath), 'utf-8')).toLocaleString();
     fs.write(join(testAppPath, xmlViewFilePath), xmlViewContent);
+    await promisify(fs.commit).call(fs);
     return fs;
 }
 
@@ -37,10 +43,10 @@ async function initialize(): Promise<Editor> {
  *
  * @param {Editor} fs the memfs editor object
  * @returns {Promise<Editor>} the updated memfs editor object
- **/
+ */
 async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
-    const answers: FilterBar = await prompts(await getFilterBarBuildingBlockPrompts());
-    fs = generateBuildingBlock<FilterBar>(
+    const answers: FilterBarPromptsAnswer = await prompts(await getFilterBarBuildingBlockPrompts());
+    fs = generateBuildingBlock<FilterBarPromptsAnswer>(
         testAppPath,
         {
             aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
@@ -60,10 +66,10 @@ async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor> {
  *
  * @param {Editor} fs the memfs editor object
  * @returns {Promise<Editor>} the updated memfs editor object
- **/
+ */
 async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
-    const answers: Chart = await prompts(await getChartBuildingBlockPrompts());
-    fs = generateBuildingBlock<Chart>(
+    const answers: ChartPromptsAnswer = await prompts(await getChartBuildingBlockPrompts(testAppPath, fs));
+    fs = generateBuildingBlock<ChartPromptsAnswer>(
         testAppPath,
         {
             aggregationPath: `/mvc:View/*[local-name()='Page']/*[local-name()='content']`,
@@ -80,7 +86,16 @@ async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
 
 (async () => {
     let fs = await initialize();
-    fs = await generateFilterBarBuildingBlock(fs);
-    fs = await generateChartBuildingBlock(fs);
+    const answers: BuildingBlockTypePromptsAnswer = await prompts(await getBuildingBlockTypePrompts());
+    switch (answers.buildingBlockType) {
+        case BuildingBlockType.Chart:
+            fs = await generateChartBuildingBlock(fs);
+            break;
+        case BuildingBlockType.FilterBar:
+            fs = await generateFilterBarBuildingBlock(fs);
+            break;
+        default:
+            break;
+    }
     await promisify(fs.commit).call(fs);
 })();
