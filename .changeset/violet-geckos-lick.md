@@ -1,5 +1,5 @@
 ---
-'@sap-ux/fiori-elements-writer': minor
+'@sap-ux/fiori-elements-writer': patch
 ---
 
-removes trusted host validation
+removes unnecessary trusted host validation
