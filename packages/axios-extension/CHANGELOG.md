@@ -1,5 +1,18 @@
 # @sap-ux/axios-extension
 
+## 0.13.0
+
+### Minor Changes
+
+-   9b9b3d7: - Changed TransportRequestService implementation and API for creating new transport request number.
+    -   New TransportRequestService API now requires two extra input parameters `packageName` and `appName`.
+
+## 0.12.0
+
+### Minor Changes
+
+-   116ff5e: Changing API for deployment to be more flexible for different consumer use cases
+
 ## 0.11.1
 
 ### Patch Changes
