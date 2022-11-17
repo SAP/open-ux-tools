@@ -1,4 +1,4 @@
-import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
+import type { Ui5App } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 
 /**
@@ -152,16 +152,6 @@ export interface Template<T = {}> {
     settings: T;
 }
 
-/**
- * Configuration object for a Fiori elements application that is extending the standard UI5 application configuration.
- */
-export interface FioriApp extends App {
-    /**
-     * Calculated value of the intent that is being used for previewing in an FLP sandbox.
-     */
-    previewIntent: string;
-}
-
 export interface FioriElementsApp<T> extends Ui5App {
     /**
      * Template specific configuration
@@ -172,6 +162,17 @@ export interface FioriElementsApp<T> extends Ui5App {
      * Standad service configuration, however, the model is not configurable because a fixed values is required by Fiori elements.
      */
     service: Omit<OdataService, 'model'>;
+
+    /**
+     * Extended app options with Fiori elements specific setting
+     */
+    appOptions: Ui5App['appOptions'] & {
+        /**
+         * Generate OPA based tests, if applicable to the specified template.
+         * This will eventually move up to {@link Ui5App.appOptions}
+         */
+        addTests?: boolean;
+    };
 }
 
 /**
@@ -179,14 +180,11 @@ export interface FioriElementsApp<T> extends Ui5App {
  * It extends the object with properties that are calculated based on other input and cannot be directly set by the caller.
  */
 export interface InternalFioriElementsApp<T> extends FioriElementsApp<T> {
-    service: Omit<OdataService, 'model'>; // Model name will use defaults
-    app: FioriApp;
-    appOptions: Partial<AppOptions> & {
+    app: FioriElementsApp<T>['app'] & {
         /**
-         * Generate OPA based tests, if applicable to the specified template.
-         * This will eventually move up to {@link Ui5App.appOptions}
+         * Calculated value of the intent that is being used for previewing in an FLP sandbox.
          */
-        addTests?: boolean;
+        previewIntent: string;
     };
 }
 
