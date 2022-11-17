@@ -4,7 +4,7 @@
         "node": true,
         "es6": true
     },
-    "plugins": ["promise", "prettier", "jsdoc", "@typescript-eslint", "import"],
+    "plugins": ["promise", "prettier", "jsdoc", "@typescript-eslint", "import", "sonarjs"],
     "extends": ["plugin:jsdoc/recommended", "plugin:prettier/recommended"],
     "overrides": [
         {
@@ -246,6 +246,8 @@
                 "after": true
             }
         ],
+        "sonarjs/cognitive-complexity": "warn",
+        "sonarjs/no-nested-template-literals": "warn",
         "space-before-function-paren": [
             "error",
             {
