@@ -59,61 +59,6 @@ export interface UndeployConfig {
 }
 
 /**
- * Required configuration for the BSP hosting an app.
- */
-export interface BspConfig {
-    /**
-     * Name of the BSP, additionally, the last part of the exposed service path
-     */
-    name: string;
-
-    /**
-     * Optional description of the ABAP development object representing the BSP
-     */
-    description?: string;
-
-    /**
-     * Optional package for the ABAP development object
-     */
-    package?: string;
-
-    /**
-     * Optional transport request to record the changes
-     */
-    transport?: string;
-}
-
-/**
- * Configuration required for deploying an app.
- */
-export interface DeployConfig {
-    /**
-     * archive zip archive containing the application files as buffer
-     */
-    archive: Buffer;
-    /**
-     * app application configuration
-     */
-    bsp: BspConfig;
-    /**
-     * if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
-     */
-    testMode?: boolean;
-    /**
-     * if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
-     */
-    safeMode?: boolean;
-}
-
-/**
- * Configuration required for undeploying an app.
- */
-export interface UndeployConfig {
-    bsp: Pick<BspConfig, 'name' | 'transport'>;
-    testMode?: DeployConfig['testMode'];
-}
-
-/**
  * Application information object returned by the UI5 Repository service
  */
 export interface AppInfo {
