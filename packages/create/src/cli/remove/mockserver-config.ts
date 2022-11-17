@@ -13,11 +13,11 @@ export function addRemoveMockserverConfigCommand(cmd: Command): void {
     cmd.command('mockserver-config [path]')
         .option('-v, --verbose', 'show verbose information')
         .option('-f, --force', 'do not ask for confirmation when deleting files')
-        .action((path, options) => {
+        .action(async (path, options) => {
             if (options.verbose === true) {
                 setLogLevelVerbose();
             }
-            removeMockserverConfiguration(path || process.cwd(), !!options.force);
+            await removeMockserverConfiguration(path || process.cwd(), !!options.force);
         });
 }
 

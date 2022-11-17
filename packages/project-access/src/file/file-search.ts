@@ -7,7 +7,7 @@ import { fileExists } from './file-access';
  * Add missing dump function declaration as mem-fs-editor types do not expose this.
  */
 declare module 'mem-fs-editor' {
-    type FileMap = { [key: string]: { state: 'modified' | 'deleted' } };
+    type FileMap = { [key: string]: { contents: string; state: 'modified' | 'deleted' } };
 
     export interface Editor {
         /**

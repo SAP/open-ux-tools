@@ -19,11 +19,11 @@ export function addAddMockserverConfigCommand(cmd: Command): void {
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write or install; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
-        .action((path, options) => {
+        .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
-            addMockserverConfig(
+            await addMockserverConfig(
                 path || process.cwd(),
                 !!options.simulate,
                 !!options.skipInstall,

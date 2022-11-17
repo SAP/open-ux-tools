@@ -28,6 +28,6 @@ export function validateBasePath(basePath: string): void {
  */
 export function hasFileDeletes(fs: Editor): boolean {
     const editorWithDump = fs as EditorWithDump;
-    const changedFiles = editorWithDump.dump() || [];
+    const changedFiles = editorWithDump.dump() || {};
     return !!Object.keys(changedFiles).find((fileName) => changedFiles[fileName].state === 'deleted');
 }

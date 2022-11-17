@@ -12,7 +12,7 @@ import { getLogger } from './logger';
  */
 export async function traceChanges(fs: Editor): Promise<void> {
     const editor = fs as EditorWithDump;
-    const changedFiles = editor.dump() || [];
+    const changedFiles = editor.dump() || {};
     const logger = getLogger();
 
     for (const changedFile in changedFiles) {
