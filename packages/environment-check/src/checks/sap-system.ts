@@ -18,6 +18,8 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
  * Internal function to create a service provider.
  *
  * @param sapSystem - the SAP system
+ * @param username
+ * @param password
  * @returns - ABAP service provider
  */
 function getServiceProvider(
@@ -95,6 +97,8 @@ export async function checkSapSystems(): Promise<{
  * Check a SAP system for information including results of v2 & v4 catalog service requests.
  *
  * @param sapSystem - SAP system from list of all systems
+ * @param username
+ * @param password
  * @returns messages and sapSystem results
  */
 export async function checkSapSystem(
