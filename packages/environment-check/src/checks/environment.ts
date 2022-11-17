@@ -131,6 +131,7 @@ async function getToolsExtensions(): Promise<{
  * Internal function to check an SAP system.
  *
  * @param sapSystem - the SAP system to get detailed results for
+ * @param credentialCallback
  * @returns - messages and detailed destination check results
  */
 async function getSapSystemResults(
@@ -174,6 +175,7 @@ async function getSapSystemResults(
  *
  * @param deepDiveSapSystems - SAP systems selected for a closer look
  * @param sapSystems - array of all SAP systems found
+ * @param credentialCallback
  * @returns - messages and the map of detailed SAP systems check results
  */
 export async function getSapSystemsResults(
