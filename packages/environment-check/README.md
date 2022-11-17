@@ -29,12 +29,12 @@ const environmentResults = await getEnvironment();
 /**
  * Checks the SAP systems on Business Application Studio or locally saved systems and returns a list
  */
-const destinationResults = await checkSapSystems();
+const sapSystemsResult = await checkSapSystems();
 
 /**
  * Check an SAP system for v2 & v4 catalog service and other services 
  */
-const destResult = await checkSapSystem(destination, username, password);
+const sapSystemResult = await checkSapSystem(destination, username, password);
 
 ```
 
