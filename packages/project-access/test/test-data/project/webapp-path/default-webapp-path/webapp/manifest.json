@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "default-webapp-path",
+        "type": "application"
+    }
+}

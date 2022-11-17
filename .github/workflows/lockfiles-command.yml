@@ -6,22 +6,22 @@ jobs:
     lockfiles:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
 
             - name: Use Node.js 12.x
               if: success()
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
                   node-version: 12.x
 
             - name: Setup PNPM
-              uses: pnpm/action-setup@v2.0.1
+              uses: pnpm/action-setup@v2.2.2
               if: success()
               with:
-                  version: 6.26.1
+                  version: 7.1.0
                   run_install: false
 
             - name: Pnpm Install recursive

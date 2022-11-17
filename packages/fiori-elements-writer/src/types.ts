@@ -1,4 +1,4 @@
-import type { Ui5App, App } from '@sap-ux/ui5-application-writer';
+import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 
 /**
@@ -9,7 +9,8 @@ export enum TemplateType {
     ListReportObjectPage = 'lrop',
     AnalyticalListPage = 'alp',
     OverviewPage = 'ovp',
-    FormEntryObjectPage = 'feop'
+    FormEntryObjectPage = 'feop',
+    FlexibleProgrammingModel = 'fpm'
 }
 
 /**
@@ -74,7 +75,15 @@ export interface LROPSettings {
 }
 
 /**
- * Settings for the worklist template in Fiori elements for odata v2
+ * Settings for the FPM template in Fiori elements for odata v4
+ */
+export interface FPMSettings {
+    entityConfig: EntityConfig;
+    pageName: string;
+}
+
+/**
+ * Settings for the worklist template in Fiori elements
  */
 export interface WorklistSettings {
     entityConfig: EntityConfig;
@@ -146,6 +155,13 @@ export interface Template<T = {}> {
 /**
  * Configuration object for a Fiori elements application that is extending the standard UI5 application configuration.
  */
+export interface FioriApp extends App {
+    /**
+     * Calculated value of the intent that is being used for previewing in an FLP sandbox.
+     */
+    previewIntent: string;
+}
+
 export interface FioriElementsApp<T> extends Ui5App {
     /**
      * Template specific configuration
@@ -163,11 +179,14 @@ export interface FioriElementsApp<T> extends Ui5App {
  * It extends the object with properties that are calculated based on other input and cannot be directly set by the caller.
  */
 export interface InternalFioriElementsApp<T> extends FioriElementsApp<T> {
-    app: App & {
+    service: Omit<OdataService, 'model'>; // Model name will use defaults
+    app: FioriApp;
+    appOptions: Partial<AppOptions> & {
         /**
-         * Calculated value of the intent that is being used for previewing in an FLP sandbox.
+         * Generate OPA based tests, if applicable to the specified template.
+         * This will eventually move up to {@link Ui5App.appOptions}
          */
-        previewIntent: string;
+        addTests?: boolean;
     };
 }
 

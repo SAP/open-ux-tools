@@ -1,5 +1,205 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.13
+
+### Patch Changes
+
+-   fdfa554: Disable codeAssist when Typescript is also selected. Since Typescript includes it's own code assist config.
+
+## 0.17.12
+
+### Patch Changes
+
+-   964ab8e: Increased best (recommended) version of UI5 types modules to latest LTS version.
+
+## 0.17.11
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/ui5-config@0.16.0
+
+## 0.17.10
+
+### Patch Changes
+
+-   672b40b: Fix issue with tsconfig paths
+
+## 0.17.9
+
+### Patch Changes
+
+-   324b802: Handle Typscript build step for Freestyle Simple templates
+
+## 0.17.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.4
+
+## 0.17.7
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-config@0.15.3
+
+## 0.17.6
+
+### Patch Changes
+
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/ui5-config@0.15.2
+
+## 0.17.5
+
+### Patch Changes
+
+-   e3e1275: Replacing json-merger with lodash.mergewith internally
+
+## 0.17.4
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.1
+
+## 0.17.3
+
+### Patch Changes
+
+-   0fc1499: Code quality improvements but no functionality change
+
+## 0.17.2
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+
+## 0.17.1
+
+### Patch Changes
+
+-   d0b4660: Dont fail if unknown AppOptions are provided
+
+## 0.17.0
+
+### Minor Changes
+
+-   83a7a1a: Enhancements to detect if a project is supporting typescript or not
+
+### Patch Changes
+
+-   Updated dependencies [83a7a1a]
+    -   @sap-ux/ui5-config@0.15.0
+
+## 0.16.1
+
+### Patch Changes
+
+-   b8d5315: Issues with typescript templates when testing the integration into SAP Fiori tools in BAS
+
+## 0.16.0
+
+### Minor Changes
+
+-   4fb53ce: Fix sonar warnings
+
+## 0.15.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+
+## 0.15.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+## 0.14.6
+
+### Patch Changes
+
+-   Updated dependencies [b6d0c67]
+    -   @sap-ux/ui5-config@0.14.5
+
+## 0.14.5
+
+### Patch Changes
+
+-   238f401: Fix: corrected minVersion calculation and handling of sapux setting
+
+## 0.14.4
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/ui5-config@0.14.4
+
+## 0.14.3
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/ui5-config@0.14.3
+
+## 0.14.2
+
+### Patch Changes
+
+-   Updated dependencies [7c4a4df]
+    -   @sap-ux/ui5-config@0.14.2
+
+## 0.14.1
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/ui5-config@0.14.1
+
+## 0.14.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/ui5-config@0.14.0
+
+## 0.13.1
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/ui5-config@0.13.3
+
+## 0.13.0
+
+### Minor Changes
+
+-   9726e2d: Feature: Adds support for setting the sourceTemplate toolsId into generated ui5 applications
+
+## 0.12.8
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+-   Updated dependencies [b5ab868]
+    -   @sap-ux/ui5-config@0.13.2
+
+## 0.12.7
+
+### Patch Changes
+
+-   73d6a6b: Fix for #438 : Incorrect manifest version set for some ui5 versions
+
 ## 0.12.6
 
 ### Patch Changes

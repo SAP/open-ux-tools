@@ -1,0 +1,14 @@
+{
+    "sap.ui5": {
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {
+                    "<%- extensionId -%>": {<%if (typeof controllerNames !== 'undefined') {%>
+                        "controllerNames": <%- JSON.stringify(controllerNames) %><% } else {%>
+                        "controllerName": "<%- controllerName %>"<% } %>
+                    }
+                }
+            }
+        }
+    }
+}

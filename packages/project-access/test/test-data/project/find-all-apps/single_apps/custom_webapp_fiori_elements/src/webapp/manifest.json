@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "single_apps-custom_webapp_fiori_elements",
+        "type": "application"
+    }
+}

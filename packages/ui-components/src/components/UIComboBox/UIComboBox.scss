@@ -1,0 +1,245 @@
+@import '../UIContextualMenu/_variables.scss';
+@import '../../styles/_variables.scss';
+@import '../../styles/_mixins.scss';
+@import './_mixins.scss';
+
+@mixin apply-combobox-error-border($border) {
+    .ms-ComboBox {
+        &,
+        &:focus-within {
+            &:after {
+                border-color: $border;
+            }
+        }
+    }
+}
+
+.ts-ComboBox {
+    .ms-ComboBox {
+        background: $dropdown-input-background;
+        height: $dropdown-input-height;
+        padding: $dropdown-input-text-padding;
+        border-radius: $dropdown-input-border-radius;
+        > .ms-Button--icon {
+            @include caretDown-icon;
+        }
+        input {
+            background: transparent;
+            font-family: var(--vscode-font-family) !important;
+            font-size: 13px;
+            min-height: unset;
+            // @include base-font;
+            // There no border like for TextField or Select - following paddings makes text position same like for TextField and Select
+            padding: $dropdown-input-border-width 0 1px $dropdown-input-border-width;
+            // Overwrite default Chrome browser focus styling
+            outline: 0;
+        }
+        // Font color
+        &,
+        &:hover {
+            input {
+                &,
+                &::placeholder {
+                    color: $dropdown-input-color;
+                }
+            }
+        }
+        input::placeholder {
+            opacity: 0.7;
+        }
+        // Overwrite default border
+        &:after {
+            border: $dropdown-input-border;
+            border-radius: $dropdown-input-border-radius;
+        }
+        &:hover,
+        &:focus-within,
+        &.is-open {
+            &:after {
+                border-color: $dropdown-input-focus-border-color;
+            }
+        }
+        &.is-disabled {
+            @include input-disabled;
+        }
+    }
+    &--error {
+        @include apply-combobox-error-border(var(--vscode-inputValidation-errorBorder));
+    }
+    &--warning {
+        @include apply-combobox-error-border(var(--vscode-inputValidation-warningBorder));
+    }
+    &--info {
+        @include apply-combobox-error-border(var(--vscode-inputValidation-infoBorder));
+    }
+}
+
+@mixin callout-list-item-button(
+    $focus-background: $menu-item-hover-background,
+    $focus-foreground: $menu-color,
+    $hover-outline: null
+) {
+    @include base-font;
+    // Option Sizes
+    min-height: $menu-item-height;
+    height: $menu-item-height;
+    line-height: $menu-item-height;
+    color: $menu-color;
+    background-color: transparent;
+    letter-spacing: normal;
+    border: 0;
+    padding: $menu-item-padding;
+    font-size: $menu-item-font-size;
+
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: $focus-background;
+        color: $focus-foreground;
+
+        &:after {
+            display: none;
+        }
+    }
+
+    @if $hover-outline {
+        &:hover {
+            outline: $hover-outline;
+            outline-offset: $menu-item-border-offset;
+        }
+    }
+
+    .ts-Menu-option {
+        font-size: $menu-item-font-size;
+    }
+
+    .ms-ComboBox-optionText,
+    .ts-Menu-option,
+    .ms-Dropdown-optionText {
+        height: $menu-item-height;
+    }
+
+    .ms-Dropdown-optionText {
+        margin: 0;
+    }
+}
+
+.ts-Callout-Dropdown {
+    .ms-Callout-main {
+        background: $menu-background;
+        border: $dropdown-input-border-width solid $menu-border-color;
+        box-sizing: border-box;
+        border-radius: 0;
+    }
+    // Combobox list items
+    .ms-ComboBox-optionsContainer,
+    .ms-Dropdown-items {
+        .ms-Button--command,
+        .ms-ComboBox-option,
+        .ms-Dropdown-item {
+            @include callout-list-item-button(
+                $menu-item-hover-background,
+                $menu-color,
+                $menu-item-hover-contrast-border
+            );
+        }
+        .ms-Button--command:after {
+            // focus background
+            display: none;
+        }
+        .ts-ComboBox--selected {
+            .ms-ComboBox-option.ms-Button--command {
+                background-color: $menu-item-selection-background;
+                color: $menu-item-selection-color;
+            }
+            .ms-Button--command,
+            .ms-ComboBox-option:after {
+                border: none;
+                outline: $menu-item-focus-border;
+                outline-offset: $menu-item-border-offset;
+            }
+        }
+    }
+    // Select/dropdown list items
+    .ms-Dropdown-items {
+        > .ms-Button--command {
+            display: block;
+            // Aditional separate style
+            &:focus {
+                background: $menu-item-selection-background;
+                color: $menu-item-selection-color;
+                outline: $menu-item-focus-border;
+                outline-offset: $menu-item-border-offset;
+            }
+        }
+    }
+    .ms-Checkbox {
+        &.ms-ComboBox-option,
+        &.ms-Dropdown-item {
+            .ms-Checkbox-checkbox {
+                background: var(--vscode-editor-lineHighlightBorder);
+                border-color: var(--vscode-editorWidget-border);
+                height: 16px;
+                width: 16px;
+                margin-right: 8px;
+            }
+            .ms-Checkbox-checkmark {
+                color: var(--vscode-checkbox-border);
+            }
+            &.is-checked {
+                background-color: $menu-item-selection-background;
+                color: $menu-item-selection-color;
+                .ms-Checkbox-checkmark {
+                    color: var(--vscode-input-foreground);
+                }
+                &:hover {
+                    outline: $menu-item-focus-border;
+                    outline-offset: $menu-item-border-offset;
+                }
+            }
+            &:hover {
+                .ms-Checkbox-checkbox {
+                    border-color: var(--vscode-focusBorder);
+                }
+            }
+        }
+        &.ms-ComboBox-option {
+            input {
+                display: none;
+            }
+        }
+        .ms-Checkbox-label {
+            font-size: $menu-item-font-size;
+            padding: 0;
+        }
+    }
+}
+
+// Multi select dropdown only
+.ts-Callout-Dropdown .ms-Checkbox.ms-Dropdown-item input:focus + label {
+    .ms-Dropdown-optionText {
+        z-index: 1;
+    }
+    &:before {
+        outline: none;
+        z-index: 0;
+        left: -$menu-item-horizontal-padding;
+        right: -$menu-item-horizontal-padding;
+        outline: $menu-item-focus-border;
+        outline-offset: $menu-item-border-offset;
+    }
+}
+
+.option-loading {
+    display: flex;
+    padding-left: 8px;
+    width: 262px;
+    height: 26px;
+
+    .uiLoaderXSmall {
+        .ms-Spinner-label {
+            font-size: 12px;
+            font-weight: normal;
+        }
+    }
+}

@@ -1,16 +1,12 @@
-import { FioriElementsApp, generate, TemplateType, LROPSettings } from '../src';
+import type { FioriElementsApp } from '../src';
+import { generate, TemplateType, LROPSettings } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, debug, getTestData, feBaseConfig } from './common';
-import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
-import {
-    ALPSettings,
-    ALPSettingsV2,
-    ALPSettingsV4,
-    TableSelectionMode,
-    TableType,
-    WorklistSettings
-} from '../src/types';
+import type { OdataService } from '@sap-ux/odata-service-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ALPSettings, ALPSettingsV2, ALPSettingsV4 } from '../src/types';
+import { TableType } from '../src/types';
 
 const TEST_NAME = 'alpTemplates';
 

@@ -1,0 +1,48 @@
+.ui-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 20;
+
+    &__container {
+        overflow-x: scroll;
+    }
+
+    &__content {
+        border-bottom: 1px solid var(--vscode-contrastBorder, var(--vscode-editorIndentGuide-background));
+        background-color: var(--vscode-editor-background);
+        display: flex;
+        flex-wrap: wrap;
+        min-width: 400px;
+    }
+
+    .ui-divider {
+        display: inline-block;
+        height: 20px;
+        margin: 3px 10px 3px;
+        border-right: 1px solid var(--vscode-contrastBorder, var(--vscode-editorIndentGuide-background));
+    }
+
+    &__column {
+        display: flex;
+        flex-grow: 1;
+
+        &__content {
+            display: flex;
+            margin: 6px 20px 6px;
+            height: 28px;
+        }
+    }
+}
+@media screen and (max-width: 640px) {
+    .ui-toolbar {
+        .ui-toolbar__content {
+            flex-wrap: wrap;
+        }
+
+        div.ui-divider.hidden-xs {
+            display: none;
+        }
+    }
+}

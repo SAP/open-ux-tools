@@ -1,0 +1,15 @@
+@mixin base-font($size: $button-font-size, $family: $font-family-base, $weight: $font-weight-base) {
+    @include apply-font($size, $family, $weight);
+}
+
+@mixin apply-font($size: '', $family: '', $weight: '') {
+    @if $size != '' {
+        font-size: $size;
+    }
+    @if $family != '' {
+        font-family: $family;
+    }
+    @if $weight != '' {
+        font-weight: $weight;
+    }
+}

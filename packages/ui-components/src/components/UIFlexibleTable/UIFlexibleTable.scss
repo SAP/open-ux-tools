@@ -1,0 +1,433 @@
+$valid-drop-color: var(--vscode-notebookStatusSuccessIcon-foreground, var(--vscode-successBackground, #84c881));
+$invalid-drop-color: var(--vscode-notificationsWarningIcon-foreground, var(--vscode-warningBackground, #cca700));
+$warning-highlight-color: var(--vscode-notificationsWarningIcon-foreground, var(--vscode-warningBackground, #cca700));
+$readonly-labels-opacity: 0.4;
+
+.flexible-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1px;
+    box-sizing: border-box;
+
+    ul {
+        margin-block-start: 0.1em;
+        margin-block-end: 0em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        padding-inline-start: 0px;
+    }
+
+    &-header {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        row-gap: 5px;
+        column-gap: 10px;
+        &-primary-actions {
+            display: flex;
+            column-gap: 10px;
+        }
+        &-secondary-actions {
+            display: flex;
+            column-gap: 10px;
+        }
+    }
+
+    .ui-loader-blocker {
+        margin: 0;
+    }
+    
+    &-content {
+        display: flex;
+        margin-top: 10px;
+        flex-direction: column;
+        position: relative;
+        border: 1px solid var(--vscode-editorWidget-border);
+
+        &.loading {
+            min-height: 60px;
+        }
+
+        &.empty-table {
+            border: none;
+            .flexible-table-content-table-title-row {
+                border: 1px solid var(--vscode-editorWidget-border);
+            }
+            margin-top: 0px;
+        }
+        &.empty-table-header {
+            margin-top: 0px;
+        }
+
+        &-table {
+            overflow-y: auto;
+            max-height: 220px;
+            overflow-x: hidden;
+
+            &-title-row {
+                font-weight: bold;
+                background: var(--vscode-editor-background);
+                border-bottom: 1px solid var(--vscode-editorWidget-border);
+                &-item-data-cells-value {
+                    width: 100%;
+                }
+            }
+
+            &-row,
+            &-row-no-data {
+                &.even {
+                    background: var(--vscode-editor-background);
+                }
+                &.odd {
+                    background: var(--vscode-sideBar-background);
+                }
+                // Reverse background for zebra pattern
+                &.reverse-background {
+                    &.even {
+                        background: var(--vscode-sideBar-background);
+                    }
+                    &.odd {
+                        background: var(--vscode-editor-background);
+                    }
+                }
+                &.no-background {
+                    background: none;
+                    .flexible-table-content-table-row-header {
+                        background: transparent;
+                    }
+                    &.dragged {
+                        // Background should not be transparent while dragging
+                        background-color: var(--vscode-editor-background);
+                    }
+                }
+            }
+
+            &-row {
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                border-bottom: 1px solid var(--vscode-editorWidget-border);
+
+                &:focus {
+                    outline: none;
+                    .flexible-table-content-table-row-wrapper {
+                        outline: 1px solid var(--vscode-focusBorder);
+                    }
+                }
+
+                &.selected {
+                    .flexible-table-content-table-row-wrapper {
+                        outline: 1px solid $valid-drop-color;
+                    }
+                }
+
+                &.dragged {
+                    z-index: 1000000;
+                    // Free drag - horizontal and vertical allowed at same time
+                    &.unlocked-axis {
+                        .flexible-table-content-table-row-wrapper {
+                            outline: 1px solid $valid-drop-color;
+                        }
+                        &.out-of-bounds {
+                            .flexible-table-content-table-row-wrapper {
+                                outline: 1px solid $invalid-drop-color;
+                            }
+                        }
+                    }
+                    // Locked drag by single axis
+                    &.locked-axis {
+                        .flexible-table-content-table-row-wrapper {
+                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+                        }
+                    }
+                }
+                &-item-wrapper {
+                    display: flex;
+                    width: 100%;
+                }
+                &-no-data {
+                    padding: 5px;
+                }
+            }
+
+            &-row-header {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                background-color: var(--vscode-debugView-stateLabelBackground);
+                padding: 5px 10px;
+                align-items: center;
+                row-gap: 5px;
+
+                &-text-content {
+                    font-size: 13px;
+                    font-weight: bold;
+                }
+
+                &-actions {
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+
+                    &-icon {
+                        width: 16px;
+                    }
+
+                    &-divider {
+                        margin: 0 10px;
+                        height: 20px;
+                    }
+
+                    &-item-wrapper {
+                        display: flex;
+                    }
+                }
+            }
+
+            &-row,
+            &-title-row {
+                padding: 0;
+                margin: 0;
+                list-style-type: none;
+
+                &-wrapper {
+                    outline-offset: -1px;
+                    display: flex;
+                    flex-direction: column;
+                    &-cells {
+                        display: flex;
+                        align-items: stretch;
+                        justify-content: space-between;
+                    }
+                }
+
+                &-wrapper.inline-layout {
+                    &-cells {
+                        flex-direction: row;
+                    }
+                }
+
+                &-wrapper.wrapping-layout {
+                    &-cells {
+                        flex-direction: column;
+                    }
+                    .flexible-table-content-table-row-header {
+                        background-color: transparent;
+                        border: 1px solid var(--vscode-editorWidget-border);
+                        padding: 4px 9px;
+                    }
+                    .flexible-table-content-table-row-wrapper-cells {
+                        border: 1px solid var(--vscode-editorWidget-border);
+                        border-top: 0;
+                    }
+                }
+                
+
+                &-item {
+                    &-title {
+                        height: 16px;
+                        font-weight: bold;
+                        padding: 0 5px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                    &-index {
+                        border-right: 1px solid var(--vscode-editorWidget-border);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-around;
+
+                        &-value {
+                            text-align: center;
+                            width: 40px;
+                        }
+                    }
+                    &-data-cells {
+                        display: flex;
+                        width: 100%;
+
+                        &.in-row {
+                            flex-direction: row;
+                        }
+                        &.in-column {
+                            flex-direction: column;
+
+                            .flexible-table-content-table-row-item-data-cells-wrapper {
+                                width: auto;
+                                border-right: none;
+                            }
+                        }
+                        &.dynamic {
+                            flex-direction: row;
+                            flex-wrap: wrap;
+                            width: auto;
+                            // Border + padding should 5px on each side
+                            padding: 5px 4px 4px;
+                        }
+
+                        &-value {
+                            padding: 5px;
+                        }
+                        &-wrapper {
+                            border-right: 1px solid var(--vscode-editorWidget-border);
+                            padding: 0px;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: flex-start;
+                            width: 100%;
+
+                            &:last-of-type {
+                                border-right: none;
+                            }
+                            &.not-editable {
+                                padding: 10px;
+
+                                span {
+                                    &:not(:last-child) {
+                                        padding-bottom: 4px;
+                                    }
+
+                                    i {
+                                        vertical-align: middle;
+
+                                        svg > path,
+                                        svg > rect {
+                                            fill: var(--vscode-textLink-activeForeground);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    &-actions {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: flex-start;
+                        min-width: 87px;
+                        border-left: 1px solid var(--vscode-editorWidget-border);
+                        padding: 5px;
+                        align-items: center;
+
+                        &-icon {
+                            width: 16px;
+                        }
+
+                        &-divider {
+                            margin: 0 10px;
+                            height: 20px;
+                        }
+                    }
+                }
+            }
+        }
+
+        &-table.dragged {
+            .flexible-table-content-table-row.highlight-drop-warning {
+                .flexible-table-content-table-row-wrapper::before {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    box-sizing: border-box;
+                    content: " ";
+                    border: 1px solid $warning-highlight-color;
+                }
+            }
+        }
+    }
+    
+}
+
+$wrapping-table-space-between-scrollbar-and-border: 5px;
+.flexible-table.wrapping-layout {
+    .flexible-table-header {
+        // Increase space between scrollbar and border
+        padding-right: $wrapping-table-space-between-scrollbar-and-border;
+        box-sizing: border-box;
+    }
+    .flexible-table-content {
+        border: none;
+        &-table {
+            // Increase space between scrollbar and border
+            padding-right: $wrapping-table-space-between-scrollbar-and-border;
+            box-sizing: border-box;
+            &-row,
+            &-title-row {
+                border: none;
+                &-item {
+                    &-index {
+                        border: none;
+                    }
+                    &-data-cells {
+                        &-wrapper {
+                            border-right: none;
+                        }
+                    }
+                }
+            }
+            &-row {
+                margin-bottom: 10px;
+                &:last-child {
+                    margin-bottom: 0px;
+                }
+            }
+        }
+    }
+}
+
+li.flexible-table-content-table-row.dragged {
+    border: none;
+    .flexible-table-content-table-row-wrapper.wrapping-layout {
+        .flexible-table-content-table-row-item {
+            &-index {
+                border: none;
+            }
+            &-data-cells {
+                &-wrapper {
+                    border-right: none;
+                }
+            }
+        }
+    }
+    margin-bottom: 0px;
+}
+
+.small-cell1 {
+    width: 30%;
+}
+
+.small-cell2 {
+    width: 40%;
+}
+
+.small-cell3 {
+    width: 30%;
+}
+
+.flexible-table.readonly {
+    .flexible-table-content-table {
+        &-title-row-item {
+            &-index-value {
+                opacity: $readonly-labels-opacity;
+            }
+            &-data-cells-value {
+                opacity: $readonly-labels-opacity;
+            }
+        }
+
+        &-row {
+            &-header-text-content {
+                opacity: $readonly-labels-opacity;
+            }
+            &-item-index-value {
+                opacity: $readonly-labels-opacity;
+            }
+            &-item-title {
+                opacity: $readonly-labels-opacity;
+            }
+        }
+    }
+}

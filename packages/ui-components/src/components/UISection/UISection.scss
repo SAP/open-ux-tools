@@ -1,0 +1,76 @@
+@import '_mixins.scss';
+
+.section {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &__header {
+        > div {
+            flex: 0 1 auto;
+            background: var(--vscode-sideBarSectionHeader-background);
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--vscode-sideBarTitle-foreground);
+        }
+
+        &__title {
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        &__title.ui-medium-header {
+            line-height: normal;
+        }
+    }
+
+    &__body {
+        margin: 1rem 0.75rem;
+        flex: 1 1 auto;
+        // For prettier scrollbar appearance
+        padding: 0 0.25rem;
+        height: 100%;
+
+        > .ui-loader-blocker:before {
+            z-index: 1;
+        }
+    }
+
+    &--clean {
+        .section__body {
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    &--scrollable {
+        .section__body {
+            overflow: auto;
+        }
+    }
+
+    &--extended {
+        .section__header {
+            background-color: var(--vscode-sideBar-background);
+        }
+    }
+
+    &__collapse {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 13px;
+    }
+
+    // Hide with animation for delay
+    &--hidden {
+        animation: 0.5s delayedFadeOut;
+        animation-fill-mode: forwards;
+    }
+}

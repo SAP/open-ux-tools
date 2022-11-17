@@ -1,0 +1,30 @@
+@import '../../styles/_variables.scss';
+@import '../../styles/_mixins.scss';
+
+$menu-background: var(--vscode-menu-background, var(--vscode-input-background));
+$menu-color: var(--vscode-editorSuggestWidget-foreground);
+$menu-border-color: var(--vscode-focusBorder);
+
+$menu-item-height: 22px;
+$menu-item-horizontal-padding: 8px;
+$menu-item-vertical-padding: 0px;
+$menu-item-padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
+$menu-item-font-size: 13px;
+$menu-item-hover-background: var(--vscode-list-hoverBackground);
+$menu-item-hover-color: var(--vscode-editorSuggestWidget-foreground);
+
+$menu-item-selection-background: var(
+    --vscode-editorSuggestWidget-selectedBackground,
+    var(--vscode-quickInputList-focusBackground)
+);
+// Two vars because one exists in VSCode Insiders only so far - it can be removed to single var when it will be officially released
+$menu-item-selection-color: var(
+    --vscode-editorSuggestWidget-selectedForeground,
+    var(--vscode-quickInputList-focusForeground, var(--vscode-editorSuggestWidget-foreground))
+);
+
+$menu-item-focus-border: 1px solid var(--vscode-focusBorder);
+$menu-item-hover-contrast-border: 1px dashed var(--vscode-contrastActiveBorder);
+$menu-item-border-offset: -1px;
+
+$menu-item-disabled-opacity: 0.2;

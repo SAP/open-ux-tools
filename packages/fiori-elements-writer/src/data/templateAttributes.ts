@@ -76,6 +76,18 @@ const templateLibs: TemplateLibs = {
         [TemplateType.AnalyticalListPage]: {
             baseComponent: appComponentLibFioriElements,
             ui5Libs: commonUi5Libs[OdataVersion.v4]
+        },
+        [TemplateType.Worklist]: {
+            baseComponent: appComponentLibFioriElements,
+            ui5Libs: commonUi5Libs[OdataVersion.v4]
+        },
+        [TemplateType.OverviewPage]: {
+            baseComponent: appComponentLibOVP,
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
+        },
+        [TemplateType.FlexibleProgrammingModel]: {
+            baseComponent: appComponentLibFioriElements,
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
         }
     }
 };
@@ -114,9 +126,10 @@ type TemplateAttributes = {
 
 export const TemplateTypeAttributes: TemplateAttributes = {
     [TemplateType.Worklist]: {
-        supportedODataVersions: [OdataVersion.v2],
+        supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: oldestSupportedUI5Version
+            [OdataVersion.v2]: oldestSupportedUI5Version,
+            [OdataVersion.v4]: '1.99.0'
         }
     },
     [TemplateType.ListReportObjectPage]: {
@@ -136,14 +149,20 @@ export const TemplateTypeAttributes: TemplateAttributes = {
     [TemplateType.OverviewPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
-            [OdataVersion.v2]: oldestSupportedUI5Version
-            //[OdataVersion.v4]: 1.97 //TBD
+            [OdataVersion.v2]: oldestSupportedUI5Version,
+            [OdataVersion.v4]: '1.96.8'
         }
     },
     [TemplateType.FormEntryObjectPage]: {
         supportedODataVersions: [OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v4]: '1.90.0'
+        }
+    },
+    [TemplateType.FlexibleProgrammingModel]: {
+        supportedODataVersions: [OdataVersion.v4],
+        minimumUi5Version: {
+            [OdataVersion.v4]: '1.94.0'
         }
     }
 };

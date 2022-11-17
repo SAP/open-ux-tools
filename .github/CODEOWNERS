@@ -9,11 +9,20 @@
 # Module: fiori-freestyle-writer
 /packages/fiori-freestyle-writer/ @SAP/ux-tools-fiori-freestyle-writer
 
+# Module: fiori-elements-writer
+/packages/fiori-elements-writer/ @SAP/ux-tools-elements-writer
+
 # Module: logger
 /packages/logger/ @SAP/ux-tools-logger
 
+# Module: project-access
+/packages/project-access/ @SAP/ux-tools-project-access
+
 # Module: odata-service-writer
 /packages/odata-service-writer/ @SAP/ux-tools-odata-service-writer
+
+# Module: ui-components
+/packages/ui-components/ @SAP/ux-tools-ui-components
 
 # Module: ui5-application-writer
 /packages/ui5-application-writer/ @SAP/ux-tools-ui5-application-writer
@@ -23,6 +32,12 @@
 
 # Module: yaml
 /packages/yaml/ @SAP/ux-tools-yaml
+
+# Module: ui5-proxy-middleware
+/packages/ui5-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
+
+# Module: backend-proxy-middleware
+/packages/backend-proxy-middleware/ @SAP/ux-tools-middlewares-and-tasks
 
 # Admin
 /.github/ @SAP/ux-tools-admin

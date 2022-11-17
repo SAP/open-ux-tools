@@ -1,0 +1,211 @@
+@import './_variables.scss';
+
+@mixin menu-item-contrast-border($outline: null) {
+    &:after {
+        @if $outline {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            z-index: 1;
+            outline: $outline;
+            outline-offset: $menu-item-border-offset;
+            pointer-events: none;
+        } @else {
+            outline: none;
+        }
+
+        border: none;
+    }
+}
+
+@mixin menu-item-color($background, $color, $iconColor: null, $outline: null) {
+    background-color: $background;
+    color: $color;
+
+    // Focus border
+    @include menu-item-contrast-border($outline);
+
+    @if $iconColor {
+        svg > path {
+            fill: $color;
+        }
+    }
+}
+
+.ts-ContextualMenu-callout {
+    box-shadow: none;
+    background: $menu-background;
+    border: 1px solid $menu-border-color;
+    border-radius: 0;
+
+    .ms-Callout-main {
+        border-radius: 0;
+        background: $menu-background;
+        // workaround. resolves callout root element borders being cut or invisible
+        transform: translateZ(0);
+    }
+}
+
+.ts-ContextualMenu {
+    background: $menu-background;
+
+    .ms-ContextualMenu-item {
+        > div,
+        > .ms-ContextualMenu-link,
+        > div > button {
+            min-height: $menu-item-height;
+            height: auto;
+        }
+
+        > .ms-ContextualMenu-link,
+        > div > button {
+            font-size: 13px;
+            color: $menu-color;
+            padding: $menu-item-padding;
+            padding-right: 3px;
+
+            svg > path {
+                fill: $menu-color;
+            }
+
+            &.is-disabled {
+                opacity: $menu-item-disabled-opacity;
+            }
+
+            &:hover,
+            &:active,
+            &.is-expanded {
+                @include menu-item-color($menu-item-hover-background, $menu-item-hover-color, $menu-item-hover-color);
+
+                & ~ .ms-ContextualMenu-splitMenu {
+                    @include menu-item-color(
+                        $menu-item-hover-background,
+                        $menu-item-hover-color,
+                        $menu-item-hover-color
+                    );
+                }
+            }
+        }
+
+        // Part of split menu item
+        > div > button {
+            padding-right: 0;
+            width: calc(100% - #{$menu-item-height});
+
+            + span {
+                display: none;
+            }
+        }
+
+        // split button
+        .ms-ContextualMenu-splitMenu {
+            padding: 0;
+            width: $menu-item-height;
+            min-width: $menu-item-height;
+        }
+
+        // High contrast
+        // Single item - high contrast
+        > .ms-ContextualMenu-link,
+        > div {
+            &:hover {
+                @include menu-item-contrast-border($menu-item-hover-contrast-border);
+            }
+        }
+
+        // Keyboard navigation and focus
+        // Single menu item
+        > .ms-ContextualMenu-link {
+            &:focus {
+                @include menu-item-color(
+                    $menu-item-selection-background,
+                    $menu-item-selection-color,
+                    $menu-item-selection-color,
+                    $menu-item-focus-border
+                );
+
+                // Context menu focus follows hover - use hover as more important
+                &:hover {
+                    @include menu-item-color(
+                        $menu-item-hover-background,
+                        $menu-item-hover-color,
+                        $menu-item-hover-color,
+                        $menu-item-hover-contrast-border
+                    );
+                }
+            }
+        }
+        // Split menu item
+        > div {
+            &:hover,
+            &:focus {
+                // Overwrite fluent style
+                background: transparent;
+            }
+            // Menu item
+            &:focus {
+                > button:first-child {
+                    @include menu-item-color(
+                        $menu-item-selection-background,
+                        $menu-item-selection-color,
+                        $menu-item-selection-color
+                    );
+
+                    & ~ .ms-ContextualMenu-splitMenu {
+                        @include menu-item-color(
+                            $menu-item-selection-background,
+                            $menu-item-selection-color,
+                            $menu-item-selection-color
+                        );
+                    }
+                }
+
+                // Context menu focus follows hover - use hover as more important
+                &:hover > button:first-child {
+                    @include menu-item-color(
+                        $menu-item-hover-background,
+                        $menu-item-hover-color,
+                        $menu-item-hover-color
+                    );
+
+                    & ~ .ms-ContextualMenu-splitMenu {
+                        @include menu-item-color(
+                            $menu-item-hover-background,
+                            $menu-item-hover-color,
+                            $menu-item-hover-color
+                        );
+                    }
+                }
+
+                // High contrast
+                @include menu-item-contrast-border($menu-item-focus-border);
+            }
+
+            // High contrast
+            &:hover {
+                @include menu-item-contrast-border($menu-item-hover-contrast-border);
+            }
+
+            // Right split button as separate
+            .ms-ContextualMenu-splitMenu.is-expanded {
+                @include menu-item-color(
+                    $menu-item-selection-background,
+                    $menu-item-selection-color,
+                    $menu-item-selection-color
+                );
+
+                &:hover {
+                    @include menu-item-color(
+                        $menu-item-hover-background,
+                        $menu-item-hover-color,
+                        $menu-item-hover-color
+                    );
+                }
+            }
+        }
+    }
+
+    .ms-ContextualMenu-itemText {
+        margin: 0;
+    }
+}

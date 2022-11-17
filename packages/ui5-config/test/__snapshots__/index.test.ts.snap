@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UI5Config add/removeCustomMiddleware addCustomMiddleware 1`] = `
+exports[`UI5Config add/find/update/removeCustomMiddleware addCustomMiddleware 1`] = `
 "server:
   customMiddleware:
     - name: custom-middleware
@@ -16,9 +16,52 @@ exports[`UI5Config add/removeCustomMiddleware addCustomMiddleware 1`] = `
 "
 `;
 
-exports[`UI5Config add/removeCustomMiddleware removeMiddleware 1`] = `
+exports[`UI5Config add/find/update/removeCustomMiddleware removeMiddleware 1`] = `
 "server:
   customMiddleware: []
+"
+`;
+
+exports[`UI5Config add/find/removeCustomTask addCustomTask 1`] = `
+"builder:
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: my-archive
+"
+`;
+
+exports[`UI5Config add/find/removeCustomTask removeCustomTask 1`] = `
+"builder:
+  customTasks: []
+"
+`;
+
+exports[`UI5Config add/find/update/removeCustomMiddleware updateMiddleware existing middleware 1`] = `
+"server:
+  customMiddleware:
+    - name: custom-middleware
+      afterMiddleware: ~newMiddleware
+      configuration:
+        newValue:
+          should: overwrite existing
+"
+`;
+
+exports[`UI5Config add/find/update/removeCustomMiddleware updateMiddleware that did not exist, should add it 1`] = `
+"server:
+  customMiddleware:
+    - name: custom-middleware
+      afterMiddleware: ~otherMiddleware
+      configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: http://ui5.example
+        version: 1.95.1
+        debug: true
 "
 `;
 
@@ -79,16 +122,6 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out 
         backend:
           - url: http://localhost:8080
             path: /~testpath~
-"
-`;
-
-exports[`UI5Config addCustomTask 1`] = `
-"builder:
-  customTasks:
-    - name: ui5-task-zipper
-      afterTask: generateCachebusterInfo
-      configuration:
-        archiveName: my-archive
 "
 `;
 
@@ -217,11 +250,13 @@ exports[`UI5Config addMockServerMiddleware add with given path 1`] = `
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: /~testpath~
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: /~testpath~
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 "
 `;
 
@@ -231,11 +266,13 @@ exports[`UI5Config addMockServerMiddleware add without path 1`] = `
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
-        service:
-          urlPath: ''
-          metadataXmlPath: ./webapp/localService/metadata.xml
-          mockdataRootPath: ./webapp/localService/data
-          generateMockData: true
+        mountPath: /
+        services:
+          - urlPath: ''
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
 "
 `;
 
@@ -268,6 +305,36 @@ exports[`UI5Config addUI5Framework Use a dark theme 1`] = `
 "
 `;
 
+exports[`UI5Config addUI5Framework Use horizon high contrast black theme 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.96.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_horizon
+"
+`;
+
+exports[`UI5Config addUI5Framework Use horizon high contrast white theme 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.96.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_horizon
+"
+`;
+
+exports[`UI5Config addUI5Framework Use horizon high dark theme 1`] = `
+"framework:
+  name: SAPUI5
+  version: 1.96.0
+  libraries:
+    - name: sap.m
+    - name: themelib_sap_horizon
+"
+`;
+
 exports[`UI5Config addUi5ToFioriToolsProxydMiddleware add ui5 config to empty tools middleware config 1`] = `
 "server:
   customMiddleware:
@@ -292,5 +359,28 @@ exports[`UI5Config getAppReloadMiddlewareConfig 1`] = `
         port: 35729
         path: webapp
         delay: 300
+"
+`;
+
+exports[`UI5Config setMetadata replace metadata 1`] = `
+"metadata:
+  name: the.replaced.name
+"
+`;
+
+exports[`UI5Config setMetadata set name and copyright 1`] = `
+"metadata:
+  name: test.name
+  copyright: ©
+"
+`;
+
+exports[`UI5Config setType replace type 1`] = `
+"type: library
+"
+`;
+
+exports[`UI5Config setType set type 1`] = `
+"type: application
 "
 `;

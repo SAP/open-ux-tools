@@ -1,17 +1,23 @@
-import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
+import type { OdataService } from '@sap-ux/odata-service-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
-import { create, Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 
 export const testOutputDir = join(__dirname, '/test-output');
 
 export const debug = prepareDebug();
 
+/**
+ * @returns object
+ *          object.enabled debug enabled boolean
+ *          object.outputDir output directory
+ */
 export function prepareDebug(): { enabled: boolean; outputDir: string } {
     const debug = !!process.env['UX_DEBUG'];
-    // eslint-disable-next-line no-console
+
     if (debug) {
         console.log(testOutputDir);
     }

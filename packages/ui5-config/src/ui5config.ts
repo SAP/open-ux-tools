@@ -2,14 +2,16 @@ import type {
     AbapApp,
     AbapTarget,
     Configuration,
+    CustomItem,
     CustomMiddleware,
     CustomTask,
     FioriToolsProxyConfig,
     FioriToolsProxyConfigBackend,
     FioriToolsProxyConfigUI5,
-    Resources
+    Resources,
+    Ui5Document
 } from './types';
-import type { NodeComment, YAMLMap } from '@sap-ux/yaml';
+import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
 import {
     getAppReloadMiddlewareConfig,
@@ -71,6 +73,32 @@ export class UI5Config {
     }
 
     /**
+     * Set the metadata object in the yaml file.
+     * See also https://sap.github.io/ui5-tooling/pages/Configuration/#metadata for reference.
+     *
+     * @param {Ui5Document['metadata']} value metadata of the project or application
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public setMetadata(value: Ui5Document['metadata']): UI5Config {
+        this.document.setIn({ path: 'metadata', value });
+        return this;
+    }
+
+    /**
+     * Set the type in the yaml file.
+     * See also https://sap.github.io/ui5-tooling/pages/Configuration/#general-configuration for reference.
+     *
+     * @param {Ui5Document['type']} value - type of the application
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public setType(value: Ui5Document['type']): UI5Config {
+        this.document.setIn({ path: 'type', value });
+        return this;
+    }
+
+    /**
      * Adds a UI5 Framework entry to the yaml file.
      *
      * @param {string} ui5Framework - whether to user SAPUI5 or OpenUI5
@@ -91,7 +119,7 @@ export class UI5Config {
             libraryObjs.push({ name: library });
         }
         // Add theme lib (dark theme versions are provided by base theme lib)
-        libraryObjs.push({ name: `themelib_${ui5Theme.replace(/_dark$/, '')}` });
+        libraryObjs.push({ name: `themelib_${ui5Theme.replace(/_dark$|_hcw$|_hcb$/, '')}` });
 
         this.document.setIn({
             path: 'framework',
@@ -258,6 +286,89 @@ export class UI5Config {
             path: 'server.customMiddleware',
             matcher: { key: 'name', value: name }
         });
+        return this;
+    }
+
+    /**
+     * Remove a task form the UI5 config.
+     *
+     * @param name name of the task that is to be removed
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public removeCustomTask(name: string): UI5Config {
+        this.document.deleteAt({
+            path: 'builder.customTasks',
+            matcher: { key: 'name', value: name }
+        });
+        return this;
+    }
+
+    /**
+     * Find a custom item in the UI5 config.
+     *
+     * @param name name of the item (task or middlewre) that is to be looked for
+     * @param path path to the root of the sequence that is to be searched
+     * @returns the configuration as object or undefined if not found
+     * @memberof UI5Config
+     */
+    private findCustomActivity<C extends object = object>(name: string, path: string): CustomItem<C> | undefined {
+        let list: YAMLSeq<unknown> | undefined;
+        try {
+            list = this.document.getSequence({ path });
+        } catch (error) {
+            // if the document does not contain the builder > customTasks section and error is thrown
+        }
+        let item: YAMLMap | undefined;
+        if (list) {
+            item = this.document.findItem(list, (item: CustomItem<object>) => item.name === name) as YAMLMap;
+        }
+
+        return item ? item.toJSON() : undefined;
+    }
+
+    /**
+     * Find a middleware in the UI5 config.
+     *
+     * @param name name of the middleware that is to be looked for
+     * @returns the middleware configuration as object or undefined if not found
+     * @memberof UI5Config
+     */
+    public findCustomMiddleware<T extends object = object>(name: string): CustomMiddleware<T> | undefined {
+        return this.findCustomActivity<T>(name, 'server.customMiddleware');
+    }
+
+    /**
+     * Find a task in the UI5 config.
+     *
+     * @param name name of the task that is to be looked for
+     * @returns the middleware configuration as object or undefined if not found
+     * @memberof UI5Config
+     */
+    public findCustomTask<T extends object = object>(name: string): CustomTask<T> | undefined {
+        return this.findCustomActivity<T>(name, 'builder.customTasks');
+    }
+
+    /**
+     * Update an existing custom middleware or create it. Existing custom middleware be overwritten, not merged.
+     * If the custom middleware doesn't exist, it will be added.
+     *
+     * @param middleware - middleware config
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public updateCustomMiddleware(middleware: CustomMiddleware<unknown>): UI5Config {
+        const name = middleware.name;
+        if (this.findCustomMiddleware(name)) {
+            this.document.updateAt({
+                path: 'server.customMiddleware',
+                matcher: { key: 'name', value: name },
+                value: middleware,
+                mode: 'overwrite'
+            });
+        } else {
+            this.addCustomMiddleware([middleware]);
+        }
         return this;
     }
 

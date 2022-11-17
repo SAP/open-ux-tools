@@ -1,6 +1,8 @@
-import { FioriElementsApp, LROPSettings, OdataVersion, TemplateType } from '../../src';
+import type { LROPSettings } from '../../src';
+import { FioriElementsApp, OdataVersion, TemplateType } from '../../src';
 import { t } from '../../src/i18n';
-import { ALPSettings, ALPSettingsV2, ALPSettingsV4, TableSelectionMode, TableType, Template } from '../../src/types';
+import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, Template } from '../../src/types';
+import { TableSelectionModeV4, TableType } from '../../src/types';
 import { setAppDefaults, setDefaultTemplateSettings } from '../../src/data/defaults';
 import { feBaseConfig, v4TemplateSettings } from '../common';
 import cloneDeep from 'lodash/cloneDeep';
@@ -81,7 +83,7 @@ describe('Defaults', () => {
                 entityConfig: {
                     mainEntityName: ''
                 },
-                selectionMode: TableSelectionMode.MULTI
+                selectionMode: TableSelectionModeV4.MULTI
             }
         };
 

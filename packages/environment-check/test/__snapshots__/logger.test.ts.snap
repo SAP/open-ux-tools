@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tests for logger Add all types of messages 1`] = `
+Array [
+  Object {
+    "severity": "error",
+    "text": "ERROR",
+  },
+  Object {
+    "severity": "warn",
+    "text": "WARNING",
+  },
+  Object {
+    "severity": "info",
+    "text": "INFO",
+  },
+  Object {
+    "severity": "debug",
+    "text": "DEBUG",
+  },
+  Object {
+    "severity": "error",
+    "text": "PUSHED_ERROR",
+  },
+  Object {
+    "severity": "debug",
+    "text": "PUSHED_INFO",
+  },
+]
+`;

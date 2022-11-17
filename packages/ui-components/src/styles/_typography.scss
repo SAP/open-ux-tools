@@ -1,0 +1,72 @@
+// Typography for Fiori tools extensions
+// Definition at https://app.abstract.com/share/95440c2a-8dcb-4037-8379-78dd8e075fcc?collectionId=43b28713-cbc9-4f30-8961-138c9f12e797&collectionLayerId=a64467b4-c7ac-47b8-82be-3a4dac367a0c&mode=build&sha=5da8afa42ad02096132002b5b7904a925421e8f9
+
+// H1
+.ui-large-header {
+    font-family: var(--vscode-font-family);
+    font-weight: bold;
+    font-size: 24px;
+    font-style: normal;
+    line-height: 29px;
+    color: var(--vscode-settings-headerForeground);
+}
+
+// H2
+.ui-medium-header {
+    font-family: var(--vscode-font-family);
+    font-weight: bold;
+    font-size: 14px;
+    font-style: normal;
+    line-height: 16px;
+    color: var(--vscode-settings-headerForeground);
+}
+
+// H3
+.ui-small-header {
+    font-family: var(--vscode-font-family);
+    font-weight: bold;
+    font-size: 13px;
+    font-style: normal;
+    line-height: 15px;
+    color: var(--vscode-settings-textInputForeground);
+}
+
+// T1
+.ui-medium-text {
+    font-family: var(--vscode-font-family);
+    font-weight: normal;
+    font-size: 13px;
+    font-style: normal;
+    line-height: 18px;
+    color: var(--vscode-settings-textInputForeground);
+}
+
+// T2
+.ui-medium-italic-text {
+    font-family: var(--vscode-font-family);
+    font-weight: normal;
+    font-size: 13px;
+    font-style: italic;
+    line-height: 18px;
+    color: var(--vscode-settings-textInputForeground);
+}
+
+// T3
+.ui-small-text {
+    font-family: var(--vscode-font-family);
+    font-weight: normal;
+    font-size: 11px;
+    font-style: normal;
+    line-height: 15px;
+    color: var(--vscode-settings-textInputForeground);
+}
+
+// T4
+.ui-small-italic-text {
+    font-family: var(--vscode-font-family);
+    font-weight: normal;
+    font-size: 11px;
+    font-style: italic;
+    line-height: 15px;
+    color: var(--vscode-settings-textInputForeground);
+}

@@ -39,8 +39,7 @@
                     "synchronizationMode": "None",
                     "operationMode": "Server",
                     "autoExpandSelect": true,
-                    "earlyRequests": true,
-                    "groupId": "$direct"<% } %>
+                    "earlyRequests": true<% } %>
                 }
             }
         }

@@ -1,12 +1,19 @@
 {
-    "include": ["src"],
+    "extends": "../../tsconfig.json",
+    "include": [
+        "src",
+        "src/**/*.json"
+    ],
     "compilerOptions": {
-        "declaration": true,
-        "outDir": "dist",
-        "sourceMap": true,
-        "baseUrl": "./src",
-        "resolveJsonModule": true,
-        "target": "ES6"
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    "extends": "../../tsconfig.json"
+    "references": [
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../ui5-config"
+        }
+    ]
 }

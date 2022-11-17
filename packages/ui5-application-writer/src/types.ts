@@ -18,9 +18,23 @@ export interface App {
     baseComponent?: string; // UI5 Component `required` by Component.js
     startFile?: string;
     localStartFile?: string;
+
+    /**
+     * Defines the template used by the generation tool
+     */
     sourceTemplate?: {
+        /**
+         * Identifies the source template used to generate the application. Set to empty string if not provided.
+         */
         id?: string;
+        /**
+         * Source template version. Set to empty string if not provided.
+         */
         version?: string;
+        /**
+         * Source template tools id. Optional property. Will not be written to manifest.json if not provided
+         */
+        toolsId?: string;
     };
 }
 
@@ -43,7 +57,22 @@ export interface AppOptions {
     codeAssist: boolean; // Enables code assist
     eslint: boolean; // Enables Fiori linting
     sapux: boolean; // Enables Fiori Tools Suite integration
-    loadReuseLibs: boolean; // Enables loading of re-use libs
+
+    /**
+     * Enables loading of re-use libs
+     */
+    loadReuseLibs: boolean;
+
+    /**
+     * Enable Typescript support and generate all files in Typescript instead of Javascript
+     * Enabling Typescript will disable JavaScript codeAssist if also enabled. Typescript code assist will be used instead
+     */
+    typescript: boolean;
+
+    /**
+     * Enable support for importing functionality from npm packages in UI5 applications
+     */
+    npmPackageConsumption: boolean;
 }
 
 export interface Ui5App {

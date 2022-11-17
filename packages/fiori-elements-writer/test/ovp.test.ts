@@ -1,9 +1,11 @@
-import { FioriElementsApp, generate, TemplateType, LROPSettings } from '../src';
+import type { FioriElementsApp } from '../src';
+import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { testOutputDir, getTestData, debug, feBaseConfig } from './common';
-import { OdataService, OdataVersion } from '@sap-ux/odata-service-writer';
-import { OVPSettings } from '../src/types';
+import type { OdataService } from '@sap-ux/odata-service-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { OVPSettings } from '../src/types';
 
 const TEST_NAME = 'ovpTemplate';
 
@@ -21,6 +23,13 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         }
     };
 
+    const v4Service: OdataService = {
+        path: '/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/',
+        url: 'http://example.alp.v4',
+        version: OdataVersion.v4,
+        metadata: getTestData('sales_order_manage_v4', 'metadata')
+    };
+
     const configuration: Array<{ name: string; config: FioriElementsApp<OVPSettings> }> = [
         {
             name: 'ovpV2',
@@ -34,6 +43,23 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     }
                 }),
                 service: ovpV2Service
+            } as FioriElementsApp<OVPSettings>
+        },
+        {
+            name: 'ovpV4',
+            config: {
+                ...Object.assign(feBaseConfig('feovp2'), {
+                    template: {
+                        type: TemplateType.OverviewPage,
+                        settings: {
+                            filterEntityType: 'SalesOrderItem'
+                        }
+                    },
+                    ui5: {
+                        version: '1.97.0'
+                    }
+                }),
+                service: v4Service
             } as FioriElementsApp<OVPSettings>
         }
     ];

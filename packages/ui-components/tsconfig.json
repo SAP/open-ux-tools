@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.json",
+    "include": ["src"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist",
+        "incremental": true,
+        "jsx": "react",
+        "lib": ["ES2020", "dom"],
+        "preserveConstEnums": true,
+        "target": "ES2020",
+        "types": ["node", "jest"],
+        "importsNotUsedAsValues": "remove"
+    }
+}

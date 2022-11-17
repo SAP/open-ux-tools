@@ -1,6 +1,6 @@
-import type { CustomElement, InternalCustomElement, Position } from '../common/types';
+import type { CustomElement, InternalCustomElement, Position, EventHandler } from '../common/types';
 
-export interface CustomSection extends CustomElement {
+export interface CustomSection extends CustomElement, EventHandler {
     /**
      * Name of the routing target
      */
@@ -17,17 +17,16 @@ export interface CustomSection extends CustomElement {
     position: Position;
 
     /**
-     * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.
-     * If an existing event handler is to be used then its id needs to be provided as string.
-     */
-    eventHandler?: string | true;
-
-    /**
      * Optional control XML that will be generated into the fragment of section. If the property isn't provided then a sample control will be generated.
      */
     control?: string;
 }
 
+export interface CustomSectionDependencies {
+    [key: string]: string;
+}
+
 export interface InternalCustomSection extends CustomSection, InternalCustomElement {
     content: string;
+    dependencies?: CustomSectionDependencies;
 }

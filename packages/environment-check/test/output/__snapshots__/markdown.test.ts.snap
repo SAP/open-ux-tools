@@ -1,0 +1,266 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check empty destination table 1`] = `
+"
+# SAP Fiori tools - Environment Check
+
+<br>
+
+## Environment
+Environment not checked<br>
+
+<br>
+
+## Destination Details (0)
+No destination details<br>
+
+<br>
+
+## All Destinations (0)
+No destinations<br>
+
+<br>
+
+## Messages (0)
+No messages<br>
+
+"
+`;
+
+exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check if writer is creating output appropriately 1`] = `
+"
+# SAP Fiori tools - Environment Check
+
+<br>
+
+## Environment
+Platform: \`linux\`<br>
+Development environment: \`Business Application Studio\`<br>
+Dev Space Type: \`SAP Fiori\`<br>
+|Tools/Extensions|Version|
+|--|--|
+|Node.js|16.17.0|
+|SAP Fiori tools - Fiori generator|1|
+|Cloud CLI tools|2|
+|Application Wizard|2|
+|UI5 Language Assistant Support|2|
+|XML Toolkit|2|
+|SAP Fiori tools - XML Annotation Language Server|2.2|
+|SAP Fiori tools - Application Modeler|2|
+|SAP Fiori tools - Guided Development|2|
+|SAP Fiori tools - Service Modeler|2.4|
+|SAP CDS Language Support|2|
+<details><summary>Versions</summary>
+<pre>
+{
+    \\"node\\": \\"16.17.0\\",
+    \\"v8\\": \\"7.8.279.23-node.56\\",
+    \\"uv\\": \\"1.40.0\\",
+    \\"zlib\\": \\"1.2.11\\",
+    \\"ares\\": \\"1.17.2\\",
+    \\"modules\\": \\"72\\",
+    \\"openssl\\": \\"1.1.1k\\"
+}
+</pre></details>
+
+<br>
+
+## Destination Details (5)
+
+### Details for \`ABC\`
+✅ &nbsp; V2 catalog call returned 0 services<br>
+🚫 &nbsp; V4 catalog service not available<br>
+✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
+✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Full Service URL<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
+|--|--|--|--|--|--|--|--|--|--|--|
+|ABC|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+
+### Details for \`DEF\`
+✅ &nbsp; V2 catalog call returned 0 services<br>
+🚫 &nbsp; V4 catalog service not available<br>
+✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
+✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Catalog Service<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
+|--|--|--|--|--|--|--|--|--|--|--|
+|DEF|def|https://def.service||Catalog Service|odata_abap||HTTP|BasicAuthentication|Internet|true|
+
+### Details for \`JUST_WRONG\`
+✅ &nbsp; V2 catalog call returned 0 services<br>
+🚫 &nbsp; V4 catalog service not available<br>
+✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
+🚫 &nbsp; SAP Fiori tools usage: Wrong configuration, Fiori Generator cannot use this destination. Please check properties<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
+|--|--|--|--|--|--|--|--|--|--|--|
+|JUST_WRONG|s4|||Invalid URL|odata_gen,odata_abap|full_url|HTTP||Internet||
+
+### Details for \`SYS\`
+✅ &nbsp; V2 catalog call returned 2 services<br>
+🚫 &nbsp; V4 catalog service not available<br>
+🚫 &nbsp; Please ensure property \`HTML5.DynamicDestination\` is set to \`true\` in SAP BTP Cockpit -> 'Additional Properties'<br>
+✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Catalog Service<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
+|--|--|--|--|--|--|--|--|--|--|--|
+|SYS|sys|https://sys-api.s4hana.ondemand.com/sap/opu/odata/sap/API_BUSINESS_PARTNER||Catalog Service|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+
+### Details for \`XYZ\`
+✅ &nbsp; V2 catalog call returned 0 services<br>
+🚫 &nbsp; V4 catalog service not available<br>
+✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
+✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Partial URL<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
+|--|--|--|--|--|--|--|--|--|--|--|
+|XYZ|xyz|https://service||Partial URL|odata_gen||HTTP|BasicAuthentication|Internet|true|
+
+<br>
+
+## All Destinations (7)
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
+|--|--|--|--|--|--|--|--|--|--|--|
+|ABC|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+|DEF|def|https://def.service||Catalog Service|odata_abap||HTTP|BasicAuthentication|Internet|true|
+|DUPLICATE|||||||||||
+|DUPLICATE|||||||||||
+|JUST_WRONG|s4|||Invalid URL|odata_gen,odata_abap|full_url|HTTP||Internet||
+|SYS|sys|https://sys-api.s4hana.ondemand.com/sap/opu/odata/sap/API_BUSINESS_PARTNER||Catalog Service|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+|XYZ|xyz|https://service||Partial URL|odata_gen||HTTP|BasicAuthentication|Internet|true|
+
+<br>
+
+## Messages (5)
+🟢 &nbsp; Info: Found 80 destinations<br>
+🟢 &nbsp; Info: Checking destination 'SYS'<br>
+🟢 &nbsp; Info: v2 catalog request for destination 'SYS' returned 739 services<br>
+🔴 &nbsp; Error: v4 catalog service for destination 'SYS' not available<br>
+<details><summary>ℹ Debug</summary>
+<pre>
+Request to URL: 'http://SYS.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)&sap-client=100' failed with message: Request failed with status code 403. Complete error object: 
+{
+    \\"message\\": \\"Request failed with status code 403\\",
+    \\"name\\": \\"Error\\",
+    \\"stack\\": \\"Error: Request failed with status code 403\\\\n    at module.exports (/tmp/vscode-unpacked/sap-ux-application-modeler-extension-1.4.2.vsix/extension/dist/src/extension-min.js:2:5470354)\\\\n    at module.exports (/tmp/vscode-unpacked/sap-ux-application-modeler-extension-1.4.2.vsix/extension/dist/src/extension-min.js:2:5474468)\\\\n    at IncomingMessage.<anonymous> (/tmp/vscode-unpacked/sap-ux-application-modeler-extension-1.4.2.vsix/extension/dist/src/extension-min.js:2:5460363)\\\\n    at IncomingMessage.emit (events.js:326:22)\\\\n    at endReadableNT (_stream_readable.js:1241:12)\\\\n    at processTicksAndRejections (internal/process/task_queues.js:84:21)\\",
+    \\"config\\": {
+        \\"url\\": \\"http://SYS.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002/ServiceGroups?$expand=DefaultSystem($expand=Services)&sap-client=100\\",
+        \\"method\\": \\"get\\",
+        \\"headers\\": {
+            \\"Accept\\": \\"application/json, text/plain, */*\\",
+            \\"User-Agent\\": \\"axios/0.21.4\\",
+            \\"host\\": \\"sh4.dest\\"
+        },
+        \\"auth\\": {
+            \\"username\\": \\"davesh\\"
+        },
+        \\"transformRequest\\": [
+            null
+        ],
+        \\"transformResponse\\": [
+            null
+        ],
+        \\"timeout\\": 0,
+        \\"xsrfCookieName\\": \\"XSRF-TOKEN\\",
+        \\"xsrfHeaderName\\": \\"X-XSRF-TOKEN\\",
+        \\"maxContentLength\\": -1,
+        \\"maxBodyLength\\": -1,
+        \\"transitional\\": {
+            \\"silentJSONParsing\\": true,
+            \\"forcedJSONParsing\\": true,
+            \\"clarifyTimeoutError\\": false
+        }
+    }
+}
+</pre></details>
+
+"
+`;
+
+exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check markdown with no checks 1`] = `
+"
+# SAP Fiori tools - Environment Check
+
+<br>
+
+## Messages (0)
+No messages<br>
+
+"
+`;
+
+exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check markdown with no destinations checked 1`] = `
+"
+# SAP Fiori tools - Environment Check
+
+<br>
+
+## Environment
+Platform: \`linux\`<br>
+Development environment: \`Business Application Studio\`<br>
+Dev Space Type: \`SAP Fiori\`<br>
+|Tools/Extensions|Version|
+|--|--|
+|Node.js|16.17.0|
+|SAP Fiori tools - Fiori generator|1|
+|Cloud CLI tools|2|
+|Application Wizard|2|
+|UI5 Language Assistant Support|2|
+|XML Toolkit|2|
+|SAP Fiori tools - XML Annotation Language Server|2.2|
+|SAP Fiori tools - Application Modeler|2|
+|SAP Fiori tools - Guided Development|2|
+|SAP Fiori tools - Service Modeler|2.4|
+|SAP CDS Language Support|2|
+<details><summary>Versions</summary>
+<pre>
+{
+    \\"node\\": \\"16.17.0\\",
+    \\"v8\\": \\"7.8.279.23-node.56\\",
+    \\"uv\\": \\"1.40.0\\",
+    \\"zlib\\": \\"1.2.11\\",
+    \\"ares\\": \\"1.17.2\\",
+    \\"modules\\": \\"72\\",
+    \\"openssl\\": \\"1.1.1k\\"
+}
+</pre></details>
+
+<br>
+
+## Messages (0)
+No messages<br>
+
+"
+`;
+
+exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check markdown with no process versions 1`] = `
+"
+# SAP Fiori tools - Environment Check
+
+<br>
+
+## Environment
+Platform: \`linux\`<br>
+Development environment: \`Business Application Studio\`<br>
+Dev Space Type: \`SAP Fiori\`<br>
+|Tools/Extensions|Version|
+|--|--|
+|Node.js|Not installed or not found|
+|SAP Fiori tools - Fiori generator|1|
+|Cloud CLI tools|2|
+|Application Wizard|2|
+|UI5 Language Assistant Support|2|
+|XML Toolkit|2|
+|SAP Fiori tools - XML Annotation Language Server|2.2|
+|SAP Fiori tools - Application Modeler|2|
+|SAP Fiori tools - Guided Development|2|
+|SAP Fiori tools - Service Modeler|2.4|
+|SAP CDS Language Support|2|
+<details><summary>Versions</summary>
+<pre>
+{}
+</pre></details>
+
+<br>
+
+## Messages (0)
+No messages<br>
+
+"
+`;

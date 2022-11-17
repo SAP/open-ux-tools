@@ -1,0 +1,15 @@
+{
+    "info": {
+        "username": "Username",
+        "password": "Password",
+        "credentialsRequiredForFLP": "The FLP Embedded Preview requires credentials. Please enter your credentials below",
+        "authNeeded": "The FLP Embedded Preview might require credentials. Do you want to enter your credentials?",
+        "operationAborted": "Operation aborted by the user."
+    },
+    "error": {
+        "emptyUsername": "Username can not be empty.",
+        "emptyPassword": "Password can not be empty.",
+        "sslProxy": "You are trying to connect to a server with a self signed certificate. Please check (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html) for guidance.",
+        "noCodeError": "Error {{-error}} thrown for request {{-request}}"
+    }
+}

@@ -1,5 +1,321 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.14.16
+
+### Patch Changes
+
+-   Updated dependencies [fdfa554]
+    -   @sap-ux/ui5-application-writer@0.17.13
+
+## 0.14.15
+
+### Patch Changes
+
+-   Updated dependencies [964ab8e]
+    -   @sap-ux/ui5-application-writer@0.17.12
+
+## 0.14.14
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/ui5-config@0.16.0
+    -   @sap-ux/odata-service-writer@0.14.13
+    -   @sap-ux/ui5-application-writer@0.17.11
+
+## 0.14.13
+
+### Patch Changes
+
+-   672b40b: Fix issue with tsconfig paths
+-   Updated dependencies [672b40b]
+    -   @sap-ux/ui5-application-writer@0.17.10
+
+## 0.14.12
+
+### Patch Changes
+
+-   324b802: Handle Typscript build step for Freestyle Simple templates
+-   Updated dependencies [324b802]
+    -   @sap-ux/ui5-application-writer@0.17.9
+
+## 0.14.11
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.4
+-   @sap-ux/odata-service-writer@0.14.12
+-   @sap-ux/ui5-application-writer@0.17.8
+
+## 0.14.10
+
+### Patch Changes
+
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-application-writer@0.17.7
+    -   @sap-ux/ui5-config@0.15.3
+    -   @sap-ux/odata-service-writer@0.14.11
+
+## 0.14.9
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/ui5-config@0.15.2
+    -   @sap-ux/odata-service-writer@0.14.10
+    -   @sap-ux/ui5-application-writer@0.17.6
+
+## 0.14.8
+
+### Patch Changes
+
+-   Updated dependencies [e3e1275]
+    -   @sap-ux/ui5-application-writer@0.17.5
+
+## 0.14.7
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.1
+-   @sap-ux/odata-service-writer@0.14.9
+-   @sap-ux/ui5-application-writer@0.17.4
+
+## 0.14.6
+
+### Patch Changes
+
+-   Updated dependencies [0fc1499]
+    -   @sap-ux/odata-service-writer@0.14.8
+    -   @sap-ux/ui5-application-writer@0.17.3
+
+## 0.14.5
+
+### Patch Changes
+
+-   b72abf0: Fix: generate type dependency based on provided versions
+-   Updated dependencies [b72abf0]
+    -   @sap-ux/ui5-application-writer@0.17.2
+
+## 0.14.4
+
+### Patch Changes
+
+-   Updated dependencies [d0b4660]
+    -   @sap-ux/ui5-application-writer@0.17.1
+
+## 0.14.3
+
+### Patch Changes
+
+-   Updated dependencies [83a7a1a]
+    -   @sap-ux/ui5-application-writer@0.17.0
+    -   @sap-ux/ui5-config@0.15.0
+    -   @sap-ux/odata-service-writer@0.14.7
+
+## 0.14.2
+
+### Patch Changes
+
+-   3db7c81: Fix for https://github.com/SAP/open-ux-tools/issues/673. Include dot files in negative pattern when copying templates.
+
+## 0.14.1
+
+### Patch Changes
+
+-   b8d5315: Issues with typescript templates when testing the integration into SAP Fiori tools in BAS
+-   Updated dependencies [b8d5315]
+    -   @sap-ux/ui5-application-writer@0.16.1
+
+## 0.14.0
+
+### Minor Changes
+
+-   4fb53ce: Fix sonar warnings
+
+### Patch Changes
+
+-   Updated dependencies [4fb53ce]
+    -   @sap-ux/ui5-application-writer@0.16.0
+
+## 0.13.2
+
+### Patch Changes
+
+-   a2e1676: Improving compatibility with older version of yeoman
+
+## 0.13.1
+
+### Patch Changes
+
+-   c86bfaf: Using better types and improved quality of generate TS projects
+-   Updated dependencies [c86bfaf]
+    -   @sap-ux/ui5-application-writer@0.15.1
+
+## 0.13.0
+
+### Minor Changes
+
+-   d351f81: Typescript support added
+
+### Patch Changes
+
+-   Updated dependencies [d351f81]
+    -   @sap-ux/ui5-application-writer@0.15.0
+
+## 0.12.9
+
+### Patch Changes
+
+-   Updated dependencies [b6d0c67]
+    -   @sap-ux/odata-service-writer@0.14.6
+    -   @sap-ux/ui5-config@0.14.5
+    -   @sap-ux/ui5-application-writer@0.14.6
+
+## 0.12.8
+
+### Patch Changes
+
+-   0fcddfd: Correct app controller name
+
+## 0.12.7
+
+### Patch Changes
+
+-   Updated dependencies [238f401]
+    -   @sap-ux/ui5-application-writer@0.14.5
+
+## 0.12.6
+
+### Patch Changes
+
+-   Updated dependencies [6c22256]
+    -   @sap-ux/odata-service-writer@0.14.5
+
+## 0.12.5
+
+### Patch Changes
+
+-   30afc5f: Override glob-parent due to ReDos vulnerability
+-   Updated dependencies [30afc5f]
+    -   @sap-ux/odata-service-writer@0.14.4
+    -   @sap-ux/ui5-application-writer@0.14.4
+    -   @sap-ux/ui5-config@0.14.4
+
+## 0.12.4
+
+### Patch Changes
+
+-   09c6eb5: chore(open-ux-tools) update .npmrc and devDependencies
+-   Updated dependencies [09c6eb5]
+    -   @sap-ux/odata-service-writer@0.14.3
+    -   @sap-ux/ui5-application-writer@0.14.3
+    -   @sap-ux/ui5-config@0.14.3
+
+## 0.12.3
+
+### Patch Changes
+
+-   Updated dependencies [7c4a4df]
+    -   @sap-ux/ui5-config@0.14.2
+    -   @sap-ux/odata-service-writer@0.14.2
+    -   @sap-ux/ui5-application-writer@0.14.2
+
+## 0.12.2
+
+### Patch Changes
+
+-   cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
+-   Updated dependencies [cc1c406]
+    -   @sap-ux/odata-service-writer@0.14.1
+    -   @sap-ux/ui5-application-writer@0.14.1
+    -   @sap-ux/ui5-config@0.14.1
+
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [c29bf99]
+    -   @sap-ux/odata-service-writer@0.14.0
+
+## 0.12.0
+
+### Minor Changes
+
+-   6f51973: chore(open-ux-tools) Remove node 12 from the list of supported engines for all modules
+
+### Patch Changes
+
+-   Updated dependencies [6f51973]
+    -   @sap-ux/odata-service-writer@0.13.0
+    -   @sap-ux/ui5-application-writer@0.14.0
+    -   @sap-ux/ui5-config@0.14.0
+
+## 0.11.15
+
+### Patch Changes
+
+-   a0a6942: Fix: incorrect routing pattern in basic template
+
+## 0.11.14
+
+### Patch Changes
+
+-   c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
+-   Updated dependencies [c70fd4d]
+    -   @sap-ux/odata-service-writer@0.12.2
+    -   @sap-ux/ui5-application-writer@0.13.1
+    -   @sap-ux/ui5-config@0.13.3
+
+## 0.11.13
+
+### Patch Changes
+
+-   3fc088e: Fix for #487: `sourceTemplate.toolsId` not written
+
+## 0.11.12
+
+### Patch Changes
+
+-   7e80052: Fix for #487: `sourceTemplate.toolsId` not written
+
+## 0.11.11
+
+### Patch Changes
+
+-   Updated dependencies [9726e2d]
+    -   @sap-ux/ui5-application-writer@0.13.0
+
+## 0.11.10
+
+### Patch Changes
+
+-   b5ab868: Changing versions of dependent modules to fix vulnerabilities
+-   Updated dependencies [b5ab868]
+    -   @sap-ux/odata-service-writer@0.12.1
+    -   @sap-ux/ui5-application-writer@0.12.8
+    -   @sap-ux/ui5-config@0.13.2
+
+## 0.11.9
+
+### Patch Changes
+
+-   Updated dependencies [cfca196]
+    -   @sap-ux/odata-service-writer@0.12.0
+
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [73d6a6b]
+    -   @sap-ux/ui5-application-writer@0.12.7
+
+## 0.11.7
+
+### Patch Changes
+
+-   275880e: Implemented UI5 guidance for basic freestyle applications.
+
 ## 0.11.6
 
 ### Patch Changes

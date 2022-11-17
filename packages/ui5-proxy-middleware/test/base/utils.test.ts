@@ -7,20 +7,26 @@ import {
     getYamlFile,
     hideProxyCredentials,
     injectUI5Url,
-    isHostExcludedFromProxy,
     proxyRequestHandler,
     proxyResponseHandler,
-    setHtmlResponse
+    setHtmlResponse,
+    proxyErrorHandler,
+    updateProxyEnv
 } from '../../src/base/utils';
 import type { Response } from 'express';
 import YAML from 'yaml';
 import fs from 'fs';
 import * as baseUtils from '../../src/base/utils';
-import { ProxyConfig } from '../../src/base/types';
+import type { ProxyConfig } from '../../src/base/types';
+import type { IncomingMessage } from 'http';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 describe('Utils', () => {
     const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
     const readFileMock = jest.spyOn(fs, 'readFileSync').mockReturnValue('');
+    const logger = new ToolsLogger({
+        transports: [new NullTransport()]
+    });
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -58,44 +64,110 @@ describe('Utils', () => {
         expect(res.end).toHaveBeenCalledTimes(1);
     });
 
-    test('getCorporateProxyServer: gets proxy configuration of user', () => {
-        const corporateProxy = 'https://myproxy:8443';
-        expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
+    test('proxyErrorHandler', () => {
+        const mockNext = jest.fn();
+        const request = {} as IncomingMessage;
+        const requestWithNext = {
+            next: mockNext as Function
+        } as IncomingMessage & { next: Function };
+        const requestCausingError = {
+            originalUrl: 'my/request/.error'
+        } as IncomingMessage & { originalUrl?: string };
+        const debugSpy = jest.spyOn(logger, 'debug');
 
-        const envProxy = process.env.npm_config_https_proxy;
-        process.env.npm_config_https_proxy = corporateProxy;
-        expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
-        process.env.npm_config_https_proxy = envProxy;
+        // do nothing if no error is provided, but log for debug purposes
+        proxyErrorHandler(undefined as unknown as Error, request, logger);
+        expect(debugSpy).toBeCalled();
+
+        // forward or throw other errors
+        const otherError = new Error();
+        proxyErrorHandler(otherError, requestWithNext, logger);
+        expect(mockNext).toBeCalledTimes(1);
+        try {
+            proxyErrorHandler(otherError, request, logger);
+        } catch (error) {
+            expect(error).toBe(otherError);
+        }
+
+        // ignore empty errors
+        debugSpy.mockReset();
+        const emptyError = { message: '', stack: 'Error' } as Error;
+        proxyErrorHandler(emptyError, requestCausingError, logger);
+        expect(debugSpy).toBeCalledTimes(1);
+        expect(debugSpy).toBeCalledWith(
+            `Error ${JSON.stringify(emptyError, null, 2)} thrown for request ${requestCausingError.originalUrl}`
+        );
     });
 
-    describe('isHostExcludedFromProxy', () => {
-        const host = 'http://www.host.example';
+    describe('getCorporateProxyServer', () => {
+        const corporateProxy = 'https://myproxy.example:8443';
 
-        test('no_proxy config does not exist', () => {
-            expect(isHostExcludedFromProxy(undefined, host)).toBeFalsy();
+        test('get value from CLI (wins over input and env)', () => {
+            const envProxy = process.env.npm_config_proxy;
+            const envHttpsProxy = process.env.npm_config_https_proxy;
+            process.env.npm_config_proxy = '~not.used';
+            process.env.npm_config_https_proxy = '~not.used';
+            process.argv.push(`proxy=${corporateProxy}`);
+            expect(getCorporateProxyServer('~not.used')).toEqual(corporateProxy);
+            process.argv.pop();
+            process.env.npm_config_proxy = envProxy;
+            process.env.npm_config_https_proxy = envHttpsProxy;
+        });
+        test('get value from env (wins over input)', () => {
+            const envProxy = process.env.npm_config_proxy;
+            const envHttpsProxy = process.env.npm_config_https_proxy;
+            process.env.npm_config_proxy = corporateProxy;
+            process.env.npm_config_https_proxy = corporateProxy;
+            expect(getCorporateProxyServer('~not.used')).toEqual(corporateProxy);
+            process.env.npm_config_proxy = envProxy;
+            process.env.npm_config_https_proxy = envHttpsProxy;
+        });
+        test('get value from env if there is no input', () => {
+            const envProxy = process.env.npm_config_proxy;
+            const envHttpsProxy = process.env.npm_config_https_proxy;
+            process.env.npm_config_proxy = corporateProxy;
+            process.env.npm_config_https_proxy = corporateProxy;
+            expect(getCorporateProxyServer(undefined)).toEqual(corporateProxy);
+            process.env.npm_config_proxy = envProxy;
+            process.env.npm_config_https_proxy = envHttpsProxy;
+        });
+        test('get value from input if there is no env', () => {
+            const envProxy = process.env.npm_config_proxy;
+            const envHttpsProxy = process.env.npm_config_https_proxy;
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
+            expect(getCorporateProxyServer(corporateProxy)).toEqual(corporateProxy);
+            process.env.npm_config_proxy = envProxy;
+            process.env.npm_config_https_proxy = envHttpsProxy;
+        });
+    });
+
+    describe('updateProxyEnv', () => {
+        const corporateProxy = 'https://myproxy.example:8443';
+        afterEach(() => {
+            delete process.env.npm_config_proxy;
+            delete process.env.npm_config_https_proxy;
         });
 
-        test('host is not excluded via no_proxy config', () => {
-            expect(isHostExcludedFromProxy('host,www', host)).toBeFalsy();
+        test('set value from CLI (wins over input)', () => {
+            process.argv.push(`proxy=${corporateProxy}`);
+            updateProxyEnv('~not.used');
+            expect(process.env.npm_config_proxy).toEqual(corporateProxy);
+            expect(process.env.npm_config_https_proxy).toEqual(corporateProxy);
+            process.argv.pop();
         });
-
-        test('host is not excluded via no_proxy config but has similar ending', () => {
-            expect(isHostExcludedFromProxy('ample', host)).toBeFalsy();
-            expect(isHostExcludedFromProxy('ost.example', host)).toBeFalsy();
+        test('set value from input if there is no env)', () => {
+            updateProxyEnv(corporateProxy);
+            expect(process.env.npm_config_proxy).toEqual(corporateProxy);
+            expect(process.env.npm_config_https_proxy).toEqual(corporateProxy);
         });
-
-        test('host is excluded via no_proxy config', () => {
-            expect(isHostExcludedFromProxy('host.example', host)).toBeTruthy();
-            expect(isHostExcludedFromProxy('example', host)).toBeTruthy();
-        });
-
-        test('host is excluded via no_proxy config, bit with leading .', () => {
-            expect(isHostExcludedFromProxy('.host.example', host)).toBeTruthy();
-            expect(isHostExcludedFromProxy('.example', host)).toBeTruthy();
-        });
-
-        test('all hosts are excluded from proxy', () => {
-            expect(isHostExcludedFromProxy('*', host)).toBeTruthy();
+        test('set value from env if there is no input', () => {
+            const envProxy = process.env.FIORI_TOOLS_PROXY;
+            process.env.FIORI_TOOLS_PROXY = corporateProxy;
+            updateProxyEnv(undefined);
+            expect(process.env.npm_config_proxy).toEqual(corporateProxy);
+            expect(process.env.npm_config_https_proxy).toEqual(corporateProxy);
+            process.env.FIORI_TOOLS_PROXY = envProxy;
         });
     });
 

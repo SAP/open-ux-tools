@@ -1,0 +1,212 @@
+@import '_variables.scss';
+@import '_mixins.scss';
+
+@mixin splitter-border($border, $horizontal: true) {
+    @if $horizontal {
+        border-left: $border;
+        border-right: $border;
+    } @else {
+        border-top: $border;
+        border-bottom: $border;
+    }
+}
+
+$splitter-contrast-border: 1px solid var(--vscode-contrastBorder);
+$splitter-hover-contrast-border: 1px dashed var(--vscode-contrastActiveBorder);
+$splitter-focus-border: 1px solid var(--vscode-focusBorder);
+
+.splitter {
+    background-color: var(--vscode-panelSection-border);
+    position: absolute;
+    outline: none;
+
+    &--horizontal {
+        top: 0;
+        bottom: 0;
+        cursor: ew-resize;
+
+        &:after {
+            @include splitter-border($splitter-contrast-border, true);
+        }
+    }
+
+    &--vertical {
+        cursor: ns-resize;
+        left: 0;
+        right: 0;
+
+        &:after {
+            @include splitter-border($splitter-contrast-border, false);
+        }
+    }
+
+    &--compact {
+        background: var(--vscode-editorWidget-border);
+        &.splitter--vertical {
+            .splitter__grip {
+                height: 3px;
+            }
+        }
+        &.splitter--horizontal {
+            .splitter__grip {
+                width: 12px;
+                svg {
+                    transform-origin: 5px 7px;
+                }
+            }
+        }
+    }
+
+    &--toggle {
+        cursor: pointer;
+
+        .splitter__grip {
+            height: 12px;
+        }
+    }
+
+    &--resize {
+        &.splitter--horizontal {
+            cursor: ew-resize;
+        }
+
+        &.splitter--vertical {
+            cursor: ns-resize;
+        }
+    }
+
+    &:after {
+        content: '';
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        position: absolute;
+    }
+
+    // Grip
+    &__grip {
+        position: absolute;
+        height: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 0;
+        right: 0;
+    }
+
+    & + .section {
+        .section__header__title,
+        .section__body {
+            padding-left: calc($splitter-size / 2);
+        }
+    }
+
+    &--toggle + .section {
+        .section__header__title,
+        .section__body {
+            padding: 0;
+            margin: 0;
+        }
+    }
+
+    // Splitter focus style
+    &:hover {
+        .splitter__grip svg path {
+            fill: var(--vscode-button-foreground);
+        }
+        background-color: var(--vscode-focusBorder);
+    }
+    &--horizontal {
+        &:hover:after {
+            @include splitter-border($splitter-hover-contrast-border, true);
+        }
+
+        &:focus:after {
+            @include splitter-border($splitter-focus-border, true);
+        }
+    }
+
+    &--vertical {
+        &:hover:after {
+            @include splitter-border($splitter-hover-contrast-border, false);
+        }
+
+        &:focus:after {
+            @include splitter-border($splitter-focus-border, false);
+        }
+    }
+
+    // Hide with animation for delay
+    &--hidden {
+        animation: 0.5s delayedFadeOut;
+        animation-fill-mode: forwards;
+    }
+
+    i.ts-icon {
+        display: flex;
+        height: 100%;
+        svg {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    // Rotate icon
+    &--toggle {
+        &.splitter--horizontal {
+            .splitter__grip {
+                svg {
+                    transform: rotate(180deg);
+                }
+            }
+        }
+        &.splitter--vertical {
+            .splitter__grip {
+                svg {
+                    transform: rotate(270deg);
+                }
+            }
+        }
+    }
+    &--resize {
+        &.splitter--standard.splitter--vertical,
+        &.splitter--compact.splitter--horizontal {
+            .splitter__grip {
+                svg {
+                    transform: rotate(90deg);
+                }
+            }
+        }
+    }
+}
+
+.splitter__overlay {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: transparent;
+
+    &--horizontal {
+        cursor: ew-resize;
+    }
+
+    &--vertical {
+        cursor: ns-resize;
+    }
+}
+
+.sections__item--hidden .splitter--toggle {
+    &.splitter--horizontal {
+        .splitter__grip svg {
+            transform: rotate(0) translateX(-1px);
+        }
+    }
+    &.splitter--vertical {
+        .splitter__grip svg {
+            transform: rotate(90deg) translateX(-1px);
+        }
+    }
+}

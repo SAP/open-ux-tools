@@ -1,135 +1,50 @@
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { createForDestination, createForAbap, createForAbapOnBtp, ODataVersion } from '@sap-ux/axios-extension';
-import { isAppStudio, listDestinations, isAbapSystem } from '@sap-ux/btp-utils';
-import { ToolsLogger } from '@sap-ux/logger';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import type { TestActivity, TestTarget } from './types';
+import { logger } from './types';
+import { testWithAbapSystem, testWithDestination, testWithAbapBtpSystem, testWithCloudAbapSystem } from './targets';
+import { testDeployUndeployDTA, useAdtServices, useCatalogAndFetchSomeMetadata } from './activities';
+
+const targets: { [name: string]: TestTarget } = {
+    abap: testWithAbapSystem,
+    destination: testWithDestination,
+    btp: testWithAbapBtpSystem,
+    cloud: testWithCloudAbapSystem,
+    unknown: () => {
+        logger.info(
+            `Test name missing or unknown, try 'pnpm start abap' or use any of the following activities: ${Object.keys(
+                targets
+            )}`
+        );
+        return Promise.resolve();
+    }
+};
+
+const activities: { [name: string]: TestActivity } = {
+    odata: useCatalogAndFetchSomeMetadata,
+    adt: useAdtServices,
+    dta: testDeployUndeployDTA
+};
 
 // read CLI arguments as well as environment variables
 const args = process.argv.slice(3);
-const test = args.length > 0 ? args[0] : undefined;
-const processEnv = process.env as any;
+const processEnv = process.env;
 
 // create a temp folder for output
-const outDir = join(process.cwd(), '.tmp');
-if (!existsSync(outDir)) {
-    mkdirSync(outDir);
+processEnv['TEST_OUTPUT'] = processEnv['TEST_OUTPUT'] ?? join(process.cwd(), '.tmp');
+if (!existsSync(processEnv['TEST_OUTPUT'])) {
+    mkdirSync(processEnv['TEST_OUTPUT']);
 }
-const logger = new ToolsLogger();
 
-// execute different scripts depending on the environment
+// execute different scripts depending on the environment and activity
+let target: string;
+let activity: string;
 if (isAppStudio()) {
-    checkDestination(processEnv);
+    target = 'destination';
+    activity = args.length > 0 ? args[0] : 'odata';
 } else {
-    switch (test) {
-        case 'abap':
-            checkAbapSystem(processEnv);
-            break;
-        case 'btp':
-            checkAbapBtpSystem(processEnv);
-            break;
-        case undefined:
-            logger.info(`Test name missing, try 'pnpm test -- abap'`);
-            break;
-        default:
-            logger.info(`Unknown manual test ${test}`);
-            break;
-    }
+    target = args.length > 0 ? args[0] : 'unknown';
+    activity = args.length > 1 ? args[1] : 'odata';
 }
-
-/**
- * Execute a sequence of test calls using the given provider.
- *
- * @param provider instance of a service provider
- */
-async function callAFewAbapServices(provider: AbapServiceProvider): Promise<void> {
-    const catalog = provider.catalog(ODataVersion.v2);
-
-    const services = await catalog.listServices();
-    writeFileSync(join(outDir, 'v2-catalog.json'), JSON.stringify(services, null, 4));
-
-    const serviceInfo = services.find((service) => service.name.includes('SEPMRA_PROD_MAN'));
-
-    if (serviceInfo) {
-        const service = provider.service(serviceInfo.path);
-        const metadata = await service.metadata();
-        writeFileSync(join(outDir, 'metadata.xml'), metadata);
-
-        const annotations = await catalog.getAnnotations(serviceInfo);
-        annotations.forEach((anno) => {
-            writeFileSync(join(outDir, `${anno.TechnicalName}.xml`), anno.Definitions);
-        });
-    }
-}
-
-/**
- * Read the required values for connecting to an on-premise SAP system from the env variable, create a provider instance and execute the system agnostic example script.
- *
- * @param env object reprensenting the content of the .env file.
- * @param env.TEST_SYSTEM base url of the test system
- * @param env.TEST_USER optional username
- * @param env.TEST_PASSWORD optional password
- * @returns Promise<void>
- */
-async function checkAbapSystem(env: {
-    TEST_SYSTEM: string;
-    TEST_USER?: string;
-    TEST_PASSWORD?: string;
-}): Promise<void> {
-    const provider = createForAbap({
-        baseURL: env.TEST_SYSTEM,
-        auth: {
-            username: env.TEST_USER,
-            password: env.TEST_PASSWORD
-        }
-    });
-    return callAFewAbapServices(provider);
-}
-
-/**
- * Read the required values for connecting to an ABAP environment on BTP from the env variable, create a provider instance and execute the system agnostic example script.
- *
- * @param env object reprensenting the content of the .env file.
- * @param env.TEST_SERVICE_INFO_PATH path to a local copy of the service configuration file
- * @returns Promise<void>
- */
-async function checkAbapBtpSystem(env: { TEST_SERVICE_INFO_PATH: string }): Promise<void> {
-    const serviceInfo = JSON.parse(readFileSync(env.TEST_SERVICE_INFO_PATH, 'utf-8'));
-    const provider = createForAbapOnBtp(serviceInfo, undefined, (newToken: string) => {
-        logger.info(`New refresh token issued ${newToken}`);
-    });
-    return callAFewAbapServices(provider);
-}
-
-/**
- * Read the required values for connecting to a destination from the env variable, create a provider instance and execute the system agnostic example script.
- *
- * @param env object reprensenting the content of the .env file.
- * @param env.TEST_DESTINATION name of destination
- * @param env.TEST_USER optional username
- * @param env.TEST_PASSWORD optional password
- * @returns Promise<void>
- */
-async function checkDestination(env: {
-    TEST_DESTINATION: string;
-    TEST_USER?: string;
-    TEST_PASSWORD?: string;
-}): Promise<void> {
-    const destinations = await listDestinations();
-    if (destinations[env.TEST_DESTINATION] && isAbapSystem(destinations[env.TEST_DESTINATION])) {
-        const provider = createForDestination(
-            env.TEST_USER
-                ? {
-                      auth: {
-                          username: env.TEST_USER,
-                          password: env.TEST_PASSWORD
-                      }
-                  }
-                : {},
-            destinations[env.TEST_DESTINATION]
-        ) as AbapServiceProvider;
-        await callAFewAbapServices(provider);
-    } else {
-        logger.info(`Invalid destination ${env.TEST_DESTINATION}`);
-    }
-}
+targets[target](processEnv, activities[activity]);

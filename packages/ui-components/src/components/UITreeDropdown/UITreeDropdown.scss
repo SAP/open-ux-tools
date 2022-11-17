@@ -1,0 +1,82 @@
+@import '../../styles/_variables.scss';
+
+.ui-treeDropdown {
+    position: relative;
+
+    &-with-label {
+        margin-top: 29px;
+    }
+    &-wrapper {
+        position: relative;
+        border: $dropdown-input-border;
+
+        &.disabled {
+            opacity: $dropdown-input-disabled-opacity;
+        }
+        .ms-TextField {
+            .ms-TextField-wrapper {
+                .ms-TextField-fieldGroup {
+                    border: none;
+                    opacity: initial;
+                    background: $dropdown-input-background;
+                }
+            }
+        }
+        input {
+            padding: 0 26px 0 8px;
+            font-family: var(--vscode-font-family);
+        }
+        &:hover {
+            border: 1px solid $dropdown-input-focus-border-color;
+        }
+        &-menu {
+            &-open {
+                border: 1px solid $dropdown-input-focus-border-color;
+            }
+            &-close {
+                border: 1px solid var(--vscode-editorWidget-border);
+            }
+        }
+    }
+    &-caret {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        top: 0;
+        right: 0;
+        cursor: pointer;
+        box-sizing: border-box;
+        &:hover,
+        &:active,
+        &:focus {
+            background-color: transparent;
+        }
+    }
+
+    label {
+        position: absolute;
+        bottom: 26px;
+        margin-top: 0 !important;
+        font-family: var(--vscode-font-family);
+        font-size: 13px;
+        font-weight: bold;
+        box-sizing: border-box;
+        box-shadow: none;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 0px;
+        display: block;
+        padding: 4px 0;
+        overflow-wrap: break-word;
+
+        &.required {
+            &:after {
+                content: ' *';
+                color: var(--vscode-inputValidation-errorBorder);
+            }
+        }
+        &.disabled {
+            opacity: 0.4;
+        }
+    }
+}

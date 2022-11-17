@@ -1,0 +1,124 @@
+<style>
+    body,
+    #storybook-preview-wrapper,
+    .os-host {
+        background: transparent !important;
+    }
+    body,
+    .sidebar-item,
+    .sidebar-header a,
+    .sidebar-subheading button {
+        color: var(--vscode-foreground) !important;
+    }
+    .search-field input {
+        background-color: var(--vscode-input-background);
+        border: 1px solid var(--vscode-editorWidget-border);
+    }
+    .search-field input:active {
+        border: 1px solid var(--vscode-focusBorder);
+    }
+    .textColor {
+        color: var(--vscode-foreground);
+    }
+</style>
+<script data-custom="SAP">
+    // Fallback style when storybook is not embeded in VSCode
+    // We can change theme from console like "localStorage.setItem('tsStorybookThemeCss', 'vscode-hcb.css');"
+    const fallbackColorsFile = localStorage.getItem('tsStorybookThemeCss') || 'vscode-light.css';
+
+    window.addEventListener('message', (event) => {
+        if (event.data.type === 'ts-refresh') {
+            updateThemeVariables(event.data.style);
+            const previewFrame = window.frames[0];
+            previewFrame.postMessage(event.data, '*');
+        } else if (isTopWindow() && isStorybookInitMessage(event.data)) {
+            // When storybook launched without vscode extension - we need to load fallback vscode variables
+            loadVSCodeFallbackColors();
+        }
+    });
+    function updateThemeVariables(style) {
+        document.body.parentNode.setAttribute('style', style);
+    }
+
+    /**
+     * Method called when VSCode fallback variables style loaded.
+     */
+    function onVSCodeFallbackColorsLoad() {
+        const styleSheets = document.styleSheets;
+        let variablesStyle = '';
+        for (let sheetIndex = 0; sheetIndex < styleSheets.length; sheetIndex++) {
+            const styleSheet = styleSheets[sheetIndex];
+            if (styleSheet.href && styleSheet.href.endsWith(fallbackColorsFile)) {
+                // We got fallback style sheet - parse it into string
+                variablesStyle = parseStylesheetVariablesToString(styleSheet);
+                break;
+            }
+        }
+        if (variablesStyle) {
+            // Post message to same window with fallback style variables
+            window.postMessage({ type: 'ts-refresh', style: variablesStyle }, '*');
+        }
+    }
+
+    /**
+     * Method parses stylesheet's css variables into string.
+     * @param {StyleSheet} styleSheet Single style sheet object.
+     * @return {string} Parsed css variables.
+     */
+    function parseStylesheetVariablesToString(styleSheet) {
+        let variablesStyle = '';
+        const cssRules = styleSheet.cssRules;
+        for (let ruleIndex = 0; ruleIndex < cssRules.length; ruleIndex++) {
+            const cssRule = cssRules[ruleIndex];
+            variablesStyle += cssRule.style.cssText;
+        }
+        return variablesStyle;
+    }
+
+    /**
+     * Method checks if current window is top most window or it is rendered as iframe.
+     * It is needed to detect if storybook rendered directly in browser or it is rendered in vscode extension.
+     * @return {boolean} Is current window root/top window.
+     */
+    function isTopWindow() {
+        try {
+            return window.self === window.top;
+        } catch (exception) {
+            console.error(exception);
+            return false;
+        }
+    }
+
+    /**
+     * Method checks if passed storybook message's type signalizes about storybook initialization.
+     * @param {Object} data Message's event data object.
+     * @return {boolean} Is message data notifies about storybook initialization.
+     */
+    function isStorybookInitMessage(data) {
+        try {
+            data = JSON.parse(data);
+            // setStories is called when stories initialized
+            return data && data.event && data.event.type === 'setStories';
+        } catch (exception) {
+            console.error(exception);
+            return false;
+        }
+    }
+
+    /**
+     * Method invokes loading of fallback colors using <link/> tag.
+     */
+    function loadVSCodeFallbackColors() {
+        try {
+            // Currently only light theme
+            const headElement = document.querySelector('head');
+            const styleLink = document.createElement('link');
+            styleLink.rel = 'stylesheet';
+            styleLink.href = '/' + fallbackColorsFile;
+            styleLink.onload = onVSCodeFallbackColorsLoad;
+            headElement.appendChild(styleLink);
+        } catch (exception) {
+            console.error(exception);
+        }
+    }
+</script>

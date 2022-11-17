@@ -1,53 +1,56 @@
 # Version Overrides
 This document lists the version overrides for vulnerable (nested) dependencies and the reason.
 
-## ansi-regex
-
-| Override:           | ^5.0.1 |
-|:--------------------| :------------ |
-|                     | |
-| **moderate**        | Inefficient Regular Expression Complexity in chalk/ansi-regex |
-| Vulnerable versions | >2.1.1 <5.0.1 |
-| Patched versions    | >=5.0.1 |
-| More info           | https://github.com/advisories/GHSA-93q8-gq69-wqmw |
-
-## tmpl
-
-| Override:           | ^1.0.5 |
+## trim
+| Override:           | >=0.0.3 |
 |:--------------------| :-------------|
 |                     | |
-| **moderate**        | Regular Expression Denial of Service in tmpl |
-| Package             | tmpl |
-| Vulnerable versions | <1.0.5 |
-| Patched versions    | >=1.0.5 |
-| More info           | https://github.com/advisories/GHSA-jgrx-mgxx-jf9v |
+| **high**        | Regular Expression Denial of Service in trim  |
+| Package             | trim |
+| Vulnerable versions | <0.0.3 |
+| Patched versions    | >=0.0.3 |
+| More info           | https://github.com/advisories/GHSA-w5p7-h5w8-2hfq  |
 
-## follow-redirects
-
-| Override:           | >=1.14.7 |
+## trim-newlines
+| Override:           | >=3.0.1 |
 |:--------------------| :-------------|
 |                     | |
-| **high**            | Exposure of sensitive information in follow-redirects |
-| Package             | follow-redirects |
-| Vulnerable versions | <1.14.7                                               |
-| More info           | https://github.com/advisories/GHSA-74fj-2j2h-c42q     |
+| **high**        | Uncontrolled Resource Consumption in trim-newlines |
+| Package             | trim-newlines |
+| Vulnerable versions | <3.0.1 |
+| Patched versions    | >=3.0.1 |
+| More info           | https://github.com/advisories/GHSA-7p7h-4mm5-852v |
 
-## vm2
-| Override:           | ^3.9.6 |
+## glob-parent
+| Override:           | >=5.1.2 |
 |:--------------------| :-------------|
 |                     | |
-| **critical**        | Sandbox bypass in vm2 |
-| Package             | vm2 |
-| Vulnerable versions | <3.9.6 |
-| Patched versions    | >=3.9.6 |
-| More info           | https://github.com/advisories/GHSA-6pw2-5hjv-9pf7 |
+| **high**        | glob-parent before 5.1.2 vulnerable to Regular Expression Denial of Service in enclosure regex |
+| Package             | glob-parent |
+| Vulnerable versions | <5.1.2 |
+| Patched versions    | >=5.1.2 |
+| More info           | https://github.com/advisories/GHSA-ww39-953v-wcq6   |
 
-## minimist
-| Override:           | ^1.2.6 |
+## minimatch
+| Override:           | >=3.0.5 |
 |:--------------------| :-------------|
 |                     | |
-| **high**        | Prototype Pollution in minimist |
-| Package             | vm2 |
-| Vulnerable versions | <=1.2.5 |
-| Patched versions    | >=1.2.6 |
-| More info           | https://github.com/advisories/GHSA-xvch-5gv4-984h |
+| **high**            | minimatch ReDoS vulnerability                     |
+| Package             | minimatch                                         |
+| Vulnerable versions | <3.0.5                                            |
+| Patched versions    | >=3.0.5                                           |
+| More info           | https://github.com/advisories/GHSA-f8q6-p94x-37v3 |
+
+## loader-utils
+| Override:           | 2.0.3; 1.4.1 |
+|:--------------------| :-------------|
+|                     | |
+| **high**            | minimatch ReDoS vulnerability                     |
+| Package             | minimatch                                         |
+| Vulnerable versions | >= 2.0.0, < 2.0.3;  < 1.4.1                       |
+| Patched versions    | 2.0.3; 1.4.1                                      |
+| More info           | https://github.com/advisories/GHSA-76p3-8jx3-jpfq |
+
+:warning: Attention :warning: 
+* `trim`, `trim-newlines` and `glob-parent` and `loader-utils` are dependencies of `storybook` that is used in `@sap-ux/ui-components`. Once a new version without the vulnerable dependency is available, it is to be used and this override can be removed.
+* the `minimatch` override can be removed as soon as `@sap/bas-sdk` and `pretty-quick` are updated

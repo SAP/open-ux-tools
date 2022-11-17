@@ -1,0 +1,80 @@
+@import '../../styles/_variables.scss';
+@import '../../styles/_mixins.scss';
+@import '../UIComboBox/_mixins.scss';
+
+@mixin apply-dropdown-error-border($border) {
+    .ms-Dropdown {
+        &,
+        &.is-open {
+            &:after {
+                border-color: $border;
+            }
+        }
+    }
+}
+
+.ts-SelectBox {
+    .ms-Dropdown {
+        background: $dropdown-input-background;
+        .ms-Dropdown-title {
+            background: transparent;
+            height: $dropdown-input-height;
+            line-height: $dropdown-input-height;
+            border: $dropdown-input-border-width solid transparent;
+            padding: $dropdown-input-text-padding;
+            @include base-font;
+        }
+        > .ms-Dropdown-caretDownWrapper {
+            @include caretDown-icon;
+            i {
+                margin-top: -$dropdown-input-border-width;
+            }
+        }
+        // Font color
+        &,
+        &:hover {
+            .ms-Dropdown-title {
+                color: $dropdown-input-color;
+            }
+        }
+        &:after {
+            pointer-events: none;
+            content: '';
+            position: absolute;
+            box-sizing: border-box;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            border: $dropdown-input-border;
+            border-radius: $dropdown-input-border-radius;
+        }
+        &.is-open,
+        &:focus,
+        &:hover {
+            &:after {
+                border: $dropdown-input-border-width solid $dropdown-input-focus-border-color;
+            }
+        }
+        &.is-disabled {
+            @include input-disabled;
+        }
+    }
+    &--error {
+        @include apply-dropdown-error-border(var(--vscode-inputValidation-errorBorder));
+    }
+    &--warning {
+        @include apply-dropdown-error-border(var(--vscode-inputValidation-warningBorder));
+    }
+    &--info {
+        @include apply-dropdown-error-border(var(--vscode-inputValidation-infoBorder));
+    }
+}
+
+.ts-dropdown-item-blocker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

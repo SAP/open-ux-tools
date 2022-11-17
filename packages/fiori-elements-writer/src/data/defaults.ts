@@ -9,7 +9,7 @@ import type {
     Template,
     InternalFioriElementsApp
 } from '../types';
-import { TableSelectionMode, TableType, TemplateType } from '../types';
+import { TableSelectionModeV4, TableType, TemplateType } from '../types';
 import { getBaseComponent, getUi5Libs, TemplateTypeAttributes } from './templateAttributes';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
@@ -33,7 +33,7 @@ export function setDefaultTemplateSettings<T>(template: Template<T>, odataVersio
         if (odataVersion === OdataVersion.v4) {
             const alpV4Settings: ALPSettingsV4 = template.settings as unknown as ALPSettingsV4;
             Object.assign(templateSettings, {
-                selectionMode: alpV4Settings.selectionMode || TableSelectionMode.NONE
+                selectionMode: alpV4Settings.selectionMode || TableSelectionModeV4.NONE
             });
             return templateSettings;
         }
@@ -68,7 +68,8 @@ export function setAppDefaults<T>(config: FioriElementsApp<T>): InternalFioriEle
         const packageInfo = readPkgUp.sync({ cwd: __dirname });
         feApp.app.sourceTemplate = {
             id: `${packageInfo?.packageJson.name}:${feApp.template.type}`,
-            version: packageInfo?.packageJson.version
+            version: packageInfo?.packageJson.version,
+            toolsId: feApp.app.sourceTemplate?.toolsId
         };
     }
 
@@ -96,6 +97,12 @@ export function setAppDefaults<T>(config: FioriElementsApp<T>): InternalFioriEle
     if (!feApp.ui5.minUI5Version) {
         feApp.ui5.minUI5Version =
             feApp.ui5.version ?? TemplateTypeAttributes[feApp.template.type].minimumUi5Version[feApp.service.version]!;
+    }
+
+    // if not explictely disabled, enable the SAP Fiori tools
+    feApp.appOptions = feApp.appOptions ?? {};
+    if (feApp.appOptions.sapux !== false) {
+        feApp.appOptions.sapux = true;
     }
 
     return feApp;

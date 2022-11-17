@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -55,7 +55,7 @@
     </script>
 
     <script src="../test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
-    <!-- Bootstrap the UI5 core library -->
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"'' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
         src="../resources/sap-ui-core.js"
         data-sap-ui-libs="<%- ui5.ui5Libs %>"
@@ -65,11 +65,16 @@
         data-sap-ui-compatVersion="edge"
         data-sap-ui-language="en"
         data-sap-ui-resourceroots='{"<%- app.id  %>": "../"}'
-        data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment<% if (templateOptions.changesLoader) {%>
-        data-sap-ui-flexibilityServices='[{"applyConnector":"<%= app.id.replace(/\./g, "/") %>/test/changes_loader", "custom":true}]'<% } %>
-        </script><% if (appOptions.loadReuseLibs) { %>
-        <script id="locate-reuse-libs" src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
-        </script><% } %><% if (templateOptions.changesPreview) { %>
+        data-sap-ui-frameOptions="allow"<% if (templateOptions.changesLoader) {%>
+        data-sap-ui-flexibilityServices='[{"applyConnector":"<%= app.id.replace(/\./g, "/") %>/test/changes_loader", "custom":true}]'<% } %>>
+    </script><% if (appOptions.loadReuseLibs) { %>
+    <script id="locate-reuse-libs" src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
+    </script><% } else { %>
+    <script>
+        sap.ui.getCore().attachInit(function () {
+            sap.ushell.Container.createRenderer().placeAt("content");
+        });
+    </script><% } %><% if (templateOptions.changesPreview) { %>
     <!-- relevant for version < 1.78.0 only -->
 	<script src="changes_preview.js"></script><% } %>
 </head>

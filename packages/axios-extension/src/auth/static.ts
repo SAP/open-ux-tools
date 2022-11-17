@@ -1,9 +1,31 @@
-export const redirectSuccessHtml = (logoutUrl?: string, systemId?: string): string => `
+export const redirectSuccessHtml = (logoutUrl?: string, systemId?: string): string => {
+    const title = `${systemId ? systemId + ': ' : ''}Authentication Successful`;
+    const content = logoutUrl
+        ? '<a class="centerLink" href="' + logoutUrl + '">(Click here to log off the current user)</a>'
+        : '';
+    return redirectHtml({ title, content });
+};
+
+export const redirectErrorHtml = (systemId?: string): string => {
+    const title = `${systemId ? systemId + ': ' : ''}Authentication Successful`;
+    const content = 'Login failed, please check the logs in the console';
+    return redirectHtml({ title, content });
+};
+
+/**
+ *
+ * @param options options object
+ * @param options.title Page title
+ * @param options.content Page content
+ * @returns string
+ */
+function redirectHtml({ title, content }: { title: string; content: string }): string {
+    return `
 <html>
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=windows-1252">
-    <title>${systemId ? systemId + ': ' : ''}Authentication Successful</title>
+    <title>${title}</title>
     <style>
         body {
             background: #ffffff;
@@ -106,11 +128,7 @@ export const redirectSuccessHtml = (logoutUrl?: string, systemId?: string): stri
     <div class="content">
         <div class="valigned">
             <p class="centerText"><span class="errorTextHeader">You can close this tab now.</span></p>
-            ${
-                logoutUrl
-                    ? '<a class="centerLink" href="' + logoutUrl + '">(Click here to log off the current user)</a>'
-                    : ''
-            }
+            ${content}
         </div>
     </div>
     <div class="footer">
@@ -125,3 +143,4 @@ export const redirectSuccessHtml = (logoutUrl?: string, systemId?: string): stri
 
 </html>
 `;
+}

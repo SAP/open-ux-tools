@@ -1,4 +1,5 @@
-import { UI5Config, AbapApp, UI5ProxyConfig } from '../src';
+import type { AbapApp, UI5ProxyConfig } from '../src';
+import { UI5Config } from '../src';
 
 describe('UI5Config', () => {
     // values for testing
@@ -47,6 +48,32 @@ describe('UI5Config', () => {
         });
     });
 
+    describe('setMetadata', () => {
+        test('set name and copyright', () => {
+            ui5Config.setMetadata({ name: 'test.name', copyright: '©' });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('replace metadata', () => {
+            ui5Config.setMetadata({ name: 'replace.me', copyright: 'Should not exist after replace' });
+            ui5Config.setMetadata({ name: 'the.replaced.name' });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
+    describe('setType', () => {
+        test('set type', () => {
+            ui5Config.setType('application');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('replace type', () => {
+            ui5Config.setType('application');
+            ui5Config.setType('library');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+    });
+
     describe('addUI5Framework', () => {
         test('Minimal set of inputs', () => {
             ui5Config.addUI5Framework('SAPUI5', '1.64.0', []);
@@ -60,6 +87,21 @@ describe('UI5Config', () => {
 
         test('Use a dark theme', () => {
             ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_fiori_3_dark');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('Use horizon high dark theme', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.96.0', ['sap.m'], 'sap_horizon_dark');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('Use horizon high contrast white theme', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.96.0', ['sap.m'], 'sap_horizon_hcw');
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('Use horizon high contrast black theme', () => {
+            ui5Config.addUI5Framework('SAPUI5', '1.96.0', ['sap.m'], 'sap_horizon_hcb');
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
@@ -155,7 +197,7 @@ describe('UI5Config', () => {
         expect(ui5Config.toString()).toMatchSnapshot();
     });
 
-    describe('add/removeCustomMiddleware', () => {
+    describe('add/find/update/removeCustomMiddleware', () => {
         const customMiddleware = {
             name: 'custom-middleware',
             afterMiddleware: '~otherMiddleware',
@@ -173,31 +215,76 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
+        test('findCustomMiddleware', () => {
+            ui5Config.addCustomMiddleware([customMiddleware]);
+            const found = ui5Config.findCustomMiddleware(customMiddleware.name);
+            expect(found).toMatchObject(customMiddleware);
+        });
+
+        test('updateMiddleware that did not exist, should add it', () => {
+            ui5Config.updateCustomMiddleware(customMiddleware);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('updateMiddleware existing middleware', () => {
+            const middlewareUpdate = {
+                name: 'custom-middleware',
+                afterMiddleware: '~newMiddleware',
+                configuration: {
+                    newValue: {
+                        should: 'overwrite existing'
+                    }
+                }
+            };
+            ui5Config.addCustomMiddleware([customMiddleware]);
+            ui5Config.updateCustomMiddleware(middlewareUpdate);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
         test('removeMiddleware', () => {
             ui5Config.addCustomMiddleware([customMiddleware]);
-            ui5Config.removeCustomMiddleware('custom-middleware');
+            ui5Config.removeCustomMiddleware(customMiddleware.name);
             expect(ui5Config.toString()).toMatchSnapshot();
         });
     });
 
-    test('addCustomTask', () => {
-        ui5Config.addCustomTasks([
-            {
-                name: 'ui5-task-zipper',
-                afterTask: 'generateCachebusterInfo',
-                configuration: {
-                    archiveName: 'my-archive'
-                }
+    describe('add/find/removeCustomTask', () => {
+        const customTask = {
+            name: 'ui5-task-zipper',
+            afterTask: 'generateCachebusterInfo',
+            configuration: {
+                archiveName: 'my-archive'
             }
-        ]);
-        expect(ui5Config.toString()).toMatchSnapshot();
+        };
+
+        test('addCustomTask', () => {
+            ui5Config.addCustomTasks([customTask]);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
+        test('findCustomTask', () => {
+            const notFound = ui5Config.findCustomTask(customTask.name);
+            expect(notFound).toBeUndefined();
+            ui5Config.addCustomTasks([customTask]);
+            const found = ui5Config.findCustomTask(customTask.name);
+            expect(found).toMatchObject(customTask);
+            ui5Config.removeCustomTask(customTask.name);
+            const removed = ui5Config.findCustomTask(customTask.name);
+            expect(removed).toBeUndefined();
+        });
+
+        test('removeCustomTask', () => {
+            ui5Config.addCustomTasks([customTask]);
+            ui5Config.removeCustomTask(customTask.name);
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
     });
 
     describe('addAbapDeployTask', () => {
         const app: AbapApp = {
             name: '~name',
             desription: '~description',
-            package: '~package',
+            'package': '~package',
             transport: '~transport'
         };
 

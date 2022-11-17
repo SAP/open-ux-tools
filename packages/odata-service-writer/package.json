@@ -9,45 +9,47 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aodata-service-writer"
     },
-    "version": "0.11.6",
+    "version": "0.14.13",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc",
-        "clean": "rimraf dist test/test-output coverage",
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
-        "test:local": "node -r ts-node/register test/index.ts",
-        "watch": "tsc --watch",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
     "files": [
         "LICENSE",
         "dist",
-        "templates"
+        "templates",
+        "!dist/*.map",
+        "!dist/**/*.map"
     ],
     "dependencies": {
-        "ejs": "3.1.6",
+        "@sap-ux/ui5-config": "workspace:*",
+        "ejs": "3.1.7",
+        "fast-xml-parser": "4.0.1",
         "i18next": "20.3.2",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.0.0",
-        "@sap-ux/ui5-config": "workspace:*",
-        "prettify-xml": "1.2.0",
-        "fast-xml-parser": "4.0.1"
+        "mem-fs-editor": "9.4.0",
+        "prettify-xml": "1.2.0"
     },
     "devDependencies": {
         "@types/ejs": "3.1.0",
         "@types/fs-extra": "9.0.13",
-        "@types/mem-fs-editor": "7.0.0",
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
         "fs-extra": "10.0.0",
         "lodash": "4.17.21"
     },
     "engines": {
-        "pnpm": ">=6.26.1",
-        "node": ">=12.22.5 < 13.0.0 || >= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0"
+        "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
+        "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     }
 }

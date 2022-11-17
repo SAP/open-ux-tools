@@ -1,4 +1,5 @@
-import { getService, BackendSystem, BackendSystemKey, ServiceOptions } from '../../src';
+import type { ServiceOptions, ApiHubSettingsKey, ApiHubSettings } from '../../src';
+import { getService, BackendSystem, BackendSystemKey } from '../../src';
 import os from 'os';
 import path from 'path';
 import { ConsoleTransport, ToolsLogger } from '@sap-ux/logger';
@@ -14,6 +15,11 @@ async function main(action: string, basedir?: string): Promise<void> {
         logger: new ToolsLogger({ transports: [new ConsoleTransport()] }),
         entityName: 'system',
         options: opt
+    });
+
+    const apiService = await getService<ApiHubSettings, ApiHubSettingsKey>({
+        logger: new ToolsLogger({ transports: [new ConsoleTransport()] }),
+        entityName: 'api-hub'
     });
 
     const sys1 = new BackendSystem({
@@ -49,6 +55,7 @@ async function main(action: string, basedir?: string): Promise<void> {
         console.dir(await systemService.delete(sys3));
     } else if (action === 'a') {
         console.dir(await systemService.getAll());
+        console.log(await apiService.getAll());
     }
 
     console.dir(action);

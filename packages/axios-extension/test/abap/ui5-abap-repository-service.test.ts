@@ -1,8 +1,6 @@
 import nock from 'nock';
-import fs from 'fs';
-import { Ui5AbapRepositoryService, createForAbap, AppInfo } from '../../src';
-
-nock.disableNetConnect();
+import type { AppInfo } from '../../src';
+import { Ui5AbapRepositoryService, createForAbap } from '../../src';
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -18,9 +16,10 @@ describe('Ui5AbapRepositoryService', () => {
         message: '~message',
         details: [{ code: '200', message: '~message', severity: 'info' }]
     });
-    const service = createForAbap({ baseURL: server }).ui5AbapRepository();
+    const service = createForAbap({ baseURL: server }).getUi5AbapRepository();
 
     beforeAll(() => {
+        nock.disableNetConnect();
         // mock an existing and not existing app
         nock(server)
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?$format=json`)
@@ -30,6 +29,11 @@ describe('Ui5AbapRepositoryService', () => {
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${notExistingApp}%27)?$format=json`)
             .replyWithError('the app does not exist')
             .persist();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
     });
 
     beforeEach(() => {
@@ -54,21 +58,17 @@ describe('Ui5AbapRepositoryService', () => {
     });
 
     describe('deploy', () => {
-        const archivePath = './dist/my-app.zip';
-        const testData = Buffer.from('TestData');
-        beforeAll(() => {
-            jest.spyOn(fs, 'readFileSync').mockReturnValue(testData);
-        });
+        const archive = Buffer.from('TestData');
 
         test('deploy new app', async () => {
             nock(server)
                 .post(
                     `${Ui5AbapRepositoryService.PATH}/Repositories?${updateParams}`,
-                    (body) => body.indexOf(testData) !== -1
+                    (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(200);
 
-            const response = await service.deploy(archivePath, { name: notExistingApp });
+            const response = await service.deploy({ archive, bsp: { name: notExistingApp } });
             expect(response.data).toBeDefined();
         });
 
@@ -80,11 +80,11 @@ describe('Ui5AbapRepositoryService', () => {
                 })
                 .post(
                     `${Ui5AbapRepositoryService.PATH}/Repositories?${updateParams}&TransportRequest=${transport}`,
-                    (body) => body.indexOf(testData) !== -1
+                    (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(200);
 
-            const response = await service.deploy(archivePath, { name: notExistingApp, transport });
+            const response = await service.deploy({ archive, bsp: { name: notExistingApp, transport } });
             expect(response.data).toBeDefined();
         });
 
@@ -92,11 +92,11 @@ describe('Ui5AbapRepositoryService', () => {
             nock(server)
                 .put(
                     `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`,
-                    (body) => body.indexOf(testData) !== -1
+                    (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(200);
 
-            const response = await service.deploy(archivePath, { name: validApp });
+            const response = await service.deploy({ archive, bsp: { name: validApp } });
             expect(response.data).toBeDefined();
         });
 
@@ -104,14 +104,14 @@ describe('Ui5AbapRepositoryService', () => {
             nock(server)
                 .put(
                     `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`,
-                    (body) => body.indexOf(testData) !== -1
+                    (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .replyWithError('Deployment failed');
-            await expect(service.deploy(archivePath, { name: validApp })).rejects.toThrowError();
+            await expect(service.deploy({ archive, bsp: { name: validApp } })).rejects.toThrowError();
         });
 
         test('retry deployment on 504', async () => {
-            const badService = createForAbap({ baseURL: server }).ui5AbapRepository();
+            const badService = createForAbap({ baseURL: server }).getUi5AbapRepository();
             const mockPut = jest.fn().mockRejectedValue({
                 response: {
                     status: 504
@@ -119,7 +119,7 @@ describe('Ui5AbapRepositoryService', () => {
             });
             badService.put = mockPut;
             try {
-                await badService.deploy(archivePath, { name: validApp });
+                await badService.deploy({ archive, bsp: { name: validApp } });
                 fail('Function should have thrown an error');
             } catch (error) {
                 expect(error.response?.status).toBe(504);
@@ -128,11 +128,18 @@ describe('Ui5AbapRepositoryService', () => {
             }
         });
 
-        test('testMode', async () => {
+        test('testMode and safeMode', async () => {
             nock(server)
-                .put(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true`)
+                .put(
+                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true&SafeMode=false`
+                )
                 .reply(200);
-            const response = await service.deploy(archivePath, { name: validApp }, true);
+            const response = await service.deploy({
+                archive,
+                bsp: { name: validApp },
+                testMode: true,
+                safeMode: false
+            });
             expect(response.data).toBeDefined();
         });
     });
@@ -142,7 +149,7 @@ describe('Ui5AbapRepositoryService', () => {
             nock(server)
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .reply(200);
-            const response = await service.undeploy({ name: validApp });
+            const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response.status).toBe(200);
         });
 
@@ -153,7 +160,7 @@ describe('Ui5AbapRepositoryService', () => {
                 })
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .reply(200);
-            const response = await service.undeploy({ name: validApp });
+            const response = await service.undeploy({ bsp: { name: validApp } });
             expect(response.status).toBe(200);
         });
 
@@ -161,7 +168,25 @@ describe('Ui5AbapRepositoryService', () => {
             nock(server)
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .replyWithError('Failed');
-            await expect(service.undeploy({ name: validApp })).rejects.toThrowError();
+            await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrowError();
+        });
+    });
+
+    describe('createPayload', () => {
+        test('ensure special characters are encoded', async () => {
+            /**
+             * Extension of Ui5AbapRespository class to make `createPayload` public and available for testing.
+             */
+            class ServiceForTesting extends Ui5AbapRepositoryService {
+                public createPayload = super.createPayload;
+            }
+            const service = new ServiceForTesting();
+            const inputDescription = `<my&special"'decription>`;
+            const xmlPayload = service.createPayload(Buffer.from('TestData'), 'special&name', inputDescription, '');
+            expect(xmlPayload).not.toContain('special&name');
+            expect(xmlPayload).toContain('special&amp;name');
+            expect(xmlPayload).not.toContain(inputDescription);
+            expect(xmlPayload).toContain('&lt;my&amp;special&quot;&apos;decription&gt;');
         });
     });
 });

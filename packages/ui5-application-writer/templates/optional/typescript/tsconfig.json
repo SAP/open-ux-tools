@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "es2015",
+    "skipLibCheck": true,
+    "preserveConstEnums": true,
+    "inlineSourceMap": true,
+    "allowJs": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "rootDir": "webapp",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "<%-app.id.replace(/\./g, '/') %>/*": [
+        "webapp/*"
+      ]
+    },
+    "types": [ "@sapui5/ts-types-esm" ]
+  },
+  "include": [
+    "webapp/**/*"
+  ]
+}

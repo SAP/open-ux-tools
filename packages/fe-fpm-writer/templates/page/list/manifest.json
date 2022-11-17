@@ -1,0 +1,17 @@
+{
+    "sap.ui5": {
+        "routing": {
+            "targets": {
+                "<%- entity %>ListReport": {
+                    "type": "Component",
+                    "id": "<%- entity %>ListReport",
+                    "name": "sap.fe.templates.ListReport",<%if (locals.controlAggregation) {%>
+                    "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
+                    "options": {
+                        "settings": <%- JSON.stringify(settings) %>
+                    }
+                }
+            }
+        }
+    }
+}

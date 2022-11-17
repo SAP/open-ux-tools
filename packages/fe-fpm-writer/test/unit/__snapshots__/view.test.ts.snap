@@ -1,0 +1,328 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/dummyAction.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.DummyOnAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        DummyOnAction: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.DummyOnAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        DummyOnAction: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onHandleSecondAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onHandleSecondAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onHandleSecondAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onHandleSecondAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomView only mandatory properties 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView only mandatory properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"NewCustomView\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView with control \`true\` (sample table fragment) 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView with control \`true\` (sample table fragment) 2`] = `
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:u=\\"sap.ui.unified\\">
+    <macros:Table id=\\"NewCustomView\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" displayMode=\\"true\\" />
+</core:FragmentDefinition>
+"
+`;
+
+exports[`CustomView with custom control passed in interface 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView with custom control passed in interface 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<CustomXML text=\\"\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView with existing handler 1`] = `
+Object {
+  "sap.ui.controllerExtensions": Object {
+    "sap.fe.templates.ListReport.ListReportController": Object {
+      "controllerName": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  },
+}
+`;
+
+exports[`CustomView with existing handler 2`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView with existing views 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "existingView",
+    },
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant",
+      "key": "existingView2",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+  "showCounts": false,
+}
+`;
+
+exports[`CustomView with existing views 2`] = `
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:u=\\"sap.ui.unified\\">
+    <macros:Table id=\\"NewCustomView\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" displayMode=\\"true\\" />
+</core:FragmentDefinition>
+"
+`;
+
+exports[`CustomView with new handler 1`] = `
+Object {
+  "sap.ui.controllerExtensions": Object {
+    "sap.fe.templates.ListReport.ListReportController": Object {
+      "controllerName": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  },
+}
+`;
+
+exports[`CustomView with new handler 2`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView with new handler 3`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomView.controller'}\\" text=\\"NewCustomView\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomView with new handler 4`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomView with new handler and new table fragment (all properties) 1`] = `
+Object {
+  "sap.ui.controllerExtensions": Object {
+    "sap.fe.templates.ListReport.ListReportController": Object {
+      "controllerName": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  },
+}
+`;
+
+exports[`CustomView with new handler and new table fragment (all properties) 2`] = `
+Object {
+  "paths": Array [
+    Object {
+      "annotationPath": "com.sap.vocabularies.UI.v1.LineItem",
+      "key": "tab1",
+    },
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView with new handler and new table fragment (all properties) 3`] = `
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:u=\\"sap.ui.unified\\">
+    <macros:Table id=\\"NewCustomView\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" displayMode=\\"true\\" />
+</core:FragmentDefinition>
+"
+`;
+
+exports[`CustomView with new handler and new table fragment (all properties) 4`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;

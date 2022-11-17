@@ -1,13 +1,13 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/ui5-config';
+import type { Manifest } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
 import type { ProxyConfig } from './types';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
-
+import type { Url } from 'url';
 import { t } from '../i18n';
 
 /**
@@ -52,15 +52,23 @@ export const proxyRequestHandler = (
  * @returns User's proxy configuration or undefined
  */
 export const getCorporateProxyServer = (yamlProxyServer: string | undefined): string | undefined => {
+    let proxyFromArgs: string | undefined;
+    process.argv.forEach((arg) => {
+        if (arg.match(/proxy=/g)) {
+            proxyFromArgs = arg.split('=')[1];
+        }
+    });
+
     return (
-        yamlProxyServer ||
+        proxyFromArgs ||
         process.env.FIORI_TOOLS_PROXY ||
+        process.env.npm_config_proxy ||
+        process.env.npm_config_https_proxy ||
         process.env.http_proxy ||
         process.env.HTTP_PROXY ||
         process.env.https_proxy ||
         process.env.HTTPS_PROXY ||
-        process.env.npm_config_proxy ||
-        process.env.npm_config_https_proxy
+        yamlProxyServer
     );
 };
 
@@ -84,23 +92,36 @@ export const hideProxyCredentials = (proxy: string | undefined): string | undefi
 };
 
 /**
- * Checks if a host is excluded from user's corporate proxy.
+ * Updates the proxy configuration with values from runtime args (highest priority), environment variables or given config value.
  *
- * @param noProxyConfig - user's no_proxy configuration
- * @param url - url to be checked
- * @returns true if host is excluded from user's corporate server, false otherwise
+ * @param proxyFromConfig - optional proxy string from configuration
  */
-export const isHostExcludedFromProxy = (noProxyConfig: string | undefined, url: string): boolean => {
-    if (noProxyConfig === '*') {
-        return true;
+export function updateProxyEnv(proxyFromConfig?: string): void {
+    let proxyFromArgs: string | undefined;
+    process.argv.forEach((arg) => {
+        if (arg.match(/proxy=/g)) {
+            proxyFromArgs = arg.split('=')[1];
+        }
+    });
+
+    if (proxyFromArgs || process.env.FIORI_TOOLS_PROXY) {
+        process.env.npm_config_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env.npm_config_https_proxy = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
     } else {
-        const host = new URL(url).host;
-        const noProxyList = noProxyConfig ? noProxyConfig.split(',') : [];
-        return !!noProxyList.find((entry) =>
-            entry.startsWith('.') ? host.endsWith(entry) : host.endsWith(`.${entry}`)
-        );
+        const proxyFromEnv =
+            process.env.npm_config_proxy ||
+            process.env.npm_config_https_proxy ||
+            process.env.http_proxy ||
+            process.env.HTTP_PROXY ||
+            process.env.https_proxy ||
+            process.env.HTTPS_PROXY;
+
+        if (!proxyFromEnv && proxyFromConfig) {
+            process.env.npm_config_proxy = proxyFromConfig;
+            process.env.npm_config_https_proxy = proxyFromConfig;
+        }
     }
-};
+}
 
 /**
  * Returns the name of html file, which is used to preview the application, from the URL.
@@ -204,27 +225,27 @@ export async function getUI5VersionFromManifest(args: string[]): Promise<string 
  * @returns The UI5 version with which the application will be started
  */
 export async function resolveUI5Version(version?: string, log?: ToolsLogger): Promise<string> {
-    let ui5Version: string = '';
+    let ui5Version: string;
     let ui5VersionInfo: string;
-    let ui5VersionLocation: string = 'manifest.json';
+    let ui5VersionLocation: string;
 
-    if (version !== undefined) {
+    if (process.env.FIORI_TOOLS_UI5_VERSION || process.env.FIORI_TOOLS_UI5_VERSION === '') {
+        ui5Version = process.env.FIORI_TOOLS_UI5_VERSION;
+        ui5VersionLocation = 'CLI arguments / Run configuration';
+    } else if (version !== undefined) {
         ui5Version = version ? version : '';
-        ui5VersionLocation =
-            process.env.FIORI_TOOLS_UI5_VERSION || process.env.FIORI_TOOLS_UI5_VERSION === ''
-                ? 'CLI arguments / Run configuration'
-                : getYamlFile(process.argv);
+        ui5VersionLocation = getYamlFile(process.argv);
     } else {
         const minUI5Version = await getUI5VersionFromManifest(process.argv);
-        if (minUI5Version) {
-            ui5Version = isNaN(parseFloat(minUI5Version)) ? '' : minUI5Version;
-        }
+        ui5Version = minUI5Version && !isNaN(parseFloat(minUI5Version)) ? minUI5Version : '';
+        ui5VersionLocation = 'manifest.json';
     }
 
     if (log) {
         ui5VersionInfo = ui5Version ? ui5Version : 'latest';
         log.info(t('info.ui5VersionSource', { version: ui5VersionInfo, source: ui5VersionLocation }));
     }
+
     return ui5Version;
 }
 
@@ -311,3 +332,30 @@ export const filterCompressedHtmlFiles = (_pathname: string, req: IncomingMessag
     }
     return true;
 };
+
+/**
+ * Specifically handling errors due to undefined and empty errors.
+ *
+ * @param err the error thrown when proxying the request or processing the response
+ * @param req request causing the error
+ * @param logger logger instance
+ * @param _res (not used)
+ * @param _target (not used)
+ */
+export function proxyErrorHandler(
+    err: Error & { code?: string },
+    req: IncomingMessage & { next?: Function; originalUrl?: string },
+    logger: ToolsLogger,
+    _res?: ServerResponse,
+    _target?: string | Partial<Url>
+): void {
+    if (err && err.stack?.toLowerCase() !== 'error') {
+        if (typeof req.next === 'function') {
+            req.next(err);
+        } else {
+            throw err;
+        }
+    } else {
+        logger.debug(t('error.noCodeError', { error: JSON.stringify(err, null, 2), request: req.originalUrl }));
+    }
+}

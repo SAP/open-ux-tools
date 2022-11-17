@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement, Position } from '../common/types';
+import type { CustomElement, InternalCustomElement, Position, EventHandler } from '../common/types';
 
 export enum TargetControl {
     header = 'header',
@@ -14,18 +14,14 @@ export interface CustomActionTarget {
     qualifier?: string;
 }
 
-export interface CustomAction extends CustomElement {
+export interface CustomAction extends CustomElement, EventHandler {
     target: CustomActionTarget;
     settings: {
         text: string;
         visible?: string | true;
         enabled?: string | true;
+        requiresSelection?: boolean;
         position?: Position;
-        /**
-         * If not set (i.e. undefined) then no event handler is linked. If it is set true, a new one is created and linked to the action.
-         * If an existing event handler is to be used then its id needs to be provided as string.
-         */
-        eventHandler?: string | true;
     };
 }
 

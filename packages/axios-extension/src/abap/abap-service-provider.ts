@@ -1,24 +1,21 @@
 import { ServiceProvider } from '../base/service-provider';
 import type { CatalogService } from './catalog';
 import { V2CatalogService, V4CatalogService } from './catalog';
-
-import type { AtoSettings } from './ato';
-import { ATO_CATALOG_URL_PATH, parseAtoResponse, TenantType } from './ato';
 import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
 import { AppIndexService } from './app-index-service';
 import { ODataVersion } from '../base/odata-service';
-
-export interface AbapServiceProviderExtension {
-    s4Cloud: boolean | undefined;
-    user(): Promise<string>;
-    catalog(oDataVersion: ODataVersion): CatalogService;
-    ui5AbapRepository(): Ui5AbapRepositoryService;
-}
+import { LayeredRepositoryService } from './lrep-service';
+import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
+import type { AtoSettings } from './types';
+import { TenantType } from './types';
+// Can't use an `import type` here. We need the classname at runtime to create object instances:
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { AdtService, AtoService } from './adt-catalog/services';
 
 /**
  * Extension of the service provider for ABAP services.
  */
-export class AbapServiceProvider extends ServiceProvider implements AbapServiceProviderExtension {
+export class AbapServiceProvider extends ServiceProvider {
     public s4Cloud: boolean | undefined;
 
     protected atoSettings: AtoSettings;
@@ -48,14 +45,19 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      * @returns ABAP Transport Organizer settings
      */
     public async getAtoInfo(): Promise<AtoSettings> {
-        if (!this.atoSettings) {
-            try {
-                const response = await this.get(ATO_CATALOG_URL_PATH);
-                this.atoSettings = parseAtoResponse(response.data);
-            } catch (error) {
+        if (this.atoSettings) {
+            return this.atoSettings;
+        }
+        let atoService: AtoService;
+        try {
+            atoService = await this.getAdtService<AtoService>(AtoService);
+            if (atoService) {
+                this.atoSettings = await atoService.getAtoInfo();
+            } else {
                 this.atoSettings = {};
-                throw error;
             }
+        } catch (error) {
+            this.atoSettings = {};
         }
         return this.atoSettings;
     }
@@ -81,6 +83,23 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             }
         }
         return this.s4Cloud;
+    }
+
+    /**
+     * Create or get an existing instance of AdtCatalogService for fetching ADT schema.
+     *
+     * @returns AdtCatalogService
+     */
+    private getAdtCatalogService(): AdtCatalogService {
+        if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
+            const adtCatalogSerivce = this.createService<AdtCatalogService>(
+                AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
+                AdtCatalogService
+            );
+            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = adtCatalogSerivce;
+        }
+
+        return this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtCatalogService;
     }
 
     /**
@@ -111,16 +130,15 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
     /**
      * Create or get an existing instance of the UI5 ABAP repository service.
      *
+     * @param alias - optional alias path on which the UI5Repository service is exposed
      * @returns an instance of the UI5 ABAP repository service.
      */
-    public ui5AbapRepository(): Ui5AbapRepositoryService {
-        if (!this.services[Ui5AbapRepositoryService.PATH]) {
-            this.services[Ui5AbapRepositoryService.PATH] = this.createService<Ui5AbapRepositoryService>(
-                Ui5AbapRepositoryService.PATH,
-                Ui5AbapRepositoryService
-            );
+    public getUi5AbapRepository(alias?: string): Ui5AbapRepositoryService {
+        const path = alias ?? Ui5AbapRepositoryService.PATH;
+        if (!this.services[path]) {
+            this.services[path] = this.createService<Ui5AbapRepositoryService>(path, Ui5AbapRepositoryService);
         }
-        return this.services[Ui5AbapRepositoryService.PATH] as Ui5AbapRepositoryService;
+        return this.services[path] as Ui5AbapRepositoryService;
     }
 
     /**
@@ -128,7 +146,7 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
      *
      * @returns an instance of the app index service.
      */
-    public appIndex(): AppIndexService {
+    public getAppIndex(): AppIndexService {
         if (!this.services[AppIndexService.PATH]) {
             this.services[AppIndexService.PATH] = this.createService<AppIndexService>(
                 AppIndexService.PATH,
@@ -136,5 +154,48 @@ export class AbapServiceProvider extends ServiceProvider implements AbapServiceP
             );
         }
         return this.services[AppIndexService.PATH] as AppIndexService;
+    }
+
+    /**
+     * Create or get an existing instance of design time adaptation service.
+     *
+     * @returns an instance of the design time adaptation service.
+     */
+    public getLayeredRepository(): LayeredRepositoryService {
+        if (!this.services[LayeredRepositoryService.PATH]) {
+            this.services[LayeredRepositoryService.PATH] = this.createService<LayeredRepositoryService>(
+                LayeredRepositoryService.PATH,
+                LayeredRepositoryService
+            );
+        }
+        return this.services[LayeredRepositoryService.PATH] as LayeredRepositoryService;
+    }
+
+    /**
+     * Retrieve singleton instance of AdtService subclass to serve the specific ADT request query.
+     *
+     * @example
+     * ```ts
+     * const transportRequestSerivce = abapServiceProvider.getAdtService<TransportRequestService>(TransportRequestService);
+     * ```
+     * @param adtServiceSubclass Subclass of class AdtService, type is specified by using AdtService class constructor signature.
+     * @returns Subclass type of class AdtService
+     */
+    public async getAdtService<T extends AdtService>(adtServiceSubclass: typeof AdtService): Promise<T | null> {
+        const subclassName = adtServiceSubclass.name;
+        if (!this.services[subclassName]) {
+            // Retrieve ADT schema for the specific input AdtService subclass
+            const adtCatalogSerivce = this.getAdtCatalogService();
+            const adtSchema = await adtCatalogSerivce.getServiceDefinition(adtServiceSubclass.getAdtCatagory());
+            // No ADT schema available neither locally nor from service query.
+            if (!adtSchema) {
+                return null;
+            }
+            // Create singleton instance of AdtService subclass
+            this.services[subclassName] = this.createService<T>(adtSchema.href, adtServiceSubclass);
+            (this.services[subclassName] as AdtService).attachAdtSchema(adtSchema);
+        }
+
+        return this.services[subclassName] as T;
     }
 }

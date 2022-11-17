@@ -1,6 +1,5 @@
 import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
-import { ConnectionError } from './error';
 import detectContentType from 'detect-content-type';
 
 export enum CSRF {
@@ -8,6 +7,8 @@ export enum CSRF {
     RequestHeaderValue = 'Fetch',
     ResponseHeaderName = 'x-csrf-token'
 }
+/** Default connection timeout (milliseconds) */
+export const defaultTimeout = 60 * 1000; // 1 minute
 
 /**
  * Helper class for managing cookies.
@@ -21,7 +22,7 @@ export class Cookies {
      * @returns cookies object
      */
     public setCookies(response: AxiosResponse): Cookies {
-        if (response.headers && response.headers['set-cookie']) {
+        if (response.headers?.['set-cookie']) {
             response.headers['set-cookie'].forEach((cookieString) => this.addCookie(cookieString));
         }
         return this;
@@ -96,7 +97,7 @@ function throwIfHtmlLoginForm(response: AxiosResponse): void {
 }
 
 /**
- * @param response
+ * @param response AxiosResponse
  * @returns true if the contents are determined to be HTML
  */
 function isHtmlResponse(response: AxiosResponse): boolean {
@@ -104,7 +105,7 @@ function isHtmlResponse(response: AxiosResponse): boolean {
 }
 
 /**
- * @param response
+ * @param response AxiosResponse
  * @returns true if we get an HTML login form
  */
 function isHtmlLoginForm(response: AxiosResponse): boolean {
@@ -112,8 +113,8 @@ function isHtmlLoginForm(response: AxiosResponse): boolean {
 }
 
 /**
- * @param contentTypeHeader
- * @param responseData
+ * @param contentTypeHeader contents of Content-Type header (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type)
+ * @param responseData data receievd in HTTP response. This is used to infer the Content-Type, if the header is missing or ambiguous
  * @returns content type
  */
 function getContentType(contentTypeHeader: string | undefined, responseData: any): string {
@@ -141,11 +142,9 @@ export function attachConnectionHandler(provider: ServiceProvider) {
         return request;
     });
 
-    // throw error on connection issues and remove interceptor if successfully connected
-    const oneTimeRespInterceptorId = provider.interceptors.response.use((response: AxiosResponse) => {
-        if (response.status >= 400) {
-            throw new ConnectionError(response.statusText, response);
-        } else {
+    // throw error if the user is unauthorized otherwise, remove interceptor if successfully connected
+    const oneTimeRespInterceptorId = provider.interceptors.response.use(
+        (response: AxiosResponse) => {
             // if a redirect to a SAML login page happened try again with disable saml param
             if (isSamlLogonNeeded(response) && provider.defaults.params?.saml2 !== 'disabled') {
                 provider.defaults.params = provider.defaults.params ?? {};
@@ -155,24 +154,22 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                 throwIfHtmlLoginForm(response);
                 // remember xsrf token
                 if (response.headers?.[CSRF.ResponseHeaderName]) {
-                    provider.defaults.headers = provider.defaults.headers ?? {
-                        common: {},
-                        // eslint-disable-next-line quote-props
-                        delete: {},
-                        put: {},
-                        get: {},
-                        post: {},
-                        head: {},
-                        patch: {}
-                    };
                     provider.defaults.headers.common[CSRF.RequestHeaderName] =
                         response.headers[CSRF.ResponseHeaderName];
                 }
                 provider.interceptors.response.eject(oneTimeRespInterceptorId);
                 return response;
             }
+        },
+        (error: AxiosError) => {
+            // remember xsrf token if provided even on error
+            if (error.response.headers?.[CSRF.ResponseHeaderName]) {
+                provider.defaults.headers.common[CSRF.RequestHeaderName] =
+                    error.response.headers[CSRF.ResponseHeaderName];
+            }
+            throw error;
         }
-    });
+    );
 
     // always add cookies to outgoing requests
     provider.interceptors.request.use((request: AxiosRequestConfig) => {

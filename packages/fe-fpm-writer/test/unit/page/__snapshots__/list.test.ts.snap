@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListReport generate all optional settings used 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "RootEntityListReport",
+        },
+      ],
+      "targets": Object {
+        "RootEntityListReport": Object {
+          "id": "RootEntityListReport",
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.LineItem": Object {
+                  "tableSettings": Object {
+                    "condensedTableLayout": true,
+                    "selectionMode": "None",
+                    "type": "GridTable",
+                  },
+                },
+              },
+              "enhanceI18n": "i18n/customRootEntityListReport.properties",
+              "entitySet": "RootEntity",
+              "navigation": Object {},
+              "variantManagement": "Page",
+            },
+          },
+          "type": "Component",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ListReport generate minimal input 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "RootEntityListReport",
+        },
+      ],
+      "targets": Object {
+        "RootEntityListReport": Object {
+          "id": "RootEntityListReport",
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "entitySet": "RootEntity",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+      },
+    },
+  },
+}
+`;

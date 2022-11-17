@@ -1,12 +1,22 @@
 {
-    "include": ["src/**/*.ts"],
+    "extends": "../../tsconfig.json",
+    "include": [
+        "src"
+    ],
     "compilerOptions": {
-        "strict": false,
-        "declaration": true,
+        "rootDir": "src",
         "outDir": "dist",
-        "sourceMap": true,
-        "baseUrl": "./src",
-        "resolveJsonModule": true
+        "strict": false
     },
-    "extends": "../../tsconfig.json"
+    "references": [
+        {
+            "path": "../../packages/axios-extension"
+        },
+        {
+            "path": "../../packages/btp-utils"
+        },
+        {
+            "path": "../../packages/logger"
+        }
+    ]
 }

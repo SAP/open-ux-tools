@@ -1,7 +1,8 @@
-import { FioriElementsApp, LROPSettings, OdataVersion, TemplateType } from '../../src';
+import type { FioriElementsApp, LROPSettings } from '../../src';
+import { OdataVersion, TemplateType } from '../../src';
 import { TemplateTypeAttributes } from '../../src/data/templateAttributes';
 import { t } from '../../src/i18n';
-import { ALPSettings } from '../../src/types';
+import type { ALPSettings } from '../../src/types';
 import { validateApp, validateRequiredProperties } from '../../src/validate';
 import { feBaseConfig, v4TemplateSettings } from '../common';
 
@@ -26,11 +27,11 @@ describe('Validate', () => {
         const feApp: FioriElementsApp<LROPSettings> = {
             ...Object.assign(feBaseConfig('felrop1'), {
                 template: {
-                    type: TemplateType.Worklist,
+                    type: TemplateType.FormEntryObjectPage,
                     settings: {}
                 },
                 service: {
-                    version: OdataVersion.v4 // Worklist does not support v4
+                    version: OdataVersion.v2 // Form Entry Object Page does not support v2
                 }
             })
         } as FioriElementsApp<LROPSettings>;

@@ -35,7 +35,8 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
         const packageInfo = readPkgUp.sync({ cwd: __dirname });
         ffApp.app.sourceTemplate = {
             id: `${packageInfo?.packageJson.name}:${ffApp.template.type}`,
-            version: packageInfo?.packageJson.version
+            version: packageInfo?.packageJson.version,
+            toolsId: ffApp.app.sourceTemplate?.toolsId
         };
     }
 
@@ -45,3 +46,7 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     // All fiori-freestyle apps should use load reuse libs, unless explicitly overridden
     ffApp.appOptions = Object.assign({ loadReuseLibs: true }, ffApp.appOptions);
 }
+
+// Specific escaping is required for FLP texts in flpSandbox.html template file
+// Escapes '\' with '\\\\' and '"' with '\"' to correctly render inputs in a secure way
+export const escapeFLPText = (s: string): string => s.replace(/\\/g, '\\\\').replace(/(")/g, '\\$&');

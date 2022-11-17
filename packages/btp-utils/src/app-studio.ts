@@ -4,6 +4,11 @@ import { ENV } from './app-studio.env';
 import type { Destination } from './destination';
 
 /**
+ * HTTP header that is to be used for encoded credentials when communicating with a destination service instance.
+ */
+export const BAS_DEST_INSTANCE_CRED_HEADER = 'bas-destination-instance-cred';
+
+/**
  * Check if this is exectued in SAP Business Application Studio.
  *
  * @returns true if yes
@@ -22,17 +27,25 @@ export function getAppStudioProxyURL(): string | undefined {
 }
 
 /**
- * Asynchronously creates a base64 encoded user for the given destination service instance based on the client information fetched from BTP.
+ * Asynchronously creates a base64 encoded credentials for the given destination service instance based on the client information fetched from BTP.
  *
  * @param instance name/id of the destination service instance
  * @returns the base64 encoded user
  */
-export async function getUserForDestinationService(instance: string): Promise<string> {
+export async function getCredentialsForDestinationService(instance: string): Promise<string> {
     try {
         const serviceInfo = await cfGetInstanceKeyParameters(instance);
-        const clientId = serviceInfo.uaa?.clientid || serviceInfo.clientid;
-        const clientSecret = serviceInfo.uaa?.clientsecret || serviceInfo.clientsecret;
-        return Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+
+        if (!serviceInfo) {
+            throw new Error(`No destination instance ${instance} found`);
+        }
+        const serviceCredentials = serviceInfo.credentials;
+        if (!serviceCredentials) {
+            throw new Error(`No credentials for destination instance ${instance} found`);
+        }
+        const clientId = serviceCredentials.uaa?.clientid || serviceCredentials.clientid;
+        const clientSecret = serviceCredentials.uaa?.clientsecret || serviceCredentials.clientsecret;
+        return Buffer.from(`${encodeURIComponent(clientId)}:${encodeURIComponent(clientSecret)}`).toString('base64');
     } catch (error) {
         throw new Error(
             `An error occurred while retrieving service key for the destination instance ${instance}: ${error}`

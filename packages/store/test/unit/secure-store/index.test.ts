@@ -1,5 +1,5 @@
 import * as appStudioUtils from '../../../src/utils/app-studio';
-import { getSecureStore } from '../../../src';
+import { getSecureStore } from '../../../src/secure-store';
 import { DummyStore } from '../../../src/secure-store/dummy-store';
 import { KeytarStore } from '../../../src/secure-store/keytar-store';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
@@ -22,7 +22,7 @@ describe('getSecureStore', () => {
             jest.spyOn(appStudioUtils, 'isAppStudio').mockReturnValue(false);
         });
         it('returns KeytarStore if keytar can be required with no errors', () => {
-            jest.mock('keytar', () => {});
+            jest.mock('keytar', jest.fn());
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
         it('returns DummyStore if keytar & vscode cannot be required', () => {

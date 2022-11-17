@@ -1,0 +1,24 @@
+@mixin caretDown-icon() {
+    right: 0;
+    width: $dropdown-input-height;
+    background: transparent;
+    height: 100%;
+    text-align: center;
+    i {
+        height: 100%;
+        fill: $dropdown-input-color;
+        svg {
+            height: 100%;
+            width: $dropdown-input-expand-icon-size;
+        }
+    }
+}
+
+@mixin input-disabled() {
+    opacity: $dropdown-input-disabled-opacity;
+    background-color: $dropdown-input-disabled-background-color;
+    font-style: italic;
+    &:after {
+        border-color: $dropdown-input-border-color;
+    }
+}

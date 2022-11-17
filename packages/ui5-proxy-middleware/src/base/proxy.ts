@@ -2,8 +2,17 @@ import type { Filter, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ProxyConfig } from './types';
-import { proxyRequestHandler, proxyResponseHandler, filterCompressedHtmlFiles } from './utils';
+import {
+    proxyRequestHandler,
+    proxyResponseHandler,
+    filterCompressedHtmlFiles,
+    proxyErrorHandler,
+    updateProxyEnv
+} from './utils';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import type { Url } from 'url';
+import { getProxyForUrl } from 'proxy-from-env';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 /**
  * Function for proxying UI5 sources.
@@ -29,8 +38,24 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         pathRewrite: { [config.path]: ui5Ver + config.path },
         onProxyRes: (proxyRes: IncomingMessage): void => {
             proxyResponseHandler(proxyRes, etag);
+        },
+        onError: (
+            err: Error & { code?: string },
+            req: IncomingMessage & { next?: Function; originalUrl?: string },
+            res: ServerResponse,
+            target: string | Partial<Url> | undefined
+        ) => {
+            proxyErrorHandler(err, req, logger, res, target);
         }
     };
+
+    // update proxy config with values coming from args or ui5.yaml
+    updateProxyEnv(config.proxy);
+    const corporateProxy = getProxyForUrl(config.url);
+    if (corporateProxy) {
+        proxyConfig.agent = new HttpsProxyAgent(corporateProxy);
+    }
+
     Object.assign(proxyConfig, options);
     let proxyFilter: Filter = filterCompressedHtmlFiles;
 

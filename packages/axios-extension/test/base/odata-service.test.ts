@@ -3,7 +3,6 @@ import { join } from 'path';
 
 import { createServiceForUrl } from '../../src';
 
-nock.disableNetConnect();
 describe('ODataService', () => {
     const server = 'https://sap.example';
     const servicePathV2 = '/v2/myservice';
@@ -12,6 +11,7 @@ describe('ODataService', () => {
     const expectedMetadata = '<METADATA>';
 
     beforeAll(() => {
+        nock.disableNetConnect();
         nock(server).get(`${servicePathV2}${metadataPath}`).reply(200, expectedMetadata).persist(true);
         nock(server).get(`${servicePathV4}${metadataPath}`).reply(200, expectedMetadata).persist(true);
         nock(server)
@@ -22,6 +22,11 @@ describe('ODataService', () => {
             .get(`${servicePathV4}/?$format=json`)
             .replyWithFile(200, join(__dirname, '../abap/mockResponses/v4CatalogDocument.json'))
             .persist(true);
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
     });
 
     describe('v2', () => {
