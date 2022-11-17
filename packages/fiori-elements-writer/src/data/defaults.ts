@@ -61,7 +61,7 @@ export function setDefaultTemplateSettings<T>(template: Template<T>, odataVersio
 export function setAppDefaults<T>(config: FioriElementsApp<T>): InternalFioriElementsApp<T> {
     // set additional internal property
     const feApp: InternalFioriElementsApp<T> = config as InternalFioriElementsApp<T>;
-    feApp.app.previewIntent = `${feApp.app.id}-preview`;
+    feApp.app.previewIntent = config.app.flpAppId ?? `${config.app.id}-preview`;
 
     // Add template information
     if (!feApp.app.sourceTemplate?.version || !feApp.app.sourceTemplate?.id) {

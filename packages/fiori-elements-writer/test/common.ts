@@ -4,7 +4,15 @@ import { readFileSync } from 'fs';
 import { create as createStore } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
+import type {
+    ALPSettingsV2,
+    ALPSettingsV4,
+    FEOPSettings,
+    FioriElementsApp,
+    FPMSettings,
+    LROPSettings,
+    WorklistSettings
+} from '../src/types';
 
 export const testOutputDir = join(__dirname, 'test-output');
 
@@ -38,42 +46,64 @@ export const getTestData = (serviceName: string, serviceType: 'metadata' | 'anno
 /**
  * Base FE app settings
  */
-export const feBaseConfig = (
+export function createFeTestConfig<
+    T = LROPSettings | FEOPSettings | FPMSettings | ALPSettingsV2 | ALPSettingsV4 | WorklistSettings
+>(
     appId: string,
+    overwrites: {
+        app?: Partial<FioriElementsApp<T>['app']>;
+        appOptions?: Partial<FioriElementsApp<T>['appOptions']>;
+        package?: Partial<FioriElementsApp<T>['package']>;
+        template: FioriElementsApp<T>['template'];
+        service: FioriElementsApp<T>['service'];
+        ui5?: FioriElementsApp<T>['ui5'];
+    },
     addUi5Config: boolean = true
-): Partial<FioriElementsApp<LROPSettings | FEOPSettings>> => {
-    const config: Partial<FioriElementsApp<LROPSettings | FEOPSettings>> = {
-        app: {
-            id: appId,
-            title: 'App "Title" \\"',
-            description: 'A Fiori application.',
-            sourceTemplate: {
-                version: '1.2.3-test',
-                id: 'test-fe-template'
-            }
-        },
-        appOptions: {
-            loadReuseLibs: true
-        },
-        package: {
-            name: appId,
-            description: 'A Fiori application.'
-        }
-    } as Partial<FioriElementsApp<LROPSettings | FEOPSettings>>;
+): FioriElementsApp<T> {
+    const config: FioriElementsApp<T> = {
+        app: Object.assign(
+            {
+                id: appId,
+                title: 'App "Title" \\"',
+                description: 'A Fiori application.',
+                sourceTemplate: {
+                    version: '1.2.3-test',
+                    id: 'test-fe-template'
+                }
+            },
+            overwrites.app
+        ),
+        appOptions: Object.assign(
+            {
+                loadReuseLibs: true
+            },
+            overwrites.appOptions
+        ),
+        package: Object.assign(
+            {
+                name: appId,
+                description: 'A Fiori application.'
+            },
+            overwrites.package
+        ),
+        template: overwrites.template,
+        service: overwrites.service,
+        ui5: overwrites.ui5
+    };
 
-    if (addUi5Config) {
-        config.ui5 = {
+    if (addUi5Config && !overwrites.ui5) {
+        config.ui5 = Object.assign(config.ui5 ?? {}, {
             version: '1.92.0',
             minUI5Version: '1.90.0',
             descriptorVersion: '1.37.0',
             ui5Libs: [],
             ui5Theme: 'sap_belize',
             localVersion: '1.86.3'
-        };
+        });
     }
 
     return config;
-};
+}
 
 export const v4Service: OdataService = {
     path: '/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/',

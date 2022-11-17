@@ -2,7 +2,7 @@ import type { FioriElementsApp } from '../src';
 import { generate, TemplateType, LROPSettings } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, getTestData, feBaseConfig } from './common';
+import { testOutputDir, debug, getTestData, createFeTestConfig } from './common';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ALPSettings, ALPSettingsV2, ALPSettingsV4 } from '../src/types';
@@ -35,47 +35,43 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const alpConfigs: Array<{ name: string; config: FioriElementsApp<ALPSettings> }> = [
         {
             name: 'alpV4',
-            config: {
-                ...Object.assign(feBaseConfig('alp1'), {
-                    template: {
-                        type: TemplateType.AnalyticalListPage,
-                        settings: {
-                            entityConfig: {
-                                mainEntityName: 'SalesOrderItem',
-                                navigationEntity: {
-                                    EntitySet: 'MaterialDetails',
-                                    Name: '_MaterialDetails'
-                                }
-                            },
-                            tableType: TableType.RESPONSIVE
-                        } as ALPSettingsV4
-                    }
-                }),
+            config: createFeTestConfig('alp1', {
+                template: {
+                    type: TemplateType.AnalyticalListPage,
+                    settings: {
+                        entityConfig: {
+                            mainEntityName: 'SalesOrderItem',
+                            navigationEntity: {
+                                EntitySet: 'MaterialDetails',
+                                Name: '_MaterialDetails'
+                            }
+                        },
+                        tableType: TableType.RESPONSIVE
+                    } as ALPSettingsV4
+                },
                 service: v4Service
-            } as FioriElementsApp<ALPSettings>
+            })
         },
         {
             name: 'alpV2',
-            config: {
-                ...Object.assign(feBaseConfig('alp2'), {
-                    template: {
-                        type: TemplateType.AnalyticalListPage,
-                        settings: {
-                            entityConfig: {
-                                mainEntityName: 'SEPMRA_C_ALP_SlsOrdItemCubeALPResults',
-                                navigationEntity: {
-                                    EntitySet: 'SEPMRA_C_ALP_SalesOrderItem',
-                                    Name: 'to_SalesOrderItem'
-                                }
-                            },
-                            tableType: TableType.RESPONSIVE,
-                            qualifier: 'DefaultVariant',
-                            multiSelect: true
-                        } as ALPSettingsV2
-                    }
-                }),
+            config: createFeTestConfig('alp2', {
+                template: {
+                    type: TemplateType.AnalyticalListPage,
+                    settings: {
+                        entityConfig: {
+                            mainEntityName: 'SEPMRA_C_ALP_SlsOrdItemCubeALPResults',
+                            navigationEntity: {
+                                EntitySet: 'SEPMRA_C_ALP_SalesOrderItem',
+                                Name: 'to_SalesOrderItem'
+                            }
+                        },
+                        tableType: TableType.RESPONSIVE,
+                        qualifier: 'DefaultVariant',
+                        multiSelect: true
+                    } as ALPSettingsV2
+                },
                 service: v2Service
-            } as FioriElementsApp<ALPSettingsV2>
+            })
         }
     ];
 

@@ -2,7 +2,7 @@ import type { FioriElementsApp, FPMSettings } from '../src';
 import { generate, TemplateType, ValidationError } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, feBaseConfig, v4Service, v2Service } from './common';
+import { testOutputDir, debug, createFeTestConfig, v4Service, v2Service } from './common';
 
 const TEST_NAME = 'fpmTemplates';
 
@@ -21,30 +21,27 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
     const fpmConfigs: Array<{ name: string; config: FioriElementsApp<FPMSettings> }> = [
         {
             name: 'with-js',
-            config: {
-                ...Object.assign(feBaseConfig('fefpmjs'), {
-                    template: fpmTemplate
-                }),
+            config: createFeTestConfig('fefpmjs', {
+                template: fpmTemplate,
                 ui5: {
                     minUI5Version: '1.96.11'
                 },
                 service: v4Service
-            } as FioriElementsApp<FPMSettings>
+            })
         },
         {
             name: 'with-ts',
-            config: {
-                ...Object.assign(feBaseConfig('fefpmts'), {
-                    template: fpmTemplate
-                }),
+            config: createFeTestConfig('fefpmts', {
+                template: fpmTemplate,
                 ui5: {
                     minUI5Version: '1.96.11'
                 },
                 service: v4Service,
                 appOptions: {
+                    loadReuseLibs: false,
                     typescript: true
                 }
-            } as FioriElementsApp<FPMSettings>
+            })
         }
     ];
 

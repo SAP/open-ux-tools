@@ -4,37 +4,33 @@ import { TemplateTypeAttributes } from '../../src/data/templateAttributes';
 import { t } from '../../src/i18n';
 import type { ALPSettings } from '../../src/types';
 import { validateApp, validateRequiredProperties } from '../../src/validate';
-import { feBaseConfig, v4TemplateSettings } from '../common';
+import { createFeTestConfig } from '../common';
 
 describe('Validate', () => {
     test('Valid app config', () => {
-        const feApp: FioriElementsApp<LROPSettings> = {
-            ...Object.assign(feBaseConfig('felrop1'), {
-                template: {
-                    type: TemplateType.ListReportObjectPage,
-                    settings: {}
-                },
-                service: {
-                    version: OdataVersion.v2
-                }
-            })
-        } as FioriElementsApp<LROPSettings>;
+        const feApp: FioriElementsApp<unknown> = createFeTestConfig('felrop', {
+            template: {
+                type: TemplateType.ListReportObjectPage,
+                settings: {}
+            },
+            service: {
+                version: OdataVersion.v2
+            }
+        });
 
         expect(() => validateApp(feApp)).not.toThrowError();
     });
 
     test('Invalid ODataVersion for template type', () => {
-        const feApp: FioriElementsApp<LROPSettings> = {
-            ...Object.assign(feBaseConfig('felrop1'), {
-                template: {
-                    type: TemplateType.FormEntryObjectPage,
-                    settings: {}
-                },
-                service: {
-                    version: OdataVersion.v2 // Form Entry Object Page does not support v2
-                }
-            })
-        } as FioriElementsApp<LROPSettings>;
+        const feApp: FioriElementsApp<unknown> = createFeTestConfig('felrop', {
+            template: {
+                type: TemplateType.FormEntryObjectPage,
+                settings: {}
+            },
+            service: {
+                version: OdataVersion.v2 // Form Entry Object Page does not support v2
+            }
+        });
 
         expect(() => validateApp(feApp)).toThrowError(
             t('error.unsupportedOdataVersion', {
@@ -45,26 +41,19 @@ describe('Validate', () => {
     });
 
     test('Invalid semantic version specified', () => {
-        let feApp: FioriElementsApp<LROPSettings> = {
-            ...Object.assign(
-                feBaseConfig('felrop1'),
-                {
-                    ui5: {
-                        version: 'a.b.c',
-                        minUI5Version: '1.60'
-                    }
-                },
-                {
-                    template: {
-                        type: TemplateType.ListReportObjectPage,
-                        settings: {}
-                    },
-                    service: {
-                        version: OdataVersion.v2
-                    }
-                }
-            )
-        } as FioriElementsApp<LROPSettings>;
+        let feApp: FioriElementsApp<unknown> = createFeTestConfig('felrop', {
+            ui5: {
+                version: 'a.b.c',
+                minUI5Version: '1.60'
+            },
+            template: {
+                type: TemplateType.ListReportObjectPage,
+                settings: {}
+            },
+            service: {
+                version: OdataVersion.v2
+            }
+        });
 
         expect(() => validateApp(feApp)).toThrowError(
             t('error.invalidUI5Version', {
@@ -89,26 +78,19 @@ describe('Validate', () => {
     });
 
     test('Invalid ui5 version for specified template type', () => {
-        const feApp: FioriElementsApp<ALPSettings> = {
-            ...Object.assign(
-                feBaseConfig('felrop1'),
-                {
-                    ui5: {
-                        version: '1.88.1',
-                        minUI5Version: '1.92.0'
-                    }
-                },
-                {
-                    template: {
-                        type: TemplateType.AnalyticalListPage,
-                        settings: {}
-                    },
-                    service: {
-                        version: OdataVersion.v4 // Worklist does not support v4
-                    }
-                }
-            )
-        } as FioriElementsApp<ALPSettings>;
+        const feApp: FioriElementsApp<unknown> = createFeTestConfig('felrop', {
+            ui5: {
+                version: '1.88.1',
+                minUI5Version: '1.92.0'
+            },
+            template: {
+                type: TemplateType.AnalyticalListPage,
+                settings: {}
+            },
+            service: {
+                version: OdataVersion.v4 // Worklist does not support v4
+            }
+        });
 
         expect(() => validateApp(feApp)).toThrowError(
             t('error.unsupportedUI5Version', {
@@ -122,26 +104,19 @@ describe('Validate', () => {
     });
 
     test('Invalid minimum ui5 version for specified template type', () => {
-        const feApp: FioriElementsApp<ALPSettings> = {
-            ...Object.assign(
-                feBaseConfig('felrop1'),
-                {
-                    ui5: {
-                        version: '1.92.0',
-                        minUI5Version: '1.60.0'
-                    }
-                },
-                {
-                    template: {
-                        type: TemplateType.AnalyticalListPage,
-                        settings: {}
-                    },
-                    service: {
-                        version: OdataVersion.v4 // Worklist does not support v4
-                    }
-                }
-            )
-        } as FioriElementsApp<ALPSettings>;
+        const feApp: FioriElementsApp<unknown> = createFeTestConfig('felrop', {
+            ui5: {
+                version: '1.92.0',
+                minUI5Version: '1.60.0'
+            },
+            template: {
+                type: TemplateType.AnalyticalListPage,
+                settings: {}
+            },
+            service: {
+                version: OdataVersion.v4 // Worklist does not support v4
+            }
+        });
 
         expect(() => validateApp(feApp)).toThrowError(
             t('error.unsupportedUI5Version', {
@@ -156,23 +131,17 @@ describe('Validate', () => {
 
     test('Missing required property', () => {
         // Missing property: `FioriElementsApp.service`
-        const feApp: FioriElementsApp<ALPSettings> = {
-            ...Object.assign(
-                feBaseConfig('felrop1'),
-                {
-                    ui5: {
-                        version: '1.92.0',
-                        minUI5Version: '1.60.0'
-                    }
-                },
-                {
-                    template: {
-                        type: TemplateType.AnalyticalListPage,
-                        settings: {}
-                    }
-                }
-            )
-        } as FioriElementsApp<ALPSettings>;
+        const feApp: FioriElementsApp<unknown> = createFeTestConfig('felrop', {
+            ui5: {
+                version: '1.92.0',
+                minUI5Version: '1.60.0'
+            },
+            template: {
+                type: TemplateType.AnalyticalListPage,
+                settings: {}
+            },
+            service: undefined as unknown as FioriElementsApp<unknown>['service']
+        });
 
         expect(() => validateRequiredProperties(feApp)).toThrowError(
             t('error.missingRequiredProperty', {

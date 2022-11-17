@@ -2,7 +2,7 @@ import type { FioriElementsApp } from '../src';
 import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, getTestData, debug, feBaseConfig } from './common';
+import { testOutputDir, getTestData, debug, createFeTestConfig } from './common';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OVPSettings } from '../src/types';
@@ -33,34 +33,30 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const configuration: Array<{ name: string; config: FioriElementsApp<OVPSettings> }> = [
         {
             name: 'ovpV2',
-            config: {
-                ...Object.assign(feBaseConfig('feovp1'), {
-                    template: {
-                        type: TemplateType.OverviewPage,
-                        settings: {
-                            filterEntityType: 'GlobalFilters'
-                        }
+            config: createFeTestConfig('feovp1', {
+                template: {
+                    type: TemplateType.OverviewPage,
+                    settings: {
+                        filterEntityType: 'GlobalFilters'
                     }
-                }),
+                },
                 service: ovpV2Service
-            } as FioriElementsApp<OVPSettings>
+            })
         },
         {
             name: 'ovpV4',
-            config: {
-                ...Object.assign(feBaseConfig('feovp2'), {
-                    template: {
-                        type: TemplateType.OverviewPage,
-                        settings: {
-                            filterEntityType: 'SalesOrderItem'
-                        }
-                    },
-                    ui5: {
-                        version: '1.97.0'
+            config: createFeTestConfig('feovp2', {
+                template: {
+                    type: TemplateType.OverviewPage,
+                    settings: {
+                        filterEntityType: 'SalesOrderItem'
                     }
-                }),
+                },
+                ui5: {
+                    version: '1.97.0'
+                },
                 service: v4Service
-            } as FioriElementsApp<OVPSettings>
+            })
         }
     ];
 

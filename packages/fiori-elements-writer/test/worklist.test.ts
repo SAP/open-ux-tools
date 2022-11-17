@@ -6,7 +6,7 @@ import {
     testOutputDir,
     debug,
     v2Service,
-    feBaseConfig,
+    createFeTestConfig,
     v2TemplateSettings,
     v4TemplateSettings,
     v4Service
@@ -21,31 +21,26 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const configuration: Array<{ name: string; config: FioriElementsApp<WorklistSettings> }> = [
         {
             name: 'worklistV2',
-            config: {
-                ...Object.assign(feBaseConfig('fewrk1'), {
-                    template: {
-                        type: TemplateType.Worklist,
-                        settings: v2TemplateSettings
-                    }
-                }),
+            config: createFeTestConfig('fewrk1', {
+                template: {
+                    type: TemplateType.Worklist,
+                    settings: v2TemplateSettings
+                },
                 service: v2Service
-            } as FioriElementsApp<WorklistSettings>
+            })
         },
         {
             name: 'worklistV4',
-            config: {
-                ...Object.assign(feBaseConfig('fewrk2'), {
-                    template: {
-                        type: TemplateType.Worklist,
-                        settings: v4TemplateSettings
-                    },
-                    ui5: {
-                        ...feBaseConfig('fewrk2', true),
-                        version: '1.99.0'
-                    }
-                }),
+            config: createFeTestConfig('fewrk2', {
+                template: {
+                    type: TemplateType.Worklist,
+                    settings: v4TemplateSettings
+                },
+                ui5: {
+                    version: '1.99.0'
+                },
                 service: v4Service
-            } as FioriElementsApp<WorklistSettings>
+            })
         }
     ];
 

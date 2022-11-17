@@ -1,10 +1,8 @@
 import type { LROPSettings } from '../../src';
-import { FioriElementsApp, OdataVersion, TemplateType } from '../../src';
-import { t } from '../../src/i18n';
+import { OdataVersion, TemplateType } from '../../src';
 import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, Template } from '../../src/types';
 import { TableSelectionModeV4, TableType } from '../../src/types';
-import { setAppDefaults, setDefaultTemplateSettings } from '../../src/data/defaults';
-import { feBaseConfig, v4TemplateSettings } from '../common';
+import { setDefaultTemplateSettings } from '../../src/data/defaults';
 import cloneDeep from 'lodash/cloneDeep';
 
 describe('Defaults', () => {

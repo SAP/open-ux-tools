@@ -164,6 +164,18 @@ export interface FioriElementsApp<T> extends Ui5App {
     service: Omit<OdataService, 'model'>;
 
     /**
+     * Additional settings for Fiori elements apps.
+     */
+    app: Ui5App['app'] & {
+        /**
+         * Use the specified app id when generating the test Fiori launch pad config
+         *
+         * @deprecated
+         */
+        flpAppId?: string;
+    };
+
+    /**
      * Extended app options with Fiori elements specific setting
      */
     appOptions: Ui5App['appOptions'] & {
@@ -180,7 +192,10 @@ export interface FioriElementsApp<T> extends Ui5App {
  * It extends the object with properties that are calculated based on other input and cannot be directly set by the caller.
  */
 export interface InternalFioriElementsApp<T> extends FioriElementsApp<T> {
-    app: FioriElementsApp<T>['app'] & {
+    /**
+     * Additional settings for Fiori elements apps.
+     */
+    app: Ui5App['app'] & {
         /**
          * Calculated value of the intent that is being used for previewing in an FLP sandbox.
          */
