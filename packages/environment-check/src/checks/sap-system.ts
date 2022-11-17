@@ -20,12 +20,14 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
  * @param sapSystem - the SAP system
  * @returns - ABAP service provider
  */
-function getServiceProvider(sapSystem: SapSystem): AbapServiceProvider {
+function getServiceProvider(
+    sapSystem: SapSystem,
+    username?: string | undefined,
+    password?: string | undefined
+): AbapServiceProvider {
     let abapServiceProvider: AbapServiceProvider;
 
     if (isAppStudio()) {
-        const username = sapSystem.Credentials?.username;
-        const password = sapSystem.Credentials?.password;
         const auth =
             username !== undefined && password !== undefined
                 ? {
@@ -96,14 +98,16 @@ export async function checkSapSystems(): Promise<{
  * @returns messages and sapSystem results
  */
 export async function checkSapSystem(
-    sapSystem: SapSystem
+    sapSystem: SapSystem,
+    username?: string | undefined,
+    password?: string | undefined
 ): Promise<{ messages: ResultMessage[]; sapSystemResults: SapSystemResults }> {
     const logger = getLogger();
     logger.info(t('info.checkingSapSystem', { sapSystem: sapSystem.Name }));
     let destinationResults: SapSystemResults;
     let storedSystemResults: SapSystemResults;
 
-    const abapServiceProvider = getServiceProvider(sapSystem);
+    const abapServiceProvider = getServiceProvider(sapSystem, username, password);
 
     // catalog service request
     const { messages: catalogMsgs, result: catalogServiceResult } = await checkCatalogServices(

@@ -17,8 +17,8 @@ Pnpm
 ```javascript
 import {
     getEnvironment,
-    checkBASDestinations,
-    checkBASDestination
+    checkSapSystems,
+    checkSapSystem,
 } from '@sap-ux/environment-check';
 
 /**
@@ -27,14 +27,14 @@ import {
 const environmentResults = await getEnvironment();
 
 /**
- * Checks the destinations and returns a list
+ * Checks the SAP systems on Business Application Studio or locally saved systems and returns a list
  */
-const destinationResults = await checkBASDestinations();
+const destinationResults = await checkSapSystems();
 
 /**
- * Check a BAS destination for v2 & v4 catalog service 
+ * Check an SAP system for v2 & v4 catalog service and other services 
  */
-const destResult = await checkBASDestination(destination, username, password);
+const destResult = await checkSapSystem(destination, username, password);
 
 ```
 
@@ -48,10 +48,10 @@ A CLI application is also available to investigate the environment and destinati
 $ envcheck --help
 
 Usage 
-    $ envcheck --destination <DESTINATION> --output <OUTPUT> <WORKSPACE_ROOT>
+    $ envcheck --sap-system <SAPSYSTEM> --output <OUTPUT> <WORKSPACE_ROOT>
 
 Options
-    --destination       destination to perform deep check, multiple destionations can be passed
+    --sap-system       SAP system to perform deep check, multiple SAP systems can be passed
     --output            json | markdown | verbose | zip format for output, if not specified all messages   except 'info' are shown
 
     <WORKSPACE_ROOT*>   path the root folder of a workspace. Multiple roots can be defined. We search for apps with destinations in workspaces
