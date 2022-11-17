@@ -1,6 +1,62 @@
-import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
+import { isAxiosError } from '../base/odata-request-error';
+
+/**
+ * Required configuration for the BSP hosting an app.
+ */
+export interface BspConfig {
+    /**
+     * Name of the BSP, additionally, the last part of the exposed service path
+     */
+    name: string;
+
+    /**
+     * Optional description of the ABAP development object representing the BSP
+     */
+    description?: string;
+
+    /**
+     * Optional package for the ABAP development object
+     */
+    package?: string;
+
+    /**
+     * Optional transport request to record the changes
+     */
+    transport?: string;
+}
+
+/**
+ * Configuration required for deploying an app.
+ */
+export interface DeployConfig {
+    /**
+     * archive zip archive containing the application files as buffer
+     */
+    archive: Buffer;
+    /**
+     * app application configuration
+     */
+    bsp: BspConfig;
+    /**
+     * if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
+     */
+    testMode?: boolean;
+    /**
+     * if set then the SafeMode url parameter will be set. SafeMode is by default active, to deactivate provide false
+     */
+    safeMode?: boolean;
+}
+
+/**
+ * Configuration required for undeploying an app.
+ */
+export interface UndeployConfig {
+    bsp: Pick<BspConfig, 'name' | 'transport'>;
+    testMode?: DeployConfig['testMode'];
+}
 
 /**
  * Required configuration for the BSP hosting an app.
@@ -372,9 +428,9 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param e.error error from Axios
      * @param e.host hostname
      */
-    protected logError({ error, host }: { error: AxiosError; host?: string }): void {
+    protected logError({ error, host }: { error: Error; host?: string }): void {
         this.log.error(error.message);
-        if (error.isAxiosError && error.response?.data) {
+        if (isAxiosError(error) && error.response?.data) {
             if (error.response.data['error']) {
                 prettyPrintError({ error: error.response.data['error'], host, log: this.log });
             } else {

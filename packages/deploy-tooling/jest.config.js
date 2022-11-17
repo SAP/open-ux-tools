@@ -1,13 +1,2 @@
-module.exports = {
-    transform: {
-        '^.+\\.ts$': 'ts-jest'
-    },
-    collectCoverage: true,
-    collectCoverageFrom: ['src/**/*.ts'],
-    coverageReporters: ['text', ['lcov', { projectRoot: '../../' }]],
-    reporters: [
-        'default',
-        'jest-sonar'
-    ],
-    verbose: true
-};
+const config = require('../../jest.base');
+module.exports = config;

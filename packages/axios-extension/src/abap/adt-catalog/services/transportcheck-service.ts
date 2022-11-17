@@ -7,7 +7,7 @@ import { DOMParser } from '@xmldom/xmldom';
 
 /**
  * TransportChecksService implements ADT requests for fetching a list of available transport requests
- * for a given package name and a give app name.
+ * for a given package name and a given app name.
  */
 export class TransportChecksService extends AdtService {
     /**
@@ -27,6 +27,7 @@ export class TransportChecksService extends AdtService {
     }
 
     /**
+     * TransportChecksService API function to fetch a list of available transport requests.
      *
      * @param packageName Package name for deployment
      * @param appName Fiori project name for deployment. A new project that has not been deployed before is also allowed

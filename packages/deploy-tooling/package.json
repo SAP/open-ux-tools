@@ -18,14 +18,16 @@
         "undeploy": "bin/undeploy"
     },
     "scripts": {
-        "build": "pnpm clean && tsc -p tsconfig-build.json",
-        "clean": "rimraf dist",
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "watch": "tsc --watch",
-        "cli": "tsc && node dist/cli/index.js"
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
     },
     "files": [
         "LICENSE",
