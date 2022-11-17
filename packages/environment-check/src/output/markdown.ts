@@ -1,8 +1,7 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
 import { Severity, UrlServiceType, Check } from '../types';
 import type {
-    Destination,
-    DestinationResults,
+    SapSystem,
     Environment,
     EnvironmentCheckResult,
     MarkdownWriter,
@@ -202,7 +201,7 @@ function writeCatalogServiceResults(writer: MarkdownWriter, catalogService: Cata
 function writeDestinationDetails(
     writer: MarkdownWriter,
     destName: string,
-    destDetails: DestinationResults,
+    destDetails: SapSystemResults,
     urlServiceType?: UrlServiceType
 ): void {
     writer.addH3(t('markdownText.detailsFor', { systemName: destName }));
@@ -289,8 +288,8 @@ function writeSapSystemResults(
  */
 function writeDestinationResults(
     writer: MarkdownWriter,
-    destinationResults: { [dest: string]: DestinationResults } = {},
-    destinations: Destination[] = []
+    destinationResults: { [sys: string]: SapSystemResults } = {},
+    destinations: SapSystem[] = []
 ): void {
     const numberOfDestDetails = Object.keys(destinationResults).length;
     writer.addH2(`${t('markdownText.destinationDetails')} (${numberOfDestDetails})`);
@@ -315,7 +314,7 @@ function writeDestinationResults(
  * @param writer - markdown writer
  * @param destinations - array of destinations
  */
-function writeDestinations(writer: MarkdownWriter, destinations: Destination[] = []): void {
+function writeDestinations(writer: MarkdownWriter, destinations: SapSystem[] = []): void {
     const numberOfDestinations = destinations.length || 0;
     writer.addH2(t('markdownText.allDestinations', { numberOfDestinations }));
     if (numberOfDestinations > 0) {
@@ -366,15 +365,21 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
         writeEnvironment(writer, results.environment);
     }
 
-    if (results.requestedChecks?.includes(Check.DestResults)) {
-        writeDestinationResults(writer, results.destinationResults, results.destinations);
+    if (
+        results.requestedChecks?.includes(Check.Destinations) &&
+        results.requestedChecks?.includes(Check.SapSystemResults)
+    ) {
+        writeDestinationResults(writer, results.sapSystemResults, results.sapSystems);
     }
 
     if (results.requestedChecks?.includes(Check.Destinations)) {
-        writeDestinations(writer, results.destinations);
+        writeDestinations(writer, results.sapSystems);
     }
 
-    if (results.requestedChecks?.includes(Check.SapSystemResults)) {
+    if (
+        results.requestedChecks?.includes(Check.StoredSystems) &&
+        results.requestedChecks?.includes(Check.SapSystemResults)
+    ) {
         writeSapSystemResults(writer, results.sapSystemResults);
     }
 

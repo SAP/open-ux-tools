@@ -8,10 +8,10 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
-const requestedChecksSet = [Check.Environment, Check.Destinations, Check.DestResults];
+const requestedChecksSet = [Check.Environment, Check.Destinations, Check.SapSystemResults];
 
 const data = {
-    destinationResults: {
+    sapSystemResults: {
         ABC: {
             catalogService: {
                 v2: { results: [] },
@@ -112,7 +112,7 @@ const data = {
             cds: '2'
         }
     },
-    destinations: [
+    sapSystems: [
         {
             Name: 'ABC',
             Type: 'HTTP',
@@ -215,7 +215,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check destination details with no v2 or v4 service', () => {
         const result = convertResultsToMarkdown({
-            destinationResults: { ABC: { catalogService: { v2: {}, v4: {} } } },
+            sapSystemResults: { ABC: { catalogService: { v2: {}, v4: {} } } },
             requestedChecks: requestedChecksSet
         });
         expect(result).toMatch('V2 catalog service not available');
@@ -223,7 +223,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check destination details with v4 service but not v2 service', () => {
         const result = convertResultsToMarkdown({
-            destinationResults: {
+            sapSystemResults: {
                 ABC: {
                     catalogService: {
                         v2: {},
@@ -239,9 +239,9 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check destination details with both v2 and v4 services available', () => {
-        const destResultsCheck = [Check.DestResults];
+        const destResultsCheck = [Check.Destinations, Check.SapSystemResults];
         const result = convertResultsToMarkdown({
-            destinationResults: {
+            sapSystemResults: {
                 ABC: {
                     catalogService: {
                         v2: {
@@ -260,10 +260,61 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check empty destination table', () => {
         const result = convertResultsToMarkdown({
-            destinations: [],
+            sapSystems: [],
             requestedChecks: requestedChecksSet
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
+    });
+
+    test('Check stored system details - no systems', () => {
+        const destResultsCheck = [Check.StoredSystems, Check.SapSystemResults];
+        const result = convertResultsToMarkdown({
+            sapSystemResults: {},
+            requestedChecks: destResultsCheck
+        });
+        expect(result).toMatch('No SAP system details');
+    });
+    test('Check stored system details with v2/v4 and service checks', () => {
+        const destResultsCheck = [Check.StoredSystems, Check.SapSystemResults];
+        const result = convertResultsToMarkdown({
+            sapSystemResults: {
+                ABC: {
+                    catalogService: {
+                        v2: {
+                            results: []
+                        },
+                        v4: {
+                            results: []
+                        }
+                    },
+                    isAtoCatalog: true,
+                    isSapUi5Repo: true,
+                    isTransportRequests: true
+                },
+                XYZ: {
+                    catalogService: {
+                        v2: {
+                            results: []
+                        },
+                        v4: {
+                            results: []
+                        }
+                    },
+                    isAtoCatalog: false,
+                    isSapUi5Repo: false,
+                    isTransportRequests: false
+                }
+            },
+            requestedChecks: destResultsCheck
+        });
+        expect(result).toMatch('V2 catalog call returned');
+        expect(result).toMatch('V4 catalog call returned');
+        expect(result).toMatch('ATO catalog available');
+        expect(result).toMatch('ATO catalog is not available');
+        expect(result).toMatch('SAPUI5 repository service for deployment available');
+        expect(result).toMatch('SAPUI5 repository service for deployment is not available');
+        expect(result).toMatch('Ability to retrieve available Transport Requests');
+        expect(result).toMatch('Unable to retrieve available Transport Requests');
     });
 
     test('Check markdown with no destinations checked', () => {

@@ -1,22 +1,21 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { checkBASDestinations, getDestinationsResults } from './destination';
-import { checkSapSystems, getSapSystemsResults } from './sap-systems';
-import { getDestinationsFromWorkspace } from './workspace';
+import { checkBASDestinations } from './destination';
+import { checkSapSystem } from './sap-system';
+import { checkStoredSystems } from './stored-system';
+import { getDestinationsFromWorkspace } from './utils';
 import { getLogger } from '../logger';
 import { devspace } from '@sap/bas-sdk';
 import type {
     CheckEnvironmentOptions,
-    Destination,
     Environment,
     EnvironmentCheckResult,
     ResultMessage,
     ToolsExtensions,
     SapSystem,
-    SapSystemResults,
-    DestinationResults
+    SapSystemResults
 } from '../types';
 import { Check, DevelopmentEnvironment, Extensions } from '../types';
-import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions } from './get-installed';
+import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions } from './helpers';
 import { t } from '../i18n';
 
 /**
@@ -129,67 +128,109 @@ async function getToolsExtensions(): Promise<{
 }
 
 /**
- * Check environment includes process.env, list of destinations, details about destinations.
+ * Internal function to check an SAP system.
  *
- * @param options - see type CheckEnvironmentOptions, includes destination for deep dive, workspace roots, ...
+ * @param sapSystem - the SAP system to get detailed results for
+ * @returns - messages and detailed destination check results
+ */
+async function getSapSystemResults(
+    sapSystem: SapSystem
+): Promise<{ messages: ResultMessage[]; sapSystemResults: SapSystemResults }> {
+    const logger = getLogger();
+
+    const sapSystemDetails = await checkSapSystem(sapSystem);
+    logger.push(...sapSystemDetails.messages);
+
+    return {
+        messages: logger.getMessages(),
+        sapSystemResults: sapSystemDetails.sapSystemResults
+    };
+}
+
+/**
+ * Check a set of SAP systems (deep dive into them).
+ *
+ * @param deepDiveSapSystems - SAP systems selected for a closer look
+ * @param sapSystems - array of all SAP systems found
+ * @returns - messages and the map of detailed SAP systems check results
+ */
+export async function getSapSystemsResults(
+    deepDiveSapSystems: Set<string>,
+    sapSystems: SapSystem[]
+): Promise<{ messages: ResultMessage[]; systemResults: { [dest: string]: SapSystemResults } }> {
+    const logger = getLogger();
+    const systemResults: { [system: string]: SapSystemResults } = {};
+    logger.info(
+        deepDiveSapSystems.size > 0
+            ? t('info.detailsForSapSystem', { sapSystems: Array.from(deepDiveSapSystems).join(', ') })
+            : t('info.noDetailsRequested')
+    );
+
+    for (const deepDiveSapSystem of Array.from(deepDiveSapSystems)) {
+        const checkDest = sapSystems.find((d) => d.Name === deepDiveSapSystem);
+        if (checkDest) {
+            const { messages: destMessages, sapSystemResults } = await getSapSystemResults(checkDest);
+            logger.push(...destMessages);
+
+            systemResults[checkDest.Name] = sapSystemResults;
+        } else {
+            logger.warn(t('warning.sapSystemsNotFound', { deepDiveSapSystem, sysNumber: sapSystems.length }));
+        }
+    }
+
+    return {
+        messages: logger.getMessages(),
+        systemResults
+    };
+}
+
+/**
+ * Check environment includes process.env, list of SAP systems, details about the SAP systems.
+ *
+ * @param options - see type CheckEnvironmentOptions, includes SAP system for deep dive, workspace roots, ...
  * @returns the result, currently as JSON
  */
 export async function checkEnvironment(options?: CheckEnvironmentOptions): Promise<EnvironmentCheckResult> {
     const logger = getLogger();
-    let destinations: Destination[];
-    let destinationResults: { [dest: string]: DestinationResults };
 
     let sapSystems: SapSystem[];
-    let sapSystemResults: { [dest: string]: SapSystemResults };
 
     const requestedChecks: Check[] = [];
+
+    // check environment
     requestedChecks.push(Check.Environment);
     const { environment, messages } = await getEnvironment();
     logger.push(...messages);
 
+    const deepDiveSapSystems = options?.sapSystems ? new Set(options.sapSystems) : new Set<string>();
+
     if (isAppStudio()) {
-        const deepDiveDestinations = options?.destinations ? new Set(options.destinations) : new Set<string>();
         if (options?.workspaceRoots?.length > 0) {
             const workspaceResults = await getDestinationsFromWorkspace(options?.workspaceRoots);
             logger.push(...workspaceResults.messages);
-            workspaceResults.destinations.forEach((dest) => deepDiveDestinations.add(dest));
+            workspaceResults.destinations.forEach((dest) => deepDiveSapSystems.add(dest));
         }
-
         requestedChecks.push(Check.Destinations);
         const basDestResults = await checkBASDestinations();
-        destinations = basDestResults.destinations;
+        sapSystems = basDestResults.destinations;
         logger.push(...basDestResults.messages);
-
-        if (deepDiveDestinations.size > 0) {
-            requestedChecks.push(Check.DestResults);
-        }
-
-        const destResults = await getDestinationsResults(
-            deepDiveDestinations,
-            destinations,
-            options?.credentialCallback
-        );
-        destinationResults = destResults.destinationResults;
-        logger.push(...destResults.messages);
     } else {
-        const deepDiveSapSystems = options?.sapSystems ? new Set(options.sapSystems) : new Set<string>();
-
-        const savedSystemResults = await checkSapSystems();
-        sapSystems = savedSystemResults.sapSystems;
+        requestedChecks.push(Check.StoredSystems);
+        const savedSystemResults = await checkStoredSystems();
+        sapSystems = savedSystemResults.storedSystems;
         logger.push(...savedSystemResults.messages);
-
-        if (deepDiveSapSystems.size > 0) {
-            requestedChecks.push(Check.SapSystemResults);
-        }
-        const sapSysResults = await getSapSystemsResults(deepDiveSapSystems, sapSystems);
-        sapSystemResults = sapSysResults.systemResults;
-        logger.push(...sapSysResults.messages);
     }
+
+    if (deepDiveSapSystems.size > 0) {
+        requestedChecks.push(Check.SapSystemResults);
+    }
+
+    const sapSysResults = await getSapSystemsResults(deepDiveSapSystems, sapSystems);
+    const sapSystemResults = sapSysResults.systemResults;
+    logger.push(...sapSysResults.messages);
 
     return {
         environment,
-        destinations,
-        destinationResults,
         sapSystems,
         sapSystemResults,
         messages: logger.getMessages(),

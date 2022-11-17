@@ -2,7 +2,7 @@ import { writeFile } from 'fs';
 import { t } from '../i18n';
 import minimist from 'minimist';
 import prompts from 'prompts';
-import type { CheckEnvironmentOptions, Destination, EnvironmentCheckResult } from '../types';
+import type { CheckEnvironmentOptions, EnvironmentCheckResult, SapSystem } from '../types';
 import { OutputMode, Severity } from '../types';
 import { convertResultsToMarkdown } from '../output/markdown';
 import { checkEnvironment } from '../checks/environment';
@@ -38,11 +38,9 @@ function getOptions(cliArgs: minimist.ParsedArgs): CheckEnvironmentOptions | und
     if (cliArgs._.length > 0) {
         options.workspaceRoots = cliArgs._;
     }
-    if (cliArgs.destination) {
-        options.destinations = Array.isArray(cliArgs.destination) ? cliArgs.destination : [cliArgs.destination];
-    }
-    if (cliArgs.sapSystem) {
-        options.sapSystems = Array.isArray(cliArgs.sapSystem) ? cliArgs.sapSystem : [cliArgs.sapSystem];
+
+    if (cliArgs['sap-system']) {
+        options.sapSystems = Array.isArray(cliArgs['sap-system']) ? cliArgs['sap-system'] : [cliArgs['sap-system']];
     }
     return Object.keys(options).length > 0 ? options : undefined;
 }
@@ -122,7 +120,7 @@ async function outputResults(result: EnvironmentCheckResult, mode?: OutputMode):
  * @param destination - destination info with Name, Host, ...
  * @returns user input for username and password
  */
-async function credentialCallback(destination: Destination): Promise<{ username: string; password: string }> {
+async function credentialCallback(destination: SapSystem): Promise<{ username: string; password: string }> {
     console.log(t('info.authRequired', { destination: destination.Name }));
     const { username, password } = await prompts([
         {

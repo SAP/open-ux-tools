@@ -1,10 +1,12 @@
 import type { CheckEnvironmentOptions } from '../../src';
 import { checkEnvironment, getEnvironment } from '../../src/checks/environment';
-import { checkBASDestinations, getDestinationsResults } from '../../src/checks/destination';
+import { checkBASDestinations } from '../../src/checks/destination';
+import { checkSapSystem } from '../../src/checks/sap-system';
+import { checkStoredSystems } from '../../src/checks/stored-system';
 import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { join } from 'path';
-import * as install from '../../src/checks/get-installed';
+import * as install from '../../src/checks/helpers/get-installed';
 
 jest.mock('axios');
 
@@ -17,11 +19,19 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 jest.mock('../../src/checks/destination', () => ({
     checkBASDestinations: jest.fn(),
     needsUsernamePassword: jest.fn(),
-    checkBASDestination: jest.fn(),
-    getDestinationsResults: jest.fn()
+    checkBASDestination: jest.fn()
 }));
 const mockCheckBASDestinations = checkBASDestinations as jest.Mock;
-const mockGetDestinationsResults = getDestinationsResults as jest.Mock;
+
+jest.mock('../../src/checks/sap-system', () => ({
+    checkSapSystem: jest.fn()
+}));
+const mockCheckSapSystem = checkSapSystem as jest.Mock;
+
+jest.mock('../../src/checks/stored-system', () => ({
+    checkStoredSystems: jest.fn()
+}));
+const mockCheckStoredSystems = checkStoredSystems as jest.Mock;
 
 const nodeJSProcessVersions = {
     'node': '16.17.0',
@@ -61,10 +71,10 @@ describe('Test for checkEnvironment() (BAS)', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         mockIsAppStudio.mockReturnValue(true);
+        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
         jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
-        jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
     });
 
     test('Test destinations', async () => {
@@ -91,32 +101,21 @@ describe('Test for checkEnvironment() (BAS)', () => {
             }
         ];
 
-        const destResults = {
-            v2: {},
-            v4: {},
-            HTML5DynamicDestination: 'true'
-        };
         mockCheckBASDestinations.mockImplementationOnce(() => Promise.resolve({ messages: [], destinations: data }));
-        mockGetDestinationsResults.mockImplementationOnce(() =>
-            Promise.resolve({
-                messages: [],
-                destinationResults: destResults
-            })
-        );
-
+        mockCheckSapSystem.mockImplementationOnce(() => Promise.resolve({ messages: [], sapSystemResults: {} }));
         const options: CheckEnvironmentOptions = {
             workspaceRoots: [join(__dirname, '..', 'sample-workspace')],
-            destinations: ['ONE']
+            sapSystems: ['ONE']
         };
 
         // Test execution
         const result = await checkEnvironment(options);
 
         // Result check
-        expect(result.destinations).toEqual(data);
+        expect(result.sapSystems).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length).toBeGreaterThan(0);
-        expect(result.destinationResults).toBe(destResults);
+        expect(result.messages.length).toBe(25);
+        expect(result.requestedChecks).toEqual(['environment', 'destinations', 'sapSystemResults']);
     });
 
     test('No deep dive destination, getEnvironmentCheck()', async () => {
@@ -131,18 +130,8 @@ describe('Test for checkEnvironment() (BAS)', () => {
                 Host: 'https://one.dest:123'
             }
         ];
-        const destResults = {
-            v2: {},
-            v4: {},
-            HTML5DynamicDestination: 'true'
-        };
+
         mockCheckBASDestinations.mockImplementationOnce(() => Promise.resolve({ messages: [], destinations: data }));
-        mockGetDestinationsResults.mockImplementationOnce(() =>
-            Promise.resolve({
-                messages: [{ severity: Severity.Info, text: 'No destinations details requested' }],
-                destinationResults: destResults
-            })
-        );
 
         const options: CheckEnvironmentOptions = {
             workspaceRoots: ['test/workspace']
@@ -156,10 +145,10 @@ describe('Test for checkEnvironment() (BAS)', () => {
 
         // Result check
         expect(infoMessage).toBeDefined();
-        expect(result.destinations).toEqual(data);
+        expect(result.sapSystems).toEqual(data);
         expect(result.messages).toBeDefined();
         expect(result.messages.length).toBeGreaterThan(0);
-        expect(result.destinationResults).toBeDefined();
+        expect(result.sapSystemResults).toBeDefined();
     });
     test('Checking for deep dive destination that does not exist in the list, getEnvironmentCheck()', async () => {
         const data = [
@@ -173,36 +162,23 @@ describe('Test for checkEnvironment() (BAS)', () => {
                 Host: 'https://one.dest:123'
             }
         ];
-        const destResults = {
-            v2: {},
-            v4: {},
-            HTML5DynamicDestination: 'true'
-        };
+
         mockCheckBASDestinations.mockImplementationOnce(() => Promise.resolve({ messages: [], destinations: data }));
-        mockGetDestinationsResults.mockImplementationOnce(() =>
-            Promise.resolve({
-                messages: [{ severity: Severity.Warning, text: `Couldn't find destination` }],
-                destinationResults: destResults
-            })
-        );
+        mockCheckSapSystem.mockImplementationOnce(() => Promise.resolve({ messages: [], sapSystemResults: {} }));
 
         const options: CheckEnvironmentOptions = {
             workspaceRoots: [join(__dirname, '..', 'sample-workspace')],
-            destinations: ['NotInList']
+            sapSystems: ['NotInList']
         };
 
         // Test execution
         const result = await checkEnvironment(options);
-        const warningMessage = result.messages?.find(
-            (m) => m.text.includes(`Couldn't find destination`) && m.severity === Severity.Warning
-        );
 
         // Result check
-        expect(warningMessage).toBeDefined();
-        expect(result.destinations).toEqual(data);
+        expect(result.sapSystems).toEqual(data);
         expect(result.messages).toBeDefined();
         expect(result.messages.length).toBeGreaterThan(0);
-        expect(result.destinationResults).toBeDefined();
+        expect(result.sapSystemResults).toBeDefined();
     });
 });
 
@@ -240,6 +216,10 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce(extensionVersions);
         jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
+
+        mockCheckStoredSystems.mockImplementationOnce(() => Promise.resolve({ messages: [], storedSystems: [] }));
+        mockCheckSapSystem.mockImplementationOnce(() => Promise.resolve({ messages: [], sapSystemResults: {} }));
+
         // Test execution
         const result = await checkEnvironment();
         expect(result.environment?.toolsExtensions).toEqual(expectedData);
@@ -263,6 +243,9 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
         jest.spyOn(install, 'getCFCliToolVersion').mockResolvedValueOnce('2');
         jest.spyOn(install, 'getInstalledExtensions').mockResolvedValueOnce({});
         jest.spyOn(install, 'getProcessVersions').mockResolvedValueOnce(nodeJSProcessVersions);
+        mockCheckStoredSystems.mockImplementationOnce(() => Promise.resolve({ messages: [], storedSystems: [] }));
+        mockCheckSapSystem.mockImplementationOnce(() => Promise.resolve({ messages: [], sapSystemResults: {} }));
+
         // Test execution
         const result = await checkEnvironment();
         expect(result.environment?.toolsExtensions).toEqual(expectedData);

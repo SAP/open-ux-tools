@@ -1,5 +1,5 @@
 import * as mockFs from 'fs';
-import type { Destination } from '../../src';
+import type { SapSystem } from '../../src';
 import { cli } from '../../src/cli/index';
 import { checkEnvironment } from '../../src/checks/environment';
 import { Severity } from '../../src/types';
@@ -100,18 +100,18 @@ describe('Test for cli()', () => {
         expect(console.info).toHaveBeenCalledWith('ℹ DEBUG message');
     });
 
-    test('Call cli() --destination ONE, checkBASEnvironment() should be called with ONE', async () => {
+    test('Call cli() --sap-system ONE, checkEnvironment() should be called with ONE', async () => {
         // Mock setup
         let checkDest;
         mockCheckEnvironment.mockImplementation((options) => {
-            checkDest = options.destinations;
+            checkDest = options.sapSystems;
             return Promise.resolve({
                 messages: [],
                 destinations: [],
                 destinationResults: {}
             });
         });
-        process.argv = [...process.argv, '--destination', 'ONE'];
+        process.argv = [...process.argv, '--sap-system', 'ONE'];
 
         // Test execution
         await cli();
@@ -120,12 +120,12 @@ describe('Test for cli()', () => {
         expect(checkDest).toEqual(['ONE']);
     });
 
-    test('Call cli() --destination ONE --destination TWO work/space1 work/space2, checkBASEnvironment() should be called with params', async () => {
+    test('Call cli() --sap-system ONE --sap-system TWO work/space1 work/space2, checkEnvironment() should be called with params', async () => {
         // Mock setup
         let checkDest;
         let checkWorkspace;
         mockCheckEnvironment.mockImplementation((options) => {
-            checkDest = options.destinations.sort();
+            checkDest = options.sapSystems.sort();
             checkWorkspace = options.workspaceRoots.sort();
             return Promise.resolve({
                 messages: [{ severity: Severity.Info, text: 'Test log message' }],
@@ -134,7 +134,7 @@ describe('Test for cli()', () => {
             });
         });
 
-        process.argv = [...process.argv, '--destination', 'ONE', '--destination', 'TWO', 'work/space1', 'work/space2'];
+        process.argv = [...process.argv, '--sap-system', 'ONE', '--sap-system', 'TWO', 'work/space1', 'work/space2'];
 
         // Test execution
         await cli();
@@ -150,7 +150,7 @@ describe('Test for cli()', () => {
         let checkContent;
         const result = {
             messages: [{ severity: Severity.Info, text: 'DUMMY TEXT' }],
-            destinations: ['DUMMYS' as unknown as Destination] as unknown as Destination[],
+            destinations: ['DUMMYS' as unknown as SapSystem] as unknown as SapSystem[],
             destinationResults: { DUMMY: { v2: 'V2DUMMY', v4: 'V4DUMMY' } }
         };
         mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
@@ -176,7 +176,7 @@ describe('Test for cli()', () => {
         let checkContent;
         const result = {
             messages: [{ severity: Severity.Info, text: 'DUMMY TEXT' }],
-            destinations: ['DUMMYS' as unknown as Destination] as unknown as Destination[],
+            destinations: ['DUMMYS' as unknown as SapSystem] as unknown as SapSystem[],
             destinationResults: { DUMMY: { v2: 'V2DUMMY', v4: 'V4DUMMY' } }
         };
         mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));
@@ -201,7 +201,7 @@ describe('Test for cli()', () => {
         let checkContent;
         const result = {
             messages: [{ severity: Severity.Info, text: 'DUMMY TEXT' }],
-            destinations: ['DUMMYS' as unknown as Destination] as unknown as Destination[],
+            destinations: ['DUMMYS' as unknown as SapSystem] as unknown as SapSystem[],
             destinationResults: { DUMMY: { v2: 'V2DUMMY', v4: 'V4DUMMY' } }
         };
         mockCheckEnvironment.mockImplementation(() => Promise.resolve(result));

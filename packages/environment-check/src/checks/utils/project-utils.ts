@@ -1,11 +1,11 @@
 import type { WorkspaceFolder } from 'vscode';
 import * as fs from 'fs';
 import type { CustomMiddleware, FioriToolsProxyConfig } from '@sap-ux/ui5-config';
-import { FileName, DirName } from '../types';
+import { FileName, DirName } from '../../types';
 import * as yaml from 'yamljs';
 import { default as find } from 'findit2';
 import { join, basename, dirname } from 'path';
-import { t } from '../i18n';
+import { t } from '../../i18n';
 
 /**
  * Returns the ui5 middleware settings of a given Fiori elements project (v2 or v4).

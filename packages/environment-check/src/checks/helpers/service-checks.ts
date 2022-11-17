@@ -1,8 +1,8 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { ResultMessage } from '../../types';
 import { TransportChecksService } from '@sap-ux/axios-extension';
-import type { ResultMessage } from '../types';
-import { getLogger } from '../logger';
-import { t } from '../i18n';
+import { getLogger } from '../../logger';
+import { t } from '../../i18n';
 
 /**
  * Checks if ATO catalog is available.

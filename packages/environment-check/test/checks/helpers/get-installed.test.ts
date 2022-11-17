@@ -1,13 +1,13 @@
-import * as command from '../../src/command';
+import * as command from '../../../src/command';
 import {
     getCFCliToolVersion,
     getFioriGenVersion,
     getInstalledExtensions,
     getProcessVersions
-} from '../../src/checks/get-installed';
+} from '../../../src/checks/helpers/get-installed';
 import fs from 'fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { getLogger } from '../../src/logger';
+import { getLogger } from '../../../src/logger';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
