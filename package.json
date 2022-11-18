@@ -36,7 +36,7 @@
         "build": "nx run-many --target=build --all",
         "format": "pnpm recursive run format",
         "lint": "nx run-many --target=lint --all",
-        "lint:fix": "nx run-many --target=lint --fix --all",
+        "lint:fix": "nx run-many --target=lint:fix --all",
         "test": "nx run-many --target=test --all",
         "link": "pnpm recursive run link",
         "unlink": "pnpm recursive run unlink",
