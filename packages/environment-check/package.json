@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/environment-check",
-    "version": "0.7.0",
+    "version": "0.7.2",
     "description": "SAP Fiori environment check",
     "license": "Apache-2.0",
     "bin": {
@@ -10,9 +10,9 @@
     "private": false,
     "scripts": {
         "test:bin": "./bin/envcheck",
-        "build": "rimraf dist && tsc -p tsconfig-build.json",
-        "clean": "rimraf dist test/test-output coverage",
+        "build": "tsc --build",
         "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",
@@ -21,12 +21,11 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "@sap/bas-sdk": "3.1.0",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "@types/archiver": "5.1.1",
+        "@sap/bas-sdk": "3.1.0",
         "archiver": "5.3.0",
         "axios": "0.24.0",
         "findit2": "2.2.3",
@@ -36,6 +35,9 @@
         "yamljs": "0.3.0"
     },
     "devDependencies": {
+        "@types/archiver": "5.1.1",
+        "@types/minimist": "1.2.2",
+        "@types/prompts": "2.0.14",
         "@types/vscode": "1.39.0"
     },
     "files": [

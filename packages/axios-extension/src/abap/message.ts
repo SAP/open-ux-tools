@@ -42,17 +42,23 @@ export interface ErrorMessage {
  * Log a Gateway response.
  *
  * @param options  options
- * @param options.msg message returned from gateway
+ * @param options.msg message string returned from gateway
  * @param options.log logger to be used
  * @param options.host optional url that should logged as clickable url
  */
-export function prettyPrintMessage({ msg, log, host }: { msg: SuccessMessage; log: Logger; host?: string }): void {
-    log.info(msg.message);
-    logFullURL({ host, path: msg['longtext_url'], log });
-    if (msg.details) {
-        msg.details.forEach((entry) => {
-            log.info(entry.message);
-        });
+export function prettyPrintMessage({ msg, log, host }: { msg: string; log: Logger; host?: string }): void {
+    try {
+        const jsonMsg = JSON.parse(msg) as SuccessMessage;
+        log.info(jsonMsg.message);
+        logFullURL({ host, path: jsonMsg['longtext_url'], log });
+        if (jsonMsg.details) {
+            jsonMsg.details.forEach((entry) => {
+                log.info(entry.message);
+            });
+        }
+    } catch (error) {
+        // if for some reason the backend doesn't return proper JSON, just print it plain text.
+        log.debug(msg);
     }
 }
 

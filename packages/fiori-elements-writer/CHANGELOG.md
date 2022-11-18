@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.8.5
+
+### Patch Changes
+
+-   a293cbb: removes unnecessary trusted host validation
+
 ## 0.8.4
 
 ### Patch Changes
