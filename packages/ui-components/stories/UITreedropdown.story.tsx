@@ -33,7 +33,7 @@ const data = [
     { value: '_Title9', label: '_Title9', children: [] }
 ];
 
-export const TreeDropdown = (): JSX.Element => {
+export const Basic = (): JSX.Element => {
     const [value, setValue] = React.useState('');
     const handleSelected = (value: any) => setValue(value);
 
@@ -46,6 +46,25 @@ export const TreeDropdown = (): JSX.Element => {
                 items={data}
                 onParameterValueChange={handleSelected}
                 maxWidth={300}
+            />
+        </div>
+    );
+};
+
+export const Message = (): JSX.Element => {
+    const [value, setValue] = React.useState('');
+    const handleSelected = (value: any) => setValue(value);
+
+    return (
+        <div style={{ width: 300 }}>
+            <UITreeDropdown
+                value={value}
+                label="Label"
+                placeholderText="Select value"
+                items={data}
+                onParameterValueChange={handleSelected}
+                maxWidth={300}
+                errorMessage="Dummy error"
             />
         </div>
     );

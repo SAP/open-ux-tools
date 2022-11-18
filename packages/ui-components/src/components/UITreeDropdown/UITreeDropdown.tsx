@@ -17,6 +17,10 @@ import { UITextInput } from '../UIInput';
 import { UIContextualMenu, UIHighlightMenuOption } from '../UIContextualMenu';
 import { UIIconButton } from '../UIButton/UIIconButton';
 import { UiIcons } from '../Icons';
+
+import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
+import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
+
 import './UITreeDropdown.scss';
 
 export { DirectionalHint as UIDirectionalHint };
@@ -29,7 +33,7 @@ export interface ItemsProps {
     split?: boolean;
 }
 
-export interface UITreeDropdownProps {
+export interface UITreeDropdownProps extends UIMessagesExtendedProps {
     label?: string;
     disabled?: boolean;
     required?: boolean;
@@ -41,6 +45,7 @@ export interface UITreeDropdownProps {
     directionalHint?: DirectionalHint;
     maxWidth?: number;
     useTargetWidth?: string;
+    errorMessage?: string;
 }
 
 interface TreeItemInfo {
@@ -699,6 +704,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
+        const messageInfo = getMessageInfo(this.props);
         let useTargetWidth = true;
         if (this.props.useTargetWidth) {
             useTargetWidth = false;
@@ -736,6 +742,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                             // Select the text of the input
                             event.target.select();
                         }}
+                        errorMessage={messageInfo.message}
                     />
                     <UIIconButton
                         tabIndex={-1}
