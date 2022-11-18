@@ -35,8 +35,8 @@ async function getExtensionsBAS(): Promise<{ [id: string]: { version: string } }
         .filter((vsixFile) => isExtensionRequired(vsixFile))
         .reduce((returnObject, current) => {
             const idVersion = current.split('.vsix')[0];
-            const firstNumeric = idVersion.search(/\d/);
-            const [id, version] = [idVersion.slice(0, firstNumeric - 1), idVersion.slice(firstNumeric)];
+            const firstNumeric = idVersion.search(/-\d/);
+            const [id, version] = [idVersion.slice(0, firstNumeric), idVersion.slice(firstNumeric + 1)];
             returnObject[id] = {
                 version
             };

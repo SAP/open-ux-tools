@@ -22,6 +22,7 @@ describe('Test install functions', () => {
     test('getInstalledExtensions() (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
         const expectedResult = {
+            'vscode-ui5-language-assistant': { version: '3.3.0' },
             'sap-ux-application-modeler-extension': { version: '1.7.4' },
             'yeoman-ui': { version: '1.7.11' },
             'xml-toolkit': { version: '1.1.0' }
@@ -31,7 +32,8 @@ describe('Test install functions', () => {
                 `sap-ux-application-modeler-extension-1.7.4.vsix`,
                 `yeoman-ui-1.7.11.vsix`,
                 `xml-toolkit-1.1.0.vsix`,
-                `vscode-dependencies-validation-1.8.0.vsix`
+                `vscode-dependencies-validation-1.8.0.vsix`,
+                `vscode-ui5-language-assistant-3.3.0.vsix`
             ] as any;
         });
 
