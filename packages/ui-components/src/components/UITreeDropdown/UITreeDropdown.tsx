@@ -19,7 +19,7 @@ import { UIIconButton } from '../UIButton/UIIconButton';
 import { UiIcons } from '../Icons';
 
 import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
-import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
+import { getMessageInfo } from '../../helper/ValidationMessage';
 
 import './UITreeDropdown.scss';
 
