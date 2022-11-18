@@ -47,9 +47,9 @@ function getServiceProvider(
     } else if (sapSystem.Scp) {
         // btp service provier if scp is true
         abapServiceProvider = createForAbapOnCloud({
-            refreshToken: (sapSystem as any).credentials?.refreshToken,
+            refreshToken: (sapSystem as any).Credentials?.refreshToken,
             environment: AbapCloudEnvironment.Standalone,
-            service: (sapSystem as any).credentials?.serviceKeysContents
+            service: (sapSystem as any).Credentials?.serviceKeysContents
         });
     } else {
         // abap on-premise
