@@ -145,7 +145,7 @@ async function getSapSystemResults(
     let username: string;
     let password: string;
 
-    if (isAppStudio && needsUsernamePassword(sapSystem)) {
+    if (needsUsernamePassword(sapSystem)) {
         if (typeof credentialCallback === 'function') {
             const credentials = await credentialCallback(sapSystem);
             if (credentials && credentials.username && credentials.password) {
