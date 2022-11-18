@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "CAPnode_mix-invalid_fiori_elements_wrong_cap_nesting",
+        "type": "application"
+    }
+}

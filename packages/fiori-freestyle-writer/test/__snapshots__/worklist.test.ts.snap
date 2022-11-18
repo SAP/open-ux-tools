@@ -12904,7 +12904,7 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.78.16\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.90.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
@@ -13362,7 +13362,7 @@ export default class ErrorHandler extends UI5Object {
             // Due to batching there can be more than one technical message. However the UX
             // guidelines say \\"display a single message in a message box\\" assuming that there
             // will be only one at a time.
-            const errorTitle = resourceBundle.getText(messages.length === 1 ? \\"errorText\\" : \\"multipleErrorsText\\");
+            const errorTitle = resourceBundle.getText(messages.length === 1 ? \\"errorText\\" : \\"multipleErrorsText\\") || \\"\\";
             this.showServiceError(errorTitle, messages[0].getMessage());
         }, this);
     }
@@ -13475,7 +13475,7 @@ export default class Object extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (!elementBinding.getBoundContext()) {
+        if (!elementBinding?.getBoundContext()) {
             this.getRouter().getTargets()!.display(\\"objectNotFound\\");
             return;
         }
@@ -13538,7 +13538,7 @@ export default class Worklist extends BaseController {
         const total = event.getParameter(\\"total\\") as number;
         // only update the counter if the length is final and
         // the table is not empty
-        let title: string;
+        let title: string | undefined;
         if (total && (table.getBinding(\\"items\\") as ListBinding).isLengthFinal()) {
             title = this.getResourceBundle().getText(\\"worklistTableTitleCount\\", [total]);
         } else {
@@ -13581,7 +13581,7 @@ export default class Worklist extends BaseController {
      *
      */
     public onRefresh() {
-        this.byId(\\"table\\")!.getBinding(\\"items\\").refresh(false);
+        this.byId(\\"table\\")?.getBinding(\\"items\\")?.refresh(false);
     }
 
     /**

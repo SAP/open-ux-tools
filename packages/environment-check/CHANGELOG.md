@@ -1,5 +1,86 @@
 # @sap-ux/environment-check
 
+## 0.7.2
+
+### Patch Changes
+
+-   Updated dependencies [9b9b3d7]
+    -   @sap-ux/axios-extension@0.13.0
+
+## 0.7.1
+
+### Patch Changes
+
+-   Updated dependencies [116ff5e]
+    -   @sap-ux/axios-extension@0.12.0
+
+## 0.7.0
+
+### Minor Changes
+
+-   63ad559: bump bas-sdk version
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/ui5-config@0.16.0
+
+## 0.6.0
+
+### Minor Changes
+
+-   be7d36c: fix error retreiving process versions
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [703dc96]
+    -   @sap-ux/axios-extension@0.11.1
+
+## 0.5.0
+
+### Minor Changes
+
+-   b016a22: fix check for node process versions
+
+## 0.4.5
+
+### Patch Changes
+
+-   Updated dependencies [f4ab2cd]
+    -   @sap-ux/axios-extension@0.11.0
+
+## 0.4.4
+
+### Patch Changes
+
+-   8945555: SECURITY: replaced nesteded dependency of problematic module
+
+## 0.4.3
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+-   Updated dependencies [f3cbe4d]
+    -   @sap-ux/axios-extension@0.10.3
+    -   @sap-ux/ui5-config@0.15.4
+
+## 0.4.2
+
+### Patch Changes
+
+-   6925538: Update @sap/bas-sdk dependency
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-config@0.15.3
+
 ## 0.4.0
 
 ### Minor Changes

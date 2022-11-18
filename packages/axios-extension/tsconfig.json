@@ -1,12 +1,14 @@
 {
-    "include": ["src/**/*.ts", "test/**/*.ts"],
+    "extends": "../../tsconfig.json",
+    "include": ["src"],
     "compilerOptions": {
-        "strict": false,
-        "declaration": true,
+        "rootDir": "src",
         "outDir": "dist",
-        "sourceMap": true,
         "baseUrl": "./src",
-        "resolveJsonModule": true
+        "strict": false
     },
-    "extends": "../../tsconfig.json"
+    "references": [
+        { "path": "../btp-utils" }, 
+        { "path": "../logger" }
+    ]
 }

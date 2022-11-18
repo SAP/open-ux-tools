@@ -1,5 +1,115 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.59
+
+### Patch Changes
+
+-   Updated dependencies [a293cbb]
+    -   @sap-ux/fiori-elements-writer@0.8.5
+
+## 0.2.58
+
+### Patch Changes
+
+-   Updated dependencies [9b9b3d7]
+    -   @sap-ux/axios-extension@0.13.0
+
+## 0.2.57
+
+### Patch Changes
+
+-   Updated dependencies [116ff5e]
+    -   @sap-ux/axios-extension@0.12.0
+
+## 0.2.56
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.4
+-   @sap-ux/fiori-freestyle-writer@0.14.16
+
+## 0.2.55
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.3
+
+## 0.2.54
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.2
+-   @sap-ux/fiori-freestyle-writer@0.14.15
+
+## 0.2.53
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.1
+-   @sap-ux/fiori-freestyle-writer@0.14.14
+
+## 0.2.52
+
+### Patch Changes
+
+-   Updated dependencies [287439e]
+    -   @sap-ux/fiori-elements-writer@0.8.0
+
+## 0.2.51
+
+### Patch Changes
+
+-   Updated dependencies [703dc96]
+    -   @sap-ux/axios-extension@0.11.1
+    -   @sap-ux/fiori-elements-writer@0.7.15
+
+## 0.2.50
+
+### Patch Changes
+
+-   Updated dependencies [f4ab2cd]
+    -   @sap-ux/axios-extension@0.11.0
+
+## 0.2.49
+
+### Patch Changes
+
+-   Updated dependencies [672b40b]
+    -   @sap-ux/fiori-freestyle-writer@0.14.13
+    -   @sap-ux/fiori-elements-writer@0.7.14
+
+## 0.2.48
+
+### Patch Changes
+
+-   Updated dependencies [0439760]
+    -   @sap-ux/store@0.3.6
+
+## 0.2.47
+
+### Patch Changes
+
+-   Updated dependencies [324b802]
+    -   @sap-ux/fiori-elements-writer@0.7.13
+    -   @sap-ux/fiori-freestyle-writer@0.14.12
+
+## 0.2.46
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+-   Updated dependencies [f3cbe4d]
+    -   @sap-ux/axios-extension@0.10.3
+    -   @sap-ux/fiori-elements-writer@0.7.12
+    -   @sap-ux/fiori-freestyle-writer@0.14.11
+
+## 0.2.45
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.7.11
+-   @sap-ux/fiori-freestyle-writer@0.14.10
+
 ## 0.2.44
 
 ### Patch Changes

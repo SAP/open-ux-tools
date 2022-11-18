@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 0.3.6
+
+### Patch Changes
+
+-   0439760: Upgrade to keytar@7.9.0
+
 ## 0.3.5
 
 ### Patch Changes

@@ -9,18 +9,18 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Abackend-proxy-middleware"
     },
-    "version": "0.6.26",
+    "version": "0.6.34",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
     "scripts": {
-        "build": "pnpm clean && tsc -p tsconfig-build.json",
-        "clean": "rimraf dist",
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
-        "watch": "tsc --watch"
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "files": [
         "LICENSE",
@@ -39,12 +39,14 @@
         "http-proxy-middleware": "2.0.1",
         "https-proxy-agent": "5.0.0",
         "i18next": "20.3.2",
-        "prompts": "2.4.2"
+        "prompts": "2.4.2",
+        "proxy-from-env": "1.1.0"
     },
     "devDependencies": {
         "@types/express": "4.17.13",
         "@types/http-proxy": "^1.17.5",
         "@types/prompts": "2.0.14",
+        "@types/proxy-from-env": "1.0.1",
         "@types/supertest": "2.0.12",
         "express": "4.17.2",
         "nock": "13.2.4",

@@ -1,5 +1,60 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.34
+
+### Patch Changes
+
+-   Updated dependencies [9b9b3d7]
+    -   @sap-ux/axios-extension@0.13.0
+
+## 0.6.33
+
+### Patch Changes
+
+-   Updated dependencies [116ff5e]
+    -   @sap-ux/axios-extension@0.12.0
+
+## 0.6.32
+
+### Patch Changes
+
+-   Updated dependencies [703dc96]
+    -   @sap-ux/axios-extension@0.11.1
+
+## 0.6.31
+
+### Patch Changes
+
+-   Updated dependencies [f4ab2cd]
+    -   @sap-ux/axios-extension@0.11.0
+
+## 0.6.30
+
+### Patch Changes
+
+-   ee7f9a9: Refactor to use getProxyForUrl directly
+
+## 0.6.29
+
+### Patch Changes
+
+-   Updated dependencies [0439760]
+    -   @sap-ux/store@0.3.6
+
+## 0.6.28
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+-   Updated dependencies [f3cbe4d]
+    -   @sap-ux/axios-extension@0.10.3
+
+## 0.6.27
+
+### Patch Changes
+
+-   748d24f: Consider ports when checking if a host is excluded from corporate proxy
+
 ## 0.6.26
 
 ### Patch Changes

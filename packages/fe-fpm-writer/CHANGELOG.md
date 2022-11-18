@@ -1,5 +1,23 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.0
+
+### Minor Changes
+
+-   b0553a0: If a given file is specified in the API of the FPM writer, no implicit conversion of the name shall take place. Only if no file name get passed, the default value now follows the naming convention of uppercase first letter.
+
+## 0.17.8
+
+### Patch Changes
+
+-   703dc96: Upgrade @xmldom/xmldom dependency to fix security vulnerability CVE-2022-39353
+
+## 0.17.7
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+
 ## 0.17.6
 
 ### Patch Changes

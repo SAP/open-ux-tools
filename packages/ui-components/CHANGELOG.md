@@ -1,5 +1,77 @@
 # @sap-ux/ui-components
 
+## 1.0.21
+
+### Patch Changes
+
+-   a1ec78c: New icon for Foreign Key and 2 new icons added - Guided Answers and Chat Bubbles
+
+## 1.0.20
+
+### Patch Changes
+
+-   d5431e7: Update to Info icon svg made larger
+
+## 1.0.19
+
+### Patch Changes
+
+-   4ab13f2: UIFlexiblaTeble row reordering restricitions support, tooltips for cell and row headers and reordering actions
+
+## 1.0.18
+
+### Patch Changes
+
+-   d893805: fix: transparent splitter issue, apply lost background color variable for splitter component
+
+## 1.0.17
+
+### Patch Changes
+
+-   e4a9572: Update dependencies
+
+## 1.0.16
+
+### Patch Changes
+
+-   1f3d134: chore(uie): replace vscuie prefix in css vars with vscode
+
+## 1.0.15
+
+### Patch Changes
+
+-   57ed473: Add UIPersona
+
+## 1.0.14
+
+### Patch Changes
+
+-   4bdcbdc: Fix peer dependencies
+
+## 1.0.13
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+
+## 1.0.12
+
+### Patch Changes
+
+-   5becde5: New storybook story for UIMessageBar and cleanup in UIMessageBar component
+
+## 1.0.11
+
+### Patch Changes
+
+-   7c0ae60: Added CustomFPMPage icon
+
+## 1.0.10
+
+### Patch Changes
+
+-   b5c89da: feat - new property "secondary" for UILink component
+
 ## 1.0.9
 
 ### Patch Changes

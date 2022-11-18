@@ -1,5 +1,43 @@
 # @sap-ux/axios-extension
 
+## 0.13.0
+
+### Minor Changes
+
+-   9b9b3d7: - Changed TransportRequestService implementation and API for creating new transport request number.
+    -   New TransportRequestService API now requires two extra input parameters `packageName` and `appName`.
+
+## 0.12.0
+
+### Minor Changes
+
+-   116ff5e: Changing API for deployment to be more flexible for different consumer use cases
+
+## 0.11.1
+
+### Patch Changes
+
+-   703dc96: Upgrade @xmldom/xmldom dependency to fix security vulnerability CVE-2022-39353
+
+## 0.11.0
+
+### Minor Changes
+
+-   f4ab2cd: - Added ADT service for create transport request
+    -   Modified API to query ADT service. Now ADT services are obtained by calling the following getAdtService() method. E.g.
+        const transportRequestSerivce = abapServiceProvider.getAdtService<TransportRequestService>(TransportRequestService);
+        transportRequestSerivce.getTransportRequestList(...);
+    -   Modified API for AbapServiceProvider APIs:
+        ui5AbapRepository() > getUi5AbapRepository()
+        appIndex() > getAppIndex()
+        layeredRepository() > getLayeredRepository()
+
+## 0.10.3
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+
 ## 0.10.2
 
 ### Patch Changes

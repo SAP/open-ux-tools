@@ -3055,21 +3055,13 @@ const connectorPath =
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
 sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
-    var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-    var url = new URL(window.location.toString());
-    var isValidHost = trustedHosts.some((host) => {
-        return host.test(url.hostname);
-    });
     return merge({}, FileListBaseConnector, {
         getFileList: function() {
             return new Promise(function(resolve, reject) {
                 // If no changes found, maybe because the app was executed without doing a build.
                 // Check for changes folder and load the changes, if any.
-                if (!isValidHost) {
-                    reject('cannot load flex changes: invalid host');
-                }
                 $.ajax({
-                    url: url.origin + '/changes/',
+                    url: '/changes/',
                     type: 'GET',
                     cache: false
                 })
@@ -3139,17 +3131,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 //Get the content of the changes folder.
                 var aPromises = [];
                 var sCacheBusterFilePath = \\"/sap-ui-cachebuster-info.json\\";
-                var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-                var url = new URL(window.location.toString());
-                var isValidHost = trustedHosts.some((host) => {
-                    return host.test(url.hostname);
-                });
                 return new Promise(function (resolve, reject) {
-                    if (!isValidHost) {
-                        reject(\\"cannot load flex changes: invalid host\\");
-                    }
                     $.ajax({
-                        url: url.origin + sCacheBusterFilePath,
+                        url: sCacheBusterFilePath,
                         type: \\"GET\\",
                         cache: false
                     })
@@ -3167,12 +3151,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                 //<MTA-HTML5-MODULE-NAME>/webapp/changes/<change-file>
                                 if (sFilePath.indexOf(\\"changes\\") === 0) {
                                     /*eslint-disable no-param-reassign*/
-                                    if (!isValidHost) {
-                                        reject(\\"cannot load flex changes: invalid host\\");
-                                    }
                                     aPromises.push(
                                         $.ajax({
-                                            url: url.origin + \\"/\\" + sFilePath,
+                                            url: \\"/\\" + sFilePath,
                                             type: \\"GET\\",
                                             cache: false
                                         }).then(function (sChangeContent) {
@@ -3188,11 +3169,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                     // If no changes found, maybe because the app was executed without doing a build.
                                     // Check for changes folder and load the changes, if any.
                                     if (aChanges.length === 0) {
-                                        if (!isValidHost) {
-                                            rejectInner(\\"cannot load flex changes: invalid host\\");
-                                        }
                                         $.ajax({
-                                            url: url.origin + \\"/changes/\\",
+                                            url: \\"/changes/\\",
                                             type: \\"GET\\",
                                             cache: false
                                         })
@@ -3201,12 +3179,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                                 var result = regex.exec(sChangesFolderContent);
 
                                                 while (result !== null) {
-                                                    if (!isValidHost) {
-                                                        rejectInner(\\"cannot load flex changes: invalid host\\");
-                                                    }
                                                     aPromises.push(
                                                         $.ajax({
-                                                            url: url.origin + result[1],
+                                                            url: result[1],
                                                             type: \\"GET\\",
                                                             cache: false
                                                         }).then(function (sChangeContent) {
@@ -6618,21 +6593,13 @@ const connectorPath =
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
 sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
-    var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-    var url = new URL(window.location.toString());
-    var isValidHost = trustedHosts.some((host) => {
-        return host.test(url.hostname);
-    });
     return merge({}, FileListBaseConnector, {
         getFileList: function() {
             return new Promise(function(resolve, reject) {
                 // If no changes found, maybe because the app was executed without doing a build.
                 // Check for changes folder and load the changes, if any.
-                if (!isValidHost) {
-                    reject('cannot load flex changes: invalid host');
-                }
                 $.ajax({
-                    url: url.origin + '/changes/',
+                    url: '/changes/',
                     type: 'GET',
                     cache: false
                 })
@@ -6702,17 +6669,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 //Get the content of the changes folder.
                 var aPromises = [];
                 var sCacheBusterFilePath = \\"/sap-ui-cachebuster-info.json\\";
-                var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-                var url = new URL(window.location.toString());
-                var isValidHost = trustedHosts.some((host) => {
-                    return host.test(url.hostname);
-                });
                 return new Promise(function (resolve, reject) {
-                    if (!isValidHost) {
-                        reject(\\"cannot load flex changes: invalid host\\");
-                    }
                     $.ajax({
-                        url: url.origin + sCacheBusterFilePath,
+                        url: sCacheBusterFilePath,
                         type: \\"GET\\",
                         cache: false
                     })
@@ -6730,12 +6689,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                 //<MTA-HTML5-MODULE-NAME>/webapp/changes/<change-file>
                                 if (sFilePath.indexOf(\\"changes\\") === 0) {
                                     /*eslint-disable no-param-reassign*/
-                                    if (!isValidHost) {
-                                        reject(\\"cannot load flex changes: invalid host\\");
-                                    }
                                     aPromises.push(
                                         $.ajax({
-                                            url: url.origin + \\"/\\" + sFilePath,
+                                            url: \\"/\\" + sFilePath,
                                             type: \\"GET\\",
                                             cache: false
                                         }).then(function (sChangeContent) {
@@ -6751,11 +6707,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                     // If no changes found, maybe because the app was executed without doing a build.
                                     // Check for changes folder and load the changes, if any.
                                     if (aChanges.length === 0) {
-                                        if (!isValidHost) {
-                                            rejectInner(\\"cannot load flex changes: invalid host\\");
-                                        }
                                         $.ajax({
-                                            url: url.origin + \\"/changes/\\",
+                                            url: \\"/changes/\\",
                                             type: \\"GET\\",
                                             cache: false
                                         })
@@ -6764,12 +6717,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                                 var result = regex.exec(sChangesFolderContent);
 
                                                 while (result !== null) {
-                                                    if (!isValidHost) {
-                                                        rejectInner(\\"cannot load flex changes: invalid host\\");
-                                                    }
                                                     aPromises.push(
                                                         $.ajax({
-                                                            url: url.origin + result[1],
+                                                            url: result[1],
                                                             type: \\"GET\\",
                                                             cache: false
                                                         }).then(function (sChangeContent) {
@@ -10180,21 +10130,13 @@ const connectorPath =
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
 sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
-    var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-    var url = new URL(window.location.toString());
-    var isValidHost = trustedHosts.some((host) => {
-        return host.test(url.hostname);
-    });
     return merge({}, FileListBaseConnector, {
         getFileList: function() {
             return new Promise(function(resolve, reject) {
                 // If no changes found, maybe because the app was executed without doing a build.
                 // Check for changes folder and load the changes, if any.
-                if (!isValidHost) {
-                    reject('cannot load flex changes: invalid host');
-                }
                 $.ajax({
-                    url: url.origin + '/changes/',
+                    url: '/changes/',
                     type: 'GET',
                     cache: false
                 })
@@ -10264,17 +10206,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 //Get the content of the changes folder.
                 var aPromises = [];
                 var sCacheBusterFilePath = \\"/sap-ui-cachebuster-info.json\\";
-                var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-                var url = new URL(window.location.toString());
-                var isValidHost = trustedHosts.some((host) => {
-                    return host.test(url.hostname);
-                });
                 return new Promise(function (resolve, reject) {
-                    if (!isValidHost) {
-                        reject(\\"cannot load flex changes: invalid host\\");
-                    }
                     $.ajax({
-                        url: url.origin + sCacheBusterFilePath,
+                        url: sCacheBusterFilePath,
                         type: \\"GET\\",
                         cache: false
                     })
@@ -10292,12 +10226,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                 //<MTA-HTML5-MODULE-NAME>/webapp/changes/<change-file>
                                 if (sFilePath.indexOf(\\"changes\\") === 0) {
                                     /*eslint-disable no-param-reassign*/
-                                    if (!isValidHost) {
-                                        reject(\\"cannot load flex changes: invalid host\\");
-                                    }
                                     aPromises.push(
                                         $.ajax({
-                                            url: url.origin + \\"/\\" + sFilePath,
+                                            url: \\"/\\" + sFilePath,
                                             type: \\"GET\\",
                                             cache: false
                                         }).then(function (sChangeContent) {
@@ -10313,11 +10244,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                     // If no changes found, maybe because the app was executed without doing a build.
                                     // Check for changes folder and load the changes, if any.
                                     if (aChanges.length === 0) {
-                                        if (!isValidHost) {
-                                            rejectInner(\\"cannot load flex changes: invalid host\\");
-                                        }
                                         $.ajax({
-                                            url: url.origin + \\"/changes/\\",
+                                            url: \\"/changes/\\",
                                             type: \\"GET\\",
                                             cache: false
                                         })
@@ -10326,12 +10254,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                                 var result = regex.exec(sChangesFolderContent);
 
                                                 while (result !== null) {
-                                                    if (!isValidHost) {
-                                                        rejectInner(\\"cannot load flex changes: invalid host\\");
-                                                    }
                                                     aPromises.push(
                                                         $.ajax({
-                                                            url: url.origin + result[1],
+                                                            url: result[1],
                                                             type: \\"GET\\",
                                                             cache: false
                                                         }).then(function (sChangeContent) {
@@ -13577,21 +13502,13 @@ const connectorPath =
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
 sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
-    var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-    var url = new URL(window.location.toString());
-    var isValidHost = trustedHosts.some((host) => {
-        return host.test(url.hostname);
-    });
     return merge({}, FileListBaseConnector, {
         getFileList: function() {
             return new Promise(function(resolve, reject) {
                 // If no changes found, maybe because the app was executed without doing a build.
                 // Check for changes folder and load the changes, if any.
-                if (!isValidHost) {
-                    reject('cannot load flex changes: invalid host');
-                }
                 $.ajax({
-                    url: url.origin + '/changes/',
+                    url: '/changes/',
                     type: 'GET',
                     cache: false
                 })
@@ -13661,17 +13578,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 //Get the content of the changes folder.
                 var aPromises = [];
                 var sCacheBusterFilePath = \\"/sap-ui-cachebuster-info.json\\";
-                var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-                var url = new URL(window.location.toString());
-                var isValidHost = trustedHosts.some((host) => {
-                    return host.test(url.hostname);
-                });
                 return new Promise(function (resolve, reject) {
-                    if (!isValidHost) {
-                        reject(\\"cannot load flex changes: invalid host\\");
-                    }
                     $.ajax({
-                        url: url.origin + sCacheBusterFilePath,
+                        url: sCacheBusterFilePath,
                         type: \\"GET\\",
                         cache: false
                     })
@@ -13689,12 +13598,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                 //<MTA-HTML5-MODULE-NAME>/webapp/changes/<change-file>
                                 if (sFilePath.indexOf(\\"changes\\") === 0) {
                                     /*eslint-disable no-param-reassign*/
-                                    if (!isValidHost) {
-                                        reject(\\"cannot load flex changes: invalid host\\");
-                                    }
                                     aPromises.push(
                                         $.ajax({
-                                            url: url.origin + \\"/\\" + sFilePath,
+                                            url: \\"/\\" + sFilePath,
                                             type: \\"GET\\",
                                             cache: false
                                         }).then(function (sChangeContent) {
@@ -13710,11 +13616,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                     // If no changes found, maybe because the app was executed without doing a build.
                                     // Check for changes folder and load the changes, if any.
                                     if (aChanges.length === 0) {
-                                        if (!isValidHost) {
-                                            rejectInner(\\"cannot load flex changes: invalid host\\");
-                                        }
                                         $.ajax({
-                                            url: url.origin + \\"/changes/\\",
+                                            url: \\"/changes/\\",
                                             type: \\"GET\\",
                                             cache: false
                                         })
@@ -13723,12 +13626,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                                 var result = regex.exec(sChangesFolderContent);
 
                                                 while (result !== null) {
-                                                    if (!isValidHost) {
-                                                        rejectInner(\\"cannot load flex changes: invalid host\\");
-                                                    }
                                                     aPromises.push(
                                                         $.ajax({
-                                                            url: url.origin + result[1],
+                                                            url: result[1],
                                                             type: \\"GET\\",
                                                             cache: false
                                                         }).then(function (sChangeContent) {
@@ -17141,21 +17041,13 @@ const connectorPath =
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
 sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
-    var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-    var url = new URL(window.location.toString());
-    var isValidHost = trustedHosts.some((host) => {
-        return host.test(url.hostname);
-    });
     return merge({}, FileListBaseConnector, {
         getFileList: function() {
             return new Promise(function(resolve, reject) {
                 // If no changes found, maybe because the app was executed without doing a build.
                 // Check for changes folder and load the changes, if any.
-                if (!isValidHost) {
-                    reject('cannot load flex changes: invalid host');
-                }
                 $.ajax({
-                    url: url.origin + '/changes/',
+                    url: '/changes/',
                     type: 'GET',
                     cache: false
                 })
@@ -17225,17 +17117,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 //Get the content of the changes folder.
                 var aPromises = [];
                 var sCacheBusterFilePath = \\"/sap-ui-cachebuster-info.json\\";
-                var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-                var url = new URL(window.location.toString());
-                var isValidHost = trustedHosts.some((host) => {
-                    return host.test(url.hostname);
-                });
                 return new Promise(function (resolve, reject) {
-                    if (!isValidHost) {
-                        reject(\\"cannot load flex changes: invalid host\\");
-                    }
                     $.ajax({
-                        url: url.origin + sCacheBusterFilePath,
+                        url: sCacheBusterFilePath,
                         type: \\"GET\\",
                         cache: false
                     })
@@ -17253,12 +17137,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                 //<MTA-HTML5-MODULE-NAME>/webapp/changes/<change-file>
                                 if (sFilePath.indexOf(\\"changes\\") === 0) {
                                     /*eslint-disable no-param-reassign*/
-                                    if (!isValidHost) {
-                                        reject(\\"cannot load flex changes: invalid host\\");
-                                    }
                                     aPromises.push(
                                         $.ajax({
-                                            url: url.origin + \\"/\\" + sFilePath,
+                                            url: \\"/\\" + sFilePath,
                                             type: \\"GET\\",
                                             cache: false
                                         }).then(function (sChangeContent) {
@@ -17274,11 +17155,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                     // If no changes found, maybe because the app was executed without doing a build.
                                     // Check for changes folder and load the changes, if any.
                                     if (aChanges.length === 0) {
-                                        if (!isValidHost) {
-                                            rejectInner(\\"cannot load flex changes: invalid host\\");
-                                        }
                                         $.ajax({
-                                            url: url.origin + \\"/changes/\\",
+                                            url: \\"/changes/\\",
                                             type: \\"GET\\",
                                             cache: false
                                         })
@@ -17287,12 +17165,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                                 var result = regex.exec(sChangesFolderContent);
 
                                                 while (result !== null) {
-                                                    if (!isValidHost) {
-                                                        rejectInner(\\"cannot load flex changes: invalid host\\");
-                                                    }
                                                     aPromises.push(
                                                         $.ajax({
-                                                            url: url.origin + result[1],
+                                                            url: result[1],
                                                             type: \\"GET\\",
                                                             cache: false
                                                         }).then(function (sChangeContent) {
@@ -17714,7 +17589,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.77\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.77.2\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.90.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
@@ -20824,21 +20699,13 @@ const connectorPath =
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
 sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
-    var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-    var url = new URL(window.location.toString());
-    var isValidHost = trustedHosts.some((host) => {
-        return host.test(url.hostname);
-    });
     return merge({}, FileListBaseConnector, {
         getFileList: function() {
             return new Promise(function(resolve, reject) {
                 // If no changes found, maybe because the app was executed without doing a build.
                 // Check for changes folder and load the changes, if any.
-                if (!isValidHost) {
-                    reject('cannot load flex changes: invalid host');
-                }
                 $.ajax({
-                    url: url.origin + '/changes/',
+                    url: '/changes/',
                     type: 'GET',
                     cache: false
                 })
@@ -20909,17 +20776,10 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 //Get the content of the changes folder.
                 var aPromises = [];
                 var sCacheBusterFilePath = \\"/sap-ui-cachebuster-info.json\\";
-                var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-                var url = new URL(window.location.toString());
-                var isValidHost = trustedHosts.some((host) => {
-                    return host.test(url.hostname);
-                });
+
                 return new Promise(function (resolve, reject) {
-                    if (!isValidHost) {
-                        reject(\\"cannot load flex changes: invalid host\\");
-                    }
                     $.ajax({
-                        url: url.origin + sCacheBusterFilePath,
+                        url: sCacheBusterFilePath,
                         type: \\"GET\\",
                         cache: false
                     })
@@ -20937,12 +20797,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                 //<MTA-HTML5-MODULE-NAME>/webapp/changes/<change-file>
                                 if (sFilePath.indexOf(\\"changes\\") === 0) {
                                     /*eslint-disable no-param-reassign*/
-                                    if (!isValidHost) {
-                                        reject(\\"cannot load flex changes: invalid host\\");
-                                    }
                                     aPromises.push(
                                         $.ajax({
-                                            url: url.origin + \\"/\\" + sFilePath,
+                                            url: \\"/\\" + sFilePath,
                                             type: \\"GET\\",
                                             cache: false
                                         }).then(function (sChangeContent) {
@@ -20958,11 +20815,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                     // If no changes found, maybe because the app was executed without doing a build.
                                     // Check for changes folder and load the changes, if any.
                                     if (aChanges.length === 0) {
-                                        if (!isValidHost) {
-                                            rejectInner(\\"cannot load flex changes: invalid host\\");
-                                        }
                                         $.ajax({
-                                            url: url.origin + \\"/changes/\\",
+                                            url: \\"/changes/\\",
                                             type: \\"GET\\",
                                             cache: false
                                         })
@@ -20971,12 +20825,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                                                 var result = regex.exec(sChangesFolderContent);
 
                                                 while (result !== null) {
-                                                    if (!isValidHost) {
-                                                        rejectInner(\\"cannot load flex changes: invalid host\\");
-                                                    }
                                                     aPromises.push(
                                                         $.ajax({
-                                                            url: url.origin + result[1],
+                                                            url: result[1],
                                                             type: \\"GET\\",
                                                             cache: false
                                                         }).then(function (sChangeContent) {

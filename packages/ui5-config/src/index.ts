@@ -1,8 +1,6 @@
 export { UI5Config } from './ui5config';
 export {
     Configuration,
-    Manifest,
-    ManifestNamespace,
     CustomTask,
     CustomMiddleware,
     FioriAppReloadConfig,
@@ -13,3 +11,5 @@ export {
     UI5ProxyConfig,
     UI5ProxyConfigTarget
 } from './types';
+
+export { errorCode as yamlErrorCode, YAMLError } from '@sap-ux/yaml';

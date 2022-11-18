@@ -1,5 +1,50 @@
 # @sap-ux/ui5-application-writer
 
+## 0.17.13
+
+### Patch Changes
+
+-   fdfa554: Disable codeAssist when Typescript is also selected. Since Typescript includes it's own code assist config.
+
+## 0.17.12
+
+### Patch Changes
+
+-   964ab8e: Increased best (recommended) version of UI5 types modules to latest LTS version.
+
+## 0.17.11
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/ui5-config@0.16.0
+
+## 0.17.10
+
+### Patch Changes
+
+-   672b40b: Fix issue with tsconfig paths
+
+## 0.17.9
+
+### Patch Changes
+
+-   324b802: Handle Typscript build step for Freestyle Simple templates
+
+## 0.17.8
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.4
+
+## 0.17.7
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-config@0.15.3
+
 ## 0.17.6
 
 ### Patch Changes

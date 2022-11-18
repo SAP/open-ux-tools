@@ -1,12 +1,37 @@
 {
-    "include": ["src/**/*.ts"],
+    "extends": "../../tsconfig.json",
+    "include": [
+        "src",
+        "src/**/*.json"
+    ],
     "compilerOptions": {
-        "strict": true,
-        "declaration": true,
-        "outDir": "generators/app",
-        "sourceMap": true,
-        "baseUrl": "./src",
-        "resolveJsonModule": true
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    "extends": "../../tsconfig.json"
+    "references": [
+        {
+            "path": "../../packages/axios-extension"
+        },
+        {
+            "path": "../../packages/btp-utils"
+        },
+        {
+            "path": "../../packages/fiori-elements-writer"
+        },
+        {
+            "path": "../../packages/fiori-freestyle-writer"
+        },
+        {
+            "path": "../../packages/logger"
+        },
+        {
+            "path": "../../packages/odata-service-writer"
+        },
+        {
+            "path": "../../packages/store"
+        },
+        {
+            "path": "../../packages/ui5-application-writer"
+        }
+    ]
 }

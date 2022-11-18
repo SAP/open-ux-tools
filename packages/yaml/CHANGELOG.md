@@ -1,5 +1,17 @@
 # @sap-ux/yaml
 
+## 0.13.0
+
+### Minor Changes
+
+-   d760b69: Additional update mode 'overwrite' for yaml nodes
+
+## 0.12.4
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+
 ## 0.12.3
 
 ### Patch Changes
