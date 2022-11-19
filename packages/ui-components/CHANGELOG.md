@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.22
+
+### Patch Changes
+
+-   3a8e205: feat(ui-components) - ui-treedropdown add error message handling
+
 ## 1.0.21
 
 ### Patch Changes
