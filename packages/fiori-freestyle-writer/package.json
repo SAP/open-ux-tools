@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
     "description": "SAP Fiori freestyle application writer",
-    "version": "0.14.14",
+    "version": "0.14.16",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -13,9 +13,10 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rimraf dist && tsc -p tsconfig-build.json",
-        "clean": "rimraf dist test/test-output coverage",
+        "build": "tsc --build",
         "watch": "tsc --watch",
+        "clean": "rimraf dist test/test-output coverage *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "test": "jest --ci --forceExit --detectOpenHandles --colors",

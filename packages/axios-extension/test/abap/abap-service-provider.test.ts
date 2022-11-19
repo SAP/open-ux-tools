@@ -7,7 +7,8 @@ import {
     TenantType,
     V4CatalogService,
     Ui5AbapRepositoryService,
-    AppIndexService
+    AppIndexService,
+    LayeredRepositoryService
 } from '../../src';
 
 /**
@@ -18,7 +19,7 @@ enum AdtServices {
     DISCOVERY = '/sap/bc/adt/discovery',
     ATO_SETTINGS = '/sap/bc/adt/ato/settings',
     TRANSPORT_CHECKS = '/sap/bc/adt/cts/transportchecks',
-    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transportrequest'
+    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transports'
 }
 
 describe('AbapServiceProvider', () => {
@@ -140,13 +141,22 @@ describe('AbapServiceProvider', () => {
 
     describe('services', () => {
         const provider = createForAbap(config);
-        test('ui5AbapRepository', () => {
+        test('Ui5AbapRepository', () => {
             const service = provider.getUi5AbapRepository();
             expect(service).toBe(provider.service(Ui5AbapRepositoryService.PATH));
         });
-        test('appIndex', () => {
+        test('Ui5AbapRepository with alias', () => {
+            const alias = '/alias/path';
+            const service = provider.getUi5AbapRepository(alias);
+            expect(service).toBe(provider.service(alias));
+        });
+        test('AppIndex', () => {
             const service = provider.getAppIndex();
             expect(service).toBe(provider.service(AppIndexService.PATH));
+        });
+        test('LayeredRepositoryService', () => {
+            const service = provider.getLayeredRepository();
+            expect(service).toBe(provider.service(LayeredRepositoryService.PATH));
         });
     });
 });

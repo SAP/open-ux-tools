@@ -251,15 +251,7 @@ function writeDestinations(writer: MarkdownWriter, destinations: Destination[] =
     writer.addH2(t('markdownText.allDestinations', { numberOfDestinations }));
     if (numberOfDestinations > 0) {
         const table = [...destinations]
-            .sort((a, b) => {
-                if (a.Name > b.Name) {
-                    return 1;
-                }
-                if (a.Name < b.Name) {
-                    return -1;
-                }
-                return 0;
-            })
+            .sort((a, b) => a.Name.localeCompare(b.Name, undefined, { numeric: true, caseFirst: 'lower' }))
             .map((d) => Array.from(destinationTableFields.keys()).map((f) => d[f]));
         table.unshift(Array.from(destinationTableFields.values()));
         writer.addTable(table);

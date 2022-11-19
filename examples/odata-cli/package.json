@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-cli",
-    "version": "0.10.19",
+    "version": "0.11.0",
     "description": "Simple example CLI uing the @sap-ux/axios-extension module to fetch metadata and annotations from an SAP system.",
     "license": "SEE LICENSE IN LICENSE",
     "private": true,

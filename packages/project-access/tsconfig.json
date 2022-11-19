@@ -1,11 +1,15 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src/**/*.ts", "test/**/*.ts"],
+    "include": [
+        "src"
+    ],
     "compilerOptions": {
-        "declaration": true,
-        "outDir": "dist",
-        "sourceMap": true,
-        "baseUrl": "./src",
-        "resolveJsonModule": true
-    }
+        "rootDir": "src",
+        "outDir": "dist"
+    },
+    "references": [
+        {
+            "path": "../ui5-config"
+        }
+    ]
 }

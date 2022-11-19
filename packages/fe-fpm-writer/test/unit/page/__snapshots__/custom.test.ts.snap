@@ -170,18 +170,18 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEnityCustomPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityCustomPage",
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
         },
       ],
       "targets": Object {
-        "RootEnityCustomPage": Object {
-          "id": "RootEnityCustomPage",
+        "RootEntityCustomPage": Object {
+          "id": "RootEntityCustomPage",
           "name": "sap.fe.core.fpm",
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "RootEntity",
               "navigation": Object {},
               "viewName": "my.test.App.ext.customPage.CustomPage",
             },
@@ -272,18 +272,18 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEnityCustomPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityCustomPage",
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
         },
       ],
       "targets": Object {
-        "RootEnityCustomPage": Object {
-          "id": "RootEnityCustomPage",
+        "RootEntityCustomPage": Object {
+          "id": "RootEntityCustomPage",
           "name": "sap.fe.core.fpm",
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "RootEntity",
               "navigation": Object {},
               "viewName": "my.test.App.ext.different.CustomPage",
             },
@@ -374,18 +374,18 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEnityCustomPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityCustomPage",
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
         },
       ],
       "targets": Object {
-        "RootEnityCustomPage": Object {
-          "id": "RootEnityCustomPage",
+        "RootEntityCustomPage": Object {
+          "id": "RootEntityCustomPage",
           "name": "sap.fe.core.fpm",
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "RootEntity",
               "navigation": Object {},
               "viewName": "my.test.App.ext.different.CustomPage",
             },
@@ -418,16 +418,16 @@ Object {
           "target": "TestObjectPage",
         },
         Object {
-          "name": "RootEnityCustomPage",
-          "pattern": "RootEnity:?query:",
-          "target": "RootEnityCustomPage",
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
         },
       ],
       "targets": Object {
-        "RootEnityCustomPage": Object {
+        "RootEntityCustomPage": Object {
           "options": Object {
             "settings": Object {
-              "entitySet": "RootEnity",
+              "entitySet": "RootEntity",
               "navigation": Object {},
             },
           },
