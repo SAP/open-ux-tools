@@ -4,7 +4,7 @@ import { Dialog as BaseDialog, DialogFooter } from '@fluentui/react';
 import { UIDefaultButton } from '../UIButton';
 import { deepMerge } from '../../utilities/DeepMerge';
 
-interface ComponentProps {
+export interface DialogProps extends IDialogProps {
     // Accept and cancel buttons options
     acceptButtonText?: string;
     cancelButtonText?: string;
@@ -21,6 +21,10 @@ interface ComponentProps {
     // Header render in single or multi lines
     // Default is single line
     multiLineTitle?: boolean;
+    /**
+     * The title text to display at the top of the dialog.
+     */
+    title?: string | JSX.Element;
 }
 
 export const DIALOG_MAX_HEIGHT_OFFSET = 32;
@@ -41,8 +45,6 @@ export const DIALOG_STYLES = {
         fontFamily: 'var(--vscode-font-family)'
     }
 };
-
-export type DialogProps = IDialogProps & ComponentProps;
 
 export interface DialogState {
     resizeMaxHeight?: number;
