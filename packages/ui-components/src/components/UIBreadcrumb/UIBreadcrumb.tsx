@@ -21,12 +21,6 @@ export class UIBreadcrumb extends React.Component<IBreadcrumbProps, {}> {
         super(props);
     }
 
-    protected setStyle = (): Partial<IBreadcrumbStyles> => ({
-        ...{
-            root: {}
-        }
-    });
-
     /**
      * @returns {JSX.Element}
      */
