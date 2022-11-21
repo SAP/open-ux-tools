@@ -370,14 +370,8 @@ export function initIcons(): void {
                         d="M5 2H3V3H1V14H6.59971C6.43777 13.6832 6.30564 13.3486 6.20703 13H2V4H12V6.02242C12.3434 6.05337 12.6777 6.11588 13 6.20703V3H11V2H9C9 0.895431 8.10457 0 7 0C5.89543 0 5 0.895431 5 2ZM7 1C6.44772 1 6 1.44772 6 2H8C8 1.44772 7.55228 1 7 1Z"
                         fill={COLORS.default}
                     />
-                    <path
-                        d="M8.33692 7H3V8H7.25716C7.57052 7.62057 7.93379 7.28389 8.33692 7Z"
-                        fill={COLORS.default}
-                    />
-                    <path
-                        d="M3 5V6H11V5H3Z"
-                        fill={COLORS.default}
-                    />
+                    <path d="M8.33692 7H3V8H7.25716C7.57052 7.62057 7.93379 7.28389 8.33692 7Z" fill={COLORS.default} />
+                    <path d="M3 5V6H11V5H3Z" fill={COLORS.default} />
                     <path
                         fillRule="evenodd"
                         clipRule="evenodd"
@@ -1197,7 +1191,8 @@ export function initIcons(): void {
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         fillRule="evenodd"
-                        clipRule="evenodd" d="M0.808994 11H10.191C10.5627 11 10.8044 10.6089 10.6382 10.2764L5.94719 0.894435C5.76293 0.525911 5.23703 0.525911 5.05276 0.894435L0.361781 10.2764C0.195556 10.6089 0.437303 11 0.808994 11ZM5 4V8H6V4H5ZM5 9V10H6V9H5Z"
+                        clipRule="evenodd"
+                        d="M0.808994 11H10.191C10.5627 11 10.8044 10.6089 10.6382 10.2764L5.94719 0.894435C5.76293 0.525911 5.23703 0.525911 5.05276 0.894435L0.361781 10.2764C0.195556 10.6089 0.437303 11 0.808994 11ZM5 4V8H6V4H5ZM5 9V10H6V9H5Z"
                         fill={COLORS.warning}
                     />
                 </svg>
