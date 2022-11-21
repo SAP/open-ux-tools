@@ -1,9 +1,23 @@
+import type { CustomMiddleware, FioriToolsProxyConfig } from '@sap-ux/ui5-config';
+import type { ResultMessage } from '../types';
+import { findAllApps, readFile } from '@sap-ux/project-access';
 import { existsSync } from 'fs';
 import { join } from 'path';
+import * as yaml from 'yamljs';
 import { FileName, Severity } from '../types';
-import { findAllPackageJsonFolders, getUi5CustomMiddleware } from './project-utils';
-import type { ResultMessage } from '../types';
 import { t } from '../i18n';
+
+/**
+ * Internal function to return the ui5 middleware settings of a given Fiori elements project (v2 or v4).
+ *
+ * @param root string - path to the SAP UX project (where the ui5.yaml is)
+ * @returns middleware proxy
+ */
+async function getUi5CustomMiddleware(root: string): Promise<CustomMiddleware<FioriToolsProxyConfig>> {
+    const yamlContent = await readFile(join(root, FileName.Ui5Yaml));
+    const middlewares: CustomMiddleware<FioriToolsProxyConfig>[] = yaml.parse(yamlContent)?.server?.customMiddleware;
+    return middlewares?.find((element) => element.name === 'fiori-tools-proxy');
+}
 
 /**
  * Retrieve destination from the app.
@@ -41,33 +55,36 @@ export async function getDestinationsFromWorkspace(
         severity: Severity.Info,
         text: t('info.appSearch', { folders: wsFolders.join(', ') })
     });
-    const appRoots = await findAllPackageJsonFolders(wsFolders);
+    const allApps = await findAllApps(wsFolders);
 
     messages.push({
         severity: Severity.Info,
-        text: t('info.foundNumApps', { numApps: appRoots.length })
+        text: t('info.foundNumApps', { numApps: allApps.length })
     });
 
-    for (const appRoot of appRoots) {
+    for (const app of allApps) {
         try {
-            const appDestinations = await getDestinationFromApp(appRoot);
+            const appDestinations = await getDestinationFromApp(app.appRoot);
 
             if (appDestinations.length > 0) {
                 destinations.push(...appDestinations);
                 messages.push({
                     severity: Severity.Info,
-                    text: t('info.foundDestinationsInApp', { appRoot, appDestinations: appDestinations.join(', ') })
+                    text: t('info.foundDestinationsInApp', {
+                        appRoot: app.appRoot,
+                        appDestinations: appDestinations.join(', ')
+                    })
                 });
             } else {
                 messages.push({
                     severity: Severity.Debug,
-                    text: t('info.noDestinationsFoundInApp', { appRoot })
+                    text: t('info.noDestinationsFoundInApp', { appRoot: app.appRoot })
                 });
             }
         } catch (error) {
             messages.push({
                 severity: Severity.Debug,
-                text: t('info.noDestinationDefinedForApp', { appRoot, error: error.message })
+                text: t('info.noDestinationDefinedForApp', { appRoot: app.appRoot, error: error.message })
             });
         }
     }

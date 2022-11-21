@@ -10,4 +10,5 @@ export {
     isCapNodeJsProject,
     loadModuleFromProject
 } from './project';
+export { readFile } from './file';
 export * from './types';
