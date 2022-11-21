@@ -114,7 +114,7 @@ describe('Test for checkEnvironment() (BAS)', () => {
         // Result check
         expect(result.sapSystems).toEqual(data);
         expect(result.messages).toBeDefined();
-        expect(result.messages.length).toBe(25);
+        expect(result.messages.length).toBe(17);
         expect(result.requestedChecks).toEqual(['environment', 'destinations', 'sapSystemResults']);
     });
 
