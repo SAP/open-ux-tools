@@ -2,6 +2,8 @@
  * Add missing dump function declaration as mem-fs-editor types do not expose this.
  */
 declare module 'mem-fs-editor' {
+    export { create } from 'mem-fs-editor';
+
     export type FileMap = { [key: string]: { contents: string; state: 'modified' | 'deleted' } };
 
     export type Editor = Editor & {
