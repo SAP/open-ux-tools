@@ -246,7 +246,7 @@ describe('use FPM with existing apps', () => {
 
         afterAll(() => {
             expect(
-                (fs as any).dump(testOutput, '**/test-output/**/webapp/{manifest.json,Component.ts,ext/**/*}')
+                fs.dump(testOutput, '**/test-output/**/webapp/{manifest.json,Component.ts,ext/**/*}')
             ).toMatchSnapshot();
         });
     });

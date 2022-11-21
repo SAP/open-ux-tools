@@ -215,7 +215,7 @@ describe('Building Blocks', () => {
                 },
                 fs
             );
-            expect((fs as any).dump(testAppPath)).toMatchSnapshot(
+            expect(fs.dump(testAppPath)).toMatchSnapshot(
                 `generate-${testData.buildingBlockData.buildingBlockType}-with-id-no-macros-ns`
             );
             await writeFilesForDebugging(fs);
