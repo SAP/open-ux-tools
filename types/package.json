@@ -2,14 +2,12 @@
   "name": "@sap-ux/types",
   "version": "1.0.0",
   "private": true,
-  "description": "Library to access SAP Fiori tools projects",
+  "description": "Type augmentations for imported modules",
   "repository": {
     "type": "git",
     "url": "https://github.com/SAP/open-ux-tools.git",
     "directory": "types"
   },
-  "license": "Apache-2.0",
-  "main": "dist/index.js",
   "engines": {
     "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
     "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
