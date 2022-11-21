@@ -26,6 +26,7 @@ importers:
       eslint-plugin-jsdoc: 39.3.3
       eslint-plugin-prettier: 4.2.1
       eslint-plugin-promise: 6.0.0
+      eslint-plugin-sonarjs: 0.16.0
       husky: 8.0.1
       jest: 27.5.1
       jest-sonar: 0.2.12
@@ -50,6 +51,7 @@ importers:
       eslint-plugin-jsdoc: 39.3.3_eslint@8.23.0
       eslint-plugin-prettier: 4.2.1_tgumt6uwl2md3n6uqnggd6wvce
       eslint-plugin-promise: 6.0.0_eslint@8.23.0
+      eslint-plugin-sonarjs: 0.16.0_eslint@8.23.0
       husky: 8.0.1
       jest: 27.5.1
       jest-sonar: 0.2.12
@@ -8548,6 +8550,15 @@ packages:
       resolve: 2.0.0-next.4
       semver: 6.3.0
       string.prototype.matchall: 4.0.7
+    dev: true
+
+  /eslint-plugin-sonarjs/0.16.0_eslint@8.23.0:
+    resolution: {integrity: sha512-al8ojAzcQW8Eu0tWn841ldhPpPcjrJ59TzzTfAVWR45bWvdAASCmrGl8vK0MWHyKVDdC0i17IGbtQQ1KgxLlVA==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      eslint: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
+    dependencies:
+      eslint: 8.23.0
     dev: true
 
   /eslint-scope/4.0.3:

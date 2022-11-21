@@ -1,5 +1,24 @@
 # @sap-ux/odata-cli
 
+## 0.11.0
+
+### Minor Changes
+
+-   9b9b3d7: - Changed TransportRequestService implementation and API for creating new transport request number.
+    -   New TransportRequestService API now requires two extra input parameters `packageName` and `appName`.
+
+### Patch Changes
+
+-   Updated dependencies [9b9b3d7]
+    -   @sap-ux/axios-extension@0.13.0
+
+## 0.10.20
+
+### Patch Changes
+
+-   Updated dependencies [116ff5e]
+    -   @sap-ux/axios-extension@0.12.0
+
 ## 0.10.19
 
 ### Patch Changes

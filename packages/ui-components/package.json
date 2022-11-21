@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "1.0.21",
+    "version": "1.0.23",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -29,7 +29,7 @@
         "format:fix": "prettier --write --ignore-path ../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "start-storybook -s ./.storybook/static",
-        "build:storybook": "build-storybook -o ./storybook", 
+        "build:storybook": "build-storybook -o ./storybook",
         "test": "jest --ci --forceExit --colors --silent",
         "test-u": "jest --ci --forceExit --colors  --silent -u"
     },
