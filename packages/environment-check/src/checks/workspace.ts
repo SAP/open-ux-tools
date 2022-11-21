@@ -1,9 +1,9 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { FileName, Severity } from '../../types';
+import { FileName, Severity } from '../types';
 import { findAllPackageJsonFolders, getUi5CustomMiddleware } from './project-utils';
-import type { ResultMessage } from '../../types';
-import { t } from '../../i18n';
+import type { ResultMessage } from '../types';
+import { t } from '../i18n';
 
 /**
  * Retrieve destination from the app.

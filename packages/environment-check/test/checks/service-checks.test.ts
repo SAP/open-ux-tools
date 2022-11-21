@@ -1,6 +1,6 @@
-import { checkAtoCatalog, checkUi5AbapRepository, checkTransportRequests } from '../../../src/checks/helpers';
+import { checkAtoCatalog, checkUi5AbapRepository, checkTransportRequests } from '../../src/checks/service-checks';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { Severity } from '../../../src/types';
+import { Severity } from '../../src/types';
 
 describe('Test service check functions', () => {
     test('checkAtoCatalog (succesful)', async () => {

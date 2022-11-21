@@ -1,9 +1,9 @@
-import { countNumberOfServices, getServiceCountText } from '../../formatter';
-import type { CatalogServiceResult, ResultMessage } from '../../types';
-import { getLogger } from '../../logger';
+import { countNumberOfServices, getServiceCountText } from '../formatter';
+import type { CatalogServiceResult, ResultMessage } from '../types';
+import { getLogger } from '../logger';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
-import { t } from '../../i18n';
+import { t } from '../i18n';
 
 const catalogMessages = {
     401: (systemName: string, odataVersion: ODataVersion): string =>

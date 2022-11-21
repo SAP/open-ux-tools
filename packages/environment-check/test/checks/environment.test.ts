@@ -6,7 +6,7 @@ import { checkStoredSystems } from '../../src/checks/stored-system';
 import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { join } from 'path';
-import * as install from '../../src/checks/helpers/get-installed';
+import * as install from '../../src/checks/get-installed';
 
 jest.mock('axios');
 

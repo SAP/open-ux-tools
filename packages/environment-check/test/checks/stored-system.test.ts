@@ -1,6 +1,6 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { Severity } from '../../src/types';
-import * as serviceChecks from '../../src/checks/helpers/service-checks';
+import * as serviceChecks from '../../src/checks/service-checks';
 import * as storeUtils from '@sap-ux/store';
 import { checkStoredSystem, checkStoredSystems } from '../../src/checks/stored-system';
 

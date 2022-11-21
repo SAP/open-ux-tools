@@ -9,7 +9,7 @@ import {
 } from '@sap-ux/axios-extension';
 import { checkBASDestination, checkBASDestinations } from './destination';
 import { checkStoredSystem, checkStoredSystems } from './stored-system';
-import { checkCatalogServices } from './helpers';
+import { checkCatalogServices } from './catalog-service';
 import { t } from '../i18n';
 import type { AxiosRequestConfig } from 'axios';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';

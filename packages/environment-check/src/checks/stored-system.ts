@@ -4,7 +4,7 @@ import type { ResultMessage, SapSystem, SapSystemResults } from '../types';
 import { getLogger } from '../logger';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { t } from '../i18n';
-import { checkAtoCatalog, checkUi5AbapRepository, checkTransportRequests } from './helpers';
+import { checkAtoCatalog, checkUi5AbapRepository, checkTransportRequests } from './service-checks';
 
 /**
  * Check a stored SAP system for service endpoints.

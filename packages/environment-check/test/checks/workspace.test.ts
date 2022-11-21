@@ -1,9 +1,9 @@
-import { FileName, Severity } from '../../../src/types';
+import { FileName, Severity } from '../../src/types';
 import { join } from 'path';
-import { getDestinationsFromWorkspace } from '../../../src/checks/utils/workspace';
+import { getDestinationsFromWorkspace } from '../../src/checks/workspace';
 
 describe('Test for getDestinationsFromWorkspace()', () => {
-    const sampleWorkspace = join(__dirname, '..', '..', 'sample-workspace');
+    const sampleWorkspace = join(__dirname, '..', 'sample-workspace');
     const sampleAppNoUI5Yaml = join(sampleWorkspace, 'sample-app-NO_UI5_YAML');
     const sampleAppNoBackend = join(sampleWorkspace, 'sample-app-NO_BACKEND');
     const sampleAppNoDest = join(sampleWorkspace, 'sample-app-NO_DEST');

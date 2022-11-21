@@ -6,7 +6,7 @@ import * as basDestination from '../../src/checks/destination';
 import * as storedSystem from '../../src/checks/stored-system';
 import { createForDestination, createForAbap, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
-import * as catalogService from '../../src/checks/helpers/catalog-service';
+import * as catalogService from '../../src/checks/catalog-service';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()

@@ -2,7 +2,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { checkBASDestinations, needsUsernamePassword } from './destination';
 import { checkSapSystem } from './sap-system';
 import { checkStoredSystems } from './stored-system';
-import { getDestinationsFromWorkspace } from './utils';
+import { getDestinationsFromWorkspace } from './workspace';
 import { getLogger } from '../logger';
 import { devspace } from '@sap/bas-sdk';
 import type {
@@ -15,7 +15,7 @@ import type {
     SapSystemResults
 } from '../types';
 import { Check, DevelopmentEnvironment, Extensions } from '../types';
-import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions } from './helpers';
+import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions } from './get-installed';
 import { t } from '../i18n';
 
 /**

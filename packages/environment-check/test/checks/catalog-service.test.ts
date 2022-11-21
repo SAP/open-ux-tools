@@ -1,7 +1,7 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { AxiosError } from 'axios';
-import { Severity } from '../../../src/types';
-import { checkCatalogServices } from '../../../src/checks/helpers';
+import { Severity } from '../../src/types';
+import { checkCatalogServices } from '../../src/checks/catalog-service';
 
 describe('Catalog service tests, function checkCatalogServices()', () => {
     test('Returns v2 and v4 services succesfully', async () => {

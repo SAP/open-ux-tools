@@ -1,9 +1,9 @@
 import { existsSync, promises, readdirSync } from 'fs';
-import { t } from '../../i18n';
+import { t } from '../i18n';
 import { join } from 'path';
-import { spawnCommand, npmCommand } from '../../command';
-import { Extensions, NpmModules } from '../../types';
-import type { ILogger } from '../../types';
+import { spawnCommand, npmCommand } from '../command';
+import { Extensions, NpmModules } from '../types';
+import type { ILogger } from '../types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 const pluginsDirBAS = join('/extbin/plugins');
