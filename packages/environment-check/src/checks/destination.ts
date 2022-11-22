@@ -10,6 +10,8 @@ import { getServiceProvider, checkCatalogServices } from './service-checks';
  * Check a BAS destination for specific destination attributes.
  *
  * @param destination - Destination from list of all destinations
+ * @param username - destination username
+ * @param password - destination password
  * @returns messages and destination results
  */
 export async function checkBASDestination(

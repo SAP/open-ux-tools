@@ -1,6 +1,7 @@
 import type { AbapServiceProvider, ODataServiceInfo, AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { CatalogServiceResult, ResultMessage, Endpoint } from '../types';
 import {
+    AtoService,
     TransportChecksService,
     ODataVersion,
     AbapCloudEnvironment,
@@ -24,8 +25,8 @@ const catalogMessages = {
  * Internal function to create a service provider.
  *
  * @param endpoint - the SAP system
- * @param username
- * @param password
+ * @param username - username for endpoint
+ * @param password - password for endpoint
  * @returns - ABAP service provider
  */
 export function getServiceProvider(
@@ -163,8 +164,8 @@ export async function checkAtoCatalog(
     const logger = getLogger();
     let isAtoCatalog = false;
     try {
-        const atoInfo = await provider.getAtoInfo();
-        if (Object.keys(atoInfo).length) {
+        const atoService = await provider.getAdtService<AtoService>(AtoService);
+        if (Object.keys(atoService).length) {
             isAtoCatalog = true;
             logger.info(t('info.atoCatalogAvailable'));
         } else {
@@ -222,7 +223,7 @@ export async function checkTransportRequests(
     let isTransportRequests = false;
     try {
         const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        if (adtService?.getTransportRequests && typeof adtService.getTransportRequests === 'function') {
+        if (adtService?.getTransportRequests) {
             isTransportRequests = true;
             logger.info(t('info.getTransportRequestsAvailable'));
         } else {

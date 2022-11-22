@@ -36,9 +36,9 @@ export async function checkEndpoints(): Promise<{
 /**
  * Check an endpoint for information including results of v2 & v4 catalog service requests.
  *
- * @param endpoint - endpoint from list of all endpoint
- * @param username
- * @param password
+ * @param endpoint - endpoint from list of all endpoints
+ * @param username - destination username
+ * @param password - destination password
  * @returns messages and sapSystem results
  */
 export async function checkEndpoint(

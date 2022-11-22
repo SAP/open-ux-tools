@@ -128,10 +128,10 @@ async function getToolsExtensions(): Promise<{
 }
 
 /**
- * Internal function to check an SAP system.
+ * Internal function to check an SAP system or BAS Destination.
  *
- * @param sapSystem - the SAP system to get detailed results for
- * @param credentialCallback
+ * @param endpoint - the endpoint to get detailed results for
+ * @param credentialCallback - callback in case user credentials are required to query a destination
  * @returns - messages and detailed destination check results
  */
 async function getEndpointResults(
@@ -171,12 +171,12 @@ async function getEndpointResults(
 }
 
 /**
- * Check a set of SAP systems (deep dive into them).
+ * Check a set of endpoints (SAP systems and BAS Destinations) (deep dive into them).
  *
- * @param deepDiveSapSystems - SAP systems selected for a closer look
- * @param endpoints - array of all SAP systems found
- * @param credentialCallback
- * @returns - messages and the map of detailed SAP systems check results
+ * @param deepDiveEndpoints - endpoints selected for a closer look
+ * @param endpoints - array of all endpoints found
+ * @param credentialCallback - callback in case user credentials are required to query a destination
+ * @returns - messages and the map of detailed endpoints check results
  */
 export async function getEndpointsResults(
     deepDiveEndpoints: Set<string>,
@@ -215,9 +215,9 @@ export async function getEndpointsResults(
 }
 
 /**
- * Check environment includes process.env, list of SAP systems, details about the SAP systems.
+ * Check environment includes process.env, list of SAP systems or BAS Destinations and their details.
  *
- * @param options - see type CheckEnvironmentOptions, includes SAP system for deep dive, workspace roots, ...
+ * @param options - see type CheckEnvironmentOptions, includes endpoint for deep dive, workspace roots, ...
  * @returns the result, currently as JSON
  */
 export async function checkEnvironment(options?: CheckEnvironmentOptions): Promise<EnvironmentCheckResult> {

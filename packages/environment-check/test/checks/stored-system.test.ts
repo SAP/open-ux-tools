@@ -1,4 +1,3 @@
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { CatalogServiceResult } from '../../src/types';
 import { Severity } from '../../src/types';
 import * as serviceChecks from '../../src/checks/service-checks';

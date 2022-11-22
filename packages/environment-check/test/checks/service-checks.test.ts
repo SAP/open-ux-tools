@@ -150,9 +150,9 @@ describe('Catalog service tests, function checkCatalogServices()', () => {
 
 describe('Test service check functions', () => {
     test('checkAtoCatalog (succesful)', async () => {
-        const getAtoInfo = jest.fn();
+        const getAdtService = jest.fn();
 
-        getAtoInfo.mockImplementation(() => {
+        getAdtService.mockImplementation(() => {
             return {
                 developmentPackage: 'PACKAGE',
                 developmentPrefix: 'YY_1',
@@ -164,7 +164,7 @@ describe('Test service check functions', () => {
         });
 
         const abapServiceProvider = {
-            getAtoInfo: getAtoInfo
+            getAdtService: getAdtService
         } as unknown as AbapServiceProvider;
 
         // Test execution
@@ -177,14 +177,14 @@ describe('Test service check functions', () => {
     });
 
     test('checkAtoCatalog (unavailable)', async () => {
-        const getAtoInfo = jest.fn();
+        const getAdtService = jest.fn();
 
-        getAtoInfo.mockImplementation(() => {
+        getAdtService.mockImplementation(() => {
             return {};
         });
 
         const abapServiceProvider = {
-            getAtoInfo: getAtoInfo
+            getAdtService: getAdtService
         } as unknown as AbapServiceProvider;
 
         // Test execution
