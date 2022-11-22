@@ -17,8 +17,8 @@ Pnpm
 ```javascript
 import {
     getEnvironment,
-    checkSapSystems,
-    checkSapSystem,
+    checkEndpoints,
+    checkEndpoint,
 } from '@sap-ux/environment-check';
 
 /**
@@ -29,12 +29,12 @@ const environmentResults = await getEnvironment();
 /**
  * Checks the SAP systems on Business Application Studio or locally saved systems and returns a list
  */
-const sapSystemsResult = await checkSapSystems();
+const sapSystemsResult = await checkEndpoints();
 
 /**
  * Check an SAP system for v2 & v4 catalog service and other services 
  */
-const sapSystemResult = await checkSapSystem(destination, username, password);
+const sapSystemResult = await checkEndpoint(destination, username, password);
 
 ```
 

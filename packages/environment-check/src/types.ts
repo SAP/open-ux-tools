@@ -4,15 +4,15 @@ import type { Logger } from '@sap-ux/logger';
 
 export interface CheckEnvironmentOptions {
     workspaceRoots?: string[];
-    sapSystems?: string[];
-    credentialCallback?: (destination: SapSystem) => Promise<{ username: string; password: string }>;
+    endpoints?: string[];
+    credentialCallback?: (destination: Endpoint) => Promise<{ username: string; password: string }>;
 }
 
 export enum Check {
     Environment = 'environment',
     Destinations = 'destinations',
     StoredSystems = 'storedSystems',
-    SapSystemResults = 'sapSystemResults'
+    EndpointResults = 'endpointResults'
 }
 
 export enum OutputMode {
@@ -93,7 +93,7 @@ export interface CatalogServiceResult {
     v4: CatalogResult;
 }
 
-export interface SapSystemResults {
+export interface EndpointResults {
     catalogService?: CatalogServiceResult;
     isAtoCatalog?: boolean; // ATO catalog available
     isSapUi5Repo?: boolean; // SAPUI5 repository service for deployment available
@@ -110,7 +110,7 @@ interface Credentials {
     refreshToken?: string;
 }
 
-export interface SapSystem extends Partial<BTPDestination> {
+export interface Endpoint extends Partial<BTPDestination> {
     Name: string;
     Url?: string;
     Client?: string;
@@ -122,8 +122,8 @@ export interface SapSystem extends Partial<BTPDestination> {
 
 export interface EnvironmentCheckResult {
     environment?: Environment;
-    sapSystems?: SapSystem[];
-    sapSystemResults?: { [system: string]: SapSystemResults };
+    endpoints?: Endpoint[];
+    endpointResults?: { [system: string]: EndpointResults };
     requestedChecks?: Check[];
     messages?: ResultMessage[];
 }

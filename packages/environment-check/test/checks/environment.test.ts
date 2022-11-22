@@ -1,7 +1,7 @@
 import type { CheckEnvironmentOptions } from '../../src';
 import { checkEnvironment, getEnvironment } from '../../src/checks/environment';
 import { checkBASDestinations } from '../../src/checks/destination';
-import { checkSapSystem } from '../../src/checks/sap-system';
+import { checkEndpoint } from '../../src/checks/endpoint';
 import { checkStoredSystems } from '../../src/checks/stored-system';
 import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -24,9 +24,9 @@ jest.mock('../../src/checks/destination', () => ({
 const mockCheckBASDestinations = checkBASDestinations as jest.Mock;
 
 jest.mock('../../src/checks/sap-system', () => ({
-    checkSapSystem: jest.fn()
+    checkEndpoint: jest.fn()
 }));
-const mockCheckSapSystem = checkSapSystem as jest.Mock;
+const mockCheckSapSystem = checkEndpoint as jest.Mock;
 
 jest.mock('../../src/checks/stored-system', () => ({
     checkStoredSystems: jest.fn()

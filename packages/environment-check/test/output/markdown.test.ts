@@ -8,7 +8,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
-const requestedChecksSet = [Check.Environment, Check.Destinations, Check.SapSystemResults];
+const requestedChecksSet = [Check.Environment, Check.Destinations, Check.EndpointResults];
 
 const data = {
     sapSystemResults: {
@@ -239,7 +239,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check destination details with both v2 and v4 services available', () => {
-        const destResultsCheck = [Check.Destinations, Check.SapSystemResults];
+        const destResultsCheck = [Check.Destinations, Check.EndpointResults];
         const result = convertResultsToMarkdown({
             sapSystemResults: {
                 ABC: {
@@ -267,7 +267,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
 
     test('Check stored system details - no systems', () => {
-        const destResultsCheck = [Check.StoredSystems, Check.SapSystemResults];
+        const destResultsCheck = [Check.StoredSystems, Check.EndpointResults];
         const result = convertResultsToMarkdown({
             sapSystemResults: {},
             requestedChecks: destResultsCheck
@@ -275,7 +275,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('No SAP system details');
     });
     test('Check stored system details with v2/v4 and service checks', () => {
-        const destResultsCheck = [Check.StoredSystems, Check.SapSystemResults];
+        const destResultsCheck = [Check.StoredSystems, Check.EndpointResults];
         const result = convertResultsToMarkdown({
             sapSystemResults: {
                 ABC: {

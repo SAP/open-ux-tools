@@ -1,21 +1,35 @@
 import { getService } from '@sap-ux/store';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { ResultMessage, SapSystem, SapSystemResults } from '../types';
+import type { ResultMessage, Endpoint, EndpointResults } from '../types';
 import { getLogger } from '../logger';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { t } from '../i18n';
-import { checkAtoCatalog, checkUi5AbapRepository, checkTransportRequests } from './service-checks';
+import {
+    getServiceProvider,
+    checkCatalogServices,
+    checkAtoCatalog,
+    checkUi5AbapRepository,
+    checkTransportRequests
+} from './service-checks';
 
 /**
  * Check a stored SAP system for service endpoints.
  *
- * @param abapServiceProvider the AbapServiceProvider to be used
  * @returns messages and sapSystem results
  */
-export async function checkStoredSystem(
-    abapServiceProvider: AbapServiceProvider
-): Promise<{ messages: ResultMessage[]; storedSystemResults: SapSystemResults }> {
+export async function checkStoredSystem(storedSystem: Endpoint): Promise<{
+    messages: ResultMessage[];
+    storedSystemResults: EndpointResults;
+}> {
     const logger = getLogger();
+
+    const abapServiceProvider = getServiceProvider(storedSystem);
+
+    // catalog service request
+    const { messages: catalogMsgs, result: catalogServiceResult } = await checkCatalogServices(
+        abapServiceProvider,
+        storedSystem.Name
+    );
+    logger.push(...catalogMsgs);
 
     // ato catalog request
     const { messages: atoMsgs, isAtoCatalog: isAtoCatalogResult } = await checkAtoCatalog(abapServiceProvider);
@@ -33,7 +47,8 @@ export async function checkStoredSystem(
     );
     logger.push(...transportReqMsgs);
 
-    const storedSystemResults: SapSystemResults = {
+    const storedSystemResults: EndpointResults = {
+        catalogService: catalogServiceResult,
         isAtoCatalog: isAtoCatalogResult,
         isSapUi5Repo: isSapUi5RepoResult,
         isTransportRequests: isTransportRequestsResult
@@ -52,10 +67,10 @@ export async function checkStoredSystem(
  */
 export async function checkStoredSystems(): Promise<{
     messages: ResultMessage[];
-    storedSystems: SapSystem[];
+    storedSystems: Endpoint[];
 }> {
     const logger = getLogger();
-    let sapSystems: SapSystem[] = [];
+    let sapSystems: Endpoint[] = [];
 
     try {
         const storeService = await getService({ logger, entityName: 'system' });
@@ -78,16 +93,16 @@ export async function checkStoredSystems(): Promise<{
 }
 
 /**
- * Transforms the systems format to SapSystem type.
+ * Transforms the systems format to Endpoint type.
  *
- * @param systems DestinationListInfo[] from '@sap/bas-sdk'
+ * @param systems SAP systems retrieved from the store
  * @returns list of destinations in new format
  */
-function transformStoredSystems(systems): SapSystem[] {
-    const sapSystems: SapSystem[] = [];
+function transformStoredSystems(systems): Endpoint[] {
+    const sapSystems: Endpoint[] = [];
 
     for (const s of systems) {
-        const answerDestination: SapSystem = {
+        const answerDestination: Endpoint = {
             Name: s.name,
             Url: s.url,
             Client: s.client,

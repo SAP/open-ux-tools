@@ -37,7 +37,7 @@ describe('Test to check zip save, storeResultsZip()', () => {
             return filename === 'envcheck-results.zip' ? writeStreamMock : undefined;
         });
         console.log = jest.fn();
-        const requestedChecksSet = [Check.Environment, Check.Destinations, Check.SapSystemResults];
+        const requestedChecksSet = [Check.Environment, Check.Destinations, Check.EndpointResults];
 
         // Test execution
         storeResultsZip({ requestedChecks: requestedChecksSet });

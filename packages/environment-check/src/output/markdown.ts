@@ -1,14 +1,14 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
 import { Severity, UrlServiceType, Check } from '../types';
 import type {
-    SapSystem,
+    Endpoint,
     Environment,
     EnvironmentCheckResult,
     MarkdownWriter,
     ResultMessage,
     ToolsExtensions,
     CatalogServiceResult,
-    SapSystemResults
+    EndpointResults
 } from '../types';
 import { t } from '../i18n';
 
@@ -201,7 +201,7 @@ function writeCatalogServiceResults(writer: MarkdownWriter, catalogService: Cata
 function writeDestinationDetails(
     writer: MarkdownWriter,
     destName: string,
-    destDetails: SapSystemResults,
+    destDetails: EndpointResults,
     urlServiceType?: UrlServiceType
 ): void {
     writer.addH3(t('markdownText.detailsFor', { systemName: destName }));
@@ -231,11 +231,7 @@ function writeDestinationDetails(
  * @param sapSystemName - name of the SAP system
  * @param sapSystemDetails - details, like V2/V4 catalog results, ato catalog
  */
-function writeSapSystemDetails(
-    writer: MarkdownWriter,
-    sapSystemName: string,
-    sapSystemDetails: SapSystemResults
-): void {
+function writeSapSystemDetails(writer: MarkdownWriter, sapSystemName: string, sapSystemDetails: EndpointResults): void {
     writer.addH3(t('markdownText.detailsFor', { systemName: sapSystemName }));
     writeCatalogServiceResults(writer, sapSystemDetails.catalogService);
 
@@ -264,9 +260,9 @@ function writeSapSystemDetails(
  * @param writer - markdown writter
  * @param sapSystemResults - results of SAP system checks that include the catalog services
  */
-function writeSapSystemResults(
+function writeStoredSystemResults(
     writer: MarkdownWriter,
-    sapSystemResults: { [sapSys: string]: SapSystemResults } = {}
+    sapSystemResults: { [sapSys: string]: EndpointResults } = {}
 ): void {
     const numberOfSystemDetails = Object.keys(sapSystemResults).length;
     writer.addH2(`${t('markdownText.sapSystemDetails')} (${numberOfSystemDetails})`);
@@ -288,8 +284,8 @@ function writeSapSystemResults(
  */
 function writeDestinationResults(
     writer: MarkdownWriter,
-    destinationResults: { [sys: string]: SapSystemResults } = {},
-    destinations: SapSystem[] = []
+    destinationResults: { [sys: string]: EndpointResults } = {},
+    destinations: Endpoint[] = []
 ): void {
     const numberOfDestDetails = Object.keys(destinationResults).length;
     writer.addH2(`${t('markdownText.destinationDetails')} (${numberOfDestDetails})`);
@@ -314,7 +310,7 @@ function writeDestinationResults(
  * @param writer - markdown writer
  * @param destinations - array of destinations
  */
-function writeDestinations(writer: MarkdownWriter, destinations: SapSystem[] = []): void {
+function writeDestinations(writer: MarkdownWriter, destinations: Endpoint[] = []): void {
     const numberOfDestinations = destinations.length || 0;
     writer.addH2(t('markdownText.allDestinations', { numberOfDestinations }));
     if (numberOfDestinations > 0) {
@@ -367,20 +363,20 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
 
     if (
         results.requestedChecks?.includes(Check.Destinations) &&
-        results.requestedChecks?.includes(Check.SapSystemResults)
+        results.requestedChecks?.includes(Check.EndpointResults)
     ) {
-        writeDestinationResults(writer, results.sapSystemResults, results.sapSystems);
+        writeDestinationResults(writer, results.endpointResults, results.endpoints);
     }
 
     if (results.requestedChecks?.includes(Check.Destinations)) {
-        writeDestinations(writer, results.sapSystems);
+        writeDestinations(writer, results.endpoints);
     }
 
     if (
         results.requestedChecks?.includes(Check.StoredSystems) &&
-        results.requestedChecks?.includes(Check.SapSystemResults)
+        results.requestedChecks?.includes(Check.EndpointResults)
     ) {
-        writeSapSystemResults(writer, results.sapSystemResults);
+        writeStoredSystemResults(writer, results.endpointResults);
     }
 
     writeMessages(writer, results.messages);

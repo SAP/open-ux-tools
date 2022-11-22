@@ -1,3 +1,3 @@
 export { checkEnvironment, getEnvironment } from './environment';
-export { checkSapSystem, checkSapSystems } from './sap-system';
-export { needsUsernamePassword } from './destination';
+export { checkEndpoint, checkEndpoints } from './endpoint';
+export { checkBASDestination, checkBASDestinations, needsUsernamePassword } from './destination';
