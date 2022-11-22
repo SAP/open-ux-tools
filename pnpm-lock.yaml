@@ -5,8 +5,8 @@ overrides:
   trim-newlines@<3.0.1: '>=3.0.1'
   glob-parent@<5.1.2: '>=5.1.2'
   multimatch@4.0.0>minimatch: 3.0.5
-  loader-utils@<1.4.1: 1.4.1
-  loader-utils@2.0.x: 2.0.3
+  loader-utils@>=1.0.0 <1.4.2: 1.4.2
+  loader-utils@>=2.0.0 <2.0.4: 2.0.4
 
 importers:
 
@@ -3279,7 +3279,7 @@ packages:
       error-stack-parser: 2.1.4
       find-up: 5.0.0
       html-entities: 2.3.3
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       react-refresh: 0.11.0
       schema-utils: 3.1.1
       source-map: 0.7.3
@@ -4026,7 +4026,7 @@ packages:
       '@mdx-js/mdx': 1.6.22
       '@types/lodash': 4.14.178
       js-string-escape: 1.0.1
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       lodash: 4.17.21
       prettier: 2.3.0
       ts-dedent: 2.2.0
@@ -4636,7 +4636,6 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
-    dev: true
 
   /@types/proxy-from-env/1.0.1:
     resolution: {integrity: sha512-luG++TFHyS61eKcfkR1CVV6a1GMNXDjtqEQIIfaSHax75xp0HU3SlezjOi1yqubJwrG8e9DeW59n6wTblIDwFg==}
@@ -4660,7 +4659,6 @@ packages:
     resolution: {integrity: sha512-idCEjROZ2cqh29+trmTmZhsBAUNQuYrF92JHKzZ5+aiFM1mlSk3bb23CK7HhYuOY75Apgap5y2jTyHzaM2AJGA==}
     dependencies:
       '@types/react': 16.14.0
-    dev: true
 
   /@types/react-virtualized/9.21.21:
     resolution: {integrity: sha512-Exx6I7p4Qn+BBA1SRyj/UwQlZ0I0Pq7g7uhAp0QQ4JWzZunqEqNBGTmCmMmS/3N9wFgAGWuBD16ap7k8Y14VPA==}
@@ -4674,7 +4672,6 @@ packages:
     dependencies:
       '@types/prop-types': 15.7.5
       csstype: 3.1.1
-    dev: true
 
   /@types/react/17.0.52:
     resolution: {integrity: sha512-vwk8QqVODi0VaZZpDXQCmEmiOuyjEFPY7Ttaw5vjM112LOq37yz1CDJGrRJwA1fYEq4Iitd5rnjd1yWAc/bT+A==}
@@ -5892,7 +5889,7 @@ packages:
     dependencies:
       '@babel/core': 7.20.2
       find-cache-dir: 2.1.0
-      loader-utils: 1.4.1
+      loader-utils: 1.4.2
       mkdirp: 0.5.6
       pify: 4.0.1
       schema-utils: 2.7.1
@@ -5908,7 +5905,7 @@ packages:
     dependencies:
       '@babel/core': 7.20.2
       find-cache-dir: 2.1.0
-      loader-utils: 1.4.1
+      loader-utils: 1.4.2
       mkdirp: 0.5.6
       pify: 4.0.1
       schema-utils: 2.7.1
@@ -7264,7 +7261,7 @@ packages:
       camelcase: 5.3.1
       cssesc: 3.0.0
       icss-utils: 4.1.1
-      loader-utils: 1.4.1
+      loader-utils: 1.4.2
       normalize-path: 3.0.0
       postcss: 7.0.39
       postcss-modules-extract-imports: 2.0.0
@@ -7284,7 +7281,7 @@ packages:
       webpack: ^4.27.0 || ^5.0.0
     dependencies:
       icss-utils: 5.1.0_postcss@8.4.16
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       postcss: 8.4.16
       postcss-modules-extract-imports: 3.0.0_postcss@8.4.16
       postcss-modules-local-by-default: 4.0.0_postcss@8.4.16
@@ -8230,7 +8227,7 @@ packages:
       esbuild: 0.15.8
       joycon: 3.1.1
       json5: 2.2.1
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       tapable: 2.2.1
       webpack: 5.74.0
       webpack-sources: 2.3.1
@@ -9019,7 +9016,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       schema-utils: 3.1.1
       webpack: 4.46.0
     dev: true
@@ -9435,7 +9432,7 @@ packages:
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
-      nan: 2.16.0
+      nan: 2.17.0
     dev: true
     optional: true
 
@@ -9731,7 +9728,7 @@ packages:
       source-map: 0.6.1
       wordwrap: 1.0.0
     optionalDependencies:
-      uglify-js: 3.17.1
+      uglify-js: 3.17.4
     dev: true
 
   /hard-rejection/2.1.0:
@@ -9993,7 +9990,7 @@ packages:
       '@types/tapable': 1.0.8
       '@types/webpack': 4.41.32
       html-minifier-terser: 5.1.1
-      loader-utils: 1.4.1
+      loader-utils: 1.4.2
       lodash: 4.17.21
       pretty-error: 2.1.2
       tapable: 1.1.3
@@ -11760,8 +11757,8 @@ packages:
     engines: {node: '>=6.11.5'}
     dev: true
 
-  /loader-utils/1.4.1:
-    resolution: {integrity: sha512-1Qo97Y2oKaU+Ro2xnDMR26g1BwMT29jNbem1EvcujW2jqt+j5COXyscjM7bLQkM9HaxI7pkWeW7gnI072yMI9Q==}
+  /loader-utils/1.4.2:
+    resolution: {integrity: sha512-I5d00Pd/jwMD2QCduo657+YM/6L3KZu++pmX9VFncxaxvHcru9jx1lBaFft+r4Mt2jK0Yhp41XlRAihzPxHNCg==}
     engines: {node: '>=4.0.0'}
     dependencies:
       big.js: 5.2.2
@@ -11769,8 +11766,8 @@ packages:
       json5: 1.0.1
     dev: true
 
-  /loader-utils/2.0.3:
-    resolution: {integrity: sha512-THWqIsn8QRnvLl0shHYVBN9syumU8pYWEHPTmkiVGd+7K5eFNVSY6AJhRvgGF70gg1Dz+l/k8WicvFCxdEs60A==}
+  /loader-utils/2.0.4:
+    resolution: {integrity: sha512-xXqpXoINfFhgua9xiqD8fPFHgkoq1mmmpE92WlDbm9rNRd/EbRb+Gqf908T2DMfuHjjJlksiK2RbHVOdD/MqSw==}
     engines: {node: '>=8.9.0'}
     dependencies:
       big.js: 5.2.2
@@ -12404,8 +12401,8 @@ packages:
       arrify: 2.0.1
       minimatch: 3.1.2
 
-  /nan/2.16.0:
-    resolution: {integrity: sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA==}
+  /nan/2.17.0:
+    resolution: {integrity: sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==}
     requiresBuild: true
     dev: true
     optional: true
@@ -12481,8 +12478,8 @@ packages:
   /nimnjs/1.3.2:
     resolution: {integrity: sha512-TIOtI4iqkQrUM1tiM76AtTQem0c7e56SkDZ7sj1d1MfUsqRcq2ZWQvej/O+HBTZV7u/VKnwlKTDugK/75IRPPw==}
     dependencies:
-      nimn_schema_builder: 1.1.0
       nimn-date-parser: 1.0.0
+      nimn_schema_builder: 1.1.0
     dev: false
 
   /no-case/3.0.4:
@@ -13360,7 +13357,7 @@ packages:
     dependencies:
       cosmiconfig: 7.0.1
       klona: 2.0.5
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       postcss: 7.0.39
       schema-utils: 3.1.1
       semver: 7.3.7
@@ -13860,7 +13857,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       schema-utils: 3.1.1
       webpack: 4.46.0
     dev: true
@@ -13913,7 +13910,6 @@ packages:
       prop-types: 15.8.1
       react: 16.14.0
       scheduler: 0.19.1
-    dev: true
 
   /react-element-to-jsx-string/14.3.4_wcqkhtmu7mswc6yz4uyexck3ty:
     resolution: {integrity: sha512-t4ZwvV6vwNxzujDQ+37bspnLwA4JlgUPWhLjBJWsNIDceAf6ZKUTCjdm08cN6WeZ5pTMKiCJkmAYnpmR4Bm+dg==}
@@ -13989,7 +13985,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       prop-types: 15.8.1
-    dev: true
 
   /read-pkg-up/1.0.1:
     resolution: {integrity: sha512-WD9MTlNtI55IwYUS27iHh9tK3YoIVhxis8yKhLpTqWtml739uXc9NWTpxoHkfZf3+DkCCsXox94/VWZniuZm6A==}
@@ -14547,7 +14542,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: true
 
   /schema-utils/1.0.0:
     resolution: {integrity: sha512-i27Mic4KovM/lnGsy8whRCHhc7VicJajAjTrYg11K9zfZXnYIt4k5F+kZkwjnrhKzLic/HLU4j11mjsz2G/75g==}
@@ -15247,7 +15241,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       schema-utils: 2.7.1
       webpack: 4.46.0
     dev: true
@@ -15258,7 +15252,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       schema-utils: 3.1.1
       webpack: 5.74.0
     dev: true
@@ -15901,8 +15895,8 @@ packages:
     hasBin: true
     dev: true
 
-  /uglify-js/3.17.1:
-    resolution: {integrity: sha512-+juFBsLLw7AqMaqJ0GFvlsGZwdQfI2ooKQB39PSBgMnMakcFosi9O8jCwE+2/2nMNcc0z63r9mwjoDG8zr+q0Q==}
+  /uglify-js/3.17.4:
+    resolution: {integrity: sha512-T9q82TJI9e/C1TAxYvfb16xO120tMVFZrGA3f9/P4424DNu6ypK103y0GPFVa17yotwSyZW5iYXgjYHkGrJW/g==}
     engines: {node: '>=0.8.0'}
     hasBin: true
     requiresBuild: true
@@ -16124,7 +16118,7 @@ packages:
         optional: true
     dependencies:
       file-loader: 6.2.0_webpack@4.46.0
-      loader-utils: 2.0.3
+      loader-utils: 2.0.4
       mime-types: 2.1.34
       schema-utils: 3.1.1
       webpack: 4.46.0
@@ -16452,7 +16446,7 @@ packages:
       eslint-scope: 4.0.3
       json-parse-better-errors: 1.0.2
       loader-runner: 2.4.0
-      loader-utils: 1.4.1
+      loader-utils: 1.4.2
       memory-fs: 0.4.1
       micromatch: 3.1.10
       mkdirp: 0.5.6
