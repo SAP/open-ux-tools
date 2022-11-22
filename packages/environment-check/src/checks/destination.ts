@@ -6,12 +6,13 @@ import { getLogger } from '../logger';
 import { UrlServiceType, Severity } from '../types';
 import { t } from '../i18n';
 import { getServiceProvider, checkCatalogServices } from './service-checks';
+
 /**
- * Check a BAS destination for specific destination attributes.
+ * Check a BAS destination, like catalog service v2 & v4.
  *
  * @param destination - Destination from list of all destinations
- * @param username - destination username
- * @param password - destination password
+ * @param username - username
+ * @param password - password
  * @returns messages and destination results
  */
 export async function checkBASDestination(
