@@ -1,5 +1,70 @@
 # @sap-ux/odata-cli
 
+## 0.11.0
+
+### Minor Changes
+
+-   9b9b3d7: - Changed TransportRequestService implementation and API for creating new transport request number.
+    -   New TransportRequestService API now requires two extra input parameters `packageName` and `appName`.
+
+### Patch Changes
+
+-   Updated dependencies [9b9b3d7]
+    -   @sap-ux/axios-extension@0.13.0
+
+## 0.10.20
+
+### Patch Changes
+
+-   Updated dependencies [116ff5e]
+    -   @sap-ux/axios-extension@0.12.0
+
+## 0.10.19
+
+### Patch Changes
+
+-   Updated dependencies [703dc96]
+    -   @sap-ux/axios-extension@0.11.1
+
+## 0.10.18
+
+### Patch Changes
+
+-   Updated dependencies [f4ab2cd]
+    -   @sap-ux/axios-extension@0.11.0
+
+## 0.10.17
+
+### Patch Changes
+
+-   f3cbe4d: Remove dependency to i18n libraries in Yaml module
+-   Updated dependencies [f3cbe4d]
+    -   @sap-ux/axios-extension@0.10.3
+
+## 0.10.16
+
+### Patch Changes
+
+-   Updated dependencies [9820cef]
+    -   @sap-ux/axios-extension@0.10.2
+
+## 0.10.15
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/axios-extension@0.10.1
+    -   @sap-ux/btp-utils@0.11.2
+    -   @sap-ux/logger@0.3.1
+
+## 0.10.14
+
+### Patch Changes
+
+-   Updated dependencies [8778cbd]
+    -   @sap-ux/axios-extension@0.10.0
+
 ## 0.10.13
 
 ### Patch Changes

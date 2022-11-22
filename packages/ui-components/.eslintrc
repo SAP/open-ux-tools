@@ -1,8 +1,7 @@
 {
     "extends": ["../../.eslintrc", "plugin:react/recommended"],
     "parserOptions": {
-        "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
-        "project": "./tsconfig-test.json"
+        "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true
     },
     "overrides": [
         {

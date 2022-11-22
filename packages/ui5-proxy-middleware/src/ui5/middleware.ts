@@ -1,13 +1,11 @@
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
 import type { Options } from 'http-proxy-middleware';
-import { HttpsProxyAgent } from 'https-proxy-agent';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { MiddlewareParameters, Ui5MiddlewareConfig, ProxyConfig } from '../base';
 import {
     getCorporateProxyServer,
     HTML_MOUNT_PATHS,
     injectScripts,
-    isHostExcludedFromProxy,
     ui5Proxy,
     resolveUI5Version,
     hideProxyCredentials
@@ -25,7 +23,7 @@ import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Options {
     return {
         secure: config.secure !== undefined ? !!config.secure : true,
-        logLevel: !!config.debug ? 'debug' : 'info',
+        logLevel: config.debug ? 'debug' : 'info',
         logProvider: () => logger
     };
 }
@@ -37,10 +35,11 @@ function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Option
  * @returns handler function
  */
 function createRequestHandler(routes: { route: string; handler: RequestHandler }[]): RequestHandler {
-    return (req, res, next) => {
+    return (req, res, next): void => {
         for (const route of routes) {
             if (req.path.startsWith(route.route)) {
-                return route.handler(req, res, next);
+                route.handler(req, res, next);
+                return;
             }
         }
         next();
@@ -74,11 +73,10 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
             const ui5Config: ProxyConfig = {
                 path: ui5Path,
                 url: envUI5Url || ui5.url,
-                version: ui5Version
+                version: ui5Version,
+                proxy: config.proxy
             };
-            if (corporateProxyServer && !isHostExcludedFromProxy(ui5Config.url)) {
-                proxyOptions.agent = new HttpsProxyAgent(corporateProxyServer);
-            }
+
             routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });
             ui5Configs.push(ui5Config);
         }

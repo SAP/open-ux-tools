@@ -1,9 +1,10 @@
 {
+    "root": true,
     "env": {
         "node": true,
         "es6": true
     },
-    "plugins": ["promise", "prettier", "jsdoc", "@typescript-eslint", "import"],
+    "plugins": ["promise", "prettier", "jsdoc", "@typescript-eslint", "import", "sonarjs"],
     "extends": ["plugin:jsdoc/recommended", "plugin:prettier/recommended"],
     "overrides": [
         {
@@ -16,7 +17,10 @@
                 "@typescript-eslint/no-inferrable-types": "off",
                 "@typescript-eslint/no-unused-vars": [
                     "error",
-                    { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }
+                    {
+                        "varsIgnorePattern": "^_",
+                        "argsIgnorePattern": "^_"
+                    }
                 ],
                 "@typescript-eslint/consistent-type-imports": [
                     "error",
@@ -78,6 +82,15 @@
                     }
                 ],
                 "@typescript-eslint/no-use-before-define": ["error", "nofunc"]
+            }
+        },
+        {
+            "files": ["**/test/**/*.js", "**/test/**/*.ts", "**/test/**/*.tsx"],
+            "rules": {
+                "no-console": "off",
+                "jsdoc/require-returns-description": "off",
+                "jsdoc/require-param-description": "off",
+                "max-nested-callbacks": ["warn", 5]
             }
         }
     ],
@@ -215,7 +228,7 @@
             "error",
             "as-needed",
             {
-                "keywords": true,
+                "keywords": false,
                 "unnecessary": false
             }
         ],
@@ -233,6 +246,8 @@
                 "after": true
             }
         ],
+        "sonarjs/cognitive-complexity": "warn",
+        "sonarjs/no-nested-template-literals": "warn",
         "space-before-function-paren": [
             "error",
             {
@@ -252,6 +267,15 @@
         //		"sap-no-jquery": 2
         // turn on errors for missing imports
         "import/no-unresolved": "error",
+        "import/no-extraneous-dependencies": [
+            "error",
+            {
+                "devDependencies": true,
+                "optionalDependencies": true,
+                "peerDependencies": true,
+                "bundledDependencies": false
+            }
+        ],
         "prettier/prettier": [
             "error",
             {

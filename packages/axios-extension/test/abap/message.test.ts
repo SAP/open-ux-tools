@@ -1,24 +1,35 @@
-import { ErrorMessage, prettyPrintError, prettyPrintMessage, prettyPrintTimeInMs, SuccessMessage } from '../../src';
+import type { ErrorMessage, SuccessMessage } from '../../src';
+import { prettyPrintError, prettyPrintMessage, prettyPrintTimeInMs } from '../../src';
 import { ToolsLogger } from '@sap-ux/logger';
 
 describe('message helpers', () => {
     const log = new ToolsLogger();
     const host = 'http://host.example';
 
-    test('prettyPrintMessage', () => {
-        const msg: SuccessMessage = {
-            code: '200',
-            message: '~message',
-            longtext_url: '/abc/de',
-            details: [
-                { code: '1', message: '~message', severity: 'info' },
-                { code: '2', message: '~message', severity: 'info' }
-            ]
-        };
-        const infoMock = (log.info = jest.fn());
-        prettyPrintMessage({ msg, log, host });
-        // log main message, two messages for the full url, and each detail
-        expect(infoMock).toBeCalledTimes(1 + 2 + msg.details.length);
+    describe('prettyPrintMessage', () => {
+        test('convert JSON into messages', () => {
+            const msg: SuccessMessage = {
+                code: '200',
+                message: '~message',
+                longtext_url: '/abc/de',
+                details: [
+                    { code: '1', message: '~message', severity: 'info' },
+                    { code: '2', message: '~message', severity: 'info' }
+                ]
+            };
+
+            const infoMock = (log.info = jest.fn());
+            prettyPrintMessage({ msg: JSON.stringify(msg), log, host });
+            // log main message, two messages for the full url, and each detail
+            expect(infoMock).toBeCalledTimes(1 + 2 + msg.details.length);
+        });
+
+        test('log none JSON message for debugging', () => {
+            const msg = '<xml>~message</xml>';
+            const debugMock = (log.debug = jest.fn());
+            prettyPrintMessage({ msg, log, host });
+            expect(debugMock).toBeCalledWith(msg);
+        });
     });
 
     test('prettyPrintError', () => {

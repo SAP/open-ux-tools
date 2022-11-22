@@ -1,7 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { AdtCategory, AdtCollection, AdtSchemaData } from 'abap/types';
 import { Axios } from 'axios';
-import type { AdtCatalogServiceApi } from './adt-catalog-service-api';
 import { AdtSchemaStore } from './adt-schema-store';
 import XmlParser from 'fast-xml-parser';
 
@@ -9,7 +8,7 @@ import XmlParser from 'fast-xml-parser';
  * Adt Catalog Service implementation fetches the
  * Adt service specification for a given ADT service.
  */
-export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
+export class AdtCatalogService extends Axios {
     // Discovery service url provided by ADT team
     public static ADT_DISCOVERY_SERVICE_PATH = '/sap/bc/adt/discovery';
     // Cache of fetched discovery schema
@@ -24,7 +23,7 @@ export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
      * @param adtCategory Adt service Id
      * @returns Service schema of the input Adt service
      */
-    public async getServiceDefinition(adtCategory: AdtCategory): Promise<AdtCollection> {
+    public async getServiceDefinition(adtCategory: AdtCategory): Promise<AdtCollection | null> {
         await this.checkOrLoadAdtDiscoverySchema();
         // Find the schema for the input service url path
         const serviceSchema = this.schemaStore.getAdtCollection(adtCategory);
@@ -33,10 +32,17 @@ export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
         if (isValidSchema) {
             return serviceSchema;
         } else {
-            throw new Error('Invalid Discovery Schema');
+            this.log.warn('Invalid Discovery Schema');
+            return null;
         }
     }
 
+    /**
+     *
+     * @param adtCategory adtCategory
+     * @param serviceSchema serviceSchema
+     * @returns boolean boolean result of schema validity
+     */
     private validateServiceSchema(adtCategory: AdtCategory, serviceSchema: AdtCollection): boolean {
         if (!serviceSchema) {
             this.log.warn(`Schema Not Found: ${adtCategory.term} - ${adtCategory.scheme}`);
@@ -52,7 +58,8 @@ export class AdtCatalogService extends Axios implements AdtCatalogServiceApi {
     /**
      * Check if discover schema is in the local cache. If not, fetch it by
      * calling discover service request.
-     * @returns
+     *
+     * @returns Promise<void>
      */
     private async checkOrLoadAdtDiscoverySchema(): Promise<void> {
         if (!this.schemaStore.isAdtSchemaEmpty()) {

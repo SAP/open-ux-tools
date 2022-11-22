@@ -4,12 +4,12 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { App, AppOptions, Package, UI5 } from './types';
 import { UI5Config } from '@sap-ux/ui5-config';
-import type { Manifest } from '@sap-ux/ui5-config';
+import type { Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
 import { Ui5App } from './types';
-import { getTypesVersion } from './data/defaults';
+import { getEsmTypesVersion } from './data/defaults';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -115,7 +115,7 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
     const ui5App = {
         app: manifest['sap.app'],
         ui5: {
-            typesVersion: getTypesVersion(manifest['sap.ui5']?.dependencies?.minUI5Version)
+            typesVersion: getEsmTypesVersion(manifest['sap.ui5']?.dependencies?.minUI5Version)
         }
     };
     enableTypescriptOption({ basePath, fs, ui5Configs: [ui5Config], tmplPath, ui5App }, true);

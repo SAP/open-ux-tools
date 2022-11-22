@@ -1,9 +1,9 @@
 @import '../../styles/_variables.scss';
 @import '../../styles/_mixins.scss';
 
-$menu-background: var(--vscode-menu-background, var(--vscuie-input-background));
+$menu-background: var(--vscode-menu-background, var(--vscode-input-background));
 $menu-color: var(--vscode-editorSuggestWidget-foreground);
-$menu-border-color: var(--vscuie-focusBorder);
+$menu-border-color: var(--vscode-focusBorder);
 
 $menu-item-height: 22px;
 $menu-item-horizontal-padding: 8px;

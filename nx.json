@@ -1,0 +1,64 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "build:extension",
+          "build:storybook",
+          "build:storybook:bundle"
+        ],
+        "accessToken": "ZjFiYzA4OTYtYjFlNS00NTI2LTk4OTktNWZiYTAyMGE0ZGRmfHJlYWQtd3JpdGU=",
+        "canTrackAnalytics": false,
+        "showUsageWarnings": true
+      }
+    }
+  },
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*"
+    ],
+    "prod": [
+      "!{projectRoot}/**/*.spec.tsx",
+      "!{projectRoot}/**/*.test.tsx",
+      "!{projectRoot}/**/*.spec.ts",
+      "!{projectRoot}/**/*.test.ts"
+    ]
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "{projectRoot}/dist",
+        "{projectRoot}/storybook"
+      ]
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^prod",
+        "{workspaceRoot}/jest.base.js",
+        "{projectRoot}/jest.config.js"
+      ],
+      "outputs": [
+        "{projectRoot}/coverage"
+      ]
+    },
+    "build:extension": {
+      "outputs": [
+        "{projectRoot}/*.vsix"
+      ]
+    },
+    "build:storybook": {
+      "outputs": [
+        "{projectRoot}/storybook"
+      ]
+    }
+  },
+  "defaultBase": "main"
+}

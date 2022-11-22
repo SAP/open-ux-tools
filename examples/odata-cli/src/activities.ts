@@ -1,7 +1,7 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { ODataVersion } from '@sap-ux/axios-extension';
+import { ODataVersion, TransportChecksService, TransportRequestService } from '@sap-ux/axios-extension';
 import { logger } from './types';
 
 /**
@@ -69,13 +69,21 @@ export async function useAdtServices(
         if (!atoSettings || Object.keys(atoSettings).length === 0) {
             logger.warn('ATO setting is empty!');
         }
-
-        const transportNumList = await provider.getTransportRequests(env.TEST_PACKAGE, env.TEST_APP);
-        if (transportNumList.length === 0) {
+        const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
+        const transportRequestList = await transportChecksService.getTransportRequests(env.TEST_PACKAGE, env.TEST_APP);
+        if (transportRequestList.length === 0) {
             logger.info(`Transport number is empty for package name ${env.TEST_PACKAGE}, app name ${env.TEST_APP}`);
         } else {
-            logger.info(JSON.stringify(transportNumList));
+            logger.info(JSON.stringify(transportRequestList));
         }
+
+        const trasnportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
+        const newTransportNumber = await trasnportRequestService.createTransportRequest({
+            packageName: env.TEST_PACKAGE,
+            ui5AppName: env.TEST_APP,
+            description: 'Test from odata-cli'
+        });
+        logger.info(`Created transport number: ${newTransportNumber}`);
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
     }
@@ -100,15 +108,14 @@ export async function testDeployUndeployDTA(
         TEST_TRANSPORT?: string;
     }
 ): Promise<void> {
-    const service = provider.layeredRepository();
+    const service = provider.getLayeredRepository();
     try {
         let response = await service.isExistingVariant(env.TEST_NAMESPACE);
         logger.info(`isExistingVariant: ${response.status}`);
 
         response = await service.deploy(env.TEST_ZIP, {
             namespace: env.TEST_NAMESPACE,
-            // eslint-disable-next-line quote-props
-            package: env.TEST_PACKAGE,
+            'package': env.TEST_PACKAGE,
             transport: env.TEST_TRANSPORT
         });
         logger.info(response.request.url);
@@ -120,8 +127,7 @@ export async function testDeployUndeployDTA(
 
             response = await service.undeploy({
                 namespace: env.TEST_NAMESPACE,
-                // eslint-disable-next-line quote-props
-                package: env.TEST_PACKAGE,
+                'package': env.TEST_PACKAGE,
                 transport: env.TEST_TRANSPORT
             });
             logger.info(`undeploy: ${response.status}`);

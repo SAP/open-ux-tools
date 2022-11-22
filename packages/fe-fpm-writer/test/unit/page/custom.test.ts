@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import type { ManifestNamespace } from '@sap-ux/ui5-config';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { CustomPage } from '../../../src';
 import { generateCustomPage, validateBasePath } from '../../../src';
 import { FCL_ROUTER } from '../../../src/common/defaults';
@@ -62,7 +62,7 @@ describe('CustomPage', () => {
     describe('generateCustomPage: different versions or target folder', () => {
         const minimalInput: CustomPage = {
             name: 'CustomPage',
-            entity: 'RootEnity'
+            entity: 'RootEntity'
         };
         test('latest version with minimal input', () => {
             const target = join(testDir, 'minimal-input');

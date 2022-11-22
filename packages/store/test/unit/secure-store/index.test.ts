@@ -22,7 +22,7 @@ describe('getSecureStore', () => {
             jest.spyOn(appStudioUtils, 'isAppStudio').mockReturnValue(false);
         });
         it('returns KeytarStore if keytar can be required with no errors', () => {
-            jest.mock('keytar', () => {});
+            jest.mock('keytar', jest.fn());
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
         it('returns DummyStore if keytar & vscode cannot be required', () => {

@@ -1,12 +1,13 @@
 {
-    "include": ["src"],
-    "exclude": ["dist", "templates", "coverage"],
+    "extends": "../../tsconfig.json",
+    "include": ["src", "src/**/*.json"],
     "compilerOptions": {
-        "declaration": true,
-        "outDir": "dist",
-        "sourceMap": true,
-        "baseUrl": "./src",
-        "resolveJsonModule": true
+        "rootDir": "src",
+        "outDir": "dist"
     },
-    "extends": "../../tsconfig.json"
+    "references": [
+        { "path": "../odata-service-writer" },
+        { "path": "../ui5-application-writer" },
+        { "path": "../ui5-config" }
+    ]
 }

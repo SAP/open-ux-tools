@@ -2,18 +2,22 @@ import * as utils from '../../src/base/utils';
 import * as proxy from '../../src/base/proxy';
 import * as ui5ProxyMiddleware from '../../src/ui5/middleware';
 
-import { Ui5MiddlewareConfig } from '../../src/base';
+import type { Ui5MiddlewareConfig } from '../../src/base';
 import express from 'express';
 import supertest from 'supertest';
 import nock from 'nock';
 
 // spy on ui5Proxy and injectScripts to verify calls
 const ui5ProxySpy = jest.spyOn(proxy, 'ui5Proxy');
-const injectScriptsMock = jest.spyOn(utils, 'injectScripts').mockImplementation(async (req, res, next) => {
+const injectScriptsMock = jest.spyOn(utils, 'injectScripts').mockImplementation(async (req, res) => {
     res.end();
 });
 
 // middleware function wrapper for testing to simplify tests
+/**
+ *
+ * @param configuration
+ */
 async function getTestServer(configuration: Ui5MiddlewareConfig): Promise<any> {
     const router = await (ui5ProxyMiddleware as any).default({
         options: { configuration }
@@ -132,8 +136,8 @@ describe('Set optional properties', () => {
             proxy: 'http://proxy.example'
         });
         expect(ui5ProxySpy).toBeCalledWith(
-            expect.objectContaining({}),
-            expect.objectContaining({ agent: expect.objectContaining({}) })
+            expect.objectContaining({ proxy: 'http://proxy.example' }),
+            expect.objectContaining({})
         );
     });
 

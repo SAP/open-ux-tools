@@ -1,5 +1,86 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.14.16
+
+### Patch Changes
+
+-   Updated dependencies [fdfa554]
+    -   @sap-ux/ui5-application-writer@0.17.13
+
+## 0.14.15
+
+### Patch Changes
+
+-   Updated dependencies [964ab8e]
+    -   @sap-ux/ui5-application-writer@0.17.12
+
+## 0.14.14
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/ui5-config@0.16.0
+    -   @sap-ux/odata-service-writer@0.14.13
+    -   @sap-ux/ui5-application-writer@0.17.11
+
+## 0.14.13
+
+### Patch Changes
+
+-   672b40b: Fix issue with tsconfig paths
+-   Updated dependencies [672b40b]
+    -   @sap-ux/ui5-application-writer@0.17.10
+
+## 0.14.12
+
+### Patch Changes
+
+-   324b802: Handle Typscript build step for Freestyle Simple templates
+-   Updated dependencies [324b802]
+    -   @sap-ux/ui5-application-writer@0.17.9
+
+## 0.14.11
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.4
+-   @sap-ux/odata-service-writer@0.14.12
+-   @sap-ux/ui5-application-writer@0.17.8
+
+## 0.14.10
+
+### Patch Changes
+
+-   Updated dependencies [11c8f5d]
+    -   @sap-ux/ui5-application-writer@0.17.7
+    -   @sap-ux/ui5-config@0.15.3
+    -   @sap-ux/odata-service-writer@0.14.11
+
+## 0.14.9
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+-   Updated dependencies [5b487ef]
+    -   @sap-ux/ui5-config@0.15.2
+    -   @sap-ux/odata-service-writer@0.14.10
+    -   @sap-ux/ui5-application-writer@0.17.6
+
+## 0.14.8
+
+### Patch Changes
+
+-   Updated dependencies [e3e1275]
+    -   @sap-ux/ui5-application-writer@0.17.5
+
+## 0.14.7
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.15.1
+-   @sap-ux/odata-service-writer@0.14.9
+-   @sap-ux/ui5-application-writer@0.17.4
+
 ## 0.14.6
 
 ### Patch Changes

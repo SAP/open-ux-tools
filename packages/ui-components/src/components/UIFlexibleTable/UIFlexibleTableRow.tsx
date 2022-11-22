@@ -11,6 +11,7 @@ export interface UIFlexibleTableRowProps<T> {
     rowData: React.ReactElement;
     rowRef?: React.RefObject<HTMLDivElement>;
     tableProps: UIFlexibleTableProps<T>;
+    className?: string;
 }
 
 /**
@@ -30,7 +31,9 @@ function renderRowTitle<T>(
 ): React.ReactNode {
     return (
         <div className="flexible-table-content-table-row-header">
-            <div className="flexible-table-content-table-row-header-text-content">{row.title || <span></span>}</div>
+            <div className="flexible-table-content-table-row-header-text-content" title={row.tooltip}>
+                {row.title || <span></span>}
+            </div>
             {props.layout === UIFlexibleTableLayout.Wrapping &&
                 getActionsContainer(false, rowIndex, rowActions, 'flexible-table-content-table-row-header-actions')}
         </div>
@@ -78,12 +81,12 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
 
     if (props.showIndexColumn) {
         if (props.onRenderTitleColumnCell) {
-            const { content, cellClassNames } = props.onRenderTitleColumnCell({
+            const { content, cellClassNames, tooltip } = props.onRenderTitleColumnCell({
                 isIndexColumn: true
             });
             const className = composeClassNames('flexible-table-content-table-title-row-item-index', [cellClassNames]);
             rowCells.push(
-                <div key="title-cell-index" className={className}>
+                <div key="title-cell-index" className={className} title={tooltip}>
                     {content}
                 </div>
             );
@@ -98,40 +101,41 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
 
     const rowCellsData: React.ReactNode[] = [];
     for (let i = 0; i < props.columns.length; i++) {
-        if (props.columns[i].hidden) {
+        const column = props.columns[i];
+        if (column.hidden) {
             continue;
         }
-        const key = props.columns[i].key;
+        const key = column.key;
         if (props.onRenderTitleColumnCell) {
-            const { content, isSpan, cellClassNames } = props.onRenderTitleColumnCell({
+            const { content, isSpan, cellClassNames, tooltip } = props.onRenderTitleColumnCell({
                 colIndex: i,
                 colKey: key
             });
             const className = composeClassNames('flexible-table-content-table-title-row-item-data-cells-value', [
                 cellClassNames,
-                props.columns[i].className
+                column.className
             ]);
             if (isSpan) {
                 rowCellsData.push(
-                    <div key={`title-cell-unknown`} className={className}>
+                    <div key={`title-cell-unknown`} className={className} title={tooltip || column.tooltip}>
                         {content}
                     </div>
                 );
                 break;
             } else {
                 rowCellsData.push(
-                    <div key={`cell-${key}-${i}`} className={className}>
+                    <div key={`cell-${key}-${i}`} className={className} title={tooltip || column.tooltip}>
                         {content}
                     </div>
                 );
             }
         } else {
             const className = composeClassNames('flexible-table-content-table-title-row-item-data-cells-value', [
-                props.columns[i].className
+                column.className
             ]);
             rowCellsData.push(
-                <div key={`title-cell-${key}-${i}`} className={className}>
-                    {props.columns[i].title}
+                <div key={`title-cell-${key}-${i}`} className={className} title={column.tooltip}>
+                    {column.title}
                 </div>
             );
         }
@@ -148,12 +152,12 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
 
     // Add actions title
     if (props.onRenderTitleColumnCell) {
-        const { content, cellClassNames } = props.onRenderTitleColumnCell({
+        const { content, cellClassNames, tooltip } = props.onRenderTitleColumnCell({
             isActionsColumn: true
         });
         const className = composeClassNames('flexible-table-content-table-title-row-item-actions', [cellClassNames]);
         rowCells.push(
-            <div key="title-row" className={className}>
+            <div key="title-row" className={className} title={tooltip}>
                 {content}
             </div>
         );
@@ -180,7 +184,7 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
  * @returns {JSX.Element}
  */
 export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
-    const { dragAndDropParams: params, rowData, rowActions, rowRef, tableProps } = props;
+    const { dragAndDropParams: params, rowData, rowActions, rowRef, tableProps, className: dynamicClassName } = props;
     const row = params.value as UIFlexibleTableRowType<T>;
     const rowIndex = params.index;
     const rowCells: Array<React.ReactElement> = [];
@@ -211,7 +215,8 @@ export function UIFlexibleTableRow<T>(props: UIFlexibleTableRowProps<T>) {
         row.className ?? '',
         tableProps.lockVertically ? 'locked-axis' : 'unlocked-axis',
         parityClassName,
-        tableProps.reverseBackground && !tableProps.noRowBackground ? 'reverse-background' : ''
+        tableProps.reverseBackground && !tableProps.noRowBackground ? 'reverse-background' : '',
+        dynamicClassName
     ]);
 
     const rowWrapperClassNames = [

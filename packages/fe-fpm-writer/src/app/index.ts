@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { lt, valid } from 'semver';
-import type { Manifest } from '@sap-ux/ui5-config';
+import type { Manifest } from '@sap-ux/project-access';
 import { FCL_ROUTER } from '../common/defaults';
 import { getTemplatePath } from '../templates';
 import { addExtensionTypes } from '../common/utils';

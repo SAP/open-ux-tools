@@ -1,5 +1,42 @@
 # @sap-ux/ui5-config
 
+## 0.16.0
+
+### Minor Changes
+
+-   d760b69: Add functionality to set metadata, type, and update custom middleware
+
+### Patch Changes
+
+-   Updated dependencies [d760b69]
+    -   @sap-ux/yaml@0.13.0
+
+## 0.15.4
+
+### Patch Changes
+
+-   Updated dependencies [f3cbe4d]
+    -   @sap-ux/yaml@0.12.4
+
+## 0.15.3
+
+### Patch Changes
+
+-   11c8f5d: Use manifest types from @sap-ux/project-access
+
+## 0.15.2
+
+### Patch Changes
+
+-   5b487ef: chore - Apply linting to test folders and linting fixes
+
+## 0.15.1
+
+### Patch Changes
+
+-   Updated dependencies [86fc1cd]
+    -   @sap-ux/yaml@0.12.3
+
 ## 0.15.0
 
 ### Minor Changes

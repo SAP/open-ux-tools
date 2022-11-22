@@ -14,7 +14,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "<%- app.id %>/*": [
+      "<%-app.id.replace(/\./g, '/') %>/*": [
         "webapp/*"
       ]
     },

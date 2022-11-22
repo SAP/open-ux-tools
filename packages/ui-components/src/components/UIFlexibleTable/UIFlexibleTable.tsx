@@ -95,7 +95,10 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
 
     const reorderTable = (oldIndex: number, newIndex: number): void => {
         if (props.onTableReorder) {
-            props.onTableReorder({ oldIndex, newIndex });
+            const result = props.onTableReorder({ oldIndex, newIndex });
+            if (typeof result === 'object' && result.isDropDisabled) {
+                return;
+            }
             setCurrentFocusedRowIndex(newIndex);
         }
     };
@@ -148,6 +151,14 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
         params: NodeDragAndDropSortingParams
     ): React.ReactElement<UIFlexibleTableRowProps<T>, 'UIFlexibleTableRow'> {
         const rowIndex: number | undefined = params.index;
+        const { isDropWarning } = props.onRenderRowContainer
+            ? props.onRenderRowContainer({
+                  readonly: !!props.readonly,
+                  rowIndex,
+                  isDragged: params.isDragged
+              })
+            : { isDropWarning: false };
+
         return (
             <UIFlexibleTableRow
                 key={`row-${rowIndex}`}
@@ -156,6 +167,7 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
                 rowData={renderRowData(params)}
                 tableProps={props}
                 rowRef={typeof rowToNavigate === 'number' && rowIndex === rowToNavigate ? scrollTargetRef : undefined}
+                className={isDropWarning ? 'highlight-drop-warning' : ''}
             />
         );
     }
@@ -169,6 +181,7 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
     }): React.ReactNode => {
         const ulElement = params.props.ref?.current;
         let { children } = params;
+
         if (ulElement && scrollableElement.current !== ulElement) {
             scrollableElement.current = ulElement;
             scrollBarObserver.current.observe(ulElement);
@@ -202,32 +215,34 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
         props.readonly ? 'readonly' : ''
     ]);
 
-    const contentClasses = composeClassNames('flexible-table-content', [
-        props.rows.length === 0 && !props.noDataText ? 'empty-table' : '',
-        props.isContentLoading ? 'loading' : ''
-    ]);
-
     const showTitleRow = props.showColumnTitles && isInRowLayout && !props.showColumnTitlesInCells;
     const tableRootElementStyle: CSSProperties = {
         maxWidth: props.maxWidth ? `${props.maxWidth}px` : '100%'
     };
 
-    const primaryTableActions: React.ReactNode[] = [];
-    const secondaryTableActions: React.ReactNode[] = [];
-    const getActionFragment = (actionElement: React.ReactElement) => (
-        <React.Fragment key={`table-action-${actionElement.key}`}>
-            <div className="flexible-table-header-action">{actionElement}</div>
-        </React.Fragment>
-    );
+    const getCustomTableActions = (
+        actionsGenerator?: (params: { readonly: boolean }) => React.ReactElement[]
+    ): JSX.Element[] => {
+        if (actionsGenerator) {
+            const customActions = actionsGenerator({ readonly: !!props.readonly });
+            return customActions.map((actionElement) => (
+                <React.Fragment key={`table-action-${actionElement.key}`}>
+                    <div className="flexible-table-header-action">{actionElement}</div>
+                </React.Fragment>
+            ));
+        }
+        return [];
+    };
 
-    if (props.onRenderPrimaryTableActions) {
-        const customActions = props.onRenderPrimaryTableActions({ readonly: !!props.readonly });
-        primaryTableActions.push(...customActions.map((item) => getActionFragment(item)));
-    }
-    if (props.onRenderSecondaryTableActions) {
-        const customActions = props.onRenderSecondaryTableActions({ readonly: !!props.readonly });
-        secondaryTableActions.push(...customActions.map((item) => getActionFragment(item)));
-    }
+    const primaryTableActions: React.ReactNode[] = getCustomTableActions(props.onRenderPrimaryTableActions);
+    const secondaryTableActions: React.ReactNode[] = getCustomTableActions(props.onRenderSecondaryTableActions);
+    const isEmptyHeader = !props.addRowButton && primaryTableActions.length + secondaryTableActions.length === 0;
+    const contentClasses = composeClassNames('flexible-table-content', [
+        props.rows.length === 0 && !props.noDataText ? 'empty-table' : '',
+        props.isContentLoading ? 'loading' : '',
+        isEmptyHeader ? 'empty-table-header' : ''
+    ]);
+
     return (
         <div
             className={tableClasses}
@@ -237,26 +252,30 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
             onBlur={() => {
                 onFocusRowAction();
             }}>
-            <div className="flexible-table-header">
-                <div className="flexible-table-header-primary-actions">
-                    {props.addRowButton && (
-                        <div className="flexible-table-header-action">
-                            <UIDefaultButton
-                                iconProps={{ iconName: 'Add' }}
-                                className="flexible-table-btn-add"
-                                id={getTableActionButtonId(props.id, 'add-row')}
-                                primary
-                                disabled={props.isAddItemDisabled || props.isContentLoading || props.readonly}
-                                onClick={addNewRow}
-                                title={props.addRowButton.title}>
-                                {props.addRowButton.label}
-                            </UIDefaultButton>
-                        </div>
-                    )}
-                    {primaryTableActions}
+            {isEmptyHeader ? (
+                <></>
+            ) : (
+                <div className="flexible-table-header">
+                    <div className="flexible-table-header-primary-actions">
+                        {props.addRowButton && (
+                            <div className="flexible-table-header-action">
+                                <UIDefaultButton
+                                    iconProps={{ iconName: 'Add' }}
+                                    className="flexible-table-btn-add"
+                                    id={getTableActionButtonId(props.id, 'add-row')}
+                                    primary
+                                    disabled={props.isAddItemDisabled || props.isContentLoading || props.readonly}
+                                    onClick={addNewRow}
+                                    title={props.addRowButton.title}>
+                                    {props.addRowButton.label}
+                                </UIDefaultButton>
+                            </div>
+                        )}
+                        {primaryTableActions}
+                    </div>
+                    <div className="flexible-table-header-secondary-actions">{secondaryTableActions}</div>
                 </div>
-                <div className="flexible-table-header-secondary-actions">{secondaryTableActions}</div>
-            </div>
+            )}
 
             <div className={contentClasses} ref={contentElementRef}>
                 {showTitleRow && renderTitleRow(props, titleRowRightPadding)}
@@ -295,17 +314,17 @@ function getTableBody<T>(
     tableBodyElementRef: React.MutableRefObject<any>
 ): React.ReactNode {
     let tableBody: React.ReactNode;
+    const { rows } = props.onBeforeTableRender ? props.onBeforeTableRender({ rows: props.rows }) : { rows: props.rows };
     if (props.onTableReorder && !props.readonly) {
         tableBody = (
             <List
-                values={props.rows}
+                values={rows}
                 lockVertically={props.lockVertically}
-                onChange={({ oldIndex, newIndex }): void => {
-                    reorderTable(oldIndex, newIndex);
-                }}
+                onChange={(params): void => reorderTable(params.oldIndex, params.newIndex)}
                 renderList={(params): React.ReactNode => renderTable(params)}
                 renderItem={(params): React.ReactNode => renderRow(params)}
                 removableByMove={true}
+                beforeDrag={props.onStartDragging}
             />
         );
     } else {

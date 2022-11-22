@@ -9,21 +9,13 @@ const connectorPath =
         : 'sap/ui/fl/initial/api/connectors/FileListBaseConnector';
 
 sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBaseConnector) {
-    var trustedHosts = [/^localhost$/, /^.*.applicationstudio.cloud.sap$/];
-    var url = new URL(window.location.toString());
-    var isValidHost = trustedHosts.some((host) => {
-        return host.test(url.hostname);
-    });
     return merge({}, FileListBaseConnector, {
         getFileList: function() {
             return new Promise(function(resolve, reject) {
                 // If no changes found, maybe because the app was executed without doing a build.
                 // Check for changes folder and load the changes, if any.
-                if (!isValidHost) {
-                    reject('cannot load flex changes: invalid host');
-                }
                 $.ajax({
-                    url: url.origin + '/changes/',
+                    url: '/changes/',
                     type: 'GET',
                     cache: false
                 })
