@@ -11,7 +11,7 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 const requestedChecksSet = [Check.Environment, Check.Destinations, Check.EndpointResults];
 
 const data = {
-    sapSystemResults: {
+    endpointResults: {
         ABC: {
             catalogService: {
                 v2: { results: [] },
@@ -112,7 +112,7 @@ const data = {
             cds: '2'
         }
     },
-    sapSystems: [
+    endpoints: [
         {
             Name: 'ABC',
             Type: 'HTTP',
@@ -215,7 +215,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check destination details with no v2 or v4 service', () => {
         const result = convertResultsToMarkdown({
-            sapSystemResults: { ABC: { catalogService: { v2: {}, v4: {} } } },
+            endpointResults: { ABC: { catalogService: { v2: {}, v4: {} } } },
             requestedChecks: requestedChecksSet
         });
         expect(result).toMatch('V2 catalog service not available');
@@ -223,7 +223,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check destination details with v4 service but not v2 service', () => {
         const result = convertResultsToMarkdown({
-            sapSystemResults: {
+            endpointResults: {
                 ABC: {
                     catalogService: {
                         v2: {},
@@ -241,7 +241,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     test('Check destination details with both v2 and v4 services available', () => {
         const destResultsCheck = [Check.Destinations, Check.EndpointResults];
         const result = convertResultsToMarkdown({
-            sapSystemResults: {
+            endpointResults: {
                 ABC: {
                     catalogService: {
                         v2: {
@@ -260,7 +260,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check empty destination table', () => {
         const result = convertResultsToMarkdown({
-            sapSystems: [],
+            endpoints: [],
             requestedChecks: requestedChecksSet
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
@@ -269,7 +269,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     test('Check stored system details - no systems', () => {
         const destResultsCheck = [Check.StoredSystems, Check.EndpointResults];
         const result = convertResultsToMarkdown({
-            sapSystemResults: {},
+            endpointResults: {},
             requestedChecks: destResultsCheck
         });
         expect(result).toMatch('No SAP system details');
@@ -277,7 +277,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     test('Check stored system details with v2/v4 and service checks', () => {
         const destResultsCheck = [Check.StoredSystems, Check.EndpointResults];
         const result = convertResultsToMarkdown({
-            sapSystemResults: {
+            endpointResults: {
                 ABC: {
                     catalogService: {
                         v2: {

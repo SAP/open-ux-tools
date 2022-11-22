@@ -1,10 +1,19 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { CatalogServiceResult } from '../../src/types';
 import { Severity } from '../../src/types';
 import * as serviceChecks from '../../src/checks/service-checks';
 import * as storeUtils from '@sap-ux/store';
 import { checkStoredSystem, checkStoredSystems } from '../../src/checks/stored-system';
 
 describe('Stored system tests ', () => {
+    const checkCatalogServicesResult = {
+        messages: [],
+        result: {
+            v2: {},
+            v4: {}
+        } as CatalogServiceResult
+    };
+
     test('checkStoredSystem() - service checks returned', async () => {
         const atoResult = {
             messages: [
@@ -35,12 +44,12 @@ describe('Stored system tests ', () => {
             ],
             isTransportRequests: true
         };
-
+        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
         jest.spyOn(serviceChecks, 'checkAtoCatalog').mockResolvedValueOnce(atoResult);
         jest.spyOn(serviceChecks, 'checkUi5AbapRepository').mockResolvedValueOnce(ui5AbapRepoResult);
         jest.spyOn(serviceChecks, 'checkTransportRequests').mockResolvedValueOnce(transportRequestResult);
 
-        const storeSystemResult = await checkStoredSystem({} as AbapServiceProvider);
+        const storeSystemResult = await checkStoredSystem({ Name: 'sys1' });
 
         expect(storeSystemResult.messages.length).toBe(3);
         expect(storeSystemResult.storedSystemResults.isAtoCatalog).toBe(true);

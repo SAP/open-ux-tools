@@ -1,12 +1,11 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { CatalogServiceResult, SapSystem } from '../../src/types';
+import type { CatalogServiceResult, Endpoint } from '../../src/types';
 import { Severity, UrlServiceType } from '../../src/types';
 import { checkEndpoints, checkEndpoint } from '../../src/checks/endpoint';
 import * as basDestination from '../../src/checks/destination';
 import * as storedSystem from '../../src/checks/stored-system';
 import { createForDestination, createForAbap, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
-import * as catalogService from '../../src/checks/catalog-service';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
@@ -35,7 +34,7 @@ const mockServiceProvider = {
 
 const mockCatalogServiceResult = {
     v2: { results: [] },
-    v4: {}
+    v4: { results: [] }
 } as CatalogServiceResult;
 
 const sapSystemOnPrem = {
@@ -76,9 +75,9 @@ const sapSystemScp = {
         refreshToken: 'mock-refresh-token'
     },
     Scp: true
-} as any as SapSystem;
+} as any as Endpoint;
 
-describe('Sap system tests', () => {
+describe('Endpoint tests', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -120,10 +119,10 @@ describe('Sap system tests', () => {
         };
         jest.spyOn(basDestination, 'checkBASDestinations').mockResolvedValueOnce(basDestinationResult);
 
-        const checkSapSysResult = await checkEndpoints();
+        const checkEndpointResult = await checkEndpoints();
 
-        expect(checkSapSysResult.sapSystems.length).toBe(2);
-        expect(checkSapSysResult.messages.length).toBe(1);
+        expect(checkEndpointResult.endpoints.length).toBe(2);
+        expect(checkEndpointResult.messages.length).toBe(1);
     });
 
     test('checkEndpoints - saved sap systems returned (VSCode)', async () => {
@@ -141,34 +140,29 @@ describe('Sap system tests', () => {
 
         jest.spyOn(storedSystem, 'checkStoredSystems').mockResolvedValueOnce(storedSystemResult);
 
-        const checkSapSysResult = await checkEndpoints();
+        const checkEndpointResult = await checkEndpoints();
 
-        expect(checkSapSysResult.sapSystems.length).toBe(2);
-        expect(checkSapSysResult.messages.length).toBe(1);
+        expect(checkEndpointResult.endpoints.length).toBe(2);
+        expect(checkEndpointResult.messages.length).toBe(1);
     });
 
     test('checkEndpoint - get destination details (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
 
-        const checkCatalogServicesResult = {
-            messages: [],
-            result: mockCatalogServiceResult
-        };
-
         const checkBASDestinationResult = {
             messages: [],
             destinationResults: {
+                catalogService: mockCatalogServiceResult,
                 HTML5DynamicDestination: true
             }
-        };
+        } as any;
 
         mockCreateForDestination.mockReturnValueOnce(mockServiceProvider);
-        jest.spyOn(catalogService, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
         jest.spyOn(basDestination, 'checkBASDestination').mockResolvedValueOnce(checkBASDestinationResult);
 
-        const checkSapSysResult = await checkEndpoint(sapSystemOnPrem);
+        const checkEndpointResult = await checkEndpoint(sapSystemOnPrem);
 
-        expect(checkSapSysResult.sapSystemResults).toEqual({
+        expect(checkEndpointResult.endpointResults).toEqual({
             catalogService: mockCatalogServiceResult,
             HTML5DynamicDestination: true
         });
@@ -177,27 +171,22 @@ describe('Sap system tests', () => {
     test('checkEndpoint - get on prem sap system details (VSCode)', async () => {
         mockIsAppStudio.mockReturnValue(false);
 
-        const checkCatalogServicesResult = {
-            messages: [],
-            result: mockCatalogServiceResult
-        };
-
         const checkStoredSystemResult = {
             messages: [],
             storedSystemResults: {
+                catalogService: mockCatalogServiceResult,
                 isAtoCatalog: true,
                 isSapUi5Repo: true,
                 isTransportRequests: true
             }
-        };
+        } as any;
 
         mockCreateForAbap.mockReturnValueOnce(mockServiceProvider);
-        jest.spyOn(catalogService, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
         jest.spyOn(storedSystem, 'checkStoredSystem').mockResolvedValueOnce(checkStoredSystemResult);
 
-        const checkSapSysResult = await checkEndpoint(sapSystemOnPrem);
+        const checkEndpointResult = await checkEndpoint(sapSystemOnPrem);
 
-        expect(checkSapSysResult.sapSystemResults).toEqual({
+        expect(checkEndpointResult.endpointResults).toEqual({
             catalogService: mockCatalogServiceResult,
             isAtoCatalog: true,
             isSapUi5Repo: true,
@@ -208,27 +197,22 @@ describe('Sap system tests', () => {
     test('checkEndpoint - get scp sap system details (VSCode)', async () => {
         mockIsAppStudio.mockReturnValue(false);
 
-        const checkCatalogServicesResult = {
-            messages: [],
-            result: mockCatalogServiceResult
-        };
-
         const checkStoredSystemResult = {
             messages: [],
             storedSystemResults: {
+                catalogService: mockCatalogServiceResult,
                 isAtoCatalog: true,
                 isSapUi5Repo: false,
                 isTransportRequests: false
             }
-        };
+        } as any;
 
         mockCreateForAbapOnCloud.mockReturnValueOnce(mockServiceProvider);
-        jest.spyOn(catalogService, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
         jest.spyOn(storedSystem, 'checkStoredSystem').mockResolvedValueOnce(checkStoredSystemResult);
 
-        const checkSapSysResult = await checkEndpoint(sapSystemScp);
+        const checkEndpointResult = await checkEndpoint(sapSystemScp);
 
-        expect(checkSapSysResult.sapSystemResults).toEqual({
+        expect(checkEndpointResult.endpointResults).toEqual({
             catalogService: mockCatalogServiceResult,
             isAtoCatalog: true,
             isSapUi5Repo: false,

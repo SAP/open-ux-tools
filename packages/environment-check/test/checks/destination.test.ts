@@ -1,9 +1,10 @@
 import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
-import type { SapSystem } from '../../src/types';
+import type { Endpoint, CatalogServiceResult } from '../../src/types';
 import { Severity } from '../../src/types';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
 import { UrlServiceType } from '../../src/types';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
+import * as serviceChecks from '../../src/checks/service-checks';
 
 jest.mock('@sap-ux/axios-extension', () => ({
     ...(jest.requireActual('@sap-ux/axios-extension') as object),
@@ -22,14 +23,23 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 const mockGetAppStudioProxyURL = getAppStudioProxyURL as jest.Mock;
 
 describe('Destination tests, function checkBASDestination()', () => {
+    const checkCatalogServicesResult = {
+        messages: [],
+        result: {
+            v2: {},
+            v4: {}
+        } as CatalogServiceResult
+    };
     test('HTML5.DynamicDestination missing', async () => {
-        const destination: Partial<SapSystem> = {
+        const destination: Partial<Endpoint> = {
             Name: 'DEST',
             Host: 'https://one.dest:123'
         };
 
+        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
+
         // Test execution
-        const result = await checkBASDestination(destination as SapSystem);
+        const result = await checkBASDestination(destination as Endpoint);
 
         // Result check
         expect(result.destinationResults.HTML5DynamicDestination).toEqual(false);
@@ -37,14 +47,15 @@ describe('Destination tests, function checkBASDestination()', () => {
     });
 
     test('HTML5.DynamicDestination set to true', async () => {
-        const destination: Partial<SapSystem> = {
+        const destination: Partial<Endpoint> = {
             Name: 'DEST',
             Host: 'https://one.dest:123',
             'HTML5.DynamicDestination': 'true'
         };
+        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
 
         // Test execution
-        const result = await checkBASDestination(destination as SapSystem);
+        const result = await checkBASDestination(destination as Endpoint);
 
         // Result check
         expect(result.destinationResults.HTML5DynamicDestination).toEqual(true);
@@ -153,12 +164,12 @@ describe('Destinaton tests, needsUsernamePassword()', () => {
     test('Password required, should return true', () => {
         const result = needsUsernamePassword({
             Authentication: 'NoAuthentication'
-        } as SapSystem);
+        } as Endpoint);
         expect(result).toBeTruthy();
     });
 
     test('No password required, should return false', () => {
-        const result = needsUsernamePassword({} as unknown as SapSystem);
+        const result = needsUsernamePassword({} as unknown as Endpoint);
         expect(result).toBeFalsy();
     });
 });

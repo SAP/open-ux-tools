@@ -23,7 +23,7 @@ jest.mock('../../src/checks/destination', () => ({
 }));
 const mockCheckBASDestinations = checkBASDestinations as jest.Mock;
 
-jest.mock('../../src/checks/sap-system', () => ({
+jest.mock('../../src/checks/endpoint', () => ({
     checkEndpoint: jest.fn()
 }));
 const mockCheckSapSystem = checkEndpoint as jest.Mock;
@@ -105,17 +105,17 @@ describe('Test for checkEnvironment() (BAS)', () => {
         mockCheckSapSystem.mockImplementationOnce(() => Promise.resolve({ messages: [], sapSystemResults: {} }));
         const options: CheckEnvironmentOptions = {
             workspaceRoots: [join(__dirname, '..', 'sample-workspace')],
-            sapSystems: ['ONE']
+            endpoints: ['ONE']
         };
 
         // Test execution
         const result = await checkEnvironment(options);
 
         // Result check
-        expect(result.sapSystems).toEqual(data);
+        expect(result.endpoints).toEqual(data);
         expect(result.messages).toBeDefined();
         expect(result.messages.length).toBe(17);
-        expect(result.requestedChecks).toEqual(['environment', 'destinations', 'sapSystemResults']);
+        expect(result.requestedChecks).toEqual(['environment', 'destinations', 'endpointResults']);
     });
 
     test('No deep dive destination, getEnvironmentCheck()', async () => {
@@ -145,10 +145,10 @@ describe('Test for checkEnvironment() (BAS)', () => {
 
         // Result check
         expect(infoMessage).toBeDefined();
-        expect(result.sapSystems).toEqual(data);
+        expect(result.endpoints).toEqual(data);
         expect(result.messages).toBeDefined();
         expect(result.messages.length).toBeGreaterThan(0);
-        expect(result.sapSystemResults).toBeDefined();
+        expect(result.endpointResults).toBeDefined();
     });
     test('Checking for deep dive destination that does not exist in the list, getEnvironmentCheck()', async () => {
         const data = [
@@ -168,17 +168,17 @@ describe('Test for checkEnvironment() (BAS)', () => {
 
         const options: CheckEnvironmentOptions = {
             workspaceRoots: [join(__dirname, '..', 'sample-workspace')],
-            sapSystems: ['NotInList']
+            endpoints: ['NotInList']
         };
 
         // Test execution
         const result = await checkEnvironment(options);
 
         // Result check
-        expect(result.sapSystems).toEqual(data);
+        expect(result.endpoints).toEqual(data);
         expect(result.messages).toBeDefined();
         expect(result.messages.length).toBeGreaterThan(0);
-        expect(result.sapSystemResults).toBeDefined();
+        expect(result.endpointResults).toBeDefined();
     });
 });
 
