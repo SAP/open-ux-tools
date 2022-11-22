@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.24
+
+### Patch Changes
+
+-   cc04479: Upgrade loader-utils modules to fix known vulnerability
+
 ## 1.0.23
 
 ### Patch Changes
