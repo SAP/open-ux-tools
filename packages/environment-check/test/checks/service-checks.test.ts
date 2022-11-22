@@ -218,14 +218,22 @@ describe('Test service check functions', () => {
     });
 
     test('checkUi5AbapRepository (succesful)', async () => {
+        const sapUI5RepoGet = jest.fn();
         const getUi5AbapRepository = jest.fn();
+
+        sapUI5RepoGet.mockImplementation(() => {
+            return {
+                status: 200,
+                response: {}
+            };
+        });
 
         getUi5AbapRepository.mockImplementation(() => {
             return {
                 baseURL: 'https://mockurl/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV',
                 httpsAgent: {},
                 withCredentials: true,
-                headers: {}
+                get: sapUI5RepoGet
             };
         });
 
@@ -243,10 +251,23 @@ describe('Test service check functions', () => {
     });
 
     test('checkUi5AbapRepository (unavailable)', async () => {
+        const sapUI5RepoGet = jest.fn();
         const getUi5AbapRepository = jest.fn();
 
+        sapUI5RepoGet.mockImplementation(() => {
+            return {
+                status: 404,
+                response: {}
+            };
+        });
+
         getUi5AbapRepository.mockImplementation(() => {
-            return {};
+            return {
+                baseURL: 'https://mockurl/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV',
+                httpsAgent: {},
+                withCredentials: true,
+                get: sapUI5RepoGet
+            };
         });
 
         const abapServiceProvider = {

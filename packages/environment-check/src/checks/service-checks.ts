@@ -194,7 +194,12 @@ export async function checkUi5AbapRepository(
     let isSapUi5Repo = false;
     try {
         const sapUI5Repo = provider.getUi5AbapRepository();
-        if (Object.keys(sapUI5Repo).length) {
+        const response = await sapUI5Repo.get('', {
+            headers: {
+                Accept: 'application/*'
+            }
+        });
+        if (response.status !== 404) {
             isSapUi5Repo = true;
             logger.info(t('info.sapUI5RepoAvailable'));
         } else {
