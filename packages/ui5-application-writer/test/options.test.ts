@@ -31,7 +31,7 @@ describe('UI5 templates', () => {
                 sapux: true
             }
         });
-        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        expect(fs.dump(projectDir)).toMatchSnapshot();
         return new Promise((resolve) => {
             // write out the files for debugging
             if (debug) {
@@ -50,7 +50,7 @@ describe('UI5 templates', () => {
                 loadReuseLibs: true
             }
         });
-        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        expect(fs.dump(projectDir)).toMatchSnapshot();
         return new Promise((resolve) => {
             // write out the files for debugging
             if (debug) {
@@ -72,7 +72,7 @@ describe('UI5 templates', () => {
                 version: '1.92.1'
             }
         });
-        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        expect(fs.dump(projectDir)).toMatchSnapshot();
         return new Promise((resolve) => {
             // write out the files for debugging
             if (debug) {
@@ -95,7 +95,7 @@ describe('UI5 templates', () => {
                 }
             })
         );
-        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        expect(fs.dump(projectDir)).toMatchSnapshot();
         return new Promise((resolve) => {
             // write out the files for debugging
             if (debug) {

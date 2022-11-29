@@ -119,7 +119,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         config.template.settings = settings;
         const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
-        expect((fs as any).dump(testPath)).toMatchSnapshot();
+        expect(fs.dump(testPath)).toMatchSnapshot();
 
         return new Promise((resolve) => {
             // write out the files for debugging

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "1.0.22",
+    "version": "1.0.24",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -24,8 +24,7 @@
         "build:extension": "tsc --build --pretty",
         "build:copyfiles": "copyfiles --up 1 \"./src/**/*.scss\" ./dist/",
         "lint": "eslint . --ext .ts,.tsx",
-        "lint:fix": "eslint --fix",
-        "lint:fix:all": "eslint . --ext .ts,.tsx --fix",
+        "lint:fix": "eslint . --ext .ts,.tsx --fix",
         "format:fix": "prettier --write --ignore-path ../../.prettierignore",
         "format:fix:all": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../.prettierignore",
         "storybook": "start-storybook -s ./.storybook/static",

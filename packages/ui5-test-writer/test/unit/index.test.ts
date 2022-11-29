@@ -80,7 +80,7 @@ describe('ui5-test-writer', () => {
         it.each(testPages)('$description', async (config) => {
             const projectDir = prepareTestFiles('Pages');
             fs = await generatePageObjectFile(projectDir, { targetKey: config.targetKey }, fs);
-            expect((fs as any).dump(projectDir)).toMatchSnapshot();
+            expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
         it.each(testUnsupportedPages)('$description', async (config) => {
@@ -114,7 +114,7 @@ describe('ui5-test-writer', () => {
                 { targetKey: 'EmployeesListTarget', appID: 'test.ui5-test-writer' },
                 fs
             );
-            expect((fs as any).dump(projectDir)).toMatchSnapshot();
+            expect(fs.dump(projectDir)).toMatchSnapshot();
         });
     });
 
@@ -165,7 +165,7 @@ describe('ui5-test-writer', () => {
         it.each(testApplications)('$description', async (config) => {
             const projectDir = prepareTestFiles(config.dirPath);
             fs = await generateOPAFiles(projectDir, { scriptName: config.scriptName }, fs);
-            expect((fs as any).dump(projectDir)).toMatchSnapshot();
+            expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
         it('No manifest', async () => {
@@ -195,7 +195,7 @@ describe('ui5-test-writer', () => {
         it('Providing an app ID', async () => {
             const projectDir = prepareTestFiles('MissingAppId');
             fs = await generateOPAFiles(projectDir, { appID: 'test.ui5-test-writer' }, fs);
-            expect((fs as any).dump(projectDir)).toMatchSnapshot();
+            expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
         it('Freestyle app not supported', async () => {
