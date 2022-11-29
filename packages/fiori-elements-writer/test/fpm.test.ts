@@ -55,7 +55,7 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
     test.each(fpmConfigs)('Generate files for template: $name', async ({ name, config }) => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
-        expect((fs as any).dump(testPath)).toMatchSnapshot();
+        expect(fs.dump(testPath)).toMatchSnapshot();
 
         return new Promise((resolve) => {
             // write out the files for debugging
