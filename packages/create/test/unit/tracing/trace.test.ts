@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { promises } from 'fs';
-import type { EditorWithDump } from '../../../src/types';
+import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { traceChanges } from '../../../src/tracing';
 import * as logger from '../../../src/tracing/logger';
@@ -27,7 +27,7 @@ describe('Test traceChanges()', () => {
         const newFile = join(__dirname, 'NEW_FILE');
         const fsMock = {
             dump: () => ({ [newFile]: { contents: 'CONTENT', state: 'modified' } })
-        } as unknown as EditorWithDump;
+        } as Partial<Editor> as Editor;
 
         // Test execution
         await traceChanges(fsMock);
@@ -43,7 +43,7 @@ describe('Test traceChanges()', () => {
         const contents = await promises.readFile(unchangedFile, { encoding: 'utf8' });
         const fsMock = {
             dump: () => ({ [unchangedFile]: { contents, state: 'modified' } })
-        } as unknown as EditorWithDump;
+        } as Partial<Editor> as Editor;
 
         // Test execution s
         await traceChanges(fsMock);
@@ -63,7 +63,7 @@ describe('Test traceChanges()', () => {
                     state: 'modified'
                 }
             })
-        } as unknown as EditorWithDump;
+        } as Partial<Editor> as Editor;
 
         // Test execution
         await traceChanges(fsMock);
@@ -100,7 +100,7 @@ describe('Test traceChanges()', () => {
                     state: 'modified'
                 }
             })
-        } as unknown as EditorWithDump;
+        } as Partial<Editor> as Editor;
 
         // Test execution
         await traceChanges(fsMock);
@@ -128,7 +128,7 @@ describe('Test traceChanges()', () => {
                     state: 'modified'
                 }
             })
-        } as unknown as EditorWithDump;
+        } as Partial<Editor> as Editor;
 
         // Test execution
         await traceChanges(fsMock);

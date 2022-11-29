@@ -1,7 +1,6 @@
 import { existsSync, promises } from 'fs';
 import type { Editor } from 'mem-fs-editor';
 import { extname } from 'path';
-import type { EditorWithDump } from '../types';
 import { compareStrings, compareJson } from './compare';
 import { getLogger } from './logger';
 
@@ -11,8 +10,7 @@ import { getLogger } from './logger';
  * @param fs - mem-fs-editor
  */
 export async function traceChanges(fs: Editor): Promise<void> {
-    const editor = fs as EditorWithDump;
-    const changedFiles = editor.dump() || {};
+    const changedFiles = fs.dump() || {};
     const logger = getLogger();
 
     for (const changedFile in changedFiles) {

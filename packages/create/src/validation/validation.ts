@@ -1,7 +1,6 @@
 import { existsSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import type { EditorWithDump } from '../types';
 
 /**
  * Validate base path of app, throw error if file is missing.
@@ -27,7 +26,6 @@ export function validateBasePath(basePath: string): void {
  * @returns - true if fs contains deletions; false otherwise
  */
 export function hasFileDeletes(fs: Editor): boolean {
-    const editorWithDump = fs as EditorWithDump;
-    const changedFiles = editorWithDump.dump() || {};
+    const changedFiles = fs.dump() || {};
     return !!Object.keys(changedFiles).find((fileName) => changedFiles[fileName].state === 'deleted');
 }
