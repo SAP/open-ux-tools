@@ -1,6 +1,6 @@
 {
-  "sap.app": {
-    "id": "bare-minimum",
-    "type": "application"
-  }
+    "sap.app": {
+        "id": "bare-minimum",
+        "type": "application"
+    }
 }
