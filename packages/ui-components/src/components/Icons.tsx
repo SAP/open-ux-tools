@@ -32,6 +32,7 @@ export enum UiIcons {
     Code = 'Code',
     CodeSnippet = 'CodeSnippet',
     Copy = 'Copy',
+    CopyToClipboard = 'CopyToClipboard',
     Columns = 'Columns',
     ComplexType = 'ComplexType',
     ConfirmationCheckSymbol = 'ConfirmationCheckSymbol',
@@ -104,6 +105,7 @@ export enum UiIcons {
     VerticalGrip = 'VerticalGrip',
     ViewMockup = 'ViewMockup',
     Warning = 'Warning',
+    WarningSmall = 'WarningSmall',
     WorklistPage = 'WorklistPage',
     World = 'World',
     WorldArrow = 'WorldArrow',
@@ -360,6 +362,24 @@ export function initIcons(): void {
                     />
                 </svg>
             ),
+            [UiIcons.CopyToClipboard]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M5 2H3V3H1V14H6.59971C6.43777 13.6832 6.30564 13.3486 6.20703 13H2V4H12V6.02242C12.3434 6.05337 12.6777 6.11588 13 6.20703V3H11V2H9C9 0.895431 8.10457 0 7 0C5.89543 0 5 0.895431 5 2ZM7 1C6.44772 1 6 1.44772 6 2H8C8 1.44772 7.55228 1 7 1Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M8.33692 7H3V8H7.25716C7.57052 7.62057 7.93379 7.28389 8.33692 7Z" fill={COLORS.default} />
+                    <path d="M3 5V6H11V5H3Z" fill={COLORS.default} />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M11.5 16C13.9853 16 16 13.9853 16 11.5C16 9.01472 13.9853 7 11.5 7C9.01472 7 7 9.01472 7 11.5C7 13.9853 9.01472 16 11.5 16ZM11.1465 9.14645C11.3418 8.95118 11.6584 8.95118 11.8536 9.14645L14.2072 11.5L13.5001 12.2071L12 10.707V14H11V10.7072L9.50008 12.2071L8.79297 11.5L11.1465 9.14645Z"
+                        fill={COLORS.info}
+                    />
+                </svg>
+            ),
             [UiIcons.Columns]: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path
@@ -544,40 +564,35 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.FullscreenExpand]: (
-                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g id="Icon16/Expand">
-                        <path
-                            id="ico_export"
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M9.99949 0H15.5045C15.7805 0 16.0045 0.224 16.0045 0.5V6H15.0045V1.703L10.7085 5.999L10.0015 5.292L14.2935 1H9.99949V0ZM1.00059 7.9991V1.4991C1.00059 1.2231 1.22459 0.9991 1.50059 0.9991H8.00059V1.9991H2.00059V7.9991H1.00059ZM6.00349 10.7061L5.29649 9.9991L1.00049 14.2951V9.9981H0.000488281V15.4971C0.000488281 15.7731 0.223488 15.9971 0.500488 15.9971H6.00449V14.9971H1.71249L6.00349 10.7061ZM8.00059 13.9991H14.0006V7.9991H15.0006V14.4991C15.0006 14.7751 14.7766 14.9991 14.5006 14.9991H8.00059V13.9991Z"
-                            fill={COLORS.default}
-                        />
-                    </g>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M15.5045 0H9.99949V1H14.2935L10.0015 5.292L10.7085 5.999L15.0045 1.703V6H15.99V0.5C15.99 0.224 15.7805 0 15.5045 0Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M10 8C10 9.10457 9.10457 10 8 10C6.89543 10 6 9.10457 6 8C6 6.89543 6.89543 6 8 6C9.10457 6 10 6.89543 10 8Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M5.29649 9.9991L6.00349 10.7061L1.71249 14.9971H6.00449V15.9971H0.500488C0.223488 15.9971 0.000488281 15.7731 0.000488281 15.4971V9.9981H1.00049V14.2951L5.29649 9.9991Z"
+                        fill={COLORS.default}
+                    />
                 </svg>
             ),
             [UiIcons.FullscreenCollapse]: (
-                <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g id="Icon16/Collapse">
-                        <g id="collapse">
-                            <path
-                                d="M16.0045 6H10.4995C10.2235 6 9.99949 5.776 9.99949 5.5V0H10.9995V4.297L15.2955 0.000999928L16.0025 0.708L11.7105 5H16.0045V6Z"
-                                fill={COLORS.default}
-                            />
-                            <path
-                                d="M1.00059 7.9991V1.4991C1.00059 1.2231 1.22459 0.9991 1.50059 0.9991H8.00059V1.9991H2.00059V7.9991H1.00059Z"
-                                fill={COLORS.default}
-                            />
-                            <path
-                                d="M0.00148869 15.2891L0.708488 15.9961L5.00449 11.7001V15.9971H6.00449V10.4981C6.00449 10.2221 5.78149 9.9981 5.50449 9.9981H0.000488281V10.9981H4.29249L0.00148869 15.2891Z"
-                                fill={COLORS.default}
-                            />
-                            <path
-                                d="M8.00059 13.9991H14.0006V7.9991H15.0006V14.4991C15.0006 14.7751 14.7766 14.9991 14.5006 14.9991H8.00059V13.9991Z"
-                                fill={COLORS.default}
-                            />
-                        </g>
-                    </g>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M10.4995 6H15.99V5H11.7105L15.99 0.708L15.2955 0.000999928L10.9995 4.297V0H9.99949V5.5C9.99949 5.776 10.2235 6 10.4995 6Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M0.708488 15.9961L0.00148869 15.2891L4.29249 10.9981H0.000488281V9.9981H5.50449C5.78149 9.9981 6.00449 10.2221 6.00449 10.4981V15.9971H5.00449V11.7001L0.708488 15.9961Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M9 4.12602C8.68038 4.04375 8.3453 4 8 4C5.79086 4 4 5.79086 4 8C4 8.3453 4.04375 8.68038 4.12602 9H6C6.55228 9 7 9.44771 7 10V11.874C7.31962 11.9562 7.6547 12 8 12C10.2091 12 12 10.2091 12 8C12 7.6547 11.9562 7.31962 11.874 7H10C9.44772 7 9 6.55228 9 6V4.12602Z"
+                        fill={COLORS.default}
+                    />
                 </svg>
             ),
             [UiIcons.Ghost]: (
@@ -1169,6 +1184,16 @@ export function initIcons(): void {
                         fill={COLORS.warning}
                         fillRule="evenodd"
                         d="M8.5,10.999 L8.5,11.997 L7.501,11.997 L7.501,10.999 L8.5,10.999 Z M8.5,5.995 L8.5,10.003 L7.501,10.003 L7.501,5.995 L8.5,5.995 Z M2.3394,13.0013 L8.0004,2.5493 L13.6594,13.0003 L2.3394,13.0013 Z M14.9384,13.2623 L8.4394,1.2613 C8.3524,1.1003 8.1834,1.0003 8.0004,1.0003 C7.8164,1.0003 7.6484,1.1003 7.5604,1.2613 L1.0604,13.2633 C0.9764,13.4183 0.9804,13.6053 1.0704,13.7573 C1.1604,13.9083 1.3234,14.0013 1.5004,14.0013 L14.4984,14.0003 C14.6744,14.0003 14.8384,13.9073 14.9284,13.7563 C15.0184,13.6053 15.0224,13.4173 14.9384,13.2623 L14.9384,13.2623 Z"
+                    />
+                </svg>
+            ),
+            [UiIcons.WarningSmall]: (
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M0.808994 11H10.191C10.5627 11 10.8044 10.6089 10.6382 10.2764L5.94719 0.894435C5.76293 0.525911 5.23703 0.525911 5.05276 0.894435L0.361781 10.2764C0.195556 10.6089 0.437303 11 0.808994 11ZM5 4V8H6V4H5ZM5 9V10H6V9H5Z"
+                        fill={COLORS.warning}
                     />
                 </svg>
             ),
