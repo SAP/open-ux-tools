@@ -646,8 +646,10 @@ importers:
   types:
     specifiers:
       '@types/mem-fs-editor': 7.0.1
+      '@types/vinyl': 2.0.7
     devDependencies:
       '@types/mem-fs-editor': 7.0.1
+      '@types/vinyl': 2.0.7
 
 packages:
 
@@ -4556,7 +4558,7 @@ packages:
       '@types/json-schema': 7.0.9
       '@types/mem-fs': 1.1.2
       '@types/node': 17.0.9
-      '@types/vinyl': 2.0.6
+      '@types/vinyl': 2.0.7
     dev: true
 
   /@types/mem-fs/1.1.2:
@@ -4767,6 +4769,13 @@ packages:
 
   /@types/vinyl/2.0.6:
     resolution: {integrity: sha512-ayJ0iOCDNHnKpKTgBG6Q6JOnHTj9zFta+3j2b8Ejza0e4cvRyMn0ZoLEmbPrTHe5YYRlDYPvPWVdV4cTaRyH7g==}
+    dependencies:
+      '@types/expect': 1.20.4
+      '@types/node': 17.0.9
+    dev: true
+
+  /@types/vinyl/2.0.7:
+    resolution: {integrity: sha512-4UqPv+2567NhMQuMLdKAyK4yzrfCqwaTt6bLhHEs8PFcxbHILsrxaY63n4wgE/BRLDWDQeI+WcTmkXKExh9hQg==}
     dependencies:
       '@types/expect': 1.20.4
       '@types/node': 17.0.9
