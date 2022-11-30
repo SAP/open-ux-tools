@@ -6,7 +6,7 @@ import { getAddCommands } from './add';
 import { getRemoveCommands } from './remove';
 
 /*
- * If chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
+ * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
  * (if it still up: https://npmtrends.com/commander-vs-minimist-vs-yargs)
  * At the time this was written in August 2022, 'commander' was the most feature rich, active, and popular module with decent size and built-in types support
  * - 'minimist' is super small but very limited functionality, no automatic help support
@@ -21,15 +21,15 @@ import { getRemoveCommands } from './remove';
 export function handleCreateFioriCommand(argv: string[]): void {
     const logger = getLogger();
     if (!Array.isArray(argv) || argv.length < 2) {
-        throw Error(`This function must be called from command line interface (cli). Or provide meaningful argv.`);
+        throw Error(`This function must be called from command line interface (cli). Or provide meaningful arguments.`);
     }
     try {
         const program = getCommanderProgram();
         program.parse(argv);
     } catch (error) {
         logger.error(`Error while executing ${argv[0]} ${argv[1]}`);
-        if (error instanceof Error) {
-            logger.error(error);
+        if (['string', 'object'].includes(typeof error)) {
+            logger.error(error as string | object);
         }
     }
 }
