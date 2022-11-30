@@ -16,7 +16,7 @@ function showHelp(): void {
 Usage: envcheck [<OPTIONS>] [<WORKSPACE_ROOT_A>] [<WORKSPACE_ROOT_..>]
 
 Following <OPTIONS> are available:
-    --destination <DESTINATION>         destination to perform deep check, multiple destionations can be passed
+    --destination <DESTINATION>         destination or stored SAP system to perform deep check, multiple destinations can be passed
     --output ${Object.values(OutputMode).join(
         ' | '
     )}  format for output, if not specified all messages except 'info' are shown
