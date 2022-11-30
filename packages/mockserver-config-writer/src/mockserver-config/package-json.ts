@@ -40,8 +40,8 @@ function enhanceDependencies(
     packageJson.devDependencies = packageJson.devDependencies || {};
     delete packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware'];
     packageJson.devDependencies[mockserverModule] = version;
-    packageJson.ui5 = packageJson.ui5 || {};
-    packageJson.ui5.dependencies = packageJson.ui5.dependencies || [];
+    packageJson.ui5 ||= {};
+    packageJson.ui5.dependencies ||= [];
     const ui5Dependencies = packageJson.ui5.dependencies.filter(
         (dep) => dep !== '@sap/ux-ui5-fe-mockserver-middleware'
     );
