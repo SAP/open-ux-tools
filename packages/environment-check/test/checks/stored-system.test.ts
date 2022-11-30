@@ -64,7 +64,7 @@ describe('Stored system tests ', () => {
             return [
                 {
                     name: 'abap-on-prem',
-                    url: 'http://url-on-prem.sap:000/',
+                    url: 'http://url-on-prem.sap:5000/sap/bc/gui/sap/its/webgui?sap-client=100&sap-language=EN',
                     client: '',
                     userDisplayName: 'user1',
                     username: 'user1',
@@ -72,14 +72,14 @@ describe('Stored system tests ', () => {
                 },
                 {
                     name: 'abap-on-prem2',
-                    url: 'http://url-on-prem2.sap:000/',
+                    url: 'http://url-on-prem2.sap/',
                     client: '',
                     userDisplayName: 'user2',
                     password: 'pass'
                 },
                 {
                     name: 'abap-on-prem3',
-                    url: 'http://url-on-prem3.sap:000/',
+                    url: 'http://url-on-prem3.sap/',
                     client: '',
                     userDisplayName: 'user3'
                 },
@@ -115,7 +115,7 @@ describe('Stored system tests ', () => {
         const expectedData = [
             {
                 Name: 'abap-on-prem',
-                Url: 'http://url-on-prem.sap:000/',
+                Url: 'http://url-on-prem.sap:5000',
                 Client: '',
                 UserDisplayName: 'user1',
                 Credentials: {
@@ -128,7 +128,7 @@ describe('Stored system tests ', () => {
             },
             {
                 Name: 'abap-on-prem2',
-                Url: 'http://url-on-prem2.sap:000/',
+                Url: 'http://url-on-prem2.sap',
                 Client: '',
                 UserDisplayName: 'user2',
                 Credentials: {
@@ -141,7 +141,7 @@ describe('Stored system tests ', () => {
             },
             {
                 Name: 'abap-on-prem3',
-                Url: 'http://url-on-prem3.sap:000/',
+                Url: 'http://url-on-prem3.sap',
                 Client: '',
                 UserDisplayName: 'user3',
                 Credentials: undefined,

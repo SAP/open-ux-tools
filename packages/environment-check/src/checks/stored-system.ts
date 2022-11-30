@@ -103,9 +103,10 @@ function transformStoredSystems(systems): Endpoint[] {
     const sapSystems: Endpoint[] = [];
 
     for (const s of systems) {
+        const url = new URL(s.url).origin;
         const answerDestination: Endpoint = {
             Name: s.name,
-            Url: s.url,
+            Url: url,
             Client: s.client,
             UserDisplayName: s.userDisplayName,
             Credentials:
