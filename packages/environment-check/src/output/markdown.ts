@@ -244,7 +244,7 @@ function writeSapSystemDetails(writer: MarkdownWriter, sapSystemName: string, sa
     if (sapSystemDetails.isSapUi5Repo) {
         writer.addLine(`✅ &nbsp; ${t('markdownText.sapUI5RepoAvailable')}`);
     } else {
-        writer.addLine(`🚫 &nbsp; ${t('markdownText.sapUI5RepoNotAvailable')}`);
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.sapUI5RepoNotDetermined')}`);
     }
 
     if (sapSystemDetails.isTransportRequests) {

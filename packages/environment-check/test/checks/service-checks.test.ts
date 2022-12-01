@@ -150,9 +150,10 @@ describe('Catalog service tests, function checkCatalogServices()', () => {
 
 describe('Test service check functions', () => {
     test('checkAtoCatalog (succesful)', async () => {
+        const getAtoInfo = jest.fn();
         const getAdtService = jest.fn();
 
-        getAdtService.mockImplementation(() => {
+        getAtoInfo.mockImplementation(() => {
             return {
                 developmentPackage: 'PACKAGE',
                 developmentPrefix: 'YY_1',
@@ -160,6 +161,12 @@ describe('Test service check functions', () => {
                 isExtensibilityDevelopmentSystem: true,
                 tenantType: '',
                 isTransportRequestRequired: true
+            };
+        });
+
+        getAdtService.mockImplementation(() => {
+            return {
+                getAtoInfo: getAtoInfo
             };
         });
 
@@ -172,15 +179,22 @@ describe('Test service check functions', () => {
 
         // Result check
         expect(atoCatalogResult.isAtoCatalog).toBe(true);
-        expect(atoCatalogResult.messages.length).toBe(1);
+        expect(atoCatalogResult.messages.length).toBe(2);
         expect(atoCatalogResult.messages[0].severity).toBe(Severity.Info);
     });
 
     test('checkAtoCatalog (unavailable)', async () => {
+        const getAtoInfo = jest.fn();
         const getAdtService = jest.fn();
 
-        getAdtService.mockImplementation(() => {
+        getAtoInfo.mockImplementation(() => {
             return {};
+        });
+
+        getAdtService.mockImplementation(() => {
+            return {
+                getAtoInfo: getAtoInfo
+            };
         });
 
         const abapServiceProvider = {
@@ -197,14 +211,14 @@ describe('Test service check functions', () => {
     });
 
     test('checkAtoCatalog (error)', async () => {
-        const getAtoInfo = jest.fn();
+        const getAdtService = jest.fn();
 
-        getAtoInfo.mockImplementation(() => {
+        getAdtService.mockImplementation(() => {
             throw new Error();
         });
 
         const abapServiceProvider = {
-            getAtoInfo: getAtoInfo
+            getAdtService: getAdtService
         } as unknown as AbapServiceProvider;
 
         // Test execution
@@ -246,7 +260,7 @@ describe('Test service check functions', () => {
 
         // Result check
         expect(sapUi5Result.isSapUi5Repo).toBe(true);
-        expect(sapUi5Result.messages.length).toBe(1);
+        expect(sapUi5Result.messages.length).toBe(3);
         expect(sapUi5Result.messages[0].severity).toBe(Severity.Info);
     });
 
@@ -279,7 +293,7 @@ describe('Test service check functions', () => {
 
         // Result check
         expect(sapUi5Result.isSapUi5Repo).toBe(false);
-        expect(sapUi5Result.messages.length).toBe(1);
+        expect(sapUi5Result.messages.length).toBe(3);
         expect(sapUi5Result.messages[0].severity).toBe(Severity.Warning);
     });
 

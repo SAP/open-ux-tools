@@ -164,10 +164,12 @@ export async function checkAtoCatalog(
     const logger = getLogger();
     let isAtoCatalog = false;
     try {
-        const atoService = await provider.getAdtService<AtoService>(AtoService);
-        if (Object.keys(atoService).length) {
+        const atdService = await provider.getAdtService<AtoService>(AtoService);
+        const atoSettings = await atdService.getAtoInfo();
+        if (Object.keys(atoSettings).length) {
             isAtoCatalog = true;
             logger.info(t('info.atoCatalogAvailable'));
+            logger.debug(atoSettings);
         } else {
             logger.warn(t('warning.atoCatalogNotAvailable'));
         }
@@ -199,12 +201,15 @@ export async function checkUi5AbapRepository(
                 Accept: 'application/*'
             }
         });
-        if (response.status !== 404) {
+        if (response.status === 200) {
             isSapUi5Repo = true;
             logger.info(t('info.sapUI5RepoAvailable'));
         } else {
-            logger.warn(t('warning.sapUI5RepoNotAvailable'));
+            logger.warn(t('warning.sapUI5RepoNotDetermined'));
         }
+
+        logger.debug(t('debug.ui5AbapStatusCode', { status: response.status }));
+        logger.debug(t('debug.ui5AbapStatusText', { statusText: response.statusText }));
     } catch (e) {
         logger.error(t('error.sapUI5RepoError'));
         logger.debug(e.message);
