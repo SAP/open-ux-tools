@@ -27,7 +27,7 @@ export function getMainServiceDataSource(manifest: Manifest): ManifestNamespace.
  */
 export function getODataSources(manifest: Manifest): { [k: string]: ManifestNamespace.DataSource } {
     const result: { [k: string]: ManifestNamespace.DataSource } = {};
-    const dataSources = manifest['sap.app'].dataSources || {};
+    const dataSources = manifest['sap.app']?.dataSources || {};
     for (const dataSource in dataSources) {
         if (dataSources[dataSource].uri && dataSources[dataSource].type === 'OData') {
             result[dataSource] = dataSources[dataSource];

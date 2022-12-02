@@ -1,6 +1,6 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import type { Manifest, Package } from '@sap-ux/project-access';
+import type { Package } from '@sap-ux/project-access';
 import type { PackageJsonMockConfig } from '../types';
 
 /**
@@ -8,19 +8,13 @@ import type { PackageJsonMockConfig } from '../types';
  *
  * @param fs - mem-fs reference to be used for file access
  * @param basePath - path to application root, where package.json is
- * @param webappPath - path to webapp folder, where manifest is
  * @param config - optional config for mockserver
  */
-export function enhancePackageJson(
-    fs: Editor,
-    basePath: string,
-    webappPath: string,
-    config?: PackageJsonMockConfig
-): void {
+export function enhancePackageJson(fs: Editor, basePath: string, config?: PackageJsonMockConfig): void {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
     enhanceDependencies(packageJson, config?.mockserverModule, config?.mockserverVersion);
-    enhanceScripts(fs, packageJson, webappPath);
+    enhanceScripts(fs, packageJson);
     fs.writeJSON(packageJsonPath, packageJson);
 }
 
@@ -52,26 +46,19 @@ function enhanceDependencies(
 }
 
 /**
- * Get the tile name of the app from app id in manifest.json and flpSandbox.hml.
+ * Add or update start-mock script to package.json. If there is a custom start-mock script,
+ * copy it to start-mock_.
  *
- * @param appId - id of app from manifest.json
- * @param flpSandboxContent - content of file flpSandbox.html as string
- * @returns - name of the tile for the app, might be empty string if not found
+ * @param fs - mem-fs reference to be used for file access
+ * @param packageJson - path to package.json
  */
-function getFlpSandboxTileName(appId: string, flpSandboxContent: string): string {
-    let flpSandboxTileName = '';
-    // Search for most recent tile name
-    const nameWithNs = `${appId.replace(/\./g, '')}-tile`;
-    if (flpSandboxContent.includes(nameWithNs)) {
-        flpSandboxTileName = nameWithNs;
-    } else {
-        // Search for older definitions of tile name
-        const nameNoNs = `${appId.split('.').pop()}-tile`;
-        if (flpSandboxContent) {
-            flpSandboxTileName = nameNoNs;
-        }
+function enhanceScripts(fs: Editor, packageJson: Package): void {
+    packageJson.scripts ||= {};
+    if (packageJson.scripts['start-mock'] && !isLegacyStartMockScript(packageJson.scripts['start-mock'])) {
+        packageJson.scripts['start-mock_'] = packageJson.scripts['start-mock'];
     }
-    return flpSandboxTileName;
+    packageJson.scripts['start-mock'] =
+        copyStartScript(packageJson.scripts.start) || `fiori run --config ./ui5-mock.yaml --open \"/\"`;
 }
 
 /**
@@ -86,52 +73,51 @@ function isLegacyStartMockScript(startMockScript: string): boolean {
         startMockScript.includes('test/flpSandbox.html')
     );
 }
+
 /**
- * Add basic start script for mock server to package.json which does not open a specific file or tile.
- * If there is an existing start-mock script, copy it to start-mock_.
+ * Return a copy of package.json's 'start' script with added or replaced config pointing to ui5-mock.yaml.
+ * In case start script can't be copied or is undefined, return undefined.
  *
- * @param packageJson - content of package.json
+ * @param startScript - start script from package.json
+ * @returns - copy of start script with config to ui5.yaml, undefined if start script can't be copied
  */
-function enhanceBasicStartMockserverScript(packageJson: Package): void {
-    packageJson.scripts = packageJson.scripts || {};
-    if (
-        packageJson.scripts['start-mock'] &&
-        !packageJson.scripts['start-mock'].startsWith('fiori run --config ./ui5-mock.yaml')
-    ) {
-        packageJson.scripts['start-mock_'] = packageJson.scripts['start-mock'];
+function copyStartScript(startScript: string | undefined): string | undefined {
+    if (typeof startScript !== 'string') {
+        return undefined;
     }
-    packageJson.scripts['start-mock'] = `fiori run --config ./ui5-mock.yaml --open \"/\"`;
+    const fioriRun = 'fiori run';
+    const fioriRunIndex = startScript.indexOf(fioriRun);
+    if (fioriRunIndex < 0) {
+        return undefined;
+    }
+    const configStartIndex = startScript.indexOf('--config', fioriRunIndex);
+    const startMockScript =
+        configStartIndex < 0
+            ? startScript.replace(fioriRun, `${fioriRun} --config ./ui5-mock.yaml`)
+            : replaceConfig(startScript, configStartIndex);
+    return startMockScript;
 }
 
 /**
- * Adds start-mock script to package.json, do nothing if script is up to date. If there is a
- * custom start-mock script, copy it to start-mock_.
+ * Replace the --config <any/path> in script with --config ./ui5-mock.yaml and return as new string.
  *
- * @param fs - mem-fs reference to be used for file access
- * @param packageJson - path to package.json
- * @param webappPath - path to webapp folder
+ * @param startScript - script that contains --config path/to/any.yaml
+ * @param configStartIndex - index in string where --config starts (first after fiori run)
+ * @returns - new script string with replaced --config
  */
-function enhanceScripts(fs: Editor, packageJson: Package, webappPath: string): void {
-    const flpSandboxPath = join(webappPath, 'test', 'flpSandbox.html');
-    if (!fs.exists(flpSandboxPath)) {
-        // If the file 'flpSandbox.html' does not exist add a basic script
-        // to start with mockserver but don't open any specific page
-        enhanceBasicStartMockserverScript(packageJson);
-        return;
+function replaceConfig(startScript: string, configStartIndex: number): string {
+    const argStart = configStartIndex + '--config'.length + 1;
+    const yamlStart = startScript.slice(argStart).search(/[^\s]/) + argStart;
+    let separator = ' ';
+    let quotischSepOffset = 0;
+    if (startScript[yamlStart] === '"' || startScript[yamlStart] === "'") {
+        separator = startScript[yamlStart];
+        quotischSepOffset = 1;
     }
-    const flpSandboxContent = fs.read(flpSandboxPath);
-    const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as unknown as Manifest;
-    const appId = manifest?.['sap.app']?.id;
-    let flpSandboxTileName = '';
-    if (appId) {
-        flpSandboxTileName = getFlpSandboxTileName(appId, flpSandboxContent);
-    }
-    const startMockScript = `fiori run --config ./ui5-mock.yaml --open \"test/flpSandbox.html?sap-ui-xx-viewCache=false#${flpSandboxTileName}\"`;
-    packageJson.scripts = packageJson.scripts || {};
-    if (packageJson.scripts['start-mock'] && !isLegacyStartMockScript(packageJson.scripts['start-mock'])) {
-        packageJson.scripts['start-mock_'] = packageJson.scripts['start-mock'];
-    }
-    packageJson.scripts['start-mock'] = startMockScript;
+    let yamlEnd = startScript.indexOf(separator, yamlStart + quotischSepOffset);
+    yamlEnd = yamlEnd === -1 ? startScript.length : yamlEnd + quotischSepOffset;
+    const startMockScript = `${startScript.substring(0, argStart)}./ui5-mock.yaml${startScript.substring(yamlEnd)}`;
+    return startMockScript;
 }
 
 /**
