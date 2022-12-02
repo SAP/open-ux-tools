@@ -195,6 +195,8 @@ importers:
       '@sap-ux/axios-extension': workspace:*
       '@sap-ux/btp-utils': workspace:*
       '@sap-ux/logger': workspace:*
+      '@sap-ux/project-access': workspace:*
+      '@sap-ux/store': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@sap/bas-sdk': 3.1.0
       '@types/archiver': 5.1.1
@@ -212,6 +214,8 @@ importers:
       '@sap-ux/axios-extension': link:../axios-extension
       '@sap-ux/btp-utils': link:../btp-utils
       '@sap-ux/logger': link:../logger
+      '@sap-ux/project-access': link:../project-access
+      '@sap-ux/store': link:../store
       '@sap-ux/ui5-config': link:../ui5-config
       '@sap/bas-sdk': 3.1.0
       archiver: 5.3.0
@@ -6462,7 +6466,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -12493,8 +12497,8 @@ packages:
   /nimnjs/1.3.2:
     resolution: {integrity: sha512-TIOtI4iqkQrUM1tiM76AtTQem0c7e56SkDZ7sj1d1MfUsqRcq2ZWQvej/O+HBTZV7u/VKnwlKTDugK/75IRPPw==}
     dependencies:
-      nimn_schema_builder: 1.1.0
       nimn-date-parser: 1.0.0
+      nimn_schema_builder: 1.1.0
     dev: false
 
   /no-case/3.0.4:
@@ -13646,6 +13650,17 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
+    dev: true
+
+  /promise-inflight/1.0.1_bluebird@3.7.2:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dependencies:
+      bluebird: 3.7.2
     dev: true
 
   /promise.allsettled/1.0.5:

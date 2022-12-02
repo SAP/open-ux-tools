@@ -7,7 +7,7 @@ import type { ILogger } from '../types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 const pluginsDirBAS = join('/extbin/plugins');
-const globalNpmBAS = join('/extbin/npm/globals/lib');
+const globalNodeModulesBAS = join('/extbin/npm/globals/lib/node_modules');
 
 /**
  * Checks if vsix/extension is required for results.
@@ -35,8 +35,8 @@ async function getExtensionsBAS(): Promise<{ [id: string]: { version: string } }
         .filter((vsixFile) => isExtensionRequired(vsixFile))
         .reduce((returnObject, current) => {
             const idVersion = current.split('.vsix')[0];
-            const firstNumeric = idVersion.search(/\d/);
-            const [id, version] = [idVersion.slice(0, firstNumeric - 1), idVersion.slice(firstNumeric)];
+            const firstNumeric = idVersion.search(/-\d/);
+            const [id, version] = [idVersion.slice(0, firstNumeric), idVersion.slice(firstNumeric + 1)];
             returnObject[id] = {
                 version
             };
@@ -103,36 +103,25 @@ export async function getCFCliToolVersion(): Promise<string> {
 }
 
 /**
- * Read the version of the fiori generator in BAS.
+ * Get the path of the fiori generator.
  *
  * @returns version
  */
-async function getFioriGenBAS(): Promise<string> {
-    let version;
-    const pathToPackageJson = join(globalNpmBAS, 'package.json');
-    if (existsSync(pathToPackageJson)) {
-        const dependencies = JSON.parse(await promises.readFile(pathToPackageJson, 'utf-8')).dependencies;
-        version = dependencies[NpmModules.FioriGenerator];
-    }
-    return version;
-}
-
-/**
- * Read the version of the fiori generator in VSCode.
- *
- * @returns version
- */
-async function getFioriGenGlobalRoot(): Promise<string> {
-    let version;
+async function getFioriGenGlobalPath(): Promise<string> {
+    let fioriGenPath;
     let globalNpmPath = await spawnCommand(npmCommand, ['root', '-g']);
-    globalNpmPath = globalNpmPath.trim();
-    const pathToPackageJson = join(globalNpmPath, NpmModules.FioriGenerator, 'package.json');
-    if (existsSync(pathToPackageJson)) {
-        version = JSON.parse(await promises.readFile(pathToPackageJson, 'utf-8')).version;
-    } else {
-        version = t('info.notInstalledOrNotFound');
+
+    // default version of npm on BAS (8.11.0) has a bug https://github.com/npm/cli/issues/5228
+    // can be removed when default npm version is upgraded
+    if (globalNpmPath.includes('WARN') && globalNpmPath.includes('--location=global')) {
+        globalNpmPath = await spawnCommand(npmCommand, ['root', '--location=global']);
     }
-    return version;
+
+    globalNpmPath = globalNpmPath.trim();
+    if (globalNpmPath) {
+        fioriGenPath = join(globalNpmPath, NpmModules.FioriGenerator);
+    }
+    return fioriGenPath;
 }
 
 /**
@@ -141,13 +130,26 @@ async function getFioriGenGlobalRoot(): Promise<string> {
  * @returns version
  */
 export async function getFioriGenVersion(): Promise<string> {
-    let fioriGenVersion: string;
+    let fioriGenVersion = t('info.notInstalledOrNotFound');
+    const genSearchPaths = [];
     try {
+        const fioriGenPath = await getFioriGenGlobalPath();
+        genSearchPaths.push(fioriGenPath);
+
         if (isAppStudio()) {
-            fioriGenVersion = await getFioriGenBAS();
+            const fioriGenPathBAS = join(globalNodeModulesBAS, NpmModules.FioriGenerator);
+            genSearchPaths.push(fioriGenPathBAS);
         }
-        if (!fioriGenVersion) {
-            fioriGenVersion = await getFioriGenGlobalRoot();
+
+        for (const genPath of genSearchPaths) {
+            const fioriGenPkgJson = join(genPath, 'package.json');
+            if (existsSync(fioriGenPkgJson)) {
+                const version = JSON.parse(await promises.readFile(fioriGenPkgJson, 'utf-8')).version;
+                if (version) {
+                    fioriGenVersion = version;
+                    break;
+                }
+            }
         }
     } catch {
         return t('info.notInstalledOrNotFound');

@@ -24,6 +24,8 @@
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap/bas-sdk": "3.1.0",
         "archiver": "5.3.0",
