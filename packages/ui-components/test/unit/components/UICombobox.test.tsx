@@ -117,6 +117,20 @@ describe('<UIComboBox />', () => {
                 wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
                 expect(wrapper.find('.ts-ComboBox--selected .ts-Menu-option').text()).toEqual('Algeria');
             });
+
+            it(`Test on "Keydown" - keyboard keys, which does not trigger dropdown open`, () => {
+                const ignoredOpenKeys = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
+
+                expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+                for (const ignoredKey of ignoredOpenKeys) {
+                    wrapper.find('input').simulate('keyDown', { key: ignoredKey });
+                }
+                // None of previously pressed keys should not trigger open for dropdown menu
+                expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
+                // Trigger with valid key
+                wrapper.find('input').simulate('keyDown', { key: 'a' });
+                expect(wrapper.find(menuDropdownSelector).length).toEqual(1);
+            });
         });
 
         it('Test "onInput"', () => {

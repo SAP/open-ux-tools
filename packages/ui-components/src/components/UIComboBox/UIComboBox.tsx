@@ -72,13 +72,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private root: React.RefObject<HTMLDivElement> = React.createRef();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
-    private ignoreOpenKeys: Array<number> = [
-        KeyCodes.ctrl,
-        KeyCodes.shift,
-        KeyCodes.tab,
-        KeyCodes.alt,
-        KeyCodes.capslock
-    ];
+    private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
 
     /**
@@ -186,7 +180,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             // Do not handle keydown of combobox
             event.preventDefault();
             event.stopPropagation();
-        } else if (!this.ignoreOpenKeys.includes(event.which) && baseCombobox && !isOpen) {
+        } else if (!this.ignoreOpenKeys.includes(event.key) && baseCombobox && !isOpen) {
             // Open dropdown list on first key press instead of showing it right after focus
             baseCombobox.focus(true);
         }
