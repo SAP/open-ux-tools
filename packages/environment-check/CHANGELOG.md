@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.8.0
+
+### Minor Changes
+
+-   16be8f1: add sap systems check
+
 ## 0.7.2
 
 ### Patch Changes
