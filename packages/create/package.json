@@ -12,7 +12,7 @@
     },
     "license": "Apache-2.0",
     "bin": {
-        "create-fiori": "./dist/index.js"
+        "sap-ux": "./dist/index.js"
     },
     "engines": {
         "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
