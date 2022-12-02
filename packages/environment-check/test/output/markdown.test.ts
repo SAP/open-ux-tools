@@ -1,58 +1,66 @@
 import type { EnvironmentCheckResult } from '../../src';
-import { Check } from '../../src';
-import { convertResultsToMarkdown, UrlServiceType } from '../../src';
+import { Check, convertResultsToMarkdown, UrlServiceType } from '../../src';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 jest.mock('@sap-ux/btp-utils', () => ({
-    ...(jest.requireActual('@sap-ux/btp-utils') as object),
     isAppStudio: jest.fn()
 }));
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
-const requestedChecksSet = [Check.Environment, Check.Destinations, Check.DestResults];
+const requestedChecksSet = [Check.Environment, Check.Destinations, Check.EndpointResults];
 
 const data = {
-    destinationResults: {
+    endpointResults: {
         ABC: {
-            v2: { results: [] },
-            v4: {},
+            catalogService: {
+                v2: { results: [] },
+                v4: {}
+            },
             HTML5DynamicDestination: true
         },
         DEF: {
-            v2: { results: [] },
-            v4: {},
+            catalogService: {
+                v2: { results: [] },
+                v4: {}
+            },
             HTML5DynamicDestination: true
         },
         JUST_WRONG: {
-            v2: { results: [] },
-            v4: {},
+            catalogService: {
+                v2: { results: [] },
+                v4: {}
+            },
             HTML5DynamicDestination: true
         },
         SYS: {
-            v2: {
-                results: [
-                    {
-                        id: 'SERVICE_ID',
-                        name: 'SERVICE_NAME',
-                        path: 'odata/SERVICE',
-                        odataVersion: '2',
-                        serviceVersion: '2'
-                    },
-                    {
-                        id: 'OTHER_SERVICE_ID',
-                        name: 'OTHER_SERVICE_NAME',
-                        path: '/odata/CATALOGSERVICE;v=2/ServiceCollection',
-                        serviceVersion: '2',
-                        odataVersion: '2'
-                    }
-                ]
-            },
-            v4: {}
+            catalogService: {
+                v2: {
+                    results: [
+                        {
+                            id: 'SERVICE_ID',
+                            name: 'SERVICE_NAME',
+                            path: 'odata/SERVICE',
+                            odataVersion: '2',
+                            serviceVersion: '2'
+                        },
+                        {
+                            id: 'OTHER_SERVICE_ID',
+                            name: 'OTHER_SERVICE_NAME',
+                            path: '/odata/CATALOGSERVICE;v=2/ServiceCollection',
+                            serviceVersion: '2',
+                            odataVersion: '2'
+                        }
+                    ]
+                },
+                v4: {}
+            }
         },
         XYZ: {
-            v2: { results: [] },
-            v4: {},
+            catalogService: {
+                v2: { results: [] },
+                v4: {}
+            },
             HTML5DynamicDestination: true
         }
     },
@@ -104,7 +112,7 @@ const data = {
             cds: '2'
         }
     },
-    destinations: [
+    endpoints: [
         {
             Name: 'ABC',
             Type: 'HTTP',
@@ -207,7 +215,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check destination details with no v2 or v4 service', () => {
         const result = convertResultsToMarkdown({
-            destinationResults: { ABC: { v2: {}, v4: {} } },
+            endpointResults: { ABC: { catalogService: { v2: {}, v4: {} } } },
             requestedChecks: requestedChecksSet
         });
         expect(result).toMatch('V2 catalog service not available');
@@ -215,11 +223,13 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check destination details with v4 service but not v2 service', () => {
         const result = convertResultsToMarkdown({
-            destinationResults: {
+            endpointResults: {
                 ABC: {
-                    v2: {},
-                    v4: {
-                        results: []
+                    catalogService: {
+                        v2: {},
+                        v4: {
+                            results: []
+                        }
                     }
                 }
             },
@@ -229,15 +239,17 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('V4 catalog call returned');
     });
     test('Check destination details with both v2 and v4 services available', () => {
-        const destResultsCheck = [Check.DestResults];
+        const destResultsCheck = [Check.Destinations, Check.EndpointResults];
         const result = convertResultsToMarkdown({
-            destinationResults: {
+            endpointResults: {
                 ABC: {
-                    v2: {
-                        results: []
-                    },
-                    v4: {
-                        results: []
+                    catalogService: {
+                        v2: {
+                            results: []
+                        },
+                        v4: {
+                            results: []
+                        }
                     }
                 }
             },
@@ -248,10 +260,61 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
     });
     test('Check empty destination table', () => {
         const result = convertResultsToMarkdown({
-            destinations: [],
+            endpoints: [],
             requestedChecks: requestedChecksSet
         });
         expect(result.split('<sub>created at')[0]).toMatchSnapshot();
+    });
+
+    test('Check stored system details - no systems', () => {
+        const destResultsCheck = [Check.StoredSystems, Check.EndpointResults];
+        const result = convertResultsToMarkdown({
+            endpointResults: {},
+            requestedChecks: destResultsCheck
+        });
+        expect(result).toMatch('No SAP system details');
+    });
+    test('Check stored system details with v2/v4 and service checks', () => {
+        const destResultsCheck = [Check.StoredSystems, Check.EndpointResults];
+        const result = convertResultsToMarkdown({
+            endpointResults: {
+                ABC: {
+                    catalogService: {
+                        v2: {
+                            results: []
+                        },
+                        v4: {
+                            results: []
+                        }
+                    },
+                    isAtoCatalog: true,
+                    isSapUi5Repo: true,
+                    isTransportRequests: true
+                },
+                XYZ: {
+                    catalogService: {
+                        v2: {
+                            results: []
+                        },
+                        v4: {
+                            results: []
+                        }
+                    },
+                    isAtoCatalog: false,
+                    isSapUi5Repo: false,
+                    isTransportRequests: false
+                }
+            },
+            requestedChecks: destResultsCheck
+        });
+        expect(result).toMatch('V2 catalog call returned');
+        expect(result).toMatch('V4 catalog call returned');
+        expect(result).toMatch('ATO catalog available');
+        expect(result).toMatch('ATO catalog is not available');
+        expect(result).toMatch('SAPUI5 repository service for deployment available');
+        expect(result).toMatch('SAPUI5 repository service for deployment cannot be determined');
+        expect(result).toMatch('Ability to retrieve available Transport Requests');
+        expect(result).toMatch('Unable to retrieve available Transport Requests');
     });
 
     test('Check markdown with no destinations checked', () => {

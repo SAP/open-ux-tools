@@ -22,6 +22,7 @@ describe('Test install functions', () => {
     test('getInstalledExtensions() (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
         const expectedResult = {
+            'vscode-ui5-language-assistant': { version: '3.3.0' },
             'sap-ux-application-modeler-extension': { version: '1.7.4' },
             'yeoman-ui': { version: '1.7.11' },
             'xml-toolkit': { version: '1.1.0' }
@@ -31,7 +32,8 @@ describe('Test install functions', () => {
                 `sap-ux-application-modeler-extension-1.7.4.vsix`,
                 `yeoman-ui-1.7.11.vsix`,
                 `xml-toolkit-1.1.0.vsix`,
-                `vscode-dependencies-validation-1.8.0.vsix`
+                `vscode-dependencies-validation-1.8.0.vsix`,
+                `vscode-ui5-language-assistant-3.3.0.vsix`
             ] as any;
         });
 
@@ -129,10 +131,28 @@ describe('Test install functions', () => {
     test('getFioriGenVersion() (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
         const expectedResult = '1.7.5';
+        const output = `some/path/to/lib/node_modules`;
+        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
+        jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
+            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
+        );
+        const result = await getFioriGenVersion();
+        expect(result).toStrictEqual(expectedResult);
+    });
+
+    test('getFioriGenVersion() (npm --location=global WARN BAS)', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        const expectedResult = '1.7.5';
+        const outputWarning = `npm WARN config global --global, --local are deprecated. Use --location=global instead --some/path/to/lib/node_modules`;
+        const output = `some/path/to/lib/node_modules`;
+
+        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(outputWarning);
+        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
 
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
         jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-            `{  "dependencies": { "@sap/generator-fiori": "1.7.5"  }}`
+            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
         );
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
