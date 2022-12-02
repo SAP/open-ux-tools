@@ -28,9 +28,7 @@ export function handleCreateFioriCommand(argv: string[]): void {
         program.parse(argv);
     } catch (error) {
         logger.error(`Error while executing ${argv[0]} ${argv[1]}`);
-        if (['string', 'object'].includes(typeof error)) {
-            logger.error(error as string | object);
-        }
+        logger.error(error as string | object);
     }
 }
 
