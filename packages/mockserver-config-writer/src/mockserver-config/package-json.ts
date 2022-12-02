@@ -46,32 +46,15 @@ function enhanceDependencies(
 }
 
 /**
- * Add or update start-mock script to package.json. If there is a custom start-mock script,
- * copy it to start-mock_.
+ * Add or update start-mock script to package.json.
  *
  * @param fs - mem-fs reference to be used for file access
  * @param packageJson - path to package.json
  */
 function enhanceScripts(fs: Editor, packageJson: Package): void {
     packageJson.scripts ||= {};
-    if (packageJson.scripts['start-mock'] && !isLegacyStartMockScript(packageJson.scripts['start-mock'])) {
-        packageJson.scripts['start-mock_'] = packageJson.scripts['start-mock'];
-    }
     packageJson.scripts['start-mock'] =
         copyStartScript(packageJson.scripts.start) || `fiori run --config ./ui5-mock.yaml --open \"/\"`;
-}
-
-/**
- * Returns whether the start-mock script in package.json is legacy.
- *
- * @param startMockScript - string of the start-mock script in package.json
- * @returns - true: is a legacy script; false: not a legacy script, perhaps custom script
- */
-function isLegacyStartMockScript(startMockScript: string): boolean {
-    return (
-        startMockScript.startsWith(`fiori run --config ./ui5-mock.yaml --open`) &&
-        startMockScript.includes('test/flpSandbox.html')
-    );
 }
 
 /**
