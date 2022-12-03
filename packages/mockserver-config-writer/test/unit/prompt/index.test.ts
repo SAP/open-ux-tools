@@ -30,6 +30,43 @@ describe('Test function getMockserverConfigQuestions()', () => {
         ]);
     });
 
+    test('Question with one choice, mem-fs passed, no odata version', () => {
+        const fs = create(createStorage());
+        fs.writeJSON(join('/webapp/manifest.json'), {
+            'sap.app': {
+                'dataSources': {
+                    'ms': {
+                        'uri': '/ms/service/path/',
+                        'type': 'OData'
+                    }
+                }
+            },
+            'sap.ui5': {
+                'models': {
+                    '': {
+                        'dataSource': 'ms'
+                    }
+                }
+            }
+        });
+        const webappPath = join('/webapp');
+
+        expect(getMockserverConfigQuestions({ fs, webappPath })).toEqual([
+            {
+                name: 'path',
+                type: 'select',
+                message: 'Path to mocked service',
+                initial: 0,
+                choices: [
+                    {
+                        'title': 'ms: /ms/service/path/',
+                        'value': '/ms/service/path/'
+                    }
+                ]
+            }
+        ]);
+    });
+
     test('Question with two choices, mem-fs passed', () => {
         // Mock setup
         const fs = create(createStorage());
@@ -67,7 +104,7 @@ describe('Test function getMockserverConfigQuestions()', () => {
         const webappPath = join('/webapp');
 
         // Test execution
-        const [question] = getMockserverConfigQuestions({ webappPath, fs });
+        const [question] = getMockserverConfigQuestions({ fs, webappPath });
 
         // Result check
         expect(question.name).toEqual('path');
@@ -95,7 +132,7 @@ describe('Test function getMockserverConfigQuestions()', () => {
         const fs = create(createStorage());
         fs.writeJSON(join('/any/manifest.json'), {});
         const webappPath = join('/any');
-        expect(getMockserverConfigQuestions({ webappPath, fs })).toEqual([
+        expect(getMockserverConfigQuestions({ fs, webappPath })).toEqual([
             {
                 name: 'path',
                 type: 'text',
