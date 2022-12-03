@@ -112,15 +112,25 @@ function replaceConfig(startScript: string, configStartIndex: number): string {
 export function removeFromPackageJson(fs: Editor, basePath: string): void {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package;
-    if (packageJson) {
-        delete packageJson?.scripts?.['start-mock'];
-        delete packageJson?.devDependencies?.['@sap/ux-ui5-fe-mockserver-middleware'];
-        delete packageJson?.devDependencies?.['@sap-ux/ui5-middleware-fe-mockserver'];
-        if (packageJson?.ui5?.dependencies && Array.isArray(packageJson?.ui5?.dependencies)) {
-            packageJson.ui5.dependencies = packageJson.ui5.dependencies.filter(
-                (d) => d !== '@sap/ux-ui5-fe-mockserver-middleware' && d !== '@sap-ux/ui5-middleware-fe-mockserver'
-            );
+    delete packageJson?.scripts?.['start-mock'];
+    if (packageJson.scripts && Object.keys(packageJson.scripts).length === 0) {
+        delete packageJson?.scripts;
+    }
+    delete packageJson?.devDependencies?.['@sap/ux-ui5-fe-mockserver-middleware'];
+    delete packageJson?.devDependencies?.['@sap-ux/ui5-middleware-fe-mockserver'];
+    if (packageJson.devDependencies && Object.keys(packageJson?.devDependencies).length === 0) {
+        delete packageJson.devDependencies;
+    }
+    if (packageJson?.ui5?.dependencies && Array.isArray(packageJson?.ui5?.dependencies)) {
+        packageJson.ui5.dependencies = packageJson.ui5.dependencies.filter(
+            (d) => d !== '@sap/ux-ui5-fe-mockserver-middleware' && d !== '@sap-ux/ui5-middleware-fe-mockserver'
+        );
+        if (packageJson.ui5.dependencies.length === 0) {
+            delete packageJson.ui5.dependencies;
         }
+    }
+    if (packageJson.ui5 && Object.keys(packageJson.ui5).length === 0) {
+        delete packageJson.ui5;
     }
     fs.writeJSON(packageJsonPath, packageJson);
 }
