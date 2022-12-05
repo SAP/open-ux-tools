@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.11.3
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 0.11.2
 
 ### Patch Changes

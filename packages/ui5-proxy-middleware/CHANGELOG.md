@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.18
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/logger@0.3.2
+    -   @sap-ux/ui5-config@0.16.1
+
 ## 1.1.17
 
 ### Patch Changes

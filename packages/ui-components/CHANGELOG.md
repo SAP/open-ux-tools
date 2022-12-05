@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.25
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 1.0.24
 
 ### Patch Changes
