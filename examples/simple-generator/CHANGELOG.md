@@ -1,5 +1,18 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.60
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/axios-extension@0.13.1
+    -   @sap-ux/btp-utils@0.11.3
+    -   @sap-ux/fiori-elements-writer@0.8.6
+    -   @sap-ux/fiori-freestyle-writer@0.14.17
+    -   @sap-ux/logger@0.3.2
+    -   @sap-ux/store@0.3.7
+
 ## 0.2.59
 
 ### Patch Changes

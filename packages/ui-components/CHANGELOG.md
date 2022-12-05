@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.0.26
+
+### Patch Changes
+
+-   cedf427: UICombobox. Default value for property "openMenuOnClick" changed to "true". Additionally, property "openMenuOnClick" is not considered during key press handling - dropdown menu is opened on first key press.
+
+## 1.0.25
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 1.0.24
 
 ### Patch Changes

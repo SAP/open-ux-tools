@@ -1,5 +1,18 @@
 # @sap-ux/environment-check
 
+## 0.8.1
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/axios-extension@0.13.1
+    -   @sap-ux/btp-utils@0.11.3
+    -   @sap-ux/logger@0.3.2
+    -   @sap-ux/project-access@1.0.3
+    -   @sap-ux/store@0.3.7
+    -   @sap-ux/ui5-config@0.16.1
+
 ## 0.8.0
 
 ### Minor Changes

@@ -157,3 +157,26 @@ export const Messages = (): JSX.Element => (
         />
     </div>
 );
+
+export const openMenuOnClick = (): JSX.Element => (
+    <div style={{ width: '300px' }}>
+        <UIComboBox
+            options={data}
+            highlight={true}
+            allowFreeform={true}
+            useComboBoxAsMenuMinWidth={true}
+            autoComplete="on"
+            openMenuOnClick={true}
+            label="Open menu on click"
+        />
+        <UIComboBox
+            options={data}
+            highlight={true}
+            allowFreeform={true}
+            useComboBoxAsMenuMinWidth={true}
+            autoComplete="on"
+            openMenuOnClick={false}
+            label="Do not open menu on click"
+        />
+    </div>
+);
