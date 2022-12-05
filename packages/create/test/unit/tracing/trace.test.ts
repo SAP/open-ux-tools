@@ -107,15 +107,21 @@ describe('Test traceChanges()', () => {
 
         // Result check
         expect(loggerMock.info).toBeCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
-        expect(loggerMock.debug).toBeCalledWith(
-            `File changes:
-[31mrootProperty: 'prop on root'[39m
-[31m[39m[32mrootProperty: 'changed prop on root'[39m
-[32m[39m[90mnested:[39m
-[90m- item: one[39m
-[90m[39m[31m- item: two[39m
-[31m[39m[32m- item: three[39m`
-        );
+        // diff's diffTrimmedLines() behaves slightly different on Windows and Mac. Get all lines and check if all is included.
+        const expectedLines = [
+            `File changes:`,
+            `[31mrootProperty: 'prop on root'[39m`,
+            `[31m[39m[32mrootProperty: 'changed prop on root'[39m`,
+            `[32m[39m[90mnested:UFF[39m`,
+            `[90m- item: one[39m`,
+            `[90m[39m[31m- item: two[39m`,
+            `[31m[39m[32m- item: three[39m`
+        ];
+        const receivedLines = new Set((loggerMock.debug as jest.Mock).mock.calls[0][0].split('\n'));
+        expect(receivedLines.size).toBe(expectedLines.length);
+        for (const expectedLine of expectedLines) {
+            expect(receivedLines.has(expectedLine));
+        }
     });
 
     test('Modified file without type', async () => {
