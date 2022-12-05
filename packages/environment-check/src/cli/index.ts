@@ -2,7 +2,7 @@ import { writeFile } from 'fs';
 import { t } from '../i18n';
 import minimist from 'minimist';
 import prompts from 'prompts';
-import type { CheckEnvironmentOptions, Destination, EnvironmentCheckResult } from '../types';
+import type { CheckEnvironmentOptions, EnvironmentCheckResult, Endpoint } from '../types';
 import { OutputMode, Severity } from '../types';
 import { convertResultsToMarkdown } from '../output/markdown';
 import { checkEnvironment } from '../checks/environment';
@@ -16,7 +16,7 @@ function showHelp(): void {
 Usage: envcheck [<OPTIONS>] [<WORKSPACE_ROOT_A>] [<WORKSPACE_ROOT_..>]
 
 Following <OPTIONS> are available:
-    --destination <DESTINATION>         destination to perform deep check, multiple destionations can be passed
+    --destination <DESTINATION>         destination or stored SAP system to perform deep check, multiple destinations can be passed
     --output ${Object.values(OutputMode).join(
         ' | '
     )}  format for output, if not specified all messages except 'info' are shown
@@ -38,8 +38,9 @@ function getOptions(cliArgs: minimist.ParsedArgs): CheckEnvironmentOptions | und
     if (cliArgs._.length > 0) {
         options.workspaceRoots = cliArgs._;
     }
-    if (cliArgs.destination) {
-        options.destinations = Array.isArray(cliArgs.destination) ? cliArgs.destination : [cliArgs.destination];
+
+    if (cliArgs['destination']) {
+        options.endpoints = Array.isArray(cliArgs['destination']) ? cliArgs['destination'] : [cliArgs['destination']];
     }
     return Object.keys(options).length > 0 ? options : undefined;
 }
@@ -119,7 +120,7 @@ async function outputResults(result: EnvironmentCheckResult, mode?: OutputMode):
  * @param destination - destination info with Name, Host, ...
  * @returns user input for username and password
  */
-async function credentialCallback(destination: Destination): Promise<{ username: string; password: string }> {
+async function credentialCallback(destination: Endpoint): Promise<{ username: string; password: string }> {
     console.log(t('info.authRequired', { destination: destination.Name }));
     const { username, password } = await prompts([
         {

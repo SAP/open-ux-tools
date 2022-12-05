@@ -26,6 +26,7 @@ export {
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {
     highlight?: boolean;
     useComboBoxAsMenuMinWidth?: boolean;
+    // Default value for "openMenuOnClick" is "true"
     openMenuOnClick?: boolean;
     onRefresh?(): void;
     onHandleChange?(value: string | number): void;
@@ -64,17 +65,14 @@ export interface ComboBoxRef extends IComboBox {
  * @extends {React.Component<UIComboBoxProps, UIComboBoxState>}
  */
 export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState> {
+    // Default values for public component properties
+    static defaultProps = { openMenuOnClick: true };
+    // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
     private root: React.RefObject<HTMLDivElement> = React.createRef();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
-    private ignoreOpenKeys: Array<number> = [
-        KeyCodes.ctrl,
-        KeyCodes.shift,
-        KeyCodes.tab,
-        KeyCodes.alt,
-        KeyCodes.capslock
-    ];
+    private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
 
     /**
@@ -182,12 +180,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             // Do not handle keydown of combobox
             event.preventDefault();
             event.stopPropagation();
-        } else if (
-            !this.ignoreOpenKeys.includes(event.which) &&
-            baseCombobox &&
-            !this.props.openMenuOnClick &&
-            !isOpen
-        ) {
+        } else if (!this.ignoreOpenKeys.includes(event.key) && baseCombobox && !isOpen) {
             // Open dropdown list on first key press instead of showing it right after focus
             baseCombobox.focus(true);
         }

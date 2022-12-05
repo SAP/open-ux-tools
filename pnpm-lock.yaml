@@ -7,6 +7,7 @@ overrides:
   multimatch@4.0.0>minimatch: 3.0.5
   loader-utils@>=1.0.0 <1.4.2: 1.4.2
   loader-utils@>=2.0.0 <2.0.4: 2.0.4
+  decode-uri-component@<0.2.2: '>=0.2.2'
 
 importers:
 
@@ -195,6 +196,8 @@ importers:
       '@sap-ux/axios-extension': workspace:*
       '@sap-ux/btp-utils': workspace:*
       '@sap-ux/logger': workspace:*
+      '@sap-ux/project-access': workspace:*
+      '@sap-ux/store': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@sap/bas-sdk': 3.1.0
       '@types/archiver': 5.1.1
@@ -212,6 +215,8 @@ importers:
       '@sap-ux/axios-extension': link:../axios-extension
       '@sap-ux/btp-utils': link:../btp-utils
       '@sap-ux/logger': link:../logger
+      '@sap-ux/project-access': link:../project-access
+      '@sap-ux/store': link:../store
       '@sap-ux/ui5-config': link:../ui5-config
       '@sap/bas-sdk': 3.1.0
       archiver: 5.3.0
@@ -642,6 +647,14 @@ importers:
     devDependencies:
       '@types/i18next-fs-backend': 1.0.0
       '@types/lodash': 4.14.176
+
+  types:
+    specifiers:
+      '@types/mem-fs-editor': 7.0.1
+      '@types/vinyl': 2.0.7
+    devDependencies:
+      '@types/mem-fs-editor': 7.0.1
+      '@types/vinyl': 2.0.7
 
 packages:
 
@@ -4550,7 +4563,7 @@ packages:
       '@types/json-schema': 7.0.9
       '@types/mem-fs': 1.1.2
       '@types/node': 17.0.9
-      '@types/vinyl': 2.0.6
+      '@types/vinyl': 2.0.7
     dev: true
 
   /@types/mem-fs/1.1.2:
@@ -4764,6 +4777,13 @@ packages:
 
   /@types/vinyl/2.0.6:
     resolution: {integrity: sha512-ayJ0iOCDNHnKpKTgBG6Q6JOnHTj9zFta+3j2b8Ejza0e4cvRyMn0ZoLEmbPrTHe5YYRlDYPvPWVdV4cTaRyH7g==}
+    dependencies:
+      '@types/expect': 1.20.4
+      '@types/node': 17.0.9
+    dev: true
+
+  /@types/vinyl/2.0.7:
+    resolution: {integrity: sha512-4UqPv+2567NhMQuMLdKAyK4yzrfCqwaTt6bLhHEs8PFcxbHILsrxaY63n4wgE/BRLDWDQeI+WcTmkXKExh9hQg==}
     dependencies:
       '@types/expect': 1.20.4
       '@types/node': 17.0.9
@@ -7460,8 +7480,8 @@ packages:
     resolution: {integrity: sha512-V0pfhfr8suzyPGOx3nmq4aHqabehUZn6Ch9kyFpV79TGDTWFmHqUqXdabR7QHqxzrYolF4+tVmJhUG4OURg5dQ==}
     dev: true
 
-  /decode-uri-component/0.2.0:
-    resolution: {integrity: sha512-hjf+xovcEn31w/EUYdTXQh/8smFL/dzYjohQGEIgjyNavaJfBY2p5F527Bo1VPATxv0VYTUC2bOcXvqFwk78Og==}
+  /decode-uri-component/0.2.2:
+    resolution: {integrity: sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==}
     engines: {node: '>=0.10'}
     dev: true
 
@@ -14877,7 +14897,7 @@ packages:
     deprecated: See https://github.com/lydell/source-map-resolve#deprecated
     dependencies:
       atob: 2.1.2
-      decode-uri-component: 0.2.0
+      decode-uri-component: 0.2.2
       resolve-url: 0.2.1
       source-map-url: 0.4.1
       urix: 0.1.0

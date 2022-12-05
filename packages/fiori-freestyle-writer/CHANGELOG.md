@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.14.17
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/odata-service-writer@0.14.14
+    -   @sap-ux/ui5-application-writer@0.17.14
+    -   @sap-ux/ui5-config@0.16.1
+
 ## 0.14.16
 
 ### Patch Changes

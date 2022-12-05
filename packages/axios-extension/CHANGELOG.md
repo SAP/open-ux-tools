@@ -1,5 +1,14 @@
 # @sap-ux/axios-extension
 
+## 0.13.1
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/btp-utils@0.11.3
+    -   @sap-ux/logger@0.3.2
+
 ## 0.13.0
 
 ### Minor Changes
