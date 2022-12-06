@@ -40,9 +40,9 @@ describe('Test removeMockserverConfig()', () => {
 
         const fs = removeMockserverConfig(basePath);
 
-        const packageJson = await promises.readFile(packageJsonPath, { encoding: 'utf-8' });
-        const manifestJson = await promises.readFile(manifestPath, { encoding: 'utf-8' });
-        expect(fs.read(packageJsonPath)).toEqual(packageJson);
-        expect(fs.read(manifestPath)).toEqual(manifestJson);
+        const packageJson = JSON.parse(await promises.readFile(packageJsonPath, { encoding: 'utf-8' }));
+        const manifestJson = JSON.parse(await promises.readFile(manifestPath, { encoding: 'utf-8' }));
+        expect(fs.readJSON(packageJsonPath)).toEqual(packageJson);
+        expect(fs.readJSON(manifestPath)).toEqual(manifestJson);
     });
 });
