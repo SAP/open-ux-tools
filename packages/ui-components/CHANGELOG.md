@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.27
+
+### Patch Changes
+
+-   e7d10c9: Storybook update
+
 ## 1.0.26
 
 ### Patch Changes
