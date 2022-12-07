@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.13.2
+
+### Patch Changes
+
+-   5589854: Upgrade qs module and the modules using it because of a potential Denial of Service vulnerabity
+
 ## 0.13.1
 
 ### Patch Changes
