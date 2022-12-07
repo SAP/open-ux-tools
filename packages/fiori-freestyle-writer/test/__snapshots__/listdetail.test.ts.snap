@@ -53,7 +53,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"1.71.18\\",
+    \\"@sapui5/ts-types-esm\\": \\"1.71.18\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -86,7 +86,7 @@ archive.zip
     \\"checkJs\\": true,
     \\"allowJs\\": true,
     \\"types\\": [
-      \\"@sapui5/ts-types\\"
+      \\"@sapui5/ts-types-esm\\"
     ]
   }
 }",
