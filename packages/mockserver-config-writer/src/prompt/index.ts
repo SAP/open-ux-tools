@@ -5,6 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Choice, PromptObject } from 'prompts';
 import type { Manifest } from '@sap-ux/project-access';
 import { getODataSources, getMainServiceDataSource } from '../app-info';
+import { t } from '..';
 
 /**
  * Return the list of questions to configure mockserver.
@@ -17,7 +18,7 @@ import { getODataSources, getMainServiceDataSource } from '../app-info';
 export function getMockserverConfigQuestions(params?: { webappPath?: string; fs?: Editor }): PromptObject[] {
     const question: Partial<PromptObject> = {
         name: 'path',
-        message: 'Path to mocked service'
+        message: t('questions.pathToMock')
     };
     if (params?.webappPath) {
         const fs = params.fs || create(createStorage());

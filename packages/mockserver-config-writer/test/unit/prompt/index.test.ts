@@ -3,11 +3,12 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Choice } from 'prompts';
 import { getMockserverConfigQuestions } from '../../../src';
+import { t } from '../../..';
 
 describe('Test function getMockserverConfigQuestions()', () => {
     test('Question without proposals', () => {
         expect(getMockserverConfigQuestions()).toEqual([
-            { name: 'path', type: 'text', message: 'Path to mocked service' }
+            { name: 'path', type: 'text', message: t('questions.pathToMock') }
         ]);
     });
 
@@ -17,7 +18,7 @@ describe('Test function getMockserverConfigQuestions()', () => {
             {
                 name: 'path',
                 type: 'select',
-                message: 'Path to mocked service',
+                message: t('questions.pathToMock'),
                 initial: 0,
                 choices: [
                     {
@@ -55,7 +56,7 @@ describe('Test function getMockserverConfigQuestions()', () => {
             {
                 name: 'path',
                 type: 'select',
-                message: 'Path to mocked service',
+                message: t('questions.pathToMock'),
                 initial: 0,
                 choices: [
                     {
@@ -109,7 +110,7 @@ describe('Test function getMockserverConfigQuestions()', () => {
         // Result check
         expect(question.name).toEqual('path');
         expect(question.type).toEqual('select');
-        expect(question.message).toEqual('Path to mocked service');
+        expect(question.message).toEqual(t('questions.pathToMock'));
         expect(question.choices).toBeDefined();
         expect(question.choices?.length).toBe(2);
         expect((question.choices as any[]).find((c) => c.value === '/path/v4/service/')).toEqual({
@@ -136,7 +137,7 @@ describe('Test function getMockserverConfigQuestions()', () => {
             {
                 name: 'path',
                 type: 'text',
-                message: 'Path to mocked service'
+                message: t('questions.pathToMock')
             }
         ]);
     });
