@@ -6,10 +6,14 @@ import { UIIcon } from '../UIIcon';
 import './UIGuidedAnswerBox.scss';
 
 export interface GuidedAnswerBoxProps {
-    targetElementId: string; // The id of the element to which this GA box will point
-    showInline?: boolean; // If true (default) the callout will be placed relative to the target element instead of floating using position absolute
-    guidedAnswerLink: IGuidedAnswerLink; // Guided Answer related properties
-    commandAction?(command: IGuidedAnswerLink['command']): void; // The function which will be passed the command
+    /** The id of the element to which this GA box will point */
+    targetElementId: string;
+    /** If true (default) the callout will be placed relative to the target element instead of floating using position absolute */
+    showInline?: boolean;
+    /** Guided Answer related properties */
+    guidedAnswerLink: IGuidedAnswerLink;
+    /** The function which will be passed the command */
+    commandAction?(command: IGuidedAnswerLink['command']): void;
 }
 
 export interface IGuidedAnswerLink {
@@ -51,6 +55,7 @@ export class UIGuidedAnswersBox extends React.Component<GuidedAnswerBoxProps> {
         this.targetElementId = props.targetElementId;
         this.showInline = props.showInline;
         this.anchor = React.createRef<HTMLAnchorElement>();
+        this.onCalloutClick = this.onCalloutClick.bind(this);
     }
 
     private onCalloutClick() {
@@ -68,7 +73,7 @@ export class UIGuidedAnswersBox extends React.Component<GuidedAnswerBoxProps> {
         return (
             <UICallout
                 className="uiGuidedAnswerBox-callout"
-                onClick={() => this.onCalloutClick()}
+                onClick={this.onCalloutClick}
                 target={`#${this.targetElementId}`}
                 isBeakVisible={true}
                 doNotLayer={true}
