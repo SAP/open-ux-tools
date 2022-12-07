@@ -1,5 +1,13 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.61
+
+### Patch Changes
+
+-   5589854: Upgrade qs module and the modules using it because of a potential Denial of Service vulnerabity
+-   Updated dependencies [5589854]
+    -   @sap-ux/axios-extension@0.13.2
+
 ## 0.2.60
 
 ### Patch Changes
