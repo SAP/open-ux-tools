@@ -1,12 +1,11 @@
-import React from 'react';
-import { UICallout } from '../UICallout';
 import { DirectionalHint } from '@fluentui/react';
-import './UIGuidedAnswerBox.scss';
-import { UILink } from '../UILink';
-import { UIIcon } from '../UIIcon';
+import React from 'react';
 import { UiIcons } from '../Icons';
+import { UICallout } from '../UICallout';
+import { UIIcon } from '../UIIcon';
+import './UIGuidedAnswerBox.scss';
 
-interface GuidedAnswerBoxProps {
+export interface GuidedAnswerBoxProps {
     targetElementId: string; // The id of the element to which this GA box will point
     showInline?: boolean; // If true (default) the callout will be placed relative to the target element instead of floating using position absolute
     guidedAnswerLink: IGuidedAnswerLink; // Guided Answer related properties
@@ -34,6 +33,12 @@ export interface IGuidedAnswerLink {
  *
  */
 export class UIGuidedAnswersBox extends React.Component<GuidedAnswerBoxProps> {
+    private anchor: React.RefObject<HTMLAnchorElement>;
+    private gaLink: IGuidedAnswerLink;
+    private commandAction: GuidedAnswerBoxProps['commandAction'];
+    private targetElementId: string;
+    private showInline: boolean | undefined;
+
     /**
      * Initializes component properties.
      *
@@ -41,22 +46,30 @@ export class UIGuidedAnswersBox extends React.Component<GuidedAnswerBoxProps> {
      */
     public constructor(props: GuidedAnswerBoxProps) {
         super(props);
+        this.gaLink = props.guidedAnswerLink;
+        this.commandAction = props.commandAction;
+        this.targetElementId = props.targetElementId;
+        this.showInline = props.showInline;
+        this.anchor = React.createRef<HTMLAnchorElement>();
+    }
+
+    private onCalloutClick() {
+        if (this.gaLink.command && this.commandAction) {
+            this.commandAction(this.gaLink.command);
+        } else {
+            this.anchor.current?.click();
+        }
     }
 
     /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const { targetElementId, guidedAnswerLink: gaLink, commandAction, showInline } = this.props;
-        // If `href` is not defined `link` renders as a button
-        if (gaLink.command) {
-            gaLink.url = undefined;
-        }
-
         return (
             <UICallout
                 className="uiGuidedAnswerBox-callout"
-                target={`#${targetElementId}`}
+                onClick={() => this.onCalloutClick()}
+                target={`#${this.targetElementId}`}
                 isBeakVisible={true}
                 doNotLayer={true}
                 beakWidth={4}
@@ -65,18 +78,19 @@ export class UIGuidedAnswersBox extends React.Component<GuidedAnswerBoxProps> {
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 styles={{
                     calloutMain: { padding: '10px' },
-                    root: { position: showInline === false ? 'absolute' : 'sticky' }
+                    root: { position: this.showInline === false ? 'absolute' : 'sticky' }
                 }}>
                 <UIIcon iconName={UiIcons.GuidedAnswerLink}></UIIcon>
-                <UILink
-                    className="uiGuidedAnswerBox-uiLink"
-                    underline
-                    href={gaLink.url}
+                {/* We do not use the 'UILink' here as it or its 'link' component do not expose a 'ref' to the underlying HTMLElement, needed to trigger click */}
+                <a
+                    ref={this.anchor}
+                    href={this.gaLink.url}
+                    className="uiGuidedAnswerBox-link"
                     target="_blank"
-                    onClick={() => (commandAction ? commandAction(gaLink.command) : null)}>
-                    {gaLink.linkText}
-                </UILink>
-                <div className="uiGuidedAnswerBox-subText">{gaLink.subText}</div>
+                    rel="noreferrer">
+                    {this.gaLink.linkText}
+                </a>
+                <div className="uiGuidedAnswerBox-subText">{this.gaLink.subText}</div>
             </UICallout>
         );
     }
