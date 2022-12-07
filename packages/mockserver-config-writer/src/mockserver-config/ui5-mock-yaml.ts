@@ -35,7 +35,7 @@ export async function enhanceYaml(
 ): Promise<void> {
     const ui5MockYamlPath = join(basePath, 'ui5-mock.yaml');
     let mockConfig;
-    const manifest: Manifest = JSON.parse(fs.read(join(webappPath, 'manifest.json')));
+    const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
     const mockserverPath = config?.path || getMainServiceDataSource(manifest)?.uri;
 
     if (fs.exists(ui5MockYamlPath)) {
@@ -59,7 +59,7 @@ export async function enhanceYaml(
  */
 async function updateUi5MockYamlConfig(fs: Editor, ui5MockYamlPath: string, path?: string): Promise<UI5Config> {
     const existingUi5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
-    existingUi5MockYamlConfig.updateCustomMiddleware(await getMockserverMiddleware(path));
+    existingUi5MockYamlConfig.updateCustomMiddleware(await getNewMockserverMiddleware(path));
     return existingUi5MockYamlConfig;
 }
 
@@ -72,7 +72,7 @@ async function updateUi5MockYamlConfig(fs: Editor, ui5MockYamlPath: string, path
  */
 async function generateUi5MockYamlBasedOnUi5Yaml(fs: Editor, basePath: string, path?: string): Promise<UI5Config> {
     const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(join(basePath, 'ui5.yaml')));
-    ui5MockYamlConfig.updateCustomMiddleware(await getMockserverMiddleware(path));
+    ui5MockYamlConfig.updateCustomMiddleware(await getNewMockserverMiddleware(path));
     return ui5MockYamlConfig;
 }
 
@@ -100,7 +100,7 @@ async function generateNewUi5MockYamlConfig(appId: string, path?: string): Promi
  * @param [path] - optional path for mockserver config
  * @returns - mockserver middleware
  */
-async function getMockserverMiddleware(path?: string): Promise<CustomMiddleware<MockserverConfig>> {
+async function getNewMockserverMiddleware(path?: string): Promise<CustomMiddleware<MockserverConfig>> {
     const ui5MockYaml = await UI5Config.newInstance('');
     ui5MockYaml.addMockServerMiddleware(path);
     const mockserverMiddleware = ui5MockYaml.findCustomMiddleware('sap-fe-mockserver');
