@@ -357,10 +357,6 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
 
     writer.addH1(t('markdownText.envCheckTitle'));
 
-    if (results.requestedChecks?.includes(Check.Environment)) {
-        writeEnvironment(writer, results.environment);
-    }
-
     if (
         results.requestedChecks?.includes(Check.Destinations) &&
         results.requestedChecks?.includes(Check.EndpointResults)
@@ -377,6 +373,10 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
         results.requestedChecks?.includes(Check.EndpointResults)
     ) {
         writeStoredSystemResults(writer, results.endpointResults);
+    }
+
+    if (results.requestedChecks?.includes(Check.Environment)) {
+        writeEnvironment(writer, results.environment);
     }
 
     writeMessages(writer, results.messages);
