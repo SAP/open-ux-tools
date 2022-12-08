@@ -16,7 +16,7 @@ describe('Test for start-mock script in package.json', () => {
         expect(startMock).toBe(`fiori run --config ./ui5-mock.yaml --open \"/\"`);
     });
 
-    test(`Start script existst, but does not contain 'fiori run' command`, () => {
+    test(`Start script exists, but does not contain 'fiori run' command`, () => {
         const fs = getMockFsPackageJson('any other start script');
         enhancePackageJson(fs, basePath);
         const startMock = (fs.readJSON(packageJsonPath) as Package).scripts?.['start-mock'];
