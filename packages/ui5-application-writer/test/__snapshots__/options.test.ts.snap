@@ -6,17 +6,46 @@ Object {
     "contents": "{
   \\"plugins\\": [
     \\"@sap/ui5-jsdocs\\",
-    \\"eslint-plugin-fiori-custom\\"
+    \\"fiori-custom\\"
   ],
   \\"extends\\": [
     \\"plugin:@sap/ui5-jsdocs/recommended\\",
-    \\"eslint:recommended\\",
-    \\"./node_modules/eslint-plugin-fiori-custom/configure.eslintrc\\"
+    \\"eslint:recommended\\"
   ],
-  \\"ignorePatterns\\": [
-    \\"webapp/localService/**\\",
-    \\"webapp/test/**\\",
-    \\"dist/**\\"
+  \\"overrides\\": [
+    {
+      \\"files\\": [
+        \\"**/*.*\\"
+      ],
+      \\"excludedFiles\\": [
+        \\"test/**\\",
+        \\"target/**\\",
+        \\"webapp/test/**\\",
+        \\"webapp/localservice/**\\",
+        \\"backup/**\\",
+        \\"Gruntfile.js\\",
+        \\"changes_preview.js\\",
+        \\"gulpfile.js\\"
+      ],
+      \\"plugins\\": [
+        \\"fiori-custom\\"
+      ],
+      \\"extends\\": [
+        \\"eslint:recommended\\",
+        \\"plugin:fiori-custom/fioriToolsDefault\\"
+      ]
+    },
+    {
+      \\"files\\": [
+        \\"webapp/test/**\\"
+      ],
+      \\"plugins\\": [
+        \\"fiori-custom\\"
+      ],
+      \\"extends\\": [
+        \\"plugin:fiori-custom/fioriToolsTestcode\\"
+      ]
+    }
   ]
 }
 ",
@@ -55,14 +84,14 @@ archive.zip
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"1.71.18\\",
-    \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
+    \\"eslint-plugin-fiori-custom\\": \\"2.2.4\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"lint\\": \\"eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/\\"
+    \\"lint\\": \\"eslint ./\\"
   },
   \\"ui5\\": {
     \\"dependencies\\": [
@@ -902,7 +931,7 @@ appDescription=Test App Description",
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var scripts = document.getElementsByTagName(\\"script\\");
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
