@@ -50,6 +50,70 @@ describe('Test to check zip save, storeResultsZip()', () => {
         expect(console.log).toBeCalledWith(`Results written to file 'envcheck-results.zip' 117.74 MB`);
     });
 
+    test('Check if writer is creating output appropriately (VSCode stored systems)', () => {
+        // Mock setup
+        zipMock = {
+            on: jest.fn(),
+            pipe: jest.fn(),
+            append: jest.fn(),
+            finalize: jest.fn(),
+            pointer: () => 123456789
+        } as unknown as archiver.Archiver;
+        let writeStreamCloseCallback;
+        const writeStreamMock = {
+            on: (name, callback) => {
+                if (name === 'close') {
+                    writeStreamCloseCallback = callback;
+                }
+            }
+        } as unknown as mockFs.WriteStream & { on: jest.Mock };
+        jest.spyOn(mockFs, 'createWriteStream').mockImplementation((filename) => {
+            return filename === 'envcheck-results.zip' ? writeStreamMock : undefined;
+        });
+        console.log = jest.fn();
+        const jsonStringifySpy = jest.spyOn(JSON, 'stringify');
+
+        const requestedChecksSet = [Check.Environment, Check.StoredSystems, Check.EndpointResults];
+        const endpoints = [
+            {
+                Name: 'system1',
+                Url: 'http://url.com',
+                Client: '000',
+                UserDisplayName: 'user display',
+                Scp: false,
+                Credentials: {
+                    username: 'user1',
+                    password: 'pass1'
+                }
+            }
+        ];
+        // Test execution
+        storeResultsZip({ requestedChecks: requestedChecksSet, endpoints });
+        writeStreamCloseCallback();
+
+        // Result check
+        expect(zipMock.pipe).toBeCalledWith(writeStreamMock);
+        expect(jsonStringifySpy).toBeCalledWith(
+            {
+                'endpoints': [
+                    {
+                        'Client': '000',
+                        'Name': 'system1',
+                        'Scp': false,
+                        'Url': 'http://url.com',
+                        'UserDisplayName': 'user display'
+                    }
+                ],
+                'requestedChecks': ['environment', 'storedSystems', 'endpointResults']
+            },
+            null,
+            4
+        );
+        expect(zipMock.append).toBeCalledTimes(2);
+        expect(zipMock.finalize).toBeCalled();
+        expect(console.log).toBeCalledWith(`Results written to file 'envcheck-results.zip' 117.74 MB`);
+    });
+
     test('Check writer for file size 0 bytes, different filename, and ENOENT warning', () => {
         // Mock setup
         zipMock = {
