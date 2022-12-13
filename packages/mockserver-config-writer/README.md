@@ -1,6 +1,6 @@
 # @sap-ux/mockserver-config-writer
 
-Adds or removes configuration for mockserver module `@sap-ux/ui5-middleware-fe-mockserver` to SAP UX project.
+Adds or removes configuration for mockserver module `@sap-ux/ui5-middleware-fe-mockserver` to an SAP UX project.
 
 ## Installation
 Npm
