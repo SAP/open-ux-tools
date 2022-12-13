@@ -1,5 +1,12 @@
 # @sap-ux/environment-check
 
+## 0.9.1
+
+### Patch Changes
+
+-   Updated dependencies [e49be41]
+    -   @sap-ux/project-access@1.0.4
+
 ## 0.9.0
 
 ### Minor Changes
