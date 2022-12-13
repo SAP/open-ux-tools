@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.9.0
+
+### Minor Changes
+
+-   f4adc48: markdown updates
+
 ## 0.8.2
 
 ### Patch Changes
