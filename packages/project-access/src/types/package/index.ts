@@ -4,7 +4,7 @@ interface SapUxPackage {
     sapux?: boolean | string[];
     sapuxLayer?: UI5FlexLayer;
     cds?: object;
-    ui5?: object;
+    ui5?: { dependencies?: string[] };
     remarkConfig?: object;
 }
 
