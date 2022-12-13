@@ -143,7 +143,9 @@ async function catalogRequest(
         if (errorJson?.config?.auth?.password) {
             delete errorJson.config.auth.password;
         }
-        logger.debug(t('error.urlRequestFailure', { url, error: error.message, errorObj: error }));
+        logger.debug(
+            t('error.urlRequestFailure', { url, error: error.message, errorObj: JSON.stringify(errorJson, null, 4) })
+        );
     }
     return {
         messages: logger.getMessages(),
