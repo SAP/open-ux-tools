@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.0.4
+
+### Patch Changes
+
+-   e49be41: Init modules to add, update, remove features
+
 ## 1.0.3
 
 ### Patch Changes
