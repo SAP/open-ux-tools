@@ -1,0 +1,6 @@
+{
+  "sap.app": {
+    "id": "bare-minimum",
+    "type": "application"
+  }
+}
