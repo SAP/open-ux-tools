@@ -25,9 +25,9 @@ export async function checkStoredSystem(storedSystem: Endpoint): Promise<{
     const logger = getLogger();
 
     // retrieve system credentials
-    const storeService = await getService({ logger, entityName: 'system' });
+    const storeService = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
     const backendKey = new BackendSystemKey({ url: storedSystem.Url, client: storedSystem.Client });
-    const sapSystem = (await storeService.read(backendKey)) as BackendSystem;
+    const sapSystem = await storeService.read(backendKey);
 
     storedSystem.Url = new URL(storedSystem.Url).origin;
     storedSystem.Credentials =
