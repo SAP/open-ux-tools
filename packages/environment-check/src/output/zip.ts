@@ -2,7 +2,6 @@ import { createWriteStream, existsSync } from 'fs';
 import { basename, dirname, join } from 'path';
 import * as archiver from 'archiver';
 import type { EnvironmentCheckResult } from '../types';
-import { Check } from '../types';
 import { convertResultsToMarkdown } from './markdown';
 import { t } from '../i18n';
 /**
@@ -18,27 +17,6 @@ function byteNumberToSizeString(byteNumber: number): string {
     const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log(byteNumber) / Math.log(1024));
     return `${parseFloat((byteNumber / Math.pow(1024, i)).toFixed(2))} ${units[i]}`;
-}
-
-/**
- * Convert results to JSON and removes credentials from (stored system) endpoints.
- *
- * @param results - environment check results
- * @returns json string
- */
-function convertResultsToJson(results: EnvironmentCheckResult): string {
-    if (results.requestedChecks?.includes(Check.StoredSystems)) {
-        results.endpoints = results.endpoints.map((endpoint) => {
-            return {
-                Name: endpoint.Name,
-                Url: endpoint.Url,
-                Client: endpoint.Client,
-                UserDisplayName: endpoint.UserDisplayName,
-                Scp: endpoint.Scp
-            };
-        });
-    }
-    return JSON.stringify(results, null, 4);
 }
 
 /**
@@ -69,7 +47,7 @@ export function storeResultsZip(results: EnvironmentCheckResult, targetFile = 'e
     const markdown = Buffer.from(convertResultsToMarkdown(results));
     zip.append(markdown, { name: 'envcheck-results.md' });
 
-    const jsonString = Buffer.from(convertResultsToJson(results));
+    const jsonString = Buffer.from(JSON.stringify(results, null, 4));
     zip.append(jsonString, { name: 'envcheck-results.json' });
 
     zip.finalize();

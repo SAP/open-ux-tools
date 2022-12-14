@@ -1,4 +1,5 @@
-import { getService } from '@sap-ux/store';
+import { getService, BackendSystemKey } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import type { ResultMessage, Endpoint, EndpointResults } from '../types';
 import { getLogger } from '../logger';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
@@ -22,6 +23,21 @@ export async function checkStoredSystem(storedSystem: Endpoint): Promise<{
     storedSystemResults: EndpointResults;
 }> {
     const logger = getLogger();
+
+    // retrieve system credentials
+    const storeService = await getService({ logger, entityName: 'system' });
+    const backendKey = new BackendSystemKey({ url: storedSystem.Url, client: storedSystem.Client });
+    const sapSystem = (await storeService.read(backendKey)) as BackendSystem;
+
+    storedSystem.Credentials =
+        sapSystem?.serviceKeys || sapSystem?.username || sapSystem?.password
+            ? {
+                  serviceKeysContents: sapSystem.serviceKeys as ServiceInfo,
+                  username: sapSystem.username,
+                  password: sapSystem.password,
+                  refreshToken: sapSystem.refreshToken
+              }
+            : undefined;
 
     const abapServiceProvider = getServiceProvider(storedSystem);
 
@@ -109,15 +125,6 @@ function transformStoredSystems(systems): Endpoint[] {
             Url: url,
             Client: s.client,
             UserDisplayName: s.userDisplayName,
-            Credentials:
-                s.serviceKeys || s.username || s.password
-                    ? {
-                          serviceKeysContents: s.serviceKeys as ServiceInfo,
-                          username: s.username,
-                          password: s.password,
-                          refreshToken: s.refreshToken
-                      }
-                    : undefined,
             Scp: !!s.serviceKeys
         };
         sapSystems.push(answerDestination);
