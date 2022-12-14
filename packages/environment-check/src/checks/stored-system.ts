@@ -29,6 +29,7 @@ export async function checkStoredSystem(storedSystem: Endpoint): Promise<{
     const backendKey = new BackendSystemKey({ url: storedSystem.Url, client: storedSystem.Client });
     const sapSystem = (await storeService.read(backendKey)) as BackendSystem;
 
+    storedSystem.Url = new URL(storedSystem.Url).origin;
     storedSystem.Credentials =
         sapSystem?.serviceKeys || sapSystem?.username || sapSystem?.password
             ? {
@@ -119,10 +120,9 @@ function transformStoredSystems(systems): Endpoint[] {
     const sapSystems: Endpoint[] = [];
 
     for (const s of systems) {
-        const url = new URL(s.url).origin;
         const answerDestination: Endpoint = {
             Name: s.name,
-            Url: url,
+            Url: s.url,
             Client: s.client,
             UserDisplayName: s.userDisplayName,
             Scp: !!s.serviceKeys

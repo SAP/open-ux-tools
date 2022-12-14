@@ -217,26 +217,23 @@ describe('Stored system tests ', () => {
         const expectedData = [
             {
                 Name: 'abap-on-prem',
-                Url: 'http://url-on-prem.sap:5000',
+                Url: 'http://url-on-prem.sap:5000/sap/bc/gui/sap/its/webgui?sap-client=100&sap-language=EN',
                 Client: '',
                 UserDisplayName: 'user1',
-                Credentials: undefined,
                 Scp: false
             },
             {
                 Name: 'abap-on-prem2',
-                Url: 'http://url-on-prem2.sap',
+                Url: 'http://url-on-prem2.sap/',
                 Client: '',
                 UserDisplayName: 'user2',
-                Credentials: undefined,
                 Scp: false
             },
             {
                 Name: 'abap-on-prem3',
-                Url: 'http://url-on-prem3.sap',
+                Url: 'http://url-on-prem3.sap/',
                 Client: '',
                 UserDisplayName: 'user3',
-                Credentials: undefined,
                 Scp: false
             },
             {
@@ -244,7 +241,6 @@ describe('Stored system tests ', () => {
                 Url: 'https://abap-cloud-url.com',
                 Client: undefined,
                 UserDisplayName: 'user@sap.com',
-                Credentials: undefined,
                 Scp: true
             }
         ];
