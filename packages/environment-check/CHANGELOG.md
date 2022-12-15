@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.10.0
+
+### Minor Changes
+
+-   31cf890: prevent showing credentials in zip, fix escaping in markdown
+
 ## 0.9.1
 
 ### Patch Changes
