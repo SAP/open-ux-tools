@@ -116,7 +116,7 @@ export enum UiIcons {
     GoToKey = 'GoToKey',
     File = 'File',
     NoResults = 'NoResults',
-    GuidedAnswerLink = 'GuidedAnswerLink'
+    actionDetail = 'actionDetail'
 }
 
 export function initIcons(): void {
@@ -1368,7 +1368,7 @@ export function initIcons(): void {
                     />
                 </svg>
             ),
-            [UiIcons.GuidedAnswerLink]: (
+            [UiIcons.actionDetail]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         fillRule="evenodd"

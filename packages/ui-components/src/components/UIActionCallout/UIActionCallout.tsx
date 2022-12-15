@@ -3,20 +3,22 @@ import React from 'react';
 import { UiIcons } from '../Icons';
 import { UICallout } from '../UICallout';
 import { UIIcon } from '../UIIcon';
-import './UIGuidedAnswerBox.scss';
+import './UIActionCallout.scss';
 
-export interface GuidedAnswerBoxProps {
+export interface ActionCalloutProps {
     /** The id of the element to which this GA box will point */
     targetElementId: string;
     /** If true (default) the callout will be placed relative to the target element instead of floating using position absolute */
     showInline?: boolean;
-    /** Guided Answer related properties */
-    guidedAnswerLink: IGuidedAnswerLink;
+    /** The action details that will be rendered in the component */
+    actionDetail: IActionCalloutDetail;
     /** The function which will be passed the command */
-    commandAction?(command: IGuidedAnswerLink['command']): void;
+    commandAction?(command: IActionCalloutDetail['command']): void;
+    /** The icon to use if provided, otherwise a default icon is applied */
+    icon?: UIIcon;
 }
 
-export interface IGuidedAnswerLink {
+export interface IActionCalloutDetail {
     linkText: string;
     subText: string;
     /**
@@ -36,26 +38,28 @@ export interface IGuidedAnswerLink {
  *
  *
  */
-export class UIGuidedAnswersBox extends React.Component<GuidedAnswerBoxProps> {
+export class UIActionCallout extends React.Component<ActionCalloutProps> {
     private anchor: React.RefObject<HTMLAnchorElement>;
-    private gaLink: IGuidedAnswerLink;
-    private commandAction: GuidedAnswerBoxProps['commandAction'];
+    private gaLink: IActionCalloutDetail;
+    private commandAction: ActionCalloutProps['commandAction'];
     private targetElementId: string;
     private showInline: boolean | undefined;
+    private icon: UIIcon | undefined;
 
     /**
      * Initializes component properties.
      *
-     * @param {GuidedAnswerBoxProps} props
+     * @param {ActionCalloutProps} props
      */
-    public constructor(props: GuidedAnswerBoxProps) {
+    public constructor(props: ActionCalloutProps) {
         super(props);
-        this.gaLink = props.guidedAnswerLink;
+        this.gaLink = props.actionDetail;
         this.commandAction = props.commandAction;
         this.targetElementId = props.targetElementId;
         this.showInline = props.showInline;
         this.anchor = React.createRef<HTMLAnchorElement>();
         this.onCalloutClick = this.onCalloutClick.bind(this);
+        this.icon = props.icon;
     }
 
     private onCalloutClick() {
@@ -72,7 +76,7 @@ export class UIGuidedAnswersBox extends React.Component<GuidedAnswerBoxProps> {
     render(): JSX.Element {
         return (
             <UICallout
-                className="uiGuidedAnswerBox-callout"
+                className="UIActionCallout-callout"
                 onClick={this.onCalloutClick}
                 target={`#${this.targetElementId}`}
                 isBeakVisible={true}
@@ -85,17 +89,17 @@ export class UIGuidedAnswersBox extends React.Component<GuidedAnswerBoxProps> {
                     calloutMain: { padding: '10px' },
                     root: { position: this.showInline === false ? 'absolute' : 'sticky' }
                 }}>
-                <UIIcon iconName={UiIcons.GuidedAnswerLink}></UIIcon>
+                {(this.icon && this.icon.render()) || <UIIcon iconName={UiIcons.actionDetail}></UIIcon>}
                 {/* We do not use the 'UILink' here as it or its 'link' component do not expose a 'ref' to the underlying HTMLElement, needed to trigger click */}
                 <a
                     ref={this.anchor}
                     href={this.gaLink.url}
-                    className="uiGuidedAnswerBox-link"
+                    className="UIActionCallout-link"
                     target="_blank"
                     rel="noreferrer">
                     {this.gaLink.linkText}
                 </a>
-                <div className="uiGuidedAnswerBox-subText">{this.gaLink.subText}</div>
+                <div className="UIActionCallout-subText">{this.gaLink.subText}</div>
             </UICallout>
         );
     }

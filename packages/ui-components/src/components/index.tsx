@@ -32,4 +32,4 @@ export * from './UITreeDropdown';
 export * from './UIVerticalDivider';
 export * from './UIVirtualList';
 export * from './UIDatePicker';
-export * from './UIGuidedAnswerBox';
+export * from './UIActionCallout';

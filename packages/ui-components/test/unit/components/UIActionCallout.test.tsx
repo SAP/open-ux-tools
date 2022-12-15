@@ -1,16 +1,17 @@
 import { fireEvent, render } from '@testing-library/react';
 import * as React from 'react';
-import type { IGuidedAnswerLink } from '../../../src/components/UIGuidedAnswerBox';
-import { UIGuidedAnswersBox } from '../../../src/components/UIGuidedAnswerBox';
+import { UIIcon, UiIcons } from '../../../src/components';
+import type { IActionCalloutDetail } from '../../../src/components/UIActionCallout';
+import { UIActionCallout } from '../../../src/components/UIActionCallout';
 
 describe('<UICallout />', () => {
-    const helpLinkURL: IGuidedAnswerLink = {
+    const helpLinkURL: IActionCalloutDetail = {
         linkText: 'Some link text',
         subText: 'some sub-text',
         url: 'http:/some/url/link'
     };
 
-    const helpLinkCommand: IGuidedAnswerLink = {
+    const helpLinkCommand: IActionCalloutDetail = {
         linkText: 'Some link text',
         subText: 'some sub-text',
         command: {
@@ -23,29 +24,29 @@ describe('<UICallout />', () => {
         const { container } = render(
             <div>
                 <div id="aDivId"></div>
-                <UIGuidedAnswersBox targetElementId={'aDivId'} guidedAnswerLink={helpLinkURL}></UIGuidedAnswersBox>
+                <UIActionCallout targetElementId={'aDivId'} actionDetail={helpLinkURL}></UIActionCallout>
             </div>
         );
 
-        const link = container.getElementsByClassName('uiGuidedAnswerBox-link')[0];
+        const link = container.getElementsByClassName('UIActionCallout-link')[0];
         expect(link.outerHTML).toMatchInlineSnapshot(
-            `"<a href=\\"http:/some/url/link\\" class=\\"uiGuidedAnswerBox-link\\" target=\\"_blank\\" rel=\\"noreferrer\\">Some link text</a>"`
+            `"<a href=\\"http:/some/url/link\\" class=\\"UIActionCallout-link\\" target=\\"_blank\\" rel=\\"noreferrer\\">Some link text</a>"`
         );
 
-        const subText = container.getElementsByClassName('uiGuidedAnswerBox-subText')[0];
+        const subText = container.getElementsByClassName('UIActionCallout-subText')[0];
         expect(subText.outerHTML).toMatchInlineSnapshot(
-            `"<div class=\\"uiGuidedAnswerBox-subText\\">some sub-text</div>"`
+            `"<div class=\\"UIActionCallout-subText\\">some sub-text</div>"`
         );
 
         // Test default icon
         const iconName = container.getElementsByTagName('i')[0].getAttribute('data-icon-name');
-        expect(iconName).toEqual('GuidedAnswerLink');
+        expect(iconName).toEqual(UiIcons.actionDetail);
 
         // Test that the anchor element is clicked when the outer callout is clicked
         (link as HTMLAnchorElement).onclick = jest.fn();
         const anchorClickSpy = jest.spyOn(link as HTMLAnchorElement, 'onclick');
 
-        const callout = container.getElementsByClassName('uiGuidedAnswerBox-callout')[0];
+        const callout = container.getElementsByClassName('UIActionCallout-callout')[0];
 
         fireEvent.click(callout);
 
@@ -58,22 +59,22 @@ describe('<UICallout />', () => {
         const { container } = render(
             <div>
                 <div id="aDivId"></div>
-                <UIGuidedAnswersBox
+                <UIActionCallout
                     commandAction={onGABoxClick}
                     targetElementId={'aDivId'}
-                    guidedAnswerLink={helpLinkCommand}></UIGuidedAnswersBox>
+                    actionDetail={helpLinkCommand}></UIActionCallout>
             </div>
         );
 
-        const link = container.getElementsByClassName('uiGuidedAnswerBox-link')[0];
+        const link = container.getElementsByClassName('UIActionCallout-link')[0];
         expect(link.outerHTML).toMatchInlineSnapshot(
-            `"<a class=\\"uiGuidedAnswerBox-link\\" target=\\"_blank\\" rel=\\"noreferrer\\">Some link text</a>"`
+            `"<a class=\\"UIActionCallout-link\\" target=\\"_blank\\" rel=\\"noreferrer\\">Some link text</a>"`
         );
-        const subText = container.getElementsByClassName('uiGuidedAnswerBox-subText')[0];
+        const subText = container.getElementsByClassName('UIActionCallout-subText')[0];
         expect(subText.outerHTML).toMatchInlineSnapshot(
-            `"<div class=\\"uiGuidedAnswerBox-subText\\">some sub-text</div>"`
+            `"<div class=\\"UIActionCallout-subText\\">some sub-text</div>"`
         );
-        const callout = container.getElementsByClassName('uiGuidedAnswerBox-callout')[0];
+        const callout = container.getElementsByClassName('UIActionCallout-callout')[0];
 
         fireEvent.click(callout);
 
@@ -84,30 +85,43 @@ describe('<UICallout />', () => {
         let { container } = render(
             <div>
                 <div id="aDivId"></div>
-                <UIGuidedAnswersBox
+                <UIActionCallout
                     showInline={false}
                     targetElementId={'aDivId'}
-                    guidedAnswerLink={helpLinkURL}></UIGuidedAnswersBox>
+                    actionDetail={helpLinkURL}></UIActionCallout>
             </div>
         );
 
         // Cannot access computed properties using '@testing-library/react' directly
         expect(
-            window.getComputedStyle(container.getElementsByClassName('uiGuidedAnswerBox-callout')[0]).position
+            window.getComputedStyle(container.getElementsByClassName('UIActionCallout-callout')[0]).position
         ).toEqual('absolute');
 
         container = render(
             <div>
                 <div id="aDivId"></div>
-                <UIGuidedAnswersBox
+                <UIActionCallout
                     showInline={true}
                     targetElementId={'aDivId'}
-                    guidedAnswerLink={helpLinkURL}></UIGuidedAnswersBox>
+                    actionDetail={helpLinkURL}></UIActionCallout>
             </div>
         ).container;
 
         expect(
-            window.getComputedStyle(container.getElementsByClassName('uiGuidedAnswerBox-callout')[0]).position
+            window.getComputedStyle(container.getElementsByClassName('UIActionCallout-callout')[0]).position
         ).toEqual('sticky');
+    });
+
+    it('Renders the provided icon', () => {
+        const altIcon: UIIcon = new UIIcon({ iconName: UiIcons.Bulb });
+        const { container } = render(
+            <div>
+                <div id="aDivId"></div>
+                <UIActionCallout icon={altIcon} targetElementId={'aDivId'} actionDetail={helpLinkURL}></UIActionCallout>
+            </div>
+        );
+        // Test specified icon
+        const iconName = container.getElementsByTagName('i')[0].getAttribute('data-icon-name');
+        expect(iconName).toEqual(UiIcons.Bulb);
     });
 });
