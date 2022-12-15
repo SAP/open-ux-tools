@@ -1,6 +1,6 @@
 # @sap-ux/mockserver-config-writer
 
-Adds or removes configuration for mockserver module `@sap-ux/ui5-middleware-fe-mockserver` to SAP UX project.
+Adds or removes configuration for mockserver module `@sap-ux/ui5-middleware-fe-mockserver` to an SAP UX project.
 
 ## Installation
 Npm
@@ -28,6 +28,7 @@ fs.commit();
 ```
 
 See more complex example in [`/test/unit`](./test/unit)
+
 ## Keywords
 SAP Fiori elements
 SAP Fiori - UI5 middleware for the Fiori elements mock server
