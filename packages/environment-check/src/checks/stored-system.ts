@@ -29,8 +29,10 @@ export async function checkStoredSystem(storedSystem: Endpoint): Promise<{
     const backendKey = new BackendSystemKey({ url: storedSystem.Url, client: storedSystem.Client });
     const sapSystem = await storeService.read(backendKey);
 
-    storedSystem.Url = new URL(storedSystem.Url).origin;
-    storedSystem.Credentials =
+    const system = { ...storedSystem };
+
+    system.Url = new URL(storedSystem.Url).origin;
+    system.Credentials =
         sapSystem?.serviceKeys || sapSystem?.username || sapSystem?.password
             ? {
                   serviceKeysContents: sapSystem.serviceKeys as ServiceInfo,
@@ -40,7 +42,7 @@ export async function checkStoredSystem(storedSystem: Endpoint): Promise<{
               }
             : undefined;
 
-    const abapServiceProvider = getServiceProvider(storedSystem);
+    const abapServiceProvider = getServiceProvider(system);
 
     // catalog service request
     const { messages: catalogMsgs, result: catalogServiceResult } = await checkCatalogServices(
