@@ -1,13 +1,9 @@
-import { Callout } from '@fluentui/react';
-import type { ICalloutContentStyles, IStyle } from '@fluentui/react';
-import * as Enzyme from 'enzyme';
+import { fireEvent, render } from '@testing-library/react';
 import * as React from 'react';
-import type { GuidedAnswerBoxProps, IGuidedAnswerLink } from '../../../src/components/UIGuidedAnswerBox';
+import type { IGuidedAnswerLink } from '../../../src/components/UIGuidedAnswerBox';
 import { UIGuidedAnswersBox } from '../../../src/components/UIGuidedAnswerBox';
 
 describe('<UICallout />', () => {
-    let wrapper: Enzyme.ReactWrapper<GuidedAnswerBoxProps>;
-
     const helpLinkURL: IGuidedAnswerLink = {
         linkText: 'Some link text',
         subText: 'some sub-text',
@@ -23,38 +19,35 @@ describe('<UICallout />', () => {
         }
     };
 
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
     it('Renders correctly if command not provided, responds to click', () => {
-        wrapper = Enzyme.mount(
+        const { container } = render(
             <div>
                 <div id="aDivId"></div>
                 <UIGuidedAnswersBox targetElementId={'aDivId'} guidedAnswerLink={helpLinkURL}></UIGuidedAnswersBox>
             </div>
         );
 
-        const link = wrapper.find('.uiGuidedAnswerBox-link');
-        expect(link.html()).toMatchInlineSnapshot(
+        const link = container.getElementsByClassName('uiGuidedAnswerBox-link')[0];
+        expect(link.outerHTML).toMatchInlineSnapshot(
             `"<a href=\\"http:/some/url/link\\" class=\\"uiGuidedAnswerBox-link\\" target=\\"_blank\\" rel=\\"noreferrer\\">Some link text</a>"`
         );
-        const subText = wrapper.find('.uiGuidedAnswerBox-subText');
-        expect(subText.html()).toMatchInlineSnapshot(
+
+        const subText = container.getElementsByClassName('uiGuidedAnswerBox-subText')[0];
+        expect(subText.outerHTML).toMatchInlineSnapshot(
             `"<div class=\\"uiGuidedAnswerBox-subText\\">some sub-text</div>"`
         );
 
-        const iconName = wrapper.find('i').props()['data-icon-name'];
+        // Test default icon
+        const iconName = container.getElementsByTagName('i')[0].getAttribute('data-icon-name');
         expect(iconName).toEqual('GuidedAnswerLink');
 
         // Test that the anchor element is clicked when the outer callout is clicked
-        const anchorEl = link.getDOMNode();
-        (anchorEl as HTMLAnchorElement).onclick = jest.fn();
-        const anchorClickSpy = jest.spyOn(anchorEl as HTMLAnchorElement, 'onclick');
+        (link as HTMLAnchorElement).onclick = jest.fn();
+        const anchorClickSpy = jest.spyOn(link as HTMLAnchorElement, 'onclick');
 
-        const callout = wrapper.find('div.uiGuidedAnswerBox-callout');
+        const callout = container.getElementsByClassName('uiGuidedAnswerBox-callout')[0];
 
-        callout.simulate('click');
+        fireEvent.click(callout);
 
         expect(anchorClickSpy).toHaveBeenCalled();
     });
@@ -62,7 +55,7 @@ describe('<UICallout />', () => {
     it('Callback on click with provided command', () => {
         const onGABoxClick = jest.fn();
 
-        wrapper = Enzyme.mount(
+        const { container } = render(
             <div>
                 <div id="aDivId"></div>
                 <UIGuidedAnswersBox
@@ -72,23 +65,23 @@ describe('<UICallout />', () => {
             </div>
         );
 
-        const link = wrapper.find('.uiGuidedAnswerBox-link');
-        expect(link.html()).toMatchInlineSnapshot(
+        const link = container.getElementsByClassName('uiGuidedAnswerBox-link')[0];
+        expect(link.outerHTML).toMatchInlineSnapshot(
             `"<a class=\\"uiGuidedAnswerBox-link\\" target=\\"_blank\\" rel=\\"noreferrer\\">Some link text</a>"`
         );
-        const subText = wrapper.find('.uiGuidedAnswerBox-subText');
-        expect(subText.html()).toMatchInlineSnapshot(
+        const subText = container.getElementsByClassName('uiGuidedAnswerBox-subText')[0];
+        expect(subText.outerHTML).toMatchInlineSnapshot(
             `"<div class=\\"uiGuidedAnswerBox-subText\\">some sub-text</div>"`
         );
-        const callout = wrapper.find('div.uiGuidedAnswerBox-callout');
+        const callout = container.getElementsByClassName('uiGuidedAnswerBox-callout')[0];
 
-        callout.simulate('click');
+        fireEvent.click(callout);
 
         expect(onGABoxClick).toHaveBeenCalledWith(helpLinkCommand.command);
     });
 
     it('Renders with correct root position via "showInline" property', () => {
-        wrapper = Enzyme.mount(
+        let { container } = render(
             <div>
                 <div id="aDivId"></div>
                 <UIGuidedAnswersBox
@@ -98,11 +91,12 @@ describe('<UICallout />', () => {
             </div>
         );
 
-        let calloutBase = wrapper.find(Callout).props().styles as ICalloutContentStyles;
-        expect((calloutBase.root as IStyle)['position']).toEqual('absolute');
+        // Cannot access computed properties using '@testing-library/react' directly
+        expect(
+            window.getComputedStyle(container.getElementsByClassName('uiGuidedAnswerBox-callout')[0]).position
+        ).toEqual('absolute');
 
-        wrapper.unmount();
-        wrapper = Enzyme.mount(
+        container = render(
             <div>
                 <div id="aDivId"></div>
                 <UIGuidedAnswersBox
@@ -110,9 +104,10 @@ describe('<UICallout />', () => {
                     targetElementId={'aDivId'}
                     guidedAnswerLink={helpLinkURL}></UIGuidedAnswersBox>
             </div>
-        );
+        ).container;
 
-        calloutBase = wrapper.find(Callout).props().styles as ICalloutContentStyles;
-        expect((calloutBase.root as IStyle)['position']).toEqual('sticky');
+        expect(
+            window.getComputedStyle(container.getElementsByClassName('uiGuidedAnswerBox-callout')[0]).position
+        ).toEqual('sticky');
     });
 });
