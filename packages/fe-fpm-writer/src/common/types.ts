@@ -67,7 +67,7 @@ export interface ViewVariant {
     /**
      * The annotationPath of a specific variant.
      */
-    annotationPath: string;
+    annotationPath?: string;
     /**
      * View title, is shown in the tab item.
      */

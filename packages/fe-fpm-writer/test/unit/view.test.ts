@@ -153,6 +153,65 @@ describe('CustomView', () => {
         expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
     });
 
+    test('with existing views and custom views', () => {
+        const testManifest = JSON.parse(JSON.stringify(manifest));
+        (testManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'] as Views) = {
+            paths: [
+                {
+                    key: 'existingView',
+                    annotationPath: 'com.sap.vocabularies.UI.v1.LineItem'
+                },
+                {
+                    key: 'existingCustomView',
+                    template: 'sample.ext.frg.existingFragment'
+                }
+            ],
+            showCounts: false
+        };
+        fs = create(createStorage());
+        fs.delete(testDir);
+        fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(testManifest));
+        const testCustomView: CustomView = {
+            ...customView,
+            control: true
+        };
+        generateCustomView(testDir, testCustomView, fs);
+        updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+        const { views } = getManifestSegments();
+
+        expect(views).toMatchSnapshot();
+        expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+    });
+
+    test('with existing views, overwrite custom view entry, no view update', () => {
+        const testManifest = JSON.parse(JSON.stringify(manifest));
+        (testManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'] as Views) = {
+            paths: [
+                {
+                    key: 'existingView',
+                    annotationPath: 'com.sap.vocabularies.UI.v1.LineItem'
+                },
+                {
+                    key: 'viewKey',
+                    template: 'sample.ext.frg.existingFragment'
+                }
+            ],
+            showCounts: false
+        };
+        fs = create(createStorage());
+        fs.delete(testDir);
+        fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(testManifest));
+        const testCustomView: CustomView = {
+            ...customView,
+            control: true
+        };
+        generateCustomView(testDir, testCustomView, fs, false);
+        updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
+        const { views } = getManifestSegments();
+
+        expect(views).toMatchSnapshot();
+    });
+
     describe('Test property "eventHandler"', () => {
         const generateCustomViewWithEventHandler = (
             viewId: string,

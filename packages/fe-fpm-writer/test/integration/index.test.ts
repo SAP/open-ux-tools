@@ -147,6 +147,89 @@ describe('use FPM with existing apps', () => {
                 fs
             );
         });
+        test.each(configs)('generateCustomView in ListReport, second custom view', (config) => {
+            //pre-requisite is at least one view based on annotations
+            fs.extendJSON(join(config.path, 'webapp/manifest.json'), {
+                'sap.ui5': {
+                    routing: {
+                        targets: {
+                            TravelListReport: {
+                                options: {
+                                    settings: {
+                                        views: {
+                                            paths: [
+                                                {
+                                                    key: 'LineItemView',
+                                                    annotationPath: 'com.sap.vocabularies.UI.v1.LineItem'
+                                                },
+                                                {
+                                                    key: 'FirstCustomView',
+                                                    template: 'any.NewCustomView'
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            generateCustomView(
+                config.path,
+                {
+                    target: 'TravelListReport',
+                    key: 'SecondCustomView',
+                    label: 'Custom View',
+                    name: 'NewCustomView',
+                    eventHandler: true,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+        test.each(configs)('generateCustomView in ListReport, custom view to be overwritten', (config) => {
+            //pre-requisite is at least one view based on annotations
+            fs.extendJSON(join(config.path, 'webapp/manifest.json'), {
+                'sap.ui5': {
+                    routing: {
+                        targets: {
+                            TravelListReport: {
+                                options: {
+                                    settings: {
+                                        views: {
+                                            paths: [
+                                                {
+                                                    key: 'LineItemView',
+                                                    annotationPath: 'com.sap.vocabularies.UI.v1.LineItem'
+                                                },
+                                                {
+                                                    key: 'CustomViewKey',
+                                                    template: 'any.NewCustomView'
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            generateCustomView(
+                config.path,
+                {
+                    target: 'TravelListReport',
+                    key: 'CustomViewKey',
+                    label: 'Custom View',
+                    name: 'NewCustomView',
+                    eventHandler: true,
+                    ...config.settings
+                },
+                fs,
+                false
+            );
+        });
 
         test.each(configs)('generateCustomAction in ListReport and ObjectPage', (config) => {
             generateCustomAction(
