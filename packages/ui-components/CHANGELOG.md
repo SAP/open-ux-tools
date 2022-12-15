@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.0.28
+
+### Patch Changes
+
+-   d19e72e: New 16 px and 12px icons added. 16px Icons: Link, Highlighter. 12px Icons: Key, Hide, Main Entity, Foreighn Key, Complex Type
+
 ## 1.0.27
 
 ### Patch Changes
