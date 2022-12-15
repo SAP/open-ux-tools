@@ -12,7 +12,7 @@ const requestedChecksSet = [Check.Environment, Check.Destinations, Check.Endpoin
 
 const data = {
     endpointResults: {
-        ABC: {
+        'ABC system https://abc-api.org': {
             catalogService: {
                 v2: { results: [] },
                 v4: {}
@@ -114,7 +114,7 @@ const data = {
     },
     endpoints: [
         {
-            Name: 'ABC',
+            Name: 'ABC system https://abc-api.org',
             Type: 'HTTP',
             Authentication: 'BasicAuthentication',
             ProxyType: 'Internet',
