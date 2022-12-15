@@ -1,10 +1,9 @@
 import { createWriteStream, existsSync } from 'fs';
 import { basename, dirname, join } from 'path';
 import * as archiver from 'archiver';
-import type { EnvironmentCheckResult } from '..';
-import { convertResultsToMarkdown } from '.';
+import type { EnvironmentCheckResult } from '../types';
+import { convertResultsToMarkdown } from './markdown';
 import { t } from '../i18n';
-
 /**
  * Convert a int byte number to a nice output format like 1.23 KB.
  *
