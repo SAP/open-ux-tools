@@ -80,7 +80,7 @@
         "catalogServiceConfig": "Configured to be used by Fiori Generator as Catalog Service",
         "createdAt": "created at",
         "destinationDetails": "Destination Details",
-        "detailsFor": "Details for `{{systemName}}`",
+        "detailsFor": "Details for `{{- systemName}}`",
         "devEnvironement": "Development environment: `{{devEnvironment}}`",
         "devSpaceType": "Dev Space Type: `{{basDevSpace}}`",
         "envCheckTitle": "SAP Fiori tools - Environment Check",
