@@ -27,8 +27,8 @@ export function handleCreateFioriCommand(argv: string[]): void {
         const program = getCommanderProgram();
         program.parse(argv);
     } catch (error) {
-        logger.error(`Error while executing ${argv[0]} ${argv[1]}`);
-        logger.error(error as string | object);
+        // Commander report meaningful error messages, output only if log level is set to debug
+        logger.debug(error as string | object);
     }
 }
 
@@ -48,6 +48,9 @@ function getCommanderProgram(): Command {
 
     // Handler for create-fiori remove <feature> ..
     program.addCommand(getRemoveCommands());
+
+    // Override exit so calling this command without arguments does not result in an exit code 1, which causes an error message when running from npm init
+    program.exitOverride();
 
     return program;
 }
