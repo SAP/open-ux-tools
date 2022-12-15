@@ -371,3 +371,22 @@ exports[`CustomView with new handler and new table fragment (all properties) 4`]
 });
 "
 `;
+
+exports[`CustomView without existing views 1`] = `
+Object {
+  "paths": Array [
+    Object {
+      "key": "viewKey",
+      "label": "viewLabel",
+      "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomView",
+    },
+  ],
+}
+`;
+
+exports[`CustomView without existing views 2`] = `
+"<core:FragmentDefinition xmlns=\\"sap.m\\" xmlns:core=\\"sap.ui.core\\" xmlns:macros=\\"sap.fe.macros\\" xmlns:u=\\"sap.ui.unified\\">
+    <macros:Table id=\\"NewCustomView\\" metaPath=\\"@com.sap.vocabularies.UI.v1.LineItem\\" displayMode=\\"true\\" />
+</core:FragmentDefinition>
+"
+`;
