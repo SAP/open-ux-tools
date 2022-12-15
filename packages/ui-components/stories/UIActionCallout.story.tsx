@@ -1,20 +1,21 @@
+import { IStackTokens, Stack } from '@fluentui/react';
 import React from 'react';
-import { IconFontSizes, IStackTokens } from '@fluentui/react';
-import { Stack } from '@fluentui/react';
-import { IActionCalloutDetail, UIActionCallout, UIIcon, UiIcons } from '../src';
+import { IActionCalloutDetail, UIActionCallout } from '../src/components/UIActionCallout';
+import { UIIcon } from '../src/components/UIIcon';
+import { UiIcons } from '../src/components/Icons';
 
-export default { title: 'Utilities/GuidedAnswerBox' };
+export default { title: 'Utilities/ActionCallout' };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 const someHelpLink: IActionCalloutDetail = {
     linkText: 'Need help with this error?',
-    subText: 'Guided Answers might be able to help.',
-    url: 'http://some.url/some/page' 
+    subText: 'This link might be able to help.',
+    url: 'https://some.url/some/page' 
 }
 
 const someActionLink: IActionCalloutDetail = {
     linkText: 'Click to action!',
     subText: 'Some action will do the thing you need',
-    url: 'http://some.url/some/page' 
+    url: 'https://some.url/some/page' 
 }
 
 export const defaultUsage = (): JSX.Element => {
