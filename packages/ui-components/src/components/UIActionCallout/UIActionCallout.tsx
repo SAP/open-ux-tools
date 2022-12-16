@@ -89,7 +89,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
                     calloutMain: { padding: '10px' },
                     root: { position: this.showInline === false ? 'absolute' : 'sticky' }
                 }}>
-                {(this.icon && this.icon.render()) || <UIIcon iconName={UiIcons.actionDetail}></UIIcon>}
+                {(this.icon && this.icon.render()) || <UIIcon iconName={UiIcons.HelpAction}></UIIcon>}
                 {/* We do not use the 'UILink' here as it or its 'link' component do not expose a 'ref' to the underlying HTMLElement, needed to trigger click */}
                 <a
                     ref={this.anchor}

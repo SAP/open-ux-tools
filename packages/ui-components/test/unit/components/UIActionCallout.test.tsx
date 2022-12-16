@@ -40,7 +40,7 @@ describe('<UICallout />', () => {
 
         // Test default icon
         const iconName = container.getElementsByTagName('i')[0].getAttribute('data-icon-name');
-        expect(iconName).toEqual(UiIcons.actionDetail);
+        expect(iconName).toEqual(UiIcons.HelpAction);
 
         // Test that the anchor element is clicked when the outer callout is clicked
         (link as HTMLAnchorElement).onclick = jest.fn();
