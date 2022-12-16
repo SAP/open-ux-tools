@@ -40,7 +40,7 @@ export interface IActionCalloutDetail {
  */
 export class UIActionCallout extends React.Component<ActionCalloutProps> {
     private anchor: React.RefObject<HTMLAnchorElement>;
-    private gaLink: IActionCalloutDetail;
+    private actionDetail: IActionCalloutDetail;
     private commandAction: ActionCalloutProps['commandAction'];
     private targetElementId: string;
     private showInline: boolean | undefined;
@@ -53,7 +53,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
      */
     public constructor(props: ActionCalloutProps) {
         super(props);
-        this.gaLink = props.actionDetail;
+        this.actionDetail = props.actionDetail;
         this.commandAction = props.commandAction;
         this.targetElementId = props.targetElementId;
         this.showInline = props.showInline;
@@ -63,8 +63,8 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
     }
 
     private onCalloutClick() {
-        if (this.gaLink.command && this.commandAction) {
-            this.commandAction(this.gaLink.command);
+        if (this.actionDetail.command && this.commandAction) {
+            this.commandAction(this.actionDetail.command);
         } else {
             this.anchor.current?.click();
         }
@@ -93,13 +93,13 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
                 {/* We do not use the 'UILink' here as it or its 'link' component do not expose a 'ref' to the underlying HTMLElement, needed to trigger click */}
                 <a
                     ref={this.anchor}
-                    href={this.gaLink.url}
+                    href={this.actionDetail.url}
                     className="UIActionCallout-link"
                     target="_blank"
                     rel="noreferrer">
-                    {this.gaLink.linkText}
+                    {this.actionDetail.linkText}
                 </a>
-                <div className="UIActionCallout-subText">{this.gaLink.subText}</div>
+                <div className="UIActionCallout-subText">{this.actionDetail.subText}</div>
             </UICallout>
         );
     }
