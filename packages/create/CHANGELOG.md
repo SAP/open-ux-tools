@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.0.4
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+
 ## 0.0.3
 
 ### Patch Changes

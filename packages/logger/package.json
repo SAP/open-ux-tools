@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/logger",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "description": "A simple logging module",
     "repository": {
         "type": "git",
@@ -27,8 +27,8 @@
     "dependencies": {
         "chalk": "4.1.2",
         "lodash": "4.17.21",
-        "winston": "3.3.3",
-        "winston-transport": "4.4.1"
+        "winston": "3.7.2",
+        "winston-transport": "4.5.0"
     },
     "devDependencies": {
         "@types/debug": "4.1.7",
