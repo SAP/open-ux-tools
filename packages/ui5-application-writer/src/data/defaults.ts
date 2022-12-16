@@ -1,5 +1,5 @@
 import type { App, AppOptions, Package, UI5, UI5Framework } from '../types';
-import versionToManifestDescMapping from './version-to-descriptor-mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
+import versionToManifestDescMapping from '@ui5/manifest/mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
 import type { SemVer } from 'semver';
