@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.13.3
+
+### Patch Changes
+
+-   b727719: chore(open-ux-tools) upgrade @xmldom/xmldom
+
 ## 0.13.2
 
 ### Patch Changes
