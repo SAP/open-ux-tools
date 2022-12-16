@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.2
+
+### Patch Changes
+
+-   b727719: chore(open-ux-tools) upgrade @xmldom/xmldom
+
 ## 0.18.1
 
 ### Patch Changes

@@ -1,7 +1,10 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
+# Module: create
+/packages/create/ @SAP/ux-tools-create
+
 # Module: store
-/packages/store @SAP/ux-tools-store
+/packages/store/ @SAP/ux-tools-store
 
 # Module: fe-fpm-writer
 /packages/fe-fpm-writer/ @SAP/ux-tools-fe-fpm-writer
@@ -14,6 +17,9 @@
 
 # Module: logger
 /packages/logger/ @SAP/ux-tools-logger
+
+# Module: mockserver-config-writer
+/packages/mockserver-config-writer/ @SAP/ux-tools-mockserver-config-writer
 
 # Module: project-access
 /packages/project-access/ @SAP/ux-tools-project-access

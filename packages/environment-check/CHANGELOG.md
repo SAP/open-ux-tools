@@ -1,5 +1,18 @@
 # @sap-ux/environment-check
 
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/axios-extension@0.13.3
+
+## 0.10.0
+
+### Minor Changes
+
+-   31cf890: prevent showing credentials in zip, fix escaping in markdown
+
 ## 0.9.1
 
 ### Patch Changes

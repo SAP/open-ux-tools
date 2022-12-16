@@ -29,11 +29,7 @@ describe('Test handleCreateFioriCommand()', () => {
 
     test('Execute command create-fiori help, should show help', () => {
         // Mock setup
-        jest.spyOn(process, 'exit').mockImplementation(() => {
-            // Commander calls process.exit() in case it shows help, which causes issues running test. Throwing handled exception instead.
-            throw Error('AVOID_EXIT');
-        });
-        const mockLogger = { error: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
+        const mockLogger = { error: jest.fn(), debug: jest.fn() } as Partial<ToolsLogger> as ToolsLogger;
         jest.spyOn(loggerMock, 'getLogger').mockImplementation(() => mockLogger);
         process.stdout.write = jest.fn() as any;
 
@@ -42,7 +38,7 @@ describe('Test handleCreateFioriCommand()', () => {
 
         // Result check
         expect(process.stdout.write).toBeCalledWith(expect.stringContaining('create-fiori [options] [command]'));
-        expect(mockLogger.error).toHaveBeenNthCalledWith(1, expect.stringContaining('create-fiori'));
-        expect(mockLogger.error).toHaveBeenNthCalledWith(2, expect.objectContaining({ message: 'AVOID_EXIT' }));
+        expect(mockLogger.debug).toBeCalledWith(expect.objectContaining({ code: 'commander.help' }));
+        expect(mockLogger.error).not.toBeCalled();
     });
 });
