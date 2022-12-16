@@ -107,7 +107,7 @@ importers:
       '@sap-ux/btp-utils': workspace:*
       '@sap-ux/logger': workspace:*
       '@types/lodash': 4.14.176
-      '@xmldom/xmldom': 0.8.4
+      '@xmldom/xmldom': 0.8.6
       axios: 0.24.0
       detect-content-type: 1.2.0
       fast-xml-parser: 3.12.20
@@ -120,7 +120,7 @@ importers:
     dependencies:
       '@sap-ux/btp-utils': link:../btp-utils
       '@sap-ux/logger': link:../logger
-      '@xmldom/xmldom': 0.8.4
+      '@xmldom/xmldom': 0.8.6
       axios: 0.24.0
       detect-content-type: 1.2.0
       fast-xml-parser: 3.12.20
@@ -262,7 +262,7 @@ importers:
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/semver': 7.3.9
-      '@xmldom/xmldom': 0.8.4
+      '@xmldom/xmldom': 0.8.6
       ejs: 3.1.7
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
@@ -270,7 +270,7 @@ importers:
       xml-formatter: 2.6.1
       xpath: 0.0.32
     dependencies:
-      '@xmldom/xmldom': 0.8.4
+      '@xmldom/xmldom': 0.8.6
       ejs: 3.1.7
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
@@ -4685,7 +4685,6 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
-    dev: true
 
   /@types/proxy-from-env/1.0.1:
     resolution: {integrity: sha512-luG++TFHyS61eKcfkR1CVV6a1GMNXDjtqEQIIfaSHax75xp0HU3SlezjOi1yqubJwrG8e9DeW59n6wTblIDwFg==}
@@ -4709,7 +4708,6 @@ packages:
     resolution: {integrity: sha512-idCEjROZ2cqh29+trmTmZhsBAUNQuYrF92JHKzZ5+aiFM1mlSk3bb23CK7HhYuOY75Apgap5y2jTyHzaM2AJGA==}
     dependencies:
       '@types/react': 16.14.0
-    dev: true
 
   /@types/react-virtualized/9.21.21:
     resolution: {integrity: sha512-Exx6I7p4Qn+BBA1SRyj/UwQlZ0I0Pq7g7uhAp0QQ4JWzZunqEqNBGTmCmMmS/3N9wFgAGWuBD16ap7k8Y14VPA==}
@@ -4723,7 +4721,6 @@ packages:
     dependencies:
       '@types/prop-types': 15.7.5
       csstype: 3.1.1
-    dev: true
 
   /@types/react/17.0.52:
     resolution: {integrity: sha512-vwk8QqVODi0VaZZpDXQCmEmiOuyjEFPY7Ttaw5vjM112LOq37yz1CDJGrRJwA1fYEq4Iitd5rnjd1yWAc/bT+A==}
@@ -5305,8 +5302,8 @@ packages:
       '@xtuc/long': 4.2.2
     dev: true
 
-  /@xmldom/xmldom/0.8.4:
-    resolution: {integrity: sha512-JIsjTbWBWJHb2t1D4UNZIJ6ohlRYCdoGzeHSzTorMH2zOq3UKlSBzFBMBdFK3xnUD/ANHw/SUzl/vx0z0JrqRw==}
+  /@xmldom/xmldom/0.8.6:
+    resolution: {integrity: sha512-uRjjusqpoqfmRkTaNuLJ2VohVr67Q5YwDATW3VU7PfzTj6IRaihGrYI7zckGZjxQPBIp63nfvJbM+Yu5ICh0Bg==}
     engines: {node: '>=10.0.0'}
     dev: false
 
@@ -13972,7 +13969,6 @@ packages:
       prop-types: 15.8.1
       react: 16.14.0
       scheduler: 0.19.1
-    dev: true
 
   /react-element-to-jsx-string/14.3.4_wcqkhtmu7mswc6yz4uyexck3ty:
     resolution: {integrity: sha512-t4ZwvV6vwNxzujDQ+37bspnLwA4JlgUPWhLjBJWsNIDceAf6ZKUTCjdm08cN6WeZ5pTMKiCJkmAYnpmR4Bm+dg==}
@@ -14048,7 +14044,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       prop-types: 15.8.1
-    dev: true
 
   /read-pkg-up/1.0.1:
     resolution: {integrity: sha512-WD9MTlNtI55IwYUS27iHh9tK3YoIVhxis8yKhLpTqWtml739uXc9NWTpxoHkfZf3+DkCCsXox94/VWZniuZm6A==}
@@ -14606,7 +14601,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: true
 
   /schema-utils/1.0.0:
     resolution: {integrity: sha512-i27Mic4KovM/lnGsy8whRCHhc7VicJajAjTrYg11K9zfZXnYIt4k5F+kZkwjnrhKzLic/HLU4j11mjsz2G/75g==}
