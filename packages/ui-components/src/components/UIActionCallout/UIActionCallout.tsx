@@ -8,7 +8,8 @@ import './UIActionCallout.scss';
 export interface ActionCalloutProps {
     /** The id of the element to which this GA box will point */
     targetElementId: string;
-    /** If true (default) the callout will be placed relative to the target element instead of floating using position absolute
+    /**
+     * If true (default) the callout will be placed relative to the target element instead of floating using position absolute
      * Note: This is not a bound property and cannot be used to dynamically change the positon of the component
      */
     showInline?: boolean;
