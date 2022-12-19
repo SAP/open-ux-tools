@@ -190,7 +190,7 @@ describe('use FPM with existing apps', () => {
                 false
             );
         });
-        
+
         test.each(configs)('generateCustomView in ListReport, second custom view', (config) => {
             //pre-requisite is at least one view based on annotations
             fs.extendJSON(join(config.path, 'webapp/manifest.json'), {
