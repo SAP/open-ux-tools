@@ -159,7 +159,7 @@ describe('use FPM with existing apps', () => {
                     eventHandler: true,
                     viewUpdate: false,
                     ...config.settings
-                },  
+                },
                 fs
             );
         });
