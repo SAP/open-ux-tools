@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.3
+
+### Patch Changes
+
+-   6e4c6c4: Feature: Merge a new custom view with an existing view of the same key
+
 ## 0.18.2
 
 ### Patch Changes
