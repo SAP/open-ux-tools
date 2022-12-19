@@ -23,7 +23,7 @@ export interface CustomView extends CustomElement, EventHandler {
     control?: string | true;
 
     /**
-     * Indicates that the view shall be crated or updated
+     * Indicates that the view shall be created or updated
      */
     viewUpdate?: boolean;
 }
