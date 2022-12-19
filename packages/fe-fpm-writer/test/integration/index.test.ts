@@ -157,10 +157,10 @@ describe('use FPM with existing apps', () => {
                     label: 'Custom View',
                     name: 'NewCustomView',
                     eventHandler: true,
+                    viewUpdate: false,
                     ...config.settings
-                },
-                fs,
-                false
+                },  
+                fs
             );
         });
 

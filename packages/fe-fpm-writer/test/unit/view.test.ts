@@ -203,6 +203,8 @@ describe('CustomView', () => {
 
     test('with existing views, overwrite custom view entry, no view update', () => {
         const testManifest = JSON.parse(JSON.stringify(manifest));
+        const testData = JSON.parse(JSON.stringify(customView));
+        testData.viewUpdate = false;
         (testManifest['sap.ui5']['routing']['targets']['sample']['options']['settings']['views'] as Views) = {
             paths: [
                 {
@@ -223,7 +225,7 @@ describe('CustomView', () => {
             ...customView,
             control: true
         };
-        generateCustomView(testDir, testCustomView, fs, false);
+        generateCustomView(testDir, testCustomView, fs);
         updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json'));
         const { views } = getManifestSegments();
 

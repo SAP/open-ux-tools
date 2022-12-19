@@ -79,10 +79,9 @@ function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manif
  * @param {string} basePath - the base path
  * @param {CustomView} customView - the custom view configuration
  * @param {Editor} [fs] - the mem-fs editor instance
- * @param {boolean} viewUpdate - indicates if th view fragment shall be created or overwritten
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-export function generateCustomView(basePath: string, customView: CustomView, fs?: Editor, viewUpdate = true): Editor {
+export function generateCustomView(basePath: string, customView: CustomView, fs?: Editor): Editor {
     validateVersion(customView.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
@@ -100,7 +99,7 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment
-    if (viewUpdate) {
+    if (customView.viewUpdate !== false) {
         const viewPath = join(completeView.path, `${completeView.name}.fragment.xml`);
         if (completeView.control === true) {
             fs.copyTpl(getTemplatePath('view/ext/CustomViewWithTable.xml'), viewPath, completeView);
