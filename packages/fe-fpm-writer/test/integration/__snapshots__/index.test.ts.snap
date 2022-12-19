@@ -327,8 +327,9 @@ Object {
                     \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
                   },
                   {
-                    \\"key\\": \\"FirstCustomView\\",
-                    \\"template\\": \\"any.NewCustomView\\"
+                    \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
                   },
                   {
                     \\"key\\": \\"SecondCustomView\\",
@@ -836,8 +837,9 @@ declare module 'sap/fe/core/PageController' {
                     \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
                   },
                   {
-                    \\"key\\": \\"FirstCustomView\\",
-                    \\"template\\": \\"any.NewCustomView\\"
+                    \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
                   },
                   {
                     \\"key\\": \\"SecondCustomView\\",
