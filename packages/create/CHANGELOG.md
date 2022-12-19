@@ -1,5 +1,20 @@
 # @sap-ux/create
 
+## 0.0.4
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+
+## 0.0.3
+
+### Patch Changes
+
+-   e1e8225: Do not exit with code 1 to avoid error messages when using module without arguments
+-   Updated dependencies [e1e8225]
+    -   @sap-ux/mockserver-config-writer@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

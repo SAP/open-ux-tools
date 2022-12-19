@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.18.0
+
+### Minor Changes
+
+-   b3945f3: consume version mapping from @ui5/manifest
+
 ## 0.17.14
 
 ### Patch Changes

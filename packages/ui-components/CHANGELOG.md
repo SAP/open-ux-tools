@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.0
+
+### Minor Changes
+
+-   69260c3: Adds UIActionCallout
+
 ## 1.0.28
 
 ### Patch Changes
