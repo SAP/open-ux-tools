@@ -24,7 +24,7 @@ jest.mock('read-pkg-up', () => ({
     })
 }));
 
-describe.only(`Fiori Elements template: ${TEST_NAME}`, () => {
+describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
     const lropConfigs: Array<{ name: string; config: FioriElementsApp<LROPSettings> }> = [
