@@ -77,6 +77,10 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
 ",
     "state": "modified",
   },
