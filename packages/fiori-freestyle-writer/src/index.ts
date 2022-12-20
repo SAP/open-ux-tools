@@ -67,7 +67,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     packageJson.scripts = Object.assign(packageJson.scripts, {
         ...getPackageJsonTasks({
-            localOnly: !ffApp.service?.url,
+            localOnly: !!ffApp.service && !ffApp.service?.url,
             addMock: !!ffApp.service?.metadata,
             sapClient: ffApp.service?.client,
             flpAppId: ffApp.app.flpAppId,
