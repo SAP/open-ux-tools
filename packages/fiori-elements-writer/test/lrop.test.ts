@@ -11,6 +11,7 @@ import {
     v2TemplateSettings,
     v2Service
 } from './common';
+import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
 
@@ -23,7 +24,7 @@ jest.mock('read-pkg-up', () => ({
     })
 }));
 
-describe(`Fiori Elements template: ${TEST_NAME}`, () => {
+describe.only(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
     const lropConfigs: Array<{ name: string; config: FioriElementsApp<LROPSettings> }> = [
@@ -161,7 +162,43 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         settings: v2TemplateSettings
                     },
                     ui5: {
-                        version: '1.77.2' // flex changes preview should be included with this version
+                        version: '1.77.2'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_ts_ui5_1_109_1',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_109_1'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.109.1' 
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_ts_ui5_variable',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_variable'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: UI5_DEFAULT.UI5_VERSION_VARIABLE 
                     },
                     appOptions: {
                         typescript: true

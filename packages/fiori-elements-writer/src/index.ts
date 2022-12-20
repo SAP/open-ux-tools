@@ -12,7 +12,7 @@ import type { FioriElementsApp, FPMSettings } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
-import type { TemplateOptions } from './data/templateAttributes';
+import { TemplateOptions, v2FETypesAvailable } from './data/templateAttributes';
 import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
@@ -53,7 +53,12 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
     // Common files
-    const ignore = [feApp.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
+    const isV2FETypesAvailable = feApp.ui5?.version
+        ? semVer.gte(semVer.coerce(feApp.ui5?.version)!, v2FETypesAvailable)
+        : false;
+    const jsIgnoreGlob = ['**/*.ts'];
+    const tsIgnoreGlob = isV2FETypesAvailable ? ['**/*.js', '**/ui5.d.ts'] : ['**/*.js'];
+    const ignore = feApp.appOptions?.typescript ? tsIgnoreGlob : jsIgnoreGlob;
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
