@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
-import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
+import { generate as generateUi5Project, UI5_DEFAULT } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import { getPackageJsonTasks } from './packageConfig';
@@ -13,7 +13,6 @@ import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
 import type { TemplateOptions } from './data/templateAttributes';
-import { v2FETypesAvailable } from './data/templateAttributes';
 import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
@@ -55,7 +54,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     // Add templates common to all template types
     // Common files
     const isV2FETypesAvailable = feApp.ui5?.version
-        ? semVer.gte(semVer.coerce(feApp.ui5?.version)!, v2FETypesAvailable)
+        ? semVer.gte(semVer.coerce(feApp.ui5?.version)!, UI5_DEFAULT.V2_FE_TYPES_AVAILABLE)
         : false;
     const jsIgnoreGlob = ['**/*.ts'];
     const tsIgnoreGlob = isV2FETypesAvailable ? ['**/*.js', '**/ui5.d.ts'] : ['**/*.js'];

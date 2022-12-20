@@ -5,8 +5,6 @@ export const oldestSupportedUI5Version = '1.65.0';
 
 export const changesPreviewToVersion = '1.78.0';
 
-export const v2FETypesAvailable = '1.109.1';
-
 // Internal template generation options
 export type TemplateOptions = {
     changesPreview?: boolean;
