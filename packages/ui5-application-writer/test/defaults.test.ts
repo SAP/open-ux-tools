@@ -15,7 +15,7 @@ describe('Defaults', () => {
         ['1.80-snapshot', esmTypesVersionSince],
         ['metadata', typesVersionBest],
         [undefined, typesVersionBest],
-        ['1.109.1','~1.109.0'],
+        ['1.109.1', '~1.109.0'],
         [UI5_DEFAULT.TYPES_VERSION_BEST, typesVersionBest],
         ['1.109-snapshot', '~1.109.0'],
         ['1.80-snapshot', esmTypesVersionSince],

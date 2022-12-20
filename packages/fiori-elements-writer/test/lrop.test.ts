@@ -180,7 +180,7 @@ describe.only(`Fiori Elements template: ${TEST_NAME}`, () => {
                         settings: v2TemplateSettings
                     },
                     ui5: {
-                        version: '1.109.1' 
+                        version: '1.109.1'
                     },
                     appOptions: {
                         typescript: true
@@ -198,7 +198,7 @@ describe.only(`Fiori Elements template: ${TEST_NAME}`, () => {
                         settings: v2TemplateSettings
                     },
                     ui5: {
-                        version: UI5_DEFAULT.UI5_VERSION_VARIABLE 
+                        version: UI5_DEFAULT.UI5_VERSION_VARIABLE
                     },
                     appOptions: {
                         typescript: true
