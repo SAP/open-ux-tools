@@ -1,6 +1,8 @@
 {
     "scripts": {
-        "ts-typecheck": "tsc --noEmit"
+        "ts-typecheck": "tsc --noEmit",
+        "prestart": "npm run ts-typecheck",
+        "prebuild": "npm run ts-typecheck"
     },
     "devDependencies": {
         "@sapui5/ts-types-esm": "<%- ui5.typesVersion %>",
