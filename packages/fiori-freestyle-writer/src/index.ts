@@ -9,6 +9,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import type { BasicAppSettings } from './types';
 import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
+import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -67,7 +68,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
 
     packageJson.scripts = Object.assign(packageJson.scripts, {
         ...getPackageJsonTasks({
-            localOnly: !ffApp.service?.url,
+            localOnly: !!ffApp.service && !ffApp.service?.url,
             addMock: !!ffApp.service?.metadata,
             sapClient: ffApp.service?.client,
             flpAppId: ffApp.app.flpAppId,
@@ -82,6 +83,12 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
+    } else {
+        // Add placeholder middleware so allow adding service later
+        const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+        ui5LocalConfig.addFioriToolsProxydMiddleware({});
+        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
     return fs;
