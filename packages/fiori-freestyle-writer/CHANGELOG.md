@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.0
+
+### Minor Changes
+
+-   62d83f6: tbi - stop adding a dummy service when no datasource supplied
+
 ## 0.14.19
 
 ### Patch Changes
