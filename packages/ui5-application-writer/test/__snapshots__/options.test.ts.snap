@@ -1205,6 +1205,8 @@ server:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
     - name: ui5-tooling-modules-middleware
       afterMiddleware: compression
       configuration: {}
@@ -1253,6 +1255,8 @@ server:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
     - name: ui5-tooling-modules-middleware
       afterMiddleware: compression
       configuration: {}
