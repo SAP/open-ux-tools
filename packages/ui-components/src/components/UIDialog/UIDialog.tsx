@@ -21,7 +21,8 @@ interface ComponentProps {
     // Header render in single or multi lines
     // Default is single line
     multiLineTitle?: boolean;
-    // Is open of dialog with animation
+    // Is dialog open should be animated with fade in animation
+    // Default value for "isOpenAnimated" is "true"
     isOpenAnimated?: boolean;
 }
 
