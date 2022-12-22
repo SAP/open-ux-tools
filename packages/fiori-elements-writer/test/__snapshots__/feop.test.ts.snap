@@ -3744,6 +3744,8 @@ server:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -3806,6 +3808,8 @@ server:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -3861,6 +3865,8 @@ server:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
