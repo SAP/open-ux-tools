@@ -67,6 +67,17 @@ describe('connection', () => {
             });
         });
 
+        it('response: do not cause problem for errors without response property', () => {
+            const response = {} as AxiosResponse;
+            const error = { message: '~test' } as AxiosError;
+            respHandlers.forEach((handler) => {
+                expect(handler.fulfilled(response)).toBe(response);
+                if (handler.rejected) {
+                    expect(() => handler.rejected(error)).toThrow(error.message);
+                }
+            });
+        });
+
         it('response: do not cause problem for normal responses', () => {
             const response = {} as AxiosResponse;
             const error = { response, message: '~test' } as AxiosError;
