@@ -19,8 +19,8 @@ describe('Defaults', () => {
         [UI5_DEFAULT.TYPES_VERSION_BEST, typesVersionBest],
         ['1.109-snapshot', '~1.109.0'],
         ['1.80-snapshot', esmTypesVersionSince],
-        ['1.102-snapshot', typesVersionBest],
-        ['1.91.0', '~1.91.0'],
+        ['1.102-snapshot', '~1.108.0'],
+        ['1.91.0', '~1.94.0'],
         [UI5_DEFAULT.UI5_VERSION_VARIABLE, `>=${UI5_DEFAULT.V2_FE_TYPES_AVAILABLE}`]
     ];
     const tesTSTypesData: [any, string][] = [

@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.8.11
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+-   Updated dependencies [eaf7214]
+    -   @sap-ux/ui5-application-writer@0.18.2
+
 ## 0.8.10
 
 ### Patch Changes
