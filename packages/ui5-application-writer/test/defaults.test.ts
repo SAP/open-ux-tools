@@ -20,7 +20,7 @@ describe('Defaults', () => {
         ['1.109-snapshot', typesVersionBest],
         ['1.80-snapshot', esmTypesVersionSince],
         ['1.102-snapshot', '~1.102.0'],
-        ['1.91.0', '~1.91.0']
+        ['1.91.0', '~1.94.0']
     ];
     const tesTSTypesData: [any, string][] = [
         [UI5_DEFAULT.MIN_UI5_VERSION, minU5Version],
