@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.2
+
+### Patch Changes
+
+-   aab6b0d: tbi - hide transpile warnings for /Component-preload.js
+-   Updated dependencies [aab6b0d]
+    -   @sap-ux/ui5-application-writer@0.18.3
+
 ## 0.15.1
 
 ### Patch Changes
