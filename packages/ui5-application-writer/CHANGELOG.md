@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.18.2
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+
 ## 0.18.1
 
 ### Patch Changes
