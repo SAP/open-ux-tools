@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 0.14.0
+
+### Minor Changes
+
+-   3748963: minor bug fix
+
 ## 0.13.4
 
 ### Patch Changes
