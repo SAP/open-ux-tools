@@ -1,5 +1,22 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.70
+
+### Patch Changes
+
+-   Updated dependencies [aab6b0d]
+    -   @sap-ux/fiori-elements-writer@0.8.12
+    -   @sap-ux/fiori-freestyle-writer@0.15.2
+
+## 0.2.69
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+-   Updated dependencies [eaf7214]
+    -   @sap-ux/fiori-elements-writer@0.8.11
+    -   @sap-ux/fiori-freestyle-writer@0.15.1
+
 ## 0.2.68
 
 ### Patch Changes

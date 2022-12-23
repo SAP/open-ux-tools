@@ -33,7 +33,8 @@ export const ui5TSSupport = {
         configuration: {
             debug: true,
             transpileAsync: true,
-            transpileTypeScript: true
+            transpileTypeScript: true,
+            excludePatterns: ['/Component-preload.js']
         }
     }
 };
