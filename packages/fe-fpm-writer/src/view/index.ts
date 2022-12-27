@@ -8,6 +8,7 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest, Ui5RoutingTarget, Ui5TargetSettings } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 
 /**
@@ -96,7 +97,10 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
 
     // enhance manifest with view definition
     const filledTemplate = render(fs.read(getTemplatePath('view/manifest.json')), completeView, {});
-    fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: filledTemplate
+    });
 
     // add fragment
     if (customView.viewUpdate !== false) {

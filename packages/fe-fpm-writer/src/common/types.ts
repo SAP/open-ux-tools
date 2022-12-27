@@ -160,3 +160,11 @@ export interface EventHandler {
      */
     eventHandler?: true | string | EventHandlerConfiguration;
 }
+
+export const CHAR_SPACE = ' ';
+export const CHAR_TAB = '\t';
+export type TabSymbol = typeof CHAR_SPACE | typeof CHAR_TAB;
+export interface TabSizeInfo {
+    symbol: TabSymbol;
+    size: number;
+}

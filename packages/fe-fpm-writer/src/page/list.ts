@@ -5,6 +5,7 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
 import type { Manifest } from '../common/types';
+import { extendJSON } from '../common/file';
 import type { ListReport, InternalListReport } from './types';
 import { getTemplatePath } from '../templates';
 
@@ -57,11 +58,11 @@ export function generate(basePath: string, data: ListReport, fs?: Editor): Edito
     const config = enhanceData(data, manifest);
 
     // enhance manifest.json
-    fs.extendJSON(
-        manifestPath,
-        JSON.parse(render(fs.read(getTemplatePath('page/list/manifest.json')), config, {})),
-        getManifestJsonExtensionHelper(config)
-    );
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: render(fs.read(getTemplatePath('page/list/manifest.json')), config, {}),
+        replacer: getManifestJsonExtensionHelper(config)
+    });
 
     return fs;
 }
