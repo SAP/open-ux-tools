@@ -180,258 +180,258 @@ Object {
   },
   "lrop/webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.32.0\\",
-  \\"sap.app\\": {
-    \\"id\\": \\"v4travel\\",
-    \\"type\\": \\"application\\",
-    \\"i18n\\": \\"i18n/i18n.properties\\",
-    \\"applicationVersion\\": {
-      \\"version\\": \\"1.0.0\\"
-    },
-    \\"title\\": \\"{{appTitle}}\\",
-    \\"description\\": \\"{{appDescription}}\\",
-    \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"annotation\\"
-          ],
-          \\"odataVersion\\": \\"4.0\\",
-          \\"localUri\\": \\"localService/metadata.xml\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
-        }
-      }
-    },
-    \\"offline\\": false,
-    \\"resources\\": \\"resources.json\\",
-    \\"sourceTemplate\\": {
-      \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
-      \\"version\\": \\"1.0.0\\"
-    }
-  },
-  \\"sap.ui\\": {
-    \\"technology\\": \\"UI5\\",
-    \\"icons\\": {
-      \\"icon\\": \\"\\",
-      \\"favIcon\\": \\"\\",
-      \\"phone\\": \\"\\",
-      \\"phone@2\\": \\"\\",
-      \\"tablet\\": \\"\\",
-      \\"tablet@2\\": \\"\\"
-    },
-    \\"deviceTypes\\": {
-      \\"desktop\\": true,
-      \\"tablet\\": true,
-      \\"phone\\": true
-    }
-  },
-  \\"sap.ui5\\": {
-    \\"resources\\": {
-      \\"js\\": [],
-      \\"css\\": []
-    },
-    \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.94.0\\",
-      \\"libs\\": {
-        \\"sap.ui.core\\": {},
-        \\"sap.fe.templates\\": {}
-      }
-    },
-    \\"models\\": {
-      \\"i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
-      },
-      \\"\\": {
-        \\"dataSource\\": \\"mainService\\",
-        \\"preload\\": true,
-        \\"settings\\": {
-          \\"synchronizationMode\\": \\"None\\",
-          \\"operationMode\\": \\"Server\\",
-          \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true
-        }
-      }
-    },
-    \\"routing\\": {
-      \\"routes\\": [
-        {
-          \\"name\\": \\"TravelListReport\\",
-          \\"pattern\\": \\":?query:\\",
-          \\"target\\": \\"TravelListReport\\"
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"v4travel\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
         },
-        {
-          \\"name\\": \\"TravelObjectPage\\",
-          \\"pattern\\": \\"Travel({TravelKey}):?query:\\",
-          \\"target\\": \\"TravelObjectPage\\"
-        },
-        {
-          \\"name\\": \\"BookingMyCustomPage\\",
-          \\"pattern\\": \\"Travel({TravelKey})/_Booking:?query:\\",
-          \\"target\\": \\"BookingMyCustomPage\\"
-        }
-      ],
-      \\"targets\\": {
-        \\"TravelListReport\\": {
-          \\"type\\": \\"Component\\",
-          \\"id\\": \\"TravelListReport\\",
-          \\"name\\": \\"sap.fe.templates.ListReport\\",
-          \\"options\\": {
-            \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
-              \\"navigation\\": {
-                \\"Travel\\": {
-                  \\"detail\\": {
-                    \\"route\\": \\"TravelObjectPage\\"
-                  }
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"annotations\\": [
+                        \\"annotation\\"
+                    ],
+                    \\"odataVersion\\": \\"4.0\\",
+                    \\"localUri\\": \\"localService/metadata.xml\\"
                 }
-              },
-              \\"controlConfiguration\\": {
-                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
-                  \\"columns\\": {
-                    \\"NewCustomColumn\\": {
-                      \\"header\\": \\"Custom Price and Currency\\",
-                      \\"position\\": {
-                        \\"placement\\": \\"After\\",
-                        \\"anchor\\": \\"DataField::TravelID\\"
-                      },
-                      \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
-                      \\"properties\\": [
-                        \\"TotalPrice\\",
-                        \\"CurrencyCode\\"
-                      ]
-                    }
-                  },
-                  \\"actions\\": {
-                    \\"MyCustomAction\\": {
-                      \\"press\\": \\"v4travel.ext.myCustomAction.MyCustomAction.onPress\\",
-                      \\"visible\\": true,
-                      \\"enabled\\": true,
-                      \\"text\\": \\"My Custom Action\\"
-                    }
-                  }
+            },
+            \\"annotation\\": {
+                \\"type\\": \\"ODataAnnotation\\",
+                \\"uri\\": \\"annotations/annotation.xml\\",
+                \\"settings\\": {
+                    \\"localUri\\": \\"annotations/annotation.xml\\"
                 }
-              },
-              \\"views\\": {
-                \\"paths\\": [
-                  {
-                    \\"key\\": \\"LineItemView\\",
-                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
-                  },
-                  {
-                    \\"key\\": \\"CustomViewKey\\",
-                    \\"label\\": \\"Custom View\\",
-                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
-                  },
-                  {
-                    \\"key\\": \\"SecondCustomView\\",
-                    \\"label\\": \\"Custom View\\",
-                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
-                  }
-                ]
-              }
             }
-          }
         },
-        \\"TravelObjectPage\\": {
-          \\"type\\": \\"Component\\",
-          \\"id\\": \\"TravelObjectPage\\",
-          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
-          \\"options\\": {
-            \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
-              \\"navigation\\": {
-                \\"_Booking\\": {
-                  \\"detail\\": {
-                    \\"route\\": \\"BookingMyCustomPage\\"
-                  }
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.94.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
                 }
-              },
-              \\"content\\": {
-                \\"header\\": {
-                  \\"actions\\": {
-                    \\"AnotherCustomAction\\": {
-                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onPress\\",
-                      \\"visible\\": true,
-                      \\"enabled\\": true,
-                      \\"text\\": \\"My other Action\\"
-                    },
-                    \\"AppendedAction\\": {
-                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onAppended\\",
-                      \\"visible\\": true,
-                      \\"enabled\\": true,
-                      \\"text\\": \\"Navigate to CustomPage (appended action)\\"
-                    }
-                  }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"name\\": \\"TravelListReport\\",
+                    \\"pattern\\": \\":?query:\\",
+                    \\"target\\": \\"TravelListReport\\"
                 },
-                \\"body\\": {
-                  \\"sections\\": {
-                    \\"MyCustomSection\\": {
-                      \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
-                      \\"position\\": {
-                        \\"placement\\": \\"After\\",
-                        \\"anchor\\": \\"DummyFacet\\"
-                      },
-                      \\"title\\": \\"My Custom Section\\"
-                    }
-                  }
+                {
+                    \\"name\\": \\"TravelObjectPage\\",
+                    \\"pattern\\": \\"Travel({TravelKey}):?query:\\",
+                    \\"target\\": \\"TravelObjectPage\\"
+                },
+                {
+                    \\"name\\": \\"BookingMyCustomPage\\",
+                    \\"pattern\\": \\"Travel({TravelKey})/_Booking:?query:\\",
+                    \\"target\\": \\"BookingMyCustomPage\\"
                 }
-              }
+            ],
+            \\"targets\\": {
+                \\"TravelListReport\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"TravelListReport\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Travel\\",
+                            \\"navigation\\": {
+                                \\"Travel\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"TravelObjectPage\\"
+                                    }
+                                }
+                            },
+                            \\"controlConfiguration\\": {
+                                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                                    \\"columns\\": {
+                                        \\"NewCustomColumn\\": {
+                                            \\"header\\": \\"Custom Price and Currency\\",
+                                            \\"position\\": {
+                                                \\"placement\\": \\"After\\",
+                                                \\"anchor\\": \\"DataField::TravelID\\"
+                                            },
+                                            \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
+                                            \\"properties\\": [
+                                                \\"TotalPrice\\",
+                                                \\"CurrencyCode\\"
+                                            ]
+                                        }
+                                    },
+                                    \\"actions\\": {
+                                        \\"MyCustomAction\\": {
+                                            \\"press\\": \\"v4travel.ext.myCustomAction.MyCustomAction.onPress\\",
+                                            \\"visible\\": true,
+                                            \\"enabled\\": true,
+                                            \\"text\\": \\"My Custom Action\\"
+                                        }
+                                    }
+                                }
+                            },
+                            \\"views\\": {
+                                \\"paths\\": [
+                                    {
+                                        \\"key\\": \\"LineItemView\\",
+                                        \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                                    },
+                                    {
+                                        \\"key\\": \\"CustomViewKey\\",
+                                        \\"label\\": \\"Custom View\\",
+                                        \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                                    },
+                                    {
+                                        \\"key\\": \\"SecondCustomView\\",
+                                        \\"label\\": \\"Custom View\\",
+                                        \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                \\"TravelObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"TravelObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Travel\\",
+                            \\"navigation\\": {
+                                \\"_Booking\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"BookingMyCustomPage\\"
+                                    }
+                                }
+                            },
+                            \\"content\\": {
+                                \\"header\\": {
+                                    \\"actions\\": {
+                                        \\"AnotherCustomAction\\": {
+                                            \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onPress\\",
+                                            \\"visible\\": true,
+                                            \\"enabled\\": true,
+                                            \\"text\\": \\"My other Action\\"
+                                        },
+                                        \\"AppendedAction\\": {
+                                            \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onAppended\\",
+                                            \\"visible\\": true,
+                                            \\"enabled\\": true,
+                                            \\"text\\": \\"Navigate to CustomPage (appended action)\\"
+                                        }
+                                    }
+                                },
+                                \\"body\\": {
+                                    \\"sections\\": {
+                                        \\"MyCustomSection\\": {
+                                            \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
+                                            \\"position\\": {
+                                                \\"placement\\": \\"After\\",
+                                                \\"anchor\\": \\"DummyFacet\\"
+                                            },
+                                            \\"title\\": \\"My Custom Section\\"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                \\"BookingMyCustomPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"BookingMyCustomPage\\",
+                    \\"name\\": \\"sap.fe.core.fpm\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\",
+                            \\"entitySet\\": \\"Booking\\",
+                            \\"navigation\\": {}
+                        }
+                    }
+                }
             }
-          }
         },
-        \\"BookingMyCustomPage\\": {
-          \\"type\\": \\"Component\\",
-          \\"id\\": \\"BookingMyCustomPage\\",
-          \\"name\\": \\"sap.fe.core.fpm\\",
-          \\"options\\": {
-            \\"settings\\": {
-              \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\",
-              \\"entitySet\\": \\"Booking\\",
-              \\"navigation\\": {}
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        },
+        \\"extends\\": {
+            \\"extensions\\": {
+                \\"sap.ui.controllerExtensions\\": {
+                    \\"sap.fe.templates.ListReport.ListReportController\\": {
+                        \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                    },
+                    \\"sap.fe.templates.ObjectPage.ObjectPageController\\": {
+                        \\"controllerName\\": \\"v4travel.ext.myControllerExtension.MyControllerExtension\\"
+                    }
+                }
             }
-          }
         }
-      }
     },
-    \\"contentDensities\\": {
-      \\"compact\\": true,
-      \\"cozy\\": true
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
     },
-    \\"extends\\": {
-      \\"extensions\\": {
-        \\"sap.ui.controllerExtensions\\": {
-          \\"sap.fe.templates.ListReport.ListReportController\\": {
-            \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
-          },
-          \\"sap.fe.templates.ObjectPage.ObjectPageController\\": {
-            \\"controllerName\\": \\"v4travel.ext.myControllerExtension.MyControllerExtension\\"
-          }
-        }
-      }
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
     }
-  },
-  \\"sap.platform.abap\\": {
-    \\"_version\\": \\"1.1.0\\",
-    \\"uri\\": \\"\\"
-  },
-  \\"sap.platform.hcp\\": {
-    \\"_version\\": \\"1.1.0\\",
-    \\"uri\\": \\"\\"
-  },
-  \\"sap.fiori\\": {
-    \\"_version\\": \\"1.1.0\\",
-    \\"registrationIds\\": [],
-    \\"archeType\\": \\"transactional\\"
-  }
 }
 ",
     "state": "modified",
@@ -690,258 +690,258 @@ declare module 'sap/fe/core/PageController' {
   },
   "ts/webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.32.0\\",
-  \\"sap.app\\": {
-    \\"id\\": \\"v4travel\\",
-    \\"type\\": \\"application\\",
-    \\"i18n\\": \\"i18n/i18n.properties\\",
-    \\"applicationVersion\\": {
-      \\"version\\": \\"1.0.0\\"
-    },
-    \\"title\\": \\"{{appTitle}}\\",
-    \\"description\\": \\"{{appDescription}}\\",
-    \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"annotation\\"
-          ],
-          \\"odataVersion\\": \\"4.0\\",
-          \\"localUri\\": \\"localService/metadata.xml\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
-        }
-      }
-    },
-    \\"offline\\": false,
-    \\"resources\\": \\"resources.json\\",
-    \\"sourceTemplate\\": {
-      \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
-      \\"version\\": \\"1.0.0\\"
-    }
-  },
-  \\"sap.ui\\": {
-    \\"technology\\": \\"UI5\\",
-    \\"icons\\": {
-      \\"icon\\": \\"\\",
-      \\"favIcon\\": \\"\\",
-      \\"phone\\": \\"\\",
-      \\"phone@2\\": \\"\\",
-      \\"tablet\\": \\"\\",
-      \\"tablet@2\\": \\"\\"
-    },
-    \\"deviceTypes\\": {
-      \\"desktop\\": true,
-      \\"tablet\\": true,
-      \\"phone\\": true
-    }
-  },
-  \\"sap.ui5\\": {
-    \\"resources\\": {
-      \\"js\\": [],
-      \\"css\\": []
-    },
-    \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.94.0\\",
-      \\"libs\\": {
-        \\"sap.ui.core\\": {},
-        \\"sap.fe.templates\\": {}
-      }
-    },
-    \\"models\\": {
-      \\"i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
-      },
-      \\"\\": {
-        \\"dataSource\\": \\"mainService\\",
-        \\"preload\\": true,
-        \\"settings\\": {
-          \\"synchronizationMode\\": \\"None\\",
-          \\"operationMode\\": \\"Server\\",
-          \\"autoExpandSelect\\": true,
-          \\"earlyRequests\\": true
-        }
-      }
-    },
-    \\"routing\\": {
-      \\"routes\\": [
-        {
-          \\"name\\": \\"TravelListReport\\",
-          \\"pattern\\": \\":?query:\\",
-          \\"target\\": \\"TravelListReport\\"
+    \\"_version\\": \\"1.32.0\\",
+    \\"sap.app\\": {
+        \\"id\\": \\"v4travel\\",
+        \\"type\\": \\"application\\",
+        \\"i18n\\": \\"i18n/i18n.properties\\",
+        \\"applicationVersion\\": {
+            \\"version\\": \\"1.0.0\\"
         },
-        {
-          \\"name\\": \\"TravelObjectPage\\",
-          \\"pattern\\": \\"Travel({TravelKey}):?query:\\",
-          \\"target\\": \\"TravelObjectPage\\"
-        },
-        {
-          \\"name\\": \\"BookingMyCustomPage\\",
-          \\"pattern\\": \\"Travel({TravelKey})/_Booking:?query:\\",
-          \\"target\\": \\"BookingMyCustomPage\\"
-        }
-      ],
-      \\"targets\\": {
-        \\"TravelListReport\\": {
-          \\"type\\": \\"Component\\",
-          \\"id\\": \\"TravelListReport\\",
-          \\"name\\": \\"sap.fe.templates.ListReport\\",
-          \\"options\\": {
-            \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
-              \\"navigation\\": {
-                \\"Travel\\": {
-                  \\"detail\\": {
-                    \\"route\\": \\"TravelObjectPage\\"
-                  }
+        \\"title\\": \\"{{appTitle}}\\",
+        \\"description\\": \\"{{appDescription}}\\",
+        \\"dataSources\\": {
+            \\"mainService\\": {
+                \\"uri\\": \\"/sap/opu/odata4/dmo/ui_travel_uuid_um_v4/srvd/dmo/ui_travel_uuid_um/0001/\\",
+                \\"type\\": \\"OData\\",
+                \\"settings\\": {
+                    \\"annotations\\": [
+                        \\"annotation\\"
+                    ],
+                    \\"odataVersion\\": \\"4.0\\",
+                    \\"localUri\\": \\"localService/metadata.xml\\"
                 }
-              },
-              \\"controlConfiguration\\": {
-                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
-                  \\"columns\\": {
-                    \\"NewCustomColumn\\": {
-                      \\"header\\": \\"Custom Price and Currency\\",
-                      \\"position\\": {
-                        \\"placement\\": \\"After\\",
-                        \\"anchor\\": \\"DataField::TravelID\\"
-                      },
-                      \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
-                      \\"properties\\": [
-                        \\"TotalPrice\\",
-                        \\"CurrencyCode\\"
-                      ]
-                    }
-                  },
-                  \\"actions\\": {
-                    \\"MyCustomAction\\": {
-                      \\"press\\": \\"v4travel.ext.myCustomAction.MyCustomAction.onPress\\",
-                      \\"visible\\": true,
-                      \\"enabled\\": true,
-                      \\"text\\": \\"My Custom Action\\"
-                    }
-                  }
+            },
+            \\"annotation\\": {
+                \\"type\\": \\"ODataAnnotation\\",
+                \\"uri\\": \\"annotations/annotation.xml\\",
+                \\"settings\\": {
+                    \\"localUri\\": \\"annotations/annotation.xml\\"
                 }
-              },
-              \\"views\\": {
-                \\"paths\\": [
-                  {
-                    \\"key\\": \\"LineItemView\\",
-                    \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
-                  },
-                  {
-                    \\"key\\": \\"CustomViewKey\\",
-                    \\"label\\": \\"Custom View\\",
-                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
-                  },
-                  {
-                    \\"key\\": \\"SecondCustomView\\",
-                    \\"label\\": \\"Custom View\\",
-                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
-                  }
-                ]
-              }
             }
-          }
         },
-        \\"TravelObjectPage\\": {
-          \\"type\\": \\"Component\\",
-          \\"id\\": \\"TravelObjectPage\\",
-          \\"name\\": \\"sap.fe.templates.ObjectPage\\",
-          \\"options\\": {
-            \\"settings\\": {
-              \\"entitySet\\": \\"Travel\\",
-              \\"navigation\\": {
-                \\"_Booking\\": {
-                  \\"detail\\": {
-                    \\"route\\": \\"BookingMyCustomPage\\"
-                  }
+        \\"offline\\": false,
+        \\"resources\\": \\"resources.json\\",
+        \\"sourceTemplate\\": {
+            \\"id\\": \\"ui5template.fiorielements.v4.lrop\\",
+            \\"version\\": \\"1.0.0\\"
+        }
+    },
+    \\"sap.ui\\": {
+        \\"technology\\": \\"UI5\\",
+        \\"icons\\": {
+            \\"icon\\": \\"\\",
+            \\"favIcon\\": \\"\\",
+            \\"phone\\": \\"\\",
+            \\"phone@2\\": \\"\\",
+            \\"tablet\\": \\"\\",
+            \\"tablet@2\\": \\"\\"
+        },
+        \\"deviceTypes\\": {
+            \\"desktop\\": true,
+            \\"tablet\\": true,
+            \\"phone\\": true
+        }
+    },
+    \\"sap.ui5\\": {
+        \\"resources\\": {
+            \\"js\\": [],
+            \\"css\\": []
+        },
+        \\"dependencies\\": {
+            \\"minUI5Version\\": \\"1.94.0\\",
+            \\"libs\\": {
+                \\"sap.ui.core\\": {},
+                \\"sap.fe.templates\\": {}
+            }
+        },
+        \\"models\\": {
+            \\"i18n\\": {
+                \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+                \\"uri\\": \\"i18n/i18n.properties\\"
+            },
+            \\"\\": {
+                \\"dataSource\\": \\"mainService\\",
+                \\"preload\\": true,
+                \\"settings\\": {
+                    \\"synchronizationMode\\": \\"None\\",
+                    \\"operationMode\\": \\"Server\\",
+                    \\"autoExpandSelect\\": true,
+                    \\"earlyRequests\\": true
                 }
-              },
-              \\"content\\": {
-                \\"header\\": {
-                  \\"actions\\": {
-                    \\"AnotherCustomAction\\": {
-                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onPress\\",
-                      \\"visible\\": true,
-                      \\"enabled\\": true,
-                      \\"text\\": \\"My other Action\\"
-                    },
-                    \\"AppendedAction\\": {
-                      \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onAppended\\",
-                      \\"visible\\": true,
-                      \\"enabled\\": true,
-                      \\"text\\": \\"Navigate to CustomPage (appended action)\\"
-                    }
-                  }
+            }
+        },
+        \\"routing\\": {
+            \\"routes\\": [
+                {
+                    \\"name\\": \\"TravelListReport\\",
+                    \\"pattern\\": \\":?query:\\",
+                    \\"target\\": \\"TravelListReport\\"
                 },
-                \\"body\\": {
-                  \\"sections\\": {
-                    \\"MyCustomSection\\": {
-                      \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
-                      \\"position\\": {
-                        \\"placement\\": \\"After\\",
-                        \\"anchor\\": \\"DummyFacet\\"
-                      },
-                      \\"title\\": \\"My Custom Section\\"
-                    }
-                  }
+                {
+                    \\"name\\": \\"TravelObjectPage\\",
+                    \\"pattern\\": \\"Travel({TravelKey}):?query:\\",
+                    \\"target\\": \\"TravelObjectPage\\"
+                },
+                {
+                    \\"name\\": \\"BookingMyCustomPage\\",
+                    \\"pattern\\": \\"Travel({TravelKey})/_Booking:?query:\\",
+                    \\"target\\": \\"BookingMyCustomPage\\"
                 }
-              }
+            ],
+            \\"targets\\": {
+                \\"TravelListReport\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"TravelListReport\\",
+                    \\"name\\": \\"sap.fe.templates.ListReport\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Travel\\",
+                            \\"navigation\\": {
+                                \\"Travel\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"TravelObjectPage\\"
+                                    }
+                                }
+                            },
+                            \\"controlConfiguration\\": {
+                                \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
+                                    \\"columns\\": {
+                                        \\"NewCustomColumn\\": {
+                                            \\"header\\": \\"Custom Price and Currency\\",
+                                            \\"position\\": {
+                                                \\"placement\\": \\"After\\",
+                                                \\"anchor\\": \\"DataField::TravelID\\"
+                                            },
+                                            \\"template\\": \\"v4travel.ext.newCustomColumn.NewCustomColumn\\",
+                                            \\"properties\\": [
+                                                \\"TotalPrice\\",
+                                                \\"CurrencyCode\\"
+                                            ]
+                                        }
+                                    },
+                                    \\"actions\\": {
+                                        \\"MyCustomAction\\": {
+                                            \\"press\\": \\"v4travel.ext.myCustomAction.MyCustomAction.onPress\\",
+                                            \\"visible\\": true,
+                                            \\"enabled\\": true,
+                                            \\"text\\": \\"My Custom Action\\"
+                                        }
+                                    }
+                                }
+                            },
+                            \\"views\\": {
+                                \\"paths\\": [
+                                    {
+                                        \\"key\\": \\"LineItemView\\",
+                                        \\"annotationPath\\": \\"com.sap.vocabularies.UI.v1.LineItem\\"
+                                    },
+                                    {
+                                        \\"key\\": \\"CustomViewKey\\",
+                                        \\"label\\": \\"Custom View\\",
+                                        \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                                    },
+                                    {
+                                        \\"key\\": \\"SecondCustomView\\",
+                                        \\"label\\": \\"Custom View\\",
+                                        \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                \\"TravelObjectPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"TravelObjectPage\\",
+                    \\"name\\": \\"sap.fe.templates.ObjectPage\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"entitySet\\": \\"Travel\\",
+                            \\"navigation\\": {
+                                \\"_Booking\\": {
+                                    \\"detail\\": {
+                                        \\"route\\": \\"BookingMyCustomPage\\"
+                                    }
+                                }
+                            },
+                            \\"content\\": {
+                                \\"header\\": {
+                                    \\"actions\\": {
+                                        \\"AnotherCustomAction\\": {
+                                            \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onPress\\",
+                                            \\"visible\\": true,
+                                            \\"enabled\\": true,
+                                            \\"text\\": \\"My other Action\\"
+                                        },
+                                        \\"AppendedAction\\": {
+                                            \\"press\\": \\"v4travel.ext.anotherCustomAction.AnotherCustomAction.onAppended\\",
+                                            \\"visible\\": true,
+                                            \\"enabled\\": true,
+                                            \\"text\\": \\"Navigate to CustomPage (appended action)\\"
+                                        }
+                                    }
+                                },
+                                \\"body\\": {
+                                    \\"sections\\": {
+                                        \\"MyCustomSection\\": {
+                                            \\"template\\": \\"v4travel.ext.myCustomSection.MyCustomSection\\",
+                                            \\"position\\": {
+                                                \\"placement\\": \\"After\\",
+                                                \\"anchor\\": \\"DummyFacet\\"
+                                            },
+                                            \\"title\\": \\"My Custom Section\\"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                \\"BookingMyCustomPage\\": {
+                    \\"type\\": \\"Component\\",
+                    \\"id\\": \\"BookingMyCustomPage\\",
+                    \\"name\\": \\"sap.fe.core.fpm\\",
+                    \\"options\\": {
+                        \\"settings\\": {
+                            \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\",
+                            \\"entitySet\\": \\"Booking\\",
+                            \\"navigation\\": {}
+                        }
+                    }
+                }
             }
-          }
         },
-        \\"BookingMyCustomPage\\": {
-          \\"type\\": \\"Component\\",
-          \\"id\\": \\"BookingMyCustomPage\\",
-          \\"name\\": \\"sap.fe.core.fpm\\",
-          \\"options\\": {
-            \\"settings\\": {
-              \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\",
-              \\"entitySet\\": \\"Booking\\",
-              \\"navigation\\": {}
+        \\"contentDensities\\": {
+            \\"compact\\": true,
+            \\"cozy\\": true
+        },
+        \\"extends\\": {
+            \\"extensions\\": {
+                \\"sap.ui.controllerExtensions\\": {
+                    \\"sap.fe.templates.ListReport.ListReportController\\": {
+                        \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                    },
+                    \\"sap.fe.templates.ObjectPage.ObjectPageController\\": {
+                        \\"controllerName\\": \\"v4travel.ext.myControllerExtension.MyControllerExtension\\"
+                    }
+                }
             }
-          }
         }
-      }
     },
-    \\"contentDensities\\": {
-      \\"compact\\": true,
-      \\"cozy\\": true
+    \\"sap.platform.abap\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
     },
-    \\"extends\\": {
-      \\"extensions\\": {
-        \\"sap.ui.controllerExtensions\\": {
-          \\"sap.fe.templates.ListReport.ListReportController\\": {
-            \\"controllerName\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
-          },
-          \\"sap.fe.templates.ObjectPage.ObjectPageController\\": {
-            \\"controllerName\\": \\"v4travel.ext.myControllerExtension.MyControllerExtension\\"
-          }
-        }
-      }
+    \\"sap.platform.hcp\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"uri\\": \\"\\"
+    },
+    \\"sap.fiori\\": {
+        \\"_version\\": \\"1.1.0\\",
+        \\"registrationIds\\": [],
+        \\"archeType\\": \\"transactional\\"
     }
-  },
-  \\"sap.platform.abap\\": {
-    \\"_version\\": \\"1.1.0\\",
-    \\"uri\\": \\"\\"
-  },
-  \\"sap.platform.hcp\\": {
-    \\"_version\\": \\"1.1.0\\",
-    \\"uri\\": \\"\\"
-  },
-  \\"sap.fiori\\": {
-    \\"_version\\": \\"1.1.0\\",
-    \\"registrationIds\\": [],
-    \\"archeType\\": \\"transactional\\"
-  }
 }
 ",
     "state": "modified",

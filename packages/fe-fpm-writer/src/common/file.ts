@@ -56,6 +56,12 @@ interface ExtendJsonParams {
 }
 
 export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
-    const { filepath, content, replacer, space } = params;
+    const { filepath, content, replacer } = params;
+    let { space } = params;
+    if (space === undefined) {
+        const tabSizeInfo = detectTabSpacing(content);
+        space = tabSizeInfo?.symbol === CHAR_SPACE ? tabSizeInfo?.size : CHAR_TAB;
+    }
+
     fs.extendJSON(filepath, JSON.parse(content), replacer, space);
 }
