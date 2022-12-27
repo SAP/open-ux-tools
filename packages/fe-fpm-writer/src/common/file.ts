@@ -4,6 +4,7 @@ import { CHAR_SPACE, CHAR_TAB } from './types';
 
 /**
  * Method returns tab info for passed line.
+ *
  * @param {string} line Line with tab spacing.
  * @returns {TabSizeInfo | undefined} Tab size information.
  */
@@ -26,6 +27,7 @@ function getLineTabInfo(line: string): TabSizeInfo | undefined {
 
 /**
  * Method calculates tab space info for passed file content.
+ *
  * @param {string} content File content.
  * @returns {TabSizeInfo | undefined} Tab size information.
  */
@@ -55,6 +57,11 @@ interface ExtendJsonParams {
     space?: WriteJsonSpace;
 }
 
+/**
+ *
+ * @param fs
+ * @param params
+ */
 export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
     const { filepath, content, replacer } = params;
     let { space } = params;
