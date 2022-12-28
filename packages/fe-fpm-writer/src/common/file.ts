@@ -59,6 +59,7 @@ export function detectTabSpacing(content: string): TabInfo | undefined {
 /**
  * Method extends target JSON file with passed JSOn content.
  * Method uses 'fs.extendJSON', but applies additional calculation to reuse existing content tab sizing information.
+ *
  * @param fs - the mem-fs editor instance.
  * @param params - options for JSON extend.
  */
