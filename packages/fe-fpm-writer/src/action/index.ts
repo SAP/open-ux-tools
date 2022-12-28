@@ -101,7 +101,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     // enhance manifest with action definition and controller reference
     const actions = enhanceManifestAndGetActionsElementReference(manifest, config.target);
     Object.assign(actions, JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action.json`)), config, {})));
-    fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs.read(manifestPath), actionConfig.tabInfo));
+    fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, actionConfig.tabInfo));
 
     return fs;
 }
