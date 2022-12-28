@@ -57,17 +57,16 @@ export function detectTabSpacing(content: string): TabInfo | undefined {
 }
 
 /**
- * Method extends target JSON file with passed JSOn content.
- * Method uses 'fs.extendJSON', but applies additional calculation to reuse existing content tab sizing information.
+ * Method calculates tab spacing parameter for JSON parse.
  *
- * @param fs - the mem-fs editor instance.
- * @param params - options for JSON extend.
+ * @param content - file content.
+ * @param tabInfo - External tab configuration.
+ * @returns tab size information.
  */
-export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
-    const { filepath, content, replacer } = params;
+export function getJsonSpace(content: string, tabInfo?: TabInfo | undefined): WriteJsonSpace | undefined {
     let space: WriteJsonSpace | undefined;
     // Use passed tab info or read from existing content
-    const tabInfo = params.tabInfo || detectTabSpacing(content);
+    tabInfo = tabInfo || detectTabSpacing(content);
     if (tabInfo !== undefined) {
         if (tabInfo.useTabSymbol) {
             // Tab symbol should be used as tab
@@ -77,6 +76,19 @@ export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
             space = tabInfo.size;
         }
     }
+    return space;
+}
+
+/**
+ * Method extends target JSON file with passed JSOn content.
+ * Method uses 'fs.extendJSON', but applies additional calculation to reuse existing content tab sizing information.
+ *
+ * @param fs - the mem-fs editor instance.
+ * @param params - options for JSON extend.
+ */
+export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
+    const { filepath, content, replacer } = params;
+    const space: WriteJsonSpace | undefined = getJsonSpace(params.content, params.tabInfo);
     // Write json
     fs.extendJSON(filepath, JSON.parse(content), replacer, space);
 }

@@ -4,6 +4,8 @@ import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import type { ListReport } from '../../../src/page';
 import { generate } from '../../../src/page/list';
+import { detectTabSpacing } from '../../../src/common/file';
+import { tabSizingTestCases } from '../../common';
 
 describe('ListReport', () => {
     const testDir = '' + Date.now();
@@ -69,6 +71,18 @@ describe('ListReport', () => {
             );
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
+
+        describe('Test property custom "tabSizing"', () => {
+            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+                const target = join(testDir, 'tab-sizing');
+                fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+                generate(target, { ...minimalInput, tabInfo }, fs);
+
+                const updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+                const result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+            });
         });
     });
 });

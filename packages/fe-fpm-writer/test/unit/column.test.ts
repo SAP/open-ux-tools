@@ -11,6 +11,7 @@ import * as manifest from './sample/column/webapp/manifest.json';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import { detectTabSpacing } from '../../src/common/file';
+import { tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/column');
 
@@ -293,40 +294,7 @@ describe('CustomAction', () => {
         });
 
         describe('Test property custom "tabSizing"', () => {
-            const testCases = [
-                {
-                    name: '6 spaces',
-                    tabInfo: {
-                        size: 6
-                    },
-                    expectedAfterSave: {
-                        size: 6,
-                        useTabSymbol: false
-                    }
-                },
-                {
-                    name: '1 tab',
-                    tabInfo: {
-                        useTabSymbol: true
-                    },
-                    expectedAfterSave: {
-                        size: 1,
-                        useTabSymbol: true
-                    }
-                },
-                {
-                    name: '2 tabs',
-                    tabInfo: {
-                        size: 2,
-                        useTabSymbol: true
-                    },
-                    expectedAfterSave: {
-                        size: 2,
-                        useTabSymbol: true
-                    }
-                }
-            ];
-            test.each(testCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
                 generateCustomColumn(
                     testDir,
                     {

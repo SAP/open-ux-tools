@@ -8,6 +8,8 @@ import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
+import { detectTabSpacing } from '../../src/common/file';
+import { tabSizingTestCases } from '../common';
 
 describe('CustomAction', () => {
     describe('getTargetElementReference', () => {
@@ -339,6 +341,15 @@ describe('CustomAction', () => {
                     expect(fs.read(existingPath)).toMatchSnapshot();
                 }
             );
+        });
+
+        describe('Test property custom "tabSizing"', () => {
+            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+                generateCustomAction(testDir, { name, target, settings, tabInfo }, fs);
+                const updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                const result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+            });
         });
     });
 });
