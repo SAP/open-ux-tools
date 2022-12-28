@@ -2,6 +2,7 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { addExtensionTypes } from '../../src/common/utils';
+import { detectTabSpacing } from '../../src/common/file';
 
 describe('Common', () => {
     describe('utils.addExtensionTypes', () => {
@@ -42,6 +43,44 @@ describe('Common', () => {
             expect(fs.exists(dtsFile)).toBe(false);
             addExtensionTypes(basePath, 'SNAPSHOT', fs);
             expect(fs.exists(dtsFile)).toBe(false);
+        });
+    });
+
+    describe('file.detectTabSpacing', () => {
+        const testCases = [
+            {
+                name: 'Empty content',
+                content: '',
+                result: undefined
+            },
+            {
+                name: '4 spaces',
+                content: '{\n    "dummy": true\n}',
+                result: {
+                    'size': 4,
+                    'useTabSymbol': false
+                }
+            },
+            {
+                name: '1 tab',
+                content: '{\n\t"dummy": true\n}',
+                result: {
+                    'size': 1,
+                    'useTabSymbol': true
+                }
+            },
+            {
+                name: '2 tabs',
+                content: '{\n\t\t"dummy": true\n}',
+                result: {
+                    'size': 2,
+                    'useTabSymbol': true
+                }
+            }
+        ];
+        test.each(testCases)('$name', (testsCase) => {
+            const tabInfo = detectTabSpacing(testsCase.content);
+            expect(tabInfo).toEqual(testsCase.result);
         });
     });
 });

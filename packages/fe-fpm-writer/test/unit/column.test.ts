@@ -9,7 +9,7 @@ import type { CustomTableColumn } from '../../src/column/types';
 import { Availability, HorizontalAlign } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
-import { Placement, CHAR_SPACE, CHAR_TAB } from '../../src/common/types';
+import { Placement } from '../../src/common/types';
 import { detectTabSpacing } from '../../src/common/file';
 
 const testDir = join(__dirname, 'sample/column');

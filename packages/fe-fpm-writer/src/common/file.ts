@@ -1,7 +1,18 @@
 import type { Editor } from 'mem-fs-editor';
-import type { TabSizeInfo } from './types';
-import { CHAR_SPACE, CHAR_TAB } from './types';
 import type { TabInfo } from '../common/types';
+
+const CHAR_SPACE = ' ';
+const CHAR_TAB = '\t';
+
+type WriteJsonReplacer = ((key: string, value: any) => any) | Array<string | number>;
+
+type WriteJsonSpace = number | string;
+interface ExtendJsonParams {
+    filepath: string;
+    content: string;
+    replacer?: WriteJsonReplacer;
+    tabInfo?: TabInfo;
+}
 
 /**
  * Method returns tab info for passed line.
@@ -45,20 +56,11 @@ export function detectTabSpacing(content: string): TabInfo | undefined {
     return tabSize;
 }
 
-type WriteJsonReplacer = ((key: string, value: any) => any) | Array<string | number>;
-
-type WriteJsonSpace = number | string;
-interface ExtendJsonParams {
-    filepath: string;
-    content: string;
-    replacer?: WriteJsonReplacer;
-    tabInfo?: TabInfo;
-}
-
 /**
- *
- * @param fs
- * @param params
+ * Method extends target JSON file with passed JSOn content.
+ * Method uses 'fs.extendJSON', but applies additional calculation to reuse existing content tab sizing information.
+ * @param {Editor} fs The mem-fs editor instance.
+ * @param {ExtendJsonParams} params Options for JSON extend.
  */
 export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
     const { filepath, content, replacer } = params;
