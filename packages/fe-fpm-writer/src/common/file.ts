@@ -1,15 +1,16 @@
 import type { Editor } from 'mem-fs-editor';
 import type { TabSizeInfo } from './types';
 import { CHAR_SPACE, CHAR_TAB } from './types';
+import type { TabInfo } from '../common/types';
 
 /**
  * Method returns tab info for passed line.
  *
  * @param {string} line Line with tab spacing.
- * @returns {TabSizeInfo | undefined} Tab size information.
+ * @returns {TabInfo | undefined} Tab size information.
  */
-function getLineTabInfo(line: string): TabSizeInfo | undefined {
-    let tabSize: TabSizeInfo | undefined;
+function getLineTabInfo(line: string): TabInfo | undefined {
+    let tabSize: TabInfo | undefined;
     const symbol = line[0] === CHAR_TAB ? CHAR_TAB : CHAR_SPACE;
     // get count of tabs
     for (let i = 0; i < line.length; i++) {
@@ -17,7 +18,7 @@ function getLineTabInfo(line: string): TabSizeInfo | undefined {
         if (char !== symbol) {
             tabSize = {
                 size: i,
-                symbol: symbol
+                useTabSymbol: symbol === CHAR_TAB
             };
             break;
         }
@@ -29,13 +30,10 @@ function getLineTabInfo(line: string): TabSizeInfo | undefined {
  * Method calculates tab space info for passed file content.
  *
  * @param {string} content File content.
- * @returns {TabSizeInfo | undefined} Tab size information.
+ * @returns {TabInfo | undefined} Tab size information.
  */
-export function detectTabSpacing(content: string): TabSizeInfo | undefined {
-    let tabSize: TabSizeInfo | undefined = {
-        size: 0,
-        symbol: CHAR_SPACE
-    };
+export function detectTabSpacing(content: string): TabInfo | undefined {
+    let tabSize: TabInfo | undefined;
     const tabSymbols = [CHAR_SPACE, CHAR_TAB];
     const lines = content.split(/\r\n|\n/);
     const lineWithSpacing = lines.find((line: string): boolean => {
@@ -54,7 +52,7 @@ interface ExtendJsonParams {
     filepath: string;
     content: string;
     replacer?: WriteJsonReplacer;
-    space?: WriteJsonSpace;
+    tabInfo?: TabInfo;
 }
 
 /**
@@ -64,11 +62,18 @@ interface ExtendJsonParams {
  */
 export function extendJSON(fs: Editor, params: ExtendJsonParams): void {
     const { filepath, content, replacer } = params;
-    let { space } = params;
-    if (space === undefined) {
-        const tabSizeInfo = detectTabSpacing(content);
-        space = tabSizeInfo?.symbol === CHAR_SPACE ? tabSizeInfo?.size : CHAR_TAB;
+    let space: WriteJsonSpace | undefined;
+    // Use passed tab info or read from existing content
+    const tabInfo = params.tabInfo || detectTabSpacing(content);
+    if (tabInfo !== undefined) {
+        if (tabInfo.useTabSymbol) {
+            // Tab symbol should be used as tab
+            space = CHAR_TAB.repeat(tabInfo.size || 1);
+        } else {
+            // Spaces should be used as tab
+            space = tabInfo.size;
+        }
     }
-
+    // Write json
     fs.extendJSON(filepath, JSON.parse(content), replacer, space);
 }

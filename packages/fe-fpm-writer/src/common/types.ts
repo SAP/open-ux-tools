@@ -2,10 +2,17 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 
+export interface TabInfo {
+    // Spaces size
+    size?: number;
+    // Use '\t' symbol instead of space
+    useTabSymbol?: boolean;
+}
+
 /**
  * Common properties for any custom element of the flexible programming model.
  */
-export interface CustomElement {
+export interface CustomElement extends WriterConfig {
     /**
      * Name of the custom element that is to be added to the application.
      */
@@ -167,4 +174,11 @@ export type TabSymbol = typeof CHAR_SPACE | typeof CHAR_TAB;
 export interface TabSizeInfo {
     symbol: TabSymbol;
     size: number;
+}
+
+export interface WriterConfig {
+    /**
+     * Tab size.
+     */
+    tabInfo?: TabInfo;
 }

@@ -9,7 +9,8 @@ import type { CustomTableColumn } from '../../src/column/types';
 import { Availability, HorizontalAlign } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
-import { Placement } from '../../src/common/types';
+import { Placement, CHAR_SPACE, CHAR_TAB } from '../../src/common/types';
+import { detectTabSpacing } from '../../src/common/file';
 
 const testDir = join(__dirname, 'sample/column');
 
@@ -289,6 +290,55 @@ describe('CustomAction', () => {
                     expect(fs.read(existingPath)).toMatchSnapshot();
                 }
             );
+        });
+
+        describe('Test property custom "tabSizing"', () => {
+            const testCases = [
+                {
+                    name: '6 spaces',
+                    tabInfo: {
+                        size: 6
+                    },
+                    expectedAfterSave: {
+                        size: 6,
+                        useTabSymbol: false
+                    }
+                },
+                {
+                    name: '1 tab',
+                    tabInfo: {
+                        useTabSymbol: true
+                    },
+                    expectedAfterSave: {
+                        size: 1,
+                        useTabSymbol: true
+                    }
+                },
+                {
+                    name: '2 tabs',
+                    tabInfo: {
+                        size: 2,
+                        useTabSymbol: true
+                    },
+                    expectedAfterSave: {
+                        size: 2,
+                        useTabSymbol: true
+                    }
+                }
+            ];
+            test.each(testCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+                generateCustomColumn(
+                    testDir,
+                    {
+                        ...customColumn,
+                        tabInfo
+                    },
+                    fs
+                );
+                const updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                const result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+            });
         });
     });
 });

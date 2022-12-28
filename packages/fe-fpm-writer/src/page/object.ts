@@ -52,7 +52,8 @@ export function generate(basePath: string, data: ObjectPage, fs?: Editor): Edito
     extendJSON(fs, {
         filepath: manifestPath,
         content: render(fs.read(getTemplatePath('/page/object/manifest.json')), config, {}),
-        replacer: getManifestJsonExtensionHelper(config)
+        replacer: getManifestJsonExtensionHelper(config),
+        tabInfo: data.tabInfo
     });
 
     return fs;

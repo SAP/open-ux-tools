@@ -227,7 +227,12 @@ export function generateControllerExtension(
 
     // enhance manifest with view definition
     const filledTemplate = render(fs.read(getTemplatePath('controller-extension/manifest.json')), internalConfig, {});
-    extendJSON(fs, { filepath: manifestPath, content: filledTemplate, replacer: getManifestReplacer(internalConfig) });
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: filledTemplate,
+        replacer: getManifestReplacer(internalConfig),
+        tabInfo: controllerConfig.tabInfo
+    });
 
     // add controller js file
     const ext = controllerConfig.typescript ? 'ts' : 'js';

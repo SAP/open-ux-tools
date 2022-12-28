@@ -95,7 +95,8 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeSection, {});
     extendJSON(fs, {
         filepath: manifestPath,
-        content: filledTemplate
+        content: filledTemplate,
+        tabInfo: customSection.tabInfo
     });
 
     // add fragment

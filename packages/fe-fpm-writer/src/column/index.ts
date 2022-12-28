@@ -89,7 +89,8 @@ export function generateCustomColumn(basePath: string, customColumn: CustomTable
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeColumn, {});
     extendJSON(fs, {
         filepath: manifestPath,
-        content: filledTemplate
+        content: filledTemplate,
+        tabInfo: customColumn.tabInfo
     });
 
     // add fragment

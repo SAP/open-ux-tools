@@ -61,7 +61,8 @@ export function generate(basePath: string, data: ListReport, fs?: Editor): Edito
     extendJSON(fs, {
         filepath: manifestPath,
         content: render(fs.read(getTemplatePath('page/list/manifest.json')), config, {}),
-        replacer: getManifestJsonExtensionHelper(config)
+        replacer: getManifestJsonExtensionHelper(config),
+        tabInfo: data.tabInfo
     });
 
     return fs;

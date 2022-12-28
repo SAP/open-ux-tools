@@ -99,7 +99,8 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
     const filledTemplate = render(fs.read(getTemplatePath('view/manifest.json')), completeView, {});
     extendJSON(fs, {
         filepath: manifestPath,
-        content: filledTemplate
+        content: filledTemplate,
+        tabInfo: customView.tabInfo
     });
 
     // add fragment
