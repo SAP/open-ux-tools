@@ -252,13 +252,17 @@ describe('ControllerExtension', () => {
                 testDir,
                 `webapp/${controllerExtension.folder}/ControllerExtension.d.ts`
             );
-            const isCopyCalledWithIrigin = (
+            const isCopyCalledWithOrigin = (
                 copySpy: jest.SpyInstance,
                 callIndex: number,
                 fileName: string
             ): boolean => {
                 const copyOrigin = copySpy.mock.calls[callIndex][0] as string;
                 return copyOrigin === join(__dirname, '..', '..', 'templates', 'controller-extension', fileName);
+            };
+            const isCopyCalledWithTarget = (copySpy: jest.SpyInstance, callIndex: number, target: string): boolean => {
+                const copyTarget = copySpy.mock.calls[callIndex][1] as string;
+                return copyTarget === target;
             };
             test.each(pageTypeTests)('New controller extension - %s', (pageType) => {
                 generateControllerExtension(
@@ -330,27 +334,27 @@ describe('ControllerExtension', () => {
                 expect(fs.read(expectedDeclarationFilePath)).toMatchSnapshot();
                 // Check how fs.copy method called - copy for 'Controller.ts' and first create of 'ControllerExtension.d.ts'
                 expect(copySpy).toBeCalledTimes(2);
-                expect(isCopyCalledWithIrigin(copySpy, 0, 'Controller.ts')).toBeTruthy();
-                expect(isCopyCalledWithIrigin(copySpy, 1, 'ControllerExtension.d.ts')).toBeTruthy();
+                expect(isCopyCalledWithOrigin(copySpy, 0, 'Controller.ts')).toBeTruthy();
+                expect(isCopyCalledWithTarget(copySpy, 0, expectedTestControllerPath)).toBeTruthy();
+                expect(isCopyCalledWithOrigin(copySpy, 1, 'ControllerExtension.d.ts')).toBeTruthy();
+                expect(isCopyCalledWithTarget(copySpy, 1, expectedDeclarationFilePath)).toBeTruthy();
 
                 // Second creation of controller extension
                 copySpy.mockReset();
-                generateControllerExtension(
-                    testDir,
-                    {
-                        ...controllerExtension,
-                        name: 'SecondExtension',
-                        extension: {
-                            pageType: ControllerExtensionPageType.ListReport
-                        },
-                        typescript: true
-                    } as ControllerExtension,
-                    fs
-                );
+                const secondExtension = {
+                    ...controllerExtension,
+                    name: 'SecondExtension',
+                    extension: {
+                        pageType: ControllerExtensionPageType.ListReport
+                    },
+                    typescript: true
+                };
+                generateControllerExtension(testDir, secondExtension as ControllerExtension, fs);
                 expect(fs.exists(expectedDeclarationFilePath)).toBeTruthy();
                 // Check how fs.copy method called - copy for 'Controller.ts' only, 'ControllerExtension.d.ts' was created on very first creation
                 expect(copySpy).toBeCalledTimes(1);
-                expect(isCopyCalledWithIrigin(copySpy, 0, 'Controller.ts')).toBeTruthy();
+                expect(isCopyCalledWithOrigin(copySpy, 0, 'Controller.ts')).toBeTruthy();
+                expect(isCopyCalledWithTarget(copySpy, 0, getControllerPath(secondExtension, true))).toBeTruthy();
                 manifest = JSON.parse(fs.read(join(testDir, 'webapp/manifest.json')));
                 expect(manifest?.['sap.ui5']?.['extends']?.['extensions']).toEqual({
                     'sap.ui.controllerExtensions': {
