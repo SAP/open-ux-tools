@@ -633,6 +633,21 @@ exports[`ControllerExtension generateControllerExtension New controller extensio
 "
 `;
 
+exports[`ControllerExtension generateControllerExtension Typescript controller Check "ControllerExtension.d.ts" file 1`] = `
+"/**
+ * Helper to be able to define how to get the page specific extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default class ControllerExtension<API> {
+        static override: unknown;
+        base: {
+            getExtensionAPI(): API;
+        }
+    }
+}
+"
+`;
+
 exports[`ControllerExtension generateControllerExtension Typescript controller New controller extension - ListReport 1`] = `
 Object {
   "sap.app": Object {

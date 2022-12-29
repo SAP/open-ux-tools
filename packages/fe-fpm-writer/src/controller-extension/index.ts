@@ -237,6 +237,12 @@ export function generateControllerExtension(
 
     if (controllerConfig.typescript) {
         addExtensionTypes(basePath, controllerConfig.minUI5Version, fs);
+        // Typescript - add declaration ts file for 'sap/ui/core/mvc/ControllerExtension', which allows access to `this.base.getExtensionAPI()` within Controller extension classes
+        // Use `ext/controller` path.
+        const controllersDeclarationPath = join(basePath, '/webapp/ext/controller/ControllerExtension.d.ts');
+        if (!fs.exists(controllersDeclarationPath)) {
+            fs.copy(getTemplatePath('controller-extension/ControllerExtension.d.ts'), controllersDeclarationPath);
+        }
     }
 
     return fs;

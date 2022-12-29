@@ -471,6 +471,21 @@ export function onAppended() {
 }",
     "state": "modified",
   },
+  "ts/webapp/ext/controller/ControllerExtension.d.ts": Object {
+    "contents": "/**
+ * Helper to be able to define how to get the page specific extension API when writing a controller extension.
+ */
+declare module 'sap/ui/core/mvc/ControllerExtension' {
+    export default class ControllerExtension<API> {
+        static override: unknown;
+        base: {
+            getExtensionAPI(): API;
+        }
+    }
+}
+",
+    "state": "modified",
+  },
   "ts/webapp/ext/myControllerExtension/MyControllerExtension.controller.ts": Object {
     "contents": "import ControllerExtension from 'sap/ui/core/mvc/ControllerExtension';
 import ExtensionAPI from 'sap/fe/templates/ObjectPage/ExtensionAPI';
