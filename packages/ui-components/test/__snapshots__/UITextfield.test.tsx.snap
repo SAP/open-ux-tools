@@ -418,8 +418,10 @@ Object {
     Object {
       "lineHeight": "normal",
     },
-    undefined,
-    undefined,
+    false,
+    Object {
+      "backgroundColor": "transparent",
+    },
     undefined,
     undefined,
   ],
@@ -437,14 +439,12 @@ Object {
       "maxHeight": 24,
       "minHeight": 24,
     },
+    false,
     Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "border": "1px solid var(--vscode-focusBorder)",
-        },
-      },
+      "borderRadius": 0,
+      "color": "var(--vscode-input-foreground)",
+      "opacity": 0.4,
     },
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -469,7 +469,9 @@ Object {
           "marginTop": 25,
           "padding": "4px 0",
         },
-        undefined,
+        Object {
+          "opacity": "0.4",
+        },
         undefined,
       ],
     },
@@ -514,7 +516,7 @@ Object {
     Object {
       "lineHeight": "normal",
     },
-    undefined,
+    false,
     undefined,
     Object {
       "backgroundColor": "var(--vscode-editor-background)",
@@ -619,7 +621,7 @@ Object {
     Object {
       "lineHeight": "normal",
     },
-    undefined,
+    false,
     undefined,
     undefined,
     undefined,
@@ -712,11 +714,15 @@ Object {
         },
       },
     },
+    false,
     Object {
-      "lineHeight": "normal",
+      "display": "flex",
+      "height": "auto",
+      "minHeight": "60px",
     },
-    undefined,
-    undefined,
+    Object {
+      "backgroundColor": "transparent",
+    },
     undefined,
     undefined,
   ],
@@ -729,19 +735,9 @@ Object {
       "borderWidth": 1,
       "boxSizing": "initial",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "border": "1px solid var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
+    false,
+    false,
+    false,
     undefined,
     undefined,
     undefined,
@@ -766,7 +762,9 @@ Object {
           "marginTop": 25,
           "padding": "4px 0",
         },
-        undefined,
+        Object {
+          "opacity": "0.4",
+        },
         undefined,
       ],
     },
@@ -808,10 +806,12 @@ Object {
         },
       },
     },
+    false,
     Object {
-      "lineHeight": "normal",
+      "display": "flex",
+      "height": "auto",
+      "minHeight": "60px",
     },
-    undefined,
     undefined,
     Object {
       "backgroundColor": "var(--vscode-editor-background)",
@@ -828,11 +828,7 @@ Object {
       "borderWidth": 1,
       "boxSizing": "initial",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
+    false,
     Object {
       "selectors": Object {
         "&:hover": Object {
@@ -913,10 +909,12 @@ Object {
         },
       },
     },
+    false,
     Object {
-      "lineHeight": "normal",
+      "display": "flex",
+      "height": "auto",
+      "minHeight": "60px",
     },
-    undefined,
     undefined,
     undefined,
     undefined,
@@ -930,11 +928,7 @@ Object {
       "borderWidth": 1,
       "boxSizing": "initial",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
+    false,
     Object {
       "selectors": Object {
         "&:hover": Object {

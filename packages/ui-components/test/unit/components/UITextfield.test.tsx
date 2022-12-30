@@ -9,7 +9,8 @@ describe('<UIToggle />', () => {
     let wrapper: Enzyme.ReactWrapper<UITextInputProps>;
 
     const getStyles = (): ITextFieldStyleProps => {
-        const styles = (wrapper.find(TextField).props().styles as IStyleFunction<{}, {}>)({}) as ITextFieldStyleProps;
+        const textfieldProps = wrapper.find(TextField).props();
+        const styles = (textfieldProps.styles as IStyleFunction<{}, {}>)(textfieldProps) as ITextFieldStyleProps;
         return styles;
     };
 
