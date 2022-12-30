@@ -300,8 +300,20 @@ describe('ControllerExtension', () => {
                     },
                     fs
                 );
-                const updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
-                const result = detectTabSpacing(updatedManifest);
+                let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                let result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+                // Generate another controller extension and check if new tab sizing recalculated correctly without passing tab size info
+                generateControllerExtension(
+                    testDir,
+                    {
+                        ...controllerExtension,
+                        name: 'Second'
+                    },
+                    fs
+                );
+                updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });
         });

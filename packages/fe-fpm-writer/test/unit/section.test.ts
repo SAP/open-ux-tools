@@ -360,8 +360,20 @@ describe('CustomSection', () => {
                     },
                     fs
                 );
-                const updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
-                const result = detectTabSpacing(updatedManifest);
+                let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                let result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+                // Generate another section and check if new tab sizing recalculated correctly without passing tab size info
+                generateCustomSection(
+                    testDir,
+                    {
+                        ...customSection,
+                        name: 'second'
+                    },
+                    fs
+                );
+                updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });
         });

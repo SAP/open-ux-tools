@@ -321,8 +321,13 @@ describe('CustomView', () => {
     describe('Test property custom "tabSizing"', () => {
         test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
             generateCustomView(testDir, { ...customView, tabInfo }, fs);
-            const updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
-            const result = detectTabSpacing(updatedManifest);
+            let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            let result = detectTabSpacing(updatedManifest);
+            expect(result).toEqual(expectedAfterSave);
+            // Generate another view and check if new tab sizing recalculated correctly without passing tab size info
+            generateCustomView(testDir, { ...customView, key: 'Second', name: 'Second' }, fs);
+            updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            result = detectTabSpacing(updatedManifest);
             expect(result).toEqual(expectedAfterSave);
         });
     });

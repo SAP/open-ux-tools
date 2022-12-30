@@ -66,12 +66,13 @@ export function detectTabSpacing(content: string): TabInfo | undefined {
  */
 export function getJsonSpace(fs: Editor, filePath: string, tabInfo?: TabInfo | undefined): WriteJsonSpace | undefined {
     let space: WriteJsonSpace | undefined;
-    // Use passed tab info or read from existing content
+    // 'tabInfo'  was not passed - calculate 'tabInfo' by checking existing content of target file
     if (!tabInfo) {
         const content = fs.read(filePath);
         tabInfo = detectTabSpacing(content);
     }
-    if (tabInfo !== undefined) {
+    // 'tabInfo' exists - it was passed as custom configuration or calculated from target file
+    if (tabInfo) {
         if (tabInfo.useTabSymbol) {
             // Tab symbol should be used as tab
             space = CHAR_TAB.repeat(tabInfo.size || 1);

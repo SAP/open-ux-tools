@@ -79,8 +79,13 @@ describe('ListReport', () => {
                 fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
                 generate(target, { ...minimalInput, tabInfo }, fs);
 
-                const updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
-                const result = detectTabSpacing(updatedManifest);
+                let updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+                let result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+                // Generate another page and check if new tab sizing recalculated correctly without passing tab size info
+                generate(target, { entity: 'Second' }, fs);
+                updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+                result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });
         });

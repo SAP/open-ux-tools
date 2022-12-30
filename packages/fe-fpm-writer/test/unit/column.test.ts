@@ -303,8 +303,20 @@ describe('CustomAction', () => {
                     },
                     fs
                 );
-                const updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
-                const result = detectTabSpacing(updatedManifest);
+                let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                let result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+                // Generate another columns and check if new tab sizing recalculated correctly without passing tab size info
+                generateCustomColumn(
+                    testDir,
+                    {
+                        ...customColumn,
+                        name: 'SecondCustom'
+                    },
+                    fs
+                );
+                updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
             });
         });
