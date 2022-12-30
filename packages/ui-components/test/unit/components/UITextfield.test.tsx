@@ -8,6 +8,11 @@ import { UITextInput } from '../../../src/components/UIInput';
 describe('<UIToggle />', () => {
     let wrapper: Enzyme.ReactWrapper<UITextInputProps>;
 
+    const getStyles = (): ITextFieldStyleProps => {
+        const styles = (wrapper.find(TextField).props().styles as IStyleFunction<{}, {}>)({}) as ITextFieldStyleProps;
+        return styles;
+    };
+
     beforeEach(() => {
         wrapper = Enzyme.mount(<UITextInput />);
     });
@@ -21,39 +26,74 @@ describe('<UIToggle />', () => {
     });
 
     it('Styles - default', () => {
-        const styles = (wrapper.find(TextField).props().styles as IStyleFunction<{}, {}>)({}) as ITextFieldStyleProps;
-        expect(styles).toMatchSnapshot();
+        expect(getStyles()).toMatchSnapshot();
     });
+
+    const testCases = [
+        // Single line
+        {
+            multiline: false,
+            disabled: undefined,
+            readOnly: undefined
+        },
+        {
+            multiline: false,
+            disabled: true,
+            readOnly: undefined
+        },
+        {
+            multiline: false,
+            disabled: undefined,
+            readOnly: true
+        },
+        // Multi line
+        {
+            multiline: true,
+            disabled: undefined,
+            readOnly: undefined
+        },
+        {
+            multiline: true,
+            disabled: true,
+            readOnly: undefined
+        },
+        {
+            multiline: true,
+            disabled: undefined,
+            readOnly: true
+        }
+    ];
+    for (const testCase of testCases) {
+        it(`Styles - multiline=${testCase.multiline}, disabled=${testCase.disabled}, readOnly=${testCase.readOnly}`, () => {
+            wrapper.setProps({
+                multiline: testCase.multiline,
+                disabled: testCase.disabled,
+                readOnly: testCase.readOnly
+            });
+            expect(getStyles()).toMatchSnapshot();
+        });
+    }
 
     describe('Styles - error message', () => {
         it('Error', () => {
             wrapper.setProps({
                 errorMessage: 'dummy'
             });
-            const styles = (wrapper.find(TextField).props().styles as IStyleFunction<{}, {}>)(
-                {}
-            ) as ITextFieldStyleProps;
-            expect(styles).toMatchSnapshot();
+            expect(getStyles()).toMatchSnapshot();
         });
 
         it('Warning', () => {
             wrapper.setProps({
                 warningMessage: 'dummy'
             });
-            const styles = (wrapper.find(TextField).props().styles as IStyleFunction<{}, {}>)(
-                {}
-            ) as ITextFieldStyleProps;
-            expect(styles).toMatchSnapshot();
+            expect(getStyles()).toMatchSnapshot();
         });
 
         it('Info', () => {
             wrapper.setProps({
                 infoMessage: 'dummy'
             });
-            const styles = (wrapper.find(TextField).props().styles as IStyleFunction<{}, {}>)(
-                {}
-            ) as ITextFieldStyleProps;
-            expect(styles).toMatchSnapshot();
+            expect(getStyles()).toMatchSnapshot();
         });
 
         it('Error - custom component', async () => {
