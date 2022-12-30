@@ -23,10 +23,6 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "height": 24,
-      "lineHeight": "normal",
-      "maxHeight": 24,
-      "minHeight": 24,
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
@@ -35,6 +31,10 @@ Object {
         },
       },
     },
+    Object {
+      "lineHeight": "normal",
+    },
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -42,12 +42,18 @@ Object {
   "fieldGroup": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "border": "1px solid var(--vscode-editorWidget-border)",
+      "borderColor": "var(--vscode-editorWidget-border)",
       "borderRadius": 0,
+      "borderStyle": "solid",
+      "borderWidth": 1,
       "boxSizing": "initial",
+    },
+    Object {
       "height": 24,
       "maxHeight": 24,
       "minHeight": 24,
+    },
+    Object {
       "selectors": Object {
         "&:hover": Object {
           "border": "1px solid var(--vscode-focusBorder)",
@@ -113,10 +119,6 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "height": 24,
-      "lineHeight": "normal",
-      "maxHeight": 24,
-      "minHeight": 24,
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
@@ -125,6 +127,10 @@ Object {
         },
       },
     },
+    Object {
+      "lineHeight": "normal",
+    },
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -132,12 +138,18 @@ Object {
   "fieldGroup": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "border": "1px solid var(--vscode-editorWidget-border)",
+      "borderColor": "var(--vscode-editorWidget-border)",
       "borderRadius": 0,
+      "borderStyle": "solid",
+      "borderWidth": 1,
       "boxSizing": "initial",
+    },
+    Object {
       "height": 24,
       "maxHeight": 24,
       "minHeight": 24,
+    },
+    Object {
       "selectors": Object {
         "&:hover": Object {
           "border": "1px solid var(--vscode-focusBorder)",
@@ -203,10 +215,6 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "height": 24,
-      "lineHeight": "normal",
-      "maxHeight": 24,
-      "minHeight": 24,
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
@@ -215,6 +223,10 @@ Object {
         },
       },
     },
+    Object {
+      "lineHeight": "normal",
+    },
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -222,12 +234,18 @@ Object {
   "fieldGroup": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "border": "1px solid var(--vscode-editorWidget-border)",
+      "borderColor": "var(--vscode-editorWidget-border)",
       "borderRadius": 0,
+      "borderStyle": "solid",
+      "borderWidth": 1,
       "boxSizing": "initial",
+    },
+    Object {
       "height": 24,
       "maxHeight": 24,
       "minHeight": 24,
+    },
+    Object {
       "selectors": Object {
         "&:hover": Object {
           "border": "1px solid var(--vscode-focusBorder)",
@@ -293,10 +311,6 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "height": 24,
-      "lineHeight": "normal",
-      "maxHeight": 24,
-      "minHeight": 24,
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
@@ -305,6 +319,10 @@ Object {
         },
       },
     },
+    Object {
+      "lineHeight": "normal",
+    },
+    undefined,
     undefined,
     undefined,
     undefined,
@@ -312,12 +330,18 @@ Object {
   "fieldGroup": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
-      "border": "1px solid var(--vscode-editorWidget-border)",
+      "borderColor": "var(--vscode-editorWidget-border)",
       "borderRadius": 0,
+      "borderStyle": "solid",
+      "borderWidth": 1,
       "boxSizing": "initial",
+    },
+    Object {
       "height": 24,
       "maxHeight": 24,
       "minHeight": 24,
+    },
+    Object {
       "selectors": Object {
         "&:hover": Object {
           "border": "1px solid var(--vscode-focusBorder)",

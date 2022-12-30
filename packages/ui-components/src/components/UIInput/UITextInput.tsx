@@ -41,69 +41,64 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         fontFamily: 'var(--vscode-font-family)'
                     },
                     fieldGroup: [
-                        !props.disabled &&
-                            !props.multiline && {
-                                backgroundColor: 'var(--vscode-input-background)',
-                                border: '1px solid var(--vscode-editorWidget-border)',
-                                borderRadius: 0,
-                                height: 24,
-                                maxHeight: 24,
-                                minHeight: 24,
-                                boxSizing: 'initial',
-                                selectors: {
-                                    '&:hover': {
-                                        border: '1px solid var(--vscode-focusBorder)'
-                                    }
-                                }
-                            },
-                        props.multiline && {
+                        // Common styles
+                        {
                             backgroundColor: 'var(--vscode-input-background)',
-                            border: '1px solid var(--vscode-editorWidget-border)',
+                            borderWidth: 1,
+                            borderStyle: 'solid',
+                            //borderColor: 'blue',
+                            borderColor: 'var(--vscode-editorWidget-border)',
                             borderRadius: 0,
-                            boxSizing: 'initial',
+                            boxSizing: 'initial'
+                        },
+                        // Single line common styles
+                        !props.multiline && {
+                            height: 24,
+                            maxHeight: 24,
+                            minHeight: 24
+                        },
+                        // Hoverable input
+                        !props.disabled && {
                             selectors: {
                                 '&:hover': {
                                     border: '1px solid var(--vscode-focusBorder)'
                                 }
                             }
                         },
+                        // Disabled field
                         props.disabled &&
                             !props.multiline && {
                                 color: 'var(--vscode-input-foreground)',
                                 opacity: 0.4,
-                                backgroundColor: `var(--vscode-editor-inactiveSelectionBackground)`,
-                                borderColor: 'var(--vscode-editorWidget-border)',
-                                border: '1px solid var(--vscode-editorWidget-border)',
-                                borderRadius: 0,
-                                height: 24,
-                                maxHeight: 24,
-                                minHeight: 24,
-                                boxSizing: 'initial'
+                                borderRadius: 0
                             },
+                        // Read only container - disable hover style
+                        this.props.readOnly && {
+                            selectors: {
+                                '&:hover': {
+                                    border: '1px solid var(--vscode-editorWidget-border)'
+                                }
+                            }
+                        },
+                        // Error message
                         props.hasErrorMessage && {
                             borderColor: messageInfo.style.borderColor
                         },
-                        props.focused &&
-                            !props.disabled && {
-                                selectors: {
-                                    ':after': {
-                                        border: `1px solid var(${
-                                            this.props.errorMessage
-                                                ? messageInfo.style.borderColor
-                                                : '--vscode-focusBorder'
-                                        })`
-                                    }
+                        props.focused && {
+                            selectors: {
+                                ':after': {
+                                    border: `1px solid var(${
+                                        this.props.errorMessage ? messageInfo.style.borderColor : '--vscode-focusBorder'
+                                    })`
                                 }
                             }
+                        }
                     ],
                     field: [
-                        !props.multiline && {
+                        // Common styles
+                        {
                             backgroundColor: 'var(--vscode-input-background)',
                             color: 'var(--vscode-input-foreground)',
-                            lineHeight: 'normal',
-                            height: 24,
-                            maxHeight: 24,
-                            minHeight: 24,
                             fontSize: '13px',
                             fontWeight: 'normal',
                             boxSizing: 'border-box',
@@ -115,36 +110,32 @@ export class UITextInput extends React.Component<UITextInputProps> {
                                 }
                             }
                         },
+                        // Single line common styles
+                        !props.multiline && {
+                            lineHeight: 'normal'
+                        },
+                        // Multi line common styles
+                        props.multiline && {
+                            minHeight: '60px',
+                            height: 'auto',
+                            display: 'flex'
+                        },
+                        // Disabled input
+                        props.disabled && {
+                            backgroundColor: 'transparent'
+                        },
+                        // Readonly input
+                        this.props.readOnly && {
+                            fontStyle: 'italic',
+                            backgroundColor: 'var(--vscode-editor-background)'
+                        },
+                        // Input with icon
                         props.hasIcon && {
                             selectors: {
                                 '&:hover': {
                                     cursor: 'pointer'
                                 }
                             }
-                        },
-
-                        props.multiline && {
-                            backgroundColor: 'var(--vscode-input-background)',
-                            color: 'var(--vscode-input-foreground)',
-                            minHeight: '60px',
-                            height: 'auto',
-                            display: 'flex',
-                            fontSize: '13px',
-                            fontWeight: 'normal',
-                            boxSizing: 'border-box',
-                            selectors: {
-                                '::placeholder': {
-                                    fontSize: 13,
-                                    fontFamily: 'var(--vscode-font-family)',
-                                    color: 'var(--vscode-input-placeholderForeground)'
-                                }
-                            }
-                        },
-
-                        // props for input element inside field group
-                        props.disabled && {
-                            fontStyle: 'italic',
-                            backgroundColor: 'transparent'
                         }
                     ],
                     suffix: {
