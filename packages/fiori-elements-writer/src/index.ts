@@ -54,7 +54,7 @@ async function generate<T>(basePath: string, data: FioriElementsApp<T>, fs?: Edi
     // Add templates common to all template types
     // Common files
     const isV2FETypesAvailable = feApp.ui5?.version
-        ? semVer.gte(semVer.coerce(feApp.ui5?.version)!, UI5_DEFAULT.V2_FE_TYPES_AVAILABLE)
+        ? semVer.gte(semVer.coerce(feApp.ui5?.version)!, UI5_DEFAULT.TYPES_VERSION_BEST)
         : false;
     const jsIgnoreGlob = ['**/*.ts'];
     const tsIgnoreGlob = isV2FETypesAvailable ? ['**/*.js', '**/ui5.d.ts'] : ['**/*.js'];
