@@ -46,7 +46,6 @@ export class UITextInput extends React.Component<UITextInputProps> {
                             backgroundColor: 'var(--vscode-input-background)',
                             borderWidth: 1,
                             borderStyle: 'solid',
-                            //borderColor: 'blue',
                             borderColor: 'var(--vscode-editorWidget-border)',
                             borderRadius: 0,
                             boxSizing: 'initial'
@@ -61,24 +60,26 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         !props.disabled && {
                             selectors: {
                                 '&:hover': {
-                                    border: '1px solid var(--vscode-focusBorder)'
+                                    borderColor: 'var(--vscode-focusBorder)'
                                 }
                             }
                         },
                         // Disabled field
                         props.disabled &&
-                            !props.multiline && {
-                                color: 'var(--vscode-input-foreground)',
-                                opacity: 0.4,
-                                borderRadius: 0
-                            },
+                        !props.multiline && {
+                            color: 'var(--vscode-input-foreground)',
+                            opacity: 0.4,
+                            borderRadius: 0
+                        },
                         // Read only container - disable hover style
                         this.props.readOnly && {
-                            selectors: {
+                            borderStyle: 'dashed',
+                            // No hover efect on input without value
+                            selectors: !this.props.value ? {
                                 '&:hover': {
-                                    border: '1px solid var(--vscode-editorWidget-border)'
+                                    borderColor: 'var(--vscode-editorWidget-border)'
                                 }
-                            }
+                            } : undefined
                         },
                         // Error message
                         props.hasErrorMessage && {
@@ -87,12 +88,11 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         props.focused && {
                             selectors: {
                                 ':after': {
-                                    border: `1px solid var(${
-                                        this.props.errorMessage ? messageInfo.style.borderColor : '--vscode-focusBorder'
-                                    })`
+                                    border: `1px solid var(${this.props.errorMessage ? messageInfo.style.borderColor : '--vscode-focusBorder'
+                                        })`
                                 }
                             }
-                        }
+                        },
                     ],
                     field: [
                         // Common styles

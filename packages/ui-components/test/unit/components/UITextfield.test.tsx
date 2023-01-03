@@ -75,6 +75,14 @@ describe('<UIToggle />', () => {
         });
     }
 
+    it('Readonly input field with value', () => {
+        wrapper.setProps({
+            readOnly: true,
+            value: 'test'
+        });
+        expect(getStyles()).toMatchSnapshot();
+    });
+
     describe('Styles - error message', () => {
         it('Error', () => {
             wrapper.setProps({

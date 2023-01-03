@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState } from '@fluentui/react';
+import type { IComboBoxProps, IComboBoxState, IAutofillProps } from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -13,7 +13,7 @@ import './UIComboBox.scss';
 import './Callout.scss';
 import { UILoader } from '../UILoader';
 import { UiIcons } from '../Icons';
-import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
+import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
 
@@ -33,6 +33,7 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     tooltipRefreshButton?: string;
     isLoading?: boolean;
     isForceEnabled?: boolean;
+    readOnly?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -489,16 +490,41 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method returns class names string depending on props and component state.
+     *
+     * @param {InputValidationMessageInfo} messageInfo Error/warning message if applied
+     * @returns {string} Class names of root combobox element.
+     */
+    private getClassNames(messageInfo: InputValidationMessageInfo): string {
+        const { readOnly } = this.props;
+        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        let classNames = `ts-ComboBox${messageInfo.message ? ' ts-ComboBox--' + errorSuffix : ''}`;
+        if (readOnly) {
+            classNames += ' ts-ComboBox--readonly';
+        }
+        return classNames;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
         const messageInfo = getMessageInfo(this.props);
-        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        const autofill: IAutofillProps = {
+            readOnly: this.props.readOnly
+        };
+        if (this.props.highlight) {
+            autofill.onKeyDownCapture = this.onKeyDown;
+        }
+        let disabled = this.props.isForceEnabled ? false : !this.props.options.length;
+        if (this.props.readOnly) {
+            disabled = true;
+        }
         return (
-            <div ref={this.root} className={`ts-ComboBox${messageInfo.message ? ' ts-ComboBox--' + errorSuffix : ''}`}>
+            <div ref={this.root} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
-                    disabled={this.props.isForceEnabled ? false : !this.props.options.length}
+                    disabled={disabled}
                     iconButtonProps={{
                         iconProps: {
                             iconName: UiIcons.ArrowDown
@@ -543,11 +569,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onRenderItem: this.onRenderItem,
                         onRenderOption: this.onRenderOption,
                         placeholder: this.getPlaceholder(),
-                        autofill: {
-                            onKeyDownCapture: this.onKeyDown
-                        },
                         onPendingValueChanged: this.onPendingValueChanged
                     })}
+                    autofill={autofill}
                     {...(this.props.useComboBoxAsMenuMinWidth && {
                         // Use 'onMenuOpen', because there can be dynamic size of combobox
                         onMenuOpen: this.calculateMenuMinWidth.bind(this)

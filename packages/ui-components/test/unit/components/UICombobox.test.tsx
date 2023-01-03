@@ -5,7 +5,7 @@ import { UIComboBox } from '../../../src/components/UIComboBox';
 import { data as originalData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
-import { KeyCodes, ComboBox } from '@fluentui/react';
+import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
 
 const data = JSON.parse(JSON.stringify(originalData));
 
@@ -527,6 +527,35 @@ describe('<UIComboBox />', () => {
                 expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
                 wrapper.find('input').simulate('click');
                 expect(wrapper.find(menuDropdownSelector).length).toEqual(testCase.expectOpen ? 1 : 0);
+            });
+        }
+    });
+
+    describe('Test "readonly" property', () => {
+        const testCases = [
+            {
+                value: true,
+                expected: true
+            },
+            {
+                value: undefined,
+                expected: undefined
+            },
+            {
+                value: false,
+                expected: false
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`Click on input, "openMenuOnClick=${testCase.value}"`, () => {
+                wrapper.setProps({
+                    readOnly: testCase.value
+                });
+                const autofill = wrapper.find(Autofill);
+                expect(autofill.length).toEqual(1);
+                expect(autofill.prop('readOnly')).toEqual(testCase.value);
+                const className = wrapper.find('.ts-ComboBox').prop('className');
+                expect(className?.includes('ts-ComboBox--readonly')).toEqual(!!testCase.value);
             });
         }
     });
