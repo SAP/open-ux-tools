@@ -1,5 +1,6 @@
 import type { SetStateAction } from 'react';
 import React, { useState } from 'react';
+import { Stack } from '@fluentui/react';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 
 import { UIComboBox } from '../src/components/UIComboBox';
@@ -180,3 +181,73 @@ export const openMenuOnClick = (): JSX.Element => (
         />
     </div>
 );
+
+export const accessibilityStates = () => {
+    const stackTokens = { childrenGap: 40 };
+    const testProps = {
+        options: data,
+        highlight: true,
+        allowFreeform: true,
+        useComboBoxAsMenuMinWidth: true
+    }
+    return (
+        <div>
+            <Stack horizontal tokens={stackTokens}>
+                <table
+                    style={{
+                        borderSpacing: 20,
+                        width: '100%',
+                        maxWidth: 750
+                    }}>
+                    <tr>
+                        <td
+                            style={{
+                                minWidth: 100
+                            }}></td>
+                        <td>Placeholder Text</td>
+                        <td>Input Text</td>
+                    </tr>
+                    <tr>
+                        <td>Regular</td>
+                        <td>
+                            <UIComboBox {...testProps} placeholder="Placeholder"></UIComboBox>
+                        </td>
+                        <td>
+                            <UIComboBox {...testProps} text="Dummy"></UIComboBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Error</td>
+                        <td>
+                            <UIComboBox
+                                {...testProps}
+                                placeholder="Placeholder"
+                                errorMessage="Dummy error"></UIComboBox>
+                        </td>
+                        <td>
+                            <UIComboBox {...testProps} errorMessage="Dummy error" selectedKey="EE"></UIComboBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Disabled</td>
+                        <td>
+                            <UIComboBox {...testProps} placeholder="Placeholder" disabled></UIComboBox>
+                        </td>
+                        <td>
+                            <UIComboBox {...testProps} selectedKey="EE" disabled></UIComboBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Read Only</td>
+                        <td>
+                            <UIComboBox {...testProps} placeholder="Placeholder" readOnly></UIComboBox>
+                        </td>
+                        <td>
+                            <UIComboBox {...testProps} selectedKey="EE" readOnly></UIComboBox>
+                        </td>
+                    </tr>
+                </table>
+            </Stack>
+        </div>
+    );
+};
