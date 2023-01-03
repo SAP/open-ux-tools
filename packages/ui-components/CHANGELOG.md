@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.1
+
+### Patch Changes
+
+-   703989a: UIDialog. Enable animation for dialog open with new property "isOpenAnimated". Default value is "true".
+
 ## 1.1.0
 
 ### Minor Changes
