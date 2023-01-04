@@ -183,13 +183,19 @@ export const openMenuOnClick = (): JSX.Element => (
 );
 
 export const accessibilityStates = () => {
+    const [selectedKey, setSelectedKey] = React.useState<number | string>('EE');
     const stackTokens = { childrenGap: 40 };
     const testProps = {
         options: data,
         highlight: true,
         allowFreeform: true,
-        useComboBoxAsMenuMinWidth: true
-    }
+        useComboBoxAsMenuMinWidth: true,
+        onChange: (event: React.FormEvent<IComboBox>, option?: IComboBoxOption | undefined) => {
+            if (option) {
+                setSelectedKey(option.key);
+            }
+        }
+    };
     return (
         <div>
             <Stack horizontal tokens={stackTokens}>
@@ -213,7 +219,7 @@ export const accessibilityStates = () => {
                             <UIComboBox {...testProps} placeholder="Placeholder"></UIComboBox>
                         </td>
                         <td>
-                            <UIComboBox {...testProps} text="Dummy"></UIComboBox>
+                            <UIComboBox {...testProps} selectedKey={selectedKey}></UIComboBox>
                         </td>
                     </tr>
                     <tr>
@@ -225,7 +231,10 @@ export const accessibilityStates = () => {
                                 errorMessage="Dummy error"></UIComboBox>
                         </td>
                         <td>
-                            <UIComboBox {...testProps} errorMessage="Dummy error" selectedKey="EE"></UIComboBox>
+                            <UIComboBox
+                                {...testProps}
+                                errorMessage="Dummy error"
+                                selectedKey={selectedKey}></UIComboBox>
                         </td>
                     </tr>
                     <tr>
@@ -234,7 +243,7 @@ export const accessibilityStates = () => {
                             <UIComboBox {...testProps} placeholder="Placeholder" disabled></UIComboBox>
                         </td>
                         <td>
-                            <UIComboBox {...testProps} selectedKey="EE" disabled></UIComboBox>
+                            <UIComboBox {...testProps} selectedKey={selectedKey} disabled></UIComboBox>
                         </td>
                     </tr>
                     <tr>
@@ -243,7 +252,7 @@ export const accessibilityStates = () => {
                             <UIComboBox {...testProps} placeholder="Placeholder" readOnly></UIComboBox>
                         </td>
                         <td>
-                            <UIComboBox {...testProps} selectedKey="EE" readOnly></UIComboBox>
+                            <UIComboBox {...testProps} selectedKey={selectedKey} readOnly></UIComboBox>
                         </td>
                     </tr>
                 </table>

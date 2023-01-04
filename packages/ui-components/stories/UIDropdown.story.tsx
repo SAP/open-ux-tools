@@ -1,5 +1,6 @@
 import React from 'react';
 import { Stack } from '@fluentui/react';
+import type { IDropdownOption } from '@fluentui/react';
 import { UIDropdown } from '../src/components/UIDropdown';
 import { data, shortData } from '../test/__mock__/select-data';
 
@@ -60,12 +61,18 @@ export const UseDropdownAsMenuMinWidth = (): JSX.Element => (
 );
 
 export const accessibilityStates = () => {
+    const [selectedKey, setSelectedKey] = React.useState<number | string>('EE');
     const stackTokens = { childrenGap: 40 };
     const testProps = {
         options: data,
         highlight: true,
         allowFreeform: true,
-        useComboBoxAsMenuMinWidth: true
+        useComboBoxAsMenuMinWidth: true,
+        onChange: (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) => {
+            if (option) {
+                setSelectedKey(option.key);
+            }
+        }
     };
     return (
         <div>
@@ -90,7 +97,7 @@ export const accessibilityStates = () => {
                             <UIDropdown {...testProps} placeholder="Placeholder"></UIDropdown>
                         </td>
                         <td>
-                            <UIDropdown {...testProps} selectedKey="EE"></UIDropdown>
+                            <UIDropdown {...testProps} selectedKey={selectedKey}></UIDropdown>
                         </td>
                     </tr>
                     <tr>
@@ -102,7 +109,10 @@ export const accessibilityStates = () => {
                                 errorMessage="Dummy error"></UIDropdown>
                         </td>
                         <td>
-                            <UIDropdown {...testProps} errorMessage="Dummy error" selectedKey="EE"></UIDropdown>
+                            <UIDropdown
+                                {...testProps}
+                                errorMessage="Dummy error"
+                                selectedKey={selectedKey}></UIDropdown>
                         </td>
                     </tr>
                     <tr>
@@ -111,7 +121,7 @@ export const accessibilityStates = () => {
                             <UIDropdown {...testProps} placeholder="Placeholder" disabled></UIDropdown>
                         </td>
                         <td>
-                            <UIDropdown {...testProps} selectedKey="EE" disabled></UIDropdown>
+                            <UIDropdown {...testProps} selectedKey={selectedKey} disabled></UIDropdown>
                         </td>
                     </tr>
                     <tr>
@@ -120,7 +130,7 @@ export const accessibilityStates = () => {
                             <UIDropdown {...testProps} placeholder="Placeholder" readOnly></UIDropdown>
                         </td>
                         <td>
-                            <UIDropdown {...testProps} selectedKey="EE" readOnly></UIDropdown>
+                            <UIDropdown {...testProps} selectedKey={selectedKey} readOnly></UIDropdown>
                         </td>
                     </tr>
                 </table>

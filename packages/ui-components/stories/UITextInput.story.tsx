@@ -46,7 +46,13 @@ export const defaultUsage = () => {
 
 export const accessibilityStates = () => {
     const [multiline, setMultiline] = React.useState(false);
-    const testProps = { multiline };
+    const [value, setValue] = React.useState('Content');
+    const testProps = {
+        multiline,
+        onChange: (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+            setValue(newValue || '');
+        }
+    };
     return (
         <div>
             <Stack horizontal tokens={stackTokens}>
@@ -79,7 +85,7 @@ export const accessibilityStates = () => {
                             <UITextInput {...testProps} placeholder="Placeholder"></UITextInput>
                         </td>
                         <td>
-                            <UITextInput {...testProps} value="Content"></UITextInput>
+                            <UITextInput {...testProps} value={value}></UITextInput>
                         </td>
                     </tr>
                     <tr>
@@ -91,7 +97,7 @@ export const accessibilityStates = () => {
                                 errorMessage="Dummy error"></UITextInput>
                         </td>
                         <td>
-                            <UITextInput {...testProps} errorMessage="Dummy error" value="Content"></UITextInput>
+                            <UITextInput {...testProps} errorMessage="Dummy error" value={value}></UITextInput>
                         </td>
                     </tr>
                     <tr>
@@ -100,7 +106,7 @@ export const accessibilityStates = () => {
                             <UITextInput {...testProps} placeholder="Placeholder" disabled></UITextInput>
                         </td>
                         <td>
-                            <UITextInput {...testProps} value="Content" disabled></UITextInput>
+                            <UITextInput {...testProps} value={value} disabled></UITextInput>
                         </td>
                     </tr>
                     <tr>
@@ -109,7 +115,7 @@ export const accessibilityStates = () => {
                             <UITextInput {...testProps} placeholder="Placeholder" readOnly></UITextInput>
                         </td>
                         <td>
-                            <UITextInput {...testProps} value="Content" readOnly></UITextInput>
+                            <UITextInput {...testProps} value={value} readOnly></UITextInput>
                         </td>
                     </tr>
                 </table>
