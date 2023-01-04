@@ -74,10 +74,21 @@ export const accessibilityStates = () => {
                     <tr>
                         <td
                             style={{
-                                minWidth: 100
+                                minWidth: 100,
+                                width: 150
                             }}></td>
-                        <td>Placeholder Text</td>
-                        <td>Input Text</td>
+                        <td
+                            style={{
+                                width: '50%'
+                            }}>
+                            Placeholder Text
+                        </td>
+                        <td
+                            style={{
+                                width: '50%'
+                            }}>
+                            Input Text
+                        </td>
                     </tr>
                     <tr>
                         <td>Regular</td>

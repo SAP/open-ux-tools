@@ -75,7 +75,6 @@ export const accessibilityStates = () => {
     const [selectedKey, setSelectedKey] = React.useState<string>('_Title1');
     const stackTokens = { childrenGap: 40 };
     const testProps = {
-        label: 'Label',
         placeholderText: 'Select value',
         items: data,
         maxWidth: 300,
@@ -98,10 +97,21 @@ export const accessibilityStates = () => {
                     <tr>
                         <td
                             style={{
-                                minWidth: 100
+                                minWidth: 100,
+                                width: 150
                             }}></td>
-                        <td>Placeholder Text</td>
-                        <td>Input Text</td>
+                        <td
+                            style={{
+                                width: '50%'
+                            }}>
+                            Placeholder Text
+                        </td>
+                        <td
+                            style={{
+                                width: '50%'
+                            }}>
+                            Input Text
+                        </td>
                     </tr>
                     <tr>
                         <td>Regular</td>
