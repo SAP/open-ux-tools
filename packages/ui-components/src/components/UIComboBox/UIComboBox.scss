@@ -59,8 +59,12 @@
                 border-color: $dropdown-input-focus-border-color;
             }
         }
-        &.is-disabled {
-            @include input-disabled;
+    }
+    &--disabled {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-disabled;
+            }
         }
     }
     &--error {

@@ -534,28 +534,59 @@ describe('<UIComboBox />', () => {
     describe('Test "readonly" property', () => {
         const testCases = [
             {
-                value: true,
-                expected: true
+                readOnly: true,
+                expected: {
+                    readOnly: true,
+                    tabIndex: undefined
+                }
             },
             {
-                value: undefined,
-                expected: undefined
+                readOnly: true,
+                tabIndex: 4,
+                expected: {
+                    readOnly: true,
+                    tabIndex: 4
+                }
             },
             {
-                value: false,
-                expected: false
+                readOnly: true,
+                disabled: true,
+                expected: {
+                    readOnly: true,
+                    tabIndex: -1
+                }
+            },
+            {
+                readOnly: undefined,
+                expected: {
+                    readOnly: false,
+                    tabIndex: undefined
+                }
+            },
+            {
+                readOnly: false,
+                expected: {
+                    readOnly: false,
+                    tabIndex: undefined
+                }
             }
         ];
         for (const testCase of testCases) {
-            it(`Click on input, "openMenuOnClick=${testCase.value}"`, () => {
+            it(`"readOnly=${testCase.readOnly}", "tabIndex=${testCase.tabIndex}", "disabled=${testCase.disabled}"`, () => {
+                const { expected } = testCase;
                 wrapper.setProps({
-                    readOnly: testCase.value
+                    readOnly: testCase.readOnly,
+                    ...(testCase.tabIndex && { tabIndex: testCase.tabIndex }),
+                    ...(testCase.disabled && { disabled: testCase.disabled })
                 });
                 const autofill = wrapper.find(Autofill);
                 expect(autofill.length).toEqual(1);
-                expect(autofill.prop('readOnly')).toEqual(testCase.value);
+                expect(autofill.prop('readOnly')).toEqual(expected.readOnly);
+                expect(autofill.prop('tabIndex')).toEqual(expected.tabIndex);
                 const className = wrapper.find('.ts-ComboBox').prop('className');
-                expect(className?.includes('ts-ComboBox--readonly')).toEqual(!!testCase.value);
+                expect(className?.includes('ts-ComboBox--readonly')).toEqual(
+                    !testCase.disabled ? !!expected.readOnly : false
+                );
             });
         }
     });

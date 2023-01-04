@@ -496,13 +496,37 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * @returns {string} Class names of root combobox element.
      */
     private getClassNames(messageInfo: InputValidationMessageInfo): string {
-        const { readOnly } = this.props;
+        const { readOnly, disabled } = this.props;
         const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
         let classNames = `ts-ComboBox${messageInfo.message ? ' ts-ComboBox--' + errorSuffix : ''}`;
-        if (readOnly) {
+        if (readOnly && !disabled) {
             classNames += ' ts-ComboBox--readonly';
         }
+        if (disabled) {
+            classNames += ' ts-ComboBox--disabled';
+        }
         return classNames;
+    }
+
+    /**
+     * Method returns properties for Autofill component(combobox's inner compnent for text input).
+     * Method handles 'highlight' and 'readOnly' properties.
+     *
+     * @returns {IAutofillProps} Properties for Autofill component.
+     */
+    private getAutofillProps(): IAutofillProps {
+        const { highlight, readOnly, disabled } = this.props;
+        const autofill: IAutofillProps = {};
+        // Handle search highligh
+        if (highlight) {
+            autofill.onKeyDownCapture = this.onKeyDown;
+        }
+        // Handle readOnly property
+        if (readOnly && !disabled) {
+            autofill.readOnly = readOnly;
+            autofill.tabIndex = 'tabIndex' in this.props ? this.props.tabIndex : undefined;
+        }
+        return autofill;
     }
 
     /**
@@ -510,12 +534,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      */
     render(): JSX.Element {
         const messageInfo = getMessageInfo(this.props);
-        const autofill: IAutofillProps = {
-            readOnly: this.props.readOnly
-        };
-        if (this.props.highlight) {
-            autofill.onKeyDownCapture = this.onKeyDown;
-        }
         let disabled = this.props.isForceEnabled ? false : !this.props.options.length;
         if (this.props.readOnly) {
             disabled = true;
@@ -571,7 +589,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         placeholder: this.getPlaceholder(),
                         onPendingValueChanged: this.onPendingValueChanged
                     })}
-                    autofill={autofill}
+                    autofill={this.getAutofillProps()}
                     {...(this.props.useComboBoxAsMenuMinWidth && {
                         // Use 'onMenuOpen', because there can be dynamic size of combobox
                         onMenuOpen: this.calculateMenuMinWidth.bind(this)
