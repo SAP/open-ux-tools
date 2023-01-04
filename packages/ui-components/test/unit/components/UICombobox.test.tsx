@@ -581,12 +581,23 @@ describe('<UIComboBox />', () => {
                 });
                 const autofill = wrapper.find(Autofill);
                 expect(autofill.length).toEqual(1);
-                expect(autofill.prop('readOnly')).toEqual(expected.readOnly);
-                expect(autofill.prop('tabIndex')).toEqual(expected.tabIndex);
+                const autofillProps = autofill.props();
+                expect(autofillProps.readOnly).toEqual(expected.readOnly);
+                expect(autofillProps.tabIndex).toEqual(expected.tabIndex);
                 const className = wrapper.find('.ts-ComboBox').prop('className');
                 expect(className?.includes('ts-ComboBox--readonly')).toEqual(
                     !testCase.disabled ? !!expected.readOnly : false
                 );
+                expect(className?.includes('ts-ComboBox--disabled')).toEqual(!!testCase.disabled);
+                // Additional properties
+                if (!testCase.disabled && expected.readOnly) {
+                    expect(autofillProps['aria-readonly']).toEqual(true);
+                    expect('aria-disabled' in autofillProps).toEqual(true);
+                    expect(autofillProps['aria-disabled']).toEqual(undefined);
+                } else {
+                    expect('aria-readonly' in autofillProps).toEqual(false);
+                    expect(autofillProps['aria-disabled']).toEqual(!!testCase.disabled);
+                }
             });
         }
     });

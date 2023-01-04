@@ -56,8 +56,19 @@
                 border: $dropdown-input-border-width solid $dropdown-input-focus-border-color;
             }
         }
-        &.is-disabled {
-            @include input-disabled;
+    }
+    &--readonly {
+        .ms-Dropdown {
+            &.is-disabled {
+                @include input-readonly;
+            }
+        }
+    }
+    &--disabled {
+        .ms-Dropdown {
+            &.is-disabled {
+                @include input-disabled;
+            }
         }
     }
     &--error {

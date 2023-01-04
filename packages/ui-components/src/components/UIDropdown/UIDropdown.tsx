@@ -8,7 +8,7 @@ import type {
 import { Dropdown, DropdownMenuItemType, IDropdownOption, ResponsiveMode } from '@fluentui/react';
 
 import { UIIcon } from '../UIIcon';
-import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
+import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
 
@@ -169,11 +169,45 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     }
 
     /**
+     * Method returns class names string depending on props and component state.
+     *
+     * @param {InputValidationMessageInfo} messageInfo Error/warning message if applied
+     * @returns {string} Class names of root dropdown element.
+     */
+    private getClassNames(messageInfo: InputValidationMessageInfo): string {
+        const { className, readOnly, disabled } = this.props;
+        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        let classNames = `ts-SelectBox${messageInfo.message ? ' ts-SelectBox--' + errorSuffix : ''}`;
+        // Readonly
+        if (readOnly && !disabled) {
+            classNames += ' ts-SelectBox--readonly';
+        }
+        // Disabled
+        if (disabled) {
+            classNames += ' ts-SelectBox--disabled';
+        }
+        // Custom external classes
+        if (className) {
+            classNames += ` ${className}`;
+        }
+        return classNames;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
+        const { readOnly, disabled } = this.props;
         const messageInfo = getMessageInfo(this.props);
-        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        const additionalProps: Partial<IDropdownProps & { ['data-is-focusable']?: boolean }> = {};
+        if (readOnly && !disabled) {
+            // Make dropdown focusable
+            additionalProps.tabIndex = 0;
+            additionalProps['data-is-focusable'] = true;
+            // Adjust aria attributes for readonly
+            additionalProps['aria-disabled'] = undefined;
+            additionalProps['aria-readonly'] = true;
+        }
         const dropdownStyles = (): Partial<IDropdownStyles> => ({
             ...{
                 label: {
@@ -196,7 +230,6 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
             }
         });
 
-        const propClassName = this.props.className ? ` ${this.props.className}` : '';
         return (
             <Dropdown
                 calloutProps={{
@@ -212,9 +245,11 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
                 onRenderItem={this.onRenderItem.bind(this)}
                 // Use default responsiveMode as xxxLarge, which does not enter mobile mode.
                 responsiveMode={ResponsiveMode.xxxLarge}
+                disabled={this.props.readOnly}
+                {...additionalProps}
                 {...this.props}
                 styles={dropdownStyles}
-                className={`ts-SelectBox${messageInfo.message ? ' ts-SelectBox--' + errorSuffix : ''}${propClassName}`}
+                className={this.getClassNames(messageInfo)}
                 errorMessage={messageInfo.message}
             />
         );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Stack } from '@fluentui/react';
 import { UIDropdown } from '../src/components/UIDropdown';
 import { data, shortData } from '../test/__mock__/select-data';
 
@@ -57,3 +58,73 @@ export const UseDropdownAsMenuMinWidth = (): JSX.Element => (
         </div>
     </div>
 );
+
+export const accessibilityStates = () => {
+    const stackTokens = { childrenGap: 40 };
+    const testProps = {
+        options: data,
+        highlight: true,
+        allowFreeform: true,
+        useComboBoxAsMenuMinWidth: true
+    };
+    return (
+        <div>
+            <Stack horizontal tokens={stackTokens}>
+                <table
+                    style={{
+                        borderSpacing: 20,
+                        width: '100%',
+                        maxWidth: 750
+                    }}>
+                    <tr>
+                        <td
+                            style={{
+                                minWidth: 100
+                            }}></td>
+                        <td>Placeholder Text</td>
+                        <td>Input Text</td>
+                    </tr>
+                    <tr>
+                        <td>Regular</td>
+                        <td>
+                            <UIDropdown {...testProps} placeholder="Placeholder"></UIDropdown>
+                        </td>
+                        <td>
+                            <UIDropdown {...testProps} selectedKey="EE"></UIDropdown>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Error</td>
+                        <td>
+                            <UIDropdown
+                                {...testProps}
+                                placeholder="Placeholder"
+                                errorMessage="Dummy error"></UIDropdown>
+                        </td>
+                        <td>
+                            <UIDropdown {...testProps} errorMessage="Dummy error" selectedKey="EE"></UIDropdown>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Disabled</td>
+                        <td>
+                            <UIDropdown {...testProps} placeholder="Placeholder" disabled></UIDropdown>
+                        </td>
+                        <td>
+                            <UIDropdown {...testProps} selectedKey="EE" disabled></UIDropdown>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Read Only</td>
+                        <td>
+                            <UIDropdown {...testProps} placeholder="Placeholder" readOnly></UIDropdown>
+                        </td>
+                        <td>
+                            <UIDropdown {...testProps} selectedKey="EE" readOnly></UIDropdown>
+                        </td>
+                    </tr>
+                </table>
+            </Stack>
+        </div>
+    );
+};
