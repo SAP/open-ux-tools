@@ -15,6 +15,20 @@
 }
 
 .ts-ComboBox {
+    &--readonly {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-readonly;
+            }
+        }
+    }
+    &--disabled {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-disabled;
+            }
+        }
+    }
     .ms-ComboBox {
         background: $dropdown-input-background;
         height: $dropdown-input-height;
@@ -59,18 +73,10 @@
                 border-color: $dropdown-input-focus-border-color;
             }
         }
-    }
-    &--readonly {
-        .ms-ComboBox {
-            &.is-disabled {
-                @include input-readonly;
-            }
-        }
-    }
-    &--disabled {
-        .ms-ComboBox {
-            &.is-disabled {
-                @include input-disabled;
+        &:focus-within,
+        &.is-open {
+            &:after {
+                border-style: solid;
             }
         }
     }
