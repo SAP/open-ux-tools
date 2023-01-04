@@ -51,6 +51,9 @@
                 color: $dropdown-input-color;
             }
         }
+        .ms-Dropdown-titleIsPlaceHolder {
+            color: $dropdown-input-placeholder-color;
+        }
         &:after {
             pointer-events: none;
             content: '';

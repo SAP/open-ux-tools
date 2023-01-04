@@ -52,14 +52,11 @@
         &,
         &:hover {
             input {
-                &,
+                color: $dropdown-input-color;
                 &::placeholder {
-                    color: $dropdown-input-color;
+                    color: $dropdown-input-placeholder-color;
                 }
             }
-        }
-        input::placeholder {
-            opacity: 0.7;
         }
         // Overwrite default border
         &:after {

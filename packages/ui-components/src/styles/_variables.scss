@@ -11,6 +11,7 @@ $button-font-size: $font-size-base;
 // colors
 $dropdown-input-height: $base-element-height;
 $dropdown-input-color: var(--vscode-foreground);
+$dropdown-input-placeholder-color: var(--vscode-input-placeholderForeground);
 $dropdown-input-background: var(--vscode-input-background);
 $dropdown-input-border-color: var(--vscode-editorWidget-border);
 $dropdown-input-focus-border-color: var(--vscode-focusBorder);
