@@ -551,7 +551,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-editor-inactiveSelectionBackground)",
       "borderRadius": 0,
-      "opacity": 0.4,
+      "opacity": 0.5,
     },
     undefined,
     undefined,
@@ -578,7 +578,7 @@ Object {
           "padding": "4px 0",
         },
         Object {
-          "opacity": "0.4",
+          "opacity": 0.5,
         },
         undefined,
       ],
@@ -852,7 +852,7 @@ Object {
     Object {
       "backgroundColor": "var(--vscode-editor-inactiveSelectionBackground)",
       "borderRadius": 0,
-      "opacity": 0.4,
+      "opacity": 0.5,
     },
     undefined,
     undefined,
@@ -879,7 +879,7 @@ Object {
           "padding": "4px 0",
         },
         Object {
-          "opacity": "0.4",
+          "opacity": 0.5,
         },
         undefined,
       ],

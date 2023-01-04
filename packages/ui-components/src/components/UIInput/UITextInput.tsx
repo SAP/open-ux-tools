@@ -10,6 +10,29 @@ export { ITextField, ITextFieldProps } from '@fluentui/react';
 
 export type UITextInputProps = ITextFieldProps & UIMessagesExtendedProps;
 
+const COLOR_STYLES = {
+    regular: {
+        backgroundColor: 'var(--vscode-input-background)',
+        borderColor: 'var(--vscode-editorWidget-border)',
+        color: 'var(--vscode-input-foreground)',
+        borderStyle: 'solid'
+    },
+    disabled: {
+        backgroundColor: 'var(--vscode-editor-inactiveSelectionBackground)',
+        opacity: 0.5
+    },
+    readOnly: {
+        backgroundColor: 'var(--vscode-editor-background)',
+        borderStyle: 'dashed'
+    },
+    hover: {
+        borderColor: 'var(--vscode-focusBorder)'
+    },
+    focus: {
+        borderColor: 'var(--vscode-focusBorder)'
+    }
+};
+
 /**
  * UITextInput component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/textfield
@@ -29,6 +52,16 @@ export class UITextInput extends React.Component<UITextInputProps> {
     }
 
     /**
+     * Method wraps passed css variable name into css variable syntax.
+     *
+     * @param {string} name
+     * @returns {string} CSS variable.
+     */
+    private wrapCssVariable(name: string): string {
+        return `var(${name})`;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
@@ -43,11 +76,11 @@ export class UITextInput extends React.Component<UITextInputProps> {
                     fieldGroup: [
                         // Common styles
                         {
-                            backgroundColor: 'var(--vscode-input-background)',
+                            backgroundColor: COLOR_STYLES.regular.backgroundColor,
                             borderWidth: 1,
-                            borderStyle: 'solid',
-                            borderColor: 'var(--vscode-editorWidget-border)',
-                            color: 'var(--vscode-input-foreground)',
+                            borderStyle: COLOR_STYLES.regular.borderStyle,
+                            borderColor: COLOR_STYLES.regular.borderColor,
+                            color: COLOR_STYLES.regular.color,
                             borderRadius: 0,
                             boxSizing: 'initial'
                         },
@@ -61,19 +94,19 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         !props.disabled && {
                             selectors: {
                                 '&:hover': {
-                                    borderColor: 'var(--vscode-focusBorder)'
+                                    borderColor: COLOR_STYLES.hover.borderColor
                                 }
                             }
                         },
                         // Disabled field
                         props.disabled && {
-                            backgroundColor: `var(--vscode-editor-inactiveSelectionBackground)`,
-                            opacity: 0.4,
+                            backgroundColor: COLOR_STYLES.disabled.backgroundColor,
+                            opacity: COLOR_STYLES.disabled.opacity,
                             borderRadius: 0
                         },
                         // Read only container - disable hover style
                         this.props.readOnly && {
-                            borderStyle: 'dashed',
+                            borderStyle: COLOR_STYLES.readOnly.borderStyle,
                             // No hover efect on input without value
                             selectors: !this.props.value
                                 ? {
@@ -90,9 +123,11 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         props.focused && {
                             selectors: {
                                 ':after': {
-                                    border: `1px solid var(${
-                                        this.props.errorMessage ? messageInfo.style.borderColor : '--vscode-focusBorder'
-                                    })`
+                                    border: `1px ${COLOR_STYLES.regular.borderStyle} ${
+                                        this.props.errorMessage && messageInfo.style.borderColor
+                                            ? this.wrapCssVariable(messageInfo.style.borderColor)
+                                            : COLOR_STYLES.focus.borderColor
+                                    }`
                                 }
                             }
                         }
@@ -100,8 +135,8 @@ export class UITextInput extends React.Component<UITextInputProps> {
                     field: [
                         // Common styles
                         {
-                            backgroundColor: 'var(--vscode-input-background)',
-                            color: 'var(--vscode-input-foreground)',
+                            backgroundColor: COLOR_STYLES.regular.backgroundColor,
+                            color: COLOR_STYLES.regular.color,
                             fontSize: '13px',
                             fontWeight: 'normal',
                             boxSizing: 'border-box',
@@ -130,7 +165,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         // Readonly input
                         this.props.readOnly && {
                             fontStyle: 'italic',
-                            backgroundColor: 'var(--vscode-editor-background)'
+                            backgroundColor: COLOR_STYLES.readOnly.backgroundColor
                         },
                         // Input with icon
                         props.hasIcon && {
@@ -152,7 +187,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                                     ...labelGlobalStyle
                                 },
                                 props.disabled && {
-                                    opacity: '0.4'
+                                    opacity: COLOR_STYLES.disabled.opacity
                                 },
                                 props.required && {
                                     selectors: {
