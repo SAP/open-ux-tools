@@ -1,4 +1,5 @@
 import React from 'react';
+import { Stack } from '@fluentui/react';
 import { UITreeDropdown } from '../src/components/UITreeDropdown';
 
 export default { title: 'Dropdowns/TreeDropdown' };
@@ -66,6 +67,86 @@ export const Message = (): JSX.Element => {
                 maxWidth={300}
                 errorMessage="Dummy error"
             />
+        </div>
+    );
+};
+
+export const accessibilityStates = () => {
+    const [selectedKey, setSelectedKey] = React.useState<string>('_Title1');
+    const stackTokens = { childrenGap: 40 };
+    const testProps = {
+        label: 'Label',
+        placeholderText: 'Select value',
+        items: data,
+        maxWidth: 300,
+        onParameterValueChange: (value) => console.log(value)
+    };
+    const changeableProps = {
+        ...testProps,
+        onParameterValueChange: (value) => setSelectedKey(value)
+    };
+
+    return (
+        <div>
+            <Stack horizontal tokens={stackTokens}>
+                <table
+                    style={{
+                        borderSpacing: 20,
+                        width: '100%',
+                        maxWidth: 750
+                    }}>
+                    <tr>
+                        <td
+                            style={{
+                                minWidth: 100
+                            }}></td>
+                        <td>Placeholder Text</td>
+                        <td>Input Text</td>
+                    </tr>
+                    <tr>
+                        <td>Regular</td>
+                        <td>
+                            <UITreeDropdown {...testProps} placeholderText="Placeholder"></UITreeDropdown>
+                        </td>
+                        <td>
+                            <UITreeDropdown {...changeableProps} value={selectedKey}></UITreeDropdown>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Error</td>
+                        <td>
+                            <UITreeDropdown
+                                {...testProps}
+                                placeholderText="Placeholder"
+                                errorMessage="Dummy error"></UITreeDropdown>
+                        </td>
+                        <td>
+                            <UITreeDropdown
+                                {...changeableProps}
+                                errorMessage="Dummy error"
+                                value={selectedKey}></UITreeDropdown>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Disabled</td>
+                        <td>
+                            <UITreeDropdown {...testProps} placeholderText="Placeholder" items={[]}></UITreeDropdown>
+                        </td>
+                        <td>
+                            <UITreeDropdown {...changeableProps} value={selectedKey} items={[]}></UITreeDropdown>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Read Only</td>
+                        <td>
+                            <UITreeDropdown {...testProps} placeholderText="Placeholder" readOnly></UITreeDropdown>
+                        </td>
+                        <td>
+                            <UITreeDropdown {...changeableProps} value={selectedKey} readOnly></UITreeDropdown>
+                        </td>
+                    </tr>
+                </table>
+            </Stack>
         </div>
     );
 };

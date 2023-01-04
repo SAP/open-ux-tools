@@ -684,4 +684,16 @@ describe('<UITreeDropdown />', () => {
             });
         }
     });
+
+    it('Property "readOnly"', () => {
+        wrapper.setProps({
+            readOnly: true
+        });
+
+        const textfield = wrapper.find(UITextInput);
+        expect(textfield.prop('readOnly')).toEqual(true);
+        // Dropdown menu should not be opened
+        openDropdown();
+        expect(wrapper.find(selectors.treeContextMenu).length).toEqual(0);
+    });
 });

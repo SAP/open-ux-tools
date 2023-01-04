@@ -46,6 +46,7 @@ export interface UITreeDropdownProps extends UIMessagesExtendedProps {
     maxWidth?: number;
     useTargetWidth?: string;
     errorMessage?: string;
+    readOnly?: boolean;
 }
 
 interface TreeItemInfo {
@@ -367,6 +368,9 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @param {React.KeyboardEvent<HTMLInputElement>} event
      */
     toggleMenu = (status: boolean, event?: React.KeyboardEvent<HTMLInputElement>): void => {
+        if (this.props.readOnly) {
+            return;
+        }
         this.setState({
             isHidden: status
         });
@@ -730,6 +734,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                     <UITextInput
                         componentRef={this.inputRef}
                         disabled={this.state.isDisabled}
+                        readOnly={this.props.readOnly}
                         autoComplete="off"
                         value={this.state.value}
                         placeholder={this.props.placeholderText}
