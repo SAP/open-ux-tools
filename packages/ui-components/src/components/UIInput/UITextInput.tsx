@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { ITextFieldProps, ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
 import { TextField } from '@fluentui/react';
-import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
+import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
 
@@ -52,13 +52,17 @@ export class UITextInput extends React.Component<UITextInputProps> {
     }
 
     /**
-     * Method wraps passed css variable name into css variable syntax.
+     * Method returns value for CSS property "border" for focus state.
      *
-     * @param {string} name
-     * @returns {string} CSS variable.
+     * @param {InputValidationMessageInfo} messageInfo
+     * @returns {string} Value for CSS "border" property.
      */
-    private wrapCssVariable(name: string): string {
-        return `var(${name})`;
+    private getFocusBorder(messageInfo: InputValidationMessageInfo): string {
+        let color = COLOR_STYLES.focus.borderColor;
+        if (this.props.errorMessage && messageInfo.style.borderColor) {
+            color = `var(${messageInfo.style.borderColor})`;
+        }
+        return `1px ${COLOR_STYLES.regular.borderStyle} ${color}`;
     }
 
     /**
@@ -123,11 +127,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         props.focused && {
                             selectors: {
                                 ':after': {
-                                    border: `1px ${COLOR_STYLES.regular.borderStyle} ${
-                                        this.props.errorMessage && messageInfo.style.borderColor
-                                            ? this.wrapCssVariable(messageInfo.style.borderColor)
-                                            : COLOR_STYLES.focus.borderColor
-                                    }`
+                                    border: this.getFocusBorder(messageInfo)
                                 }
                             }
                         }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as Enzyme from 'enzyme';
-import type { IStyleFunction, ITextFieldStyleProps } from '@fluentui/react';
+import type { IStyleFunction, ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
 import { TextField } from '@fluentui/react';
 import type { UITextInputProps } from '../../../src/components/UIInput';
 import { UITextInput } from '../../../src/components/UIInput';
@@ -8,9 +8,12 @@ import { UITextInput } from '../../../src/components/UIInput';
 describe('<UIToggle />', () => {
     let wrapper: Enzyme.ReactWrapper<UITextInputProps>;
 
-    const getStyles = (): ITextFieldStyleProps => {
+    const getStyles = (additionalProps?: Partial<ITextFieldStyleProps>): ITextFieldStyles => {
         const textfieldProps = wrapper.find(TextField).props();
-        const styles = (textfieldProps.styles as IStyleFunction<{}, {}>)(textfieldProps) as ITextFieldStyleProps;
+        const styles = (textfieldProps.styles as IStyleFunction<{}, {}>)({
+            ...textfieldProps,
+            ...additionalProps
+        }) as ITextFieldStyles;
         return styles;
     };
 
@@ -82,6 +85,27 @@ describe('<UIToggle />', () => {
         });
         expect(getStyles()).toMatchSnapshot();
     });
+
+    const focusTestCases = [
+        {
+            errorMessage: true
+        },
+        {
+            errorMessage: false
+        }
+    ];
+    for (const errorMessage of focusTestCases) {
+        it(`Focus styles, "errorMessage=${errorMessage}"`, () => {
+            wrapper.setProps({
+                errorMessage: errorMessage.errorMessage ? 'dummy' : undefined
+            });
+            expect(
+                getStyles({
+                    focused: true
+                })
+            ).toMatchSnapshot();
+        });
+    }
 
     describe('Styles - error message', () => {
         it('Error', () => {
