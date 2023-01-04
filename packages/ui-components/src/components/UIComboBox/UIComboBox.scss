@@ -60,6 +60,13 @@
             }
         }
     }
+    &--readonly {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-readonly;
+            }
+        }
+    }
     &--disabled {
         .ms-ComboBox {
             &.is-disabled {

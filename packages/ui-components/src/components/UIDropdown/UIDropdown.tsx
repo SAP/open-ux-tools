@@ -22,6 +22,7 @@ export interface UIDropdownProps extends IDropdownProps, UIMessagesExtendedProps
     onHandleOpen?(): void;
     onHandleRenderTitle?(items: IDropdownOption[] | undefined): JSX.Element;
     useDropdownAsMenuMinWidth?: boolean;
+    readOnly?: boolean;
 }
 
 export interface UIDropdownState {
