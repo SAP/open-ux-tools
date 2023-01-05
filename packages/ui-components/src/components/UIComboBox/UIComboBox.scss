@@ -15,20 +15,6 @@
 }
 
 .ts-ComboBox {
-    &--readonly {
-        .ms-ComboBox {
-            &.is-disabled {
-                @include input-readonly;
-            }
-        }
-    }
-    &--disabled {
-        .ms-ComboBox {
-            &.is-disabled {
-                @include input-disabled;
-            }
-        }
-    }
     .ms-ComboBox {
         background: $dropdown-input-background;
         height: $dropdown-input-height;
@@ -70,10 +56,31 @@
                 border-color: $dropdown-input-focus-border-color;
             }
         }
-        &:focus-within,
-        &.is-open {
-            &:after {
-                border-style: solid;
+    }
+    &--readonly {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-readonly;
+            }
+            &:focus-within,
+            &.is-open {
+                &:after {
+                    border-style: solid;
+                    border-color: $dropdown-input-focus-border-color !important;
+                }
+            }
+        }
+        // Empty and readonly field - disable hover efect
+        &.ts-ComboBox--empty {
+            .ms-ComboBox:hover:after {
+                border-color: $dropdown-input-border-color;
+            }
+        }
+    }
+    &--disabled {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-disabled;
             }
         }
     }

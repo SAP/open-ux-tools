@@ -16,6 +16,7 @@ import { UiIcons } from '../Icons';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
+import { isDropdownEmpty } from '../UIDropdown';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -504,6 +505,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         }
         if (disabled) {
             classNames += ' ts-ComboBox--disabled';
+        }
+        if (isDropdownEmpty(this.props)) {
+            classNames += ' ts-ComboBox--empty';
         }
         return classNames;
     }

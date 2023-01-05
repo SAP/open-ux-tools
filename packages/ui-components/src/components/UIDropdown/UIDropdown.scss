@@ -14,20 +14,6 @@
 }
 
 .ts-SelectBox {
-    &--readonly {
-        .ms-Dropdown {
-            &.is-disabled {
-                @include input-readonly;
-            }
-        }
-    }
-    &--disabled {
-        .ms-Dropdown {
-            &.is-disabled {
-                @include input-disabled;
-            }
-        }
-    }
     .ms-Dropdown {
         background: $dropdown-input-background;
         .ms-Dropdown-title {
@@ -77,6 +63,33 @@
         &.is-open {
             &:after {
                 border-style: solid;
+            }
+        }
+    }
+    &--readonly {
+        .ms-Dropdown {
+            &.is-disabled {
+                @include input-readonly;
+            }
+            &.is-open,
+            &:focus {
+                &:after {
+                    border-style: solid;
+                    border-color: $dropdown-input-focus-border-color !important;
+                }
+            }
+        }
+        // Empty and readonly field - disable hover efect
+        &.ts-SelectBox--empty {
+            .ms-Dropdown:hover:after {
+                border-color: $dropdown-input-border-color;
+            }
+        }
+    }
+    &--disabled {
+        .ms-Dropdown {
+            &.is-disabled {
+                @include input-disabled;
             }
         }
     }

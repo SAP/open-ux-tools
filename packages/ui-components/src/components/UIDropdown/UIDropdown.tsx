@@ -11,6 +11,7 @@ import { UIIcon } from '../UIIcon';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
+import { isDropdownEmpty } from './utils';
 
 import './UIDropdown.scss';
 
@@ -189,6 +190,10 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
         // Custom external classes
         if (className) {
             classNames += ` ${className}`;
+        }
+        // Empty value
+        if (isDropdownEmpty(this.props)) {
+            classNames += ' ts-SelectBox--empty';
         }
         return classNames;
     }

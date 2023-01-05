@@ -18,7 +18,7 @@ describe('<UIDropdown />', () => {
     };
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UIDropdown options={data} />);
+        wrapper = Enzyme.mount(<UIDropdown options={data} selectedKey="EE" />);
     });
 
     afterEach(() => {
@@ -263,6 +263,35 @@ describe('<UIDropdown />', () => {
                     expect('aria-readonly' in dropdownProps).toEqual(false);
                     expect('aria-disabled' in dropdownProps).toEqual(false);
                 }
+            });
+        }
+    });
+
+    describe('Empty dropdown classname', () => {
+        const testCases = [
+            {
+                selectedKey: 'EE',
+                expected: false
+            },
+            {
+                selectedKey: ['EE'],
+                expected: false
+            },
+            {
+                selectedKey: [],
+                expected: true
+            },
+            {
+                selectedKey: undefined,
+                expected: true
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`"selectedKey=${testCase.selectedKey}"`, () => {
+                wrapper.setProps({
+                    selectedKey: testCase.selectedKey
+                });
+                expect(wrapper.find('div.ts-SelectBox--empty').length).toEqual(testCase.expected ? 1 : 0);
             });
         }
     });

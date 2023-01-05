@@ -601,4 +601,45 @@ describe('<UIComboBox />', () => {
             });
         }
     });
+
+    describe('Empty combobox classname', () => {
+        const testCases = [
+            {
+                text: undefined,
+                selectedKey: 'EE',
+                expected: false
+            },
+            {
+                text: undefined,
+                selectedKey: ['EE'],
+                expected: false
+            },
+            {
+                text: 'Dummy',
+                selectedKey: undefined,
+                expected: false
+            },
+            {
+                text: undefined,
+                selectedKey: undefined,
+                expected: true
+            },
+            {
+                text: undefined,
+                selectedKey: [],
+                expected: true
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`"text=${testCase.text}", "selectedKey=${
+                Array.isArray(testCase.selectedKey) ? JSON.stringify(testCase.selectedKey) : testCase.selectedKey
+            }"`, () => {
+                wrapper.setProps({
+                    text: testCase.text,
+                    selectedKey: testCase.selectedKey
+                });
+                expect(wrapper.find('div.ts-ComboBox--empty').length).toEqual(testCase.expected ? 1 : 0);
+            });
+        }
+    });
 });
