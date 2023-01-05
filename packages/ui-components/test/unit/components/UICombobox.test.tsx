@@ -534,7 +534,7 @@ describe('<UIComboBox />', () => {
     describe('Test "isForceEnabled" property', () => {
         const testCases = [true, false];
         for (const testCase of testCases) {
-            it(`"isForceEnabled=${testCase}"`, () => {
+            it(`isForceEnabled=${testCase}`, () => {
                 wrapper.setProps({
                     options: [],
                     isForceEnabled: testCase
