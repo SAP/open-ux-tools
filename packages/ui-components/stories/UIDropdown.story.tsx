@@ -63,8 +63,9 @@ export const UseDropdownAsMenuMinWidth = (): JSX.Element => (
 
 export const accessibilityStates = () => {
     const [multiSelect, setMultiSelect] = React.useState(false);
-    const [selectedKey, setSelectedKey] = React.useState<number | string>('EE');
+    const [selectedKey, setSelectedKey] = React.useState<number | string | number[] | string[]>('EE');
     const stackTokens = { childrenGap: 40 };
+    const selectedKeys = Array.isArray(selectedKey) ? selectedKey : undefined;
     const testProps = {
         options: data,
         highlight: true,
@@ -72,7 +73,13 @@ export const accessibilityStates = () => {
         useComboBoxAsMenuMinWidth: true,
         multiSelect,
         onChange: (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) => {
-            if (option) {
+            console.log('aaaaaaaa');
+            if (Array.isArray(selectedKey)) {
+                const newKeys = [...selectedKey, option?.key].filter((k) =>
+                    option?.selected ? true : k !== option?.key
+                ) as string[];
+                setSelectedKey(newKeys);
+            } else if (option) {
                 setSelectedKey(option.key);
             }
         }
@@ -83,6 +90,11 @@ export const accessibilityStates = () => {
                 label="Multi Select"
                 checked={multiSelect}
                 onChange={(event: any, value: any) => {
+                    if (value && !Array.isArray(selectedKey)) {
+                        setSelectedKey([selectedKey as string]);
+                    } else if (!value && Array.isArray(selectedKey)) {
+                        setSelectedKey(selectedKey[0]);
+                    }
                     setMultiSelect(value);
                 }}
             />
@@ -118,7 +130,10 @@ export const accessibilityStates = () => {
                             <UIDropdown {...testProps} placeholder="Placeholder"></UIDropdown>
                         </td>
                         <td>
-                            <UIDropdown {...testProps} selectedKey={selectedKey}></UIDropdown>
+                            <UIDropdown
+                                {...testProps}
+                                selectedKey={selectedKey}
+                                selectedKeys={selectedKeys}></UIDropdown>
                         </td>
                     </tr>
                     <tr>
@@ -133,7 +148,8 @@ export const accessibilityStates = () => {
                             <UIDropdown
                                 {...testProps}
                                 errorMessage="Dummy error"
-                                selectedKey={selectedKey}></UIDropdown>
+                                selectedKey={selectedKey}
+                                selectedKeys={selectedKeys}></UIDropdown>
                         </td>
                     </tr>
                     <tr>
@@ -142,7 +158,11 @@ export const accessibilityStates = () => {
                             <UIDropdown {...testProps} placeholder="Placeholder" disabled></UIDropdown>
                         </td>
                         <td>
-                            <UIDropdown {...testProps} selectedKey={selectedKey} disabled></UIDropdown>
+                            <UIDropdown
+                                {...testProps}
+                                selectedKey={selectedKey}
+                                selectedKeys={selectedKeys}
+                                disabled></UIDropdown>
                         </td>
                     </tr>
                     <tr>
@@ -151,7 +171,11 @@ export const accessibilityStates = () => {
                             <UIDropdown {...testProps} placeholder="Placeholder" readOnly></UIDropdown>
                         </td>
                         <td>
-                            <UIDropdown {...testProps} selectedKey={selectedKey} readOnly></UIDropdown>
+                            <UIDropdown
+                                {...testProps}
+                                selectedKey={selectedKey}
+                                selectedKeys={selectedKeys}
+                                readOnly></UIDropdown>
                         </td>
                     </tr>
                 </table>

@@ -185,7 +185,7 @@ export const openMenuOnClick = (): JSX.Element => (
 
 export const accessibilityStates = () => {
     const [multiSelect, setMultiSelect] = React.useState(false);
-    const [selectedKey, setSelectedKey] = React.useState<number | string>('EE');
+    const [selectedKey, setSelectedKey] = React.useState<number | string | number[] | string[]>('EE');
     const stackTokens = { childrenGap: 40 };
     const testProps = {
         options: data,
@@ -194,7 +194,12 @@ export const accessibilityStates = () => {
         useComboBoxAsMenuMinWidth: true,
         multiSelect,
         onChange: (event: React.FormEvent<IComboBox>, option?: IComboBoxOption | undefined) => {
-            if (option) {
+            if (Array.isArray(selectedKey)) {
+                const newKeys = [...selectedKey, option?.key].filter((k) =>
+                    option?.selected ? true : k !== option?.key
+                ) as string[];
+                setSelectedKey(newKeys);
+            } else if (option) {
                 setSelectedKey(option.key);
             }
         }
@@ -206,6 +211,11 @@ export const accessibilityStates = () => {
                     label="Multi Select"
                     checked={multiSelect}
                     onChange={(event: any, value: any) => {
+                        if (value && !Array.isArray(selectedKey)) {
+                            setSelectedKey([selectedKey as string]);
+                        } else if (!value && Array.isArray(selectedKey)) {
+                            setSelectedKey(selectedKey[0]);
+                        }
                         setMultiSelect(value);
                     }}
                 />

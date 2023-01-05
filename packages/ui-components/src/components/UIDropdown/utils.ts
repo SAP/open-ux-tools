@@ -11,7 +11,7 @@ export function isDropdownEmpty(props: Partial<IDropdownProps | IComboBoxProps>)
     if (Array.isArray(selectedKey)) {
         return selectedKey.length === 0;
     }
-    if ('text' in props && props.text) {
+    if (('text' in props && props.text) || ('selectedKeys' in props && props.selectedKeys?.length)) {
         return false;
     }
     return !selectedKey;

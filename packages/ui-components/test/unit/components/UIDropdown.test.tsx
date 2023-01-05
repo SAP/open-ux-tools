@@ -278,7 +278,15 @@ describe('<UIDropdown />', () => {
                 expected: false
             },
             {
+                selectedKeys: ['EE'],
+                expected: false
+            },
+            {
                 selectedKey: [],
+                expected: true
+            },
+            {
+                selectedKeys: [],
                 expected: true
             },
             {
@@ -287,9 +295,10 @@ describe('<UIDropdown />', () => {
             }
         ];
         for (const testCase of testCases) {
-            it(`"selectedKey=${testCase.selectedKey}"`, () => {
+            it(`"selectedKey=${testCase.selectedKey}","selectedKeys=${JSON.stringify(testCase.selectedKeys)}"`, () => {
                 wrapper.setProps({
-                    selectedKey: testCase.selectedKey
+                    selectedKey: testCase.selectedKey,
+                    selectedKeys: testCase.selectedKeys
                 });
                 expect(wrapper.find('div.ts-SelectBox--empty').length).toEqual(testCase.expected ? 1 : 0);
             });
