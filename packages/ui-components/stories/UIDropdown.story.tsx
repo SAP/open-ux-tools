@@ -2,6 +2,7 @@ import React from 'react';
 import { Stack } from '@fluentui/react';
 import type { IDropdownOption } from '@fluentui/react';
 import { UIDropdown } from '../src/components/UIDropdown';
+import { UICheckbox } from '../src/components/UICheckbox';
 import { data, shortData } from '../test/__mock__/select-data';
 
 import { initIcons } from '../src/components/Icons';
@@ -61,6 +62,7 @@ export const UseDropdownAsMenuMinWidth = (): JSX.Element => (
 );
 
 export const accessibilityStates = () => {
+    const [multiSelect, setMultiSelect] = React.useState(false);
     const [selectedKey, setSelectedKey] = React.useState<number | string>('EE');
     const stackTokens = { childrenGap: 40 };
     const testProps = {
@@ -68,6 +70,7 @@ export const accessibilityStates = () => {
         highlight: true,
         allowFreeform: true,
         useComboBoxAsMenuMinWidth: true,
+        multiSelect,
         onChange: (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) => {
             if (option) {
                 setSelectedKey(option.key);
@@ -76,6 +79,13 @@ export const accessibilityStates = () => {
     };
     return (
         <div>
+            <UICheckbox
+                label="Multi Select"
+                checked={multiSelect}
+                onChange={(event: any, value: any) => {
+                    setMultiSelect(value);
+                }}
+            />
             <Stack horizontal tokens={stackTokens}>
                 <table
                     style={{
