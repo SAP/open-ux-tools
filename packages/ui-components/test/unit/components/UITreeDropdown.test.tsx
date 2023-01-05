@@ -73,7 +73,13 @@ describe('<UITreeDropdown />', () => {
     };
     const selectors = {
         highlightItem: '.ts-Menu-option--highlighted',
-        treeContextMenu: '.ui-treeDropDown-context-menu'
+        treeContextMenu: '.ui-treeDropDown-context-menu',
+        wrapper: {
+            disabled: 'div.ui-treeDropdown-wrapper.disabled',
+            readonly: 'div.ui-treeDropdown-wrapper.readonly',
+            open: 'div.ui-treeDropdown-wrapper-menu-open',
+            closed: 'div.ui-treeDropdown-wrapper-menu-close'
+        }
     };
 
     beforeEach(() => {
@@ -102,12 +108,21 @@ describe('<UITreeDropdown />', () => {
     });
 
     it('Open', () => {
+        // Initial state
+        expect(wrapper.find(selectors.wrapper.disabled).length).toEqual(0);
+        expect(wrapper.find(selectors.wrapper.closed).length).toEqual(1);
+        expect(wrapper.find(selectors.wrapper.open).length).toEqual(0);
+        // Open dropdown
         const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
         // Click on caret
         openDropdown();
         expect(wrapper.find(selectors.treeContextMenu).length).toBeGreaterThan(0);
         // Focus should be called for input
         expect(focusSpy).toBeCalledTimes(1);
+        // Check wrapper
+        expect(wrapper.find(selectors.wrapper.disabled).length).toEqual(0);
+        expect(wrapper.find(selectors.wrapper.closed).length).toEqual(0);
+        expect(wrapper.find(selectors.wrapper.open).length).toEqual(1);
     });
 
     it('Focus of input should select text', () => {
@@ -685,15 +700,25 @@ describe('<UITreeDropdown />', () => {
         }
     });
 
-    it('Property "readOnly"', () => {
+    it('Disabled state', () => {
+        expect(wrapper.find(selectors.wrapper.disabled).length).toEqual(0);
+        wrapper.setProps({
+            items: []
+        });
+        wrapper.update();
+        expect(wrapper.find(selectors.wrapper.disabled).length).toEqual(1);
+    });
+
+    it('ReadOnly state', () => {
+        expect(wrapper.find(selectors.wrapper.readonly).length).toEqual(0);
         wrapper.setProps({
             readOnly: true
         });
-
         const textfield = wrapper.find(UITextInput);
         expect(textfield.prop('readOnly')).toEqual(true);
         // Dropdown menu should not be opened
         openDropdown();
         expect(wrapper.find(selectors.treeContextMenu).length).toEqual(0);
+        expect(wrapper.find(selectors.wrapper.readonly).length).toEqual(1);
     });
 });
