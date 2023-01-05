@@ -73,7 +73,6 @@ export const accessibilityStates = () => {
         useComboBoxAsMenuMinWidth: true,
         multiSelect,
         onChange: (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) => {
-            console.log('aaaaaaaa');
             if (Array.isArray(selectedKey)) {
                 const newKeys = [...selectedKey, option?.key].filter((k) =>
                     option?.selected ? true : k !== option?.key
