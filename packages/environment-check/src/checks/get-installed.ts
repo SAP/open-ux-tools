@@ -46,12 +46,28 @@ async function getExtensionsBAS(): Promise<{ [id: string]: { version: string } }
 }
 
 /**
+ * Internal function to check if the module is being ran in VSCode Insiders.
+ *
+ * @returns boolean - if ran in insiders
+ */
+async function checkIsInsiders(): Promise<boolean> {
+    let isInsiders = false;
+    const processEnvProp = process.env['VSCODE_IPC_HOOK'] ?? process.env['TERM_PROGRAM_VERSION'];
+    if (processEnvProp?.includes('insider')) {
+        debugger;
+        isInsiders = true;
+    }
+    return isInsiders;
+}
+
+/**
  * Reads the list of extensions installed in vscode.
  *
  * @returns list of extension ids and versions
  */
 async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string } }> {
-    const output = await spawnCommand('code', ['--list-extensions', '--show-versions']);
+    const isInsiders = await checkIsInsiders();
+    const output = await spawnCommand(isInsiders ? 'code-insiders' : 'code', ['--list-extensions', '--show-versions']);
     const versions = output
         .split('\n')
         .filter((ext) => ext.startsWith('SAP'))

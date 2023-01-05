@@ -200,4 +200,34 @@ describe('Test install functions', () => {
             { 'severity': 'error', 'text': 'Error retrieving process versions: spawn error' }
         ]);
     });
+
+    test('getInstalledExtensions() (VSCODE-Insiders)', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        process.env['VSCODE_IPC_HOOK'] = 'VSCode-main-insider';
+        const expectedResult = {
+            'yeoman-ui': { version: '2' },
+            'vscode-ui5-language-assistant': { version: '2' },
+            'xml-toolkit': { version: '2' }
+        };
+
+        const output = `SAPOS.yeoman-ui@2\nSAPOSS.vscode-ui5-language-assistant@2\nSAPOSS.xml-toolkit@2`;
+        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
+        const result = await getInstalledExtensions();
+        expect(result).toStrictEqual(expectedResult);
+    });
+
+    test('getInstalledExtensions() (VSCODE-Insiders 2)', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        process.env['TERM_PROGRAM_VERSION'] = '1.72.0-insider';
+        const expectedResult = {
+            'yeoman-ui': { version: '2' },
+            'vscode-ui5-language-assistant': { version: '2' },
+            'xml-toolkit': { version: '2' }
+        };
+
+        const output = `SAPOS.yeoman-ui@2\nSAPOSS.vscode-ui5-language-assistant@2\nSAPOSS.xml-toolkit@2`;
+        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
+        const result = await getInstalledExtensions();
+        expect(result).toStrictEqual(expectedResult);
+    });
 });
