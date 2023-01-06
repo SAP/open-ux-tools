@@ -54,7 +54,6 @@ async function checkIsInsiders(): Promise<boolean> {
     let isInsiders = false;
     const processEnvProp = process.env['VSCODE_IPC_HOOK'] ?? process.env['TERM_PROGRAM_VERSION'];
     if (processEnvProp?.includes('insider')) {
-        debugger;
         isInsiders = true;
     }
     return isInsiders;
