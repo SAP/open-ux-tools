@@ -40,7 +40,8 @@ import {
     showFocus,
     hideFocus,
     scrollToRow,
-    getComboBoxInput
+    getComboBoxInput,
+    getCellFromCoords
 } from './UITable-helper';
 import type { UITableProps, UITableState, UIDocument, UIColumn, EditedCell } from './types';
 import { ColumnControlType } from './types';
@@ -64,6 +65,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     private selection: Selection;
     private onDocMousedown: any;
     private activeElement: EditedCell = {} as EditedCell;
+    private caretPosition: number = -1;
 
     /**
      * Initializes component properties.
@@ -127,23 +129,50 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param prevState
      */
     componentDidUpdate(prevProps: UITableProps, prevState: UITableState): void {
-        const scrollContainer = document.querySelector('.ms-ScrollablePane--contentContainer');
-        if (scrollContainer) {
-            const left = scrollContainer.scrollLeft || 0;
-            requestAnimationFrame(() => (scrollContainer.scrollLeft = left));
-        }
+        const newState: any = {};
 
         if (prevProps.items !== this.props.items) {
-            this.setState({ items: this.props.items });
+            newState.items = this.props.items;
             this._setTextRefs();
         }
 
         if (prevProps.columns !== this.props.columns) {
-            this.setState({ columns: this.props.columns });
+            newState.columns = this.props.columns;
         }
 
         if (prevProps.dataSetKey !== this.props.dataSetKey) {
-            this.setState({ editedCell: undefined });
+            newState.editedCell = undefined;
+        }
+
+        const { selectedColumnId } = this.props;
+        const { selectedColumnId: prevSelectedColumnId } = prevProps;
+        // Due to table rendering using columns data from state, instead of props,
+        // to sync selected column change callback with rendered dataset change
+        // selected column id/key needs to be stored on a state level along with columns data
+        if (selectedColumnId !== prevSelectedColumnId) {
+            newState.selectedColumnId = selectedColumnId;
+        }
+
+        if (Object.keys(newState).length) {
+            this.setState(newState);
+        }
+
+        this.scrollTableToTheRightColumnAndRow(prevProps, prevState);
+        this.setCaretPositionInsideInputAfterValidation();
+    }
+
+    /**
+     * Second part of the componentDidMount function.
+     * Things that have to be done, but didn't fit into the compiler's happy function size.
+     *
+     * @param prevProps UI Table props
+     * @param prevState UI Table state
+     */
+    private scrollTableToTheRightColumnAndRow(prevProps: UITableProps, prevState: UITableState): void {
+        const scrollContainer = document.querySelector('.ms-ScrollablePane--contentContainer');
+        if (scrollContainer) {
+            const left = scrollContainer.scrollLeft || 0;
+            requestAnimationFrame(() => (scrollContainer.scrollLeft = left));
         }
 
         if (typeof this.props.selectedRow !== 'undefined' && prevProps.selectedRow !== this.props.selectedRow) {
@@ -161,16 +190,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 this.tableRef.current.scrollToIndex(newRowIndex);
             }
         }
-
-        const { selectedColumnId } = this.props;
-        const { selectedColumnId: prevSelectedColumnId } = prevProps;
-        // Due to table rendering using columns data from state, instead of props,
-        // to sync selected column change callback with rendered dataset change
-        // selected column id/key needs to be stored on a state level along with columns data
-        if (selectedColumnId !== prevSelectedColumnId) {
-            this.setState({ selectedColumnId });
-        }
-
         const columnIsSelected = typeof this.state.selectedColumnId !== 'undefined';
         const selectedColumnDidChange = prevState.selectedColumnId !== this.state.selectedColumnId;
         if (columnIsSelected && selectedColumnDidChange) {
@@ -180,6 +199,27 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 this.props.selectedRow || 0,
                 this.props.showRowNumbers
             );
+        }
+    }
+
+    /**
+     * Third part of the componentDidMount function.
+     * Things that have to be done, but didn't fit into the compiler's happy function size.
+     */
+    private setCaretPositionInsideInputAfterValidation(): void {
+        const editedCell = this.state.editedCell;
+        if (this.caretPosition !== -1 && editedCell?.rowIndex && editedCell.column?.key) {
+            const cell = getCellFromCoords(
+                editedCell.rowIndex,
+                editedCell.column.key,
+                this.props.columns,
+                true
+            ) as HTMLElement;
+            const input = cell.querySelector('input') as HTMLInputElement;
+            if (input && input.selectionStart !== this.caretPosition) {
+                input.setSelectionRange(this.caretPosition, this.caretPosition);
+                this.caretPosition = -1;
+            }
         }
     }
 
@@ -401,6 +441,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     }
 
     private cancelEdit(): void {
+        this.caretPosition = -1;
         this.setState({ editedCell: undefined });
         this.rerenderTable();
     }
@@ -412,6 +453,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param value
      */
     private saveCell(cancelEdit = false, value?: any): void {
+        this.caretPosition = -1;
         if (typeof this.props.onSave === 'function' && this.state.editedCell) {
             const { rowIndex, column } = this.state.editedCell;
 
@@ -620,6 +662,17 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             errorMessage = column.validate(value);
         }
         if (editedCell && editedCell.errorMessage !== errorMessage) {
+            if (editedCell.rowIndex && editedCell?.column?.key) {
+                const cell = getCellFromCoords(
+                    editedCell.rowIndex,
+                    editedCell.column.key,
+                    this.props.columns,
+                    true
+                ) as HTMLElement;
+                const input = cell.querySelector('input') as HTMLInputElement;
+                this.caretPosition = input.selectionStart || 0;
+            }
+
             editedCell.errorMessage = errorMessage || undefined;
             this.setState({ editedCell });
             this.rerenderTable();
@@ -634,10 +687,10 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      */
     private onTextInputChange(e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue = ''): void {
         const editedCell = this.state.editedCell || this.activeElement;
-        if (editedCell) {
+        if (editedCell && editedCell.newValue !== newValue) {
             editedCell.newValue = newValue;
+            this.setState({ editedCell });
         }
-        this.setState({ editedCell });
         const column = editedCell?.column;
         if (column && typeof column.validate === 'function') {
             this.validateCell(newValue);
