@@ -8,6 +8,7 @@ import {
 import fs from 'fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getLogger } from '../../src/logger';
+import type { Extension } from 'vscode';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
@@ -70,12 +71,48 @@ describe('Test install functions', () => {
         jest.spyOn(fs, 'readdirSync').mockImplementation(() => {
             throw new Error('Could not read directory');
         });
-        const result = await getInstalledExtensions(logger);
+        const result = await getInstalledExtensions(undefined, logger);
         const messages = logger.getMessages();
         expect(result).toBe(undefined);
         expect(messages).toStrictEqual([
             { 'severity': 'error', 'text': 'Error retrieving installed extensions: Could not read directory' }
         ]);
+    });
+
+    test('getInstalledExtensions() (extensions passed in)', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        const expectedResult = {
+            'vscode-ui5-language-assistant': { version: '3.3.0' },
+            'sap-ux-application-modeler-extension': { version: '1.7.4' },
+            'yeoman-ui': { version: '1.7.11' }
+        };
+        const logger = getLogger();
+        const extensions = [
+            {
+                id: 'SAPOS.yeoman-ui',
+                packageJSON: {
+                    name: 'yeoman-ui',
+                    version: '1.7.11'
+                }
+            },
+            {
+                id: 'SAPSE.sap-ux-application-modeler-extension',
+                packageJSON: {
+                    name: 'sap-ux-application-modeler-extension',
+                    version: '1.7.4'
+                }
+            },
+            {
+                id: 'SAPSE.vscode-ui5-language-assistant',
+                packageJSON: {
+                    name: 'vscode-ui5-language-assistant',
+                    version: '3.3.0'
+                }
+            }
+        ] as any as readonly Extension<any>[];
+
+        const result = await getInstalledExtensions(extensions, logger);
+        expect(result).toStrictEqual(expectedResult);
     });
 
     test('getCFCliToolVersion()', async () => {

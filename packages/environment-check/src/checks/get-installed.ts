@@ -4,10 +4,12 @@ import { join } from 'path';
 import { spawnCommand, npmCommand } from '../command';
 import { Extensions, NpmModules } from '../types';
 import type { ILogger } from '../types';
+import type { Extension } from 'vscode';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 const pluginsDirBAS = join('/extbin/plugins');
 const globalNodeModulesBAS = join('/extbin/npm/globals/lib/node_modules');
+const globalNodeModulePnpmBAS = join('/extbin/globals/pnpm/5/node_modules');
 
 /**
  * Checks if vsix/extension is required for results.
@@ -81,16 +83,31 @@ async function getExtensionsVSCode(): Promise<{ [id: string]: { version: string 
         }, {});
     return versions;
 }
+
 /**
  * Reads the list of extensions installed and returns the id and version.
  *
+ * @param extensions - installed extensions passed from vscode
  * @param logger - logger to report errors
  * @returns list of extension ids and versions
  */
-export async function getInstalledExtensions(logger?: ILogger): Promise<{ [id: string]: { version: string } }> {
+export async function getInstalledExtensions(
+    extensions?: readonly Extension<any>[],
+    logger?: ILogger
+): Promise<{ [id: string]: { version: string } }> {
     let versions;
     try {
-        if (isAppStudio()) {
+        if (extensions) {
+            versions = extensions
+                .filter((ext) => isExtensionRequired(ext.packageJSON.name))
+                .reduce((returnObject, current) => {
+                    const version = current.packageJSON.version;
+                    returnObject[current.packageJSON.name] = {
+                        version
+                    };
+                    return returnObject;
+                }, {});
+        } else if (isAppStudio()) {
             versions = await getExtensionsBAS();
         } else {
             versions = await getExtensionsVSCode();
@@ -153,7 +170,8 @@ export async function getFioriGenVersion(): Promise<string> {
 
         if (isAppStudio()) {
             const fioriGenPathBAS = join(globalNodeModulesBAS, NpmModules.FioriGenerator);
-            genSearchPaths.push(fioriGenPathBAS);
+            const fioriGenPathPnpmBAS = join(globalNodeModulePnpmBAS, NpmModules.FioriGenerator);
+            genSearchPaths.push(fioriGenPathBAS, fioriGenPathPnpmBAS);
         }
 
         for (const genPath of genSearchPaths) {
