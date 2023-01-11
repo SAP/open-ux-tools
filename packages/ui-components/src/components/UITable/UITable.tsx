@@ -129,7 +129,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param prevState
      */
     componentDidUpdate(prevProps: UITableProps, prevState: UITableState): void {
-        const newState: any = {};
+        const newState: Partial<UITableState> = {};
 
         if (prevProps.items !== this.props.items) {
             newState.items = this.props.items;
@@ -154,7 +154,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         }
 
         if (Object.keys(newState).length) {
-            this.setState(newState);
+            this.setState(newState as UITableState);
         }
 
         this.scrollTableToTheRightColumnAndRow(prevProps, prevState);
