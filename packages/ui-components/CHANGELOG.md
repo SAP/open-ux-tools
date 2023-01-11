@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.2
+
+### Patch Changes
+
+-   1777aff: UIFlexibleTable. Added "grab" icon for cursor when table reordering is enabled. Cursor icon changes to "default" when reordering is disabled, "grabbing" icon is displayed if reordering is started.
+
 ## 1.1.1
 
 ### Patch Changes
