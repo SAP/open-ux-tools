@@ -195,12 +195,19 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
                 </UIFlexibleTableRowNoData>
             );
         }
+        const getCursorStyle = () => {
+            let cursorIcon = 'default';
+            if (props.onTableReorder) {
+                cursorIcon = params.isDragged ? 'grabbing' : 'grab';
+            }
+            return cursorIcon;
+        };
         return (
             <ul
                 ref={params.props.ref}
                 className={`flexible-table-content-table${params.isDragged ? ' dragged' : ''}`}
                 style={{
-                    cursor: params.isDragged ? 'grabbing' : 'default',
+                    cursor: getCursorStyle(),
                     maxHeight: props.maxScrollableContentHeight ? `${props.maxScrollableContentHeight}px` : undefined
                 }}>
                 {children}

@@ -516,6 +516,7 @@ describe('<UIFlexibleTable />', () => {
                 downButtonsFound.forEach((button, idx) => {
                     expect(button.getElement().props.className.includes('is-disabled') === (idx === 2)).toBeTruthy();
                 });
+                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('grab');
             });
             it('move up/down not rendered', () => {
                 wrapper.setProps({
@@ -525,6 +526,7 @@ describe('<UIFlexibleTable />', () => {
                 const downButtonsFound = wrapper.find(selectors.downArrow);
                 expect(upButtonsFound.length).toBe(0);
                 expect(downButtonsFound.length).toBe(0);
+                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('default');
             });
 
             it('move up/down disabled for new line item index 1(2nd row) with tooltip', () => {
