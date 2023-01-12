@@ -86,6 +86,17 @@ describe('<UIToggle />', () => {
         expect(getStyles()).toMatchSnapshot();
     });
 
+    it('Disabled textfield, but input should be readonly', () => {
+        wrapper.setProps({
+            disabled: true,
+            value: 'test'
+        });
+        const inputProps = wrapper.find('input.ms-TextField-field')?.props();
+        expect(inputProps?.disabled).toEqual(undefined);
+        expect(inputProps?.readOnly).toEqual(true);
+        expect(inputProps?.['aria-disabled']).toEqual(true);
+    });
+
     const focusTestCases = [
         {
             errorMessage: true

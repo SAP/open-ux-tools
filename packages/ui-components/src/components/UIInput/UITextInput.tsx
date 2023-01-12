@@ -33,6 +33,8 @@ const COLOR_STYLES = {
     }
 };
 
+type InputRenderProps = React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>;
+
 /**
  * UITextInput component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/textfield
@@ -49,6 +51,8 @@ export class UITextInput extends React.Component<UITextInputProps> {
      */
     public constructor(props: UITextInputProps) {
         super(props);
+
+        this.onRenderDisabledInput = this.onRenderDisabledInput.bind(this);
     }
 
     /**
@@ -64,6 +68,27 @@ export class UITextInput extends React.Component<UITextInputProps> {
         }
         return `1px ${COLOR_STYLES.regular.borderStyle} ${color}`;
     }
+
+    /**
+     * Method to render HTML input element.
+     * Custom rendering is used to use "readonly" attribute instead of "disabled" to make disabled field focusable.
+     *
+     * @param {InputRenderProps} [props] Input props.
+     * @param {(props?: InputRenderProps) => JSX.Element | null} [defaultRender] Default renderer.
+     * @returns {JSX.Element | null} Input element to render.
+     */
+    private onRenderDisabledInput = (
+        props?: InputRenderProps,
+        defaultRender?: (props?: InputRenderProps) => JSX.Element | null
+    ): JSX.Element | null => {
+        const inputProps = {
+            ...props,
+            disabled: undefined,
+            readOnly: true,
+            ['aria-disabled']: true
+        };
+        return defaultRender?.(inputProps) || null;
+    };
 
     /**
      * @returns {JSX.Element}
@@ -211,6 +236,13 @@ export class UITextInput extends React.Component<UITextInputProps> {
             };
         };
 
-        return <TextField {...this.props} errorMessage={messageInfo.message} styles={textFieldStyles} />;
+        return (
+            <TextField
+                onRenderInput={this.props.disabled ? this.onRenderDisabledInput : undefined}
+                {...this.props}
+                errorMessage={messageInfo.message}
+                styles={textFieldStyles}
+            />
+        );
     }
 }
