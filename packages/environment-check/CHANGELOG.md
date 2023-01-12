@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.11.0
+
+### Minor Changes
+
+-   10d7646: enhance env-check for vscode insiders
+
 ## 0.10.3
 
 ### Patch Changes
