@@ -82,6 +82,11 @@
             &.is-disabled {
                 @include input-disabled;
             }
+            &:focus-within {
+                &:after {
+                    border-color: $dropdown-input-focus-border-color;
+                }
+            }
         }
     }
     &--error {

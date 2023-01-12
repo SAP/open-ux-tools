@@ -525,13 +525,18 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         if (highlight) {
             autofill.onKeyDownCapture = this.onKeyDown;
         }
+        const tabIndex = 'tabIndex' in this.props ? this.props.tabIndex : undefined;
         // Handle readOnly property
         if (readOnly && !disabled) {
             autofill.readOnly = readOnly;
-            autofill.tabIndex = 'tabIndex' in this.props ? this.props.tabIndex : undefined;
+            autofill.tabIndex = tabIndex;
             // Adjust aria attributes for readonly
             autofill['aria-disabled'] = undefined;
             autofill['aria-readonly'] = true;
+        } else if (disabled) {
+            autofill.disabled = undefined;
+            autofill.readOnly = true;
+            autofill.tabIndex = tabIndex;
         }
         return autofill;
     }

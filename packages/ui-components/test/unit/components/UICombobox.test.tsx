@@ -14,6 +14,7 @@ describe('<UIComboBox />', () => {
     const menuDropdownSelector = 'div.ts-Callout-Dropdown';
     const nonHighlighttItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ms-ComboBox-optionText`;
     const highlightItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ts-Menu-option`;
+    const inputSelector = 'input.ms-ComboBox-Input';
     initIcons();
 
     const openDropdown = (): void => {
@@ -423,7 +424,7 @@ describe('<UIComboBox />', () => {
                 }
                 // Open callout
                 openDropdown();
-                const input = wrapper.find('input.ms-ComboBox-Input');
+                const input = wrapper.find(inputSelector);
                 input.simulate('keyDown', { which: KeyCodes.down });
                 // Mock element
                 const element: HTMLElement = wrapper.find('.ts-ComboBox--selected').getDOMNode();
@@ -544,6 +545,17 @@ describe('<UIComboBox />', () => {
         }
     });
 
+    it('Test "disabled" property', () => {
+        wrapper.setProps({
+            disabled: true
+        });
+        const inputProps = wrapper.find(inputSelector)?.props();
+        expect(inputProps?.disabled).toEqual(undefined);
+        expect(inputProps?.readOnly).toEqual(true);
+        expect(inputProps?.tabIndex).toEqual(undefined);
+        expect(inputProps?.['aria-disabled']).toEqual(true);
+    });
+
     describe('Test "readonly" property', () => {
         const testCases = [
             {
@@ -566,7 +578,7 @@ describe('<UIComboBox />', () => {
                 disabled: true,
                 expected: {
                     readOnly: true,
-                    tabIndex: -1
+                    tabIndex: undefined
                 }
             },
             {

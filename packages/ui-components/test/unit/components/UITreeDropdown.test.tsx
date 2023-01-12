@@ -707,6 +707,10 @@ describe('<UITreeDropdown />', () => {
         });
         wrapper.update();
         expect(wrapper.find(selectors.wrapper.disabled).length).toEqual(1);
+        const inputProps = wrapper.find('input.ms-TextField-field')?.props();
+        expect(inputProps?.disabled).toEqual(undefined);
+        expect(inputProps?.readOnly).toEqual(true);
+        expect(inputProps?.['aria-disabled']).toEqual(true);
     });
 
     it('ReadOnly state', () => {
