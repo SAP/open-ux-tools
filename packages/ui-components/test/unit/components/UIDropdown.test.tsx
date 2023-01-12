@@ -79,11 +79,15 @@ describe('<UIDropdown />', () => {
         expect(wrapper.find('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command').length).toBeGreaterThan(0);
     });
 
-    it('Test disabled selector', () => {
+    it('Test "disabled" property', () => {
         wrapper.setProps({
             disabled: true
         });
         expect(wrapper.find('.ts-SelectBox .ms-Dropdown.is-disabled').length).toEqual(1);
+        const dropdownProps = wrapper.find(Dropdown)?.props();
+        expect(dropdownProps?.disabled).toEqual(true);
+        expect(dropdownProps?.tabIndex).toEqual(0);
+        expect(dropdownProps?.['data-is-focusable']).toEqual(true);
     });
 
     it('Test className property', () => {
@@ -257,6 +261,11 @@ describe('<UIDropdown />', () => {
                     expect(dropdownProps['aria-readonly']).toEqual(true);
                     expect('aria-disabled' in dropdownProps).toEqual(true);
                     expect(dropdownProps['aria-disabled']).toEqual(undefined);
+                } else if (testCase.disabled) {
+                    expect(dropdownProps.tabIndex).toEqual(0);
+                    expect('data-is-focusable' in dropdownProps).toEqual(true);
+                    expect('aria-readonly' in dropdownProps).toEqual(false);
+                    expect('aria-disabled' in dropdownProps).toEqual(false);
                 } else {
                     expect('tabIndex' in dropdownProps).toEqual(false);
                     expect('data-is-focusable' in dropdownProps).toEqual(false);

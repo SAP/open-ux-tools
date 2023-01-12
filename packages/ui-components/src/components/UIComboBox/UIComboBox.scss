@@ -62,13 +62,6 @@
             &.is-disabled {
                 @include input-readonly;
             }
-            &:focus-within,
-            &.is-open {
-                &:after {
-                    border-style: solid;
-                    border-color: $dropdown-input-focus-border-color !important;
-                }
-            }
         }
         // Empty and readonly field - disable hover efect
         &.ts-ComboBox--empty {
@@ -82,10 +75,14 @@
             &.is-disabled {
                 @include input-disabled;
             }
-            &:focus-within {
-                &:after {
-                    border-color: $dropdown-input-focus-border-color;
-                }
+        }
+    }
+    &--readonly,
+    &--disabled {
+        .ms-ComboBox:focus-within {
+            &:after {
+                border-style: solid;
+                border-color: $dropdown-input-focus-border-color !important;
             }
         }
     }

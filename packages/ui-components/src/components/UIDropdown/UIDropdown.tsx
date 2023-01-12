@@ -31,6 +31,8 @@ export interface UIDropdownState {
     isOpen: boolean;
 }
 
+type AccessibilityProps = Partial<IDropdownProps & { ['data-is-focusable']?: boolean }>;
+
 const ERROR_BORDER_COLOR = 'var(--vscode-inputValidation-errorBorder)';
 
 /**
@@ -199,12 +201,13 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
     }
 
     /**
-     * @returns {JSX.Element}
+     * Method returns additional component properties for accessibility.
+     *
+     * @returns {AccessibilityProps} Additional properties.
      */
-    render(): JSX.Element {
+    private getAccessibilityProps(): AccessibilityProps {
         const { readOnly, disabled } = this.props;
-        const messageInfo = getMessageInfo(this.props);
-        const additionalProps: Partial<IDropdownProps & { ['data-is-focusable']?: boolean }> = {};
+        const additionalProps: AccessibilityProps = {};
         if (readOnly && !disabled) {
             // Make dropdown focusable
             additionalProps.tabIndex = 0;
@@ -212,7 +215,19 @@ export class UIDropdown extends React.Component<UIDropdownProps, UIDropdownState
             // Adjust aria attributes for readonly
             additionalProps['aria-disabled'] = undefined;
             additionalProps['aria-readonly'] = true;
+        } else if (disabled) {
+            additionalProps.tabIndex = 0;
+            additionalProps['data-is-focusable'] = true;
         }
+        return additionalProps;
+    }
+
+    /**
+     * @returns {JSX.Element}
+     */
+    render(): JSX.Element {
+        const messageInfo = getMessageInfo(this.props);
+        const additionalProps = this.getAccessibilityProps();
         const dropdownStyles = (): Partial<IDropdownStyles> => ({
             ...{
                 label: {

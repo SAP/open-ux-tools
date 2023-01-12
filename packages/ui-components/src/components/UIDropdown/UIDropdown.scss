@@ -71,13 +71,6 @@
             &.is-disabled {
                 @include input-readonly;
             }
-            &.is-open,
-            &:focus {
-                &:after {
-                    border-style: solid;
-                    border-color: $dropdown-input-focus-border-color !important;
-                }
-            }
         }
         // Empty and readonly field - disable hover efect
         &.ts-SelectBox--empty {
@@ -90,6 +83,15 @@
         .ms-Dropdown {
             &.is-disabled {
                 @include input-disabled;
+            }
+        }
+    }
+    &--readonly,
+    &--disabled {
+        .ms-Dropdown:focus {
+            &:after {
+                border-style: solid;
+                border-color: $dropdown-input-focus-border-color !important;
             }
         }
     }
