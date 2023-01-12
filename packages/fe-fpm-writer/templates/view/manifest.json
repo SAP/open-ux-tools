@@ -20,17 +20,16 @@
                             "views": {
                                 "paths": [
                                     <% if (locals.views?.paths) { %>
-                                        <% locals.views.paths.forEach ( (path) => { %>
-                                            <%- JSON.stringify(path) %>,
+                                        <% for (var i =0; i < locals.views.paths.length; i++) { %>
+                                            <%- JSON.stringify(locals.views.paths[i]) %>
+                                            <% if (i < locals.views.paths.length - 1) { %>
+                                            ,
+                                            <%
+                                            }  %>
                                     <%
-                                        } ) %>
+                                        }  %>
                                     <%
                                     } %>
-                                    {
-                                        "key": "<%- key %>",
-                                        "label": "<%- label %>",
-                                        "template": "<%- ns %>.<%- name %>"
-                                    }
                                 ]
                             }
                         }

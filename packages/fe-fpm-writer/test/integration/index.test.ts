@@ -148,6 +148,37 @@ describe('use FPM with existing apps', () => {
             );
         });
 
+        test.each(configs)('generateCustomView in ListReport, custom view to be overwritten', (config) => {
+            generateCustomView(
+                config.path,
+                {
+                    target: 'TravelListReport',
+                    key: 'CustomViewKey',
+                    label: 'Custom View',
+                    name: 'NewCustomView',
+                    eventHandler: true,
+                    viewUpdate: false,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateCustomView in ListReport, second custom view', (config) => {
+            generateCustomView(
+                config.path,
+                {
+                    target: 'TravelListReport',
+                    key: 'SecondCustomView',
+                    label: 'Custom View',
+                    name: 'NewCustomView',
+                    eventHandler: true,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
         test.each(configs)('generateCustomAction in ListReport and ObjectPage', (config) => {
             generateCustomAction(
                 config.path,

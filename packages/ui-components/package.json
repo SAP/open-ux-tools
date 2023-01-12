@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "1.0.28",
+    "version": "1.1.2",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "repository": {
@@ -57,6 +57,8 @@
         "@types/react-virtualized": "9.21.21",
         "@types/sanitize-html": "2.6.2",
         "@types/uuid": "3.4.7",
+        "@testing-library/react": "12.1.5",
+        "@testing-library/jest-dom": "5.16.5",
         "babel-jest": "24.8.0",
         "babel-loader": "9.1.0",
         "copyfiles": "2.4.1",

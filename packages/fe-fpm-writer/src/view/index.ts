@@ -11,6 +11,38 @@ import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { getTemplatePath } from '../templates';
 
 /**
+ * Merge the new view into the list of existing views (if any).
+ *
+ * @param {CustomView & Partial<InternalCustomView>} config - config for the template, views property gets updated
+ * @param {Manifest} manifest - the application manifest
+ */
+function mergeViews(config: CustomView & Partial<InternalCustomView>, manifest: Manifest) {
+    const newViews = {
+        paths: [
+            {
+                'key': config.key,
+                'label': config.label,
+                'template': `${config.ns}.${config.name}`
+            }
+        ]
+    };
+    const existingViews = (
+        manifest['sap.ui5']?.routing?.targets?.[config.target] as Ui5RoutingTarget<Ui5TargetSettings>
+    ).options?.settings?.views;
+    if (existingViews?.paths) {
+        const index = existingViews.paths.findIndex((entry) => entry.key === newViews.paths[0].key);
+        if (index > -1) {
+            existingViews.paths[index] = newViews.paths[0];
+        } else {
+            existingViews.paths.push(newViews.paths[0]);
+        }
+        config.views = existingViews;
+    } else {
+        config.views = newViews;
+    }
+}
+
+/**
  * Enhances the provided custom view configuration with default data.
  *
  * @param {Editor} fs - the mem-fs editor instance
@@ -23,17 +55,13 @@ function enhanceConfig(fs: Editor, data: CustomView, manifestPath: string, manif
     const config: CustomView & Partial<InternalCustomView> = { ...data };
     setCommonDefaults(config, manifestPath, manifest);
 
-    // Apply event handler
+    // apply event handler
     if (config.eventHandler) {
         config.eventHandler = applyEventHandlerConfiguration(fs, config, config.eventHandler, true, config.typescript);
     }
 
-    // existing views
-    const existingViews = (manifest['sap.ui5']?.routing?.targets?.[data.target] as Ui5RoutingTarget<Ui5TargetSettings>)
-        .options?.settings?.views;
-    if (existingViews) {
-        config.views = existingViews;
-    }
+    // fill config.views, merge new data into existing views
+    mergeViews(config, manifest);
 
     // generate view content
     if (typeof config.control === 'string') {
@@ -71,11 +99,13 @@ export function generateCustomView(basePath: string, customView: CustomView, fs?
     fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
 
     // add fragment
-    const viewPath = join(completeView.path, `${completeView.name}.fragment.xml`);
-    if (completeView.control === true) {
-        fs.copyTpl(getTemplatePath('view/ext/CustomViewWithTable.xml'), viewPath, completeView);
-    } else if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeView);
+    if (customView.viewUpdate !== false) {
+        const viewPath = join(completeView.path, `${completeView.name}.fragment.xml`);
+        if (completeView.control === true) {
+            fs.copyTpl(getTemplatePath('view/ext/CustomViewWithTable.xml'), viewPath, completeView);
+        } else if (!fs.exists(viewPath)) {
+            fs.copyTpl(getTemplatePath('common/Fragment.xml'), viewPath, completeView);
+        }
     }
 
     return fs;

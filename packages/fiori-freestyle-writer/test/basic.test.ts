@@ -20,7 +20,7 @@ jest.mock('read-pkg-up', () => ({
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
-    const commonConfig: FreestyleApp<BasicAppSettings> = {
+    const baseConfig: FreestyleApp<BasicAppSettings> = {
         app: {
             id: 'nods1',
             title: 'App Title',
@@ -54,20 +54,20 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         template: {
             type: TemplateType.Basic,
             settings: {}
-        },
-        // Add a placeholder middleware, required for local run
-        service: {
-            path: '/sap/opu/odata/',
-            url: 'http://localhost',
-            version: OdataVersion.v2,
-            metadata: '<metadata />'
         }
     };
-
+    const commonConfig = { ...baseConfig };
+    // Add a default
+    commonConfig.service = {
+        path: '/sap/opu/odata/',
+        url: 'http://localhost',
+        version: OdataVersion.v2,
+        metadata: '<metadata />'
+    };
     const configuration: Array<{ name: string; config: FreestyleApp<BasicAppSettings>; settings: BasicAppSettings }> = [
         {
             name: 'basic_no_datasource',
-            config: commonConfig,
+            config: baseConfig,
             settings: {}
         },
         {

@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.1.2
+
+### Patch Changes
+
+-   1777aff: UIFlexibleTable. Added "grab" icon for cursor when table reordering is enabled. Cursor icon changes to "default" when reordering is disabled, "grabbing" icon is displayed if reordering is started.
+
+## 1.1.1
+
+### Patch Changes
+
+-   703989a: UIDialog. Enable animation for dialog open with new property "isOpenAnimated". Default value is "true".
+
+## 1.1.0
+
+### Minor Changes
+
+-   69260c3: Adds UIActionCallout
+
 ## 1.0.28
 
 ### Patch Changes
