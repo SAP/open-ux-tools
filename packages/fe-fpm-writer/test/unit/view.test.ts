@@ -8,6 +8,8 @@ import type { CustomView } from '../../src/view/types';
 import * as manifest from './sample/view/webapp/manifest.json';
 import type { Views, EventHandlerConfiguration } from '../../src/common/types';
 import type { Manifest } from '@sap-ux/project-access';
+import { detectTabSpacing } from '../../src/common/file';
+import { tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/view');
 
@@ -314,5 +316,19 @@ describe('CustomView', () => {
                 expect(fs.read(existingPath)).toMatchSnapshot();
             }
         );
+    });
+
+    describe('Test property custom "tabSizing"', () => {
+        test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+            generateCustomView(testDir, { ...customView, tabInfo }, fs);
+            let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            let result = detectTabSpacing(updatedManifest);
+            expect(result).toEqual(expectedAfterSave);
+            // Generate another view and check if new tab sizing recalculated correctly without passing tab size info
+            generateCustomView(testDir, { ...customView, key: 'Second', name: 'Second' }, fs);
+            updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+            result = detectTabSpacing(updatedManifest);
+            expect(result).toEqual(expectedAfterSave);
+        });
     });
 });

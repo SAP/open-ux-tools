@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.3
+
+### Patch Changes
+
+-   dbfb2ae: UITextInput, UIComboBox, UIDropdown, UITreeDropdown. Support for "readonly" property
+
 ## 1.1.2
 
 ### Patch Changes
