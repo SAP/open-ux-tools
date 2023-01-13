@@ -32,26 +32,13 @@ export function getServiceCountText(count: number) {
  * @returns - replacer that replaces circular structures
  */
 export function getCircularReplacer(): (key: string, value: any) => any {
-    const stack: any[] = [];
-    const keys: string[] = [];
-    return function replacer(key, value) {
-        if (stack.length > 0) {
-            const thisPos = stack.indexOf(this);
-            if (thisPos === -1) {
-                stack.push(this);
-                keys.push(key);
-            } else {
-                stack.splice(thisPos + 1);
-                keys.splice(thisPos, Infinity, key);
+    const seen = new WeakSet();
+    return (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return '|CIRCULAR STRUCTURE|';
             }
-            if (stack.includes(value)) {
-                value =
-                    stack[0] === value
-                        ? '|CIRCULAR STRUCTURE|'
-                        : '|CIRCULAR STRUCTURE .' + keys.slice(0, stack.indexOf(value)).join('.') + '|';
-            }
-        } else {
-            stack.push(value);
+            seen.add(value);
         }
         return value;
     };

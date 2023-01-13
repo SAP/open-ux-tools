@@ -63,7 +63,7 @@ describe('Tests for formatter function stringify()', () => {
         obj.child.selfRef = obj.child;
         const result = JSON.stringify(obj, getCircularReplacer());
         expect(result).toBe(
-            JSON.stringify({ 'prop': 'val', 'child': { 'cprop': 'cval', 'selfRef': '|CIRCULAR STRUCTURE .child|' } })
+            JSON.stringify({ 'prop': 'val', 'child': { 'cprop': 'cval', 'selfRef': '|CIRCULAR STRUCTURE|' } })
         );
     });
 });
