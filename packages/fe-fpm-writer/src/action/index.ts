@@ -10,6 +10,7 @@ import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
 import { getTemplatePath } from '../templates';
+import { getJsonSpace } from '../common/file';
 
 /**
  * Enhances the provided custom action configuration with default data.
@@ -100,7 +101,7 @@ export function generateCustomAction(basePath: string, actionConfig: CustomActio
     // enhance manifest with action definition and controller reference
     const actions = enhanceManifestAndGetActionsElementReference(manifest, config.target);
     Object.assign(actions, JSON.parse(render(fs.read(getTemplatePath(`action/manifest.action.json`)), config, {})));
-    fs.writeJSON(manifestPath, manifest);
+    fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, actionConfig.tabInfo));
 
     return fs;
 }
