@@ -18,7 +18,7 @@ describe('<UIDropdown />', () => {
     };
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UIDropdown options={data} />);
+        wrapper = Enzyme.mount(<UIDropdown options={data} selectedKey="EE" />);
     });
 
     afterEach(() => {
@@ -79,11 +79,15 @@ describe('<UIDropdown />', () => {
         expect(wrapper.find('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command').length).toBeGreaterThan(0);
     });
 
-    it('Test disabled selector', () => {
+    it('Test "disabled" property', () => {
         wrapper.setProps({
             disabled: true
         });
         expect(wrapper.find('.ts-SelectBox .ms-Dropdown.is-disabled').length).toEqual(1);
+        const dropdownProps = wrapper.find(Dropdown)?.props();
+        expect(dropdownProps?.disabled).toEqual(true);
+        expect(dropdownProps?.tabIndex).toEqual(0);
+        expect(dropdownProps?.['data-is-focusable']).toEqual(true);
     });
 
     it('Test className property', () => {
@@ -198,5 +202,115 @@ describe('<UIDropdown />', () => {
             openDropdown();
             expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual(null);
         });
+    });
+
+    describe('Test "readonly" property', () => {
+        const testCases = [
+            {
+                readOnly: true,
+                expected: {
+                    readOnly: true
+                }
+            },
+            {
+                readOnly: true,
+                expected: {
+                    readOnly: true
+                }
+            },
+            {
+                readOnly: true,
+                disabled: true,
+                expected: {
+                    readOnly: true
+                }
+            },
+            {
+                readOnly: undefined,
+                expected: {
+                    readOnly: undefined
+                }
+            },
+            {
+                readOnly: false,
+                expected: {
+                    readOnly: false
+                }
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`"readOnly=${testCase.readOnly}", "disabled=${testCase.disabled}"`, () => {
+                const { expected } = testCase;
+                wrapper.setProps({
+                    readOnly: testCase.readOnly,
+                    ...(testCase.disabled && { disabled: testCase.disabled })
+                });
+                const dropdown = wrapper.find(Dropdown);
+                expect(dropdown.length).toEqual(1);
+                const dropdownProps = dropdown.props();
+                expect(dropdownProps.disabled).toEqual(expected.readOnly);
+                const className = dropdownProps.className;
+                expect(className?.includes('ts-SelectBox--readonly')).toEqual(
+                    !testCase.disabled ? !!expected.readOnly : false
+                );
+                expect(className?.includes('ts-SelectBox--disabled')).toEqual(!!testCase.disabled);
+                // Additional properties
+                if (!testCase.disabled && expected.readOnly) {
+                    expect(dropdownProps.tabIndex).toEqual(0);
+                    expect(dropdownProps['data-is-focusable']).toEqual(true);
+                    expect(dropdownProps['aria-readonly']).toEqual(true);
+                    expect('aria-disabled' in dropdownProps).toEqual(true);
+                    expect(dropdownProps['aria-disabled']).toEqual(undefined);
+                } else if (testCase.disabled) {
+                    expect(dropdownProps.tabIndex).toEqual(0);
+                    expect('data-is-focusable' in dropdownProps).toEqual(true);
+                    expect('aria-readonly' in dropdownProps).toEqual(false);
+                    expect('aria-disabled' in dropdownProps).toEqual(false);
+                } else {
+                    expect('tabIndex' in dropdownProps).toEqual(false);
+                    expect('data-is-focusable' in dropdownProps).toEqual(false);
+                    expect('aria-readonly' in dropdownProps).toEqual(false);
+                    expect('aria-disabled' in dropdownProps).toEqual(false);
+                }
+            });
+        }
+    });
+
+    describe('Empty dropdown classname', () => {
+        const testCases = [
+            {
+                selectedKey: 'EE',
+                expected: false
+            },
+            {
+                selectedKey: ['EE'],
+                expected: false
+            },
+            {
+                selectedKeys: ['EE'],
+                expected: false
+            },
+            {
+                selectedKey: [],
+                expected: true
+            },
+            {
+                selectedKeys: [],
+                expected: true
+            },
+            {
+                selectedKey: undefined,
+                expected: true
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`"selectedKey=${testCase.selectedKey}","selectedKeys=${JSON.stringify(testCase.selectedKeys)}"`, () => {
+                wrapper.setProps({
+                    selectedKey: testCase.selectedKey,
+                    selectedKeys: testCase.selectedKeys
+                });
+                expect(wrapper.find('div.ts-SelectBox--empty').length).toEqual(testCase.expected ? 1 : 0);
+            });
+        }
     });
 });

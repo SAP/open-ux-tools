@@ -5,7 +5,7 @@ import { UIComboBox } from '../../../src/components/UIComboBox';
 import { data as originalData } from '../../__mock__/select-data';
 import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
-import { KeyCodes, ComboBox } from '@fluentui/react';
+import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
 
 const data = JSON.parse(JSON.stringify(originalData));
 
@@ -14,6 +14,7 @@ describe('<UIComboBox />', () => {
     const menuDropdownSelector = 'div.ts-Callout-Dropdown';
     const nonHighlighttItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ms-ComboBox-optionText`;
     const highlightItemSelector = `${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command .ts-Menu-option`;
+    const inputSelector = 'input.ms-ComboBox-Input';
     initIcons();
 
     const openDropdown = (): void => {
@@ -423,7 +424,7 @@ describe('<UIComboBox />', () => {
                 }
                 // Open callout
                 openDropdown();
-                const input = wrapper.find('input.ms-ComboBox-Input');
+                const input = wrapper.find(inputSelector);
                 input.simulate('keyDown', { which: KeyCodes.down });
                 // Mock element
                 const element: HTMLElement = wrapper.find('.ts-ComboBox--selected').getDOMNode();
@@ -527,6 +528,142 @@ describe('<UIComboBox />', () => {
                 expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
                 wrapper.find('input').simulate('click');
                 expect(wrapper.find(menuDropdownSelector).length).toEqual(testCase.expectOpen ? 1 : 0);
+            });
+        }
+    });
+
+    describe('Test "isForceEnabled" property', () => {
+        const testCases = [true, false];
+        for (const testCase of testCases) {
+            it(`isForceEnabled=${testCase}`, () => {
+                wrapper.setProps({
+                    options: [],
+                    isForceEnabled: testCase
+                });
+                expect(wrapper.find(ComboBox).prop('disabled')).toEqual(!testCase);
+            });
+        }
+    });
+
+    it('Test "disabled" property', () => {
+        wrapper.setProps({
+            disabled: true
+        });
+        const inputProps = wrapper.find(inputSelector)?.props();
+        expect(inputProps?.disabled).toEqual(undefined);
+        expect(inputProps?.readOnly).toEqual(true);
+        expect(inputProps?.tabIndex).toEqual(undefined);
+        expect(inputProps?.['aria-disabled']).toEqual(true);
+    });
+
+    describe('Test "readonly" property', () => {
+        const testCases = [
+            {
+                readOnly: true,
+                expected: {
+                    readOnly: true,
+                    tabIndex: undefined
+                }
+            },
+            {
+                readOnly: true,
+                tabIndex: 4,
+                expected: {
+                    readOnly: true,
+                    tabIndex: 4
+                }
+            },
+            {
+                readOnly: true,
+                disabled: true,
+                expected: {
+                    readOnly: true,
+                    tabIndex: undefined
+                }
+            },
+            {
+                readOnly: undefined,
+                expected: {
+                    readOnly: false,
+                    tabIndex: undefined
+                }
+            },
+            {
+                readOnly: false,
+                expected: {
+                    readOnly: false,
+                    tabIndex: undefined
+                }
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`"readOnly=${testCase.readOnly}", "tabIndex=${testCase.tabIndex}", "disabled=${testCase.disabled}"`, () => {
+                const { expected } = testCase;
+                wrapper.setProps({
+                    readOnly: testCase.readOnly,
+                    ...(testCase.tabIndex && { tabIndex: testCase.tabIndex }),
+                    ...(testCase.disabled && { disabled: testCase.disabled })
+                });
+                const autofill = wrapper.find(Autofill);
+                expect(autofill.length).toEqual(1);
+                const autofillProps = autofill.props();
+                expect(autofillProps.readOnly).toEqual(expected.readOnly);
+                expect(autofillProps.tabIndex).toEqual(expected.tabIndex);
+                const className = wrapper.find('.ts-ComboBox').prop('className');
+                expect(className?.includes('ts-ComboBox--readonly')).toEqual(
+                    !testCase.disabled ? !!expected.readOnly : false
+                );
+                expect(className?.includes('ts-ComboBox--disabled')).toEqual(!!testCase.disabled);
+                // Additional properties
+                if (!testCase.disabled && expected.readOnly) {
+                    expect(autofillProps['aria-readonly']).toEqual(true);
+                    expect('aria-disabled' in autofillProps).toEqual(true);
+                    expect(autofillProps['aria-disabled']).toEqual(undefined);
+                } else {
+                    expect('aria-readonly' in autofillProps).toEqual(false);
+                    expect(autofillProps['aria-disabled']).toEqual(!!testCase.disabled);
+                }
+            });
+        }
+    });
+
+    describe('Empty combobox classname', () => {
+        const testCases = [
+            {
+                text: undefined,
+                selectedKey: 'EE',
+                expected: false
+            },
+            {
+                text: undefined,
+                selectedKey: ['EE'],
+                expected: false
+            },
+            {
+                text: 'Dummy',
+                selectedKey: undefined,
+                expected: false
+            },
+            {
+                text: undefined,
+                selectedKey: undefined,
+                expected: true
+            },
+            {
+                text: undefined,
+                selectedKey: [],
+                expected: true
+            }
+        ];
+        for (const testCase of testCases) {
+            it(`"text=${testCase.text}", "selectedKey=${
+                Array.isArray(testCase.selectedKey) ? JSON.stringify(testCase.selectedKey) : testCase.selectedKey
+            }"`, () => {
+                wrapper.setProps({
+                    text: testCase.text,
+                    selectedKey: testCase.selectedKey
+                });
+                expect(wrapper.find('div.ts-ComboBox--empty').length).toEqual(testCase.expected ? 1 : 0);
             });
         }
     });
