@@ -44,21 +44,21 @@ describe('Tests for formatter function stringify()', () => {
         expect(result).toBe(JSON.stringify({ 'ak': 'av', 'obj': { 'arr': [1, 2, 3], 'k': 'v' } }));
     });
 
-    test('Object with circular structures', () => {
+    test('Object with circular structures to self', () => {
         const obj: any = { prop: 'val' };
         obj.selfRef = obj;
         const result = JSON.stringify(obj, getCircularReplacer());
         expect(result).toBe(JSON.stringify({ 'prop': 'val', 'selfRef': '|CIRCULAR STRUCTURE|' }));
     });
 
-    test('Object with circular structures', () => {
+    test('Object with circular structures to self nested', () => {
         const obj: any = { prop: 'val' };
         obj.circular = { selfRef: obj };
         const result = JSON.stringify(obj, getCircularReplacer());
         expect(result).toBe(JSON.stringify({ 'prop': 'val', 'circular': { 'selfRef': '|CIRCULAR STRUCTURE|' } }));
     });
 
-    test('Object with circular structures', () => {
+    test('Object with deep circular structures', () => {
         const obj: any = { prop: 'val', child: { cprop: 'cval' } };
         obj.child.selfRef = obj.child;
         const result = JSON.stringify(obj, getCircularReplacer());
