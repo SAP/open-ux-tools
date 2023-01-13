@@ -10,7 +10,7 @@ import {
     createForDestination
 } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { countNumberOfServices, getServiceCountText } from '../formatter';
+import { countNumberOfServices, getCircularReplacer, getServiceCountText } from '../formatter';
 import { getLogger } from '../logger';
 import { t } from '../i18n';
 
@@ -139,12 +139,15 @@ async function catalogRequest(
                 ? catalogMessages[responseStatus](systemName, odataVersion)
                 : t('error.queryFailure', { odataVersion, system: systemName })
         );
-        const errorJson = error.toJSON ? error.toJSON() : {};
-        if (errorJson?.config?.auth?.password) {
-            delete errorJson.config.auth.password;
+        if (error?.config?.auth?.password) {
+            delete error.config.auth.password;
         }
         logger.debug(
-            t('error.urlRequestFailure', { url, error: error.message, errorObj: JSON.stringify(errorJson, null, 4) })
+            t('error.urlRequestFailure', {
+                url,
+                error: error.message,
+                errorObj: JSON.stringify(error, getCircularReplacer(), 4)
+            })
         );
     }
     return {
