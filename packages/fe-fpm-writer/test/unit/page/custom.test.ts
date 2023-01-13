@@ -6,6 +6,8 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { CustomPage } from '../../../src';
 import { generateCustomPage, validateBasePath } from '../../../src';
 import { FCL_ROUTER } from '../../../src/common/defaults';
+import { detectTabSpacing } from '../../../src/common/file';
+import { tabSizingTestCases } from '../../common';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -199,6 +201,38 @@ describe('CustomPage', () => {
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
             generateCustomPage(target, input, fs);
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+    });
+
+    describe('Test property custom "tabSizing"', () => {
+        test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+            const target = join(testDir, 'tab-sizing');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generateCustomPage(
+                target,
+                {
+                    name: 'CustomPage',
+                    entity: 'RootEntity',
+                    tabInfo
+                },
+                fs
+            );
+
+            let updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+            let result = detectTabSpacing(updatedManifest);
+            expect(result).toEqual(expectedAfterSave);
+            // Generate another page and check if new tab sizing recalculated correctly without passing tab size info
+            generateCustomPage(
+                target,
+                {
+                    name: 'Second',
+                    entity: 'RootEntity'
+                },
+                fs
+            );
+            updatedManifest = fs.read(join(target, 'webapp/manifest.json'));
+            result = detectTabSpacing(updatedManifest);
+            expect(result).toEqual(expectedAfterSave);
         });
     });
 });

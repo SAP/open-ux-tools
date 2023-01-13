@@ -8,6 +8,8 @@ import type { CustomSection } from '../../src/section/types';
 import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
 import * as manifest from './sample/section/webapp/manifest.json';
+import { detectTabSpacing } from '../../src/common/file';
+import { tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/section');
 
@@ -346,6 +348,34 @@ describe('CustomSection', () => {
                     expect(fs.read(existingPath)).toMatchSnapshot();
                 }
             );
+        });
+
+        describe('Test property custom "tabSizing"', () => {
+            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+                generateCustomSection(
+                    testDir,
+                    {
+                        ...customSection,
+                        tabInfo
+                    },
+                    fs
+                );
+                let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                let result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+                // Generate another section and check if new tab sizing recalculated correctly without passing tab size info
+                generateCustomSection(
+                    testDir,
+                    {
+                        ...customSection,
+                        name: 'second'
+                    },
+                    fs
+                );
+                updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+            });
         });
     });
 });
