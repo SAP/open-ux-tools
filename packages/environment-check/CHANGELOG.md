@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.12.0
+
+### Minor Changes
+
+-   349a136: Add error details from HTTP calls (axios) to environment check report
+
 ## 0.11.0
 
 ### Minor Changes
