@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.4
+
+### Patch Changes
+
+-   2447b96: New icons added for knowledge centre, Icon16/ Mission, Graduate, ClockShort, ClockMedium, ClockLong
+
 ## 1.1.3
 
 ### Patch Changes
