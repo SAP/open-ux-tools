@@ -23,3 +23,23 @@ export function countNumberOfServices(catalogResult?: ODataServiceInfo[]): numbe
 export function getServiceCountText(count: number) {
     return count === 1 ? `${count} service` : `${count} services`;
 }
+
+/**
+ * Returns replacer function that can be used with JSON.stringify to detect
+ * and replace circular structures.
+ *
+ * @example JSON.stringify(object, getCircularReplacer());
+ * @returns - replacer that replaces circular structures
+ */
+export function getCircularReplacer(): (key: string, value: any) => any {
+    const seen = new WeakSet();
+    return (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return '|CIRCULAR STRUCTURE|';
+            }
+            seen.add(value);
+        }
+        return value;
+    };
+}
