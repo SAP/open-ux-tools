@@ -17,6 +17,9 @@ jest.mock('@sap-ux/btp-utils', () => ({
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('Test install functions', () => {
+    const mockPackageJson =
+        '{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }';
+
     beforeEach(() => {
         jest.resetAllMocks();
     });
@@ -141,7 +144,7 @@ describe('Test install functions', () => {
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
         jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
+           mockPackageJson
         );
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
@@ -173,7 +176,7 @@ describe('Test install functions', () => {
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
         jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
+           mockPackageJson
         );
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
@@ -190,7 +193,7 @@ describe('Test install functions', () => {
 
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
         jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
+           mockPackageJson
         );
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
@@ -220,7 +223,7 @@ describe('Test install functions', () => {
             return false;
         });
         jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
+           mockPackageJson
         );
 
         let result = await getFioriGenVersion();
