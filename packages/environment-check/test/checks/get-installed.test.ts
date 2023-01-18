@@ -239,7 +239,6 @@ describe('Test install functions', () => {
                 delete process.env.NODE_PATH;
             }
         }
-        expect(true);
     });
 
     test('getProcessVersions() (VSCODE)', async () => {
