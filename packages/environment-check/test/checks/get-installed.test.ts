@@ -143,9 +143,7 @@ describe('Test install functions', () => {
         const output = `some/path/to/lib/node_modules`;
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-           mockPackageJson
-        );
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
@@ -175,9 +173,7 @@ describe('Test install functions', () => {
         const output = `some/path/to/lib/node_modules`;
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-           mockPackageJson
-        );
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
@@ -192,9 +188,7 @@ describe('Test install functions', () => {
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
 
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-           mockPackageJson
-        );
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
@@ -222,9 +216,7 @@ describe('Test install functions', () => {
             }
             return false;
         });
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-           mockPackageJson
-        );
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
 
         let result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
