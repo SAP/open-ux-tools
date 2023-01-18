@@ -9,6 +9,7 @@ import fs from 'fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getLogger } from '../../src/logger';
 import type { Extension } from 'vscode';
+import { t } from '../../src/i18n';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
@@ -201,6 +202,44 @@ describe('Test install functions', () => {
 
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual('Not installed or not found');
+    });
+
+    test('getFioriGenVersion() (BAS) installed to NODE_PATH location', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        const expectedResult = '1.7.5';
+        const installedPath = `/installed/path/node_modules`;
+        const nodePathSaved = process.env.NODE_PATH;
+        process.env.NODE_PATH = `/some/global/node_modules:/another/global/node_modules:/yet/another/global/node_modules:${installedPath}`;
+
+        jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce('/not/installed/path');
+        jest.spyOn(fs, 'existsSync').mockImplementation((filePath) => {
+            // Mocks finding the package at `installedPath`
+            if ((filePath as string).startsWith(installedPath)) {
+                return true;
+            }
+            return false;
+        });
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
+            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
+        );
+
+        let result = await getFioriGenVersion();
+        expect(result).toStrictEqual(expectedResult);
+
+        // Neg tests, NODE_PATH not set
+        process.env.NODE_PATH = '';
+        result = await getFioriGenVersion();
+        expect(result).toEqual(t('info.notInstalledOrNotFound'));
+
+        delete process.env.NODE_PATH;
+        result = await getFioriGenVersion();
+        expect(result).toEqual(t('info.notInstalledOrNotFound'));
+
+        if (nodePathSaved) {
+            process.env.NODE_PATH = nodePathSaved;
+        } else {
+            delete process.env.NODE_PATH;
+        }
     });
 
     test('getProcessVersions() (VSCODE)', async () => {

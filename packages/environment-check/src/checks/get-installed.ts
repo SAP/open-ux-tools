@@ -8,8 +8,6 @@ import type { Extension } from 'vscode';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 const pluginsDirBAS = join('/extbin/plugins');
-const globalNodeModulesBAS = join('/extbin/npm/globals/lib/node_modules');
-const globalNodeModulePnpmBAS = join('/extbin/globals/pnpm/5/node_modules');
 
 /**
  * Checks if vsix/extension is required for results.
@@ -168,10 +166,13 @@ export async function getFioriGenVersion(): Promise<string> {
         const fioriGenPath = await getFioriGenGlobalPath();
         genSearchPaths.push(fioriGenPath);
 
-        if (isAppStudio()) {
-            const fioriGenPathBAS = join(globalNodeModulesBAS, NpmModules.FioriGenerator);
-            const fioriGenPathPnpmBAS = join(globalNodeModulePnpmBAS, NpmModules.FioriGenerator);
-            genSearchPaths.push(fioriGenPathBAS, fioriGenPathPnpmBAS);
+        // BAS recommend using NODE_PATH as the paths therein are used to locate all generators regardless of installation method
+        if (isAppStudio() && process.env.NODE_PATH) {
+            genSearchPaths.push(
+                ...process.env.NODE_PATH.split(':')
+                    .filter((path) => path.endsWith('node_modules'))
+                    .map((path) => join(path, NpmModules.FioriGenerator))
+            );
         }
 
         for (const genPath of genSearchPaths) {
