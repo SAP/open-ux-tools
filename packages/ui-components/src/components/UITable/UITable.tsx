@@ -128,7 +128,6 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param prevProps
      * @param prevState
      */
-    // eslint-disable-next-line sonarjs/cognitive-complexity
     componentDidUpdate(prevProps: UITableProps, prevState: UITableState): void {
         const scrollContainer = document.querySelector('.ms-ScrollablePane--contentContainer');
         if (scrollContainer) {
@@ -184,9 +183,15 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 this.props.showRowNumbers
             );
         }
+        this._restoreCaretPosition();
+    }
 
+    /**
+     * Restores the caret position. Caret position gets lost when validation finds issue in cell.
+     */
+    private _restoreCaretPosition(): void {
         const editedCell = this.state.editedCell;
-        if (this.caretPosition !== -1 && editedCell?.rowIndex && editedCell.column?.key) {
+        if (this.caretPosition !== -1 && typeof editedCell?.rowIndex === 'number' && editedCell.column?.key) {
             const cell = getCellFromCoords(
                 editedCell.rowIndex,
                 editedCell.column.key,
@@ -640,7 +645,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             errorMessage = column.validate(value);
         }
         if (editedCell && editedCell.errorMessage !== errorMessage) {
-            if (editedCell.rowIndex && editedCell?.column?.key) {
+            if (typeof editedCell.rowIndex === 'number' && editedCell?.column?.key) {
                 const cell = getCellFromCoords(
                     editedCell.rowIndex,
                     editedCell.column.key,
