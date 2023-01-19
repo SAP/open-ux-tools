@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.6
+
+### Patch Changes
+
+-   2014255: Added warning icon with smiley style.
+
 ## 1.1.5
 
 ### Patch Changes
