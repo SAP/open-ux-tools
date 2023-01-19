@@ -118,22 +118,29 @@ export const defaultUsage = (): JSX.Element => {
                 <Stack horizontal tokens={stackTokens}>
                     <UIActionButton
                         iconProps={{
+                            iconName: UiIcons.Calendar
+                        }}>
+                        Standard Action
+                    </UIActionButton>
+                    <UIActionButton
+                        disabled={true}
+                        iconProps={{
+                            iconName: UiIcons.Calendar
+                        }}>
+                        Disabled action
+                    </UIActionButton>
+                    <UIActionButton
+                        iconProps={{
                             iconName: UiIcons.Bulb
                         }}>
-                        Action
+                        Icon with color
                     </UIActionButton>
                     <UIActionButton
                         disabled={true}
                         iconProps={{
                             iconName: UiIcons.Bulb
                         }}>
-                        Disabled action
-                    </UIActionButton>
-                    <UIActionButton
-                        iconProps={{
-                            iconName: UiIcons.CopyToClipboard
-                        }}>
-                        Icon with different color
+                        Disabled icon with color
                     </UIActionButton>
                 </Stack>
             </Stack>
