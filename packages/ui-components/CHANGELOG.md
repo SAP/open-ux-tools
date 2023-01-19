@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.5
+
+### Patch Changes
+
+-   e415208: UIActionButton. Remove forced color for inner icon - icon will be taken from individual icon styles
+
 ## 1.1.4
 
 ### Patch Changes
