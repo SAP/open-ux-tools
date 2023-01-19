@@ -127,7 +127,7 @@ export const defaultUsage = (): JSX.Element => {
                         iconProps={{
                             iconName: UiIcons.Calendar
                         }}>
-                        Disabled action
+                        Standard Action - disabled
                     </UIActionButton>
                     <UIActionButton
                         iconProps={{
@@ -140,7 +140,7 @@ export const defaultUsage = (): JSX.Element => {
                         iconProps={{
                             iconName: UiIcons.Bulb
                         }}>
-                        Disabled icon with color
+                        Icon with color - disabled
                     </UIActionButton>
                 </Stack>
             </Stack>
