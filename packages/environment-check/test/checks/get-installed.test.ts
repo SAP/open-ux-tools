@@ -9,6 +9,7 @@ import fs from 'fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getLogger } from '../../src/logger';
 import type { Extension } from 'vscode';
+import { t } from '../../src/i18n';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
@@ -16,6 +17,9 @@ jest.mock('@sap-ux/btp-utils', () => ({
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('Test install functions', () => {
+    const mockPackageJson =
+        '{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }';
+
     beforeEach(() => {
         jest.resetAllMocks();
     });
@@ -139,9 +143,7 @@ describe('Test install functions', () => {
         const output = `some/path/to/lib/node_modules`;
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
-        );
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
@@ -171,9 +173,7 @@ describe('Test install functions', () => {
         const output = `some/path/to/lib/node_modules`;
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
-        );
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
@@ -188,9 +188,7 @@ describe('Test install functions', () => {
         jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce(output);
 
         jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(
-            `{  "name": "@sap/generator-fiori",  "displayName": "SAP Fiori application",  "version": "1.7.5",  "description": "Create an SAPUI5 application using SAP Fiori elements or a freestyle approach"  }`
-        );
+        jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual(expectedResult);
     });
@@ -201,6 +199,46 @@ describe('Test install functions', () => {
 
         const result = await getFioriGenVersion();
         expect(result).toStrictEqual('Not installed or not found');
+    });
+
+    test('getFioriGenVersion() (BAS) installed to NODE_PATH location', async () => {
+        // This test should not run on Windows, the code it tests is only run on BAS
+        // Only posix path.delimiter and path.separator are relevant
+        if (process.platform !== 'win32') {
+            mockIsAppStudio.mockReturnValue(true);
+            const expectedResult = '1.7.5';
+            const installedPath = `/installed/path/node_modules`;
+            const nodePathSaved = process.env.NODE_PATH;
+            process.env.NODE_PATH = `/some/global/node_modules:/another/global/node_modules:/yet/another/global/node_modules:${installedPath}`;
+
+            jest.spyOn(command, 'spawnCommand').mockResolvedValueOnce('/not/installed/path');
+            jest.spyOn(fs, 'existsSync').mockImplementation((filePath) => {
+                // Mocks finding the package at `installedPath`
+                if ((filePath as string).startsWith(installedPath)) {
+                    return true;
+                }
+                return false;
+            });
+            jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(mockPackageJson);
+
+            let result = await getFioriGenVersion();
+            expect(result).toStrictEqual(expectedResult);
+
+            // Neg tests, NODE_PATH not set
+            process.env.NODE_PATH = '';
+            result = await getFioriGenVersion();
+            expect(result).toEqual(t('info.notInstalledOrNotFound'));
+
+            delete process.env.NODE_PATH;
+            result = await getFioriGenVersion();
+            expect(result).toEqual(t('info.notInstalledOrNotFound'));
+
+            if (nodePathSaved) {
+                process.env.NODE_PATH = nodePathSaved;
+            } else {
+                delete process.env.NODE_PATH;
+            }
+        }
     });
 
     test('getProcessVersions() (VSCODE)', async () => {
