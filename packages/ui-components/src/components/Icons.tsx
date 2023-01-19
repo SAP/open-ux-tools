@@ -117,6 +117,7 @@ export enum UiIcons {
     VerticalGrip = 'VerticalGrip',
     ViewMockup = 'ViewMockup',
     Warning = 'Warning',
+    WarningBad = 'WarningBad',
     WarningSmall = 'WarningSmall',
     WorklistPage = 'WorklistPage',
     World = 'World',
@@ -1443,6 +1444,24 @@ export function initIcons(): void {
                         fill={COLORS.warning}
                         fillRule="evenodd"
                         d="M8.5,10.999 L8.5,11.997 L7.501,11.997 L7.501,10.999 L8.5,10.999 Z M8.5,5.995 L8.5,10.003 L7.501,10.003 L7.501,5.995 L8.5,5.995 Z M2.3394,13.0013 L8.0004,2.5493 L13.6594,13.0003 L2.3394,13.0013 Z M14.9384,13.2623 L8.4394,1.2613 C8.3524,1.1003 8.1834,1.0003 8.0004,1.0003 C7.8164,1.0003 7.6484,1.1003 7.5604,1.2613 L1.0604,13.2633 C0.9764,13.4183 0.9804,13.6053 1.0704,13.7573 C1.1604,13.9083 1.3234,14.0013 1.5004,14.0013 L14.4984,14.0003 C14.6744,14.0003 14.8384,13.9073 14.9284,13.7563 C15.0184,13.6053 15.0224,13.4173 14.9384,13.2623 L14.9384,13.2623 Z"
+                    />
+                </svg>
+            ),
+            [UiIcons.WarningBad]: (
+                <svg width="66" height="58" viewBox="0 0 66 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M33 4L3.71478 55H62.2852L33 4ZM34.7227 0.999998C33.957 -0.333336 32.043 -0.333331 31.2773 1L0.269463 55C-0.496163 56.3333 0.460875 58 1.99213 58H64.0079C65.5391 58 66.4962 56.3333 65.7305 55L34.7227 0.999998Z"
+                        fill={COLORS.default}
+                    />
+                    <rect x="27" y="24" width="3" height="13" fill={COLORS.warning} />
+                    <rect x="36" y="24" width="3" height="13" fill={COLORS.warning} />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M39.6531 49C38.61 47.426 36.3645 46 33 46C29.6355 46 27.39 47.426 26.3469 49H23C24.1462 45.5495 28.1888 43 33 43C37.8112 43 41.8538 45.5495 43 49H39.6531Z"
+                        fill={COLORS.warning}
                     />
                 </svg>
             ),

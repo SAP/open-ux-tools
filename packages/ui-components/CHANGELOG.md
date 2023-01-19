@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.1.6
+
+### Patch Changes
+
+-   2014255: Added warning icon with smiley style.
+
+## 1.1.5
+
+### Patch Changes
+
+-   e415208: UIActionButton. Remove forced color for inner icon - icon will be taken from individual icon styles
+
 ## 1.1.4
 
 ### Patch Changes
