@@ -127,7 +127,13 @@ export const defaultUsage = (): JSX.Element => {
                         iconProps={{
                             iconName: UiIcons.Bulb
                         }}>
-                        Action
+                        Disabled action
+                    </UIActionButton>
+                    <UIActionButton
+                        iconProps={{
+                            iconName: UiIcons.CopyToClipboard
+                        }}>
+                        Icon with different color
                     </UIActionButton>
                 </Stack>
             </Stack>
