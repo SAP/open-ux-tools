@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.12.1
+
+### Patch Changes
+
+-   450925a: Replaces hardcoded paths with env var NODE_PATH as installed generator search locations
+
 ## 0.12.0
 
 ### Minor Changes
