@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.7
+
+### Patch Changes
+
+-   2942309: fix(uic): fixes jumping cursor in editable table input
+
 ## 1.1.6
 
 ### Patch Changes
