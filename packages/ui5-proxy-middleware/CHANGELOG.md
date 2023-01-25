@@ -1,5 +1,27 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.20
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+
+## 1.1.19
+
+### Patch Changes
+
+-   5589854: Upgrade qs module and the modules using it because of a potential Denial of Service vulnerabity
+
+## 1.1.18
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/logger@0.3.2
+    -   @sap-ux/ui5-config@0.16.1
+
 ## 1.1.17
 
 ### Patch Changes

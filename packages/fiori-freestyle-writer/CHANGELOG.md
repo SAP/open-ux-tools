@@ -1,5 +1,52 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.2
+
+### Patch Changes
+
+-   aab6b0d: tbi - hide transpile warnings for /Component-preload.js
+-   Updated dependencies [aab6b0d]
+    -   @sap-ux/ui5-application-writer@0.18.3
+
+## 0.15.1
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+-   Updated dependencies [eaf7214]
+    -   @sap-ux/ui5-application-writer@0.18.2
+
+## 0.15.0
+
+### Minor Changes
+
+-   62d83f6: tbi - stop adding a dummy service when no datasource supplied
+
+## 0.14.19
+
+### Patch Changes
+
+-   ac7f8f3: chore - TS writers udpate "ui5-tooling-transpile": "^0.2.1",
+-   Updated dependencies [ac7f8f3]
+    -   @sap-ux/ui5-application-writer@0.18.1
+
+## 0.14.18
+
+### Patch Changes
+
+-   Updated dependencies [b3945f3]
+    -   @sap-ux/ui5-application-writer@0.18.0
+
+## 0.14.17
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/odata-service-writer@0.14.14
+    -   @sap-ux/ui5-application-writer@0.17.14
+    -   @sap-ux/ui5-config@0.16.1
+
 ## 0.14.16
 
 ### Patch Changes

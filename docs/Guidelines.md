@@ -53,6 +53,11 @@ describe('Fiori elements templates'), () => {
 * Preferably write tests first, when it makes sense. This is a judgement call
 * We use jest snapshots to validate the generated files. Please follow the documentation here: https://jestjs.io/docs/snapshot-testing
 
+## UI Component testing
+[react-testing-library](https://testing-library.com/docs/react-testing-library/intro) should be used for UI component testing. 
+Older components used [Enzyme](https://enzymejs.github.io/enzyme/), but should no longer as it does not support React 17+.
+[TBI #833](https://github.com/SAP/open-ux-tools/issues/833) has been created to migrate existing tests to react-testing-library.
+
 
 ## Internationalization (i18n)
 Messages and texts that are visible to the consumer and required to interact with or use the module should be translatable. This includes user dialogs, button texts, questions, labels, messages. 

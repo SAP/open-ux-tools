@@ -10,7 +10,6 @@ import { t } from './i18n';
  * @param options.flpAppId local FLP id
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be oppend with the start-local script
- * @param options.addTypeScript add Typescript scripts for build and start commands
  * @description Generates the package.json scripts
  * @returns package.json scripts
  */
@@ -20,8 +19,7 @@ export function getPackageJsonTasks({
     sapClient,
     flpAppId = '',
     startFile,
-    localStartFile,
-    addTypeScript = false
+    localStartFile
 }: {
     localOnly: boolean;
     addMock: boolean;
@@ -29,7 +27,6 @@ export function getPackageJsonTasks({
     flpAppId?: string;
     startFile?: string;
     localStartFile?: string;
-    addTypeScript?: boolean;
 }): { start: string; 'start-local': string; 'start-noflp': string; 'start-mock'?: string } {
     // Build search param part of preview launch url
     const searchParamList = [];
@@ -66,7 +63,6 @@ export function getPackageJsonTasks({
             ? {
                   'start-mock': mockTask
               }
-            : {},
-        addTypeScript ? { prestart: 'npm run ts-typecheck', prebuild: 'npm run ts-typecheck' } : {}
+            : {}
     );
 }

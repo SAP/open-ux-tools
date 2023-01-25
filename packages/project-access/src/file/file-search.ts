@@ -4,23 +4,6 @@ import { default as find } from 'findit2';
 import { fileExists } from './file-access';
 
 /**
- * Add missing dump function declaration as mem-fs-editor types do not expose this.
- */
-declare module 'mem-fs-editor' {
-    type FileMap = { [key: string]: { state: 'modified' | 'deleted' } };
-
-    export interface Editor {
-        /**
-         * Dump files to compare expected result. Provide a cwd for relative path.
-         * See also https://github.com/SBoudrias/mem-fs-editor#dumpcwd-filter for further details.
-         *
-         * @param [cwd] - optional, relative path
-         */
-        dump(cwd?: string): FileMap;
-    }
-}
-
-/**
  * Creates a filter function that removes files that have been deleted in an instance of a mem-fs-editor.
  *
  * @param changes - changes recorded in an instance of a mem-fs-editor

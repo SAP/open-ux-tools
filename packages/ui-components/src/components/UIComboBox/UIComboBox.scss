@@ -38,14 +38,11 @@
         &,
         &:hover {
             input {
-                &,
+                color: $dropdown-input-color;
                 &::placeholder {
-                    color: $dropdown-input-color;
+                    color: $dropdown-input-placeholder-color;
                 }
             }
-        }
-        input::placeholder {
-            opacity: 0.7;
         }
         // Overwrite default border
         &:after {
@@ -59,8 +56,34 @@
                 border-color: $dropdown-input-focus-border-color;
             }
         }
-        &.is-disabled {
-            @include input-disabled;
+    }
+    &--readonly {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-readonly;
+            }
+        }
+        // Empty and readonly field - disable hover efect
+        &.ts-ComboBox--empty {
+            .ms-ComboBox:hover:after {
+                border-color: $dropdown-input-border-color;
+            }
+        }
+    }
+    &--disabled {
+        .ms-ComboBox {
+            &.is-disabled {
+                @include input-disabled;
+            }
+        }
+    }
+    &--readonly,
+    &--disabled {
+        .ms-ComboBox:focus-within {
+            &:after {
+                border-style: solid;
+                border-color: $dropdown-input-focus-border-color !important;
+            }
         }
     }
     &--error {

@@ -1,13 +1,14 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
 import { Severity, UrlServiceType, Check } from '../types';
 import type {
-    Destination,
-    DestinationResults,
+    Endpoint,
     Environment,
     EnvironmentCheckResult,
     MarkdownWriter,
     ResultMessage,
-    ToolsExtensions
+    ToolsExtensions,
+    CatalogServiceResult,
+    EndpointResults
 } from '../types';
 import { t } from '../i18n';
 
@@ -166,6 +167,33 @@ function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsEx
  * Write the details of one destination.
  *
  * @param writer - markdown writter
+ * @param catalogService - results of catalog service request v2/v4
+ */
+function writeCatalogServiceResults(writer: MarkdownWriter, catalogService: CatalogServiceResult): void {
+    if (catalogService.v2 && Array.isArray(catalogService.v2.results)) {
+        writer.addLine(
+            `✅ &nbsp; ${t('markdownText.v2CatalogReturned')} ${getServiceCountText(
+                countNumberOfServices(catalogService.v2.results)
+            )}`
+        );
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.v2CatalogNotAvailable')}`);
+    }
+    if (catalogService.v4 && Array.isArray(catalogService.v4.results)) {
+        writer.addLine(
+            `✅ &nbsp; ${t('markdownText.v4CatalogReturned')} ${getServiceCountText(
+                countNumberOfServices(catalogService.v4.results)
+            )}`
+        );
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.v4CatalogNotAvailable')}`);
+    }
+}
+
+/**
+ * Write the details of one destination.
+ *
+ * @param writer - markdown writter
  * @param destName - name of the destination
  * @param destDetails - details, like V2/V4 catalog results
  * @param urlServiceType - (optional) type of service
@@ -173,28 +201,13 @@ function writeToolsExtensionsResults(writer: MarkdownWriter, toolsExts?: ToolsEx
 function writeDestinationDetails(
     writer: MarkdownWriter,
     destName: string,
-    destDetails: DestinationResults,
+    destDetails: EndpointResults,
     urlServiceType?: UrlServiceType
 ): void {
-    writer.addH3(t('markdownText.detailsFor', { destName }));
-    if (destDetails.v2 && Array.isArray(destDetails.v2.results)) {
-        writer.addLine(
-            `✅ &nbsp; ${t('markdownText.v2CatalogReturned')} ${getServiceCountText(
-                countNumberOfServices(destDetails.v2.results)
-            )}`
-        );
-    } else {
-        writer.addLine(`🚫 &nbsp; ${t('markdownText.v2CatalogNotAvailable')}`);
-    }
-    if (destDetails.v4 && Array.isArray(destDetails.v4.results)) {
-        writer.addLine(
-            `✅ &nbsp; ${t('markdownText.v4CatalogReturned')} ${getServiceCountText(
-                countNumberOfServices(destDetails.v4.results)
-            )}`
-        );
-    } else {
-        writer.addLine(`🚫 &nbsp; ${t('markdownText.v4CatalogNotAvailable')}`);
-    }
+    writer.addH3(t('markdownText.detailsFor', { systemName: destName }));
+
+    writeCatalogServiceResults(writer, destDetails.catalogService);
+
     if (destDetails.HTML5DynamicDestination) {
         writer.addLine(`✅ &nbsp; ${t('markdownText.html5DynamicDestTrue')}`);
     } else {
@@ -212,6 +225,57 @@ function writeDestinationDetails(
 }
 
 /**
+ * Write the details of one SAP system.
+ *
+ * @param writer - markdown writter
+ * @param sapSystemName - name of the SAP system
+ * @param sapSystemDetails - details, like V2/V4 catalog results, ato catalog
+ */
+function writeSapSystemDetails(writer: MarkdownWriter, sapSystemName: string, sapSystemDetails: EndpointResults): void {
+    writer.addH3(t('markdownText.detailsFor', { systemName: sapSystemName }));
+    writeCatalogServiceResults(writer, sapSystemDetails.catalogService);
+
+    if (sapSystemDetails.isAtoCatalog) {
+        writer.addLine(`✅ &nbsp; ${t('markdownText.atoCatalogAvailable')}`);
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.atoCatalogNotAvailable')}`);
+    }
+
+    if (sapSystemDetails.isSapUi5Repo) {
+        writer.addLine(`✅ &nbsp; ${t('markdownText.sapUI5RepoAvailable')}`);
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.sapUI5RepoNotDetermined')}`);
+    }
+
+    if (sapSystemDetails.isTransportRequests) {
+        writer.addLine(`✅ &nbsp; ${t('markdownText.getTransportRequestsAvailable')}`);
+    } else {
+        writer.addLine(`🚫 &nbsp; ${t('markdownText.getTransportRequestsoNotAvailable')}`);
+    }
+}
+
+/**
+ * Write the results for SAP system checks.
+ *
+ * @param writer - markdown writter
+ * @param sapSystemResults - results of SAP system checks that include the catalog services
+ */
+function writeStoredSystemResults(
+    writer: MarkdownWriter,
+    sapSystemResults: { [sapSys: string]: EndpointResults } = {}
+): void {
+    const numberOfSystemDetails = Object.keys(sapSystemResults).length;
+    writer.addH2(`${t('markdownText.sapSystemDetails')} (${numberOfSystemDetails})`);
+    if (numberOfSystemDetails > 0) {
+        for (const sysName of Object.keys(sapSystemResults)) {
+            writeSapSystemDetails(writer, sysName, sapSystemResults[sysName]);
+        }
+    } else {
+        writer.addLine(t('markdownText.noSapSystemDetails'));
+    }
+}
+
+/**
  * Write the results for destination checks.
  *
  * @param writer - markdown writter
@@ -220,8 +284,8 @@ function writeDestinationDetails(
  */
 function writeDestinationResults(
     writer: MarkdownWriter,
-    destinationResults: { [dest: string]: DestinationResults } = {},
-    destinations: Destination[] = []
+    destinationResults: { [sys: string]: EndpointResults } = {},
+    destinations: Endpoint[] = []
 ): void {
     const numberOfDestDetails = Object.keys(destinationResults).length;
     writer.addH2(`${t('markdownText.destinationDetails')} (${numberOfDestDetails})`);
@@ -246,7 +310,7 @@ function writeDestinationResults(
  * @param writer - markdown writer
  * @param destinations - array of destinations
  */
-function writeDestinations(writer: MarkdownWriter, destinations: Destination[] = []): void {
+function writeDestinations(writer: MarkdownWriter, destinations: Endpoint[] = []): void {
     const numberOfDestinations = destinations.length || 0;
     writer.addH2(t('markdownText.allDestinations', { numberOfDestinations }));
     if (numberOfDestinations > 0) {
@@ -293,16 +357,26 @@ export function convertResultsToMarkdown(results: EnvironmentCheckResult): strin
 
     writer.addH1(t('markdownText.envCheckTitle'));
 
-    if (results.requestedChecks?.includes(Check.Environment)) {
-        writeEnvironment(writer, results.environment);
-    }
-
-    if (results.requestedChecks?.includes(Check.DestResults)) {
-        writeDestinationResults(writer, results.destinationResults, results.destinations);
+    if (
+        results.requestedChecks?.includes(Check.Destinations) &&
+        results.requestedChecks?.includes(Check.EndpointResults)
+    ) {
+        writeDestinationResults(writer, results.endpointResults, results.endpoints);
     }
 
     if (results.requestedChecks?.includes(Check.Destinations)) {
-        writeDestinations(writer, results.destinations);
+        writeDestinations(writer, results.endpoints);
+    }
+
+    if (
+        results.requestedChecks?.includes(Check.StoredSystems) &&
+        results.requestedChecks?.includes(Check.EndpointResults)
+    ) {
+        writeStoredSystemResults(writer, results.endpointResults);
+    }
+
+    if (results.requestedChecks?.includes(Check.Environment)) {
+        writeEnvironment(writer, results.environment);
     }
 
     writeMessages(writer, results.messages);

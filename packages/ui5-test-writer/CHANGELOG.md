@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.5
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 0.1.4
 
 ### Patch Changes

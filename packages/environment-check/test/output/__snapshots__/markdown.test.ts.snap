@@ -6,11 +6,6 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 
 <br>
 
-## Environment
-Environment not checked<br>
-
-<br>
-
 ## Destination Details (0)
 No destination details<br>
 
@@ -18,6 +13,11 @@ No destination details<br>
 
 ## All Destinations (0)
 No destinations<br>
+
+<br>
+
+## Environment
+Environment not checked<br>
 
 <br>
 
@@ -33,48 +33,16 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 
 <br>
 
-## Environment
-Platform: \`linux\`<br>
-Development environment: \`Business Application Studio\`<br>
-Dev Space Type: \`SAP Fiori\`<br>
-|Tools/Extensions|Version|
-|--|--|
-|Node.js|16.17.0|
-|SAP Fiori tools - Fiori generator|1|
-|Cloud CLI tools|2|
-|Application Wizard|2|
-|UI5 Language Assistant Support|2|
-|XML Toolkit|2|
-|SAP Fiori tools - XML Annotation Language Server|2.2|
-|SAP Fiori tools - Application Modeler|2|
-|SAP Fiori tools - Guided Development|2|
-|SAP Fiori tools - Service Modeler|2.4|
-|SAP CDS Language Support|2|
-<details><summary>Versions</summary>
-<pre>
-{
-    \\"node\\": \\"16.17.0\\",
-    \\"v8\\": \\"7.8.279.23-node.56\\",
-    \\"uv\\": \\"1.40.0\\",
-    \\"zlib\\": \\"1.2.11\\",
-    \\"ares\\": \\"1.17.2\\",
-    \\"modules\\": \\"72\\",
-    \\"openssl\\": \\"1.1.1k\\"
-}
-</pre></details>
-
-<br>
-
 ## Destination Details (5)
 
-### Details for \`ABC\`
+### Details for \`ABC system https://abc-api.org\`
 ✅ &nbsp; V2 catalog call returned 0 services<br>
 🚫 &nbsp; V4 catalog service not available<br>
 ✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
 ✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Full Service URL<br>
 |Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
 |--|--|--|--|--|--|--|--|--|--|--|
-|ABC|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+|ABC system https://abc-api.org|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
 
 ### Details for \`DEF\`
 ✅ &nbsp; V2 catalog call returned 0 services<br>
@@ -117,13 +85,45 @@ Dev Space Type: \`SAP Fiori\`<br>
 ## All Destinations (7)
 |Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
 |--|--|--|--|--|--|--|--|--|--|--|
-|ABC|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+|ABC system https://abc-api.org|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
 |DEF|def|https://def.service||Catalog Service|odata_abap||HTTP|BasicAuthentication|Internet|true|
 |DUPLICATE|||||||||||
 |DUPLICATE|||||||||||
 |JUST_WRONG|s4|||Invalid URL|odata_gen,odata_abap|full_url|HTTP||Internet||
 |SYS|sys|https://sys-api.s4hana.ondemand.com/sap/opu/odata/sap/API_BUSINESS_PARTNER||Catalog Service|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
 |XYZ|xyz|https://service||Partial URL|odata_gen||HTTP|BasicAuthentication|Internet|true|
+
+<br>
+
+## Environment
+Platform: \`linux\`<br>
+Development environment: \`Business Application Studio\`<br>
+Dev Space Type: \`SAP Fiori\`<br>
+|Tools/Extensions|Version|
+|--|--|
+|Node.js|16.17.0|
+|SAP Fiori tools - Fiori generator|1|
+|Cloud CLI tools|2|
+|Application Wizard|2|
+|UI5 Language Assistant Support|2|
+|XML Toolkit|2|
+|SAP Fiori tools - XML Annotation Language Server|2.2|
+|SAP Fiori tools - Application Modeler|2|
+|SAP Fiori tools - Guided Development|2|
+|SAP Fiori tools - Service Modeler|2.4|
+|SAP CDS Language Support|2|
+<details><summary>Versions</summary>
+<pre>
+{
+    \\"node\\": \\"16.17.0\\",
+    \\"v8\\": \\"7.8.279.23-node.56\\",
+    \\"uv\\": \\"1.40.0\\",
+    \\"zlib\\": \\"1.2.11\\",
+    \\"ares\\": \\"1.17.2\\",
+    \\"modules\\": \\"72\\",
+    \\"openssl\\": \\"1.1.1k\\"
+}
+</pre></details>
 
 <br>
 

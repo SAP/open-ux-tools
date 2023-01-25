@@ -1,5 +1,95 @@
 # @sap-ux/ui-components
 
+## 1.1.7
+
+### Patch Changes
+
+-   2942309: fix(uic): fixes jumping cursor in editable table input
+
+## 1.1.6
+
+### Patch Changes
+
+-   2014255: Added warning icon with smiley style.
+
+## 1.1.5
+
+### Patch Changes
+
+-   e415208: UIActionButton. Remove forced color for inner icon - icon will be taken from individual icon styles
+
+## 1.1.4
+
+### Patch Changes
+
+-   2447b96: New icons added for knowledge centre, Icon16/ Mission, Graduate, ClockShort, ClockMedium, ClockLong
+
+## 1.1.3
+
+### Patch Changes
+
+-   dbfb2ae: UITextInput, UIComboBox, UIDropdown, UITreeDropdown. Support for "readonly" property
+
+## 1.1.2
+
+### Patch Changes
+
+-   1777aff: UIFlexibleTable. Added "grab" icon for cursor when table reordering is enabled. Cursor icon changes to "default" when reordering is disabled, "grabbing" icon is displayed if reordering is started.
+
+## 1.1.1
+
+### Patch Changes
+
+-   703989a: UIDialog. Enable animation for dialog open with new property "isOpenAnimated". Default value is "true".
+
+## 1.1.0
+
+### Minor Changes
+
+-   69260c3: Adds UIActionCallout
+
+## 1.0.28
+
+### Patch Changes
+
+-   d19e72e: New 16 px and 12px icons added. 16px Icons: Link, Highlighter. 12px Icons: Key, Hide, Main Entity, Foreighn Key, Complex Type
+
+## 1.0.27
+
+### Patch Changes
+
+-   e7d10c9: Storybook update
+
+## 1.0.26
+
+### Patch Changes
+
+-   cedf427: UICombobox. Default value for property "openMenuOnClick" changed to "true". Additionally, property "openMenuOnClick" is not considered during key press handling - dropdown menu is opened on first key press.
+
+## 1.0.25
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
+## 1.0.24
+
+### Patch Changes
+
+-   cc04479: Upgrade loader-utils modules to fix known vulnerability
+
+## 1.0.23
+
+### Patch Changes
+
+-   d6cb122: Changes to current icons and 2 new icons added. Expand and Collapse icons changed and CopyToClipboard and Warningsmall added
+
+## 1.0.22
+
+### Patch Changes
+
+-   3a8e205: feat(ui-components) - ui-treedropdown add error message handling
+
 ## 1.0.21
 
 ### Patch Changes

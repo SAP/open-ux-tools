@@ -46,7 +46,7 @@ describe('UI5 templates', () => {
     it('generates files correctly', async () => {
         let projectDir = join(outputDir, 'testapp-simple');
         await generate(projectDir, ui5AppConfig, fs);
-        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        expect(fs.dump(projectDir)).toMatchSnapshot();
 
         // Test `sap.app.sourceTemplate.toolsId` is correctly written
         ui5AppConfig.app.sourceTemplate = {

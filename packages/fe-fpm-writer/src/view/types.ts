@@ -21,6 +21,11 @@ export interface CustomView extends CustomElement, EventHandler {
      * If set to true, a table macro control will be generated.
      */
     control?: string | true;
+
+    /**
+     * Indicates that the view shall be created or updated
+     */
+    viewUpdate?: boolean;
 }
 
 export interface InternalCustomView extends CustomView, InternalCustomElement {

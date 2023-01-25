@@ -1,0 +1,5 @@
+{
+    "questions": {
+        "pathToMock": "Path to mocked service"
+    }
+}

@@ -40,7 +40,8 @@ import {
     showFocus,
     hideFocus,
     scrollToRow,
-    getComboBoxInput
+    getComboBoxInput,
+    getCellFromCoords
 } from './UITable-helper';
 import type { UITableProps, UITableState, UIDocument, UIColumn, EditedCell } from './types';
 import { ColumnControlType } from './types';
@@ -64,6 +65,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     private selection: Selection;
     private onDocMousedown: any;
     private activeElement: EditedCell = {} as EditedCell;
+    private caretPosition: number = -1;
 
     /**
      * Initializes component properties.
@@ -180,6 +182,27 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 this.props.selectedRow || 0,
                 this.props.showRowNumbers
             );
+        }
+        this._restoreCaretPosition();
+    }
+
+    /**
+     * Restores the caret position. Caret position gets lost when validation finds issue in cell.
+     */
+    private _restoreCaretPosition(): void {
+        const editedCell = this.state.editedCell;
+        if (this.caretPosition !== -1 && typeof editedCell?.rowIndex === 'number' && editedCell.column?.key) {
+            const cell = getCellFromCoords(
+                editedCell.rowIndex,
+                editedCell.column.key,
+                this.props.columns,
+                true
+            ) as HTMLElement;
+            const input = cell.querySelector('input') as HTMLInputElement;
+            if (input && input.selectionStart !== this.caretPosition) {
+                input.setSelectionRange(this.caretPosition, this.caretPosition);
+                this.caretPosition = -1;
+            }
         }
     }
 
@@ -401,6 +424,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     }
 
     private cancelEdit(): void {
+        this.caretPosition = -1;
         this.setState({ editedCell: undefined });
         this.rerenderTable();
     }
@@ -412,6 +436,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @param value
      */
     private saveCell(cancelEdit = false, value?: any): void {
+        this.caretPosition = -1;
         if (typeof this.props.onSave === 'function' && this.state.editedCell) {
             const { rowIndex, column } = this.state.editedCell;
 
@@ -620,6 +645,17 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             errorMessage = column.validate(value);
         }
         if (editedCell && editedCell.errorMessage !== errorMessage) {
+            if (typeof editedCell.rowIndex === 'number' && editedCell?.column?.key) {
+                const cell = getCellFromCoords(
+                    editedCell.rowIndex,
+                    editedCell.column.key,
+                    this.props.columns,
+                    true
+                ) as HTMLElement;
+                const input = cell.querySelector('input') as HTMLInputElement;
+                this.caretPosition = input.selectionStart || 0;
+            }
+
             editedCell.errorMessage = errorMessage || undefined;
             this.setState({ editedCell });
             this.rerenderTable();
