@@ -2,7 +2,7 @@ import React from 'react';
 import type { IStackTokens } from '@fluentui/react';
 import { Text, Stack, Separator } from '@fluentui/react';
 
-import { UITextInput } from '../src/components/UIInput';
+import { UITextInput, UITranslationInput } from '../src/components/UIInput';
 import { UICheckbox } from '../src/components/UICheckbox';
 import { initIcons } from '../src/components/Icons';
 
@@ -178,6 +178,18 @@ export const withMessages = () => {
                 </Text>
                 <UITextInput label="input field label" infoMessage={message}></UITextInput>
             </Stack>
+        </Stack>
+    );
+};
+
+export const translationInput = () => {
+    return (
+        <Stack
+            tokens={stackTokens}
+            style={{
+                width: '100%'
+            }}>
+            <UITranslationInput entries={{}} />
         </Stack>
     );
 };
