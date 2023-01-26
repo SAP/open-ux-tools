@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.8
+
+### Patch Changes
+
+-   b9b66e9: UIFlexibleTable. Fixed "undefined" error when "No data." row was clicked and dragged.
+
 ## 1.1.7
 
 ### Patch Changes
