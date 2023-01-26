@@ -22,6 +22,15 @@ export type I18nBundle = Record<string, TranslationEntry[]>;
 
 
 export interface UITranslationInputProps {
+    // Questionsable/refactor properties
+    // appId?: string;
+    // appJsonFilePath?: string;
+    // name: string;
+    // i18nPrefix?: string;
+    // path?: PropertyPath;
+    // // Default value is 'binding'
+    // generateFormat?: TranslationValueFormat;
+
     entries: I18nBundle;
     // When entry exists in passed i18n entries and user clicked on show entry button
     // ToDo - param
