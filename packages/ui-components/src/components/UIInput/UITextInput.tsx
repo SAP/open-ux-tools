@@ -117,6 +117,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                     // Read only container - disable hover style
                     this.props.readOnly && {
                         borderStyle: COLOR_STYLES.readOnly.borderStyle,
+                        backgroundColor: COLOR_STYLES.readOnly.backgroundColor,
                         // No hover efect on input without value
                         selectors: !this.props.value
                             ? {
