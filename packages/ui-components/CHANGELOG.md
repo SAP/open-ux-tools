@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.9
+
+### Patch Changes
+
+-   ce13abe: UITextInput. Background color issue for read only input field
+
 ## 1.1.8
 
 ### Patch Changes
