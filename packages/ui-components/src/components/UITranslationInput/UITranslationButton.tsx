@@ -78,7 +78,7 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
         defaultPattern,
         i18nPrefix
     } = props;
-    const i18nKey = extractI18nKey(value, allowedPatterns);
+    const i18nKey = extractI18nKey(value, allowedPatterns, i18nPrefix);
     let message = '';
     let tooltip = '';
     let suggest: TranslationSuggestValue;

@@ -3,7 +3,6 @@ import { TranslationKeyGenerator, TranslationTextPattern } from './UITranslation
 
 // type PatternResolutionMethod = () => string | undefined;
 // const PATTERN_RESOLUTION = new Map<TranslationTextPattern, PatternResolutionMethod>([]);
-const I18N_BINDING_PREFIX = 'i18n';
 
 /**
  * Method extracts i18n binding and returns key of i18n entry.
@@ -11,11 +10,15 @@ const I18N_BINDING_PREFIX = 'i18n';
  * @param {TranslationTextPattern[]} patterns - Check if method should resolve syntax annotation based i18n binding.
  * @returns {string | undefined} I18n entry key or undefined if input does not matches i18n binding pattern.
  */
-export const extractI18nKey = (value: string, patterns: TranslationTextPattern[]): string | undefined => {
+export const extractI18nKey = (
+    value: string,
+    patterns: TranslationTextPattern[],
+    prefix: string
+): string | undefined => {
     let key: string | undefined;
     for (const pattern of patterns) {
         if (pattern === TranslationTextPattern.SingleBracketBinding) {
-            const i18nMatch = value.toString().match(`^{${I18N_BINDING_PREFIX}>([^\\{}:]+)}$`);
+            const i18nMatch = value.toString().match(`^{${prefix}>([^\\{}:]+)}$`);
             key = i18nMatch?.[1];
         } else if (pattern === TranslationTextPattern.DoubleBracketReplace && value.match(`^{{[^\\{}:]+}}$`)) {
             key = value.toString().substring(2, value.length - 2);
