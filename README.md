@@ -95,7 +95,7 @@ When analyzing a problem, it is helpful to be able to debug the modules. How to 
 
 Each of the packages has an extensive set of unit tests covering as many as possible different scenarios, therefore, as a starting point for debugging, it is a good idea to use the tests. The easiest (but not the only) way to debug a specific test in VSCode is to open a `JavaScript Debug Terminal` and then go to the package that needs to be debugged. Using the debug terminal, execute all tests with `pnpm test` or a specific one, e.g. execute `pnpm test -- test/basic.test.ts` in the `fiori-freestyle-writer` directory (`./packages/fiori-freestyle-writer`). When running either of the commands in the debug terminal, breakpoints set in VSCode will be active.
 
-Additionally for the `*-writer` modules it is sometimes helpful to manually inspect the generated output of the unit tests on the filesystem. This can be achieved by setting the variable `UX_DEBUG` before running the tests e.g. in `fiori-freestyle-writer` run `UX_DEBUG=true pnpm test` and after the tests finish, the generated files can be found at `./test/test-output`.
+Additionally, for the `*-writer` modules it is sometimes helpful to manually inspect the generated output of the unit tests on the filesystem. This can be achieved by setting the variable `UX_DEBUG` before running the tests e.g. in `fiori-freestyle-writer` run `UX_DEBUG=true pnpm test` and after the tests finish, the generated files can be found at `./test/test-output`.
 
 ### Create changesets for feature or bug fix branches
 
