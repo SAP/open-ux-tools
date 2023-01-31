@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.13.0
+
+### Minor Changes
+
+-   1894a8a: add new function to format results to a string
+
 ## 0.12.1
 
 ### Patch Changes
