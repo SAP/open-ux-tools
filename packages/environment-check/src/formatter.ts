@@ -43,3 +43,18 @@ export function getCircularReplacer(): (key: string, value: any) => any {
         return value;
     };
 }
+
+/**
+ * Convert an int byte number to a nice output format like 1.23 KB.
+ *
+ * @param byteNumber - int number of bytes
+ * @returns output string
+ */
+export function byteNumberToSizeString(byteNumber: number): string {
+    if (byteNumber === 0) {
+        return '0 Bytes';
+    }
+    const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(byteNumber) / Math.log(1024));
+    return `${parseFloat((byteNumber / Math.pow(1024, i)).toFixed(2))} ${units[i]}`;
+}
