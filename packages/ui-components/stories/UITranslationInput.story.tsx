@@ -86,7 +86,7 @@ export const translationInput = () => {
             <UITranslationInput
                 entries={i18nBundle}
                 id="test"
-                i18nPrefix="@i18n"
+                i18nPrefix="i18n"
                 allowedPatterns={[
                     TranslationTextPattern.SingleBracketBinding,
                     TranslationTextPattern.DoubleBracketReplace
