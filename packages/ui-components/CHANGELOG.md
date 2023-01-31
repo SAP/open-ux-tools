@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.1.9
+
+### Patch Changes
+
+-   ce13abe: UITextInput. Background color issue for read only input field
+
+## 1.1.8
+
+### Patch Changes
+
+-   b9b66e9: UIFlexibleTable. Fixed "undefined" error when "No data." row was clicked and dragged.
+
 ## 1.1.7
 
 ### Patch Changes
