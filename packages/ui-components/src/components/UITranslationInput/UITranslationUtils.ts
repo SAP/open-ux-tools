@@ -72,7 +72,8 @@ export function format(text: string, values?: { [key: string]: string }): string
     let formattedText = text;
     for (const key in values) {
         const value = values[key];
-        formattedText = formattedText.replace(`{{{${key}}}}`, value);
+        const regex = new RegExp(`{{{${key}}}}`, 'g');
+        formattedText = formattedText.replace(regex, value);
     }
     return formattedText;
 }

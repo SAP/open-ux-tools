@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IStackTokens } from '@fluentui/react';
+import { IStackTokens, setFocusVisibility } from '@fluentui/react';
 import { Stack } from '@fluentui/react';
 import type { I18nBundle, TranslationEntry } from '../src/components/UITranslationInput';
 import { TranslationTextPattern, UITranslationInput } from '../src/components/UITranslationInput';
@@ -51,8 +51,13 @@ export const translationInput = () => {
             setI18nBundle({ ...i18nBundle });
         }
     };
+    const onShowExistingEntry = (entry: TranslationEntry) => {
+        const cell = document.querySelector(`div[data-i18n-key="${entry.key.value}"]`) as HTMLElement;
+        (cell?.parentElement as HTMLElement).focus();
+        setFocusVisibility(true, cell?.parentElement as HTMLElement);
+    };
+    // Table event to delete i18n entry
     const onDeleteEntry = (key: string) => {
-        console.log('delete ' + !!i18nBundle[key]);
         if (i18nBundle[key]) {
             delete i18nBundle[key];
             updateI18nBundle(i18nBundle);
@@ -90,6 +95,7 @@ export const translationInput = () => {
                 value={value}
                 onChange={onChange}
                 onCreateNewEntry={onCreateNewEntry}
+                onShowExistingEntry={onShowExistingEntry}
             />
             <I18nTable tableData={tableData} onDelete={onDeleteEntry} />
         </Stack>
@@ -108,6 +114,9 @@ function I18nTable(props: I18nTableProps) {
         if (index === 0) {
             col.name = 'Key';
             col.fieldName = 'key';
+            col.onRender = (item: I18nTableRow) => {
+                return <div data-i18n-key={item.key}>{item.key}</div>;
+            };
         } else if (index === 1) {
             col.name = 'Value';
             col.fieldName = 'value';
@@ -135,17 +144,7 @@ function I18nTable(props: I18nTableProps) {
                 position: 'relative',
                 height: '100%'
             }}>
-            <UITable
-                dataSetKey={'datasetkey'}
-                items={props.tableData}
-                columns={columnsWithDropdown}
-                // onSave={onSave2}
-                // onSelectionChange={onSelectionChange}
-                // checkboxVisibility={CheckboxVisibility.always}
-                // headerRenderer={_onHeaderRender}
-                // selectionMode={SelectionMode.multiple}
-                // renderInputs={RenderInputs.always}
-            />
+            <UITable dataSetKey={'datasetkey'} items={props.tableData} columns={columnsWithDropdown} />
         </div>
     );
 }

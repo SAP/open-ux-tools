@@ -64,7 +64,7 @@ export interface UITranslationButtonProps {
     entries: I18nBundle;
     // When entry exists in passed i18n entries and user clicked on show entry button
     // ToDo - param
-    onShowExistingEntry?: () => void;
+    onShowExistingEntry?: (entry: TranslationEntry) => void;
     // When creation of new i18n entry is requested
     onCreateNewEntry?: (entry: TranslationEntry) => void;
     // ToDo

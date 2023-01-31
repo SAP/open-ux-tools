@@ -24,6 +24,7 @@ export enum SuggestValueType {
 
 interface TranslationSuggestValue {
     entry: TranslationEntry;
+    icon?: UiIcons;
     type: SuggestValueType;
     i18n?: string;
 }
@@ -88,7 +89,8 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
             tooltip = strings.i18nEntryExistsTooltip;
             suggest = {
                 entry,
-                type: SuggestValueType.Existing
+                type: SuggestValueType.Existing,
+                icon: UiIcons.WorldArrow
             };
         } else {
             message = strings.i18nKeyMissingDescription;
@@ -102,7 +104,8 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
                         value: i18nKey
                     }
                 },
-                type: SuggestValueType.New
+                type: SuggestValueType.New,
+                icon: UiIcons.WorldWarning
             };
         }
     } else {
@@ -141,6 +144,11 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
         value: suggest.entry.value.value,
         i18n: suggest.i18n
     });
+    tooltip = format(tooltip, {
+        key: suggest.entry.key.value,
+        value: suggest.entry.value.value,
+        i18n: suggest.i18n
+    });
     return {
         message: <div>{text}</div>,
         tooltip,
@@ -149,13 +157,20 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
 };
 
 export function UITranslationButton(props: UITranslationButtonProps): ReactElement {
-    const { id, strings, onCreateNewEntry, onUpdateValue, value } = props;
+    const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry } = props;
     const [isCalloutVisible, setCalloutVisible] = useState(false);
+    // ToDo - store 'suggestion' in State???
+    const suggestion = getTranslationSuggestion(props);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
-        setCalloutVisible(!isCalloutVisible);
-    }, [isCalloutVisible]);
-    const suggestion = getTranslationSuggestion(props);
+        if (suggestion.suggest?.type === SuggestValueType.Existing) {
+            setCalloutVisible(false);
+            // Trigger show existing entry callbACK
+            onShowExistingEntry?.(suggestion.suggest.entry);
+        } else {
+            setCalloutVisible(!isCalloutVisible);
+        }
+    }, [isCalloutVisible, suggestion]);
     const onAccept = useCallback((): void => {
         if (suggestion.suggest) {
             if (suggestion.suggest.type === SuggestValueType.New) {
@@ -179,7 +194,7 @@ export function UITranslationButton(props: UITranslationButtonProps): ReactEleme
                 disabled={props.disabled ?? false}
                 //className={`${this.state.isCalloutVisible ? 'active' : ''}`}
                 onClick={onToggleCallout}
-                iconProps={{ iconName: UiIcons.World }}
+                iconProps={{ iconName: suggestion.suggest?.icon || UiIcons.World }}
                 title={suggestion.tooltip}
             />
             {isCalloutVisible && (
