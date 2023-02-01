@@ -1,3 +1,4 @@
 export * from './types';
 export * from './checks';
-export { convertResultsToMarkdown, storeResultsZip, archiveProject, convertResultsToString } from './output';
+export { convertResultsToMarkdown, storeResultsZip, convertResultsToString } from './output';
+export { archiveProject } from './archive';
