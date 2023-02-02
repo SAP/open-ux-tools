@@ -41,6 +41,7 @@
     "devDependencies": {
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
+        "@ui5/manifest": "1.51.0",
         "vscode-uri": "3.0.6"
     }
 }
