@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.1.10
+
+### Patch Changes
+
+-   2bac3c4: New icon Id tag
+
 ## 1.1.9
 
 ### Patch Changes
