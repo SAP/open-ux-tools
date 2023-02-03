@@ -405,7 +405,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         requestAnimationFrame(() => {
             if (column?.columnControlType === ColumnControlType.UITextInput) {
                 (this.inputRefs?.[rowIndex][column?.key] as React.RefObject<ITextField>)?.current?.select();
-            } else if (column?.columnControlType === ColumnControlType.UIBooleanSelect) {
+            } else if (column?.columnControlType === ColumnControlType.UICombobox) {
                 const combo = this.inputRefs?.[rowIndex][column?.key] as React.RefObject<ComboBoxRef>;
                 getComboBoxInput(combo)?.focus();
             } else if (column?.columnControlType === ColumnControlType.UIDatePicker) {
@@ -452,7 +452,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                     refValue = (compRef as React.RefObject<ITextField>)?.current?.value || '';
                 } else if (column?.columnControlType === ColumnControlType.UIDatePicker) {
                     refValue = (compRef as React.RefObject<ITextField>)?.current?.value || '';
-                } else if (column?.columnControlType === ColumnControlType.UIBooleanSelect) {
+                } else if (column?.columnControlType === ColumnControlType.UICombobox) {
                     const combo = compRef as React.RefObject<ComboBoxRef>;
                     refValue = getComboBoxInput(combo)?.value || '';
                 }
@@ -763,14 +763,14 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     }
 
     /**
-     * Renders boolean select.
+     * Renders combobox.
      *
      * @param item
      * @param rowIndex
      * @param column
      * @returns {any}
      */
-    private _renderBooleanSelect(item: UIDocument, rowIndex?: number, column?: UIColumn): any {
+    private _renderCombobox(item: UIDocument, rowIndex?: number, column?: UIColumn): any {
         const compRef = this._getInputRef(rowIndex, column) as React.RefObject<ComboBoxRef>;
         const newValue = this.state.editedCell?.newValue;
 
@@ -781,6 +781,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         if (typeof newValue !== 'undefined') {
             value = newValue;
         }
+
+        const options = column?.comboboxOptions?.map((o: string) => ({ key: o, text: o })) || [];
 
         return (
             <UIComboBox
@@ -797,10 +799,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                 onClick={(e): void => {
                     e.stopPropagation();
                 }}
-                options={[
-                    { key: 'true', text: 'true' },
-                    { key: 'false', text: 'false' }
-                ]}
+                options={options}
             />
         );
     }
@@ -901,8 +900,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         const isCellInEditMode = itsThisRow && itsThisCol;
 
         if (isCellInEditMode && rowIndex !== undefined) {
-            if (column?.columnControlType === ColumnControlType.UIBooleanSelect) {
-                return this._renderBooleanSelect(item, rowIndex, column);
+            if (column?.columnControlType === ColumnControlType.UICombobox) {
+                return this._renderCombobox(item, rowIndex, column);
             } else if (column?.columnControlType === ColumnControlType.UIDatePicker) {
                 return this._renderDatePicker(item, rowIndex, column, column?.type === 'Date');
             } else {

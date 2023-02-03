@@ -25,7 +25,8 @@ const columns: UIColumn[] = Array.from({ length: 10 }).map((item, index) => {
         validate: undefined as any,
         iconName: undefined as any,
         iconTooltip: undefined as any,
-        columnControlType: ColumnControlType.UITextInput
+        columnControlType: ColumnControlType.UITextInput,
+        comboboxOptions: undefined as any,
     };
     if (index === 1 || index >= 3) {
         col.name += ' (editable)';
@@ -37,7 +38,8 @@ const columns: UIColumn[] = Array.from({ length: 10 }).map((item, index) => {
         col.iconTooltip = 'Dummy tooltip';
     }
     if (index === 3) {
-        col.columnControlType = ColumnControlType.UIBooleanSelect;
+        col.columnControlType = ColumnControlType.UICombobox;
+        col.comboboxOptions = ["true", "false"];
     }
     return col;
 });
