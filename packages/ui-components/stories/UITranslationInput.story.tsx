@@ -137,14 +137,18 @@ function I18nTable(props: I18nTableProps) {
         }
         return col;
     });
+    const style = '.ms-Fabric--isFocusVisible .ms-DetailsList .ms-DetailsRow-cell:focus::after { z-index: -1; }';
 
     return (
-        <div
-            style={{
-                position: 'relative',
-                height: '100%'
-            }}>
-            <UITable dataSetKey={'datasetkey'} items={props.tableData} columns={columnsWithDropdown} />
-        </div>
+        <>
+            <style>{style}</style>
+            <div
+                style={{
+                    position: 'relative',
+                    height: '100%'
+                }}>
+                <UITable dataSetKey={'datasetkey'} items={props.tableData} columns={columnsWithDropdown} />
+            </div>
+        </>
     );
 }

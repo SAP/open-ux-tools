@@ -12,9 +12,10 @@ import type {
     I18nBundle
 } from './UITranslationButton.types';
 import { TranslationKeyGenerator, TranslationTextPattern } from './UITranslationButton.types';
-import { extractI18nKey, format, generateI18nKey } from './UITranslationUtils';
+import { extractI18nKey, generateI18nKey } from './UITranslationUtils';
 
 import './UITranslationInput.scss';
+import { UIFormattedText } from './UIFormattedText';
 
 export enum SuggestValueType {
     Existing = 'Existing',
@@ -139,18 +140,20 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
     // I18n string to apply for input value
     suggest.i18n = getI18nMarkup(suggest.entry.key.value, i18nPrefix, defaultPattern);
     // Format message to show in callout
-    const text = format(message, {
+    const messageValues = {
         key: suggest.entry.key.value,
         value: suggest.entry.value.value,
         i18n: suggest.i18n
-    });
-    tooltip = format(tooltip, {
-        key: suggest.entry.key.value,
-        value: suggest.entry.value.value,
-        i18n: suggest.i18n
-    });
+    };
+    // const text = format(message, {
+    //     key: suggest.entry.key.value,
+    //     value: suggest.entry.value.value,
+    //     i18n: suggest.i18n
+    // });
+    //tooltip = format(tooltip, messageValues);
+    tooltip = '';
     return {
-        message: <div>{text}</div>,
+        message: <UIFormattedText values={messageValues}>{message}</UIFormattedText>,
         tooltip,
         suggest
     };
@@ -211,7 +214,7 @@ export function UITranslationButton(props: UITranslationButtonProps): ReactEleme
                     onDismiss={() => onToggleCallout()}
                     contentPadding={UICalloutContentPadding.Standard}>
                     <div className="ui-translatable__message">
-                        <div>{suggestion.message}</div>
+                        {suggestion.message}
                         <div className="ui-translatable__actions">
                             <UIDefaultButton id={`${id}-button-action-confirm`} primary onClick={onAccept}>
                                 {getStringText('acceptButtonLabel', strings)}

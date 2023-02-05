@@ -24,62 +24,8 @@ export const extractI18nKey = (
             key = value.toString().substring(2, value.length - 2);
         }
     }
-    // if (value.match(`^{{[^\\{}:]+}}$`)) {
-    //     if (!resolveAnnotationBinding || forceKeyExtraction) {
-    //         return value.toString().substring(2, value.length - 2);
-    //     }
-    // }
-    // const prefixRegex = resolveAnnotationBinding
-    //     ? `(${I18N_BINDING_PREFIX}|@${I18N_BINDING_PREFIX})`
-    //     : `${I18N_BINDING_PREFIX}`;
-    // const mathIndex = resolveAnnotationBinding ? 2 : 1;
-    // const i18nMatch = value.toString().match(`^{${prefixRegex}>([^\\{}:]+)}$`);
-    // return i18nMatch ? i18nMatch[mathIndex] : undefined;
     return key;
 };
-
-// Regex that finds { and } so they can be removed on a lookup for string format
-const FORMAT_ARGS_REGEX = /[\{\}]/g;
-
-// Regex that finds {#} so it can be replaced by the arguments in string format
-const FORMAT_REGEX = /\{\d+\}/g;
-
-// ToDo - we need format with option to inject HTML
-/**
- * String format method, used for scenarios where at runtime you
- * need to evaluate a formatted string given a tokenized string. This
- * usually only is needed in localization scenarios.
- * @param {string} s String to format.
- * @param {any[]} values Values to apply.
- * @returns {string} Resolved string.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// export function format(s: string, ...values: any[]): string {
-//     const args = values;
-//     // Callback match function
-//     const replaceFunc = (match: string): string => {
-//         // looks up in the args
-//         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//         let replacement = args[match.replace(FORMAT_ARGS_REGEX, '') as any];
-
-//         // catches undefined in nondebug and null in debug and nondebug
-//         if (replacement === null || replacement === undefined) {
-//             replacement = '';
-//         }
-
-//         return replacement;
-//     };
-//     return s.replace(FORMAT_REGEX, replaceFunc);
-// }
-export function format(text: string, values?: { [key: string]: string }): string {
-    let formattedText = text;
-    for (const key in values) {
-        const value = values[key];
-        const regex = new RegExp(`{{{${key}}}}`, 'g');
-        formattedText = formattedText.replace(regex, value);
-    }
-    return formattedText;
-}
 
 /**
  * Convert to camel case
@@ -142,22 +88,9 @@ export const convertToPascalCase = (input: string, maxWord = 4): string => {
  * @param counter counter for increment
  * @returns {string} Generated i18n key.
  */
-export const getI18nUniqueKey = (
-    key: string,
-    i18nData: TranslationEntry[] | I18nBundle,
-    originalKey = key,
-    counter = 1
-): string => {
+export const getI18nUniqueKey = (key: string, i18nData: I18nBundle, originalKey = key, counter = 1): string => {
     const uniqueKey = key;
-    let keyExists = false;
-
-    if (Array.isArray(i18nData)) {
-        keyExists = i18nData.findIndex((item) => item.key.value === key) !== -1;
-    } else {
-        keyExists = i18nData[key] !== undefined;
-    }
-
-    if (keyExists) {
+    if (i18nData[key] !== undefined) {
         key = `${originalKey}${counter}`;
         counter++;
         return getI18nUniqueKey(key, i18nData, originalKey, counter);
@@ -183,7 +116,7 @@ export function generateI18nKey(
             ? convertToCamelCase(text)
             : convertToPascalCase(text);
     if (key === '') {
-        key = 'key';
+        key = translationKeyGenerator === TranslationKeyGenerator.CamelCase ? 'key' : 'Key';
     }
     return getI18nUniqueKey(key, bundle);
 }
