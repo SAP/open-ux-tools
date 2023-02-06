@@ -51,7 +51,7 @@ export const convertToCamelCase = (input = '', maxWord = 4): string => {
             output += part.toLowerCase();
         } else {
             const initial = part.charAt(0).toUpperCase();
-            const rest = part.substr(1).toLowerCase();
+            const rest = part.substring(1).toLowerCase();
             output += `${initial}${rest}`;
         }
     }
@@ -76,7 +76,7 @@ export const convertToPascalCase = (input: string, maxWord = 4): string => {
     for (let i = 0; len > i; i++) {
         const part = parts[i];
         const initial = part.charAt(0).toUpperCase();
-        const rest = part.substr(1).toLowerCase();
+        const rest = part.substring(1).toLowerCase();
         output += `${initial}${rest}`;
     }
 
