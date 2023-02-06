@@ -272,6 +272,7 @@ Object {
     },
     undefined,
     Object {
+      "backgroundColor": "var(--vscode-editor-background)",
       "borderStyle": "dashed",
       "selectors": undefined,
     },
@@ -862,6 +863,7 @@ Object {
     },
     undefined,
     Object {
+      "backgroundColor": "var(--vscode-editor-background)",
       "borderStyle": "dashed",
       "selectors": Object {
         "&:hover": Object {
@@ -1161,6 +1163,7 @@ Object {
     },
     undefined,
     Object {
+      "backgroundColor": "var(--vscode-editor-background)",
       "borderStyle": "dashed",
       "selectors": Object {
         "&:hover": Object {
