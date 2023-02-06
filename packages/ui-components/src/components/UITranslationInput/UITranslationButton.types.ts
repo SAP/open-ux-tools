@@ -52,7 +52,6 @@ export interface UITranslationProps {
     // Default i18n prefix for "SingleBracketBinding"
     i18nPrefix: string;
     // Option to pass multiple allowed prefixes - if not passed then single "i18nPrefix" considered as allowed
-    // ToDo - handle
     allowedI18nPrefixes?: string[];
     // Default pattern
     defaultPattern: TranslationTextPattern;

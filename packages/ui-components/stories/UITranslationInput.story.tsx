@@ -106,6 +106,7 @@ export const translationInput = () => {
                 entries={i18nBundle}
                 id="test"
                 i18nPrefix="i18n"
+                allowedI18nPrefixes={['i18n', '@i18n']}
                 allowedPatterns={[
                     TranslationTextPattern.SingleBracketBinding,
                     TranslationTextPattern.DoubleBracketReplace

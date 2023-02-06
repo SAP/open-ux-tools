@@ -28,6 +28,7 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
         entries,
         busy,
         i18nPrefix,
+        allowedI18nPrefixes,
         namingConvention,
         onCreateNewEntry,
         onShowExistingEntry,
@@ -57,6 +58,7 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
                 entries={entries}
                 busy={busy}
                 i18nPrefix={i18nPrefix}
+                allowedI18nPrefixes={allowedI18nPrefixes}
                 namingConvention={namingConvention}
                 onCreateNewEntry={onCreateNewEntry}
                 onShowExistingEntry={onShowExistingEntry}
@@ -72,6 +74,7 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
         busy,
         disabled,
         i18nPrefix,
+        allowedI18nPrefixes,
         namingConvention,
         onCreateNewEntry,
         onShowExistingEntry,

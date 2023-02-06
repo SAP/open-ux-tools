@@ -6,19 +6,23 @@ import { TranslationKeyGenerator, TranslationTextPattern } from './UITranslation
  *
  * @param value Binding value.
  * @param patterns Check if method should resolve syntax annotation based i18n binding.
- * @param prefix Prefix for single bracket pattern.
+ * @param prefixes Allowed prefixes for single bracket pattern.
  * @returns {string | undefined} I18n entry key or undefined if input does not matches i18n binding pattern.
  */
 export const extractI18nKey = (
     value: string,
     patterns: TranslationTextPattern[],
-    prefix: string
+    prefixes: string[]
 ): string | undefined => {
     let key: string | undefined;
     for (const pattern of patterns) {
         if (pattern === TranslationTextPattern.SingleBracketBinding) {
-            const i18nMatch = value.toString().match(`^{${prefix}>([^\\{}:]+)}$`);
-            key = i18nMatch?.[1];
+            for (const prefix of prefixes) {
+                const i18nMatch = value.toString().match(`^{${prefix}>([^\\{}:]+)}$`);
+                if (i18nMatch?.[1]) {
+                    key = i18nMatch?.[1];
+                }
+            }
         } else if (pattern === TranslationTextPattern.DoubleBracketReplace && value.match(`^{{[^\\{}:]+}}$`)) {
             key = value.toString().substring(2, value.length - 2);
         }

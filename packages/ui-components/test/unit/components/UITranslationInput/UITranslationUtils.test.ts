@@ -44,8 +44,13 @@ describe('UITranslationUtils', () => {
         ];
 
         test.each(testCases)('Test "$value" with patterns $patterns', (testCase) => {
-            const key = extractI18nKey(testCase.value, testCase.patterns, 'i18n');
+            const key = extractI18nKey(testCase.value, testCase.patterns, ['i18n']);
             expect(key).toEqual(testCase.expectedKey);
+        });
+
+        test('Handle multiple allowed prefixes', () => {
+            const key = extractI18nKey('{i18n>test}', [TranslationTextPattern.SingleBracketBinding], ['i18n', '@i18n']);
+            expect(key).toEqual('test');
         });
     });
 
