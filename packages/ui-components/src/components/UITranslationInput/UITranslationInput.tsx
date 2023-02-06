@@ -11,7 +11,7 @@ export interface UITranslationInputProps extends ITextFieldProps, UITranslationB
 }
 
 export function UITranslationInput(props: UITranslationInputProps): ReactElement {
-    const { title, id, className, onChange } = props;
+    const { title, id, className, onChange, value } = props;
 
     let classNames = ' ui-translatable__input';
     // Custom external classes
@@ -42,5 +42,12 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
         );
     };
 
-    return <UITextInput {...props} title={title} onRenderSuffix={onRenderSuffix} className={classNames} />;
+    return (
+        <UITextInput
+            {...props}
+            title={title}
+            onRenderSuffix={value?.trim() ? onRenderSuffix : undefined}
+            className={classNames}
+        />
+    );
 }

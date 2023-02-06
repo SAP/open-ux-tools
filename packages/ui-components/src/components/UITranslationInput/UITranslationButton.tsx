@@ -219,7 +219,7 @@ export function UITranslationButton(props: UITranslationButtonProps): ReactEleme
                             <UIDefaultButton id={`${id}-button-action-confirm`} primary onClick={onAccept}>
                                 {getStringText('acceptButtonLabel', strings)}
                             </UIDefaultButton>
-                            <UIDefaultButton id={`${id}-button-action-confirm`} onClick={onCancel}>
+                            <UIDefaultButton id={`${id}-button-action-cancel`} onClick={onCancel}>
                                 {getStringText('cancelButtonLabel', strings)}
                             </UIDefaultButton>
                         </div>
