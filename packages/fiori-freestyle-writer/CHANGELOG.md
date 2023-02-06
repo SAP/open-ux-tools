@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.3
+
+### Patch Changes
+
+-   730e940: fix(fiori-freestyle-writer) align formatter name with JS template #881
+
 ## 0.15.2
 
 ### Patch Changes

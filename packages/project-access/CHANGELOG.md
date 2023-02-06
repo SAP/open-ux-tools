@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.0.5
+
+### Patch Changes
+
+-   8cc76b5: chore: consume App Descriptor (manifest.json) types from @ui5/manifest
+
 ## 1.0.4
 
 ### Patch Changes
