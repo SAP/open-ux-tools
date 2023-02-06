@@ -258,6 +258,22 @@ describe('<UITranslationInput />', () => {
         expect(container.querySelectorAll(selectors.button).length).toEqual(0);
     });
 
+    test('Test "disabled" property', () => {
+        const { container } = render(
+            <UITranslationInput
+                id={id}
+                entries={entries}
+                allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                i18nPrefix={'i18n'}
+                value={'test'}
+                disabled={true}
+            />
+        );
+        const input = container.querySelector(`${selectors.input} input`);
+        expect(input?.getAttribute('readonly')).toEqual('');
+    });
+
     describe('Close callout', () => {
         test('Cancel callout', () => {
             render(

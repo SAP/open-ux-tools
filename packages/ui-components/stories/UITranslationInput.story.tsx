@@ -6,6 +6,7 @@ import { TranslationTextPattern, UITranslationInput } from '../src/components/UI
 import { initIcons, UiIcons } from '../src/components/Icons';
 import { ColumnControlType, UIColumn, UITable } from '../src/components/UITable';
 import { UIIconButton } from '../src/components/UIButton';
+import { UICheckbox } from '../src/components/UICheckbox';
 
 export default { title: 'Basic Inputs/Input' };
 
@@ -40,6 +41,8 @@ const updateI18nBundle = (i18nBundle: I18nBundle): void => {
 
 export const translationInput = () => {
     const [value, setValue] = React.useState('Content');
+    const [disabled, setDisabled] = React.useState(false);
+    const [busy, setBusy] = React.useState(false);
     const [i18nBundle, setI18nBundle] = React.useState(getI18nBundle());
     const onChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
         setValue(newValue || '');
@@ -83,6 +86,22 @@ export const translationInput = () => {
                 width: '100%',
                 height: '100%'
             }}>
+            <Stack horizontal tokens={stackTokens}>
+                <UICheckbox
+                    label="Disabled"
+                    checked={disabled}
+                    onChange={(event: any, value: any) => {
+                        setDisabled(value);
+                    }}
+                />
+                <UICheckbox
+                    label="Busy"
+                    checked={busy}
+                    onChange={(event: any, value: any) => {
+                        setBusy(value);
+                    }}
+                />
+            </Stack>
             <UITranslationInput
                 entries={i18nBundle}
                 id="test"
@@ -96,6 +115,8 @@ export const translationInput = () => {
                 onChange={onChange}
                 onCreateNewEntry={onCreateNewEntry}
                 onShowExistingEntry={onShowExistingEntry}
+                disabled={disabled}
+                busy={busy}
             />
             <I18nTable tableData={tableData} onDelete={onDeleteEntry} />
         </Stack>

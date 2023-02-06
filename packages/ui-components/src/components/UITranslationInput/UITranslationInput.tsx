@@ -3,9 +3,9 @@ import type { ReactElement } from 'react';
 import { UITextInput } from '../UIInput';
 import type { ITextFieldProps } from '../UIInput';
 import { UITranslationButton } from './UITranslationButton';
-import type { UITranslationButtonProps } from './UITranslationButton.types';
+import type { UITranslationProps } from './UITranslationButton.types';
 
-export interface UITranslationInputProps extends ITextFieldProps, UITranslationButtonProps {
+export interface UITranslationInputProps extends ITextFieldProps, UITranslationProps {
     id: string;
     dummy?: string;
 }
@@ -30,7 +30,8 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
         i18nPrefix,
         namingConvention,
         onCreateNewEntry,
-        onShowExistingEntry
+        onShowExistingEntry,
+        disabled
     } = props;
 
     let classNames = ' ui-translatable__input';
@@ -60,6 +61,7 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
                 onCreateNewEntry={onCreateNewEntry}
                 onShowExistingEntry={onShowExistingEntry}
                 onUpdateValue={onUpdateValue}
+                disabled={disabled}
             />
         );
     }, [
@@ -68,6 +70,7 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
         defaultPattern,
         entries,
         busy,
+        disabled,
         i18nPrefix,
         namingConvention,
         onCreateNewEntry,

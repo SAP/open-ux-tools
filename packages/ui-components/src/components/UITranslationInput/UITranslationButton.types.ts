@@ -33,22 +33,21 @@ export interface TranslationEntry {
 
 export type I18nBundle = Record<string, TranslationEntry[]>;
 
-export interface UITranslationButtonProps {
+export interface UITranslationProps {
     value?: string;
     id: string;
     disabled?: boolean;
-
+    // Existing I18n entries
     entries: I18nBundle;
     // When entry exists in passed i18n entries and user clicked on show entry button
     onShowExistingEntry?: (entry: TranslationEntry) => void;
     // When creation of new i18n entry is requested
     onCreateNewEntry?: (entry: TranslationEntry) => void;
-    // ToDo
-    onUpdateValue?: (value: string) => void;
     // PascalCase or camelCase to be used for key generation
-    // Default value is -> ???
+    // Default value is 'CamelCase'
     namingConvention?: TranslationKeyGenerator;
     // Loader indicator
+    // ToDo
     busy?: boolean;
     // Default i18n prefix for "SingleBracketBinding"
     i18nPrefix: string;

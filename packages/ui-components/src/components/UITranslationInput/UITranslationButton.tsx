@@ -4,7 +4,7 @@ import { UIDefaultButton, UIIconButton } from '../UIButton';
 import { UICallout, UICalloutContentPadding } from '../UICallout';
 import { UiIcons } from '../Icons';
 import { defaultTranslationButtonStrings } from './defaults';
-import type { UITranslationButtonProps, TranslationButtonStrings, TranslationEntry } from './UITranslationButton.types';
+import type { UITranslationProps, TranslationButtonStrings, TranslationEntry } from './UITranslationButton.types';
 import { TranslationKeyGenerator } from './UITranslationButton.types';
 import {
     extractI18nKey,
@@ -34,6 +34,10 @@ interface TranslationSuggest {
     tooltip: string;
     message?: React.ReactElement;
     suggest?: TranslationSuggestValue;
+}
+
+interface UITranslationButtonProps extends UITranslationProps {
+    onUpdateValue?: (value: string) => void;
 }
 
 /**
