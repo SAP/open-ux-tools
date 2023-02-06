@@ -1,4 +1,3 @@
-import { fireEvent } from '@testing-library/react';
 import type { I18nBundle } from '../../../../src/components/UITranslationInput/UITranslationButton.types';
 
 const defaultEntries = [

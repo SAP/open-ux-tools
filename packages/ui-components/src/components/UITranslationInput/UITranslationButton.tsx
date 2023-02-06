@@ -4,18 +4,18 @@ import { UIDefaultButton, UIIconButton } from '../UIButton';
 import { UICallout, UICalloutContentPadding } from '../UICallout';
 import { UiIcons } from '../Icons';
 import { defaultTranslationButtonStrings } from './defaults';
-import type {
-    UITranslationButtonProps,
-    TranslationButtonStrings,
-    //TranslationTextPattern,
-    TranslationEntry,
-    I18nBundle
-} from './UITranslationButton.types';
-import { TranslationKeyGenerator, TranslationTextPattern } from './UITranslationButton.types';
-import { extractI18nKey, generateI18nKey } from './UITranslationUtils';
+import type { UITranslationButtonProps, TranslationButtonStrings, TranslationEntry } from './UITranslationButton.types';
+import { TranslationKeyGenerator } from './UITranslationButton.types';
+import {
+    extractI18nKey,
+    generateI18nKey,
+    applyI18nPattern,
+    getTranslationByKey,
+    getTranslationByText
+} from './UITranslationUtils';
 
 import './UITranslationInput.scss';
-import { UIFormattedText } from './UIFormattedText';
+import { UIFormattedText, formatText } from './UIFormattedText';
 
 export enum SuggestValueType {
     Existing = 'Existing',
@@ -36,39 +36,24 @@ interface TranslationSuggest {
     suggest?: TranslationSuggestValue;
 }
 
-const getI18nMarkup = (key: string, prefix: string, pattern: TranslationTextPattern): string => {
-    return pattern === TranslationTextPattern.DoubleBracketReplace ? `{{${key}}}` : `{${prefix}>${key}}`;
-};
-
-const getStringText = (key: keyof TranslationButtonStrings, strings?: TranslationButtonStrings): string => {
-    return strings?.[key] || '';
-};
-
-const getTranslationByKey = (bundle: I18nBundle, key: string): TranslationEntry | undefined => {
-    const entries = bundle[key];
-    if (entries?.length > 0) {
-        return entries[0];
-    }
+/**
+ * Method to resolve button component text strings for passed key.
+ * Component has default texts which can be overwritten using property `strings`.
+ *
+ * @param property Property.
+ * @param strings Map with all text properties.
+ * @returns Resolved text.
+ */
+const getStringText = (property: keyof TranslationButtonStrings, strings?: TranslationButtonStrings): string => {
+    return strings?.[property] || '';
 };
 
 /**
- * Method finds existing i81n key searching by value.
- * @param {I18nBundle} bundle Search for value.
- * @param {string} value Search for value.
- * @returns {TranslationEntry | undefined} Key if value is found.
+ * Method returns suggestion object with message and tooltip based on passed translation button props.
+ *
+ * @param props Properties of translation button component.
+ * @returns Translation suggestion object.
  */
-const getTranslationByText = (bundle: I18nBundle, value: string): TranslationEntry | undefined => {
-    for (const key in bundle) {
-        const entries = bundle[key];
-        if (entries.length) {
-            const first = entries[0];
-            if (first.value.value === value) {
-                return first;
-            }
-        }
-    }
-};
-
 const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationSuggest => {
     const {
         value = '',
@@ -111,7 +96,6 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
         }
     } else {
         // Use generation format passed from outside or use default as 'Standard';
-        //i18nValueFormat = generateFormat || TRANSLATION_VALUE_FORMAT_BINDING;
         const existingEntry = getTranslationByText(entries, value);
         if (existingEntry) {
             message = strings.i18nReplaceWithExistingDescription;
@@ -138,20 +122,14 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
         }
     }
     // I18n string to apply for input value
-    suggest.i18n = getI18nMarkup(suggest.entry.key.value, i18nPrefix, defaultPattern);
+    suggest.i18n = applyI18nPattern(suggest.entry.key.value, defaultPattern, i18nPrefix);
     // Format message to show in callout
     const messageValues = {
         key: suggest.entry.key.value,
         value: suggest.entry.value.value,
         i18n: suggest.i18n
     };
-    // const text = format(message, {
-    //     key: suggest.entry.key.value,
-    //     value: suggest.entry.value.value,
-    //     i18n: suggest.i18n
-    // });
-    //tooltip = format(tooltip, messageValues);
-    tooltip = '';
+    tooltip = formatText(tooltip, messageValues);
     return {
         message: <UIFormattedText values={messageValues}>{message}</UIFormattedText>,
         tooltip,
@@ -159,10 +137,15 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
     };
 };
 
+/**
+ * Component to render translation button to provide helper callout with i18n generation option.
+ *
+ * @param props Component properties.
+ * @returns Component to render translation button with callout.
+ */
 export function UITranslationButton(props: UITranslationButtonProps): ReactElement {
     const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry } = props;
     const [isCalloutVisible, setCalloutVisible] = useState(false);
-    // ToDo - store 'suggestion' in State???
     const suggestion = getTranslationSuggestion(props);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
@@ -195,7 +178,6 @@ export function UITranslationButton(props: UITranslationButtonProps): ReactEleme
             <UIIconButton
                 id={id}
                 disabled={props.disabled ?? false}
-                //className={`${this.state.isCalloutVisible ? 'active' : ''}`}
                 onClick={onToggleCallout}
                 iconProps={{ iconName: suggestion.suggest?.icon || UiIcons.World }}
                 title={suggestion.tooltip}
