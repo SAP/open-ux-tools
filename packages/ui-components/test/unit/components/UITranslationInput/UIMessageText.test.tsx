@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { fireEvent, render } from '@testing-library/react';
-import { UiIcons, initIcons } from '../../../../src/components';
-import type { UIFormattedTextProps } from '../../../../src/components/UITranslationInput/UIFormattedText';
+import { render } from '@testing-library/react';
+import { initIcons } from '../../../../src/components';
 import { UIFormattedText, formatText } from '../../../../src/components/UITranslationInput/UIFormattedText';
 
 describe('<UIMessageText />', () => {

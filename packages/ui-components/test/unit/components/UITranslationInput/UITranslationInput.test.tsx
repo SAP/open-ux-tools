@@ -139,7 +139,7 @@ describe('<UITranslationInput />', () => {
             const onCreateNewEntryMock = jest.fn();
             const onChangeMock = jest.fn();
             const onUpdateValueMock = jest.fn();
-            const { container } = render(
+            render(
                 <UITranslationInput
                     id={id}
                     value={value}
