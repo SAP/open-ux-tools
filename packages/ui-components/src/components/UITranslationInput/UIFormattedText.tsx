@@ -118,11 +118,11 @@ export function formatText(text: string, values: MessageTextValues): string {
 }
 
 /**
- * Method renders component to show formatted text with highlighting matching entries.
+ * Component to show formatted text with highlighting matching entries.
  * Entries with '{{{key}}}' will be replaced with passed value and wrapped in bold.
  *
  * @param props Component properties.
- * @returns Component to show formatted text.
+ * @returns Component to render formatted text.
  */
 export function UIFormattedText(props: UIFormattedTextProps): ReactElement {
     const { children, values = {} } = props;

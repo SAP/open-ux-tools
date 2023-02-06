@@ -10,8 +10,28 @@ export interface UITranslationInputProps extends ITextFieldProps, UITranslationB
     dummy?: string;
 }
 
+/**
+ * Component to render translation input with button to provide helper callout with i18n generation option.
+ *
+ * @param props Component properties.
+ * @returns Component to render translation input.
+ */
 export function UITranslationInput(props: UITranslationInputProps): ReactElement {
-    const { title, id, className, onChange, value } = props;
+    const {
+        title,
+        id,
+        className,
+        onChange,
+        value,
+        allowedPatterns,
+        defaultPattern,
+        entries,
+        busy,
+        i18nPrefix,
+        namingConvention,
+        onCreateNewEntry,
+        onShowExistingEntry
+    } = props;
 
     let classNames = ' ui-translatable__input';
     // Custom external classes
@@ -19,28 +39,41 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
         classNames += ` ${className}`;
     }
 
-    const onUpdateValue = useCallback((newValue: string): void => {
-        // ToDo - event???
-        onChange?.({} as any, newValue);
-    }, []);
+    const onUpdateValue = useCallback(
+        (newValue: string): void => {
+            onChange?.({} as React.FormEvent<HTMLInputElement>, newValue);
+        },
+        [onChange]
+    );
 
-    const onRenderSuffix = (): JSX.Element | null => {
+    const onRenderSuffix = useCallback((): JSX.Element | null => {
         return (
             <UITranslationButton
                 id={`${id}-i18n`}
-                value={props.value}
-                allowedPatterns={props.allowedPatterns}
-                defaultPattern={props.defaultPattern}
-                entries={props.entries}
-                busy={props.busy}
-                i18nPrefix={props.i18nPrefix}
-                namingConvention={props.namingConvention}
-                onCreateNewEntry={props.onCreateNewEntry}
-                onShowExistingEntry={props.onShowExistingEntry}
+                value={value}
+                allowedPatterns={allowedPatterns}
+                defaultPattern={defaultPattern}
+                entries={entries}
+                busy={busy}
+                i18nPrefix={i18nPrefix}
+                namingConvention={namingConvention}
+                onCreateNewEntry={onCreateNewEntry}
+                onShowExistingEntry={onShowExistingEntry}
                 onUpdateValue={onUpdateValue}
             />
         );
-    };
+    }, [
+        value,
+        allowedPatterns,
+        defaultPattern,
+        entries,
+        busy,
+        i18nPrefix,
+        namingConvention,
+        onCreateNewEntry,
+        onShowExistingEntry,
+        onUpdateValue
+    ]);
 
     return (
         <UITextInput
