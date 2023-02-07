@@ -17,7 +17,8 @@ describe('<UITranslationInput />', () => {
     const selectors = {
         input: '.ms-TextField',
         button: '.ms-Button',
-        callout: '.ms-Callout'
+        callout: '.ms-Callout',
+        loader: '.ms-Spinner'
     };
 
     const clickI18nButton = (expectCallout = true) => {
@@ -35,6 +36,14 @@ describe('<UITranslationInput />', () => {
         const acceptBtn = document.querySelector(`#${id}-i18n-button-action-cancel`) as HTMLElement;
         fireEvent.click(acceptBtn);
     };
+
+    const isLoading = (): boolean => {
+        return !!document.querySelectorAll(selectors.loader).length;
+    };
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
     test('Render', () => {
         const customClassName = 'dummyInput';
@@ -272,6 +281,57 @@ describe('<UITranslationInput />', () => {
         );
         const input = container.querySelector(`${selectors.input} input`);
         expect(input?.getAttribute('readonly')).toEqual('');
+    });
+
+    describe('Close callout', () => {
+        let setTimeoutSpy: jest.SpyInstance;
+        beforeEach(() => {
+            setTimeoutSpy = jest.spyOn(window, 'setTimeout');
+        });
+        test('Test "busy" property', () => {
+            const props = {
+                id: id,
+                entries: entries,
+                allowedPatterns: [TranslationTextPattern.SingleBracketBinding],
+                defaultPattern: TranslationTextPattern.SingleBracketBinding,
+                i18nPrefix: 'i18n',
+                value: 'test',
+                busy: {
+                    busy: true
+                }
+            };
+            const { rerender } = render(<UITranslationInput {...props} />);
+            expect(isLoading()).toEqual(true);
+            props.busy = { busy: false };
+            rerender(<UITranslationInput {...props} />);
+            expect(isLoading()).toEqual(false);
+        });
+
+        test('Test "useMinWaitingTime" property', () => {
+            const props = {
+                id: id,
+                entries: entries,
+                allowedPatterns: [TranslationTextPattern.SingleBracketBinding],
+                defaultPattern: TranslationTextPattern.SingleBracketBinding,
+                i18nPrefix: 'i18n',
+                value: 'test',
+                busy: {
+                    busy: true,
+                    useMinWaitingTime: true
+                }
+            };
+            const { rerender } = render(<UITranslationInput {...props} />);
+            expect(isLoading()).toEqual(true);
+            expect(setTimeoutSpy).toBeCalledTimes(1);
+            expect(setTimeoutSpy.mock.calls[0][1]).toEqual(500);
+            // Try to release loader - it still should busy, because min waiting time was not completed
+            props.busy = { busy: false, useMinWaitingTime: true };
+            rerender(<UITranslationInput {...props} />);
+            expect(isLoading()).toEqual(true);
+            // Simulate timeout handler
+            setTimeoutSpy.mock.calls[0][0]();
+            expect(isLoading()).toEqual(false);
+        });
     });
 
     describe('Close callout', () => {

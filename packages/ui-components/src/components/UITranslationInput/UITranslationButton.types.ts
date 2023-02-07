@@ -47,8 +47,7 @@ export interface UITranslationProps {
     // Default value is 'CamelCase'
     namingConvention?: TranslationKeyGenerator;
     // Loader indicator
-    // ToDo
-    busy?: boolean;
+    busy?: UILoadButtonBusyProps;
     // Default i18n prefix for "SingleBracketBinding"
     i18nPrefix: string;
     // Option to pass multiple allowed prefixes - if not passed then single "i18nPrefix" considered as allowed
@@ -59,4 +58,10 @@ export interface UITranslationProps {
     allowedPatterns: TranslationTextPattern[];
     // Opion to pass custom Texts for component's labels and tooltips
     strings?: TranslationButtonStrings;
+}
+
+export interface UILoadButtonBusyProps {
+    busy?: boolean;
+    // If true set, then default time is 500ms
+    useMinWaitingTime?: boolean | number;
 }

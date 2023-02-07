@@ -7,7 +7,6 @@ import type { UITranslationProps } from './UITranslationButton.types';
 
 export interface UITranslationInputProps extends ITextFieldProps, UITranslationProps {
     id: string;
-    dummy?: string;
 }
 
 /**

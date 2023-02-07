@@ -117,7 +117,14 @@ export const translationInput = () => {
                 onCreateNewEntry={onCreateNewEntry}
                 onShowExistingEntry={onShowExistingEntry}
                 disabled={disabled}
-                busy={busy}
+                busy={
+                    busy
+                        ? {
+                              busy,
+                              useMinWaitingTime: true
+                          }
+                        : undefined
+                }
             />
             <I18nTable tableData={tableData} onDelete={onDeleteEntry} />
         </Stack>

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import type { ReactElement } from 'react';
-import { UIDefaultButton, UIIconButton } from '../UIButton';
+import { UIDefaultButton } from '../UIButton';
 import { UICallout, UICalloutContentPadding } from '../UICallout';
 import { UiIcons } from '../Icons';
 import { defaultTranslationButtonStrings } from './defaults';
@@ -16,6 +16,7 @@ import {
 
 import './UITranslationInput.scss';
 import { UIFormattedText, formatText } from './UIFormattedText';
+import { UILoadButton } from './UILoadButton';
 
 export enum SuggestValueType {
     Existing = 'Existing',
@@ -149,7 +150,7 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
  * @returns Component to render translation button with callout.
  */
 export function UITranslationButton(props: UITranslationButtonProps): ReactElement {
-    const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry } = props;
+    const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry, busy } = props;
     const [isCalloutVisible, setCalloutVisible] = useState(false);
     const suggestion = getTranslationSuggestion(props);
     // Callbacks
@@ -180,12 +181,14 @@ export function UITranslationButton(props: UITranslationButtonProps): ReactEleme
 
     return (
         <div className="ui-translatable__button">
-            <UIIconButton
+            <UILoadButton
                 id={id}
                 disabled={props.disabled ?? false}
                 onClick={onToggleCallout}
                 iconProps={{ iconName: suggestion.suggest?.icon || UiIcons.World }}
                 title={suggestion.tooltip}
+                busy={busy?.busy}
+                useMinWaitingTime={busy?.useMinWaitingTime}
             />
             {isCalloutVisible && (
                 <UICallout
