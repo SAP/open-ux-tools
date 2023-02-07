@@ -12,13 +12,26 @@ export interface UILoadButtonState {
 
 type UILoadButtonProps = ButtonProps & UILoadButtonBusyProps;
 
+/**
+ * Component to render load button with spin indicator.
+ */
 export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButtonState> {
     private minLoaderTimer: number | undefined = undefined;
+    /**
+     * Constructor method for load button.
+     *
+     * @param props Component properties.
+     */
     constructor(props: UILoadButtonProps) {
         super(props);
         this.state = this.getBusyState(props, {}) || {};
     }
 
+    /**
+     * Method handles component update to refresh busy state.
+     *
+     * @param prevProps Component previous properties.
+     */
     componentDidUpdate(prevProps: UILoadButtonProps): void {
         if (prevProps.busy === this.props.busy) {
             return;
@@ -50,12 +63,13 @@ export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButto
 
     /**
      * Method returns latest busy state by checking current state and props.
-     * @param {LoadButtonProps} props Current props.
-     * @param {LoadButtonState} state Current state.
-     * @return {LoadButtonState | undefined} Busy state.
+     *
+     * @param props Current props.
+     * @param state Current state.
+     * @returns Busy state.
      */
     private getBusyState(props: UILoadButtonProps, state: UILoadButtonState): UILoadButtonState | undefined {
-        let newState: UILoadButtonState | undefined = undefined;
+        let newState: UILoadButtonState | undefined;
         if (props.busy !== state.busy) {
             if (!props.busy && !this.minLoaderTimer) {
                 newState = {
@@ -79,13 +93,19 @@ export class UILoadButton extends React.Component<UILoadButtonProps, UILoadButto
 
     /**
      * Method returns minimal waiting time for loader depending on passed 'useMinWaitingTime' property.
-     * @return {number} Minimal waiting time for busy loader.
+     *
+     * @returns Minimal waiting time for busy loader.
      */
     private getMinimalWaitingTime(): number {
         const { useMinWaitingTime } = this.props;
         return !useMinWaitingTime || typeof useMinWaitingTime === 'boolean' ? 500 : useMinWaitingTime;
     }
 
+    /**
+     * Method to render load button component.
+     *
+     * @returns Load button component.
+     */
     render(): React.ReactElement {
         const { children } = this.props;
         const { busy } = this.state;
