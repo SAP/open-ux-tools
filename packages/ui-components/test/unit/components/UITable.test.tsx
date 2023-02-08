@@ -44,6 +44,21 @@ describe('<UITable />', () => {
         columnControlType: ColumnControlType.UIBooleanSelect
     };
 
+    const columnCombobox = {
+        key: 'comboboxcolumn',
+        name: 'comboboxcolumn',
+        fieldName: 'combobox',
+        minWidth: 100,
+        maxWidth: 200,
+        isResizable: true,
+        editable: true,
+        validate: undefined as any,
+        iconName: undefined as any,
+        iconTooltip: undefined as any,
+        columnControlType: ColumnControlType.UICombobox,
+        comboboxOptions: ['one', 'two', 'three']
+    };
+
     const columnDate = {
         key: 'datecolumn',
         name: 'datecolumn',
@@ -131,7 +146,7 @@ describe('<UITable />', () => {
         const wrapper = Enzyme.mount(
             <UITable
                 {...defaultProps}
-                columns={[columnBool, columnText]}
+                columns={[columnBool, columnText, columnCombobox]}
                 items={[
                     { bool: 'true', text: 'apple' },
                     { bool: 'false', text: 'orange' }
