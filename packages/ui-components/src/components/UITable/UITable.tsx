@@ -404,7 +404,10 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         requestAnimationFrame(() => {
             if (column?.columnControlType === ColumnControlType.UITextInput) {
                 (this.inputRefs?.[rowIndex][column?.key] as React.RefObject<ITextField>)?.current?.select();
-            } else if (column?.columnControlType === ColumnControlType.UICombobox || column?.columnControlType === ColumnControlType.UIBooleanSelect) {
+            } else if (
+                column?.columnControlType === ColumnControlType.UICombobox ||
+                column?.columnControlType === ColumnControlType.UIBooleanSelect
+            ) {
                 const combo = this.inputRefs?.[rowIndex][column?.key] as React.RefObject<HTMLDivElement>;
                 getComboBoxInput(combo)?.focus();
             } else if (column?.columnControlType === ColumnControlType.UIDatePicker) {
@@ -451,7 +454,10 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                     refValue = (compRef as React.RefObject<ITextField>)?.current?.value || '';
                 } else if (column?.columnControlType === ColumnControlType.UIDatePicker) {
                     refValue = (compRef as React.RefObject<ITextField>)?.current?.value || '';
-                } else if (column?.columnControlType === ColumnControlType.UICombobox || column?.columnControlType === ColumnControlType.UIBooleanSelect) {
+                } else if (
+                    column?.columnControlType === ColumnControlType.UICombobox ||
+                    column?.columnControlType === ColumnControlType.UIBooleanSelect
+                ) {
                     const combo = compRef as React.RefObject<HTMLDivElement>;
                     refValue = getComboBoxInput(combo)?.value || '';
                 }

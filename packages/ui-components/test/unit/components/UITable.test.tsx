@@ -41,7 +41,7 @@ describe('<UITable />', () => {
         validate: undefined as any,
         iconName: undefined as any,
         iconTooltip: undefined as any,
-        columnControlType: ColumnControlType.UIBooleanSelect,
+        columnControlType: ColumnControlType.UIBooleanSelect
     };
 
     const columnCombobox = {

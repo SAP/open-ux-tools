@@ -355,7 +355,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      */
     private calculateMenuMinWidth(): void {
         const comboBoxWrapper = this.comboBox.current?._comboBoxWrapper.current;
-        if (comboBoxWrapper && this.props.useComboBoxAsMenuMinWidth && comboBoxWrapper.clientWidth !== this.state.minWidth) {
+        if (
+            comboBoxWrapper &&
+            this.props.useComboBoxAsMenuMinWidth &&
+            comboBoxWrapper.clientWidth !== this.state.minWidth
+        ) {
             this.setState({
                 minWidth: comboBoxWrapper.clientWidth
             });
