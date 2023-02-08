@@ -39,7 +39,10 @@ const columns: UIColumn[] = Array.from({ length: 10 }).map((item, index) => {
     }
     if (index === 3) {
         col.columnControlType = ColumnControlType.UICombobox;
-        col.comboboxOptions = ["true", "false"];
+        col.comboboxOptions = ["one", "two", "three"];
+    }
+    if (index === 4) {
+        col.columnControlType = ColumnControlType.UIBooleanSelect;
     }
     return col;
 });

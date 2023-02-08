@@ -27,7 +27,6 @@ import {
 import { UICheckbox } from '../UICheckbox';
 import { UITextInput } from '../UIInput';
 import { UIDropdown } from '../UIDropdown';
-import type { ComboBoxRef } from '../UIComboBox';
 import { UIComboBox } from '../UIComboBox';
 import { UIDatePicker } from '../UIDatePicker';
 import {
@@ -59,7 +58,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
     private tableRef: React.RefObject<IDetailsList>;
     private inputRefs?: {
         [key: string]: {
-            [key: string]: React.RefObject<ITextField | IDropdown | ComboBoxRef> | undefined;
+            [key: string]: React.RefObject<ITextField | IDropdown | HTMLDivElement> | undefined;
         };
     } = {};
     private selection: Selection;
@@ -405,8 +404,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         requestAnimationFrame(() => {
             if (column?.columnControlType === ColumnControlType.UITextInput) {
                 (this.inputRefs?.[rowIndex][column?.key] as React.RefObject<ITextField>)?.current?.select();
-            } else if (column?.columnControlType === ColumnControlType.UICombobox) {
-                const combo = this.inputRefs?.[rowIndex][column?.key] as React.RefObject<ComboBoxRef>;
+            } else if (column?.columnControlType === ColumnControlType.UICombobox || column?.columnControlType === ColumnControlType.UIBooleanSelect) {
+                const combo = this.inputRefs?.[rowIndex][column?.key] as React.RefObject<HTMLDivElement>;
                 getComboBoxInput(combo)?.focus();
             } else if (column?.columnControlType === ColumnControlType.UIDatePicker) {
                 (this.inputRefs?.[rowIndex][column?.key] as React.RefObject<ITextField>)?.current?.select();
@@ -441,7 +440,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
             const { rowIndex, column } = this.state.editedCell;
 
             if (column?.columnControlType !== ColumnControlType.UIDropdown && !this.state.editedCell.errorMessage) {
-                let compRef: React.RefObject<ITextField | IDropdown | ComboBoxRef> | undefined;
+                let compRef: React.RefObject<ITextField | IDropdown | HTMLDivElement> | undefined;
                 if (column && this?.inputRefs?.[rowIndex]?.[column.key]) {
                     compRef = this?.inputRefs[rowIndex][column.key];
                 }
@@ -452,8 +451,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
                     refValue = (compRef as React.RefObject<ITextField>)?.current?.value || '';
                 } else if (column?.columnControlType === ColumnControlType.UIDatePicker) {
                     refValue = (compRef as React.RefObject<ITextField>)?.current?.value || '';
-                } else if (column?.columnControlType === ColumnControlType.UICombobox) {
-                    const combo = compRef as React.RefObject<ComboBoxRef>;
+                } else if (column?.columnControlType === ColumnControlType.UICombobox || column?.columnControlType === ColumnControlType.UIBooleanSelect) {
+                    const combo = compRef as React.RefObject<HTMLDivElement>;
                     refValue = getComboBoxInput(combo)?.value || '';
                 }
 
@@ -723,12 +722,12 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      *
      * @param rowIndex
      * @param column
-     * @returns { React.RefObject<ITextField | IDropdown | UIComboBox> | undefined}
+     * @returns { React.RefObject<ITextField | IDropdown | HTMLDivElement> | undefined}
      */
     private _getInputRef(
         rowIndex: number | undefined,
         column: UIColumn | undefined
-    ): React.RefObject<ITextField | IDropdown | UIComboBox> | undefined {
+    ): React.RefObject<ITextField | IDropdown | HTMLDivElement> | undefined {
         return typeof rowIndex === 'number' && typeof column?.key === 'string'
             ? this?.inputRefs?.[rowIndex]?.[column.key]
             : undefined;
@@ -771,7 +770,7 @@ export class UITable extends React.Component<UITableProps, UITableState> {
      * @returns {any}
      */
     private _renderCombobox(item: UIDocument, rowIndex?: number, column?: UIColumn): any {
-        const compRef = this._getInputRef(rowIndex, column) as React.RefObject<ComboBoxRef>;
+        const compRef = this._getInputRef(rowIndex, column) as React.RefObject<HTMLDivElement>;
         const newValue = this.state.editedCell?.newValue;
 
         let value;
@@ -786,11 +785,12 @@ export class UITable extends React.Component<UITableProps, UITableState> {
 
         return (
             <UIComboBox
+                highlight={true}
                 defaultSelectedKey={value}
                 allowFreeform={false}
                 autoComplete="on"
                 shouldRestoreFocus={false}
-                componentRef={compRef}
+                wrapperRef={compRef}
                 errorMessage={this.state.editedCell?.errorMessage}
                 openMenuOnClick={false}
                 onPendingValueChanged={this.onComboBoxChange}
@@ -902,6 +902,8 @@ export class UITable extends React.Component<UITableProps, UITableState> {
         if (isCellInEditMode && rowIndex !== undefined) {
             if (column?.columnControlType === ColumnControlType.UICombobox) {
                 return this._renderCombobox(item, rowIndex, column);
+            } else if (column?.columnControlType === ColumnControlType.UIBooleanSelect) {
+                return this._renderCombobox(item, rowIndex, { ...column, comboboxOptions: ['true', 'false'] });
             } else if (column?.columnControlType === ColumnControlType.UIDatePicker) {
                 return this._renderDatePicker(item, rowIndex, column, column?.type === 'Date');
             } else {

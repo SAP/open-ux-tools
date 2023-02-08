@@ -1,6 +1,5 @@
 ---
-"@sap-ux/ui-components": major
-"@sap-ux/types": minor
+"@sap-ux/ui-components": minor
 ---
 
-feat(21552): make UITable's combobox more generic (ColumnControlType.UIBooleanSelect -> ColumnControlType.UICombobox)
+feat(21552): add generic combobox column type to UITable (ColumnControlType.UICombobox)

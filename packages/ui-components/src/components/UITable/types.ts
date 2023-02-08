@@ -20,7 +20,8 @@ export enum ColumnControlType {
     UITextInput,
     UIDropdown,
     UIDatePicker,
-    UICombobox
+    UICombobox,
+    UIBooleanSelect,
 }
 export { CheckboxVisibility, SelectionMode, Selection, DetailsListLayoutMode, IDropdownOption } from '@fluentui/react';
 
