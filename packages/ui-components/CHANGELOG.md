@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.2.0
+
+### Minor Changes
+
+-   92184eb: New component - UITranslationInput which provide UI to generate i18n key for entered text value
+
 ## 1.1.10
 
 ### Patch Changes
