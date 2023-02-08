@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.0
+
+### Minor Changes
+
+-   e007958: feat(21552): add generic combobox column type to UITable (ColumnControlType.UICombobox)
+
 ## 1.2.0
 
 ### Minor Changes
