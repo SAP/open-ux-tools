@@ -11,10 +11,6 @@ describe('BackendSystem service', () => {
         await initI18n();
     });
 
-    beforeEach(() => {
-        // jest.resetAllMocks();
-    });
-
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
 
     describe('delete', () => {
