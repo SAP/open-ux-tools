@@ -47,7 +47,7 @@ export interface UITranslationProps {
     // Loader indicator
     busy?: UILoadButtonBusyProps;
     // Opion to pass custom Texts for component's labels and tooltips
-    strings?: TranslationButtonStrings;
+    strings?: TranslationInputStrings;
 }
 
 export interface UILoadButtonBusyProps {

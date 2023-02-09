@@ -3,7 +3,7 @@ import type { ReactElement } from 'react';
 import { UIDefaultButton } from '../UIButton';
 import { UICallout, UICalloutContentPadding } from '../UICallout';
 import { UiIcons } from '../Icons';
-import type { UITranslationProps, TranslationButtonStrings, TranslationSuggest } from './UITranslationButton.types';
+import type { UITranslationProps, TranslationInputStrings, TranslationSuggest } from './UITranslationButton.types';
 import { SuggestValueType } from './UITranslationButton.types';
 import { UILoadButton } from './UILoadButton';
 
@@ -22,7 +22,7 @@ export interface UITranslationButtonProps extends UITranslationProps {
  * @param strings Map with all text properties.
  * @returns Resolved text.
  */
-const getStringText = (property: keyof TranslationButtonStrings, strings?: TranslationButtonStrings): string => {
+const getStringText = (property: keyof TranslationInputStrings, strings?: TranslationInputStrings): string => {
     return strings?.[property] || '';
 };
 
