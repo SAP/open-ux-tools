@@ -8,6 +8,7 @@ import { validateVersion, validateBasePath } from '../common/validate';
 import type { Manifest } from '../common/types';
 import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
+import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
 import { coerce } from 'semver';
 
@@ -92,7 +93,11 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
     // enhance manifest with section definition
     const manifestRoot = getManifestRoot(customSection.minUI5Version);
     const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeSection, {});
-    fs.extendJSON(manifestPath, JSON.parse(filledTemplate));
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: filledTemplate,
+        tabInfo: customSection.tabInfo
+    });
 
     // add fragment
     const viewPath = join(completeSection.path, `${completeSection.name}.fragment.xml`);

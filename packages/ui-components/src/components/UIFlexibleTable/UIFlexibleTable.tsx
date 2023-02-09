@@ -195,12 +195,19 @@ export function UIFlexibleTable<T>(props: UIFlexibleTableProps<T>): React.ReactE
                 </UIFlexibleTableRowNoData>
             );
         }
+        const getCursorStyle = () => {
+            let cursorIcon = 'default';
+            if (props.onTableReorder) {
+                cursorIcon = params.isDragged ? 'grabbing' : 'grab';
+            }
+            return cursorIcon;
+        };
         return (
             <ul
                 ref={params.props.ref}
                 className={`flexible-table-content-table${params.isDragged ? ' dragged' : ''}`}
                 style={{
-                    cursor: params.isDragged ? 'grabbing' : 'default',
+                    cursor: getCursorStyle(),
                     maxHeight: props.maxScrollableContentHeight ? `${props.maxScrollableContentHeight}px` : undefined
                 }}>
                 {children}
@@ -315,7 +322,7 @@ function getTableBody<T>(
 ): React.ReactNode {
     let tableBody: React.ReactNode;
     const { rows } = props.onBeforeTableRender ? props.onBeforeTableRender({ rows: props.rows }) : { rows: props.rows };
-    if (props.onTableReorder && !props.readonly) {
+    if (rows.length > 0 && props.onTableReorder && !props.readonly) {
         tableBody = (
             <List
                 values={rows}

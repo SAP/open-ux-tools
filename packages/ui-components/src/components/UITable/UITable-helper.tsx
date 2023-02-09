@@ -2,7 +2,6 @@ import React from 'react';
 import type { IDetailsHeaderProps, IRenderFunction, IDetailsListStyles, IDetailsList } from '@fluentui/react';
 import { Sticky } from '@fluentui/react';
 import { UIIcon } from '..';
-import type { ComboBoxRef } from '../UIComboBox';
 import type { UIColumn, EditedCell, UITableProps, UITableState } from '.';
 
 /**
@@ -276,8 +275,6 @@ export function hideFocus(): void {
  * @param ref
  * @returns {HTMLInputElement | undefined }
  */
-export function getComboBoxInput(ref?: React.RefObject<ComboBoxRef>): HTMLInputElement | undefined {
-    const anyCombo = ref?.current as any;
-    const anyComboDiv = anyCombo?.root.current;
-    return anyComboDiv?.querySelector('input') as HTMLInputElement;
+export function getComboBoxInput(ref?: React.RefObject<HTMLDivElement>): HTMLInputElement | undefined {
+    return ref?.current?.querySelector('input') as HTMLInputElement;
 }

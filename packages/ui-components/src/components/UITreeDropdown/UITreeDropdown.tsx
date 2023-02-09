@@ -17,6 +17,10 @@ import { UITextInput } from '../UIInput';
 import { UIContextualMenu, UIHighlightMenuOption } from '../UIContextualMenu';
 import { UIIconButton } from '../UIButton/UIIconButton';
 import { UiIcons } from '../Icons';
+
+import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
+import { getMessageInfo } from '../../helper/ValidationMessage';
+
 import './UITreeDropdown.scss';
 
 export { DirectionalHint as UIDirectionalHint };
@@ -29,7 +33,7 @@ export interface ItemsProps {
     split?: boolean;
 }
 
-export interface UITreeDropdownProps {
+export interface UITreeDropdownProps extends UIMessagesExtendedProps {
     label?: string;
     disabled?: boolean;
     required?: boolean;
@@ -41,6 +45,8 @@ export interface UITreeDropdownProps {
     directionalHint?: DirectionalHint;
     maxWidth?: number;
     useTargetWidth?: string;
+    errorMessage?: string;
+    readOnly?: boolean;
 }
 
 interface TreeItemInfo {
@@ -362,6 +368,9 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @param {React.KeyboardEvent<HTMLInputElement>} event
      */
     toggleMenu = (status: boolean, event?: React.KeyboardEvent<HTMLInputElement>): void => {
+        if (this.props.readOnly) {
+            return;
+        }
         this.setState({
             isHidden: status
         });
@@ -696,9 +705,28 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     };
 
     /**
+     * Method returns class names for wrapper element depending on props and component state.
+     *
+     * @returns {string} Class names of wrapper element.
+     */
+    private getClassNames(): string {
+        let classNames = `ui-treeDropdown-wrapper ui-treeDropdown-wrapper-menu${
+            this.state.isMenuOpen ? '-open' : '-close'
+        } ui-treeDropdown-wrapper-${this.state.uiidInput}`;
+        if (this.state.isDisabled) {
+            classNames += ' disabled';
+        }
+        if (this.props.readOnly) {
+            classNames += ' readonly';
+        }
+        return classNames;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
+        const messageInfo = getMessageInfo(this.props);
         let useTargetWidth = true;
         if (this.props.useTargetWidth) {
             useTargetWidth = false;
@@ -716,14 +744,11 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                         {this.props.label}
                     </label>
                 )}
-                <div
-                    className={`ui-treeDropdown-wrapper${this.state.isDisabled ? ' disabled' : ''}
-                        ui-treeDropdown-wrapper-menu${
-                            this.state.isMenuOpen ? '-open' : '-close'
-                        } ui-treeDropdown-wrapper-${this.state.uiidInput}`}>
+                <div className={this.getClassNames()}>
                     <UITextInput
                         componentRef={this.inputRef}
                         disabled={this.state.isDisabled}
+                        readOnly={this.props.readOnly}
                         autoComplete="off"
                         value={this.state.value}
                         placeholder={this.props.placeholderText}
@@ -736,6 +761,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                             // Select the text of the input
                             event.target.select();
                         }}
+                        errorMessage={messageInfo.message}
                     />
                     <UIIconButton
                         tabIndex={-1}

@@ -1,0 +1,40 @@
+// Input field
+.ui-translatable {
+    &__input {
+        position: relative;
+        // Translation suggest button
+        .ms-TextField-suffix {
+            background: transparent;
+        }
+    }
+    &__button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        // Icon button
+        .ms-Button {
+            margin: 1px;
+            box-sizing: content-box;
+        }
+    }
+    &__callout {
+        .ms-Callout-main {
+            padding: 0;
+        }
+    }
+    &__message {
+        padding: 20px 10px;
+        text-align: center;
+        font-size: var(--vscode-font-size);
+        word-break: break-word;
+        .ui-translatable__actions {
+            margin-top: 16px;
+            > .ms-Button {
+                margin-right: 16px;
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+}

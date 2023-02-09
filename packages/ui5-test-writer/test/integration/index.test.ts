@@ -91,6 +91,6 @@ describe('ui5-test-writer - Integration tests', () => {
         );
         fs = await generatePageObjectFile(projectDir, { targetKey: 'EmployeesCustomPage' }, fs);
 
-        expect((fs as any).dump(projectDir)).toMatchSnapshot();
+        expect(fs.dump(projectDir)).toMatchSnapshot();
     });
 });

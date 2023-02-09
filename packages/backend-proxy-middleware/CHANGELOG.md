@@ -1,5 +1,47 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.39
+
+### Patch Changes
+
+-   Updated dependencies [3748963]
+    -   @sap-ux/axios-extension@0.14.0
+
+## 0.6.38
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+    -   @sap-ux/axios-extension@0.13.4
+    -   @sap-ux/store@0.3.8
+
+## 0.6.37
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/axios-extension@0.13.3
+
+## 0.6.36
+
+### Patch Changes
+
+-   5589854: Upgrade qs module and the modules using it because of a potential Denial of Service vulnerabity
+-   Updated dependencies [5589854]
+    -   @sap-ux/axios-extension@0.13.2
+
+## 0.6.35
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/axios-extension@0.13.1
+    -   @sap-ux/btp-utils@0.11.3
+    -   @sap-ux/logger@0.3.2
+    -   @sap-ux/store@0.3.7
+
 ## 0.6.34
 
 ### Patch Changes

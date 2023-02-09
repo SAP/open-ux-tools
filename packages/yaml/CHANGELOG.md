@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.13.1
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 0.13.0
 
 ### Minor Changes

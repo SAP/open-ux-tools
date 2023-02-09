@@ -1,5 +1,111 @@
 # @sap-ux/environment-check
 
+## 0.14.1
+
+### Patch Changes
+
+-   Updated dependencies [8cc76b5]
+    -   @sap-ux/project-access@1.0.5
+
+## 0.14.0
+
+### Minor Changes
+
+-   2be6b00: If present use .gitignore to decide content of archive, if not, allow SAP specific files '.cdsrc.json' and '.extconfig.json' to be added to the archive
+
+## 0.13.0
+
+### Minor Changes
+
+-   1894a8a: add new function to format results to a string
+
+## 0.12.1
+
+### Patch Changes
+
+-   450925a: Replaces hardcoded paths with env var NODE_PATH as installed generator search locations
+
+## 0.12.0
+
+### Minor Changes
+
+-   349a136: Add error details from HTTP calls (axios) to environment check report
+
+## 0.11.0
+
+### Minor Changes
+
+-   10d7646: enhance env-check for vscode insiders
+
+## 0.10.3
+
+### Patch Changes
+
+-   Updated dependencies [3748963]
+    -   @sap-ux/axios-extension@0.14.0
+
+## 0.10.2
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+    -   @sap-ux/axios-extension@0.13.4
+    -   @sap-ux/store@0.3.8
+
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/axios-extension@0.13.3
+
+## 0.10.0
+
+### Minor Changes
+
+-   31cf890: prevent showing credentials in zip, fix escaping in markdown
+
+## 0.9.1
+
+### Patch Changes
+
+-   Updated dependencies [e49be41]
+    -   @sap-ux/project-access@1.0.4
+
+## 0.9.0
+
+### Minor Changes
+
+-   f4adc48: markdown updates
+
+## 0.8.2
+
+### Patch Changes
+
+-   5589854: Upgrade qs module and the modules using it because of a potential Denial of Service vulnerabity
+-   Updated dependencies [5589854]
+    -   @sap-ux/axios-extension@0.13.2
+
+## 0.8.1
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/axios-extension@0.13.1
+    -   @sap-ux/btp-utils@0.11.3
+    -   @sap-ux/logger@0.3.2
+    -   @sap-ux/project-access@1.0.3
+    -   @sap-ux/store@0.3.7
+    -   @sap-ux/ui5-config@0.16.1
+
+## 0.8.0
+
+### Minor Changes
+
+-   16be8f1: add sap systems check
+
 ## 0.7.2
 
 ### Patch Changes
