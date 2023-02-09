@@ -16,7 +16,7 @@ describe('Backend system data provider', () => {
 
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
     beforeEach(() => {
-        jest.resetAllMocks();
+        // jest.resetAllMocks();
         mockGetHybridStore.mockReturnValue(mockHybridStore);
     });
 

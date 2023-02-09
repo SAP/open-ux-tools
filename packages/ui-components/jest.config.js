@@ -7,9 +7,9 @@ config.transform = {
     '^.+\\.tsx?$': 'ts-jest',
     '.+\\.(css|sass|scss)$': 'jest-scss-transform'
 };
-config.globals = {
-    'ts-jest': {
+config.transform= {
+    '^.+\\.tsx?$': ['ts-jest', {
         tsconfig: 'test/tsconfig.json'
-    }
-};
+    }],
+},
 module.exports = config;

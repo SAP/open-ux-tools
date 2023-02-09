@@ -12,7 +12,7 @@ describe('BackendSystem service', () => {
     });
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        // jest.resetAllMocks();
     });
 
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
