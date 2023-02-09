@@ -489,7 +489,7 @@ describe('proxy', () => {
             };
             const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, logger);
             const debugSpy = jest.spyOn(logger, 'debug');
-            debugSpy.mockReset();
+            // debugSpy.mockReset();
             if (typeof proxyOptions?.onError === 'function') {
                 proxyOptions?.onError(undefined as any, {} as any, {} as any);
                 expect(debugSpy).toHaveBeenCalledTimes(1);
