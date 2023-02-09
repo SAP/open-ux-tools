@@ -21,6 +21,14 @@ describe('<UITranslationInput />', () => {
         loader: '.ms-Spinner'
     };
 
+    const getButtonIdSelector = (id: string, goToCode = false): string => {
+        id = `#${id}-i18n`;
+        if (goToCode) {
+            id += '-navigate';
+        }
+        return id;
+    };
+
     const clickI18nButton = (expectCallout = true) => {
         const openBtn = document.querySelector(selectors.button) as HTMLElement;
         fireEvent.click(openBtn);
@@ -59,6 +67,8 @@ describe('<UITranslationInput />', () => {
         );
         expect(container.querySelectorAll(selectors.input).length).toEqual(1);
         expect(container.querySelectorAll(selectors.button).length).toEqual(1);
+        expect(container.querySelectorAll(getButtonIdSelector(id, false)).length).toEqual(1);
+        expect(container.querySelectorAll(getButtonIdSelector(id, true)).length).toEqual(0);
         expect(container.querySelectorAll(`.${customClassName}`).length).toEqual(0);
 
         rerender(
@@ -199,7 +209,8 @@ describe('<UITranslationInput />', () => {
                 entry: {
                     key: 'dummy1',
                     value: 'dummy1 text'
-                }
+                },
+                title: "Value: '{i18n>dummy1}'.\nTranslation: 'dummy1 text'."
             }
         },
         {
@@ -212,7 +223,8 @@ describe('<UITranslationInput />', () => {
                 entry: {
                     key: 'Dummy1',
                     value: 'Dummy1 text'
-                }
+                },
+                title: "Value: '{i18n>Dummy1}'.\nTranslation: 'Dummy1 text'."
             }
         }
     ];
@@ -224,7 +236,7 @@ describe('<UITranslationInput />', () => {
             const onChangeMock = jest.fn();
             const onUpdateValueMock = jest.fn();
             const onShowExistingEntryMock = jest.fn();
-            render(
+            const { container } = render(
                 <UITranslationInput
                     id={id}
                     value={value}
@@ -244,11 +256,15 @@ describe('<UITranslationInput />', () => {
             expect(onCreateNewEntryMock).toBeCalledTimes(0);
             expect(onChangeMock).toBeCalledTimes(0);
             expect(onUpdateValueMock).toBeCalledTimes(0);
+            expect(container.querySelectorAll(getButtonIdSelector(id, false)).length).toEqual(0);
+            expect(container.querySelectorAll(getButtonIdSelector(id, true)).length).toEqual(1);
             expect(onShowExistingEntryMock).toBeCalledTimes(1);
             expect(onShowExistingEntryMock).toBeCalledWith({
                 'key': { 'value': result.entry.key },
                 'value': { 'value': result.entry.value }
             });
+            // Check title
+            expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toEqual(result.title);
         }
     );
 
