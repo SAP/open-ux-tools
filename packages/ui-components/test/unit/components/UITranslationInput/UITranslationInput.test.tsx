@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '../../../../src/components';
 import {
     UITranslationInput,
@@ -385,5 +385,33 @@ describe('<UITranslationInput />', () => {
             fireEvent.click(document.body);
             expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
         });
+    });
+
+    test('Test "string" property', () => {
+        const acceptButtonLabel = 'Dummy accept';
+        render(
+            <UITranslationInput
+                id={id}
+                entries={entries}
+                allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                i18nPrefix={'i18n'}
+                value={'new value'}
+                strings={{
+                    acceptButtonLabel,
+                    cancelButtonLabel: '',
+                    i18nKeyMissingTooltip: '',
+                    i18nKeyMissingDescription: '',
+                    i18nValueMissingTooltip: '',
+                    i18nValueMissingDescription: '',
+                    i18nReplaceWithExistingTooltip: '',
+                    i18nReplaceWithExistingDescription: '',
+                    i18nEntryExistsTooltip: '',
+                    i18nEntryExistsInputTooltip: ''
+                }}
+            />
+        );
+        clickI18nButton();
+        expect(screen.getByText(acceptButtonLabel)).toBeDefined();
     });
 });
