@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.1
+
+### Patch Changes
+
+-   4418744: UITranslationInput. Rename accept button default text, add title to input with information about resolved i18n value
+
 ## 1.3.0
 
 ### Minor Changes
