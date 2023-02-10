@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.4
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/odata-service-writer@0.14.15
+    -   @sap-ux/ui5-application-writer@0.18.4
+    -   @sap-ux/ui5-config@0.16.2
+
 ## 0.15.3
 
 ### Patch Changes

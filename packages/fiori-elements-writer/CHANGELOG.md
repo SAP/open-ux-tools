@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.8.14
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/fe-fpm-writer@0.18.5
+    -   @sap-ux/odata-service-writer@0.14.15
+    -   @sap-ux/ui5-application-writer@0.18.4
+    -   @sap-ux/ui5-config@0.16.2
+    -   @sap-ux/ui5-test-writer@0.1.6
+
 ## 0.8.13
 
 ### Patch Changes

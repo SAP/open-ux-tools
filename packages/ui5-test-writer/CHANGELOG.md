@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.6
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
 ## 0.1.5
 
 ### Patch Changes
