@@ -82,7 +82,6 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 }
             } as FreestyleApp<ListDetailSettings>
         }
-        
     ];
 
     beforeAll(() => {
