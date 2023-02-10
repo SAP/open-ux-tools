@@ -1,17 +1,18 @@
-import type { Destination as BTPDestination } from '@sap-ux/btp-utils';
+import type { Destination as BTPDestination, ServiceInfo } from '@sap-ux/btp-utils';
 import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
 
 export interface CheckEnvironmentOptions {
     workspaceRoots?: string[];
-    destinations?: string[];
-    credentialCallback?: (destination: Destination) => Promise<{ username: string; password: string }>;
+    endpoints?: string[];
+    credentialCallback?: (destination: Endpoint) => Promise<{ username: string; password: string }>;
 }
 
 export enum Check {
     Environment = 'environment',
-    DestResults = 'destinationResults',
-    Destinations = 'destinations'
+    Destinations = 'destinations',
+    StoredSystems = 'storedSystems',
+    EndpointResults = 'endpointResults'
 }
 
 export enum OutputMode {
@@ -87,20 +88,42 @@ interface CatalogResult {
     status?: number;
 }
 
-export interface DestinationResults {
+export interface CatalogServiceResult {
     v2: CatalogResult;
     v4: CatalogResult;
+}
+
+export interface EndpointResults {
+    catalogService?: CatalogServiceResult;
+    isAtoCatalog?: boolean; // ATO catalog available
+    isSapUi5Repo?: boolean; // SAPUI5 repository service for deployment available
+    isTransportRequests?: boolean; // Ability to retrieve available Transport Requests
     HTML5DynamicDestination?: boolean;
 }
 
-export interface Destination extends BTPDestination {
+interface Credentials {
+    [key: string]: unknown;
+    username?: string;
+    password?: string;
+    serviceKeysContents?: string | ServiceInfo;
+    serviceKeys?: string;
+    refreshToken?: string;
+}
+
+export interface Endpoint extends Partial<BTPDestination> {
+    Name: string;
+    Url?: string;
+    Client?: string;
+    Credentials?: Credentials;
     UrlServiceType?: UrlServiceType;
+    UserDisplayName?: string;
+    Scp?: boolean;
 }
 
 export interface EnvironmentCheckResult {
     environment?: Environment;
-    destinations?: Destination[];
-    destinationResults?: { [dest: string]: DestinationResults };
+    endpoints?: Endpoint[];
+    endpointResults?: { [system: string]: EndpointResults };
     requestedChecks?: Check[];
     messages?: ResultMessage[];
 }
@@ -150,3 +173,17 @@ export interface ILogger extends Logger {
     push(...newMessages: ResultMessage[]): void;
     getMessages(): ResultMessage[];
 }
+
+export const toolsExtensionListVSCode = new Map<string, string>([
+    ['platform', 'Platform'],
+    ['cloudCli', 'Cloud CLI tools'],
+    ['appWizard', 'Application Wizard'],
+    ['fioriGenVersion', 'SAP Fiori tools - Fiori generator'],
+    ['appMod', 'SAP Fiori tools - Application Modeler'],
+    ['help', 'SAP Fiori tools - Guided Development'],
+    ['serviceMod', 'SAP Fiori tools - Service Modeler'],
+    ['annotationMod', 'SAP Fiori tools - XML Annotation Language Server'],
+    ['xmlToolkit', 'XML Toolkit'],
+    ['cds', 'SAP CDS Language Support'],
+    ['ui5LanguageAssistant', 'UI5 Language Assistant Support']
+]);

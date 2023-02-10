@@ -1,24 +1,8 @@
-import { createWriteStream, existsSync } from 'fs';
-import { basename, dirname, join } from 'path';
+import { createWriteStream } from 'fs';
 import * as archiver from 'archiver';
-import type { EnvironmentCheckResult } from '..';
-import { convertResultsToMarkdown } from '.';
-import { t } from '../i18n';
-
-/**
- * Convert a int byte number to a nice output format like 1.23 KB.
- *
- * @param byteNumber - int number of bytes
- * @returns output string
- */
-function byteNumberToSizeString(byteNumber: number): string {
-    if (byteNumber === 0) {
-        return '0 Bytes';
-    }
-    const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(byteNumber) / Math.log(1024));
-    return `${parseFloat((byteNumber / Math.pow(1024, i)).toFixed(2))} ${units[i]}`;
-}
+import type { EnvironmentCheckResult } from '../types';
+import { byteNumberToSizeString } from '../formatter';
+import { convertResultsToMarkdown } from './markdown';
 
 /**
  * Store output results to zip archive. This includes the markdown report and the raw JSON.
@@ -52,58 +36,4 @@ export function storeResultsZip(results: EnvironmentCheckResult, targetFile = 'e
     zip.append(jsonString, { name: 'envcheck-results.json' });
 
     zip.finalize();
-}
-
-/**
- * Archive a project to zip file. Result file is written to parent of the project root folder.
- *
- * @param projectRoot - root of the project, where package.json is located
- * @param targetFileName - optional file name, defaults to project folder + timestamp + .zip
- */
-export async function archiveProject(
-    projectRoot: string,
-    targetFileName?: string
-): Promise<{ path: string; size: string }> {
-    return new Promise((resolve, reject) => {
-        if (existsSync(projectRoot)) {
-            try {
-                const zip = archiver.default('zip', { zlib: { level: 9 } });
-                let targetName = '';
-                if (typeof targetFileName === 'string') {
-                    targetName = targetFileName.toLocaleLowerCase().endsWith('.zip')
-                        ? targetFileName
-                        : targetFileName + '.zip';
-                } else {
-                    targetName = `${basename(projectRoot)}-${new Date()
-                        .toISOString()
-                        .replace('T', '')
-                        .replace(':', '')
-                        .substring(0, 14)}.zip`;
-                }
-                const targetPath = join(dirname(projectRoot), targetName);
-                const writeStream = createWriteStream(targetPath);
-                // To define which files to include/exclude archiver uses node-readdir-glob. If we use
-                // ignore: ['**/node_modules/**', '**/.env'] here it takes time, as ignore still enters directories.
-                // Using skip instead, which is way faster because directories are skipped completely in this
-                // case (https://github.com/yqnn/node-readdir-glob#options). Unfortunately, @types/glob -> IOptions
-                // hasn't skip defined. It works as it is supported by node-readdir-glob. Define it here as 'unknown'
-                const globOptions = {
-                    cwd: projectRoot,
-                    ignore: ['**/.env', '**/node_modules'],
-                    skip: ['**/node_modules/**']
-                } as unknown;
-                zip.glob('**', globOptions, {})
-                    .on('error', (error) => reject(error))
-                    .pipe(writeStream);
-                writeStream.on('close', () =>
-                    resolve({ path: targetPath, size: byteNumberToSizeString(zip.pointer()) })
-                );
-                zip.finalize();
-            } catch (error) {
-                reject(error);
-            }
-        } else {
-            reject(new Error(t('error.noProjectRoot', { projectRoot })));
-        }
-    });
 }

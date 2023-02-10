@@ -33,6 +33,7 @@ describe('<UIFlexibleTable />', () => {
         tableHeaderPrimaryAction: '.flexible-table-header-primary-actions .flexible-table-header-action',
         tableHeaderSecondaryAction: '.flexible-table-header-secondary-actions .flexible-table-header-action',
         content: '.flexible-table-content-table',
+        noData: '.flexible-table-content-table-row-no-data',
         row: '.flexible-table-content-table-row',
         rowHeader: '.flexible-table-content-table-row-header',
         rowTitleContainer: '.flexible-table-content-table-row-header-text-content',
@@ -123,6 +124,19 @@ describe('<UIFlexibleTable />', () => {
                 });
             });
             expect(wrapper.find(selectors.reverseBackground).length).toEqual(0);
+        });
+
+        it('Render table (no rows)', () => {
+            wrapper.setProps({
+                noDataText: 'No data.',
+                rows: []
+            });
+            expect(wrapper.exists()).toEqual(true);
+            expect(wrapper.find(selectors.content).length).toEqual(1);
+            expect(wrapper.find(selectors.row).length).toEqual(0);
+            const noData = wrapper.find(selectors.noData);
+            expect(noData.exists()).toEqual(true);
+            expect(noData.props().style?.cursor).toBe('default');
         });
 
         it('Render index column', () => {
@@ -516,6 +530,7 @@ describe('<UIFlexibleTable />', () => {
                 downButtonsFound.forEach((button, idx) => {
                     expect(button.getElement().props.className.includes('is-disabled') === (idx === 2)).toBeTruthy();
                 });
+                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('grab');
             });
             it('move up/down not rendered', () => {
                 wrapper.setProps({
@@ -525,6 +540,7 @@ describe('<UIFlexibleTable />', () => {
                 const downButtonsFound = wrapper.find(selectors.downArrow);
                 expect(upButtonsFound.length).toBe(0);
                 expect(downButtonsFound.length).toBe(0);
+                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('default');
             });
 
             it('move up/down disabled for new line item index 1(2nd row) with tooltip', () => {
@@ -889,7 +905,7 @@ describe('<UIFlexibleTable />', () => {
             wrapper.setProps({
                 noDataText
             });
-            const noData = wrapper.find('.flexible-table-content-table-row-no-data');
+            const noData = wrapper.find(selectors.noData);
             expect(noData.length).toEqual(1);
             expect(noData.text()).toEqual(noDataText);
         });
@@ -908,7 +924,7 @@ describe('<UIFlexibleTable />', () => {
                 noRowBackground: true,
                 noDataText
             });
-            expect(wrapper.find('.flexible-table-content-table-row-no-data.no-background').length).toEqual(1);
+            expect(wrapper.find(`${selectors.noData}.no-background`).length).toEqual(1);
         });
 
         it('"reverseBackground" ', () => {
@@ -917,7 +933,7 @@ describe('<UIFlexibleTable />', () => {
                 reverseBackground: true,
                 noDataText
             });
-            expect(wrapper.find('.flexible-table-content-table-row-no-data.reverse-background').length).toEqual(1);
+            expect(wrapper.find(`${selectors.noData}.reverse-background`).length).toEqual(1);
         });
     });
 });

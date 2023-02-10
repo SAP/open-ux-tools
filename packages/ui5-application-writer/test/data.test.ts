@@ -228,7 +228,7 @@ describe('Setting defaults', () => {
                 version: '1.199.0',
                 localVersion: '1.199.0',
                 minUI5Version: '1.199.0',
-                descriptorVersion: '1.48.0',
+                descriptorVersion: '1.49.0',
                 typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_BEST}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs

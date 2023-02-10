@@ -26,7 +26,8 @@ export function UIFlexibleTableRowNoData(props: UIFlexibleTableRowNoDataProps) {
         <li
             className={rowClassName}
             style={{
-                textAlign: align
+                textAlign: align,
+                cursor: 'default'
             }}>
             {props.children}
         </li>

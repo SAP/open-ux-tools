@@ -330,6 +330,11 @@ Object {
                     \\"key\\": \\"CustomViewKey\\",
                     \\"label\\": \\"Custom View\\",
                     \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                  },
+                  {
+                    \\"key\\": \\"SecondCustomView\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
                   }
                 ]
               }
@@ -833,6 +838,11 @@ declare module 'sap/fe/core/PageController' {
                   },
                   {
                     \\"key\\": \\"CustomViewKey\\",
+                    \\"label\\": \\"Custom View\\",
+                    \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
+                  },
+                  {
+                    \\"key\\": \\"SecondCustomView\\",
                     \\"label\\": \\"Custom View\\",
                     \\"template\\": \\"v4travel.ext.newCustomView.NewCustomView\\"
                   }

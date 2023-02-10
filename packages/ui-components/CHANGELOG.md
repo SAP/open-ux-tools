@@ -1,5 +1,113 @@
 # @sap-ux/ui-components
 
+## 1.3.1
+
+### Patch Changes
+
+-   4418744: UITranslationInput. Rename accept button default text, add title to input with information about resolved i18n value
+
+## 1.3.0
+
+### Minor Changes
+
+-   e007958: feat(21552): add generic combobox column type to UITable (ColumnControlType.UICombobox)
+
+## 1.2.0
+
+### Minor Changes
+
+-   92184eb: New component - UITranslationInput which provide UI to generate i18n key for entered text value
+
+## 1.1.10
+
+### Patch Changes
+
+-   2bac3c4: New icon Id tag
+
+## 1.1.9
+
+### Patch Changes
+
+-   ce13abe: UITextInput. Background color issue for read only input field
+
+## 1.1.8
+
+### Patch Changes
+
+-   b9b66e9: UIFlexibleTable. Fixed "undefined" error when "No data." row was clicked and dragged.
+
+## 1.1.7
+
+### Patch Changes
+
+-   2942309: fix(uic): fixes jumping cursor in editable table input
+
+## 1.1.6
+
+### Patch Changes
+
+-   2014255: Added warning icon with smiley style.
+
+## 1.1.5
+
+### Patch Changes
+
+-   e415208: UIActionButton. Remove forced color for inner icon - icon will be taken from individual icon styles
+
+## 1.1.4
+
+### Patch Changes
+
+-   2447b96: New icons added for knowledge centre, Icon16/ Mission, Graduate, ClockShort, ClockMedium, ClockLong
+
+## 1.1.3
+
+### Patch Changes
+
+-   dbfb2ae: UITextInput, UIComboBox, UIDropdown, UITreeDropdown. Support for "readonly" property
+
+## 1.1.2
+
+### Patch Changes
+
+-   1777aff: UIFlexibleTable. Added "grab" icon for cursor when table reordering is enabled. Cursor icon changes to "default" when reordering is disabled, "grabbing" icon is displayed if reordering is started.
+
+## 1.1.1
+
+### Patch Changes
+
+-   703989a: UIDialog. Enable animation for dialog open with new property "isOpenAnimated". Default value is "true".
+
+## 1.1.0
+
+### Minor Changes
+
+-   69260c3: Adds UIActionCallout
+
+## 1.0.28
+
+### Patch Changes
+
+-   d19e72e: New 16 px and 12px icons added. 16px Icons: Link, Highlighter. 12px Icons: Key, Hide, Main Entity, Foreighn Key, Complex Type
+
+## 1.0.27
+
+### Patch Changes
+
+-   e7d10c9: Storybook update
+
+## 1.0.26
+
+### Patch Changes
+
+-   cedf427: UICombobox. Default value for property "openMenuOnClick" changed to "true". Additionally, property "openMenuOnClick" is not considered during key press handling - dropdown menu is opened on first key press.
+
+## 1.0.25
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+
 ## 1.0.24
 
 ### Patch Changes

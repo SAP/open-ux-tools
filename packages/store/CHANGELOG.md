@@ -1,5 +1,20 @@
 # @sap-ux/store
 
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+
+## 0.3.7
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/logger@0.3.2
+
 ## 0.3.6
 
 ### Patch Changes

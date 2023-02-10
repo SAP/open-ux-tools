@@ -1,18 +1,15 @@
-import type { AxiosError } from 'axios';
 import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
-import type { Destination } from '../../src/types';
+import type { Endpoint, CatalogServiceResult } from '../../src/types';
 import { Severity } from '../../src/types';
 import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
 import { UrlServiceType } from '../../src/types';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
-import { createForDestination } from '@sap-ux/axios-extension';
+import * as serviceChecks from '../../src/checks/service-checks';
 
 jest.mock('@sap-ux/axios-extension', () => ({
     ...(jest.requireActual('@sap-ux/axios-extension') as object),
     createForDestination: jest.fn()
 }));
-
-const mockCreateForDestination = createForDestination as jest.Mock;
 
 jest.mock('@sap/bas-sdk');
 const mockDestinationsApi = destinationsApi as jest.Mocked<typeof destinationsApi>;
@@ -21,8 +18,50 @@ jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn(),
     getAppStudioProxyURL: jest.fn()
 }));
+
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const mockGetAppStudioProxyURL = getAppStudioProxyURL as jest.Mock;
+
+describe('Destination tests, function checkBASDestination()', () => {
+    const checkCatalogServicesResult = {
+        messages: [],
+        result: {
+            v2: {},
+            v4: {}
+        } as CatalogServiceResult
+    };
+    test('HTML5.DynamicDestination missing', async () => {
+        const destination: Partial<Endpoint> = {
+            Name: 'DEST',
+            Host: 'https://one.dest:123'
+        };
+
+        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
+
+        // Test execution
+        const result = await checkBASDestination(destination as Endpoint);
+
+        // Result check
+        expect(result.destinationResults.HTML5DynamicDestination).toEqual(false);
+        expect(result.messages.filter((m) => m.severity === Severity.Error).length).toBe(1);
+    });
+
+    test('HTML5.DynamicDestination set to true', async () => {
+        const destination: Partial<Endpoint> = {
+            Name: 'DEST',
+            Host: 'https://one.dest:123',
+            'HTML5.DynamicDestination': 'true'
+        };
+        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
+
+        // Test execution
+        const result = await checkBASDestination(destination as Endpoint);
+
+        // Result check
+        expect(result.destinationResults.HTML5DynamicDestination).toEqual(true);
+        expect(result.messages.filter((m) => m.severity >= Severity.Warning).length).toBe(0);
+    });
+});
 
 describe('Destinaton tests, function checkBASDestinations()', () => {
     beforeEach(() => {
@@ -31,7 +70,6 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
 
     test('Valid call should return destinations', async () => {
         // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
         mockGetAppStudioProxyURL.mockResolvedValueOnce('');
         const data = [
             {
@@ -42,7 +80,8 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
                 description: 'ONE_DESC',
                 basProperties: {
                     webIDEEnabled: 'true',
-                    usage: 'odata_abap'
+                    usage: 'odata_abap',
+                    html5DynamicDestination: 'true'
                 },
                 host: 'https://one.dest:123'
             },
@@ -74,6 +113,7 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
                 Authentication: 'NoAuthentication',
                 ProxyType: 'Internet',
                 Description: 'ONE_DESC',
+                'HTML5.DynamicDestination': 'true',
                 WebIDEUsage: 'odata_abap',
                 UrlServiceType: 'Catalog Service',
                 Host: 'https://one.dest:123'
@@ -97,21 +137,6 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
 
     test('No destinations and calling checkBASDestinations', async () => {
         // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-        const data = [];
-        mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
-
-        // Test execution
-        const destResult = await checkBASDestinations();
-
-        // Result check
-        expect(destResult.destinations).toEqual(data);
-        expect(destResult.messages).toBeDefined();
-    });
-
-    test('No destinations and VSCode Environment', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(false);
         const data = [];
         mockDestinationsApi.getDestinations.mockResolvedValueOnce(data);
 
@@ -125,7 +150,6 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
 
     test('HTTP call returns error for all requests, should be in result messages', async () => {
         // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
         mockDestinationsApi.getDestinations.mockImplementationOnce(() => Promise.reject(new Error('HTTP ERROR')));
 
         // Test execution
@@ -136,172 +160,16 @@ describe('Destinaton tests, function checkBASDestinations()', () => {
     });
 });
 
-describe('Destinaton tests, function checkBASDestination()', () => {
-    test('Valid destination, should return catalog results', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValue(true);
-        const destination: Partial<Destination> = {
-            Name: 'ONE',
-            Host: 'https://one.dest:123',
-            'sap-client': '123'
-        };
-        const v2catalogResponse = ['V2_S1', 'V2_S2', 'V2_S3'];
-        const v4catalogResponse = ['V4_S1', 'V4_S2', 'V4_S3'];
-
-        const catalog = jest.fn();
-        const listServices = jest.fn();
-
-        listServices.mockImplementationOnce(() => v2catalogResponse).mockImplementationOnce(() => v4catalogResponse);
-
-        catalog.mockImplementation(() => {
-            return {
-                listServices: listServices
-            };
-        });
-
-        mockCreateForDestination.mockImplementation(() => {
-            return {
-                catalog: catalog
-            };
-        });
-
-        // Test execution
-        const result = await checkBASDestination(destination as Destination, 'testUsername', 'testPassword');
-
-        // Result check
-        expect(result.destinationResults.v2.results).toEqual(['V2_S1', 'V2_S2', 'V2_S3']);
-        expect(result.destinationResults.v4.results).toEqual(v4catalogResponse);
-        expect(result.messages.length).toBeGreaterThan(0);
-    });
-
-    test('Catalog services return 401, HTML5.DynamicDestination missing', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-
-        const destination: Partial<Destination> = {
-            Name: 'DEST',
-            Host: 'https://one.dest:123'
-        };
-        const catalog = jest.fn();
-        const listServices = jest.fn();
-
-        const error = {
-            response: {
-                status: 401
-            }
-        } as AxiosError;
-
-        listServices.mockImplementationOnce(() => {
-            throw error;
-        });
-
-        catalog.mockImplementation(() => {
-            return {
-                listServices: listServices
-            };
-        });
-
-        mockCreateForDestination.mockImplementation(() => {
-            return {
-                catalog: catalog
-            };
-        });
-        // Test execution
-        const result = await checkBASDestination(destination as Destination);
-
-        // Result check
-        expect(result.destinationResults.HTML5DynamicDestination).toEqual(false);
-        expect(result.messages.filter((m) => m.severity === Severity.Error).length).toBe(3);
-    });
-
-    test('Catalog services return 403, HTML5.DynamicDestination missing', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-
-        const destination: Partial<Destination> = {
-            Name: 'DEST',
-            Host: 'https://one.dest:123'
-        };
-        const catalog = jest.fn();
-        const listServices = jest.fn();
-
-        const error = {
-            response: {
-                status: 403
-            }
-        } as AxiosError;
-
-        listServices.mockImplementationOnce(() => {
-            throw error;
-        });
-
-        catalog.mockImplementation(() => {
-            return {
-                listServices: listServices
-            };
-        });
-
-        mockCreateForDestination.mockImplementation(() => {
-            return {
-                catalog: catalog
-            };
-        });
-        // Test execution
-        const result = await checkBASDestination(destination as Destination);
-
-        // Result check
-        expect(result.destinationResults.HTML5DynamicDestination).toEqual(false);
-        expect(result.messages.filter((m) => m.severity === Severity.Error).length).toBe(3);
-    });
-
-    test('HTML5.DynamicDestination set to true', async () => {
-        // Mock setup
-        mockIsAppStudio.mockReturnValueOnce(true);
-
-        const destination: Partial<Destination> = {
-            Name: 'DEST',
-            Host: 'https://one.dest:123',
-            'HTML5.DynamicDestination': 'true'
-        };
-        const v2catalogResponse = ['V2_S1', 'V2_S2', 'V2_S3'];
-        const v4catalogResponse = ['V4_S1', 'V4_S2', 'V4_S3'];
-
-        const catalog = jest.fn();
-        const listServices = jest.fn();
-
-        listServices.mockImplementationOnce(() => v2catalogResponse).mockImplementationOnce(() => v4catalogResponse);
-
-        catalog.mockImplementation(() => {
-            return {
-                listServices: listServices
-            };
-        });
-
-        mockCreateForDestination.mockImplementation(() => {
-            return {
-                catalog: catalog
-            };
-        });
-
-        // Test execution
-        const result = await checkBASDestination(destination as Destination);
-
-        // Result check
-        expect(result.destinationResults.HTML5DynamicDestination).toEqual(true);
-        expect(result.messages.filter((m) => m.severity >= Severity.Warning).length).toBe(0);
-    });
-});
-
 describe('Destinaton tests, needsUsernamePassword()', () => {
     test('Password required, should return true', () => {
         const result = needsUsernamePassword({
             Authentication: 'NoAuthentication'
-        } as Destination);
+        } as Endpoint);
         expect(result).toBeTruthy();
     });
 
     test('No password required, should return false', () => {
-        const result = needsUsernamePassword({} as unknown as Destination);
+        const result = needsUsernamePassword({} as unknown as Endpoint);
         expect(result).toBeFalsy();
     });
 });

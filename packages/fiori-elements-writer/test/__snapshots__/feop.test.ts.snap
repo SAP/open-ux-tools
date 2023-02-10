@@ -3654,8 +3654,8 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.90.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.2.0\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
+    \\"ui5-tooling-transpile\\": \\"^0.2.1\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
@@ -3666,6 +3666,8 @@ archive.zip
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefeop2ts-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
+    \\"prestart\\": \\"npm run ts-typecheck\\",
+    \\"prebuild\\": \\"npm run ts-typecheck\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
@@ -3742,6 +3744,8 @@ server:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -3804,6 +3808,8 @@ server:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -3859,6 +3865,8 @@ server:
         debug: true
         transpileAsync: true
         transpileTypeScript: true
+        excludePatterns:
+          - /Component-preload.js
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task

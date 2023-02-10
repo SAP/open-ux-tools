@@ -1,5 +1,108 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.72
+
+### Patch Changes
+
+-   Updated dependencies [730e940]
+    -   @sap-ux/fiori-freestyle-writer@0.15.3
+
+## 0.2.71
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.13
+
+## 0.2.70
+
+### Patch Changes
+
+-   Updated dependencies [aab6b0d]
+    -   @sap-ux/fiori-elements-writer@0.8.12
+    -   @sap-ux/fiori-freestyle-writer@0.15.2
+
+## 0.2.69
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+-   Updated dependencies [eaf7214]
+    -   @sap-ux/fiori-elements-writer@0.8.11
+    -   @sap-ux/fiori-freestyle-writer@0.15.1
+
+## 0.2.68
+
+### Patch Changes
+
+-   Updated dependencies [3748963]
+    -   @sap-ux/axios-extension@0.14.0
+
+## 0.2.67
+
+### Patch Changes
+
+-   Updated dependencies [62d83f6]
+    -   @sap-ux/fiori-freestyle-writer@0.15.0
+
+## 0.2.66
+
+### Patch Changes
+
+-   Updated dependencies [ac7f8f3]
+    -   @sap-ux/fiori-elements-writer@0.8.10
+    -   @sap-ux/fiori-freestyle-writer@0.14.19
+
+## 0.2.65
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.9
+
+## 0.2.64
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+    -   @sap-ux/axios-extension@0.13.4
+    -   @sap-ux/store@0.3.8
+
+## 0.2.63
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.8
+-   @sap-ux/fiori-freestyle-writer@0.14.18
+
+## 0.2.62
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/axios-extension@0.13.3
+    -   @sap-ux/fiori-elements-writer@0.8.7
+
+## 0.2.61
+
+### Patch Changes
+
+-   5589854: Upgrade qs module and the modules using it because of a potential Denial of Service vulnerabity
+-   Updated dependencies [5589854]
+    -   @sap-ux/axios-extension@0.13.2
+
+## 0.2.60
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/axios-extension@0.13.1
+    -   @sap-ux/btp-utils@0.11.3
+    -   @sap-ux/fiori-elements-writer@0.8.6
+    -   @sap-ux/fiori-freestyle-writer@0.14.17
+    -   @sap-ux/logger@0.3.2
+    -   @sap-ux/store@0.3.7
+
 ## 0.2.59
 
 ### Patch Changes

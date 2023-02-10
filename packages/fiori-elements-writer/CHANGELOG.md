@@ -1,5 +1,69 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.8.13
+
+### Patch Changes
+
+-   Updated dependencies [d167d79]
+    -   @sap-ux/fe-fpm-writer@0.18.4
+
+## 0.8.12
+
+### Patch Changes
+
+-   aab6b0d: tbi - hide transpile warnings for /Component-preload.js
+-   Updated dependencies [aab6b0d]
+    -   @sap-ux/ui5-application-writer@0.18.3
+
+## 0.8.11
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+-   Updated dependencies [eaf7214]
+    -   @sap-ux/ui5-application-writer@0.18.2
+
+## 0.8.10
+
+### Patch Changes
+
+-   ac7f8f3: chore - TS writers udpate "ui5-tooling-transpile": "^0.2.1",
+-   Updated dependencies [ac7f8f3]
+    -   @sap-ux/ui5-application-writer@0.18.1
+
+## 0.8.9
+
+### Patch Changes
+
+-   Updated dependencies [6e4c6c4]
+    -   @sap-ux/fe-fpm-writer@0.18.3
+
+## 0.8.8
+
+### Patch Changes
+
+-   Updated dependencies [b3945f3]
+    -   @sap-ux/ui5-application-writer@0.18.0
+
+## 0.8.7
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/fe-fpm-writer@0.18.2
+
+## 0.8.6
+
+### Patch Changes
+
+-   070d8dc: Upgrade Decode URI Component to fix potential Denial of Service vulnerability
+-   Updated dependencies [070d8dc]
+    -   @sap-ux/fe-fpm-writer@0.18.1
+    -   @sap-ux/odata-service-writer@0.14.14
+    -   @sap-ux/ui5-application-writer@0.17.14
+    -   @sap-ux/ui5-config@0.16.1
+    -   @sap-ux/ui5-test-writer@0.1.5
+
 ## 0.8.5
 
 ### Patch Changes
