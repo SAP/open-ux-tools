@@ -79,6 +79,7 @@ export enum UiIcons {
     MainEntity = 'MainEntity',
     MainEntitySmall = 'MainEntitySmall',
     MeatballMenu = 'MeatballMenu',
+    MessageSent = 'MessageSent',
     Mission = 'Mission',
     NoData = 'NoData',
     NotEditable = 'NotEditable',
@@ -1019,6 +1020,22 @@ export function initIcons(): void {
                         fill={COLORS.default}
                         fillRule="evenodd"
                         d="M8.0024,7 C8.5544,7 9.0024,7.447 9.0024,8 C9.0024,8.553 8.5544,9 8.0024,9 C7.4504,9 7.0024,8.553 7.0024,8 C7.0024,7.447 7.4504,7 8.0024,7 Z M13.0034,7 C13.5554,7 14.0034,7.447 14.0034,8 C14.0034,8.553 13.5554,9 13.0034,9 C12.4514,9 12.0034,8.553 12.0034,8 C12.0034,7.447 12.4514,7 13.0034,7 Z M3,7 C3.552,7 4,7.447 4,8 C4,8.553 3.552,9 3,9 C2.448,9 2,8.553 2,8 C2,7.447 2.448,7 3,7 Z"
+                    />
+                </svg>
+            ),
+            [UiIcons.MessageSent]: (
+                <svg width="49" height="46" viewBox="0 0 49 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M35.9142 12.4142L21.9142 26.4142C21.5237 26.8047 20.8905 26.8047 20.5 26.4142L15 20.9142L16.4142 19.5L21.2071 24.2929L34.5 11L35.9142 12.4142Z"
+                        fill={COLORS.focus}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M21 37H5C2.23858 37 0 34.7614 0 32V5C0 2.23858 2.23858 0 5 0H44C46.7614 0 49 2.23858 49 5V32C49 34.7614 46.7614 37 44 37H30L21 46V37ZM5 3H44C45.1046 3 46 3.89543 46 5V32C46 33.1046 45.1046 34 44 34H28.7574L24 38.7574V34H5C3.89543 34 3 33.1046 3 32V5C3 3.89543 3.89543 3 5 3Z"
+                        fill={COLORS.default}
                     />
                 </svg>
             ),

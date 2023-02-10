@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.2
+
+### Patch Changes
+
+-   59fc7a9: message sent icon added
+
 ## 1.3.1
 
 ### Patch Changes
