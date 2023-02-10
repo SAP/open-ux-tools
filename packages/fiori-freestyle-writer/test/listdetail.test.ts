@@ -53,7 +53,36 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     typescript: true
                 }
             } as FreestyleApp<ListDetailSettings>
+        },
+        {
+            name: 'listdetail-advanced-ts',
+            config: {
+                ...listDetailConfig,
+                template: {
+                    type: TemplateType.ListDetail,
+                    settings: {
+                        entity: {
+                            name: 'Suppliers',
+                            key: 'SupplierID',
+                            idProperty: 'CompanyName',
+                            numberProperty: 'Phone',
+                            unitOfMeasureProperty: 'Region'
+                        },
+                        lineItem: {
+                            name: 'Products',
+                            key: 'ProductID',
+                            idProperty: 'ProductName',
+                            numberProperty: 'UnitsInStock',
+                            unitOfMeasureProperty: 'QuantityPerUnit'
+                        }
+                    }
+                },
+                appOptions: {
+                    typescript: true
+                }
+            } as FreestyleApp<ListDetailSettings>
         }
+        
     ];
 
     beforeAll(() => {

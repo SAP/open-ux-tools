@@ -22,13 +22,14 @@ export default class List extends BaseController {
 
     private list: ListControl;
     private listFilterState = {
-        aFilter: [],
+        aFilter: [] as Filter[],
         aSearch: [] as Filter[]
     };<%if (template.settings.entity.numberProperty) {%>
-    private groupFunctions = {
-        <%=template.settings.entity.numberProperty%>: function(oContext) {
-            var iNumber = oContext.getProperty('<%=template.settings.entity.numberProperty%>'),
-                key, text;
+        
+    private groupFunctions: { [key:string]: (oContext: any) => { key: string; text: string; }; } = {
+        <%=template.settings.entity.numberProperty%>: (oContext: any) => {
+            const iNumber = oContext.getProperty('<%=template.settings.entity.numberProperty%>');
+            let key, text;
             if (iNumber <= 20) {
                 key = "LE20";
                 text = this.getResourceBundle().getText("listGroup1Header1");
@@ -40,7 +41,7 @@ export default class List extends BaseController {
                 key: key,
                 text: text
             };
-        }.bind(this)
+        }
     };<%}%>
 
     /**
@@ -164,13 +165,13 @@ export default class List extends BaseController {
      * are applied to the list, which can also mean that they
      * are removed from the list, in case they are
      * removed in the ViewSettingsDialog.
-     * @param event the confirm event
+     * @param oEvent the confirm event
      */
-    public onConfirmViewSettingsDialog(event: Event) {
+    public onConfirmViewSettingsDialog(oEvent: Event) {
         <%if (template.settings.entity.numberProperty) {%>
-        var aFilterItems = oEvent.getParameters().filterItems,
-            aFilters = [],
-            aCaptions = [];
+        const aFilterItems: any[] = (oEvent.getParameters() as any).filterItems;
+        let aFilters:  Filter[] = [];
+        const aCaptions: any[] = [];
 
         // update filter state:
         // combine the filter array and the filter string
@@ -191,7 +192,7 @@ export default class List extends BaseController {
         this.listFilterState.aFilter = aFilters;
         this.updateFilterBar(aCaptions.join(", "));
         this.applyFilterSearch();<%}%>
-        this.applySortGroup(event);
+        this.applySortGroup(oEvent);
     }
 
     /**
@@ -211,7 +212,7 @@ export default class List extends BaseController {
         if (params.groupItem) {
             const path = params.groupItem.getKey();
             const fnGroup = this.groupFunctions[path];
-            aSorters.push(new Sorter(path, params.sortDescending, fnGroup));
+            sorters.push(new Sorter(path, params.sortDescending, fnGroup));
         }
         <%}%>
         sorters.push(new Sorter(params.sortItem.getKey(), params.sortDescending));
