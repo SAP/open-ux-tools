@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { initIcons } from '../../../../src/components';
 import {
     UITranslationInput,
@@ -19,6 +19,14 @@ describe('<UITranslationInput />', () => {
         button: '.ms-Button',
         callout: '.ms-Callout',
         loader: '.ms-Spinner'
+    };
+
+    const getButtonIdSelector = (id: string, goToCode = false): string => {
+        id = `#${id}-i18n`;
+        if (goToCode) {
+            id += '-navigate';
+        }
+        return id;
     };
 
     const clickI18nButton = (expectCallout = true) => {
@@ -59,6 +67,8 @@ describe('<UITranslationInput />', () => {
         );
         expect(container.querySelectorAll(selectors.input).length).toEqual(1);
         expect(container.querySelectorAll(selectors.button).length).toEqual(1);
+        expect(container.querySelectorAll(getButtonIdSelector(id, false)).length).toEqual(1);
+        expect(container.querySelectorAll(getButtonIdSelector(id, true)).length).toEqual(0);
         expect(container.querySelectorAll(`.${customClassName}`).length).toEqual(0);
 
         rerender(
@@ -199,7 +209,8 @@ describe('<UITranslationInput />', () => {
                 entry: {
                     key: 'dummy1',
                     value: 'dummy1 text'
-                }
+                },
+                title: "Value: '{i18n>dummy1}'.\nTranslation: 'dummy1 text'."
             }
         },
         {
@@ -212,7 +223,8 @@ describe('<UITranslationInput />', () => {
                 entry: {
                     key: 'Dummy1',
                     value: 'Dummy1 text'
-                }
+                },
+                title: "Value: '{i18n>Dummy1}'.\nTranslation: 'Dummy1 text'."
             }
         }
     ];
@@ -224,7 +236,7 @@ describe('<UITranslationInput />', () => {
             const onChangeMock = jest.fn();
             const onUpdateValueMock = jest.fn();
             const onShowExistingEntryMock = jest.fn();
-            render(
+            const { container } = render(
                 <UITranslationInput
                     id={id}
                     value={value}
@@ -244,11 +256,15 @@ describe('<UITranslationInput />', () => {
             expect(onCreateNewEntryMock).toBeCalledTimes(0);
             expect(onChangeMock).toBeCalledTimes(0);
             expect(onUpdateValueMock).toBeCalledTimes(0);
+            expect(container.querySelectorAll(getButtonIdSelector(id, false)).length).toEqual(0);
+            expect(container.querySelectorAll(getButtonIdSelector(id, true)).length).toEqual(1);
             expect(onShowExistingEntryMock).toBeCalledTimes(1);
             expect(onShowExistingEntryMock).toBeCalledWith({
                 'key': { 'value': result.entry.key },
                 'value': { 'value': result.entry.value }
             });
+            // Check title
+            expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toEqual(result.title);
         }
     );
 
@@ -369,5 +385,33 @@ describe('<UITranslationInput />', () => {
             fireEvent.click(document.body);
             expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
         });
+    });
+
+    test('Test "string" property', () => {
+        const acceptButtonLabel = 'Dummy accept';
+        render(
+            <UITranslationInput
+                id={id}
+                entries={entries}
+                allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                i18nPrefix={'i18n'}
+                value={'new value'}
+                strings={{
+                    acceptButtonLabel,
+                    cancelButtonLabel: '',
+                    i18nKeyMissingTooltip: '',
+                    i18nKeyMissingDescription: '',
+                    i18nValueMissingTooltip: '',
+                    i18nValueMissingDescription: '',
+                    i18nReplaceWithExistingTooltip: '',
+                    i18nReplaceWithExistingDescription: '',
+                    i18nEntryExistsTooltip: '',
+                    i18nEntryExistsInputTooltip: ''
+                }}
+            />
+        );
+        clickI18nButton();
+        expect(screen.getByText(acceptButtonLabel)).toBeDefined();
     });
 });
