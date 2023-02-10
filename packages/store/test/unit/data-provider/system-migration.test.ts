@@ -15,7 +15,6 @@ describe('System migration data provider', () => {
         readAll: jest.fn()
     };
     beforeEach(() => {
-        jest.resetAllMocks();
         mockGetFilesystemStore.mockReturnValue(mockFsStore);
     });
 
@@ -65,7 +64,7 @@ describe('System migration data provider', () => {
         mockFsStore.del.mockResolvedValueOnce(true);
         expect(
             new SystemMigrationStatusDataProvider(logger).delete(new SystemMigrationStatus(migrationStatus))
-        ).resolves.toBeTrue();
+        ).resolves.toBe(true);
         expect(mockFsStore.del).toBeCalledWith({
             entityName: Entities.SystemMigrationStatus,
             id: new SystemMigrationStatusKey().getId()
