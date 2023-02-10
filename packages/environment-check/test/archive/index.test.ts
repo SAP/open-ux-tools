@@ -51,7 +51,7 @@ describe('Test for archive project, archiveProject()', () => {
             .mockImplementation(() => Promise.resolve(['FILE_ONE', 'FILE_TWO']));
 
         // Test execution
-        const result = await archiveProject('PROJECT_ROOT');
+        const result = await archiveProject({ projectRoot: 'PROJECT_ROOT' });
 
         // Result check
         expect(result.path).toMatch('PROJECT_ROOT');
@@ -100,7 +100,7 @@ describe('Test for archive project, archiveProject()', () => {
             .mockImplementation(() => Promise.resolve(['FILE_ONE', 'FILE_TWO']));
 
         // Test execution
-        const result = await archiveProject('PRJ_GITIGNORE');
+        const result = await archiveProject({ projectRoot: 'PRJ_GITIGNORE' });
 
         // Result check
         expect(result.path).toMatch('PRJ_GITIGNORE');
@@ -145,7 +145,7 @@ describe('Test for archive project, archiveProject()', () => {
             .mockImplementationOnce(() => false);
 
         // Test execution
-        const result = await archiveProject('PROJECT_ROOT', 'TEST');
+        const result = await archiveProject({ projectRoot: 'PROJECT_ROOT', targetFileName: 'TEST' });
 
         // Result check
         expect(result.path).toBe('TEST.zip');
@@ -177,10 +177,46 @@ describe('Test for archive project, archiveProject()', () => {
             .mockImplementationOnce(() => false);
 
         // Test execution
-        const result = await archiveProject('PROJECT_ROOT', 'PROJECT.zip');
+        const result = await archiveProject({ projectRoot: 'PROJECT_ROOT', targetFileName: 'PROJECT.zip' });
 
         // Result check
         expect(result.path).toBe('PROJECT.zip');
+        expect(result.size).toBe('1 Bytes');
+    });
+
+    test('Archive sample project PROJECT.zip (mocked, no real zip is created), should write to specified targetPath archiveFolder/PROJECT.zip', async () => {
+        // Mock setup
+        let writeStreamCloseCallback;
+        zipMock = {
+            pipe: jest.fn(),
+            on: jest.fn(),
+            file: jest.fn(),
+            pointer: () => 1,
+            finalize: () => {
+                writeStreamCloseCallback();
+            }
+        } as unknown as archiver.Archiver;
+        const writeStreamMock = {
+            on: (name, callback) => {
+                if (name === 'close') {
+                    writeStreamCloseCallback = callback;
+                }
+            }
+        } as unknown as mockFs.WriteStream & { on: jest.Mock };
+        jest.spyOn(mockFs, 'createWriteStream').mockImplementation(() => writeStreamMock);
+        jest.spyOn(mockFs, 'existsSync')
+            .mockImplementationOnce(() => true)
+            .mockImplementationOnce(() => false);
+
+        // Test execution
+        const result = await archiveProject({
+            projectRoot: 'PROJECT_ROOT',
+            targetPath: 'archiveFolder',
+            targetFileName: 'PROJECT.zip'
+        });
+
+        // Result check
+        expect(result.path).toBe(join('archiveFolder', 'PROJECT.zip'));
         expect(result.size).toBe('1 Bytes');
     });
 
@@ -190,7 +226,7 @@ describe('Test for archive project, archiveProject()', () => {
 
         // Test execution
         try {
-            await archiveProject('WRONG_ROOT');
+            await archiveProject({ projectRoot: 'WRONG_ROOT' });
             fail(`Call to archiveProject() with wrong root should have thrown error, but did not`);
         } catch (error) {
             // Result check
@@ -205,7 +241,7 @@ describe('Test for archive project, archiveProject()', () => {
 
         // Test execution
         try {
-            await archiveProject('ANY');
+            await archiveProject({ projectRoot: 'ANY' });
             fail(`Call to archiveProject() and error occurred, should have thrown error, but did not`);
         } catch (error) {
             // Result check
@@ -224,7 +260,7 @@ describe('Test for archive project, archiveProject()', () => {
 
         // Test execution
         try {
-            await archiveProject('ANY');
+            await archiveProject({ projectRoot: 'ANY' });
             fail(`Call to archiveProject() and error occurred, should have thrown error, but did not`);
         } catch (error) {
             // Result check
