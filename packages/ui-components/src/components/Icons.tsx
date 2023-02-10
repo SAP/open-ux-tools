@@ -1025,10 +1025,19 @@ export function initIcons(): void {
             ),
             [UiIcons.MessageSent]: (
                 <svg width="49" height="46" viewBox="0 0 49 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M35.9142 12.4142L21.9142 26.4142C21.5237 26.8047 20.8905 26.8047 20.5 26.4142L15 20.9142L16.4142 19.5L21.2071 24.2929L34.5 11L35.9142 12.4142Z" fill={COLORS.focus}/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M21 37H5C2.23858 37 0 34.7614 0 32V5C0 2.23858 2.23858 0 5 0H44C46.7614 0 49 2.23858 49 5V32C49 34.7614 46.7614 37 44 37H30L21 46V37ZM5 3H44C45.1046 3 46 3.89543 46 5V32C46 33.1046 45.1046 34 44 34H28.7574L24 38.7574V34H5C3.89543 34 3 33.1046 3 32V5C3 3.89543 3.89543 3 5 3Z" fill={COLORS.default}/>
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M35.9142 12.4142L21.9142 26.4142C21.5237 26.8047 20.8905 26.8047 20.5 26.4142L15 20.9142L16.4142 19.5L21.2071 24.2929L34.5 11L35.9142 12.4142Z"
+                        fill={COLORS.focus}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M21 37H5C2.23858 37 0 34.7614 0 32V5C0 2.23858 2.23858 0 5 0H44C46.7614 0 49 2.23858 49 5V32C49 34.7614 46.7614 37 44 37H30L21 46V37ZM5 3H44C45.1046 3 46 3.89543 46 5V32C46 33.1046 45.1046 34 44 34H28.7574L24 38.7574V34H5C3.89543 34 3 33.1046 3 32V5C3 3.89543 3.89543 3 5 3Z"
+                        fill={COLORS.default}
+                    />
                 </svg>
-                
             ),
             [UiIcons.Mission]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

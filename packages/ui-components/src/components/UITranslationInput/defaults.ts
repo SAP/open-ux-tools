@@ -1,7 +1,7 @@
-import type { TranslationButtonStrings } from './UITranslationButton.types';
+import type { TranslationInputStrings } from './UITranslationButton.types';
 
-export const defaultTranslationButtonStrings: TranslationButtonStrings = {
-    acceptButtonLabel: 'Accept',
+export const defaultTranslationInputStrings: TranslationInputStrings = {
+    acceptButtonLabel: 'Apply',
     cancelButtonLabel: 'Cancel',
     i18nKeyMissingTooltip: 'Text key or value is not available in i18n file.',
     i18nKeyMissingDescription: 'Generate a text key {{{key}}} with value {{{value}}} in i18n file.',
@@ -11,5 +11,6 @@ export const defaultTranslationButtonStrings: TranslationButtonStrings = {
         'Text key {{{key}}} for value {{{value}}} is available in i18n file. \nConsider substituting {{{value}}} by {{{i18n}}}.',
     i18nReplaceWithExistingDescription:
         'Text key {{{key}}} for value {{{value}}} is available in i18n file.Substitute {{{value}}} by {{{i18n}}}.',
-    i18nEntryExistsTooltip: 'Edit in source file'
+    i18nEntryExistsTooltip: 'Edit in source file',
+    i18nEntryExistsInputTooltip: "Value: '{{{value}}}'.\nTranslation: '{{{translation}}}'."
 };
