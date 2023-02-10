@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.5
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
 ## 0.18.4
 
 ### Patch Changes

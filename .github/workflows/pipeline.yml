@@ -20,7 +20,7 @@ jobs:
               with:
                   fetch-depth: 0
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.2.2
+              uses: pnpm/action-setup@v2.2.4
               with:
                   version: 7.1.0
                   run_install: true
@@ -63,7 +63,7 @@ jobs:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.2.2
+              uses: pnpm/action-setup@v2.2.4
               with:
                   version: 7.1.0
                   run_install: true
@@ -109,7 +109,7 @@ jobs:
             - name: Checkout code repository
               uses: actions/checkout@v3
             - name: Setup pnpm
-              uses: pnpm/action-setup@v2.2.2
+              uses: pnpm/action-setup@v2.2.4
               with:
                   version: 7.1.0
                   run_install: true
@@ -133,7 +133,7 @@ jobs:
             - name: Setup npmrc with npmjs.com token
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
-              uses: changesets/action@v1.3.0
+              uses: changesets/action@v1.4.1
               with:
                   publish: pnpm ci:publish
               env:
