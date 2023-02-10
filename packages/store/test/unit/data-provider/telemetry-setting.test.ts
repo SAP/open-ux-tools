@@ -15,7 +15,6 @@ describe('TelemetrySetting data provider', () => {
         readAll: jest.fn()
     };
     beforeEach(() => {
-        jest.resetAllMocks();
         mockGetFilesystemStore.mockReturnValue(mockFsStore);
     });
 
