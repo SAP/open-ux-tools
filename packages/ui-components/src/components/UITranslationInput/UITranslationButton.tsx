@@ -3,42 +3,15 @@ import type { ReactElement } from 'react';
 import { UIDefaultButton } from '../UIButton';
 import { UICallout, UICalloutContentPadding } from '../UICallout';
 import { UiIcons } from '../Icons';
-import { defaultTranslationButtonStrings } from './defaults';
-import type { UITranslationProps, TranslationButtonStrings, TranslationEntry } from './UITranslationButton.types';
-import { TranslationKeyGenerator } from './UITranslationButton.types';
-import {
-    extractI18nKey,
-    generateI18nKey,
-    applyI18nPattern,
-    getTranslationByKey,
-    getTranslationByText
-} from './UITranslationUtils';
-
-import './UITranslationInput.scss';
-import { UIFormattedText, formatText } from './UIFormattedText';
+import type { UITranslationProps, TranslationInputStrings, TranslationSuggest } from './UITranslationButton.types';
+import { SuggestValueType } from './UITranslationButton.types';
 import { UILoadButton } from './UILoadButton';
 
-export enum SuggestValueType {
-    Existing = 'Existing',
-    Update = 'Update',
-    New = 'New'
-}
+import './UITranslationInput.scss';
 
-interface TranslationSuggestValue {
-    entry: TranslationEntry;
-    icon?: UiIcons;
-    type: SuggestValueType;
-    i18n?: string;
-}
-
-interface TranslationSuggest {
-    tooltip: string;
-    message?: React.ReactElement;
-    suggest?: TranslationSuggestValue;
-}
-
-interface UITranslationButtonProps extends UITranslationProps {
+export interface UITranslationButtonProps extends UITranslationProps {
     onUpdateValue?: (value: string) => void;
+    suggestion: TranslationSuggest;
 }
 
 /**
@@ -49,98 +22,8 @@ interface UITranslationButtonProps extends UITranslationProps {
  * @param strings Map with all text properties.
  * @returns Resolved text.
  */
-const getStringText = (property: keyof TranslationButtonStrings, strings?: TranslationButtonStrings): string => {
+const getStringText = (property: keyof TranslationInputStrings, strings?: TranslationInputStrings): string => {
     return strings?.[property] || '';
-};
-
-/**
- * Method returns suggestion object with message and tooltip based on passed translation button props.
- *
- * @param props Properties of translation button component.
- * @returns Translation suggestion object.
- */
-const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationSuggest => {
-    const {
-        value = '',
-        allowedPatterns,
-        entries,
-        strings = defaultTranslationButtonStrings,
-        namingConvention = TranslationKeyGenerator.CamelCase,
-        defaultPattern,
-        i18nPrefix,
-        allowedI18nPrefixes
-    } = props;
-    const i18nKey = extractI18nKey(value, allowedPatterns, allowedI18nPrefixes || [i18nPrefix]);
-    let message = '';
-    let tooltip = '';
-    let suggest: TranslationSuggestValue;
-    if (i18nKey) {
-        // There is already i18n binding as value
-        const entry = getTranslationByKey(entries, i18nKey);
-        if (entry) {
-            tooltip = strings.i18nEntryExistsTooltip;
-            suggest = {
-                entry,
-                type: SuggestValueType.Existing,
-                icon: UiIcons.WorldArrow
-            };
-        } else {
-            message = strings.i18nKeyMissingDescription;
-            tooltip = strings.i18nKeyMissingTooltip;
-            suggest = {
-                entry: {
-                    key: {
-                        value: i18nKey
-                    },
-                    value: {
-                        value: i18nKey
-                    }
-                },
-                type: SuggestValueType.New,
-                icon: UiIcons.WorldWarning
-            };
-        }
-    } else {
-        // Use generation format passed from outside or use default as 'Standard';
-        const existingEntry = getTranslationByText(entries, value);
-        if (existingEntry) {
-            message = strings.i18nReplaceWithExistingDescription;
-            tooltip = strings.i18nReplaceWithExistingTooltip;
-            suggest = {
-                entry: existingEntry,
-                type: SuggestValueType.Update
-            };
-        } else {
-            message = strings.i18nValueMissingDescription;
-            tooltip = strings.i18nValueMissingTooltip;
-            const key = generateI18nKey(value, namingConvention, entries);
-            suggest = {
-                entry: {
-                    key: {
-                        value: key
-                    },
-                    value: {
-                        value
-                    }
-                },
-                type: SuggestValueType.New
-            };
-        }
-    }
-    // I18n string to apply for input value
-    suggest.i18n = applyI18nPattern(suggest.entry.key.value, defaultPattern, i18nPrefix);
-    // Format message to show in callout
-    const messageValues = {
-        key: suggest.entry.key.value,
-        value: suggest.entry.value.value,
-        i18n: suggest.i18n
-    };
-    tooltip = formatText(tooltip, messageValues);
-    return {
-        message: <UIFormattedText values={messageValues}>{message}</UIFormattedText>,
-        tooltip,
-        suggest
-    };
 };
 
 /**
@@ -150,9 +33,8 @@ const getTranslationSuggestion = (props: UITranslationButtonProps): TranslationS
  * @returns Component to render translation button with callout.
  */
 export function UITranslationButton(props: UITranslationButtonProps): ReactElement {
-    const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry, busy } = props;
+    const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry, busy, suggestion } = props;
     const [isCalloutVisible, setCalloutVisible] = useState(false);
-    const suggestion = getTranslationSuggestion(props);
     // Callbacks
     const onToggleCallout = useCallback((): void => {
         if (suggestion.suggest?.type === SuggestValueType.Existing) {
@@ -219,7 +101,3 @@ export function UITranslationButton(props: UITranslationButtonProps): ReactEleme
         </div>
     );
 }
-
-UITranslationButton.defaultProps = {
-    strings: defaultTranslationButtonStrings
-};
