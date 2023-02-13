@@ -211,7 +211,7 @@ describe('Test for archive project, archiveProject()', () => {
         // Test execution
         const result = await archiveProject({
             projectRoot: 'PROJECT_ROOT',
-            targetPath: 'archiveFolder',
+            targetFolder: 'archiveFolder',
             targetFileName: 'PROJECT.zip'
         });
 

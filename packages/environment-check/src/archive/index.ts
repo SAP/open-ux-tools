@@ -8,7 +8,7 @@ import { byteNumberToSizeString } from '../formatter';
 
 interface ArchiveProjectOptions {
     projectRoot: string;
-    targetPath?: string;
+    targetFolder?: string;
     targetFileName?: string;
 }
 
@@ -17,12 +17,12 @@ interface ArchiveProjectOptions {
  *
  * @param options - archive project options
  * @param options.projectRoot - root of the project, where package.json is located
- * @param options.targetPath - optional, target path where to create the archive
+ * @param options.targetFolder - optional, target folder where to create the archive
  * @param options.targetFileName - optional file name, defaults to project folder + timestamp + .zip
  */
 export async function archiveProject({
     projectRoot,
-    targetPath,
+    targetFolder,
     targetFileName
 }: ArchiveProjectOptions): Promise<{ path: string; size: string }> {
     if (!existsSync(projectRoot)) {
@@ -44,14 +44,14 @@ export async function archiveProject({
                     .replace(':', '')
                     .substring(0, 14)}.zip`;
             }
-            const targetFolder = targetPath ? join(targetPath, targetName) : join(dirname(projectRoot), targetName);
+            const targetPath = targetFolder ? join(targetFolder, targetName) : join(dirname(projectRoot), targetName);
             const writeStream = createWriteStream(targetFolder);
             zip.pipe(writeStream);
             zip.on('error', (error) => reject(error));
             for (const file of fileList) {
                 zip.file(join(projectRoot, file), { name: file });
             }
-            writeStream.on('close', () => resolve({ path: targetFolder, size: byteNumberToSizeString(zip.pointer()) }));
+            writeStream.on('close', () => resolve({ path: targetPath, size: byteNumberToSizeString(zip.pointer()) }));
             zip.finalize();
         } catch (error) {
             reject(error);
