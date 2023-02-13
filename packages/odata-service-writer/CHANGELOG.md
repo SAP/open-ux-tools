@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.15
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/ui5-config@0.16.2
+
 ## 0.14.14
 
 ### Patch Changes

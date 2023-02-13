@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.3
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
 ## 1.3.2
 
 ### Patch Changes
