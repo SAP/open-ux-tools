@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.15.0
+
+### Minor Changes
+
+-   410299f: Adds optional parameter 'targetPath' for the 'archiveProject' method.
+
 ## 0.14.2
 
 ### Patch Changes
