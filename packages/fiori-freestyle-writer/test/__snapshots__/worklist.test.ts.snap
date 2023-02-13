@@ -13483,7 +13483,7 @@ export default class Object extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (!elementBinding?.getBoundContext()) {
+        if (!elementBinding || !elementBinding.getBoundContext()) {
             this.getRouter().getTargets()!.display(\\"objectNotFound\\");
             return;
         }
@@ -13589,7 +13589,9 @@ export default class Worklist extends BaseController {
      *
      */
     public onRefresh() {
-        this.byId(\\"table\\")?.getBinding(\\"items\\")?.refresh(false);
+        if (this.byId(\\"table\\") && this.byId(\\"table\\").getBinding(\\"items\\")) {
+            this.byId(\\"table\\").getBinding(\\"items\\").refresh(false);
+        }
     }
 
     /**
