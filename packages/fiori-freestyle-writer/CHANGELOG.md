@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.6
+
+### Patch Changes
+
+-   f9dcf18: fix worklist typescript template to be compatible with @ui5/cli v2
+
 ## 0.15.5
 
 ### Patch Changes
