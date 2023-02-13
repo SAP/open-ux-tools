@@ -45,7 +45,7 @@ export async function archiveProject({
                     .substring(0, 14)}.zip`;
             }
             const targetPath = targetFolder ? join(targetFolder, targetName) : join(dirname(projectRoot), targetName);
-            const writeStream = createWriteStream(targetFolder);
+            const writeStream = createWriteStream(targetPath);
             zip.pipe(writeStream);
             zip.on('error', (error) => reject(error));
             for (const file of fileList) {
