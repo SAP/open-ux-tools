@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.5
+
+### Patch Changes
+
+-   b0d8f64: Fix TypeScript listdetail type errors in List.controller.ts
+
 ## 0.15.4
 
 ### Patch Changes
