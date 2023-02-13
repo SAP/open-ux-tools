@@ -4,6 +4,7 @@ import ListControl from "sap/m/List";
 import ObjectListItem from "sap/m/ObjectListItem";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import Event from "sap/ui/base/Event";
+import Context from "sap/ui/model/Context";
 import Filter from "sap/ui/model/Filter";
 import Sorter from "sap/ui/model/Sorter";
 import FilterOperator from "sap/ui/model/FilterOperator";
@@ -14,6 +15,7 @@ import BaseController from "./BaseController";
 import Control from "sap/ui/core/Control";
 import ViewSettingsDialog from "sap/m/ViewSettingsDialog";
 import ListBinding from "sap/ui/model/ListBinding";
+import ViewSettingsItem from "sap/m/ViewSettingsItem";
 
 /**
  * @namespace <%- app.id %>
@@ -26,9 +28,9 @@ export default class List extends BaseController {
         aSearch: [] as Filter[]
     };<%if (template.settings.entity.numberProperty) {%>
         
-    private groupFunctions: { [key:string]: (oContext: any) => { key: string; text: string; }; } = {
-        <%=template.settings.entity.numberProperty%>: (oContext: any) => {
-            const iNumber = oContext.getProperty('<%=template.settings.entity.numberProperty%>');
+    private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
+        <%=template.settings.entity.numberProperty%>: (context: Context) => {
+            const iNumber = context.getProperty('<%=template.settings.entity.numberProperty%>');
             let key, text;
             if (iNumber <= 20) {
                 key = "LE20";
@@ -167,32 +169,32 @@ export default class List extends BaseController {
      * removed in the ViewSettingsDialog.
      * @param oEvent the confirm event
      */
-    public onConfirmViewSettingsDialog(oEvent: Event) {
+    public onConfirmViewSettingsDialog(event: Event) {
         <%if (template.settings.entity.numberProperty) {%>
-        const aFilterItems: any[] = (oEvent.getParameters() as any).filterItems;
-        let aFilters:  Filter[] = [];
-        const aCaptions: any[] = [];
+        const filterItems = event.getParameter('filterItems') as ViewSettingsItem[];
+        const filters:  Filter[] = [];
+        const captions: string[] = [];
 
         // update filter state:
         // combine the filter array and the filter string
-        aFilterItems.forEach(function (oItem) {
-            switch (oItem.getKey()) {
+        filterItems.forEach(function (item) {
+            switch (item.getKey()) {
                 case "Filter1" :
-                    aFilters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.LE, 100));
+                    filters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.LE, 100));
                     break;
                 case "Filter2" :
-                    aFilters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.GT, 100));
+                    filters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.GT, 100));
                     break;
                 default :
                     break;
             }
-            aCaptions.push(oItem.getText());
+            captions.push(item.getText());
         });
 
-        this.listFilterState.aFilter = aFilters;
-        this.updateFilterBar(aCaptions.join(", "));
+        this.listFilterState.aFilter = filters;
+        this.updateFilterBar(captions.join(", "));
         this.applyFilterSearch();<%}%>
-        this.applySortGroup(oEvent);
+        this.applySortGroup(event);
     }
 
     /**
