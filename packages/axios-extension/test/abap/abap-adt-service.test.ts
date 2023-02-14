@@ -5,7 +5,8 @@ import {
     createForAbapOnCloud,
     AbapCloudEnvironment,
     TransportRequestService,
-    TransportChecksService
+    TransportChecksService,
+    ListPackageService
 } from '../../src';
 import * as auth from '../../src/auth';
 
@@ -17,7 +18,8 @@ enum AdtServices {
     DISCOVERY = '/sap/bc/adt/discovery',
     ATO_SETTINGS = '/sap/bc/adt/ato/settings',
     TRANSPORT_CHECKS = '/sap/bc/adt/cts/transportchecks',
-    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transports'
+    TRANSPORT_REQUEST = '/sap/bc/adt/cts/transports',
+    LIST_PACKAGES = '/sap/bc/adt/repository/informationsystem/search'
 }
 
 const server = 'https://server.example';
@@ -120,7 +122,7 @@ describe('Create new transport number', () => {
             .replyWithFile(200, join(__dirname, 'mockResponses/transportRequest-1.txt'));
         const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
         expect(
-            await transportRequestService.createTransportRequest({
+            await transportRequestService?.createTransportRequest({
                 packageName: 'dummyPackage',
                 ui5AppName: 'dummyAppName',
                 description: dummyComment
@@ -136,7 +138,7 @@ describe('Create new transport number', () => {
             .reply(200, 'unknown');
         const transportRequestService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
         expect(
-            await transportRequestService.createTransportRequest({
+            await transportRequestService?.createTransportRequest({
                 packageName: 'dummyPackage',
                 ui5AppName: 'dummyAppName',
                 description: dummyComment
@@ -164,7 +166,7 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .reply(200, 'Some error message from backend');
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        expect(await transportChecksService.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
+        expect(await transportChecksService?.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
     });
 
     test('Unexpected response - error or unknown XML', async () => {
@@ -174,7 +176,7 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .reply(200, '<unknown></unknown>');
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        expect(await transportChecksService.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
+        expect(await transportChecksService?.getTransportRequests(testPackage, testNewProject)).toStrictEqual([]);
     });
 
     test('Valid package name, existing project name - no transport number', async () => {
@@ -184,7 +186,7 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-4.xml'));
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        expect(await transportChecksService.getTransportRequests(testPackage, testExistProject)).toStrictEqual([]);
+        expect(await transportChecksService?.getTransportRequests(testPackage, testExistProject)).toStrictEqual([]);
     });
 
     test('Local package: no transport number required for deploy for both new and exist project', async () => {
@@ -194,7 +196,7 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-3.xml'));
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        expect(await transportChecksService.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual([]);
+        expect(await transportChecksService?.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual([]);
     });
 
     test('New package name: no transport number available', async () => {
@@ -204,7 +206,7 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-4.xml'));
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        expect(await transportChecksService.getTransportRequests(testNewPakcage, testNewProject)).toStrictEqual([]);
+        expect(await transportChecksService?.getTransportRequests(testNewPakcage, testNewProject)).toStrictEqual([]);
     });
 
     test('Valid package name, new project name', async () => {
@@ -214,7 +216,7 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-1.xml'), { random: `${Math.random()}` });
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        const transportRequestList = await transportChecksService.getTransportRequests(testPackage, testNewProject);
+        const transportRequestList = await transportChecksService?.getTransportRequests(testPackage, testNewProject);
         expect(transportRequestList).toStrictEqual([
             expect.objectContaining({
                 transportNumber: 'EC1K900294',
@@ -241,7 +243,7 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-2.xml'));
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        expect(await transportChecksService.getTransportRequests(testPackage, testExistProject)).toStrictEqual([
+        expect(await transportChecksService?.getTransportRequests(testPackage, testExistProject)).toStrictEqual([
             expect.objectContaining({
                 transportNumber: 'EC1K900294',
                 user: 'TESTUSER',
@@ -293,5 +295,94 @@ describe('Use existing connection session', () => {
         const provider = createForAbapOnCloud(configForAbapOnCloud as any);
         expect(await provider.isS4Cloud()).toBe(false);
         expect(attachUaaAuthInterceptorSpy.mockImplementation(jest.fn())).toBeCalledTimes(1);
+    });
+});
+
+describe('List packages', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('List packages - multiple packages returned', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `TestPackage*`,
+                useSearchProvider: 'X',
+                maxResults: 50,
+                objectType: 'DEVC/K'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/listPackages-1.xml'));
+        const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
+        expect(
+            await listPackageService?.listPackages('TestPackage')
+        ).toStrictEqual(['Z001', 'Z002', 'Z003']);
+    });
+
+    test('List packages - single package returned', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `TestPackage*`,
+                useSearchProvider: 'X',
+                maxResults: 50,
+                objectType: 'DEVC/K'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/listPackages-2.xml'));
+        const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
+        expect(
+            await listPackageService?.listPackages('TestPackage')
+        ).toStrictEqual(['Z001']);
+    });
+
+    test('List packages - no package found', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `TestPackage*`,
+                useSearchProvider: 'X',
+                maxResults: 50,
+                objectType: 'DEVC/K'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/listPackages-3.xml'));
+        const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
+        expect(
+            await listPackageService?.listPackages('TestPackage')
+        ).toStrictEqual([]);
+    });
+
+    test('List packages - invalid xml content', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `TestPackage*`,
+                useSearchProvider: 'X',
+                maxResults: 50,
+                objectType: 'DEVC/K'
+            })
+            .reply(200, 'Some unknown errors');
+        const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
+        expect(
+            await listPackageService?.listPackages('TestPackage')
+        ).toStrictEqual([]);
     });
 });
