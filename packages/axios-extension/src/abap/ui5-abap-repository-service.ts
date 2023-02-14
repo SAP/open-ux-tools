@@ -1,7 +1,7 @@
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { prettyPrintError, prettyPrintMessage, ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
-import { isAxiosError } from '../base/odata-request-error';
+import { isAxiosError, ODataRequestError } from '../base/odata-request-error';
 
 /**
  * Required configuration for the BSP hosting an app.
@@ -114,7 +114,8 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Get information about a deployed application. Returns undefined if the application cannot be found.
+     * Get information about a deployed application. Returns undefined if the application cannot be found or response contains an error.
+     * Using the axios validateStatus config option, some HTTP code(s) should not throw an error and instead be handled, for example HTTP 404 https://github.com/axios/axios/issues/2697.
      *
      * @param app application id (BSP application name)
      * @returns application information or undefined
@@ -122,7 +123,8 @@ export class Ui5AbapRepositoryService extends ODataService {
     public async getInfo(app: string): Promise<AppInfo> {
         try {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
-            return response.odata();
+            const data = response.odata();
+            return ODataRequestError.containsError(data) ? undefined : data;
         } catch (error) {
             return undefined;
         }
