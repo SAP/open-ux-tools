@@ -1,7 +1,12 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { ODataVersion, TransportChecksService, TransportRequestService } from '@sap-ux/axios-extension';
+import {
+    ODataVersion,
+    TransportChecksService,
+    TransportRequestService,
+    ListPackageService
+} from '@sap-ux/axios-extension';
 import { logger } from './types';
 
 /**
@@ -84,6 +89,10 @@ export async function useAdtServices(
             description: 'Test from odata-cli'
         });
         logger.info(`Created transport number: ${newTransportNumber}`);
+
+        const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
+        const packages = await listPackageService.listPackages('$TMP');
+        logger.info(`Query $tmp package: ${packages.length === 1}`);
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
     }
