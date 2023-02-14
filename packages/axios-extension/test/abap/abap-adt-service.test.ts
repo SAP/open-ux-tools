@@ -196,7 +196,9 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-3.xml'));
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        expect(await transportChecksService?.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual([]);
+        expect(await transportChecksService?.getTransportRequests(testLocalPackage, testExistProject)).toStrictEqual(
+            []
+        );
     });
 
     test('New package name: no transport number available', async () => {
@@ -324,9 +326,7 @@ describe('List packages', () => {
             })
             .replyWithFile(200, join(__dirname, 'mockResponses/listPackages-1.xml'));
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
-        expect(
-            await listPackageService?.listPackages('TestPackage')
-        ).toStrictEqual(['Z001', 'Z002', 'Z003']);
+        expect(await listPackageService?.listPackages('TestPackage')).toStrictEqual(['Z001', 'Z002', 'Z003']);
     });
 
     test('List packages - single package returned', async () => {
@@ -343,9 +343,7 @@ describe('List packages', () => {
             })
             .replyWithFile(200, join(__dirname, 'mockResponses/listPackages-2.xml'));
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
-        expect(
-            await listPackageService?.listPackages('TestPackage')
-        ).toStrictEqual(['Z001']);
+        expect(await listPackageService?.listPackages('TestPackage')).toStrictEqual(['Z001']);
     });
 
     test('List packages - no package found', async () => {
@@ -362,9 +360,7 @@ describe('List packages', () => {
             })
             .replyWithFile(200, join(__dirname, 'mockResponses/listPackages-3.xml'));
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
-        expect(
-            await listPackageService?.listPackages('TestPackage')
-        ).toStrictEqual([]);
+        expect(await listPackageService?.listPackages('TestPackage')).toStrictEqual([]);
     });
 
     test('List packages - invalid xml content', async () => {
@@ -381,8 +377,6 @@ describe('List packages', () => {
             })
             .reply(200, 'Some unknown errors');
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
-        expect(
-            await listPackageService?.listPackages('TestPackage')
-        ).toStrictEqual([]);
+        expect(await listPackageService?.listPackages('TestPackage')).toStrictEqual([]);
     });
 });

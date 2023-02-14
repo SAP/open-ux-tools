@@ -1,6 +1,5 @@
 import { AdtService } from './adt-service';
-import { PackageInfo } from '../../types';
-import type { AdtCategory } from '../../types';
+import type { AdtCategory, PackageInfo } from '../../types';
 import XmlParser from 'fast-xml-parser';
 
 /**
@@ -17,7 +16,7 @@ export class ListPackageService extends AdtService {
     };
 
     /**
-     * Get ADT scheme ID
+     * Get ADT scheme ID.
      * @returns AdtCategory
      */
     public static getAdtCatagory(): AdtCategory {
