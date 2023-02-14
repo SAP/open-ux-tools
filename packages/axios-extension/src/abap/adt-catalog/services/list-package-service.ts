@@ -17,6 +17,7 @@ export class ListPackageService extends AdtService {
 
     /**
      * Get ADT scheme ID.
+     *
      * @returns AdtCategory
      */
     public static getAdtCatagory(): AdtCategory {
