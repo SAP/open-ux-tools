@@ -1,5 +1,15 @@
 # @sap-ux/create
 
+## 0.0.6
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/logger@0.3.4
+    -   @sap-ux/mockserver-config-writer@0.0.4
+    -   @sap-ux/project-access@1.0.6
+
 ## 0.0.5
 
 ### Patch Changes

@@ -4,7 +4,6 @@ import { basedir, getFilesystemStore, getFilesystemWatcherFor } from '../../../s
 import path from 'path';
 import type { FSWatcher } from 'fs';
 import fs from 'fs';
-import { mocked } from 'ts-jest/utils';
 import type { Entity } from '../../../src';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
 
@@ -308,7 +307,7 @@ describe('data-access/filesystem', () => {
 
         it('will throw an error if write fails', async () => {
             const entity = { prop1: 1, prop2: '2', prop3: undefined, prop4: 42 };
-            const mockFs = mocked(fs, true);
+            const mockFs = jest.mocked(fs, { shallow: true });
             const originalFn = mockFs.writeFileSync;
             mockFs.writeFileSync = jest.fn().mockImplementationOnce(() => {
                 throw new Error();
