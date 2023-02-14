@@ -17,7 +17,7 @@ export interface NodeComment<T> {
  * @class YamlDocument
  */
 export class YamlDocument {
-    private document: Document;
+    private documents: Document[];
 
     /**
      * Returns a new instance of YamlDocument.
@@ -38,10 +38,16 @@ export class YamlDocument {
      * @memberof YamlDocument
      */
     private constructor(serializedYaml: string) {
-        this.document = yaml.parseDocument(serializedYaml);
-        if (this.document.errors?.length > 0) {
+        this.documents = yaml.parseAllDocuments(serializedYaml);
+        if (this.documents.length === 0) {
+            // this is done for backward compatibility when only single document yaml was supported.
+            // yaml.parseDocument('') creates a new document
+            // yaml.parseAll('') does not create a new document
+            this.documents.push(yaml.parseDocument(serializedYaml));
+        }
+        if (this.documents[0].errors?.length > 0) {
             throw new YAMLError(
-                errorTemplate.yamlParsing + '\n' + this.document.errors.map((e) => e.message).join(''),
+                errorTemplate.yamlParsing + '\n' + this.documents[0].errors.map((e) => e.message).join(''),
                 errorCode.yamlParsing
             );
         }
@@ -54,7 +60,7 @@ export class YamlDocument {
      * @memberof YamlDocument
      */
     toString(): string {
-        return this.document.toString({ singleQuote: true });
+        return this.documents.map((d) => d.toString({ singleQuote: true })).join('');
     }
 
     /**
@@ -75,10 +81,10 @@ export class YamlDocument {
     }): YamlDocument {
         switch (location) {
             case 'beginning':
-                this.document.commentBefore = comment;
+                this.documents[0].commentBefore = comment;
                 break;
             case 'end':
-                this.document.comment = comment;
+                this.documents[0].comment = comment;
                 break;
             default:
                 break;
@@ -124,7 +130,7 @@ export class YamlDocument {
 
         if (pathArray.length > 1) {
             const parentPath = pathArray.slice(0, -1);
-            const parentNode = this.document.getIn(parentPath);
+            const parentNode = this.documents[0].getIn(parentPath);
             if (!parentNode && !createIntermediateKeys) {
                 // Not at root and we're not asked to create the intermediate keys
                 throw new YAMLError(
@@ -133,11 +139,11 @@ export class YamlDocument {
                 );
             }
         }
-        const newNode = this.document.createNode(value);
+        const newNode = this.documents[0].createNode(value);
         if (comment) {
             newNode.commentBefore = comment;
         }
-        this.document.setIn(pathArray, newNode);
+        this.documents[0].setIn(pathArray, newNode);
 
         return this;
     }
@@ -168,7 +174,7 @@ export class YamlDocument {
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
         // Create a copy to work to modify
-        const documentCopy = this.document.clone();
+        const documentCopy = this.documents[0].clone();
         let seq = documentCopy.getIn(pathArray) as YAMLSeq;
         if (!seq) {
             if (!createIntermediateKeys) {
@@ -211,7 +217,7 @@ export class YamlDocument {
         }
 
         // Modification succeeded, replace document with modified copy
-        this.document = documentCopy;
+        this.documents[0] = documentCopy;
         return this;
     }
 
@@ -240,7 +246,7 @@ export class YamlDocument {
         mode?: 'merge' | 'overwrite';
     }): YamlDocument {
         const pathArray = this.toPathArray(path);
-        const seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
+        const seq = this.documents[0].getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq) {
             throw new YAMLError(interpolate(errorTemplate.seqDoesNotExist, { path }), errorCode.seqDoesNotExist);
         }
@@ -253,7 +259,7 @@ export class YamlDocument {
             );
         }
         const newValue = mode === 'merge' ? merge(node.toJSON(), value) : value;
-        const newNode = this.document.createNode(newValue);
+        const newNode = this.documents[0].createNode(newValue);
         seq.items.splice(seq.items.indexOf(node), 1, newNode);
 
         return this;
@@ -272,7 +278,7 @@ export class YamlDocument {
      */
     deleteAt({ path, matcher }: { path: string; matcher: { key: string; value: string } }): YamlDocument {
         const pathArray = this.toPathArray(path);
-        const seq = this.document.getIn(pathArray) as YAMLSeq<yaml.Node>;
+        const seq = this.documents[0].getIn(pathArray) as YAMLSeq<yaml.Node>;
         if (!seq || !seq.items) {
             throw new YAMLError(interpolate(errorTemplate.seqDoesNotExist, { path }), errorCode.seqDoesNotExist);
         }
@@ -306,7 +312,7 @@ export class YamlDocument {
             }
         }
         const pathArray = this.toPathArray(path);
-        const node = start || this.document;
+        const node = start || this.documents[0];
         const targetNode = node?.getIn(pathArray);
         if (!targetNode) {
             throw new YAMLError(interpolate(errorTemplate.nodeNotFound, { path }), errorCode.nodeNotFound);
