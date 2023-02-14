@@ -1,5 +1,33 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.7
+
+### Patch Changes
+
+-   a34b85f: fix worklist check for undefined
+
+## 0.15.6
+
+### Patch Changes
+
+-   f9dcf18: fix worklist typescript template to be compatible with @ui5/cli v2
+
+## 0.15.5
+
+### Patch Changes
+
+-   b0d8f64: Fix TypeScript listdetail type errors in List.controller.ts
+
+## 0.15.4
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/odata-service-writer@0.14.15
+    -   @sap-ux/ui5-application-writer@0.18.4
+    -   @sap-ux/ui5-config@0.16.2
+
 ## 0.15.3
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @sap-ux/environment-check
 
+## 0.15.0
+
+### Minor Changes
+
+-   410299f: Adds optional parameter 'targetPath' for the 'archiveProject' method.
+
+## 0.14.2
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/store@0.3.9
+    -   @sap-ux/axios-extension@0.14.1
+    -   @sap-ux/btp-utils@0.11.4
+    -   @sap-ux/logger@0.3.4
+    -   @sap-ux/project-access@1.0.6
+    -   @sap-ux/ui5-config@0.16.2
+
 ## 0.14.1
 
 ### Patch Changes

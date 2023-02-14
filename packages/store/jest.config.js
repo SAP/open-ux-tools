@@ -1,8 +1,11 @@
 const config = require('../../jest.base');
-config.setupFilesAfterEnv = ['jest-extended'];
-config.globals = {
-    'ts-jest': {
-        tsconfig: 'test/tsconfig.json'
-    }
+config.setupFilesAfterEnv = ['jest-extended/all'];
+config.transform = {
+    '^.+\\.tsx?$': [
+        'ts-jest',
+        {
+            tsconfig: 'test/tsconfig.json'
+        }
+    ]
 };
 module.exports = config;
