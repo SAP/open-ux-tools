@@ -28,6 +28,7 @@ export * from './UIToggle';
 export * from './UIToggleGroup';
 export * from './UITooltip';
 export * from './UIToolbar';
+export * from './UITranslationInput';
 export * from './UITreeDropdown';
 export * from './UIVerticalDivider';
 export * from './UIVirtualList';

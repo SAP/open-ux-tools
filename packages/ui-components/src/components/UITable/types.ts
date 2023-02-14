@@ -19,8 +19,9 @@ export enum CalculationType {
 export enum ColumnControlType {
     UITextInput,
     UIDropdown,
-    UIBooleanSelect,
-    UIDatePicker
+    UIDatePicker,
+    UICombobox,
+    UIBooleanSelect
 }
 export { CheckboxVisibility, SelectionMode, Selection, DetailsListLayoutMode, IDropdownOption } from '@fluentui/react';
 
@@ -44,6 +45,7 @@ export type UIColumn = IColumn & {
     onChange?: any;
     maxLength?: number;
     applyColumnFilter?: boolean;
+    comboboxOptions?: string[];
 };
 
 export interface EditedCell {

@@ -25,6 +25,7 @@ export {
 };
 
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {
+    wrapperRef?: React.RefObject<HTMLDivElement>;
     highlight?: boolean;
     useComboBoxAsMenuMinWidth?: boolean;
     // Default value for "openMenuOnClick" is "true"
@@ -54,9 +55,11 @@ interface ComboBoxHoistedProps {
         currentOptions: IComboBoxOption[];
     };
 }
-export interface ComboBoxRef extends IComboBox {
+
+interface ComboBoxRef extends IComboBox {
     state: IComboBoxState;
     props: UIComboBoxProps & ComboBoxHoistedProps;
+    _comboBoxWrapper: React.RefObject<HTMLDivElement>;
 }
 
 /**
@@ -71,7 +74,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
-    private root: React.RefObject<HTMLDivElement> = React.createRef();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
@@ -352,10 +354,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * 'minWidth' from state is used to set callout size in render.
      */
     private calculateMenuMinWidth(): void {
-        const root = this.root.current;
-        if (root && this.props.useComboBoxAsMenuMinWidth && root.clientWidth !== this.state.minWidth) {
+        const comboBoxWrapper = this.comboBox.current?._comboBoxWrapper.current;
+        if (
+            comboBoxWrapper &&
+            this.props.useComboBoxAsMenuMinWidth &&
+            comboBoxWrapper.clientWidth !== this.state.minWidth
+        ) {
             this.setState({
-                minWidth: root.clientWidth
+                minWidth: comboBoxWrapper.clientWidth
             });
         }
     }
@@ -551,7 +557,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             disabled = true;
         }
         return (
-            <div ref={this.root} className={this.getClassNames(messageInfo)}>
+            <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
                     disabled={disabled}

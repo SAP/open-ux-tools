@@ -1,5 +1,18 @@
 # @sap-ux/environment-check
 
+## 0.14.1
+
+### Patch Changes
+
+-   Updated dependencies [8cc76b5]
+    -   @sap-ux/project-access@1.0.5
+
+## 0.14.0
+
+### Minor Changes
+
+-   2be6b00: If present use .gitignore to decide content of archive, if not, allow SAP specific files '.cdsrc.json' and '.extconfig.json' to be added to the archive
+
 ## 0.13.0
 
 ### Minor Changes

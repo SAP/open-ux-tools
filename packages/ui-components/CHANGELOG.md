@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.3.0
+
+### Minor Changes
+
+-   e007958: feat(21552): add generic combobox column type to UITable (ColumnControlType.UICombobox)
+
+## 1.2.0
+
+### Minor Changes
+
+-   92184eb: New component - UITranslationInput which provide UI to generate i18n key for entered text value
+
+## 1.1.10
+
+### Patch Changes
+
+-   2bac3c4: New icon Id tag
+
 ## 1.1.9
 
 ### Patch Changes
