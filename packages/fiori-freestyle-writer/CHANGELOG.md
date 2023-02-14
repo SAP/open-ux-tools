@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.7
+
+### Patch Changes
+
+-   a34b85f: fix worklist check for undefined
+
 ## 0.15.6
 
 ### Patch Changes
