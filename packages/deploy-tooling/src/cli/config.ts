@@ -16,7 +16,7 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
     const ui5Config = await UI5Config.newInstance(content);
     const config = ui5Config.findCustomTask<AbapDeployConfig>(NAME)?.configuration;
     if (!config) {
-        throw new Error('The deployment configuration is missing.');
+        throw new Error('The deployment configuration is missing. 01');
     }
     return config;
 }
@@ -62,12 +62,11 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';
     }
-
-    if (options.archiveFolder && !isAbsolute(options.archiveFolder)) {
+    if (options.config && options.archiveFolder && !isAbsolute(options.archiveFolder)) {
         options.archiveFolder = join(dirname(options.config), options.archiveFolder);
     }
 
-    if (options.archivePath && !isAbsolute(options.archivePath)) {
+    if (options.config && options.archivePath && !isAbsolute(options.archivePath)) {
         options.archivePath = join(dirname(options.config), options.archivePath);
     }
 

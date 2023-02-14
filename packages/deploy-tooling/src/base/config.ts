@@ -62,7 +62,7 @@ function throwConfigMissingError(property: string): void {
  * Validate the given target config. If anything mandatory is missing throw an error.
  *
  * @param target - target configuration to be validated
- * @returns referenc to the given target config
+ * @returns reference to the given target config
  */
 function validateTarget(target: AbapTarget): AbapTarget {
     if (isUrlTarget(target)) {

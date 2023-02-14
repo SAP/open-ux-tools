@@ -1,5 +1,5 @@
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { prettyPrintError, prettyPrintMessage } from './message';
+import { prettyPrintError, prettyPrintMessage, ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
 
@@ -136,7 +136,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param config.bsp BSP configuration
      * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
      * @param config.safeMode if set then the SafeMode url parameter will be set. SafeMode is by default active, to activate provide false
-     * @returns the Axios response object for futher processing
+     * @returns the Axios response object for further processing
      */
     public async deploy({ archive, bsp, testMode = false, safeMode }: DeployConfig): Promise<AxiosResponse> {
         const info: AppInfo = await this.getInfo(bsp.name);
@@ -154,14 +154,13 @@ export class Ui5AbapRepositoryService extends ODataService {
             // An app can be successfully deployed after a timeout exception, no value in showing exception headers
             if (response?.headers?.['sap-message']) {
                 prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host: frontendUrl });
+                // log url of created/updated app
+                const path = '/sap/bc/ui5_ui5' + (!bsp.name.startsWith('/') ? '/sap/' : '') + bsp.name.toLowerCase();
+                const query = this.defaults.params?.['sap-client']
+                    ? '?sap-client=' + this.defaults.params['sap-client']
+                    : '';
+                this.log.info(`App available at ${frontendUrl}${path}${query}`);
             }
-            // log url of created/updated app
-            const path = '/sap/bc/ui5_ui5' + (!bsp.name.startsWith('/') ? '/sap/' : '') + bsp.name.toLowerCase();
-            const query = this.defaults.params?.['sap-client']
-                ? '?sap-client=' + this.defaults.params['sap-client']
-                : '';
-            this.log.info(`App available at ${frontendUrl}${path}${query}`);
-
             return response;
         } catch (error) {
             this.logError({ error, host: frontendUrl });
@@ -172,10 +171,10 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Undeploy an existing app.
      *
-     * @param config undeployment config
+     * @param config undeploy config
      * @param config.bsp BSP configuration
      * @param config.testMode if set to true, all requests will be sent, the service checks them, but no actual deployment will happen
-     * @returns the Axios response object for futher processing or undefined if no request is sent
+     * @returns the Axios response object for further processing or undefined if no request is sent
      */
     public async undeploy({ bsp, testMode = false }: UndeployConfig): Promise<AxiosResponse | undefined> {
         const config = this.createConfig(bsp.transport, testMode);
@@ -216,29 +215,26 @@ export class Ui5AbapRepositoryService extends ODataService {
      *
      * @param transport optional transport request id
      * @param testMode optional url parameter to enable test mode
-     * @param safeMode optional url paramater to disable the safe model (safemode=false)
-     * @returns the Axios response object for futher processing
+     * @param safeMode optional url parameter to disable the safe model (safemode=false)
+     * @returns the Axios response object for further processing
      */
-    protected createConfig(transport?: string, testMode?: boolean, safeMode?: boolean): AxiosRequestConfig {
+    protected createConfig(transport?: string, testMode = false, safeMode = true): AxiosRequestConfig {
         const headers = {
             'Content-Type': 'application/atom+xml',
             type: 'entry',
             charset: 'UTF8'
         };
         const params: { [key: string]: string | boolean } = {
-            CodePage: `'UTF8'`,
+            CodePage: "'UTF8'",
             CondenseMessagesInHttpResponseHeader: 'X',
             format: 'json'
         };
         if (transport) {
             params.TransportRequest = transport;
         }
-        if (testMode) {
-            params.TestMode = true;
-        }
-        if (safeMode !== undefined) {
-            params.SafeMode = safeMode;
-        }
+
+        params.TestMode = testMode;
+        params.SafeMode = safeMode;
 
         // `axios` does not properly pass the default values of `maxBodyLength` and `maxContentLength`
         // to `follow-redirects`: https://github.com/axios/axios/issues/4263
@@ -295,7 +291,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param payload request payload
      * @param config additional request config
      * @param tryCount number of attempted deploys (sometimes a repo request fails with a known timeout issue, so we retry)
-     * @returns the Axios response object for futher processing
+     * @returns the Axios response object for further processing
      */
     protected async updateRepoRequest(
         isExisting: boolean,
@@ -316,10 +312,10 @@ export class Ui5AbapRepositoryService extends ODataService {
                 // We've nothing to return as we dont want to show the exception to the user!
                 return Promise.resolve(undefined);
             } else {
+                this.log.info(`${appName} found on target system: ${isExisting}`);
                 const response = isExisting
                     ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
                     : await this.post('/Repositories', payload, config);
-
                 return response;
             }
         } catch (error) {
@@ -329,6 +325,9 @@ export class Ui5AbapRepositoryService extends ODataService {
                     throw error;
                 }
                 return this.updateRepoRequest(isExisting, appName, payload, config, tryCount + 1);
+            } else if (config?.params?.TestMode) {
+                // TestMode returns HTTP 403 but includes details of the uploaded files and request
+                return error.response;
             } else {
                 throw error;
             }
@@ -336,12 +335,12 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Send a request to the backed to delete an application.
+     * Send a request to the backend to delete an application.
      *
      * @param appName application name
      * @param config additional request config
      * @param tryCount number of attempted deploys (sometimes a repo request fails with a known timeout issue, so we retry)
-     * @returns the Axios response object for futher processing
+     * @returns the Axios response object for further processing
      */
     protected async deleteRepoRequest(
         appName: string,

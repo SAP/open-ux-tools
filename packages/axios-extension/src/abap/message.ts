@@ -38,6 +38,22 @@ export interface ErrorMessage {
     };
 }
 
+const logLevel = (severity: string, msg: string, log: Logger, error = false): void => {
+    if (severity) {
+        severity = severity.toLowerCase();
+        if (severity === 'success') {
+            log.info(msg);
+        } else {
+            if (severity === 'warning') {
+                severity = 'warn';
+            }
+            log[severity](msg);
+        }
+    } else {
+        error ? log.error(msg) : log.info(msg);
+    }
+};
+
 /**
  * Log a Gateway response.
  *
@@ -92,7 +108,7 @@ export function prettyPrintError({ error, log, host }: { error: ErrorMessage; lo
         if (error.innererror) {
             (error.innererror.errordetails || []).forEach((entry) => {
                 if (!entry.message.startsWith('<![CDATA')) {
-                    log.error(entry.message);
+                    logLevel(entry.severity, entry.message, log, true);
                 }
                 logFullURL({ host, path: error['longtext_url'], log });
             });

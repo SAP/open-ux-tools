@@ -23,7 +23,7 @@ import { getConfigForLogging, isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials, promptServiceKeys } from './prompt';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
-type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys'>> & { refreshToken?: string };
+type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
 
 /**
  * Check the secure storage if it has credentials for the given target.
@@ -78,7 +78,11 @@ async function createAbapServiceProvider(
  * @param config - deployment configuration
  * @returns service instance
  */
-async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRepositoryService> {
+async function createDeployService(
+    config: AbapDeployConfig,
+    logger?: Logger,
+    validateStatusCB?: ((status: number) => boolean) | null
+): Promise<Ui5AbapRepositoryService> {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
     if (config.strictSsl === false) {
@@ -90,7 +94,10 @@ async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRep
             password: config.credentials?.password
         };
     }
-
+    // Allow individual requests to handle specific HTTP response codes
+    if (validateStatusCB) {
+        options.validateStatus = validateStatusCB;
+    }
     if (isUrlTarget(config.target)) {
         if (config.target.scp) {
             const storedOpts = (await getCredentials<ServiceAuth>(config.target)) ?? (await promptServiceKeys());
@@ -101,6 +108,9 @@ async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRep
                     service: storedOpts.serviceKeys as ServiceInfo,
                     refreshToken: storedOpts.refreshToken
                 });
+                if (logger) {
+                    logger.info(`Using system [${storedOpts.name}] from System store`);
+                }
             } else {
                 throw new Error('Service keys required for deployment to an ABAP environment on SAP BTP');
             }
@@ -193,11 +203,13 @@ async function handleAxiosError(
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  */
-export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger) {
+export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger): Promise<void> {
     if (config.keep) {
         writeFileSync(`archive-${Date.now()}.zip`, archive);
     }
-    const service = await createDeployService(config);
+    // Dont reject 404's, a csrf token is still returned and shouldn't block the update | create flow
+    const validateStatusCB = (status: number) => (status === 404 ? true : status < 400);
+    const service = await createDeployService(config, logger, validateStatusCB);
     service.log = logger;
     if (!config.strictSsl) {
         logger.warn(
@@ -206,7 +218,13 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
     }
     logger.info(`Starting deployment${config.test === true ? ' in test mode' : ''}.`);
     await tryDeploy(archive, service, config, logger);
-    logger.info('Deployment successful.');
+    if (config.test === true) {
+        logger.info(
+            'Deployment in TestMode completed. A successful TestMode execution does not necessarily mean that your upload will be successful.'
+        );
+    } else {
+        logger.info('Deployment successful.');
+    }
 }
 
 /**
@@ -215,8 +233,8 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  */
-export async function undeploy(config: AbapDeployConfig, logger: Logger) {
-    const service = await createDeployService(config);
+export async function undeploy(config: AbapDeployConfig, logger: Logger): Promise<void> {
+    const service = await createDeployService(config, logger);
     service.log = logger;
     if (!config.strictSsl) {
         logger.warn(
