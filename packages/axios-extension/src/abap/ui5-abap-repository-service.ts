@@ -1,7 +1,7 @@
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { prettyPrintError, prettyPrintMessage, ErrorMessage } from './message';
+import { prettyPrintError, prettyPrintMessage } from './message';
 import { ODataService } from '../base/odata-service';
-import { isAxiosError, ODataRequestError } from '../base/odata-request-error';
+import { isAxiosError } from '../base/odata-request-error';
 
 /**
  * Required configuration for the BSP hosting an app.
@@ -218,7 +218,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param safeMode optional url parameter to disable the safe model (safemode=false)
      * @returns the Axios response object for further processing
      */
-    protected createConfig(transport?: string, testMode = false, safeMode = true): AxiosRequestConfig {
+    protected createConfig(transport?: string, testMode?: boolean, safeMode?: boolean): AxiosRequestConfig {
         const headers = {
             'Content-Type': 'application/atom+xml',
             type: 'entry',
@@ -233,8 +233,12 @@ export class Ui5AbapRepositoryService extends ODataService {
             params.TransportRequest = transport;
         }
 
-        params.TestMode = testMode;
-        params.SafeMode = safeMode;
+        if (testMode) {
+            params.TestMode = true;
+        }
+        if (safeMode !== undefined) {
+            params.SafeMode = safeMode;
+        }
 
         // `axios` does not properly pass the default values of `maxBodyLength` and `maxContentLength`
         // to `follow-redirects`: https://github.com/axios/axios/issues/4263

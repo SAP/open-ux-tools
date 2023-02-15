@@ -22,7 +22,7 @@ export class Cookies {
      * @returns cookies object
      */
     public setCookies(response: AxiosResponse): Cookies {
-        if (response.headers?.['set-cookie']) {
+        if (response?.headers?.['set-cookie']) {
             response.headers['set-cookie'].forEach((cookieString) => this.addCookie(cookieString));
         }
         return this;
