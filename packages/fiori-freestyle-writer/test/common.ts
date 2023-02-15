@@ -5,6 +5,10 @@ import { readFileSync } from 'fs';
 import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import type { FreestyleApp } from '../src';
+import { promisify } from 'util';
+import { exec as execCP } from 'child_process';
+const exec = promisify(execCP);
 
 export const testOutputDir = join(__dirname, '/test-output');
 
@@ -15,13 +19,14 @@ export const debug = prepareDebug();
  *          object.enabled debug enabled boolean
  *          object.outputDir output directory
  */
-export function prepareDebug(): { enabled: boolean; outputDir: string } {
+export function prepareDebug(): { enabled: boolean; outputDir: string; debugFull: boolean } {
     const debug = !!process.env['UX_DEBUG'];
+    const debugFull = !!process.env['UX_DEBUG_FULL'];
 
     if (debug) {
         console.log(testOutputDir);
     }
-    return { enabled: debug, outputDir: testOutputDir };
+    return { enabled: debug, outputDir: testOutputDir, debugFull };
 }
 
 export const commonConfig = {
@@ -60,4 +65,40 @@ export const getMetadata = (serviceName: string) => {
     }
 
     return sampleTestStore.write(metadataPath, readFileSync(metadataPath));
+};
+
+export const projectChecks = async (
+    rootPath: string,
+    config: FreestyleApp<unknown>,
+    debugFull = false
+): Promise<void> => {
+    if (debugFull && (config.appOptions?.typescript || config.appOptions?.eslint)) {
+        // Do additonal checks on generated projects
+        const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+        let npmResult;
+        try {
+            // Do npm install
+            npmResult = await exec(`${npm} install`, { cwd: rootPath });
+            console.log('stdout:', npmResult.stdout);
+            console.log('stderr:', npmResult.stderr);
+
+            // run checks on the project
+            // Check TS Types
+            if (config.appOptions?.typescript) {
+                npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
+            }
+            // Check Eslint
+            if (config.appOptions?.eslint) {
+                npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
+            }
+        } catch (error) {
+            console.log('stdout:', error?.stdout);
+            console.log('stderr:', error?.stderr);
+            expect(error).toBeUndefined();
+        }
+    }
 };
