@@ -1,0 +1,27 @@
+{
+    "questions": {
+        "service": "Service for smart links configuration",
+        "client": "Service client",
+        "credentials": "Credentials to be used",
+        "credentialsDescription": "Provide username and password"
+    },
+    "warnings": {},
+    "info": {
+        "username": "Username",
+        "password": "Password",
+        "credentialsRequired": "Credentials are required. Please enter your credentials below",
+        "authNeeded": "Credentials might be required. Do you want to enter your credentials?",
+        "operationAborted": "Operation aborted by the user.",
+        "connectTo": "Connecting to",
+        "connectSuccess": "Connection successful"
+    },
+    "error": {
+        "service": "Please provide a service for configuration",
+        "noServices": "No services found {{-targets}}",
+        "noTargets": "No targets found",
+        "emptyUsername": "Username can not be empty.",
+        "emptyPassword": "Password can not be empty.",
+        "statusError": "Error {{-code}} {{-status}} thrown with {{-message}}",
+        "connectError": "Connection could not be established"
+    }
+}
