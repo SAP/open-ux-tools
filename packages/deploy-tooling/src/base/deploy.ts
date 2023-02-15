@@ -74,8 +74,8 @@ async function createAbapServiceProvider(
 
 /**
  * Create an instance of a UI5AbapRepository service connected to the given target configuration.
- *
  * @param config - deployment configuration
+ * @param logger - optional reference to the logger instance
  * @returns service instance
  */
 async function createDeployService(config: AbapDeployConfig, logger?: Logger): Promise<Ui5AbapRepositoryService> {

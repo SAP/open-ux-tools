@@ -2,10 +2,10 @@ import type { ParseOptions } from 'commander';
 import { join } from 'path';
 import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
 import { mockedUi5RepoService } from '../../__mocks__';
+import { Command } from 'commander';
 
 describe('cli', () => {
     const fixture = join(__dirname, '../../test-input/');
-
     beforeEach(() => {
         mockedUi5RepoService.deploy.mockReset();
     });
@@ -37,6 +37,21 @@ describe('cli', () => {
             await runUndeploy();
             expect(mockedUi5RepoService.undeploy).toBeCalled();
         });
+
+        test('unsuccessful undeploy, help options is shown if no parameters are passed in', async () => {
+            // Dont exit the jest process
+            const mockExit = jest.spyOn(process, 'exit').mockImplementation((number) => {
+                throw new Error('process.exit: ' + number);
+            });
+            const errorMock = jest.spyOn(Command.prototype, 'error').mockImplementation();
+            const helpMock = jest.spyOn(Command.prototype, 'help');
+            process.argv = ['node', 'test'];
+            await runUndeploy();
+            expect(helpMock).toBeCalled();
+            expect(errorMock).toBeCalled();
+            expect(mockExit).toHaveBeenCalledWith(0);
+            mockExit.mockRestore();
+        });
     });
 
     describe('createCommand', () => {
@@ -47,13 +62,6 @@ describe('cli', () => {
 
         afterEach(() => {
             errorMock.mockClear();
-        });
-
-        test('missing mandatory parameter --config', () => {
-            process.argv = ['node', 'test'];
-            cmd.parse([], opts);
-            expect(errorMock).toBeCalled();
-            expect(errorMock.mock.calls[0][1]).toBeDefined();
         });
 
         test('minimum parameters', () => {

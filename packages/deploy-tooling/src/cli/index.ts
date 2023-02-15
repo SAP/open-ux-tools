@@ -1,8 +1,8 @@
 import { Option, Command } from 'commander';
 import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
 import { deploy, getConfigForLogging, replaceEnvVariables, undeploy, validateConfig } from '../base';
-import type { CliOptions } from '../types';
-import { AbapDeployConfig, NAME } from '../types';
+import type { CliOptions, AbapDeployConfig } from '../types';
+import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, mergeConfig } from './config';
 
@@ -83,8 +83,10 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
  * @returns a set of objects required for the command execution
  */
 async function prepareRun(cmd: Command) {
+    if (process.argv.length < 3) {
+        cmd.help();
+    }
     const options = cmd.parse().opts<CliOptions>();
-
     const logLevel = options.verbose ? LogLevel.Silly : LogLevel.Info;
     const logger = new ToolsLogger({
         transports: [new ConsoleTransport()],
