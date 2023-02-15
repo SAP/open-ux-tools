@@ -47,7 +47,7 @@ function createInstance<T extends ServiceProvider>(
      * @param status - http response status
      * @returns success (true) or error (false)
      */
-    providerConfig.validateStatus = providerConfig.validateStatus ?? ((status) => status < 400);
+    providerConfig.validateStatus = (status) => status < 400;
     const instance = new ProviderType(providerConfig);
     instance.defaults.headers = instance.defaults.headers ?? {
         common: {},

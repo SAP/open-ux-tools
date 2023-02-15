@@ -114,8 +114,7 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * Get information about a deployed application. Returns undefined if the application cannot be found or response contains an error.
-     * Using the axios validateStatus config option, some HTTP code(s) should not throw an error and instead be handled, for example HTTP 404 https://github.com/axios/axios/issues/2697.
+     * Get information about a deployed application. Returns undefined if the application cannot be found.
      *
      * @param app application id (BSP application name)
      * @returns application information or undefined
@@ -123,8 +122,7 @@ export class Ui5AbapRepositoryService extends ODataService {
     public async getInfo(app: string): Promise<AppInfo> {
         try {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
-            const data = response.odata();
-            return ODataRequestError.containsError(data) ? undefined : data;
+            return response.odata();
         } catch (error) {
             return undefined;
         }

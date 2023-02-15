@@ -167,6 +167,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                 provider.defaults.headers.common[CSRF.RequestHeaderName] =
                     error.response.headers[CSRF.ResponseHeaderName];
             }
+            provider.cookies.setCookies(error.response);
             throw error;
         }
     );

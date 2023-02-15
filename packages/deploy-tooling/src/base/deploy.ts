@@ -78,11 +78,7 @@ async function createAbapServiceProvider(
  * @param config - deployment configuration
  * @returns service instance
  */
-async function createDeployService(
-    config: AbapDeployConfig,
-    logger?: Logger,
-    validateStatusCB?: ((status: number) => boolean) | null
-): Promise<Ui5AbapRepositoryService> {
+async function createDeployService(config: AbapDeployConfig, logger?: Logger): Promise<Ui5AbapRepositoryService> {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
     if (config.strictSsl === false) {
@@ -93,10 +89,6 @@ async function createDeployService(
             username: config.credentials?.username,
             password: config.credentials?.password
         };
-    }
-    // Allow individual requests to handle specific HTTP response codes
-    if (validateStatusCB) {
-        options.validateStatus = validateStatusCB;
     }
     if (isUrlTarget(config.target)) {
         if (config.target.scp) {
@@ -207,9 +199,7 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
     if (config.keep) {
         writeFileSync(`archive-${Date.now()}.zip`, archive);
     }
-    // Dont reject 404's, a csrf token is still returned and shouldn't block the update | create flow
-    const validateStatusCB = (status: number) => (status === 404 ? true : status < 400);
-    const service = await createDeployService(config, logger, validateStatusCB);
+    const service = await createDeployService(config, logger);
     service.log = logger;
     if (!config.strictSsl) {
         logger.warn(

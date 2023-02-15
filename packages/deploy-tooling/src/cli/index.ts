@@ -44,6 +44,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
         .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
+        // If set to TRUE, the result shows which operations (create, read, update, delete) would be done in a real run for each file to help you make an informed decision. A successful TestMode execution does not necessarily mean that your upload will be successful.
         .option(
             '--test',
             `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing. (use --no-test to deactivate it)`
@@ -55,7 +56,8 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
             .option('--package <abap-package>', 'Package name for deploy target ABAP system')
             .option('--description <description>', 'Project description of the app')
             .option('--keep', 'Keep a copy of the deployed archive in the project folder.')
-            .option('--safe', 'Only semantic changes (changes possible during the application runtime) can be made.');
+            // SafeMode: Example: If the deployment would overwrite a repository that contains an app with a different sap.app/id and SafeMode is true, HTTP status code 412 (Precondition Failed) with further information would be returned.
+            .option('--safe', 'Prevents accidentally breaking deployments.');
 
         // alternatives to provide the archive
         command
