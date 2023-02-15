@@ -106,6 +106,11 @@ describe('Test findProjectRoot()', () => {
         }
     });
 
+    test('No package.json in silent mode should not throw', async () => {
+        const path = await findProjectRoot(join('/'), true, true);
+        expect(path).toStrictEqual('');
+    });
+
     test('No package.json, sapuxRequired: false, should throw error', async () => {
         try {
             await findProjectRoot(join('/'), false);
