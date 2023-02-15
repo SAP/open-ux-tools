@@ -8,6 +8,7 @@ export {
     FioriToolsProxyConfigBackend,
     FioriToolsProxyConfigUI5,
     AbapApp,
+    AbapDeployConfig,
     UI5ProxyConfig,
     UI5ProxyConfigTarget
 } from './types';
