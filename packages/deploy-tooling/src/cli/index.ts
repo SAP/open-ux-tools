@@ -18,7 +18,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .option('-y, --yes', 'yes to all questions', false)
         .option('-v, --verbose', 'verbose log output', false)
         .option('-n, --no-retry', `do not retry if the ${name}ment fails for any reason`, false)
-        .version('0.0.1', '-vers', 'output the current version');
+        .version('0.0.1');
 
     // is this really required or was it a workaround for something in the past?
     //--failfast           -f         Terminate deploy and throw error when encoutering first error (y/N)
@@ -33,18 +33,11 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .addOption(new Option('--url <target-url>', 'URL of deploy target ABAP system').conflicts('destination'))
         .addOption(
             new Option('--client <sap-client>', 'Client number of deploy target ABAP system').conflicts('destination')
-        );
-    // TODO need to look at this further, conflicts with destination, scp required if no destination
-    if (name === 'undeploy') {
-        command.requiredOption('--scp', `true for ${name}ments to ABAP on BTP`);
-    } else {
-        command.addOption(new Option('--scp', `true for ${name}ments to ABAP on BTP`).conflicts('destination'));
-    }
-    command
+        )
+        .addOption(new Option('--scp', `true for ${name}ments to ABAP on BTP`).conflicts('destination'))
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
         .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
-        // If set to TRUE, the result shows which operations (create, read, update, delete) would be done in a real run for each file to help you make an informed decision. A successful TestMode execution does not necessarily mean that your upload will be successful.
         .option(
             '--test',
             `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing. (use --no-test to deactivate it)`
@@ -55,9 +48,9 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         command
             .option('--package <abap-package>', 'Package name for deploy target ABAP system')
             .option('--description <description>', 'Project description of the app')
-            .option('--keep', 'Keep a copy of the deployed archive in the project folder.')
             // SafeMode: Example: If the deployment would overwrite a repository that contains an app with a different sap.app/id and SafeMode is true, HTTP status code 412 (Precondition Failed) with further information would be returned.
-            .option('--safe', 'Prevents accidentally breaking deployments.');
+            .option('--safe', 'Prevents accidentally breaking deployments.')
+            .option('--keep', 'Keep a copy of the deployed archive in the project folder.');
 
         // alternatives to provide the archive
         command
@@ -99,19 +92,20 @@ async function prepareRun(cmd: Command) {
         logPrefix: NAME
     });
 
+    // Handle empty config when not passed in
     const taskConfig = options.config ? await getDeploymentConfig(options.config) : ({} as AbapDeployConfig);
     const config = await mergeConfig(taskConfig, options);
     if (logLevel >= LogLevel.Debug) {
         logger.debug(getConfigForLogging(config));
     }
-    replaceEnvVariables(config);
     validateConfig(config);
+    replaceEnvVariables(config);
 
     return { cmd, logger, config, options };
 }
 
 /**
- * Function that is to be executed when the exposed deploy command is executed.
+ * Function that is to be execute when the exposed deploy command is executed.
  */
 export async function runDeploy(): Promise<void> {
     const cmd = createCommand('deploy');
@@ -125,7 +119,7 @@ export async function runDeploy(): Promise<void> {
 }
 
 /**
- * Function that is to be executed when the exposed undeploy command is executed.
+ * Function that is to be execute when the exposed undeploy command is executed.
  */
 export async function runUndeploy(): Promise<void> {
     const cmd = createCommand('undeploy');

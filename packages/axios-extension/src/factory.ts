@@ -42,7 +42,7 @@ function createInstance<T extends ServiceProvider>(
     providerConfig.withCredentials = providerConfig?.auth && Object.keys(providerConfig.auth).length > 0;
 
     /**
-     * Make axios throw an error for 4xx errors or allow calling client to handle specific response codes.
+     * Make axios throw an error for 4xx errors.
      *
      * @param status - http response status
      * @returns success (true) or error (false)

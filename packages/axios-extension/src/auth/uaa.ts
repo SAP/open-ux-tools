@@ -251,7 +251,7 @@ export class Uaa {
 
         if (newRefreshToken && refreshTokenChangedCb) {
             this.log.info('Sending notification that refresh token changed');
-            await refreshTokenChangedCb(newRefreshToken);
+            refreshTokenChangedCb(newRefreshToken);
         }
 
         this.log.info('Got access token successfully');
