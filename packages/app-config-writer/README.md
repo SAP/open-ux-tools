@@ -1,0 +1,1 @@
+# @sap-ux/app-config-config-writer
