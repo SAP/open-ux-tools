@@ -53,10 +53,14 @@ async function findAllManifest(wsFolders: WorkspaceFolder[] | string[] | undefin
  *
  * @param path path of a project file
  * @param sapuxRequired if true, only find sapux projects
+ * @param silent if true, then does not throw an error but returns an empty path
  */
-export async function findProjectRoot(path: string, sapuxRequired = true): Promise<string> {
+export async function findProjectRoot(path: string, sapuxRequired = true, silent = false): Promise<string> {
     const packageJson = await findFileUp(FileName.Package, path);
     if (!packageJson) {
+        if (silent) {
+            return '';
+        }
         throw new Error(
             `Could not find any project root for '${path}'. Search was done for ${
                 sapuxRequired ? 'Fiori elements' : 'All'
