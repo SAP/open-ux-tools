@@ -11,10 +11,7 @@
     },
     "references": [
         {
-            "path": "../axios-extension"
-        },
-        {
-            "path": "../environment-check"
+            "path": "../btp-utils"
         },
         {
             "path": "../logger"
@@ -27,9 +24,6 @@
         },
         {
             "path": "../ui5-config"
-        },
-        {
-            "path": "../yaml"
         }
     ]
 }
