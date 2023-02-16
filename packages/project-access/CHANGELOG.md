@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.1.0
+
+### Minor Changes
+
+-   470275c: Add option for findProjectRoot function to not throw errors when no match is found
+
 ## 1.0.6
 
 ### Patch Changes
