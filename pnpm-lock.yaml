@@ -226,7 +226,6 @@ importers:
 
   packages/create:
     specifiers:
-      '@sap-ux/app-config-writer': workspace:0.0.1
       '@sap-ux/logger': workspace:*
       '@sap-ux/mockserver-config-writer': workspace:*
       '@sap-ux/project-access': workspace:*
@@ -238,7 +237,6 @@ importers:
       diff: 5.1.0
       prompts: 2.4.2
     dependencies:
-      '@sap-ux/app-config-writer': link:../app-config-writer
       '@sap-ux/logger': link:../logger
       '@sap-ux/mockserver-config-writer': link:../mockserver-config-writer
       '@sap-ux/project-access': link:../project-access
@@ -6976,7 +6974,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -14401,17 +14399,6 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
-    dev: true
-
-  /promise-inflight/1.0.1_bluebird@3.7.2:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
-    dependencies:
-      bluebird: 3.7.2
     dev: true
 
   /promise.allsettled/1.0.5:
