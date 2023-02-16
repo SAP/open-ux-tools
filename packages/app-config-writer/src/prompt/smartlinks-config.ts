@@ -1,13 +1,13 @@
 import type { AxiosBasicCredentials } from 'axios';
 import type { Choice } from 'prompts';
 import { prompt } from 'prompts';
-import { yellow, cyan, red } from 'chalk';
+import { yellow, cyan } from 'chalk';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { QuestionType } from '../types/prompt';
 import { t } from '..';
 import type { Service, ServiceConfig } from '..';
-import { checkConnection, getServices, getSystemCredentials } from '../smartlinks-config';
+import { getServices, getSystemCredentials, sendRequest } from '../smartlinks-config';
 
 /**
  * @description Returns prompt result to provide or use service parameters
@@ -137,11 +137,9 @@ export async function getSmartLinksServicePrompt(
     const services = await getServices(basePath, logger);
     const service = await getServicePrompt(services);
     const credentials = await getCredentialsPrompt(service, logger);
-    const connectionStatus = await checkConnection(service, credentials, logger);
+    const connectionStatus = await sendRequest(service, credentials, logger);
     if (connectionStatus) {
-        logger?.info(cyan(t('info.connectSuccess')));
         return { ...service, credentials };
     }
-    logger?.error(red(t('error.connectError')));
     return undefined;
 }

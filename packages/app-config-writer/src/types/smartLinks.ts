@@ -2,7 +2,8 @@ import type { AxiosBasicCredentials } from 'axios';
 
 export enum DeployConfig {
     'DeployToAbap' = 'deploy-to-abap',
-    'FioriToolsProxy' = 'fiori-tools-proxy'
+    'FioriToolsProxy' = 'fiori-tools-proxy',
+    'FioriToolsServestatic' = 'fiori-tools-servestatic'
 }
 
 export enum UrlParameters {
@@ -28,6 +29,7 @@ export interface ServiceConfig {
     url: string;
     client?: string;
     credentials?: AxiosBasicCredentials;
+    ignoreCertError?: boolean;
 }
 
 /**
@@ -62,12 +64,14 @@ export type InboundTarget = {
     semanticObject: string;
     signature: object;
     title?: string;
-    resolutionResult: {};
+    resolutionResult?: {};
 };
+
+export type InboundTargetsConfig = { [key: string]: InboundTarget };
 
 export type SmartLinksSandboxConfig = {
     services?: {
-        ClientSideTargetResolution?: { adapter?: { config?: { inbounds?: { [key: string]: InboundTarget } } } };
+        ClientSideTargetResolution?: { adapter?: { config?: { inbounds?: InboundTargetsConfig } } };
     };
 };
 

@@ -1,5 +1,5 @@
 import { Agent as HttpsAgent } from 'https';
-import { cyan, red } from 'chalk';
+import { cyan } from 'chalk';
 import type { AxiosBasicCredentials } from 'axios';
 import axios from 'axios';
 import type { Editor } from 'mem-fs-editor';
@@ -10,7 +10,7 @@ import { FileName } from '@sap-ux/project-access';
 import type { ServiceConfig, Service, SystemDetailsResponse } from '../types';
 import { UrlParameters } from '../types';
 import { t } from '../i18n';
-import { readUi5Config, readUi5DeployConfig } from './ui5-yaml';
+import { readUi5ConfigTargets, readUi5DeployConfigTargets } from './ui5-yaml';
 
 /**
  * @description Combines the service parameters and returns the service url
@@ -37,41 +37,17 @@ export async function sendRequest(
     credentials?: AxiosBasicCredentials,
     logger?: ToolsLogger
 ): Promise<SystemDetailsResponse> {
-    const httpsAgent = new HttpsAgent({ rejectUnauthorized: false });
-    const axiosConfig = { baseUrl: service.url, auth: credentials, httpsAgent };
     const serviceUrl = getSmartLinksServiceUrl(service);
+    const httpsAgent = new HttpsAgent({ rejectUnauthorized: service.ignoreCertError });
+    const axiosConfig = { auth: credentials, httpsAgent };
     try {
         logger?.info(`${cyan(t('info.connectTo'))} ${serviceUrl}`);
         const response = await axios.get(serviceUrl, axiosConfig);
+        logger?.info(cyan(t('info.connectSuccess')));
         return response.data;
     } catch (error: any) {
-        logger?.error(
-            red(
-                t('error.statusError', {
-                    code: error.code,
-                    status: error.response?.status,
-                    message: error.response?.statusText
-                })
-            )
-        );
         throw new Error(error);
     }
-}
-
-/**
- * @description checks if a connection to a system can be established
- * @param service service url and client
- * @param credentials optional credentials for service
- * @param logger logger to report info to the user
- * @returns boolean
- */
-export async function checkConnection(
-    service: ServiceConfig,
-    credentials?: AxiosBasicCredentials,
-    logger?: ToolsLogger
-): Promise<boolean> {
-    const status = await sendRequest({ url: service.url, client: service.client }, credentials, logger);
-    return !!status;
 }
 
 /**
@@ -95,13 +71,13 @@ export async function getServices(basePath: string, logger?: ToolsLogger, fs?: E
         fs = create(createStorage());
     }
     const services: Service[] = [];
-    const ui5DeployConfig = await readUi5DeployConfig(fs, basePath, logger);
-    if (ui5DeployConfig) {
-        services.push({ ...ui5DeployConfig, source: FileName.UI5DeployYaml });
+    const ui5DeployConfigTargets = await readUi5DeployConfigTargets(fs, basePath, logger);
+    if (ui5DeployConfigTargets) {
+        services.push({ ...ui5DeployConfigTargets, source: FileName.UI5DeployYaml });
     } else {
-        const ui5Config = await readUi5Config(fs, basePath, logger);
-        if (ui5Config) {
-            services.push(...ui5Config);
+        const ui5ConfigTargets = await readUi5ConfigTargets(fs, basePath, logger);
+        if (ui5ConfigTargets) {
+            services.push(...ui5ConfigTargets);
             services.forEach((service) => (service.source = FileName.Ui5Yaml));
         }
     }
