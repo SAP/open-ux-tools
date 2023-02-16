@@ -2,11 +2,12 @@ import type { FreestyleApp } from '../src';
 import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, getMetadata } from './common';
+import { testOutputDir, debug, getMetadata, projectChecks } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { WorklistSettings } from '../src/types';
 
 const TEST_NAME = 'worklistTemplate';
+jest.setTimeout(120000); // Needed when debug.debugFull
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -164,6 +165,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });
