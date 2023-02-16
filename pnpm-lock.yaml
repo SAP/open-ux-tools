@@ -107,11 +107,13 @@ importers:
       '@sap-ux/project-access': workspace:*
       '@sap-ux/store': workspace:*
       '@sap-ux/ui5-config': workspace:*
+      '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/prompts': 2.0.14
       axios: 0.24.0
       chalk: 4.1.2
+      ejs: 3.1.7
       i18next: 20.3.2
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0
@@ -123,12 +125,14 @@ importers:
       '@sap-ux/ui5-config': link:../ui5-config
       axios: 0.24.0
       chalk: 4.1.2
+      ejs: 3.1.7
       i18next: 20.3.2
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
       prompts: 2.4.2
     devDependencies:
       '@sap-ux/project-access': link:../project-access
+      '@types/ejs': 3.1.0
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/prompts': 2.0.14
@@ -222,6 +226,7 @@ importers:
 
   packages/create:
     specifiers:
+      '@sap-ux/app-config-writer': workspace:0.0.1
       '@sap-ux/logger': workspace:*
       '@sap-ux/mockserver-config-writer': workspace:*
       '@sap-ux/project-access': workspace:*
@@ -233,6 +238,7 @@ importers:
       diff: 5.1.0
       prompts: 2.4.2
     dependencies:
+      '@sap-ux/app-config-writer': link:../app-config-writer
       '@sap-ux/logger': link:../logger
       '@sap-ux/mockserver-config-writer': link:../mockserver-config-writer
       '@sap-ux/project-access': link:../project-access

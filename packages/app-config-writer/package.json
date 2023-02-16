@@ -35,6 +35,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "axios": "0.24.0",
         "chalk": "4.1.2",
+        "ejs": "3.1.7",
         "i18next": "20.3.2",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
@@ -42,6 +43,7 @@
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
+        "@types/ejs": "3.1.0",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/prompts": "2.0.14"

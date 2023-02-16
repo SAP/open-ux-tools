@@ -1,0 +1,11 @@
+{
+    "services": {
+        "ClientSideTargetResolution": {
+            "adapter": {
+                "config": {
+                    "inbounds": <%- JSON.stringify(locals.inboundTargets) %>
+                }
+            }
+        }
+    }
+}

@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { SmartLinksConfig } from '..';
-import { getCredentials, getServices } from '.';
+import { getCredentials, getServices, writeSmartLinksConfig } from '.';
 
 /**
  * @description Add smartlinks configuration to a UI5 application.
@@ -27,10 +27,7 @@ export async function generateSmartLinksConfig(
         const credentials = await getCredentials(service, logger);
         config.service = { ...service, credentials };
     }
-    // ToDo:
-    // [ ] return targets
-    // [ ] map targets
-    // [ ] write appconfig/fioriSandboxConfig.json
+    await writeSmartLinksConfig(basePath, config.service, fs, logger);
     return fs;
 }
 
