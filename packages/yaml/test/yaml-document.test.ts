@@ -14,6 +14,22 @@ foo:
         expect(async () => await YamlDocument.newInstance(serializedYaml)).rejects.toThrow();
     });
 
+    it('throws an error containing messages for all documents', async () => {
+        expect(async () => await YamlDocument.newInstance(`- 1\n2\n---\n- 3\n4`)).rejects.toThrowError(
+            expect.objectContaining({
+                message: `Error parsing YAML document\nUnexpected scalar at node end at line 2, column 1:\n\n- 1\n2\n^\n,Unexpected scalar at node end at line 5, column 1:\n\n- 3\n4\n^\n`
+            })
+        );
+    });
+
+    it('throws an error containing message for erroneous document', async () => {
+        expect(async () => await YamlDocument.newInstance(`- 1\n---\n- 2\n3`)).rejects.toThrowError(
+            expect.objectContaining({
+                message: `Error parsing YAML document\nUnexpected scalar at node end at line 4, column 1:\n\n- 2\n3\n^\n`
+            })
+        );
+    });
+
     it('toString returns serialized contents, including comments', async () => {
         const serializedYaml = `# This is at the top
 

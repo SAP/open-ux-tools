@@ -45,9 +45,12 @@ export class YamlDocument {
             // yaml.parseAll('') does not create a new document
             this.documents.push(yaml.parseDocument(serializedYaml));
         }
-        if (this.documents[0].errors?.length > 0) {
+        const docsWithErrors = this.documents.filter((doc) => doc.errors.length > 0);
+        if (docsWithErrors.length > 0) {
             throw new YAMLError(
-                errorTemplate.yamlParsing + '\n' + this.documents[0].errors.map((e) => e.message).join(''),
+                errorTemplate.yamlParsing +
+                    '\n' +
+                    docsWithErrors.map((doc) => doc.errors.map((e) => e.message).join('')),
                 errorCode.yamlParsing
             );
         }
