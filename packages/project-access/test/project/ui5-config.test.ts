@@ -21,4 +21,10 @@ describe('Test getWebappPath()', () => {
             join(samplesRoot, 'custom-webapp-path', 'src', 'webapp')
         );
     });
+
+    test('Get webapp from app with custom webapp mapping in multi document yaml', async () => {
+        expect(await getWebappPath(join(samplesRoot, 'custom-webapp-path-multi-yaml'))).toEqual(
+            join(samplesRoot, 'custom-webapp-path-multi-yaml', 'src', 'webapp')
+        );
+    });
 });
