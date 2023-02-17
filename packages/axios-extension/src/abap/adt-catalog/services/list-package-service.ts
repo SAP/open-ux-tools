@@ -9,8 +9,8 @@ import type { PackageInfo } from '../../types/adt-internal-types';
  * @see {@link ListPackageService#listPackages}
  */
 export interface ListPackageParams {
-    maxResults: number;
-    phrase: string;
+    maxResults?: number;
+    phrase?: string;
 }
 
 /**

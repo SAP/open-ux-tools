@@ -385,4 +385,21 @@ describe('List packages', () => {
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
         expect(await listPackageService?.listPackages({ maxResults: 50, phrase: 'TestPackage' })).toStrictEqual([]);
     });
+
+    test('List packages - no package found', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(AdtServices.LIST_PACKAGES)
+            .query({
+                operation: 'quickSearch',
+                query: `*`,
+                useSearchProvider: 'X',
+                maxResults: 50,
+                objectType: 'DEVC/K'
+            })
+            .replyWithFile(200, join(__dirname, 'mockResponses/listPackages-4.xml'));
+        const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
+        expect(await listPackageService?.listPackages({})).toStrictEqual([]);
+    });
 });
