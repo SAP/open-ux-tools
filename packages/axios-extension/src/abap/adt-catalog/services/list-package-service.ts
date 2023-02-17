@@ -51,6 +51,8 @@ export class ListPackageService extends AdtService {
      *             Based on explanation above, it is suggested to use a relatively small number like 50.
      *  phrase     Search phrase. The input is case sensitive.
      * @returns A list of package names that has prefix matching input parameter `phrase`.
+     *          The list is returned in the same order as returned by the ADT API.
+     *          No guarantee on alphabetic ordering of package names.
      */
     public async listPackages(params: ListPackageParams): Promise<string[]> {
         const { maxResults = 50, phrase = '' } = params;
