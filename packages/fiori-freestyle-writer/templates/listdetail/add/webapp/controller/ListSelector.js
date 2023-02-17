@@ -7,7 +7,7 @@
     return BaseObject.extend("<%- app.id %>.controller.ListSelector", {
 
         /**
-         * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundMasterList
+         * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundList
          * function.
          * @class
          * @public
@@ -18,7 +18,7 @@
                 this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
             }.bind(this));
             // This promise needs to be created in the constructor, since it is allowed to
-            // invoke selectItem functions before calling setBoundMasterList
+            // invoke selectItem functions before calling setBoundList
             this.oWhenListLoadingIsDone = new Promise(function (fnResolve, fnReject) {
                 this._oWhenListHasBeenSet
                     .then(function (oList) {
@@ -46,7 +46,7 @@
          * @param {sap.m.List} oList The list all the select functions will be invoked on.
          * @public
          */
-        setBoundMasterList : function (oList) {
+        setBoundList : function (oList) {
             this._oList = oList;
             this._fnResolveListHasBeenSet(oList);
         },

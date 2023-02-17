@@ -2,10 +2,11 @@ import type { FioriElementsApp } from '../src';
 import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, feBaseConfig, v4TemplateSettings, v4Service } from './common';
+import { testOutputDir, debug, feBaseConfig, v4TemplateSettings, v4Service, projectChecks } from './common';
 import type { FEOPSettings } from '../src/types';
 
 const TEST_NAME = 'feopTemplate';
+jest.setTimeout(120000); // Needed when debug.debugFull
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -56,6 +57,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });
