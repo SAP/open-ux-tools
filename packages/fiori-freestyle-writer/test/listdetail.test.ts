@@ -4,9 +4,11 @@ import { join } from 'path';
 import type { ListDetailSettings } from '../src/types';
 import { TemplateType } from '../src/types';
 import { removeSync } from 'fs-extra';
-import { commonConfig, northwind, debug, testOutputDir } from './common';
+import { commonConfig, northwind, debug, testOutputDir, projectChecks } from './common';
 
 const TEST_NAME = 'listDetailTemplate';
+
+jest.setTimeout(120000); // Needed when debug.debugFull
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -92,13 +94,15 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(join(testPath), config);
         expect(fs.dump(testPath)).toMatchSnapshot();
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
                 fs.commit(resolve);
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });

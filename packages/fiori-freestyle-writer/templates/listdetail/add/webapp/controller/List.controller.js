@@ -69,7 +69,7 @@ sap.ui.define([
 
             this.getView().addEventDelegate({
                 onBeforeFirstShow: function () {
-                    this.getOwnerComponent().oListSelector.setBoundMasterList(oList);
+                    this.getOwnerComponent().oListSelector.setBoundList(oList);
                 }.bind(this)
             });
 
