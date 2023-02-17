@@ -1,35 +1,59 @@
 import { AdtService } from './adt-service';
-import type { AdtCategory, PackageInfo } from '../../types';
+import type { AdtCategory } from '../../types';
 import XmlParser from 'fast-xml-parser';
+import type { PackageInfo } from '../../types/adt-internal-types';
+
+/**
+ * Structure of input parameter for `listPackages` method.
+ *
+ * @see {@link ListPackageService#listPackages}
+ */
+export interface ListPackageParams {
+    maxResults: number;
+    phrase: string;
+}
 
 /**
  * ListPackageService implements ADT requests for fetching a list of available package names
  * from ABAP backend system.
+ *
+ * @class
  */
 export class ListPackageService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
      */
-    private static AdtCategory = {
+    private static adtCategory = {
         scheme: 'http://www.sap.com/adt/categories/respository',
         term: 'search'
     };
 
     /**
      * Get ADT scheme ID.
+     *
      * @returns AdtCategory
      */
     public static getAdtCatagory(): AdtCategory {
-        return ListPackageService.AdtCategory;
+        return ListPackageService.adtCategory;
     }
 
     /**
-     * ListPackageService API function to fetch a list of available package names.
+     * The suggested usage of this API from ADT team is to validate the input package
+     * name exists rather than searching through the list to find a package name.
+     * Several reasons: 1) there is a large number of package names; 2) ABAP developer
+     * works with the same package name most of the time. They are likely to remember
+     * the package name, typing the prefix (namespace) of the package, the backend
+     * returns few package names that match the prefix, and finally developer selects
+     * a package name to minimize risk of typo introduced by manual input.
      *
-     * @param phrase Search phrase
-     * @returns A list of package names that can be used for deploy
+     * @param params
+     *  maxResults Maxmium number of records to be returned by the ADT service.
+     *             Based on explanation above, it is suggested to use a relatively small number like 50.
+     *  phrase     Search phrase. The input is case sensitive.
+     * @returns A list of package names that has prefix matching input parameter `phrase`.
      */
-    public async listPackages(phrase: string): Promise<string[]> {
+    public async listPackages(params: ListPackageParams): Promise<string[]> {
+        const { maxResults = 50, phrase = '' } = params;
         const config = {
             headers: {
                 Accept: 'application/xml'
@@ -38,7 +62,7 @@ export class ListPackageService extends AdtService {
                 operation: 'quickSearch',
                 query: `${phrase}*`,
                 useSearchProvider: 'X',
-                maxResults: 50,
+                maxResults,
                 objectType: 'DEVC/K'
             }
         };
@@ -48,10 +72,10 @@ export class ListPackageService extends AdtService {
     }
 
     /**
-     * Parse an XML document for ATO (Adaptation Transport Organizer) settings.
+     * Parse the XML document of package info entries from ADT service.
      *
-     * @param xml xml document containing ATO settings
-     * @returns parsed ATO settings
+     * @param xml xml document containing package info entries.
+     * @returns A list of package names.
      */
     private parsePackageListResponse(xml: string): string[] {
         if (XmlParser.validate(xml) !== true) {

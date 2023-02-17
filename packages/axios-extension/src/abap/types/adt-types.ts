@@ -95,9 +95,3 @@ export type AdtTransportStatus = 'S' | 'E';
 // the <DLVUNIT/> element contain text that indicate it is local package.
 // No transport number required for deploying to local pacakge.
 export const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
-
-export interface PackageInfo {
-    uri: string;
-    type: 'DEVC/K';
-    name: string;
-}

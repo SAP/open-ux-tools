@@ -91,7 +91,7 @@ export async function useAdtServices(
         logger.info(`Created transport number: ${newTransportNumber}`);
 
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
-        const packages = await listPackageService.listPackages('$TMP');
+        const packages = await listPackageService.listPackages({ maxResults: 50, phrase: '$TMP' });
         logger.info(`Query $tmp package: ${packages.length === 1}`);
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
