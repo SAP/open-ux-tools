@@ -5,17 +5,21 @@ import { create as createStore } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
+import { promisify } from 'util';
+import { exec as execCP } from 'child_process';
+const exec = promisify(execCP);
 
 export const testOutputDir = join(__dirname, 'test-output');
 
 export const debug = prepareDebug();
 
-export function prepareDebug(): { enabled: boolean; outputDir: string } {
+export function prepareDebug(): { enabled: boolean; outputDir: string; debugFull: boolean } {
     const debug = !!process.env['UX_DEBUG'];
+    const debugFull = !!process.env['UX_DEBUG_FULL'];
     if (debug) {
         console.log(testOutputDir);
     }
-    return { enabled: debug, outputDir: testOutputDir };
+    return { enabled: debug, outputDir: testOutputDir, debugFull };
 }
 
 const sampleTestStore = create(createStore());
@@ -112,6 +116,42 @@ export const v2TemplateSettings: LROPSettings | WorklistSettings = {
         navigationEntity: {
             EntitySet: 'SEPMRA_C_PD_ProductSalesData',
             Name: 'to_ProductSalesData'
+        }
+    }
+};
+
+export const projectChecks = async (
+    rootPath: string,
+    config: FioriElementsApp<unknown>,
+    debugFull = false
+): Promise<void> => {
+    if (debugFull && (config.appOptions?.typescript || config.appOptions?.eslint)) {
+        // Do additonal checks on generated projects
+        const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+        let npmResult;
+        try {
+            // Do npm install
+            npmResult = await exec(`${npm} install`, { cwd: rootPath });
+            console.log('stdout:', npmResult.stdout);
+            console.log('stderr:', npmResult.stderr);
+
+            // run checks on the project
+            // Check TS Types
+            if (config.appOptions?.typescript) {
+                npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
+            }
+            // Check Eslint
+            if (config.appOptions?.eslint) {
+                npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
+            }
+        } catch (error) {
+            console.log('stdout:', error?.stdout);
+            console.log('stderr:', error?.stderr);
+            expect(error).toBeUndefined();
         }
     }
 };
