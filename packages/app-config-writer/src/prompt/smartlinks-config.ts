@@ -1,42 +1,59 @@
 import type { AxiosBasicCredentials } from 'axios';
-import type { Choice } from 'prompts';
-import { prompt } from 'prompts';
 import { yellow, cyan } from 'chalk';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import type { Choice, PromptObject } from 'prompts';
+import { prompt } from 'prompts';
+import { getDestinationUrlForAppStudio, isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { QuestionType } from '../types/prompt';
+import { FileName } from '@sap-ux/project-access';
+import { getTargetDefinition, getSystemCredentials } from '../smartlinks-config';
+import type { BasicTarget, TargetConfig, DeployTarget } from '..';
 import { t } from '..';
-import type { Service, ServiceConfig } from '..';
-import { getServices, getSystemCredentials, sendRequest } from '../smartlinks-config';
 
 /**
- * @description Returns prompt result to provide or use service parameters
- * @param services possible services to be offered for prompt
- * @returns service to be used from prompt
+ * @description Returns target parameters from prompt
+ * @param target possible deploy target to be offered for prompt
+ * @param logger logger to report info to the user
+ * @returns target url and client
  */
-const getServicePrompt = async (services?: Service[]): Promise<ServiceConfig> => {
-    const service = services?.[0];
-    const { url, client } = await prompt([
+const getTargetPrompt = async (target?: DeployTarget, logger?: ToolsLogger): Promise<BasicTarget> => {
+    const cancel = {
+        onCancel: () => {
+            logger?.info(yellow(t('info.operationAborted')));
+            return process.exit(1);
+        }
+    };
+    const validator = (value: string, error: string): boolean | string => {
+        if (!value || !value.trim()) {
+            return t(error);
+        } else {
+            return true;
+        }
+    };
+
+    let targetUrl = target?.url;
+    if (isAppStudio() && !!target?.destination) {
+        targetUrl = getDestinationUrlForAppStudio(
+            target.destination,
+            target?.url ? new URL(target.url).pathname : undefined
+        );
+    }
+    const questions: PromptObject[] = [
         {
-            name: QuestionType.Url,
+            name: 'url',
             type: 'text',
-            initial: service?.url,
-            message: service ? `${t('questions.service')} (${service?.source})` : `${t('questions.service')}`,
-            validate: (value: string): boolean | string => {
-                if (!value || !value.trim()) {
-                    return `${t('error.service')}`;
-                } else {
-                    return true;
-                }
-            }
+            initial: targetUrl,
+            message: t('questions.target', { file: targetUrl ? `(${FileName.UI5DeployYaml})` : '' }),
+            validate: (value: string) => validator(value, 'error.target')
         },
         {
-            name: QuestionType.Client,
+            name: 'client',
             type: 'text',
-            initial: service?.client,
-            message: service?.client ? `${t('questions.client')} (${service?.source})` : `${t('questions.client')}`
+            initial: target?.client,
+            message: t('questions.client', { file: target?.client ? `(${FileName.UI5DeployYaml})` : '' }),
+            format: (val: number | any) => (typeof val === 'number' ? val.toString() : val)
         }
-    ]);
+    ];
+    const { url, client } = await prompt(questions, cancel);
     return { url, client };
 };
 
@@ -65,7 +82,7 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
         [
             {
                 type: 'text',
-                name: QuestionType.Username,
+                name: 'username',
                 message: `${cyan(t('info.username'))}`,
                 validate: (value: string): boolean | string => {
                     if (!value || !value.trim()) {
@@ -77,7 +94,7 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
             },
             {
                 type: 'invisible',
-                name: QuestionType.Password,
+                name: 'password',
                 message: `${cyan(t('info.password'))}`,
                 validate: (value: string): boolean | string => {
                     if (!value || !value.trim()) {
@@ -100,22 +117,22 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
 
 /**
  * @description Returns prompt result for credentials
- * @param service service parameters to be checked for existing credentials
+ * @param target target parameters to be checked for existing credentials
  * @param logger logger to report info to the user
  * @returns credentials to be used from prompt
  */
 const getCredentialsPrompt = async (
-    service: ServiceConfig,
+    target: BasicTarget,
     logger?: ToolsLogger
 ): Promise<AxiosBasicCredentials | undefined> => {
-    const auth = await getSystemCredentials(service.url, service.client);
+    const auth = await getSystemCredentials(target.url, target.client);
     if (auth?.username) {
         const choices: Choice[] = [
             { title: `Use ${auth.username}`, value: auth },
             { title: t('questions.credentialsDescription'), value: false }
         ];
         const { credentials } = await prompt([
-            { name: QuestionType.Credentials, type: 'select', message: t('questions.credentials'), choices, initial: 0 }
+            { name: 'credentials', type: 'select', message: t('questions.credentials'), choices, initial: 0 }
         ]);
         if (credentials) {
             return credentials;
@@ -126,20 +143,13 @@ const getCredentialsPrompt = async (
 
 /**
  * @description Return the list of questions to configure smartlinks.
- * @param basePath - path to project root, where ui5-deploy.yaml or ui5.yaml is
+ * @param basePath - path to project root, where ui5-deploy.yaml is
  * @param logger logger to report info to the user
  * @returns - array of questions that serves as input for prompt module
  */
-export async function getSmartLinksServicePrompt(
-    basePath: string,
-    logger?: ToolsLogger
-): Promise<ServiceConfig | undefined> {
-    const services = await getServices(basePath, logger);
-    const service = await getServicePrompt(services);
-    const credentials = await getCredentialsPrompt(service, logger);
-    const connectionStatus = await sendRequest(service, credentials, logger);
-    if (connectionStatus) {
-        return { ...service, credentials };
-    }
-    return undefined;
+export async function getSmartLinksTargetFromPrompt(basePath: string, logger?: ToolsLogger): Promise<TargetConfig> {
+    const definition = await getTargetDefinition(basePath, logger);
+    const target = await getTargetPrompt(definition?.target, logger);
+    const credentials = await getCredentialsPrompt(target, logger);
+    return { target, credentials, ignoreCertError: definition?.ignoreCertError };
 }

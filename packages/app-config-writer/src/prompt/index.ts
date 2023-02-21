@@ -1,1 +1,1 @@
-export { getSmartLinksServicePrompt, promptUserPass } from './smartlinks-config';
+export { getSmartLinksTargetFromPrompt, promptUserPass } from './smartlinks-config';
