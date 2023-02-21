@@ -13589,8 +13589,12 @@ export default class Worklist extends BaseController {
      *
      */
     public onRefresh() {
-        if (this.byId(\\"table\\") && this.byId(\\"table\\").getBinding(\\"items\\")) {
-            this.byId(\\"table\\").getBinding(\\"items\\").refresh(false);
+        const tableId = this.byId(\\"table\\");
+        if (tableId) {
+            const tableItems = tableId.getBinding(\\"items\\");
+            if (tableItems) {
+                tableItems.refresh(false);
+            }
         }
     }
 
