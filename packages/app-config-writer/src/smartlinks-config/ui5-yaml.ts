@@ -14,8 +14,7 @@ import { DeployConfig } from '../types';
 /**
  * @description - reads and returns target information from ui5-deploy.yaml, if existing
  * @param basePath - path to project root, where ui5-deploy.yaml is
- * @param logger - logger
- * @returns {ServiceConfig} target url and client for deploy configuration
+ * @returns {TargetConfig} target url and client for deploy configuration
  */
 export async function readUi5DeployConfigTarget(basePath: string): Promise<TargetConfig> {
     const ui5DeployYaml = await readUi5Yaml(basePath, FileName.UI5DeployYaml);
