@@ -472,6 +472,7 @@ describe('proxy', () => {
 
         test('throw an error if proxyOptions.target is not defined', async () => {
             const backend = { url: '', path: '/my/path' } as LocalBackendConfig;
+            expect.assertions(2);
             try {
                 await generateProxyMiddlewareOptions(backend);
             } catch (error: any) {
