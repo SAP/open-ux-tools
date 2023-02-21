@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test function getSmartLinksConfigQuestions() Check stored credentials No stored credentials 1`] = `
+Array [
+  Object {
+    "message": "[36mUsername[39m",
+    "name": "username",
+    "type": "text",
+    "validate": [Function],
+  },
+  Object {
+    "message": "[36mPassword[39m",
+    "name": "password",
+    "type": "invisible",
+    "validate": [Function],
+  },
+]
+`;
+
+exports[`Test function getSmartLinksConfigQuestions() Check stored credentials Stored credentials 1`] = `
+Array [
+  Object {
+    "choices": Array [
+      Object {
+        "title": "Use mockUser",
+        "value": Object {
+          "password": "mockPW",
+          "username": "mockUser",
+        },
+      },
+      Object {
+        "title": "Provide username and password",
+        "value": false,
+      },
+    ],
+    "initial": 0,
+    "message": "Credentials to be used",
+    "name": "credentials",
+    "type": "select",
+  },
+]
+`;
+
+exports[`Test function getSmartLinksConfigQuestions() Prompt for target url and client:  Existing ui5-deploy-config 1`] = `
+Array [
+  Object {
+    "initial": "https://abc.abap.stagingaws.hanavlab.ondemand.com",
+    "message": "SmartLinks configuration source (ui5-deploy.yaml)",
+    "name": "url",
+    "type": "text",
+    "validate": [Function],
+  },
+  Object {
+    "format": [Function],
+    "initial": undefined,
+    "message": "SAP client ",
+    "name": "client",
+    "type": "text",
+  },
+]
+`;
+
+exports[`Test function getSmartLinksConfigQuestions() Prompt for target url and client:  No ui5-deploy config 1`] = `
+Array [
+  Object {
+    "initial": undefined,
+    "message": "SmartLinks configuration source ",
+    "name": "url",
+    "type": "text",
+    "validate": [Function],
+  },
+  Object {
+    "format": [Function],
+    "initial": undefined,
+    "message": "SAP client ",
+    "name": "client",
+    "type": "text",
+  },
+]
+`;
+
+exports[`Test function getSmartLinksConfigQuestions() Return prompt values Target and credentials provided 1`] = `
+Object {
+  "credentials": Object {
+    "password": "mockPW",
+    "username": "mockUser",
+  },
+  "ignoreCertError": undefined,
+  "target": Object {
+    "client": "mockClient",
+    "url": "mockUrl",
+  },
+}
+`;
