@@ -1,0 +1,20 @@
+specVersion: '2.4'
+metadata:
+    name: 'fe_lrop_v4_odata_none'
+type: application
+builder:
+    resources:
+        excludes:
+            - /test/**
+            - /localService/**
+    customTasks:
+        - name: deploy-to-abap
+          afterTask: generateCachebusterInfo
+          configuration:
+              target:
+                  url: https://abc.abap.stagingaws.hanavlab.ondemand.com
+                  scp: true
+              app:
+                  name: TEST
+                  package: $tmp
+                  transport: ''
