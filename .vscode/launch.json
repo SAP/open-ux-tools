@@ -59,6 +59,20 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "fiori-freestyle-writer: Debug Current Jest File with UX_DEBUG & UX_DEBUG_FULL",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/fiori-freestyle-writer",
+            "env": {
+                "UX_DEBUG": "false",
+                "UX_DEBUG_FULL": "false"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "odata-service-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/.bin/jest",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],

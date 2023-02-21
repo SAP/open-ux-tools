@@ -1,5 +1,17 @@
 # @sap-ux/ui5-application-writer
 
+## 0.18.6
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+
+## 0.18.5
+
+### Patch Changes
+
+-   76603f8: Align FF ListDetail temple between JS and TS and add test utils
+
 ## 0.18.4
 
 ### Patch Changes
