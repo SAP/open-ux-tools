@@ -2,7 +2,7 @@
     "name": "<%= package.name.toLowerCase() %>",
     "version": "<%- package.version %>",
     "private": true,
-    "description": "<%= package.description %>",
+    "description": "<%- package.description %>",
     "keywords": [
         "ui5",
         "openui5",

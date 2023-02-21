@@ -60,6 +60,10 @@ describe(`Fiori freestyle templates: ${TEST_NAME}`, () => {
             name: 'worklist',
             config: {
                 ...commonConfig,
+                package: {
+                    name: 'test.me',
+                    description: 'Worklist app & "package" description'
+                },
                 service: northwindV2Metadata,
                 template: {
                     type: TemplateType.Worklist,

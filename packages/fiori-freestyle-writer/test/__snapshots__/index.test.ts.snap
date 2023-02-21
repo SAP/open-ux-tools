@@ -3903,7 +3903,7 @@ archive.zip
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
-  \\"description\\": \\"Test App Description\\",
+  \\"description\\": \\"Worklist app & \\\\\\"package\\\\\\" description\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",

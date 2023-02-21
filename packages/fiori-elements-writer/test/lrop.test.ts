@@ -76,6 +76,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
+                    },
+                    package: {
+                        name: 'felrop2',
+                        description: 'A "Fiori" application & test description'
                     }
                 }),
                 service: v2Service

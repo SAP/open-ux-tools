@@ -20,7 +20,7 @@ archive.zip
   \\"name\\": \\"felrop2\\",
   \\"version\\": \\"0.0.1\\",
   \\"private\\": true,
-  \\"description\\": \\"A Fiori application.\\",
+  \\"description\\": \\"A \\\\\\"Fiori\\\\\\" application & test description\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
