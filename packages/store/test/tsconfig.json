@@ -1,7 +1,6 @@
 {
     "extends": "../tsconfig.json",
     "compilerOptions": {
-        "strict": false,
-        "experimentalDecorators": true
+        "strict": false
     }
 }
