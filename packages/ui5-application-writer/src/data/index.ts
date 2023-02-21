@@ -24,7 +24,7 @@ export function mergeWithDefaults(ui5App: Ui5App): {
     }
     ui5App.ui5 = mergeUi5(ui5App.ui5 || {}, ui5App.appOptions);
     ui5App.package = mergeObjects(packageDefaults(ui5App.package.version, ui5App.app.description), ui5App.package);
-    ui5App.package.description = ui5App.package.description?.replace(/\"/g, '\\"');
+    ui5App.package.description = ui5App.package.description?.replace(/"/g, '\\"');
 
     if (ui5App.appOptions.sapux) {
         ui5App.package.devDependencies = ui5App.package.devDependencies || {};
