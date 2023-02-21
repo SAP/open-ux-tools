@@ -1,4 +1,5 @@
 import type { AxiosBasicCredentials } from 'axios';
+import type { AbapTarget } from '@sap-ux/ui5-config';
 
 export enum DeployConfig {
     'DeployToAbap' = 'deploy-to-abap',
@@ -15,28 +16,20 @@ export enum UrlParameters {
     Depth = 'depth=0'
 }
 
-/**
- * Possible destinations for smartlinks configuration
- */
-export interface Service extends ServiceConfig {
-    source?: string;
+export interface BasicTarget {
+    url: string;
+    client?: string;
 }
+
+export type DeployTarget = Pick<AbapTarget, 'url' | 'client' | 'destination'>;
 
 /**
  * Configuration of a target system.
  */
-export interface ServiceConfig {
-    url: string;
-    client?: string;
+export interface TargetConfig {
+    target: BasicTarget | DeployTarget;
     credentials?: AxiosBasicCredentials;
     ignoreCertError?: boolean;
-}
-
-/**
- * Configuration for smartlinks config
- */
-export interface SmartLinksConfig {
-    service?: ServiceConfig;
 }
 
 export type TargetMapping = {
@@ -71,7 +64,13 @@ export type InboundTargetsConfig = { [key: string]: InboundTarget };
 
 export type SmartLinksSandboxConfig = {
     services?: {
-        ClientSideTargetResolution?: { adapter?: { config?: { inbounds?: InboundTargetsConfig } } };
+        ClientSideTargetResolution?: {
+            adapter?: {
+                config?: {
+                    inbounds?: InboundTargetsConfig;
+                };
+            };
+        };
     };
 };
 
