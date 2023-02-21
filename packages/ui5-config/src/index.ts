@@ -10,6 +10,7 @@ export {
     FioriToolsServeStaticPath,
     FioriToolsServeStaticConfig,
     AbapApp,
+    AbapTarget,
     AbapDeployConfig,
     UI5ProxyConfig,
     UI5ProxyConfigTarget
