@@ -1,21 +1,28 @@
 import type { AxiosBasicCredentials } from 'axios';
+import { cyan } from 'chalk';
+import { render } from 'ejs';
+import { Agent as HttpsAgent } from 'https';
+import type { Editor } from 'mem-fs-editor';
+import { join } from 'path';
+import { create } from '@sap-ux/axios-extension';
+import type { ToolsLogger } from '@sap-ux/logger';
+import { FileName } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey, getService } from '@sap-ux/store';
-import type { ToolsLogger } from '@sap-ux/logger';
 import type {
+    BasicTarget,
+    DeployTarget,
     InboundTargetsConfig,
-    ServiceConfig,
     SmartLinksSandboxConfig,
     SystemDetailsResponse,
+    TargetConfig,
     TargetMapping
 } from '../types';
 import { t } from '../i18n';
 import { promptUserPass } from '../prompt';
-import { sendRequest } from './service';
-import type { Editor } from 'mem-fs-editor';
 import { getTemplatePath } from '../templates';
-import { join } from 'path';
-import { render } from 'ejs';
+import { UrlParameters } from '../types';
+import { readUi5DeployConfigTarget } from './ui5-yaml';
 
 /**
  * @description Check the secure storage if it has credentials for the entered url.
@@ -31,15 +38,68 @@ export async function getSystemCredentials(url: string, client?: string): Promis
 
 /**
  * @description Returns stored credentials or prompt for credentials input
- * @param service service parameters to be checked for existing credentials
+ * @param target target parameters to be checked for existing credentials
  * @param logger logger to report info to the user
  * @returns stored credentials or from prompt
  */
 export async function getCredentials(
-    service: ServiceConfig,
+    target: BasicTarget,
     logger?: ToolsLogger
 ): Promise<AxiosBasicCredentials | undefined> {
-    return (await getSystemCredentials(service.url, service.client)) || promptUserPass(logger);
+    return (await getSystemCredentials(target.url, target.client)) || promptUserPass(logger);
+}
+
+/**
+ * @description Combines the target parameters and returns the target url
+ * @param target target information with optional sap-client
+ * @returns target url to be called for smartlinks config
+ */
+function getSmartLinksTargetUrl(target: DeployTarget | BasicTarget) {
+    let appendUrl = Object.values(UrlParameters).join('&');
+    if (target.client) {
+        appendUrl = `${appendUrl}&sap-client=${target.client}`;
+    }
+    return `${target.url}${appendUrl}`;
+}
+
+/**
+ * @description Sends a request to a target and returns the result
+ * @param config target and credentials to be used for request
+ * @param logger logger to report info to the user
+ * @returns response from service provider
+ */
+export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): Promise<SystemDetailsResponse> {
+    const httpsAgent = new HttpsAgent({ rejectUnauthorized: !config.ignoreCertError });
+    const requestConfig = { auth: config.credentials, httpsAgent };
+    const service = create({ baseURL: config.target.url, ...requestConfig });
+    try {
+        const targetUrl = getSmartLinksTargetUrl(config.target);
+        logger?.info(`${cyan(t('info.connectTo'))} ${targetUrl}`);
+        const response = await service.get(targetUrl, requestConfig);
+        logger?.info(cyan(t('info.connectSuccess')));
+        return JSON.parse(response.data);
+    } catch (error: any) {
+        logger?.debug(error);
+        throw Error(error.message);
+    }
+}
+
+/**
+ * @description Get target definition of deploy system as source for smartlinks configuration.
+ * @param basePath - path to project root, where ui5-deploy.yaml is
+ * @param logger - logger
+ */
+export async function getTargetDefinition(basePath: string, logger?: ToolsLogger): Promise<TargetConfig | undefined> {
+    try {
+        logger?.info(t('info.searchTarget', { file: FileName.UI5DeployYaml }));
+        const targets = await readUi5DeployConfigTarget(basePath);
+        logger?.info(cyan(t('info.targetFound', { file: FileName.UI5DeployYaml })));
+        return targets;
+    } catch (err: any) {
+        logger?.warn(err.message);
+        logger?.debug(err);
+        return undefined;
+    }
 }
 
 /**
@@ -49,12 +109,12 @@ export async function getCredentials(
  * @returns target mappings result from service
  */
 async function getTargetMappings(
-    config: ServiceConfig,
+    config: TargetConfig,
     logger?: ToolsLogger
 ): Promise<{ [key: string]: TargetMapping }> {
-    const response: SystemDetailsResponse | undefined = await sendRequest(config, config.credentials, logger);
+    const response: SystemDetailsResponse | undefined = await sendRequest(config, logger);
     if (!response || !response.targetMappings) {
-        throw Error(t('error.noTargets'));
+        throw Error(t('error.noSmartlinkTargets'));
     }
     return response.targetMappings;
 }
@@ -66,7 +126,7 @@ async function getTargetMappings(
  * @returns config with targets to be used for template mapping
  */
 export async function getTargetMappingsConfig(
-    config: ServiceConfig,
+    config: TargetConfig,
     logger?: ToolsLogger
 ): Promise<InboundTargetsConfig> {
     const targetMappings = await getTargetMappings(config, logger);
@@ -104,17 +164,17 @@ export function mergeTargetMappings(appConfigPath: string, inboundTargets: Inbou
 /**
  * @description Add or enhance appconfig smartlinks configuration.
  * @param basePath - the base path of the application
- * @param service - Configuration of a target system
+ * @param config - configuration of the target system for smartlinks
  * @param fs - the memfs editor instance
  * @param logger - logger
  */
 export async function writeSmartLinksConfig(
     basePath: string,
-    service: ServiceConfig,
+    config: TargetConfig,
     fs: Editor,
     logger?: ToolsLogger
 ): Promise<void> {
-    const inboundTargets = await getTargetMappingsConfig(service, logger);
+    const inboundTargets = await getTargetMappingsConfig(config, logger);
     const templatePath = getTemplatePath('smartlinks-config/fioriSandboxConfig.json');
     const appConfigPath = join(basePath, 'appconfig', 'fioriSandboxConfig.json');
     if (!fs.exists(appConfigPath)) {
