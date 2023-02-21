@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { getWebappPath } from '../../src';
+import { FileName, getWebappPath, readUi5Yaml } from '../../src';
 
 describe('Test getWebappPath()', () => {
     const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
@@ -20,5 +20,44 @@ describe('Test getWebappPath()', () => {
         expect(await getWebappPath(join(samplesRoot, 'custom-webapp-path'))).toEqual(
             join(samplesRoot, 'custom-webapp-path', 'src', 'webapp')
         );
+    });
+});
+
+describe('Test readUi5Yaml()', () => {
+    const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
+
+    test('Read existing Ui5 yaml file', async () => {
+        expect(await readUi5Yaml(join(samplesRoot, 'custom-webapp-path'), FileName.Ui5Yaml)).toMatchInlineSnapshot(`
+            UI5Config {
+              "document": YamlDocument {
+                "document": Object {
+                  "resources": Object {
+                    "configuration": Object {
+                      "paths": Object {
+                        "webapp": "src/webapp",
+                      },
+                    },
+                  },
+                },
+              },
+            }
+        `);
+    });
+    test('Read empty Ui5 yaml file', async () => {
+        expect(await readUi5Yaml(join(samplesRoot, 'default-with-ui5-yaml'), FileName.Ui5Yaml)).toMatchInlineSnapshot(`
+            UI5Config {
+              "document": YamlDocument {
+                "document": null,
+              },
+            }
+        `);
+    });
+    test('Read non-existing Ui5 yaml file', async () => {
+        try {
+            await readUi5Yaml(join(samplesRoot, 'default-webapp-path'), FileName.Ui5Yaml);
+            fail('The function should have thrown an error.');
+        } catch (error) {
+            expect(error).toBeDefined();
+        }
     });
 });
