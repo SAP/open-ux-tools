@@ -5,7 +5,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import * as store from '@sap-ux/store';
 import * as utils from '../../../src/smartlinks-config/utils';
-import { getSmartLinksTargetFromPrompt } from '../../../src';
+import { getSmartLinksTargetFromPrompt, t } from '../../../src';
 
 jest.mock('prompts', () => ({
     ...(jest.requireActual('prompts') as object),
@@ -55,6 +55,7 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
             const promptForTarget = mockPrompt.mock.calls[0][0];
             expect(promptForTarget).toMatchSnapshot();
             expect(promptForTarget[0].initial).toBeDefined();
+            expect(promptForTarget[0].choices[1].title).toEqual(t('questions.credentialsDescription'));
         });
         test('Existing ui5-deploy-config - picked initial', async () => {
             const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
