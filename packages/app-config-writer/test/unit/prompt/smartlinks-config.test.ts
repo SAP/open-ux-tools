@@ -55,7 +55,6 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
             const promptForTarget = mockPrompt.mock.calls[0][0];
             expect(promptForTarget).toMatchSnapshot();
             expect(promptForTarget[0].initial).toBeDefined();
-            expect(promptForTarget[0].choices[1].title).toEqual(t('questions.credentialsDescription'));
         });
         test('Existing ui5-deploy-config - picked initial', async () => {
             const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
@@ -74,7 +73,7 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
         });
     });
 
-    describe('Check stored credentials', () => {
+    describe('Check credentials', () => {
         const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
         const mockTarget = { url: 'mockUrl', client: 'mockClient' };
         const mockUser = { username: 'mockUser', password: 'mockPW' };
@@ -98,6 +97,7 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
             const promptForCredentials = mockPrompt.mock.calls[1][0];
             expect(promptForCredentials).toMatchSnapshot();
             expect(promptForCredentials[0].choices.length).toBe(2);
+            expect(promptForCredentials[0].choices[1].title).toEqual(t('questions.credentialsDescription'));
         });
 
         test('Stored credentials - manual input', async () => {
