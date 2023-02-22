@@ -1,11 +1,13 @@
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
+import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import type {
     AbapDeployConfig,
     CustomMiddleware,
     FioriToolsServeStaticConfig,
-    FioriToolsServeStaticPath
+    FioriToolsServeStaticPath,
+    UI5Config
 } from '@sap-ux/ui5-config';
 import { t } from '../i18n';
 import type { TargetConfig } from '../types';
@@ -50,11 +52,22 @@ const getFioriToolsServeStaticMiddlewareConfig = (
  * @description - reads and adds servestatic configuration to ui5/-local/-mock.yaml files
  * @param basePath - path to project root, where ui5.yaml is
  * @param fs - mem-fs reference to be used for file access
+ * @param logger - logger
  */
-export async function addUi5YamlServeStaticMiddleware(basePath: string, fs: Editor): Promise<void> {
+export async function addUi5YamlServeStaticMiddleware(
+    basePath: string,
+    fs: Editor,
+    logger?: ToolsLogger
+): Promise<void> {
     const ui5Yamls = [FileName.Ui5Yaml, FileName.Ui5MockYaml, FileName.Ui5LocalYaml];
     for (const ui5Yaml of ui5Yamls) {
-        const ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml);
+        let ui5YamlConfig: UI5Config;
+        try {
+            ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml);
+        } catch (error) {
+            logger?.debug(`File ${ui5Yaml} not existing`);
+            continue;
+        }
         const appServeStaticMiddleware = ui5YamlConfig.findCustomMiddleware<FioriToolsServeStaticConfig>(
             DeployConfig.FioriToolsServestatic
         );

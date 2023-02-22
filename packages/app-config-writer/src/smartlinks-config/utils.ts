@@ -19,10 +19,9 @@ import type {
     TargetMapping
 } from '../types';
 import { t } from '../i18n';
-import { promptUserPass } from '../prompt';
 import { getTemplatePath } from '../templates';
 import { UrlParameters } from '../types';
-import { readUi5DeployConfigTarget } from './ui5-yaml';
+import { addUi5YamlServeStaticMiddleware, readUi5DeployConfigTarget } from './ui5-yaml';
 
 /**
  * @description Check the secure storage if it has credentials for the entered url.
@@ -34,19 +33,6 @@ export async function getSystemCredentials(url: string, client?: string): Promis
     const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
     const system = await systemService.read(new BackendSystemKey({ url, client }));
     return system?.username ? { username: system.username, password: system.password || '' } : undefined;
-}
-
-/**
- * @description Returns stored credentials or prompt for credentials input
- * @param target target parameters to be checked for existing credentials
- * @param logger logger to report info to the user
- * @returns stored credentials or from prompt
- */
-export async function getCredentials(
-    target: BasicTarget,
-    logger?: ToolsLogger
-): Promise<AxiosBasicCredentials | undefined> {
-    return (await getSystemCredentials(target.url, target.client)) || promptUserPass(logger);
 }
 
 /**
@@ -184,4 +170,5 @@ export async function writeSmartLinksConfig(
         const filledTemplate = render(fs.read(templatePath), { inboundTargets }, {});
         fs.extendJSON(appConfigPath, JSON.parse(filledTemplate));
     }
+    await addUi5YamlServeStaticMiddleware(basePath, fs, logger);
 }
