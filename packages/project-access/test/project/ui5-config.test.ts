@@ -36,15 +36,17 @@ describe('Test readUi5Yaml()', () => {
         expect(await readUi5Yaml(join(samplesRoot, 'custom-webapp-path'), FileName.Ui5Yaml)).toMatchInlineSnapshot(`
             UI5Config {
               "document": YamlDocument {
-                "document": Object {
-                  "resources": Object {
-                    "configuration": Object {
-                      "paths": Object {
-                        "webapp": "src/webapp",
+                "documents": Array [
+                  Object {
+                    "resources": Object {
+                      "configuration": Object {
+                        "paths": Object {
+                          "webapp": "src/webapp",
+                        },
                       },
                     },
                   },
-                },
+                ],
               },
             }
         `);
@@ -53,7 +55,9 @@ describe('Test readUi5Yaml()', () => {
         expect(await readUi5Yaml(join(samplesRoot, 'default-with-ui5-yaml'), FileName.Ui5Yaml)).toMatchInlineSnapshot(`
             UI5Config {
               "document": YamlDocument {
-                "document": null,
+                "documents": Array [
+                  null,
+                ],
               },
             }
         `);
