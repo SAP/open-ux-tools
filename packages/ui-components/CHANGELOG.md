@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.4
+
+### Patch Changes
+
+-   f8c3fe5: Updated filter icon, as it was totally buggy
+
 ## 1.3.3
 
 ### Patch Changes
