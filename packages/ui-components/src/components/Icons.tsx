@@ -666,13 +666,14 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.Filter]: (
-                 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        fill-rule="evenodd"
-                        clip-rule="evenodd"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
                         d="M1.019 3.708L6.015 8.71L6.014 14.003H6.513L10.021 14.002L10.019 8.715L15.01 3.709L15.013 2.008L1 2L1.019 3.708ZM7.015 8.296L2.014 3.29L2.012 3.001L14.011 3.008V3.295L9.019 8.301L9.021 13.002L7.014 13.003L7.015 8.296Z"
-                        fill={COLORS.default}/>
-                    </svg>
+                        fill={COLORS.default}
+                    />
+                </svg>
             ),
             [UiIcons.FilterWithChevron]: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="16" viewBox="0 0 26 16">
