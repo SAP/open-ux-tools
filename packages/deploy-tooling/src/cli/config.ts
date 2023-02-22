@@ -16,7 +16,7 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
     const ui5Config = await UI5Config.newInstance(content);
     const config = ui5Config.findCustomTask<AbapDeployConfig>(NAME)?.configuration;
     if (!config) {
-        throw new Error('The deployment configuration is missing. 01');
+        throw new Error('The deployment configuration is missing.');
     }
     return config;
 }

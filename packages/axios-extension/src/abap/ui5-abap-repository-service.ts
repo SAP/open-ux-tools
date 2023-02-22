@@ -225,7 +225,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             charset: 'UTF8'
         };
         const params: { [key: string]: string | boolean } = {
-            CodePage: "'UTF8'",
+            CodePage: `'UTF8'`,
             CondenseMessagesInHttpResponseHeader: 'X',
             format: 'json'
         };

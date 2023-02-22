@@ -22,7 +22,7 @@ export class Cookies {
      * @returns cookies object
      */
     public setCookies(response: AxiosResponse): Cookies {
-        if (response?.headers?.['set-cookie']) {
+        if (response.headers?.['set-cookie']) {
             response.headers['set-cookie'].forEach((cookieString) => this.addCookie(cookieString));
         }
         return this;
@@ -163,11 +163,13 @@ export function attachConnectionHandler(provider: ServiceProvider) {
         },
         (error: AxiosError) => {
             // remember xsrf token if provided even on error
-            if (error.response?.headers?.[CSRF.ResponseHeaderName]) {
-                provider.defaults.headers.common[CSRF.RequestHeaderName] =
-                    error.response.headers[CSRF.ResponseHeaderName];
+            if (error.response) {
+                if (error.response.headers?.[CSRF.ResponseHeaderName]) {
+                    provider.defaults.headers.common[CSRF.RequestHeaderName] =
+                        error.response.headers[CSRF.ResponseHeaderName];
+                }
+                provider.cookies.setCookies(error.response);
             }
-            provider.cookies.setCookies(error.response);
             throw error;
         }
     );

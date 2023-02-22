@@ -38,7 +38,7 @@ export interface ErrorMessage {
     };
 }
 
-const logLevel = (severity: string, msg: string, log: Logger, error = false): void => {
+function logLevel(severity: string, msg: string, log: Logger, error = false): void {
     if (severity) {
         severity = severity.toLowerCase();
         if (severity === 'success') {
@@ -52,7 +52,7 @@ const logLevel = (severity: string, msg: string, log: Logger, error = false): vo
     } else {
         error ? log.error(msg) : log.info(msg);
     }
-};
+}
 
 /**
  * Log a Gateway response.
