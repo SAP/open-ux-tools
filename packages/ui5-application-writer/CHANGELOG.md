@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-writer
 
+## 0.18.7
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/ui5-config@0.16.4
+
 ## 0.18.6
 
 ### Patch Changes

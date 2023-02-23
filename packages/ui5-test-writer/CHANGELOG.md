@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.1.7
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
 ## 0.1.6
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @sap-ux/environment-check
 
+## 0.15.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/axios-extension@1.0.1
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/store@0.3.10
+    -   @sap-ux/btp-utils@0.11.5
+    -   @sap-ux/project-access@1.1.2
+    -   @sap-ux/ui5-config@0.16.4
+
 ## 0.15.3
 
 ### Patch Changes
