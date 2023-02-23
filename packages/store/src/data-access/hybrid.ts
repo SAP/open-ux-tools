@@ -84,7 +84,9 @@ class HybridStore<E extends object> implements DataAccess<E> {
             for (let i = 0; i < serializableProps.length; i = i + 1) {
                 if (sensitiveProps.indexOf(serializableProps[i]) !== -1) {
                     this.logger.debug(
-                        `hybrid/write - [${serializableProps[i]}] is also marked as sensitive. Not writing to filesystem`
+                        `hybrid/write - [${String(
+                            serializableProps[i]
+                        )}] is also marked as sensitive. Not writing to filesystem`
                     );
                     serializableProps.splice(i, 1);
                 }
