@@ -5,6 +5,7 @@ import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import type {
     AbapDeployConfig,
     CustomMiddleware,
+    FioriToolsProxyConfig,
     FioriToolsServeStaticConfig,
     FioriToolsServeStaticPath,
     UI5Config
@@ -67,6 +68,9 @@ export async function addUi5YamlServeStaticMiddleware(
         } catch (error) {
             logger?.debug(`File ${ui5Yaml} not existing`);
             continue;
+        }
+        if (!ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>(DeployConfig.FioriToolsProxy)) {
+            ui5YamlConfig.addFioriToolsProxydMiddleware({ ui5: {} });
         }
         const appServeStaticMiddleware = ui5YamlConfig.findCustomMiddleware<FioriToolsServeStaticConfig>(
             DeployConfig.FioriToolsServestatic
