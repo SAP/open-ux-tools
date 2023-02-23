@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.13.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
 ## 0.13.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.6
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
 ## 0.18.5
 
 ### Patch Changes
