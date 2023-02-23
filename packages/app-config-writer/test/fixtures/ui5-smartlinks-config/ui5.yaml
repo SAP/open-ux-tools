@@ -22,3 +22,10 @@ server:
           configuration:
               port: 35729
               path: webapp
+        - name: fiori-tools-servestatic
+          beforeMiddleware: fiori-tools-proxy
+          configuration:
+              paths:
+                  - path: /appconfig
+                    src: appconfig
+                    fallthrough: false

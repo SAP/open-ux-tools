@@ -1,0 +1,28 @@
+specVersion: '2.4'
+metadata:
+    name: 'fe_lrop_v4_odata_none'
+type: application
+framework:
+    name: SAPUI5
+    version: 1.110.1
+    libraries:
+        - name: sap.m
+        - name: sap.ui.core
+        - name: sap.ushell
+        - name: sap.f
+        - name: sap.ui.comp
+        - name: sap.ui.generic.app
+        - name: sap.suite.ui.generic.template
+        - name: themelib_sap_horizon
+server:
+    customMiddleware:
+        - name: sap-fe-mockserver
+          beforeMiddleware: csp
+          configuration:
+              mountPath: /
+              services:
+                  - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+                    metadataPath: ./webapp/localService/metadata.xml
+                    mockdataPath: ./webapp/localService/data
+                    generateMockData: true
+              annotations: []

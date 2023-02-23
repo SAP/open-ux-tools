@@ -11,6 +11,7 @@ builder:
         - name: deploy-to-abap
           afterTask: generateCachebusterInfo
           configuration:
+              ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
               target:
                   url: https://abc.abap.stagingaws.hanavlab.ondemand.com
                   scp: true
