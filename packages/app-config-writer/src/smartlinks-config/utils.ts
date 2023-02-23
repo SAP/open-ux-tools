@@ -100,7 +100,7 @@ async function getTargetMappings(
 ): Promise<{ [key: string]: TargetMapping }> {
     const response: SystemDetailsResponse | undefined = await sendRequest(config, logger);
     if (!response || !response.targetMappings) {
-        throw Error(t('error.noSmartlinkTargets'));
+        throw Error(t('error.noTarget'));
     }
     return response.targetMappings;
 }

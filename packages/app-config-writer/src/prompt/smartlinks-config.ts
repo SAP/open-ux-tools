@@ -5,9 +5,9 @@ import { prompt } from 'prompts';
 import { getDestinationUrlForAppStudio, isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName } from '@sap-ux/project-access';
+import { t } from '../i18n';
 import { getTargetDefinition, getSystemCredentials } from '../smartlinks-config';
-import type { BasicTarget, TargetConfig, DeployTarget } from '..';
-import { t } from '..';
+import type { BasicTarget, TargetConfig, DeployTarget } from '../types';
 
 /**
  * @description Returns target parameters from prompt
