@@ -322,7 +322,7 @@ function getTableBody<T>(
 ): React.ReactNode {
     let tableBody: React.ReactNode;
     const { rows } = props.onBeforeTableRender ? props.onBeforeTableRender({ rows: props.rows }) : { rows: props.rows };
-    if (props.onTableReorder && !props.readonly) {
+    if (rows.length > 0 && props.onTableReorder && !props.readonly) {
         tableBody = (
             <List
                 values={rows}

@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.3.4
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
 ## 0.3.3
 
 ### Patch Changes

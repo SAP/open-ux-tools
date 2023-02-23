@@ -1,5 +1,17 @@
 # @sap-ux/yaml
 
+## 0.13.3
+
+### Patch Changes
+
+-   3327a3f: Do not throw exception for multi document yaml
+
+## 0.13.2
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
 ## 0.13.1
 
 ### Patch Changes

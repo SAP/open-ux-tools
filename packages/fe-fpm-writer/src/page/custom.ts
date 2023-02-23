@@ -11,6 +11,7 @@ import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { coerce } from 'semver';
 import { addExtensionTypes } from '../common/utils';
+import { extendJSON } from '../common/file';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -77,11 +78,12 @@ export function generate(basePath: string, data: CustomPage, fs?: Editor): Edito
     const root = getTemplateRoot(data.minUI5Version);
 
     // enhance manifest.json
-    fs.extendJSON(
-        manifestPath,
-        JSON.parse(render(fs.read(join(root, `manifest.json`)), config, {})),
-        getManifestJsonExtensionHelper(config)
-    );
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: render(fs.read(join(root, `manifest.json`)), config, {}),
+        replacer: getManifestJsonExtensionHelper(config),
+        tabInfo: data.tabInfo
+    });
 
     // add extension content
     const viewPath = join(config.path, `${config.name}.view.xml`);

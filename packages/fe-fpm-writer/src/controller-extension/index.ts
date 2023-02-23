@@ -15,6 +15,7 @@ import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
 import { addExtensionTypes } from '../common/utils';
+import { extendJSON } from '../common/file';
 
 export const UI5_CONTROLLER_EXTENSION_LIST_REPORT = 'sap.fe.templates.ListReport.ListReportController';
 export const UI5_CONTROLLER_EXTENSION_OBJECT_PAGE = 'sap.fe.templates.ObjectPage.ObjectPageController';
@@ -226,7 +227,12 @@ export function generateControllerExtension(
 
     // enhance manifest with view definition
     const filledTemplate = render(fs.read(getTemplatePath('controller-extension/manifest.json')), internalConfig, {});
-    fs.extendJSON(manifestPath, JSON.parse(filledTemplate), getManifestReplacer(internalConfig));
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: filledTemplate,
+        replacer: getManifestReplacer(internalConfig),
+        tabInfo: controllerConfig.tabInfo
+    });
 
     // add controller js file
     const ext = controllerConfig.typescript ? 'ts' : 'js';

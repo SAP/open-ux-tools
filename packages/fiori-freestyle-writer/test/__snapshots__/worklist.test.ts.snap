@@ -13242,7 +13242,7 @@ import View from \\"sap/ui/core/mvc/View\\";
 import History from \\"sap/ui/core/routing/History\\";
 import Router from \\"sap/ui/core/routing/Router\\";
 import AppComponent from \\"../Component\\";
-import { currencyValue } from \\"../model/formatter\\";
+import { numberUnit } from \\"../model/formatter\\";
 
 /**
  * @namespace wrk1
@@ -13250,7 +13250,7 @@ import { currencyValue } from \\"../model/formatter\\";
 export default class BaseController extends Controller {
 
     public readonly formatter = {
-        currencyValue
+        numberUnit
     };
     
     /**
@@ -13491,7 +13491,7 @@ export default class Object extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (!elementBinding?.getBoundContext()) {
+        if (!elementBinding || !elementBinding.getBoundContext()) {
             this.getRouter().getTargets()!.display(\\"objectNotFound\\");
             return;
         }
@@ -13597,7 +13597,13 @@ export default class Worklist extends BaseController {
      *
      */
     public onRefresh() {
-        this.byId(\\"table\\")?.getBinding(\\"items\\")?.refresh(false);
+        const tableId = this.byId(\\"table\\");
+        if (tableId) {
+            const tableItems = tableId.getBinding(\\"items\\");
+            if (tableItems) {
+                tableItems.refresh(false);
+            }
+        }
     }
 
     /**
@@ -15724,7 +15730,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 * @param value value to be formatted
 * @returns formatted currency value with 2 digits
 */
-export function currencyValue(value: string): string {
+export function numberUnit(value: string): string {
     if (!value) {
         return \\"\\";
     }

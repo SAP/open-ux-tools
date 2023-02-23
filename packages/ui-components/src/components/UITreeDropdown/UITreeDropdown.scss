@@ -8,21 +8,16 @@
     }
     &-wrapper {
         position: relative;
-
-        &.disabled {
-            opacity: $dropdown-input-disabled-opacity;
-        }
-        .ms-TextField {
-            .ms-TextField-wrapper {
-                .ms-TextField-fieldGroup {
-                    opacity: initial;
-                    background: $dropdown-input-background;
-                }
-            }
-        }
         input {
             padding: 0 26px 0 8px;
             font-family: var(--vscode-font-family);
+        }
+        // Decrease z-index for open menu button when component is disabled
+        &.disabled > button {
+            z-index: -1;
+        }
+        &.readonly > button {
+            pointer-events: none;
         }
     }
     &-caret {

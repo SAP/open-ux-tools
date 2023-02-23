@@ -10,6 +10,8 @@ import { Availability, HorizontalAlign } from '../../src/column/types';
 import * as manifest from './sample/column/webapp/manifest.json';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
+import { detectTabSpacing } from '../../src/common/file';
+import { tabSizingTestCases } from '../common';
 
 const testDir = join(__dirname, 'sample/column');
 
@@ -289,6 +291,34 @@ describe('CustomAction', () => {
                     expect(fs.read(existingPath)).toMatchSnapshot();
                 }
             );
+        });
+
+        describe('Test property custom "tabSizing"', () => {
+            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+                generateCustomColumn(
+                    testDir,
+                    {
+                        ...customColumn,
+                        tabInfo
+                    },
+                    fs
+                );
+                let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                let result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+                // Generate another columns and check if new tab sizing recalculated correctly without passing tab size info
+                generateCustomColumn(
+                    testDir,
+                    {
+                        ...customColumn,
+                        name: 'SecondCustom'
+                    },
+                    fs
+                );
+                updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+            });
         });
     });
 });

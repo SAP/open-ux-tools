@@ -9,6 +9,8 @@ import {
     UI5_CONTROLLER_EXTENSION_LIST_REPORT,
     UI5_CONTROLLER_EXTENSION_OBJECT_PAGE
 } from '../../src/controller-extension';
+import { detectTabSpacing } from '../../src/common/file';
+import { tabSizingTestCases } from '../common';
 
 describe('ControllerExtension', () => {
     describe('generateControllerExtension', () => {
@@ -366,6 +368,34 @@ describe('ControllerExtension', () => {
                         }
                     }
                 });
+            });
+        });
+
+        describe('Test property custom "tabSizing"', () => {
+            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+                generateControllerExtension(
+                    testDir,
+                    {
+                        ...controllerExtension,
+                        tabInfo
+                    },
+                    fs
+                );
+                let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                let result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+                // Generate another controller extension and check if new tab sizing recalculated correctly without passing tab size info
+                generateControllerExtension(
+                    testDir,
+                    {
+                        ...controllerExtension,
+                        name: 'Second'
+                    },
+                    fs
+                );
+                updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
             });
         });
     });

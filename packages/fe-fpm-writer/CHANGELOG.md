@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.5
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
+## 0.18.4
+
+### Patch Changes
+
+-   d167d79: Fix: writing into manifest.json always provides 2 spaces for tab size. Additional property 'tabInfo' can be passed in config for generation functions or tab sizing will be calculated before saving
+
 ## 0.18.3
 
 ### Patch Changes

@@ -1,8 +1,10 @@
 import type { SetStateAction } from 'react';
 import React, { useState } from 'react';
+import { Stack } from '@fluentui/react';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 
 import { UIComboBox } from '../src/components/UIComboBox';
+import { UICheckbox } from '../src/components/UICheckbox';
 import { data } from '../test/__mock__/select-data';
 
 import { initIcons } from '../src/components/Icons';
@@ -180,3 +182,114 @@ export const openMenuOnClick = (): JSX.Element => (
         />
     </div>
 );
+
+export const accessibilityStates = () => {
+    const [multiSelect, setMultiSelect] = React.useState(false);
+    const [selectedKey, setSelectedKey] = React.useState<number | string | number[] | string[]>('EE');
+    const stackTokens = { childrenGap: 40 };
+    const testProps = {
+        options: data,
+        highlight: true,
+        allowFreeform: true,
+        useComboBoxAsMenuMinWidth: true,
+        multiSelect,
+        onChange: (event: React.FormEvent<IComboBox>, option?: IComboBoxOption | undefined) => {
+            if (Array.isArray(selectedKey)) {
+                const newKeys = [...selectedKey, option?.key].filter((k) =>
+                    option?.selected ? true : k !== option?.key
+                ) as string[];
+                setSelectedKey(newKeys);
+            } else if (option) {
+                setSelectedKey(option.key);
+            }
+        }
+    };
+    return (
+        <div>
+            <Stack horizontal tokens={stackTokens}>
+                <UICheckbox
+                    label="Multi Select"
+                    checked={multiSelect}
+                    onChange={(event: any, value: any) => {
+                        if (value && !Array.isArray(selectedKey)) {
+                            setSelectedKey([selectedKey as string]);
+                        } else if (!value && Array.isArray(selectedKey)) {
+                            setSelectedKey(selectedKey[0]);
+                        }
+                        setMultiSelect(value);
+                    }}
+                />
+            </Stack>
+            <Stack horizontal tokens={stackTokens}>
+                <table
+                    style={{
+                        borderSpacing: 20,
+                        width: '100%',
+                        maxWidth: 750
+                    }}>
+                    <tr>
+                        <td
+                            style={{
+                                minWidth: 100,
+                                width: 150
+                            }}></td>
+                        <td
+                            style={{
+                                width: '50%'
+                            }}>
+                            Placeholder Text
+                        </td>
+                        <td
+                            style={{
+                                width: '50%'
+                            }}>
+                            Input Text
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Regular</td>
+                        <td>
+                            <UIComboBox {...testProps} placeholder="Placeholder"></UIComboBox>
+                        </td>
+                        <td>
+                            <UIComboBox {...testProps} selectedKey={selectedKey}></UIComboBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Error</td>
+                        <td>
+                            <UIComboBox
+                                {...testProps}
+                                placeholder="Placeholder"
+                                errorMessage="Dummy error"></UIComboBox>
+                        </td>
+                        <td>
+                            <UIComboBox
+                                {...testProps}
+                                errorMessage="Dummy error"
+                                selectedKey={selectedKey}></UIComboBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Disabled</td>
+                        <td>
+                            <UIComboBox {...testProps} placeholder="Placeholder" disabled></UIComboBox>
+                        </td>
+                        <td>
+                            <UIComboBox {...testProps} selectedKey={selectedKey} disabled></UIComboBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Read Only</td>
+                        <td>
+                            <UIComboBox {...testProps} placeholder="Placeholder" readOnly></UIComboBox>
+                        </td>
+                        <td>
+                            <UIComboBox {...testProps} selectedKey={selectedKey} readOnly></UIComboBox>
+                        </td>
+                    </tr>
+                </table>
+            </Stack>
+        </div>
+    );
+};

@@ -2,10 +2,17 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 
+export interface TabInfo {
+    // Spaces size
+    size?: number;
+    // Use '\t' symbol instead of space
+    useTabSymbol?: boolean;
+}
+
 /**
  * Common properties for any custom element of the flexible programming model.
  */
-export interface CustomElement {
+export interface CustomElement extends WriterConfig {
     /**
      * Name of the custom element that is to be added to the application.
      */
@@ -159,4 +166,12 @@ export interface EventHandler {
      * 2. Pass non-default function name(default is "onPress");
      */
     eventHandler?: true | string | EventHandlerConfiguration;
+}
+
+export interface WriterConfig {
+    /**
+     * Tab size info.
+     * Currently is used only for 'manifest.json' update.
+     */
+    tabInfo?: TabInfo;
 }

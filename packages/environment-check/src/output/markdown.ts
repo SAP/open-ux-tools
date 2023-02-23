@@ -1,5 +1,5 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
-import { Severity, UrlServiceType, Check } from '../types';
+import { Severity, UrlServiceType, Check, toolsExtensionListVSCode } from '../types';
 import type {
     Endpoint,
     Environment,
@@ -11,7 +11,6 @@ import type {
     EndpointResults
 } from '../types';
 import { t } from '../i18n';
-
 /**
  * Output mapping from severity -> icon + text
  */
@@ -23,20 +22,6 @@ const severityMap = {
 };
 
 const toolsExtensionFields = ['Tools/Extensions', 'Version'];
-
-const toolsExtensionListVSCode = new Map<string, string>([
-    ['platform', 'Platform'],
-    ['cloudCli', 'Cloud CLI tools'],
-    ['appWizard', 'Application Wizard'],
-    ['fioriGenVersion', 'SAP Fiori tools - Fiori generator'],
-    ['appMod', 'SAP Fiori tools - Application Modeler'],
-    ['help', 'SAP Fiori tools - Guided Development'],
-    ['serviceMod', 'SAP Fiori tools - Service Modeler'],
-    ['annotationMod', 'SAP Fiori tools - XML Annotation Language Server'],
-    ['xmlToolkit', 'XML Toolkit'],
-    ['cds', 'SAP CDS Language Support'],
-    ['ui5LanguageAssistant', 'UI5 Language Assistant Support']
-]);
 
 /**
  * Column sequence of the destination table, first colun id, the column title

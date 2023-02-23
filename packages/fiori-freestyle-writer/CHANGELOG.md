@@ -1,5 +1,55 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.9
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+-   @sap-ux/odata-service-writer@0.14.16
+-   @sap-ux/ui5-application-writer@0.18.6
+
+## 0.15.8
+
+### Patch Changes
+
+-   76603f8: Align FF ListDetail temple between JS and TS and add test utils
+-   Updated dependencies [76603f8]
+    -   @sap-ux/ui5-application-writer@0.18.5
+
+## 0.15.7
+
+### Patch Changes
+
+-   a34b85f: fix worklist check for undefined
+
+## 0.15.6
+
+### Patch Changes
+
+-   f9dcf18: fix worklist typescript template to be compatible with @ui5/cli v2
+
+## 0.15.5
+
+### Patch Changes
+
+-   b0d8f64: Fix TypeScript listdetail type errors in List.controller.ts
+
+## 0.15.4
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/odata-service-writer@0.14.15
+    -   @sap-ux/ui5-application-writer@0.18.4
+    -   @sap-ux/ui5-config@0.16.2
+
+## 0.15.3
+
+### Patch Changes
+
+-   730e940: fix(fiori-freestyle-writer) align formatter name with JS template #881
+
 ## 0.15.2
 
 ### Patch Changes

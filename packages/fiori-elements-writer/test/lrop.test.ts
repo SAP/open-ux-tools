@@ -9,10 +9,12 @@ import {
     v4TemplateSettings,
     v4Service,
     v2TemplateSettings,
-    v2Service
+    v2Service,
+    projectChecks
 } from './common';
 
 const TEST_NAME = 'lropTemplates';
+jest.setTimeout(120000); // Needed when debug.debugFull
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -161,7 +163,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         settings: v2TemplateSettings
                     },
                     ui5: {
-                        version: '1.77.2' // flex changes preview should be included with this version
+                        version: '1.108.0'
                     },
                     appOptions: {
                         typescript: true
@@ -188,6 +190,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });

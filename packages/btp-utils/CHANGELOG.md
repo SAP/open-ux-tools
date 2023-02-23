@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 0.11.4
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
 ## 0.11.3
 
 ### Patch Changes

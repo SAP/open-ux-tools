@@ -1,5 +1,27 @@
 # @sap-ux/axios-extension
 
+## 1.0.0
+
+### Major Changes
+
+-   77ac998: Added a new AdtService class: ListPackageService. It provides API function
+    `listPackages({maxResult: number, phrase: string})` which returns all existing package names that
+    has prefix matching input parameter `phrase`.
+
+    ```javascript
+    const listPackageService = (await provider.getAdtService) < ListPackageService > ListPackageService;
+    const packages = await listPackageService.listPackages({ maxResult: 50, phrase: 'Z_' });
+    ```
+
+## 0.14.1
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/btp-utils@0.11.4
+    -   @sap-ux/logger@0.3.4
+
 ## 0.14.0
 
 ### Minor Changes

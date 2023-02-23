@@ -1,5 +1,20 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.22
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+
+## 1.1.21
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/logger@0.3.4
+    -   @sap-ux/ui5-config@0.16.2
+
 ## 1.1.20
 
 ### Patch Changes
