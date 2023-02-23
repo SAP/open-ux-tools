@@ -202,9 +202,9 @@ export function createForDestination(
 
     let provider: ServiceProvider;
     if (isAbapSystem(destination)) {
-        provider = createInstance(AbapServiceProvider, providerConfig);
+        provider = createInstance<AbapServiceProvider>(AbapServiceProvider, providerConfig);
     } else {
-        provider = createInstance(ServiceProvider, providerConfig);
+        provider = createInstance<ServiceProvider>(ServiceProvider, providerConfig);
     }
 
     // resolve destination service user on first request if required

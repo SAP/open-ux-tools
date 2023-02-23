@@ -3,8 +3,9 @@ import { deploy, getCredentials, undeploy } from '../../../src/base/deploy';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
-import { mockedStoreService, mockIsAppStudio, mockedUi5RepoService } from '../../__mocks__';
+import { mockedStoreService, mockIsAppStudio, mockedUi5RepoService, mockListDestinations } from '../../__mocks__';
 import { join } from 'path';
+import type { Destination } from '@sap-ux/btp-utils';
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -70,10 +71,26 @@ describe('base/deploy', () => {
             expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
         });
 
-        test('No errors in AppStudio with destinations', async () => {
+        test('Throw error in AppStudio if destination not found', async () => {
+            const destination = '~destination';
             mockIsAppStudio.mockReturnValueOnce(true);
+            mockListDestinations.mockReturnValue({});
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            await deploy(archive, { app, target: { destination: '~destination' } }, nullLogger);
+            try {
+                await deploy(archive, { app, target: { destination } }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toStrictEqual(new Error(`Destination ${destination} not found on subaccount`));
+            }
+            expect(mockedUi5RepoService.deploy).not.toBeCalledWith();
+        });
+
+        test('No errors in AppStudio with destinations', async () => {
+            const destination = 'testDestination';
+            mockIsAppStudio.mockReturnValueOnce(true);
+            mockListDestinations.mockReturnValue({ testDestination: { Name: destination } as Destination });
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            await deploy(archive, { app, target: { destination } }, nullLogger);
             expect(mockedUi5RepoService.deploy).toBeCalledWith({
                 archive,
                 bsp: app,

@@ -13,7 +13,7 @@ import {
     isAxiosError
 } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
@@ -74,6 +74,7 @@ async function createAbapServiceProvider(
 
 /**
  * Create an instance of a UI5AbapRepository service connected to the given target configuration.
+ *
  * @param config - deployment configuration
  * @param logger - optional reference to the logger instance
  * @returns service instance
@@ -90,7 +91,16 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
             password: config.credentials?.password
         };
     }
-    if (isUrlTarget(config.target)) {
+    // Destination only supported on Business Application studio
+    if (isAppStudio() && config.target.destination) {
+        // Need additional properties to determine the type of destination we are dealing with
+        const destinations = await listDestinations();
+        const destination = destinations?.[config.target.destination];
+        if (!destination) {
+            throw new Error(`Destination ${config.target.destination} not found on subaccount`);
+        }
+        provider = createForDestination(options, destination) as AbapServiceProvider;
+    } else if (isUrlTarget(config.target)) {
         if (config.target.scp) {
             const storedOpts = (await getCredentials<ServiceAuth>(config.target)) ?? (await promptServiceKeys());
             if (storedOpts) {
@@ -109,10 +119,6 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
         } else {
             provider = await createAbapServiceProvider(options, config.target);
         }
-    } else if (isAppStudio()) {
-        provider = createForDestination(options, {
-            Name: config.target.destination
-        }) as AbapServiceProvider;
     } else {
         throw new Error('TODO');
     }
