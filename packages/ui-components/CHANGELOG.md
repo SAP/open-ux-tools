@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.5
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
 ## 1.3.4
 
 ### Patch Changes

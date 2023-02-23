@@ -1,5 +1,14 @@
 # @sap-ux/axios-extension
 
+## 1.0.1
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/btp-utils@0.11.5
+
 ## 1.0.0
 
 ### Major Changes

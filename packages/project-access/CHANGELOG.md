@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 1.1.2
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/ui5-config@0.16.4
+
 ## 1.1.1
 
 ### Patch Changes
