@@ -4,8 +4,9 @@ import type { PromptObject } from 'prompts';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import * as store from '@sap-ux/store';
+import { getSmartLinksTargetFromPrompt } from '../../../src';
+import { t } from '../../../src/i18n';
 import * as utils from '../../../src/smartlinks-config/utils';
-import { getSmartLinksTargetFromPrompt, t } from '../../../src';
 
 jest.mock('prompts', () => ({
     ...(jest.requireActual('prompts') as object),
@@ -24,7 +25,6 @@ jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 const serviceMock = { read: jest.fn() };
 
 describe('Test function getSmartLinksConfigQuestions()', () => {
-    jest.setTimeout(100000000);
     // Mock setup
     const debugMock = loggerMock.debug as unknown as jest.SpyInstance;
     let getSystemCredentialsSpy: jest.SpyInstance;
