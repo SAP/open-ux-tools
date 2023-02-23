@@ -13,7 +13,7 @@ export class TransportChecksService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
      */
-    private static AdtCategory = {
+    private static adtCategory = {
         scheme: 'http://www.sap.com/adt/categories/cts',
         term: 'transportchecks'
     };
@@ -23,7 +23,7 @@ export class TransportChecksService extends AdtService {
      * @returns AdtCategory
      */
     public static getAdtCatagory(): AdtCategory {
-        return TransportChecksService.AdtCategory;
+        return TransportChecksService.adtCategory;
     }
 
     /**

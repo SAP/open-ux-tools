@@ -1,5 +1,23 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.42
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/axios-extension@1.0.1
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/store@0.3.10
+    -   @sap-ux/btp-utils@0.11.5
+
+## 0.6.41
+
+### Patch Changes
+
+-   Updated dependencies [77ac998]
+    -   @sap-ux/axios-extension@1.0.0
+
 ## 0.6.40
 
 ### Patch Changes

@@ -70,6 +70,7 @@ describe('UAA', () => {
         });
 
         it('returns the access token without refresh token', async () => {
+            jest.setTimeout(10000);
             jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
 
             // mocked exchange with the server

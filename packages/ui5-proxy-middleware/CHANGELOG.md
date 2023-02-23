@@ -1,5 +1,14 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.23
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/ui5-config@0.16.4
+
 ## 1.1.22
 
 ### Patch Changes
