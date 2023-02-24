@@ -1,5 +1,25 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.80
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/axios-extension@1.0.1
+    -   @sap-ux/fiori-elements-writer@0.8.17
+    -   @sap-ux/fiori-freestyle-writer@0.15.10
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/store@0.3.10
+    -   @sap-ux/btp-utils@0.11.5
+
+## 0.2.79
+
+### Patch Changes
+
+-   Updated dependencies [77ac998]
+    -   @sap-ux/axios-extension@1.0.0
+
 ## 0.2.78
 
 ### Patch Changes

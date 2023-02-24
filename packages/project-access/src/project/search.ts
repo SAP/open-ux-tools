@@ -71,7 +71,7 @@ export async function findProjectRoot(path: string, sapuxRequired = true, silent
     if (sapuxRequired) {
         const sapux = (await readJSON<Package>(packageJson)).sapux;
         if (!sapux) {
-            root = await findProjectRoot(dirname(root), sapuxRequired);
+            root = await findProjectRoot(dirname(root), sapuxRequired, silent);
         }
     }
     return root;
