@@ -111,6 +111,11 @@ describe('Test findProjectRoot()', () => {
         expect(path).toStrictEqual('');
     });
 
+    test('package.json exists, but sapux is missing in silent mode should not throw', async () => {
+        const path = await findProjectRoot(__dirname, true, true);
+        expect(path).toStrictEqual('');
+    });
+
     test('No package.json, sapuxRequired: false, should throw error', async () => {
         try {
             await findProjectRoot(join('/'), false);
