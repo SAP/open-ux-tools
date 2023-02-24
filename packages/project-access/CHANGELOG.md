@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.1.3
+
+### Patch Changes
+
+-   8c45841: Fixed silent mode throwing an error when sapuxRequired was set to true
+
 ## 1.1.2
 
 ### Patch Changes
