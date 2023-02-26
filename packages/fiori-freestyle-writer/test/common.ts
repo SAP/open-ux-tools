@@ -95,6 +95,12 @@ export const projectChecks = async (
                 console.log('stdout:', npmResult.stdout);
                 console.log('stderr:', npmResult.stderr);
             }
+            // Check build
+            npmResult = await exec(`${npm} run build`, { cwd: rootPath });
+            console.log('stdout:', npmResult.stdout);
+            console.log('stderr:', npmResult.stderr);
+            expect(npmResult.stdout.toString()).not.toContain('ERR!');
+            expect(npmResult.stderr.toString()).not.toContain('ERR!');
         } catch (error) {
             console.log('stdout:', error?.stdout);
             console.log('stderr:', error?.stderr);
