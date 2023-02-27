@@ -608,17 +608,19 @@ export default class Detail extends BaseController {
             return;
         }
 
-        const path = elementBinding.getPath();
-        const resourceBundle = this.getResourceBundle();
-        const detailObject = this.getModel().getObject(path);
-        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
+        if (elementBinding) {
+            const path = elementBinding.getPath();
+            const resourceBundle = this.getResourceBundle();
+            const detailObject = this.getModel().getObject(path);
+            const viewModel = this.getModel<JSONModel>(\\"detailView\\");
 
-        this.getUIComponent().listSelector.selectAListItem(path);
+            this.getUIComponent().listSelector.selectAListItem(path);
 
-        viewModel.setProperty(\\"/shareSendEmailSubject\\",
-            resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
-        viewModel.setProperty(\\"/shareSendEmailMessage\\",
-            resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
+            viewModel.setProperty(\\"/shareSendEmailSubject\\",
+                resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
+            viewModel.setProperty(\\"/shareSendEmailMessage\\",
+                resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
+        }    
     }
 
     protected onMetadataLoaded() {
@@ -787,10 +789,10 @@ export default class List extends BaseController {
             let key, text;
             if (iNumber <= 20) {
                 key = \\"LE20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header1\\");
+                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || '';
             } else {
                 key = \\"GT20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header2\\");
+                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || '';
             }
             return {
                 key: key,
@@ -3274,17 +3276,19 @@ export default class Detail extends BaseController {
             return;
         }
 
-        const path = elementBinding.getPath();
-        const resourceBundle = this.getResourceBundle();
-        const detailObject = this.getModel().getObject(path);
-        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
+        if (elementBinding) {
+            const path = elementBinding.getPath();
+            const resourceBundle = this.getResourceBundle();
+            const detailObject = this.getModel().getObject(path);
+            const viewModel = this.getModel<JSONModel>(\\"detailView\\");
 
-        this.getUIComponent().listSelector.selectAListItem(path);
+            this.getUIComponent().listSelector.selectAListItem(path);
 
-        viewModel.setProperty(\\"/shareSendEmailSubject\\",
-            resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
-        viewModel.setProperty(\\"/shareSendEmailMessage\\",
-            resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
+            viewModel.setProperty(\\"/shareSendEmailSubject\\",
+                resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
+            viewModel.setProperty(\\"/shareSendEmailMessage\\",
+                resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
+        }    
     }
 
     protected onMetadataLoaded() {
@@ -3453,10 +3457,10 @@ export default class List extends BaseController {
             let key, text;
             if (iNumber <= 20) {
                 key = \\"LE20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header1\\");
+                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || '';
             } else {
                 key = \\"GT20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header2\\");
+                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || '';
             }
             return {
                 key: key,
@@ -8448,17 +8452,19 @@ export default class Detail extends BaseController {
             return;
         }
 
-        const path = elementBinding.getPath();
-        const resourceBundle = this.getResourceBundle();
-        const detailObject = this.getModel().getObject(path);
-        const viewModel = this.getModel<JSONModel>(\\"detailView\\");
+        if (elementBinding) {
+            const path = elementBinding.getPath();
+            const resourceBundle = this.getResourceBundle();
+            const detailObject = this.getModel().getObject(path);
+            const viewModel = this.getModel<JSONModel>(\\"detailView\\");
 
-        this.getUIComponent().listSelector.selectAListItem(path);
+            this.getUIComponent().listSelector.selectAListItem(path);
 
-        viewModel.setProperty(\\"/shareSendEmailSubject\\",
-            resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
-        viewModel.setProperty(\\"/shareSendEmailMessage\\",
-            resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
+            viewModel.setProperty(\\"/shareSendEmailSubject\\",
+                resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
+            viewModel.setProperty(\\"/shareSendEmailMessage\\",
+                resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
+        }    
     }
 
     protected onMetadataLoaded() {

@@ -119,17 +119,19 @@ export default class Detail extends BaseController {
             return;
         }
 
-        const path = elementBinding.getPath();
-        const resourceBundle = this.getResourceBundle();
-        const detailObject = this.getModel().getObject(path);
-        const viewModel = this.getModel<JSONModel>("detailView");
+        if (elementBinding) {
+            const path = elementBinding.getPath();
+            const resourceBundle = this.getResourceBundle();
+            const detailObject = this.getModel().getObject(path);
+            const viewModel = this.getModel<JSONModel>("detailView");
 
-        this.getUIComponent().listSelector.selectAListItem(path);
+            this.getUIComponent().listSelector.selectAListItem(path);
 
-        viewModel.setProperty("/shareSendEmailSubject",
-            resourceBundle.getText("shareSendEmailObjectSubject", [detailObject.<%=template.settings.entity.key%>]));
-        viewModel.setProperty("/shareSendEmailMessage",
-            resourceBundle.getText("shareSendEmailObjectMessage", [detailObject.<%=template.settings.entity.idProperty%>, detailObject.<%=template.settings.entity.key%>, location.href]));
+            viewModel.setProperty("/shareSendEmailSubject",
+                resourceBundle.getText("shareSendEmailObjectSubject", [detailObject.<%=template.settings.entity.key%>]));
+            viewModel.setProperty("/shareSendEmailMessage",
+                resourceBundle.getText("shareSendEmailObjectMessage", [detailObject.<%=template.settings.entity.idProperty%>, detailObject.<%=template.settings.entity.key%>, location.href]));
+        }    
     }
 
     protected onMetadataLoaded() {

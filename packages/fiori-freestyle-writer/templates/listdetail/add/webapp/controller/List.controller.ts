@@ -34,10 +34,10 @@ export default class List extends BaseController {
             let key, text;
             if (iNumber <= 20) {
                 key = "LE20";
-                text = this.getResourceBundle().getText("listGroup1Header1");
+                text = this.getResourceBundle().getText("listGroup1Header1") || '';
             } else {
                 key = "GT20";
-                text = this.getResourceBundle().getText("listGroup1Header2");
+                text = this.getResourceBundle().getText("listGroup1Header2") || '';
             }
             return {
                 key: key,
