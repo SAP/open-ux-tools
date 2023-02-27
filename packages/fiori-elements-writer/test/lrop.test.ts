@@ -9,11 +9,13 @@ import {
     v4TemplateSettings,
     v4Service,
     v2TemplateSettings,
-    v2Service
+    v2Service,
+    projectChecks
 } from './common';
 import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
+jest.setTimeout(120000); // Needed when debug.debugFull
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -180,7 +182,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         settings: v2TemplateSettings
                     },
                     ui5: {
-                        version: '1.109.1'
+                        version: '1.108.0'
                     },
                     appOptions: {
                         typescript: true
@@ -225,6 +227,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });

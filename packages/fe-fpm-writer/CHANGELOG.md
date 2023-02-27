@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.6
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 0.18.5
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
 ## 0.18.4
 
 ### Patch Changes

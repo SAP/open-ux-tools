@@ -9,7 +9,7 @@ export class AtoService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
      */
-    private static AdtCategory = {
+    private static adtCategory = {
         scheme: 'http://www.sap.com/adt/categories/ato',
         term: 'settings'
     };
@@ -19,7 +19,7 @@ export class AtoService extends AdtService {
      * @returns AdtCategory
      */
     public static getAdtCatagory(): AdtCategory {
-        return AtoService.AdtCategory;
+        return AtoService.adtCategory;
     }
 
     /**

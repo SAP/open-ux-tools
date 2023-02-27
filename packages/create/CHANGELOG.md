@@ -1,5 +1,56 @@
 # @sap-ux/create
 
+## 0.0.10
+
+### Patch Changes
+
+-   Updated dependencies [8c45841]
+    -   @sap-ux/project-access@1.1.3
+    -   @sap-ux/mockserver-config-writer@0.0.6
+
+## 0.0.9
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/mockserver-config-writer@0.0.6
+    -   @sap-ux/project-access@1.1.2
+
+## 0.0.8
+
+### Patch Changes
+
+-   @sap-ux/mockserver-config-writer@0.0.5
+-   @sap-ux/project-access@1.1.1
+
+## 0.0.7
+
+### Patch Changes
+
+-   Updated dependencies [470275c]
+    -   @sap-ux/project-access@1.1.0
+    -   @sap-ux/mockserver-config-writer@0.0.4
+
+## 0.0.6
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/logger@0.3.4
+    -   @sap-ux/mockserver-config-writer@0.0.4
+    -   @sap-ux/project-access@1.0.6
+
+## 0.0.5
+
+### Patch Changes
+
+-   Updated dependencies [8cc76b5]
+    -   @sap-ux/project-access@1.0.5
+    -   @sap-ux/mockserver-config-writer@0.0.3
+
 ## 0.0.4
 
 ### Patch Changes

@@ -1,5 +1,95 @@
 # @sap-ux/ui-components
 
+## 1.3.5
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 1.3.4
+
+### Patch Changes
+
+-   f8c3fe5: Updated filter icon, as it was totally buggy
+
+## 1.3.3
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
+## 1.3.2
+
+### Patch Changes
+
+-   59fc7a9: message sent icon added
+
+## 1.3.1
+
+### Patch Changes
+
+-   4418744: UITranslationInput. Rename accept button default text, add title to input with information about resolved i18n value
+
+## 1.3.0
+
+### Minor Changes
+
+-   e007958: feat(21552): add generic combobox column type to UITable (ColumnControlType.UICombobox)
+
+## 1.2.0
+
+### Minor Changes
+
+-   92184eb: New component - UITranslationInput which provide UI to generate i18n key for entered text value
+
+## 1.1.10
+
+### Patch Changes
+
+-   2bac3c4: New icon Id tag
+
+## 1.1.9
+
+### Patch Changes
+
+-   ce13abe: UITextInput. Background color issue for read only input field
+
+## 1.1.8
+
+### Patch Changes
+
+-   b9b66e9: UIFlexibleTable. Fixed "undefined" error when "No data." row was clicked and dragged.
+
+## 1.1.7
+
+### Patch Changes
+
+-   2942309: fix(uic): fixes jumping cursor in editable table input
+
+## 1.1.6
+
+### Patch Changes
+
+-   2014255: Added warning icon with smiley style.
+
+## 1.1.5
+
+### Patch Changes
+
+-   e415208: UIActionButton. Remove forced color for inner icon - icon will be taken from individual icon styles
+
+## 1.1.4
+
+### Patch Changes
+
+-   2447b96: New icons added for knowledge centre, Icon16/ Mission, Graduate, ClockShort, ClockMedium, ClockLong
+
+## 1.1.3
+
+### Patch Changes
+
+-   dbfb2ae: UITextInput, UIComboBox, UIDropdown, UITreeDropdown. Support for "readonly" property
+
 ## 1.1.2
 
 ### Patch Changes

@@ -472,14 +472,9 @@ describe('proxy', () => {
 
         test('throw an error if proxyOptions.target is not defined', async () => {
             const backend = { url: '', path: '/my/path' } as LocalBackendConfig;
-            try {
-                await generateProxyMiddlewareOptions(backend);
-            } catch (error) {
-                expect(error).toBeDefined();
-                expect(error.message).toEqual(
-                    `Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`
-                );
-            }
+            await expect(() => generateProxyMiddlewareOptions(backend)).rejects.toThrow(
+                `Unable to determine target from configuration:\n${JSON.stringify(backend, null, 2)}`
+            );
         });
 
         test('calling onError calls proxyErrorHandler', async () => {
@@ -489,7 +484,6 @@ describe('proxy', () => {
             };
             const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, logger);
             const debugSpy = jest.spyOn(logger, 'debug');
-            debugSpy.mockReset();
             if (typeof proxyOptions?.onError === 'function') {
                 proxyOptions?.onError(undefined as any, {} as any, {} as any);
                 expect(debugSpy).toHaveBeenCalledTimes(1);

@@ -11,7 +11,7 @@ jobs:
             pull-requests: write
             contents: write
         steps:
-            - uses: pnpm/action-setup@v2.2.2
+            - uses: pnpm/action-setup@v2.2.4
               with:
                   version: ^7
             - uses: actions/checkout@v3

@@ -10,11 +10,11 @@ export default class ListSelector extends UI5Object {
 
     protected readonly oWhenListLoadingIsDone: Promise<any>;
     protected readonly _oWhenListHasBeenSet: Promise<any>;
-    protected list: List;
+    protected _oList: List;
     protected _fnResolveListHasBeenSet: any;
 
     /**
-     * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundMasterList
+     * Provides a convenience API for selecting list items. All the functions will wait until the initial load of the a List passed to the instance by the setBoundList
      * function.
      */
      constructor() {
@@ -26,17 +26,20 @@ export default class ListSelector extends UI5Object {
         // invoke selectItem functions before calling setBoundList
         this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
-                .then(function (this: ListSelector, list: List) {
-                    list.getBinding("items")?.attachEventOnce("dataReceived",
+                .then(function (this: ListSelector, oList: List) {
+                    const items = oList.getBinding("items");
+                    if (items) {
+                     items.attachEventOnce("dataReceived",
                         function (this: ListSelector) {
-                            if (this.list.getItems().length) {
-                                resolve({ list });
+                            if (this._oList.getItems().length) {
+                                resolve({ oList });
                             } else {
                                 // No items in the list
-                                reject({ list });
+                                reject({ oList });
                             }
                         }.bind(this)
                     );
+                }
                 }.bind(this));
         }.bind(this));
     };
@@ -47,9 +50,9 @@ export default class ListSelector extends UI5Object {
      * @param list The list all the select functions will be invoked on.
      *
      */
-     public setBoundList(list: List) {
-        this.list = list;
-        this._fnResolveListHasBeenSet(list);
+     public setBoundList(oList: List) {
+        this._oList = oList;
+        this._fnResolveListHasBeenSet(oList);
     }
 
     /**
@@ -62,20 +65,20 @@ export default class ListSelector extends UI5Object {
 
         this.oWhenListLoadingIsDone.then(
             function (this: ListSelector) {
-                const list = this.list;
-                if (list.getMode() === "None") {
+                const oList = this._oList;
+                if (oList.getMode() === "None") {
                     return;
                 }
 
                 // skip update if the current selection is already matching the object path
-                const selectedItem = list.getSelectedItem();
+                const selectedItem = oList.getSelectedItem();
                 if (selectedItem && selectedItem.getBindingContext()!.getPath() === path) {
                     return;
                 }
 
-                list.getItems().some(function (oItem: ListItemBase) {
+                oList.getItems().some(function (oItem: ListItemBase) {
                     if (oItem.getBindingContext() && oItem.getBindingContext()!.getPath() === path) {
-                        list.setSelectedItem(oItem);
+                        oList.setSelectedItem(oItem);
                         return true;
                     }
                 });
@@ -91,8 +94,8 @@ export default class ListSelector extends UI5Object {
      * Does not trigger 'selectionChange' event on list, though.
      */
     public async clearListSelection() {
-        //use promise to make sure that 'this.list' is available
+        //use promise to make sure that 'this._oList' is available
         await this._oWhenListHasBeenSet;
-        this.list.removeSelections(true);
+        this._oList.removeSelections(true);
     }
 }

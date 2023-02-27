@@ -173,3 +173,17 @@ export interface ILogger extends Logger {
     push(...newMessages: ResultMessage[]): void;
     getMessages(): ResultMessage[];
 }
+
+export const toolsExtensionListVSCode = new Map<string, string>([
+    ['platform', 'Platform'],
+    ['cloudCli', 'Cloud CLI tools'],
+    ['appWizard', 'Application Wizard'],
+    ['fioriGenVersion', 'SAP Fiori tools - Fiori generator'],
+    ['appMod', 'SAP Fiori tools - Application Modeler'],
+    ['help', 'SAP Fiori tools - Guided Development'],
+    ['serviceMod', 'SAP Fiori tools - Service Modeler'],
+    ['annotationMod', 'SAP Fiori tools - XML Annotation Language Server'],
+    ['xmlToolkit', 'XML Toolkit'],
+    ['cds', 'SAP CDS Language Support'],
+    ['ui5LanguageAssistant', 'UI5 Language Assistant Support']
+]);

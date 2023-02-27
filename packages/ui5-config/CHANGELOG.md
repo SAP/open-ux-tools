@@ -1,5 +1,28 @@
 # @sap-ux/ui5-config
 
+## 0.16.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/yaml@0.13.4
+
+## 0.16.3
+
+### Patch Changes
+
+-   Updated dependencies [3327a3f]
+    -   @sap-ux/yaml@0.13.3
+
+## 0.16.2
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/yaml@0.13.2
+
 ## 0.16.1
 
 ### Patch Changes

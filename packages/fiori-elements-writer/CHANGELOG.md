@@ -1,5 +1,47 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.8.17
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/fe-fpm-writer@0.18.6
+    -   @sap-ux/odata-service-writer@0.14.17
+    -   @sap-ux/ui5-application-writer@0.18.7
+    -   @sap-ux/ui5-config@0.16.4
+    -   @sap-ux/ui5-test-writer@0.1.7
+
+## 0.8.16
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+-   @sap-ux/odata-service-writer@0.14.16
+-   @sap-ux/ui5-application-writer@0.18.6
+-   @sap-ux/fe-fpm-writer@0.18.5
+-   @sap-ux/ui5-test-writer@0.1.6
+
+## 0.8.15
+
+### Patch Changes
+
+-   76603f8: Align FF ListDetail temple between JS and TS and add test utils
+-   Updated dependencies [76603f8]
+    -   @sap-ux/ui5-application-writer@0.18.5
+
+## 0.8.14
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/fe-fpm-writer@0.18.5
+    -   @sap-ux/odata-service-writer@0.14.15
+    -   @sap-ux/ui5-application-writer@0.18.4
+    -   @sap-ux/ui5-config@0.16.2
+    -   @sap-ux/ui5-test-writer@0.1.6
+
 ## 0.8.13
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 0.11.5
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 0.11.4
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
 ## 0.11.3
 
 ### Patch Changes
