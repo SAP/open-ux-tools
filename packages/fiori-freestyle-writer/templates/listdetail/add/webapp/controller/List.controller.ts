@@ -126,7 +126,7 @@ export default class List extends BaseController {
      */
     public onRefresh() {
         const items = this.list.getBinding("items");
-        if (items){
+        if (items) {
             items.refresh(false);
         }
     }
