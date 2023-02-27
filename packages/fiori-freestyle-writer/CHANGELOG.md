@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.11
+
+### Patch Changes
+
+-   7fae2cd: fix(freestyle-writer) replace Optional chaining to be compatible with ui5/cli v2
+
 ## 0.15.10
 
 ### Patch Changes
