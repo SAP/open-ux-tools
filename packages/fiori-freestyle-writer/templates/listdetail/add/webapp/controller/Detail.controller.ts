@@ -111,7 +111,7 @@ export default class Detail extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (!elementBinding?.getBoundContext()) {
+        if (elementBinding && !elementBinding.getBoundContext()) {
             this.getRouter().getTargets()!.display("detailObjectNotFound");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
