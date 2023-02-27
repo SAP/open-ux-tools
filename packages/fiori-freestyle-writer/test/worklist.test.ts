@@ -147,6 +147,34 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     typescript: true
                 }
             }
+        },
+        {
+            name: 'worklist_ts_ui5_1_108',
+            config: {
+                ...commonConfig,
+                template: {
+                    type: TemplateType.Worklist,
+                    settings: {
+                        entity: {
+                            name: 'SEPMRA_C_PD_Product',
+                            key: 'Product',
+                            idProperty: 'Name',
+                            numberProperty: 'Price',
+                            unitOfMeasureProperty: 'Currency'
+                        }
+                    } as WorklistSettings
+                },
+                ui5: {
+                    version: '1.108.1',
+                    ui5Libs: ['sap.f', 'sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.108.1'
+                },
+                service: v2Service,
+                appOptions: {
+                    typescript: true
+                }
+            }
         }
     ];
 
