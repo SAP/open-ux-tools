@@ -13,7 +13,7 @@ import {
     isAxiosError
 } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService, BackendSystemKey } from '@sap-ux/store';
@@ -23,7 +23,7 @@ import { getConfigForLogging, isUrlTarget } from './config';
 import { promptConfirmation, promptCredentials, promptServiceKeys } from './prompt';
 
 type BasicAuth = Required<Pick<BackendSystem, 'username' | 'password'>>;
-type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys'>> & { refreshToken?: string };
+type ServiceAuth = Required<Pick<BackendSystem, 'serviceKeys' | 'name'>> & { refreshToken?: string };
 
 /**
  * Check the secure storage if it has credentials for the given target.
@@ -76,9 +76,10 @@ async function createAbapServiceProvider(
  * Create an instance of a UI5AbapRepository service connected to the given target configuration.
  *
  * @param config - deployment configuration
+ * @param logger - optional reference to the logger instance
  * @returns service instance
  */
-async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRepositoryService> {
+async function createDeployService(config: AbapDeployConfig, logger?: Logger): Promise<Ui5AbapRepositoryService> {
     let provider: AbapServiceProvider;
     const options: AxiosRequestConfig & Partial<ProviderConfiguration> = {};
     if (config.strictSsl === false) {
@@ -90,8 +91,16 @@ async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRep
             password: config.credentials?.password
         };
     }
-
-    if (isUrlTarget(config.target)) {
+    // Destination only supported on Business Application studio
+    if (isAppStudio() && config.target.destination) {
+        // Need additional properties to determine the type of destination we are dealing with
+        const destinations = await listDestinations();
+        const destination = destinations?.[config.target.destination];
+        if (!destination) {
+            throw new Error(`Destination ${config.target.destination} not found on subaccount`);
+        }
+        provider = createForDestination(options, destination) as AbapServiceProvider;
+    } else if (isUrlTarget(config.target)) {
         if (config.target.scp) {
             const storedOpts = (await getCredentials<ServiceAuth>(config.target)) ?? (await promptServiceKeys());
             if (storedOpts) {
@@ -101,16 +110,15 @@ async function createDeployService(config: AbapDeployConfig): Promise<Ui5AbapRep
                     service: storedOpts.serviceKeys as ServiceInfo,
                     refreshToken: storedOpts.refreshToken
                 });
+                if (logger) {
+                    logger.info(`Using system [${storedOpts.name}] from System store`);
+                }
             } else {
                 throw new Error('Service keys required for deployment to an ABAP environment on SAP BTP');
             }
         } else {
             provider = await createAbapServiceProvider(options, config.target);
         }
-    } else if (isAppStudio()) {
-        provider = createForDestination(options, {
-            Name: config.target.destination
-        }) as AbapServiceProvider;
     } else {
         throw new Error('TODO');
     }
@@ -193,11 +201,11 @@ async function handleAxiosError(
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  */
-export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger) {
+export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger): Promise<void> {
     if (config.keep) {
         writeFileSync(`archive-${Date.now()}.zip`, archive);
     }
-    const service = await createDeployService(config);
+    const service = await createDeployService(config, logger);
     service.log = logger;
     if (!config.strictSsl) {
         logger.warn(
@@ -206,7 +214,13 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
     }
     logger.info(`Starting deployment${config.test === true ? ' in test mode' : ''}.`);
     await tryDeploy(archive, service, config, logger);
-    logger.info('Deployment successful.');
+    if (config.test === true) {
+        logger.info(
+            'Deployment in TestMode completed. A successful TestMode execution does not necessarily mean that your upload will be successful.'
+        );
+    } else {
+        logger.info('Deployment successful.');
+    }
 }
 
 /**
@@ -215,8 +229,8 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
  * @param config - deployment configuration
  * @param logger - reference to the logger instance
  */
-export async function undeploy(config: AbapDeployConfig, logger: Logger) {
-    const service = await createDeployService(config);
+export async function undeploy(config: AbapDeployConfig, logger: Logger): Promise<void> {
+    const service = await createDeployService(config, logger);
     service.log = logger;
     if (!config.strictSsl) {
         logger.warn(

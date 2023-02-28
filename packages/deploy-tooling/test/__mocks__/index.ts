@@ -1,6 +1,6 @@
 import mockedStore from '@sap-ux/store';
 import mockedAxiosExtension from '@sap-ux/axios-extension';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 
 type MockedStore = {
     mockedService: {
@@ -20,3 +20,5 @@ export const mockedUi5RepoService = (mockedAxiosExtension as unknown as MockedAx
     .mockedUi5AbapRepositoryService;
 
 export const mockIsAppStudio = isAppStudio as jest.Mock;
+
+export const mockListDestinations = listDestinations as jest.Mock;

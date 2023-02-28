@@ -43,7 +43,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     const app: BspConfig = {
         name: options.name ?? taskConfig.app?.name,
         description: options.description ?? taskConfig.app?.description,
-        'package': options.package ?? taskConfig.app?.package,
+        package: options.package ?? taskConfig.app?.package,
         transport: options.transport ?? taskConfig.app?.transport
     };
     const target = {
@@ -52,7 +52,6 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
         scp: options.scp !== undefined ? options.scp : taskConfig.target?.scp,
         destination: options.destination ?? taskConfig.target?.destination
     } as AbapTarget;
-
     const config: AbapDeployConfig = { app, target, credentials: taskConfig.credentials };
     config.test = mergeFlag(options.test, taskConfig.test);
     config.keep = mergeFlag(options.keep, taskConfig.keep);
@@ -62,12 +61,11 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     if (!options.archiveUrl && !options.archivePath && !options.archiveFolder) {
         options.archiveFolder = 'dist';
     }
-
-    if (options.archiveFolder && !isAbsolute(options.archiveFolder)) {
+    if (options.config && options.archiveFolder && !isAbsolute(options.archiveFolder)) {
         options.archiveFolder = join(dirname(options.config), options.archiveFolder);
     }
 
-    if (options.archivePath && !isAbsolute(options.archivePath)) {
+    if (options.config && options.archivePath && !isAbsolute(options.archivePath)) {
         options.archivePath = join(dirname(options.config), options.archivePath);
     }
 

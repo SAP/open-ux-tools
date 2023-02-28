@@ -29,7 +29,7 @@ export interface CommonOptions {
     safe?: boolean;
 
     /**
-     * If set to true only only servers with validatated idtenities are accepted
+     * If set to true only only servers with validated identities are accepted
      */
     strictSsl?: boolean;
 

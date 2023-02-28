@@ -68,6 +68,7 @@ export async function promptServiceKeys() {
     return {
         serviceKeys,
         url: serviceKeys.url,
-        refreshToken: undefined
+        refreshToken: undefined,
+        name: serviceKeys.systemid
     };
 }

@@ -19,7 +19,7 @@ function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer> {
         logger.info(`Loading archive from ${path}`);
         readFile(path, (err, data) => {
             if (err) {
-                reject(`Archive loading has failed. Please ensure ${path} is valid and accesible.`);
+                reject(`Archive loading has failed. Please ensure ${path} is valid and accessible.`);
             } else {
                 logger.info('Archive loaded.');
                 resolve(data);
@@ -87,7 +87,7 @@ function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> 
             logger.debug(`Adding ${relPath}`);
             zip.addFile(filePath, relPath);
         }
-        logger.info('Archive created.');
+        logger.info(`Archive created from ${path}.`);
         return createBuffer(zip);
     } catch (error) {
         throw new Error(`Archive creation has failed. Please ensure ${path} is valid and accesible.`);

@@ -1,7 +1,7 @@
 import { Option, Command } from 'commander';
 import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
 import { deploy, getConfigForLogging, replaceEnvVariables, undeploy, validateConfig } from '../base';
-import type { CliOptions } from '../types';
+import type { CliOptions, AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, mergeConfig } from './config';
@@ -14,7 +14,7 @@ import { getDeploymentConfig, mergeConfig } from './config';
  */
 export function createCommand(name: 'deploy' | 'undeploy'): Command {
     const command = new Command()
-        .requiredOption('-c, --config <path-to-yaml>', 'Path to config yaml file')
+        .option('-c, --config <path-to-yaml>', 'Path to config yaml file')
         .option('-y, --yes', 'yes to all questions', false)
         .option('-v, --verbose', 'verbose log output', false)
         .option('-n, --no-retry', `do not retry if the ${name}ment fails for any reason`, false)
@@ -48,6 +48,8 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         command
             .option('--package <abap-package>', 'Package name for deploy target ABAP system')
             .option('--description <description>', 'Project description of the app')
+            // SafeMode: Example: If the deployment would overwrite a repository that contains an app with a different sap.app/id and SafeMode is true, HTTP status code 412 (Precondition Failed) with further information would be returned.
+            .option('--safe', 'Prevents accidentally breaking deployments.')
             .option('--keep', 'Keep a copy of the deployed archive in the project folder.');
 
         // alternatives to provide the archive
@@ -77,12 +79,14 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
 /**
  * Prepare the run of the task based on on the configured command i.e. read and validate configuration and create logger.
  *
- * @param cmd - CLI command condiguration to be executed
+ * @param cmd - CLI command configuration to be executed
  * @returns a set of objects required for the command execution
  */
 async function prepareRun(cmd: Command) {
+    if (process.argv.length < 3) {
+        cmd.help();
+    }
     const options = cmd.parse().opts<CliOptions>();
-
     const logLevel = options.verbose ? LogLevel.Silly : LogLevel.Info;
     const logger = new ToolsLogger({
         transports: [new ConsoleTransport()],
@@ -90,7 +94,8 @@ async function prepareRun(cmd: Command) {
         logPrefix: NAME
     });
 
-    const taskConfig = await getDeploymentConfig(options.config);
+    // Handle empty config when not passed in
+    const taskConfig = options.config ? await getDeploymentConfig(options.config) : ({} as AbapDeployConfig);
     const config = await mergeConfig(taskConfig, options);
     if (logLevel >= LogLevel.Debug) {
         logger.debug(getConfigForLogging(config));
