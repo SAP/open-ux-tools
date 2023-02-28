@@ -110,6 +110,23 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 }
             },
             settings: {}
+        },
+        {
+            name: 'basic_typescript_ui5_1_108',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    loadReuseLibs: false,
+                    typescript: true
+                },
+                ui5: {
+                    version: '1.108.1',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.108.1'
+                }
+            },
+            settings: {}
         }
     ];
 
