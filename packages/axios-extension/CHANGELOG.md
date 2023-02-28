@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.0.2
+
+### Patch Changes
+
+-   8e059ae: consider segment parameters in service uri
+
 ## 1.0.1
 
 ### Patch Changes
