@@ -38,6 +38,13 @@ export interface ErrorMessage {
     };
 }
 
+/**
+ *
+ * @param severity
+ * @param msg
+ * @param log
+ * @param error
+ */
 function logLevel(severity: string, msg: string, log: Logger, error = false): void {
     if (severity) {
         severity = severity.toLowerCase();
