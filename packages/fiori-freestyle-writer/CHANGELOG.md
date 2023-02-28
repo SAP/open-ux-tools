@@ -1,5 +1,17 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.12
+
+### Patch Changes
+
+-   6602fe4: Add more tests for TypeScript with ui5 1.108.x and fix ts templates
+
+## 0.15.11
+
+### Patch Changes
+
+-   7fae2cd: fix(freestyle-writer) replace Optional chaining to be compatible with ui5/cli v2
+
 ## 0.15.10
 
 ### Patch Changes
