@@ -46,8 +46,8 @@ describe('use FPM with existing apps', () => {
         const configs: { path: string; settings: { typescript?: boolean } }[] = [basicConfig, tsConfig];
 
         beforeAll(() => {
-            fs.copy(join(testInput, 'basic-lrop'), basicConfig.path);
-            fs.copy(join(testInput, 'basic-ts'), tsConfig.path);
+            fs.copy(join(testInput, 'basic-lrop'), basicConfig.path, { globOptions: { dot: true }});
+            fs.copy(join(testInput, 'basic-ts'), tsConfig.path, { globOptions: { dot: true }});
         });
 
         test.each(configs)('enableFpm', (config) => {
