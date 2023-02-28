@@ -1,5 +1,11 @@
 # @sap-ux/types
 
+## 1.0.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
 ## 1.0.3
 
 ### Patch Changes
