@@ -84,6 +84,7 @@ describe('V2CatalogService', () => {
         const title = 'TEST_SERVICE';
         const path = `/TEST/${title}`;
         const anno = 'TEST_SERVICE_ANNO';
+        const pathWithSegParams = `/TEST/${title};v=0001`;
 
         // create a catalog for testing
         const provider = createForAbap(config);
@@ -123,7 +124,9 @@ describe('V2CatalogService', () => {
 
         test('find by path or title', async () => {
             nock(server)
-                .get(`${V2CatalogService.PATH}/ServiceCollection?$format=json&$filter=Title eq '${title}'`)
+                .get(
+                    `${V2CatalogService.PATH}/ServiceCollection?$format=json&$filter=Title eq '${title}' and TechnicalServiceVersion eq 1`
+                )
                 .reply(200, {
                     d: {
                         results: [
@@ -143,6 +146,9 @@ describe('V2CatalogService', () => {
             expect(annotations[0].Definitions).toBeDefined();
             const annotationsByTitle = await catalog.getAnnotations({ title });
             expect(annotationsByTitle[0].Definitions).toBe(annotations[0].Definitions);
+            // service uri contains segment parameters
+            const annotationsByPathWithSegParams = await catalog.getAnnotations({ path: pathWithSegParams });
+            expect(annotationsByPathWithSegParams[0].Definitions).toBe(annotations[0].Definitions);
         });
     });
 });
