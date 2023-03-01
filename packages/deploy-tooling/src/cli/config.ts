@@ -6,6 +6,20 @@ import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
 import { NAME } from '../types';
 
 /**
+ * Tries to read the version of the modules package.json but in case of an error, it returns the manually maintained version matching major.minor of the module.
+ *
+ * @returns the version of the deploy tooling.
+ */
+export function getVersion() {
+    try {
+        const packageInfo = readFileSync(join(__dirname, '../../package.json'), 'utf-8');
+        return JSON.parse(packageInfo).version;
+    } catch (error) {
+        return '0.1';
+    }
+}
+
+/**
  * Read the deployment configuration from a ui5*.yaml file.
  *
  * @param path - path to the ui5*.yaml file

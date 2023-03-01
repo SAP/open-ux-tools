@@ -4,7 +4,7 @@ import { deploy, getConfigForLogging, replaceEnvVariables, undeploy, validateCon
 import type { CliOptions, AbapDeployConfig } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
-import { getDeploymentConfig, mergeConfig } from './config';
+import { getDeploymentConfig, getVersion, mergeConfig } from './config';
 
 /**
  * Create an instance of a command runner for deployment.
@@ -18,7 +18,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .option('-y, --yes', 'yes to all questions', false)
         .option('-v, --verbose', 'verbose log output', false)
         .option('-n, --no-retry', `do not retry if the ${name}ment fails for any reason`, false)
-        .version('0.0.1');
+        .version(getVersion(), 'version of the deploy tooling');
 
     // is this really required or was it a workaround for something in the past?
     //--failfast           -f         Terminate deploy and throw error when encoutering first error (y/N)
