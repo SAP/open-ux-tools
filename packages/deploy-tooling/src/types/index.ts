@@ -6,7 +6,7 @@ export const NAME = 'abap-deploy-task';
 export interface UrlAbapTarget {
     url: string;
     client?: string;
-    scp?: boolean;
+    cloud?: boolean;
 }
 
 export interface DestinationAbapTarget {

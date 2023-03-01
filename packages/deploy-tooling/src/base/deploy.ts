@@ -129,7 +129,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
         }
         provider = createForDestination(options, destination) as AbapServiceProvider;
     } else if (isUrlTarget(config.target)) {
-        if (config.target.scp) {
+        if (config.target.cloud) {
             provider = await createAbapCloudServiceProvider(options, config.target, logger);
         } else {
             provider = await createAbapServiceProvider(options, config.target);

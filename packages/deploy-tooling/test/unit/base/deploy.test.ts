@@ -112,7 +112,7 @@ describe('base/deploy', () => {
             };
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            await deploy(archive, { app, target: { ...target, scp: true } }, nullLogger);
+            await deploy(archive, { app, target: { ...target, cloud: true } }, nullLogger);
             expect(mockedUi5RepoService.deploy).toBeCalledWith({
                 archive,
                 bsp: app,
@@ -125,7 +125,7 @@ describe('base/deploy', () => {
             mockedStoreService.read.mockResolvedValue(undefined);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             prompts.inject([join(__dirname, '../../test-input/service-keys.json')]);
-            await deploy(archive, { app, target: { ...target, scp: true } }, nullLogger);
+            await deploy(archive, { app, target: { ...target, cloud: true } }, nullLogger);
             expect(mockedUi5RepoService.deploy).toBeCalledWith({
                 archive,
                 bsp: app,

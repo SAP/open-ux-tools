@@ -37,7 +37,7 @@ Options:
   --destination  <destination>     Destination in SAP BTP pointing to an ABAP system 
   --url <target-url>               URL of deploy target ABAP system
   --client <sap-client>            Client number of deploy target ABAP system
-  --scp                            true for deployments to ABAP on BTP
+  --cloud                          true for deployments to ABAP Cloud
   --transport <transport-request>  Transport number to record the change in the ABAP system
   --name <bsp-name>                Project name of the app
   --strict-ssl                     Perform certificate validation (use --no-strict-ssl to deactivate it)
@@ -66,7 +66,7 @@ Options:
   --destination  <destination>     Destination in SAP BTP pointing to an ABAP system 
   --url <target-url>               URL of deploy target ABAP system
   --client <sap-client>            Client number of deploy target ABAP system
-  --scp                            true for undeployments to ABAP on BTP
+  --cloud                          true for undeployments from ABAP Cloud
   --transport <transport-request>  Transport number to record the change in the ABAP system
   --name <bsp-name>                Project name of the app
   --strict-ssl                     Perform certificate validation (use --no-strict-ssl to deactivate it)

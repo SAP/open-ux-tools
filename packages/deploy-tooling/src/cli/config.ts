@@ -63,7 +63,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     const target = {
         url: options.url ?? taskConfig.target?.url,
         client: options.client ?? taskConfig.target?.client,
-        scp: options.scp !== undefined ? options.scp : taskConfig.target?.scp,
+        cloud: options.cloud !== undefined ? options.cloud : taskConfig.target?.cloud,
         destination: options.destination ?? taskConfig.target?.destination
     } as AbapTarget;
     const config: AbapDeployConfig = { app, target, credentials: taskConfig.credentials };

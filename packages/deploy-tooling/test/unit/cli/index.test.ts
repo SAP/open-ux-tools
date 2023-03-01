@@ -113,7 +113,7 @@ describe('cli', () => {
         test.each([
             { params: ['--url', '~url', '--destination', '~dest'] },
             { params: ['--client', '001', '--destination', '~dest'] },
-            { params: ['--scp', '--destination', '~dest'] }
+            { params: ['--cloud', '--destination', '~dest'] }
         ])('conflicting options $params', ({ params }) => {
             cmd.parse(params, opts);
             expect(errorMock).toBeCalled();

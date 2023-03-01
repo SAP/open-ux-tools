@@ -34,7 +34,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
         .addOption(
             new Option('--client <sap-client>', 'Client number of deploy target ABAP system').conflicts('destination')
         )
-        .addOption(new Option('--scp', `true for ${name}ments to ABAP on BTP`).conflicts('destination'))
+        .addOption(new Option('--cloud', `true for ${name}ments to ABAP Cloud`).conflicts('destination'))
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
         .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
