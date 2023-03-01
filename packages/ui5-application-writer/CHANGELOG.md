@@ -1,5 +1,12 @@
 # @sap-ux/ui5-application-writer
 
+## 0.18.8
+
+### Patch Changes
+
+-   81e3f25: chore - TS writers update `"ui5-tooling-transpile": "^0.3.7"`
+    `"addControllerStaticPropsToExtend": true` is added to typescript app's `.babelrc.json` to support controller extension class syntax
+
 ## 0.18.7
 
 ### Patch Changes
