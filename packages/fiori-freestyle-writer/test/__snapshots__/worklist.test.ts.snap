@@ -12845,7 +12845,15 @@ Object {
   ".babelrc.json": Object {
     "contents": "{
     \\"ignore\\": [\\"**/*.d.ts\\"],
-    \\"presets\\": [\\"transform-ui5\\", \\"@babel/preset-typescript\\"]
+    \\"presets\\": [
+        [
+            \\"transform-ui5\\",
+            {
+                \\"addControllerStaticPropsToExtend\\": true
+            }
+        ],
+        \\"@babel/preset-typescript\\"
+    ]
 }",
     "state": "modified",
   },
@@ -12905,7 +12913,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.2.1\\",
+    \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
@@ -16192,7 +16200,15 @@ Object {
   ".babelrc.json": Object {
     "contents": "{
     \\"ignore\\": [\\"**/*.d.ts\\"],
-    \\"presets\\": [\\"transform-ui5\\", \\"@babel/preset-typescript\\"]
+    \\"presets\\": [
+        [
+            \\"transform-ui5\\",
+            {
+                \\"addControllerStaticPropsToExtend\\": true
+            }
+        ],
+        \\"@babel/preset-typescript\\"
+    ]
 }",
     "state": "modified",
   },
@@ -16252,7 +16268,7 @@ archive.zip
     \\"@ui5/cli\\": \\"^2.14.1\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.2.1\\",
+    \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.17.0\\",

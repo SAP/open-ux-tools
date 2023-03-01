@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.7
+
+### Patch Changes
+
+-   81e3f25: Fix: Controller extensions. Typescript error "Subsequent property declarations must have the same type." displayed for typescript application when both extension controllers created for ListReport and ObjectPage.
+
 ## 0.18.6
 
 ### Patch Changes
