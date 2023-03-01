@@ -107,6 +107,38 @@ describe('Test for mockserver dependencies in package.json', () => {
         expect(packageJson.ui5?.dependencies).toEqual(['other-dep', '@sap-ux/ui5-middleware-fe-mockserver']);
     });
 
+    test('Add mockserver dependency to package.json where @ui5/cli version 2 is used, should add ui5 dependencies', () => {
+        const fs = getMockFsPackageJson({
+            '@ui5/cli': '^2'
+        });
+        enhancePackageJson(fs, basePath);
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        expect(packageJson.ui5?.dependencies).toEqual(['@sap-ux/ui5-middleware-fe-mockserver']);
+    });
+
+    test('Add mockserver dependency to package.json where @ui5/cli > 2 is used, should remove ui5 dependencies', () => {
+        const fs = getMockFsPackageJson(
+            {
+                '@ui5/cli': '3.2.1'
+            },
+            {
+                dependencies: ['@sap/ux-ui5-fe-mockserver-middleware', '@sap-ux/ui5-middleware-fe-mockserver']
+            }
+        );
+        enhancePackageJson(fs, basePath);
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        expect(packageJson.ui5).toBeUndefined();
+    });
+
+    test('Add mockserver dependency to package.json where @ui5/cli version is non-parsable, should add ui5 dependencies', () => {
+        const fs = getMockFsPackageJson({
+            '@ui5/cli': 'non-parsable'
+        });
+        enhancePackageJson(fs, basePath);
+        const packageJson = fs.readJSON(packageJsonPath) as Package;
+        expect(packageJson.ui5?.dependencies).toEqual(['@sap-ux/ui5-middleware-fe-mockserver']);
+    });
+
     function getMockFsPackageJson(devDependencies?: any, ui5?: any): Editor {
         const fs = create(createStorage());
         const packageJson: Package = {};
