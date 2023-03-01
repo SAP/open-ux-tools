@@ -47,7 +47,35 @@ export async function getCredentials<T extends BasicAuth | ServiceAuth | undefin
 }
 
 /**
- * Enhance axios options and create a service provided instance.
+ * Enhance axios options and create a service provider instance for an ABAP Cloud system.
+ *
+ * @param options - predefined axios options
+ * @param target - url target configuration
+ * @param logger - reference to the logger instance
+ */
+async function createAbapCloudServiceProvider(
+    options: AxiosRequestConfig,
+    target: UrlAbapTarget,
+    logger?: Logger
+): Promise<AbapServiceProvider> {
+    const storedOpts = (await getCredentials<ServiceAuth>(target)) ?? (await promptServiceKeys());
+    if (storedOpts) {
+        if (logger) {
+            logger.info(`Using system [${storedOpts.name}] from System store`);
+        }
+        return createForAbapOnCloud({
+            ...options,
+            environment: AbapCloudEnvironment.Standalone,
+            service: storedOpts.serviceKeys as ServiceInfo,
+            refreshToken: storedOpts.refreshToken
+        });
+    } else {
+        throw new Error('Service keys required for deployment to an ABAP environment on SAP BTP');
+    }
+}
+
+/**
+ * Enhance axios options and create a service provider instance for an on-premise ABAP system.
  *
  * @param options - predefined axios options
  * @param target - url target configuration
@@ -102,25 +130,12 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
         provider = createForDestination(options, destination) as AbapServiceProvider;
     } else if (isUrlTarget(config.target)) {
         if (config.target.scp) {
-            const storedOpts = (await getCredentials<ServiceAuth>(config.target)) ?? (await promptServiceKeys());
-            if (storedOpts) {
-                provider = createForAbapOnCloud({
-                    ...options,
-                    environment: AbapCloudEnvironment.Standalone,
-                    service: storedOpts.serviceKeys as ServiceInfo,
-                    refreshToken: storedOpts.refreshToken
-                });
-                if (logger) {
-                    logger.info(`Using system [${storedOpts.name}] from System store`);
-                }
-            } else {
-                throw new Error('Service keys required for deployment to an ABAP environment on SAP BTP');
-            }
+            provider = await createAbapCloudServiceProvider(options, config.target, logger);
         } else {
             provider = await createAbapServiceProvider(options, config.target);
         }
     } else {
-        throw new Error('TODO');
+        throw new Error('Unable to handle the configuration in the current environment.');
     }
     return provider.getUi5AbapRepository();
 }
