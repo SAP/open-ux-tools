@@ -5,7 +5,8 @@ import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
 import { mockedStoreService, mockIsAppStudio, mockedUi5RepoService, mockListDestinations } from '../../__mocks__';
 import { join } from 'path';
-import type { Destination } from '@sap-ux/btp-utils';
+import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
+import { readFileSync } from 'fs';
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -113,6 +114,20 @@ describe('base/deploy', () => {
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
             await deploy(archive, { app, target: { ...target, cloud: true } }, nullLogger);
+            expect(mockedUi5RepoService.deploy).toBeCalledWith({
+                archive,
+                bsp: app,
+                testMode: undefined,
+                safeMode: undefined
+            });
+        });
+
+        test('Provide service key for ABAP on BTP as input', async () => {
+            mockedUi5RepoService.deploy.mockResolvedValue(undefined);
+            const serviceKey: ServiceInfo = JSON.parse(
+                readFileSync(join(__dirname, '../../test-input/service-keys.json'), 'utf-8')
+            );
+            await deploy(archive, { app, target: { ...target, cloud: true, serviceKey } }, nullLogger);
             expect(mockedUi5RepoService.deploy).toBeCalledWith({
                 archive,
                 bsp: app,

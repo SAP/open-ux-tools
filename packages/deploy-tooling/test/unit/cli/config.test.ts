@@ -1,6 +1,7 @@
 import type { AbapDeployConfig, CliOptions } from '../../../src/types';
 import { getDeploymentConfig, mergeConfig } from '../../../src/cli/config';
 import { join } from 'path';
+import { readFileSync } from 'fs';
 
 describe('cli/config', () => {
     describe('getDeploymentConfig', () => {
@@ -52,6 +53,16 @@ describe('cli/config', () => {
             const merged = await mergeConfig(config, { ...noOptions, ...appOverrides, ...targetOverrides });
             expect(merged.app).toEqual(appOverrides);
             expect(merged.target).toEqual(targetOverrides);
+        });
+
+        test('service keys merged correctly', async () => {
+            const cloudServiceKey = join(__dirname, '../../test-input/service-keys.json');
+            const merged = await mergeConfig(config, {
+                ...noOptions,
+                cloud: true,
+                cloudServiceKey
+            });
+            expect(merged.target.serviceKey).toEqual(JSON.parse(readFileSync(cloudServiceKey, 'utf-8')));
         });
     });
 });

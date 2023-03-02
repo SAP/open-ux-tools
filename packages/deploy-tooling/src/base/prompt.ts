@@ -1,3 +1,4 @@
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 import { existsSync, readFileSync } from 'fs';
 import prompts from 'prompts';
 
@@ -63,12 +64,5 @@ export async function promptServiceKeys() {
             validate: (input) => existsSync(input)
         }
     ]);
-    const serviceKeys = JSON.parse(readFileSync(path, 'utf-8'));
-
-    return {
-        serviceKeys,
-        url: serviceKeys.url,
-        refreshToken: undefined,
-        name: serviceKeys.systemid
-    };
+    return JSON.parse(readFileSync(path, 'utf-8')) as ServiceInfo;
 }

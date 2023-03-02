@@ -1,5 +1,5 @@
 import { UI5Config } from '@sap-ux/ui5-config';
-import type { BspConfig } from '@sap-ux/axios-extension';
+import type { BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join } from 'path';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
@@ -36,6 +36,20 @@ export async function getDeploymentConfig(path: string): Promise<AbapDeployConfi
 }
 
 /**
+ * Try reading a service key object from the given path an parse it as js object.
+ *
+ * @param path path to the service key json file
+ * @returns service key as js object.
+ */
+function readServiceKeyFromFile(path: string): ServiceInfo {
+    try {
+        return JSON.parse(readFileSync(path, 'utf-8'));
+    } catch (error) {
+        throw new Error(`Unable to read service key from from ${path}`);
+    }
+}
+
+/**
  * Boolean merger.
  *
  * @param cli - optional flag from CLI
@@ -64,7 +78,8 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
         url: options.url ?? taskConfig.target?.url,
         client: options.client ?? taskConfig.target?.client,
         cloud: options.cloud !== undefined ? options.cloud : taskConfig.target?.cloud,
-        destination: options.destination ?? taskConfig.target?.destination
+        destination: options.destination ?? taskConfig.target?.destination,
+        serviceKey: options.cloudServiceKey ? readServiceKeyFromFile(options.cloudServiceKey) : undefined
     } as AbapTarget;
     const config: AbapDeployConfig = { app, target, credentials: taskConfig.credentials };
     config.test = mergeFlag(options.test, taskConfig.test);

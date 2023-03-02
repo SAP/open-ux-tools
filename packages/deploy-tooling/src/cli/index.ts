@@ -13,15 +13,11 @@ import { getDeploymentConfig, getVersion, mergeConfig } from './config';
  * @returns instance of the command
  */
 export function createCommand(name: 'deploy' | 'undeploy'): Command {
-    const command = new Command()
+    const command = new Command(name)
         .option('-c, --config <path-to-yaml>', 'Path to config yaml file')
         .option('-y, --yes', 'yes to all questions', false)
-        .option('-v, --verbose', 'verbose log output', false)
-        .option('-n, --no-retry', `do not retry if the ${name}ment fails for any reason`, false)
-        .version(getVersion(), 'version of the deploy tooling');
-
-    // is this really required or was it a workaround for something in the past?
-    //--failfast           -f         Terminate deploy and throw error when encoutering first error (y/N)
+        .option('-n, --no-retry', `do not retry if ${name} fails for any reason`, false)
+        .option('--verbose', 'verbose log output', false);
 
     // options to set (or overwrite) values that are otherwise read from the `ui5*.yaml`
     command
@@ -30,17 +26,21 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
                 'url'
             )
         )
-        .addOption(new Option('--url <target-url>', 'URL of deploy target ABAP system').conflicts('destination'))
+        .addOption(new Option('--url <target-url>', 'URL of target ABAP system').conflicts('destination'))
+        .addOption(new Option('--client <sap-client>', 'Client number of target ABAP system').conflicts('destination'))
+        .addOption(new Option('--cloud', 'target is an ABAP Cloud system').conflicts('destination'))
         .addOption(
-            new Option('--client <sap-client>', 'Client number of deploy target ABAP system').conflicts('destination')
+            new Option(
+                '--cloud-service-key <file-location>',
+                'JSON file location with the ABAP cloud service key.'
+            ).conflicts('destination')
         )
-        .addOption(new Option('--cloud', `true for ${name}ments to ABAP Cloud`).conflicts('destination'))
         .option('--transport <transport-request>', 'Transport number to record the change in the ABAP system')
         .option('--name <bsp-name>', 'Project name of the app')
         .option('--strict-ssl', 'Perform certificate validation (use --no-strict-ssl to deactivate it)')
         .option(
             '--test',
-            `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing. (use --no-test to deactivate it)`
+            `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing (use --no-test to deactivate it).`
         );
 
     if (name === 'deploy') {
@@ -73,7 +73,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
                 ])
             );
     }
-    return command;
+    return command.version(getVersion(), '-v, --version', 'version of the deploy tooling');
 }
 
 /**

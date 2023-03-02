@@ -3,7 +3,8 @@ import type {
     ProviderConfiguration,
     Ui5AbapRepositoryService,
     AxiosRequestConfig,
-    AxiosError
+    AxiosError,
+    AbapCloudStandaloneOptions
 } from '@sap-ux/axios-extension';
 import {
     AbapCloudEnvironment,
@@ -51,26 +52,35 @@ export async function getCredentials<T extends BasicAuth | ServiceAuth | undefin
  *
  * @param options - predefined axios options
  * @param target - url target configuration
+ * @param noPrompt - only if not truthy prompt for anything
  * @param logger - reference to the logger instance
  */
 async function createAbapCloudServiceProvider(
     options: AxiosRequestConfig,
     target: UrlAbapTarget,
+    noPrompt?: boolean,
     logger?: Logger
 ): Promise<AbapServiceProvider> {
-    const storedOpts = (await getCredentials<ServiceAuth>(target)) ?? (await promptServiceKeys());
-    if (storedOpts) {
-        if (logger) {
+    const providerConfig: Partial<AbapCloudStandaloneOptions & ProviderConfiguration> = {
+        ...options,
+        environment: AbapCloudEnvironment.Standalone,
+        service: target.serviceKey
+    };
+    if (!target.serviceKey) {
+        const storedOpts = await getCredentials<ServiceAuth>(target);
+        if (logger && storedOpts) {
+            providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
+            providerConfig.refreshToken = storedOpts.refreshToken;
             logger.info(`Using system [${storedOpts.name}] from System store`);
         }
-        return createForAbapOnCloud({
-            ...options,
-            environment: AbapCloudEnvironment.Standalone,
-            service: storedOpts.serviceKeys as ServiceInfo,
-            refreshToken: storedOpts.refreshToken
-        });
+        if (!storedOpts && !noPrompt) {
+            providerConfig.service = await promptServiceKeys();
+        }
+    }
+    if (providerConfig.service) {
+        return createForAbapOnCloud(providerConfig as AbapCloudStandaloneOptions);
     } else {
-        throw new Error('Service keys required for deployment to an ABAP environment on SAP BTP');
+        throw new Error('Service keys required for deployment to an ABAP Cloud environment.');
     }
 }
 
@@ -130,7 +140,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
         provider = createForDestination(options, destination) as AbapServiceProvider;
     } else if (isUrlTarget(config.target)) {
         if (config.target.cloud) {
-            provider = await createAbapCloudServiceProvider(options, config.target, logger);
+            provider = await createAbapCloudServiceProvider(options, config.target, config.noRetry, logger);
         } else {
             provider = await createAbapServiceProvider(options, config.target);
         }
@@ -227,14 +237,14 @@ export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: 
             'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'
         );
     }
-    logger.info(`Starting deployment${config.test === true ? ' in test mode' : ''}.`);
+    logger.info(`Starting to deploy${config.test === true ? ' in test mode' : ''}.`);
     await tryDeploy(archive, service, config, logger);
     if (config.test === true) {
         logger.info(
             'Deployment in TestMode completed. A successful TestMode execution does not necessarily mean that your upload will be successful.'
         );
     } else {
-        logger.info('Deployment successful.');
+        logger.info('Successfully deployed.');
     }
 }
 
@@ -252,8 +262,8 @@ export async function undeploy(config: AbapDeployConfig, logger: Logger): Promis
             'You chose not to validate SSL certificate. Please verify the server certificate is trustful before proceeding. See documentation for recommended configuration (https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/4b318bede7eb4021a8be385c46c74045.html).'
         );
     }
-    logger.info(`Starting undeployment${config.test === true ? ' in test mode' : ''}.`);
+    logger.info(`Starting to undeploy${config.test === true ? ' in test mode' : ''}.`);
     if (await service.undeploy({ bsp: config.app, testMode: config.test })) {
-        logger.info('Undeployment successful.');
+        logger.info('Successfully undeployed.');
     }
 }

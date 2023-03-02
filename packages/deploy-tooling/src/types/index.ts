@@ -1,4 +1,4 @@
-import type { AxiosRequestConfig, BspConfig } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig, BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
 import type { LogLevel } from '@sap-ux/logger';
 
 export const NAME = 'abap-deploy-task';
@@ -7,6 +7,7 @@ export interface UrlAbapTarget {
     url: string;
     client?: string;
     cloud?: boolean;
+    serviceKey?: ServiceInfo;
 }
 
 export interface DestinationAbapTarget {
@@ -73,10 +74,11 @@ export interface AbapDeployConfig extends CommonOptions {
 export interface CliOptions
     extends Partial<BspConfig>,
         Partial<DestinationAbapTarget>,
-        Partial<UrlAbapTarget>,
+        Pick<Partial<UrlAbapTarget>, Exclude<keyof UrlAbapTarget, 'serviceKey'>>,
         Partial<CommonOptions> {
     config: string;
     archiveFolder?: string;
     archivePath?: string;
     archiveUrl?: string;
+    cloudServiceKey?: string;
 }

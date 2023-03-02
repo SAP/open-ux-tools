@@ -29,26 +29,28 @@ The `deploy` command executes the same functionality as the `abap-deploy` UI5 ta
 Usage: deploy [options]
 
 Options:
-  -c, --config <path-to-yaml>      Path to config yaml file
-  -y, --yes                        yes to all questions (default: false)
-  -v, --verbose                    verbose log output (default: false)
-  -n, --no-retry                   do not retry if the deployment fails for any reason
-  -V, --version                    output the version number
-  --destination  <destination>     Destination in SAP BTP pointing to an ABAP system 
-  --url <target-url>               URL of deploy target ABAP system
-  --client <sap-client>            Client number of deploy target ABAP system
-  --cloud                          true for deployments to ABAP Cloud
-  --transport <transport-request>  Transport number to record the change in the ABAP system
-  --name <bsp-name>                Project name of the app
-  --strict-ssl                     Perform certificate validation (use --no-strict-ssl to deactivate it)
-  --test                           Run in test mode. ABAP backend reports deployment errors without actually deploying (use --no-test to deactivate it)
-  --package <abap-package>         Package name for deploy target ABAP system
-  --description <description>      Project description of the app
-  --keep                           Keep a copy of the deployed archive in the project folder.
-  --archive-url <url>              Download app bundle from this url and upload this bundle for deployment
-  --archive-path <path>            Provide path of the app bundle for deployment
-  --archive-folder <path>          Provide path to a folder for deployment
-  -h, --help                       display help for command
+  -c, --config <path-to-yaml>          Path to config yaml file
+  -y, --yes                            yes to all questions (default: false)
+  -n, --no-retry                       do not retry if deploy fails for any reason
+  --verbose                            verbose log output (default: false)
+  --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
+  --url <target-url>                   URL of target ABAP system
+  --client <sap-client>                Client number of target ABAP system
+  --cloud                              target is an ABAP Cloud system
+  --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
+  --transport <transport-request>      Transport number to record the change in the ABAP system
+  --name <bsp-name>                    Project name of the app
+  --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)
+  --test                               Run in test mode. ABAP backend reports deployment errors without actually deploying. (use --no-test to deactivate it)
+  --package <abap-package>             Package name for deploy target ABAP system
+  --description <description>          Project description of the app
+  --safe                               Prevents accidentally breaking deployments.
+  --keep                               Keep a copy of the deployed archive in the project folder.
+  --archive-url <url>                  Download app bundle from this url and upload this bundle for deployment
+  --archive-path <path>                Provide path of the app bundle for deployment
+  --archive-folder <path>              Provide path to a folder for deployment
+  -v, --version                        version of the deploy tooling
+  -h, --help                           display help for command
 ```
 
 ### undeploy
@@ -58,18 +60,19 @@ The `undeploy` command allows undeploying a previously deployed application. Thi
 Usage: undeploy [options]
 
 Options:
-  -c, --config <path-to-yaml>      Path to config yaml file
-  -y, --yes                        yes to all questions (default: false)
-  -v, --verbose                    verbose log output (default: false)
-  -n, --no-retry                   do not retry if the undeployment fails for any reason
-  -V, --version                    output the version number
-  --destination  <destination>     Destination in SAP BTP pointing to an ABAP system 
-  --url <target-url>               URL of deploy target ABAP system
-  --client <sap-client>            Client number of deploy target ABAP system
-  --cloud                          true for undeployments from ABAP Cloud
-  --transport <transport-request>  Transport number to record the change in the ABAP system
-  --name <bsp-name>                Project name of the app
-  --strict-ssl                     Perform certificate validation (use --no-strict-ssl to deactivate it)
-  --test                           Run in test mode. ABAP backend reports deployment errors without actually deploying (use --no-test to deactivate it)
-  -h, --help                       display help for command
+  -c, --config <path-to-yaml>          Path to config yaml file
+  -y, --yes                            yes to all questions (default: false)
+  -n, --no-retry                       do not retry if undeploy fails for any reason
+  --verbose                            verbose log output (default: false)
+  --destination  <destination>         Destination in SAP BTP pointing to an ABAP system
+  --url <target-url>                   URL of target ABAP system
+  --client <sap-client>                Client number of target ABAP system
+  --cloud                              target is an ABAP Cloud system
+  --cloud-service-key <file-location>  JSON file location with the ABAP cloud service key.
+  --transport <transport-request>      Transport number to record the change in the ABAP system
+  --name <bsp-name>                    Project name of the app
+  --strict-ssl                         Perform certificate validation (use --no-strict-ssl to deactivate it)
+  --test                               Run in test mode. ABAP backend reports undeployment errors without actually undeploying (use --no-test to deactivate it).
+  -v, --version                        version of the deploy tooling
+  -h, --help                           display help for command
 ```
