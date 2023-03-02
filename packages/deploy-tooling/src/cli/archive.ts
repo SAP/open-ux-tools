@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { readdirSync, readFile, statSync } from 'fs';
+import { readFile } from 'fs';
 import { ZipFile } from 'yazl';
-import { join, relative } from 'path';
+import { relative } from 'path';
 import type { CliOptions } from '../types';
-import { createBuffer } from '../base/archive';
+import { createBuffer, getFileNames } from '../base/archive';
 import type { Logger } from '@sap-ux/logger';
 import { Agent } from 'https';
 
@@ -50,27 +50,6 @@ async function fetchArchiveFromUrl(url: string, rejectUnauthorized?: boolean): P
 }
 
 /**
- * Helper function to recursevely get a list of all files in a given folder and its sub folders.
- *
- * @param path - path to the folder that is to be searched
- * @returns list of files names
- */
-function getFileNames(path: string): string[] {
-    const names: string[] = [];
-
-    const files = readdirSync(path);
-    for (const file of files) {
-        const filePath = join(path, file);
-        if (statSync(filePath).isDirectory()) {
-            names.push(...getFileNames(filePath));
-        } else {
-            names.push(filePath);
-        }
-    }
-    return names;
-}
-
-/**
  * Create a zipped file containing all files in the given folder.
  *
  * @param logger - reference to the logger instance
@@ -90,7 +69,7 @@ function createArchiveFromFolder(logger: Logger, path: string): Promise<Buffer> 
         logger.info(`Archive created from ${path}.`);
         return createBuffer(zip);
     } catch (error) {
-        throw new Error(`Archive creation has failed. Please ensure ${path} is valid and accesible.`);
+        throw new Error(`Archive creation has failed. Please ensure ${path} is valid and accessible.`);
     }
 }
 
