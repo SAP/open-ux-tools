@@ -64,13 +64,13 @@ function mergeFlag(cli?: boolean, file?: boolean): boolean | undefined {
  * Parse a query string and return an object.
  *
  * @param query query string
- * @returns params object ready for axios requests 
+ * @returns params object ready for axios requests
  */
 function parseQueryParams(query: string): AxiosRequestConfig['params'] {
     const paramsList = query.split('&');
     const params: AxiosRequestConfig['params'] = {};
     paramsList.forEach((param) => {
-        const [ key, value ] = param.split("=");
+        const [key, value] = param.split('=');
         if (value !== undefined) {
             params[key] = value;
         }
@@ -98,7 +98,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
         cloud: options.cloud !== undefined ? options.cloud : taskConfig.target?.cloud,
         destination: options.destination ?? taskConfig.target?.destination,
         serviceKey: options.cloudServiceKey ? readServiceKeyFromFile(options.cloudServiceKey) : undefined,
-        params: options.queryParams ? parseQueryParams(options.queryParams): undefined
+        params: options.queryParams ? parseQueryParams(options.queryParams) : undefined
     } as AbapTarget;
     const config: AbapDeployConfig = { app, target, credentials: taskConfig.credentials };
     config.test = mergeFlag(options.test, taskConfig.test);

@@ -3,7 +3,13 @@ import { deploy, getCredentials, undeploy } from '../../../src/base/deploy';
 import type { BackendSystemKey } from '@sap-ux/store';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
-import { mockedStoreService, mockIsAppStudio, mockedUi5RepoService, mockListDestinations, mockCreateForAbap } from '../../__mocks__';
+import {
+    mockedStoreService,
+    mockIsAppStudio,
+    mockedUi5RepoService,
+    mockListDestinations,
+    mockCreateForAbap
+} from '../../__mocks__';
 import { join } from 'path';
 import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
 import { readFileSync } from 'fs';
@@ -61,7 +67,7 @@ describe('base/deploy', () => {
             const credentials = { username: '~username', password: '~password' };
             mockedStoreService.read.mockResolvedValueOnce(credentials);
             mockedUi5RepoService.deploy.mockResolvedValue(undefined);
-            
+
             await deploy(archive, { app, target }, nullLogger);
             expect(mockedUi5RepoService.deploy).toBeCalledWith({
                 archive,
@@ -76,8 +82,12 @@ describe('base/deploy', () => {
             mockedUi5RepoService.deploy.mockClear();
             mockCreateForAbap.mockClear();
 
-            const params = { hello: "world" };
-            await deploy(archive, { app, target: { ...target, params }, test: true, safe: false, credentials }, nullLogger);
+            const params = { hello: 'world' };
+            await deploy(
+                archive,
+                { app, target: { ...target, params }, test: true, safe: false, credentials },
+                nullLogger
+            );
             expect(mockedUi5RepoService.deploy).toBeCalledWith({ archive, bsp: app, testMode: true, safeMode: false });
             expect(mockCreateForAbap).toBeCalledWith(expect.objectContaining({ params }));
         });

@@ -56,10 +56,14 @@ describe('cli/config', () => {
         });
 
         test('query params are parsed and added', async () => {
-            expect(await (await mergeConfig(config, { ...noOptions, queryParams: "hello=world&optional=false" })).target.params).toEqual({
+            expect(
+                await (
+                    await mergeConfig(config, { ...noOptions, queryParams: 'hello=world&optional=false' })
+                ).target.params
+            ).toEqual({
                 hello: 'world',
                 optional: 'false'
-            })
+            });
         });
 
         test('service keys merged correctly', async () => {
