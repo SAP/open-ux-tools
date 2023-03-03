@@ -31,12 +31,9 @@ describe('cli/config', () => {
                 url: 'http://target.example'
             }
         };
-        const noOptions: CliOptions = {
-            config: 'ui5.yaml'
-        };
 
         test('no overrides', async () => {
-            expect(await mergeConfig(config, noOptions)).toEqual(config);
+            expect(await mergeConfig(config, {})).toEqual(config);
         });
 
         test('some overrides', async () => {
@@ -50,7 +47,7 @@ describe('cli/config', () => {
                 url: 'https://secure.target.example',
                 client: '001'
             };
-            const merged = await mergeConfig(config, { ...noOptions, ...appOverrides, ...targetOverrides });
+            const merged = await mergeConfig(config, { ...appOverrides, ...targetOverrides });
             expect(merged.app).toEqual(appOverrides);
             expect(merged.target).toEqual(targetOverrides);
         });
@@ -58,7 +55,7 @@ describe('cli/config', () => {
         test('query params are parsed and added', async () => {
             expect(
                 await (
-                    await mergeConfig(config, { ...noOptions, queryParams: 'hello=world&optional=false' })
+                    await mergeConfig(config, { queryParams: 'hello=world&optional=false' })
                 ).target.params
             ).toEqual({
                 hello: 'world',
@@ -69,7 +66,6 @@ describe('cli/config', () => {
         test('service keys merged correctly', async () => {
             const cloudServiceKey = join(__dirname, '../../test-input/service-keys.json');
             const merged = await mergeConfig(config, {
-                ...noOptions,
                 cloud: true,
                 cloudServiceKey
             });

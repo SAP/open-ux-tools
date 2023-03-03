@@ -79,6 +79,24 @@ function parseQueryParams(query: string): AxiosRequestConfig['params'] {
 }
 
 /**
+ * Merge CLI options into a base target configuration.
+ *
+ * @param baseTarget base target config
+ * @param options additional options
+ * @returns merged target object
+ */
+function mergeTarget(baseTarget: AbapTarget, options: CliOptions) {
+    return {
+        url: options.url ?? baseTarget?.url,
+        client: options.client ?? baseTarget?.client,
+        cloud: options.cloud !== undefined ? options.cloud : baseTarget?.cloud,
+        destination: options.destination ?? baseTarget?.destination,
+        serviceKey: options.cloudServiceKey ? readServiceKeyFromFile(options.cloudServiceKey) : undefined,
+        params: options.queryParams ? parseQueryParams(options.queryParams) : undefined
+    } as AbapTarget;
+}
+
+/**
  * Merge the configuration from the ui5*.yaml with CLI options.
  *
  * @param taskConfig - base configuration from the file
@@ -92,14 +110,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
         package: options.package ?? taskConfig.app?.package,
         transport: options.transport ?? taskConfig.app?.transport
     };
-    const target = {
-        url: options.url ?? taskConfig.target?.url,
-        client: options.client ?? taskConfig.target?.client,
-        cloud: options.cloud !== undefined ? options.cloud : taskConfig.target?.cloud,
-        destination: options.destination ?? taskConfig.target?.destination,
-        serviceKey: options.cloudServiceKey ? readServiceKeyFromFile(options.cloudServiceKey) : undefined,
-        params: options.queryParams ? parseQueryParams(options.queryParams) : undefined
-    } as AbapTarget;
+    const target = mergeTarget(taskConfig.target, options);
     const config: AbapDeployConfig = { app, target, credentials: taskConfig.credentials };
     config.test = mergeFlag(options.test, taskConfig.test);
     config.keep = mergeFlag(options.keep, taskConfig.keep);

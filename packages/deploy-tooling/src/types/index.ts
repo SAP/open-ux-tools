@@ -77,7 +77,7 @@ export interface CliOptions
         Partial<DestinationAbapTarget>,
         Pick<Partial<UrlAbapTarget>, Exclude<keyof UrlAbapTarget, 'serviceKey'>>,
         Partial<CommonOptions> {
-    config: string;
+    config?: string;
     archiveFolder?: string;
     archivePath?: string;
     archiveUrl?: string;
