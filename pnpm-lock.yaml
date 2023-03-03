@@ -212,6 +212,35 @@ importers:
       '@types/mem-fs-editor': 7.0.1
       '@types/prompts': 2.0.14
 
+  packages/deploy-tooling:
+    specifiers:
+      '@sap-ux/axios-extension': workspace:*
+      '@sap-ux/btp-utils': workspace:*
+      '@sap-ux/logger': workspace:*
+      '@sap-ux/store': workspace:*
+      '@sap-ux/ui5-config': workspace:*
+      '@types/prompts': 2.0.14
+      '@types/yazl': 2.4.2
+      axios: 0.24.0
+      commander: 9.4.0
+      dotenv: 16.0.0
+      prompts: 2.4.2
+      yazl: 2.5.1
+    dependencies:
+      '@sap-ux/axios-extension': link:../axios-extension
+      '@sap-ux/btp-utils': link:../btp-utils
+      '@sap-ux/logger': link:../logger
+      '@sap-ux/store': link:../store
+      '@sap-ux/ui5-config': link:../ui5-config
+      axios: 0.24.0
+      commander: 9.4.0
+      dotenv: 16.0.0
+      prompts: 2.4.2
+      yazl: 2.5.1
+    devDependencies:
+      '@types/prompts': 2.0.14
+      '@types/yazl': 2.4.2
+
   packages/environment-check:
     specifiers:
       '@sap-ux/axios-extension': workspace:*
@@ -5259,6 +5288,12 @@ packages:
       '@types/yargs-parser': 20.2.1
     dev: true
 
+  /@types/yazl/2.4.2:
+    resolution: {integrity: sha512-T+9JH8O2guEjXNxqmybzQ92mJUh2oCwDDMSSimZSe1P+pceZiFROZLYmcbqkzV5EUwz6VwcKXCO2S2yUpra6XQ==}
+    dependencies:
+      '@types/node': 17.0.9
+    dev: true
+
   /@types/yeoman-environment/2.10.6:
     resolution: {integrity: sha512-LxouMcULWzEr919MQ82g0qPc7JypnldWA1IVMFUcnqn8nWKt2jjxK8RyxUohxzVDG2ou9EH1upt2jGqprhcnNA==}
     dependencies:
@@ -6271,7 +6306,7 @@ packages:
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.15.2
     transitivePeerDependencies:
       - debug
 
@@ -9739,6 +9774,7 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
 
   /follow-redirects/1.15.2:
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
@@ -17489,6 +17525,12 @@ packages:
       y18n: 5.0.8
       yargs-parser: 21.1.1
     dev: true
+
+  /yazl/2.5.1:
+    resolution: {integrity: sha512-phENi2PLiHnHb6QBVot+dJnaAZ0xosj7p3fWl+znIjBDlnMI2PsZCJZ306BPTFOaHf5qdDEI8x5qFrSOBN5vrw==}
+    dependencies:
+      buffer-crc32: 0.2.13
+    dev: false
 
   /yeoman-generator/5.6.1:
     resolution: {integrity: sha512-XllgFvmDEwoPMq2rKtL4/N52WlINJW6a3I3XtlCrMb3/dqO5dW0nPNgR0L3IIUIdf9y1EHb1ZFMs2Qp3ZEEFxg==}

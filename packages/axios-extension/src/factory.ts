@@ -42,13 +42,12 @@ function createInstance<T extends ServiceProvider>(
     providerConfig.withCredentials = providerConfig?.auth && Object.keys(providerConfig.auth).length > 0;
 
     /**
-     * Make axios throw an error for 4xx errors as well.
+     * Make axios throw an error for 4xx errors.
      *
      * @param status - http response status
      * @returns success (true) or error (false)
      */
     providerConfig.validateStatus = (status) => status < 400;
-
     const instance = new ProviderType(providerConfig);
     instance.defaults.headers = instance.defaults.headers ?? {
         common: {},
@@ -137,7 +136,6 @@ type AbapCloudOptions = AbapCloudStandaloneOptions | AbapEmbeddedSteampunkOption
  */
 export function createForAbapOnCloud(options: AbapCloudOptions & Partial<ProviderConfiguration>): AbapServiceProvider {
     let provider: AbapServiceProvider;
-
     switch (options.environment) {
         case AbapCloudEnvironment.Standalone: {
             const { service, refreshToken, refreshTokenChangedCb, cookies, ...config } = options;
@@ -204,9 +202,9 @@ export function createForDestination(
 
     let provider: ServiceProvider;
     if (isAbapSystem(destination)) {
-        provider = createInstance(AbapServiceProvider, providerConfig);
+        provider = createInstance<AbapServiceProvider>(AbapServiceProvider, providerConfig);
     } else {
-        provider = createInstance(ServiceProvider, providerConfig);
+        provider = createInstance<ServiceProvider>(ServiceProvider, providerConfig);
     }
 
     // resolve destination service user on first request if required

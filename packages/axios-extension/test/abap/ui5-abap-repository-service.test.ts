@@ -27,7 +27,10 @@ describe('Ui5AbapRepositoryService', () => {
             .persist();
         nock(server)
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${notExistingApp}%27)?$format=json`)
-            .replyWithError('the app does not exist')
+            .replyWithError({
+                status: 404,
+                body: 'the app does not exist'
+            })
             .persist();
     });
 
@@ -169,6 +172,28 @@ describe('Ui5AbapRepositoryService', () => {
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .replyWithError('Failed');
             await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrowError();
+        });
+
+        test('failed removal, application not found', async () => {
+            const appName = 'TestApp';
+            nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`).reply(404);
+            const response = await service.undeploy({ bsp: { name: appName } });
+            expect(response).toBeUndefined();
+        });
+
+        test('failed removal but handle repeat request', async () => {
+            const appName = 'TestAppRecursive';
+            nock(server)
+                .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`)
+                .reply(200, { d: { ...validAppInfo, Name: appName } });
+            nock(server)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?${updateParams}`)
+                .reply(400);
+            nock(server)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?${updateParams}`)
+                .reply(200);
+            const response = await service.undeploy({ bsp: { name: appName } });
+            expect(response.status).toBe(200);
         });
     });
 
