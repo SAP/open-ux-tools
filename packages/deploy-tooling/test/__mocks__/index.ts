@@ -22,3 +22,5 @@ export const mockedUi5RepoService = (mockedAxiosExtension as unknown as MockedAx
 export const mockIsAppStudio = isAppStudio as jest.Mock;
 
 export const mockListDestinations = listDestinations as jest.Mock;
+
+export const mockCreateForAbap = mockedAxiosExtension.createForAbap as jest.Mock;

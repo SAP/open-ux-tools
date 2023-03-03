@@ -96,7 +96,7 @@ async function createAbapServiceProvider(
 ): Promise<AbapServiceProvider> {
     options.baseURL = target.url;
     if (target.client) {
-        options.params = { 'sap-client': target.client };
+        options.params['sap-client'] = target.client;
     }
     if (!options.auth) {
         const storedOpts = await getCredentials<BasicAuth>(target);
@@ -129,6 +129,7 @@ async function createDeployService(config: AbapDeployConfig, logger?: Logger): P
             password: config.credentials?.password
         };
     }
+    options.params = config.target.params || {};
     // Destination only supported on Business Application studio
     if (isAppStudio() && config.target.destination) {
         // Need additional properties to determine the type of destination we are dealing with

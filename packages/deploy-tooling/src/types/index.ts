@@ -8,6 +8,7 @@ export interface UrlAbapTarget {
     client?: string;
     cloud?: boolean;
     serviceKey?: ServiceInfo;
+    params?: AxiosRequestConfig['params'];
 }
 
 export interface DestinationAbapTarget {
@@ -81,4 +82,5 @@ export interface CliOptions
     archivePath?: string;
     archiveUrl?: string;
     cloudServiceKey?: string;
+    queryParams?: string;
 }

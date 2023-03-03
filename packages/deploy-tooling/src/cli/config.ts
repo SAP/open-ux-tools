@@ -1,5 +1,5 @@
 import { UI5Config } from '@sap-ux/ui5-config';
-import type { BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
+import type { AxiosRequestConfig, BspConfig, ServiceInfo } from '@sap-ux/axios-extension';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join } from 'path';
 import type { AbapDeployConfig, AbapTarget, CliOptions } from '../types';
@@ -61,6 +61,24 @@ function mergeFlag(cli?: boolean, file?: boolean): boolean | undefined {
 }
 
 /**
+ * Parse a query string and return an object.
+ *
+ * @param query query string
+ * @returns params object ready for axios requests 
+ */
+function parseQueryParams(query: string): AxiosRequestConfig['params'] {
+    const paramsList = query.split('&');
+    const params: AxiosRequestConfig['params'] = {};
+    paramsList.forEach((param) => {
+        const [ key, value ] = param.split("=");
+        if (value !== undefined) {
+            params[key] = value;
+        }
+    });
+    return params;
+}
+
+/**
  * Merge the configuration from the ui5*.yaml with CLI options.
  *
  * @param taskConfig - base configuration from the file
@@ -79,7 +97,8 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
         client: options.client ?? taskConfig.target?.client,
         cloud: options.cloud !== undefined ? options.cloud : taskConfig.target?.cloud,
         destination: options.destination ?? taskConfig.target?.destination,
-        serviceKey: options.cloudServiceKey ? readServiceKeyFromFile(options.cloudServiceKey) : undefined
+        serviceKey: options.cloudServiceKey ? readServiceKeyFromFile(options.cloudServiceKey) : undefined,
+        params: options.queryParams ? parseQueryParams(options.queryParams): undefined
     } as AbapTarget;
     const config: AbapDeployConfig = { app, target, credentials: taskConfig.credentials };
     config.test = mergeFlag(options.test, taskConfig.test);
