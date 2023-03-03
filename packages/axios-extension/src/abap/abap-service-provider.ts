@@ -92,11 +92,11 @@ export class AbapServiceProvider extends ServiceProvider {
      */
     private getAdtCatalogService(): AdtCatalogService {
         if (!this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH]) {
-            const adtCatalogSerivce = this.createService<AdtCatalogService>(
+            const adtCatalogService = this.createService<AdtCatalogService>(
                 AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH,
                 AdtCatalogService
             );
-            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = adtCatalogSerivce;
+            this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] = adtCatalogService;
         }
 
         return this.services[AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH] as AdtCatalogService;
@@ -185,8 +185,8 @@ export class AbapServiceProvider extends ServiceProvider {
         const subclassName = adtServiceSubclass.name;
         if (!this.services[subclassName]) {
             // Retrieve ADT schema for the specific input AdtService subclass
-            const adtCatalogSerivce = this.getAdtCatalogService();
-            const adtSchema = await adtCatalogSerivce.getServiceDefinition(adtServiceSubclass.getAdtCatagory());
+            const adtCatalogService = this.getAdtCatalogService();
+            const adtSchema = await adtCatalogService.getServiceDefinition(adtServiceSubclass.getAdtCatagory());
             // No ADT schema available neither locally nor from service query.
             if (!adtSchema) {
                 return null;
