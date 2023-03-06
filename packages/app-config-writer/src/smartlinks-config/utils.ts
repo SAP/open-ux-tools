@@ -4,10 +4,14 @@ import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { create } from '@sap-ux/axios-extension';
+import { getDestinationUrlForAppStudio, isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName } from '@sap-ux/project-access';
 import { BackendSystemKey, getService } from '@sap-ux/store';
 import type { BackendSystem } from '@sap-ux/store';
+import { t } from '../i18n';
+import { getTemplatePath } from '../templates';
+import { UrlParameters } from '../types';
 import type {
     InboundTargetsConfig,
     SmartLinksSandboxConfig,
@@ -15,15 +19,11 @@ import type {
     TargetConfig,
     TargetMapping
 } from '../types';
-import { t } from '../i18n';
-import { getTemplatePath } from '../templates';
-import { UrlParameters } from '../types';
 import {
     addUi5YamlServeStaticMiddleware,
     readUi5DeployConfigTarget,
     removeUi5YamlServeStaticMiddleware
 } from './ui5-yaml';
-import { getDestinationUrlForAppStudio, isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * @description Check the secure storage if it has credentials for the entered url.
@@ -60,7 +60,7 @@ function getSmartLinksTargetUrl(baseUrl: string, client?: string) {
     if (isAppStudio()) {
         baseUrl = getDestinationUrlForAppStudio(baseUrl);
     }
-    if (client) {
+    if (client && !isAppStudio()) {
         appendUrl = `${appendUrl}&sap-client=${client}`;
     }
     return `${baseUrl}${appendUrl}`;
@@ -158,7 +158,7 @@ export async function getTargetMappingsConfig(
  * @param inboundTargets returned targets from service
  * @param fs - the memfs editor instance
  */
-export function mergeTargetMappings(appConfigPath: string, inboundTargets: InboundTargetsConfig, fs: Editor): void {
+function mergeTargetMappings(appConfigPath: string, inboundTargets: InboundTargetsConfig, fs: Editor): void {
     const existingConfig = fs.readJSON(appConfigPath) as SmartLinksSandboxConfig;
     const existingTargets = existingConfig.services?.ClientSideTargetResolution?.adapter?.config?.inbounds;
     if (existingTargets) {
