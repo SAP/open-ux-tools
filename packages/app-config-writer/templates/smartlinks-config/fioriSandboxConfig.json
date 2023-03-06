@@ -9,7 +9,8 @@
                             "action": "<%- locals.inboundTargets[target].action %>", <% if (locals.inboundTargets[target].title) { %> 
                             "title": "<%- locals.inboundTargets[target].title %>", <% } %> <% if (locals.inboundTargets[target].signature) { %> 
                             "signature": <%- JSON.stringify(locals.inboundTargets[target].signature) %>, <% } %>
-                            "resolutionResult": "<%- JSON.stringify(locals.inboundTargets[target].resolutionResult) %>"
+                            "resolutionResult": <% if(locals.inboundTargets[target].resolutionResult)
+                                { %> <%- JSON.stringify(locals.inboundTargets[target].resolutionResult) %><% } else { %> {} <% } %>
                         }<% if( index < Object.keys(locals.inboundTargets).length -1 ){ %>, <% } %> <% }) %> 
                     }
                 }
