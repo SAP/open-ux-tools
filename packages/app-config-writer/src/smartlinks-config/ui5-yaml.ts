@@ -85,3 +85,34 @@ export async function addUi5YamlServeStaticMiddleware(
         }
     }
 }
+
+/**
+ * @description - removes servestatic configuration from ui5/-local/-mock.yaml files
+ * @param basePath - path to project root, where ui5.yaml is
+ * @param fs - mem-fs reference to be used for file access
+ * @param logger - logger
+ */
+export async function removeUi5YamlServeStaticMiddleware(
+    basePath: string,
+    fs: Editor,
+    logger?: ToolsLogger
+): Promise<void> {
+    const ui5Yamls = [FileName.Ui5Yaml, FileName.Ui5MockYaml, FileName.Ui5LocalYaml];
+    for (const ui5Yaml of ui5Yamls) {
+        let ui5YamlConfig: UI5Config;
+        try {
+            ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml);
+        } catch (error) {
+            logger?.debug(`File ${ui5Yaml} not existing`);
+            continue;
+        }
+        const appServeStaticMiddleware = ui5YamlConfig.findCustomMiddleware<FioriToolsServeStaticConfig>(
+            DeployConfig.FioriToolsServestatic
+        );
+        if (appServeStaticMiddleware) {
+            ui5YamlConfig.removeCustomMiddleware(DeployConfig.FioriToolsServestatic);
+            const yaml = ui5YamlConfig.toString();
+            fs.write(join(basePath, ui5Yaml), yaml);
+        }
+    }
+}
