@@ -2,7 +2,7 @@ import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/smartlinks-config.json';
 
-const NS = 'odata-service-writer';
+const NS = 'app-config-writer';
 
 /**
  * Initialize i18next with the translations for this module.
