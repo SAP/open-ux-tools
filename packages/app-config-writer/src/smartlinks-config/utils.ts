@@ -157,16 +157,22 @@ export async function getTargetMappingsConfig(
  * @param appConfigPath path to apps appconfig/fioriSandboxConfig.json file
  * @param inboundTargets returned targets from service
  * @param fs - the memfs editor instance
+ * @returns merged inbound targets
  */
-function mergeTargetMappings(appConfigPath: string, inboundTargets: InboundTargetsConfig, fs: Editor): void {
+function mergeTargetMappings(
+    appConfigPath: string,
+    inboundTargets: InboundTargetsConfig,
+    fs: Editor
+): InboundTargetsConfig {
     const existingConfig = fs.readJSON(appConfigPath) as SmartLinksSandboxConfig;
     const existingTargets = existingConfig.services?.ClientSideTargetResolution?.adapter?.config?.inbounds;
     if (existingTargets) {
         Object.entries(inboundTargets).forEach(([name, value]) => {
             existingTargets[name] = value;
         });
-        inboundTargets = existingTargets;
+        return existingTargets;
     }
+    return inboundTargets;
 }
 
 /**
@@ -182,13 +188,13 @@ export async function writeSmartLinksConfig(
     fs: Editor,
     logger?: ToolsLogger
 ): Promise<void> {
-    const inboundTargets = await getTargetMappingsConfig(config, logger);
+    let inboundTargets = await getTargetMappingsConfig(config, logger);
     const templatePath = getTemplatePath('smartlinks-config/fioriSandboxConfig.json');
     const appConfigPath = join(basePath, 'appconfig', 'fioriSandboxConfig.json');
     if (!fs.exists(appConfigPath)) {
         fs.copyTpl(templatePath, appConfigPath, { inboundTargets });
     } else {
-        mergeTargetMappings(appConfigPath, inboundTargets, fs);
+        inboundTargets = mergeTargetMappings(appConfigPath, inboundTargets, fs);
         const filledTemplate = render(fs.read(templatePath), { inboundTargets }, {});
         fs.extendJSON(appConfigPath, JSON.parse(filledTemplate));
     }
