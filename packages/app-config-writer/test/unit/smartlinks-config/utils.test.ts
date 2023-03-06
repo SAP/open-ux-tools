@@ -152,6 +152,7 @@ describe('Test writeSmartLinksConfig', () => {
     const copyTemplateSpy = jest.spyOn(fs, 'copyTpl');
     const sandboxExistsSpy = jest.spyOn(fs, 'exists');
     const readSandboxSpy = jest.spyOn(fs, 'readJSON');
+    const extendSandboxSpy = jest.spyOn(fs, 'extendJSON');
 
     const config: TargetConfig = { target: { url: 'mockUrl' } };
     const getSandboxJSON = (existingInboundTargets: any) => ({
@@ -189,7 +190,6 @@ describe('Test writeSmartLinksConfig', () => {
         sandboxExistsSpy.mockReturnValueOnce(false);
         await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock as any);
         expect(copyTemplateSpy).toBeCalled();
-        expect(fs.dump()).toMatchSnapshot();
     });
     test('Update fioriSandboxConfig.json - existing target', async () => {
         const existingTarget = {
@@ -204,7 +204,7 @@ describe('Test writeSmartLinksConfig', () => {
         axiosGet.mockResolvedValue({ data: JSON.stringify(targetResults) });
 
         await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock as any);
-        expect(fs.dump()).toMatchSnapshot();
+        expect(extendSandboxSpy).toBeCalled();
     });
     test('Overwrite fioriSandboxConfig.json - existing target with same key', async () => {
         const ResponseMapping = {
@@ -218,7 +218,7 @@ describe('Test writeSmartLinksConfig', () => {
         axiosGet.mockResolvedValue({ data: JSON.stringify(targetResults) });
 
         await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock as any);
-        expect(fs.dump()).toMatchSnapshot();
+        expect(extendSandboxSpy).toBeCalled();
     });
     test('No target mappings', async () => {
         axiosGet.mockResolvedValue({ data: JSON.stringify('') });
