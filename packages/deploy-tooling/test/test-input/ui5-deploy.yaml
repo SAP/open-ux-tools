@@ -1,0 +1,22 @@
+specVersion: '2.6'
+metadata:
+  name: test-project
+type: application
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        transpileAsync: true
+        transpileTypeScript: true
+    - name: abap-deploy-task
+      afterTask: ui5-tooling-transpile-task
+      configuration:
+        strictSsl: false
+        test: true
+        app:
+          name: Z_TEST
+          package: $TMP
+        target:
+          destination: EXAMPLE
+          url: https://target.example

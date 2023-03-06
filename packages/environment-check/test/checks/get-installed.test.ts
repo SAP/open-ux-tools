@@ -196,9 +196,10 @@ describe('Test install functions', () => {
     test('getFioriGenVersion() (not installed) (BAS)', async () => {
         mockIsAppStudio.mockReturnValue(true);
         jest.spyOn(fs, 'existsSync').mockReturnValue(false);
+        jest.spyOn(command, 'spawnCommand').mockResolvedValue('MOCK_NPM_ROOT');
 
         const result = await getFioriGenVersion();
-        expect(result).toStrictEqual('Not installed or not found');
+        expect(result).toStrictEqual(t('info.notInstalledOrNotFound'));
     });
 
     test('getFioriGenVersion() (BAS) installed to NODE_PATH location', async () => {

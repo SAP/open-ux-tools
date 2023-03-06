@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.0.11
+
+### Patch Changes
+
+-   Updated dependencies [8b83e93]
+    -   @sap-ux/mockserver-config-writer@0.1.0
+
 ## 0.0.10
 
 ### Patch Changes

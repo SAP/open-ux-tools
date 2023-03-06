@@ -1,5 +1,11 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.1.0
+
+### Minor Changes
+
+-   8b83e93: Consider used version of @ui5/cli when adding mockserver config
+
 ## 0.0.6
 
 ### Patch Changes

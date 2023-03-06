@@ -1,4 +1,12 @@
 {
     "ignore": ["**/*.d.ts"],
-    "presets": ["transform-ui5", "@babel/preset-typescript"]
+    "presets": [
+        [
+            "transform-ui5",
+            {
+                "addControllerStaticPropsToExtend": true
+            }
+        ],
+        "@babel/preset-typescript"
+    ]
 }
