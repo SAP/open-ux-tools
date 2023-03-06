@@ -45,7 +45,7 @@ exports[`Test function getSmartLinksConfigQuestions() Prompt for target url and 
 Array [
   Object {
     "initial": "https://abc.abap.stagingaws.hanavlab.ondemand.com",
-    "message": "SmartLinks configuration source (ui5-deploy.yaml)",
+    "message": "SmartLinks configuration source url (ui5-deploy.yaml)",
     "name": "url",
     "type": "text",
     "validate": [Function],
@@ -64,7 +64,7 @@ exports[`Test function getSmartLinksConfigQuestions() Prompt for target url and 
 Array [
   Object {
     "initial": undefined,
-    "message": "SmartLinks configuration source ",
+    "message": "SmartLinks configuration source url ",
     "name": "url",
     "type": "text",
     "validate": [Function],
@@ -81,13 +81,14 @@ Array [
 
 exports[`Test function getSmartLinksConfigQuestions() Return prompt values Target and credentials provided 1`] = `
 Object {
-  "credentials": Object {
+  "auth": Object {
     "password": "mockPW",
     "username": "mockUser",
   },
-  "ignoreCertError": undefined,
+  "ignoreCertErrors": undefined,
   "target": Object {
     "client": "mockClient",
+    "destination": undefined,
     "url": "mockUrl",
   },
 }

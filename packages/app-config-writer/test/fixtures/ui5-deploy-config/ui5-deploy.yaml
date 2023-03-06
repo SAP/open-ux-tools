@@ -13,7 +13,7 @@ builder:
           configuration:
               target:
                   url: https://abc.abap.stagingaws.hanavlab.ondemand.com
-                  scp: true
+                  # scp: true - not supported
               app:
                   name: TEST
                   package: $tmp

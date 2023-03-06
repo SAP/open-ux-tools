@@ -32,7 +32,7 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
-        getSystemCredentialsSpy = jest.spyOn(utils, 'getSystemCredentials');
+        getSystemCredentialsSpy = jest.spyOn(utils, 'getLocalStoredCredentials');
         getServiceMock = jest.spyOn(store, 'getService').mockImplementation(() => serviceMock as any);
     });
 
@@ -68,7 +68,8 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
             expect(debugMock).not.toBeCalled();
             expect(getSystemCredentialsSpy).toBeCalledWith(
                 'https://abc.abap.stagingaws.hanavlab.ondemand.com',
-                undefined
+                undefined,
+                loggerMock
             );
         });
     });
@@ -124,8 +125,8 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
             mockPrompt.mockResolvedValueOnce({ credentials: mockUser });
             const config = await getSmartLinksTargetFromPrompt(basePath, loggerMock);
             expect(config).toMatchSnapshot();
-            expect(config.credentials).toEqual(mockUser);
-            expect(config.ignoreCertError).toEqual(undefined);
+            expect(config.auth).toEqual(mockUser);
+            expect(config.ignoreCertErrors).toEqual(undefined);
             expect(config.target).toEqual(mockTarget);
         });
         test('User aborted - no config provided', async () => {

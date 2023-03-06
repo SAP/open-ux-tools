@@ -3,7 +3,6 @@ import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
-import * as Logger from '@sap-ux/logger';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as projectAccessMock from '@sap-ux/project-access';
 import { readUi5DeployConfigTarget, addUi5YamlServeStaticMiddleware } from '../../../src/smartlinks-config/ui5-yaml';
@@ -12,8 +11,8 @@ describe('Test readUi5DeployConfigTarget', () => {
     test('existing ui5-deploy.yaml', async () => {
         const basePath = join(__dirname, '../../fixtures/ui5-smartlinks-config');
         const result = await readUi5DeployConfigTarget(basePath);
-        expect(result.target).toEqual({ 'scp': true, 'url': 'https://abc.abap.stagingaws.hanavlab.ondemand.com' });
-        expect(result.ignoreCertError).toBe(false);
+        expect(result.target).toEqual({ 'url': 'https://abc.abap.stagingaws.hanavlab.ondemand.com' });
+        expect(result.ignoreCertErrors).toBe(false);
     });
     test('non-existing ui5-deploy.yaml', async () => {
         const basePath = join(__dirname, '../../fixtures/no-ui5-config');
