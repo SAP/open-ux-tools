@@ -9,7 +9,7 @@ Object {
           "inbounds": Object {
             "firstLink": Object {
               "action": "dummyAction",
-              "resolutionResult": "{}",
+              "resolutionResult": Object {},
               "semanticObject": "dummyObject",
               "signature": Object {
                 "additionalParameters": "ignored",
@@ -68,7 +68,7 @@ Object {
           "inbounds": Object {
             "existingLink": Object {
               "action": "existingAction",
-              "resolutionResult": "{}",
+              "resolutionResult": Object {},
               "semanticObject": "existingObject",
               "signature": Object {
                 "additionalParameters": "ignored",
@@ -77,7 +77,7 @@ Object {
             },
             "firstLink": Object {
               "action": "dummyAction",
-              "resolutionResult": "{}",
+              "resolutionResult": Object {},
               "semanticObject": "dummyObject",
               "signature": Object {
                 "additionalParameters": "ignored",

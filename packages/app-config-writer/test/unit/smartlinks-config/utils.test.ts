@@ -196,7 +196,7 @@ describe('Test writeSmartLinksConfig', () => {
             'semanticObject': 'ExistingSemanticObject',
             'action': 'ExistingAction',
             'signature': { 'additionalParameters': 'allowed' },
-            'resolutionResult': '{}'
+            'resolutionResult': {}
         };
         const sandboxJSON = getSandboxJSON(existingTarget);
         readSandboxSpy.mockReturnValue(sandboxJSON);

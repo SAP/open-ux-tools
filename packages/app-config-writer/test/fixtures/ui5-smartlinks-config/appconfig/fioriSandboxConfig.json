@@ -6,7 +6,7 @@
                     "inbounds": {
                         "existingLink": {
                             "action": "existingAction",
-                            "resolutionResult": "{}",
+                            "resolutionResult": {},
                             "semanticObject": "existingObject",
                             "signature": {
                                 "additionalParameters": "ignored"

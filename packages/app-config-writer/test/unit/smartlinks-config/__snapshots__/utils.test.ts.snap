@@ -13,7 +13,7 @@ Object {
                             \\"semanticObject\\": \\"MockObject1\\",
                             \\"action\\": \\"MockAction1\\",   
                             \\"signature\\": {\\"additionalParameters\\":\\"allowed\\",\\"parameters\\":{\\"app-id\\":{\\"required\\":true}}}, 
-                            \\"resolutionResult\\": \\"{}\\"
+                            \\"resolutionResult\\":  {}
                         }  
                     }
                 }
@@ -38,7 +38,8 @@ Object {
             \\"existingInboundTargets\\": {
               \\"semanticObject\\": \\"ExistingSemanticObject\\",
               \\"action\\": \\"ExistingAction\\",
-              \\"signature\\": {}
+              \\"signature\\": {},
+              \\"resolutionResult\\": {}
             },
             \\"ResponseMapping\\": {
               \\"semanticObject\\": \\"MockObject1\\",
@@ -51,7 +52,7 @@ Object {
                   }
                 }
               },
-              \\"resolutionResult\\": \\"{}\\"
+              \\"resolutionResult\\": {}
             }
           }
         }
@@ -80,7 +81,7 @@ Object {
               \\"signature\\": {
                 \\"additionalParameters\\": \\"allowed\\"
               },
-              \\"resolutionResult\\": \\"{}\\"
+              \\"resolutionResult\\": {}
             },
             \\"ResponseMapping\\": {
               \\"semanticObject\\": \\"MockObject1\\",
@@ -93,7 +94,7 @@ Object {
                   }
                 }
               },
-              \\"resolutionResult\\": \\"{}\\"
+              \\"resolutionResult\\": {}
             }
           }
         }
