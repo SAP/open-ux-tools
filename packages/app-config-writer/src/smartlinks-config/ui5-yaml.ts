@@ -17,7 +17,7 @@ import { DeployConfig } from '../types';
 /**
  * @description - reads and returns target information from ui5-deploy.yaml, if existing
  * @param basePath - path to project root, where ui5-deploy.yaml is
- * @returns {TargetConfig} target url and client for deploy configuration
+ * @returns {TargetConfig} target definition for deploy configuration
  */
 export async function readUi5DeployConfigTarget(basePath: string): Promise<TargetConfig> {
     const ui5DeployYaml = await readUi5Yaml(basePath, FileName.UI5DeployYaml);
@@ -26,7 +26,7 @@ export async function readUi5DeployConfigTarget(basePath: string): Promise<Targe
         throw Error(t('error.noTarget', { file: `(${FileName.UI5DeployYaml})` }));
     }
     const { target, ignoreCertError } = customTask?.configuration;
-    return { target, ignoreCertError };
+    return { target, ignoreCertErrors: ignoreCertError };
 }
 
 /**

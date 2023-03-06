@@ -1,17 +1,14 @@
 import type { AxiosBasicCredentials } from 'axios';
 import { cyan } from 'chalk';
 import { render } from 'ejs';
-import { Agent as HttpsAgent } from 'https';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { create } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName } from '@sap-ux/project-access';
-import type { BackendSystem } from '@sap-ux/store';
 import { BackendSystemKey, getService } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
 import type {
-    BasicTarget,
-    DeployTarget,
     InboundTargetsConfig,
     SmartLinksSandboxConfig,
     SystemDetailsResponse,
@@ -22,30 +19,47 @@ import { t } from '../i18n';
 import { getTemplatePath } from '../templates';
 import { UrlParameters } from '../types';
 import { addUi5YamlServeStaticMiddleware, readUi5DeployConfigTarget } from './ui5-yaml';
+import { getDestinationUrlForAppStudio, isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * @description Check the secure storage if it has credentials for the entered url.
  * @param url target system url
  * @param client optional sap-client parameter
+ * @param logger Logger for user output
  * @returns credentials or undefined
  */
-export async function getSystemCredentials(url: string, client?: string): Promise<AxiosBasicCredentials | undefined> {
-    const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-    const system = await systemService.read(new BackendSystemKey({ url, client }));
-    return system?.username ? { username: system.username, password: system.password || '' } : undefined;
+export async function getLocalStoredCredentials(
+    url: string,
+    client?: string,
+    logger?: ToolsLogger
+): Promise<AxiosBasicCredentials | undefined> {
+    // check if system credentials are stored in the store
+    try {
+        const systemStore = await getService<BackendSystem, BackendSystemKey>({ logger, entityName: 'system' });
+        const system = await systemStore.read(new BackendSystemKey({ url, client }));
+        return system?.username ? { username: system.username, password: system.password || '' } : undefined;
+    } catch (error) {
+        logger?.warn(t('warning.useCredentialsFailed'));
+        logger?.debug(error as object);
+    }
+    return undefined;
 }
 
 /**
  * @description Combines the target parameters and returns the target url
- * @param target target information with optional sap-client
+ * @param baseUrl destination or url
+ * @param client optional sap-client
  * @returns target url to be called for smartlinks config
  */
-function getSmartLinksTargetUrl(target: DeployTarget | BasicTarget) {
+function getSmartLinksTargetUrl(baseUrl: string, client?: string) {
     let appendUrl = Object.values(UrlParameters).join('&');
-    if (target.client) {
-        appendUrl = `${appendUrl}&sap-client=${target.client}`;
+    if (isAppStudio()) {
+        baseUrl = getDestinationUrlForAppStudio(baseUrl);
     }
-    return `${target.url}${appendUrl}`;
+    if (client) {
+        appendUrl = `${appendUrl}&sap-client=${client}`;
+    }
+    return `${baseUrl}${appendUrl}`;
 }
 
 /**
@@ -55,13 +69,16 @@ function getSmartLinksTargetUrl(target: DeployTarget | BasicTarget) {
  * @returns response from service provider
  */
 export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): Promise<SystemDetailsResponse> {
-    const httpsAgent = new HttpsAgent({ rejectUnauthorized: !config.ignoreCertError });
-    const requestConfig = { auth: config.credentials, httpsAgent };
-    const service = create({ baseURL: config.target.url, ...requestConfig });
+    const { target, auth, ignoreCertErrors } = config;
+    const baseUrl = isAppStudio() ? target.destination : target.url;
+    if (!baseUrl) {
+        throw Error(t('error.target'));
+    }
     try {
-        const targetUrl = getSmartLinksTargetUrl(config.target);
+        const service = create({ auth, ignoreCertErrors });
+        const targetUrl = getSmartLinksTargetUrl(baseUrl, target.client);
         logger?.info(`${cyan(t('info.connectTo'))} ${targetUrl}`);
-        const response = await service.get(targetUrl, requestConfig);
+        const response = await service.get(targetUrl, config);
         logger?.info(cyan(t('info.connectSuccess')));
         return JSON.parse(response.data);
     } catch (error: any) {
@@ -74,13 +91,14 @@ export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): P
  * @description Get target definition of deploy system as source for smartlinks configuration.
  * @param basePath - path to project root, where ui5-deploy.yaml is
  * @param logger - logger
+ * @returns target definition
  */
 export async function getTargetDefinition(basePath: string, logger?: ToolsLogger): Promise<TargetConfig | undefined> {
+    logger?.info(t('info.searchTarget', { file: FileName.UI5DeployYaml }));
     try {
-        logger?.info(t('info.searchTarget', { file: FileName.UI5DeployYaml }));
-        const targets = await readUi5DeployConfigTarget(basePath);
+        const target = await readUi5DeployConfigTarget(basePath);
         logger?.info(cyan(t('info.targetFound', { file: FileName.UI5DeployYaml })));
-        return targets;
+        return target;
     } catch (err: any) {
         logger?.warn(err.message);
         logger?.debug(err);

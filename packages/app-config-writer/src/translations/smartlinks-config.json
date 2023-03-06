@@ -1,15 +1,19 @@
 {
     "questions": {
-        "target": "SmartLinks configuration source {{-file}}",
+        "target": "SmartLinks configuration source {{-type}} {{-file}}",
         "client": "SAP client {{-file}}",
         "credentials": "Credentials to be used",
         "credentialsDescription": "Provide username and password"
     },
-    "warnings": {},
+    "warnings": {
+        "useCredentialsFailed": "Retrieving stored credentials failed."
+    },
     "info": {
         "username": "Username",
         "password": "Password",
-        "targetFound": "Deploy target definition found in {{-file}}",
+        "searchTarget": "Searching for deploy target definition {{-file}}",
+        "targetFound": "Deploy target definition found {{-file}}",
+        "credentialsAvailable": "Credentials taken from stored system",
         "credentialsRequired": "Credentials are required. Please enter your credentials below",
         "authNeeded": "Credentials might be required. Do you want to enter your credentials?",
         "operationAborted": "Operation aborted by the user.",

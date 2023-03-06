@@ -16,20 +16,15 @@ export enum UrlParameters {
     Depth = 'depth=0'
 }
 
-export interface BasicTarget {
-    url: string;
-    client?: string;
-}
-
-export type DeployTarget = Pick<AbapTarget, 'url' | 'client' | 'destination'>;
+export type DeployTarget = Pick<AbapTarget, 'url' | 'client' | 'destination' | 'scp'>;
 
 /**
  * Configuration of a target system.
  */
 export interface TargetConfig {
-    target: BasicTarget | DeployTarget;
-    credentials?: AxiosBasicCredentials;
-    ignoreCertError?: boolean;
+    target: DeployTarget;
+    ignoreCertErrors?: boolean;
+    auth?: AxiosBasicCredentials;
 }
 
 export type TargetMapping = {

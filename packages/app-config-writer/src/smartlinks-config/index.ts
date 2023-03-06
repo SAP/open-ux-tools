@@ -1,2 +1,2 @@
 export * from './generateSmartLinks';
-export { getTargetDefinition, getSystemCredentials } from './utils';
+export { getTargetDefinition, getLocalStoredCredentials } from './utils';
