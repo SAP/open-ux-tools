@@ -213,8 +213,8 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
 
     return (
         <UITextInput
-            title={title}
             {...props}
+            title={title}
             onRenderSuffix={value?.trim() ? onRenderSuffix : undefined}
             className={classNames}
         />
