@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.6
+
+### Patch Changes
+
+-   925a52c: UITranslationInput. Fix - allow to pass custom "title" when i18n entry resolved
+
 ## 1.3.5
 
 ### Patch Changes
