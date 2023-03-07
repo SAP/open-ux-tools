@@ -133,8 +133,8 @@ async function getCredentialsPrompt(
 ): Promise<AxiosBasicCredentials | undefined> {
     if (isAppStudio() && target.destination) {
         const destinations = await listDestinations();
-        const destination = destinations[target.destination];
-        if (destination.Authentication === 'NoAuthentication') {
+        const destination = destinations?.[target.destination];
+        if (destination?.Authentication === 'NoAuthentication') {
             logger?.info(t('info.credentialsRequired'));
             return await promptUserPass(logger);
         } else if (destination) {
