@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test function getSmartLinksConfigQuestions() Check credentials (BAS) Destination found (NoAuthentication) - ask for credentials 1`] = `
+exports[`Test function getSmartLinksTargetFromPrompt Check credentials (BAS) Destination found (NoAuthentication) - ask for credentials 1`] = `
 Array [
   Object {
     "message": "[36mUsername[39m",
@@ -17,7 +17,7 @@ Array [
 ]
 `;
 
-exports[`Test function getSmartLinksConfigQuestions() Check credentials (BAS) Destination not found - ask for credentials 1`] = `
+exports[`Test function getSmartLinksTargetFromPrompt Check credentials (BAS) Destination not found - ask for credentials 1`] = `
 Array [
   Object {
     "message": "[36mUsername[39m",
@@ -34,7 +34,7 @@ Array [
 ]
 `;
 
-exports[`Test function getSmartLinksConfigQuestions() Check credentials (local) No stored credentials 1`] = `
+exports[`Test function getSmartLinksTargetFromPrompt Check credentials (local) No stored credentials 1`] = `
 Array [
   Object {
     "message": "[36mUsername[39m",
@@ -51,7 +51,7 @@ Array [
 ]
 `;
 
-exports[`Test function getSmartLinksConfigQuestions() Check credentials (local) Stored credentials 1`] = `
+exports[`Test function getSmartLinksTargetFromPrompt Check credentials (local) Stored credentials 1`] = `
 Array [
   Object {
     "choices": Array [
@@ -75,7 +75,7 @@ Array [
 ]
 `;
 
-exports[`Test function getSmartLinksConfigQuestions() Prompt for destination on BAS:  Existing ui5-deploy-config 1`] = `
+exports[`Test function getSmartLinksTargetFromPrompt Prompt for destination on BAS:  Existing ui5-deploy-config 1`] = `
 Array [
   Object {
     "initial": "ABC123",
@@ -87,7 +87,7 @@ Array [
 ]
 `;
 
-exports[`Test function getSmartLinksConfigQuestions() Prompt for destination on BAS:  No ui5-deploy config 1`] = `
+exports[`Test function getSmartLinksTargetFromPrompt Prompt for destination on BAS:  No ui5-deploy config 1`] = `
 Array [
   Object {
     "initial": undefined,
@@ -99,7 +99,7 @@ Array [
 ]
 `;
 
-exports[`Test function getSmartLinksConfigQuestions() Prompt for target url and client:  Existing ui5-deploy-config 1`] = `
+exports[`Test function getSmartLinksTargetFromPrompt Prompt for target url and client:  Existing ui5-deploy-config 1`] = `
 Array [
   Object {
     "initial": "https://abc.abap.stagingaws.hanavlab.ondemand.com",
@@ -110,15 +110,15 @@ Array [
   },
   Object {
     "format": [Function],
-    "initial": undefined,
-    "message": "SAP client ",
+    "initial": 100,
+    "message": "SAP client (ui5-deploy.yaml)",
     "name": "client",
     "type": "text",
   },
 ]
 `;
 
-exports[`Test function getSmartLinksConfigQuestions() Prompt for target url and client:  No ui5-deploy config 1`] = `
+exports[`Test function getSmartLinksTargetFromPrompt Prompt for target url and client:  No ui5-deploy config 1`] = `
 Array [
   Object {
     "initial": undefined,
@@ -137,7 +137,7 @@ Array [
 ]
 `;
 
-exports[`Test function getSmartLinksConfigQuestions() Return prompt values Target and credentials provided 1`] = `
+exports[`Test function getSmartLinksTargetFromPrompt Return prompt values Target and credentials provided 1`] = `
 Object {
   "auth": Object {
     "password": "mockPW",

@@ -14,6 +14,7 @@ builder:
               target:
                   destination: ABC123
                   url: https://abc.abap.stagingaws.hanavlab.ondemand.com
+                  client: 100
                   # scp: true - not supported
               app:
                   name: TEST

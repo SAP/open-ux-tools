@@ -8,6 +8,8 @@ import * as store from '@sap-ux/store';
 import { getSmartLinksTargetFromPrompt } from '../../../src';
 import { t } from '../../../src/i18n';
 import * as utils from '../../../src/smartlinks-config/utils';
+import { promptUserPass } from '../../../src/prompt';
+import { yellow } from 'chalk';
 
 jest.mock('prompts', () => ({
     ...(jest.requireActual('prompts') as object),
@@ -33,7 +35,7 @@ const serviceMock = { read: jest.fn() };
 let isAppStudioMock: jest.SpyInstance;
 let listDestinationsMock: jest.SpyInstance;
 
-describe('Test function getSmartLinksConfigQuestions()', () => {
+describe('Test function getSmartLinksTargetFromPrompt', () => {
     // Mock setup
     const debugMock = loggerMock.debug as unknown as jest.SpyInstance;
     let getSystemCredentialsSpy: jest.SpyInstance;
@@ -41,16 +43,13 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
 
     beforeEach(() => {
         jest.resetAllMocks();
+        isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         getSystemCredentialsSpy = jest.spyOn(utils, 'getLocalStoredCredentials');
         getServiceMock = jest.spyOn(store, 'getService').mockImplementation(() => serviceMock as any);
-        isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
     });
 
     describe('Prompt for target url and client: ', () => {
-        // Mock exit by user on prompt for url and client
-        promptMock.mockImplementationOnce((_values, onCancel) => onCancel());
-
         test('No ui5-deploy config', async () => {
             const basePath = join(__dirname, '../../fixtures/no-ui5-deploy-config');
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
@@ -71,22 +70,21 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
             const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
             promptMock.mockImplementationOnce((choices: PromptObject[]) => ({
                 [choices[0].name as string]: choices[0].initial,
-                [choices[1].name as string]: choices[1].initial
+                [choices[1].name as string]: (choices[1].format as any)(choices[1].initial)
             }));
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(debugMock).not.toBeCalled();
             expect(getSystemCredentialsSpy).toBeCalledWith(
                 'https://abc.abap.stagingaws.hanavlab.ondemand.com',
-                undefined,
+                '100',
                 loggerMock
             );
         });
     });
 
     describe('Prompt for destination on BAS: ', () => {
-        // Mock exit by user on prompt for url and client
-        promptMock.mockImplementationOnce((_values, onCancel) => onCancel());
         beforeEach(() => {
+            jest.resetAllMocks();
             isAppStudioMock.mockResolvedValue(true);
         });
 
@@ -125,7 +123,6 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
 
         test('No stored credentials', async () => {
             promptMock.mockResolvedValueOnce(mockTarget);
-            promptMock.mockImplementationOnce((_values, onCancel) => onCancel());
             serviceMock.read.mockResolvedValue(undefined);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(serviceMock.read).toBeCalledWith(mockTarget);
@@ -158,9 +155,6 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
         });
     });
     describe('Check credentials (BAS)', () => {
-        beforeEach(() => {
-            isAppStudioMock.mockResolvedValue(true);
-        });
         const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
         const mockDestination = { destination: 'ABC123' };
         const destinationsMock = {
@@ -174,8 +168,9 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
             }
         };
         test('Destination not found - ask for credentials', async () => {
+            isAppStudioMock.mockResolvedValue(true);
             promptMock.mockResolvedValueOnce(mockDestination);
-            promptMock.mockImplementationOnce((_values, onCancel) => onCancel());
+
             listDestinationsMock.mockResolvedValue(undefined);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             const promptForCredentials = promptMock.mock.calls[1][0];
@@ -184,8 +179,9 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
         });
 
         test('Destination found (NoAuthentication) - ask for credentials', async () => {
+            isAppStudioMock.mockResolvedValue(true);
             promptMock.mockResolvedValueOnce(mockDestination);
-            promptMock.mockImplementationOnce((_values, onCancel) => onCancel());
+
             listDestinationsMock.mockResolvedValue(destinationsMock);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             const promptForCredentials = promptMock.mock.calls[1][0];
@@ -193,9 +189,10 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
             expect(promptForCredentials[0].choices).not.toBeDefined();
         });
         test('Destination found - use credentials', async () => {
+            isAppStudioMock.mockResolvedValue(true);
             destinationsMock.ABC123.Authentication = 'BasicAuthentication';
             promptMock.mockResolvedValueOnce(mockDestination);
-            promptMock.mockImplementationOnce((_values, onCancel) => onCancel());
+
             listDestinationsMock.mockResolvedValue(destinationsMock);
             const config = await getSmartLinksTargetFromPrompt(basePath, loggerMock);
             expect(config.auth).toEqual(undefined);
@@ -223,11 +220,81 @@ describe('Test function getSmartLinksConfigQuestions()', () => {
             expect(config.ignoreCertErrors).toEqual(undefined);
             expect(config.target).toEqual(mockTarget);
         });
-        test('User aborted - no config provided', async () => {
-            serviceMock.read.mockResolvedValue(mockUser);
-            promptMock.mockResolvedValueOnce(mockTarget);
-            promptMock.mockImplementationOnce((_values, onCancel) => onCancel);
+        test('User aborted on choose target - no config provided', async () => {
+            promptMock.mockImplementation((_choices, cancel) => {
+                const processSpy = jest.spyOn(process, 'exit');
+                processSpy.mockImplementation();
+                cancel.onCancel();
+                expect(loggerMock.info).toHaveBeenLastCalledWith(yellow('Operation aborted by the user.'));
+                expect(processSpy).toBeCalled();
+            });
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
         });
+    });
+    describe('Target validation', () => {
+        const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
+
+        test('BAS', async () => {
+            isAppStudioMock.mockResolvedValueOnce(true);
+            promptMock.mockImplementationOnce((choices: PromptObject[]) => {
+                const destination = choices[0];
+                expect(destination.name).toEqual('destination');
+                expect((destination.validate as any)()).toEqual('Please provide a target for configuration');
+                expect((destination.validate as any)('abc')).toBeTruthy();
+                expect(choices[1]).not.toBeDefined();
+                return { destination: 'mockDestination' };
+            });
+            promptMock.mockResolvedValueOnce({});
+            await getSmartLinksTargetFromPrompt(basePath, loggerMock);
+        });
+        test('Local environment', async () => {
+            promptMock.mockImplementationOnce((choices: PromptObject[]) => {
+                const url = choices[0];
+                expect(url.name).toBe('url');
+                expect((url.validate as any)()).toEqual('Please provide a target for configuration');
+                expect((url.validate as any)('abc')).toBeTruthy();
+                const client = choices[1];
+                expect(client.name).toBe('client');
+                expect((client.format as any)('123')).toEqual('123');
+                expect((client.format as any)(123)).toEqual('123');
+                return { url: 'mockUrl' };
+            });
+            promptMock.mockResolvedValueOnce({});
+            await getSmartLinksTargetFromPrompt(basePath, loggerMock);
+        });
+    });
+});
+
+describe('Test promptUserPass', () => {
+    const userPrompt = { username: 'mockUser', password: 'mockPassword' };
+    test('Return username, password', async () => {
+        promptMock.mockResolvedValueOnce(userPrompt);
+        expect(await promptUserPass(loggerMock)).toEqual(userPrompt);
+    });
+    test('Validation', async () => {
+        promptMock.mockImplementation((choices: PromptObject[]) => {
+            const username = choices[0];
+            expect(username.name).toBe('username');
+            expect((username.validate as any)()).toEqual('Username can not be empty.');
+            expect((username.validate as any)('abc')).toBeTruthy();
+            const password = choices[1];
+            expect(password.name).toBe('password');
+            expect((password.validate as any)()).toEqual('Password can not be empty.');
+            expect((password.validate as any)(' ')).toEqual('Password can not be empty.');
+            expect((password.validate as any)('123')).toBeTruthy();
+            return userPrompt;
+        });
+        await promptUserPass(loggerMock);
+    });
+    test('onCancel', async () => {
+        promptMock.mockImplementation((_choices, cancel) => {
+            const processSpy = jest.spyOn(process, 'exit');
+            processSpy.mockImplementation();
+            cancel.onCancel();
+            expect(loggerMock.info).toHaveBeenLastCalledWith(yellow('Operation aborted by the user.'));
+            expect(processSpy).toBeCalled();
+        });
+        await expect(promptUserPass(loggerMock)).rejects.toThrow();
+        await expect(promptUserPass()).rejects.toThrow();
     });
 });

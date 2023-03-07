@@ -63,6 +63,12 @@ describe('Test getLocalStoredCredentials', () => {
         storeRead.mockResolvedValueOnce(undefined);
         expect(await getLocalStoredCredentials('targetUrl', '000')).toEqual(undefined);
     });
+    test('Store throws error', async () => {
+        storeRead.mockRejectedValueOnce('Throw Error');
+        await getLocalStoredCredentials('targetUrl', '000', loggerMock);
+        expect(warnMock).toBeCalledWith('Retrieving stored credentials failed.');
+        expect(debugMock).toBeCalledWith('Throw Error');
+    });
 });
 describe('Test sendRequest', () => {
     const targetResponseMock = { 'targetMappings': 'mockData' };
@@ -122,6 +128,14 @@ describe('Test sendRequest', () => {
             expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
         }
     });
+    test('No url/destination provided - throw error', async () => {
+        try {
+            await sendRequest({ target: {} }, loggerMock);
+            fail('Error should have been thrown');
+        } catch (error) {
+            expect(error.message).toEqual('Please provide a target for configuration');
+        }
+    });
 });
 describe('Test getTargetDefinition', () => {
     test('target in deploy.yaml', async () => {
@@ -130,6 +144,7 @@ describe('Test getTargetDefinition', () => {
             Object {
               "ignoreCertErrors": undefined,
               "target": Object {
+                "client": 100,
                 "destination": "ABC123",
                 "url": "https://abc.abap.stagingaws.hanavlab.ondemand.com",
               },
@@ -156,12 +171,12 @@ describe('Test writeSmartLinksConfig', () => {
     const extendSandboxSpy = jest.spyOn(fs, 'extendJSON');
 
     const config: TargetConfig = { target: { url: 'mockUrl' } };
-    const getSandboxJSON = (existingInboundTargets: any) => ({
+    const getSandboxJSON = (targets?: any) => ({
         'services': {
             'ClientSideTargetResolution': {
                 'adapter': {
                     'config': {
-                        'inbounds': { existingInboundTargets }
+                        'inbounds': targets ? targets : undefined
                     }
                 }
             }
@@ -200,6 +215,15 @@ describe('Test writeSmartLinksConfig', () => {
             'resolutionResult': {}
         };
         const sandboxJSON = getSandboxJSON(existingTarget);
+        readSandboxSpy.mockReturnValue(sandboxJSON);
+        sandboxExistsSpy.mockReturnValueOnce(true);
+        axiosGet.mockResolvedValue({ data: JSON.stringify(targetResults) });
+
+        await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock as any);
+        expect(extendSandboxSpy).toBeCalled();
+    });
+    test('Update fioriSandboxConfig.json - existing file, no targets', async () => {
+        const sandboxJSON = getSandboxJSON();
         readSandboxSpy.mockReturnValue(sandboxJSON);
         sandboxExistsSpy.mockReturnValueOnce(true);
         axiosGet.mockResolvedValue({ data: JSON.stringify(targetResults) });
