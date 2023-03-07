@@ -29,7 +29,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -43,12 +43,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#fewrk1-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -57,7 +51,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fewrk1
 type: application
@@ -106,7 +100,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fewrk1
 type: application
@@ -147,7 +141,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fewrk1
 type: application
@@ -3577,7 +3571,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.99\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -3591,12 +3585,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fewrk2-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -3605,7 +3593,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fewrk2
 type: application
@@ -3649,7 +3637,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fewrk2
 type: application
@@ -3689,7 +3677,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fewrk2
 type: application
