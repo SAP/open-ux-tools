@@ -43,7 +43,7 @@ export async function getLocalStoredCredentials(
         const system = await systemStore.read(new BackendSystemKey({ url, client }));
         return system?.username ? { username: system.username, password: system.password || '' } : undefined;
     } catch (error) {
-        logger?.warn(t('warning.useCredentialsFailed'));
+        logger?.warn(t('warnings.useCredentialsFailed'));
         logger?.debug(error as object);
     }
     return undefined;
