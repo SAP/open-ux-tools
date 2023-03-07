@@ -174,11 +174,12 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
     if (suggestion.suggest?.type === SuggestValueType.Existing && strings?.i18nEntryExistsInputTooltip) {
         // Change DOM id with additional suffix
         buttonId += '-navigate';
-        // Overwrite title with information about reference entry
-        title = formatText(strings.i18nEntryExistsInputTooltip, {
-            value: value || '',
-            translation: suggestion.suggest.entry.value.value
-        });
+        if (!title) {
+            title = formatText(strings.i18nEntryExistsInputTooltip, {
+                value: value || '',
+                translation: suggestion.suggest.entry.value.value
+            });
+        }
     }
 
     const onRenderSuffix = useCallback((): JSX.Element | null => {

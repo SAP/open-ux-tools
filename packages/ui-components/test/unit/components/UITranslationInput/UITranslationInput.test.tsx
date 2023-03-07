@@ -414,4 +414,22 @@ describe('<UITranslationInput />', () => {
         clickI18nButton();
         expect(screen.getByText(acceptButtonLabel)).toBeDefined();
     });
+
+    test('Test "string" property', () => {
+        const externalTitle = 'dummy';
+        const { container } = render(
+            <UITranslationInput
+                id={id}
+                value={'{i18n>dummy1}'}
+                entries={entries}
+                allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                namingConvention={TranslationKeyGenerator.CamelCase}
+                title={externalTitle}
+                i18nPrefix={'i18n'}
+            />
+        );
+        // Check title
+        expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toEqual(externalTitle);
+    });
 });
