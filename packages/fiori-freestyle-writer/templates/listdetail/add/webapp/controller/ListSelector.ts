@@ -27,9 +27,7 @@ export default class ListSelector extends UI5Object {
         this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
-                    const items = oList.getBinding("items");
-                    if (items) {
-                     items.attachEventOnce("dataReceived",
+                    oList.getBinding("items")?.attachEventOnce("dataReceived",
                         function (this: ListSelector) {
                             if (this._oList.getItems().length) {
                                 resolve({ oList });
@@ -39,7 +37,6 @@ export default class ListSelector extends UI5Object {
                             }
                         }.bind(this)
                     );
-                }
                 }.bind(this));
         }.bind(this));
     };

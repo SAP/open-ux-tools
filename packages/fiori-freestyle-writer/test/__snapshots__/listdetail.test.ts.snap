@@ -601,7 +601,7 @@ export default class Detail extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (elementBinding && !elementBinding.getBoundContext()) {
+        if (!elementBinding?.getBoundContext()) {
             this.getRouter().getTargets()!.display(\\"detailObjectNotFound\\");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
@@ -881,10 +881,7 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        const items = this.list.getBinding(\\"items\\");
-        if (items) {
-            items.refresh(false);
-        }
+        this.list.getBinding(\\"items\\")?.refresh(false);
     }
 
     /**
@@ -1123,9 +1120,7 @@ export default class ListSelector extends UI5Object {
         this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
-                    const items = oList.getBinding(\\"items\\");
-                    if (items) {
-                     items.attachEventOnce(\\"dataReceived\\",
+                    oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
                         function (this: ListSelector) {
                             if (this._oList.getItems().length) {
                                 resolve({ oList });
@@ -1135,7 +1130,6 @@ export default class ListSelector extends UI5Object {
                             }
                         }.bind(this)
                     );
-                }
                 }.bind(this));
         }.bind(this));
     };
@@ -8441,7 +8435,7 @@ export default class Detail extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (elementBinding && !elementBinding.getBoundContext()) {
+        if (!elementBinding?.getBoundContext()) {
             this.getRouter().getTargets()!.display(\\"detailObjectNotFound\\");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
@@ -8703,10 +8697,7 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        const items = this.list.getBinding(\\"items\\");
-        if (items) {
-            items.refresh(false);
-        }
+        this.list.getBinding(\\"items\\")?.refresh(false);
     }
 
     /**
@@ -8904,9 +8895,7 @@ export default class ListSelector extends UI5Object {
         this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
-                    const items = oList.getBinding(\\"items\\");
-                    if (items) {
-                     items.attachEventOnce(\\"dataReceived\\",
+                    oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
                         function (this: ListSelector) {
                             if (this._oList.getItems().length) {
                                 resolve({ oList });
@@ -8916,7 +8905,6 @@ export default class ListSelector extends UI5Object {
                             }
                         }.bind(this)
                     );
-                }
                 }.bind(this));
         }.bind(this));
     };
