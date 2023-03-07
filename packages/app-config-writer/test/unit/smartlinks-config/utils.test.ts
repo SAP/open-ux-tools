@@ -130,6 +130,7 @@ describe('Test getTargetDefinition', () => {
             Object {
               "ignoreCertErrors": undefined,
               "target": Object {
+                "destination": "ABC123",
                 "url": "https://abc.abap.stagingaws.hanavlab.ondemand.com",
               },
             }

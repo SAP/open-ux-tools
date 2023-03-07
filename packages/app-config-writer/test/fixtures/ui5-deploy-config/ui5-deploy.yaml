@@ -12,6 +12,7 @@ builder:
           afterTask: generateCachebusterInfo
           configuration:
               target:
+                  destination: ABC123
                   url: https://abc.abap.stagingaws.hanavlab.ondemand.com
                   # scp: true - not supported
               app:

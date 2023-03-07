@@ -11,7 +11,10 @@ describe('Test readUi5DeployConfigTarget', () => {
     test('existing ui5-deploy.yaml', async () => {
         const basePath = join(__dirname, '../../fixtures/ui5-smartlinks-config');
         const result = await readUi5DeployConfigTarget(basePath);
-        expect(result.target).toEqual({ 'url': 'https://abc.abap.stagingaws.hanavlab.ondemand.com' });
+        expect(result.target).toEqual({
+            'destination': 'ABC123',
+            'url': 'https://abc.abap.stagingaws.hanavlab.ondemand.com'
+        });
         expect(result.ignoreCertErrors).toBe(false);
     });
     test('non-existing ui5-deploy.yaml', async () => {

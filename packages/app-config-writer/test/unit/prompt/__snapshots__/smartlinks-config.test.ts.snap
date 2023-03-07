@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test function getSmartLinksConfigQuestions() Check credentials No stored credentials 1`] = `
+exports[`Test function getSmartLinksConfigQuestions() Check credentials (BAS) Destination found (NoAuthentication) - ask for credentials 1`] = `
 Array [
   Object {
     "message": "[36mUsername[39m",
@@ -17,7 +17,41 @@ Array [
 ]
 `;
 
-exports[`Test function getSmartLinksConfigQuestions() Check credentials Stored credentials 1`] = `
+exports[`Test function getSmartLinksConfigQuestions() Check credentials (BAS) Destination not found - ask for credentials 1`] = `
+Array [
+  Object {
+    "message": "[36mUsername[39m",
+    "name": "username",
+    "type": "text",
+    "validate": [Function],
+  },
+  Object {
+    "message": "[36mPassword[39m",
+    "name": "password",
+    "type": "invisible",
+    "validate": [Function],
+  },
+]
+`;
+
+exports[`Test function getSmartLinksConfigQuestions() Check credentials (local) No stored credentials 1`] = `
+Array [
+  Object {
+    "message": "[36mUsername[39m",
+    "name": "username",
+    "type": "text",
+    "validate": [Function],
+  },
+  Object {
+    "message": "[36mPassword[39m",
+    "name": "password",
+    "type": "invisible",
+    "validate": [Function],
+  },
+]
+`;
+
+exports[`Test function getSmartLinksConfigQuestions() Check credentials (local) Stored credentials 1`] = `
 Array [
   Object {
     "choices": Array [
@@ -37,6 +71,30 @@ Array [
     "message": "Credentials to be used",
     "name": "credentials",
     "type": "select",
+  },
+]
+`;
+
+exports[`Test function getSmartLinksConfigQuestions() Prompt for destination on BAS:  Existing ui5-deploy-config 1`] = `
+Array [
+  Object {
+    "initial": "ABC123",
+    "message": "SmartLinks configuration source destination (ui5-deploy.yaml)",
+    "name": "destination",
+    "type": "text",
+    "validate": [Function],
+  },
+]
+`;
+
+exports[`Test function getSmartLinksConfigQuestions() Prompt for destination on BAS:  No ui5-deploy config 1`] = `
+Array [
+  Object {
+    "initial": undefined,
+    "message": "SmartLinks configuration source destination ",
+    "name": "destination",
+    "type": "text",
+    "validate": [Function],
   },
 ]
 `;
