@@ -18,16 +18,13 @@ export function packageDefaults(version?: string, description?: string): Partial
         version: version || '0.0.1',
         description: description || '',
         devDependencies: {
-            '@ui5/cli': '^2.14.1',
+            '@ui5/cli': '^3.0.0',
             '@sap/ux-ui5-tooling': '1'
         },
         scripts: {
             start: 'ui5 serve --config=ui5.yaml --open index.html',
             'start-local': 'ui5 serve --config=ui5-local.yaml --open index.html',
             build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist'
-        },
-        ui5: {
-            dependencies: ['@sap/ux-ui5-tooling']
         }
     };
 }
