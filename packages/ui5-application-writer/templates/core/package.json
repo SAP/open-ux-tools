@@ -11,10 +11,5 @@
     "main": "webapp/index.html",
     "dependencies": {},
     "devDependencies": <%- JSON.stringify(package.devDependencies, null, 8) -%>,
-    "scripts": <%- JSON.stringify(package.scripts, null, 4) -%>,
-    "ui5": {
-        "dependencies": [
-            "<%- package.ui5.dependencies.join('",\n"') %>"
-        ]
-    }
+    "scripts": <%- JSON.stringify(package.scripts, null, 4) -%>
 }

@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.18
+
+### Patch Changes
+
+-   35d1e15: tbi: Support @ui5/cli v3 in the generated projects
+
 ## 0.14.17
 
 ### Patch Changes

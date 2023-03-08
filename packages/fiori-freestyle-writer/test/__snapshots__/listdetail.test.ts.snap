@@ -70,7 +70,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
@@ -90,13 +90,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   }
 }
 ",
@@ -134,7 +127,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -194,7 +187,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -251,7 +244,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -608,7 +601,7 @@ export default class Detail extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (elementBinding && !elementBinding.getBoundContext()) {
+        if (!elementBinding?.getBoundContext()) {
             this.getRouter().getTargets()!.display(\\"detailObjectNotFound\\");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
@@ -888,10 +881,7 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        const items = this.list.getBinding(\\"items\\");
-        if (items) {
-            items.refresh(false);
-        }
+        this.list.getBinding(\\"items\\")?.refresh(false);
     }
 
     /**
@@ -1130,9 +1120,7 @@ export default class ListSelector extends UI5Object {
         this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
-                    const items = oList.getBinding(\\"items\\");
-                    if (items) {
-                     items.attachEventOnce(\\"dataReceived\\",
+                    oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
                         function (this: ListSelector) {
                             if (this._oList.getItems().length) {
                                 resolve({ oList });
@@ -1142,7 +1130,6 @@ export default class ListSelector extends UI5Object {
                             }
                         }.bind(this)
                     );
-                }
                 }.bind(this));
         }.bind(this));
     };
@@ -2746,7 +2733,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
@@ -2766,13 +2753,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   }
 }
 ",
@@ -2810,7 +2790,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -2870,7 +2850,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -2927,7 +2907,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -3284,7 +3264,7 @@ export default class Detail extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (elementBinding && !elementBinding.getBoundContext()) {
+        if (!elementBinding?.getBoundContext()) {
             this.getRouter().getTargets()!.display(\\"detailObjectNotFound\\");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
@@ -3564,10 +3544,7 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        const items = this.list.getBinding(\\"items\\");
-        if (items) {
-            items.refresh(false);
-        }
+        this.list.getBinding(\\"items\\")?.refresh(false);
     }
 
     /**
@@ -3806,9 +3783,7 @@ export default class ListSelector extends UI5Object {
         this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
-                    const items = oList.getBinding(\\"items\\");
-                    if (items) {
-                     items.attachEventOnce(\\"dataReceived\\",
+                    oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
                         function (this: ListSelector) {
                             if (this._oList.getItems().length) {
                                 resolve({ oList });
@@ -3818,7 +3793,6 @@ export default class ListSelector extends UI5Object {
                             }
                         }.bind(this)
                     );
-                }
                 }.bind(this));
         }.bind(this));
     };
@@ -5402,7 +5376,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
@@ -5420,12 +5394,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   }
 }
 ",
@@ -5448,7 +5416,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -5491,7 +5459,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -5531,7 +5499,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -7930,7 +7898,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
@@ -7950,13 +7918,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   }
 }
 ",
@@ -7994,7 +7955,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -8054,7 +8015,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -8111,7 +8072,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: test.me
 type: application
@@ -8468,7 +8429,7 @@ export default class Detail extends BaseController {
         const elementBinding = view.getElementBinding();
 
         // No data for the binding
-        if (elementBinding && !elementBinding.getBoundContext()) {
+        if (!elementBinding?.getBoundContext()) {
             this.getRouter().getTargets()!.display(\\"detailObjectNotFound\\");
             // if object could not be found, the selection in the list
             // does not make sense anymore.
@@ -8730,10 +8691,7 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        const items = this.list.getBinding(\\"items\\");
-        if (items) {
-            items.refresh(false);
-        }
+        this.list.getBinding(\\"items\\")?.refresh(false);
     }
 
     /**
@@ -8931,9 +8889,7 @@ export default class ListSelector extends UI5Object {
         this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
-                    const items = oList.getBinding(\\"items\\");
-                    if (items) {
-                     items.attachEventOnce(\\"dataReceived\\",
+                    oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
                         function (this: ListSelector) {
                             if (this._oList.getItems().length) {
                                 resolve({ oList });
@@ -8943,7 +8899,6 @@ export default class ListSelector extends UI5Object {
                             }
                         }.bind(this)
                     );
-                }
                 }.bind(this));
         }.bind(this));
     };

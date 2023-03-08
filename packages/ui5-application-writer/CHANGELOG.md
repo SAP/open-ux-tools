@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.18.9
+
+### Patch Changes
+
+-   35d1e15: tbi: Support @ui5/cli v3 in the generated projects
+
 ## 0.18.8
 
 ### Patch Changes

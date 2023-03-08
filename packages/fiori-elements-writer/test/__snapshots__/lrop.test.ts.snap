@@ -29,7 +29,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -43,12 +43,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop2-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -57,7 +51,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop2
 type: application
@@ -105,7 +99,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop2
 type: application
@@ -146,7 +140,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop2
 type: application
@@ -3567,7 +3561,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.77\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -3581,12 +3575,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop3-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -3595,7 +3583,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop3
 type: application
@@ -3643,7 +3631,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop3
 type: application
@@ -3684,7 +3672,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop3
 type: application
@@ -7107,7 +7095,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.77\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -7121,12 +7109,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#felrop4-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -7135,7 +7117,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop4
 type: application
@@ -7183,7 +7165,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop4
 type: application
@@ -7224,7 +7206,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop4
 type: application
@@ -10475,7 +10457,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -10489,12 +10471,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_set_toolsId-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -10503,7 +10479,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_set_toolsId
 type: application
@@ -10551,7 +10527,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_set_toolsId
 type: application
@@ -10592,7 +10568,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_set_toolsId
 type: application
@@ -14014,7 +13990,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -14028,12 +14004,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_set_toolsId_only-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -14042,7 +14012,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_set_toolsId_only
 type: application
@@ -14090,7 +14060,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_set_toolsId_only
 type: application
@@ -14131,7 +14101,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_set_toolsId_only
 type: application
@@ -17594,7 +17564,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.108\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
@@ -17615,13 +17585,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts-tile\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   },
   \\"sapux\\": true
 }
@@ -17660,7 +17623,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_ts
 type: application
@@ -17725,7 +17688,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_ts
 type: application
@@ -17783,7 +17746,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_ts
 type: application
@@ -21060,7 +21023,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -21074,12 +21037,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#felrop1-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -21088,7 +21045,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop1
 type: application
@@ -21132,7 +21089,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop1
 type: application
@@ -21172,7 +21129,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felrop1
 type: application
@@ -24655,7 +24612,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -24670,12 +24627,6 @@ archive.zip
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#lropV4AddTests-tile\\\\\\"\\",
     \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/integration/opaTests.qunit.html\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -24684,7 +24635,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV4AddTests
 type: application
@@ -24728,7 +24679,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV4AddTests
 type: application
@@ -24768,7 +24719,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV4AddTests
 type: application
@@ -28440,7 +28391,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -28454,12 +28405,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#felropui5-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -28468,7 +28413,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felropui5
 type: application
@@ -28512,7 +28457,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felropui5
 type: application
@@ -28552,7 +28497,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: felropui5
 type: application
