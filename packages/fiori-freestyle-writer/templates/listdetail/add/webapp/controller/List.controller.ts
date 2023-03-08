@@ -125,10 +125,7 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        const items = this.list.getBinding("items");
-        if (items) {
-            items.refresh(false);
-        }
+        this.list.getBinding("items")?.refresh(false);
     }
 
     /**

@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "include": [
         "../../types/mem-fs-editor.d.ts",
-        "src", 
+        "src",
         "src/**/*.json"
     ],
     "compilerOptions": {
@@ -11,6 +11,11 @@
         "noImplicitAny": false
     },
     "references": [
-        { "path": "../ui5-config" }
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../ui5-config"
+        }
     ]
 }
