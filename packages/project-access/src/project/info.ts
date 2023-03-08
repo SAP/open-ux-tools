@@ -2,6 +2,7 @@ import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { FileName } from '../constants';
 import { fileExists, findFilesByExtension } from '../file';
+import type { AppProgrammingLanguage } from '../types';
 import { getWebappPath } from './ui5-config';
 
 /**
@@ -11,9 +12,9 @@ import { getWebappPath } from './ui5-config';
  * @param [memFs] - optional mem-fs editor instance
  * @returns - used language, JavaScript or TypeScript
  */
-export async function getAppLanguage(appRoot: string, memFs?: Editor): Promise<'JavaScript' | 'TypeScript' | ''> {
+export async function getAppProgrammingLanguage(appRoot: string, memFs?: Editor): Promise<AppProgrammingLanguage> {
     const ignoreFolders = ['node_modules', '.git'];
-    let appLanguage: 'JavaScript' | 'TypeScript' | '' = '';
+    let appLanguage: AppProgrammingLanguage = '';
     try {
         const webappPath = await getWebappPath(appRoot, memFs);
         if (await fileExists(webappPath, memFs)) {
