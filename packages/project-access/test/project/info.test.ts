@@ -13,9 +13,15 @@ describe('Test getAppLanguage()', () => {
         expect(await getAppLanguage(join(sampleRoot, 'javascript-app'))).toBe('JavaScript');
     });
 
-    test('Detect app language, .ts file deleted in mem-fs', async () => {
+    test('Detect app language, .ts file deleted in mem-fs, no app language', async () => {
         const fs = create(createStorage());
         fs.delete(join(sampleRoot, 'typescript-app/webapp/index.ts'));
-        expect(await getAppLanguage(join(sampleRoot, 'typescript-app'), fs)).toBe('JavaScript');
+        expect(await getAppLanguage(join(sampleRoot, 'typescript-app'), fs)).toBe('');
+    });
+
+    test('Detect app language, no webapp folder', async () => {
+        const fs = create(createStorage());
+        fs.delete(join(sampleRoot, 'javascript-app/webapp'));
+        expect(await getAppLanguage(join(sampleRoot, 'javascript-app'), fs)).toBe('');
     });
 });
