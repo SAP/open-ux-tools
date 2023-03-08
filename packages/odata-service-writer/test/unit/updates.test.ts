@@ -62,13 +62,13 @@ describe('updates', () => {
             expect(packageJson.ui5?.dependencies).toEqual(['@sap/ux-ui5-tooling']);
         });
 
-        test('Add @sap/ux-ui5-tooling dependency to ui5 if @ui5/cli version is less than 3.0.0', () => {
+        test('Do not add @sap/ux-ui5-tooling dependency to ui5 if @ui5/cli version is 3.0.0 or greater', () => {
             testPackageJson.devDependencies['@ui5/cli'] = '^3.0.0';
-            const path = join('./test1', packageJsonFile);
+            const path = join('./test2', packageJsonFile);
             fs.writeJSON(path, testPackageJson);
             updatePackageJson(path, fs, false);
-            const packageJson = fs.readJSON('./test1/package.json') as Package;
-            expect(packageJson.ui5?.dependencies).toEqual(['@sap/ux-ui5-tooling']);
+            const packageJson = fs.readJSON('./test2/package.json') as Package;
+            expect(packageJson.ui5?.dependencies).toEqual([]);
         });
     });
 });
