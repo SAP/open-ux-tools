@@ -21,10 +21,10 @@ function getMemFsChanges(
     const getFilePartToCompare = by === 'extension' ? extname : basename;
     for (const file of Object.keys(changes).filter((f) => getFilePartToCompare(f) === query)) {
         if (changes[file].state === 'deleted') {
-            deleted.push(file);
+            deleted.push(join(file));
         }
         if (changes[file].state === 'modified') {
-            modified.push(file);
+            modified.push(join(file));
         }
     }
     return { deleted, modified };
