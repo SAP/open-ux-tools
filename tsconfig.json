@@ -15,6 +15,7 @@
         "strictPropertyInitialization": false,
         "target": "ES6",
         "skipLibCheck": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "useUnknownInCatchVariables": false
     }
 }

@@ -1,5 +1,17 @@
 # @sap-ux/yaml
 
+## 0.13.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 0.13.3
+
+### Patch Changes
+
+-   3327a3f: Do not throw exception for multi document yaml
+
 ## 0.13.2
 
 ### Patch Changes

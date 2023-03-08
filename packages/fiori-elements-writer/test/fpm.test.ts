@@ -2,9 +2,10 @@ import type { FioriElementsApp, FPMSettings } from '../src';
 import { generate, TemplateType, ValidationError } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, feBaseConfig, v4Service, v2Service } from './common';
+import { testOutputDir, debug, feBaseConfig, v4Service, v2Service, projectChecks } from './common';
 
 const TEST_NAME = 'fpmTemplates';
+jest.setTimeout(120000); // Needed when debug.debugFull
 
 describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -64,6 +65,8 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 

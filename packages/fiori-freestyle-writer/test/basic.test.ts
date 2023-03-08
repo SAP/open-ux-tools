@@ -5,8 +5,10 @@ import { removeSync } from 'fs-extra';
 import { testOutputDir, debug } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
+import { projectChecks } from './common';
 
 const TEST_NAME = 'basicTemplate';
+jest.setTimeout(120000); // Needed when debug.enabled
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -108,6 +110,23 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 }
             },
             settings: {}
+        },
+        {
+            name: 'basic_typescript_ui5_1_108',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    loadReuseLibs: false,
+                    typescript: true
+                },
+                ui5: {
+                    version: '1.108.1',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.108.1'
+                }
+            },
+            settings: {}
         }
     ];
 
@@ -128,6 +147,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 

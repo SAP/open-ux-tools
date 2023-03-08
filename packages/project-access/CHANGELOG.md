@@ -1,5 +1,31 @@
 # @sap-ux/project-access
 
+## 1.1.3
+
+### Patch Changes
+
+-   8c45841: Fixed silent mode throwing an error when sapuxRequired was set to true
+
+## 1.1.2
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/ui5-config@0.16.4
+
+## 1.1.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+
+## 1.1.0
+
+### Minor Changes
+
+-   470275c: Add option for findProjectRoot function to not throw errors when no match is found
+
 ## 1.0.6
 
 ### Patch Changes

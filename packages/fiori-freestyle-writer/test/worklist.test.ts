@@ -2,11 +2,12 @@ import type { FreestyleApp } from '../src';
 import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, getMetadata } from './common';
+import { testOutputDir, debug, getMetadata, projectChecks } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { WorklistSettings } from '../src/types';
 
 const TEST_NAME = 'worklistTemplate';
+jest.setTimeout(120000); // Needed when debug.debugFull
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -146,6 +147,34 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     typescript: true
                 }
             }
+        },
+        {
+            name: 'worklist_ts_ui5_1_108',
+            config: {
+                ...commonConfig,
+                template: {
+                    type: TemplateType.Worklist,
+                    settings: {
+                        entity: {
+                            name: 'SEPMRA_C_PD_Product',
+                            key: 'Product',
+                            idProperty: 'Name',
+                            numberProperty: 'Price',
+                            unitOfMeasureProperty: 'Currency'
+                        }
+                    } as WorklistSettings
+                },
+                ui5: {
+                    version: '1.108.1',
+                    ui5Libs: ['sap.f', 'sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.108.1'
+                },
+                service: v2Service,
+                appOptions: {
+                    typescript: true
+                }
+            }
         }
     ];
 
@@ -164,6 +193,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });

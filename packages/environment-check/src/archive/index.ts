@@ -6,16 +6,25 @@ import ignore from 'ignore';
 import { t } from '../i18n';
 import { byteNumberToSizeString } from '../formatter';
 
+interface ArchiveProjectOptions {
+    projectRoot: string;
+    targetFolder?: string;
+    targetFileName?: string;
+}
+
 /**
  * Archive a project to zip file. Result file is written to parent of the project root folder.
  *
- * @param projectRoot - root of the project, where package.json is located
- * @param targetFileName - optional file name, defaults to project folder + timestamp + .zip
+ * @param options - archive project options
+ * @param options.projectRoot - root of the project, where package.json is located
+ * @param options.targetFolder - optional, target folder where to create the archive
+ * @param options.targetFileName - optional file name, defaults to project folder + timestamp + .zip
  */
-export async function archiveProject(
-    projectRoot: string,
-    targetFileName?: string
-): Promise<{ path: string; size: string }> {
+export async function archiveProject({
+    projectRoot,
+    targetFolder,
+    targetFileName
+}: ArchiveProjectOptions): Promise<{ path: string; size: string }> {
     if (!existsSync(projectRoot)) {
         return Promise.reject(new Error(t('error.noProjectRoot', { projectRoot })));
     }
@@ -35,7 +44,7 @@ export async function archiveProject(
                     .replace(':', '')
                     .substring(0, 14)}.zip`;
             }
-            const targetPath = join(dirname(projectRoot), targetName);
+            const targetPath = targetFolder ? join(targetFolder, targetName) : join(dirname(projectRoot), targetName);
             const writeStream = createWriteStream(targetPath);
             zip.pipe(writeStream);
             zip.on('error', (error) => reject(error));

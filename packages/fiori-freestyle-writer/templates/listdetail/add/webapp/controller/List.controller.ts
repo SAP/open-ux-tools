@@ -4,6 +4,7 @@ import ListControl from "sap/m/List";
 import ObjectListItem from "sap/m/ObjectListItem";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import Event from "sap/ui/base/Event";
+import Context from "sap/ui/model/Context";
 import Filter from "sap/ui/model/Filter";
 import Sorter from "sap/ui/model/Sorter";
 import FilterOperator from "sap/ui/model/FilterOperator";
@@ -14,6 +15,7 @@ import BaseController from "./BaseController";
 import Control from "sap/ui/core/Control";
 import ViewSettingsDialog from "sap/m/ViewSettingsDialog";
 import ListBinding from "sap/ui/model/ListBinding";
+import ViewSettingsItem from "sap/m/ViewSettingsItem";
 
 /**
  * @namespace <%- app.id %>
@@ -22,25 +24,26 @@ export default class List extends BaseController {
 
     private list: ListControl;
     private listFilterState = {
-        aFilter: [],
+        aFilter: [] as Filter[],
         aSearch: [] as Filter[]
     };<%if (template.settings.entity.numberProperty) {%>
-    private groupFunctions = {
-        <%=template.settings.entity.numberProperty%>: function(oContext) {
-            var iNumber = oContext.getProperty('<%=template.settings.entity.numberProperty%>'),
-                key, text;
+        
+    private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
+        <%=template.settings.entity.numberProperty%>: (context: Context) => {
+            const iNumber = context.getProperty('<%=template.settings.entity.numberProperty%>');
+            let key, text;
             if (iNumber <= 20) {
                 key = "LE20";
-                text = this.getResourceBundle().getText("listGroup1Header1");
+                text = this.getResourceBundle().getText("listGroup1Header1") || '';
             } else {
                 key = "GT20";
-                text = this.getResourceBundle().getText("listGroup1Header2");
+                text = this.getResourceBundle().getText("listGroup1Header2") || '';
             }
             return {
                 key: key,
                 text: text
             };
-        }.bind(this)
+        }
     };<%}%>
 
     /**
@@ -122,7 +125,10 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        this.list.getBinding("items")?.refresh(false);
+        const items = this.list.getBinding("items");
+        if (items) {
+            items.refresh(false);
+        }
     }
 
     /**
@@ -164,32 +170,32 @@ export default class List extends BaseController {
      * are applied to the list, which can also mean that they
      * are removed from the list, in case they are
      * removed in the ViewSettingsDialog.
-     * @param event the confirm event
+     * @param oEvent the confirm event
      */
     public onConfirmViewSettingsDialog(event: Event) {
         <%if (template.settings.entity.numberProperty) {%>
-        var aFilterItems = oEvent.getParameters().filterItems,
-            aFilters = [],
-            aCaptions = [];
+        const filterItems = event.getParameter('filterItems') as ViewSettingsItem[];
+        const filters:  Filter[] = [];
+        const captions: string[] = [];
 
         // update filter state:
         // combine the filter array and the filter string
-        aFilterItems.forEach(function (oItem) {
-            switch (oItem.getKey()) {
+        filterItems.forEach(function (item) {
+            switch (item.getKey()) {
                 case "Filter1" :
-                    aFilters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.LE, 100));
+                    filters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.LE, 100));
                     break;
                 case "Filter2" :
-                    aFilters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.GT, 100));
+                    filters.push(new Filter("<%=template.settings.entity.numberProperty%>", FilterOperator.GT, 100));
                     break;
                 default :
                     break;
             }
-            aCaptions.push(oItem.getText());
+            captions.push(item.getText());
         });
 
-        this.listFilterState.aFilter = aFilters;
-        this.updateFilterBar(aCaptions.join(", "));
+        this.listFilterState.aFilter = filters;
+        this.updateFilterBar(captions.join(", "));
         this.applyFilterSearch();<%}%>
         this.applySortGroup(event);
     }
@@ -211,7 +217,7 @@ export default class List extends BaseController {
         if (params.groupItem) {
             const path = params.groupItem.getKey();
             const fnGroup = this.groupFunctions[path];
-            aSorters.push(new Sorter(path, params.sortDescending, fnGroup));
+            sorters.push(new Sorter(path, params.sortDescending, fnGroup));
         }
         <%}%>
         sorters.push(new Sorter(params.sortItem.getKey(), params.sortDescending));

@@ -1,5 +1,96 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.85
+
+### Patch Changes
+
+-   Updated dependencies [7fd2810]
+    -   @sap-ux/axios-extension@1.0.3
+
+## 0.2.84
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.18
+-   @sap-ux/fiori-freestyle-writer@0.15.13
+
+## 0.2.83
+
+### Patch Changes
+
+-   Updated dependencies [8e059ae]
+    -   @sap-ux/axios-extension@1.0.2
+
+## 0.2.82
+
+### Patch Changes
+
+-   Updated dependencies [6602fe4]
+    -   @sap-ux/fiori-freestyle-writer@0.15.12
+
+## 0.2.81
+
+### Patch Changes
+
+-   Updated dependencies [7fae2cd]
+    -   @sap-ux/fiori-freestyle-writer@0.15.11
+
+## 0.2.80
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/axios-extension@1.0.1
+    -   @sap-ux/fiori-elements-writer@0.8.17
+    -   @sap-ux/fiori-freestyle-writer@0.15.10
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/store@0.3.10
+    -   @sap-ux/btp-utils@0.11.5
+
+## 0.2.79
+
+### Patch Changes
+
+-   Updated dependencies [77ac998]
+    -   @sap-ux/axios-extension@1.0.0
+
+## 0.2.78
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.8.16
+-   @sap-ux/fiori-freestyle-writer@0.15.9
+
+## 0.2.77
+
+### Patch Changes
+
+-   Updated dependencies [76603f8]
+    -   @sap-ux/fiori-elements-writer@0.8.15
+    -   @sap-ux/fiori-freestyle-writer@0.15.8
+
+## 0.2.76
+
+### Patch Changes
+
+-   Updated dependencies [a34b85f]
+    -   @sap-ux/fiori-freestyle-writer@0.15.7
+
+## 0.2.75
+
+### Patch Changes
+
+-   Updated dependencies [f9dcf18]
+    -   @sap-ux/fiori-freestyle-writer@0.15.6
+
+## 0.2.74
+
+### Patch Changes
+
+-   Updated dependencies [b0d8f64]
+    -   @sap-ux/fiori-freestyle-writer@0.15.5
+
 ## 0.2.73
 
 ### Patch Changes

@@ -1,5 +1,68 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.13
+
+### Patch Changes
+
+-   Updated dependencies [81e3f25]
+    -   @sap-ux/ui5-application-writer@0.18.8
+
+## 0.15.12
+
+### Patch Changes
+
+-   6602fe4: Add more tests for TypeScript with ui5 1.108.x and fix ts templates
+
+## 0.15.11
+
+### Patch Changes
+
+-   7fae2cd: fix(freestyle-writer) replace Optional chaining to be compatible with ui5/cli v2
+
+## 0.15.10
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/odata-service-writer@0.14.17
+    -   @sap-ux/ui5-application-writer@0.18.7
+    -   @sap-ux/ui5-config@0.16.4
+
+## 0.15.9
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+-   @sap-ux/odata-service-writer@0.14.16
+-   @sap-ux/ui5-application-writer@0.18.6
+
+## 0.15.8
+
+### Patch Changes
+
+-   76603f8: Align FF ListDetail temple between JS and TS and add test utils
+-   Updated dependencies [76603f8]
+    -   @sap-ux/ui5-application-writer@0.18.5
+
+## 0.15.7
+
+### Patch Changes
+
+-   a34b85f: fix worklist check for undefined
+
+## 0.15.6
+
+### Patch Changes
+
+-   f9dcf18: fix worklist typescript template to be compatible with @ui5/cli v2
+
+## 0.15.5
+
+### Patch Changes
+
+-   b0d8f64: Fix TypeScript listdetail type errors in List.controller.ts
+
 ## 0.15.4
 
 ### Patch Changes

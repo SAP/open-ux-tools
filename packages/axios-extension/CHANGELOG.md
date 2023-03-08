@@ -1,5 +1,39 @@
 # @sap-ux/axios-extension
 
+## 1.0.3
+
+### Patch Changes
+
+-   7fd2810: improved logging
+
+## 1.0.2
+
+### Patch Changes
+
+-   8e059ae: consider segment parameters in service uri
+
+## 1.0.1
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/btp-utils@0.11.5
+
+## 1.0.0
+
+### Major Changes
+
+-   77ac998: Added a new AdtService class: ListPackageService. It provides API function
+    `listPackages({maxResult: number, phrase: string})` which returns all existing package names that
+    has prefix matching input parameter `phrase`.
+
+    ```javascript
+    const listPackageService = (await provider.getAdtService) < ListPackageService > ListPackageService;
+    const packages = await listPackageService.listPackages({ maxResult: 50, phrase: 'Z_' });
+    ```
+
 ## 0.14.1
 
 ### Patch Changes
