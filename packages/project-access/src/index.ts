@@ -3,6 +3,7 @@ export {
     findAllApps,
     findProjectRoot,
     getAppRootFromWebappPath,
+    getAppLanguage,
     getCapModelAndServices,
     getCapProjectType,
     getWebappPath,
