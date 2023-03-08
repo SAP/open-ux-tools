@@ -4,7 +4,7 @@ import { default as find } from 'findit2';
 import { fileExists } from './file-access';
 
 /**
- * Get deleted and modified files from mem-fs editor filtered by query and 'by'.
+ * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).
  *
  * @param changes - memfs editor changes, usually retrieved by fs.dump()
  * @param query - search string, file name or file extension
@@ -38,15 +38,15 @@ function getMemFsChanges(
  * @param options.by - search by file 'name' or file 'extension'
  * @param options.root - folder to start recursive search
  * @param options.excludeFolders - folder names to exclude
- * @param options.fs - optional memfs editor instance
- * @returns - array of paths that contain the file, array of full file paths in case of search by extension
+ * @param [options.memFs] - optional memfs editor instance
+ * @returns - array of paths that contain the file if searched for name; array of full file paths in case of search by extension
  */
 function findBy(options: {
     query: string;
     by: 'name' | 'extension';
     root: string;
     excludeFolders: string[];
-    fs?: Editor;
+    memFs?: Editor;
 }): Promise<string[]> {
     const getFilePartToCompare = options.by === 'extension' ? extname : basename;
     return new Promise((resolve, reject) => {
@@ -64,16 +64,16 @@ function findBy(options: {
             }
         });
         finder.on('end', () => {
-            let returnResult: string[] = results;
-            if (options.fs) {
-                const { modified, deleted } = getMemFsChanges(options.fs.dump(''), options.query, options.by);
+            let searchResult: string[] = results;
+            if (options.memFs) {
+                const { modified, deleted } = getMemFsChanges(options.memFs.dump(''), options.query, options.by);
                 const merged = Array.from(new Set([...results, ...modified]));
-                returnResult = merged.filter((f) => !deleted.includes(f));
+                searchResult = merged.filter((f) => !deleted.includes(f));
             }
             if (options.by === 'name') {
-                returnResult = returnResult.map((f) => dirname(f));
+                searchResult = searchResult.map((f) => dirname(f));
             }
-            resolve(returnResult);
+            resolve(searchResult);
         });
         finder.on('error', (error: Error) => {
             reject(error);
@@ -87,11 +87,11 @@ function findBy(options: {
  * @param filename - filename to search
  * @param root - root folder to start search
  * @param excludeFolders - list of folder names to exclude (search doesn't traverse into these folders)
- * @param fs - optional mem-fs-editor instance
+ * @param [memFs] - optional mem-fs-editor instance
  * @returns - array of paths that contain the filename
  */
-export function findFiles(filename: string, root: string, excludeFolders: string[], fs?: Editor): Promise<string[]> {
-    return findBy({ query: filename, by: 'name', root, excludeFolders, fs });
+export function findFiles(filename: string, root: string, excludeFolders: string[], memFs?: Editor): Promise<string[]> {
+    return findBy({ query: filename, by: 'name', root, excludeFolders, memFs });
 }
 
 /**
@@ -100,16 +100,16 @@ export function findFiles(filename: string, root: string, excludeFolders: string
  * @param extension - file extension to search for including '.', e.g. '.ts'
  * @param root - root folder to start search
  * @param excludeFolders - list of folder names to exclude (search doesn't traverse into these folders)
- * @param fs - optional mem-fs-editor instance
+ * @param [memFs] - optional mem-fs-editor instance
  * @returns - array of file paths that have the extension
  */
 export function findFilesByExtension(
     extension: string,
     root: string,
     excludeFolders: string[],
-    fs?: Editor
+    memFs?: Editor
 ): Promise<string[]> {
-    return findBy({ query: extension, by: 'extension', root, excludeFolders, fs });
+    return findBy({ query: extension, by: 'extension', root, excludeFolders, memFs });
 }
 
 /**
