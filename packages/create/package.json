@@ -34,8 +34,8 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/logger": "workspace:*",
         "@sap-ux/app-config-writer": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
         "@sap-ux/mockserver-config-writer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "chalk": "4.1.2",
