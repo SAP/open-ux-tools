@@ -59,6 +59,11 @@ describe('Test getLocalStoredCredentials', () => {
         storeRead.mockResolvedValueOnce(credentials);
         expect(await getLocalStoredCredentials('targetUrl', '000')).toEqual(credentials);
     });
+    test('existing username in secure storage', async () => {
+        const credentials = { username: 'mockUser', password: '' };
+        storeRead.mockResolvedValueOnce({ username: 'mockUser' });
+        expect(await getLocalStoredCredentials('targetUrl')).toEqual(credentials);
+    });
     test('non-existing credentials in secure storage', async () => {
         storeRead.mockResolvedValueOnce(undefined);
         expect(await getLocalStoredCredentials('targetUrl', '000')).toEqual(undefined);
@@ -68,6 +73,12 @@ describe('Test getLocalStoredCredentials', () => {
         await getLocalStoredCredentials('targetUrl', '000', loggerMock);
         expect(warnMock).toBeCalledWith('Retrieving stored credentials failed.');
         expect(debugMock).toBeCalledWith('Throw Error');
+    });
+    test('Store throws error (no logger)', async () => {
+        storeRead.mockRejectedValueOnce('Throw Error');
+        await getLocalStoredCredentials('targetUrl');
+        expect(warnMock).not.toBeCalled();
+        expect(debugMock).not.toBeCalled();
     });
 });
 describe('Test sendRequest', () => {
@@ -117,15 +128,25 @@ describe('Test sendRequest', () => {
         expectDebugInfo(infoMock.mock.calls);
         expect(result).toEqual(targetResponseMock);
     });
-    test('Connection error - no response', async () => {
-        axiosGet.mockRejectedValue('Connection Error');
+    test('Connection error - throw error', async () => {
+        axiosGet.mockRejectedValue(Error('Connection Error'));
         try {
             await sendRequest(config, loggerMock);
             fail('Error should have been thrown');
         } catch (error) {
             expect(debugMock.mock.calls.length).toBe(1);
-            expect(debugMock.mock.calls[0][0]).toEqual('Connection Error');
+            expect(debugMock).toBeCalledWith(Error('Connection Error'));
             expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
+        }
+    });
+    test('Connection error - throw error (no logger)', async () => {
+        axiosGet.mockRejectedValue(Error('Connection Error'));
+        try {
+            await sendRequest(config);
+            fail('Error should have been thrown');
+        } catch (error) {
+            expect(debugMock).not.toBeCalled();
+            expect(error.message).toEqual('Connection Error');
         }
     });
     test('No url/destination provided - throw error', async () => {
@@ -160,6 +181,18 @@ describe('Test getTargetDefinition', () => {
         expect(infoMock.mock.calls[1]).not.toBeDefined();
         expect(debugMock.mock.calls[0][0].message).toContain(`File 'ui5-deploy.yaml' not found`);
         expect(warnMock.mock.calls[0][0]).toContain(`File 'ui5-deploy.yaml' not found`);
+    });
+    test('target available (no logger)', async () => {
+        const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
+        await getTargetDefinition(basePath);
+        expect(infoMock).not.toBeCalled();
+        expect(warnMock).not.toBeCalled();
+    });
+    test('no target available (no logger)', async () => {
+        const basePath = join(__dirname, '../../fixtures/no-ui5-deploy-config');
+        await getTargetDefinition(basePath);
+        expect(infoMock).not.toBeCalled();
+        expect(warnMock).not.toBeCalled();
     });
 });
 
