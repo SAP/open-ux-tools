@@ -4,14 +4,7 @@
             "adapter": {
                 "config": {
                     "inbounds": { <% Object.keys(locals.inboundTargets).forEach((target, index) => { %>
-                        "<%- target %>": {
-                            "semanticObject": "<%- locals.inboundTargets[target].semanticObject %>",
-                            "action": "<%- locals.inboundTargets[target].action %>", <% if (locals.inboundTargets[target].title) { %> 
-                            "title": "<%- locals.inboundTargets[target].title %>", <% } %> <% if (locals.inboundTargets[target].signature) { %> 
-                            "signature": <%- JSON.stringify(locals.inboundTargets[target].signature) %>, <% } %>
-                            "resolutionResult": <% if(locals.inboundTargets[target].resolutionResult)
-                                { %> <%- JSON.stringify(locals.inboundTargets[target].resolutionResult) %><% } else { %> {} <% } %>
-                        }<% if( index < Object.keys(locals.inboundTargets).length -1 ){ %>, <% } %> <% }) %> 
+                        "<%- target %>": <%- JSON.stringify(locals.inboundTargets[target], null, '\t') %><% if( index < Object.keys(locals.inboundTargets).length -1 ){ %>, <% } %><% }) %> 
                     }
                 }
             }
