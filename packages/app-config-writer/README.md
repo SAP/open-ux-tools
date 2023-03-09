@@ -1,6 +1,6 @@
-# @sap-ux/app-config-config-writer
+# @sap-ux/app-config-writer
 
-The `@sap-ux/app-config-writer` adds or removes a smartlinks configuration to an SAP UX project. 
+The `@sap-ux/app-config-writer` adds or removes smartlinks configuration for a SAP UX project. 
 
 ## Installation
 Npm
@@ -13,20 +13,26 @@ Pnpm
 `pnpm add @sap-ux/app-config-writer`
 
 ## Usage
+
 ```Typescript
 import { generateSmartLinksConfig } from '@sap-ux/app-config-writer';
-import { join } from 'path';
 
-const basePath = join(__dirname, 'test/fixtures/ui5-deploy-config');
-// For destination in BAS, use `destination`
-const target = { url: 'https://abc.abap.stagingaws.hanavlab.ondemand.com', client: '000' }
-const auth = { username: 'username', password: 'password' }
-const fs = await generateSmartLinksConfig(
-    basePath,
-    { target, auth }
-);
+const myProjectPath = 'path/to/my/project'; // Path to the root of the Fiori app
+const target = {
+  url: 'https://abc.abap.stagingaws.hanavlab.ondemand.com', // For BAS, use `destination`
+  client: '100', // Optional client
+};
+const auth = { username: 'user', password: 'password' }; // Authentication details
 
-fs.commit();
+const exampleSmartLinksConfig = async () => {
+  const fs = await generateSmartLinksConfig(myProjectPath, { target, auth });
+  return new Promise((resolve) => {
+    fs.commit(resolve);
+  });
+};
+
+// Calling the function
+exampleSmartLinksConfig();
 ```
 
 See more complex example in [`/test/unit`](./test/unit)
