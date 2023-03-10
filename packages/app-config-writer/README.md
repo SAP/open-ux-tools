@@ -1,6 +1,6 @@
 # @sap-ux/app-config-writer
 
-The `@sap-ux/app-config-writer` adds or removes smartlinks configuration for a SAP UX project. 
+The `@sap-ux/app-config-writer` adds smartlinks configuration for a SAP UX project. 
 
 ## Installation
 Npm
