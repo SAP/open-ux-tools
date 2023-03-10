@@ -1,7 +1,7 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from '@sap-ux/axios-extension';
-import { generateSmartLinksConfig, removeSmartLinksConfig } from '../../../src';
+import { generateSmartLinksConfig } from '../../../src';
 import { t } from '../../../src/i18n';
 import type { TargetConfig } from '../../../src/types';
 
@@ -68,11 +68,4 @@ describe('Test generateSmartLinksConfig', () => {
             expect(fs?.read(join(basePath, 'ui5.yaml'))).not.toBeDefined();
         }
     });
-});
-
-test(`Test removeSmartLinksConfig`, async () => {
-    const basePath = join(__dirname, '../../fixtures/ui5-smartlinks-config');
-    const fs = await removeSmartLinksConfig(basePath);
-    expect(fs.readJSON(join(basePath, 'appconfig', 'fioriSandboxConfig.json'))).not.toBeDefined();
-    expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
 });

@@ -19,11 +19,7 @@ import type {
     TargetConfig,
     TargetMapping
 } from '../types';
-import {
-    addUi5YamlServeStaticMiddleware,
-    readUi5DeployConfigTarget,
-    removeUi5YamlServeStaticMiddleware
-} from './ui5-yaml';
+import { addUi5YamlServeStaticMiddleware, readUi5DeployConfigTarget } from './ui5-yaml';
 
 /**
  * @description Check the secure storage if it has credentials for the entered url.
@@ -199,18 +195,4 @@ export async function writeSmartLinksConfig(
         fs.extendJSON(appConfigPath, JSON.parse(filledTemplate));
     }
     await addUi5YamlServeStaticMiddleware(basePath, fs, logger);
-}
-
-/**
- * @description Removes the smartlinks configuration (fioriSandboxConfig, ui5 yaml servestatic middleware).
- * @param basePath - the base path of the application
- * @param fs - the memfs editor instance
- * @param logger - logger
- */
-export async function deleteSmartLinksConfig(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<void> {
-    const appConfigPath = join(basePath, 'appconfig', 'fioriSandboxConfig.json');
-    if (fs.exists(appConfigPath)) {
-        fs.delete(appConfigPath);
-    }
-    await removeUi5YamlServeStaticMiddleware(basePath, fs, logger);
 }
