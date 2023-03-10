@@ -50,7 +50,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"eslint\\": \\"7.32.0\\",
@@ -64,11 +64,6 @@ archive.zip
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\"
-    ]
   },
   \\"sapux\\": true
 }
@@ -92,7 +87,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: app.with.namespace
 type: application
@@ -117,7 +112,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: app.with.namespace
 type: application
@@ -319,7 +314,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.92\\"
   },
@@ -327,11 +322,6 @@ archive.zip
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\"
-    ]
   },
   \\"sapux\\": true
 }
@@ -341,7 +331,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: app.with.namespace
 type: application
@@ -366,7 +356,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: app.with.namespace
 type: application
@@ -568,27 +558,21 @@ archive.zip
     \\"main\\": \\"webapp/index.html\\",
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        \\"@ui5/cli\\": \\"^2.14.1\\",
+        \\"@ui5/cli\\": \\"^3.0.0\\",
         \\"@sap/ux-ui5-tooling\\": \\"1\\"
 },
     \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
-},
-    \\"ui5\\": {
-        \\"dependencies\\": [
-            \\"@sap/ux-ui5-tooling\\"
-        ]
-    }
-}
+}}
 ",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: app.with.namespace
 type: application
@@ -613,7 +597,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: app.with.namespace
 type: application
@@ -975,7 +959,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
@@ -991,12 +975,6 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\"
-    ]
   }
 }
 "
@@ -1127,7 +1105,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
@@ -1144,13 +1122,6 @@ archive.zip
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"ui5-tooling-modules\\"
-    ]
   },
   \\"sapux\\": true
 }
@@ -1189,7 +1160,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: app.with.namespace
 type: application
@@ -1237,7 +1208,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: app.with.namespace
 type: application

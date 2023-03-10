@@ -40,7 +40,7 @@ export const ProxyEventHandlers = {
      */
     onProxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions) {
         if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
-            proxyReq.setHeader('accept-encoding', 'br');
+            proxyReq.setHeader('accept-encoding', '*');
         }
     },
 

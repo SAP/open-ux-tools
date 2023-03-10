@@ -120,7 +120,7 @@ describe('proxy', () => {
             expect(mockSetHeader).not.toBeCalled();
 
             onProxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader } as ClientRequest);
-            expect(mockSetHeader).toBeCalled();
+            expect(mockSetHeader).toBeCalledWith('accept-encoding', '*');
         });
 
         test('onProxyRes', () => {

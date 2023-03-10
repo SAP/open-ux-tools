@@ -1,5 +1,14 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.15.14
+
+### Patch Changes
+
+-   35d1e15: tbi: Support @ui5/cli v3 in the generated projects
+-   Updated dependencies [35d1e15]
+    -   @sap-ux/odata-service-writer@0.14.18
+    -   @sap-ux/ui5-application-writer@0.18.9
+
 ## 0.15.13
 
 ### Patch Changes
