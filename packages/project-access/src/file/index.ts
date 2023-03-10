@@ -1,2 +1,2 @@
 export { fileExists, readFile, readJSON } from './file-access';
-export { findFiles, findFileUp } from './file-search';
+export { findFiles, findFilesByExtension, findFileUp } from './file-search';
