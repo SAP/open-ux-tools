@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.2.0
+
+### Minor Changes
+
+-   f8022a8: Add getAppLanguage to detect used app programming language JavaScript or TypeScript
+
 ## 1.1.3
 
 ### Patch Changes
