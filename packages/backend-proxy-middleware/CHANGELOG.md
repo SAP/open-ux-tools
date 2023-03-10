@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.45
+
+### Patch Changes
+
+-   03abc1f: Fix - enables flp embedded preview to load in case of decoding failure
+
 ## 0.6.44
 
 ### Patch Changes
