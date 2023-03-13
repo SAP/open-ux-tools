@@ -27,7 +27,7 @@ importers:
       husky: 8.0.3
       jest: 29.4.2
       jest-sonar: 0.2.15
-      nx: 15.6.3
+      nx: 15.8.6
       prettier: 2.8.4
       pretty-quick: 3.1.3
       rimraf: 3.0.2
@@ -52,7 +52,7 @@ importers:
       husky: 8.0.3
       jest: 29.4.2_@types+node@12.12.6
       jest-sonar: 0.2.15
-      nx: 15.6.3
+      nx: 15.8.6
       prettier: 2.8.4
       pretty-quick: 3.1.3_prettier@2.8.4
       rimraf: 3.0.2
@@ -2817,7 +2817,7 @@ packages:
     resolution: {integrity: sha512-u540ACUdnC+Jms1DIHkho80eJmoCg/LtAzR4a/1Tum6PicxWv59UYp9Ba7qFbIw+mrjWnwX/2ZmBpqTy9Rgn7w==}
     dependencies:
       '@fluentui/set-version': 8.2.2
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@fluentui/dom-utilities/2.2.2:
@@ -2833,7 +2833,7 @@ packages:
       '@fluentui/set-version': 8.2.2
       '@fluentui/style-utilities': 8.8.1_vshvapmxg47tngu7tvrsqpq55u
       '@fluentui/utilities': 8.13.2_vshvapmxg47tngu7tvrsqpq55u
-      tslib: 2.4.0
+      tslib: 2.5.0
     transitivePeerDependencies:
       - '@types/react'
       - react
@@ -2851,7 +2851,7 @@ packages:
       '@fluentui/utilities': 8.13.2_vshvapmxg47tngu7tvrsqpq55u
       '@types/react': 16.14.0
       react: 16.14.0
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@fluentui/keyboard-key/0.4.2:
@@ -2864,7 +2864,7 @@ packages:
     resolution: {integrity: sha512-bHWftN3zTp1bbBfmAEH8YK9UURWj2mffw7b7VaW2Og1qxwv3GMSza1cyv/d3EVqpMJ8AVwFv3mbi9p1ieMN9mw==}
     dependencies:
       '@fluentui/set-version': 8.2.2
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@fluentui/react-focus/8.8.8_vshvapmxg47tngu7tvrsqpq55u:
@@ -2880,7 +2880,7 @@ packages:
       '@fluentui/utilities': 8.13.2_vshvapmxg47tngu7tvrsqpq55u
       '@types/react': 16.14.0
       react: 16.14.0
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@fluentui/react-hooks/8.6.12_vshvapmxg47tngu7tvrsqpq55u:
@@ -2894,7 +2894,7 @@ packages:
       '@fluentui/utilities': 8.13.2_vshvapmxg47tngu7tvrsqpq55u
       '@types/react': 16.14.0
       react: 16.14.0
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@fluentui/react-portal-compat-context/9.0.3_vshvapmxg47tngu7tvrsqpq55u:
@@ -2905,7 +2905,7 @@ packages:
     dependencies:
       '@types/react': 16.14.0
       react: 16.14.0
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@fluentui/react-window-provider/2.2.3_vshvapmxg47tngu7tvrsqpq55u:
@@ -2917,7 +2917,7 @@ packages:
       '@fluentui/set-version': 8.2.2
       '@types/react': 16.14.0
       react: 16.14.0
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@fluentui/react/8.100.0_xcycjaol2m3tfnicwh7yl4p4jq:
@@ -2951,7 +2951,7 @@ packages:
   /@fluentui/set-version/8.2.2:
     resolution: {integrity: sha512-Vg20KZ0ufgWjxx6GFbqC5wiVxXZDUWgNT0r0By/Eyj4bUSb1jG6lmf5z1oY1dUX0YS6Cp5e6GnvbNdXg5E7orA==}
     dependencies:
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@fluentui/style-utilities/8.8.1_vshvapmxg47tngu7tvrsqpq55u:
@@ -2962,7 +2962,7 @@ packages:
       '@fluentui/theme': 2.6.17_vshvapmxg47tngu7tvrsqpq55u
       '@fluentui/utilities': 8.13.2_vshvapmxg47tngu7tvrsqpq55u
       '@microsoft/load-themed-styles': 1.10.295
-      tslib: 2.4.0
+      tslib: 2.5.0
     transitivePeerDependencies:
       - '@types/react'
       - react
@@ -2979,7 +2979,7 @@ packages:
       '@fluentui/utilities': 8.13.2_vshvapmxg47tngu7tvrsqpq55u
       '@types/react': 16.14.0
       react: 16.14.0
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@fluentui/utilities/8.13.2_vshvapmxg47tngu7tvrsqpq55u:
@@ -2993,7 +2993,7 @@ packages:
       '@fluentui/set-version': 8.2.2
       '@types/react': 16.14.0
       react: 16.14.0
-      tslib: 2.4.0
+      tslib: 2.5.0
     dev: false
 
   /@gar/promisify/1.1.3:
@@ -3481,10 +3481,10 @@ packages:
       rimraf: 3.0.2
     dev: true
 
-  /@nrwl/cli/15.6.3:
-    resolution: {integrity: sha512-K4E0spofThZXMnhA6R8hkUTdfqmwSnUE2+DlD5Y3jqsvKTAgwF5U41IFkEouFZCf+dWjy0RA20bWoX48EVFtmQ==}
+  /@nrwl/cli/15.8.6:
+    resolution: {integrity: sha512-KrWoYcZgE6woCubPO1QSnwbZAjs2rdV4dotHxR+iRkeHRPAq0D6w83CVo5oP/krfUri2pxwzhnbkgAK1LSPBYg==}
     dependencies:
-      nx: 15.6.3
+      nx: 15.8.6
     transitivePeerDependencies:
       - '@swc-node/register'
       - '@swc/core'
@@ -3507,11 +3507,92 @@ packages:
       - debug
     dev: true
 
-  /@nrwl/tao/15.6.3:
-    resolution: {integrity: sha512-bDZbPIbU5Mf2BvX0q8GjPxrm1WkYyfW+gp7mLuuJth2sEpZiCr47mSwuGko/y4CKXvIX46VQcAS0pKQMKugXsg==}
+  /@nrwl/nx-darwin-arm64/15.8.6:
+    resolution: {integrity: sha512-8diQitlyjHxpkWcXNecd6T2ch8fHR7LOMaZg9+qgrt5AypWkEGf+UHMxTSNRObAiBGnoxySa+AL/UKVtpQ203Q==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@nrwl/nx-darwin-x64/15.8.6:
+    resolution: {integrity: sha512-h9/JULzPZTpt6oNpKMZLc1NGDu+CLyx91c8DJUh/hH0Zh/7dS9LFxe9jWeFIdh18iAu7ZAoktK2KJ5YhOrUYhA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@nrwl/nx-linux-arm-gnueabihf/15.8.6:
+    resolution: {integrity: sha512-Yp/YjzcIHW+OW4revPRZIt0Px9cKRsOL69FPLlYSxWuR/PD9SPeXWcbo3pKkjnIWIjOL2YT8z5cHiQ3bV1NVfw==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@nrwl/nx-linux-arm64-gnu/15.8.6:
+    resolution: {integrity: sha512-b+OenpPhhxqgaG6EFHRLfVGtAU4+UbKqOhv7DLLh5P7tX3RAQAtyrT6tVkfDRFYl6kgEme/I5ZrevcbaGyDO+w==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@nrwl/nx-linux-arm64-musl/15.8.6:
+    resolution: {integrity: sha512-F9D8moy+lfJQhVrZoY54vDwpigBgxQy4HB9PRmc6Ln9mIk3ouOvKNC99OjUYEO+ensHr9eMpsbghsRCjod//uw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@nrwl/nx-linux-x64-gnu/15.8.6:
+    resolution: {integrity: sha512-an0zD6lKpblexazKssFvcfOx7BuGutwlrzmwScxISPXj5+ly99u+sYclDg2P56YRHYXIuYGBK0c0VWaJ91QIcw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@nrwl/nx-linux-x64-musl/15.8.6:
+    resolution: {integrity: sha512-LOurlSuLf9LWdjvpHHIsHC0auxgMVrkeOFFCUJ3oVv/dN4uZ0vuNG98XM2E7fPDXDacBZIyKdx34KQlmFfBHsA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@nrwl/nx-win32-arm64-msvc/15.8.6:
+    resolution: {integrity: sha512-MvH84nLv1tdM96z92abeQd+tguY/zKC22AFHek9PSR1StUQzwwPu6rR7XDn3mggwnkLm11jTUXlk7wdbE5sldQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@nrwl/nx-win32-x64-msvc/15.8.6:
+    resolution: {integrity: sha512-P0Sb4HJCeoeTvPFdUMKljRUIjzso0go36cn1Zpl+Z5CG/nbOvLlbnzh6rg15SRNu9OLWTHNPtyQIvKxjqEDoxg==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@nrwl/tao/15.8.6:
+    resolution: {integrity: sha512-dY205cotLiKTV+5BrUlneZEOucDmXiJU4asj1G4vQCf8Nt7awwuLYOmgbsACS27gkopSVV+DPl1zmtkSJX8Cjg==}
     hasBin: true
     dependencies:
-      nx: 15.6.3
+      nx: 15.8.6
     transitivePeerDependencies:
       - '@swc-node/register'
       - '@swc/core'
@@ -6924,7 +7005,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -9355,7 +9436,7 @@ packages:
       merge-stream: 2.0.0
       npm-run-path: 4.0.1
       onetime: 5.1.2
-      signal-exit: 3.0.6
+      signal-exit: 3.0.7
       strip-final-newline: 2.0.0
 
   /execa/5.1.1:
@@ -9767,16 +9848,6 @@ packages:
 
   /fn.name/1.1.0:
     resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
-    dev: false
-
-  /follow-redirects/1.14.9:
-    resolution: {integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
     dev: false
 
   /follow-redirects/1.15.2:
@@ -10697,7 +10768,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.15.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -13436,8 +13507,8 @@ packages:
     resolution: {integrity: sha512-90yv+6538zuvUMnN+zCr8LuV6bPFdq50304114vJYJ8RDyK8D5O9Phpbd6SZWgI7PwzmmfN1upeOJlvybDSgCw==}
     dev: true
 
-  /nx/15.6.3:
-    resolution: {integrity: sha512-3t0A0GPLNen1yPAyE+VGZ3nkAzZYb5nfXtAcx8SHBlKq4u42yBY3khBmP1y4Og3jhIwFIj7J7Npeh8ZKrthmYQ==}
+  /nx/15.8.6:
+    resolution: {integrity: sha512-3OsT6HMyyUyRuP07vLr7iuWzqziQvkh/vSfOWQb3PXakm6N1IvaLxF+NuUCtSaBDUACfqoVO4MC7WE2270OrKQ==}
     hasBin: true
     requiresBuild: true
     peerDependencies:
@@ -13449,8 +13520,8 @@ packages:
       '@swc/core':
         optional: true
     dependencies:
-      '@nrwl/cli': 15.6.3
-      '@nrwl/tao': 15.6.3
+      '@nrwl/cli': 15.8.6
+      '@nrwl/tao': 15.8.6
       '@parcel/watcher': 2.0.4
       '@yarnpkg/lockfile': 1.1.0
       '@yarnpkg/parsers': 3.0.0-rc.27
@@ -13480,10 +13551,20 @@ packages:
       tar-stream: 2.2.0
       tmp: 0.2.1
       tsconfig-paths: 4.1.2
-      tslib: 2.4.0
+      tslib: 2.5.0
       v8-compile-cache: 2.3.0
       yargs: 17.6.2
       yargs-parser: 21.1.1
+    optionalDependencies:
+      '@nrwl/nx-darwin-arm64': 15.8.6
+      '@nrwl/nx-darwin-x64': 15.8.6
+      '@nrwl/nx-linux-arm-gnueabihf': 15.8.6
+      '@nrwl/nx-linux-arm64-gnu': 15.8.6
+      '@nrwl/nx-linux-arm64-musl': 15.8.6
+      '@nrwl/nx-linux-x64-gnu': 15.8.6
+      '@nrwl/nx-linux-x64-musl': 15.8.6
+      '@nrwl/nx-win32-arm64-msvc': 15.8.6
+      '@nrwl/nx-win32-x64-msvc': 15.8.6
     transitivePeerDependencies:
       - debug
     dev: true
@@ -14331,6 +14412,17 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
+    dev: true
+
+  /promise-inflight/1.0.1_bluebird@3.7.2:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dependencies:
+      bluebird: 3.7.2
     dev: true
 
   /promise.allsettled/1.0.5:
@@ -15477,9 +15569,6 @@ packages:
       get-intrinsic: 1.1.3
       object-inspect: 1.12.2
     dev: true
-
-  /signal-exit/3.0.6:
-    resolution: {integrity: sha512-sDl4qMFpijcGw22U5w63KmD3cZJfBuFlVNbVMKje2keoKML7X2UzWbc4XrmEbDwg0NXJc3yv4/ox7b+JWb57kQ==}
 
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
