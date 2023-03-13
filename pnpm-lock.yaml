@@ -11,7 +11,7 @@ importers:
     specifiers:
       '@bessonovs/set-project-references': 0.0.10
       '@changesets/cli': 2.24.4
-      '@nrwl/nx-cloud': 15.0.2
+      '@nrwl/nx-cloud': 15.2.1
       '@types/jest': 29.4.0
       '@types/node': 12.12.6
       '@typescript-eslint/eslint-plugin': 5.51.0
@@ -36,7 +36,7 @@ importers:
     devDependencies:
       '@bessonovs/set-project-references': 0.0.10
       '@changesets/cli': 2.24.4
-      '@nrwl/nx-cloud': 15.0.2
+      '@nrwl/nx-cloud': 15.2.1
       '@types/jest': 29.4.0
       '@types/node': 12.12.6
       '@typescript-eslint/eslint-plugin': 5.51.0_o6ewljbj247dtzzkns6ax7wsu4
@@ -3491,8 +3491,8 @@ packages:
       - debug
     dev: true
 
-  /@nrwl/nx-cloud/15.0.2:
-    resolution: {integrity: sha512-DaTASuXmGyQHMxJuK6y3f7fs+Q0qQCfYDIDVGK9muNwN/QItLeWdRNltLQxbrBeS112kQTu2FPsr0DmRD60+0A==}
+  /@nrwl/nx-cloud/15.2.1:
+    resolution: {integrity: sha512-T4ycGSx77TdvS0j6tKI/6zmh6YtsPHyfB2li+wDR+BW9wjGGqOTX1QvG3gf0k2enhA3dxLgYnmeDZoEUek6MOw==}
     hasBin: true
     dependencies:
       axios: 0.21.4
@@ -6924,7 +6924,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -9769,16 +9769,6 @@ packages:
     resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
     dev: false
 
-  /follow-redirects/1.14.9:
-    resolution: {integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dev: false
-
   /follow-redirects/1.15.2:
     resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
     engines: {node: '>=4.0'}
@@ -10697,7 +10687,7 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.15.2
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -14331,6 +14321,17 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
+    dev: true
+
+  /promise-inflight/1.0.1_bluebird@3.7.2:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dependencies:
+      bluebird: 3.7.2
     dev: true
 
   /promise.allsettled/1.0.5:
