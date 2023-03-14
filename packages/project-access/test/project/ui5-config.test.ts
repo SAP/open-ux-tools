@@ -1,4 +1,7 @@
 import { join } from 'path';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+
 import { getWebappPath } from '../../src';
 
 describe('Test getWebappPath()', () => {
@@ -25,6 +28,17 @@ describe('Test getWebappPath()', () => {
     test('Get webapp from app with custom webapp mapping in multi document yaml', async () => {
         expect(await getWebappPath(join(samplesRoot, 'custom-webapp-path-multi-yaml'))).toEqual(
             join(samplesRoot, 'custom-webapp-path-multi-yaml', 'src', 'webapp')
+        );
+    });
+
+    test('Get custom webapp path from mem-fs editor instance', async () => {
+        const memFs = create(createStorage());
+        memFs.write(
+            join(samplesRoot, 'custom-webapp-path/ui5.yaml'),
+            'resources:\n  configuration:\n    paths:\n      webapp: new/webapp/path'
+        );
+        expect(await getWebappPath(join(samplesRoot, 'custom-webapp-path'), memFs)).toEqual(
+            join(samplesRoot, 'custom-webapp-path/new/webapp/path')
         );
     });
 });

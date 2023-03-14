@@ -34,10 +34,10 @@ export default class List extends BaseController {
             let key, text;
             if (iNumber <= 20) {
                 key = "LE20";
-                text = this.getResourceBundle().getText("listGroup1Header1");
+                text = this.getResourceBundle().getText("listGroup1Header1") || '';
             } else {
                 key = "GT20";
-                text = this.getResourceBundle().getText("listGroup1Header2");
+                text = this.getResourceBundle().getText("listGroup1Header2") || '';
             }
             return {
                 key: key,
@@ -125,10 +125,7 @@ export default class List extends BaseController {
      * and group settings and refreshes the list binding.
      */
     public onRefresh() {
-        const items = this.list.getBinding("items");
-        if (items) {
-            items.refresh(false);
-        }
+        this.list.getBinding("items")?.refresh(false);
     }
 
     /**

@@ -1,5 +1,23 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.8.19
+
+### Patch Changes
+
+-   35d1e15: tbi: Support @ui5/cli v3 in the generated projects
+-   Updated dependencies [35d1e15]
+    -   @sap-ux/odata-service-writer@0.14.18
+    -   @sap-ux/ui5-application-writer@0.18.9
+
+## 0.8.18
+
+### Patch Changes
+
+-   Updated dependencies [81e3f25]
+-   Updated dependencies [81e3f25]
+    -   @sap-ux/fe-fpm-writer@0.18.7
+    -   @sap-ux/ui5-application-writer@0.18.8
+
 ## 0.8.17
 
 ### Patch Changes

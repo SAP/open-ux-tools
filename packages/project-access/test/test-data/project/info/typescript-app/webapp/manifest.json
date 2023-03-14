@@ -1,0 +1,6 @@
+{
+    "sap.app": {
+        "id": "typescript-app",
+        "type": "application"
+    }
+}

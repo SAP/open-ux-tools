@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { findFiles, findFileUp } from '../../src/file';
+import { findFiles, findFilesByExtension, findFileUp } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
@@ -44,6 +44,28 @@ describe('findFiles', () => {
             fs.append(join(root, 'childB/child'), '...');
             const result = await findFiles('child', root, [], fs);
             expect(result.length).toBe(4);
+        });
+    });
+
+    describe('findFileByExtension', () => {
+        test('Find files by extension, no mem-fs', async () => {
+            const result = (await findFilesByExtension('.extension', root, [])).sort();
+            expect(result).toEqual([join(root, 'childA/child.extension'), join(root, 'root.extension')]);
+        });
+
+        test('Find files by extension with mem-fs', async () => {
+            const fs = create(createStorage());
+            const result = await findFilesByExtension('.extension', join(root, 'childA'), [], fs);
+            expect(result).toEqual([join(root, 'childA', 'child.extension')]);
+        });
+
+        test('Find files by extension with mem-fs, files added and deleted on mem-fs', async () => {
+            const fs = create(createStorage());
+            fs.delete(join(root, 'childA', 'child.extension'));
+            fs.delete(join(root, 'childA', 'child'));
+            fs.write(join(root, 'childB', 'new.extension'), '');
+            const result = (await findFilesByExtension('.extension', root, [], fs)).sort();
+            expect(result).toEqual([join(root, 'childB/new.extension'), join(root, 'root.extension')]);
         });
     });
 

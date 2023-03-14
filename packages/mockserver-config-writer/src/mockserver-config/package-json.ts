@@ -34,15 +34,19 @@ function enhanceDependencies(
     packageJson.devDependencies = packageJson.devDependencies || {};
     delete packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware'];
     packageJson.devDependencies[mockserverModule] = version;
-    packageJson.ui5 ||= {};
-    packageJson.ui5.dependencies ||= [];
-    const ui5Dependencies = packageJson.ui5.dependencies.filter(
-        (dep) => dep !== '@sap/ux-ui5-fe-mockserver-middleware'
-    );
-    if (!ui5Dependencies.includes(mockserverModule)) {
-        ui5Dependencies.push(mockserverModule);
+    if (isUi5CliHigherTwo(packageJson.devDependencies)) {
+        removeMockserverUi5Dependencies(packageJson);
+    } else {
+        packageJson.ui5 ||= {};
+        packageJson.ui5.dependencies ||= [];
+        const ui5Dependencies = packageJson.ui5.dependencies.filter(
+            (dep) => dep !== '@sap/ux-ui5-fe-mockserver-middleware'
+        );
+        if (!ui5Dependencies.includes(mockserverModule)) {
+            ui5Dependencies.push(mockserverModule);
+        }
+        packageJson.ui5.dependencies = ui5Dependencies;
     }
-    packageJson.ui5.dependencies = ui5Dependencies;
 }
 
 /**
@@ -82,6 +86,26 @@ function copyStartScript(startScript: string | undefined): string | undefined {
 }
 
 /**
+ * Check if package.json has devDependency to @ui5/cli version  > 2.
+ *
+ * @param devDependencies - parsed devDependencies from package.json
+ * @returns - true: @ui/cli higher version 2; false: @ui/cli
+ */
+function isUi5CliHigherTwo(devDependencies: Partial<Record<string, string>>): boolean {
+    let isHigherTwo = false;
+    try {
+        const versionString = devDependencies['@ui5/cli'];
+        if (typeof versionString === 'string') {
+            const majorVersion = parseInt(versionString.split('.')[0].match(/\d+/)?.[0] || '0', 10);
+            isHigherTwo = majorVersion > 2 ? true : false;
+        }
+    } catch {
+        // if something went wrong we don't have @ui/cli > version 2
+    }
+    return isHigherTwo;
+}
+
+/**
  * Replace the --config <any/path> in script with --config ./ui5-mock.yaml and return as new string.
  *
  * @param startScript - script that contains --config path/to/any.yaml
@@ -104,6 +128,25 @@ function replaceConfig(startScript: string, configStartIndex: number): string {
 }
 
 /**
+ * Remove mockserver middleware from ui5.dependencies in package.json. If no ui5.dependencies
+ * are left, remove the complete property dependencies or respective also the ui5 property.
+ *
+ * @param packageJson - parsed package.json content
+ */
+function removeMockserverUi5Dependencies(packageJson: Package) {
+    const removeModules = new Set(['@sap/ux-ui5-fe-mockserver-middleware', '@sap-ux/ui5-middleware-fe-mockserver']);
+    if (packageJson.ui5?.dependencies && Array.isArray(packageJson.ui5.dependencies)) {
+        packageJson.ui5.dependencies = packageJson.ui5.dependencies.filter((d) => !removeModules.has(d));
+        if (packageJson.ui5.dependencies.length === 0) {
+            delete packageJson.ui5.dependencies;
+        }
+    }
+    if (packageJson.ui5 && Object.keys(packageJson.ui5).length === 0) {
+        delete packageJson.ui5;
+    }
+}
+
+/**
  * Remove mockserver script and dependencies from package.json.
  *
  * @param fs - mem-fs reference to be used for file access
@@ -121,16 +164,6 @@ export function removeFromPackageJson(fs: Editor, basePath: string): void {
     if (packageJson.devDependencies && Object.keys(packageJson.devDependencies).length === 0) {
         delete packageJson.devDependencies;
     }
-    if (packageJson.ui5?.dependencies && Array.isArray(packageJson.ui5.dependencies)) {
-        packageJson.ui5.dependencies = packageJson.ui5.dependencies.filter(
-            (d) => d !== '@sap/ux-ui5-fe-mockserver-middleware' && d !== '@sap-ux/ui5-middleware-fe-mockserver'
-        );
-        if (packageJson.ui5.dependencies.length === 0) {
-            delete packageJson.ui5.dependencies;
-        }
-    }
-    if (packageJson.ui5 && Object.keys(packageJson.ui5).length === 0) {
-        delete packageJson.ui5;
-    }
+    removeMockserverUi5Dependencies(packageJson);
     fs.writeJSON(packageJsonPath, packageJson);
 }

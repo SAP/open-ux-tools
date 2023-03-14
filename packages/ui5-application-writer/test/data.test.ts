@@ -294,9 +294,6 @@ describe('Setting defaults', () => {
                 scripts: {
                     doTaskA: 'echo "Doing task A"',
                     doTaskB: 'echo "Doing task B"'
-                },
-                ui5: {
-                    dependencies: ['@some/other-dep', '@sap/ux-ui5-tooling']
                 }
             }
         };
@@ -320,9 +317,6 @@ describe('Setting defaults', () => {
                 build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist',
                 doTaskA: 'echo "Doing task A"',
                 doTaskB: 'echo "Doing task B"'
-            },
-            ui5: {
-                dependencies: ['@sap/ux-ui5-tooling', '@some/other-dep']
             },
             version: '0.0.1'
         };

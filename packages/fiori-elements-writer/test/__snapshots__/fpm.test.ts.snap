@@ -29,7 +29,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -43,12 +43,6 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\"
   },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
-  },
   \\"sapux\\": true
 }
 ",
@@ -57,7 +51,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fefpmjs
 type: application
@@ -101,7 +95,7 @@ server:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fefpmjs
 type: application
@@ -141,7 +135,7 @@ server:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fefpmjs
 type: application
@@ -3609,7 +3603,15 @@ Object {
   ".babelrc.json": Object {
     "contents": "{
     \\"ignore\\": [\\"**/*.d.ts\\"],
-    \\"presets\\": [\\"transform-ui5\\", \\"@babel/preset-typescript\\"]
+    \\"presets\\": [
+        [
+            \\"transform-ui5\\",
+            {
+                \\"addControllerStaticPropsToExtend\\": true
+            }
+        ],
+        \\"@babel/preset-typescript\\"
+    ]
 }",
     "state": "modified",
   },
@@ -3666,11 +3668,11 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.96.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.2.1\\",
+    \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
@@ -3687,13 +3689,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   },
   \\"sapux\\": true
 }
@@ -3732,7 +3727,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fefpmts
 type: application
@@ -3793,7 +3788,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fefpmts
 type: application
@@ -3850,7 +3845,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: fefpmts
 type: application
