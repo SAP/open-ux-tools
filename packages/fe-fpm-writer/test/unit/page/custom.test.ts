@@ -66,10 +66,23 @@ describe('CustomPage', () => {
             name: 'CustomPage',
             entity: 'RootEntity'
         };
+
         test('latest version with minimal input', () => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             generateCustomPage(target, minimalInput, fs);
+
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+        });
+
+        test('latest version with contextPath', () => {
+            const localInput = JSON.parse(JSON.stringify(minimalInput));
+            localInput.contextPath = 'my/path';
+            const target = join(testDir, 'minimal-input');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generateCustomPage(target, localInput, fs);
 
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();

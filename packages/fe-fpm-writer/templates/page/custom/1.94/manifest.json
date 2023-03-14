@@ -9,8 +9,9 @@
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
                         "settings": {
-                            "viewName": "<%- ns %>.<%- name %>",
-                            "entitySet": "<%- entity %>",
+                            "viewName": "<%- ns %>.<%- name %>",<%if (locals.contextPath) {%> 
+                            "contextPath": "<%- contextPath %>", <%} else {%>
+                            "entitySet": "<%- entity %>", <% } %>
                             "navigation": { }
                         }
                     }

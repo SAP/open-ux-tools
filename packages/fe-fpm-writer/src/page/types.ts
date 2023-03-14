@@ -77,8 +77,14 @@ export interface ObjectPage extends WriterConfig {
 export interface CustomPage extends CustomElement {
     /**
      * Name of the entity used for the custom page.
+     * Take the entitySet that shall be inserted as page option. 
      */
     entity: string;
+
+    /**
+     * With template or UI5 version 1.94 you can alternatively specify a contextPath that shall be insterted as page option, insted of the entitySet. 
+     */
+    contextPath?: string;
 
     /**
      * Optional incoming navigation configuration. If provided then a navigation configuration is added to an existing page navigating to this custom page.
