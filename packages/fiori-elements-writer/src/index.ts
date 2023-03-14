@@ -53,12 +53,38 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
     // Common files
-    const isV2FETypesAvailable = feApp.ui5?.version
-        ? semVer.gte(semVer.coerce(feApp.ui5?.version)!, UI5_DEFAULT.V2_FE_TYPES_AVAILABLE)
-        : false;
+    // const isV2FETypesAvailable = feApp.ui5?.version
+    //     ? semVer.gte(semVer.coerce(feApp.ui5?.version)!, UI5_DEFAULT.V2_FE_TYPES_AVAILABLE)
+    //     : false;
+    // const jsIgnoreGlob = ['**/*.ts'];
+    // const tsIgnoreGlob = isV2FETypesAvailable ? ['**/*.js', '**/ui5.d.ts'] : ['**/*.js'];
+    // const ignore = feApp.appOptions?.typescript ? tsIgnoreGlob : jsIgnoreGlob;
     const jsIgnoreGlob = ['**/*.ts'];
-    const tsIgnoreGlob = isV2FETypesAvailable ? ['**/*.js', '**/ui5.d.ts'] : ['**/*.js'];
-    const ignore = feApp.appOptions?.typescript ? tsIgnoreGlob : jsIgnoreGlob;
+
+    let ignore = jsIgnoreGlob;
+    if (feApp.appOptions?.typescript === true) {
+        const isV2FETypesAvailable = feApp.ui5?.version
+            ? 
+            // semVer.gte(semVer.coerce(feApp.ui5?.version)!, UI5_DEFAULT.V2_FE_TYPES_AVAILABLE)
+            semVer.gte(semVer.coerce(feApp.ui5?.version)!, '1.108.0')
+            : false;
+        const tsIgnoreGlob = ['**/*.js'];
+        ignore = tsIgnoreGlob;
+        // Add local ui5.d.ts if types are missing in UI5 version for V2 Odata services
+        // OR template is OVP
+        if (feApp.service.version === OdataVersion.v2) {
+            if (isV2FETypesAvailable) {
+                ignore.push('**/ui5.d.ts');
+            } else {
+                // do nothing
+            }
+        } else {
+            if (feApp.template.type !== TemplateType.OverviewPage) {
+                ignore.push('**/ui5.d.ts');
+            }
+        }
+    }
+
     fs.copyTpl(
         join(rootTemplatesPath, 'common', 'add', '**/*.*'),
         basePath,
