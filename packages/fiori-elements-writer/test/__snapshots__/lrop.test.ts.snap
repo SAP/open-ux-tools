@@ -17566,8 +17566,8 @@ archive.zip
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.108\\",
-    \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.77\\",
+    \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
@@ -17629,7 +17629,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.108.0
+  version: 1.77.2
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -20499,7 +20499,7 @@ appDescription=A Fiori application.",
   },
   "webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.48.0\\",
+  \\"_version\\": \\"1.21.0\\",
   \\"sap.app\\": {
     \\"id\\": \\"lropV2_ts\\",
     \\"type\\": \\"application\\",
@@ -20562,7 +20562,7 @@ appDescription=A Fiori application.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.108.0\\",
+      \\"minUI5Version\\": \\"1.77.2\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -20980,6 +20980,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
             sap.ushell.Container.createRenderer().placeAt(\\"content\\");
         });
     </script>
+    <!-- relevant for version < 1.78.0 only -->
+	<script src=\\"changes_preview.js\\"></script>
 </head>
 
 <!-- UI Content -->
@@ -21008,7 +21010,15 @@ Object {
   ".babelrc.json": Object {
     "contents": "{
     \\"ignore\\": [\\"**/*.d.ts\\"],
-    \\"presets\\": [\\"transform-ui5\\", \\"@babel/preset-typescript\\"]
+    \\"presets\\": [
+        [
+            \\"transform-ui5\\",
+            {
+                \\"addControllerStaticPropsToExtend\\": true
+            }
+        ],
+        \\"@babel/preset-typescript\\"
+    ]
 }",
     "state": "modified",
   },
@@ -21065,11 +21075,11 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
-    \\"@sap/ux-specification\\": \\"UI5-1.109\\",
+    \\"@sap/ux-specification\\": \\"UI5-1.108\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.2.1\\",
+    \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
@@ -21086,13 +21096,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts_ui5_1_109_1-tile\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   },
   \\"sapux\\": true
 }
@@ -21131,13 +21134,13 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_ts_ui5_1_109_1
 type: application
 framework:
   name: SAPUI5
-  version: 1.109.1
+  version: 1.108.0
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -21196,7 +21199,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_ts_ui5_1_109_1
 type: application
@@ -21254,7 +21257,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_ts_ui5_1_109_1
 type: application
@@ -24007,7 +24010,7 @@ appDescription=A Fiori application.",
   },
   "webapp/manifest.json": Object {
     "contents": "{
-  \\"_version\\": \\"1.49.0\\",
+  \\"_version\\": \\"1.48.0\\",
   \\"sap.app\\": {
     \\"id\\": \\"lropV2_ts_ui5_1_109_1\\",
     \\"type\\": \\"application\\",
@@ -24070,7 +24073,7 @@ appDescription=A Fiori application.",
   \\"sap.ui5\\": {
     \\"flexEnabled\\": true,
     \\"dependencies\\": {
-      \\"minUI5Version\\": \\"1.109.1\\",
+      \\"minUI5Version\\": \\"1.108.0\\",
       \\"libs\\": {
         \\"sap.m\\": {},
         \\"sap.ui.core\\": {},
@@ -24499,6 +24502,15 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 ",
     "state": "modified",
   },
+  "webapp/ui5.d.ts": Object {
+    "contents": "/**
+* Declaring the required interface of AppComponent that is currently missing in the UI5 types
+*/
+declare module \\"sap/suite/ui/generic/template/lib/AppComponent\\" {
+    export default class AppComponent { }
+}",
+    "state": "modified",
+  },
 }
 `;
 
@@ -24507,7 +24519,15 @@ Object {
   ".babelrc.json": Object {
     "contents": "{
     \\"ignore\\": [\\"**/*.d.ts\\"],
-    \\"presets\\": [\\"transform-ui5\\", \\"@babel/preset-typescript\\"]
+    \\"presets\\": [
+        [
+            \\"transform-ui5\\",
+            {
+                \\"addControllerStaticPropsToExtend\\": true
+            }
+        ],
+        \\"@babel/preset-typescript\\"
+    ]
 }",
     "state": "modified",
   },
@@ -24564,11 +24584,11 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.14.1\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"latest\\",
     \\"@sapui5/ts-types-esm\\": \\">=1.108.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.2.1\\",
+    \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
@@ -24585,13 +24605,6 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#lropV2_ts_ui5_variable-tile\\\\\\"\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap/ux-ui5-tooling\\",
-      \\"ui5-tooling-transpile\\",
-      \\"@sap-ux/ui5-middleware-fe-mockserver\\"
-    ]
   },
   \\"sapux\\": true
 }
@@ -24630,7 +24643,7 @@ archive.zip
   "ui5-local.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_ts_ui5_variable
 type: application
@@ -24695,7 +24708,7 @@ builder:
   "ui5-mock.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_ts_ui5_variable
 type: application
@@ -24753,7 +24766,7 @@ builder:
   "ui5.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
-specVersion: \\"2.5\\"
+specVersion: \\"2.6\\"
 metadata:
   name: lropV2_ts_ui5_variable
 type: application
