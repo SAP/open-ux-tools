@@ -140,8 +140,12 @@ export async function getTargetMappingsConfig(
         inboundConfig[targetName] = {
             semanticObject: target.semanticObject,
             action: target.semanticAction,
-            title: target.title,
-            signature: target.signature,
+            title: target.title || 'PlaceholderTitle',
+            signature: {
+                additionalParameters: 'ignored',
+                parameters: {},
+                ...target.signature
+            },
             resolutionResult: {}
         };
     }

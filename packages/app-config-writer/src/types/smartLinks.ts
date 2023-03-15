@@ -50,7 +50,10 @@ export type SystemDetailsResponse = {
 export type InboundTarget = {
     action: string;
     semanticObject: string;
-    signature: object;
+    signature: {
+        parameters: object;
+        additionalParameters: string;
+    };
     title?: string;
     resolutionResult?: {};
 };
