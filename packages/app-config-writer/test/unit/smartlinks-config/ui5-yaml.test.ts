@@ -13,7 +13,7 @@ describe('Test readUi5DeployConfigTarget', () => {
         const result = await readUi5DeployConfigTarget(basePath);
         expect(result.target).toEqual({
             'destination': 'ABC123',
-            'url': 'https://abc.abap.stagingaws.hanavlab.ondemand.com'
+            'url': 'https://abc.example'
         });
         expect(result.ignoreCertErrors).toBe(false);
     });

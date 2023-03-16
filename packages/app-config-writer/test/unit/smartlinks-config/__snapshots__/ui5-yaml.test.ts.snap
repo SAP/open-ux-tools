@@ -13,12 +13,12 @@ server:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
-            url: https://abc.ondemand.com
+            url: https://abc.example
         ui5:
           path:
             - /resources
             - /test-resources
-          url: https://ui5.sap.com
+          url: https://ui5.sap.com.example
           version: 1.91.0 # The UI5 version, for instance, 1.78.1. Empty means latest version
     - name: fiori-tools-appreload
       afterMiddleware: compression
@@ -38,7 +38,7 @@ server:
 exports[`Test addUi5YamlServeStaticMiddleware ui5.yaml - existing fiori-tools-servestatic 1`] = `
 "specVersion: '2.4'
 metadata:
-    name: 'fe_lrop_v4_odata_none'
+    name: 'ui5-smartlinks-config'
 type: application
 server:
     customMiddleware:
@@ -48,18 +48,13 @@ server:
               ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
               backend:
                   - path: /sap
-                    url: https://abc.ondemand.com
+                    url: https://abc.ondemand.example
               ui5:
                   path:
                       - /resources
                       - /test-resources
-                  url: https://ui5.sap.com
+                  url: https://ui5.sap.com.example
                   version: 1.91.0 # The UI5 version, for instance, 1.78.1. Empty means latest version
-        - name: fiori-tools-appreload
-          afterMiddleware: compression
-          configuration:
-              port: 35729
-              path: webapp
         - name: fiori-tools-servestatic
           beforeMiddleware: fiori-tools-proxy
           configuration:
@@ -73,32 +68,10 @@ server:
 exports[`Test addUi5YamlServeStaticMiddleware ui5-local.yaml - add fiori-tools-proxy 1`] = `
 "specVersion: '2.4'
 metadata:
-  name: 'fe_lrop_v4_odata_none'
+  name: 'ui5-smartlinks-config'
 type: application
-framework:
-  name: SAPUI5
-  version: 1.110.1
-  libraries:
-    - name: sap.m
-    - name: sap.ui.core
-    - name: sap.ushell
-    - name: sap.f
-    - name: sap.ui.comp
-    - name: sap.ui.generic.app
-    - name: sap.suite.ui.generic.template
-    - name: themelib_sap_horizon
 server:
   customMiddleware:
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations: []
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:

@@ -54,17 +54,29 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             const basePath = join(__dirname, '../../fixtures/no-ui5-deploy-config');
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(debugMock.mock.calls[0][0].message).toContain(`File 'ui5-deploy.yaml' not found in project`);
-            const promptForTarget = promptMock.mock.calls[0][0];
-            expect(promptForTarget).toMatchSnapshot();
-            expect(promptForTarget[0].initial).not.toBeDefined();
+            const urlPrompt = promptMock.mock.calls[0][0][0];
+            expect(urlPrompt.initial).not.toBeDefined();
+            expect(urlPrompt.message).toContain('url');
+            expect(urlPrompt.name).toEqual('url');
+            expect(urlPrompt.type).toEqual('text');
+            expect(urlPrompt.validate).toBeDefined();
+            const clientPrompt = promptMock.mock.calls[0][0][1];
+            expect(clientPrompt.initial).not.toBeDefined();
+            expect(clientPrompt.message).toEqual('SAP client ');
+            expect(clientPrompt.name).toEqual('client');
+            expect(clientPrompt.type).toEqual('text');
+            expect(clientPrompt.format).toBeDefined();
         });
         test('Existing ui5-deploy-config', async () => {
             const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(debugMock).not.toBeCalled();
-            const promptForTarget = promptMock.mock.calls[0][0];
-            expect(promptForTarget).toMatchSnapshot();
-            expect(promptForTarget[0].initial).toBeDefined();
+            const urlPrompt = promptMock.mock.calls[0][0][0];
+            expect(urlPrompt.initial).toBeDefined();
+            expect(urlPrompt.message).toContain('(ui5-deploy.yaml)');
+            const clientPrompt = promptMock.mock.calls[0][0][1];
+            expect(clientPrompt.message).toContain('(ui5-deploy.yaml)');
+            expect(clientPrompt.initial).toBeDefined();
         });
         test('Existing ui5-deploy-config - picked initial', async () => {
             const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
@@ -74,11 +86,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             }));
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(debugMock).not.toBeCalled();
-            expect(getSystemCredentialsSpy).toBeCalledWith(
-                'https://abc.abap.stagingaws.hanavlab.ondemand.com',
-                '100',
-                loggerMock
-            );
+            expect(getSystemCredentialsSpy).toBeCalledWith('https://abc.example', '100', loggerMock);
         });
     });
 
@@ -92,17 +100,22 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             const basePath = join(__dirname, '../../fixtures/no-ui5-deploy-config');
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(debugMock.mock.calls[0][0].message).toContain(`File 'ui5-deploy.yaml' not found in project`);
-            const promptForTarget = promptMock.mock.calls[0][0];
-            expect(promptForTarget).toMatchSnapshot();
-            expect(promptForTarget[0].initial).not.toBeDefined();
+            const destinationPrompt = promptMock.mock.calls[0][0][0];
+            expect(destinationPrompt.initial).not.toBeDefined();
+            expect(destinationPrompt.message).toContain('destination');
+            expect(destinationPrompt.name).toEqual('destination');
+            expect(destinationPrompt.type).toEqual('text');
+            expect(destinationPrompt.validate).toBeDefined();
+            // No prompt for client
+            expect(promptMock.mock.calls[0][0][1]).not.toBeDefined();
         });
         test('Existing ui5-deploy-config', async () => {
             const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(debugMock).not.toBeCalled();
-            const promptForTarget = promptMock.mock.calls[0][0];
-            expect(promptForTarget).toMatchSnapshot();
-            expect(promptForTarget[0].initial).toBeDefined();
+            const destinationPrompt = promptMock.mock.calls[0][0][0];
+            expect(destinationPrompt.initial).toBeDefined();
+            expect(destinationPrompt.message).toContain('(ui5-deploy.yaml)');
         });
         test('Existing ui5-deploy-config - picked initial', async () => {
             const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
@@ -126,9 +139,17 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             serviceMock.read.mockResolvedValue(undefined);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(serviceMock.read).toBeCalledWith(mockTarget);
-            const promptForCredentials = promptMock.mock.calls[1][0];
-            expect(promptForCredentials).toMatchSnapshot();
-            expect(promptForCredentials[0].choices).not.toBeDefined();
+            const usernamePrompt = promptMock.mock.calls[1][0][0];
+            expect(usernamePrompt.name).toEqual('username');
+            expect(usernamePrompt.choices).not.toBeDefined();
+            expect(usernamePrompt.message).toContain('Username');
+            expect(usernamePrompt.type).toEqual('text');
+            expect(usernamePrompt.validate).toBeDefined();
+            const passwordPrompt = promptMock.mock.calls[1][0][1];
+            expect(passwordPrompt.name).toEqual('password');
+            expect(passwordPrompt.message).toContain('Password');
+            expect(passwordPrompt.type).toEqual('invisible');
+            expect(passwordPrompt.validate).toBeDefined();
         });
 
         test('Stored credentials', async () => {
@@ -136,10 +157,13 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             serviceMock.read.mockResolvedValue(mockUser);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             expect(serviceMock.read).toBeCalledWith(mockTarget);
-            const promptForCredentials = promptMock.mock.calls[1][0];
-            expect(promptForCredentials).toMatchSnapshot();
-            expect(promptForCredentials[0].choices.length).toBe(2);
-            expect(promptForCredentials[0].choices[1].title).toEqual(t('questions.credentialsDescription'));
+            const promptForCredentials = promptMock.mock.calls[1][0][0];
+            expect(promptForCredentials.choices.length).toBe(2);
+            expect(promptForCredentials.choices[0].title).toContain('Use');
+            expect(promptForCredentials.choices[0].value).toEqual({ username: 'mockUser', password: 'mockPW' });
+            expect(promptForCredentials.choices[1].title).toContain('Provide');
+            expect(promptForCredentials.choices[1].value).toBeFalsy();
+            expect(promptForCredentials.initial).toBe(0);
         });
 
         test('Stored credentials - manual input', async () => {
@@ -174,7 +198,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             listDestinationsMock.mockResolvedValue(undefined);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             const promptForCredentials = promptMock.mock.calls[1][0];
-            expect(promptForCredentials).toMatchSnapshot();
+            expect(promptForCredentials.length).toBe(2);
             expect(promptForCredentials[0].choices).not.toBeDefined();
         });
 
@@ -185,7 +209,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             listDestinationsMock.mockResolvedValue(destinationsMock);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
             const promptForCredentials = promptMock.mock.calls[1][0];
-            expect(promptForCredentials).toMatchSnapshot();
+            expect(promptForCredentials.length).toBe(2);
             expect(promptForCredentials[0].choices).not.toBeDefined();
         });
         test('Destination found - use credentials', async () => {
@@ -215,7 +239,6 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             promptMock.mockResolvedValueOnce(mockTarget);
             promptMock.mockResolvedValueOnce({ credentials: mockUser });
             const config = await getSmartLinksTargetFromPrompt(basePath, loggerMock);
-            expect(config).toMatchSnapshot();
             expect(config.auth).toEqual(mockUser);
             expect(config.ignoreCertErrors).toEqual(undefined);
             expect(config.target).toEqual(mockTarget);

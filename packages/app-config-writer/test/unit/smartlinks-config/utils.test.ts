@@ -167,7 +167,7 @@ describe('Test getTargetDefinition', () => {
               "target": Object {
                 "client": 100,
                 "destination": "ABC123",
-                "url": "https://abc.abap.stagingaws.hanavlab.ondemand.com",
+                "url": "https://abc.example",
               },
             }
         `);
