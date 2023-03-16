@@ -100,6 +100,55 @@ Object {
 }
 `;
 
+exports[`ObjectPage generate minimal input, with contextPath 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "TestListReport",
+        },
+        Object {
+          "name": "RootEntityObjectPage",
+          "pattern": "RootEntity({RootEntityKey}):?query:",
+          "target": "RootEntityObjectPage",
+        },
+        Object {
+          "name": "OtherEntityObjectPage",
+          "pattern": "OtherEntity:?query:",
+          "target": "OtherEntityObjectPage",
+        },
+      ],
+      "targets": Object {
+        "OtherEntityObjectPage": Object {
+          "id": "OtherEntityObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/my/navigation",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+        "RootEntityListReport": Object {},
+        "RootEntityObjectPage": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`ObjectPage generate simple inbound navigation 1`] = `
 Object {
   "routes": Array [

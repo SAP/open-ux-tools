@@ -84,3 +84,40 @@ Object {
   },
 }
 `;
+
+exports[`ListReport generate minimal input, with contextPath 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "RootEntityListReport",
+        },
+      ],
+      "targets": Object {
+        "RootEntityListReport": Object {
+          "id": "RootEntityListReport",
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/my/navigation",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+      },
+    },
+  },
+}
+`;

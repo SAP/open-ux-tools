@@ -14,7 +14,11 @@ function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
     const config: InternalObjectPage = { settings: {}, ...data, name: 'ObjectPage', ...getFclConfig(manifest) };
 
     // move settings into correct possition in the manifest
-    config.settings.entitySet = data.entity;
+    if (data.contextPath) {
+        config.settings.contextPath = data.contextPath;
+    } else {
+        config.settings.entitySet = data.entity;
+    }
     config.settings.navigation = {};
     // use standard file name if i18n enhancement required
     if (config.settings.enhanceI18n === true) {

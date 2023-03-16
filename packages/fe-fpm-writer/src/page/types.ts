@@ -46,6 +46,11 @@ export interface ListReport extends WriterConfig {
     entity: string;
 
     /**
+     * With template or UI5 version 1.94 you can alternatively specify a contextPath that shall be insterted as page option, insted of the entitySet.
+     */
+    contextPath?: string;
+
+    /**
      * Optional settings for the ListReport page
      */
     settings?: ListReportSettings;
@@ -59,6 +64,11 @@ export interface ObjectPage extends WriterConfig {
      * Name of the entity used for the custom page.
      */
     entity: string;
+
+    /**
+     * With template or UI5 version 1.94 you can alternatively specify a contextPath that shall be insterted as page option, insted of the entitySet.
+     */
+    contextPath?: string;
 
     /**
      * Optional settings for the object page
