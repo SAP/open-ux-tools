@@ -1,7 +1,7 @@
 import React from 'react';
-import { UISection } from './UISection';
 import type { UISectionProps } from './UISection';
-import { UISplitter, UISplitterType, UISplitterLayoutType } from './UISplitter';
+import { UISection } from './UISection';
+import { UISplitter, UISplitterLayoutType, UISplitterType } from './UISplitter';
 
 import './UISections.scss';
 

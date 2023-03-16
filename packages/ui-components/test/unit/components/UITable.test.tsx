@@ -1,8 +1,8 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
 import { KeyCodes } from '@fluentui/react';
-import { ColumnControlType, UITable } from '../../../src/components/UITable';
+import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import type { UIColumn } from '../../../src/components/UITable';
+import { ColumnControlType, UITable } from '../../../src/components/UITable';
 import * as tableHelper from '../../../src/components/UITable/UITable-helper';
 
 describe('<UITable />', () => {

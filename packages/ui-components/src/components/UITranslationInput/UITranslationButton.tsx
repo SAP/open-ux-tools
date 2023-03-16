@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react';
 import type { ReactElement } from 'react';
+import React, { useCallback, useState } from 'react';
+import { UiIcons } from '../Icons';
 import { UIDefaultButton } from '../UIButton';
 import { UICallout, UICalloutContentPadding } from '../UICallout';
-import { UiIcons } from '../Icons';
-import type { UITranslationProps, TranslationInputStrings, TranslationSuggest } from './UITranslationButton.types';
-import { SuggestValueType } from './UITranslationButton.types';
 import { UILoadButton } from './UILoadButton';
+import type { TranslationInputStrings, TranslationSuggest, UITranslationProps } from './UITranslationButton.types';
+import { SuggestValueType } from './UITranslationButton.types';
 
 import './UITranslationInput.scss';
 

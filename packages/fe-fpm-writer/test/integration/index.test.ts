@@ -1,16 +1,16 @@
-import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { join } from 'path';
 import {
+    ControllerExtensionPageType,
+    enableFPM,
+    generateControllerExtension,
     generateCustomAction,
     generateCustomColumn,
     generateCustomPage,
-    TargetControl,
     generateCustomSection,
     generateCustomView,
-    enableFPM,
-    generateControllerExtension,
-    ControllerExtensionPageType
+    TargetControl
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';

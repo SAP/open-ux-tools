@@ -1,17 +1,17 @@
-import type { RequestHandler, NextFunction, Request, Response } from 'express';
-import type { Options } from 'http-proxy-middleware';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { MiddlewareParameters, Ui5MiddlewareConfig, ProxyConfig } from '../base';
+import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
+import dotenv from 'dotenv';
+import type { NextFunction, Request, RequestHandler, Response } from 'express';
+import type { Options } from 'http-proxy-middleware';
+import type { MiddlewareParameters, ProxyConfig, Ui5MiddlewareConfig } from '../base';
 import {
     getCorporateProxyServer,
+    hideProxyCredentials,
     HTML_MOUNT_PATHS,
     injectScripts,
-    ui5Proxy,
     resolveUI5Version,
-    hideProxyCredentials
+    ui5Proxy
 } from '../base';
-import dotenv from 'dotenv';
-import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 
 /**
  * Create proxy options based on the middleware config.

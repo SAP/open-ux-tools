@@ -1,18 +1,18 @@
+import { removeSync } from 'fs-extra';
+import { join } from 'path';
 import type { FioriElementsApp } from '../src';
 import { generate, TemplateType } from '../src';
-import { join } from 'path';
-import { removeSync } from 'fs-extra';
-import {
-    testOutputDir,
-    debug,
-    v2Service,
-    feBaseConfig,
-    v2TemplateSettings,
-    v4TemplateSettings,
-    v4Service,
-    projectChecks
-} from './common';
 import type { WorklistSettings } from '../src/types';
+import {
+    debug,
+    feBaseConfig,
+    projectChecks,
+    testOutputDir,
+    v2Service,
+    v2TemplateSettings,
+    v4Service,
+    v4TemplateSettings
+} from './common';
 
 const TEST_NAME = 'worklistTemplate';
 jest.setTimeout(120000); // Needed when debug.debugFull

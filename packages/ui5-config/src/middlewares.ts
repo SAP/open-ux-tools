@@ -1,12 +1,12 @@
+import type { NodeComment } from '@sap-ux/yaml';
 import type {
-    FioriToolsProxyConfigBackend,
     CustomMiddleware,
     FioriAppReloadConfig,
     FioriToolsProxyConfig,
-    MockserverConfig,
-    FioriToolsProxyConfigUI5
+    FioriToolsProxyConfigBackend,
+    FioriToolsProxyConfigUI5,
+    MockserverConfig
 } from './types';
-import type { NodeComment } from '@sap-ux/yaml';
 
 /**
  * Get the configuration for the AppReload middleware.

@@ -1,11 +1,11 @@
 import type { Logger } from '@sap-ux/logger';
-import type { ServiceOptions } from '../types';
 import type { DataProvider, DataProviderConstructor } from '.';
 import type { DataAccess } from '../data-access';
 import { getHybridStore } from '../data-access/hybrid';
-import { Entities } from './constants';
 import type { ApiHubSettings } from '../entities/api-hub';
 import { ApiHubSettingsKey } from '../entities/api-hub';
+import type { ServiceOptions } from '../types';
+import { Entities } from './constants';
 
 export const ApiHubSettingsProvider: DataProviderConstructor<ApiHubSettings, ApiHubSettingsKey> = class
     implements DataProvider<ApiHubSettings, ApiHubSettingsKey>

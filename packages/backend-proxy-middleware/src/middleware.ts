@@ -1,9 +1,9 @@
-import dotenv from 'dotenv';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import dotenv from 'dotenv';
 import type { RequestHandler } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
 import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
+import type { BackendMiddlewareConfig, MiddlewareParameters } from './base/types';
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.

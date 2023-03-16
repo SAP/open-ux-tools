@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { UIIcon } from '../../UIIcon';
 import { getUIId } from '../../../utilities';
+import { UIIcon } from '../../UIIcon';
 
 import type { UIToggleGroupOptionProps } from './UIToggleGroupOption.types';
 

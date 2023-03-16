@@ -1,11 +1,11 @@
-import 'jest-extended';
-import { vol } from 'memfs';
-import { basedir, getFilesystemStore, getFilesystemWatcherFor } from '../../../src/data-access/filesystem';
-import path from 'path';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { FSWatcher } from 'fs';
 import fs from 'fs';
+import 'jest-extended';
+import { vol } from 'memfs';
+import path from 'path';
 import type { Entity } from '../../../src';
-import { ToolsLogger, NullTransport } from '@sap-ux/logger';
+import { basedir, getFilesystemStore, getFilesystemWatcherFor } from '../../../src/data-access/filesystem';
 
 jest.mock('fs', () => {
     return require('memfs');

@@ -1,12 +1,12 @@
-import type { CheckEnvironmentOptions } from '../../src';
-import { checkEnvironment, getEnvironment } from '../../src/checks/environment';
-import { checkBASDestinations } from '../../src/checks/destination';
-import { checkEndpoint } from '../../src/checks/endpoint';
-import { checkStoredSystems } from '../../src/checks/stored-system';
-import { DevelopmentEnvironment, Severity } from '../../src/types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { join } from 'path';
+import type { CheckEnvironmentOptions } from '../../src';
+import { checkBASDestinations } from '../../src/checks/destination';
+import { checkEndpoint } from '../../src/checks/endpoint';
+import { checkEnvironment, getEnvironment } from '../../src/checks/environment';
 import * as install from '../../src/checks/get-installed';
+import { checkStoredSystems } from '../../src/checks/stored-system';
+import { DevelopmentEnvironment, Severity } from '../../src/types';
 
 jest.mock('axios');
 

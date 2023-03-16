@@ -1,6 +1,6 @@
+import { ToolsLogger } from '@sap-ux/logger';
 import type { ErrorMessage, SuccessMessage } from '../../src';
 import { prettyPrintError, prettyPrintMessage, prettyPrintTimeInMs } from '../../src';
-import { ToolsLogger } from '@sap-ux/logger';
 
 describe('message helpers', () => {
     const log = new ToolsLogger();

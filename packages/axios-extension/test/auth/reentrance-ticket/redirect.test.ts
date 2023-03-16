@@ -1,10 +1,10 @@
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import http from 'http';
+import request from 'supertest';
+import { ConnectionError, TimeoutError } from '../../../src/auth';
+import { ABAPSystem } from '../../../src/auth/reentrance-ticket/abap-system';
 import type { SetupRedirectOptions } from '../../../src/auth/reentrance-ticket/redirect';
 import { setupRedirectHandling } from '../../../src/auth/reentrance-ticket/redirect';
-import { ABAPSystem } from '../../../src/auth/reentrance-ticket/abap-system';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { ConnectionError, TimeoutError } from '../../../src/auth';
-import request from 'supertest';
 
 describe('setupRedirectHandling()', () => {
     beforeEach(() => {

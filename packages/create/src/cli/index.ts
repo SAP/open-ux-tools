@@ -1,6 +1,6 @@
+import { Command } from 'commander';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { Command } from 'commander';
 import { getLogger } from '../tracing';
 import { getAddCommands } from './add';
 import { getRemoveCommands } from './remove';

@@ -1,16 +1,16 @@
+import { render } from 'ejs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomSection, InternalCustomSection, CustomSectionDependencies } from './types';
 import { join } from 'path';
-import { render } from 'ejs';
-import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest } from '../common/types';
-import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
+import { coerce } from 'semver';
+import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
+import type { Manifest } from '../common/types';
+import { validateBasePath, validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
-import { coerce } from 'semver';
+import type { CustomSection, CustomSectionDependencies, InternalCustomSection } from './types';
 
 /**
  * Get the template folder for the given UI5 version.

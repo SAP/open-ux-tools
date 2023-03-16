@@ -1,6 +1,6 @@
-import { errorTemplate } from '../src/errors';
-import { YamlDocument } from '../src';
 import type { YAMLMap, YAMLSeq } from '../src';
+import { YamlDocument } from '../src';
+import { errorTemplate } from '../src/errors';
 import { interpolate } from '../src/texts';
 
 describe('YamlDocument', () => {

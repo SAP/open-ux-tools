@@ -1,11 +1,11 @@
-import type { FioriElementsApp } from '../src';
-import { generate, TemplateType } from '../src';
-import { join } from 'path';
-import { removeSync } from 'fs-extra';
-import { testOutputDir, getTestData, debug, feBaseConfig, projectChecks } from './common';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { removeSync } from 'fs-extra';
+import { join } from 'path';
+import type { FioriElementsApp } from '../src';
+import { generate, TemplateType } from '../src';
 import type { OVPSettings } from '../src/types';
+import { debug, feBaseConfig, getTestData, projectChecks, testOutputDir } from './common';
 
 const TEST_NAME = 'ovpTemplate';
 jest.setTimeout(120000); // Needed when debug.debugFull

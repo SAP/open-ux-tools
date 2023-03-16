@@ -1,11 +1,11 @@
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import { detectTabSpacing } from '../../../src/common/file';
 import type { ObjectPage } from '../../../src/page';
 import { generate } from '../../../src/page/object';
-import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
 
 describe('ObjectPage', () => {

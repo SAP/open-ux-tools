@@ -1,5 +1,5 @@
-import type { ServiceOptions } from '../types';
 import type { Logger } from '@sap-ux/logger';
+import type { ServiceOptions } from '../types';
 
 /**
  * This interface represents the target the data gets written to/read from. It abstracts implementation details

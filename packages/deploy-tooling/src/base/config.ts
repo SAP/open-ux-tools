@@ -1,5 +1,5 @@
-import { config } from 'dotenv';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { config } from 'dotenv';
 import type { AbapDeployConfig, AbapTarget, UrlAbapTarget } from '../types';
 
 /**

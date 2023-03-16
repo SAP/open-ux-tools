@@ -1,12 +1,12 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import type { DataProvider } from '../../../../src/data-provider';
 import type { ApiHubSettings, ApiHubSettingsKey } from '../../../../src';
+import type { DataProvider } from '../../../../src/data-provider';
+import type { SecureStore } from '../../../../src/secure-store';
 import {
     LEGACY_API_HUB_API_KEY,
     LEGACY_API_HUB_API_SERVICE,
     migrateToLatestVersion
 } from '../../../../src/services/api-hub/migration';
-import type { SecureStore } from '../../../../src/secure-store';
 
 describe('migration', () => {
     describe('migrateToLatestVersion', () => {

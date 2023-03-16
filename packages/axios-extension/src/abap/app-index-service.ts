@@ -1,6 +1,6 @@
-import type { Service } from '../base/service-provider';
-import { Axios } from 'axios';
 import type { Logger } from '@sap-ux/logger';
+import { Axios } from 'axios';
+import type { Service } from '../base/service-provider';
 
 export interface App {
     'sap.app/id': string;

@@ -1,5 +1,5 @@
-import { AppIndexService, createForAbap } from '../../src';
 import nock from 'nock';
+import { AppIndexService, createForAbap } from '../../src';
 import appIndexMock from './mockResponses/appIndex.json';
 
 nock.disableNetConnect();

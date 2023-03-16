@@ -1,15 +1,15 @@
-import * as command from '../../src/command';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import fs from 'fs';
+import type { Extension } from 'vscode';
 import {
     getCFCliToolVersion,
     getFioriGenVersion,
     getInstalledExtensions,
     getProcessVersions
 } from '../../src/checks/get-installed';
-import fs from 'fs';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { getLogger } from '../../src/logger';
-import type { Extension } from 'vscode';
+import * as command from '../../src/command';
 import { t } from '../../src/i18n';
+import { getLogger } from '../../src/logger';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()

@@ -1,10 +1,10 @@
+import { removeSync } from 'fs-extra';
+import { join } from 'path';
 import type { FreestyleApp } from '../src';
 import { generate } from '../src';
-import { join } from 'path';
 import type { ListDetailSettings } from '../src/types';
 import { TemplateType } from '../src/types';
-import { removeSync } from 'fs-extra';
-import { commonConfig, northwind, debug, testOutputDir, projectChecks } from './common';
+import { commonConfig, debug, northwind, projectChecks, testOutputDir } from './common';
 
 const TEST_NAME = 'listDetailTemplate';
 

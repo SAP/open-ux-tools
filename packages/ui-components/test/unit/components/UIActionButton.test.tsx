@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { render } from '@testing-library/react';
-import { UiIcons, initIcons, UIActionButton } from '../../../src/components';
+import * as React from 'react';
+import { initIcons, UIActionButton, UiIcons } from '../../../src/components';
 
 describe('<UIActionButton />', () => {
     initIcons();

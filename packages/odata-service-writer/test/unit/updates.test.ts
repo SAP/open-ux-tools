@@ -1,12 +1,12 @@
-import { updateManifest, updatePackageJson } from '../../src/updates';
-import { join } from 'path';
+import type { Package } from '@sap-ux/project-access';
+import * as ejs from 'ejs';
+import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
+import { join } from 'path';
 import type { OdataService } from '../../src';
 import { OdataVersion } from '../../src';
-import * as ejs from 'ejs';
-import type { Package } from '@sap-ux/project-access';
+import { updateManifest, updatePackageJson } from '../../src/updates';
 
 jest.mock('ejs', () => ({
     __esModule: true, // Allows mocking of ejs funcs

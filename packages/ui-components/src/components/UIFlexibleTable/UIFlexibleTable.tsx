@@ -2,16 +2,16 @@ import type { CSSProperties } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 import { List } from 'react-movable';
 import { UIDefaultButton, UILoader } from '..';
-import { renderTitleRow, UIFlexibleTableRow } from './UIFlexibleTableRow';
-import type { UIFlexibleTableRowProps } from './UIFlexibleTableRow';
-import { UIFlexibleTableRowNoData } from './UIFlexibleTableRowNoData';
-import { UIFlexibleTableLayout } from './types';
 import type { NodeDragAndDropSortingParams, UIFlexibleTableProps, UIFlexibleTableRowType } from './types';
+import { UIFlexibleTableLayout } from './types';
+import type { UIFlexibleTableRowProps } from './UIFlexibleTableRow';
+import { renderTitleRow, UIFlexibleTableRow } from './UIFlexibleTableRow';
+import { UIFlexibleTableRowNoData } from './UIFlexibleTableRowNoData';
 
-import './UIFlexibleTable.scss';
-import { composeClassNames, getRowActionButtonId, getTableActionButtonId } from './utils';
 import { RowActions } from './RowActions';
 import { RowDataCells } from './RowData';
+import './UIFlexibleTable.scss';
+import { composeClassNames, getRowActionButtonId, getTableActionButtonId } from './utils';
 
 /**
  * @class {ResizeObserver}

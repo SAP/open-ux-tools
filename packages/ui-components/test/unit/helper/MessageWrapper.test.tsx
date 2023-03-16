@@ -1,7 +1,7 @@
-import * as React from 'react';
 import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import type { MessageWrapperProps } from '../../../src/helper/ValidationMessage';
-import { MessageWrapper, getMessageInfo } from '../../../src/helper/ValidationMessage';
+import { getMessageInfo, MessageWrapper } from '../../../src/helper/ValidationMessage';
 
 describe('<MessageWrapper />', () => {
     let wrapper: Enzyme.ReactWrapper<MessageWrapperProps>;

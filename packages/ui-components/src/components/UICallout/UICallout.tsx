@@ -1,12 +1,12 @@
-import React from 'react';
 import type {
-    ICalloutProps,
+    ICalloutContentStyleProps,
     ICalloutContentStyles,
+    ICalloutProps,
     IRawStyle,
-    IStyleFunctionOrObject,
-    ICalloutContentStyleProps
+    IStyleFunctionOrObject
 } from '@fluentui/react';
 import { Callout } from '@fluentui/react';
+import React from 'react';
 
 export interface UICalloutProps extends ICalloutProps {
     calloutMinWidth?: number;

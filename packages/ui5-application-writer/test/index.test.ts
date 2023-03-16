@@ -1,9 +1,9 @@
-import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { join } from 'path';
 import type { Ui5App } from '../src';
-import { generate, isTypescriptEnabled, enableTypescript } from '../src';
+import { enableTypescript, generate, isTypescriptEnabled } from '../src';
 
 describe('UI5 templates', () => {
     const fs = create(createStorage());

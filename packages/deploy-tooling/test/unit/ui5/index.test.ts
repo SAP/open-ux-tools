@@ -1,7 +1,7 @@
 import { LogLevel } from '@sap-ux/logger';
+import { task } from '../../../src';
 import type { AbapDeployConfig } from '../../../src/types';
 import ui5Task from '../../../src/ui5';
-import { task } from '../../../src';
 import { mockedUi5RepoService } from '../../__mocks__';
 
 describe('ui5', () => {

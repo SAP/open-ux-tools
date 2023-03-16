@@ -1,11 +1,11 @@
-import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
-import { UI5Config } from '@sap-ux/ui5-config';
-import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
-import type { Ui5MockYamlConfig } from '../types';
+import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import { UI5Config } from '@sap-ux/ui5-config';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
+import type { Editor } from 'mem-fs-editor';
+import { join } from 'path';
 import { getMainServiceDataSource } from '../app-info';
+import type { Ui5MockYamlConfig } from '../types';
 
 /**
  * Enhance or create the ui5-mock.yaml with mockserver config.

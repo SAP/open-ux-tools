@@ -1,14 +1,14 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
 
-import type { Template, LROPSettings, OVPSettings, FPMSettings } from '@sap-ux/fiori-elements-writer';
-import { generate as generateFE, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
-import type { OdataService } from '@sap-ux/odata-service-writer';
 import { ODataVersion } from '@sap-ux/axios-extension';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import type { FPMSettings, LROPSettings, OVPSettings, Template } from '@sap-ux/fiori-elements-writer';
+import { generate as generateFE, OdataVersion, TemplateType } from '@sap-ux/fiori-elements-writer';
 import type { Template as FreestyleTemplate } from '@sap-ux/fiori-freestyle-writer';
 import { generate as generateUI5, TemplateType as FreestyleTemplateType } from '@sap-ux/fiori-freestyle-writer';
+import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { Ui5App } from '@sap-ux/ui5-application-writer';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ServiceInfo } from './service';
 import { getServiceInfo, getServiceInfoInBAS } from './service';
 import { getUI5Versions } from './ui5';

@@ -1,9 +1,9 @@
-import { yellow, cyan } from 'chalk';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import type { Logger } from '@sap-ux/logger';
+import { cyan, yellow } from 'chalk';
 import type { Options } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import prompts from 'prompts';
-import type { Logger } from '@sap-ux/logger';
-import { isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * Replace calls to manifest.appdescr file if we are running the FLP embedded flow.

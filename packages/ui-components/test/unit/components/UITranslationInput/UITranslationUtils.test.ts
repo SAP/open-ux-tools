@@ -1,12 +1,12 @@
-import {
-    TranslationTextPattern,
-    TranslationKeyGenerator
-} from '../../../../src/components/UITranslationInput/UITranslationButton.types';
 import type { I18nBundle } from '../../../../src/components/UITranslationInput/UITranslationButton.types';
 import {
+    TranslationKeyGenerator,
+    TranslationTextPattern
+} from '../../../../src/components/UITranslationInput/UITranslationButton.types';
+import {
+    applyI18nPattern,
     extractI18nKey,
     generateI18nKey,
-    applyI18nPattern,
     getTranslationByKey,
     getTranslationByText
 } from '../../../../src/components/UITranslationInput/UITranslationUtils';

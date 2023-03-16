@@ -1,2 +1,2 @@
-export * from './defaults';
 export * from './annotations';
+export * from './defaults';

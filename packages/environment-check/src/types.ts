@@ -1,5 +1,5 @@
-import type { Destination as BTPDestination, ServiceInfo } from '@sap-ux/btp-utils';
 import type { ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { Destination as BTPDestination, ServiceInfo } from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
 
 export interface CheckEnvironmentOptions {

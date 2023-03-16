@@ -1,8 +1,8 @@
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { BackendSystem, BackendSystemKey } from '../../../src';
 import * as dataAccessHybrid from '../../../src/data-access/hybrid';
 import { SystemDataProvider } from '../../../src/data-provider/backend-system';
 import { Entities } from '../../../src/data-provider/constants';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 describe('Backend system data provider', () => {
     const mockGetHybridStore = jest.spyOn(dataAccessHybrid, 'getHybridStore');

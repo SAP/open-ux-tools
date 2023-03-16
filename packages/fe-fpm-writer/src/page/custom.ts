@@ -1,17 +1,17 @@
-import { join } from 'path';
+import { render } from 'ejs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { render } from 'ejs';
-import type { CustomPage, InternalCustomPage } from './types';
-import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
+import { join } from 'path';
+import { coerce } from 'semver';
 import { setCommonDefaults } from '../common/defaults';
+import { extendJSON } from '../common/file';
 import type { Manifest } from '../common/types';
+import { addExtensionTypes } from '../common/utils';
 import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
-import { coerce } from 'semver';
-import { addExtensionTypes } from '../common/utils';
-import { extendJSON } from '../common/file';
+import { getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
+import type { CustomPage, InternalCustomPage } from './types';
 
 /**
  * Enhances the provided custom page configuration with default data.

@@ -1,11 +1,11 @@
-import { existsSync, promises, readdirSync } from 'fs';
-import { t } from '../i18n';
-import { join } from 'path';
-import { spawnCommand, npmCommand } from '../command';
-import { Extensions, NpmModules } from '../types';
-import type { ILogger } from '../types';
-import type { Extension } from 'vscode';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { existsSync, promises, readdirSync } from 'fs';
+import { join } from 'path';
+import type { Extension } from 'vscode';
+import { npmCommand, spawnCommand } from '../command';
+import { t } from '../i18n';
+import type { ILogger } from '../types';
+import { Extensions, NpmModules } from '../types';
 
 const pluginsDirBAS = join('/extbin/plugins');
 

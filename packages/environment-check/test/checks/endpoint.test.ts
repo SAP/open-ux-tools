@@ -1,11 +1,11 @@
+import type { ServiceProvider } from '@sap-ux/axios-extension';
+import { createForAbap, createForAbapOnCloud, createForDestination } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import * as basDestination from '../../src/checks/destination';
+import { checkEndpoint, checkEndpoints } from '../../src/checks/endpoint';
+import * as storedSystem from '../../src/checks/stored-system';
 import type { CatalogServiceResult, Endpoint } from '../../src/types';
 import { Severity, UrlServiceType } from '../../src/types';
-import { checkEndpoints, checkEndpoint } from '../../src/checks/endpoint';
-import * as basDestination from '../../src/checks/destination';
-import * as storedSystem from '../../src/checks/stored-system';
-import { createForDestination, createForAbap, createForAbapOnCloud } from '@sap-ux/axios-extension';
-import type { ServiceProvider } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()

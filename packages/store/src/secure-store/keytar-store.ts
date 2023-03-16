@@ -1,7 +1,7 @@
-import type { SecureStore } from './types';
-import type * as Keytar from 'keytar';
 import type { Logger } from '@sap-ux/logger';
+import type * as Keytar from 'keytar';
 import { errorString } from '../utils';
+import type { SecureStore } from './types';
 
 type Entities<T> = {
     [key: string]: T;

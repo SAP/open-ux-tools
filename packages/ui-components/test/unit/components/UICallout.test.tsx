@@ -1,7 +1,7 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
 import type { ICalloutContentStyles } from '@fluentui/react';
 import { Callout } from '@fluentui/react';
+import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import type { UICalloutProps } from '../../../src/components/UICallout';
 import { UICallout, UICalloutContentPadding } from '../../../src/components/UICallout';
 

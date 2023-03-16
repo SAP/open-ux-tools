@@ -1,4 +1,4 @@
-import { generateProxyMiddlewareOptions, createProxy, initI18n } from './base/proxy';
+import { createProxy, generateProxyMiddlewareOptions, initI18n } from './base/proxy';
 
 export { generateProxyMiddlewareOptions, createProxy };
 

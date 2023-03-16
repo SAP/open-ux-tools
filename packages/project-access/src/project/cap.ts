@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { FileName } from '../constants';
-import type { CapCustomPaths, CapProjectType, csn, Package } from '../types';
 import { fileExists, readJSON } from '../file';
+import type { CapCustomPaths, CapProjectType, csn, Package } from '../types';
 import { loadModuleFromProject } from './module-loader';
 
 /**

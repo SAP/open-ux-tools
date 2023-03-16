@@ -1,11 +1,11 @@
-import * as React from 'react';
+import type { ICalloutContentStyles, IDropdownStyleProps, IStyleFunction } from '@fluentui/react';
+import { Dropdown, ResponsiveMode } from '@fluentui/react';
 import * as Enzyme from 'enzyme';
+import * as React from 'react';
+import { initIcons } from '../../../src/components/Icons';
 import type { UIDropdownProps } from '../../../src/components/UIDropdown';
 import { UIDropdown } from '../../../src/components/UIDropdown';
-import type { IStyleFunction, ICalloutContentStyles, IDropdownStyleProps } from '@fluentui/react';
-import { Dropdown, ResponsiveMode } from '@fluentui/react';
 import { data as originalData } from '../../__mock__/select-data';
-import { initIcons } from '../../../src/components/Icons';
 
 const data = JSON.parse(JSON.stringify(originalData));
 

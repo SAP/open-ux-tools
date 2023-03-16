@@ -1,6 +1,6 @@
-import { generate } from '../src';
-import { join } from 'path';
 import { removeSync } from 'fs-extra';
+import { join } from 'path';
+import { generate } from '../src';
 
 describe('UI5 templates', () => {
     const debug = !!process.env['UX_DEBUG'];

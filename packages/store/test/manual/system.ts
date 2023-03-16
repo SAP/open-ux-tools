@@ -1,8 +1,8 @@
-import type { ServiceOptions, ApiHubSettingsKey, ApiHubSettings } from '../../src';
-import { getService, BackendSystem, BackendSystemKey } from '../../src';
+import { ConsoleTransport, ToolsLogger } from '@sap-ux/logger';
 import os from 'os';
 import path from 'path';
-import { ConsoleTransport, ToolsLogger } from '@sap-ux/logger';
+import type { ApiHubSettings, ApiHubSettingsKey, ServiceOptions } from '../../src';
+import { BackendSystem, BackendSystemKey, getService } from '../../src';
 
 async function main(action: string, basedir?: string): Promise<void> {
     let opt: ServiceOptions = {};

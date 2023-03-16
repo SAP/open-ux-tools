@@ -1,12 +1,12 @@
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as mockserverWriter from '@sap-ux/mockserver-config-writer';
+import * as childProcess from 'child_process';
 import { Command } from 'commander';
 import type { Editor } from 'mem-fs-editor';
-import type { ToolsLogger } from '@sap-ux/logger';
-import { addAddMockserverConfigCommand } from '../../../../src/cli/add/mockserver-config';
-import * as prompts from 'prompts';
-import * as mockserverWriter from '@sap-ux/mockserver-config-writer';
-import * as logger from '../../../../src/tracing/logger';
-import * as childProcess from 'child_process';
 import { join } from 'path';
+import * as prompts from 'prompts';
+import { addAddMockserverConfigCommand } from '../../../../src/cli/add/mockserver-config';
+import * as logger from '../../../../src/tracing/logger';
 
 jest.mock('child_process');
 jest.mock('prompts');

@@ -1,49 +1,49 @@
-import React from 'react';
 import type {
-    IDetailsListCheckboxProps,
-    ITextField,
+    IComboBoxOption,
+    IDetailsColumnFieldProps,
     IDetailsList,
+    IDetailsListCheckboxProps,
     IDetailsListProps,
     IDetailsListStyles,
-    IDropdown,
     IDetailsRowFieldsProps,
-    IDetailsColumnFieldProps,
+    IDropdown,
     IRenderFunction,
-    IComboBoxOption
+    ITextField
 } from '@fluentui/react';
 import {
+    CheckboxVisibility,
+    ConstrainMode,
     DetailsList,
+    DetailsListLayoutMode,
+    DetailsRow,
+    DetailsRowFields,
+    FocusZoneDirection,
     ScrollablePane,
     Selection,
-    CheckboxVisibility,
-    DetailsRow,
-    DetailsListLayoutMode,
-    ConstrainMode,
-    SelectionMode,
-    DetailsRowFields,
-    FocusZoneDirection
+    SelectionMode
 } from '@fluentui/react';
+import React from 'react';
 
 import { UICheckbox } from '../UICheckbox';
-import { UITextInput } from '../UIInput';
-import { UIDropdown } from '../UIDropdown';
 import { UIComboBox } from '../UIComboBox';
 import { UIDatePicker } from '../UIDatePicker';
-import {
-    scrollToColumn,
-    addRowNumbers,
-    _copyAndSort,
-    _onHeaderRender,
-    focusEditedCell,
-    getStylesForSelectedCell,
-    showFocus,
-    hideFocus,
-    scrollToRow,
-    getComboBoxInput,
-    getCellFromCoords
-} from './UITable-helper';
-import type { UITableProps, UITableState, UIDocument, UIColumn, EditedCell } from './types';
+import { UIDropdown } from '../UIDropdown';
+import { UITextInput } from '../UIInput';
+import type { EditedCell, UIColumn, UIDocument, UITableProps, UITableState } from './types';
 import { ColumnControlType } from './types';
+import {
+    addRowNumbers,
+    focusEditedCell,
+    getCellFromCoords,
+    getComboBoxInput,
+    getStylesForSelectedCell,
+    hideFocus,
+    scrollToColumn,
+    scrollToRow,
+    showFocus,
+    _copyAndSort,
+    _onHeaderRender
+} from './UITable-helper';
 import './UITable.scss';
 
 /**

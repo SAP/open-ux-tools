@@ -1,5 +1,5 @@
-import type { App, UI5, AppOptions, Package, Ui5App } from '../types';
-import { mergeApp, packageDefaults, mergeUi5, mergeObjects, getSpecTagVersion } from './defaults';
+import type { App, AppOptions, Package, UI5, Ui5App } from '../types';
+import { getSpecTagVersion, mergeApp, mergeObjects, mergeUi5, packageDefaults } from './defaults';
 import { validate } from './validators';
 
 /**

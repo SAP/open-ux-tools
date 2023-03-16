@@ -3,14 +3,14 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import type { CustomTableColumn, InternalCustomTableColumn } from './types';
-import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults';
-import type { Manifest } from '../common/types';
-import { validateVersion, validateBasePath } from '../common/validate';
+import { coerce } from 'semver';
+import { getDefaultFragmentContent, setCommonDefaults } from '../common/defaults';
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
+import type { Manifest } from '../common/types';
+import { validateBasePath, validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
-import { coerce } from 'semver';
+import type { CustomTableColumn, InternalCustomTableColumn } from './types';
 
 /**
  * Get the template folder for the given UI5 version.

@@ -1,5 +1,5 @@
-import { AdtService } from './adt-service';
 import type { AdtCategory } from '../../types';
+import { AdtService } from './adt-service';
 
 /**
  * Input parameter for creating a new transport request for an UI5 app object.

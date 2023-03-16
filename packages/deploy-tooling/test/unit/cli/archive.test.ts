@@ -1,7 +1,7 @@
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import axios from 'axios';
 import { dirname, relative } from 'path';
 import { getArchive } from '../../../src/cli/archive';
-import axios from 'axios';
 
 jest.mock('axios');
 

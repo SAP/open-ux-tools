@@ -1,16 +1,16 @@
+import { removeSync } from 'fs-extra';
+import { join } from 'path';
 import type { FioriElementsApp, LROPSettings } from '../src';
 import { generate, TemplateType } from '../src';
-import { join } from 'path';
-import { removeSync } from 'fs-extra';
 import {
-    testOutputDir,
     debug,
     feBaseConfig,
-    v4TemplateSettings,
-    v4Service,
-    v2TemplateSettings,
+    projectChecks,
+    testOutputDir,
     v2Service,
-    projectChecks
+    v2TemplateSettings,
+    v4Service,
+    v4TemplateSettings
 } from './common';
 
 const TEST_NAME = 'lropTemplates';

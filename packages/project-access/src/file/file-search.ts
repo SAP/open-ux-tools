@@ -1,6 +1,6 @@
+import { default as find } from 'findit2';
 import type { Editor, FileMap } from 'mem-fs-editor';
 import { basename, dirname, extname, join } from 'path';
-import { default as find } from 'findit2';
 import { fileExists } from './file-access';
 
 /**

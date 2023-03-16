@@ -1,3 +1,10 @@
+import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
+import { YamlDocument } from '@sap-ux/yaml';
+import {
+    getAppReloadMiddlewareConfig,
+    getFioriToolsProxyMiddlewareConfig,
+    getMockServerMiddlewareConfig
+} from './middlewares';
 import type {
     AbapApp,
     AbapTarget,
@@ -11,13 +18,6 @@ import type {
     Resources,
     Ui5Document
 } from './types';
-import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
-import { YamlDocument } from '@sap-ux/yaml';
-import {
-    getAppReloadMiddlewareConfig,
-    getFioriToolsProxyMiddlewareConfig,
-    getMockServerMiddlewareConfig
-} from './middlewares';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.

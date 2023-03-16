@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
-import { getFclConfig, extendPageJSON } from './common';
 import type { Manifest } from '../common/types';
-import type { ObjectPage, InternalObjectPage } from './types';
+import { extendPageJSON, getFclConfig } from './common';
+import type { InternalObjectPage, ObjectPage } from './types';
 
 /**
  * Enhances the provided list report configuration with default data.

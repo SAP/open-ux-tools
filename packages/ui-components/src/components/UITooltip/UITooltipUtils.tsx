@@ -1,5 +1,5 @@
-import React from 'react';
 import type { ITooltipProps, ITooltipStyles } from '@fluentui/react';
+import React from 'react';
 import sanitizeHtml from 'sanitize-html';
 
 import { CALLOUT_STYLES } from '../UICallout';

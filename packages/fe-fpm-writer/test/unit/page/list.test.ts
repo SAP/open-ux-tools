@@ -2,9 +2,9 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
+import { detectTabSpacing } from '../../../src/common/file';
 import type { ListReport } from '../../../src/page';
 import { generate } from '../../../src/page/list';
-import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
 
 describe('ListReport', () => {

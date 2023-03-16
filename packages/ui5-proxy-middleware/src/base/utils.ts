@@ -1,14 +1,14 @@
-import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
-import type { ProxyConfig } from './types';
 import { existsSync, readFileSync } from 'fs';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import { join } from 'path';
-import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
+import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
+import type { ProxyConfig } from './types';
 
 /**
  * Handler for the proxy response event.

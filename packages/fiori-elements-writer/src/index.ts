@@ -1,21 +1,21 @@
-import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
-import { render } from 'ejs';
 import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
+import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
-import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
-import { getPackageJsonTasks } from './packageConfig';
+import { render } from 'ejs';
 import cloneDeep from 'lodash/cloneDeep';
+import type { Editor } from 'mem-fs-editor';
+import { join } from 'path';
+import semVer from 'semver';
+import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
+import { extendManifestJson } from './data/manifestSettings';
+import type { TemplateOptions } from './data/templateAttributes';
+import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
+import { getPackageJsonTasks } from './packageConfig';
 import type { FioriElementsApp, FPMSettings } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
-import { setAppDefaults, setDefaultTemplateSettings } from './data/defaults';
-import type { TemplateOptions } from './data/templateAttributes';
-import { changesPreviewToVersion, escapeFLPText } from './data/templateAttributes';
-import { extendManifestJson } from './data/manifestSettings';
-import semVer from 'semver';
 
 /**
  * Generate a UI5 application based on the specified Fiori Elements floorplan template.
@@ -135,5 +135,5 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     return fs;
 }
 
-export { generate, FioriElementsApp, App };
 export * from './types';
+export { generate, FioriElementsApp, App };

@@ -1,15 +1,15 @@
-import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
-import { render } from 'ejs';
+import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
-import { generate as addOdataService } from '@sap-ux/odata-service-writer';
-import { getPackageJsonTasks } from './packageConfig';
+import { UI5Config } from '@sap-ux/ui5-config';
+import { render } from 'ejs';
 import cloneDeep from 'lodash/cloneDeep';
+import type { Editor } from 'mem-fs-editor';
+import { join } from 'path';
+import { escapeFLPText, setDefaults } from './defaults';
+import { getPackageJsonTasks } from './packageConfig';
 import type { BasicAppSettings } from './types';
 import { FreestyleApp, TemplateType } from './types';
-import { setDefaults, escapeFLPText } from './defaults';
-import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -94,5 +94,5 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     return fs;
 }
 
+export { ListDetailSettings, OdataVersion, Template, TemplateType, WorklistSettings } from './types';
 export { generate, FreestyleApp };
-export { WorklistSettings, ListDetailSettings, TemplateType, Template, OdataVersion } from './types';

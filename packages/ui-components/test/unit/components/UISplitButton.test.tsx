@@ -1,10 +1,10 @@
-import * as React from 'react';
 import * as Enzym from 'enzyme';
+import * as React from 'react';
 
-import { UISplitButton } from '../../../src/components/UIButton/index';
 import type { UISplitButtonProps } from '../../../src/components/UIButton/index';
+import { UISplitButton } from '../../../src/components/UIButton/index';
 
-import type { UIContextualMenuProps, UIContextualMenuItem } from '../../../src/components/UIContextualMenu';
+import type { UIContextualMenuItem, UIContextualMenuProps } from '../../../src/components/UIContextualMenu';
 
 describe('<UISplitButton />', () => {
     let app: any;

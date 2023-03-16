@@ -1,8 +1,8 @@
-import nock from 'nock';
 import fs from 'fs';
-import type { Message } from '../../src/abap/lrep-service';
+import nock from 'nock';
 import type { AdaptationConfig } from '../../src';
-import { LayeredRepositoryService, createForAbap } from '../../src';
+import { createForAbap, LayeredRepositoryService } from '../../src';
+import type { Message } from '../../src/abap/lrep-service';
 
 describe('LayeredRepositoryService', () => {
     const server = 'http://sap.example';

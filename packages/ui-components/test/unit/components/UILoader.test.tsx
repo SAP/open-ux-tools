@@ -1,8 +1,8 @@
-import * as React from 'react';
+import { Overlay } from '@fluentui/react';
 import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import type { UILoaderProps } from '../../../src/components/UILoader/UILoader';
 import { UILoader } from '../../../src/components/UILoader/UILoader';
-import { Overlay } from '@fluentui/react';
 
 describe('<UILoader />', () => {
     let wrapper: Enzyme.ReactWrapper<UILoaderProps>;

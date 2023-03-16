@@ -1,10 +1,10 @@
-import * as React from 'react';
+import type { IDialogContentStyles, IDialogFooterStyles, IDialogStyles } from '@fluentui/react';
+import { ContextualMenu, Dialog, DialogFooter } from '@fluentui/react';
 import * as Enzyme from 'enzyme';
-import type { DialogProps, DialogState } from '../../../src/components/UIDialog';
-import { UIDialog, UIDialogScrollArea, DIALOG_MAX_HEIGHT_OFFSET } from '../../../src/components/UIDialog';
+import * as React from 'react';
 import { UIDefaultButton } from '../../../src/components/UIButton';
-import type { IDialogStyles, IDialogContentStyles, IDialogFooterStyles } from '@fluentui/react';
-import { Dialog, DialogFooter, ContextualMenu } from '@fluentui/react';
+import type { DialogProps, DialogState } from '../../../src/components/UIDialog';
+import { DIALOG_MAX_HEIGHT_OFFSET, UIDialog, UIDialogScrollArea } from '../../../src/components/UIDialog';
 import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
 

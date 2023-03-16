@@ -1,6 +1,6 @@
 import type { AxiosError, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, HeadersDefaults } from 'axios';
-import { ServiceProvider } from '../../src/base/service-provider';
 import { attachConnectionHandler, Cookies, CSRF } from '../../src/auth/connection';
+import { ServiceProvider } from '../../src/base/service-provider';
 
 interface AxiosInterceptor<T> {
     fulfilled(response: T);

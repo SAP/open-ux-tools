@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement, Position, EventHandler } from '../common/types';
+import type { CustomElement, EventHandler, InternalCustomElement, Position } from '../common/types';
 
 export enum TargetControl {
     header = 'header',

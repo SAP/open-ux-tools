@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import type { MockserverConfig } from '../types';
 import { enhancePackageJson, removeFromPackageJson } from './package-json';
 import { enhanceYaml, removeUi5MockYaml } from './ui5-mock-yaml';

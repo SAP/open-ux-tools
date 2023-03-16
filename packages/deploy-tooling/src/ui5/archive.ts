@@ -1,6 +1,6 @@
-import { ZipFile } from 'yazl';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { DuplexCollection } from '@ui5/fs';
+import { ZipFile } from 'yazl';
 import { createBuffer } from '../base';
 
 /**

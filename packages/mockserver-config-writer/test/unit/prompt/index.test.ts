@@ -1,9 +1,9 @@
-import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { join } from 'path';
 import type { Choice } from 'prompts';
-import { getMockserverConfigQuestions } from '../../../src';
 import { t } from '../../..';
+import { getMockserverConfigQuestions } from '../../../src';
 
 describe('Test function getMockserverConfigQuestions()', () => {
     test('Question without proposals', () => {

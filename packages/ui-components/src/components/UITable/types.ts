@@ -1,13 +1,13 @@
 import type {
-    IDetailsListProps,
-    IScrollablePaneProps,
     IColumn,
     IDetailsHeaderProps,
+    IDetailsListProps,
     IRenderFunction,
+    IScrollablePaneProps,
     Selection
 } from '@fluentui/react';
-import './UITable.scss';
 import type { MutableRefObject } from 'react';
+import './UITable.scss';
 
 export enum CalculationType {
     Addition,
@@ -23,7 +23,7 @@ export enum ColumnControlType {
     UICombobox,
     UIBooleanSelect
 }
-export { CheckboxVisibility, SelectionMode, Selection, DetailsListLayoutMode, IDropdownOption } from '@fluentui/react';
+export { CheckboxVisibility, DetailsListLayoutMode, IDropdownOption, Selection, SelectionMode } from '@fluentui/react';
 
 export type UIDocument = { [key: string]: any };
 export type UIColumn = IColumn & {

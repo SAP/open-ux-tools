@@ -1,8 +1,8 @@
-import type { SecureStore } from '../../secure-store';
-import { text } from '../../i18n';
+import type { Logger } from '@sap-ux/logger';
 import type { DataProvider } from '../../data-provider';
 import { ApiHubSettings, ApiHubSettingsKey } from '../../entities/api-hub';
-import type { Logger } from '@sap-ux/logger';
+import { text } from '../../i18n';
+import type { SecureStore } from '../../secure-store';
 
 export const LEGACY_API_HUB_API_SERVICE = 'fiori/system/apiHub';
 export const LEGACY_API_HUB_API_KEY = 'API_HUB_API_KEY';

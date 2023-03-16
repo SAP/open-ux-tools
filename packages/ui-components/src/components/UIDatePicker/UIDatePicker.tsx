@@ -1,8 +1,8 @@
 import React from 'react';
+import { UiIcons } from '../Icons';
+import { UIIcon } from '../UIIcon';
 import type { ITextField } from '../UIInput';
 import { UITextInput } from '../UIInput';
-import { UIIcon } from '../UIIcon';
-import { UiIcons } from '../Icons';
 
 import './UIDatePicker.scss';
 

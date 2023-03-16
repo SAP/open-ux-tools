@@ -1,7 +1,7 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
-import type { IStyleFunction, IToggleStyles, IRawStyle } from '@fluentui/react';
+import type { IRawStyle, IStyleFunction, IToggleStyles } from '@fluentui/react';
 import { Toggle } from '@fluentui/react';
+import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import type { UIToggleProps } from '../../../src/components/UIToggle/UIToggle';
 import { UIToggle, UIToggleSize } from '../../../src/components/UIToggle/UIToggle';
 

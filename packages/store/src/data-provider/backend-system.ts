@@ -1,9 +1,9 @@
-import type { ServiceOptions } from '../types';
+import type { Logger } from '@sap-ux/logger';
 import type { DataProvider, DataProviderConstructor } from '.';
 import type { DataAccess } from '../data-access';
 import { getHybridStore } from '../data-access/hybrid';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
-import type { Logger } from '@sap-ux/logger';
+import type { ServiceOptions } from '../types';
 import { Entities } from './constants';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class

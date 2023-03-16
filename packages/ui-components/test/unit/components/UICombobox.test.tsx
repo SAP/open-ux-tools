@@ -1,11 +1,11 @@
-import * as React from 'react';
+import type { IComboBox, IComboBoxOption } from '@fluentui/react';
+import { Autofill, ComboBox, KeyCodes } from '@fluentui/react';
 import * as Enzyme from 'enzyme';
+import * as React from 'react';
+import { initIcons } from '../../../src/components/Icons';
 import type { UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
 import { UIComboBox } from '../../../src/components/UIComboBox';
 import { data as originalData } from '../../__mock__/select-data';
-import { initIcons } from '../../../src/components/Icons';
-import type { IComboBox, IComboBoxOption } from '@fluentui/react';
-import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
 
 const data = JSON.parse(JSON.stringify(originalData));
 

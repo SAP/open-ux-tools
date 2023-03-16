@@ -1,6 +1,6 @@
-import { AdtService } from './adt-service';
 import type { AdtCategory, AtoSettings } from 'abap/types';
 import XmlParser from 'fast-xml-parser';
+import { AdtService } from './adt-service';
 
 /**
  * AtoService implements ADT requests for fetching ATO settings.

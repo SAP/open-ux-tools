@@ -1,9 +1,9 @@
-import * as React from 'react';
+import { ContextualMenu } from '@fluentui/react';
 import * as Enzyme from 'enzyme';
+import * as React from 'react';
+import { initIcons } from '../../../src/components/Icons';
 import type { UIIContextualMenuProps } from '../../../src/components/UIContextualMenu';
 import { UIContextualMenu } from '../../../src/components/UIContextualMenu';
-import { ContextualMenu } from '@fluentui/react';
-import { initIcons } from '../../../src/components/Icons';
 
 describe('<UIDropdown />', () => {
     let wrapper: Enzyme.ReactWrapper<UIIContextualMenuProps>;

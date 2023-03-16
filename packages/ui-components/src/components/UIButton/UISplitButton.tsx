@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { UIDefaultButton } from './UIDefaultButton';
-import { UIContextualMenu } from '../UIContextualMenu';
 import { UiIcons } from '../Icons';
-import type { UIContextualMenuProps, UIContextualMenuItem } from '../UIContextualMenu';
+import type { UIContextualMenuItem, UIContextualMenuProps } from '../UIContextualMenu';
+import { UIContextualMenu } from '../UIContextualMenu';
+import { UIDefaultButton } from './UIDefaultButton';
 
 import { getUIId } from '../../utilities';
 

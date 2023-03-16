@@ -1,15 +1,15 @@
-import os from 'os';
+import type { Manifest } from '@sap-ux/project-access';
+import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
+import os from 'os';
 import { join } from 'path';
 import { generateCustomView } from '../../src';
-import type { CustomView } from '../../src/view/types';
-import * as manifest from './sample/view/webapp/manifest.json';
-import type { Views, EventHandlerConfiguration } from '../../src/common/types';
-import type { Manifest } from '@sap-ux/project-access';
 import { detectTabSpacing } from '../../src/common/file';
+import type { EventHandlerConfiguration, Views } from '../../src/common/types';
+import type { CustomView } from '../../src/view/types';
 import { tabSizingTestCases } from '../common';
+import * as manifest from './sample/view/webapp/manifest.json';
 
 const testDir = join(__dirname, 'sample/view');
 

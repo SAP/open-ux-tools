@@ -1,7 +1,7 @@
-import { getInstance } from '../../../src/services/telemetry-setting';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { TelemetrySetting, TelemetrySettingKey } from '../../../src';
 import { TelemetryDataProvider } from '../../../src/data-provider/telemetry-setting';
-import { ToolsLogger, NullTransport } from '@sap-ux/logger';
+import { getInstance } from '../../../src/services/telemetry-setting';
 
 jest.mock('../../../src/data-provider/telemetry-setting');
 

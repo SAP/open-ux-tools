@@ -1,6 +1,6 @@
-import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { join } from 'path';
 import { getAppProgrammingLanguage } from '../../src/project';
 
 describe('Test getAppProgrammingLanguage()', () => {

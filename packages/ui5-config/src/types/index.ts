@@ -1,5 +1,5 @@
-export * from './ui5yaml';
 export * from './middlewares';
+export * from './ui5yaml';
 
 export interface AbapApp {
     name: string;

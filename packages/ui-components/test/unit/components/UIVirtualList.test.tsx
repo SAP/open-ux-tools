@@ -1,8 +1,8 @@
-import * as React from 'react';
 import * as Enzyme from 'enzyme';
-import { UIVirtualList } from '../../../src/components/UIVirtualList';
+import * as React from 'react';
 import type { ListProps, ListRowProps } from 'react-virtualized';
 import { List } from 'react-virtualized';
+import { UIVirtualList } from '../../../src/components/UIVirtualList';
 
 describe('<UIVirtualList />', () => {
     let wrapper: Enzyme.ReactWrapper<ListProps>;

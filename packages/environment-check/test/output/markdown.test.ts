@@ -1,6 +1,6 @@
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { EnvironmentCheckResult } from '../../src';
 import { Check, convertResultsToMarkdown, UrlServiceType } from '../../src';
-import { isAppStudio } from '@sap-ux/btp-utils';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()

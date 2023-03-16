@@ -1,6 +1,6 @@
 import React from 'react';
-import { UIFlexibleTableLayout } from './types';
 import type { UIFlexibleTableProps, UIFlexibleTableRowType } from './types';
+import { UIFlexibleTableLayout } from './types';
 import { composeClassNames } from './utils';
 
 interface RowDataCellsProps<T> {

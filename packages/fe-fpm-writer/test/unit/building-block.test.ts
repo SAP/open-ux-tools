@@ -1,12 +1,12 @@
+import { promises as fsPromises } from 'fs';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import type { Chart, Field, FilterBar } from '../../src';
 import { BuildingBlockType, generateBuildingBlock } from '../../src';
-import * as testManifestContent from './sample/building-block/webapp/manifest.json';
-import { promises as fsPromises } from 'fs';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
+import * as testManifestContent from './sample/building-block/webapp/manifest.json';
 
 describe('Building Blocks', () => {
     let fs: Editor;

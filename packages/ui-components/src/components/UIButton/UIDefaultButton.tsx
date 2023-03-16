@@ -1,6 +1,6 @@
-import React from 'react';
 import type { IButtonProps, IButtonStyles, IStyle } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
+import React from 'react';
 import { UIContextualMenu } from '../UIContextualMenu';
 
 /**

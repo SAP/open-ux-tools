@@ -1,22 +1,22 @@
-import React from 'react';
-import uuid from 'uuid';
 import type {
-    IContextualMenuProps,
+    FocusZone,
     IContextualMenuItem,
-    ITextField,
-    IContextualMenuListProps,
-    IRenderFunction,
     IContextualMenuItemProps,
     IContextualMenuItemRenderFunctions,
-    FocusZone,
-    IPopupRestoreFocusParams
+    IContextualMenuListProps,
+    IContextualMenuProps,
+    IPopupRestoreFocusParams,
+    IRenderFunction,
+    ITextField
 } from '@fluentui/react';
 import { DirectionalHint, FocusZoneTabbableElements, setIconOptions } from '@fluentui/react';
+import React from 'react';
+import uuid from 'uuid';
 
-import { UITextInput } from '../UIInput';
-import { UIContextualMenu, UIHighlightMenuOption } from '../UIContextualMenu';
-import { UIIconButton } from '../UIButton/UIIconButton';
 import { UiIcons } from '../Icons';
+import { UIIconButton } from '../UIButton/UIIconButton';
+import { UIContextualMenu, UIHighlightMenuOption } from '../UIContextualMenu';
+import { UITextInput } from '../UIInput';
 
 import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
 import { getMessageInfo } from '../../helper/ValidationMessage';

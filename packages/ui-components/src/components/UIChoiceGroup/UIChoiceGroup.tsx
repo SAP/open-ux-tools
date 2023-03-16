@@ -1,11 +1,11 @@
-import React from 'react';
 import type {
     IChoiceGroupOption,
+    IChoiceGroupOptionProps,
     IChoiceGroupProps,
-    IChoiceGroupStyles,
-    IChoiceGroupOptionProps
+    IChoiceGroupStyles
 } from '@fluentui/react';
 import { ChoiceGroup } from '@fluentui/react';
+import React from 'react';
 import { labelGlobalStyle } from '../UILabel';
 
 export type ChoiceGroupOption = IChoiceGroupOption;

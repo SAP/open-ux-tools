@@ -1,10 +1,10 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
-import type { IStyleFunction, ICalloutContentStyles } from '@fluentui/react';
+import type { ICalloutContentStyles, IStyleFunction } from '@fluentui/react';
 import { TooltipHost } from '@fluentui/react';
+import * as Enzyme from 'enzyme';
+import * as React from 'react';
+import { UIDefaultButton } from '../../../src/components/UIButton';
 import type { UITooltipProps } from '../../../src/components/UITooltip/UITooltip';
 import { UITooltip } from '../../../src/components/UITooltip/UITooltip';
-import { UIDefaultButton } from '../../../src/components/UIButton';
 
 describe('<UITooltip />', () => {
     let wrapper: Enzyme.ReactWrapper<UITooltipProps>;

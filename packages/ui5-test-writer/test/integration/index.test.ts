@@ -1,9 +1,9 @@
-import { generateOPAFiles, generatePageObjectFile } from '../../src';
-import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
 import fileSystem from 'fs';
+import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { join } from 'path';
+import { generateOPAFiles, generatePageObjectFile } from '../../src';
 
 describe('ui5-test-writer - Integration tests', () => {
     let fs: Editor | undefined;

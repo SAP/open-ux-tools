@@ -1,8 +1,8 @@
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import fc from 'fast-check';
 import * as keytar from 'keytar';
 import { getSecureStore } from '../../../src/secure-store';
 import { KeytarStore } from '../../../src/secure-store/keytar-store';
-import fc from 'fast-check';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 jest.mock('keytar');
 const mockedKeytar = jest.mocked(keytar, { shallow: true });

@@ -1,13 +1,12 @@
 import { ServiceInfo } from '@sap-ux/btp-utils';
 import type { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
-import type { ServiceProvider } from '../base/service-provider';
 import type { AbapServiceProvider } from '../abap';
+import type { ServiceProvider } from '../base/service-provider';
 import { getReentranceTicket } from './reentrance-ticket';
 import { RefreshTokenChanged, Uaa } from './uaa';
 
 export * from './connection';
 export * from './error';
-
 export { ServiceInfo, RefreshTokenChanged, Uaa };
 
 /**

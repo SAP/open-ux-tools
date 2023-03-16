@@ -1,6 +1,6 @@
-import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
-import type { ServiceProvider } from '../base/service-provider';
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import detectContentType from 'detect-content-type';
+import type { ServiceProvider } from '../base/service-provider';
 
 export enum CSRF {
     RequestHeaderName = 'X-Csrf-Token',

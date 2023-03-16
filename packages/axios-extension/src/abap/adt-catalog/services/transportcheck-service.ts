@@ -1,9 +1,9 @@
-import { AdtService } from './adt-service';
-import { LocalPackageText } from '../../types';
-import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types';
+import { DOMParser } from '@xmldom/xmldom';
 import XmlParser from 'fast-xml-parser';
 import * as xpath from 'xpath';
-import { DOMParser } from '@xmldom/xmldom';
+import type { AdtCategory, AdtTransportStatus, TransportRequest } from '../../types';
+import { LocalPackageText } from '../../types';
+import { AdtService } from './adt-service';
 
 /**
  * TransportChecksService implements ADT requests for fetching a list of available transport requests

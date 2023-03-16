@@ -1,11 +1,11 @@
-import { join } from 'path';
+import type { Manifest } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { Manifest } from '@sap-ux/project-access';
-import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
-import { SupportedPageTypes, ValidationError } from './types';
+import { join } from 'path';
 import { t } from './i18n';
+import type { FEV4ManifestTarget, FEV4OPAConfig, FEV4OPAPageConfig } from './types';
+import { SupportedPageTypes, ValidationError } from './types';
 
 /**
  * Reads the manifest for an app.

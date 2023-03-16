@@ -1,11 +1,11 @@
+import { inspect } from 'util';
+import winston, { format } from 'winston';
+import type WinstonTransport from 'winston-transport';
 import { ConsoleTransport } from '../transports';
 import type { ChildLoggerOptions, Log, Logger, LoggerOptions, Transport } from '../types';
 import { LogLevel } from '../types';
-import winston, { format } from 'winston';
 import { toWinstonLogLevel, toWinstonTransport } from './adapter';
-import type WinstonTransport from 'winston-transport';
 import { nextColor } from './utils';
-import { inspect } from 'util';
 
 const defaultLoggerOptions: LoggerOptions = {
     transports: [new ConsoleTransport()]

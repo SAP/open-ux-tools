@@ -1,11 +1,11 @@
 import type { Logger } from '@sap-ux/logger';
-import type { SecureStore } from '../../secure-store';
-import { getSecureStore } from '../../secure-store';
 import type { Service } from '..';
 import type { DataProvider } from '../../data-provider';
 import { ApiHubSettingsProvider } from '../../data-provider/api-hub';
 import type { ApiHubSettings } from '../../entities/api-hub';
 import { ApiHubSettingsKey } from '../../entities/api-hub';
+import type { SecureStore } from '../../secure-store';
+import { getSecureStore } from '../../secure-store';
 import { migrateToLatestVersion } from './migration';
 
 export class ApiHubSettingsService implements Service<ApiHubSettings, ApiHubSettingsKey> {

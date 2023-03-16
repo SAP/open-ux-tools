@@ -1,5 +1,5 @@
-import * as React from 'react';
 import * as Enzyme from 'enzyme';
+import * as React from 'react';
 
 import type { UIPersonaProps } from '../../../src/components/UIPersona';
 import { UIPersona, UIPersonaSize } from '../../../src/components/UIPersona';

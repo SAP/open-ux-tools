@@ -1,11 +1,11 @@
-import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
-import { render } from 'ejs';
-import type { Ui5App } from './types';
-import { getFilePaths } from './files';
 import type { UI5Config } from '@sap-ux/ui5-config';
-import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
+import { render } from 'ejs';
+import type { Editor } from 'mem-fs-editor';
+import { join } from 'path';
 import { mergeObjects, UI5_DEFAULT } from './data/defaults';
+import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
+import { getFilePaths } from './files';
+import type { Ui5App } from './types';
 
 /**
  * Input required to enable optional features.

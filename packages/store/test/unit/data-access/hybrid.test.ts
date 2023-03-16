@@ -1,9 +1,9 @@
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import 'jest-extended';
-import { sensitiveData, serializable } from '../../../src/decorators';
 import { getFilesystemStore } from '../../../src/data-access/filesystem';
-import { getSecureStore } from '../../../src/secure-store';
 import { getHybridStore } from '../../../src/data-access/hybrid';
-import { ToolsLogger, NullTransport } from '@sap-ux/logger';
+import { sensitiveData, serializable } from '../../../src/decorators';
+import { getSecureStore } from '../../../src/secure-store';
 
 jest.mock('../../../src/data-access/filesystem');
 const mockFileSystemAccess = jest.mocked(getFilesystemStore);

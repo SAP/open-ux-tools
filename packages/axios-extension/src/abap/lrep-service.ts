@@ -1,10 +1,10 @@
-import type { Service } from '../base/service-provider';
+import type { Logger } from '@sap-ux/logger';
+import { LogLevel } from '@sap-ux/logger';
 import type { AxiosResponse } from 'axios';
 import { Axios } from 'axios';
-import { LogLevel } from '@sap-ux/logger';
-import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
 import { isAxiosError } from '../base/odata-request-error';
+import type { Service } from '../base/service-provider';
 
 /**
  * Object structure representing a namespace: containing an id (variant id) and a reference (base application id).

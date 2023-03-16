@@ -1,6 +1,6 @@
-import { createForAbap, ODataVersion, V2CatalogService } from '../../../src';
-import { join } from 'path';
 import nock from 'nock';
+import { join } from 'path';
+import { createForAbap, ODataVersion, V2CatalogService } from '../../../src';
 
 describe('V2CatalogService', () => {
     const server = 'https://sap.example';

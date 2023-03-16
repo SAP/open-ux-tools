@@ -1,18 +1,18 @@
+import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import type { BackendSystemKey } from '@sap-ux/store';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import prompts from 'prompts';
 import { deploy, getCredentials, undeploy } from '../../../src/base/deploy';
-import type { BackendSystemKey } from '@sap-ux/store';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../../../src/types';
 import {
+    mockCreateForAbap,
     mockedStoreService,
-    mockIsAppStudio,
     mockedUi5RepoService,
-    mockListDestinations,
-    mockCreateForAbap
+    mockIsAppStudio,
+    mockListDestinations
 } from '../../__mocks__';
-import { join } from 'path';
-import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
-import { readFileSync } from 'fs';
 
 describe('base/deploy', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });

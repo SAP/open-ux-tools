@@ -1,4 +1,4 @@
-import { rmdirSync, existsSync } from 'fs';
+import { existsSync, rmdirSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
 
 /**

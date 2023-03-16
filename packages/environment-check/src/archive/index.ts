@@ -1,10 +1,10 @@
-import { createWriteStream, existsSync, promises } from 'fs';
-import { basename, dirname, join } from 'path';
 import * as archiver from 'archiver';
+import { createWriteStream, existsSync, promises } from 'fs';
 import { glob } from 'glob-gitignore';
 import ignore from 'ignore';
-import { t } from '../i18n';
+import { basename, dirname, join } from 'path';
 import { byteNumberToSizeString } from '../formatter';
+import { t } from '../i18n';
 
 interface ArchiveProjectOptions {
     projectRoot: string;

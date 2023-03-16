@@ -1,12 +1,12 @@
+import type { Manifest } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import { lt, valid } from 'semver';
-import type { Manifest } from '@sap-ux/project-access';
 import { FCL_ROUTER } from '../common/defaults';
-import { getTemplatePath } from '../templates';
 import { addExtensionTypes } from '../common/utils';
+import { getTemplatePath } from '../templates';
 
 /**
  * Configurable options when enabling the Flexible Programming Model in a UI5 application.

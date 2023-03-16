@@ -1,10 +1,10 @@
+import type { Logger } from '@sap-ux/logger';
 import type { DataProvider, DataProviderConstructor } from '.';
 import type { DataAccess } from '../data-access';
 import { getFilesystemStore } from '../data-access/filesystem';
 import type { TelemetrySetting } from '../entities/telemetry-setting';
 import { TelemetrySettingKey } from '../entities/telemetry-setting';
 import { Entities } from './constants';
-import type { Logger } from '@sap-ux/logger';
 
 export const TelemetryDataProvider: DataProviderConstructor<TelemetrySetting, TelemetrySettingKey> = class
     implements DataProvider<TelemetrySetting, TelemetrySettingKey>

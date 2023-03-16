@@ -1,7 +1,7 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
 import type { IButtonProps } from '@fluentui/react';
 import { DefaultButton } from '@fluentui/react';
+import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
 
 describe('<UIDefaultButton />', () => {

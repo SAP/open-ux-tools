@@ -1,30 +1,30 @@
-import { HttpsProxyAgent } from 'https-proxy-agent';
-import type { ServerOptions } from 'http-proxy';
-import type { RequestHandler, Options } from 'http-proxy-middleware';
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import i18n from 'i18next';
-import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
+import {
+    BAS_DEST_INSTANCE_CRED_HEADER,
+    getCredentialsForDestinationService,
+    getDestinationUrlForAppStudio,
+    isAppStudio,
+    isFullUrlDestination,
+    listDestinations
+} from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
-import {
-    isAppStudio,
-    getDestinationUrlForAppStudio,
-    getCredentialsForDestinationService,
-    listDestinations,
-    isFullUrlDestination,
-    BAS_DEST_INSTANCE_CRED_HEADER
-} from '@sap-ux/btp-utils';
-import type { ServiceInfo } from '@sap-ux/btp-utils';
-import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import type { ServerOptions } from 'http-proxy';
+import type { Options, RequestHandler } from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+import i18n from 'i18next';
 import translations from './i18n.json';
+import type { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from './types';
 
 import type { ApiHubSettings, ApiHubSettingsKey, ApiHubSettingsService, BackendSystem } from '@sap-ux/store';
 import { AuthenticationType, BackendSystemKey, getService } from '@sap-ux/store';
-import { updateProxyEnv } from './config';
+import { getProxyForUrl } from 'proxy-from-env';
 import type { Url } from 'url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
-import { getProxyForUrl } from 'proxy-from-env';
+import { updateProxyEnv } from './config';
 
 /**
  * Collection of custom event handler for the proxy.

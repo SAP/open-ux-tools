@@ -1,9 +1,9 @@
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
+import semVer from 'semver';
 import { t } from './i18n';
 import type { OdataService } from './types';
-import semVer from 'semver';
 
 /**
  * Internal function that updates the manifest.json based on the given service configuration.

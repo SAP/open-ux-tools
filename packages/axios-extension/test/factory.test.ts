@@ -1,8 +1,8 @@
 import type { Destination } from '@sap-ux/btp-utils';
-import { getDestinationUrlForAppStudio, WebIDEUsage, BAS_DEST_INSTANCE_CRED_HEADER } from '@sap-ux/btp-utils';
+import { BAS_DEST_INSTANCE_CRED_HEADER, getDestinationUrlForAppStudio, WebIDEUsage } from '@sap-ux/btp-utils';
 import axios from 'axios';
 import nock from 'nock';
-import { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } from '../src';
+import { AbapServiceProvider, create, createForDestination, createServiceForUrl, ServiceProvider } from '../src';
 
 const server = 'https://sap.example';
 const servicePath = '/ns/myservice';

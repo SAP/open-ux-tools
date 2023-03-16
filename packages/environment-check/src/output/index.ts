@@ -1,3 +1,3 @@
 export * from './markdown';
-export * from './zip';
 export * from './string';
+export * from './zip';

@@ -1,7 +1,7 @@
 import React from 'react';
-import { UIFlexibleTableRowActionButton } from './UIFlexibleTableRowActionButton';
-import type { UIFlexibleTableProps, TableRowEventHandlerParameters } from './types';
 import { UiIcons, UIVerticalDivider } from '..';
+import type { TableRowEventHandlerParameters, UIFlexibleTableProps } from './types';
+import { UIFlexibleTableRowActionButton } from './UIFlexibleTableRowActionButton';
 
 export interface RowActionsProps<T> {
     rowIndex: number;

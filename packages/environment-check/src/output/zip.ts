@@ -1,7 +1,7 @@
-import { createWriteStream } from 'fs';
 import * as archiver from 'archiver';
-import type { EnvironmentCheckResult } from '../types';
+import { createWriteStream } from 'fs';
 import { byteNumberToSizeString } from '../formatter';
+import type { EnvironmentCheckResult } from '../types';
 import { convertResultsToMarkdown } from './markdown';
 
 /**

@@ -1,4 +1,4 @@
-import { ToolsLogger, NullTransport } from '@sap-ux/logger';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import fc from 'fast-check';
 import { DummyStore } from '../../../src/secure-store/dummy-store';
 

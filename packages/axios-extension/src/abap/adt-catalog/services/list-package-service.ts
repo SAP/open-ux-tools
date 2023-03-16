@@ -1,7 +1,7 @@
-import { AdtService } from './adt-service';
-import type { AdtCategory } from '../../types';
 import XmlParser from 'fast-xml-parser';
+import type { AdtCategory } from '../../types';
 import type { PackageInfo } from '../../types/adt-internal-types';
+import { AdtService } from './adt-service';
 
 /**
  * Structure of input parameter for `listPackages` method.

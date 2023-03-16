@@ -10,5 +10,5 @@ export interface Service<Entity, EntityKey> {
     getAll(): Promise<Entity[] | []>;
 }
 
-export { SystemService } from './backend-system';
 export { ApiHubSettingsService } from './api-hub';
+export { SystemService } from './backend-system';

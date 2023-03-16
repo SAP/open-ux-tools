@@ -1,6 +1,6 @@
-import React from 'react';
 import type { IIconProps, IIconStyles } from '@fluentui/react';
 import { Icon } from '@fluentui/react';
+import React from 'react';
 import './UIIcon.scss';
 
 /**

@@ -1,21 +1,21 @@
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
 import { render } from 'ejs';
+import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { join } from 'path';
+import { setCommonDefaults } from '../common/defaults';
+import { extendJSON } from '../common/file';
+import type { Manifest } from '../common/types';
+import { addExtensionTypes } from '../common/utils';
+import { validateBasePath } from '../common/validate';
+import { getTemplatePath } from '../templates';
 import type {
     ControllerExtension,
+    ControllerExtensionPageTarget,
     InternalControllerExtension,
-    ManifestControllerExtension,
-    ControllerExtensionPageTarget
+    ManifestControllerExtension
 } from './types';
 import { ControllerExtensionPageType } from './types';
-import { validateBasePath } from '../common/validate';
-import type { Manifest } from '../common/types';
-import { setCommonDefaults } from '../common/defaults';
-import { getTemplatePath } from '../templates';
-import { addExtensionTypes } from '../common/utils';
-import { extendJSON } from '../common/file';
 
 export const UI5_CONTROLLER_EXTENSION_LIST_REPORT = 'sap.fe.templates.ListReport.ListReportController';
 export const UI5_CONTROLLER_EXTENSION_OBJECT_PAGE = 'sap.fe.templates.ObjectPage.ObjectPageController';

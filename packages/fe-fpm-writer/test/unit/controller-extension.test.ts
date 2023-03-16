@@ -1,15 +1,15 @@
+import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { generateControllerExtension } from '../../src';
-import type { ControllerExtension } from '../../src/controller-extension/types';
-import { ControllerExtensionPageType } from '../../src/controller-extension/types';
+import { detectTabSpacing } from '../../src/common/file';
 import {
     UI5_CONTROLLER_EXTENSION_LIST_REPORT,
     UI5_CONTROLLER_EXTENSION_OBJECT_PAGE
 } from '../../src/controller-extension';
-import { detectTabSpacing } from '../../src/common/file';
+import type { ControllerExtension } from '../../src/controller-extension/types';
+import { ControllerExtensionPageType } from '../../src/controller-extension/types';
 import { tabSizingTestCases } from '../common';
 
 describe('ControllerExtension', () => {

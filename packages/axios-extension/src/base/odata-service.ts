@@ -1,6 +1,6 @@
+import type { Logger } from '@sap-ux/logger';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Axios } from 'axios';
-import type { Logger } from '@sap-ux/logger';
 
 /**
  * OData versions supported by Fiori elements

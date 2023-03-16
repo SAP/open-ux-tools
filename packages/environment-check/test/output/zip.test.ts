@@ -1,7 +1,7 @@
-import * as mockFs from 'fs';
 import type * as archiver from 'archiver';
-import { storeResultsZip } from '../../src/output';
+import * as mockFs from 'fs';
 import { Check } from '../../src';
+import { storeResultsZip } from '../../src/output';
 
 // Need to mock fs and archiver on top level before any test is run
 jest.mock('fs');

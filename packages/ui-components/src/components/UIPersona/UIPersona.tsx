@@ -1,6 +1,6 @@
+import type { IPersonaProps, IPersonaStyleProps, IPersonaStyles } from '@fluentui/react';
+import { Persona, PersonaPresence, PersonaSize } from '@fluentui/react';
 import React from 'react';
-import type { IPersonaProps, IPersonaStyles, IPersonaStyleProps } from '@fluentui/react';
-import { Persona, PersonaSize, PersonaPresence } from '@fluentui/react';
 
 export { PersonaSize as UIPersonaSize };
 export { PersonaPresence as UIPersonaPresence };

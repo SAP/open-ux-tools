@@ -1,11 +1,11 @@
+import type { Logger } from '@sap-ux/logger';
 import axios from 'axios';
 import { readFile } from 'fs';
-import { ZipFile } from 'yazl';
-import { relative } from 'path';
-import type { CliOptions } from '../types';
-import { createBuffer, getFileNames } from '../base/archive';
-import type { Logger } from '@sap-ux/logger';
 import { Agent } from 'https';
+import { relative } from 'path';
+import { ZipFile } from 'yazl';
+import { createBuffer, getFileNames } from '../base/archive';
+import type { CliOptions } from '../types';
 
 /**
  * Get/read zip file from the given path.

@@ -1,4 +1,4 @@
-import type { IDropdownProps, IComboBoxProps } from '@fluentui/react';
+import type { IComboBoxProps, IDropdownProps } from '@fluentui/react';
 
 /**
  * Method checks if drodpown or combobox is empty or any value is selected.

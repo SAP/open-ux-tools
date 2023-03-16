@@ -1,15 +1,14 @@
-export { UI5Config } from './ui5config';
+export { errorCode as yamlErrorCode, YAMLError } from '@sap-ux/yaml';
 export {
+    AbapApp,
     Configuration,
-    CustomTask,
     CustomMiddleware,
+    CustomTask,
     FioriAppReloadConfig,
     FioriToolsProxyConfig,
     FioriToolsProxyConfigBackend,
     FioriToolsProxyConfigUI5,
-    AbapApp,
     UI5ProxyConfig,
     UI5ProxyConfigTarget
 } from './types';
-
-export { errorCode as yamlErrorCode, YAMLError } from '@sap-ux/yaml';
+export { UI5Config } from './ui5config';

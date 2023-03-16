@@ -1,9 +1,9 @@
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { MockserverConfig } from '@sap-ux/ui5-config/dist/types';
+import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { join } from 'path';
 import { enhanceYaml } from '../../../src/mockserver-config/ui5-mock-yaml';
 
 describe('Test enhanceYaml()', () => {

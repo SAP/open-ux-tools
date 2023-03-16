@@ -1,10 +1,9 @@
-import { isAppStudio, getAppStudioProxyURL } from '@sap-ux/btp-utils';
-import type { Endpoint, CatalogServiceResult } from '../../src/types';
-import { Severity } from '../../src/types';
-import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
-import { UrlServiceType } from '../../src/types';
+import { getAppStudioProxyURL, isAppStudio } from '@sap-ux/btp-utils';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
+import { checkBASDestination, checkBASDestinations, needsUsernamePassword } from '../../src/checks/destination';
 import * as serviceChecks from '../../src/checks/service-checks';
+import type { CatalogServiceResult, Endpoint } from '../../src/types';
+import { Severity, UrlServiceType } from '../../src/types';
 
 jest.mock('@sap-ux/axios-extension', () => ({
     ...(jest.requireActual('@sap-ux/axios-extension') as object),

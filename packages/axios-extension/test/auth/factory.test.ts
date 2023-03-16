@@ -1,6 +1,6 @@
 import { AbapServiceProvider } from '../../src/abap';
-import { AbapCloudEnvironment, createForAbapOnCloud } from '../../src/factory';
 import * as Auth from '../../src/auth';
+import { AbapCloudEnvironment, createForAbapOnCloud } from '../../src/factory';
 
 describe('createForAbapCloud', () => {
     it('returns an AbapServiceProvider instance', () => {

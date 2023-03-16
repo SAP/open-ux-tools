@@ -1,12 +1,12 @@
-import { getFilesystemStore as dataAccessFilesystem } from './filesystem';
-import { pick } from '../utils';
 import type { Logger } from '@sap-ux/logger';
+import { inspect } from 'util';
+import type { DataAccess } from '.';
+import { getSensitiveDataProperties, getSerializableProperties } from '../decorators';
 import type { SecureStore } from '../secure-store';
 import { getSecureStore } from '../secure-store';
-import { getSensitiveDataProperties, getSerializableProperties } from '../decorators';
-import type { DataAccess } from '.';
 import type { ServiceOptions } from '../types';
-import { inspect } from 'util';
+import { pick } from '../utils';
+import { getFilesystemStore as dataAccessFilesystem } from './filesystem';
 
 function getFullyQualifiedServiceName(name: string): string {
     return 'fiori/v2/' + name;

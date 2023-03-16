@@ -1,6 +1,6 @@
-import React from 'react';
 import type { IMessageBarProps, IMessageBarStyles } from '@fluentui/react';
 import { MessageBar, MessageBarType } from '@fluentui/react';
+import React from 'react';
 
 import { UiIcons } from '../Icons';
 

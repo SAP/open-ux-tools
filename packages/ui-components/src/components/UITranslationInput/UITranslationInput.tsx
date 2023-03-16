@@ -1,26 +1,26 @@
-import React, { useCallback } from 'react';
 import type { ReactElement } from 'react';
-import { UITextInput } from '../UIInput';
-import type { ITextFieldProps } from '../UIInput';
+import React, { useCallback } from 'react';
 import { UiIcons } from '../Icons';
+import type { ITextFieldProps } from '../UIInput';
+import { UITextInput } from '../UIInput';
+import { defaultTranslationInputStrings } from './defaults';
+import { formatText, UIFormattedText } from './UIFormattedText';
 import { UITranslationButton } from './UITranslationButton';
 import type {
-    UITranslationProps,
-    TranslationSuggestValue,
-    TranslationSuggest,
     I18nBundle,
-    TranslationTextPattern
+    TranslationSuggest,
+    TranslationSuggestValue,
+    TranslationTextPattern,
+    UITranslationProps
 } from './UITranslationButton.types';
-import { TranslationKeyGenerator, SuggestValueType } from './UITranslationButton.types';
+import { SuggestValueType, TranslationKeyGenerator } from './UITranslationButton.types';
 import {
+    applyI18nPattern,
     extractI18nKey,
     generateI18nKey,
-    applyI18nPattern,
     getTranslationByKey,
     getTranslationByText
 } from './UITranslationUtils';
-import { defaultTranslationInputStrings } from './defaults';
-import { UIFormattedText, formatText } from './UIFormattedText';
 
 export interface UITranslationInputProps extends ITextFieldProps, UITranslationProps {
     id: string;

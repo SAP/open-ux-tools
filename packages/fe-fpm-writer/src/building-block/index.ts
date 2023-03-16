@@ -1,14 +1,14 @@
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
-import { render } from 'ejs';
-import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
-import type { BuildingBlock, BuildingBlockConfig } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
-import * as xpath from 'xpath';
+import { render } from 'ejs';
+import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { join } from 'path';
 import format from 'xml-formatter';
+import * as xpath from 'xpath';
 import { getErrorMessage, validateBasePath } from '../common/validate';
 import { getTemplatePath } from '../templates';
+import type { BuildingBlock, BuildingBlockConfig } from './types';
 
 /**
  * Generates a building block into the provided xml view file.

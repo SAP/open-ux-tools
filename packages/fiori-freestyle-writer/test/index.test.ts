@@ -1,11 +1,11 @@
-import type { FreestyleApp } from '../src';
-import { generate } from '../src';
-import { join } from 'path';
-import { TemplateType } from '../src/types';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { removeSync } from 'fs-extra';
+import { join } from 'path';
+import type { FreestyleApp } from '../src';
+import { generate } from '../src';
+import { TemplateType } from '../src/types';
+import { debug, northwind, testOutputDir } from './common';
 import { sample } from './sample/metadata';
-import { testOutputDir, debug, northwind } from './common';
 
 const TEST_NAME = 'allTemplate';
 

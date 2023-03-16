@@ -1,7 +1,7 @@
-import { join } from 'path';
-import { findFiles, findFilesByExtension, findFileUp } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { join } from 'path';
+import { findFiles, findFilesByExtension, findFileUp } from '../../src/file';
 
 describe('findFiles', () => {
     const root = join(__dirname, '../test-data/file');

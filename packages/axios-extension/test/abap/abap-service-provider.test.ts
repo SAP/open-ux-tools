@@ -1,14 +1,14 @@
-import { join } from 'path';
 import nock from 'nock';
+import { join } from 'path';
 import {
+    AppIndexService,
     createForAbap,
-    V2CatalogService,
+    LayeredRepositoryService,
     ODataVersion,
     TenantType,
-    V4CatalogService,
     Ui5AbapRepositoryService,
-    AppIndexService,
-    LayeredRepositoryService
+    V2CatalogService,
+    V4CatalogService
 } from '../../src';
 
 /**

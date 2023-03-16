@@ -1,20 +1,20 @@
-import type { Transport, TransportOptions } from '../types';
-import { LogLevel } from '../types';
-import type WinstonTransport from 'winston-transport';
+import chalk from 'chalk';
+import type { Format } from 'logform';
+import { inspect } from 'util';
 import winston, { format } from 'winston';
+import type WinstonTransport from 'winston-transport';
 import {
-    ConsoleTransport,
     ArrayTransport,
+    ConsoleTransport,
     FileTransport,
     NullTransport,
     UI5ToolingTransport,
     VSCodeTransport
 } from '../transports';
+import type { Transport, TransportOptions } from '../types';
+import { LogLevel } from '../types';
 import { NullTransport as WinstonNullTransport } from './null-transport';
 import { VSCodeTransport as WinstonVSCodeTransport } from './vscode-output-channel-transport';
-import type { Format } from 'logform';
-import { inspect } from 'util';
-import chalk from 'chalk';
 
 /**
  * Translate @type {LogLevel} to what Winston understands

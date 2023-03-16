@@ -1,16 +1,16 @@
 import { countNumberOfServices, getServiceCountText } from '../formatter';
-import { Severity, UrlServiceType, Check, toolsExtensionListVSCode } from '../types';
+import { t } from '../i18n';
 import type {
+    CatalogServiceResult,
     Endpoint,
+    EndpointResults,
     Environment,
     EnvironmentCheckResult,
     MarkdownWriter,
     ResultMessage,
-    ToolsExtensions,
-    CatalogServiceResult,
-    EndpointResults
+    ToolsExtensions
 } from '../types';
-import { t } from '../i18n';
+import { Check, Severity, toolsExtensionListVSCode, UrlServiceType } from '../types';
 /**
  * Output mapping from severity -> icon + text
  */

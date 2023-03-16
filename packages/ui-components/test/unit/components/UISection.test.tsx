@@ -1,5 +1,5 @@
-import * as React from 'react';
 import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import type { UISectionProps } from '../../../src/components/UISection/UISection';
 import { UISection, UISectionLayout } from '../../../src/components/UISection/UISection';
 

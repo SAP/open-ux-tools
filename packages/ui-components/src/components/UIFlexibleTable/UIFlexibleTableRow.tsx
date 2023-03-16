@@ -1,8 +1,8 @@
-import React from 'react';
 import type { CSSProperties } from 'react';
+import React from 'react';
 import { UIFocusZone, UIFocusZoneDirection } from '..';
+import type { NodeDragAndDropSortingParams, UIFlexibleTableProps, UIFlexibleTableRowType } from './types';
 import { UIFlexibleTableLayout } from './types';
-import type { UIFlexibleTableProps, UIFlexibleTableRowType, NodeDragAndDropSortingParams } from './types';
 import { composeClassNames } from './utils';
 
 export interface UIFlexibleTableRowProps<T> {

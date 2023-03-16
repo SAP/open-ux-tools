@@ -1,9 +1,9 @@
 import { dirname, join, parse, sep } from 'path';
-import type { AllAppResults, Manifest, Package, WorkspaceFolder } from '../types';
 import { FileName } from '../constants';
 import { fileExists, findFiles, findFileUp, readJSON } from '../file';
-import { hasDependency } from './dependencies';
+import type { AllAppResults, Manifest, Package, WorkspaceFolder } from '../types';
 import { getCapProjectType, isCapJavaProject, isCapNodeJsProject } from './cap';
+import { hasDependency } from './dependencies';
 import { getWebappPath } from './ui5-config';
 
 /**

@@ -1,15 +1,15 @@
-import React from 'react';
 import type {
-    IDropdownProps,
-    IDropdownStyles,
     ICalloutContentStyleProps,
-    ICalloutContentStyles
+    ICalloutContentStyles,
+    IDropdownProps,
+    IDropdownStyles
 } from '@fluentui/react';
 import { Dropdown, DropdownMenuItemType, IDropdownOption, ResponsiveMode } from '@fluentui/react';
+import React from 'react';
 
-import { UIIcon } from '../UIIcon';
-import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
+import type { InputValidationMessageInfo, UIMessagesExtendedProps } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
+import { UIIcon } from '../UIIcon';
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty } from './utils';
 

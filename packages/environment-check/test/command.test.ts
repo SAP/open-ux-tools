@@ -1,5 +1,5 @@
-import { spawnCommand } from '../src/command';
 import * as cp from 'child_process';
+import { spawnCommand } from '../src/command';
 
 jest.mock('child_process');
 const mockedCp = jest.mocked(cp, { shallow: true });

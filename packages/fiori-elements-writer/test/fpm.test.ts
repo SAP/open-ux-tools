@@ -1,8 +1,8 @@
+import { removeSync } from 'fs-extra';
+import { join } from 'path';
 import type { FioriElementsApp, FPMSettings } from '../src';
 import { generate, TemplateType, ValidationError } from '../src';
-import { join } from 'path';
-import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, feBaseConfig, v4Service, v2Service, projectChecks } from './common';
+import { debug, feBaseConfig, projectChecks, testOutputDir, v2Service, v4Service } from './common';
 
 const TEST_NAME = 'fpmTemplates';
 jest.setTimeout(120000); // Needed when debug.debugFull

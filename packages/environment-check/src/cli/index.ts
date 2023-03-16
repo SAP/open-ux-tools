@@ -1,12 +1,12 @@
 import { writeFile } from 'fs';
-import { t } from '../i18n';
 import minimist from 'minimist';
 import prompts from 'prompts';
-import type { CheckEnvironmentOptions, EnvironmentCheckResult, Endpoint } from '../types';
-import { OutputMode, Severity } from '../types';
-import { convertResultsToMarkdown } from '../output/markdown';
 import { checkEnvironment } from '../checks/environment';
+import { t } from '../i18n';
 import { storeResultsZip } from '../output';
+import { convertResultsToMarkdown } from '../output/markdown';
+import type { CheckEnvironmentOptions, Endpoint, EnvironmentCheckResult } from '../types';
+import { OutputMode, Severity } from '../types';
 
 /**
  * Output usage information to console.

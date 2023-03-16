@@ -1,17 +1,17 @@
-import os from 'os';
+import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
+import os from 'os';
 import { join } from 'path';
 import { generateCustomColumn } from '../../src';
 import { getManifestRoot } from '../../src/column';
 import type { CustomTableColumn } from '../../src/column/types';
 import { Availability, HorizontalAlign } from '../../src/column/types';
-import * as manifest from './sample/column/webapp/manifest.json';
+import { detectTabSpacing } from '../../src/common/file';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import { detectTabSpacing } from '../../src/common/file';
 import { tabSizingTestCases } from '../common';
+import * as manifest from './sample/column/webapp/manifest.json';
 
 const testDir = join(__dirname, 'sample/column');
 

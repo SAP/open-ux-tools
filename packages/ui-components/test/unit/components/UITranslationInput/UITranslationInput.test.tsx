@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import * as React from 'react';
 import { initIcons } from '../../../../src/components';
 import {
-    UITranslationInput,
+    TranslationKeyGenerator,
     TranslationTextPattern,
-    TranslationKeyGenerator
+    UITranslationInput
 } from '../../../../src/components/UITranslationInput';
 import { getBundle } from './utils';
 

@@ -1,6 +1,6 @@
-import React from 'react';
 import type { IOverlayProps, IOverlayStyles } from '@fluentui/react';
 import { Overlay } from '@fluentui/react';
+import React from 'react';
 
 /**
  * UILoader component

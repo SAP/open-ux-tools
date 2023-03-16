@@ -1,8 +1,8 @@
-import { join } from 'path';
-import type { Package } from '../../src';
-import { readFile, readJSON, fileExists } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { join } from 'path';
+import type { Package } from '../../src';
+import { fileExists, readFile, readJSON } from '../../src/file';
 
 describe('fileAccess', () => {
     const memFs = create(createStorage());

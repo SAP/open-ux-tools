@@ -1,7 +1,7 @@
+import { ODataRequestError } from '../../base/odata-request-error';
+import { ODataVersion } from '../../base/odata-service';
 import type { Annotations, ODataServiceInfo } from './base';
 import { CatalogService } from './base';
-import { ODataVersion } from '../../base/odata-service';
-import { ODataRequestError } from '../../base/odata-request-error';
 
 const V4_RECOMMENDED_ENTITYSET = 'RecommendedServices';
 const V4_CLASSIC_ENTITYSET = 'Services';

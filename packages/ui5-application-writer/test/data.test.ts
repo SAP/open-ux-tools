@@ -1,4 +1,4 @@
-import { UI5_DEFAULT, mergeUi5, defaultUI5Libs, mergeApp, getSpecTagVersion, mergeObjects } from '../src/data/defaults';
+import { defaultUI5Libs, getSpecTagVersion, mergeApp, mergeObjects, mergeUi5, UI5_DEFAULT } from '../src/data/defaults';
 import { mergeWithDefaults } from '../src/data/index';
 import type { App, Package, UI5, Ui5App } from '../src/types';
 

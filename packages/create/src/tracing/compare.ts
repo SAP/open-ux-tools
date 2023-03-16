@@ -1,6 +1,6 @@
-import { diffJson, diffTrimmedLines } from 'diff';
-import type { Change } from 'diff';
 import { green, grey, red } from 'chalk';
+import type { Change } from 'diff';
+import { diffJson, diffTrimmedLines } from 'diff';
 import { getLogger } from './logger';
 
 /**

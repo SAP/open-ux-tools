@@ -1,18 +1,18 @@
-import type { AbapServiceProvider, ODataServiceInfo, AxiosRequestConfig } from '@sap-ux/axios-extension';
-import type { CatalogServiceResult, ResultMessage, Endpoint } from '../types';
+import type { AbapServiceProvider, AxiosRequestConfig, ODataServiceInfo } from '@sap-ux/axios-extension';
 import {
-    AtoService,
-    TransportChecksService,
-    ODataVersion,
     AbapCloudEnvironment,
+    AtoService,
     createForAbap,
     createForAbapOnCloud,
-    createForDestination
+    createForDestination,
+    ODataVersion,
+    TransportChecksService
 } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { countNumberOfServices, getCircularReplacer, getServiceCountText } from '../formatter';
-import { getLogger } from '../logger';
 import { t } from '../i18n';
+import { getLogger } from '../logger';
+import type { CatalogServiceResult, Endpoint, ResultMessage } from '../types';
 
 const catalogMessages = {
     401: (systemName: string, odataVersion: ODataVersion): string =>

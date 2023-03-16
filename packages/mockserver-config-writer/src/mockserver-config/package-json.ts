@@ -1,6 +1,6 @@
-import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
+import type { Editor } from 'mem-fs-editor';
+import { join } from 'path';
 import type { PackageJsonMockConfig } from '../types';
 
 /**

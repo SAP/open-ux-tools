@@ -1,24 +1,24 @@
-import type { Editor } from 'mem-fs-editor';
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import { render } from 'ejs';
 import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { render } from 'ejs';
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import { FCL_ROUTER } from '../common/defaults';
+import { extendJSON } from '../common/file';
+import type { Manifest } from '../common/types';
 import { validateBasePath } from '../common/validate';
+import { getTemplatePath } from '../templates';
 import type {
     CustomPage,
     FCL,
     InternalCustomPage,
+    InternalListReport,
     InternalObjectPage,
-    ObjectPage,
     ListReport,
     Navigation,
-    InternalListReport
+    ObjectPage
 } from './types';
-import type { Manifest } from '../common/types';
-import { FCL_ROUTER } from '../common/defaults';
-import { extendJSON } from '../common/file';
-import { getTemplatePath } from '../templates';
 
 type EnhancePageConfigFunction = (
     data: ObjectPage | ListReport,

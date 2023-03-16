@@ -1,18 +1,18 @@
+import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { Filter, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import { HttpsProxyAgent } from 'https-proxy-agent';
+import { getProxyForUrl } from 'proxy-from-env';
+import type { Url } from 'url';
 import type { ProxyConfig } from './types';
 import {
-    proxyRequestHandler,
-    proxyResponseHandler,
     filterCompressedHtmlFiles,
     proxyErrorHandler,
+    proxyRequestHandler,
+    proxyResponseHandler,
     updateProxyEnv
 } from './utils';
-import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
-import type { Url } from 'url';
-import { getProxyForUrl } from 'proxy-from-env';
-import { HttpsProxyAgent } from 'https-proxy-agent';
 
 /**
  * Function for proxying UI5 sources.

@@ -1,7 +1,7 @@
-import type { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { prettyPrintError, prettyPrintMessage } from './message';
-import { ODataService } from '../base/odata-service';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { isAxiosError } from '../base/odata-request-error';
+import { ODataService } from '../base/odata-service';
+import { prettyPrintError, prettyPrintMessage } from './message';
 
 /**
  * Required configuration for the BSP hosting an app.

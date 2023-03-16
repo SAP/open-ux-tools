@@ -1,8 +1,8 @@
-import React from 'react';
-import type { ICheckboxProps, ICheckboxStyles, ICheckboxStyleProps } from '@fluentui/react';
+import type { ICheckboxProps, ICheckboxStyleProps, ICheckboxStyles } from '@fluentui/react';
 import { Checkbox, HighContrastSelector, IsFocusVisibleClassName } from '@fluentui/react';
+import React from 'react';
 
-import type { UIComponentMessagesProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
+import type { InputValidationMessageInfo, UIComponentMessagesProps } from '../../helper/ValidationMessage';
 import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
 
 export interface UICheckboxProps extends ICheckboxProps, UIComponentMessagesProps {

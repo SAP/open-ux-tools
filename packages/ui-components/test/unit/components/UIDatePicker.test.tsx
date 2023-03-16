@@ -1,5 +1,5 @@
-import * as React from 'react';
 import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import { UIDatePicker } from '../../../src/components/UIDatePicker';
 
 describe('<UIDatePicker />', () => {

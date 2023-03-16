@@ -1,7 +1,7 @@
-import { Option, Command } from 'commander';
-import { ToolsLogger, ConsoleTransport, LogLevel } from '@sap-ux/logger';
+import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
+import { Command, Option } from 'commander';
 import { deploy, getConfigForLogging, replaceEnvVariables, undeploy, validateConfig } from '../base';
-import type { CliOptions, AbapDeployConfig } from '../types';
+import type { AbapDeployConfig, CliOptions } from '../types';
 import { NAME } from '../types';
 import { getArchive } from './archive';
 import { getDeploymentConfig, getVersion, mergeConfig } from './config';

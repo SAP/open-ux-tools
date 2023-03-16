@@ -1,16 +1,16 @@
 import open = require('open');
-import type { AxiosResponse, AxiosRequestConfig } from 'axios';
+import type { ServiceInfo } from '@sap-ux/btp-utils';
+import type { Logger } from '@sap-ux/logger';
+import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import axios from 'axios';
 import http from 'http';
 import type { AddressInfo } from 'net';
 import qs from 'qs';
-import type { Logger } from '@sap-ux/logger';
-import type { ServiceInfo } from '@sap-ux/btp-utils';
-import { Redirect } from './redirect';
 import { prettyPrintTimeInMs } from '../abap/message';
-import { UAATimeoutError } from './error';
-import { redirectSuccessHtml } from './static';
 import { defaultTimeout } from './connection';
+import { UAATimeoutError } from './error';
+import { Redirect } from './redirect';
+import { redirectSuccessHtml } from './static';
 
 export type RefreshTokenChanged = (refreshToken?: string) => void | Promise<void>;
 

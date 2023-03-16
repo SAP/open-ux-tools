@@ -1,5 +1,5 @@
-import chalk from 'chalk';
 import { ConsoleTransport, LogLevel, ToolsLogger } from '@sap-ux/logger';
+import chalk from 'chalk';
 
 const levelColor: { [level: string]: string } = {
     warn: 'yellow',

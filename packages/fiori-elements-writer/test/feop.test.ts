@@ -1,9 +1,9 @@
+import { removeSync } from 'fs-extra';
+import { join } from 'path';
 import type { FioriElementsApp } from '../src';
 import { generate, TemplateType } from '../src';
-import { join } from 'path';
-import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, feBaseConfig, v4TemplateSettings, v4Service, projectChecks } from './common';
 import type { FEOPSettings } from '../src/types';
+import { debug, feBaseConfig, projectChecks, testOutputDir, v4Service, v4TemplateSettings } from './common';
 
 const TEST_NAME = 'feopTemplate';
 jest.setTimeout(120000); // Needed when debug.debugFull

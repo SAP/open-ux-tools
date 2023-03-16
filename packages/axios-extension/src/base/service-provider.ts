@@ -1,9 +1,9 @@
-import type { AxiosRequestConfig } from 'axios';
-import { Axios } from 'axios';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { ODataService } from './odata-service';
+import type { AxiosRequestConfig } from 'axios';
+import { Axios } from 'axios';
 import { Cookies } from '../auth';
+import { ODataService } from './odata-service';
 
 export type Service = Axios & { log: Logger };
 

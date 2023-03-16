@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
+import axios from 'axios';
 import { ENV } from './app-studio.env';
 import type { Destination } from './destination';
 

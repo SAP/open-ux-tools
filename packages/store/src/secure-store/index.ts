@@ -1,6 +1,6 @@
-import type * as Keytar from 'keytar';
 import type { Logger } from '@sap-ux/logger';
-import { isAppStudio, errorString } from '../utils';
+import type * as Keytar from 'keytar';
+import { errorString, isAppStudio } from '../utils';
 import { DummyStore } from './dummy-store';
 import { KeytarStore } from './keytar-store';
 import type { SecureStore } from './types';

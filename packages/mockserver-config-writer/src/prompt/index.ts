@@ -1,11 +1,11 @@
-import { join } from 'path';
-import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
-import type { Choice, PromptObject } from 'prompts';
 import type { Manifest } from '@sap-ux/project-access';
-import { getODataSources, getMainServiceDataSource } from '../app-info';
+import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
+import { join } from 'path';
+import type { Choice, PromptObject } from 'prompts';
 import { t } from '..';
+import { getMainServiceDataSource, getODataSources } from '../app-info';
 
 /**
  * Return the list of questions to configure mockserver.

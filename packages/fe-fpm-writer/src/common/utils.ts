@@ -2,8 +2,8 @@ import type { Editor } from 'mem-fs-editor';
 import os from 'os';
 import { join } from 'path';
 import { coerce, minor } from 'semver';
-import { getTemplatePath } from '../templates';
 import type { FileContentPosition } from '../common/types';
+import { getTemplatePath } from '../templates';
 
 /**
  * Method inserts passed text into content by char index position.

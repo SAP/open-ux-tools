@@ -1,11 +1,11 @@
-import * as React from 'react';
 import * as Enzyme from 'enzyme';
-import { UISections } from '../../../src/components/UISection/UISections';
-import { UISectionLayout } from '../../../src/components/UISection/UISection';
-import { UISplitterType } from '../../../src/components/UISection/UISplitter';
-import type { UISectionsProps, UISectionsState } from '../../../src/components/UISection/UISections';
-import { mockResizeObserver, mockDomEventListener } from '../../utils/utils';
+import * as React from 'react';
 import { initIcons } from '../../../src/components/Icons';
+import { UISectionLayout } from '../../../src/components/UISection/UISection';
+import type { UISectionsProps, UISectionsState } from '../../../src/components/UISection/UISections';
+import { UISections } from '../../../src/components/UISection/UISections';
+import { UISplitterType } from '../../../src/components/UISection/UISplitter';
+import { mockDomEventListener, mockResizeObserver } from '../../utils/utils';
 
 initIcons();
 mockResizeObserver();

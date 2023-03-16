@@ -1,8 +1,8 @@
-import React from 'react';
-import type { IDialogProps, IDialogFooterProps } from '@fluentui/react';
+import type { IDialogFooterProps, IDialogProps } from '@fluentui/react';
 import { Dialog as BaseDialog, DialogFooter } from '@fluentui/react';
-import { UIDefaultButton } from '../UIButton';
+import React from 'react';
 import { deepMerge } from '../../utilities/DeepMerge';
+import { UIDefaultButton } from '../UIButton';
 
 interface ComponentProps {
     // Accept and cancel buttons options

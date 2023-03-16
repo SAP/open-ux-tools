@@ -1,8 +1,8 @@
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { TelemetrySetting, TelemetrySettingKey } from '../../../src';
 import * as dataAccessFilesystem from '../../../src/data-access/filesystem';
-import { TelemetryDataProvider } from '../../../src/data-provider/telemetry-setting';
 import { Entities } from '../../../src/data-provider/constants';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { TelemetryDataProvider } from '../../../src/data-provider/telemetry-setting';
 
 describe('TelemetrySetting data provider', () => {
     const logger = new ToolsLogger({ transports: [new NullTransport()] });

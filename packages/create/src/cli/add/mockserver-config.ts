@@ -1,12 +1,12 @@
+import type { MockserverConfig } from '@sap-ux/mockserver-config-writer';
+import { generateMockserverConfig, getMockserverConfigQuestions } from '@sap-ux/mockserver-config-writer';
+import { getWebappPath } from '@sap-ux/project-access';
 import { spawnSync } from 'child_process';
 import type { Command } from 'commander';
-import { prompt } from 'prompts';
-import { getWebappPath } from '@sap-ux/project-access';
-import { generateMockserverConfig, getMockserverConfigQuestions } from '@sap-ux/mockserver-config-writer';
-import type { MockserverConfig } from '@sap-ux/mockserver-config-writer';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import { validateBasePath } from '../../validation';
 import { relative } from 'path';
+import { prompt } from 'prompts';
+import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
+import { validateBasePath } from '../../validation';
 
 /**
  * Add the "add mockserver config" command to a passed command.

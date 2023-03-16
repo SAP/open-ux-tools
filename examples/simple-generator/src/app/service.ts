@@ -1,9 +1,9 @@
-import type Generator from 'yeoman-generator';
-import type { AxiosBasicCredentials } from 'axios';
-import type { ODataService, AbapServiceProvider, Annotations } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, Annotations, ODataService } from '@sap-ux/axios-extension';
 import { createForAbap, createForDestination, ODataVersion } from '@sap-ux/axios-extension';
 import type { OdataService } from '@sap-ux/odata-service-writer';
-import { getService, BackendSystem, BackendSystemKey } from '@sap-ux/store';
+import { BackendSystem, BackendSystemKey, getService } from '@sap-ux/store';
+import type { AxiosBasicCredentials } from 'axios';
+import type Generator from 'yeoman-generator';
 
 export interface ServiceInfo {
     url?: string;

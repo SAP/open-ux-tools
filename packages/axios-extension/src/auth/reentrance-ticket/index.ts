@@ -1,9 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
 import type { AddressInfo } from 'net';
-import open = require('open');
 import { defaultTimeout } from '../connection';
 import { ABAPSystem } from './abap-system';
 import { setupRedirectHandling } from './redirect';
+import open = require('open');
 
 /**
  * DO NOT USE THIS SERVICE ENDPOINT DIRECTLY.

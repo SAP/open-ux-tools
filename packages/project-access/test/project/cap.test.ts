@@ -1,10 +1,10 @@
 import { join } from 'path';
-import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
+import { getCapModelAndServices, getCapProjectType, isCapJavaProject, isCapNodeJsProject } from '../../src';
 import { FileName } from '../../src/constants';
-import { isCapNodeJsProject, isCapJavaProject, getCapModelAndServices, getCapProjectType } from '../../src';
-import { getCapCustomPaths } from '../../src/project/cap';
 import { readJSON } from '../../src/file';
+import { getCapCustomPaths } from '../../src/project/cap';
+import * as projectModuleMock from '../../src/project/module-loader';
 
 describe('Test getCapProjectType()', () => {
     test('Test if valid CAP Node.js project is recognized', async () => {

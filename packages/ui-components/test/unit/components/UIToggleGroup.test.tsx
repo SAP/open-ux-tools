@@ -1,8 +1,8 @@
-import * as React from 'react';
 import * as Enzym from 'enzyme';
+import * as React from 'react';
 
-import { UIToggleGroup } from '../../../src/components/UIToggleGroup/index';
 import type { UIToggleGroupProps } from '../../../src/components/UIToggleGroup/index';
+import { UIToggleGroup } from '../../../src/components/UIToggleGroup/index';
 
 describe('<UIToggleGroup />', () => {
     let toggleGroupProps: UIToggleGroupProps;

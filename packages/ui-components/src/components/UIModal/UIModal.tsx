@@ -1,6 +1,6 @@
-import React from 'react';
 import type { IModalProps, IModalStyles } from '@fluentui/react';
 import { Modal } from '@fluentui/react';
+import React from 'react';
 
 /**
  * UIModal component

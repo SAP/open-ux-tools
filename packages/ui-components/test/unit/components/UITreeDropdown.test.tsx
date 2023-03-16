@@ -1,10 +1,10 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
 import type { IContextualMenuItem } from '@fluentui/react';
+import * as Enzyme from 'enzyme';
+import * as React from 'react';
+import { UIContextualMenu } from '../../../src/components/UIContextualMenu';
+import { UITextInput } from '../../../src/components/UIInput';
 import type { UITreeDropdownProps, UITreeDropdownState } from '../../../src/components/UITreeDropdown';
 import { UITreeDropdown } from '../../../src/components/UITreeDropdown';
-import { UITextInput } from '../../../src/components/UIInput';
-import { UIContextualMenu } from '../../../src/components/UIContextualMenu';
 import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
 

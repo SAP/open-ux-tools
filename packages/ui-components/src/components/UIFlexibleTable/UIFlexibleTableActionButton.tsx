@@ -1,6 +1,6 @@
 import React from 'react';
-import { UIIconButton } from '..';
 import type { UiIcons } from '..';
+import { UIIconButton } from '..';
 import { getTableActionButtonId } from './utils';
 
 export interface UIFlexibleTableActionProps {

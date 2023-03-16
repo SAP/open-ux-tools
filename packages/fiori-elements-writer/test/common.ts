@@ -1,12 +1,12 @@
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { exec as execCP } from 'child_process';
 import { readFileSync } from 'fs';
 import { create as createStore } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
 import { promisify } from 'util';
-import { exec as execCP } from 'child_process';
+import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
 const exec = promisify(execCP);
 
 export const testOutputDir = join(__dirname, 'test-output');

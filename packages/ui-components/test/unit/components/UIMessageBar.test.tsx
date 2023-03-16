@@ -1,9 +1,9 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
 import type { IMessageBarProps, IMessageBarStyles } from '@fluentui/react';
 import { MessageBar, MessageBarType } from '@fluentui/react';
-import { UIMessageBar } from '../../../src/components/UIMessageBar';
+import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import { UiIcons } from '../../../src/components/Icons';
+import { UIMessageBar } from '../../../src/components/UIMessageBar';
 
 describe('<UIMessageBar />', () => {
     let wrapper: Enzyme.ReactWrapper<IMessageBarProps>;

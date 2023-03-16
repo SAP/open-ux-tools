@@ -1,7 +1,7 @@
-import { ServiceProvider } from '../../src/base/service-provider';
+import type { AxiosRequestConfig } from 'axios';
 import { getReentranceTicketAuthInterceptor } from '../../src/auth';
 import * as rt from '../../src/auth/reentrance-ticket';
-import type { AxiosRequestConfig } from 'axios';
+import { ServiceProvider } from '../../src/base/service-provider';
 
 describe('getReentranceTicketAuthInterceptor', () => {
     const getReentranceTicketSpy = jest.spyOn(rt, 'getReentranceTicket');

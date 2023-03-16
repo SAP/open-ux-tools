@@ -1,15 +1,15 @@
-import { getService, BackendSystemKey } from '@sap-ux/store';
-import type { BackendSystem } from '@sap-ux/store';
-import type { ResultMessage, Endpoint, EndpointResults } from '../types';
-import { getLogger } from '../logger';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
+import type { BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey, getService } from '@sap-ux/store';
 import { t } from '../i18n';
+import { getLogger } from '../logger';
+import type { Endpoint, EndpointResults, ResultMessage } from '../types';
 import {
-    getServiceProvider,
-    checkCatalogServices,
     checkAtoCatalog,
+    checkCatalogServices,
+    checkTransportRequests,
     checkUi5AbapRepository,
-    checkTransportRequests
+    getServiceProvider
 } from './service-checks';
 
 /**

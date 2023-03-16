@@ -1,6 +1,6 @@
-import mockedStore from '@sap-ux/store';
 import mockedAxiosExtension from '@sap-ux/axios-extension';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import mockedStore from '@sap-ux/store';
 
 type MockedStore = {
     mockedService: {

@@ -1,6 +1,6 @@
-import { Uaa } from '../../src/auth/uaa';
-import axios from 'axios';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import axios from 'axios';
+import { Uaa } from '../../src/auth/uaa';
 
 let openMockCallback: (url: string) => void;
 jest.mock('open', () => jest.fn((url: string) => openMockCallback && openMockCallback(url)));

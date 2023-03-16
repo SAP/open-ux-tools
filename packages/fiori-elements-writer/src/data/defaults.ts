@@ -1,5 +1,5 @@
-import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import readPkgUp from 'read-pkg-up';
 import type { ALPSettings, ALPSettingsV2, ALPSettingsV4, FioriElementsApp, Template } from '../types';
 import { TableSelectionMode, TableType, TemplateType } from '../types';

@@ -1,13 +1,13 @@
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { join } from 'path';
+import { exec as execCP } from 'child_process';
 import { readFileSync } from 'fs';
-import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { FreestyleApp } from '../src';
+import { join } from 'path';
 import { promisify } from 'util';
-import { exec as execCP } from 'child_process';
+import type { FreestyleApp } from '../src';
+import { sample } from './sample/metadata';
 const exec = promisify(execCP);
 
 export const testOutputDir = join(__dirname, '/test-output');

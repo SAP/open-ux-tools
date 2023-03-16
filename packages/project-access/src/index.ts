@@ -2,8 +2,8 @@ export { FileName } from './constants';
 export {
     findAllApps,
     findProjectRoot,
-    getAppRootFromWebappPath,
     getAppProgrammingLanguage,
+    getAppRootFromWebappPath,
     getCapModelAndServices,
     getCapProjectType,
     getWebappPath,

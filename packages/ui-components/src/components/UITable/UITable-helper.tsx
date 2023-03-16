@@ -1,8 +1,8 @@
-import React from 'react';
-import type { IDetailsHeaderProps, IRenderFunction, IDetailsListStyles, IDetailsList } from '@fluentui/react';
+import type { IDetailsHeaderProps, IDetailsList, IDetailsListStyles, IRenderFunction } from '@fluentui/react';
 import { Sticky } from '@fluentui/react';
+import React from 'react';
+import type { EditedCell, UIColumn, UITableProps, UITableState } from '.';
 import { UIIcon } from '..';
-import type { UIColumn, EditedCell, UITableProps, UITableState } from '.';
 
 /**
  * Method to copy and sort.

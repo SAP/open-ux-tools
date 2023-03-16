@@ -1,13 +1,13 @@
-import React from 'react';
 import type {
     IGroup,
     IGroupedListStyles,
-    IGroupRenderProps,
     IGroupHeaderProps,
     IGroupHeaderStyles,
+    IGroupRenderProps,
     IListProps
 } from '@fluentui/react';
 import { GroupedList } from '@fluentui/react';
+import React from 'react';
 
 import { UiIcons } from '../Icons';
 

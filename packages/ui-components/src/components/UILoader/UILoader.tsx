@@ -1,6 +1,6 @@
+import type { IOverlayStyles, ISpinnerProps, ISpinnerStyles } from '@fluentui/react';
+import { Overlay, Spinner } from '@fluentui/react';
 import React from 'react';
-import type { ISpinnerProps, ISpinnerStyles, IOverlayStyles } from '@fluentui/react';
-import { Spinner, Overlay } from '@fluentui/react';
 
 import './UILoader.scss';
 

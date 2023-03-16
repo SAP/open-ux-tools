@@ -1,6 +1,6 @@
 import nock from 'nock';
 import type { AppInfo } from '../../src';
-import { Ui5AbapRepositoryService, createForAbap } from '../../src';
+import { createForAbap, Ui5AbapRepositoryService } from '../../src';
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';

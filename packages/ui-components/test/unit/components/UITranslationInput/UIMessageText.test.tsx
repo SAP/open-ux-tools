@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { render } from '@testing-library/react';
+import * as React from 'react';
 import { initIcons } from '../../../../src/components';
-import { UIFormattedText, formatText } from '../../../../src/components/UITranslationInput/UIFormattedText';
+import { formatText, UIFormattedText } from '../../../../src/components/UITranslationInput/UIFormattedText';
 
 describe('<UIMessageText />', () => {
     initIcons();

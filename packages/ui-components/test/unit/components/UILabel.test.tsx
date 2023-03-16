@@ -1,7 +1,7 @@
-import * as React from 'react';
-import * as Enzyme from 'enzyme';
-import type { IStyleFunction, ILabelStyles } from '@fluentui/react';
+import type { ILabelStyles, IStyleFunction } from '@fluentui/react';
 import { Label } from '@fluentui/react';
+import * as Enzyme from 'enzyme';
+import * as React from 'react';
 import type { UILabelProps } from '../../../src/components/UILabel';
 import { UILabel } from '../../../src/components/UILabel';
 

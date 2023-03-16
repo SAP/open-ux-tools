@@ -1,10 +1,10 @@
+import { isAppStudio } from '@sap-ux/btp-utils';
 import * as mockFs from 'fs';
 import type { Endpoint } from '../../src';
-import { cli } from '../../src/cli/index';
 import { checkEnvironment } from '../../src/checks/environment';
-import { Severity } from '../../src/types';
+import { cli } from '../../src/cli/index';
 import { storeResultsZip } from '../../src/output';
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { Severity } from '../../src/types';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as object),

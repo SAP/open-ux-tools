@@ -1,23 +1,23 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { checkBASDestinations, needsUsernamePassword } from './destination';
-import { checkEndpoint } from './endpoint';
-import { checkStoredSystems } from './stored-system';
-import { getDestinationsFromWorkspace } from './workspace';
-import { getLogger } from '../logger';
 import { devspace } from '@sap/bas-sdk';
 import type { Extension } from 'vscode';
+import { t } from '../i18n';
+import { getLogger } from '../logger';
 import type {
     CheckEnvironmentOptions,
+    Endpoint,
+    EndpointResults,
     Environment,
     EnvironmentCheckResult,
     ResultMessage,
-    ToolsExtensions,
-    EndpointResults,
-    Endpoint
+    ToolsExtensions
 } from '../types';
 import { Check, DevelopmentEnvironment, Extensions } from '../types';
-import { getInstalledExtensions, getCFCliToolVersion, getFioriGenVersion, getProcessVersions } from './get-installed';
-import { t } from '../i18n';
+import { checkBASDestinations, needsUsernamePassword } from './destination';
+import { checkEndpoint } from './endpoint';
+import { getCFCliToolVersion, getFioriGenVersion, getInstalledExtensions, getProcessVersions } from './get-installed';
+import { checkStoredSystems } from './stored-system';
+import { getDestinationsFromWorkspace } from './workspace';
 
 /**
  * Return the environment.

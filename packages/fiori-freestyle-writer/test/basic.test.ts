@@ -1,11 +1,10 @@
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { removeSync } from 'fs-extra';
+import { join } from 'path';
 import type { FreestyleApp } from '../src';
 import { generate, TemplateType } from '../src';
-import { join } from 'path';
-import { removeSync } from 'fs-extra';
-import { testOutputDir, debug } from './common';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
-import { projectChecks } from './common';
+import { debug, projectChecks, testOutputDir } from './common';
 
 const TEST_NAME = 'basicTemplate';
 jest.setTimeout(120000); // Needed when debug.enabled

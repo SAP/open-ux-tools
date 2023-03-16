@@ -1,6 +1,6 @@
+import { convertResultsToString } from '../../src/output';
 import type { EnvironmentCheckResult } from '../../src/types';
 import envCheckResults from '../test-input/env-check-result.json';
-import { convertResultsToString } from '../../src/output';
 
 describe('Test to check formatResultsForClipboard returns stringified results', () => {
     test('Check results are returned as a string', () => {

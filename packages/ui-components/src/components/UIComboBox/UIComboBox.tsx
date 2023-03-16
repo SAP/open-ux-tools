@@ -1,22 +1,22 @@
-import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps } from '@fluentui/react';
+import type { IAutofillProps, IComboBoxProps, IComboBoxState } from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
     IComboBoxOption,
     initializeComponentRef,
-    KeyCodes,
-    IOnRenderComboBoxLabelProps
+    IOnRenderComboBoxLabelProps,
+    KeyCodes
 } from '@fluentui/react';
-import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption';
-import './UIComboBox.scss';
-import './Callout.scss';
-import { UILoader } from '../UILoader';
-import { UiIcons } from '../Icons';
-import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
+import React from 'react';
+import type { InputValidationMessageInfo, UIMessagesExtendedProps } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
-import { labelGlobalStyle } from '../UILabel';
+import { UiIcons } from '../Icons';
+import { UIHighlightMenuOption } from '../UIContextualMenu/UIHighlightMenuOption';
 import { isDropdownEmpty } from '../UIDropdown';
+import { labelGlobalStyle } from '../UILabel';
+import { UILoader } from '../UILoader';
+import './Callout.scss';
+import './UIComboBox.scss';
 
 export {
     IComboBoxOption as UIComboBoxOption,

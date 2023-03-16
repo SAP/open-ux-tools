@@ -1,14 +1,14 @@
-import { join, dirname, sep } from 'path';
+import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
+import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { updateManifest, updatePackageJson } from './updates';
-import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
-import { UI5Config, yamlErrorCode, YAMLError } from '@sap-ux/ui5-config';
+import { dirname, join, sep } from 'path';
 import prettifyXml from 'prettify-xml';
 import { enhanceData, getAnnotationNamespaces } from './data';
 import { t } from './i18n';
 import { OdataService, OdataVersion } from './types';
+import { updateManifest, updatePackageJson } from './updates';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.

@@ -1,10 +1,10 @@
-import type { FioriElementsApp } from '../types';
-import { TemplateType } from '../types';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { render } from 'ejs';
+import type { FioriElementsApp } from '../types';
+import { TemplateType } from '../types';
 
 /**
  * Extend the manifest.json file passed via the fs reference with the template and settings specified.

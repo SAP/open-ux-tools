@@ -1,12 +1,12 @@
-import type { OdataService } from '../src/types';
-import { OdataVersion } from '../src/types';
-import { generate } from '../src';
-import { join } from 'path';
+import { UI5Config } from '@sap-ux/ui5-config';
+import { readFile, removeSync } from 'fs-extra';
+import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
-import { readFile, removeSync } from 'fs-extra';
-import { UI5Config } from '@sap-ux/ui5-config';
+import { join } from 'path';
+import { generate } from '../src';
+import type { OdataService } from '../src/types';
+import { OdataVersion } from '../src/types';
 
 describe('ODataService templates', () => {
     const debug = !!process.env['UX_DEBUG'];

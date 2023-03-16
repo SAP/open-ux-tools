@@ -1,15 +1,15 @@
-import os from 'os';
+import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
+import os from 'os';
 import { join } from 'path';
-import { generateCustomSection, getManifestRoot } from '../../src/section';
-import type { CustomSection } from '../../src/section/types';
+import { detectTabSpacing } from '../../src/common/file';
 import type { EventHandlerConfiguration, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import * as manifest from './sample/section/webapp/manifest.json';
-import { detectTabSpacing } from '../../src/common/file';
+import { generateCustomSection, getManifestRoot } from '../../src/section';
+import type { CustomSection } from '../../src/section/types';
 import { tabSizingTestCases } from '../common';
+import * as manifest from './sample/section/webapp/manifest.json';
 
 const testDir = join(__dirname, 'sample/section');
 

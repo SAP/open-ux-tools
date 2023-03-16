@@ -1,5 +1,5 @@
+import { initializeIcons, registerIcons } from '@fluentui/react';
 import React from 'react';
-import { registerIcons, initializeIcons } from '@fluentui/react';
 
 const COLORS = {
     'default': 'var(--vscode-icon-foreground, var(--vscode-foreground))',

@@ -1,5 +1,5 @@
-import { join } from 'path';
 import nock from 'nock';
+import { join } from 'path';
 import { createForAbap, ODataVersion, V4CatalogService } from '../../../src';
 
 const mockRespPath = join(__dirname, '../mockResponses');

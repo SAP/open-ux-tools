@@ -1,3 +1,4 @@
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -10,7 +11,6 @@ import {
     PATTERN_SUFFIX,
     validatePageConfig
 } from '../../../src/page/common';
-import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { CustomPage } from '../../../src/page/types';
 
 describe('common page functionality', () => {

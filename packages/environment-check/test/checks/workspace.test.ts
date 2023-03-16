@@ -1,7 +1,7 @@
-import { FileName, Severity } from '../../src/types';
+import { findAllApps } from '@sap-ux/project-access';
 import { join } from 'path';
 import { getDestinationsFromWorkspace } from '../../src/checks/workspace';
-import { findAllApps } from '@sap-ux/project-access';
+import { FileName, Severity } from '../../src/types';
 
 jest.mock('@sap-ux/project-access', () => ({
     findAllApps: jest.fn()

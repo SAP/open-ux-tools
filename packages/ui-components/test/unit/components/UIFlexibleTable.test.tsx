@@ -1,16 +1,16 @@
-import * as React from 'react';
 import * as Enzyme from 'enzyme';
+import * as React from 'react';
 
 import type {
-    UIFlexibleTableProps,
-    UIFlexibleTableColumnType,
-    UIFlexibleTableRowType,
-    CellRendererResult,
     CellRendererParams,
-    TitleCellRendererParams
+    CellRendererResult,
+    TitleCellRendererParams,
+    UIFlexibleTableColumnType,
+    UIFlexibleTableProps,
+    UIFlexibleTableRowType
 } from '../../../src/components';
 
-import { initIcons, UIFlexibleTable, UIFlexibleTableLayout, getRowActionButtonId } from '../../../src/components';
+import { getRowActionButtonId, initIcons, UIFlexibleTable, UIFlexibleTableLayout } from '../../../src/components';
 
 import { mockResizeObserver } from '../../utils/utils';
 

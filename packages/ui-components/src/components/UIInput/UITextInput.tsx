@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { ITextFieldProps, ITextFieldStyleProps, ITextFieldStyles } from '@fluentui/react';
 import { TextField } from '@fluentui/react';
-import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
+import type { InputValidationMessageInfo, UIMessagesExtendedProps } from '../../helper/ValidationMessage';
 import { getMessageInfo } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
 

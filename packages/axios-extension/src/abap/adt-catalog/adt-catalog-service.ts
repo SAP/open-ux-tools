@@ -1,8 +1,8 @@
 import type { Logger } from '@sap-ux/logger';
 import type { AdtCategory, AdtCollection, AdtSchemaData } from 'abap/types';
 import { Axios } from 'axios';
-import { AdtSchemaStore } from './adt-schema-store';
 import XmlParser from 'fast-xml-parser';
+import { AdtSchemaStore } from './adt-schema-store';
 
 /**
  * Adt Catalog Service implementation fetches the

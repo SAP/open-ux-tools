@@ -1,8 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
+import type { EventHandlerConfiguration, InternalCustomElement, TextFragmentInsertion } from '../common/types';
+import { insertTextAtAbsolutePosition, insertTextAtPosition } from '../common/utils';
 import { getTemplatePath } from '../templates';
-import type { TextFragmentInsertion, EventHandlerConfiguration, InternalCustomElement } from '../common/types';
-import { insertTextAtPosition, insertTextAtAbsolutePosition } from '../common/utils';
 
 /**
  * Interface to describe the input parameters for the generated event handler function.

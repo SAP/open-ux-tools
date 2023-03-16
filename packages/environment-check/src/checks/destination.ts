@@ -1,11 +1,11 @@
-import type { Endpoint, ResultMessage, EndpointResults } from '../types';
+import { getAppStudioProxyURL } from '@sap-ux/btp-utils';
 import { destinations as destinationsApi } from '@sap/bas-sdk';
 import axios from 'axios';
-import { getAppStudioProxyURL } from '@sap-ux/btp-utils';
-import { getLogger } from '../logger';
-import { UrlServiceType, Severity } from '../types';
 import { t } from '../i18n';
-import { getServiceProvider, checkCatalogServices } from './service-checks';
+import { getLogger } from '../logger';
+import type { Endpoint, EndpointResults, ResultMessage } from '../types';
+import { Severity, UrlServiceType } from '../types';
+import { checkCatalogServices, getServiceProvider } from './service-checks';
 
 /**
  * Check a BAS destination, like catalog service v2 & v4.

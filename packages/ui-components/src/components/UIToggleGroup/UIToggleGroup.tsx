@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-import { UIToggleGroupOption } from './UIToggleGroupOption';
-import { UILabel } from '../UILabel';
-import { UIFocusZone, UIFocusZoneDirection } from '../UIFocusZone';
 import { getUIId } from '../../utilities';
+import { UIFocusZone, UIFocusZoneDirection } from '../UIFocusZone';
+import { UILabel } from '../UILabel';
+import { UIToggleGroupOption } from './UIToggleGroupOption';
 
-import type { UIToggleGroupProps, ToggleGroupOption } from './UIToggleGroup.types';
+import type { ToggleGroupOption, UIToggleGroupProps } from './UIToggleGroup.types';
 import type { UIToggleGroupOptionProps } from './UIToggleGroupOption/UIToggleGroupOption.types';
 
 import './UIToggleGroup.scss';

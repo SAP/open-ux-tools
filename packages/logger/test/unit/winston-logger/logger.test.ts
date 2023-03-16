@@ -1,17 +1,17 @@
 import 'jest-extended';
+import winston from 'winston';
 import type { Transport } from '../../../src';
 import { LogLevel, ToolsLogger } from '../../../src';
 import type { ArrayTransportLogEntry } from '../../../src/transports';
 import {
-    ConsoleTransport,
     ArrayTransport,
+    ConsoleTransport,
     NullTransport,
     UI5ToolingTransport,
     VSCodeTransport
 } from '../../../src/transports';
 import { NullTransport as WinstonNullTransport } from '../../../src/winston-logger/null-transport';
 import { VSCodeTransport as WinstonVSCodeTransport } from '../../../src/winston-logger/vscode-output-channel-transport';
-import winston from 'winston';
 
 jest.mock(
     'vscode',

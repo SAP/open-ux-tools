@@ -1,8 +1,8 @@
+import * as storeUtils from '@sap-ux/store';
+import * as serviceChecks from '../../src/checks/service-checks';
+import { checkStoredSystem, checkStoredSystems } from '../../src/checks/stored-system';
 import type { CatalogServiceResult } from '../../src/types';
 import { Severity } from '../../src/types';
-import * as serviceChecks from '../../src/checks/service-checks';
-import * as storeUtils from '@sap-ux/store';
-import { checkStoredSystem, checkStoredSystems } from '../../src/checks/stored-system';
 
 describe('Stored system tests ', () => {
     const checkCatalogServicesResult = {

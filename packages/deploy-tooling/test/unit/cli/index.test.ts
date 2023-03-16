@@ -1,8 +1,8 @@
 import type { ParseOptions } from 'commander';
+import { Command } from 'commander';
 import { join } from 'path';
 import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
 import { mockedUi5RepoService } from '../../__mocks__';
-import { Command } from 'commander';
 
 describe('cli', () => {
     const fixture = join(__dirname, '../../test-input/');

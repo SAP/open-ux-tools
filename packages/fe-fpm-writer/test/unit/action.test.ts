@@ -1,14 +1,14 @@
-import os from 'os';
+import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
+import os from 'os';
 import { join } from 'path';
 import { generateCustomAction } from '../../src';
 import { enhanceManifestAndGetActionsElementReference } from '../../src/action';
 import { TargetControl } from '../../src/action/types';
+import { detectTabSpacing } from '../../src/common/file';
 import type { EventHandlerConfiguration, FileContentPosition, Manifest } from '../../src/common/types';
 import { Placement } from '../../src/common/types';
-import { detectTabSpacing } from '../../src/common/file';
 import { tabSizingTestCases } from '../common';
 
 describe('CustomAction', () => {

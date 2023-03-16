@@ -1,9 +1,9 @@
-import { create } from 'mem-fs-editor';
-import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
+import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { addExtensionTypes } from '../../src/common/utils';
 import { detectTabSpacing, getJsonSpace } from '../../src/common/file';
+import { addExtensionTypes } from '../../src/common/utils';
 
 describe('Common', () => {
     describe('utils.addExtensionTypes', () => {

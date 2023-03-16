@@ -1,9 +1,9 @@
-import type { ResultMessage, Endpoint, EndpointResults } from '../types';
-import { getLogger } from '../logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { t } from '../i18n';
+import { getLogger } from '../logger';
+import type { Endpoint, EndpointResults, ResultMessage } from '../types';
 import { checkBASDestination, checkBASDestinations } from './destination';
 import { checkStoredSystem, checkStoredSystems } from './stored-system';
-import { t } from '../i18n';
 
 /**
  * Checks the endpoints (SAP Systems or BAS Destinations) and returns a list.
