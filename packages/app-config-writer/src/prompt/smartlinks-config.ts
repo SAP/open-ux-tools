@@ -10,7 +10,8 @@ import { getLocalStoredCredentials, getTargetDefinition } from '../smartlinks-co
 import type { TargetConfig, DeployTarget } from '../types';
 
 /**
- * @description Returns deploy questions for prompt
+ * Returns deploy questions for prompt
+ *
  * @param target deploy target definition
  * @returns Prompt object array of questions
  */
@@ -61,7 +62,8 @@ const getTargetPromptQuestions = (target?: DeployTarget) => {
 };
 
 /**
- * @description Returns target parameters from prompt
+ * Returns target parameters from prompt
+ *
  * @param config possible deploy config with target to be offered for prompt
  * @param logger logger to report info to the user
  * @returns target configuration
@@ -79,7 +81,8 @@ const getTargetPrompt = async (config?: TargetConfig, logger?: ToolsLogger): Pro
 };
 
 /**
- * @description Prompts the user for credentials.
+ * Prompts the user for credentials.
+ *
  * @param log logger to report info to the user
  * @returns prompted user and password serialized for a basic auth header
  */
@@ -122,7 +125,8 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
 }
 
 /**
- * @description Returns credentials from target or from prompt
+ * Returns credentials from target or from prompt
+ *
  * @param target target definition to be checked for existing credentials
  * @param logger logger to report info to the user
  * @returns credentials for target definition
@@ -160,7 +164,8 @@ async function getCredentialsPrompt(
 }
 
 /**
- * @description Return the list of questions to configure smartlinks.
+ * Return the list of questions to configure smartlinks.
+ *
  * @param basePath - path to project root, where ui5-deploy.yaml is
  * @param logger logger to report info to the user
  * @returns - array of questions that serves as input for prompt module

@@ -26,7 +26,8 @@ export async function getWebappPath(projectRoot: string, memFs?: Editor): Promis
 }
 
 /**
- * @description Checks if UI5 config yaml file exists and returns its content
+ * Checks if UI5 config yaml file exists and returns its content
+ *
  * @param basePath - path to project root
  * @param fileName - name of yaml file to be read
  * @returns {UI5Config} UI5 config file in yaml format
