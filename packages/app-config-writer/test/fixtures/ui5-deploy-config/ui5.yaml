@@ -10,12 +10,12 @@ server:
               ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
               backend:
                   - path: /sap
-                    url: https://abc.ondemand.com
+                    url: https://abc.example
               ui5:
                   path:
                       - /resources
                       - /test-resources
-                  url: https://ui5.sap.com
+                  url: https://ui5.sap.com.example
                   version: 1.91.0 # The UI5 version, for instance, 1.78.1. Empty means latest version
         - name: fiori-tools-appreload
           afterMiddleware: compression

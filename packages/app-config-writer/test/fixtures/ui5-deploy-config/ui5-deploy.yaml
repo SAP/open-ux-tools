@@ -1,6 +1,6 @@
 specVersion: '2.4'
 metadata:
-    name: 'fe_lrop_v4_odata_none'
+    name: 'ui5-deploy-config'
 type: application
 builder:
     resources:
@@ -13,7 +13,7 @@ builder:
           configuration:
               target:
                   destination: ABC123
-                  url: https://abc.abap.stagingaws.hanavlab.ondemand.com
+                  url: https://abc.example
                   client: 100
                   # scp: true - not supported
               app:

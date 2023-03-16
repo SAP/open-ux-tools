@@ -14,7 +14,7 @@ builder:
               ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
               target:
                   destination: ABC123
-                  url: https://abc.abap.stagingaws.hanavlab.ondemand.com
+                  url: https://abc.example
                   # scp: true - not supported
               app:
                   name: TEST
