@@ -1,6 +1,12 @@
 # @sap-ux/app-config-writer
 
-The `@sap-ux/app-config-writer` adds smartlinks configuration for a SAP UX project. 
+The `@sap-ux/app-config-writer` adds or updates configurations to a SAP UX project.
+
+## Features
+
+### Smart Links configuration
+Smart Link controls can be defined in an application to provide navigation links to other Fiori Applications in a standardized way.
+To deliver an application with pre-configured targets for the included smart links, it is necessary to add a smartlinks configuration to the project.
 
 ## Installation
 Npm
@@ -14,12 +20,20 @@ Pnpm
 
 ## Usage
 
+### Smart Links configuration
+
+#### Using @sap-ux/create module
+
+- You can easily add a smartlinks configuration by running:
+    `npm init @sap-ux add smartlinks-config`
+
+#### Using @sap-ux/app-config-writer
 ```Typescript
 import { generateSmartLinksConfig } from '@sap-ux/app-config-writer';
 
 const myProjectPath = 'path/to/my/project'; // Path to the root of the Fiori app
 const target = {
-  url: 'https://abc.abap.stagingaws.hanavlab.ondemand.com', // For BAS, use `destination`
+  url: 'https://abc.example', // For BAS, use `destination`
   client: '100', // Optional client
 };
 const auth = { username: 'user', password: 'password' }; // Authentication details
