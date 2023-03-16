@@ -72,12 +72,13 @@ function createSmartLinksProvider({ target, auth, ignoreCertErrors }: TargetConf
  * @returns response from service provider
  */
 export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): Promise<SystemDetailsResponse> {
-    if ((!isAppStudio() && !config.target.url) || !config.target.destination) {
+    const target = isAppStudio() && config.target.destination ? config.target.destination : config.target.url
+    if (!target) {
         throw Error(t('error.target'));
     }
     try {
         const provider = createSmartLinksProvider(config);
-        //logger?.info(`${cyan(t('info.connectTo'))} ${provider}`);
+        logger?.info(`${cyan(t('info.connectTo'))} ${target}`);
         const response = await provider.get('/sap/bc/ui2/start_up', { params: UrlParameters});
         logger?.info(cyan(t('info.connectSuccess')));
         return JSON.parse(response.data);
