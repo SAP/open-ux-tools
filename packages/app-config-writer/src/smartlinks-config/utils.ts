@@ -54,7 +54,7 @@ export async function getLocalStoredCredentials(
 function createSmartLinksProvider({ target, auth, ignoreCertErrors }: TargetConfig) {
     let provider: ServiceProvider;
     if (isAppStudio() && target.destination) {
-        provider = createForDestination({ auth, ignoreCertErrors }, { Name: target.destination });
+        provider = createForDestination({ auth }, { Name: target.destination });
     } else {
         provider = createForAbap({ 
             baseURL: target.url, 
