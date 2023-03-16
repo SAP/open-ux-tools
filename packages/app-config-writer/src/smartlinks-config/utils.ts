@@ -3,8 +3,8 @@ import { cyan } from 'chalk';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { create } from '@sap-ux/axios-extension';
-import { getDestinationUrlForAppStudio, isAppStudio } from '@sap-ux/btp-utils';
+import { createForAbap, createForDestination, ServiceProvider } from '@sap-ux/axios-extension';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName } from '@sap-ux/project-access';
 import { BackendSystemKey, getService } from '@sap-ux/store';
@@ -51,16 +51,19 @@ export async function getLocalStoredCredentials(
  * @param client optional sap-client
  * @returns target url to be called for smartlinks config
  */
-function getSmartLinksTargetUrl(baseUrl: string, client?: string) {
-    let appendUrl = Object.values(UrlParameters).join('&');
-    if (isAppStudio()) {
-        baseUrl = getDestinationUrlForAppStudio(baseUrl);
+function createSmartLinksProvider({ target, auth, ignoreCertErrors }: TargetConfig) {
+    let provider: ServiceProvider;
+    if (isAppStudio() && target.destination) {
+        provider = createForDestination({ auth, ignoreCertErrors }, { Name: target.destination });
+    } else {
+        provider = createForAbap({ 
+            baseURL: target.url, 
+            auth, 
+            ignoreCertErrors,
+            params: target.client ? { 'sap-client': target.client } : undefined
+        });
     }
-    if (client && !isAppStudio()) {
-        appendUrl = `${appendUrl}&sap-client=${client}`;
-    }
-    return `${baseUrl}${appendUrl}`;
-}
+    return provider;
 
 /**
  * @description Sends a request to a target and returns the result
@@ -69,16 +72,13 @@ function getSmartLinksTargetUrl(baseUrl: string, client?: string) {
  * @returns response from service provider
  */
 export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): Promise<SystemDetailsResponse> {
-    const { target, auth, ignoreCertErrors } = config;
-    const baseUrl = isAppStudio() ? target.destination : target.url;
-    if (!baseUrl) {
+    if ((!isAppStudio() && !config.target.url) || !config.target.destination) {
         throw Error(t('error.target'));
     }
     try {
-        const service = create({ auth, ignoreCertErrors });
-        const targetUrl = getSmartLinksTargetUrl(baseUrl, target.client);
-        logger?.info(`${cyan(t('info.connectTo'))} ${targetUrl}`);
-        const response = await service.get(targetUrl, config);
+        const provider = createSmartLinksProvider(config);
+        //logger?.info(`${cyan(t('info.connectTo'))} ${provider}`);
+        const response = await provider.get('/sap/bc/ui2/start_up', { params: UrlParameters});
         logger?.info(cyan(t('info.connectSuccess')));
         return JSON.parse(response.data);
     } catch (error: any) {
