@@ -10,7 +10,7 @@ import { getLocalStoredCredentials, getTargetDefinition } from '../smartlinks-co
 import type { TargetConfig, DeployTarget } from '../types';
 
 /**
- * Returns deploy questions for prompt
+ * Returns deploy questions for prompt.
  *
  * @param target deploy target definition
  * @returns Prompt object array of questions
@@ -62,7 +62,7 @@ const getTargetPromptQuestions = (target?: DeployTarget) => {
 };
 
 /**
- * Returns target parameters from prompt
+ * Returns target parameters from prompt.
  *
  * @param config possible deploy config with target to be offered for prompt
  * @param logger logger to report info to the user
@@ -125,7 +125,7 @@ export async function promptUserPass(log?: ToolsLogger): Promise<AxiosBasicCrede
 }
 
 /**
- * Returns credentials from target or from prompt
+ * Returns credentials from target or from prompt.
  *
  * @param target target definition to be checked for existing credentials
  * @param logger logger to report info to the user

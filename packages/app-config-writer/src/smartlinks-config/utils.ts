@@ -47,7 +47,7 @@ export async function getLocalStoredCredentials(
 }
 
 /**
- * Combines the target parameters and returns the target url
+ * Combines the target parameters and returns the target url.
  *
  * @param baseUrl destination or url
  * @param client optional sap-client
@@ -65,7 +65,7 @@ function getSmartLinksTargetUrl(baseUrl: string, client?: string) {
 }
 
 /**
- * Sends a request to a target and returns the result
+ * Sends a request to a target and returns the result.
  *
  * @param config target and credentials to be used for request
  * @param logger logger to report info to the user
@@ -111,7 +111,7 @@ export async function getTargetDefinition(basePath: string, logger?: ToolsLogger
 }
 
 /**
- * Sends a request and returns the target mappings
+ * Sends a request and returns the target mappings.
  *
  * @param config service and credentials to be used for request
  * @param logger logger
@@ -129,7 +129,7 @@ async function getTargetMappings(
 }
 
 /**
- * Receives and maps targets from service to template for further consumption
+ * Receives and maps targets from service to template for further consumption.
  *
  * @param config service and credentials to be used for request
  * @param logger logger
@@ -159,7 +159,7 @@ export async function getTargetMappingsConfig(
 }
 
 /**
- * Maps service targets to existing targets in appconfig sandboxConfig file
+ * Maps service targets to existing targets in appconfig sandboxConfig file.
  *
  * @param appConfigPath path to apps appconfig/fioriSandboxConfig.json file
  * @param inboundTargets returned targets from service
