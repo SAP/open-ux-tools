@@ -3,7 +3,8 @@ import { cyan } from 'chalk';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { createForAbap, createForDestination, ServiceProvider } from '@sap-ux/axios-extension';
+import type { ServiceProvider } from '@sap-ux/axios-extension';
+import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName } from '@sap-ux/project-access';
@@ -11,7 +12,6 @@ import { BackendSystemKey, getService } from '@sap-ux/store';
 import type { BackendSystem } from '@sap-ux/store';
 import { t } from '../i18n';
 import { getTemplatePath } from '../templates';
-import { UrlParameters } from '../types';
 import type {
     InboundTargetsConfig,
     SmartLinksSandboxConfig,
@@ -20,6 +20,18 @@ import type {
     TargetMapping
 } from '../types';
 import { addUi5YamlServeStaticMiddleware, readUi5DeployConfigTarget } from './ui5-yaml';
+
+/**
+ * URL parameters for call to backend
+ */
+const UrlParameters = {
+    so: '*',
+    action: '*',
+    systemAliasesFormat: 'object',
+    'sap-language': 'EN',
+    shellType: 'FLP',
+    depth: 0
+};
 
 /**
  * Check the secure storage if it has credentials for the entered url.
@@ -47,25 +59,26 @@ export async function getLocalStoredCredentials(
 }
 
 /**
- * Combines the target parameters and returns the target url.
+ * Creates and returns a service provider.
  *
- * @param baseUrl destination or url
- * @param client optional sap-client
- * @returns target url to be called for smartlinks config
+ * @param config configuration with target, authentication and ignoreCertErrors flag
+ * @returns service provider
  */
-function createSmartLinksProvider({ target, auth, ignoreCertErrors }: TargetConfig) {
+function createSmartLinksProvider(config: TargetConfig) {
+    const { target, auth, ignoreCertErrors } = config;
     let provider: ServiceProvider;
     if (isAppStudio() && target.destination) {
         provider = createForDestination({ auth }, { Name: target.destination });
     } else {
-        provider = createForAbap({ 
-            baseURL: target.url, 
-            auth, 
+        provider = createForAbap({
+            baseURL: target.url,
+            auth,
             ignoreCertErrors,
             params: target.client ? { 'sap-client': target.client } : undefined
         });
     }
     return provider;
+}
 
 /**
  * Sends a request to a target and returns the result.
@@ -75,14 +88,14 @@ function createSmartLinksProvider({ target, auth, ignoreCertErrors }: TargetConf
  * @returns response from service provider
  */
 export async function sendRequest(config: TargetConfig, logger?: ToolsLogger): Promise<SystemDetailsResponse> {
-    const target = isAppStudio() && config.target.destination ? config.target.destination : config.target.url
+    const target = isAppStudio() && config.target.destination ? config.target.destination : config.target.url;
     if (!target) {
         throw Error(t('error.target'));
     }
     try {
         const provider = createSmartLinksProvider(config);
         logger?.info(`${cyan(t('info.connectTo'))} ${target}`);
-        const response = await provider.get('/sap/bc/ui2/start_up', { params: UrlParameters});
+        const response = await provider.get('/sap/bc/ui2/start_up', { params: UrlParameters });
         logger?.info(cyan(t('info.connectSuccess')));
         return JSON.parse(response.data);
     } catch (error: any) {
