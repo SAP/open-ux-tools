@@ -7,13 +7,12 @@ export enum DeployConfig {
     'FioriToolsServestatic' = 'fiori-tools-servestatic'
 }
 
-export enum UrlParameters {
-    UI2 = '/sap/bc/ui2/start_up?so=%2A',
-    Action = 'action=%2A',
-    Alias = 'systemAliasesFormat=object',
-    Language = 'sap-language=EN',
-    ShellType = 'shellType=FLP',
-    Depth = 'depth=0'
+export const UrlParameters = {
+    action: '%2A',
+    systemAliasesFormat: 'object',
+    'sap-language': 'EN',
+    shellType: 'FLP',
+    depth: '0'
 }
 
 export type DeployTarget = Pick<AbapTarget, 'url' | 'client' | 'destination' | 'scp'>;
