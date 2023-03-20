@@ -51,6 +51,13 @@ export interface ListReport extends WriterConfig {
     contextPath?: string;
 
     /**
+     * Optional property to define the minimum UI5 version that the generated code must support.
+     * If undefined then the latest version of the template is used.
+     * If nothing can be generated for the given version then an exception is thrown.
+     */
+    minUI5Version?: string;
+
+    /**
      * Optional settings for the ListReport page
      */
     settings?: ListReportSettings;
@@ -69,6 +76,13 @@ export interface ObjectPage extends WriterConfig {
      * With template or UI5 version 1.94 you can alternatively specify a contextPath that shall be inserted as page option, instead of the entitySet.
      */
     contextPath?: string;
+
+    /**
+     * Optional property to define the minimum UI5 version that the generated code must support.
+     * If undefined then the latest version of the template is used.
+     * If nothing can be generated for the given version then an exception is thrown.
+     */
+    minUI5Version?: string;
 
     /**
      * Optional settings for the object page
