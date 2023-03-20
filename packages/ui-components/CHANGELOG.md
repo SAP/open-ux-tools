@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.7
+
+### Patch Changes
+
+-   3d9e5ef: chore: upgrade webpack to version 5.76.0
+
 ## 1.3.6
 
 ### Patch Changes
