@@ -11,52 +11,70 @@ import type { TargetConfig, DeployTarget } from '../types';
 import { TargetType } from '../types';
 
 /**
+ * Validator helper function for prompts.
+ *
+ * @param value entry to be verified
+ * @param error error message to be displayed
+ * @returns boolean or error message
+ */
+const validator = (value: string, error: string): boolean | string => {
+    if (!value || !value.trim()) {
+        return t(error);
+    } else {
+        return true;
+    }
+};
+
+/**
+ * Questions specifically for app studio to be displayed.
+ *
+ * @param questions Prompt object array to be filled
+ * @param target deploy target definition
+ */
+const addAppStudioQuestions = (questions: PromptObject[], target?: DeployTarget) => {
+    // Offer existing configuration
+    if (target?.destination || target?.url) {
+        questions.push({
+            name: target?.destination ? TargetType.destination : TargetType.url,
+            message: t('questions.useTarget', { target: target.destination || target.url }),
+            type: 'confirm',
+            initial: true,
+            format: (confirm) => (confirm ? target.destination || target.url : confirm)
+        });
+    }
+    // Offer destination or url configuration
+    questions.push({
+        name: 'select',
+        type: (prev) => (!prev ? 'select' : null),
+        message: t('questions.target'),
+        choices: [
+            { title: t('questions.enter', { type: TargetType.destination }), value: TargetType.destination },
+            { title: t('questions.enter', { type: TargetType.url }), value: TargetType.url }
+        ]
+    });
+    // destination
+    questions.push({
+        type: (prev) => (prev === TargetType.destination ? 'text' : null),
+        name: TargetType.destination,
+        initial: target?.destination,
+        message: t('questions.target', {
+            type: TargetType.destination,
+            file: target?.destination ? `(${FileName.UI5DeployYaml})` : ''
+        }),
+        validate: (value: string) => validator(value, 'error.target')
+    });
+};
+
+/**
  * Returns deploy questions for prompt.
  *
  * @param target deploy target definition
  * @returns Prompt object array of questions
  */
 const getTargetPromptQuestions = (target?: DeployTarget) => {
-    const validator = (value: string, error: string): boolean | string => {
-        if (!value || !value.trim()) {
-            return t(error);
-        } else {
-            return true;
-        }
-    };
     const questions: PromptObject[] = [];
     if (isAppStudio()) {
-        // Offer existing configuration
-        if (target?.destination || target?.url) {
-            questions.push({
-                name: target?.destination ? TargetType.destination : TargetType.url,
-                message: t('questions.useTarget', { target: target.destination || target.url }),
-                type: 'confirm',
-                initial: true,
-                format: (confirm) => (confirm ? target.destination || target.url : confirm)
-            });
-        }
-        // Offer destination or url configuration
-        questions.push({
-            name: 'select',
-            type: (prev) => (!prev ? 'select' : null),
-            message: t('questions.target'),
-            choices: [
-                { title: t('questions.enter', { type: TargetType.destination }), value: TargetType.destination },
-                { title: t('questions.enter', { type: TargetType.url }), value: TargetType.url }
-            ]
-        });
-        // destination
-        questions.push({
-            type: (prev) => (prev === TargetType.destination ? 'text' : null),
-            name: TargetType.destination,
-            initial: target?.destination,
-            message: t('questions.target', {
-                type: TargetType.destination,
-                file: target?.destination ? `(${FileName.UI5DeployYaml})` : ''
-            }),
-            validate: (value: string) => validator(value, 'error.target')
-        });
+        addAppStudioQuestions(questions, target);
     }
     // Offer url configuration for VSCode and BAS instance
     questions.push(
