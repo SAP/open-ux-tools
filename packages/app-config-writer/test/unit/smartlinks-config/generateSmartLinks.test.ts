@@ -1,17 +1,21 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { create } from '@sap-ux/axios-extension';
+import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
 import { generateSmartLinksConfig } from '../../../src';
 import { t } from '../../../src/i18n';
 import type { TargetConfig } from '../../../src/types';
 
 jest.mock('@sap-ux/axios-extension', () => ({
     ...jest.requireActual('@sap-ux/axios-extension'),
-    create: jest.fn()
+    createForAbap: jest.fn(),
+    createForDestination: jest.fn()
 }));
-const createMock = create as jest.Mock;
 const createGetMock = jest.fn();
-createMock.mockImplementation(() => ({ get: createGetMock }));
+const createForAbapMock = createForAbap as jest.Mock;
+const createForDestinationMock = createForDestination as jest.Mock;
+
+createForAbapMock.mockImplementation(() => ({ get: createGetMock }));
+createForDestinationMock.mockImplementation(() => ({ get: createGetMock }));
 
 describe('Test generateSmartLinksConfig', () => {
     const configMock: TargetConfig = {
