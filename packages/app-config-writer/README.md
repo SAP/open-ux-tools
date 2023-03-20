@@ -1,12 +1,12 @@
 # @sap-ux/app-config-writer
 
-The `@sap-ux/app-config-writer` adds or updates configurations to a SAP UX project.
+The `@sap-ux/app-config-writer` adds or updates configurations to a SAP Fiori tools project.
 
 ## Features
 
 ### Smart Links configuration
-Smart Link controls can be defined in an application to provide navigation links to other Fiori Applications in a standardized way.
-To deliver an application with pre-configured targets for the included smart links, it is necessary to add a smartlinks configuration to the project.
+Smart Link controls can be defined in an application to provide navigation links to other SAP Fiori applications in a standardized way.
+To deliver an application with pre-configured targets for the included smart links, the smartlinks configuration enables local preview changes to be applied to the smart links.
 
 ## Installation
 Npm
