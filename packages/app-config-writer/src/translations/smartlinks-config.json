@@ -1,5 +1,7 @@
 {
     "questions": {
+        "enter": "Enter {{-type}}",
+        "useTarget": "Do you want to use {{-target}}",
         "target": "SmartLinks configuration source {{-type}} {{-file}}",
         "client": "SAP client {{-file}}",
         "credentials": "Credentials to be used",

@@ -8,6 +8,7 @@ import { FileName } from '@sap-ux/project-access';
 import { t } from '../i18n';
 import { getLocalStoredCredentials, getTargetDefinition } from '../smartlinks-config';
 import type { TargetConfig, DeployTarget } from '../types';
+import { TargetType } from '../types';
 
 /**
  * Returns deploy questions for prompt.
@@ -25,39 +26,60 @@ const getTargetPromptQuestions = (target?: DeployTarget) => {
     };
     const questions: PromptObject[] = [];
     if (isAppStudio()) {
+        // Offer existing configuration
+        if (target?.destination || target?.url) {
+            questions.push({
+                name: target?.destination ? TargetType.destination : TargetType.url,
+                message: t('questions.useTarget', { target: target.destination || target.url }),
+                type: 'confirm',
+                initial: true,
+                format: (confirm) => (confirm ? target.destination || target.url : confirm)
+            });
+        }
+        // Offer destination or url configuration
         questions.push({
-            name: 'destination',
-            type: 'text',
+            name: 'select',
+            type: (prev) => (!prev ? 'select' : null),
+            message: t('questions.target'),
+            choices: [
+                { title: t('questions.enter', { type: TargetType.destination }), value: TargetType.destination },
+                { title: t('questions.enter', { type: TargetType.url }), value: TargetType.url }
+            ]
+        });
+        // destination
+        questions.push({
+            type: (prev) => (prev === TargetType.destination ? 'text' : null),
+            name: TargetType.destination,
             initial: target?.destination,
             message: t('questions.target', {
-                type: 'destination',
+                type: TargetType.destination,
                 file: target?.destination ? `(${FileName.UI5DeployYaml})` : ''
             }),
             validate: (value: string) => validator(value, 'error.target')
         });
-    } else {
-        questions.push(
-            {
-                name: 'url',
-                type: 'text',
-                initial: target?.url,
-                message: t('questions.target', {
-                    type: 'url',
-                    file: target?.url ? `(${FileName.UI5DeployYaml})` : ''
-                }),
-                validate: (value: string) => validator(value, 'error.target')
-            },
-            {
-                name: 'client',
-                type: 'text',
-                initial: target?.client,
-                message: t('questions.client', {
-                    file: target?.client ? `(${FileName.UI5DeployYaml})` : ''
-                }),
-                format: (val: number | any) => (typeof val === 'number' ? val.toString() : val)
-            }
-        );
     }
+    // Offer url configuration for VSCode and BAS instance
+    questions.push(
+        {
+            type: (prev) => (!prev || prev === TargetType.url ? 'text' : null),
+            name: TargetType.url,
+            initial: target?.url,
+            message: t('questions.target', {
+                type: TargetType.url,
+                file: target?.url ? `(${FileName.UI5DeployYaml})` : ''
+            }),
+            validate: (value: string) => validator(value, 'error.target')
+        },
+        {
+            name: 'client',
+            type: (_prev, values) => (values?.url ? 'text' : null),
+            initial: target?.client,
+            message: t('questions.client', {
+                file: target?.client ? `(${FileName.UI5DeployYaml})` : ''
+            }),
+            format: (val: number | any) => (typeof val === 'number' ? val.toString() : val)
+        }
+    );
     return questions;
 };
 
