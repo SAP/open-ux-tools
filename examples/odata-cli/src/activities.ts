@@ -5,7 +5,8 @@ import {
     ODataVersion,
     TransportChecksService,
     TransportRequestService,
-    ListPackageService
+    ListPackageService,
+    FileStoreService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
 
@@ -93,6 +94,10 @@ export async function useAdtServices(
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
         const packages = await listPackageService.listPackages({ maxResults: 50, phrase: '$TMP' });
         logger.info(`Query $tmp package: ${packages.length === 1}`);
+
+        const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        const rootFolderContent = await fileStoreService.getAppArchiveContent(env.TEST_APP, 'folder');
+        logger.info(`Deployed archive for ${env.TEST_APP} contains: ${rootFolderContent.length} files and folders`);
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
     }

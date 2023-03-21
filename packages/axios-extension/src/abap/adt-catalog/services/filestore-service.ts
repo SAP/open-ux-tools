@@ -1,5 +1,7 @@
 import { AdtService } from './adt-service';
-import type { AdtCategory } from '../../types';
+import type { AdtCategory, ArchiveFileNode, ArchiveFileNodeType } from '../../types';
+import XmlParser from 'fast-xml-parser';
+import { AdtFileNode } from 'abap/types/adt-internal-types';
 
 /**
  * FileStoreService implements ADT requests to obtain the content
@@ -26,43 +28,75 @@ export class FileStoreService extends AdtService {
     }
 
     /**
+     * If target `path` is a file, the file content is returned as string type.
+     * If target `path` is a folder, files and folders in this folder are returned as an array list
+     * of ArchiveFileNode objects.
+     * @see ArchiveFileNode
      *
-     * @param appName Deployed Fiori application name
+     * @param path Path to a folder / file in the deployed archive
+     * @param type
+     *  Specifies if input `path` refers to a file or a folder. When starting exploring
+     *  the file structure from the root, type should be set to `folder`. The type information
+     *  of files and folders inside root folder can be found in the returned `ArchiveFileNode` entries.
+     * @returns Folder content (ArchiveFileNode[]) | file content (string)
      */
-    public async getArchiveStructure(appName: string): Promise<string> {
+    public async getAppArchiveContent(path: string, type: ArchiveFileNodeType): Promise<string | ArchiveFileNode[]> {
+        const contentType = type === 'folder' ? 'application/atom+xml' : 'application/octet-stream';
         const config = {
             headers: {
-                Accept: 'application/xml'
+                Accept: 'application/xml',
+                'Content-Type': contentType
             }
         };
 
-        const response = await this.get(`/${appName}/content`, config);
-        return this.parseArchiveStructureResponse(response.data);
+        const response = await this.get(`/${path}/content`, config);
+        return this.parseArchiveContentResponse(response.data, type);
     }
 
     /**
+     * Parse response data from ADT service. If the content is XML document of
+     * folder structure, this method returns a list of `ArchiveFileNode` object. If the content
+     * is text string, this method returns the text cotent.
+     * @see ArchiveFileNode
      *
-     * @param appName Deployed Fiori application name
-     * @param filePath File path and name of a specific file in the deployed archive
+     * @param responseData Response from ADT service
+     * @param type Reponse data is the file content or folder content.
+     * @returns Folder content (ArchiveFileNode[]) | file content (string)
      */
-    public async getArchiveFileContent(appName: string, filePath: string): Promise<string> {
-        const config = {
-            headers: {
-                Accept: 'application/xml'
-            }
+    private parseArchiveContentResponse(responseData: string, type: ArchiveFileNodeType): string | ArchiveFileNode[] {
+        // File content that is not xml data.
+        if (type === 'file' || XmlParser.validate(responseData) !== true) {
+            return responseData;
+        }
+        // A list of file/folder items in the response data as xml string.
+        const options = {
+            attributeNamePrefix: '',
+            ignoreAttributes: false,
+            ignoreNameSpace: true,
+            parseAttributeValue: true
         };
+        const obj = XmlParser.getTraversalObj(responseData, options);
+        const parsed = XmlParser.convertToJson(obj, options);
 
-        const response = await this.get(`/${appName}/${filePath}/content`, config);
-        return this.parseArchiveFileContentResponse(response.data);
-    }
+        let fileNodeArray: AdtFileNode[] = [];
 
-    private parseArchiveStructureResponse(xml: string): string {
-        console.log(xml);
-        return '';
-    }
+        if (parsed?.feed) {
+            if (Array.isArray(parsed.feed.entry)) {
+                fileNodeArray = parsed.feed.entry;
+            } else {
+                fileNodeArray = [parsed.feed.entry];
+            }
+        }
 
-    private parseArchiveFileContentResponse(xml: string): string {
-        console.log(xml);
-        return '';
+        return fileNodeArray.map((fileNode) => {
+            const exposedFileNode = {
+                basename: fileNode.title.split('/').pop(),
+                fullPath: fileNode.title,
+                queryPath: encodeURIComponent(fileNode.title),
+                type: fileNode.category.term
+            } as ArchiveFileNode;
+
+            return exposedFileNode;
+        });
     }
 }

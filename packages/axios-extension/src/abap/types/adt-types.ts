@@ -95,3 +95,12 @@ export type AdtTransportStatus = 'S' | 'E';
 // the <DLVUNIT/> element contain text that indicate it is local package.
 // No transport number required for deploying to local pacakge.
 export const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
+
+export interface ArchiveFileNode {
+    basename: string; // file or folder name only
+    fullPath: string; // full path to the file or folder from root app folder
+    queryPath: string; // URI encoded `fullPath` ready for query
+    type: ArchiveFileNodeType; // File or folder
+}
+
+export type ArchiveFileNodeType = 'file' | 'folder';
