@@ -122,7 +122,7 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
                         key={`title-cell-unknown`}
                         className={className}
                         title={tooltip || column.tooltip}
-                        id={`${tableId}--header--column-${key}`}>
+                        id={`${tableId}-header-column-${key}`}>
                         {content}
                     </div>
                 );
@@ -133,7 +133,7 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
                         key={`cell-${key}-${i}`}
                         className={className}
                         title={tooltip || column.tooltip}
-                        id={`${tableId}--header--column-${key}`}>
+                        id={`${tableId}-header-column-${key}`}>
                         {content}
                     </div>
                 );
@@ -147,7 +147,7 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
                     key={`title-cell-${key}-${i}`}
                     className={className}
                     title={column.tooltip}
-                    id={`${tableId}--header--column-${key}`}>
+                    id={`${tableId}-header-column-${key}`}>
                     {column.title}
                 </div>
             );
