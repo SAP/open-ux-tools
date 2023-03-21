@@ -162,7 +162,7 @@ describe('<UIFlexibleTable />', () => {
             expect(titleCells.length).toBe(2);
 
             const filteredColumns = columns.filter((col) => !col.hidden);
-            const expectedIds = filteredColumns.map(c => `columnKey-${c.key}`);
+            const expectedIds = filteredColumns.map(c => `${tableId}--header--column-${c.key}`);
 
             filteredColumns
                 .forEach((col, idx) => {
