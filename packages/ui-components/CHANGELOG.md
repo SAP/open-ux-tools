@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.9
+
+### Patch Changes
+
+-   28c472e: Addition of new icons- refresh, refreshsmall, expandnodes, contractnodes, contractnodessmall
+
 ## 1.3.8
 
 ### Patch Changes
