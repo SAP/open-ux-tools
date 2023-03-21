@@ -117,14 +117,22 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
             ]);
             if (isSpan) {
                 rowCellsData.push(
-                    <div key={`title-cell-unknown`} className={className} title={tooltip || column.tooltip}>
+                    <div
+                        key={`title-cell-unknown`}
+                        className={className}
+                        title={tooltip || column.tooltip}
+                        id={`columnKey-${key}`}>
                         {content}
                     </div>
                 );
                 break;
             } else {
                 rowCellsData.push(
-                    <div key={`cell-${key}-${i}`} className={className} title={tooltip || column.tooltip}>
+                    <div
+                        key={`cell-${key}-${i}`}
+                        className={className}
+                        title={tooltip || column.tooltip}
+                        id={`columnKey-${key}`}>
                         {content}
                     </div>
                 );
@@ -134,7 +142,11 @@ export function renderTitleRow<T>(props: UIFlexibleTableProps<T>, paddingRight: 
                 column.className
             ]);
             rowCellsData.push(
-                <div key={`title-cell-${key}-${i}`} className={className} title={column.tooltip}>
+                <div
+                    key={`title-cell-${key}-${i}`}
+                    className={className}
+                    title={column.tooltip}
+                    id={`columnKey-${key}`}>
                     {column.title}
                 </div>
             );
