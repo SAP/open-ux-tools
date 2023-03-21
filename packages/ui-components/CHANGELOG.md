@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.3.8
+
+### Patch Changes
+
+-   3a61b8d: Column ids added to the flexible table header row cells
+
 ## 1.3.7
 
 ### Patch Changes
