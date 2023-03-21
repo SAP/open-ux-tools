@@ -5,9 +5,10 @@ The `@sap-ux/app-config-writer` adds or updates configurations to a SAP Fiori to
 ## Features
 
 ### Smart Links configuration
-Smart links can be defined in an application to provide navigation links to other SAP Fiori applications in a standardized way.
-In order to be able to deliver an application with pre-configured targets for the included smart links, you need to import the available targets from a remote SAP Fiori launchpad configuration with the provided `add smart links config` command. 
-Then you can configure the smart links with the help of the preview mode for developer variant creation. https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/ceb845a45dd94f4c8bd52f2976f99090.html?q=developer%20variant%20creation&locale=en-US
+You can define smart links in an application to provide navigation links to other SAP Fiori applications in a standardized way.
+To be able to deliver an application with preconfigured targets for the included smart links, you need to import the available targets from a remote configuration of the SAP Fiori launchpad with the provided `add smart links config` command.
+Then you can configure the smart links with the help of the preview mode for developer variant creation.
+https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/ceb845a45dd94f4c8bd52f2976f99090.html?q=developer%20variant%20creation&locale=en-US
 
 ## Installation
 Npm
