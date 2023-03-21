@@ -162,14 +162,13 @@ describe('<UIFlexibleTable />', () => {
             expect(titleCells.length).toBe(2);
 
             const filteredColumns = columns.filter((col) => !col.hidden);
-            const expectedIds = filteredColumns.map(c => `${tableId}--header--column-${c.key}`);
+            const expectedIds = filteredColumns.map((c) => `${tableId}--header--column-${c.key}`);
 
-            filteredColumns
-                .forEach((col, idx) => {
-                    expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
-                    expect(titleCells.get(idx).props.children).toBe(col.title);
-                    expect(titleCells.get(idx).props['id']).toBe(expectedIds[idx]);
-                });
+            filteredColumns.forEach((col, idx) => {
+                expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
+                expect(titleCells.get(idx).props.children).toBe(col.title);
+                expect(titleCells.get(idx).props['id']).toBe(expectedIds[idx]);
+            });
         });
 
         it('Render column titles in cells', () => {
