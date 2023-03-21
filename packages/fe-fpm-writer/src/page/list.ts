@@ -2,7 +2,7 @@ import type { Editor } from 'mem-fs-editor';
 import { getFclConfig, extendPageJSON } from './common';
 import type { Manifest } from '../common/types';
 import type { ListReport, InternalListReport } from './types';
-import { coerce } from 'semver';
+import { coerce, gte } from 'semver';
 
 /**
  * Enhances the provided list report configuration with default data.
@@ -16,7 +16,7 @@ function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
     const minVersion = coerce(data.minUI5Version);
 
     // move settings into correct possition in the manifest
-    if (minVersion && minVersion.minor >= 94) {
+    if (minVersion && gte(minVersion, '1.94.0')) {
         config.settings.contextPath = data.contextPath ? data.contextPath : `/${data.entity}`;
     } else {
         config.settings.entitySet = data.entity;
