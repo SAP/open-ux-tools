@@ -161,11 +161,14 @@ describe('<UIFlexibleTable />', () => {
             const titleCells = wrapper.find(selectors.titleRowValue);
             expect(titleCells.length).toBe(2);
 
-            columns
-                .filter((col) => !col.hidden)
+            const filteredColumns = columns.filter((col) => !col.hidden);
+            const expectedIds = filteredColumns.map(c => `columnKey-${c.key}`);
+
+            filteredColumns
                 .forEach((col, idx) => {
                     expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
                     expect(titleCells.get(idx).props.children).toBe(col.title);
+                    expect(titleCells.get(idx).props['id']).toBe(expectedIds[idx]);
                 });
         });
 
