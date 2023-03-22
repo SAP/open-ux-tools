@@ -69,6 +69,7 @@ function createSmartLinksProvider(config: TargetConfig) {
     let provider: ServiceProvider;
     if (isAppStudio() && target.destination) {
         provider = createForDestination({ auth }, { Name: target.destination });
+        delete provider.defaults.params['saml2'];
     } else {
         provider = createForAbap({
             baseURL: target.url,

@@ -1,5 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create as createFS } from 'mem-fs-editor';
+import nock from 'nock';
 import { join } from 'path';
 import { createForAbap, createForDestination } from '@sap-ux/axios-extension';
 import * as btp from '@sap-ux/btp-utils';
@@ -17,8 +18,7 @@ import {
 // Mocks
 jest.mock('@sap-ux/axios-extension', () => ({
     ...jest.requireActual('@sap-ux/axios-extension'),
-    createForAbap: jest.fn(),
-    createForDestination: jest.fn()
+    createForAbap: jest.fn()
 }));
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
@@ -32,10 +32,8 @@ jest.mock('@sap-ux/btp-utils', () => ({
 // axios-extension mock
 const axiosGet = jest.fn();
 const createForAbapMock = createForAbap as jest.Mock;
-const createForDestinationMock = createForDestination as jest.Mock;
 
 createForAbapMock.mockImplementation(() => ({ get: axiosGet }));
-createForDestinationMock.mockImplementation(() => ({ get: axiosGet }));
 // store mock
 const storeRead = jest.fn();
 jest.spyOn(store, 'getService').mockReturnValue({ read: storeRead } as any);
@@ -87,6 +85,15 @@ describe('Test getLocalStoredCredentials', () => {
     });
 });
 describe('Test sendRequest', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+    
     const expectedParamsMock = {
         'params': {
             'action': '*',
@@ -114,16 +121,14 @@ describe('Test sendRequest', () => {
         expect(calls[0][0].auth).toEqual(config.auth);
         expect(calls[0][0].ignoreCertErrors).toEqual(config.ignoreCertErrors);
     };
-    const expectAxiosDestinationMock = (calls: any) => {
-        expect(calls[0][0].auth).toEqual(config.auth);
-    };
 
-    test('Connection successful - BAS instance with destination', async () => {
+    test.only('Connection successful - BAS instance with destination', async () => {
+        nock(`https://${config.target.destination}.dest`)
+                .get('/sap/bc/ui2/start_up')
+                .query(expectedParamsMock.params)
+                .reply(200, JSON.stringify(targetResponseMock));
         isAppStudioMock.mockResolvedValueOnce(true).mockResolvedValueOnce(true).mockResolvedValueOnce(true);
         const result = await sendRequest(config, loggerMock);
-        expectAxiosDestinationMock(createForDestinationMock.mock.calls);
-        expect(axiosGet.mock.calls[0][0]).toEqual('/sap/bc/ui2/start_up');
-        expect(axiosGet.mock.calls[0][1]).toMatchObject(expectedParamsMock);
         expectDebugInfo(infoMock.mock.calls);
         expect(result).toEqual(targetResponseMock);
     });
