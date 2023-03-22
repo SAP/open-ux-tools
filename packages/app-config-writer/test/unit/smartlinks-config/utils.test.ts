@@ -93,7 +93,7 @@ describe('Test sendRequest', () => {
         nock.cleanAll();
         nock.enableNetConnect();
     });
-    
+
     const expectedParamsMock = {
         'params': {
             'action': '*',
@@ -124,9 +124,9 @@ describe('Test sendRequest', () => {
 
     test.only('Connection successful - BAS instance with destination', async () => {
         nock(`https://${config.target.destination}.dest`)
-                .get('/sap/bc/ui2/start_up')
-                .query(expectedParamsMock.params)
-                .reply(200, JSON.stringify(targetResponseMock));
+            .get('/sap/bc/ui2/start_up')
+            .query(expectedParamsMock.params)
+            .reply(200, JSON.stringify(targetResponseMock));
         isAppStudioMock.mockResolvedValueOnce(true).mockResolvedValueOnce(true).mockResolvedValueOnce(true);
         const result = await sendRequest(config, loggerMock);
         expectDebugInfo(infoMock.mock.calls);
