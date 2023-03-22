@@ -17,7 +17,9 @@ import {
 const storeRead = jest.fn();
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn(() => { return { read: storeRead } })
+    getService: jest.fn(() => {
+        return { read: storeRead };
+    })
 }));
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -119,10 +121,7 @@ describe('utils', () => {
             expect(result).toEqual(targetResponseMock);
         });
         test('local environment: just url', async () => {
-            nock(config.target.url)
-                .get(service)
-                .query(params)
-                .reply(200, JSON.stringify(targetResponseMock));
+            nock(config.target.url).get(service).query(params).reply(200, JSON.stringify(targetResponseMock));
             const result = await sendRequest({ target: { url } }, loggerMock);
             expectDebugInfo(infoMock.mock.calls);
             expect(result).toEqual(targetResponseMock);
@@ -140,20 +139,24 @@ describe('utils', () => {
         });
 
         test('Connection error - throw error', async () => {
-            const error = 'Connection Error';
-            nock(config.target.url).get(() => true).replyWithError(error);
+            const errorMsg = 'Connection Error';
+            nock(config.target.url)
+                .get(() => true)
+                .replyWithError(errorMsg);
             try {
                 await sendRequest(config, loggerMock);
                 fail('Error should have been thrown');
             } catch (error) {
                 expect(debugMock.mock.calls.length).toBe(1);
-                expect(debugMock).toBeCalledWith(error);
+                expect(debugMock).toBeCalledWith(Error(errorMsg));
                 expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
             }
         });
         test('Connection error - throw error (no logger)', async () => {
             const errorMsg = 'Connection Error';
-            nock(config.target.url).get(() => true).replyWithError(errorMsg);
+            nock(config.target.url)
+                .get(() => true)
+                .replyWithError(errorMsg);
             try {
                 await sendRequest(config);
                 fail('Error should have been thrown');
@@ -216,7 +219,7 @@ describe('utils', () => {
         const sandboxExistsSpy = jest.spyOn(fs, 'exists');
         const readSandboxSpy = jest.spyOn(fs, 'readJSON');
         const extendSandboxSpy = jest.spyOn(fs, 'extendJSON');
-    
+
         const config: TargetConfig = { target: { url } };
         const getSandboxJSON = (targets?: any) => ({
             'services': {
@@ -247,7 +250,7 @@ describe('utils', () => {
                 }
             }
         };
-    
+
         test('Add fioriSandboxConfig.json - none existing', async () => {
             nock(url).get(service).query(params).reply(200, targetResults);
             sandboxExistsSpy.mockReturnValueOnce(false);
@@ -265,7 +268,7 @@ describe('utils', () => {
             readSandboxSpy.mockReturnValue(sandboxJSON);
             sandboxExistsSpy.mockReturnValueOnce(true);
             nock(url).get(service).query(params).reply(200, targetResults);
-    
+
             await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock);
             expect(extendSandboxSpy).toBeCalled();
         });
@@ -274,7 +277,7 @@ describe('utils', () => {
             readSandboxSpy.mockReturnValue(sandboxJSON);
             sandboxExistsSpy.mockReturnValueOnce(true);
             nock(url).get(service).query(params).reply(200, targetResults);
-    
+
             await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock);
             expect(extendSandboxSpy).toBeCalled();
         });
@@ -288,7 +291,7 @@ describe('utils', () => {
             readSandboxSpy.mockReturnValue(sandboxJSON);
             sandboxExistsSpy.mockReturnValueOnce(true);
             nock(url).get(service).query(params).reply(200, targetResults);
-    
+
             await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock);
             expect(extendSandboxSpy).toBeCalled();
         });
@@ -303,5 +306,4 @@ describe('utils', () => {
             }
         });
     });
-    
 });
