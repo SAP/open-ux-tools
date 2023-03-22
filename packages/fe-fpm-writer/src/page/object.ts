@@ -17,7 +17,7 @@ function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
 
     // move settings into correct possition in the manifest
     if (minVersion && gte(minVersion, '1.94.0')) {
-        config.settings.contextPath = data.contextPath ? data.contextPath : `/${data.entity}`;
+        config.settings.contextPath = data.contextPath ?? `/${data.entity}`;
     } else {
         config.settings.entitySet = data.entity;
     }

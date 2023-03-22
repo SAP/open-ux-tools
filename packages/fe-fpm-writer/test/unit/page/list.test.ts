@@ -50,33 +50,13 @@ describe('ListReport', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
-        test('minimal input, with contextPath and minUi5Version 1.110', () => {
+        const testVersions = ['1.110', '1.94.1', '1.84.23'];
+
+        test.each(testVersions)('minimal input, with contextPath and minUi5Version', (minUI5Version) => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             const testApiData = JSON.parse(JSON.stringify(minimalInput));
-            testApiData.minUI5Version = '1.110';
-            testApiData.contextPath = '/my/navigation';
-            generate(target, testApiData, fs);
-
-            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-        });
-
-        test('minimal input, with contextPath and minUi5Version 1.94', () => {
-            const target = join(testDir, 'minimal-input');
-            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-            const testApiData = JSON.parse(JSON.stringify(minimalInput));
-            testApiData.minUI5Version = '1.94.1';
-            testApiData.contextPath = '/my/navigation';
-            generate(target, testApiData, fs);
-
-            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
-        });
-
-        test('minimal input, with contextPath and minUi5Version 1.84', () => {
-            const target = join(testDir, 'minimal-input');
-            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-            const testApiData = JSON.parse(JSON.stringify(minimalInput));
-            testApiData.minUI5Version = '1.84.23';
+            testApiData.minUI5Version = minUI5Version;
             testApiData.contextPath = '/my/navigation';
             generate(target, testApiData, fs);
 

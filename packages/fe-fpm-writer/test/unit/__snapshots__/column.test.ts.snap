@@ -2,7 +2,7 @@
 
 exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/dummyAction'}\\" text=\\"Sample Text\\" press=\\"handler.DummyOnAction\\" />
+	<CustomXML text=\\"\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -23,7 +23,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
 
 exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\" text=\\"Sample Text\\" press=\\"handler.DummyOnAction\\" />
+	<CustomXML text=\\"\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -34,7 +34,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
     'use strict';
 
     return {
-        DummyOnAction: function(oEvent) {
+        onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
         }
     };
@@ -44,7 +44,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
 
 exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\" text=\\"Sample Text\\" press=\\"handler.onPress\\" />
+	<CustomXML text=\\"\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -65,7 +65,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
 
 exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"Sample Text\\" press=\\"handler.onHandleSecondAction\\" />
+	<CustomXML text=\\"\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -89,7 +89,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
 
 exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"Sample Text\\" press=\\"handler.onHandleSecondAction\\" />
+	<CustomXML text=\\"\\" />
 </core:FragmentDefinition>"
 `;
 
@@ -111,7 +111,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomColumn only mandatory properties 1`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -149,13 +149,13 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn only mandatory properties 2`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn only mandatory properties 3`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 3`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -193,13 +193,13 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn only mandatory properties 4`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 4`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn only mandatory properties 5`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 5`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -237,10 +237,278 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn only mandatory properties 6`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 6`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 1`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "NewCustomColumn": Object {
+        "availability": "Adaptation",
+        "header": "col header",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "placement": "After",
+        },
+        "properties": Array [
+          "ID",
+          "TotalNetAmount",
+          "_CustomerPaymentTerms/CustomerPaymentTerms",
+        ],
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
+        "width": "150px",
+      },
+    },
+  },
+  "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "ExistingCustomColumn": Object {
+        "availability": "Default",
+        "header": "{i18n>customColumn}",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "properties": Array [
+          "BooleanProperty",
+          "TextProperty",
+        ],
+        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
+        "width": "15em",
+      },
+    },
+    "tableSettings": Object {
+      "selectionMode": "Single",
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"Sample Text\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 4`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "NewCustomColumn": Object {
+        "availability": "Adaptation",
+        "header": "col header",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "placement": "After",
+        },
+        "properties": Array [
+          "ID",
+          "TotalNetAmount",
+          "_CustomerPaymentTerms/CustomerPaymentTerms",
+        ],
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
+        "width": "150px",
+      },
+    },
+  },
+  "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "ExistingCustomColumn": Object {
+        "availability": "Default",
+        "header": "{i18n>customColumn}",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "properties": Array [
+          "BooleanProperty",
+          "TextProperty",
+        ],
+        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
+        "width": "15em",
+      },
+    },
+    "tableSettings": Object {
+      "selectionMode": "Single",
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 5`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"Sample Text\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 6`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 7`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "NewCustomColumn": Object {
+        "availability": "Adaptation",
+        "header": "col header",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "placement": "After",
+        },
+        "properties": Array [
+          "ID",
+          "TotalNetAmount",
+          "_CustomerPaymentTerms/CustomerPaymentTerms",
+        ],
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
+        "width": "150px",
+      },
+    },
+  },
+  "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "ExistingCustomColumn": Object {
+        "availability": "Default",
+        "header": "{i18n>customColumn}",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "properties": Array [
+          "BooleanProperty",
+          "TextProperty",
+        ],
+        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
+        "width": "15em",
+      },
+    },
+    "tableSettings": Object {
+      "selectionMode": "Single",
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 8`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"Sample Text\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 9`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 10`] = `
+Object {
+  "@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "NewCustomColumn": Object {
+        "availability": "Adaptation",
+        "header": "col header",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "placement": "After",
+        },
+        "properties": Array [
+          "ID",
+          "TotalNetAmount",
+          "_CustomerPaymentTerms/CustomerPaymentTerms",
+        ],
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
+        "width": "150px",
+      },
+    },
+  },
+  "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+    "columns": Object {
+      "ExistingCustomColumn": Object {
+        "availability": "Default",
+        "header": "{i18n>customColumn}",
+        "horizontalAlign": "Center",
+        "position": Object {
+          "anchor": "DataField::BooleanProperty",
+          "placement": "After",
+        },
+        "properties": Array [
+          "BooleanProperty",
+          "TextProperty",
+        ],
+        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
+        "width": "15em",
+      },
+    },
+    "tableSettings": Object {
+      "selectionMode": "Single",
+    },
+  },
+}
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 11`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Text text=\\"Sample Text\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 12`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
 `;
 
 exports[`CustomAction generateCustomColumn version 1.85, no handler, all properties 1`] = `
@@ -250,9 +518,15 @@ Object {
       "NewCustomColumn": Object {
         "availability": "Adaptation",
         "header": "col header",
+        "horizontalAlign": "Center",
         "position": Object {
           "placement": "After",
         },
+        "properties": Array [
+          "ID",
+          "TotalNetAmount",
+          "_CustomerPaymentTerms/CustomerPaymentTerms",
+        ],
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
         "width": "150px",
       },
@@ -341,44 +615,6 @@ Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
       "NewCustomColumn": Object {
-        "header": "col header",
-        "position": Object {
-          "placement": "After",
-        },
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
-      },
-    },
-  },
-  "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
-    "columns": Object {
-      "ExistingCustomColumn": Object {
-        "availability": "Default",
-        "header": "{i18n>customColumn}",
-        "horizontalAlign": "Center",
-        "position": Object {
-          "anchor": "DataField::BooleanProperty",
-          "placement": "After",
-        },
-        "properties": Array [
-          "BooleanProperty",
-          "TextProperty",
-        ],
-        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
-        "width": "15em",
-      },
-    },
-    "tableSettings": Object {
-      "selectionMode": "Single",
-    },
-  },
-}
-`;
-
-exports[`CustomAction generateCustomColumn version 1.86.0-snapshot, with new handler, all properties 1`] = `
-Object {
-  "@com.sap.vocabularies.UI.v1.LineItem": Object {
-    "columns": Object {
-      "NewCustomColumn": Object {
         "availability": "Adaptation",
         "header": "col header",
         "horizontalAlign": "Center",
@@ -418,161 +654,6 @@ Object {
     },
   },
 }
-`;
-
-exports[`CustomAction generateCustomColumn version 1.86.0-snapshot, with new handler, all properties 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\" text=\\"{=%{ID} + ' ' + %{TotalNetAmount} + ' ' + %{_CustomerPaymentTerms/CustomerPaymentTerms}}\\" press=\\"handler.onPress\\" />
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomAction generateCustomColumn version 1.86.0-snapshot, with new handler, all properties 3`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomAction generateCustomColumn version 1.86.3, with new handler, all properties 1`] = `
-Object {
-  "@com.sap.vocabularies.UI.v1.LineItem": Object {
-    "columns": Object {
-      "NewCustomColumn": Object {
-        "availability": "Adaptation",
-        "header": "col header",
-        "horizontalAlign": "Center",
-        "position": Object {
-          "placement": "After",
-        },
-        "properties": Array [
-          "ID",
-          "TotalNetAmount",
-          "_CustomerPaymentTerms/CustomerPaymentTerms",
-        ],
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
-        "width": "150px",
-      },
-    },
-  },
-  "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
-    "columns": Object {
-      "ExistingCustomColumn": Object {
-        "availability": "Default",
-        "header": "{i18n>customColumn}",
-        "horizontalAlign": "Center",
-        "position": Object {
-          "anchor": "DataField::BooleanProperty",
-          "placement": "After",
-        },
-        "properties": Array [
-          "BooleanProperty",
-          "TextProperty",
-        ],
-        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
-        "width": "15em",
-      },
-    },
-    "tableSettings": Object {
-      "selectionMode": "Single",
-    },
-  },
-}
-`;
-
-exports[`CustomAction generateCustomColumn version 1.86.3, with new handler, all properties 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\" text=\\"{=%{ID} + ' ' + %{TotalNetAmount} + ' ' + %{_CustomerPaymentTerms/CustomerPaymentTerms}}\\" press=\\"handler.onPress\\" />
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomAction generateCustomColumn version 1.86.3, with new handler, all properties 3`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
-`;
-
-exports[`CustomAction generateCustomColumn version 2.0.0, with new handler, all properties 1`] = `
-Object {
-  "@com.sap.vocabularies.UI.v1.LineItem": Object {
-    "columns": Object {
-      "NewCustomColumn": Object {
-        "availability": "Adaptation",
-        "header": "col header",
-        "horizontalAlign": "Center",
-        "position": Object {
-          "placement": "After",
-        },
-        "properties": Array [
-          "ID",
-          "TotalNetAmount",
-          "_CustomerPaymentTerms/CustomerPaymentTerms",
-        ],
-        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
-        "width": "150px",
-      },
-    },
-  },
-  "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
-    "columns": Object {
-      "ExistingCustomColumn": Object {
-        "availability": "Default",
-        "header": "{i18n>customColumn}",
-        "horizontalAlign": "Center",
-        "position": Object {
-          "anchor": "DataField::BooleanProperty",
-          "placement": "After",
-        },
-        "properties": Array [
-          "BooleanProperty",
-          "TextProperty",
-        ],
-        "template": "sap.fe.core.fpmExplorer.customColumnContent.CustomColumnButton",
-        "width": "15em",
-      },
-    },
-    "tableSettings": Object {
-      "selectionMode": "Single",
-    },
-  },
-}
-`;
-
-exports[`CustomAction generateCustomColumn version 2.0.0, with new handler, all properties 2`] = `
-"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
-	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomColumn'}\\" text=\\"{=%{ID} + ' ' + %{TotalNetAmount} + ' ' + %{_CustomerPaymentTerms/CustomerPaymentTerms}}\\" press=\\"handler.onPress\\" />
-</core:FragmentDefinition>"
-`;
-
-exports[`CustomAction generateCustomColumn version 2.0.0, with new handler, all properties 3`] = `
-"sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
-    return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-"
 `;
 
 exports[`CustomAction generateCustomColumn with custom control passed in interface 1`] = `
@@ -580,11 +661,19 @@ Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
       "NewCustomColumn": Object {
+        "availability": "Adaptation",
         "header": "col header",
+        "horizontalAlign": "Center",
         "position": Object {
           "placement": "After",
         },
+        "properties": Array [
+          "ID",
+          "TotalNetAmount",
+          "_CustomerPaymentTerms/CustomerPaymentTerms",
+        ],
         "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomColumn",
+        "width": "150px",
       },
     },
   },

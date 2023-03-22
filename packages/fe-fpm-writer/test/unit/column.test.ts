@@ -50,27 +50,31 @@ describe('CustomAction', () => {
             }
         };
         const expectedFragmentPath = join(testDir, `webapp/${customColumn.folder}/${customColumn.name}.fragment.xml`);
-        const testVersions = ['1.86', '1.85', '1.84'];
-        beforeEach(() => {
-            fs = create(createStorage());
-            fs.delete(testDir);
-            fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
+
+        describe('generateCustomColumn: only mandatory properties', () => {
+            const testVersions = ['1.86', '1.85', '1.84'];
+            beforeEach(() => {
+                fs = create(createStorage());
+                fs.delete(testDir);
+                fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
+            });
+
+            test.each(testVersions)('only mandatory properties', (minUI5Version) => {
+                //sut
+                generateCustomColumn(testDir, { ...customColumn, minUI5Version }, fs);
+                const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+                const settings = (
+                    updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+                )['settings'];
+                expect(settings).toBeDefined();
+                expect(settings.controlConfiguration).toMatchSnapshot();
+
+                expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+            });
         });
 
-        test.each(testVersions)('only mandatory properties', (minUI5Version) => {
-            //sut
-            generateCustomColumn(testDir, { ...customColumn, minUI5Version }, fs);
-            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
-            const settings = (
-                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
-            )['settings'];
-            expect(settings).toBeDefined();
-            expect(settings.controlConfiguration).toMatchSnapshot();
-
-            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
-        });
-
-        test('version 1.86.3, with new handler, all properties', () => {
+        describe('generateCustomColumn: with new handler, all properties', () => {
+            const testVersions = ['1.86.3', '2.0.0', '1.86.0', '1.86.0-snapshot'];
             const testCustomColumn: CustomTableColumn = {
                 ...customColumn,
                 eventHandler: true,
@@ -79,56 +83,20 @@ describe('CustomAction', () => {
                 width: '150px',
                 properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
             };
-            generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86.3' }, fs);
-            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
-            const settings = (
-                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
-            )['settings'];
-            expect(settings.controlConfiguration).toMatchSnapshot();
 
-            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
-            expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            test.each(testVersions)('with new handler, all properties', (minUI5Version) => {
+                generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version }, fs);
+                const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+                const settings = (
+                    updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+                )['settings'];
+                expect(settings.controlConfiguration).toMatchSnapshot();
+
+                expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+                expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
+            });
         });
 
-        test('version 2.0.0, with new handler, all properties', () => {
-            const testCustomColumn: CustomTableColumn = {
-                ...customColumn,
-                eventHandler: true,
-                availability: Availability.Adaptation,
-                horizontalAlign: HorizontalAlign.Center,
-                width: '150px',
-                properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
-            };
-            generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '2.0.0' }, fs);
-            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
-            const settings = (
-                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
-            )['settings'];
-            expect(settings.controlConfiguration).toMatchSnapshot();
-
-            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
-            expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
-        });
-
-        test('version 1.86.0-snapshot, with new handler, all properties', () => {
-            const testCustomColumn: CustomTableColumn = {
-                ...customColumn,
-                eventHandler: true,
-                availability: Availability.Adaptation,
-                horizontalAlign: HorizontalAlign.Center,
-                width: '150px',
-                properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
-            };
-            generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version: '1.86.0' }, fs);
-            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
-            const settings = (
-                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
-            )['settings'];
-            expect(settings.controlConfiguration).toMatchSnapshot();
-
-            expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
-            expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
-        });
         test('version 1.86, with existing handler', () => {
             const controllerPath = 'my.test.App.ext.ExistingHandler.onCustomAction';
             fs.write(controllerPath, 'dummyContent');
