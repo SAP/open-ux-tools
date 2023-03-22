@@ -21,7 +21,7 @@ describe('CustomAction', () => {
             { control: TargetControl.table },
             { control: TargetControl.table, navProperty: 'items' }
         ];
-        test.each(testInput)('get reference for different control types', (input) => {
+        test.each(testInput)('get reference for control type %p', (input) => {
             const manifest = { 'sap.ui5': { routing: { targets: { TestPage: {} } } } };
             enhanceManifestAndGetActionsElementReference(manifest, { page: 'TestPage', ...input });
             expect(manifest).toMatchSnapshot();

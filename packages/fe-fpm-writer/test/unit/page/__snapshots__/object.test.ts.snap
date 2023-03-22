@@ -100,7 +100,7 @@ Object {
 }
 `;
 
-exports[`ObjectPage generate minimal input, with contextPath and minUi5Version 1.84 1`] = `
+exports[`ObjectPage generate minimal input, with contextPath and minUi5Version "1.84.7" 1`] = `
 Object {
   "sap.app": Object {
     "id": "my.test.App",
@@ -149,7 +149,7 @@ Object {
 }
 `;
 
-exports[`ObjectPage generate minimal input, with contextPath and minUi5Version 1.94 1`] = `
+exports[`ObjectPage generate minimal input, with contextPath and minUi5Version "1.94.0" 1`] = `
 Object {
   "sap.app": Object {
     "id": "my.test.App",
@@ -198,7 +198,7 @@ Object {
 }
 `;
 
-exports[`ObjectPage generate minimal input, with contextPath and minUi5Version 1.110 1`] = `
+exports[`ObjectPage generate minimal input, with contextPath and minUi5Version "1.110" 1`] = `
 Object {
   "sap.app": Object {
     "id": "my.test.App",

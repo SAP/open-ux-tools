@@ -111,7 +111,7 @@ exports[`CustomAction generateCustomColumn Test property "eventHandler" "eventHa
 "
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 1`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties version "1.84" 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -149,13 +149,13 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 2`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties version "1.84" 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 3`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties version "1.85" 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -193,13 +193,13 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 4`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties version "1.85" 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 5`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties version "1.86" 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -237,13 +237,13 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties only mandatory properties 6`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: only mandatory properties version "1.86" 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 1`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "1.86.0" 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -289,13 +289,13 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 2`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "1.86.0" 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 3`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "1.86.0" 3`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -310,7 +310,7 @@ exports[`CustomAction generateCustomColumn generateCustomColumn: with new handle
 "
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 4`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "1.86.0-snapshot" 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -356,13 +356,13 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 5`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "1.86.0-snapshot" 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 6`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "1.86.0-snapshot" 3`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -377,7 +377,7 @@ exports[`CustomAction generateCustomColumn generateCustomColumn: with new handle
 "
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 7`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "1.86.3" 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -423,13 +423,13 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 8`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "1.86.3" 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 9`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "1.86.3" 3`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -444,7 +444,7 @@ exports[`CustomAction generateCustomColumn generateCustomColumn: with new handle
 "
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 10`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "2.0.0" 1`] = `
 Object {
   "@com.sap.vocabularies.UI.v1.LineItem": Object {
     "columns": Object {
@@ -490,13 +490,13 @@ Object {
 }
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 11`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "2.0.0" 2`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Text text=\\"Sample Text\\" />
 </core:FragmentDefinition>"
 `;
 
-exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties with new handler, all properties 12`] = `
+exports[`CustomAction generateCustomColumn generateCustomColumn: with new handler, all properties version "2.0.0" 3`] = `
 "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {

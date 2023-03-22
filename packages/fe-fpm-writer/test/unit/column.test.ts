@@ -25,7 +25,7 @@ describe('CustomAction', () => {
             { version: '1.85', expected: join(__dirname, '../../templates/column/1.85') },
             { version: '1.86', expected: join(__dirname, '../../templates/column/1.86') }
         ];
-        test.each(testInput)('get root path of template', ({ version, expected }) => {
+        test.each(testInput)('$version', ({ version, expected }) => {
             expect(getManifestRoot(version)).toEqual(expected);
         });
         test('invalid version', () => {
@@ -59,7 +59,7 @@ describe('CustomAction', () => {
                 fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
             });
 
-            test.each(testVersions)('only mandatory properties', (minUI5Version) => {
+            test.each(testVersions)('version %p', (minUI5Version) => {
                 //sut
                 generateCustomColumn(testDir, { ...customColumn, minUI5Version }, fs);
                 const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
@@ -84,7 +84,7 @@ describe('CustomAction', () => {
                 properties: ['ID', 'TotalNetAmount', '_CustomerPaymentTerms/CustomerPaymentTerms']
             };
 
-            test.each(testVersions)('with new handler, all properties', (minUI5Version) => {
+            test.each(testVersions)('version %p', (minUI5Version) => {
                 generateCustomColumn(testDir, { ...testCustomColumn, minUI5Version }, fs);
                 const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
                 const settings = (

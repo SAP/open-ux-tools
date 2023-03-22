@@ -407,73 +407,7 @@ Object {
 }
 `;
 
-exports[`CustomAction getTargetElementReference get reference for different control types 1`] = `
-Object {
-  "sap.ui5": Object {
-    "routing": Object {
-      "targets": Object {
-        "TestPage": Object {
-          "options": Object {
-            "settings": Object {
-              "content": Object {
-                "header": Object {
-                  "actions": Object {},
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-`;
-
-exports[`CustomAction getTargetElementReference get reference for different control types 2`] = `
-Object {
-  "sap.ui5": Object {
-    "routing": Object {
-      "targets": Object {
-        "TestPage": Object {
-          "options": Object {
-            "settings": Object {
-              "content": Object {
-                "footer": Object {
-                  "actions": Object {},
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-`;
-
-exports[`CustomAction getTargetElementReference get reference for different control types 3`] = `
-Object {
-  "sap.ui5": Object {
-    "routing": Object {
-      "targets": Object {
-        "TestPage": Object {
-          "options": Object {
-            "settings": Object {
-              "controlConfiguration": Object {
-                "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
-                  "actions": Object {},
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-}
-`;
-
-exports[`CustomAction getTargetElementReference get reference for different control types 4`] = `
+exports[`CustomAction getTargetElementReference get reference for control type {"control": "@com.sap.vocabularies.UI.v1.FieldGroup", "qualifier": "FacetCustomAction"} 1`] = `
 Object {
   "sap.ui5": Object {
     "routing": Object {
@@ -495,7 +429,51 @@ Object {
 }
 `;
 
-exports[`CustomAction getTargetElementReference get reference for different control types 5`] = `
+exports[`CustomAction getTargetElementReference get reference for control type {"control": "@com.sap.vocabularies.UI.v1.FieldGroup"} 1`] = `
+Object {
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "TestPage": Object {
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.FieldGroup": Object {
+                  "actions": Object {},
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction getTargetElementReference get reference for control type {"control": "@com.sap.vocabularies.UI.v1.LineItem", "navProperty": "items"} 1`] = `
+Object {
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "TestPage": Object {
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+                  "actions": Object {},
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction getTargetElementReference get reference for control type {"control": "@com.sap.vocabularies.UI.v1.LineItem"} 1`] = `
 Object {
   "sap.ui5": Object {
     "routing": Object {
@@ -517,7 +495,7 @@ Object {
 }
 `;
 
-exports[`CustomAction getTargetElementReference get reference for different control types 6`] = `
+exports[`CustomAction getTargetElementReference get reference for control type {"control": "footer"} 1`] = `
 Object {
   "sap.ui5": Object {
     "routing": Object {
@@ -525,8 +503,30 @@ Object {
         "TestPage": Object {
           "options": Object {
             "settings": Object {
-              "controlConfiguration": Object {
-                "items/@com.sap.vocabularies.UI.v1.LineItem": Object {
+              "content": Object {
+                "footer": Object {
+                  "actions": Object {},
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomAction getTargetElementReference get reference for control type {"control": "header"} 1`] = `
+Object {
+  "sap.ui5": Object {
+    "routing": Object {
+      "targets": Object {
+        "TestPage": Object {
+          "options": Object {
+            "settings": Object {
+              "content": Object {
+                "header": Object {
                   "actions": Object {},
                 },
               },

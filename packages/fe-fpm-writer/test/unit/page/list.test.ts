@@ -52,7 +52,7 @@ describe('ListReport', () => {
 
         const testVersions = ['1.110', '1.94.1', '1.84.23'];
 
-        test.each(testVersions)('minimal input, with contextPath and minUi5Version', (minUI5Version) => {
+        test.each(testVersions)('minimal input, with contextPath and minUi5Version %p', (minUI5Version) => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             const testApiData = JSON.parse(JSON.stringify(minimalInput));
