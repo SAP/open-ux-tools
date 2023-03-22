@@ -161,12 +161,36 @@ describe('<UIFlexibleTable />', () => {
             const titleCells = wrapper.find(selectors.titleRowValue);
             expect(titleCells.length).toBe(2);
 
-            columns
-                .filter((col) => !col.hidden)
-                .forEach((col, idx) => {
-                    expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
-                    expect(titleCells.get(idx).props.children).toBe(col.title);
-                });
+            const filteredColumns = columns.filter((col) => !col.hidden);
+            const expectedIds = filteredColumns.map((c) => `${tableId}-header-column-${c.key}`);
+
+            filteredColumns.forEach((col, idx) => {
+                expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
+                expect(titleCells.get(idx).props.children).toBe(col.title);
+                expect(titleCells.get(idx).props['id']).toBe(expectedIds[idx]);
+            });
+        });
+
+        it('Render column default titles (with spanned cells)', () => {
+            wrapper.setProps({
+                showIndexColumn: true,
+                showColumnTitles: true,
+                onRenderTitleColumnCell: (params) => ({
+                    content: columns[params.colIndex || 0].title,
+                    isSpan: params.colIndex === 0
+                })
+            });
+            const headersFound = wrapper.find(selectors.titleRow);
+            expect(headersFound.length).toEqual(1);
+
+            const titleCells = wrapper.find(selectors.titleRowValue);
+            expect(titleCells.length).toBe(1);
+
+            const col = columns[0];
+            const expectedId = `${tableId}-header-column-${col.key}`;
+            expect(titleCells.get(0).key).toBe(`title-cell-unknown`);
+            expect(titleCells.get(0).props.children).toBe(col.title);
+            expect(titleCells.get(0).props['id']).toBe(expectedId);
         });
 
         it('Render column titles in cells', () => {
