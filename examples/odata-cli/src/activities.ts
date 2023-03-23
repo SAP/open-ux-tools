@@ -9,6 +9,7 @@ import {
     FileStoreService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
+import { ArchiveFileNode } from '@sap-ux/axios-extension/src/abap/types';
 
 /**
  * Execute a sequence of test calls using the given provider.
@@ -59,9 +60,9 @@ export async function useCatalogAndFetchSomeMetadata(
  * Execute a sequence of test calls using the given provider.
  *
  * @param provider instance of a service provider
- * @param env object reprensenting the content of the .env file.
+ * @param env object representing the content of the .env file.
  * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
- * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
+ * @param env.TEST_APP optional project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
  */
 export async function useAdtServices(
     provider: AbapServiceProvider,
@@ -97,7 +98,11 @@ export async function useAdtServices(
 
         const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
         const rootFolderContent = await fileStoreService.getAppArchiveContent(env.TEST_APP, 'folder');
-        logger.info(`Deployed archive for ${env.TEST_APP} contains: ${rootFolderContent.length} files and folders`);
+        logger.info(`Deployed archive for ${env.TEST_APP} contains: ${(rootFolderContent as ArchiveFileNode[]).map((node) => node.basename).join(',')}`);
+        const componentJs = await fileStoreService.getAppArchiveContent(`${env.TEST_APP}/Component.js`, 'file');
+        logger.info(`Component.js for ${env.TEST_APP} is:`);
+        logger.info(componentJs);
+        
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
     }
@@ -107,7 +112,7 @@ export async function useAdtServices(
  * Execute a sequence of check, deploy and undeploy requests for a DTA project.
  *
  * @param provider instance of a service provider
- * @param env object reprensenting the content of the .env file.
+ * @param env object representing the content of the .env file.
  * @param env.TEST_ZIP path to a zipped webapp folder of an adaptation project that should be deployed
  * @param env.TEST_NAMESPACE namespaces containing the referenced app as well as the new project id
  * @param env.TEST_PACKAGE optional package name
