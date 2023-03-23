@@ -27,7 +27,7 @@ describe('Test generateSmartLinksConfig', () => {
         'firstLink': {
             semanticObject: 'dummyObject',
             semanticAction: 'dummyAction',
-            title: 'dummyTitle',
+            text: 'dummyTitle',
             formFactors: {
                 desktop: true,
                 tablet: true

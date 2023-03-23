@@ -32,7 +32,7 @@ export type TargetMapping = {
         additionalParameters?: string;
         parameters?: { [key: string]: any };
     };
-    title?: string;
+    text?: string;
     url?: string;
 };
 
