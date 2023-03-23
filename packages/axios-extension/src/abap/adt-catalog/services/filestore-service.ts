@@ -1,7 +1,9 @@
 import { AdtService } from './adt-service';
 import type { AdtCategory, ArchiveFileNode, ArchiveFileNodeType } from '../../types';
 import XmlParser from 'fast-xml-parser';
-import { AdtFileNode } from 'abap/types/adt-internal-types';
+import type { AdtFileNode } from 'abap/types/adt-internal-types';
+
+type ReturnType<T> = T extends 'file' ? string : T extends 'folder' ? ArchiveFileNode[] : never;
 
 /**
  * FileStoreService implements ADT requests to obtain the content
@@ -40,7 +42,7 @@ export class FileStoreService extends AdtService {
      *  of files and folders inside root folder can be found in the returned `ArchiveFileNode` entries.
      * @returns Folder content (ArchiveFileNode[]) | file content (string)
      */
-    public async getAppArchiveContent(path: string, type: ArchiveFileNodeType): Promise<string | ArchiveFileNode[]> {
+    public async getAppArchiveContent<T extends ArchiveFileNodeType>(path: string, type: T): Promise<ReturnType<T>> {
         const contentType = type === 'folder' ? 'application/atom+xml' : 'application/octet-stream';
         const config = {
             headers: {
@@ -63,10 +65,10 @@ export class FileStoreService extends AdtService {
      * @param type Reponse data is the file content or folder content.
      * @returns Folder content (ArchiveFileNode[]) | file content (string)
      */
-    private parseArchiveContentResponse(responseData: string, type: ArchiveFileNodeType): string | ArchiveFileNode[] {
+    private parseArchiveContentResponse<T extends ArchiveFileNodeType>(responseData: string, type: T): ReturnType<T> {
         // File content that is not xml data.
         if (type === 'file' || XmlParser.validate(responseData) !== true) {
-            return responseData;
+            return responseData as ReturnType<T>;
         }
         // A list of file/folder items in the response data as xml string.
         const options = {
@@ -97,6 +99,6 @@ export class FileStoreService extends AdtService {
             } as ArchiveFileNode;
 
             return exposedFileNode;
-        });
+        }) as ReturnType<T>;
     }
 }
