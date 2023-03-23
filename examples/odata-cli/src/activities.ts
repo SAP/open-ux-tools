@@ -9,7 +9,7 @@ import {
     FileStoreService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
-import { ArchiveFileNode } from '@sap-ux/axios-extension/src/abap/types';
+import type { ArchiveFileNode } from '@sap-ux/axios-extension/src/abap/types';
 
 /**
  * Execute a sequence of test calls using the given provider.
