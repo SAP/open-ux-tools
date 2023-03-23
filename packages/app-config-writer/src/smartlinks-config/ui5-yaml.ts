@@ -34,19 +34,24 @@ export async function readUi5DeployConfigTarget(basePath: string): Promise<Targe
  * Checks if 'fiori-tools-servestatic' configuration is already existing.
  *
  * @param existingPaths existing configuration paths under 'fiori-tools-servestatic'
+ * @param existingFioriToolsProxy - flag if fiori tools proxy middleware is already existing
  * @returns 'fiori-tools-servestatic' configuration, if not existing yet
  */
 const getFioriToolsServeStaticMiddlewareConfig = (
-    existingPaths: FioriToolsServeStaticPath[]
+    existingPaths: FioriToolsServeStaticPath[],
+    existingFioriToolsProxy: boolean
 ): CustomMiddleware<FioriToolsServeStaticConfig> | undefined => {
     const configPath: FioriToolsServeStaticPath = { path: '/appconfig', src: 'appconfig', fallthrough: false };
     if (existingPaths.find((existing) => existing.path === configPath.path && existing.src === configPath.src)) {
         return undefined;
     }
     const paths = [...existingPaths, configPath];
+    const beforeAfterMiddleware = existingFioriToolsProxy
+        ? { beforeMiddleware: 'fiori-tools-proxy' }
+        : { afterMiddleware: 'compression' };
     return {
         name: 'fiori-tools-servestatic',
-        beforeMiddleware: 'fiori-tools-proxy',
+        ...beforeAfterMiddleware,
         configuration: { paths }
     };
 };
@@ -72,14 +77,15 @@ export async function addUi5YamlServeStaticMiddleware(
             logger?.debug(`File ${ui5Yaml} not existing`);
             continue;
         }
-        if (!ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>(DeployConfig.FioriToolsProxy)) {
-            ui5YamlConfig.addFioriToolsProxydMiddleware({ ui5: {} });
-        }
+        const existingFioriToolsProxy = !!ui5YamlConfig.findCustomMiddleware<FioriToolsProxyConfig>(
+            DeployConfig.FioriToolsProxy
+        );
         const appServeStaticMiddleware = ui5YamlConfig.findCustomMiddleware<FioriToolsServeStaticConfig>(
             DeployConfig.FioriToolsServestatic
         );
         const middleware = getFioriToolsServeStaticMiddlewareConfig(
-            appServeStaticMiddleware?.configuration.paths || []
+            appServeStaticMiddleware?.configuration.paths || [],
+            existingFioriToolsProxy
         );
         if (middleware) {
             const yamlConfig = ui5YamlConfig.updateCustomMiddleware(middleware);
