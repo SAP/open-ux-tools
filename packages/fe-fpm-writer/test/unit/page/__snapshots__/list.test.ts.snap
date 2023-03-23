@@ -85,7 +85,7 @@ Object {
 }
 `;
 
-exports[`ListReport generate minimal input, with contextPath and minUi5Version 1`] = `
+exports[`ListReport generate minimal input, with minUi5Version 1`] = `
 Object {
   "sap.app": Object {
     "id": "my.test.App",
@@ -122,7 +122,44 @@ Object {
 }
 `;
 
-exports[`ListReport generate minimal input, with contextPath and minUi5Version 2`] = `
+exports[`ListReport generate minimal input, with minUi5Version 2`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "RootEntityListReport",
+        },
+      ],
+      "targets": Object {
+        "RootEntityListReport": Object {
+          "id": "RootEntityListReport",
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/RootEntity",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ListReport generate minimal input, with minUi5Version 3`] = `
 Object {
   "sap.app": Object {
     "id": "my.test.App",
@@ -159,7 +196,7 @@ Object {
 }
 `;
 
-exports[`ListReport generate minimal input, with contextPath and minUi5Version 3`] = `
+exports[`ListReport generate minimal input, with minUi5Version 4`] = `
 Object {
   "sap.app": Object {
     "id": "my.test.App",
