@@ -98,11 +98,20 @@ export async function useAdtServices(
 
         const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
         const rootFolderContent = await fileStoreService.getAppArchiveContent(env.TEST_APP, 'folder');
-        logger.info(`Deployed archive for ${env.TEST_APP} contains: ${(rootFolderContent as ArchiveFileNode[]).map((node) => node.basename).join(',')}`);
-        const componentJs = await fileStoreService.getAppArchiveContent(`${env.TEST_APP}/Component.js`, 'file');
-        logger.info(`Component.js for ${env.TEST_APP} is:`);
-        logger.info(componentJs);
-        
+        logger.info(
+            `Deployed archive for ${env.TEST_APP} contains: ${(rootFolderContent as ArchiveFileNode[])
+                .map((node) => node.basename)
+                .join(',')}`
+        );
+        if (rootFolderContent[0].type === 'file') {
+            const componentJs = await fileStoreService.getAppArchiveContent(rootFolderContent[0].queryPath, 'file');
+            logger.info(`Component.js for ${env.TEST_APP} is:`);
+            logger.info(componentJs);
+        } else {
+            const componentJs = await fileStoreService.getAppArchiveContent(rootFolderContent[0].queryPath, 'folder');
+            logger.info(`Component.js for ${env.TEST_APP} is:`);
+            logger.info(componentJs);
+        }
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
     }
