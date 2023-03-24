@@ -1,5 +1,14 @@
 # @sap-ux/environment-check
 
+## 0.15.9
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+    -   @sap-ux/project-access@1.3.0
+
 ## 0.15.8
 
 ### Patch Changes
