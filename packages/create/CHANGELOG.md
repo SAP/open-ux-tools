@@ -1,5 +1,19 @@
 # @sap-ux/create
 
+## 0.1.0
+
+### Minor Changes
+
+-   e7614e5: Adds `add smartlinks-config` command to add a smartlinks configuration to a project
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/app-config-writer@0.0.2
+    -   @sap-ux/project-access@1.3.0
+    -   @sap-ux/mockserver-config-writer@0.1.1
+
 ## 0.0.12
 
 ### Patch Changes
