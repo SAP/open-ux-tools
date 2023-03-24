@@ -1,5 +1,16 @@
 # @sap-ux/project-access
 
+## 1.3.0
+
+### Minor Changes
+
+-   e7614e5: Add `readUi5Yaml` to read ui5.yaml files
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+
 ## 1.2.0
 
 ### Minor Changes
