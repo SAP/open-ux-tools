@@ -1,0 +1,21 @@
+{
+    "services": {
+        "ClientSideTargetResolution": {
+            "adapter": {
+                "config": {
+                    "inbounds": {
+                        "existingLink": {
+                            "action": "existingAction",
+                            "resolutionResult": {},
+                            "semanticObject": "existingObject",
+                            "signature": {
+                                "additionalParameters": "ignored"
+                            },
+                            "title": "existingTitle"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
