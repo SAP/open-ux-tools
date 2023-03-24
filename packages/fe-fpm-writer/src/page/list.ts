@@ -1,8 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
-import { getFclConfig, extendPageJSON } from './common';
+import { getFclConfig, extendPageJSON, createTargetSettings } from './common';
 import type { Manifest } from '../common/types';
 import type { ListReport, InternalListReport } from './types';
-import { coerce, gte } from 'semver';
 
 /**
  * Enhances the provided list report configuration with default data.
@@ -12,26 +11,20 @@ import { coerce, gte } from 'semver';
  * @returns enhanced configuration
  */
 function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
-    const config: InternalListReport = { settings: {}, ...data, name: 'ListReport', ...getFclConfig(manifest) };
-    const minVersion = coerce(data.minUI5Version);
+    const config: InternalListReport = { ...data, 
+        settings: createTargetSettings(data, data.settings),
+        name: 'ListReport', ...getFclConfig(manifest)
+    };
 
-    // move settings into correct possition in the manifest
-    if (minVersion && gte(minVersion, '1.94.0')) {
-        config.settings.contextPath = data.contextPath ?? `/${data.entity}`;
-    } else {
-        config.settings.entitySet = data.entity;
-    }
-    config.settings.navigation = {};
     // use standard file name if i18n enhancement required
     if (config.settings.enhanceI18n === true) {
         config.settings.enhanceI18n = `i18n/custom${config.entity}${config.name}.properties`;
     }
     // move table settings into the correct structure
     if (config.settings.tableSettings) {
-        config.settings.controlConfiguration = config.settings.controlConfiguration ?? {};
-        config.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.LineItem'] =
-            config.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.LineItem'] ?? {};
-        config.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.LineItem'].tableSettings =
+        const controlConfig = (config.settings.controlConfiguration ??= {}) as Record<string, Record<string, unknown>>;
+        controlConfig['@com.sap.vocabularies.UI.v1.LineItem'] ??= {};
+        controlConfig['@com.sap.vocabularies.UI.v1.LineItem'].tableSettings =
             config.settings.tableSettings;
         delete config.settings.tableSettings;
     }
