@@ -97,10 +97,23 @@ export type AdtTransportStatus = 'S' | 'E';
 export const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
 
 export interface ArchiveFileNode {
-    basename: string; // file or folder name only
-    fullPath: string; // full path to the file or folder from root app folder
-    queryPath: string; // URI encoded `fullPath` ready for query
-    type: ArchiveFileNodeType; // File or folder
+    /**
+     * file or folder name only
+     */
+    basename: string;
+    /**
+     * Path to the file or folder. Ready to be passed to the `path`
+     * argument of FileStoreService.getAppArchiveContent() method.
+     *
+     * @see FileStoreService.getAppArchiveContent
+     */
+    path: string;
+    /**
+     * 'file' | 'folder'
+     */
+    type: ArchiveFileNodeType;
 }
 
 export type ArchiveFileNodeType = 'file' | 'folder';
+
+export type ArchiveFileContentType<T> = T extends 'file' ? string : T extends 'folder' ? ArchiveFileNode[] : never;

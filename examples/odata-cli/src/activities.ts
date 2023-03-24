@@ -97,20 +97,37 @@ export async function useAdtServices(
         logger.info(`Query $tmp package: ${packages.length === 1}`);
 
         const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
-        const rootFolderContent = await fileStoreService.getAppArchiveContent(env.TEST_APP, 'folder');
+        const rootFolderContent = await fileStoreService.getAppArchiveContent('folder', env.TEST_APP);
         logger.info(
             `Deployed archive for ${env.TEST_APP} contains: ${(rootFolderContent as ArchiveFileNode[])
                 .map((node) => node.basename)
                 .join(',')}`
         );
-        if (rootFolderContent[0].type === 'file') {
-            const componentJs = await fileStoreService.getAppArchiveContent(rootFolderContent[0].queryPath, 'file');
-            logger.info(`Component.js for ${env.TEST_APP} is:`);
-            logger.info(componentJs);
+
+        // Query and log the first encountered file content inside env.TEST_APP
+        const fileList = rootFolderContent.filter((node) => node.type === 'file');
+        if (fileList.length > 0) {
+            const fileContent = await fileStoreService.getAppArchiveContent('file', env.TEST_APP, fileList[0].path);
+            logger.info(`File content of ${fileList[0].path} is:`);
+            logger.info(fileContent);
         } else {
-            const componentJs = await fileStoreService.getAppArchiveContent(rootFolderContent[0].queryPath, 'folder');
-            logger.info(`Component.js for ${env.TEST_APP} is:`);
-            logger.info(componentJs);
+            logger.info(`No file in ${env.TEST_APP}`);
+        }
+        // Query and log the first encountered folder content inside env.TEST_APP
+        const folderList = rootFolderContent.filter((node) => node.type === 'folder');
+        if (folderList.length > 0) {
+            const folderContent = await fileStoreService.getAppArchiveContent(
+                'folder',
+                env.TEST_APP,
+                folderList[0].path
+            );
+            logger.info(
+                `Folder ${folderList[0].path} contains: ${(folderContent as ArchiveFileNode[])
+                    .map((node) => node.basename)
+                    .join(',')}`
+            );
+        } else {
+            logger.info(`No folder in ${env.TEST_APP}`);
         }
     } catch (error) {
         logger.error(error.cause || error.toString() || error);

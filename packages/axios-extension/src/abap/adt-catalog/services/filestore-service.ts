@@ -1,9 +1,7 @@
 import { AdtService } from './adt-service';
-import type { AdtCategory, ArchiveFileNode, ArchiveFileNodeType } from '../../types';
+import type { AdtCategory, ArchiveFileNode, ArchiveFileNodeType, ArchiveFileContentType } from '../../types';
 import XmlParser from 'fast-xml-parser';
 import type { AdtFileNode } from 'abap/types/adt-internal-types';
-
-type ReturnType<T> = T extends 'file' ? string : T extends 'folder' ? ArchiveFileNode[] : never;
 
 /**
  * FileStoreService implements ADT requests to obtain the content
@@ -35,14 +33,21 @@ export class FileStoreService extends AdtService {
      * of ArchiveFileNode objects.
      * @see ArchiveFileNode
      *
-     * @param path Path to a folder / file in the deployed archive
      * @param type
      *  Specifies if input `path` refers to a file or a folder. When starting exploring
      *  the file structure from the root, type should be set to `folder`. The type information
      *  of files and folders inside root folder can be found in the returned `ArchiveFileNode` entries.
+     * @param appName Deployed Fiori app name
+     * @param path
+     *   Default value is empty string. In this case the output would be folder structure information of the root folder.
+     *   Otherwise provide path to a folder or a file in the deployed archive. E.g. `/webapp/index.html`.
      * @returns Folder content (ArchiveFileNode[]) | file content (string)
      */
-    public async getAppArchiveContent<T extends ArchiveFileNodeType>(path: string, type: T): Promise<ReturnType<T>> {
+    public async getAppArchiveContent<T extends ArchiveFileNodeType>(
+        type: T,
+        appName: string,
+        path = ''
+    ): Promise<ArchiveFileContentType<T>> {
         const contentType = type === 'folder' ? 'application/atom+xml' : 'application/octet-stream';
         const config = {
             headers: {
@@ -50,9 +55,9 @@ export class FileStoreService extends AdtService {
                 'Content-Type': contentType
             }
         };
-
-        const response = await this.get(`/${path}/content`, config);
-        return this.parseArchiveContentResponse(response.data, type);
+        const encodedFullPath = encodeURIComponent(`${appName}${path}`);
+        const response = await this.get(`/${encodedFullPath}/content`, config);
+        return this.parseArchiveContentResponse(appName, response.data, type);
     }
 
     /**
@@ -61,14 +66,19 @@ export class FileStoreService extends AdtService {
      * is text string, this method returns the text cotent.
      * @see ArchiveFileNode
      *
+     * @param appName Deployed Fiori app name
      * @param responseData Response from ADT service
      * @param type Reponse data is the file content or folder content.
      * @returns Folder content (ArchiveFileNode[]) | file content (string)
      */
-    private parseArchiveContentResponse<T extends ArchiveFileNodeType>(responseData: string, type: T): ReturnType<T> {
+    private parseArchiveContentResponse<T extends ArchiveFileNodeType>(
+        appName: string,
+        responseData: string,
+        type: T
+    ): ArchiveFileContentType<T> {
         // File content that is not xml data.
         if (type === 'file' || XmlParser.validate(responseData) !== true) {
-            return responseData as ReturnType<T>;
+            return responseData as ArchiveFileContentType<T>;
         }
         // A list of file/folder items in the response data as xml string.
         const options = {
@@ -93,12 +103,11 @@ export class FileStoreService extends AdtService {
         return fileNodeArray.map((fileNode) => {
             const exposedFileNode = {
                 basename: fileNode.title.split('/').pop(),
-                fullPath: fileNode.title,
-                queryPath: encodeURIComponent(fileNode.title),
+                path: fileNode.title.substring(appName.length),
                 type: fileNode.category.term
             } as ArchiveFileNode;
 
             return exposedFileNode;
-        }) as ReturnType<T>;
+        }) as ArchiveFileContentType<T>;
     }
 }

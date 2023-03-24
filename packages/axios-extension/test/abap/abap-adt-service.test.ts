@@ -10,7 +10,7 @@ import {
     FileStoreService
 } from '../../src';
 import * as auth from '../../src/auth';
-import { ArchiveFileNode } from '../../src/abap/types';
+import type { ArchiveFileNode } from '../../src/abap/types';
 import fs from 'fs';
 
 /**
@@ -444,7 +444,7 @@ describe('File Store Service', () => {
             .get(`${AdtServices.FILE_STORE}/ZTESTAPP/content`)
             .replyWithFile(200, join(__dirname, 'mockResponses/archiveFolderContent_RootZTESTAPP.xml'));
         const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
-        const rootFolderContent = await fsService?.getAppArchiveContent('ZTESTAPP', 'folder');
+        const rootFolderContent = await fsService?.getAppArchiveContent('folder', 'ZTESTAPP');
         expect(rootFolderContent?.length).toStrictEqual(13);
     });
 
@@ -455,11 +455,10 @@ describe('File Store Service', () => {
             .get(`${AdtServices.FILE_STORE}/ZTESTAPP/content`)
             .replyWithFile(200, join(__dirname, 'mockResponses/archiveFolderContent_i18n.xml'));
         const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
-        const folderContent = await fsService?.getAppArchiveContent('ZTESTAPP', 'folder');
+        const folderContent = await fsService?.getAppArchiveContent('folder', 'ZTESTAPP');
         expect(folderContent?.length).toStrictEqual(1);
         expect((folderContent as ArchiveFileNode[])[0].basename).toEqual('i18n.properties');
-        expect((folderContent as ArchiveFileNode[])[0].fullPath).toEqual('ZTESTAPP/i18n/i18n.properties');
-        expect((folderContent as ArchiveFileNode[])[0].queryPath).toEqual('ZTESTAPP%2Fi18n%2Fi18n.properties');
+        expect((folderContent as ArchiveFileNode[])[0].path).toEqual('/i18n/i18n.properties');
         expect((folderContent as ArchiveFileNode[])[0].type).toEqual('file');
 
         // expect(typeof folderContent).not.toEqual('string');
@@ -472,7 +471,7 @@ describe('File Store Service', () => {
             .get(`${AdtServices.FILE_STORE}/ZTESTAPP%2FComponent-dbg.js/content`)
             .replyWithFile(200, join(__dirname, 'mockResponses/archiveFileContent_Component-dbg_js.txt'));
         const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
-        const fileContent = await fsService?.getAppArchiveContent('ZTESTAPP%2FComponent-dbg.js', 'file');
+        const fileContent = await fsService?.getAppArchiveContent('file', 'ZTESTAPP', '/Component-dbg.js');
         expect(typeof fileContent).toEqual('string');
         expect(fileContent).toEqual(
             fs.readFileSync(join(__dirname, 'mockResponses/archiveFileContent_Component-dbg_js.txt'), 'utf-8')
@@ -486,7 +485,7 @@ describe('File Store Service', () => {
             .get(`${AdtServices.FILE_STORE}/ZTESTAPP/content`)
             .reply(200, '<?xml version="1.0" encoding="UTF-8"?><invalid>error message</invalid>');
         const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
-        const fileContent = await fsService?.getAppArchiveContent('ZTESTAPP', 'folder');
+        const fileContent = await fsService?.getAppArchiveContent('folder', 'ZTESTAPP');
         console.log(fileContent);
         expect(fileContent?.length).toEqual(0);
     });
