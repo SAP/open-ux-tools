@@ -80,6 +80,7 @@ describe('CustomPage', () => {
         test('latest version with contextPath', () => {
             const localInput = JSON.parse(JSON.stringify(minimalInput));
             localInput.contextPath = 'my/path';
+            localInput.minUI5Version = '1.102';
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             generateCustomPage(target, localInput, fs);

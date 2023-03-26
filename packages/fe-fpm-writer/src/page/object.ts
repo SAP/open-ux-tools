@@ -1,8 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
-import { getFclConfig, extendPageJSON } from './common';
+import { getFclConfig, extendPageJSON, initializeTargetSettings } from './common';
 import type { Manifest } from '../common/types';
 import type { ObjectPage, InternalObjectPage } from './types';
-import { coerce, gte } from 'semver';
 
 /**
  * Enhances the provided list report configuration with default data.
@@ -12,16 +11,13 @@ import { coerce, gte } from 'semver';
  * @returns enhanced configuration
  */
 function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
-    const config: InternalObjectPage = { settings: {}, ...data, name: 'ObjectPage', ...getFclConfig(manifest) };
-    const minVersion = coerce(data.minUI5Version);
+    const config: InternalObjectPage = {
+        ...data,
+        settings: initializeTargetSettings(data, data.settings),
+        name: 'ObjectPage',
+        ...getFclConfig(manifest)
+    };
 
-    // move settings into correct possition in the manifest
-    if (minVersion && gte(minVersion, '1.94.0')) {
-        config.settings.contextPath = data.contextPath ?? `/${data.entity}`;
-    } else {
-        config.settings.entitySet = data.entity;
-    }
-    config.settings.navigation = {};
     // use standard file name if i18n enhancement required
     if (config.settings.enhanceI18n === true) {
         config.settings.enhanceI18n = `i18n/custom${config.entity}${config.name}.properties`;

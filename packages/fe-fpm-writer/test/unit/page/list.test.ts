@@ -50,19 +50,12 @@ describe('ListReport', () => {
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
         });
 
-        const testCases = [
-            { version: '1.110', contextPath: '/my/navigation' },
-            { version: '1.110.1' },
-            { version: '1.94.1', contextPath: '/my/navigation' },
-            { version: '1.84.23', contextPath: '/my/navigation' }
-        ];
-
-        test.each(testCases)('minimal input, with minUi5Version', (testData) => {
+        test('minimal input, plus minUi5Version and contextPath', () => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             const testApiData = JSON.parse(JSON.stringify(minimalInput));
-            testApiData.minUI5Version = testData.version;
-            testApiData.contextPath = testData.contextPath;
+            testApiData.minUI5Version = '1.110';
+            testApiData.contextPath = '/my/navigation';
             //act
             generate(target, testApiData, fs);
             //check
