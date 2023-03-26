@@ -151,11 +151,15 @@ export function getFclConfig(manifest: Manifest, navigation?: Navigation): FCL {
 
 /**
  * Create target settings for a Fiori elements page.
+ *
  * @param data - incoming configuration
  * @param addSettings - optional arbitrary settings
  * @returns version aware settings object
  */
-export function createTargetSettings(data: FpmPage, addSettings?: Record<string, unknown>): Record<string, unknown> {
+export function initializeTargetSettings(
+    data: FpmPage,
+    addSettings?: Record<string, unknown>
+): Record<string, unknown> {
     const settings: Record<string, unknown> = addSettings ? { ...addSettings } : {};
     settings.navigation ??= {};
 

@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { getFclConfig, extendPageJSON, createTargetSettings } from './common';
+import { getFclConfig, extendPageJSON, initializeTargetSettings } from './common';
 import type { Manifest } from '../common/types';
 import type { ListReport, InternalListReport } from './types';
 
@@ -11,9 +11,11 @@ import type { ListReport, InternalListReport } from './types';
  * @returns enhanced configuration
  */
 function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
-    const config: InternalListReport = { ...data, 
-        settings: createTargetSettings(data, data.settings),
-        name: 'ListReport', ...getFclConfig(manifest)
+    const config: InternalListReport = {
+        ...data,
+        settings: initializeTargetSettings(data, data.settings),
+        name: 'ListReport',
+        ...getFclConfig(manifest)
     };
 
     // use standard file name if i18n enhancement required
@@ -24,8 +26,7 @@ function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
     if (config.settings.tableSettings) {
         const controlConfig = (config.settings.controlConfiguration ??= {}) as Record<string, Record<string, unknown>>;
         controlConfig['@com.sap.vocabularies.UI.v1.LineItem'] ??= {};
-        controlConfig['@com.sap.vocabularies.UI.v1.LineItem'].tableSettings =
-            config.settings.tableSettings;
+        controlConfig['@com.sap.vocabularies.UI.v1.LineItem'].tableSettings = config.settings.tableSettings;
         delete config.settings.tableSettings;
     }
     return config;

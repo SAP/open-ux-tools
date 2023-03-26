@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { CustomPage, InternalCustomPage } from './types';
-import { createTargetSettings, getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
+import { initializeTargetSettings, getFclConfig, getManifestJsonExtensionHelper, validatePageConfig } from './common';
 import { setCommonDefaults } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
@@ -26,8 +26,8 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
 
     // set common defaults
     const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
-    config.settings = createTargetSettings(data);
-    
+    config.settings = initializeTargetSettings(data);
+
     // set FCL configuration
     const fclConfig = getFclConfig(manifest, config.navigation);
     config.fcl = fclConfig.fcl;

@@ -23,7 +23,7 @@ export interface Navigation {
 export type StandardPageSettings = {
     enhanceI18n?: string | true;
     variantManagement?: 'Page' | 'None';
-}
+};
 
 /**
  * Support list of settings for a ListReport page
@@ -34,7 +34,7 @@ export type ListReportSettings = StandardPageSettings & {
         selectionMode?: 'None' | 'Single' | 'Multi' | 'Auto';
         condensedTableLayout?: boolean;
     };
-}
+};
 
 /**
  * Common settings for any page supporting the Fiori elements flexible programming model.
@@ -87,7 +87,6 @@ export interface ObjectPage extends FpmPage, WriterConfig {
  * Configuration options for adding a custom page.
  */
 export interface CustomPage extends FpmPage, CustomElement {
-
     /**
      * Optional incoming navigation configuration. If provided then a navigation configuration is added to an existing page navigating to this custom page.
      */
@@ -125,8 +124,8 @@ export interface FCL {
 /**
  * Common settings for Fiori elements pages
  */
-export type InternalFpmPage = FCL & { 
-    settings: Record<string, unknown | undefined> 
+export type InternalFpmPage = FCL & {
+    settings: Record<string, unknown | undefined>;
 };
 
 /**
@@ -134,6 +133,6 @@ export type InternalFpmPage = FCL & {
  */
 export type InternalCustomPage = CustomPage & InternalFpmPage & InternalCustomElement;
 
-export type InternalListReport = ListReport & InternalFpmPage & { name: 'ListReport'; navigation?: Navigation; };
+export type InternalListReport = ListReport & InternalFpmPage & { name: 'ListReport'; navigation?: Navigation };
 
-export type InternalObjectPage = ObjectPage & InternalFpmPage & { name: 'ObjectPage'; };
+export type InternalObjectPage = ObjectPage & InternalFpmPage & { name: 'ObjectPage' };
