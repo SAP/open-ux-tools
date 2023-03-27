@@ -9,6 +9,7 @@ export {
     getWebappPath,
     isCapJavaProject,
     isCapNodeJsProject,
-    loadModuleFromProject
+    loadModuleFromProject,
+    readUi5Yaml
 } from './project';
 export * from './types';

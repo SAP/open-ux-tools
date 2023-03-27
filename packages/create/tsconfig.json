@@ -1,11 +1,17 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["../../types/mem-fs-editor.d.ts", "src"],
+    "include": [
+        "../../types/mem-fs-editor.d.ts",
+        "src"
+    ],
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "dist"
     },
     "references": [
+        {
+            "path": "../app-config-writer"
+        },
         {
             "path": "../logger"
         },

@@ -1,0 +1,13 @@
+{
+    "services": {
+        "ClientSideTargetResolution": {
+            "adapter": {
+                "config": {
+                    "inbounds": { <% Object.keys(locals.inboundTargets).forEach((target, index) => { %>
+                        "<%- target %>": <%- JSON.stringify(locals.inboundTargets[target], null, '\t') %><% if( index < Object.keys(locals.inboundTargets).length -1 ){ %>, <% } %><% }) %> 
+                    }
+                }
+            }
+        }
+    }
+}
