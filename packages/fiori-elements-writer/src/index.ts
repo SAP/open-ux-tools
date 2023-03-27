@@ -67,10 +67,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             } else {
                 // do nothing
             }
-        } else {
-            if (feApp.template.type !== TemplateType.OverviewPage) {
-                ignore.push('**/ui5.d.ts');
-            }
+        } else if (feApp.template.type !== TemplateType.OverviewPage) {
+            ignore.push('**/ui5.d.ts');
         }
     }
 
