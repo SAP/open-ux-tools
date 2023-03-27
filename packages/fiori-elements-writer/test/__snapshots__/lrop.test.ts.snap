@@ -20993,6 +20993,15 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 ",
     "state": "modified",
   },
+  "webapp/ui5.d.ts": Object {
+    "contents": "/**
+* Declaring the required interface of AppComponent that is currently missing in the UI5 types
+*/
+declare module \\"sap/suite/ui/generic/template/lib/AppComponent\\" {
+    export default class AppComponent { }
+}",
+    "state": "modified",
+  },
 }
 `;
 
@@ -24491,15 +24500,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 
 </html>
 ",
-    "state": "modified",
-  },
-  "webapp/ui5.d.ts": Object {
-    "contents": "/**
-* Declaring the required interface of AppComponent that is currently missing in the UI5 types
-*/
-declare module \\"sap/suite/ui/generic/template/lib/AppComponent\\" {
-    export default class AppComponent { }
-}",
     "state": "modified",
   },
 }

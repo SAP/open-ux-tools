@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
-import { generate as generateUi5Project, UI5_DEFAULT } from '@sap-ux/ui5-application-writer';
+import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import { getPackageJsonTasks } from './packageConfig';
@@ -64,9 +64,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     let ignore = jsIgnoreGlob;
     if (feApp.appOptions?.typescript === true) {
         const isV2FETypesAvailable = feApp.ui5?.version
-            ? 
-            // semVer.gte(semVer.coerce(feApp.ui5?.version)!, UI5_DEFAULT.V2_FE_TYPES_AVAILABLE)
-            semVer.gte(semVer.coerce(feApp.ui5?.version)!, '1.108.0')
+            ? // semVer.gte(semVer.coerce(feApp.ui5?.version)!, UI5_DEFAULT.V2_FE_TYPES_AVAILABLE)
+              semVer.gte(semVer.coerce(feApp.ui5?.version)!, '1.108.0')
             : false;
         const tsIgnoreGlob = ['**/*.js'];
         ignore = tsIgnoreGlob;
