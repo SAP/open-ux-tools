@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.16.5
+
+### Patch Changes
+
+-   e7614e5: Add minor types for smartlinks configuration
+
 ## 0.16.4
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.3.9
+
+### Patch Changes
+
+-   28c472e: Addition of new icons- refresh, refreshsmall, expandnodes, contractnodes, contractnodessmall
+
+## 1.3.8
+
+### Patch Changes
+
+-   3a61b8d: Column ids added to the flexible table header row cells
+
+## 1.3.7
+
+### Patch Changes
+
+-   3d9e5ef: chore: upgrade webpack to version 5.76.0
+
 ## 1.3.6
 
 ### Patch Changes

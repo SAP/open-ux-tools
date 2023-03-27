@@ -1,0 +1,6 @@
+specVersion: '2.4'
+metadata:
+    name: 'ui5-smartlinks-config'
+type: application
+server:
+    customMiddleware:

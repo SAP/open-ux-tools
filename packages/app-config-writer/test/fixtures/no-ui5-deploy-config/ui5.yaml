@@ -1,0 +1,4 @@
+specVersion: '2.4'
+metadata:
+    name: 'no-ui5-deploy-config'
+type: application
