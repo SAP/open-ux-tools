@@ -13,3 +13,4 @@ export {
     readUi5Yaml
 } from './project';
 export * from './types';
+export { fileExists } from './file';
