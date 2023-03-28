@@ -9,7 +9,7 @@ import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
 import { Ui5App } from './types';
-import { getEsmTypesVersion, UI5_DEFAULT } from './data/defaults';
+import { getEsmTypesVersion } from './data/defaults';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -126,4 +126,4 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
 }
 
 export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
-export { App, Package, UI5, AppOptions, UI5_DEFAULT };
+export { App, Package, UI5, AppOptions };
