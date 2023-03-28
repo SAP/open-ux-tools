@@ -65,6 +65,9 @@ describe('Ui5AbapRepositoryService', () => {
 
         test('deploy new app', async () => {
             nock(server)
+                .defaultReplyHeaders({
+                    'sap-message': sapMessageHeader
+                })
                 .post(
                     `${Ui5AbapRepositoryService.PATH}/Repositories?${updateParams}`,
                     (body) => body.indexOf(archive.toString('base64')) !== -1
@@ -197,21 +200,28 @@ describe('Ui5AbapRepositoryService', () => {
         });
     });
 
-    describe('createPayload', () => {
-        test('ensure special characters are encoded', async () => {
+    describe('Validate Ui5AbapRepositoryService private methods', () => {
+        test('Validate private methods', async () => {
             /**
-             * Extension of Ui5AbapRespository class to make `createPayload` public and available for testing.
+             * Extension of Ui5AbapRepository class to make `createPayload` and `getAbapFrontendUrl` public and available for testing.
              */
             class ServiceForTesting extends Ui5AbapRepositoryService {
                 public createPayload = super.createPayload;
+                public getAbapFrontendUrl = super.getAbapFrontendUrl;
             }
-            const service = new ServiceForTesting();
-            const inputDescription = `<my&special"'decription>`;
+            const publicUrl = 'http://sap.server';
+            const service = new ServiceForTesting(undefined, publicUrl);
+            const inputDescription = `<my&special"'description>`;
             const xmlPayload = service.createPayload(Buffer.from('TestData'), 'special&name', inputDescription, '');
+            // Ensure special characters are encoded
             expect(xmlPayload).not.toContain('special&name');
             expect(xmlPayload).toContain('special&amp;name');
             expect(xmlPayload).not.toContain(inputDescription);
-            expect(xmlPayload).toContain('&lt;my&amp;special&quot;&apos;decription&gt;');
+            expect(xmlPayload).toContain('&lt;my&amp;special&quot;&apos;description&gt;');
+            expect(xmlPayload).toContain(` xml:base="${publicUrl}"`);
+            expect(xmlPayload).toContain(`<id>${publicUrl}/Repositories('special&amp;name')</id>`);
+            // ABAP frontend reflects
+            expect(service.getAbapFrontendUrl()).toEqual(publicUrl);
         });
     });
 });

@@ -6,6 +6,7 @@ import type {
     AxiosError,
     AbapCloudStandaloneOptions
 } from '@sap-ux/axios-extension';
+import { LogLevel } from '@sap-ux/logger';
 import {
     AbapCloudEnvironment,
     createForAbap,
@@ -171,6 +172,12 @@ async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, con
         }
         logger.error('Deployment has failed.');
         logger.debug(getConfigForLogging(config));
+        if (!config.verbose) {
+            logger.error(
+                'Change logging level to debug your issue\n\t(see examples https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling#configuration-examples)'
+            );
+        }
+
         throw e;
     }
 }
