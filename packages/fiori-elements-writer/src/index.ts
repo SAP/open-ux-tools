@@ -17,6 +17,8 @@ import { changesPreviewToVersion, escapeFLPText } from './data/templateAttribute
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 
+export const V2_FE_TYPES_AVAILABLE = '1.108.0';
+
 /**
  * Generate a UI5 application based on the specified Fiori Elements floorplan template.
  *
@@ -56,7 +58,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     let ignore = jsIgnoreGlob;
     if (feApp.appOptions?.typescript === true) {
         // isV2FETypesAvailable - Boolean to indicate if V2 Fiori Element types were available in the UI5 version
-        const isV2FETypesAvailable = feApp.ui5?.version ? semVer.gte(coercedUI5Version, '1.108.0') : false;
+        const isV2FETypesAvailable = feApp.ui5?.version ? semVer.gte(coercedUI5Version, V2_FE_TYPES_AVAILABLE) : false;
         const tsIgnoreGlob = ['**/*.js'];
         ignore = tsIgnoreGlob;
         // Add local ui5.d.ts if types are missing in UI5 version for V2 Odata services

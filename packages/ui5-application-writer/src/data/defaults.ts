@@ -60,10 +60,8 @@ export const enum UI5_DEFAULT {
     TYPES_VERSION_BEST_MIN = '1.102.0',
     TYPES_VERSION_PREVIOUS = '1.71.15',
     TYPES_VERSION_BEST = '1.108.0',
-    V2_FE_TYPES_AVAILABLE = '1.108.0',
     ESM_TYPES_VERSION_SINCE = '1.94.0',
     MANIFEST_VERSION = '1.12.0',
-    UI5_VERSION_VARIABLE = '${sap.ui5.dist.version}',
     BASE_COMPONENT = 'sap/ui/core/UIComponent'
 }
 
@@ -130,9 +128,7 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
  */
 export function getTypesVersion(minUI5Version?: string) {
     const version = semVer.coerce(minUI5Version);
-    if (minUI5Version === UI5_DEFAULT.UI5_VERSION_VARIABLE) {
-        return `>=${UI5_DEFAULT.TYPES_VERSION_BEST}`;
-    } else if (!version) {
+    if (!version) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
     } else if (semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST)) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
@@ -154,9 +150,7 @@ export function getTypesVersion(minUI5Version?: string) {
  */
 export function getEsmTypesVersion(minUI5Version?: string) {
     const version = semVer.coerce(minUI5Version);
-    if (minUI5Version === UI5_DEFAULT.UI5_VERSION_VARIABLE) {
-        return `>=${UI5_DEFAULT.TYPES_VERSION_BEST}`;
-    } else if (!version || semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST_MIN)) {
+    if (!version || semVer.gte(version, UI5_DEFAULT.TYPES_VERSION_BEST_MIN)) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
     } else {
         return semVer.gte(version, UI5_DEFAULT.ESM_TYPES_VERSION_SINCE)

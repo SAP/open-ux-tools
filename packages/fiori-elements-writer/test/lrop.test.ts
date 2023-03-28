@@ -174,9 +174,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV2_ts_ui5_1_109_1',
+            name: 'lropV2_ts_ui5_1_108',
             config: {
-                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_109_1'), {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_108'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
@@ -192,15 +192,15 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV2_ts_ui5_variable',
+            name: 'lropV2_ts_ui5_1_111',
             config: {
-                ...Object.assign(feBaseConfig('lropV2_ts_ui5_variable'), {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_111'), {
                     template: {
                         type: TemplateType.ListReportObjectPage,
                         settings: v2TemplateSettings
                     },
                     ui5: {
-                        version: UI5_DEFAULT.UI5_VERSION_VARIABLE
+                        version: '1.111.0'
                     },
                     appOptions: {
                         typescript: true
