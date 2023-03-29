@@ -23,7 +23,7 @@ export class AbapServiceProvider extends ServiceProvider {
     /**
      * Maintain the public facing URL which is required for destination related flows
      */
-    protected publicUrl: string;
+    protected _publicUrl: string;
 
     /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
@@ -70,10 +70,10 @@ export class AbapServiceProvider extends ServiceProvider {
     /**
      * Set the public facing URL, typically used for a destination related flows.
      *
-     * @param url
+     * @param host
      */
-    public setPublicUrl(url: string) {
-        this.publicUrl = url;
+    public set publicUrl(host: string) {
+        this._publicUrl = host;
     }
 
     /**
@@ -81,8 +81,8 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @returns string Axios baseUrl if public URL is not configured by a destination
      */
-    public getPublicUrl(): string {
-        return this.publicUrl || this.defaults.baseURL;
+    public get publicUrl(): string {
+        return this._publicUrl || this.defaults.baseURL;
     }
 
     /**
@@ -162,7 +162,7 @@ export class AbapServiceProvider extends ServiceProvider {
             this.services[path] = this.createService<Ui5AbapRepositoryService>(
                 path,
                 Ui5AbapRepositoryService,
-                this.getPublicUrl()
+                this.publicUrl
             );
         }
 

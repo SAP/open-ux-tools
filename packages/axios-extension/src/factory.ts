@@ -203,7 +203,7 @@ export function createForDestination(
     if (isAbapSystem(destination)) {
         provider = createInstance<AbapServiceProvider>(AbapServiceProvider, providerConfig);
         // For an ABAP destination flow, need to show the destination host URL property instead of the BAS host URL i.e. https://mydest.dest
-        (provider as AbapServiceProvider).setPublicUrl(destination.Host);
+        (provider as AbapServiceProvider).publicUrl = destination.Host;
     } else {
         provider = createInstance<ServiceProvider>(ServiceProvider, providerConfig);
     }

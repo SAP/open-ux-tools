@@ -81,7 +81,7 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
      *
      * @returns string Axios Base URL
      */
-    protected getPublicUrl(): string {
+    protected get publicUrl(): string {
         return this.defaults.baseURL;
     }
 }

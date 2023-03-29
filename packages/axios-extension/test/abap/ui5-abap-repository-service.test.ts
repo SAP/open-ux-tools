@@ -211,7 +211,7 @@ describe('Ui5AbapRepositoryService', () => {
                 public getAbapFrontendUrl = super.getAbapFrontendUrl;
             }
             const publicUrl = 'http://sap.server';
-            const service = new ServiceForTesting(undefined, publicUrl);
+            const service = new ServiceForTesting({ publicUrl });
             const inputDescription = `<my&special"'description>`;
             const xmlPayload = service.createPayload(Buffer.from('TestData'), 'special&name', inputDescription, '');
             // Ensure special characters are encoded

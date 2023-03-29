@@ -104,16 +104,15 @@ export class Ui5AbapRepositoryService extends ODataService {
     /**
      * Extension of the base constructor to set preferred response format if not provided by caller.
      *
-     * @param config optional base configuration for Axios
-     * @param publicUrl optional string representing the host exposing the ABAP repository
+     * @param config optional base configuration for Axios appended with optional fields
      */
-    public constructor(config?: AxiosRequestConfig, publicUrl?: string) {
+    public constructor(config?: AxiosRequestConfig & { publicUrl?: string }) {
         config = config ?? {};
         config.headers = config.headers ?? {};
         // @see https://axios-http.com/docs/config_defaults
         config.headers['Accept'] = config.headers['Accept'] ?? 'application/json,application/xml,text/plain,*/*';
         super(config);
-        this.publicUrl = publicUrl ?? this.defaults.baseURL;
+        this.publicUrl = config.publicUrl ?? this.defaults.baseURL;
     }
 
     /**
