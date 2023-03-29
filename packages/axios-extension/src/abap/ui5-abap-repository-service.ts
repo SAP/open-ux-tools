@@ -281,9 +281,8 @@ export class Ui5AbapRepositoryService extends ODataService {
             `  <content type="application/xml">` +
             `    <m:properties>` +
             `      <d:Name>${escapedName}</d:Name>` +
-            `      <d:Package>${abapPackage?.toUpperCase()}</d:Package>``      <d:Description>${encodeXmlValue(
-                description
-            )}</d:Description>` +
+            `      <d:Package>${abapPackage?.toUpperCase()}</d:Package>` +
+            `      <d:Description>${encodeXmlValue(description)}</d:Description>` +
             `      <d:ZipArchive>${base64Data}</d:ZipArchive>` +
             `      <d:Info/>` +
             `    </m:properties>` +
