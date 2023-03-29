@@ -1,6 +1,7 @@
 import nock from 'nock';
 import type { AppInfo } from '../../src';
 import { Ui5AbapRepositoryService, createForAbap } from '../../src';
+import { AxiosDefaults, AxiosRequestConfig } from 'axios';
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -112,7 +113,7 @@ describe('Ui5AbapRepositoryService', () => {
                     `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`,
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
-                .replyWithError('Deployment failed');
+                .reply(401, 'Deployment failed');
             await expect(service.deploy({ archive, bsp: { name: validApp } })).rejects.toThrowError();
         });
 
