@@ -66,7 +66,6 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
      *
      * @param path path of the service relative to the service provider
      * @param ServiceClass class type to be used to create an instance
-     * @param publicUrl the public URL exposing the ABAP UI application, defaults to the Axios base URL if not configured
      * @returns a service instance
      */
     protected createService<T extends Service>(path: string, ServiceClass: any): T {
