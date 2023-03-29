@@ -69,8 +69,8 @@ export class ServiceProvider extends Axios implements ServiceProviderExtension {
      * @param publicUrl the public URL exposing the ABAP UI application, defaults to the Axios base URL if not configured
      * @returns a service instance
      */
-    protected createService<T extends Service>(path: string, ServiceClass: any, publicUrl = this.defaults.baseURL): T {
-        const service = new ServiceClass(this.generateServiceConfig(path), publicUrl);
+    protected createService<T extends Service>(path: string, ServiceClass: any): T {
+        const service = new ServiceClass({ ...this.generateServiceConfig(path), publicUrl: this.publicUrl });
         service.log = this.log;
         service.interceptors = this.interceptors;
         return service;

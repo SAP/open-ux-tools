@@ -159,11 +159,7 @@ export class AbapServiceProvider extends ServiceProvider {
     public getUi5AbapRepository(alias?: string): Ui5AbapRepositoryService {
         const path = alias ?? Ui5AbapRepositoryService.PATH;
         if (!this.services[path]) {
-            this.services[path] = this.createService<Ui5AbapRepositoryService>(
-                path,
-                Ui5AbapRepositoryService,
-                this.publicUrl
-            );
+            this.services[path] = this.createService<Ui5AbapRepositoryService>(path, Ui5AbapRepositoryService);
         }
 
         return this.services[path] as Ui5AbapRepositoryService;
