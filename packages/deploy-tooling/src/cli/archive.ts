@@ -31,6 +31,7 @@ function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer> {
 /**
  * Fetch/get zip file from the given url.
  *
+ * @param logger - reference to the logger instance
  * @param url - url to the zip file
  * @param rejectUnauthorized - strict SSL handling or not
  * @returns Buffer containing the zip file

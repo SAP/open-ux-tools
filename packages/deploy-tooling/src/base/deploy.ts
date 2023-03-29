@@ -6,7 +6,6 @@ import type {
     AxiosError,
     AbapCloudStandaloneOptions
 } from '@sap-ux/axios-extension';
-import { LogLevel } from '@sap-ux/logger';
 import {
     AbapCloudEnvironment,
     createForAbap,

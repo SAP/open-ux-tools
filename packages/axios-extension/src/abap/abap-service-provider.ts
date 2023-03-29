@@ -68,7 +68,7 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Set the public facing URL, typically used for a destination related flows
+     * Set the public facing URL, typically used for a destination related flows.
      *
      * @param url
      */
@@ -77,7 +77,7 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Retrieve the public facing URL, default to Axios base URL if not configured
+     * Retrieve the public facing URL, default to Axios base URL if not configured.
      *
      * @returns string Axios baseUrl if public URL is not configured by a destination
      */
