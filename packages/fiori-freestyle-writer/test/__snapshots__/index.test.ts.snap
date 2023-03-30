@@ -271,6 +271,7 @@ title=My Test App",
         data-sap-ui-resourceroots='{
             \\"test.me\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
@@ -2539,6 +2540,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"test.me\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
@@ -4665,6 +4667,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"test.me\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"

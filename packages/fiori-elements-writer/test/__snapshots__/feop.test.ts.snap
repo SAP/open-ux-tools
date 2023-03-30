@@ -241,6 +241,7 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{
             \\"fefeop1\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"

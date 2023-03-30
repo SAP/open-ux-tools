@@ -681,6 +681,7 @@ appDescription=Test App Description",
         data-sap-ui-resourceroots='{
             \\"app.with.namespace\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
