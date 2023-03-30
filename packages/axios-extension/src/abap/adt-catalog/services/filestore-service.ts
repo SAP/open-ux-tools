@@ -29,8 +29,8 @@ export class FileStoreService extends AdtService {
      * If target `path` is a file, the file content is returned as string type.
      * If target `path` is a folder, files and folders in this folder are returned as an array list
      * of ArchiveFileNode objects.
-     * @see ArchiveFileNode
      *
+     * @see ArchiveFileNode
      * @param type
      *  Specifies if input `path` refers to a file or a folder. When starting exploring
      *  the file structure from the root, type should be set to `folder`. The type information
@@ -62,8 +62,8 @@ export class FileStoreService extends AdtService {
      * Parse response data from ADT service. If the content is XML document of
      * folder structure, this method returns a list of `ArchiveFileNode` object. If the content
      * is text string, this method returns the text cotent.
-     * @see ArchiveFileNode
      *
+     * @see ArchiveFileNode
      * @param appName Deployed Fiori app name
      * @param responseData Response from ADT service
      * @param type Reponse data is the file content or folder content.
