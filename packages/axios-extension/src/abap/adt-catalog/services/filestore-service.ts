@@ -6,8 +6,6 @@ import type { AdtFileNode } from 'abap/types/adt-internal-types';
 /**
  * FileStoreService implements ADT requests to obtain the content
  * of deployed archive.
- *
- * @class
  */
 export class FileStoreService extends AdtService {
     /**
