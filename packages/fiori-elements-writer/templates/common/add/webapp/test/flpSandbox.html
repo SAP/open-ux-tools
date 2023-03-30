@@ -68,7 +68,7 @@
         data-sap-ui-frameOptions="allow"<% if (templateOptions.changesLoader) {%>
         data-sap-ui-flexibilityServices='[{"applyConnector":"<%= app.id.replace(/\./g, "/") %>/test/changes_loader", "custom":true}]'<% } %>>
     </script><% if (appOptions.loadReuseLibs) { %>
-    <script id="locate-reuse-libs" src="../utils/locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
+    <script id="locate-reuse-libs" src="./locate-reuse-libs.js" data-sap-ui-manifest-uri="../manifest.json">
     </script><% } else { %>
     <script>
         sap.ui.getCore().attachInit(function () {

@@ -237,10 +237,6 @@ appDescription=A Fiori application.",
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"alp2\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -5704,7 +5700,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"alp2/test/changes_loader\\", \\"custom\\":true}]'>
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -5717,7 +5713,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -6126,10 +6122,6 @@ appDescription=A Fiori application.",
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"alp1\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -11622,7 +11614,7 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{\\"alp1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -11635,7 +11627,7 @@ appDescription=A Fiori application.",
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {

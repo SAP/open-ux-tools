@@ -292,10 +292,6 @@ appDescription=A Fiori application.",
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"fefpmjs\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -3410,7 +3406,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-resourceroots='{\\"fefpmjs\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -3423,7 +3419,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {

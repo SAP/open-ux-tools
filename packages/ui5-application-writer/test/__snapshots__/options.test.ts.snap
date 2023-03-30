@@ -685,10 +685,6 @@ appDescription=Test App Description",
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"app.with.namespace\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -770,7 +766,7 @@ appDescription=Test App Description",
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
