@@ -112,7 +112,7 @@ export class Ui5AbapRepositoryService extends ODataService {
         // @see https://axios-http.com/docs/config_defaults
         config.headers['Accept'] = config.headers['Accept'] ?? 'application/json,application/xml,text/plain,*/*';
         super(config);
-        this.publicUrl = config.publicUrl ?? this.defaults.baseURL;
+        this.publicUrl = config.publicUrl || this.defaults.baseURL;
     }
 
     /**
