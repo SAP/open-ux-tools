@@ -801,14 +801,11 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"wrk1\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -6312,7 +6309,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -6325,7 +6322,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -7493,14 +7490,11 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"wrk1\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -9589,7 +9583,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -9602,7 +9596,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -10765,14 +10759,11 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"wrk1\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -12457,7 +12448,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -12470,7 +12461,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -13716,14 +13707,11 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"wrk1\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -15789,7 +15777,7 @@ export function createDeviceModel () {
         data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -15802,7 +15790,7 @@ export function createDeviceModel () {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -17053,14 +17041,11 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         data-sap-ui-resourceroots='{
             \\"wrk1\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"wrk1\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -19121,7 +19106,7 @@ export function createDeviceModel () {
         data-sap-ui-resourceroots='{\\"wrk1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -19134,7 +19119,7 @@ export function createDeviceModel () {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {

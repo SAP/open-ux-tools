@@ -236,14 +236,11 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{
             \\"felrop2\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"felrop2\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -3344,7 +3341,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop2/test/changes_loader\\", \\"custom\\":true}]'>
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -3357,7 +3354,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -3768,14 +3765,11 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{
             \\"felrop3\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"felrop3\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -6876,7 +6870,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"felrop3/test/changes_loader\\", \\"custom\\":true}]'>
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
     <!-- relevant for version < 1.78.0 only -->
 	<script src=\\"changes_preview.js\\"></script>
@@ -6891,7 +6885,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -10664,14 +10658,11 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{
             \\"lropV2_set_toolsId\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"lropV2_set_toolsId\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -13773,7 +13764,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_set_toolsId/test/changes_loader\\", \\"custom\\":true}]'>
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -13786,7 +13777,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -14197,14 +14188,11 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{
             \\"lropV2_set_toolsId_only\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"lropV2_set_toolsId_only\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -17306,7 +17294,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"applyConnector\\":\\"lropV2_set_toolsId_only/test/changes_loader\\", \\"custom\\":true}]'>
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -17319,7 +17307,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -21224,14 +21212,11 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{
             \\"felrop1\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"felrop1\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -24395,7 +24380,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-resourceroots='{\\"felrop1\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -24408,7 +24393,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -24814,14 +24799,11 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{
             \\"lropV4AddTests\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"lropV4AddTests\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -27985,7 +27967,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-resourceroots='{\\"lropV4AddTests\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -28161,33 +28143,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 });",
     "state": "modified",
   },
-  "webapp/test/testsuite.qunit.html": Object {
-    "contents": "<!DOCTYPE html>
-<html>
-  <head>
-    <title>QUnit test suite</title>
-    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
-    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
-  </head>
-  <body></body>
-</html>",
-    "state": "modified",
-  },
-  "webapp/test/testsuite.qunit.js": Object {
-    "contents": "window.suite = function() {
-    'use strict';
-
-    // eslint-disable-next-line
-    var oSuite = new parent.jsUnitTestSuite(),
-    
-    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-    return oSuite;
-};",
-    "state": "modified",
-  },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
@@ -28357,6 +28313,32 @@ sap.registerComponentDependencyPaths(manifestUri)
 
 sap.registerComponentDependencyPaths(manifestUri);
 ",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.js": Object {
+    "contents": "window.suite = function() {
+    'use strict';
+
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+
+    return oSuite;
+};",
     "state": "modified",
   },
 }
@@ -28592,14 +28574,11 @@ appDescription=A Fiori application.",
         data-sap-ui-resourceroots='{
             \\"felropui5\\": \\"./\\"
         }'
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
-    <script id=\\"locate-reuse-libs\\" src=\\"./utils/locate-reuse-libs.js\\"
-        data-sap-ui-manifest-uri=\\"./manifest.json\\"
-        data-sap-ui-componentName=\\"felropui5\\">
-    </script> 
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
@@ -31763,7 +31742,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         data-sap-ui-resourceroots='{\\"felropui5\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\">
     </script>
-    <script id=\\"locate-reuse-libs\\" src=\\"../utils/locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
+    <script id=\\"locate-reuse-libs\\" src=\\"./locate-reuse-libs.js\\" data-sap-ui-manifest-uri=\\"../manifest.json\\">
     </script>
 </head>
 
@@ -31776,7 +31755,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 ",
     "state": "modified",
   },
-  "webapp/utils/locate-reuse-libs.js": Object {
+  "webapp/test/locate-reuse-libs.js": Object {
     "contents": "/*eslint-disable semi, no-console*/
 (function (sap) {
     var getKeys = function (libOrComp, libOrCompKeysString) {
