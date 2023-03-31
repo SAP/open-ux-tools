@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.19.0
+
+### Minor Changes
+
+-   7df492ae: move locate-reuse-libs.js to webapp/test, update references and remove reference from index.html
+
 ## 0.18.10
 
 ### Patch Changes
