@@ -1,6 +1,6 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, ArchiveFileNode } from '@sap-ux/axios-extension';
 import {
     ODataVersion,
     TransportChecksService,
@@ -9,7 +9,6 @@ import {
     FileStoreService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
-import type { ArchiveFileNode } from '@sap-ux/axios-extension/src/abap/types';
 
 /**
  * Execute a sequence of test calls using the given provider.

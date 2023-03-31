@@ -460,8 +460,6 @@ describe('File Store Service', () => {
         expect((folderContent as ArchiveFileNode[])[0].basename).toEqual('i18n.properties');
         expect((folderContent as ArchiveFileNode[])[0].path).toEqual('/i18n/i18n.properties');
         expect((folderContent as ArchiveFileNode[])[0].type).toEqual('file');
-
-        // expect(typeof folderContent).not.toEqual('string');
     });
 
     test('File content of given file path', async () => {

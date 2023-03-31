@@ -27,7 +27,7 @@ export class FileStoreService extends AdtService {
 
     /**
      * If target `path` is a file, the file content is returned as string type.
-     * If target `path` is a folder, files and folders in this folder are returned as an array list
+     * If target `path` is a folder, files and folders in this folder are returned as an array
      * of ArchiveFileNode objects.
      *
      * @see ArchiveFileNode
@@ -53,6 +53,9 @@ export class FileStoreService extends AdtService {
                 'Content-Type': contentType
             }
         };
+        if (path && !path.startsWith('/')) {
+            throw new Error('Input argument "path" needs to start with /');
+        }
         const encodedFullPath = encodeURIComponent(`${appName}${path}`);
         const response = await this.get(`/${encodedFullPath}/content`, config);
         return this.parseArchiveContentResponse(appName, response.data, type);
@@ -75,10 +78,13 @@ export class FileStoreService extends AdtService {
         type: T
     ): ArchiveFileContentType<T> {
         // File content that is not xml data.
-        if (type === 'file' || XmlParser.validate(responseData) !== true) {
+        if (type === 'file') {
             return responseData as ArchiveFileContentType<T>;
         }
         // A list of file/folder items in the response data as xml string.
+        if (XmlParser.validate(responseData) !== true) {
+            throw new Error('Invalid XML content');
+        }
         const options = {
             attributeNamePrefix: '',
             ignoreAttributes: false,
