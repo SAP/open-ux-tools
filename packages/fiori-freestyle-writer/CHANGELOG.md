@@ -1,5 +1,16 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.16.0
+
+### Minor Changes
+
+-   7df492ae: move locate-reuse-libs.js to webapp/test, update references and remove reference from index.html
+
+### Patch Changes
+
+-   Updated dependencies [7df492ae]
+    -   @sap-ux/ui5-application-writer@0.19.0
+
 ## 0.15.15
 
 ### Patch Changes
