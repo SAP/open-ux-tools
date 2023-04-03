@@ -38,7 +38,7 @@ describe('LayeredRepositoryService', () => {
             jest.spyOn(fs, 'readFileSync').mockReturnValue(testData);
         });
 
-        test('deploy new adapation project', async () => {
+        test('deploy new adaptation project', async () => {
             nock(server)
                 .get((url) => {
                     return url.startsWith(
@@ -61,7 +61,7 @@ describe('LayeredRepositoryService', () => {
             expect(response.status).toBe(200);
         });
 
-        test('update an existing adapation project', async () => {
+        test('update an existing adaptation project', async () => {
             nock(server)
                 .get((url) => {
                     return url.startsWith(
@@ -125,7 +125,7 @@ describe('LayeredRepositoryService', () => {
             expect(response.status).toBe(200);
         });
 
-        test('try undeploying a not existing adapation project', async () => {
+        test('try undeploying a not existing adaptation project', async () => {
             nock(server)
                 .get(
                     `${LayeredRepositoryService.PATH}/dta_folder/?name=${encodeURIComponent(
