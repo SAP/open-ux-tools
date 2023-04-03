@@ -99,18 +99,20 @@ function encodeXmlValue(xmlValue: string): string {
  */
 export class Ui5AbapRepositoryService extends ODataService {
     public static readonly PATH = '/sap/opu/odata/UI5/ABAP_REPOSITORY_SRV';
+    private readonly publicUrl: string;
 
     /**
      * Extension of the base constructor to set preferred response format if not provided by caller.
      *
-     * @param config optional base configuration for Axios
+     * @param config optional base configuration for Axios appended with optional fields
      */
-    public constructor(config?: AxiosRequestConfig) {
+    public constructor(config?: AxiosRequestConfig & { publicUrl?: string }) {
         config = config ?? {};
         config.headers = config.headers ?? {};
         // @see https://axios-http.com/docs/config_defaults
         config.headers['Accept'] = config.headers['Accept'] ?? 'application/json,application/xml,text/plain,*/*';
         super(config);
+        this.publicUrl = config.publicUrl || this.defaults.baseURL;
     }
 
     /**
@@ -124,6 +126,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
         } catch (error) {
+            this.log.debug(`Retrieving application ${app}, error found ${error}`);
             return undefined;
         }
     }
@@ -203,7 +206,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @returns url to be used in the browser.
      */
     protected getAbapFrontendUrl(): string {
-        const url = new URL(this.defaults.baseURL);
+        const url = new URL(this.publicUrl);
         abapUrlReplaceMap.forEach((value, key) => {
             url.hostname = url.hostname.replace(key, value);
         });
@@ -268,8 +271,8 @@ export class Ui5AbapRepositoryService extends ODataService {
             `<entry xmlns="http://www.w3.org/2005/Atom"` +
             `       xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"` +
             `       xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices"` +
-            `       xml:base="${this.defaults.baseURL}">` +
-            `  <id>${this.defaults.baseURL}/Repositories('${escapedName}')</id>` +
+            `       xml:base="${this.publicUrl}">` +
+            `  <id>${this.publicUrl}/Repositories('${escapedName}')</id>` +
             `  <title type="text">Repositories('${escapedName}')</title>` +
             `  <updated>${time}</updated>` +
             `  <category term="/UI5/ABAP_REPOSITORY_SRV.Repository" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>` +
@@ -379,8 +382,16 @@ export class Ui5AbapRepositoryService extends ODataService {
     protected logError({ error, host }: { error: Error; host?: string }): void {
         this.log.error(error.message);
         if (isAxiosError(error) && error.response?.data) {
-            if (error.response.data['error']) {
-                prettyPrintError({ error: error.response.data['error'], host, log: this.log });
+            let responseData = error.response.data;
+            if (typeof error.response.data === 'string') {
+                try {
+                    responseData = JSON.parse(error.response.data);
+                } catch {
+                    // Not much we can do!
+                }
+            }
+            if (responseData?.['error']) {
+                prettyPrintError({ error: responseData['error'], host, log: this.log });
             } else {
                 this.log.error(error.response.data);
             }

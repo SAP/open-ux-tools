@@ -17,7 +17,7 @@ export async function createUi5Archive(logger: ToolsLogger, workspace: DuplexCol
     const resources = await workspace.byGlob(`${prefix}**/*`);
     for (const resource of resources) {
         const path = resource.getPath().replace(prefix, '');
-        logger.debug(path);
+        logger.debug(`Adding ${path}`);
         const buffer = await resource.getBuffer();
         zip.addBuffer(buffer, path);
     }
