@@ -476,7 +476,19 @@ describe('File Store Service', () => {
         );
     });
 
-    test('Invalid xml in resonse', async () => {
+    test('Invalid input file path', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(`${AdtServices.FILE_STORE}/ZTESTAPP%2FComponent-dbg.js/content`)
+            .replyWithFile(200, join(__dirname, 'mockResponses/archiveFileContent_Component-dbg_js.txt'));
+        const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        await expect(fsService?.getAppArchiveContent('file', 'ZTESTAPP', 'Component-dbg.js')).rejects.toThrow(
+            'Input argument "path" needs to start with /'
+        );
+    });
+
+    test('Unexpected xml in resonse', async () => {
         nock(server)
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
@@ -484,7 +496,16 @@ describe('File Store Service', () => {
             .reply(200, '<?xml version="1.0" encoding="UTF-8"?><invalid>error message</invalid>');
         const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
         const fileContent = await fsService?.getAppArchiveContent('folder', 'ZTESTAPP');
-        console.log(fileContent);
         expect(fileContent?.length).toEqual(0);
+    });
+
+    test('Invalid xml in resonse', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(`${AdtServices.FILE_STORE}/ZTESTAPP/content`)
+            .reply(200, 'Invalid XML');
+        const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        await expect(fsService?.getAppArchiveContent('folder', 'ZTESTAPP')).rejects.toThrow('Invalid XML content');
     });
 });
