@@ -186,7 +186,6 @@ export function createForDestination(
     destinationServiceInstance?: string
 ): ServiceProvider {
     const { cookies, ...config } = options;
-
     const providerConfig: AxiosRequestConfig & Partial<ProviderConfiguration> = {
         ...config,
         baseURL: getDestinationUrlForAppStudio(
@@ -203,6 +202,8 @@ export function createForDestination(
     let provider: ServiceProvider;
     if (isAbapSystem(destination)) {
         provider = createInstance<AbapServiceProvider>(AbapServiceProvider, providerConfig);
+        // For an ABAP destination flow, need to show the destination host URL property instead of the BAS host URL i.e. https://mydest.dest
+        (provider as AbapServiceProvider).publicUrl = destination.Host;
     } else {
         provider = createInstance<ServiceProvider>(ServiceProvider, providerConfig);
     }

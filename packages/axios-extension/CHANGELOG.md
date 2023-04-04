@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.1.0
+
+### Minor Changes
+
+-   0fa9c31e: Show destination URL property as public facing URL
+
 ## 1.0.3
 
 ### Patch Changes

@@ -21,6 +21,11 @@ export class AbapServiceProvider extends ServiceProvider {
     protected atoSettings: AtoSettings;
 
     /**
+     * Maintain the public facing URL which is required for destination related flows
+     */
+    protected _publicUrl: string;
+
+    /**
      * Get the name of the currently logged in user. This is the basic implementation that could be overwritten by subclasses.
      * The function returns a promise because it may be required to fetch the information from the backend.
      *
@@ -60,6 +65,24 @@ export class AbapServiceProvider extends ServiceProvider {
             this.atoSettings = {};
         }
         return this.atoSettings;
+    }
+
+    /**
+     * Set the public facing URL, typically used for a destination related flows.
+     *
+     * @param host
+     */
+    public set publicUrl(host: string) {
+        this._publicUrl = host;
+    }
+
+    /**
+     * Retrieve the public facing URL, default to Axios base URL if not configured.
+     *
+     * @returns string Axios baseUrl if public URL is not configured by a destination
+     */
+    public get publicUrl(): string {
+        return this._publicUrl || this.defaults.baseURL;
     }
 
     /**
@@ -138,6 +161,7 @@ export class AbapServiceProvider extends ServiceProvider {
         if (!this.services[path]) {
             this.services[path] = this.createService<Ui5AbapRepositoryService>(path, Ui5AbapRepositoryService);
         }
+
         return this.services[path] as Ui5AbapRepositoryService;
     }
 
@@ -176,7 +200,7 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @example
      * ```ts
-     * const transportRequestSerivce = abapServiceProvider.getAdtService<TransportRequestService>(TransportRequestService);
+     * const transportRequestService = abapServiceProvider.getAdtService<TransportRequestService>(TransportRequestService);
      * ```
      * @param adtServiceSubclass Subclass of class AdtService, type is specified by using AdtService class constructor signature.
      * @returns Subclass type of class AdtService
