@@ -8,6 +8,7 @@ import { validateBasePath } from '../common/validate';
 import type {
     CustomPage,
     FCL,
+    FpmPage,
     InternalCustomPage,
     InternalObjectPage,
     ObjectPage,
@@ -16,7 +17,6 @@ import type {
     InternalListReport
 } from './types';
 import type { Manifest } from '../common/types';
-import type { FpmPage } from './types';
 import { FCL_ROUTER } from '../common/defaults';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
