@@ -1,5 +1,16 @@
 # @sap-ux/deploy-tooling
 
+## 0.2.0
+
+### Minor Changes
+
+-   0fa9c31e: Show destination URL property as public facing URL
+
+### Patch Changes
+
+-   Updated dependencies [0fa9c31e]
+    -   @sap-ux/axios-extension@1.1.0
+
 ## 0.1.1
 
 ### Patch Changes
