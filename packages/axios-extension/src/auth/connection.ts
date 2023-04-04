@@ -35,8 +35,8 @@ export class Cookies {
      * @returns cookies object
      */
     public addCookie(cookieString: string): Cookies {
-        const cookie = cookieString.split(';');
-        const [key, ...values] = cookie[0]?.split('=');
+        const cookie = cookieString?.split(';') || [];
+        const [key, ...values] = cookie[0]?.split('=') || [];
         const value = values?.join('='); // Account for embedded '=' in the value
         if (key && cookieString.indexOf('Max-Age=0') >= 0) {
             delete this.cookies[key];

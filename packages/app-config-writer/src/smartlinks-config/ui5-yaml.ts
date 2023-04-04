@@ -26,7 +26,7 @@ export async function readUi5DeployConfigTarget(basePath: string): Promise<Targe
     if (!customTask?.configuration?.target) {
         throw Error(t('error.noTarget', { file: `(${FileName.UI5DeployYaml})` }));
     }
-    const { target, ignoreCertError } = customTask?.configuration;
+    const { target, ignoreCertError } = customTask?.configuration || {};
     return { target, ignoreCertErrors: ignoreCertError };
 }
 
