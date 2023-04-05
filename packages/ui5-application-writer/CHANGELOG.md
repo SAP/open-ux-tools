@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.19.2
+
+### Patch Changes
+
+-   c06de66b: TBI - refactor locate-reuse-lib.js template to use modern API's and fix lint issues
+
 ## 0.19.1
 
 ### Patch Changes
