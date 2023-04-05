@@ -12,6 +12,7 @@ import {
     v2Service,
     projectChecks
 } from './common';
+import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
 jest.setTimeout(120000); // Needed when debug.debugFull
@@ -163,7 +164,43 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         settings: v2TemplateSettings
                     },
                     ui5: {
+                        version: '1.77.2'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_ts_ui5_1_108',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_108'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
                         version: '1.108.0'
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_ts_ui5_1_111',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts_ui5_1_111'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.111.0'
                     },
                     appOptions: {
                         typescript: true
