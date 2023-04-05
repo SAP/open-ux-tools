@@ -15,13 +15,13 @@ import { Agent } from 'https';
  * @returns Buffer containing the zip file
  */
 function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer> {
+    logger.info(`Loading archive from ${path}`);
     return new Promise((resolve, reject) => {
-        logger.info(`Loading archive from ${path}`);
         readFile(path, (err, data) => {
             if (err) {
-                reject(`Archive loading has failed. Please ensure ${path} is valid and accessible.`);
+                reject(`Loading archive has failed. Please ensure ${path} is valid and accessible.`);
             } else {
-                logger.info('Archive loaded.');
+                logger.info(`Archive loaded from ${path}`);
                 resolve(data);
             }
         });
@@ -31,16 +31,19 @@ function getArchiveFromPath(logger: Logger, path: string): Promise<Buffer> {
 /**
  * Fetch/get zip file from the given url.
  *
+ * @param logger - reference to the logger instance
  * @param url - url to the zip file
  * @param rejectUnauthorized - strict SSL handling or not
  * @returns Buffer containing the zip file
  */
-async function fetchArchiveFromUrl(url: string, rejectUnauthorized?: boolean): Promise<Buffer> {
+async function fetchArchiveFromUrl(logger: Logger, url: string, rejectUnauthorized?: boolean): Promise<Buffer> {
     try {
+        logger.info(`Fetching archive from ${url}.`);
         const response = await axios.get(url, {
             httpsAgent: new Agent({ rejectUnauthorized }),
             responseType: 'arraybuffer'
         });
+        logger.info(`Archive fetched from ${url}.`);
         return response.data;
     } catch (error) {
         throw new Error(
@@ -84,7 +87,7 @@ export async function getArchive(logger: Logger, options: CliOptions): Promise<B
     if (options.archivePath) {
         return getArchiveFromPath(logger, options.archivePath);
     } else if (options.archiveUrl) {
-        return fetchArchiveFromUrl(options.archiveUrl, options.strictSsl);
+        return fetchArchiveFromUrl(logger, options.archiveUrl, options.strictSsl);
     } else {
         return createArchiveFromFolder(logger, options.archiveFolder ?? process.cwd());
     }
