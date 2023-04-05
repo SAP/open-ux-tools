@@ -18,8 +18,14 @@ import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
-
-function getIgnore<T extends {}>(feApp: FioriElementsApp<T>, coercedUI5Version: semVer.SemVer): string[] {
+/**
+ * Get TypeScript Ignore Glob Pattern.
+ *
+ * @param feApp  to generate the Fiori elements application
+ * @param coercedUI5Version
+ * @returns ignore pattern
+ */
+function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coercedUI5Version: semVer.SemVer): string[] {
     let ignore = [];
     // isV2FETypesAvailable - Boolean to indicate if V2 Fiori Element types were available in the UI5 version
     const isV2FETypesAvailable = feApp.ui5?.version ? semVer.gte(coercedUI5Version, V2_FE_TYPES_AVAILABLE) : false;
@@ -76,7 +82,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     let ignore = jsIgnoreGlob;
     if (feApp.appOptions?.typescript === true) {
-        ignore = getIgnore(feApp, coercedUI5Version);
+        ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
     }
 
     fs.copyTpl(
