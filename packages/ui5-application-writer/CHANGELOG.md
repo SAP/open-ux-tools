@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.19.1
+
+### Patch Changes
+
+-   8f167e8a: TBI - Fiori Elements V2 type support
+
 ## 0.19.0
 
 ### Minor Changes
