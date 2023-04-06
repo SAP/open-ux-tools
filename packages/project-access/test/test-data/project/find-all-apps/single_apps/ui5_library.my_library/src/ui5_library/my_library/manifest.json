@@ -1,0 +1,9 @@
+{
+	"_version": "1.1.0",
+
+	"sap.app": {
+		"_version": "1.1.0",
+		"id": "single_apps-ui5_library.my_library",
+		"type": "library"
+	}
+}

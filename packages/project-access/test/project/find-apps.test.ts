@@ -57,6 +57,59 @@ describe('Test findAllApps()', () => {
         expect(expectedApps.length).toEqual(findResults.length);
     });
 
+    test('Find all apps from workspace - including library app', async () => {
+        // Mock setup
+        const testWs = {
+            uri: {
+                authority: '',
+                fragment: '',
+                fsPath: join(testDataRoot, 'project', 'find-all-apps'),
+                path: `${__dirname}/project/find-all-apps`,
+                query: '',
+                scheme: 'file'
+            }
+        } as WorkspaceFolder;
+
+        // Test execution
+        const findResults = await findAllApps([testWs], true);
+
+        // Check for invalid apps
+        const invalidApps = findResults.filter((m) => m.appRoot.includes('invalid'));
+        expect(invalidApps).toEqual([]);
+
+        // Check all expected apps found
+        const expectedApps = [
+            'single_apps-fiori_elements',
+            'single_apps-freestyle',
+            'single_apps-custom_webapp_fiori_elements',
+            'single_apps-custom_webapp_freestyle',
+            'single_apps-ui5_library.my_library',
+            'CAPJava_fiori_elements-fiori_elements_no_package_json',
+            'CAPJava_fiori_elements-fiori_elements',
+            'CAPJava_freestyle-freestyle',
+            'CAPJava_mix-fiori_elements',
+            'CAPJava_mix-fiori_elements_no_package_json',
+            'CAPJava_mix-freestyle',
+            'CAPnode_fiori_elements-fiori_elements',
+            'CAPnode_fiori_elements-fiori_elements_no_package_json',
+            'CAPnode_freestyle-freestyle',
+            'CAPnode_mix-fiori_elements',
+            'CAPnode_mix-fiori_elements_no_package_json',
+            'CAPnode_mix-freestyle'
+        ];
+        const foundApps = findResults.map((m) => m.manifest['sap.app'].id);
+        const foundRoots = findResults.map((m) =>
+            m.projectRoot === m.appRoot
+                ? `${basename(dirname(m.projectRoot))}-${basename(m.appRoot)}`
+                : `${basename(m.projectRoot)}-${basename(m.appRoot)}`
+        );
+        for (const expectedApp of expectedApps) {
+            expect(foundApps).toContain(expectedApp);
+            expect(foundRoots).toContain(expectedApp);
+        }
+        expect(expectedApps.length).toEqual(findResults.length);
+    });
+
     test('Find all apps from path[]', async () => {
         // Mock setup
         const paths = [

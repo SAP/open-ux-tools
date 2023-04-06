@@ -204,9 +204,13 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
  * Find all app that are supported by Fiori tools for a given list of roots (workspace folders).
  *
  * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @param includeLibraries - whether UI5 library should be included in the return list
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | undefined): Promise<AllAppResults[]> {
+export async function findAllApps(
+    wsFolders: WorkspaceFolder[] | string[] | undefined,
+    includeLibraries = false
+): Promise<AllAppResults[]> {
     const result: AllAppResults[] = [];
     const manifestPaths = await findAllManifest(wsFolders);
 
@@ -214,9 +218,12 @@ export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | unde
         try {
             // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
             const manifest = await readJSON<Manifest>(join(manifestPath, FileName.Manifest));
-            if (!manifest['sap.app'] || !manifest['sap.app'].id || manifest['sap.app'].type !== 'application') {
+            // With default `includeLibraries` set to false, apps that do not have type: "application" in manifest.json are excluded.
+            // When `includeLibraries` is set to true, apps have type: "library" in manifest.json are NOT excluded.
+            if (!isValidUi5AppManifest(manifest) && (!includeLibraries || !isValidUi5LibraryManifest(manifest))) {
                 continue;
             }
+
             const roots = await findRootsForPath(manifestPath);
             if (roots) {
                 result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
@@ -226,4 +233,24 @@ export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | unde
         }
     }
     return result;
+}
+
+/**
+ * Validate if the input manifest content matches UI5 reuse library.
+ *
+ * @param manifest - manifest.json content as a JSON object
+ * @returns - manifest.json validates as a UI5 library
+ */
+function isValidUi5LibraryManifest(manifest: Manifest): boolean {
+    return !!manifest['sap.app']?.id && manifest['sap.app']?.type === 'library';
+}
+
+/**
+ * Validate if the input manifest content matches the manifest.json content in a UI5 app.
+ *
+ * @param manifest - manifest.json content as a JSON object
+ * @returns - manifest.json validates as a UI5 app
+ */
+function isValidUi5AppManifest(manifest: Manifest): boolean {
+    return !!manifest['sap.app']?.id && manifest['sap.app']?.type === 'application';
 }
