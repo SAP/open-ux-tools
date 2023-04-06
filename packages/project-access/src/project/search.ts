@@ -242,7 +242,7 @@ export async function findAllApps(
  * @returns - manifest.json validates as a UI5 library
  */
 function isValidUi5LibraryManifest(manifest: Manifest): boolean {
-    return !!manifest['sap.app']?.id && manifest['sap.app']?.type === 'library';
+    return Boolean(manifest['sap.app'] && manifest['sap.app'].id && manifest['sap.app'].type === 'library');
 }
 
 /**
@@ -252,5 +252,5 @@ function isValidUi5LibraryManifest(manifest: Manifest): boolean {
  * @returns - manifest.json validates as a UI5 app
  */
 function isValidUi5AppManifest(manifest: Manifest): boolean {
-    return !!manifest['sap.app']?.id && manifest['sap.app']?.type === 'application';
+    return Boolean(manifest['sap.app'] && manifest['sap.app'].id && manifest['sap.app'].type === 'application');
 }
