@@ -46,6 +46,7 @@ export interface UITreeDropdownProps extends UIMessagesExtendedProps {
     maxWidth?: number;
     useTargetWidth?: string;
     errorMessage?: string;
+    readOnly?: boolean;
 }
 
 interface TreeItemInfo {
@@ -367,6 +368,9 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @param {React.KeyboardEvent<HTMLInputElement>} event
      */
     toggleMenu = (status: boolean, event?: React.KeyboardEvent<HTMLInputElement>): void => {
+        if (this.props.readOnly) {
+            return;
+        }
         this.setState({
             isHidden: status
         });
@@ -701,6 +705,24 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     };
 
     /**
+     * Method returns class names for wrapper element depending on props and component state.
+     *
+     * @returns {string} Class names of wrapper element.
+     */
+    private getClassNames(): string {
+        let classNames = `ui-treeDropdown-wrapper ui-treeDropdown-wrapper-menu${
+            this.state.isMenuOpen ? '-open' : '-close'
+        } ui-treeDropdown-wrapper-${this.state.uiidInput}`;
+        if (this.state.isDisabled) {
+            classNames += ' disabled';
+        }
+        if (this.props.readOnly) {
+            classNames += ' readonly';
+        }
+        return classNames;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
@@ -722,14 +744,11 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
                         {this.props.label}
                     </label>
                 )}
-                <div
-                    className={`ui-treeDropdown-wrapper${this.state.isDisabled ? ' disabled' : ''}
-                        ui-treeDropdown-wrapper-menu${
-                            this.state.isMenuOpen ? '-open' : '-close'
-                        } ui-treeDropdown-wrapper-${this.state.uiidInput}`}>
+                <div className={this.getClassNames()}>
                     <UITextInput
                         componentRef={this.inputRef}
                         disabled={this.state.isDisabled}
+                        readOnly={this.props.readOnly}
                         autoComplete="off"
                         value={this.state.value}
                         placeholder={this.props.placeholderText}

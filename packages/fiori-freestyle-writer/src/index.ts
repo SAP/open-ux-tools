@@ -9,6 +9,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import type { BasicAppSettings } from './types';
 import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
+import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -65,23 +66,29 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     );
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
-    packageJson.scripts = Object.assign(packageJson.scripts, {
+    packageJson.scripts = {
+        ...packageJson.scripts,
         ...getPackageJsonTasks({
-            localOnly: !ffApp.service?.url,
+            localOnly: !!ffApp.service && !ffApp.service?.url,
             addMock: !!ffApp.service?.metadata,
             sapClient: ffApp.service?.client,
             flpAppId: ffApp.app.flpAppId,
             startFile: data?.app?.startFile,
-            localStartFile: data?.app?.localStartFile,
-            addTypeScript: ffApp.template.type === TemplateType.Basic && isTypeScriptEnabled
+            localStartFile: data?.app?.localStartFile
         })
-    });
+    };
 
     fs.writeJSON(packagePath, packageJson);
 
     // Add service to the project if provided
     if (ffApp.service) {
         await addOdataService(basePath, ffApp.service, fs);
+    } else {
+        // Add placeholder middleware so allow adding service later
+        const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
+        const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
+        ui5LocalConfig.addFioriToolsProxydMiddleware({});
+        fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 
     return fs;

@@ -9,6 +9,8 @@ import {
     UI5_CONTROLLER_EXTENSION_LIST_REPORT,
     UI5_CONTROLLER_EXTENSION_OBJECT_PAGE
 } from '../../src/controller-extension';
+import { detectTabSpacing } from '../../src/common/file';
+import { tabSizingTestCases } from '../common';
 
 describe('ControllerExtension', () => {
     describe('generateControllerExtension', () => {
@@ -248,6 +250,22 @@ describe('ControllerExtension', () => {
         describe('Typescript controller', () => {
             // Page types
             const expectedTestControllerPath = getControllerPath(controllerExtension, true);
+            const expectedDeclarationFilePath = join(
+                testDir,
+                `webapp/${controllerExtension.folder}/ControllerExtension.d.ts`
+            );
+            const isCopyCalledWithOrigin = (
+                copySpy: jest.SpyInstance,
+                callIndex: number,
+                fileName: string
+            ): boolean => {
+                const copyOrigin = copySpy.mock.calls[callIndex][0] as string;
+                return copyOrigin === join(__dirname, '..', '..', 'templates', 'controller-extension', fileName);
+            };
+            const isCopyCalledWithTarget = (copySpy: jest.SpyInstance, callIndex: number, target: string): boolean => {
+                const copyTarget = copySpy.mock.calls[callIndex][1] as string;
+                return copyTarget === target;
+            };
             test.each(pageTypeTests)('New controller extension - %s', (pageType) => {
                 generateControllerExtension(
                     testDir,
@@ -262,6 +280,7 @@ describe('ControllerExtension', () => {
                 );
                 expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
                 expect(fs.exists(expectedTestControllerPath)).toBeTruthy();
+                expect(fs.exists(expectedDeclarationFilePath)).toBeTruthy();
                 expect(fs.read(expectedTestControllerPath)).toMatchSnapshot();
             });
             // Manual extension name
@@ -285,6 +304,98 @@ describe('ControllerExtension', () => {
                 expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
                 expect(fs.exists(expectedTestControllerPath)).toBeTruthy();
                 expect(fs.read(expectedTestControllerPath)).toMatchSnapshot();
+            });
+
+            test('Check "ControllerExtension.d.ts" file', () => {
+                expect(fs.exists(expectedDeclarationFilePath)).toBeFalsy();
+                // Spy for copy method to detect how often it is called
+                const copySpy = jest.spyOn(fs, 'copy');
+                // Create extension controller
+                generateControllerExtension(
+                    testDir,
+                    {
+                        ...controllerExtension,
+                        extension: {
+                            pageType: ControllerExtensionPageType.ListReport
+                        },
+                        typescript: true
+                    } as ControllerExtension,
+                    fs
+                );
+                // Check if new manifest entry created
+                let manifest = JSON.parse(fs.read(join(testDir, 'webapp/manifest.json')));
+                expect(manifest?.['sap.ui5']?.['extends']?.['extensions']).toEqual({
+                    'sap.ui.controllerExtensions': {
+                        'sap.fe.templates.ListReport.ListReportController': {
+                            'controllerName': 'my.test.App.ext.controller.NewExtension'
+                        }
+                    }
+                });
+                // Check if declaration file was created
+                expect(fs.exists(expectedDeclarationFilePath)).toBeTruthy();
+                expect(fs.read(expectedDeclarationFilePath)).toMatchSnapshot();
+                // Check how fs.copy method called - copy for 'Controller.ts' and first create of 'ControllerExtension.d.ts'
+                expect(copySpy).toBeCalledTimes(2);
+                expect(isCopyCalledWithOrigin(copySpy, 0, 'Controller.ts')).toBeTruthy();
+                expect(isCopyCalledWithTarget(copySpy, 0, expectedTestControllerPath)).toBeTruthy();
+                expect(isCopyCalledWithOrigin(copySpy, 1, 'ControllerExtension.d.ts')).toBeTruthy();
+                expect(isCopyCalledWithTarget(copySpy, 1, expectedDeclarationFilePath)).toBeTruthy();
+
+                // Second creation of controller extension
+                copySpy.mockReset();
+                const secondExtension = {
+                    ...controllerExtension,
+                    name: 'SecondExtension',
+                    extension: {
+                        pageType: ControllerExtensionPageType.ListReport
+                    },
+                    typescript: true
+                };
+                generateControllerExtension(testDir, secondExtension as ControllerExtension, fs);
+                expect(fs.exists(expectedDeclarationFilePath)).toBeTruthy();
+                // Check how fs.copy method called - copy for 'Controller.ts' only, 'ControllerExtension.d.ts' was created on very first creation
+                expect(copySpy).toBeCalledTimes(1);
+                expect(isCopyCalledWithOrigin(copySpy, 0, 'Controller.ts')).toBeTruthy();
+                expect(isCopyCalledWithTarget(copySpy, 0, getControllerPath(secondExtension, true))).toBeTruthy();
+                manifest = JSON.parse(fs.read(join(testDir, 'webapp/manifest.json')));
+                expect(manifest?.['sap.ui5']?.['extends']?.['extensions']).toEqual({
+                    'sap.ui.controllerExtensions': {
+                        'sap.fe.templates.ListReport.ListReportController': {
+                            'controllerNames': [
+                                'my.test.App.ext.controller.NewExtension',
+                                'my.test.App.ext.controller.SecondExtension'
+                            ]
+                        }
+                    }
+                });
+            });
+        });
+
+        describe('Test property custom "tabSizing"', () => {
+            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
+                generateControllerExtension(
+                    testDir,
+                    {
+                        ...controllerExtension,
+                        tabInfo
+                    },
+                    fs
+                );
+                let updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                let result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
+                // Generate another controller extension and check if new tab sizing recalculated correctly without passing tab size info
+                generateControllerExtension(
+                    testDir,
+                    {
+                        ...controllerExtension,
+                        name: 'Second'
+                    },
+                    fs
+                );
+                updatedManifest = fs.read(join(testDir, 'webapp/manifest.json'));
+                result = detectTabSpacing(updatedManifest);
+                expect(result).toEqual(expectedAfterSave);
             });
         });
     });

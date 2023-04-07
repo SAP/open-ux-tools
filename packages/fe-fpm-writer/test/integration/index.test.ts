@@ -46,8 +46,8 @@ describe('use FPM with existing apps', () => {
         const configs: { path: string; settings: { typescript?: boolean } }[] = [basicConfig, tsConfig];
 
         beforeAll(() => {
-            fs.copy(join(testInput, 'basic-lrop'), basicConfig.path);
-            fs.copy(join(testInput, 'basic-ts'), tsConfig.path);
+            fs.copy(join(testInput, 'basic-lrop'), basicConfig.path, { globOptions: { dot: true } });
+            fs.copy(join(testInput, 'basic-ts'), tsConfig.path, { globOptions: { dot: true } });
         });
 
         test.each(configs)('enableFpm', (config) => {
@@ -139,6 +139,37 @@ describe('use FPM with existing apps', () => {
                 {
                     target: 'TravelListReport',
                     key: 'CustomViewKey',
+                    label: 'Custom View',
+                    name: 'NewCustomView',
+                    eventHandler: true,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateCustomView in ListReport, custom view to be overwritten', (config) => {
+            generateCustomView(
+                config.path,
+                {
+                    target: 'TravelListReport',
+                    key: 'CustomViewKey',
+                    label: 'Custom View',
+                    name: 'NewCustomView',
+                    eventHandler: true,
+                    viewUpdate: false,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateCustomView in ListReport, second custom view', (config) => {
+            generateCustomView(
+                config.path,
+                {
+                    target: 'TravelListReport',
+                    key: 'SecondCustomView',
                     label: 'Custom View',
                     name: 'NewCustomView',
                     eventHandler: true,

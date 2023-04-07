@@ -1,6 +1,7 @@
 import nock from 'nock';
 import type { AppInfo } from '../../src';
 import { Ui5AbapRepositoryService, createForAbap } from '../../src';
+import { AxiosDefaults, AxiosRequestConfig } from 'axios';
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -27,7 +28,10 @@ describe('Ui5AbapRepositoryService', () => {
             .persist();
         nock(server)
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${notExistingApp}%27)?$format=json`)
-            .replyWithError('the app does not exist')
+            .replyWithError({
+                status: 404,
+                body: 'the app does not exist'
+            })
             .persist();
     });
 
@@ -62,6 +66,9 @@ describe('Ui5AbapRepositoryService', () => {
 
         test('deploy new app', async () => {
             nock(server)
+                .defaultReplyHeaders({
+                    'sap-message': sapMessageHeader
+                })
                 .post(
                     `${Ui5AbapRepositoryService.PATH}/Repositories?${updateParams}`,
                     (body) => body.indexOf(archive.toString('base64')) !== -1
@@ -106,7 +113,7 @@ describe('Ui5AbapRepositoryService', () => {
                     `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`,
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
-                .replyWithError('Deployment failed');
+                .reply(401, 'Deployment failed');
             await expect(service.deploy({ archive, bsp: { name: validApp } })).rejects.toThrowError();
         });
 
@@ -170,23 +177,52 @@ describe('Ui5AbapRepositoryService', () => {
                 .replyWithError('Failed');
             await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrowError();
         });
+
+        test('failed removal, application not found', async () => {
+            const appName = 'TestApp';
+            nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`).reply(404);
+            const response = await service.undeploy({ bsp: { name: appName } });
+            expect(response).toBeUndefined();
+        });
+
+        test('failed removal but handle repeat request', async () => {
+            const appName = 'TestAppRecursive';
+            nock(server)
+                .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`)
+                .reply(200, { d: { ...validAppInfo, Name: appName } });
+            nock(server)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?${updateParams}`)
+                .reply(400);
+            nock(server)
+                .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?${updateParams}`)
+                .reply(200);
+            const response = await service.undeploy({ bsp: { name: appName } });
+            expect(response.status).toBe(200);
+        });
     });
 
-    describe('createPayload', () => {
-        test('ensure special characters are encoded', async () => {
+    describe('Validate Ui5AbapRepositoryService private methods', () => {
+        test('Validate private methods', async () => {
             /**
-             * Extension of Ui5AbapRespository class to make `createPayload` public and available for testing.
+             * Extension of Ui5AbapRepository class to make `createPayload` and `getAbapFrontendUrl` public and available for testing.
              */
             class ServiceForTesting extends Ui5AbapRepositoryService {
                 public createPayload = super.createPayload;
+                public getAbapFrontendUrl = super.getAbapFrontendUrl;
             }
-            const service = new ServiceForTesting();
-            const inputDescription = `<my&special"'decription>`;
+            const publicUrl = 'http://sap.server';
+            const service = new ServiceForTesting({ publicUrl });
+            const inputDescription = `<my&special"'description>`;
             const xmlPayload = service.createPayload(Buffer.from('TestData'), 'special&name', inputDescription, '');
+            // Ensure special characters are encoded
             expect(xmlPayload).not.toContain('special&name');
             expect(xmlPayload).toContain('special&amp;name');
             expect(xmlPayload).not.toContain(inputDescription);
-            expect(xmlPayload).toContain('&lt;my&amp;special&quot;&apos;decription&gt;');
+            expect(xmlPayload).toContain('&lt;my&amp;special&quot;&apos;description&gt;');
+            expect(xmlPayload).toContain(` xml:base="${publicUrl}"`);
+            expect(xmlPayload).toContain(`<id>${publicUrl}/Repositories('special&amp;name')</id>`);
+            // ABAP frontend reflects
+            expect(service.getAbapFrontendUrl()).toEqual(publicUrl);
         });
     });
 });

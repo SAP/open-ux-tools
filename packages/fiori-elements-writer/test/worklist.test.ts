@@ -9,11 +9,13 @@ import {
     feBaseConfig,
     v2TemplateSettings,
     v4TemplateSettings,
-    v4Service
+    v4Service,
+    projectChecks
 } from './common';
 import type { WorklistSettings } from '../src/types';
 
 const TEST_NAME = 'worklistTemplate';
+jest.setTimeout(120000); // Needed when debug.debugFull
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -65,6 +67,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });

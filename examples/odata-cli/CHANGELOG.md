@@ -1,5 +1,75 @@
 # @sap-ux/odata-cli
 
+## 0.11.11
+
+### Patch Changes
+
+-   Updated dependencies [0fa9c31e]
+    -   @sap-ux/axios-extension@1.1.0
+
+## 0.11.10
+
+### Patch Changes
+
+-   Updated dependencies [7fd2810]
+    -   @sap-ux/axios-extension@1.0.3
+
+## 0.11.9
+
+### Patch Changes
+
+-   Updated dependencies [8e059ae]
+    -   @sap-ux/axios-extension@1.0.2
+
+## 0.11.8
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/axios-extension@1.0.1
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/btp-utils@0.11.5
+
+## 0.11.7
+
+### Patch Changes
+
+-   Updated dependencies [77ac998]
+    -   @sap-ux/axios-extension@1.0.0
+
+## 0.11.6
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/axios-extension@0.14.1
+    -   @sap-ux/btp-utils@0.11.4
+    -   @sap-ux/logger@0.3.4
+
+## 0.11.5
+
+### Patch Changes
+
+-   Updated dependencies [3748963]
+    -   @sap-ux/axios-extension@0.14.0
+
+## 0.11.4
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+    -   @sap-ux/axios-extension@0.13.4
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/axios-extension@0.13.3
+
 ## 0.11.2
 
 ### Patch Changes

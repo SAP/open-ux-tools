@@ -1,5 +1,175 @@
 # @sap-ux/environment-check
 
+## 0.15.10
+
+### Patch Changes
+
+-   Updated dependencies [0fa9c31e]
+    -   @sap-ux/axios-extension@1.1.0
+
+## 0.15.9
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+    -   @sap-ux/project-access@1.3.0
+
+## 0.15.8
+
+### Patch Changes
+
+-   Updated dependencies [f8022a8]
+    -   @sap-ux/project-access@1.2.0
+
+## 0.15.7
+
+### Patch Changes
+
+-   Updated dependencies [7fd2810]
+    -   @sap-ux/axios-extension@1.0.3
+
+## 0.15.6
+
+### Patch Changes
+
+-   Updated dependencies [8e059ae]
+    -   @sap-ux/axios-extension@1.0.2
+
+## 0.15.5
+
+### Patch Changes
+
+-   Updated dependencies [8c45841]
+    -   @sap-ux/project-access@1.1.3
+
+## 0.15.4
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/axios-extension@1.0.1
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/store@0.3.10
+    -   @sap-ux/btp-utils@0.11.5
+    -   @sap-ux/project-access@1.1.2
+    -   @sap-ux/ui5-config@0.16.4
+
+## 0.15.3
+
+### Patch Changes
+
+-   Updated dependencies [77ac998]
+    -   @sap-ux/axios-extension@1.0.0
+
+## 0.15.2
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+-   @sap-ux/project-access@1.1.1
+
+## 0.15.1
+
+### Patch Changes
+
+-   Updated dependencies [470275c]
+    -   @sap-ux/project-access@1.1.0
+
+## 0.15.0
+
+### Minor Changes
+
+-   410299f: Adds optional parameter 'targetPath' for the 'archiveProject' method.
+
+## 0.14.2
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/store@0.3.9
+    -   @sap-ux/axios-extension@0.14.1
+    -   @sap-ux/btp-utils@0.11.4
+    -   @sap-ux/logger@0.3.4
+    -   @sap-ux/project-access@1.0.6
+    -   @sap-ux/ui5-config@0.16.2
+
+## 0.14.1
+
+### Patch Changes
+
+-   Updated dependencies [8cc76b5]
+    -   @sap-ux/project-access@1.0.5
+
+## 0.14.0
+
+### Minor Changes
+
+-   2be6b00: If present use .gitignore to decide content of archive, if not, allow SAP specific files '.cdsrc.json' and '.extconfig.json' to be added to the archive
+
+## 0.13.0
+
+### Minor Changes
+
+-   1894a8a: add new function to format results to a string
+
+## 0.12.1
+
+### Patch Changes
+
+-   450925a: Replaces hardcoded paths with env var NODE_PATH as installed generator search locations
+
+## 0.12.0
+
+### Minor Changes
+
+-   349a136: Add error details from HTTP calls (axios) to environment check report
+
+## 0.11.0
+
+### Minor Changes
+
+-   10d7646: enhance env-check for vscode insiders
+
+## 0.10.3
+
+### Patch Changes
+
+-   Updated dependencies [3748963]
+    -   @sap-ux/axios-extension@0.14.0
+
+## 0.10.2
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+    -   @sap-ux/axios-extension@0.13.4
+    -   @sap-ux/store@0.3.8
+
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/axios-extension@0.13.3
+
+## 0.10.0
+
+### Minor Changes
+
+-   31cf890: prevent showing credentials in zip, fix escaping in markdown
+
+## 0.9.1
+
+### Patch Changes
+
+-   Updated dependencies [e49be41]
+    -   @sap-ux/project-access@1.0.4
+
 ## 0.9.0
 
 ### Minor Changes

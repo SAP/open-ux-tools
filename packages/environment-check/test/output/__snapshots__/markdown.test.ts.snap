@@ -35,14 +35,14 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 
 ## Destination Details (5)
 
-### Details for \`ABC\`
+### Details for \`ABC system https://abc-api.org\`
 ✅ &nbsp; V2 catalog call returned 0 services<br>
 🚫 &nbsp; V4 catalog service not available<br>
 ✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
 ✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Full Service URL<br>
 |Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
 |--|--|--|--|--|--|--|--|--|--|--|
-|ABC|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+|ABC system https://abc-api.org|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
 
 ### Details for \`DEF\`
 ✅ &nbsp; V2 catalog call returned 0 services<br>
@@ -85,7 +85,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 ## All Destinations (7)
 |Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
 |--|--|--|--|--|--|--|--|--|--|--|
-|ABC|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+|ABC system https://abc-api.org|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
 |DEF|def|https://def.service||Catalog Service|odata_abap||HTTP|BasicAuthentication|Internet|true|
 |DUPLICATE|||||||||||
 |DUPLICATE|||||||||||

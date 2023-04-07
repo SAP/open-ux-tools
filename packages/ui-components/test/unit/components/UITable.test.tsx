@@ -2,6 +2,8 @@ import * as React from 'react';
 import * as Enzyme from 'enzyme';
 import { KeyCodes } from '@fluentui/react';
 import { ColumnControlType, UITable } from '../../../src/components/UITable';
+import type { UIColumn } from '../../../src/components/UITable';
+import * as tableHelper from '../../../src/components/UITable/UITable-helper';
 
 describe('<UITable />', () => {
     const onSaveSpy = jest.fn();
@@ -42,6 +44,21 @@ describe('<UITable />', () => {
         columnControlType: ColumnControlType.UIBooleanSelect
     };
 
+    const columnCombobox = {
+        key: 'comboboxcolumn',
+        name: 'comboboxcolumn',
+        fieldName: 'combobox',
+        minWidth: 100,
+        maxWidth: 200,
+        isResizable: true,
+        editable: true,
+        validate: undefined as any,
+        iconName: undefined as any,
+        iconTooltip: undefined as any,
+        columnControlType: ColumnControlType.UICombobox,
+        comboboxOptions: ['one', 'two', 'three']
+    };
+
     const columnDate = {
         key: 'datecolumn',
         name: 'datecolumn',
@@ -76,6 +93,20 @@ describe('<UITable />', () => {
                 { key: 'LV', text: 'Latvia' }
             ]
         }
+    };
+
+    const columnValidate = {
+        key: 'validatecolumn',
+        name: 'validatecolumn',
+        fieldName: 'validate',
+        minWidth: 100,
+        maxWidth: 200,
+        isResizable: true,
+        editable: true,
+        validate: (value: any) => `Error: ${value}`,
+        iconName: undefined as any,
+        iconTooltip: undefined as any,
+        columnControlType: ColumnControlType.UITextInput
     };
 
     beforeEach(() => {
@@ -115,7 +146,7 @@ describe('<UITable />', () => {
         const wrapper = Enzyme.mount(
             <UITable
                 {...defaultProps}
-                columns={[columnBool, columnText]}
+                columns={[columnBool, columnText, columnCombobox]}
                 items={[
                     { bool: 'true', text: 'apple' },
                     { bool: 'false', text: 'orange' }
@@ -222,5 +253,34 @@ describe('<UITable />', () => {
         jest.runOnlyPendingTimers();
 
         wrapper.find('Dropdown').first().simulate('click');
+    });
+
+    it('Validate and focus', () => {
+        const wrapper = Enzyme.mount(
+            <UITable {...defaultProps} columns={[columnValidate]} items={[{ validate: 'invalid' }]} />
+        );
+
+        wrapper.find('.ms-DetailsRow-cell span').simulate('click');
+        const input = wrapper.find('.ms-DetailsRow-cell input.ms-TextField-field');
+        const mockCell = {
+            selectionStart: 99,
+            setSelectionRange: jest.fn()
+        };
+        const mockInput = {
+            querySelector: () => mockCell
+        };
+        jest.spyOn(tableHelper, 'getCellFromCoords').mockImplementation(
+            (rowIdx: number, columnKey: string, columns: UIColumn[], addOneToColIndex: boolean | undefined) => {
+                expect(rowIdx).toBe(0);
+                expect(columnKey).toBe('validatecolumn');
+                expect(columns).toBeDefined();
+                expect(addOneToColIndex).toBe(true);
+                mockCell.selectionStart++;
+                return mockInput as any;
+            }
+        );
+        input.simulate('change', { target: { value: 'stillinvalid' } });
+        jest.runOnlyPendingTimers();
+        expect(mockCell.setSelectionRange).toBeCalledWith(100, 100);
     });
 });

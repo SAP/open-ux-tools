@@ -15,6 +15,7 @@ import type { Manifest } from '../common/types';
 import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
 import { addExtensionTypes } from '../common/utils';
+import { extendJSON } from '../common/file';
 
 export const UI5_CONTROLLER_EXTENSION_LIST_REPORT = 'sap.fe.templates.ListReport.ListReportController';
 export const UI5_CONTROLLER_EXTENSION_OBJECT_PAGE = 'sap.fe.templates.ObjectPage.ObjectPageController';
@@ -226,7 +227,12 @@ export function generateControllerExtension(
 
     // enhance manifest with view definition
     const filledTemplate = render(fs.read(getTemplatePath('controller-extension/manifest.json')), internalConfig, {});
-    fs.extendJSON(manifestPath, JSON.parse(filledTemplate), getManifestReplacer(internalConfig));
+    extendJSON(fs, {
+        filepath: manifestPath,
+        content: filledTemplate,
+        replacer: getManifestReplacer(internalConfig),
+        tabInfo: controllerConfig.tabInfo
+    });
 
     // add controller js file
     const ext = controllerConfig.typescript ? 'ts' : 'js';
@@ -237,6 +243,11 @@ export function generateControllerExtension(
 
     if (controllerConfig.typescript) {
         addExtensionTypes(basePath, controllerConfig.minUI5Version, fs);
+        // Typescript - add declaration ts file for 'sap/ui/core/mvc/ControllerExtension', which allows access to `this.base.getExtensionAPI()` within Controller extension classes
+        const declarationFilePath = join(basePath, '/webapp/ext/controller/ControllerExtension.d.ts');
+        if (!fs.exists(declarationFilePath)) {
+            fs.copy(getTemplatePath('controller-extension/ControllerExtension.d.ts'), declarationFilePath);
+        }
     }
 
     return fs;

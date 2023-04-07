@@ -33,6 +33,7 @@ describe('<UIFlexibleTable />', () => {
         tableHeaderPrimaryAction: '.flexible-table-header-primary-actions .flexible-table-header-action',
         tableHeaderSecondaryAction: '.flexible-table-header-secondary-actions .flexible-table-header-action',
         content: '.flexible-table-content-table',
+        noData: '.flexible-table-content-table-row-no-data',
         row: '.flexible-table-content-table-row',
         rowHeader: '.flexible-table-content-table-row-header',
         rowTitleContainer: '.flexible-table-content-table-row-header-text-content',
@@ -125,6 +126,19 @@ describe('<UIFlexibleTable />', () => {
             expect(wrapper.find(selectors.reverseBackground).length).toEqual(0);
         });
 
+        it('Render table (no rows)', () => {
+            wrapper.setProps({
+                noDataText: 'No data.',
+                rows: []
+            });
+            expect(wrapper.exists()).toEqual(true);
+            expect(wrapper.find(selectors.content).length).toEqual(1);
+            expect(wrapper.find(selectors.row).length).toEqual(0);
+            const noData = wrapper.find(selectors.noData);
+            expect(noData.exists()).toEqual(true);
+            expect(noData.props().style?.cursor).toBe('default');
+        });
+
         it('Render index column', () => {
             wrapper.setProps({ showIndexColumn: true });
             const indexCells = wrapper.find(selectors.indexColumn);
@@ -147,12 +161,36 @@ describe('<UIFlexibleTable />', () => {
             const titleCells = wrapper.find(selectors.titleRowValue);
             expect(titleCells.length).toBe(2);
 
-            columns
-                .filter((col) => !col.hidden)
-                .forEach((col, idx) => {
-                    expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
-                    expect(titleCells.get(idx).props.children).toBe(col.title);
-                });
+            const filteredColumns = columns.filter((col) => !col.hidden);
+            const expectedIds = filteredColumns.map((c) => `${tableId}-header-column-${c.key}`);
+
+            filteredColumns.forEach((col, idx) => {
+                expect(titleCells.get(idx).key).toBe(`title-cell-${col.key}-${idx}`);
+                expect(titleCells.get(idx).props.children).toBe(col.title);
+                expect(titleCells.get(idx).props['id']).toBe(expectedIds[idx]);
+            });
+        });
+
+        it('Render column default titles (with spanned cells)', () => {
+            wrapper.setProps({
+                showIndexColumn: true,
+                showColumnTitles: true,
+                onRenderTitleColumnCell: (params) => ({
+                    content: columns[params.colIndex || 0].title,
+                    isSpan: params.colIndex === 0
+                })
+            });
+            const headersFound = wrapper.find(selectors.titleRow);
+            expect(headersFound.length).toEqual(1);
+
+            const titleCells = wrapper.find(selectors.titleRowValue);
+            expect(titleCells.length).toBe(1);
+
+            const col = columns[0];
+            const expectedId = `${tableId}-header-column-${col.key}`;
+            expect(titleCells.get(0).key).toBe(`title-cell-unknown`);
+            expect(titleCells.get(0).props.children).toBe(col.title);
+            expect(titleCells.get(0).props['id']).toBe(expectedId);
         });
 
         it('Render column titles in cells', () => {
@@ -516,6 +554,7 @@ describe('<UIFlexibleTable />', () => {
                 downButtonsFound.forEach((button, idx) => {
                     expect(button.getElement().props.className.includes('is-disabled') === (idx === 2)).toBeTruthy();
                 });
+                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('grab');
             });
             it('move up/down not rendered', () => {
                 wrapper.setProps({
@@ -525,6 +564,7 @@ describe('<UIFlexibleTable />', () => {
                 const downButtonsFound = wrapper.find(selectors.downArrow);
                 expect(upButtonsFound.length).toBe(0);
                 expect(downButtonsFound.length).toBe(0);
+                expect(wrapper.find(selectors.content).props().style?.cursor).toBe('default');
             });
 
             it('move up/down disabled for new line item index 1(2nd row) with tooltip', () => {
@@ -889,7 +929,7 @@ describe('<UIFlexibleTable />', () => {
             wrapper.setProps({
                 noDataText
             });
-            const noData = wrapper.find('.flexible-table-content-table-row-no-data');
+            const noData = wrapper.find(selectors.noData);
             expect(noData.length).toEqual(1);
             expect(noData.text()).toEqual(noDataText);
         });
@@ -908,7 +948,7 @@ describe('<UIFlexibleTable />', () => {
                 noRowBackground: true,
                 noDataText
             });
-            expect(wrapper.find('.flexible-table-content-table-row-no-data.no-background').length).toEqual(1);
+            expect(wrapper.find(`${selectors.noData}.no-background`).length).toEqual(1);
         });
 
         it('"reverseBackground" ', () => {
@@ -917,7 +957,7 @@ describe('<UIFlexibleTable />', () => {
                 reverseBackground: true,
                 noDataText
             });
-            expect(wrapper.find('.flexible-table-content-table-row-no-data.reverse-background').length).toEqual(1);
+            expect(wrapper.find(`${selectors.noData}.reverse-background`).length).toEqual(1);
         });
     });
 });

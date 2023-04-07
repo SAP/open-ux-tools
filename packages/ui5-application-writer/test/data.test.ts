@@ -228,7 +228,7 @@ describe('Setting defaults', () => {
                 version: '1.199.0',
                 localVersion: '1.199.0',
                 minUI5Version: '1.199.0',
-                descriptorVersion: '1.48.0',
+                descriptorVersion: '1.49.0',
                 typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_BEST}`,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
@@ -294,9 +294,6 @@ describe('Setting defaults', () => {
                 scripts: {
                     doTaskA: 'echo "Doing task A"',
                     doTaskB: 'echo "Doing task B"'
-                },
-                ui5: {
-                    dependencies: ['@some/other-dep', '@sap/ux-ui5-tooling']
                 }
             }
         };
@@ -320,9 +317,6 @@ describe('Setting defaults', () => {
                 build: 'ui5 build --config=ui5.yaml --clean-dest --dest dist',
                 doTaskA: 'echo "Doing task A"',
                 doTaskB: 'echo "Doing task B"'
-            },
-            ui5: {
-                dependencies: ['@sap/ux-ui5-tooling', '@some/other-dep']
             },
             version: '0.0.1'
         };

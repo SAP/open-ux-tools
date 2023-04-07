@@ -1,5 +1,84 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.46
+
+### Patch Changes
+
+-   Updated dependencies [0fa9c31e]
+    -   @sap-ux/axios-extension@1.1.0
+
+## 0.6.45
+
+### Patch Changes
+
+-   03abc1f: Fix - enables flp embedded preview to load in case of decoding failure
+
+## 0.6.44
+
+### Patch Changes
+
+-   Updated dependencies [7fd2810]
+    -   @sap-ux/axios-extension@1.0.3
+
+## 0.6.43
+
+### Patch Changes
+
+-   Updated dependencies [8e059ae]
+    -   @sap-ux/axios-extension@1.0.2
+
+## 0.6.42
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/axios-extension@1.0.1
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/store@0.3.10
+    -   @sap-ux/btp-utils@0.11.5
+
+## 0.6.41
+
+### Patch Changes
+
+-   Updated dependencies [77ac998]
+    -   @sap-ux/axios-extension@1.0.0
+
+## 0.6.40
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/store@0.3.9
+    -   @sap-ux/axios-extension@0.14.1
+    -   @sap-ux/btp-utils@0.11.4
+    -   @sap-ux/logger@0.3.4
+
+## 0.6.39
+
+### Patch Changes
+
+-   Updated dependencies [3748963]
+    -   @sap-ux/axios-extension@0.14.0
+
+## 0.6.38
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+    -   @sap-ux/axios-extension@0.13.4
+    -   @sap-ux/store@0.3.8
+
+## 0.6.37
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/axios-extension@0.13.3
+
 ## 0.6.36
 
 ### Patch Changes

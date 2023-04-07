@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement } from '../common/types';
+import type { CustomElement, InternalCustomElement, WriterConfig } from '../common/types';
 
 /**
  * Incoming navigation configuration.
@@ -39,7 +39,7 @@ export interface ListReportSettings extends StandardPageSettings {
 /**
  * Configuration options for adding a list report page.
  */
-export interface ListReport {
+export interface ListReport extends WriterConfig {
     /**
      * Name of the entity used for the custom page.
      */
@@ -54,7 +54,7 @@ export interface ListReport {
 /**
  * Configuration options for adding an object page.
  */
-export interface ObjectPage {
+export interface ObjectPage extends WriterConfig {
     /**
      * Name of the entity used for the custom page.
      */

@@ -3,11 +3,13 @@ export {
     findAllApps,
     findProjectRoot,
     getAppRootFromWebappPath,
+    getAppProgrammingLanguage,
     getCapModelAndServices,
     getCapProjectType,
     getWebappPath,
     isCapJavaProject,
     isCapNodeJsProject,
-    loadModuleFromProject
+    loadModuleFromProject,
+    readUi5Yaml
 } from './project';
 export * from './types';

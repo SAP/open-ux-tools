@@ -1,5 +1,43 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.1.24
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+
+## 1.1.23
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/logger@0.3.5
+    -   @sap-ux/ui5-config@0.16.4
+
+## 1.1.22
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+
+## 1.1.21
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/logger@0.3.4
+    -   @sap-ux/ui5-config@0.16.2
+
+## 1.1.20
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+
 ## 1.1.19
 
 ### Patch Changes

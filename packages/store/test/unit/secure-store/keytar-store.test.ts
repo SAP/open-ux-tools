@@ -1,12 +1,11 @@
 import * as keytar from 'keytar';
-import { mocked } from 'ts-jest/utils';
 import { getSecureStore } from '../../../src/secure-store';
 import { KeytarStore } from '../../../src/secure-store/keytar-store';
 import fc from 'fast-check';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
 jest.mock('keytar');
-const mockedKeytar = mocked(keytar, true);
+const mockedKeytar = jest.mocked(keytar, { shallow: true });
 
 describe('KeytarStore', () => {
     const store = getSecureStore(new ToolsLogger({ transports: [new NullTransport()] }));

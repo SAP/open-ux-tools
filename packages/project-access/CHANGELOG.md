@@ -1,5 +1,68 @@
 # @sap-ux/project-access
 
+## 1.3.0
+
+### Minor Changes
+
+-   e7614e5: Add `readUi5Yaml` to read ui5.yaml files
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+
+## 1.2.0
+
+### Minor Changes
+
+-   f8022a8: Add getAppLanguage to detect used app programming language JavaScript or TypeScript
+
+## 1.1.3
+
+### Patch Changes
+
+-   8c45841: Fixed silent mode throwing an error when sapuxRequired was set to true
+
+## 1.1.2
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/ui5-config@0.16.4
+
+## 1.1.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+
+## 1.1.0
+
+### Minor Changes
+
+-   470275c: Add option for findProjectRoot function to not throw errors when no match is found
+
+## 1.0.6
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/ui5-config@0.16.2
+
+## 1.0.5
+
+### Patch Changes
+
+-   8cc76b5: chore: consume App Descriptor (manifest.json) types from @ui5/manifest
+
+## 1.0.4
+
+### Patch Changes
+
+-   e49be41: Init modules to add, update, remove features
+
 ## 1.0.3
 
 ### Patch Changes

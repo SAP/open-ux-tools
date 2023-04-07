@@ -1,5 +1,95 @@
 # @sap-ux/ui5-application-writer
 
+## 0.19.2
+
+### Patch Changes
+
+-   c06de66b: TBI - refactor locate-reuse-lib.js template to use modern API's and fix lint issues
+
+## 0.19.1
+
+### Patch Changes
+
+-   8f167e8a: TBI - Fiori Elements V2 type support
+
+## 0.19.0
+
+### Minor Changes
+
+-   7df492ae: move locate-reuse-libs.js to webapp/test, update references and remove reference from index.html
+
+## 0.18.10
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+
+## 0.18.9
+
+### Patch Changes
+
+-   35d1e15: tbi: Support @ui5/cli v3 in the generated projects
+
+## 0.18.8
+
+### Patch Changes
+
+-   81e3f25: chore - TS writers update `"ui5-tooling-transpile": "^0.3.7"`
+    `"addControllerStaticPropsToExtend": true` is added to typescript app's `.babelrc.json` to support controller extension class syntax
+
+## 0.18.7
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/ui5-config@0.16.4
+
+## 0.18.6
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+
+## 0.18.5
+
+### Patch Changes
+
+-   76603f8: Align FF ListDetail temple between JS and TS and add test utils
+
+## 0.18.4
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/ui5-config@0.16.2
+
+## 0.18.3
+
+### Patch Changes
+
+-   aab6b0d: tbi - hide transpile warnings for /Component-preload.js
+
+## 0.18.2
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+
+## 0.18.1
+
+### Patch Changes
+
+-   ac7f8f3: chore - TS writers udpate "ui5-tooling-transpile": "^0.2.1",
+
+## 0.18.0
+
+### Minor Changes
+
+-   b3945f3: consume version mapping from @ui5/manifest
+
 ## 0.17.14
 
 ### Patch Changes

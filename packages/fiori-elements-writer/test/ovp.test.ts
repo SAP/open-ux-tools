@@ -2,12 +2,13 @@ import type { FioriElementsApp } from '../src';
 import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, getTestData, debug, feBaseConfig } from './common';
+import { testOutputDir, getTestData, debug, feBaseConfig, projectChecks } from './common';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OVPSettings } from '../src/types';
 
 const TEST_NAME = 'ovpTemplate';
+jest.setTimeout(120000); // Needed when debug.debugFull
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -46,6 +47,23 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<OVPSettings>
         },
         {
+            name: 'ovpV2_ts',
+            config: {
+                ...Object.assign(feBaseConfig('feovp1'), {
+                    template: {
+                        type: TemplateType.OverviewPage,
+                        settings: {
+                            filterEntityType: 'GlobalFilters'
+                        }
+                    },
+                    appOptions: {
+                        typescript: true
+                    }
+                }),
+                service: ovpV2Service
+            } as FioriElementsApp<OVPSettings>
+        },
+        {
             name: 'ovpV4',
             config: {
                 ...Object.assign(feBaseConfig('feovp2'), {
@@ -57,6 +75,26 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     },
                     ui5: {
                         version: '1.97.0'
+                    }
+                }),
+                service: v4Service
+            } as FioriElementsApp<OVPSettings>
+        },
+        {
+            name: 'ovpV4_ts',
+            config: {
+                ...Object.assign(feBaseConfig('feovp2'), {
+                    template: {
+                        type: TemplateType.OverviewPage,
+                        settings: {
+                            filterEntityType: 'SalesOrderItem'
+                        }
+                    },
+                    ui5: {
+                        version: '1.97.0'
+                    },
+                    appOptions: {
+                        typescript: true
                     }
                 }),
                 service: v4Service
@@ -80,6 +118,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } else {
                 resolve(true);
             }
+        }).then(async () => {
+            await projectChecks(testPath, config, debug?.debugFull);
         });
     });
 });

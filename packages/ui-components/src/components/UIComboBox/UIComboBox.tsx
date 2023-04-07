@@ -1,5 +1,5 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState } from '@fluentui/react';
+import type { IComboBoxProps, IComboBoxState, IAutofillProps } from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -13,9 +13,10 @@ import './UIComboBox.scss';
 import './Callout.scss';
 import { UILoader } from '../UILoader';
 import { UiIcons } from '../Icons';
-import type { UIMessagesExtendedProps } from '../../helper/ValidationMessage';
+import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
+import { isDropdownEmpty } from '../UIDropdown';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -24,6 +25,7 @@ export {
 };
 
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {
+    wrapperRef?: React.RefObject<HTMLDivElement>;
     highlight?: boolean;
     useComboBoxAsMenuMinWidth?: boolean;
     // Default value for "openMenuOnClick" is "true"
@@ -33,6 +35,7 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     tooltipRefreshButton?: string;
     isLoading?: boolean;
     isForceEnabled?: boolean;
+    readOnly?: boolean;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -52,9 +55,11 @@ interface ComboBoxHoistedProps {
         currentOptions: IComboBoxOption[];
     };
 }
-export interface ComboBoxRef extends IComboBox {
+
+interface ComboBoxRef extends IComboBox {
     state: IComboBoxState;
     props: UIComboBoxProps & ComboBoxHoistedProps;
+    _comboBoxWrapper: React.RefObject<HTMLDivElement>;
 }
 
 /**
@@ -69,7 +74,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     static defaultProps = { openMenuOnClick: true };
     // Reference to fluent ui combobox
     private comboBox = React.createRef<ComboBoxRef>();
-    private root: React.RefObject<HTMLDivElement> = React.createRef();
     private selectedElement: React.RefObject<HTMLDivElement> = React.createRef();
     private query = '';
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
@@ -350,10 +354,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * 'minWidth' from state is used to set callout size in render.
      */
     private calculateMenuMinWidth(): void {
-        const root = this.root.current;
-        if (root && this.props.useComboBoxAsMenuMinWidth && root.clientWidth !== this.state.minWidth) {
+        const comboBoxWrapper = this.comboBox.current?._comboBoxWrapper.current;
+        if (
+            comboBoxWrapper &&
+            this.props.useComboBoxAsMenuMinWidth &&
+            comboBoxWrapper.clientWidth !== this.state.minWidth
+        ) {
             this.setState({
-                minWidth: root.clientWidth
+                minWidth: comboBoxWrapper.clientWidth
             });
         }
     }
@@ -489,16 +497,70 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method returns class names string depending on props and component state.
+     *
+     * @param {InputValidationMessageInfo} messageInfo Error/warning message if applied
+     * @returns {string} Class names of root combobox element.
+     */
+    private getClassNames(messageInfo: InputValidationMessageInfo): string {
+        const { readOnly, disabled } = this.props;
+        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        let classNames = `ts-ComboBox${messageInfo.message ? ' ts-ComboBox--' + errorSuffix : ''}`;
+        if (readOnly && !disabled) {
+            classNames += ' ts-ComboBox--readonly';
+        }
+        if (disabled) {
+            classNames += ' ts-ComboBox--disabled';
+        }
+        if (isDropdownEmpty(this.props)) {
+            classNames += ' ts-ComboBox--empty';
+        }
+        return classNames;
+    }
+
+    /**
+     * Method returns properties for Autofill component(combobox's inner compnent for text input).
+     * Method handles 'highlight' and 'readOnly' properties.
+     *
+     * @returns {IAutofillProps} Properties for Autofill component.
+     */
+    private getAutofillProps(): IAutofillProps {
+        const { highlight, readOnly, disabled } = this.props;
+        const autofill: IAutofillProps = {};
+        // Handle search highligh
+        if (highlight) {
+            autofill.onKeyDownCapture = this.onKeyDown;
+        }
+        const tabIndex = 'tabIndex' in this.props ? this.props.tabIndex : undefined;
+        // Handle readOnly property
+        if (readOnly && !disabled) {
+            autofill.readOnly = readOnly;
+            autofill.tabIndex = tabIndex;
+            // Adjust aria attributes for readonly
+            autofill['aria-disabled'] = undefined;
+            autofill['aria-readonly'] = true;
+        } else if (disabled) {
+            autofill.disabled = undefined;
+            autofill.readOnly = true;
+            autofill.tabIndex = tabIndex;
+        }
+        return autofill;
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
         const messageInfo = getMessageInfo(this.props);
-        const errorSuffix = messageInfo.message ? MESSAGE_TYPES_CLASSNAME_MAP.get(messageInfo.type) : undefined;
+        let disabled = this.props.isForceEnabled ? false : !this.props.options.length;
+        if (this.props.readOnly) {
+            disabled = true;
+        }
         return (
-            <div ref={this.root} className={`ts-ComboBox${messageInfo.message ? ' ts-ComboBox--' + errorSuffix : ''}`}>
+            <div ref={this.props.wrapperRef} className={this.getClassNames(messageInfo)}>
                 <ComboBox
                     componentRef={this.comboBox}
-                    disabled={this.props.isForceEnabled ? false : !this.props.options.length}
+                    disabled={disabled}
                     iconButtonProps={{
                         iconProps: {
                             iconName: UiIcons.ArrowDown
@@ -543,11 +605,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onRenderItem: this.onRenderItem,
                         onRenderOption: this.onRenderOption,
                         placeholder: this.getPlaceholder(),
-                        autofill: {
-                            onKeyDownCapture: this.onKeyDown
-                        },
                         onPendingValueChanged: this.onPendingValueChanged
                     })}
+                    autofill={this.getAutofillProps()}
                     {...(this.props.useComboBoxAsMenuMinWidth && {
                         // Use 'onMenuOpen', because there can be dynamic size of combobox
                         onMenuOpen: this.calculateMenuMinWidth.bind(this)

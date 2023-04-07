@@ -1,5 +1,41 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.7
+
+### Patch Changes
+
+-   81e3f25: Fix: Controller extensions. Typescript error "Subsequent property declarations must have the same type." displayed for typescript application when both extension controllers created for ListReport and ObjectPage.
+
+## 0.18.6
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+
+## 0.18.5
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+
+## 0.18.4
+
+### Patch Changes
+
+-   d167d79: Fix: writing into manifest.json always provides 2 spaces for tab size. Additional property 'tabInfo' can be passed in config for generation functions or tab sizing will be calculated before saving
+
+## 0.18.3
+
+### Patch Changes
+
+-   6e4c6c4: Feature: Merge a new custom view with an existing view of the same key
+
+## 0.18.2
+
+### Patch Changes
+
+-   b727719: chore(open-ux-tools) upgrade @xmldom/xmldom
+
 ## 0.18.1
 
 ### Patch Changes

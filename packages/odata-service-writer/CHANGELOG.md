@@ -1,5 +1,40 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.19
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+
+## 0.14.18
+
+### Patch Changes
+
+-   35d1e15: tbi: Support @ui5/cli v3 in the generated projects
+
+## 0.14.17
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/ui5-config@0.16.4
+
+## 0.14.16
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+
+## 0.14.15
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/ui5-config@0.16.2
+
 ## 0.14.14
 
 ### Patch Changes

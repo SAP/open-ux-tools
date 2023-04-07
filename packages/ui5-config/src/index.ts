@@ -7,7 +7,11 @@ export {
     FioriToolsProxyConfig,
     FioriToolsProxyConfigBackend,
     FioriToolsProxyConfigUI5,
+    FioriToolsServeStaticPath,
+    FioriToolsServeStaticConfig,
     AbapApp,
+    AbapTarget,
+    AbapDeployConfig,
     UI5ProxyConfig,
     UI5ProxyConfigTarget
 } from './types';

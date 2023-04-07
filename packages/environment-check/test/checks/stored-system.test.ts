@@ -13,7 +13,27 @@ describe('Stored system tests ', () => {
         } as CatalogServiceResult
     };
 
-    test('checkStoredSystem() - service checks returned', async () => {
+    test('checkStoredSystem() - service checks returned (on-prem)', async () => {
+        const read = jest.fn();
+        read.mockImplementationOnce(() => {
+            return {
+                name: 'abap-on-prem',
+                url: 'http://url-on-prem.sap:5000/sap/bc/gui/sap/its/webgui?sap-client=100&sap-language=EN',
+                client: '000',
+                userDisplayName: 'user1',
+                username: 'user1',
+                password: 'pass'
+            };
+        });
+
+        jest.spyOn(storeUtils, 'getService').mockImplementationOnce(() => {
+            return {
+                logger: jest.fn(),
+                dataProvider: {},
+                read: jest.fn()
+            } as any;
+        });
+
         const atoResult = {
             messages: [
                 {
@@ -48,7 +68,89 @@ describe('Stored system tests ', () => {
         jest.spyOn(serviceChecks, 'checkUi5AbapRepository').mockResolvedValueOnce(ui5AbapRepoResult);
         jest.spyOn(serviceChecks, 'checkTransportRequests').mockResolvedValueOnce(transportRequestResult);
 
-        const storeSystemResult = await checkStoredSystem({ Name: 'sys1' });
+        const storeSystemResult = await checkStoredSystem({
+            Name: 'sys1',
+            Url: 'http://url-on-prem.sap:5000/sap/bc/gui/sap/its/webgui?sap-client=100&sap-language=EN',
+            Client: '000'
+        });
+
+        expect(storeSystemResult.messages.length).toBe(3);
+        expect(storeSystemResult.storedSystemResults.isAtoCatalog).toBe(true);
+        expect(storeSystemResult.storedSystemResults.isTransportRequests).toBe(true);
+        expect(storeSystemResult.storedSystemResults.isSapUi5Repo).toBe(true);
+        expect(storeSystemResult.storedSystemResults.HTML5DynamicDestination).toBe(undefined);
+    });
+
+    test('checkStoredSystem() - service checks returned (btp)', async () => {
+        const read = jest.fn();
+        read.mockImplementationOnce(() => {
+            return {
+                name: 'abap-cloud',
+                url: 'https://abap-cloud-url.com',
+                userDisplayName: 'user@sap.com',
+                serviceKeys: {
+                    binding: {},
+                    catalogs: {
+                        abap: {
+                            path: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2',
+                            type: 'sap_abap_catalog_v1'
+                        }
+                    },
+                    endpoints: {
+                        abap: 'mock-endpoint'
+                    }
+                },
+                refreshToken: 'mock-refresh-token'
+            };
+        });
+
+        jest.spyOn(storeUtils, 'getService').mockImplementationOnce(() => {
+            return {
+                logger: jest.fn(),
+                dataProvider: {},
+                read: jest.fn()
+            } as any;
+        });
+
+        const atoResult = {
+            messages: [
+                {
+                    severity: Severity.Info,
+                    text: 'ato available'
+                }
+            ],
+            isAtoCatalog: true
+        };
+
+        const ui5AbapRepoResult = {
+            messages: [
+                {
+                    severity: Severity.Info,
+                    text: 'sap ui5 repo available'
+                }
+            ],
+            isSapUi5Repo: true
+        };
+
+        const transportRequestResult = {
+            messages: [
+                {
+                    severity: Severity.Info,
+                    text: 'transport requests available'
+                }
+            ],
+            isTransportRequests: true
+        };
+        jest.spyOn(serviceChecks, 'checkCatalogServices').mockResolvedValueOnce(checkCatalogServicesResult);
+        jest.spyOn(serviceChecks, 'checkAtoCatalog').mockResolvedValueOnce(atoResult);
+        jest.spyOn(serviceChecks, 'checkUi5AbapRepository').mockResolvedValueOnce(ui5AbapRepoResult);
+        jest.spyOn(serviceChecks, 'checkTransportRequests').mockResolvedValueOnce(transportRequestResult);
+
+        const storeSystemResult = await checkStoredSystem({
+            Name: 'sys1',
+            Url: 'http://url-on-prem.sap:5000/sap/bc/gui/sap/its/webgui?sap-client=100&sap-language=EN',
+            Client: '000'
+        });
 
         expect(storeSystemResult.messages.length).toBe(3);
         expect(storeSystemResult.storedSystemResults.isAtoCatalog).toBe(true);
@@ -115,36 +217,23 @@ describe('Stored system tests ', () => {
         const expectedData = [
             {
                 Name: 'abap-on-prem',
-                Url: 'http://url-on-prem.sap:5000',
+                Url: 'http://url-on-prem.sap:5000/sap/bc/gui/sap/its/webgui?sap-client=100&sap-language=EN',
                 Client: '',
                 UserDisplayName: 'user1',
-                Credentials: {
-                    serviceKeysContents: undefined,
-                    username: 'user1',
-                    password: 'pass',
-                    refreshToken: undefined
-                },
                 Scp: false
             },
             {
                 Name: 'abap-on-prem2',
-                Url: 'http://url-on-prem2.sap',
+                Url: 'http://url-on-prem2.sap/',
                 Client: '',
                 UserDisplayName: 'user2',
-                Credentials: {
-                    serviceKeysContents: undefined,
-                    username: undefined,
-                    password: 'pass',
-                    refreshToken: undefined
-                },
                 Scp: false
             },
             {
                 Name: 'abap-on-prem3',
-                Url: 'http://url-on-prem3.sap',
+                Url: 'http://url-on-prem3.sap/',
                 Client: '',
                 UserDisplayName: 'user3',
-                Credentials: undefined,
                 Scp: false
             },
             {
@@ -152,23 +241,6 @@ describe('Stored system tests ', () => {
                 Url: 'https://abap-cloud-url.com',
                 Client: undefined,
                 UserDisplayName: 'user@sap.com',
-                Credentials: {
-                    serviceKeysContents: {
-                        binding: {},
-                        catalogs: {
-                            abap: {
-                                path: '/sap/opu/odata/IWFND/CATALOGSERVICE;v=2',
-                                type: 'sap_abap_catalog_v1'
-                            }
-                        },
-                        endpoints: {
-                            abap: 'mock-endpoint'
-                        }
-                    },
-                    username: undefined,
-                    password: undefined,
-                    refreshToken: 'mock-refresh-token'
-                },
                 Scp: true
             }
         ];

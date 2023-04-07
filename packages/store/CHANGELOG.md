@@ -1,5 +1,28 @@
 # @sap-ux/store
 
+## 0.3.10
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/logger@0.3.5
+
+## 0.3.9
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/logger@0.3.4
+
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [c6f4c8c]
+    -   @sap-ux/logger@0.3.3
+
 ## 0.3.7
 
 ### Patch Changes

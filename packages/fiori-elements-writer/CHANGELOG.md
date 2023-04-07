@@ -1,5 +1,155 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.9.2
+
+### Patch Changes
+
+-   c06de66b: TBI - refactor locate-reuse-lib.js template to use modern API's and fix lint issues
+-   Updated dependencies [c06de66b]
+    -   @sap-ux/ui5-application-writer@0.19.2
+
+## 0.9.1
+
+### Patch Changes
+
+-   8f167e8a: TBI - Fiori Elements V2 type support
+-   Updated dependencies [8f167e8a]
+    -   @sap-ux/ui5-application-writer@0.19.1
+
+## 0.9.0
+
+### Minor Changes
+
+-   7df492ae: move locate-reuse-libs.js to webapp/test, update references and remove reference from index.html
+
+### Patch Changes
+
+-   Updated dependencies [7df492ae]
+    -   @sap-ux/ui5-application-writer@0.19.0
+
+## 0.8.20
+
+### Patch Changes
+
+-   Updated dependencies [e7614e5]
+    -   @sap-ux/ui5-config@0.16.5
+    -   @sap-ux/odata-service-writer@0.14.19
+    -   @sap-ux/ui5-application-writer@0.18.10
+    -   @sap-ux/fe-fpm-writer@0.18.7
+    -   @sap-ux/ui5-test-writer@0.1.7
+
+## 0.8.19
+
+### Patch Changes
+
+-   35d1e15: tbi: Support @ui5/cli v3 in the generated projects
+-   Updated dependencies [35d1e15]
+    -   @sap-ux/odata-service-writer@0.14.18
+    -   @sap-ux/ui5-application-writer@0.18.9
+
+## 0.8.18
+
+### Patch Changes
+
+-   Updated dependencies [81e3f25]
+-   Updated dependencies [81e3f25]
+    -   @sap-ux/fe-fpm-writer@0.18.7
+    -   @sap-ux/ui5-application-writer@0.18.8
+
+## 0.8.17
+
+### Patch Changes
+
+-   d350038: chore - TypeScript 4.9.4 upgrade
+-   Updated dependencies [d350038]
+    -   @sap-ux/fe-fpm-writer@0.18.6
+    -   @sap-ux/odata-service-writer@0.14.17
+    -   @sap-ux/ui5-application-writer@0.18.7
+    -   @sap-ux/ui5-config@0.16.4
+    -   @sap-ux/ui5-test-writer@0.1.7
+
+## 0.8.16
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.16.3
+-   @sap-ux/odata-service-writer@0.14.16
+-   @sap-ux/ui5-application-writer@0.18.6
+-   @sap-ux/fe-fpm-writer@0.18.5
+-   @sap-ux/ui5-test-writer@0.1.6
+
+## 0.8.15
+
+### Patch Changes
+
+-   76603f8: Align FF ListDetail temple between JS and TS and add test utils
+-   Updated dependencies [76603f8]
+    -   @sap-ux/ui5-application-writer@0.18.5
+
+## 0.8.14
+
+### Patch Changes
+
+-   ed04f6f: chore(open-ux-tools) Upgrade Dev Dependencies and fix Audit issues
+-   Updated dependencies [ed04f6f]
+    -   @sap-ux/fe-fpm-writer@0.18.5
+    -   @sap-ux/odata-service-writer@0.14.15
+    -   @sap-ux/ui5-application-writer@0.18.4
+    -   @sap-ux/ui5-config@0.16.2
+    -   @sap-ux/ui5-test-writer@0.1.6
+
+## 0.8.13
+
+### Patch Changes
+
+-   Updated dependencies [d167d79]
+    -   @sap-ux/fe-fpm-writer@0.18.4
+
+## 0.8.12
+
+### Patch Changes
+
+-   aab6b0d: tbi - hide transpile warnings for /Component-preload.js
+-   Updated dependencies [aab6b0d]
+    -   @sap-ux/ui5-application-writer@0.18.3
+
+## 0.8.11
+
+### Patch Changes
+
+-   eaf7214: TBI - refactor pre scripts for start and build for typescript projects
+-   Updated dependencies [eaf7214]
+    -   @sap-ux/ui5-application-writer@0.18.2
+
+## 0.8.10
+
+### Patch Changes
+
+-   ac7f8f3: chore - TS writers udpate "ui5-tooling-transpile": "^0.2.1",
+-   Updated dependencies [ac7f8f3]
+    -   @sap-ux/ui5-application-writer@0.18.1
+
+## 0.8.9
+
+### Patch Changes
+
+-   Updated dependencies [6e4c6c4]
+    -   @sap-ux/fe-fpm-writer@0.18.3
+
+## 0.8.8
+
+### Patch Changes
+
+-   Updated dependencies [b3945f3]
+    -   @sap-ux/ui5-application-writer@0.18.0
+
+## 0.8.7
+
+### Patch Changes
+
+-   Updated dependencies [b727719]
+    -   @sap-ux/fe-fpm-writer@0.18.2
+
 ## 0.8.6
 
 ### Patch Changes
