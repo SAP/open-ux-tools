@@ -1639,7 +1639,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
             var sPreviousHash = History.getInstance().getPreviousHash();
 
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line sap-no-history-manipulation
+                // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"list\\", {}, true);
@@ -2212,7 +2212,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
          * @public
          */
         onNavBack: function() {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
             history.go(-1);
         },
 
@@ -4382,7 +4382,7 @@ server:
         onNavBack : function() {
             var sPreviousHash = History.getInstance().getPreviousHash();
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line sap-no-history-manipulation
+                // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"worklist\\", {}, true);
@@ -4538,7 +4538,7 @@ server:
          * @public
          */
         onNavBack : function() {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
             history.go(-1);
         },
 
