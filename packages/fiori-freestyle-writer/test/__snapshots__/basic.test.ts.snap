@@ -588,7 +588,6 @@ title=App Title",
 })(sap);
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -2647,7 +2646,6 @@ title=App Title",
 })(sap);
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -3403,7 +3401,6 @@ title=App Title",
 })(sap);
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;

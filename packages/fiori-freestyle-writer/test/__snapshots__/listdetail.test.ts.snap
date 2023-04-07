@@ -2313,7 +2313,7 @@ export function createDeviceModel () {
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -4999,7 +4999,7 @@ export function createDeviceModel () {
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -5455,7 +5455,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
-    \\"@sapui5/ts-types\\": \\"1.71.18\\",
+    \\"@sapui5/ts-types\\": \\"1.71.15\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.6.5\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -7612,7 +7612,6 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 })(sap);
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -10152,7 +10151,6 @@ export function createDeviceModel () {
 })(sap);
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;

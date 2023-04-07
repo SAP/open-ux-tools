@@ -1562,7 +1562,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
 })(sap);
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -9012,7 +9011,6 @@ appDescription=A Fiori application.",
 })(sap);
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
-var scripts = document.getElementsByTagName(\\"script\\");
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
