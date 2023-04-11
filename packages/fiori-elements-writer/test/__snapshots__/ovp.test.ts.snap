@@ -1495,7 +1495,7 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                     }
                     resolve(result);
                 })
-                .fail(function (error) {
+                .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
@@ -8944,7 +8944,7 @@ appDescription=A Fiori application.",
                     }
                     resolve(result);
                 })
-                .fail(function (error) {
+                .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });

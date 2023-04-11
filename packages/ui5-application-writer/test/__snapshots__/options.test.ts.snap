@@ -85,7 +85,7 @@ archive.zip
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"1.71.15\\",
-    \\"eslint-plugin-fiori-custom\\": \\"2.6.5\\",
+    \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },
   \\"scripts\\": {
@@ -864,7 +864,7 @@ appDescription=Test App Description",
                     }
                     resolve(result);
                 })
-                .fail(function (error) {
+                .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });

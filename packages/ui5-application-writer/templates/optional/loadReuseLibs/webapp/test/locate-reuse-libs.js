@@ -65,7 +65,7 @@
                     }
                     resolve(result);
                 })
-                .fail(function (error) {
+                .fail(function () {
                     reject(new Error("Could not fetch manifest at '" + manifestPath));
                 });
         });
