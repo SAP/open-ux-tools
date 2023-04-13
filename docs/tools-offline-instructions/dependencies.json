@@ -1,0 +1,26 @@
+{
+    "vscode_extensions": {
+        "sapse.sap-ux-fiori-tools-extension-pack": "latest"
+    },
+    "node_modules": {
+        "@sap/abap-deploy": "latest",
+        "@sap/cds-compiler": "latest",
+        "@sap/eslint-plugin-ui5-jsdocs": "latest",
+        "@sap/generator-fiori": "latest",
+        "@sap/ux-specification": "latest",
+        "@sap-ux/ui5-middleware-fe-mockserver": "latest",
+        "@sap/ux-ui5-tooling": "latest",
+        "@sapui5/distribution-metadata": "latest",
+        "@sapui5/ts-types": "latest",
+        "@ui5/builder": "latest",
+        "@ui5/cli": "latest",
+        "@ui5/fs": "latest",
+        "@ui5/logger": "latest",
+        "@ui5/project": "latest",
+        "@ui5/server": "latest",
+        "chokidar": "latest",
+        "rimraf": "latest",
+        "ui5-task-flatten-library": "latest",
+        "yo": "latest"
+    }
+}
