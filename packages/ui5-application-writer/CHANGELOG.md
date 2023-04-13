@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.20.0
+
+### Minor Changes
+
+-   f3ec7324: Update eslint fiori custom package and rules
+
 ## 0.19.2
 
 ### Patch Changes

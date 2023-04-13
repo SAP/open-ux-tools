@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.10.0
+
+### Minor Changes
+
+-   f3ec7324: Update eslint fiori custom package and rules
+
+### Patch Changes
+
+-   Updated dependencies [f3ec7324]
+    -   @sap-ux/ui5-application-writer@0.20.0
+
 ## 0.9.2
 
 ### Patch Changes
