@@ -74,7 +74,7 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
             history.go(-1);
         } else {
             this.getRouter().navTo("worklist", {});
