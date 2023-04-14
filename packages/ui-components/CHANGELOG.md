@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.4.0
+
+### Minor Changes
+
+-   3771a579: feat(ui-components) icons - separator - small btn
+
 ## 1.3.9
 
 ### Patch Changes
