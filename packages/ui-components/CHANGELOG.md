@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.5.0
+
+### Minor Changes
+
+-   faa2fac3: feat(ui-components) add uiseparator to index
+
 ## 1.4.0
 
 ### Minor Changes
