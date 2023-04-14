@@ -35,7 +35,7 @@ export class UISmallButton extends React.Component<IButtonProps, {}> {
      * @returns {string} CSS value for background color with fallback.
      */
     private getColorwithFallback(color: string, fallbackColor: string): string {
-        return `var(${color}, ${fallbackColor}})`;
+        return `var(${color}, ${fallbackColor})`;
     }
 
     protected setStyle = (props: IButtonProps): IButtonStyles => {
