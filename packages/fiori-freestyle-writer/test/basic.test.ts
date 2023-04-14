@@ -127,6 +127,14 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 }
             },
             settings: {}
+        },
+        {
+            name: 'basic_without_start-noflp',
+            config: {
+                ...commonConfig,
+                appOptions: { excludeNoFlp: true }
+            },
+            settings: {}
         }
     ];
 

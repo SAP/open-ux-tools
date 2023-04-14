@@ -73,6 +73,11 @@ export interface AppOptions {
      * Enable support for importing functionality from npm packages in UI5 applications
      */
     npmPackageConsumption: boolean;
+
+    /**
+     * Excludes the index.html from the templates and does not add the `start-noflp` script in package.json
+     */
+    excludeNoFlp?: boolean | undefined;
 }
 
 export interface Ui5App {

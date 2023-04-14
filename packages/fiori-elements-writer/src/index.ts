@@ -153,7 +153,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             sapClient: feApp.service?.client,
             flpAppId: feApp.app.flpAppId,
             startFile: data?.app?.startFile,
-            localStartFile: data?.app?.localStartFile
+            localStartFile: data?.app?.localStartFile,
+            excludeNoFlp: feApp.appOptions?.excludeNoFlp
         })
     });
 

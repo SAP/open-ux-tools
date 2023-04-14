@@ -11,6 +11,7 @@ import { t } from './i18n';
  * @param options.flpAppId local FLP id
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be opend with the start-local script
+ * @param options.excludeNoFlp exclude the start-noflp script
  * @description Generates the package.json scripts
  * @returns package.json scripts
  */
@@ -21,7 +22,8 @@ export function getPackageJsonTasks({
     sapClient,
     flpAppId = '',
     startFile,
-    localStartFile
+    localStartFile,
+    excludeNoFlp = false
 }: {
     localOnly: boolean;
     addMock: boolean;
@@ -30,7 +32,8 @@ export function getPackageJsonTasks({
     flpAppId?: string;
     startFile?: string;
     localStartFile?: string;
-}): { start: string; 'start-local': string; 'start-noflp': string; 'start-mock'?: string } {
+    excludeNoFlp?: boolean;
+}): { start: string; 'start-local': string; 'start-noflp'?: string; 'start-mock'?: string } {
     // Build search param part of preview launch url
     const searchParamList: string[][] = [];
     if (sapClient) {
@@ -60,9 +63,13 @@ export function getPackageJsonTasks({
     return Object.assign(
         {
             start: startCommand,
-            'start-local': startLocalCommand,
-            'start-noflp': startNoFlpCommand
+            'start-local': startLocalCommand
         },
+        excludeNoFlp
+            ? {}
+            : {
+                  'start-noflp': startNoFlpCommand
+              },
         addMock
             ? {
                   'start-mock': mockTask

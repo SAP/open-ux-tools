@@ -27,8 +27,12 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         mergeWithDefaults(ui5AppConfig);
 
     const tmplPath = join(__dirname, '..', 'templates');
-
     const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
+
+    if (ui5AppConfig.appOptions?.excludeNoFlp && ui5AppConfig.appOptions?.excludeNoFlp === true) {
+        ignore.push(join(tmplPath, 'core', 'webapp', 'index.html'));
+    }
+
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
         globOptions: { dot: true, ignore },
         processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
