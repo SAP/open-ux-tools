@@ -1,0 +1,29 @@
+{
+  "name": "eslint-config-sapux-ts",
+  "version": "0.0.1",
+  "description": "custom ts rules for Fiori tools apps",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin"
+  ],
+  "author": "sapux-ts",
+  "main": "./index.js",
+  "exports": "./index.js",
+  "scripts": {},
+  "dependencies": {
+    "@typescript-eslint/parser": "5.58.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.19.0"
+  },
+  "engines": {
+    "node": "^14.17.0 || ^16.0.0 || >= 18.0.0"
+  },
+  "peerDependencies": {
+    "eslint": ">=7",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "eslint-plugin-fiori-custom": "2.5.1-20230118184613"
+  },
+  "license": "ISC"
+}
