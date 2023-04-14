@@ -3,6 +3,7 @@ import React from 'react';
 import type { ISeparatorProps, ISeparatorStyleProps, ISeparatorStyles } from '@fluentui/react';
 import { Separator } from '@fluentui/react';
 
+export type UISeparatorProps = ISeparatorProps;
 /**
  * UISeparator component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/separator
