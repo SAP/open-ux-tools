@@ -1,11 +1,12 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, ArchiveFileNode } from '@sap-ux/axios-extension';
 import {
     ODataVersion,
     TransportChecksService,
     TransportRequestService,
-    ListPackageService
+    ListPackageService,
+    FileStoreService
 } from '@sap-ux/axios-extension';
 import { logger } from './types';
 
@@ -58,9 +59,9 @@ export async function useCatalogAndFetchSomeMetadata(
  * Execute a sequence of test calls using the given provider.
  *
  * @param provider instance of a service provider
- * @param env object reprensenting the content of the .env file.
+ * @param env object representing the content of the .env file.
  * @param env.TEST_PACKAGE optional package name for testing fetch transport numbers
- * @param env.TEST_APP optioanl project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
+ * @param env.TEST_APP optional project name for testing fetch transport numbers, new project doesn't exist on backend is also allowed
  */
 export async function useAdtServices(
     provider: AbapServiceProvider,
@@ -93,6 +94,40 @@ export async function useAdtServices(
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
         const packages = await listPackageService.listPackages({ maxResults: 50, phrase: '$TMP' });
         logger.info(`Query $tmp package: ${packages.length === 1}`);
+
+        const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        const rootFolderContent = await fileStoreService.getAppArchiveContent('folder', env.TEST_APP);
+        logger.info(
+            `Deployed archive for ${env.TEST_APP} contains: ${(rootFolderContent as ArchiveFileNode[])
+                .map((node) => node.basename)
+                .join(',')}`
+        );
+
+        // Query and log the first encountered file content inside env.TEST_APP
+        const fileList = rootFolderContent.filter((node) => node.type === 'file');
+        if (fileList.length > 0) {
+            const fileContent = await fileStoreService.getAppArchiveContent('file', env.TEST_APP, fileList[0].path);
+            logger.info(`File content of ${fileList[0].path} is:`);
+            logger.info(fileContent);
+        } else {
+            logger.info(`No file in ${env.TEST_APP}`);
+        }
+        // Query and log the first encountered folder content inside env.TEST_APP
+        const folderList = rootFolderContent.filter((node) => node.type === 'folder');
+        if (folderList.length > 0) {
+            const folderContent = await fileStoreService.getAppArchiveContent(
+                'folder',
+                env.TEST_APP,
+                folderList[0].path
+            );
+            logger.info(
+                `Folder ${folderList[0].path} contains: ${(folderContent as ArchiveFileNode[])
+                    .map((node) => node.basename)
+                    .join(',')}`
+            );
+        } else {
+            logger.info(`No folder in ${env.TEST_APP}`);
+        }
     } catch (error) {
         logger.error(error.cause || error.toString() || error);
     }
@@ -102,7 +137,7 @@ export async function useAdtServices(
  * Execute a sequence of check, deploy and undeploy requests for a DTA project.
  *
  * @param provider instance of a service provider
- * @param env object reprensenting the content of the .env file.
+ * @param env object representing the content of the .env file.
  * @param env.TEST_ZIP path to a zipped webapp folder of an adaptation project that should be deployed
  * @param env.TEST_NAMESPACE namespaces containing the referenced app as well as the new project id
  * @param env.TEST_PACKAGE optional package name
