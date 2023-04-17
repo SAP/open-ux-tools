@@ -75,7 +75,7 @@ export interface AppOptions {
     npmPackageConsumption: boolean;
 
     /**
-     * Excludes the index.html from the templates and does not add the `start-noflp` script in package.json
+     * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
      */
     skipIndexHtml?: boolean | undefined;
 }

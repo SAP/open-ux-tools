@@ -1,7 +1,7 @@
 import { t } from './i18n';
 
 /**
- * Get and object reflecting the scripts that need to be added to the package.json.
+ * Get an object reflecting the scripts that need to be added to the package.json.
  *
  * @param options Collection of mostly optional settings.
  * @param options.localOnly no server available
