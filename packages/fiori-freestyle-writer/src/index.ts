@@ -75,7 +75,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             flpAppId: ffApp.app.flpAppId,
             startFile: data?.app?.startFile,
             localStartFile: data?.app?.localStartFile,
-            generateStandaloneIndexHtml: ffApp.appOptions?.generateStandaloneIndexHtml
+            generateIndex: ffApp.appOptions?.generateIndex
         })
     };
 

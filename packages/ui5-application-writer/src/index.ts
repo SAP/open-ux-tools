@@ -29,7 +29,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
 
-    if (ui5AppConfig.appOptions?.generateStandaloneIndexHtml === false) {
+    if (ui5AppConfig.appOptions?.generateIndex === false) {
         ignore.push('**/webapp/index.html');
     }
 

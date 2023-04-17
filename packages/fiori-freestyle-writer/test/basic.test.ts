@@ -132,7 +132,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             name: 'basic_without_start-noflp',
             config: {
                 ...commonConfig,
-                appOptions: { generateStandaloneIndexHtml: false }
+                appOptions: { generateIndex: false }
             },
             settings: {}
         }

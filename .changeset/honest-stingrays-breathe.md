@@ -4,4 +4,4 @@
 '@sap-ux/ui5-application-writer': minor
 ---
 
-Add configuration option generateStandaloneIndexHtmlto toggle the generation of index.html
+Add configuration option generateIndex to toggle the generation of index.html

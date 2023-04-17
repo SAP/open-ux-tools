@@ -220,7 +220,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     ui5: {
                         version: '1.77.2'
                     },
-                    appOptions: { generateStandaloneIndexHtml: false }
+                    appOptions: { generateIndex: false }
                 }),
                 service: v2Service
             } as FioriElementsApp<LROPSettings>

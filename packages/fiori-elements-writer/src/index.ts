@@ -154,7 +154,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             flpAppId: feApp.app.flpAppId,
             startFile: data?.app?.startFile,
             localStartFile: data?.app?.localStartFile,
-            generateStandaloneIndexHtml: feApp.appOptions?.generateStandaloneIndexHtml
+            generateIndex: feApp.appOptions?.generateIndex
         })
     });
 
