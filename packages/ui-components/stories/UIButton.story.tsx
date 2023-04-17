@@ -7,7 +7,8 @@ import {
     UIIconButton,
     UIActionButton,
     UIIconButtonSizes,
-    UISplitButton
+    UISplitButton,
+    UISmallButton
 } from '../src/components/UIButton';
 import type { UIContextualMenuItem } from '../src/components/UIContextualMenu';
 import { initIcons, UiIcons } from '../src/components/Icons';
@@ -56,7 +57,6 @@ export const defaultUsage = (): JSX.Element => {
                     </UIDefaultButton>
                 </Stack>
             </Stack>
-
             <Stack tokens={stackTokens}>
                 <Text variant={'large'} className="textColor" block>
                     Secondary Button
@@ -69,7 +69,6 @@ export const defaultUsage = (): JSX.Element => {
                     </UIDefaultButton>
                 </Stack>
             </Stack>
-
             <Stack tokens={stackTokens}>
                 <Text variant={'large'} className="textColor" block>
                     Split Button
@@ -84,7 +83,6 @@ export const defaultUsage = (): JSX.Element => {
                     <span>selection: {selection}</span>
                 </Stack>
             </Stack>
-
             <Stack tokens={stackTokens}>
                 <Text variant={'large'} className="textColor" block>
                     Icon Button
@@ -110,7 +108,6 @@ export const defaultUsage = (): JSX.Element => {
                         title="Undo"></UIIconButton>
                 </Stack>
             </Stack>
-
             <Stack tokens={stackTokens}>
                 <Text variant={'large'} className="textColor" block>
                     Action Button
@@ -142,6 +139,15 @@ export const defaultUsage = (): JSX.Element => {
                         }}>
                         Icon with color - disabled
                     </UIActionButton>
+                </Stack>
+            </Stack>
+
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
+                    Small Button
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UISmallButton primary>Clear All</UISmallButton>
                 </Stack>
             </Stack>
         </Stack>

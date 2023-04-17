@@ -1,14 +1,41 @@
 { 
   "root": true,
   "plugins": [
-    "eslint-plugin-fiori-custom"
+      "fiori-custom"
   ],
-  "extends": [
-    "./node_modules/eslint-plugin-fiori-custom/configure.eslintrc"
-  ],
-  "ignorePatterns": [
-    "webapp/localService/**",
-    "webapp/test/**",
-    "dist/**"
+  "overrides": [
+      {
+          "files": [
+              "**/*.*"
+          ],
+          "excludedFiles": [
+              "test/**",
+              "target/**",
+              "webapp/test/**",
+              "webapp/localservice/**",
+              "backup/**",
+              "Gruntfile.js",
+              "changes_preview.js",
+              "gulpfile.js"
+          ],
+          "plugins": [
+              "fiori-custom"
+          ],
+          "extends": [
+              "eslint:recommended",
+              "plugin:fiori-custom/fioriToolsDefault"
+          ]
+      },
+      {
+          "files": [
+              "webapp/test/**"
+          ],
+          "plugins": [
+              "fiori-custom"
+          ],
+          "extends": [
+              "plugin:fiori-custom/fioriToolsTestcode"
+          ]
+      }
   ]
 }
