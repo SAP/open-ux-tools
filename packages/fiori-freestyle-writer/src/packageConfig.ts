@@ -10,7 +10,7 @@ import { t } from './i18n';
  * @param options.flpAppId local FLP id
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be oppend with the start-local script
- * @param options.excludeNoFlp exclude the start-noflp script
+ * @param options.skipIndexHtml exclude the start-noflp script
  * @description Generates the package.json scripts
  * @returns package.json scripts
  */
@@ -21,7 +21,7 @@ export function getPackageJsonTasks({
     flpAppId = '',
     startFile,
     localStartFile,
-    excludeNoFlp = false
+    skipIndexHtml = false
 }: {
     localOnly: boolean;
     addMock: boolean;
@@ -29,7 +29,7 @@ export function getPackageJsonTasks({
     flpAppId?: string;
     startFile?: string;
     localStartFile?: string;
-    excludeNoFlp?: boolean;
+    skipIndexHtml?: boolean;
 }): { start: string; 'start-local': string; 'start-noflp'?: string; 'start-mock'?: string } {
     // Build search param part of preview launch url
     const searchParamList = [];
@@ -61,7 +61,7 @@ export function getPackageJsonTasks({
             start: startCommand,
             'start-local': startLocalCommand
         },
-        excludeNoFlp
+        skipIndexHtml
             ? {}
             : {
                   'start-noflp': startNoFlpCommand

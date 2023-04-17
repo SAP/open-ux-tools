@@ -77,7 +77,7 @@ export interface AppOptions {
     /**
      * Excludes the index.html from the templates and does not add the `start-noflp` script in package.json
      */
-    excludeNoFlp?: boolean | undefined;
+    skipIndexHtml?: boolean | undefined;
 }
 
 export interface Ui5App {

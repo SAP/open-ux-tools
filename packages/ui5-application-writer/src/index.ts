@@ -29,8 +29,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
 
-    if (ui5AppConfig.appOptions?.excludeNoFlp && ui5AppConfig.appOptions?.excludeNoFlp === true) {
-        ignore.push(join(tmplPath, 'core', 'webapp', 'index.html'));
+    if (ui5AppConfig.appOptions?.skipIndexHtml && ui5AppConfig.appOptions?.skipIndexHtml === true) {
+        ignore.push('**/webapp/index.html');
     }
 
     fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), ui5App, undefined, {
