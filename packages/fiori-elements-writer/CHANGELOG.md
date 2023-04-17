@@ -1,5 +1,32 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.10.0
+
+### Minor Changes
+
+-   f3ec7324: Update eslint fiori custom package and rules
+
+### Patch Changes
+
+-   Updated dependencies [f3ec7324]
+    -   @sap-ux/ui5-application-writer@0.20.0
+
+## 0.9.2
+
+### Patch Changes
+
+-   c06de66b: TBI - refactor locate-reuse-lib.js template to use modern API's and fix lint issues
+-   Updated dependencies [c06de66b]
+    -   @sap-ux/ui5-application-writer@0.19.2
+
+## 0.9.1
+
+### Patch Changes
+
+-   8f167e8a: TBI - Fiori Elements V2 type support
+-   Updated dependencies [8f167e8a]
+    -   @sap-ux/ui5-application-writer@0.19.1
+
 ## 0.9.0
 
 ### Minor Changes

@@ -21,6 +21,7 @@ export * from './UIModal';
 export * from './UIOverlay';
 export * from './UIPersona';
 export * from './UISearchBox';
+export * from './UISeparator';
 export * from './UISection';
 export * from './UITable';
 export * from './UITabs';
