@@ -6,9 +6,12 @@ import {
     AbapCloudEnvironment,
     TransportRequestService,
     TransportChecksService,
-    ListPackageService
+    ListPackageService,
+    FileStoreService
 } from '../../src';
 import * as auth from '../../src/auth';
+import type { ArchiveFileNode } from '../../src/abap/types';
+import fs from 'fs';
 
 /**
  * URL are specific to the discovery schema.
@@ -19,7 +22,8 @@ enum AdtServices {
     ATO_SETTINGS = '/sap/bc/adt/ato/settings',
     TRANSPORT_CHECKS = '/sap/bc/adt/cts/transportchecks',
     TRANSPORT_REQUEST = '/sap/bc/adt/cts/transports',
-    LIST_PACKAGES = '/sap/bc/adt/repository/informationsystem/search'
+    LIST_PACKAGES = '/sap/bc/adt/repository/informationsystem/search',
+    FILE_STORE = '/sap/bc/adt/filestore/ui5-bsp/objects'
 }
 
 const server = 'https://server.example';
@@ -418,5 +422,90 @@ describe('List packages', () => {
             .replyWithFile(200, join(__dirname, 'mockResponses/listPackages-4.xml'));
         const listPackageService = await provider.getAdtService<ListPackageService>(ListPackageService);
         expect(await listPackageService?.listPackages({ phrase: undefined })).toStrictEqual([]);
+    });
+});
+
+describe('File Store Service', () => {
+    beforeAll(() => {
+        nock.disableNetConnect();
+    });
+
+    afterAll(() => {
+        nock.cleanAll();
+        nock.enableNetConnect();
+    });
+
+    const provider = createForAbap(config);
+
+    test('File structure content of root folder', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(`${AdtServices.FILE_STORE}/ZTESTAPP/content`)
+            .replyWithFile(200, join(__dirname, 'mockResponses/archiveFolderContent_RootZTESTAPP.xml'));
+        const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        const rootFolderContent = await fsService?.getAppArchiveContent('folder', 'ZTESTAPP');
+        expect(rootFolderContent?.length).toStrictEqual(13);
+    });
+
+    test('File structure content of folder that contain a single file', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(`${AdtServices.FILE_STORE}/ZTESTAPP/content`)
+            .replyWithFile(200, join(__dirname, 'mockResponses/archiveFolderContent_i18n.xml'));
+        const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        const folderContent = await fsService?.getAppArchiveContent('folder', 'ZTESTAPP');
+        expect(folderContent?.length).toStrictEqual(1);
+        expect((folderContent as ArchiveFileNode[])[0].basename).toEqual('i18n.properties');
+        expect((folderContent as ArchiveFileNode[])[0].path).toEqual('/i18n/i18n.properties');
+        expect((folderContent as ArchiveFileNode[])[0].type).toEqual('file');
+    });
+
+    test('File content of given file path', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(`${AdtServices.FILE_STORE}/ZTESTAPP%2FComponent-dbg.js/content`)
+            .replyWithFile(200, join(__dirname, 'mockResponses/archiveFileContent_Component-dbg_js.txt'));
+        const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        const fileContent = await fsService?.getAppArchiveContent('file', 'ZTESTAPP', '/Component-dbg.js');
+        expect(typeof fileContent).toEqual('string');
+        expect(fileContent).toEqual(
+            fs.readFileSync(join(__dirname, 'mockResponses/archiveFileContent_Component-dbg_js.txt'), 'utf-8')
+        );
+    });
+
+    test('Invalid input file path', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(`${AdtServices.FILE_STORE}/ZTESTAPP%2FComponent-dbg.js/content`)
+            .replyWithFile(200, join(__dirname, 'mockResponses/archiveFileContent_Component-dbg_js.txt'));
+        const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        await expect(fsService?.getAppArchiveContent('file', 'ZTESTAPP', 'Component-dbg.js')).rejects.toThrow(
+            'Input argument "path" needs to start with /'
+        );
+    });
+
+    test('Unexpected xml in resonse', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(`${AdtServices.FILE_STORE}/ZTESTAPP/content`)
+            .reply(200, '<?xml version="1.0" encoding="UTF-8"?><invalid>error message</invalid>');
+        const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        const fileContent = await fsService?.getAppArchiveContent('folder', 'ZTESTAPP');
+        expect(fileContent?.length).toEqual(0);
+    });
+
+    test('Invalid xml in resonse', async () => {
+        nock(server)
+            .get(AdtServices.DISCOVERY)
+            .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
+            .get(`${AdtServices.FILE_STORE}/ZTESTAPP/content`)
+            .reply(200, 'Invalid XML');
+        const fsService = await provider.getAdtService<FileStoreService>(FileStoreService);
+        await expect(fsService?.getAppArchiveContent('folder', 'ZTESTAPP')).rejects.toThrow('Invalid XML content');
     });
 });
