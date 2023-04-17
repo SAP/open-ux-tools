@@ -1,7 +1,7 @@
 import { ServiceProvider } from '../../src/base/service-provider';
 import { getReentranceTicketAuthInterceptor } from '../../src/auth';
 import * as rt from '../../src/auth/reentrance-ticket';
-import type { AxiosRequestConfig } from 'axios';
+import { AxiosHeaders, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 
 describe('getReentranceTicketAuthInterceptor', () => {
     const getReentranceTicketSpy = jest.spyOn(rt, 'getReentranceTicket');
@@ -10,7 +10,7 @@ describe('getReentranceTicketAuthInterceptor', () => {
         const REENTRANCE_TICKET_VALUE = 'a_reentrance_ticket';
         getReentranceTicketSpy.mockResolvedValueOnce({ reentranceTicket: REENTRANCE_TICKET_VALUE });
         const provider = new ServiceProvider({ baseURL: 'base_url.example' });
-        const request: AxiosRequestConfig = {};
+        const request: InternalAxiosRequestConfig = { headers: new AxiosHeaders() };
 
         const interceptor = getReentranceTicketAuthInterceptor({ provider, ejectCallback: () => 0 });
         await interceptor(request);
@@ -27,7 +27,7 @@ describe('getReentranceTicketAuthInterceptor', () => {
         const interceptor = getReentranceTicketAuthInterceptor({ provider, ejectCallback: () => 0 });
         expect(provider.defaults.baseURL).toBe(ORIGINAL_BASE_URL);
 
-        await interceptor({});
+        await interceptor({ headers: new AxiosHeaders() });
 
         expect(provider.defaults.baseURL).toBe(API_URL);
     });
@@ -38,7 +38,7 @@ describe('getReentranceTicketAuthInterceptor', () => {
         getReentranceTicketSpy.mockResolvedValueOnce({ reentranceTicket: 'foo' });
 
         const interceptor = getReentranceTicketAuthInterceptor({ provider, ejectCallback });
-        await interceptor({});
+        await interceptor({ headers: new AxiosHeaders() });
 
         expect(ejectCallback).toBeCalledTimes(1);
     });

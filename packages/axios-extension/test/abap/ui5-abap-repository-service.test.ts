@@ -157,7 +157,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
-            expect(response.status).toBe(200);
+            expect(response?.status).toBe(200);
         });
 
         test('successful with additional message', async () => {
@@ -168,7 +168,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
-            expect(response.status).toBe(200);
+            expect(response?.status).toBe(200);
         });
 
         test('failed removal', async () => {
@@ -197,7 +197,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: appName } });
-            expect(response.status).toBe(200);
+            expect(response?.status).toBe(200);
         });
     });
 

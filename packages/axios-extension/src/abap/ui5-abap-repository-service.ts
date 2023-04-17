@@ -393,7 +393,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             if (responseData?.['error']) {
                 prettyPrintError({ error: responseData['error'], host, log: this.log });
             } else {
-                this.log.error(error.response.data);
+                this.log.error(error.response.data.toString());
             }
         }
     }

@@ -1,4 +1,4 @@
-import type { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
+import { AxiosResponse, AxiosRequestConfig, AxiosError, InternalAxiosRequestConfig, AxiosHeaders } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
 import detectContentType from 'detect-content-type';
 
@@ -135,8 +135,8 @@ function getContentType(contentTypeHeader: string | undefined, responseData: any
  */
 export function attachConnectionHandler(provider: ServiceProvider) {
     // fetch xsrf token with the first request
-    const oneTimeReqInterceptorId = provider.interceptors.request.use((request: AxiosRequestConfig) => {
-        request.headers = request.headers ?? {};
+    const oneTimeReqInterceptorId = provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+        request.headers = request.headers ?? new AxiosHeaders();
         request.headers[CSRF.RequestHeaderName] = CSRF.RequestHeaderValue;
         provider.interceptors.request.eject(oneTimeReqInterceptorId);
         return request;
@@ -175,8 +175,8 @@ export function attachConnectionHandler(provider: ServiceProvider) {
     );
 
     // always add cookies to outgoing requests
-    provider.interceptors.request.use((request: AxiosRequestConfig) => {
-        request.headers = request.headers ?? {};
+    provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+        request.headers = request.headers ?? new AxiosHeaders();
         request.headers.cookie = provider.cookies.toString();
         return request;
     });
