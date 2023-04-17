@@ -13,17 +13,10 @@ module.exports = {
     overrides: [
         {
             'plugins': ['@typescript-eslint'],
-            'files': ['*.ts'], // Your TypeScript files extension
-            // As mentioned in the comments, you should extend TypeScript plugins here,
-            // instead of extending them outside the `overrides`.
-            // If you don't want to extend any rules, you don't need an `extends` attribute.
+            'files': ['*.ts'],
             'parser': '@typescript-eslint/parser',
-            'extends': [
-                'plugin:@typescript-eslint/recommended'
-                // "plugin:@typescript-eslint/recommended-requiring-type-checking"
-            ],
+            'extends': ['plugin:@typescript-eslint/recommended'],
             'parserOptions': {
-                'sourceType': 'module',
                 'project': ['tsconfig.json']
             }
         },

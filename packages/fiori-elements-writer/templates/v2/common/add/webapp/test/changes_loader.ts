@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 //Loads and extends the openui5 FileListBaseConnector
 
@@ -21,9 +22,9 @@ sap.ui.define(['sap/base/util/merge', connectorPath], function(merge, FileListBa
                     cache: false
                 })
                     .then(function(sChangesFolderContent) {
-                        var regex = /(\/changes\/[^"]*\.[a-zA-Z]*)/g;
-                        var result = regex.exec(sChangesFolderContent);
-                        var aChanges = [];
+                        const regex = /(\/changes\/[^"]*\.[a-zA-Z]*)/g;
+                        const result = regex.exec(sChangesFolderContent);
+                        const aChanges = [];
                         while (result !== null) {
                             aChanges.push(result[1]);
                             result = regex.exec(sChangesFolderContent);
