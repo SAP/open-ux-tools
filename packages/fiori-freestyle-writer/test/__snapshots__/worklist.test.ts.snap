@@ -12910,27 +12910,7 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"root\\": true,
-    \\"env\\": {
-        \\"browser\\": true,
-        \\"es6\\": true,
-        \\"node\\": true
-    },
-    \\"extends\\": [
-        \\"eslint:recommended\\",
-        \\"plugin:@typescript-eslint/recommended\\",
-        \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\"
-    ],
-	\\"ignorePatterns\\": [\\".eslintignore.js\\"],
-    \\"parser\\": \\"@typescript-eslint/parser\\",
-    \\"parserOptions\\": {
-        \\"project\\": [\\"./tsconfig.json\\"],
-        \\"tsconfigRootDir\\": \\".\\",
-        \\"sourceType\\": \\"module\\"
-    },
-    \\"plugins\\": [
-        \\"@typescript-eslint\\"
-    ]
+    \\"extends\\": \\"@sap-ux/eslint-config-fiori-tools\\"
 }",
     "state": "modified",
   },
@@ -12974,6 +12954,7 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
@@ -16275,27 +16256,7 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"root\\": true,
-    \\"env\\": {
-        \\"browser\\": true,
-        \\"es6\\": true,
-        \\"node\\": true
-    },
-    \\"extends\\": [
-        \\"eslint:recommended\\",
-        \\"plugin:@typescript-eslint/recommended\\",
-        \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\"
-    ],
-	\\"ignorePatterns\\": [\\".eslintignore.js\\"],
-    \\"parser\\": \\"@typescript-eslint/parser\\",
-    \\"parserOptions\\": {
-        \\"project\\": [\\"./tsconfig.json\\"],
-        \\"tsconfigRootDir\\": \\".\\",
-        \\"sourceType\\": \\"module\\"
-    },
-    \\"plugins\\": [
-        \\"@typescript-eslint\\"
-    ]
+    \\"extends\\": \\"@sap-ux/eslint-config-fiori-tools\\"
 }",
     "state": "modified",
   },
@@ -16339,6 +16300,7 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
