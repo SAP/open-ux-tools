@@ -1,4 +1,5 @@
 import { t } from './i18n';
+import type { PackageJsonScripts } from './types';
 
 /**
  * Get an object reflecting the scripts that need to be added to the package.json.
@@ -30,7 +31,7 @@ export function getPackageJsonTasks({
     startFile?: string;
     localStartFile?: string;
     generateIndex?: boolean;
-}): { start: string; 'start-local': string; 'start-noflp'?: string; 'start-mock'?: string } {
+}): PackageJsonScripts {
     // Build search param part of preview launch url
     const searchParamList = [];
     if (sapClient) {
@@ -48,24 +49,25 @@ export function getPackageJsonTasks({
     const startCommand = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
         : `fiori run --open "${startFile || 'test/flpSandbox.html'}${params}"`;
+
     const startLocalCommand = `fiori run --config ./ui5-local.yaml --open "${
         localStartFile || 'test/flpSandbox.html'
     }${params}"`;
-    const startNoFlpCommand = localOnly
-        ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : `fiori run --open "${'index.html'}${searchParam}"`;
 
-    const mockTask = `fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html${params}"`;
-    return Object.assign(
-        {
-            start: startCommand,
-            'start-local': startLocalCommand
-        },
-        generateIndex ? { 'start-noflp': startNoFlpCommand } : {},
-        addMock
-            ? {
-                  'start-mock': mockTask
-              }
-            : {}
-    );
+    const scripts: PackageJsonScripts = {
+        start: startCommand,
+        'start-local': startLocalCommand
+    };
+
+    if (generateIndex) {
+        scripts['start-noflp'] = localOnly
+            ? `echo \\"${t('info.mockOnlyWarning')}\\"`
+            : `fiori run --open "${'index.html'}${searchParam}"`;
+    }
+
+    if (addMock) {
+        scripts['start-mock'] = `fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html${params}"`;
+    }
+
+    return scripts;
 }
