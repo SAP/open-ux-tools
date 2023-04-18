@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.21.0
+
+### Minor Changes
+
+-   e39c14d7: Add configuration option generateIndex to toggle the generation of index.html
+
 ## 0.20.0
 
 ### Minor Changes
