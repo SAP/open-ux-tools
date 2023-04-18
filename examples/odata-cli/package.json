@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-cli",
-    "version": "0.11.11",
+    "version": "0.11.12",
     "description": "Simple example CLI uing the @sap-ux/axios-extension module to fetch metadata and annotations from an SAP system.",
     "license": "SEE LICENSE IN LICENSE",
     "private": true,
@@ -9,7 +9,7 @@
         "start": "node -r dotenv/config dist/index.js dotenv_config_path=./.env/env.properties",
         "build": "pnpm clean && tsc",
         "watch": "tsc --watch",
-        "clean": "rimraf dist coverage",
+        "clean": "rimraf dist coverage tsconfig.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix"

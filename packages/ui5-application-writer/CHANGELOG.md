@@ -1,5 +1,29 @@
 # @sap-ux/ui5-application-writer
 
+## 0.21.0
+
+### Minor Changes
+
+-   e39c14d7: Add configuration option generateIndex to toggle the generation of index.html
+
+## 0.20.0
+
+### Minor Changes
+
+-   f3ec7324: Update eslint fiori custom package and rules
+
+## 0.19.2
+
+### Patch Changes
+
+-   c06de66b: TBI - refactor locate-reuse-lib.js template to use modern API's and fix lint issues
+
+## 0.19.1
+
+### Patch Changes
+
+-   8f167e8a: TBI - Fiori Elements V2 type support
+
 ## 0.19.0
 
 ### Minor Changes

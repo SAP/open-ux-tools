@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<atom:feed xmlns:atom="http://www.w3.org/2005/Atom" xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+   <atom:author />
+   <atom:id>ZTESTAPP%2fi18n</atom:id>
+   <atom:link href="./ZTESTAPP%2fi18n/content" rel="self" type="application/atom+xml;type=feed" />
+   <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+   <atom:title>ZTESTAPP/i18n</atom:title>
+   <atom:entry xml:base="/sap/bc/adt/filestore/ui5-bsp/objects/">
+      <atom:author />
+      <atom:category term="file" />
+      <atom:content xmlns:afr="http://www.sap.com/adt/afr" afr:etag="20230112203911" type="application/octet-stream" src="./ZTESTAPP%2fi18n%2fi18n.properties/content" />
+      <atom:contributor />
+      <atom:id>ZTESTAPP%2fi18n%2fi18n.properties</atom:id>
+      <atom:link href="../appindex/ZTESTAPP" rel="appindex" />
+      <atom:link href="./ZTESTAPP%2fi18n%2fi18n.properties" rel="self" type="application/atom+xml;type=entry" />
+      <atom:link href="https://testdomain/sap/bc/ui5_ui5/sap/ZTESTAPP/i18n/i18n.properties?sap-client=100&amp;sap-ui-language=EN&amp;sap-ui-xx-devmode=true" rel="execute" type="application/http" />
+      <atom:summary type="text" />
+      <atom:title>ZTESTAPP/i18n/i18n.properties</atom:title>
+   </atom:entry>
+</atom:feed>

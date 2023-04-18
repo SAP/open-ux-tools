@@ -1,5 +1,42 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.18.0
+
+### Minor Changes
+
+-   e39c14d7: Add configuration option generateIndex to toggle the generation of index.html
+
+### Patch Changes
+
+-   Updated dependencies [e39c14d7]
+    -   @sap-ux/ui5-application-writer@0.21.0
+
+## 0.17.0
+
+### Minor Changes
+
+-   f3ec7324: Update eslint fiori custom package and rules
+
+### Patch Changes
+
+-   Updated dependencies [f3ec7324]
+    -   @sap-ux/ui5-application-writer@0.20.0
+
+## 0.16.2
+
+### Patch Changes
+
+-   c06de66b: TBI - refactor locate-reuse-lib.js template to use modern API's and fix lint issues
+-   Updated dependencies [c06de66b]
+    -   @sap-ux/ui5-application-writer@0.19.2
+
+## 0.16.1
+
+### Patch Changes
+
+-   Updated dependencies [8f167e8a]
+    -   @sap-ux/ui5-application-writer@0.19.1
+
 ## 0.16.0
 
 ### Minor Changes

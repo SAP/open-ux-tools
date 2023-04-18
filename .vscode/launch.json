@@ -23,6 +23,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "ui5-application-writer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/ui5-application-writer"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "app-config-writer: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
@@ -59,6 +69,16 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "fiori-elements-writer: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "cwd": "${workspaceFolder}/packages/fiori-elements-writer"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "fiori-freestyle-writer: Debug Current Jest File with UX_DEBUG & UX_DEBUG_FULL",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
@@ -74,7 +94,7 @@
             "type": "node",
             "request": "launch",
             "name": "odata-service-writer: Debug Current Jest File",
-            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
@@ -87,7 +107,7 @@
             "type": "node",
             "request": "launch",
             "name": "yaml: Debug Current Jest File",
-            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
