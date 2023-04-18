@@ -10,7 +10,8 @@ import {
     generateCustomView,
     enableFPM,
     generateControllerExtension,
-    ControllerExtensionPageType
+    ControllerExtensionPageType,
+    generateCustomFilter
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
@@ -250,6 +251,25 @@ describe('use FPM with existing apps', () => {
                     name: 'MyCustomSection',
                     target: 'TravelObjectPage',
                     title: 'My Custom Section',
+                    position: {
+                        placement: Placement.After,
+                        anchor: 'DummyFacet'
+                    },
+                    eventHandler: true,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateCustomFilter in ListReportPage', (config) => {
+            generateCustomFilter(
+                config.path,
+                {
+                    name: 'NewCustomFilter',
+                    label: 'Test Custom Filter',
+                    controlID: 'testID',
+                    property: 'Testing',
                     position: {
                         placement: Placement.After,
                         anchor: 'DummyFacet'

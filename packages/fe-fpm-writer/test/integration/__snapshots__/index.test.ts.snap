@@ -157,6 +157,37 @@ Object {
 ",
     "state": "modified",
   },
+  "lrop/webapp/ext/newCustomFilter/NewCustomFilter.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox
+            id=\\"testID\\"
+            core:require=\\"{handler: 'v4travel/ext/newCustomFilter/NewCustomFilter'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.itemsFilter' }}\\"
+        >
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/newCustomFilter/NewCustomFilter.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
   "lrop/webapp/ext/newCustomView/NewCustomView.controller.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
@@ -316,6 +347,20 @@ Object {
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My Custom Action\\"
+                    }
+                  }
+                },
+                \\"@com.sap.vocabularies.UI.v1.SelectionFields\\": {
+                  \\"filterFields\\": {
+                    \\"NewCustomFilter\\": {
+                      \\"label\\": \\"Test Custom Filter\\",
+                      \\"property\\": \\"Testing\\",
+                      \\"template\\": \\"v4travel.ext.newCustomFilter.NewCustomFilter\\",
+                      \\"required\\": false,
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyFacet\\"
+                      }
                     }
                   }
                 }
@@ -623,6 +668,38 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
 }",
     "state": "modified",
   },
+  "ts/webapp/ext/newCustomFilter/NewCustomFilter.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox
+            id=\\"testID\\"
+            core:require=\\"{handler: 'v4travel/ext/newCustomFilter/NewCustomFilter'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.itemsFilter' }}\\"
+        >
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/newCustomFilter/NewCustomFilter.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import Context from 'sap/ui/model/odata/v4/Context';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param pageContext the context of the page on which the event was fired
+ */
+export function onPress(this: ExtensionAPI, pageContext: Context) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
   "ts/webapp/ext/newCustomView/NewCustomView.controller.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import UI5Event from 'sap/ui/base/Event';
@@ -830,6 +907,20 @@ declare module 'sap/fe/core/PageController' {
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My Custom Action\\"
+                    }
+                  }
+                },
+                \\"@com.sap.vocabularies.UI.v1.SelectionFields\\": {
+                  \\"filterFields\\": {
+                    \\"NewCustomFilter\\": {
+                      \\"label\\": \\"Test Custom Filter\\",
+                      \\"property\\": \\"Testing\\",
+                      \\"template\\": \\"v4travel.ext.newCustomFilter.NewCustomFilter\\",
+                      \\"required\\": false,
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyFacet\\"
+                      }
                     }
                   }
                 }

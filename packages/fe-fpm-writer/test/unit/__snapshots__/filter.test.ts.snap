@@ -1,0 +1,488 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomFilter generateCustomFilter Create several new custom filters 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "myTestApp",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": Object {
+                  "filterFields": Object {
+                    "NewCustomFilter": Object {
+                      "label": "Test Custom Filter",
+                      "property": "Testing",
+                      "required": false,
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
+                    },
+                    "NewCustomFilter2": Object {
+                      "label": "Test Custom Filter",
+                      "property": "Testing",
+                      "required": false,
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter2",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomFilter generateCustomFilter Create several new custom filters 2`] = `
+"sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
+    \\"use strict\\";
+    return {
+      itemsFilter: function(sValue) {
+          switch (sValue) {
+              case \\"0\\":
+                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
+              case \\"1\\":
+                    return new Filter({
+                      filters: [
+                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                      ],
+                      and: true
+                  });           
+              case \\"2\\":
+                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
+          }
+      }
+   };
+  });"
+`;
+
+exports[`CustomFilter generateCustomFilter Create several new custom filters 3`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox
+            id=\\"testID\\"
+            core:require=\\"{handler: 'myTestApp/ext/newCustomFilter/NewCustomFilter2'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter.NewCustomFilter2.itemsFilter' }}\\"
+        >
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomFilter generateCustomFilter New custom filters (no eventhandler) 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "myTestApp",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": Object {
+                  "filterFields": Object {
+                    "NewCustomFilter": Object {
+                      "label": "Test Custom Filter",
+                      "property": "Testing",
+                      "required": false,
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomFilter generateCustomFilter New custom filters (no eventhandler) 2`] = `
+"sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
+    \\"use strict\\";
+    return {
+      itemsFilter: function(sValue) {
+          switch (sValue) {
+              case \\"0\\":
+                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
+              case \\"1\\":
+                    return new Filter({
+                      filters: [
+                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                      ],
+                      and: true
+                  });           
+              case \\"2\\":
+                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
+          }
+      }
+   };
+  });"
+`;
+
+exports[`CustomFilter generateCustomFilter New custom filters (no eventhandler) 3`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox
+            id=\\"testID\\"
+            core:require=\\"{handler: 'myTestApp/ext/newCustomFilter/NewCustomFilter'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter.NewCustomFilter.itemsFilter' }}\\"
+        >
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomFilter generateCustomFilter Test 'position' property. Create with anchor 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "myTestApp",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": Object {
+                  "filterFields": Object {
+                    "NewCustomFilter": Object {
+                      "label": "Test Custom Filter",
+                      "position": Object {
+                        "anchor": "Dummy",
+                        "placement": "Before",
+                      },
+                      "property": "Testing",
+                      "required": false,
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomFilter generateCustomFilter Test 'position' property. Create without anchor 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "myTestApp",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": Object {
+                  "filterFields": Object {
+                    "NewCustomFilter": Object {
+                      "label": "Test Custom Filter",
+                      "position": Object {
+                        "placement": "Before",
+                      },
+                      "property": "Testing",
+                      "required": false,
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomFilter generateCustomFilter Test 'position' property. Create without position 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "myTestApp",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": Object {
+                  "filterFields": Object {
+                    "NewCustomFilter": Object {
+                      "label": "Test Custom Filter",
+                      "property": "Testing",
+                      "required": false,
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomFilter generateCustomFilter Test 'typescript' property. JavaScript 1`] = `
+"sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
+    \\"use strict\\";
+    return {
+      itemsFilter: function(sValue) {
+          switch (sValue) {
+              case \\"0\\":
+                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
+              case \\"1\\":
+                    return new Filter({
+                      filters: [
+                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                      ],
+                      and: true
+                  });           
+              case \\"2\\":
+                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
+          }
+      }
+   };
+  });"
+`;
+
+exports[`CustomFilter generateCustomFilter Test 'typescript' property. TypeScript 1`] = `
+"import Filter from 'sap/ui/model/Filter';
+import FilterOperator from 'sap/ui/model/FilterOperator';
+
+/**
+ * Custom filter
+ * @param sValue selected filter item
+ * @returns new Filter
+ */
+export function itemsFilter(sValue: string) {
+    switch (sValue) {
+        case \\"0\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
+        case \\"1\\":
+            return new Filter({
+                filters: [
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                ],
+                and: true
+            });           
+        case \\"2\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
+    }
+}"
+`;
+
+exports[`CustomFilter generateCustomFilter specific target folder, event handler as boolean 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "myTestApp",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": Object {
+                  "filterFields": Object {
+                    "NewCustomFilter": Object {
+                      "label": "Test Custom Filter",
+                      "property": "Testing",
+                      "required": false,
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomFilter generateCustomFilter specific target folder, event handler as boolean 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`CustomFilter generateCustomFilter with existing event handler as string 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "myTestApp",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": Object {
+                  "filterFields": Object {
+                    "NewCustomFilter": Object {
+                      "label": "Test Custom Filter",
+                      "property": "Testing",
+                      "required": false,
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomFilter generateCustomFilter with new event handler as string 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "myTestApp",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "targets": Object {
+        "TestListReport": Object {
+          "name": "sap.fe.templates.ListReport",
+          "options": Object {
+            "settings": Object {
+              "controlConfiguration": Object {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": Object {
+                  "filterFields": Object {
+                    "NewCustomFilter": Object {
+                      "label": "Test Custom Filter",
+                      "property": "Testing",
+                      "required": false,
+                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        "TestObjectPage": Object {
+          "name": "sap.fe.templates.ObjectPage",
+        },
+      },
+    },
+  },
+}
+`;
