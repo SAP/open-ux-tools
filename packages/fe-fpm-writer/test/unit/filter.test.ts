@@ -4,7 +4,8 @@ import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { CustomFilter } from '../../src/filter/types';
 import { generateCustomFilter } from '../../src/filter';
-import { Placement } from '../../src/common/types';
+import { EventHandlerConfiguration, Placement, FileContentPosition } from '../../src/common/types';
+import os from 'os';
 
 describe('CustomFilter', () => {
     describe('generateCustomFilter', () => {
@@ -50,7 +51,7 @@ describe('CustomFilter', () => {
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), testAppManifest);
         });
-        test('New custom filters (no eventhandler)', () => {
+        test('New custom filter (no eventhandler)', () => {
             generateCustomFilter(testDir, filter, fs);
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(getControllerPath(filter))).toBeTruthy();
@@ -81,6 +82,8 @@ describe('CustomFilter', () => {
                 fs
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(getExpectedFragmentPath(filter))).toBeTruthy();
+            expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
         });
 
         test('with existing event handler as string', () => {
@@ -95,6 +98,8 @@ describe('CustomFilter', () => {
                 fs
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(getExpectedFragmentPath(filter))).toBeTruthy();
+            expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
             expect(fs.exists(controllerPath)).toBe(true);
             expect(fs.read(controllerPath)).toEqual('dummyContent');
         });
@@ -109,7 +114,128 @@ describe('CustomFilter', () => {
                 fs
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.exists(getExpectedFragmentPath(filter))).toBeTruthy();
+            expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
             expect(fs.read(getControllerPath(filter))).toMatchSnapshot();
+        });
+
+        describe('Test property "eventHandler"', () => {
+            const generateCustomFilterWithEventHandler = (
+                actionId: string,
+                eventHandler: string | EventHandlerConfiguration,
+                folder?: string
+            ) => {
+                generateCustomFilter(
+                    testDir,
+                    {
+                        ...filter,
+                        folder,
+                        eventHandler
+                    },
+                    fs
+                );
+            };
+
+            test('"eventHandler" is empty "object" - create new file with default function name', () => {
+                generateCustomFilterWithEventHandler(filter.name, {});
+
+                expect(
+                    fs.read(join(testDir, 'webapp', 'ext', 'newCustomFilter', 'NewCustomFilter.js'))
+                ).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+                const extension = {
+                    fnName: 'DummyItemsFilter',
+                    fileName: 'dummyFilter'
+                };
+                const folder = join('ext', 'custom');
+                generateCustomFilterWithEventHandler(filter.name, extension, folder);
+
+                expect(fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object" - create new file with custom function name', () => {
+                generateCustomFilterWithEventHandler(filter.name, {
+                    fnName: 'DummyOnAction'
+                });
+
+                expect(
+                    fs.read(join(testDir, 'webapp', 'ext', 'newCustomFilter', 'NewCustomFilter.js'))
+                ).toMatchSnapshot();
+            });
+
+            test('"eventHandler" is "object", action with lowercase first letter', () => {
+                generateCustomFilterWithEventHandler(filter.name, {
+                    fnName: 'dummyOnAction'
+                });
+
+                expect(
+                    fs.read(join(testDir, 'webapp', 'ext', 'newCustomFilter', 'NewCustomFilter.js'))
+                ).toMatchSnapshot();
+            });
+
+            test(`"eventHandler" is String - no changes to handler file`, () => {
+                generateCustomFilterWithEventHandler(filter.name, 'my.test.App.ext.ExistingHandler.onCustomAction');
+
+                expect(fs.exists(join(testDir, 'webapp', 'ext', 'newCustomFilter', 'NewCustomFilter.js'))).toBeFalsy();
+            });
+
+            // Test with both position interfaces
+            test.each([
+                [
+                    'position as object',
+                    {
+                        line: os.EOL.length + 17,
+                        character: 3
+                    }
+                ],
+                ['absolute position', 1200 + 20 * os.EOL.length]
+            ])(
+                '"eventHandler" is object. Append new function to existing js file with %s',
+                (_desc: string, position: number | FileContentPosition) => {
+                    const fileName = 'MyExistingFilter';
+                    // Create existing file with existing filters
+                    const folder = join('ext', 'fragments');
+                    const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
+                    // Generate handler with single method - content should be updated during generating of custom filter
+                    fs.copyTpl(join(__dirname, '../../templates', 'filter/Controller.js'), existingPath, filter);
+                    // Create third action - append existing js file
+                    const filterName = 'CustomFilter2';
+                    const fnName = 'onHandleSecondAction';
+                    generateCustomFilterWithEventHandler(
+                        filterName,
+                        {
+                            fnName,
+                            fileName,
+                            insertScript: {
+                                fragment: `itemsFilter2: function(sValue) {
+    switch (sValue) {
+        case "0":
+                return new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 100 });       
+        case "1":
+                return new Filter({
+                filters: [
+                    new Filter({ path: "FlightPrice", operator: FilterOperator.GT, value1: 100 }),
+                    new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 500 })
+                ],
+                and: true
+            });           
+        case "2":
+                return new Filter({ path: "FlightPrice", operator: FilterOperator.GT, value1: 500 });       
+    }
+    }
+    `,
+                                position
+                            }
+                        },
+                        folder
+                    );
+
+                    // Check update js file content
+                    expect(fs.read(existingPath)).toMatchSnapshot();
+                }
+            );
         });
 
         const positionTests = [

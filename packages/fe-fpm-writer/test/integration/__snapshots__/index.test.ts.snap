@@ -174,18 +174,27 @@ Object {
     "state": "modified",
   },
   "lrop/webapp/ext/newCustomFilter/NewCustomFilter.js": Object {
-    "contents": "sap.ui.define([
-    \\"sap/m/MessageToast\\"
-], function(MessageToast) {
-    'use strict';
-
+    "contents": "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
+    \\"use strict\\";
     return {
-        onPress: function(oEvent) {
-            MessageToast.show(\\"Custom handler invoked.\\");
-        }
-    };
-});
-",
+        itemsFilter: function(sValue) {
+          switch (sValue) {
+              case \\"0\\":
+                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
+              case \\"1\\":
+                    return new Filter({
+                      filters: [
+                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                      ],
+                      and: true
+                  });           
+              case \\"2\\":
+                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
+          }
+      }
+   };
+  });",
     "state": "modified",
   },
   "lrop/webapp/ext/newCustomView/NewCustomView.controller.js": Object {
@@ -685,18 +694,29 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
     "state": "modified",
   },
   "ts/webapp/ext/newCustomFilter/NewCustomFilter.ts": Object {
-    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
-import Context from 'sap/ui/model/odata/v4/Context';
-import MessageToast from 'sap/m/MessageToast';
+    "contents": "import Filter from 'sap/ui/model/Filter';
+import FilterOperator from 'sap/ui/model/FilterOperator';
 
 /**
- * Generated event handler.
- *
- * @param this reference to the 'this' that the event handler is bound to.
- * @param pageContext the context of the page on which the event was fired
+ * Custom filter
+ * @param sValue selected filter item
+ * @returns new Filter
  */
-export function onPress(this: ExtensionAPI, pageContext: Context) {
-    MessageToast.show(\\"Custom handler invoked.\\");
+export function itemsFilter(sValue: string) {
+    switch (sValue) {
+        case \\"0\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
+        case \\"1\\":
+            return new Filter({
+                filters: [
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                ],
+                and: true
+            });           
+        case \\"2\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
+    }
 }",
     "state": "modified",
   },
