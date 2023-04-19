@@ -1,7 +1,7 @@
 sap.ui.define(["sap/ui/model/Filter", "sap/ui/model/FilterOperator"], function(Filter, FilterOperator) {
     "use strict";
     return {
-      itemsFilter: function(sValue) {
+        <%- (typeof eventHandlerFnName !== 'undefined' && eventHandlerFnName) || 'itemsFilter' %>: function(sValue) {
           switch (sValue) {
               case "0":
                     return new Filter({ path: "<%- property %>", operator: FilterOperator.LT, value1: 100 });       

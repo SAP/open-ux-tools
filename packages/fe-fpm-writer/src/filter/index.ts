@@ -59,21 +59,22 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
             config.eventHandler,
             false,
             config.typescript,
-            contextParameter
+            contextParameter,
+            { templatePath: 'filter/Controller', fnName: 'itemsFilter', fileName: config.name }
         );
+    } else {
+        // create a controller file
+        const ext = filterConfig.typescript ? 'ts' : 'js';
+        const viewPath = join(config.path, `${config.name}.${ext}`);
+        if (!fs.exists(viewPath)) {
+            fs.copyTpl(getTemplatePath(`filter/Controller.${ext}`), viewPath, config);
+        }
     }
 
     // enhance manifest with the filter definition and controller reference
     const filters = enhanceManifestAndGetFiltersReference(manifest, filterConfig);
     Object.assign(filters, JSON.parse(render(fs.read(getTemplatePath(`filter/manifest.json`)), config, {})));
     fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, filterConfig.tabInfo));
-
-    // create a controller file
-    const ext = filterConfig.typescript ? 'ts' : 'js';
-    const viewPath = join(config.path, `${config.name}.${ext}`);
-    if (!fs.exists(viewPath)) {
-        fs.copyTpl(getTemplatePath(`filter/Controller.${ext}`), viewPath, config);
-    }
 
     // create a fragment file
     const fragmentPath = join(config.path, `${config.name}.fragment.xml`);

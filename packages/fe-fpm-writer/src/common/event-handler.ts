@@ -43,6 +43,7 @@ export const contextParameter: EventHandlerTypescriptParameters = {
  * @param controllerSuffix - append controller suffix to new file
  * @param typescript - create Typescript file instead of Javascript
  * @param parameters - parameter configurations for the event handler
+ * @param defaultConfig - default path to the template without the extension, default functionName, default fileName
  * @returns {string} full namespace path to method
  */
 export function applyEventHandlerConfiguration(
@@ -51,17 +52,18 @@ export function applyEventHandlerConfiguration(
     eventHandler: EventHandlerConfiguration | true | string,
     controllerSuffix = false,
     typescript?: boolean,
-    parameters: EventHandlerTypescriptParameters = defaultParameter
+    parameters: EventHandlerTypescriptParameters = defaultParameter,
+    defaultConfig = { templatePath: 'common/EventHandler', fnName: 'onPress', fileName: config.name }
 ): string {
     if (typeof eventHandler === 'string') {
         // Existing event handler is passed - no need for file creation/update
         return eventHandler;
     }
     // New event handler function name - 'onPress' is default
-    let eventHandlerFnName = 'onPress';
+    let eventHandlerFnName = defaultConfig.fnName;
     let insertScript: TextFragmentInsertion | undefined;
     // By default - use config name for js file name
-    let fileName = `${config.name}`;
+    let fileName = defaultConfig.fileName;
     if (typeof eventHandler === 'object') {
         if (eventHandler.fnName) {
             eventHandlerFnName = eventHandler.fnName;
@@ -76,9 +78,10 @@ export function applyEventHandlerConfiguration(
     const ext = typescript ? 'ts' : 'js';
     const controllerPath = join(config.path || '', `${fileName}${controllerSuffix ? '.controller' : ''}.${ext}`);
     if (!fs.exists(controllerPath)) {
-        fs.copyTpl(getTemplatePath(`common/EventHandler.${ext}`), controllerPath, {
+        fs.copyTpl(getTemplatePath(`${defaultConfig.templatePath}.${ext}`), controllerPath, {
             eventHandlerFnName,
-            parameters
+            parameters,
+            ...config
         });
     } else if (insertScript) {
         // Read current file content
