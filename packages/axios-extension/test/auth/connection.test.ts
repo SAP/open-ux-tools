@@ -39,6 +39,14 @@ describe('connection', () => {
             const response = newAxiosResponseWithCookies();
             expect(() => new Cookies().setCookies(response)).not.toThrowError();
         });
+
+        it('do not crash if cookie string is empty string', () => {
+            const response = {
+                ...newAxiosResponseWithCookies(),
+                headers: { 'set-cookie': [''] } as unknown as AxiosRequestHeaders
+            };
+            expect(() => new Cookies().setCookies(response)).not.toThrowError();
+        });
     });
 
     describe('attachConnectionHandler', () => {
