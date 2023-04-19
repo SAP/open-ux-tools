@@ -2,7 +2,7 @@
         <ComboBox
             id="<%- controlID %>"
             core:require="{handler: '<%- ns.split('.').join('/') %>/<%- name %>'}"
-            selectedKey="{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: '<%- ns %>.<%- name %>.itemsFilter' }}"
+            selectedKey="{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: '<%- (typeof eventHandler === 'string' ? eventHandler : `${ns}.${name}.${typeof eventHandlerFnName !== 'undefined' && eventHandlerFnName || 'itemsFilter'}`) %>' }}"
         >
             <items>
                 <core:Item key="0" text="Item1"/>
