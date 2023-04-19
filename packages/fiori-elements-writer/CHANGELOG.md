@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.11.0
+
+### Minor Changes
+
+-   e39c14d7: Add configuration option generateIndex to toggle the generation of index.html
+
+### Patch Changes
+
+-   Updated dependencies [e39c14d7]
+    -   @sap-ux/ui5-application-writer@0.21.0
+
 ## 0.10.0
 
 ### Minor Changes

@@ -74,7 +74,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             sapClient: ffApp.service?.client,
             flpAppId: ffApp.app.flpAppId,
             startFile: data?.app?.startFile,
-            localStartFile: data?.app?.localStartFile
+            localStartFile: data?.app?.localStartFile,
+            generateIndex: ffApp.appOptions?.generateIndex
         })
     };
 
