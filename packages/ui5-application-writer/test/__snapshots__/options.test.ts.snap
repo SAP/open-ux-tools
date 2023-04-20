@@ -1064,8 +1064,10 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
 
 exports[`UI5 templates option: \`typescript and code assist\` to check for conflicts 3`] = `
 "{
-    \\"extends\\": \\"@sap-ux/eslint-config-fiori-tools\\"
-}"
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/default\\",
+    \\"root\\": true
+}
+"
 `;
 
 exports[`UI5 templates option: \`typescript, npm modules and Fiori tools\` 1`] = `
@@ -1087,8 +1089,10 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"extends\\": \\"@sap-ux/eslint-config-fiori-tools\\"
-}",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/default\\",
+    \\"root\\": true
+}
+",
     "state": "modified",
   },
   ".gitignore": Object {

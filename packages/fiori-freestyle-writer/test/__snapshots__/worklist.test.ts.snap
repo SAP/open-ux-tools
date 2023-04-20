@@ -12910,8 +12910,10 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"extends\\": \\"@sap-ux/eslint-config-fiori-tools\\"
-}",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/default\\",
+    \\"root\\": true
+}
+",
     "state": "modified",
   },
   ".gitignore": Object {
@@ -16256,8 +16258,10 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"extends\\": \\"@sap-ux/eslint-config-fiori-tools\\"
-}",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/default\\",
+    \\"root\\": true
+}
+",
     "state": "modified",
   },
   ".gitignore": Object {
