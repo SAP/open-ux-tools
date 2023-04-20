@@ -21,7 +21,7 @@ describe('CustomFilter', () => {
             return join(testDir, `webapp/${controller.folder}/${controller.name}.${isTs ? 'ts' : 'js'}`);
         };
         const getExpectedFragmentPath = (newFilter: CustomFilter): string =>
-            join(testDir, `webapp/${newFilter.folder}/${newFilter.name}.fragment.xml`);
+            join(testDir, `webapp/${newFilter.folder}/${newFilter.fragmentFile}.fragment.xml`);
 
         const getManifest = (extensions: unknown = undefined): string => {
             const manifest = {
@@ -61,15 +61,20 @@ describe('CustomFilter', () => {
         });
 
         test('Create several new custom filters', () => {
+            const secondFilter = {
+                name: 'NewCustomFilter2',
+                label: 'Test Custom Filter 2',
+                controlID: 'testID2',
+                property: 'Testing'
+            };
             generateCustomFilter(testDir, filter, fs);
 
-            const secondFilterConfig = { ...filter, name: 'NewCustomFilter2', template: undefined };
-            generateCustomFilter(testDir, secondFilterConfig, fs);
+            generateCustomFilter(testDir, secondFilter, fs);
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.exists(getControllerPath(secondFilterConfig))).toBeTruthy();
-            expect(fs.read(getControllerPath(secondFilterConfig))).toMatchSnapshot();
-            expect(fs.exists(getExpectedFragmentPath(secondFilterConfig))).toBeTruthy();
-            expect(fs.read(getExpectedFragmentPath(secondFilterConfig))).toMatchSnapshot();
+            expect(fs.exists(getControllerPath(secondFilter))).toBeTruthy();
+            expect(fs.read(getControllerPath(secondFilter))).toMatchSnapshot();
+            expect(fs.exists(getExpectedFragmentPath(secondFilter))).toBeTruthy();
+            expect(fs.read(getExpectedFragmentPath(secondFilter))).toMatchSnapshot();
         });
 
         test('with new event handler as string', () => {
@@ -121,7 +126,7 @@ describe('CustomFilter', () => {
 
         describe('Test property "eventHandler"', () => {
             const generateCustomFilterWithEventHandler = (
-                actionId: string,
+                filterId: string,
                 eventHandler: string | EventHandlerConfiguration,
                 folder?: string
             ) => {

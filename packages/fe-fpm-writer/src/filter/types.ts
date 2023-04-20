@@ -4,7 +4,7 @@ export interface CustomFilter extends CustomElement, EventHandler {
     label: string;
     property: string;
     controlID: string;
-    template?: string;
+    fragmentFile?: string;
     required?: boolean;
     position?: Position;
     typescript?: boolean;

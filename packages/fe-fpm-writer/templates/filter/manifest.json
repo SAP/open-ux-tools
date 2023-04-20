@@ -2,7 +2,7 @@
     "<%- name %>": {
         "label": "<%- label %>",
         "property": "<%- property %>",
-        "template": "<%- template %>",
+        "template": "<%- `${ns}.${fragmentFile}` %>",
         "required": <%- required -%><%if (typeof position !== 'undefined') {%>,
         "position": {
             "placement": "<%- position.placement %>"<%if (position.anchor !== undefined) {%>,

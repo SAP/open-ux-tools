@@ -25,10 +25,10 @@ function enhanceConfig(data: CustomFilter, manifestPath: string, manifest: Manif
 
     setCommonDefaults(config, manifestPath, manifest);
 
-    // set default values for requiremetn and language, create the template path
+    // set default values for requirement, language, the fragment file name
     config.required = config.required || false;
     config.typescript = !!config.typescript;
-    config.template = config.template || `${config.ns}.${config.name}`;
+    config.fragmentFile = config.fragmentFile || config.name;
 
     return config as InternalCustomFilter;
 }
@@ -77,7 +77,7 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
     fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, filterConfig.tabInfo));
 
     // create a fragment file
-    const fragmentPath = join(config.path, `${config.name}.fragment.xml`);
+    const fragmentPath = join(config.path, `${config.fragmentFile}.fragment.xml`);
     fs.copyTpl(getTemplatePath(`filter/fragment.xml`), fragmentPath, config);
 
     return fs;

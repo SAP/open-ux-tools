@@ -27,10 +27,10 @@ Object {
                       "template": "myTestApp.ext.newCustomFilter.NewCustomFilter",
                     },
                     "NewCustomFilter2": Object {
-                      "label": "Test Custom Filter",
+                      "label": "Test Custom Filter 2",
                       "property": "Testing",
                       "required": false,
-                      "template": "myTestApp.ext.newCustomFilter.NewCustomFilter2",
+                      "template": "myTestApp.ext.newCustomFilter2.NewCustomFilter2",
                     },
                   },
                 },
@@ -74,9 +74,9 @@ exports[`CustomFilter generateCustomFilter Create several new custom filters 2`]
 exports[`CustomFilter generateCustomFilter Create several new custom filters 3`] = `
 "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
         <ComboBox
-            id=\\"testID\\"
-            core:require=\\"{handler: 'myTestApp/ext/newCustomFilter/NewCustomFilter2'}\\"
-            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter.NewCustomFilter2.itemsFilter' }}\\"
+            id=\\"testID2\\"
+            core:require=\\"{handler: 'myTestApp/ext/newCustomFilter2/NewCustomFilter2'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter2.NewCustomFilter2.itemsFilter' }}\\"
         >
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
