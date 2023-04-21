@@ -10,6 +10,7 @@ import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
 import { getJsonSpace } from '../common/file';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
+import { FilterField } from '../building-block/types';
 
 /**
  * Enhances the provided custom filter configuration with default data.
@@ -72,7 +73,7 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
     }
 
     // enhance manifest with the filter definition and controller reference
-    const filters = enhanceManifestAndGetFiltersReference(manifest, filterConfig);
+    const filters = enhanceManifestAndGetFiltersReference(manifest);
     Object.assign(filters, JSON.parse(render(fs.read(getTemplatePath(`filter/manifest.json`)), config, {})));
     fs.writeJSON(manifestPath, manifest, undefined, getJsonSpace(fs, manifestPath, filterConfig.tabInfo));
 
@@ -87,17 +88,18 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
  * Enhance the target object in the manifest with the required nested objects and return a reference to it.
  *
  * @param {Manifest} manifest - the application manifest
- * @param {CustomFilter} customFilter - the custom filter configuration
- * @returns Filters object of the given page
+ * @returns Filters object of the first page
  */
-function enhanceManifestAndGetFiltersReference(manifest: any, customFilter: CustomFilter): any {
-    const page = Object.values(manifest['sap.ui5'].routing.targets)[0] as any;
-    page.options = page.options || {};
-    page.options.settings = page.options.settings || {};
-    page.options.settings.controlConfiguration = page.options.settings.controlConfiguration || {};
-    page.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'] =
-        page.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'] || {};
-    page.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'].filterFields =
-        page.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'].filterFields || {};
-    return page.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'].filterFields;
+function enhanceManifestAndGetFiltersReference(manifest: Manifest): FilterField[] {
+    if (manifest['sap.ui5'] && manifest['sap.ui5'].routing && manifest['sap.ui5'].routing.targets) {
+        const pages = manifest['sap.ui5'].routing.targets;
+        const lrPage = Object.values(pages)[0] as any;
+        lrPage.options ||= {};
+        lrPage.options.settings ||= {};
+        lrPage.options.settings.controlConfiguration ||= {};
+        lrPage.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'] ||= {};
+        lrPage.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'].filterFields ||= {};
+        return lrPage.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'].filterFields;
+    }
+    return [];
 }
