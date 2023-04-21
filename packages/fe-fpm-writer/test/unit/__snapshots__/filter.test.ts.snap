@@ -52,23 +52,23 @@ exports[`CustomFilter generateCustomFilter Create several new custom filters 2`]
     \\"use strict\\";
     return {
         itemsFilter: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
-   };
-  });"
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter Create several new custom filters 3`] = `
@@ -133,23 +133,23 @@ exports[`CustomFilter generateCustomFilter New custom filter (no eventhandler) 2
     \\"use strict\\";
     return {
         itemsFilter: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
-   };
-  });"
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter New custom filter (no eventhandler) 3`] = `
@@ -303,23 +303,23 @@ exports[`CustomFilter generateCustomFilter Test 'typescript' property. JavaScrip
     \\"use strict\\";
     return {
         itemsFilter: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
-   };
-  });"
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter Test 'typescript' property. TypeScript 1`] = `
@@ -354,23 +354,23 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
     \\"use strict\\";
     return {
         DummyItemsFilter: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
-   };
-  });"
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
@@ -378,23 +378,23 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
     \\"use strict\\";
     return {
         DummyOnAction: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
-   };
-  });"
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is "object", action with lowercase first letter 1`] = `
@@ -402,23 +402,23 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
     \\"use strict\\";
     return {
         dummyOnAction: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
-   };
-  });"
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
@@ -426,23 +426,23 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
     \\"use strict\\";
     return {
         itemsFilter: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
-   };
-  });"
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
@@ -450,23 +450,23 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
     \\"use strict\\";
     return {
         itemsFilter: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
-   };
-  });                                                                                                                                                                                                                                                                                                                                           itemsFilter2: function(sValue) {
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});                                                                                                                                                                                                                                                                                                                                 itemsFilter2: function(sValue) {
     switch (sValue) {
         case \\"0\\":
                 return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });       
@@ -490,21 +490,21 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
     \\"use strict\\";
     return {
         itemsFilter: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
    itemsFilter2: function(sValue) {
     switch (sValue) {
         case \\"0\\":
@@ -521,8 +521,8 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                 return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });       
     }
     }
-    };
-  });"
+     };
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter specific target folder, event handler as boolean 1`] = `
@@ -587,23 +587,23 @@ exports[`CustomFilter generateCustomFilter specific target folder, event handler
     \\"use strict\\";
     return {
         itemsFilter: function(sValue) {
-          switch (sValue) {
-              case \\"0\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
-              case \\"1\\":
-                    return new Filter({
-                      filters: [
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                          new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                      ],
-                      and: true
-                  });           
-              case \\"2\\":
-                    return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
-          }
-      }
-   };
-  });"
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter with existing event handler as string 1`] = `
