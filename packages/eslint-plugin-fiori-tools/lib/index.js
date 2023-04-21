@@ -11,15 +11,25 @@
 //------------------------------------------------------------------------------
 // Plugin Definition
 //------------------------------------------------------------------------------
-
-module.exports.configs = {
+const commonConfig = require('../eslintrc-common.js');
+const typescriptConfig = require('../eslintrc-typescript.js');
+const prodConfig = require('../eslintrc-prod.js');
+const testConfig = require('../eslintrc-test.js');
+module.exports = {
     default: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js', '../eslintrc-test.js']
+        ...commonConfig,
+        ...typescriptConfig,
+        ...prodConfig,
+        ...testConfig
     },
-    testcode: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-test.js']
+    testCode: {
+        ...commonConfig,
+        ...typescriptConfig,
+        ...testConfig
     },
     prodCode: {
-        extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js']
+        ...commonConfig,
+        ...typescriptConfig,
+        ...prodConfig
     }
 };

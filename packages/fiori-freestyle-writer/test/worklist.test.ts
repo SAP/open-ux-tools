@@ -2,7 +2,7 @@ import type { FreestyleApp } from '../src';
 import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, getMetadata, projectChecks } from './common';
+import { testOutputDir, debug, getMetadata, projectChecks, updatePackageJSONDependencyToUseLocalPath } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { WorklistSettings } from '../src/types';
 
@@ -186,9 +186,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         const testPath = join(curTestOutPath, name);
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);

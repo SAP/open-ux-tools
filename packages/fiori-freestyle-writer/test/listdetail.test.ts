@@ -4,7 +4,14 @@ import { join } from 'path';
 import type { ListDetailSettings } from '../src/types';
 import { TemplateType } from '../src/types';
 import { removeSync } from 'fs-extra';
-import { commonConfig, northwind, debug, testOutputDir, projectChecks } from './common';
+import {
+    commonConfig,
+    northwind,
+    debug,
+    testOutputDir,
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
+} from './common';
 
 const TEST_NAME = 'listDetailTemplate';
 
@@ -131,6 +138,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);

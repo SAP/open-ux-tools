@@ -299,5 +299,9 @@
                 "project": ["./packages/*/tsconfig.json", "./tsconfig.json"]
             }
         }
-    }
+    },
+    "parserOptions": {
+        "ecmaVersion": 9,
+        // "sourceType": "module"
+      }
 }
