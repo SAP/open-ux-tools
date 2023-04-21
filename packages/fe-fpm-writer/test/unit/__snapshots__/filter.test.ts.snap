@@ -49,25 +49,25 @@ Object {
 
 exports[`CustomFilter generateCustomFilter Create several new custom filters 2`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        itemsFilter: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		itemsFilter: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
@@ -130,25 +130,25 @@ Object {
 
 exports[`CustomFilter generateCustomFilter New custom filter (no eventhandler) 2`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        itemsFilter: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		itemsFilter: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
@@ -300,25 +300,25 @@ Object {
 
 exports[`CustomFilter generateCustomFilter Test 'typescript' property. JavaScript 1`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        itemsFilter: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		itemsFilter: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
@@ -332,196 +332,196 @@ import FilterOperator from 'sap/ui/model/FilterOperator';
  * @returns new Filter
  */
 export function itemsFilter(sValue: string) {
-    switch (sValue) {
-        case \\"0\\":
-            return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-        case \\"1\\":
-            return new Filter({
-                filters: [
-                    new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                    new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                ],
-                and: true
-            });           
-        case \\"2\\":
-            return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-    }
+	switch (sValue) {
+		case \\"0\\":
+			return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+		case \\"1\\":
+			return new Filter({
+				filters: [
+					new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+					new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+				],
+				and: true
+			});
+		case \\"2\\":
+			return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+	}
 }"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        DummyItemsFilter: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		DummyItemsFilter: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        DummyOnAction: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		DummyOnAction: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is "object", action with lowercase first letter 1`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        dummyOnAction: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		dummyOnAction: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        itemsFilter: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		itemsFilter: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        itemsFilter: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        },
-				itemsFilter2: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		itemsFilter: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		},
+		itemsFilter2: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        itemsFilter: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        },
-				itemsFilter2: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		itemsFilter: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		},
+		itemsFilter2: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
@@ -584,25 +584,25 @@ exports[`CustomFilter generateCustomFilter specific target folder, event handler
 
 exports[`CustomFilter generateCustomFilter specific target folder, event handler as boolean 3`] = `
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-    \\"use strict\\";
-    return {
-        itemsFilter: function(sValue) {
-            switch (sValue) {
-                case \\"0\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-                case \\"1\\":
-                        return new Filter({
-                        filters: [
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-                        ],
-                        and: true
-                    });
-                case \\"2\\":
-                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-            }
-        }
-    };
+	\\"use strict\\";
+	return {
+		itemsFilter: function(sValue) {
+			switch (sValue) {
+				case \\"0\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+				case \\"1\\":
+						return new Filter({
+						filters: [
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+						],
+						and: true
+					});
+				case \\"2\\":
+						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+			}
+		}
+	};
 });"
 `;
 
