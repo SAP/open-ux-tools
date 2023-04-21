@@ -2,9 +2,10 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
-import { CustomFilter } from '../../src/filter/types';
+import type { CustomFilter } from '../../src/filter/types';
 import { generateCustomFilter } from '../../src/filter';
-import { EventHandlerConfiguration, Placement, FileContentPosition } from '../../src/common/types';
+import type { EventHandlerConfiguration, FileContentPosition } from '../../src/common/types';
+import { Placement } from '../../src/common/types';
 import os from 'os';
 
 describe('CustomFilter', () => {
