@@ -1,5 +1,13 @@
 # @sap-ux/app-config-writer
 
+## 0.0.5
+
+### Patch Changes
+
+-   3d3d8c64: Fixes for unsage usage of optional chaining sonar bugs
+-   Updated dependencies [3d3d8c64]
+    -   @sap-ux/axios-extension@1.2.1
+
 ## 0.0.4
 
 ### Patch Changes
