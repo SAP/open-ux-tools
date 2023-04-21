@@ -107,7 +107,7 @@ Once you've created the `data` folder you can start the `code` executable. Insid
 
 Copy the downloaded and prepared files to the isolated environment:
 
-- Node.js 14 installation file
+- Node.js 16 installation file
 - `verdaccio.zip` that contains the modules to run Verdaccio
 - `storage.zip` that contains the `storage` of Verdaccio
 - `vscode.zip` containing Visual Studio Code portable mode with SAP Fiori tools extension pack
@@ -116,12 +116,12 @@ Copy the downloaded and prepared files to the isolated environment:
 
 ### Node.js
 
-Install Node.js 14 using the downloaded installer.
+Install Node.js 16 using the downloaded installer.
 After installing node you can check the version by running following command in terminal
 
 ```shell
 >node --version
-v14.19.1
+v16.20.0
 ```
 
 ## Install and setup Verdaccio
