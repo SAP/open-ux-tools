@@ -469,7 +469,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 });                                                                                                                                                                                                                                                                                                                                 itemsFilter2: function(sValue) {
     switch (sValue) {
         case \\"0\\":
-                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });       
+                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
         case \\"1\\":
                 return new Filter({
                 filters: [
@@ -479,7 +479,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                 and: true
             });           
         case \\"2\\":
-                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });       
+                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
     }
     }
     "
@@ -508,7 +508,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
    itemsFilter2: function(sValue) {
     switch (sValue) {
         case \\"0\\":
-                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });       
+                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
         case \\"1\\":
                 return new Filter({
                 filters: [
@@ -518,7 +518,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                 and: true
             });           
         case \\"2\\":
-                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });       
+                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
     }
     }
      };

@@ -218,7 +218,7 @@ describe('CustomFilter', () => {
                                 fragment: `itemsFilter2: function(sValue) {
     switch (sValue) {
         case "0":
-                return new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 100 });       
+                return new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 100 });
         case "1":
                 return new Filter({
                 filters: [
@@ -228,7 +228,7 @@ describe('CustomFilter', () => {
                 and: true
             });           
         case "2":
-                return new Filter({ path: "FlightPrice", operator: FilterOperator.GT, value1: 500 });       
+                return new Filter({ path: "FlightPrice", operator: FilterOperator.GT, value1: 500 });
     }
     }
     `,
