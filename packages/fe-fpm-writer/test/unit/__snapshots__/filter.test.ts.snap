@@ -334,7 +334,7 @@ import FilterOperator from 'sap/ui/model/FilterOperator';
 export function itemsFilter(sValue: string) {
     switch (sValue) {
         case \\"0\\":
-            return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });       
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
         case \\"1\\":
             return new Filter({
                 filters: [
@@ -344,7 +344,7 @@ export function itemsFilter(sValue: string) {
                 and: true
             });           
         case \\"2\\":
-            return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });       
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
     }
 }"
 `;
