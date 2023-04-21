@@ -10,7 +10,7 @@ import { setCommonDefaults } from '../common/defaults';
 import { getTemplatePath } from '../templates';
 import { getJsonSpace } from '../common/file';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
-import { FilterField } from '../building-block/types';
+import type { FilterField } from '../building-block/types';
 
 /**
  * Enhances the provided custom filter configuration with default data.
