@@ -19,8 +19,9 @@
         "@ui5/project": "latest",
         "@ui5/server": "latest",
         "chokidar": "latest",
+        "mta": "latest",
         "rimraf": "latest",
-        "ui5-task-flatten-library": "latest",
+        "ui5-task-flatten-library": "^0.2.5",
         "yo": "latest"
     }
 }
