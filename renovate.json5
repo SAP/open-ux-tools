@@ -32,6 +32,8 @@
 
     assigneesFromCodeOwners: true,
 
+    ignorePaths: ["**/templates/**"],
+
     packageRules: [
         {
             matchPackagePrefixes: ['react', '@types/react'],
@@ -54,8 +56,24 @@
             groupName: 'dependencies [prettier]'
         },
         {
-            matchPackagePrefixes: ['jest', '@types/jest'],
-            groupName: 'dependencies [jest]'
+            matchPackagePrefixes: ['i18next'],
+            groupName: 'dependencies [i18next]'
+        },
+        {
+            matchPackagePrefixes: ['mem-fs', '@types/mem-fs'],
+            groupName: 'dependencies [mem-fs]'
+        },
+        {
+            matchPackagePrefixes: ['enzyme', '@types/enzyme'],
+            groupName: 'dependencies [enzyme]'
+        }
+        {
+            matchPackagePrefixes: ['lodash', '@types/lodash'],
+            groupName: 'dependencies [lodash]'
+        },
+        {
+            matchPackagePrefixes: ['webpack', 'ts-loader', 'style-loader', 'sass-loader', 'sass', 'css-loader', '@storybook/manager-webpack5', '@storybook/builder-webpack5', 'storybook-addon-turbo-build'],
+            groupName: 'dependencies [webpack]'
         }
     ]
 }
