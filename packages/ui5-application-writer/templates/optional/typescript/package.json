@@ -10,6 +10,7 @@
         "ui5-tooling-transpile": "^0.3.7",
         "typescript": "^4.6.3",
         "@typescript-eslint/eslint-plugin": "^5.17.0",
-        "@typescript-eslint/parser": "^5.17.0"
+        "@typescript-eslint/parser": "^5.17.0",
+        "@sap-ux/eslint-plugin-fiori-tools": "^0.1.0"
     }
 }

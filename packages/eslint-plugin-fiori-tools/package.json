@@ -11,10 +11,12 @@
   "devDependencies": {
     "eslint": "7.32.0"
   },
+  "dependencies": {
+    "eslint-plugin-fiori-custom": "2.6.7"
+  },
   "peerDependencies": {
     "eslint": ">=7",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
-    "eslint-plugin-fiori-custom": "2.6.7",
     "@typescript-eslint/parser": "^5.17.0"
   },
   "engines": {
