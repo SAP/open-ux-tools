@@ -192,11 +192,11 @@ describe('CustomFilter', () => {
                 [
                     'position as object',
                     {
-                        line: os.EOL.length + 17,
-                        character: 3
+                        line: 18,
+                        character: 9
                     }
                 ],
-                ['absolute position', 1200 + 20 * os.EOL.length]
+                ['absolute position', 826 + 40 * os.EOL.length]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
                 (_desc: string, position: number | FileContentPosition) => {
@@ -215,23 +215,22 @@ describe('CustomFilter', () => {
                             fnName,
                             fileName,
                             insertScript: {
-                                fragment: `itemsFilter2: function(sValue) {
-    switch (sValue) {
-        case "0":
-                return new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 100 });
-        case "1":
-                return new Filter({
-                filters: [
-                    new Filter({ path: "FlightPrice", operator: FilterOperator.GT, value1: 100 }),
-                    new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 500 })
-                ],
-                and: true
-            });
-        case "2":
-                return new Filter({ path: "FlightPrice", operator: FilterOperator.GT, value1: 500 });
-    }
-    }
-`,
+                                fragment: `,\n\t\t\t\titemsFilter2: function(sValue) {
+            switch (sValue) {
+                case "0":
+                        return new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 100 });
+                case "1":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: "FlightPrice", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case "2":
+                        return new Filter({ path: "FlightPrice", operator: FilterOperator.GT, value1: 500 });
+            }
+        }`,
                                 position
                             }
                         },

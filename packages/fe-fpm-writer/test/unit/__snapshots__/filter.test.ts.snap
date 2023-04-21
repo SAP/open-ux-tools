@@ -464,25 +464,25 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                 case \\"2\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
             }
+        },
+				itemsFilter2: function(sValue) {
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
+            }
         }
     };
-});                                                                                                                                                                                                                                                                                                                                 itemsFilter2: function(sValue) {
-    switch (sValue) {
-        case \\"0\\":
-                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
-        case \\"1\\":
-                return new Filter({
-                filters: [
-                    new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
-                    new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
-                ],
-                and: true
-            });
-        case \\"2\\":
-                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
-    }
-    }
-"
+});"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
@@ -504,24 +504,24 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                 case \\"2\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
             }
+        },
+				itemsFilter2: function(sValue) {
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
+            }
         }
-   itemsFilter2: function(sValue) {
-    switch (sValue) {
-        case \\"0\\":
-                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
-        case \\"1\\":
-                return new Filter({
-                filters: [
-                    new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 100 }),
-                    new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
-                ],
-                and: true
-            });
-        case \\"2\\":
-                return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
-    }
-    }
- };
+    };
 });"
 `;
 
