@@ -226,12 +226,12 @@ describe('CustomFilter', () => {
                     new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 500 })
                 ],
                 and: true
-            });           
+            });
         case "2":
                 return new Filter({ path: "FlightPrice", operator: FilterOperator.GT, value1: 500 });
     }
     }
-    `,
+`,
                                 position
                             }
                         },

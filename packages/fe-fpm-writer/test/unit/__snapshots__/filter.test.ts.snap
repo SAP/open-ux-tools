@@ -477,12 +477,12 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                     new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
                 ],
                 and: true
-            });           
+            });
         case \\"2\\":
                 return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
     }
     }
-    "
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
@@ -516,12 +516,12 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                     new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 500 })
                 ],
                 and: true
-            });           
+            });
         case \\"2\\":
                 return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.GT, value1: 500 });
     }
     }
-     };
+ };
 });"
 `;
 
