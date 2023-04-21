@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.2.1
+
+### Patch Changes
+
+-   3d3d8c64: Fixes for unsage usage of optional chaining sonar bugs
+
 ## 1.2.0
 
 ### Minor Changes
