@@ -8,7 +8,7 @@ import type { BasicAppSettings } from '../src/types';
 import { projectChecks } from './common';
 
 const TEST_NAME = 'basicTemplate';
-jest.setTimeout(120000); // Needed when debug.enabled
+jest.setTimeout(240000); // Needed when debug.enabled
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
