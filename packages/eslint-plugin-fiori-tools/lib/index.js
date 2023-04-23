@@ -16,20 +16,22 @@ const typescriptConfig = require('../eslintrc-typescript.js');
 const prodConfig = require('../eslintrc-prod.js');
 const testConfig = require('../eslintrc-test.js');
 module.exports = {
-    default: {
-        ...commonConfig,
-        ...typescriptConfig,
-        ...prodConfig,
-        ...testConfig
-    },
-    testCode: {
-        ...commonConfig,
-        ...typescriptConfig,
-        ...testConfig
-    },
-    prodCode: {
-        ...commonConfig,
-        ...typescriptConfig,
-        ...prodConfig
+    configs: {
+        default: {
+            ...commonConfig,
+            ...typescriptConfig,
+            ...prodConfig,
+            ...testConfig
+        },
+        testCode: {
+            ...commonConfig,
+            ...typescriptConfig,
+            ...testConfig
+        },
+        prodCode: {
+            ...commonConfig,
+            ...typescriptConfig,
+            ...prodConfig
+        }
     }
 };
