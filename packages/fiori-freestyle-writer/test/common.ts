@@ -71,7 +71,7 @@ export const updatePackageJSONDependencyToUseLocalPath = async (rootPath: string
     const packagePath = join(rootPath, 'package.json');
     const packageJson = fs.readJSON(packagePath) as any;
     if (packageJson?.dependencies?.['@sap-ux/eslint-plugin-fiori-tools']) {
-        packageJson.dependencies['@sap-ux/eslint-plugin-fiori-tools'] = 'file://../../../../eslint-plugin-fiori-tools/';
+        packageJson.dependencies['@sap-ux/eslint-plugin-fiori-tools'] = '../../../../../eslint-plugin-fiori-tools/';
     }
     fs.writeJSON(packagePath, packageJson);
 };
