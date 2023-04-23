@@ -44,53 +44,53 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     } as FreestyleApp<ListDetailSettings>;
 
     const configuration: Array<{ name: string; config: FreestyleApp<unknown> }> = [
-        // {
-        //     name: 'listdetail-good-eslint',
-        //     config: {
-        //         ...listDetailConfig,
-        //         appOptions: {
-        //             codeAssist: true,
-        //             eslint: true
-        //         }
-        //     }
-        // },
-        // {
-        //     name: 'listdetail-ts',
-        //     config: {
-        //         ...listDetailConfig,
-        //         appOptions: {
-        //             typescript: true
-        //         }
-        //     } as FreestyleApp<ListDetailSettings>
-        // },
-        // {
-        //     name: 'listdetail-advanced-ts',
-        //     config: {
-        //         ...listDetailConfig,
-        //         template: {
-        //             type: TemplateType.ListDetail,
-        //             settings: {
-        //                 entity: {
-        //                     name: 'Suppliers',
-        //                     key: 'SupplierID',
-        //                     idProperty: 'CompanyName',
-        //                     numberProperty: 'Phone',
-        //                     unitOfMeasureProperty: 'Region'
-        //                 },
-        //                 lineItem: {
-        //                     name: 'Products',
-        //                     key: 'ProductID',
-        //                     idProperty: 'ProductName',
-        //                     numberProperty: 'UnitsInStock',
-        //                     unitOfMeasureProperty: 'QuantityPerUnit'
-        //                 }
-        //             }
-        //         },
-        //         appOptions: {
-        //             typescript: true
-        //         }
-        //     } as FreestyleApp<ListDetailSettings>
-        // },
+        {
+            name: 'listdetail-good-eslint',
+            config: {
+                ...listDetailConfig,
+                appOptions: {
+                    codeAssist: true,
+                    eslint: true
+                }
+            }
+        },
+        {
+            name: 'listdetail-ts',
+            config: {
+                ...listDetailConfig,
+                appOptions: {
+                    typescript: true
+                }
+            } as FreestyleApp<ListDetailSettings>
+        },
+        {
+            name: 'listdetail-advanced-ts',
+            config: {
+                ...listDetailConfig,
+                template: {
+                    type: TemplateType.ListDetail,
+                    settings: {
+                        entity: {
+                            name: 'Suppliers',
+                            key: 'SupplierID',
+                            idProperty: 'CompanyName',
+                            numberProperty: 'Phone',
+                            unitOfMeasureProperty: 'Region'
+                        },
+                        lineItem: {
+                            name: 'Products',
+                            key: 'ProductID',
+                            idProperty: 'ProductName',
+                            numberProperty: 'UnitsInStock',
+                            unitOfMeasureProperty: 'QuantityPerUnit'
+                        }
+                    }
+                },
+                appOptions: {
+                    typescript: true
+                }
+            } as FreestyleApp<ListDetailSettings>
+        },
         {
             name: 'listdetail-advanced-ts_ui5_1_108',
             config: {

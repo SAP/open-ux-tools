@@ -2,7 +2,14 @@ import type { FioriElementsApp } from '../src';
 import { generate, TemplateType, LROPSettings } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug, getTestData, feBaseConfig, projectChecks } from './common';
+import {
+    testOutputDir,
+    debug,
+    getTestData,
+    feBaseConfig,
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
+} from './common';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ALPSettings, ALPSettingsV2, ALPSettingsV4 } from '../src/types';
@@ -89,9 +96,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);

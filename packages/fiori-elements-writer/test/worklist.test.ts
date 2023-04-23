@@ -10,7 +10,8 @@ import {
     v2TemplateSettings,
     v4TemplateSettings,
     v4Service,
-    projectChecks
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
 } from './common';
 import type { WorklistSettings } from '../src/types';
 
@@ -60,9 +61,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);

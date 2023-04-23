@@ -2,6 +2,7 @@ import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFileSync } from 'fs';
 import { create as createStore } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
 import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
@@ -118,6 +119,15 @@ export const v2TemplateSettings: LROPSettings | WorklistSettings = {
             Name: 'to_ProductSalesData'
         }
     }
+};
+
+export const updatePackageJSONDependencyToUseLocalPath = async (rootPath: string, fs: Editor): Promise<void> => {
+    const packagePath = join(rootPath, 'package.json');
+    const packageJson = fs.readJSON(packagePath) as any;
+    if (packageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']) {
+        packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = '../../../../../eslint-plugin-fiori-tools/';
+    }
+    fs.writeJSON(packagePath, packageJson);
 };
 
 export const projectChecks = async (
