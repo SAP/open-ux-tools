@@ -16,7 +16,7 @@ import {
 import type { WorklistSettings } from '../src/types';
 
 const TEST_NAME = 'worklistTemplate';
-jest.setTimeout(240000); // Needed when debug.debugFull
+jest.setTimeout(360000); // Needed when debug.debugFull
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);

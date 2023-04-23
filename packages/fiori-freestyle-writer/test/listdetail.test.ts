@@ -15,7 +15,7 @@ import {
 
 const TEST_NAME = 'listDetailTemplate';
 
-jest.setTimeout(240000); // Needed when debug.debugFull
+jest.setTimeout(360000); // Needed when debug.debugFull
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);

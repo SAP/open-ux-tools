@@ -1201,7 +1201,7 @@ title=App Title",
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",
@@ -1831,7 +1831,7 @@ title=App Title",
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",

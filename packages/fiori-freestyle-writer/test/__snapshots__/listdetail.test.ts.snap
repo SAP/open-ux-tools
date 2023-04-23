@@ -328,7 +328,7 @@ export default class Component extends UIComponent {
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line sap-no-proprietary-browser-api
+            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -473,7 +473,7 @@ export default class BaseController extends Controller {
   },
   "webapp/controller/Detail.controller.ts": Object {
     "contents": "import { URLHelper } from \\"sap/m/library\\";
-import Table from \\"sap/m/Table\\";;
+import Table from \\"sap/m/Table\\";
 import Event from \\"sap/ui/base/Event\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
 import ListBinding from \\"sap/ui/model/ListBinding\\";
@@ -613,7 +613,7 @@ export default class Detail extends BaseController {
         const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
         const viewModel = this.getModel<JSONModel>(\\"detailView\\");
         const lineItemTable = this.byId(\\"lineItemsList\\") as Table;
-        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time
@@ -1101,7 +1101,7 @@ export default class ListSelector extends UI5Object {
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
         // invoke selectItem functions before calling setBoundList
-        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: any, reject: any) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
                     oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
@@ -1116,7 +1116,7 @@ export default class ListSelector extends UI5Object {
                     );
                 }.bind(this));
         }.bind(this));
-    };
+    }
 
     /**
      * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
@@ -2074,7 +2074,7 @@ export function currencyValue(value: string): string {
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",
@@ -2998,7 +2998,7 @@ export default class Component extends UIComponent {
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line sap-no-proprietary-browser-api
+            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -3143,7 +3143,7 @@ export default class BaseController extends Controller {
   },
   "webapp/controller/Detail.controller.ts": Object {
     "contents": "import { URLHelper } from \\"sap/m/library\\";
-import Table from \\"sap/m/Table\\";;
+import Table from \\"sap/m/Table\\";
 import Event from \\"sap/ui/base/Event\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
 import ListBinding from \\"sap/ui/model/ListBinding\\";
@@ -3283,7 +3283,7 @@ export default class Detail extends BaseController {
         const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
         const viewModel = this.getModel<JSONModel>(\\"detailView\\");
         const lineItemTable = this.byId(\\"lineItemsList\\") as Table;
-        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time
@@ -3771,7 +3771,7 @@ export default class ListSelector extends UI5Object {
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
         // invoke selectItem functions before calling setBoundList
-        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: any, reject: any) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
                     oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
@@ -3786,7 +3786,7 @@ export default class ListSelector extends UI5Object {
                     );
                 }.bind(this));
         }.bind(this));
-    };
+    }
 
     /**
      * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
@@ -4744,7 +4744,7 @@ export function currencyValue(value: string): string {
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",
@@ -8222,7 +8222,7 @@ export default class Component extends UIComponent {
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line sap-no-proprietary-browser-api
+            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -8367,7 +8367,7 @@ export default class BaseController extends Controller {
   },
   "webapp/controller/Detail.controller.ts": Object {
     "contents": "import { URLHelper } from \\"sap/m/library\\";
-import Table from \\"sap/m/Table\\";;
+import Table from \\"sap/m/Table\\";
 import Event from \\"sap/ui/base/Event\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
 import ListBinding from \\"sap/ui/model/ListBinding\\";
@@ -8507,7 +8507,7 @@ export default class Detail extends BaseController {
         const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
         const viewModel = this.getModel<JSONModel>(\\"detailView\\");
         const lineItemTable = this.byId(\\"lineItemsList\\") as Table;
-        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time
@@ -8936,7 +8936,7 @@ export default class ListSelector extends UI5Object {
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
         // invoke selectItem functions before calling setBoundList
-        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: any, reject: any) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
                     oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
@@ -8951,7 +8951,7 @@ export default class ListSelector extends UI5Object {
                     );
                 }.bind(this));
         }.bind(this));
-    };
+    }
 
     /**
      * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
@@ -9879,7 +9879,7 @@ export function currencyValue(value: string): string {
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",

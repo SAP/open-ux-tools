@@ -7,7 +7,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { WorklistSettings } from '../src/types';
 
 const TEST_NAME = 'worklistTemplate';
-jest.setTimeout(240000); // Needed when debug.debugFull
+jest.setTimeout(360000); // Needed when debug.debugFull
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);

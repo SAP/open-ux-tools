@@ -16,7 +16,7 @@ import {
 import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
-jest.setTimeout(240000); // Needed when debug.debugFull
+jest.setTimeout(360000); // Needed when debug.debugFull
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
