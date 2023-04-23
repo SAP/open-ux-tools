@@ -1,5 +1,5 @@
 import { URLHelper } from "sap/m/library";<%if (template.settings.lineItem.name) {%>
-import Table from "sap/m/Table";<%}%>;
+import Table from "sap/m/Table";<%};%>
 import Event from "sap/ui/base/Event";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import ListBinding from "sap/ui/model/ListBinding";
@@ -139,7 +139,7 @@ export default class Detail extends BaseController {
         const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
         const viewModel = this.getModel<JSONModel>("detailView");<%if (template.settings.lineItem.name) {%>
         const lineItemTable = this.byId("lineItemsList") as Table;
-        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();<%}%>;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();<%};%>
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time
