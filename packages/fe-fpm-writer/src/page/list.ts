@@ -24,7 +24,8 @@ function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
     }
     // move table settings into the correct structure
     if (config.settings.tableSettings) {
-        const controlConfig = (config.settings.controlConfiguration ??= {}) as Record<string, Record<string, unknown>>;
+        config.settings.controlConfiguration ??= {};
+        const controlConfig = config.settings.controlConfiguration as Record<string, Record<string, unknown>>;
         controlConfig['@com.sap.vocabularies.UI.v1.LineItem'] ??= {};
         controlConfig['@com.sap.vocabularies.UI.v1.LineItem'].tableSettings = config.settings.tableSettings;
         delete config.settings.tableSettings;
