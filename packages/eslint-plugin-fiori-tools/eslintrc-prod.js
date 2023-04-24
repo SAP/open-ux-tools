@@ -4,10 +4,7 @@ module.exports = {
     overrides: [
         {
             'plugins': ['fiori-custom'],
-            'files': [
-                '**/*.js'
-                //   ,  '**/*.ts' // TODO uncomment this
-            ],
+            'files': ['**/*.js', '**/*.ts'],
             'excludedFiles': [
                 'test/**',
                 'target/**',

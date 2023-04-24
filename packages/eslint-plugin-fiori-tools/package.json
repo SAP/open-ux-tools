@@ -16,8 +16,8 @@
   },
   "peerDependencies": {
     "eslint": ">=7",
-    "@typescript-eslint/eslint-plugin": "^5.17.0",
-    "@typescript-eslint/parser": "^5.17.0"
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0"
   },
   "engines": {
     "pnpm": ">=6.26.1 < 7.0.0 || >=7.1.0",
