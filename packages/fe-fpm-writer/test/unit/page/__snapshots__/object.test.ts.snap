@@ -35,8 +35,8 @@ Object {
           "name": "sap.fe.templates.ObjectPage",
           "options": Object {
             "settings": Object {
+              "contextPath": "/OtherEntity",
               "enhanceI18n": "i18n/customOtherEntityObjectPage.properties",
-              "entitySet": "OtherEntity",
               "navigation": Object {},
               "variantManagement": "Page",
             },
@@ -86,7 +86,7 @@ Object {
           "name": "sap.fe.templates.ObjectPage",
           "options": Object {
             "settings": Object {
-              "entitySet": "OtherEntity",
+              "contextPath": "/OtherEntity",
               "navigation": Object {},
             },
           },
@@ -174,7 +174,7 @@ Object {
       "name": "sap.fe.templates.ObjectPage",
       "options": Object {
         "settings": Object {
-          "entitySet": "OtherEntity",
+          "contextPath": "/OtherEntity",
           "navigation": Object {},
         },
       },
@@ -223,7 +223,7 @@ Object {
       "name": "sap.fe.templates.ObjectPage",
       "options": Object {
         "settings": Object {
-          "entitySet": "OtherEntity",
+          "contextPath": "/OtherEntity",
           "navigation": Object {},
         },
       },

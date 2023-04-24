@@ -293,7 +293,7 @@ Object {
                   }
                 }
               },
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
                   \\"columns\\": {
@@ -354,7 +354,7 @@ Object {
                   }
                 }
               },
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"content\\": {
                 \\"header\\": {
                   \\"actions\\": {
@@ -395,7 +395,7 @@ Object {
           \\"options\\": {
             \\"settings\\": {
               \\"navigation\\": {},
-              \\"entitySet\\": \\"Booking\\",
+              \\"contextPath\\": \\"/Booking\\",
               \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\"
             }
           }
@@ -807,7 +807,7 @@ declare module 'sap/fe/core/PageController' {
                   }
                 }
               },
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"controlConfiguration\\": {
                 \\"@com.sap.vocabularies.UI.v1.LineItem\\": {
                   \\"columns\\": {
@@ -868,7 +868,7 @@ declare module 'sap/fe/core/PageController' {
                   }
                 }
               },
-              \\"entitySet\\": \\"Travel\\",
+              \\"contextPath\\": \\"/Travel\\",
               \\"content\\": {
                 \\"header\\": {
                   \\"actions\\": {
@@ -909,7 +909,7 @@ declare module 'sap/fe/core/PageController' {
           \\"options\\": {
             \\"settings\\": {
               \\"navigation\\": {},
-              \\"entitySet\\": \\"Booking\\",
+              \\"contextPath\\": \\"/Booking\\",
               \\"viewName\\": \\"v4travel.ext.myCustomPage.MyCustomPage\\"
             }
           }

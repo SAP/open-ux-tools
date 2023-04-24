@@ -165,7 +165,7 @@ export function initializeTargetSettings(
 
     // starting with UI5 v1.94.0, contextPath is the preferred setting
     const minVersion = coerce(data.minUI5Version);
-    if (minVersion && gte(minVersion, '1.94.0')) {
+    if (!minVersion || gte(minVersion, '1.94.0')) {
         settings.contextPath = data.contextPath ?? `/${data.entity}`;
     } else {
         settings.entitySet = data.entity;

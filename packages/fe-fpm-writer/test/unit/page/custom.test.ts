@@ -70,8 +70,24 @@ describe('CustomPage', () => {
         test('latest version with minimal input', () => {
             const target = join(testDir, 'minimal-input');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            //act
             generateCustomPage(target, minimalInput, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+            expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
+        });
 
+        test('latest version with entitySet and lower UI5 version', () => {
+            const target = join(testDir, 'ui5_1_71');
+            const localManifest = JSON.parse(testAppManifest);
+            localManifest['sap.ui5'].dependencies.minUI5Version = '1.84.62';
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(localManifest));
+            const testInput = JSON.parse(JSON.stringify(minimalInput));
+            testInput.minUI5Version = '1.84.62';
+            //act
+            generateCustomPage(target, testInput, fs);
+            //check
             expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.controller.js'))).toMatchSnapshot();
