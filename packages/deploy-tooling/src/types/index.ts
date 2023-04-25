@@ -61,7 +61,7 @@ export interface CommonOptions {
     verbose?: boolean;
 
     /**
-     * If set to try then do not retry if a deployment fails.
+     * If set to true then do not retry if a deployment fails.
      */
     noRetry?: boolean;
 }

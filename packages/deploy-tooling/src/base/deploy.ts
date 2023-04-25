@@ -173,7 +173,7 @@ async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, con
         logger.debug(getConfigForLogging(config));
         if (!config.verbose) {
             logger.error(
-                'Change logging level to debug your issue\n\t(see examples https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling#configuration-examples)'
+                'Change logging level to debug your issue\n\t(see examples https://github.com/SAP/open-ux-tools/tree/main/packages/deploy-tooling#configuration-with-logging-enabled)'
             );
         }
 
@@ -184,7 +184,7 @@ async function tryDeploy(archive: Buffer, service: Ui5AbapRepositoryService, con
 /**
  * Main function for different deploy retry handling.
  *
- * @param response - response of that trigged and axios error
+ * @param response - response of that triggered and axios error
  * @param archive - archive file that is to be deployed
  * @param service - instance of the axios-extension deployment service
  * @param config - configuration used for the previous request
