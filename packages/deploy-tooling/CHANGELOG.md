@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.2.3
+
+### Patch Changes
+
+-   fa94bfd6: Only eject the fetch request interceptor when a valid csrf token is received
+-   Updated dependencies [fa94bfd6]
+    -   @sap-ux/axios-extension@1.2.2
+
 ## 0.2.2
 
 ### Patch Changes
