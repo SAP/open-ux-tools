@@ -1,5 +1,13 @@
 # @sap-ux/deploy-tooling
 
+## 0.2.4
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+
 ## 0.2.3
 
 ### Patch Changes

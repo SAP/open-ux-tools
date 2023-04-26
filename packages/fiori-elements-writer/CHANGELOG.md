@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.11.2
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+    -   @sap-ux/odata-service-writer@0.14.20
+    -   @sap-ux/ui5-application-writer@0.21.1
+    -   @sap-ux/fe-fpm-writer@0.18.8
+    -   @sap-ux/ui5-test-writer@0.1.7
+
 ## 0.11.1
 
 ### Patch Changes
