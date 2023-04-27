@@ -1,5 +1,28 @@
 # @sap-ux/deploy-tooling
 
+## 0.2.4
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+
+## 0.2.3
+
+### Patch Changes
+
+-   fa94bfd6: Only eject the fetch request interceptor when a valid csrf token is received
+-   Updated dependencies [fa94bfd6]
+    -   @sap-ux/axios-extension@1.2.2
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [3d3d8c64]
+    -   @sap-ux/axios-extension@1.2.1
+
 ## 0.2.1
 
 ### Patch Changes

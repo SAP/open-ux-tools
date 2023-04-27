@@ -2,7 +2,7 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { coerce } from 'semver';
+import { coerce, lt } from 'semver';
 
 /**
  * Validate that the UI5 version requirement is valid.
@@ -12,7 +12,7 @@ import { coerce } from 'semver';
  */
 export function validateVersion(ui5Version?: string): boolean {
     const minVersion = coerce(ui5Version);
-    if (minVersion && minVersion.minor < 84) {
+    if (minVersion && lt(minVersion, '1.84.0')) {
         throw new Error('SAP Fiori elements for OData v4 is only supported starting with SAPUI5 1.84.');
     }
     return true;

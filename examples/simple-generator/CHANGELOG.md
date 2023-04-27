@@ -1,5 +1,34 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.98
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/fiori-elements-writer@0.11.2
+    -   @sap-ux/fiori-freestyle-writer@0.18.1
+
+## 0.2.97
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@0.11.1
+
+## 0.2.96
+
+### Patch Changes
+
+-   Updated dependencies [fa94bfd6]
+    -   @sap-ux/axios-extension@1.2.2
+
+## 0.2.95
+
+### Patch Changes
+
+-   Updated dependencies [3d3d8c64]
+    -   @sap-ux/axios-extension@1.2.1
+
 ## 0.2.94
 
 ### Patch Changes

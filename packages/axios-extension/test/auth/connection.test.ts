@@ -39,12 +39,21 @@ describe('connection', () => {
             const response = newAxiosResponseWithCookies();
             expect(() => new Cookies().setCookies(response)).not.toThrowError();
         });
+
+        it('do not crash if cookie string is empty string', () => {
+            const response = {
+                ...newAxiosResponseWithCookies(),
+                headers: { 'set-cookie': [''] } as unknown as AxiosRequestHeaders
+            };
+            expect(() => new Cookies().setCookies(response)).not.toThrowError();
+        });
     });
 
     describe('attachConnectionHandler', () => {
         let testProvider: ServiceProvider;
         let respHandlers: AxiosInterceptor<AxiosResponse>[];
         let reqHandlers: AxiosInterceptor<AxiosRequestConfig>[];
+        let spyOnRequestEject;
 
         beforeEach(() => {
             testProvider = new ServiceProvider();
@@ -53,6 +62,7 @@ describe('connection', () => {
 
             respHandlers = (testProvider.interceptors.response as unknown)['handlers'];
             reqHandlers = (testProvider.interceptors.request as unknown)['handlers'];
+            spyOnRequestEject = testProvider.interceptors.request.eject = jest.fn();
         });
 
         it('handlers correctly attached', () => {
@@ -65,6 +75,7 @@ describe('connection', () => {
             reqHandlers.forEach((handler) => {
                 expect(handler.fulfilled(request)).toBe(request);
             });
+            expect(spyOnRequestEject).toHaveBeenCalledTimes(0);
         });
 
         it('response: do not cause problem for errors without response property', () => {
@@ -76,10 +87,11 @@ describe('connection', () => {
                     expect(() => handler.rejected(error)).toThrow(error.message);
                 }
             });
+            expect(spyOnRequestEject).toHaveBeenCalledTimes(0);
         });
 
         it('response: do not cause problem for normal responses', () => {
-            const response = {} as AxiosResponse;
+            const response = { headers: { [CSRF.ResponseHeaderName]: '~test' } } as unknown as AxiosResponse;
             const error = { response, message: '~test' } as AxiosError;
             respHandlers.forEach((handler) => {
                 expect(handler.fulfilled(response)).toBe(response);
@@ -87,6 +99,7 @@ describe('connection', () => {
                     expect(() => handler.rejected(error)).toThrow(error.message);
                 }
             });
+            expect(spyOnRequestEject).toHaveBeenCalledTimes(2);
         });
 
         it('response: extract CSRF header even if the backend returned an error', () => {
@@ -100,6 +113,7 @@ describe('connection', () => {
             expect(testProvider.defaults.headers.common[CSRF.RequestHeaderName]).toBe(
                 response.headers[CSRF.ResponseHeaderName]
             );
+            expect(spyOnRequestEject).toHaveBeenCalledTimes(1);
         });
     });
 });
