@@ -9,7 +9,8 @@ import type {
     TranslationSuggestValue,
     TranslationSuggest,
     I18nBundle,
-    TranslationTextPattern
+    TranslationTextPattern,
+    TranslationEntry
 } from './UITranslationButton.types';
 import { TranslationKeyGenerator, SuggestValueType } from './UITranslationButton.types';
 import {
@@ -22,7 +23,9 @@ import {
 import { defaultTranslationInputStrings } from './defaults';
 import { UIFormattedText, formatText } from './UIFormattedText';
 
-export interface UITranslationInputProps extends ITextFieldProps, UITranslationProps {
+export interface UITranslationInputProps<T extends TranslationEntry = TranslationEntry>
+    extends ITextFieldProps,
+        UITranslationProps<T> {
     id: string;
     // Existing I18n entries
     entries: I18nBundle;
@@ -45,7 +48,9 @@ export interface UITranslationInputProps extends ITextFieldProps, UITranslationP
  * @param props Properties of translation input component.
  * @returns Translation suggestion object.
  */
-const getTranslationSuggestion = (props: UITranslationInputProps): TranslationSuggest => {
+const getTranslationSuggestion = <T extends TranslationEntry = TranslationEntry>(
+    props: UITranslationInputProps<T>
+): TranslationSuggest => {
     const {
         value = '',
         allowedPatterns,
@@ -135,7 +140,9 @@ const getTranslationSuggestion = (props: UITranslationInputProps): TranslationSu
  * @param props Component properties.
  * @returns Component to render translation input.
  */
-export function UITranslationInput(props: UITranslationInputProps): ReactElement {
+export const UITranslationInput = <T extends TranslationEntry = TranslationEntry>(
+    props: UITranslationInputProps<T>
+): ReactElement => {
     const {
         id,
         className,
@@ -219,7 +226,7 @@ export function UITranslationInput(props: UITranslationInputProps): ReactElement
             className={classNames}
         />
     );
-}
+};
 
 UITranslationInput.defaultProps = {
     strings: defaultTranslationInputStrings
