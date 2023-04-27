@@ -28,7 +28,7 @@ export interface UITranslationInputProps<T extends TranslationEntry = Translatio
         UITranslationProps<T> {
     id: string;
     // Existing I18n entries
-    entries: I18nBundle;
+    entries: I18nBundle<T>;
     // PascalCase or camelCase to be used for key generation
     // Default value is 'CamelCase'
     namingConvention?: TranslationKeyGenerator;
@@ -50,7 +50,7 @@ export interface UITranslationInputProps<T extends TranslationEntry = Translatio
  */
 const getTranslationSuggestion = <T extends TranslationEntry = TranslationEntry>(
     props: UITranslationInputProps<T>
-): TranslationSuggest => {
+): TranslationSuggest<T> => {
     const {
         value = '',
         allowedPatterns,
@@ -64,7 +64,7 @@ const getTranslationSuggestion = <T extends TranslationEntry = TranslationEntry>
     const i18nKey = extractI18nKey(value, allowedPatterns, allowedI18nPrefixes || [i18nPrefix]);
     let message = '';
     let tooltip = '';
-    let suggest: TranslationSuggestValue;
+    let suggest: TranslationSuggestValue<T>;
     if (i18nKey) {
         // There is already i18n binding as value
         const entry = getTranslationByKey(entries, i18nKey);

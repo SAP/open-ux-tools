@@ -146,7 +146,10 @@ export const applyI18nPattern = (key: string, pattern: TranslationTextPattern, p
  * @param {string} key Search for key.
  * @returns {TranslationEntry | undefined} Key if value is found.
  */
-export const getTranslationByKey = (bundle: I18nBundle, key: string): TranslationEntry | undefined => {
+export const getTranslationByKey = <T extends TranslationEntry = TranslationEntry>(
+    bundle: I18nBundle<T>,
+    key: string
+): T | undefined => {
     const entries = bundle[key];
     if (entries?.length > 0) {
         return entries[0];
@@ -161,7 +164,10 @@ export const getTranslationByKey = (bundle: I18nBundle, key: string): Translatio
  * @param {string} value Search for value.
  * @returns {TranslationEntry | undefined} Key if value is found.
  */
-export const getTranslationByText = (bundle: I18nBundle, value: string): TranslationEntry | undefined => {
+export const getTranslationByText = <T extends TranslationEntry = TranslationEntry>(
+    bundle: I18nBundle<T>,
+    value: string
+): T | undefined => {
     for (const key in bundle) {
         const entries = bundle[key];
         if (entries.length) {

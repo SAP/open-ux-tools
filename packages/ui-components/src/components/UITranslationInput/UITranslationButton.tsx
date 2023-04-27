@@ -16,7 +16,7 @@ import './UITranslationInput.scss';
 
 export interface UITranslationButtonProps<T extends TranslationEntry = TranslationEntry> extends UITranslationProps<T> {
     onUpdateValue?: (value: string) => void;
-    suggestion: TranslationSuggest;
+    suggestion: TranslationSuggest<T>;
 }
 
 /**

@@ -62,10 +62,21 @@ export enum SuggestValueType {
     New = 'New'
 }
 
-export interface TranslationSuggestValue<T extends TranslationEntry = TranslationEntry> {
+export type TranslationSuggestValue<T extends TranslationEntry = TranslationEntry> =
+    | TranslationSuggestValueNew
+    | TranslationSuggestValueExisting<T>;
+
+export interface TranslationSuggestValueNew {
+    entry: TranslationEntry;
+    icon?: UiIcons;
+    type: SuggestValueType.New;
+    i18n?: string;
+}
+
+export interface TranslationSuggestValueExisting<T extends TranslationEntry = TranslationEntry> {
     entry: T;
     icon?: UiIcons;
-    type: SuggestValueType;
+    type: SuggestValueType.Existing | SuggestValueType.Update;
     i18n?: string;
 }
 
