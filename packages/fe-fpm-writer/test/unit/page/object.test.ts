@@ -66,7 +66,7 @@ describe('ObjectPage', () => {
         });
 
         test('minimal input, plus minUi5Version and contextPath', () => {
-            const target = join(testDir, 'minimal-input');
+            const target = join(testDir, 'contextPath');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             const testApiData = JSON.parse(JSON.stringify(minimalInput));
             testApiData.minUI5Version = '1.110';
@@ -113,6 +113,25 @@ describe('ObjectPage', () => {
             expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
 
+        test('simple inbound navigation with contextPath', () => {
+            const target = join(testDir, 'with-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generate(
+                target,
+                {
+                    ...minimalInput,
+                    contextPath: '/OtherEntity',
+                    navigation: {
+                        sourcePage: 'RootEntityListReport',
+                        navEntity: minimalInput.entity,
+                        navKey: true
+                    }
+                },
+                fs
+            );
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
         test('simple nested navigation', () => {
             const target = join(testDir, 'with-nested-nav');
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
@@ -120,6 +139,25 @@ describe('ObjectPage', () => {
                 target,
                 {
                     ...minimalInput,
+                    navigation: {
+                        sourcePage: 'RootEntityObjectPage',
+                        navEntity: `to_${minimalInput.entity}`,
+                        navKey: true
+                    }
+                },
+                fs
+            );
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('simple nested navigation with contextPath', () => {
+            const target = join(testDir, 'with-nested-nav');
+            fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
+            generate(
+                target,
+                {
+                    ...minimalInput,
+                    contextPath: '/RootEntity/OtherEntity',
                     navigation: {
                         sourcePage: 'RootEntityObjectPage',
                         navEntity: `to_${minimalInput.entity}`,
