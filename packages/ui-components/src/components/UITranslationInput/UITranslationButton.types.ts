@@ -66,18 +66,20 @@ export type TranslationSuggestValue<T extends TranslationEntry = TranslationEntr
     | TranslationSuggestValueNew
     | TranslationSuggestValueExisting<T>;
 
-export interface TranslationSuggestValueNew {
-    entry: TranslationEntry;
+interface TranslationSuggestValueBase {
     icon?: UiIcons;
-    type: SuggestValueType.New;
     i18n?: string;
 }
 
-export interface TranslationSuggestValueExisting<T extends TranslationEntry = TranslationEntry> {
+export interface TranslationSuggestValueNew extends TranslationSuggestValueBase {
+    entry: TranslationEntry;
+    type: SuggestValueType.New;
+}
+
+export interface TranslationSuggestValueExisting<T extends TranslationEntry = TranslationEntry>
+    extends TranslationSuggestValueBase {
     entry: T;
-    icon?: UiIcons;
     type: SuggestValueType.Existing | SuggestValueType.Update;
-    i18n?: string;
 }
 
 export interface TranslationSuggest<T extends TranslationEntry = TranslationEntry> {
