@@ -14,7 +14,9 @@ module.exports = {
                 'Gruntfile.js',
                 'changes_preview.js',
                 'changes_preview.ts',
-                'gulpfile.js'
+                'gulpfile.js',
+                '*.d.ts',
+                '**/*.d.ts'
             ],
             'extends': ['eslint:recommended', 'plugin:fiori-custom/fioriToolsDefault']
         }
