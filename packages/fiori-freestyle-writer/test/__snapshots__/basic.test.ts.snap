@@ -992,6 +992,7 @@ export default class Component extends BaseComponent {
  */
 export default class App extends Controller {
 
+    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -1006,6 +1007,7 @@ export default class App extends Controller {
  */
 export default class View1 extends Controller {
 
+    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -1628,6 +1630,7 @@ export default class Component extends BaseComponent {
  */
 export default class App extends Controller {
 
+    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
@@ -1642,6 +1645,7 @@ export default class App extends Controller {
  */
 export default class View1 extends Controller {
 
+    /*eslint-disable @typescript-eslint/no-empty-function*/
     public onInit(): void {
 
     }
