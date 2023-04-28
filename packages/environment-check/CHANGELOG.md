@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.15.15
+
+### Patch Changes
+
+-   50c1f8be: Remove empty folders if ignored
+
 ## 0.15.14
 
 ### Patch Changes
