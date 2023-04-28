@@ -12948,8 +12948,8 @@ archive.zip
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
     \\"typescript\\": \\"^4.6.3\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.1.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -13224,12 +13224,13 @@ export default class Component extends UIComponent {
     /**
      * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
      * design mode class should be set, which influences the size appearance of some controls.
-     * @return css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
+     *
+     * @returns css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
      */
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line sap-no-proprietary-browser-api
+            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -15763,7 +15764,7 @@ export function numberUnit(value: string): string {
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",
@@ -16297,8 +16298,8 @@ archive.zip
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
     \\"typescript\\": \\"^4.6.3\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.1.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -16568,12 +16569,13 @@ export default class Component extends UIComponent {
     /**
      * This method can be called to determine whether the sapUiSizeCompact or sapUiSizeCozy
      * design mode class should be set, which influences the size appearance of some controls.
-     * @return css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
+     *
+     * @returns css class, either 'sapUiSizeCompact' or 'sapUiSizeCozy' - or an empty string if no css class should be set
      */
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line sap-no-proprietary-browser-api
+            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -19102,7 +19104,7 @@ export function numberUnit(value: string): string {
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",

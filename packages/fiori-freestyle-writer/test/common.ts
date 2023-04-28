@@ -4,6 +4,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { FreestyleApp } from '../src';
 import { promisify } from 'util';
@@ -66,7 +67,14 @@ export const getMetadata = (serviceName: string) => {
 
     return sampleTestStore.write(metadataPath, readFileSync(metadataPath));
 };
-
+export const updatePackageJSONDependencyToUseLocalPath = async (rootPath: string, fs: Editor): Promise<void> => {
+    const packagePath = join(rootPath, 'package.json');
+    const packageJson = fs.readJSON(packagePath) as any;
+    if (packageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']) {
+        packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = '../../../../../eslint-plugin-fiori-tools/';
+    }
+    fs.writeJSON(packagePath, packageJson);
+};
 export const projectChecks = async (
     rootPath: string,
     config: FreestyleApp<unknown>,

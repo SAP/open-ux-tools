@@ -10,12 +10,13 @@ import {
     v4Service,
     v2TemplateSettings,
     v2Service,
-    projectChecks
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
 } from './common';
 import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
-jest.setTimeout(120000); // Needed when debug.debugFull
+jest.setTimeout(360000); // Needed when debug.debugFull
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -236,9 +237,10 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);

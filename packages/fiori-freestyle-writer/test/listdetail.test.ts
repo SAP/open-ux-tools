@@ -4,11 +4,18 @@ import { join } from 'path';
 import type { ListDetailSettings } from '../src/types';
 import { TemplateType } from '../src/types';
 import { removeSync } from 'fs-extra';
-import { commonConfig, northwind, debug, testOutputDir, projectChecks } from './common';
+import {
+    commonConfig,
+    northwind,
+    debug,
+    testOutputDir,
+    projectChecks,
+    updatePackageJSONDependencyToUseLocalPath
+} from './common';
 
 const TEST_NAME = 'listDetailTemplate';
 
-jest.setTimeout(120000); // Needed when debug.debugFull
+jest.setTimeout(360000); // Needed when debug.debugFull
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -131,6 +138,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);
