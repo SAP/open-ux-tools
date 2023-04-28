@@ -700,7 +700,7 @@ export default class ErrorHandler extends UI5Object {
         const model = component.getModel() as ODataModel;
         model.attachMetadataFailed(this.showServiceError);
         model.attachRequestFailed(function (this: ErrorHandler, event: Event) {
-            const params = event.getParameters() as { response: XMLHttpRequest['response'] };
+            const params = event.getParameters() as { response: XMLHttpRequest[\\"response\\"] };
             // An entity that was not found in the service is also throwing a 404 error in oData.
             // We already cover this case with a notFound target so we skip it here.
             // A request that cannot be sent to the server is a technical error that we have to handle though
@@ -724,7 +724,7 @@ export default class ErrorHandler extends UI5Object {
             ((this.component.getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle).getText(\\"errorText\\") || \\"\\",
             {
                 id: \\"serviceErrorMessageBox\\",
-                details: (event.getParameters() as XMLHttpRequest['response']).response,
+                details: (event.getParameters() as XMLHttpRequest[\\"response\\"]).response,
                 styleClass: this.component.getContentDensityClass(),
                 actions: [Action.CLOSE],
                 onClose: function (this: ErrorHandler) {
@@ -770,14 +770,14 @@ export default class List extends BaseController {
         
     private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
         Phone: (context: Context) => {
-            const iNumber = context.getProperty('Phone');
+            const iNumber = context.getProperty(\\"Phone\\");
             let key, text;
             if (iNumber <= 20) {
                 key = \\"LE20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || '';
+                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || \\"\\";
             } else {
                 key = \\"GT20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || '';
+                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || \\"\\";
             }
             return {
                 key: key,
@@ -911,7 +911,7 @@ export default class List extends BaseController {
      */
     public onConfirmViewSettingsDialog(event: Event) {
         
-        const filterItems = event.getParameter('filterItems') as ViewSettingsItem[];
+        const filterItems = event.getParameter(\\"filterItems\\") as ViewSettingsItem[];
         const filters:  Filter[] = [];
         const captions: string[] = [];
 
@@ -1096,7 +1096,7 @@ export default class ListSelector extends UI5Object {
      */
      constructor() {
         super();
-        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector[\\"_fnResolveListHasBeenSet\\"]) {
             this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
@@ -3370,7 +3370,7 @@ export default class ErrorHandler extends UI5Object {
         const model = component.getModel() as ODataModel;
         model.attachMetadataFailed(this.showServiceError);
         model.attachRequestFailed(function (this: ErrorHandler, event: Event) {
-            const params = event.getParameters() as { response: XMLHttpRequest['response'] };
+            const params = event.getParameters() as { response: XMLHttpRequest[\\"response\\"] };
             // An entity that was not found in the service is also throwing a 404 error in oData.
             // We already cover this case with a notFound target so we skip it here.
             // A request that cannot be sent to the server is a technical error that we have to handle though
@@ -3394,7 +3394,7 @@ export default class ErrorHandler extends UI5Object {
             ((this.component.getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle).getText(\\"errorText\\") || \\"\\",
             {
                 id: \\"serviceErrorMessageBox\\",
-                details: (event.getParameters() as XMLHttpRequest['response']).response,
+                details: (event.getParameters() as XMLHttpRequest[\\"response\\"]).response,
                 styleClass: this.component.getContentDensityClass(),
                 actions: [Action.CLOSE],
                 onClose: function (this: ErrorHandler) {
@@ -3440,14 +3440,14 @@ export default class List extends BaseController {
         
     private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
         Phone: (context: Context) => {
-            const iNumber = context.getProperty('Phone');
+            const iNumber = context.getProperty(\\"Phone\\");
             let key, text;
             if (iNumber <= 20) {
                 key = \\"LE20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || '';
+                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || \\"\\";
             } else {
                 key = \\"GT20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || '';
+                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || \\"\\";
             }
             return {
                 key: key,
@@ -3581,7 +3581,7 @@ export default class List extends BaseController {
      */
     public onConfirmViewSettingsDialog(event: Event) {
         
-        const filterItems = event.getParameter('filterItems') as ViewSettingsItem[];
+        const filterItems = event.getParameter(\\"filterItems\\") as ViewSettingsItem[];
         const filters:  Filter[] = [];
         const captions: string[] = [];
 
@@ -3766,7 +3766,7 @@ export default class ListSelector extends UI5Object {
      */
      constructor() {
         super();
-        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector[\\"_fnResolveListHasBeenSet\\"]) {
             this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
@@ -8594,7 +8594,7 @@ export default class ErrorHandler extends UI5Object {
         const model = component.getModel() as ODataModel;
         model.attachMetadataFailed(this.showServiceError);
         model.attachRequestFailed(function (this: ErrorHandler, event: Event) {
-            const params = event.getParameters() as { response: XMLHttpRequest['response'] };
+            const params = event.getParameters() as { response: XMLHttpRequest[\\"response\\"] };
             // An entity that was not found in the service is also throwing a 404 error in oData.
             // We already cover this case with a notFound target so we skip it here.
             // A request that cannot be sent to the server is a technical error that we have to handle though
@@ -8618,7 +8618,7 @@ export default class ErrorHandler extends UI5Object {
             ((this.component.getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle).getText(\\"errorText\\") || \\"\\",
             {
                 id: \\"serviceErrorMessageBox\\",
-                details: (event.getParameters() as XMLHttpRequest['response']).response,
+                details: (event.getParameters() as XMLHttpRequest[\\"response\\"]).response,
                 styleClass: this.component.getContentDensityClass(),
                 actions: [Action.CLOSE],
                 onClose: function (this: ErrorHandler) {
@@ -8931,7 +8931,7 @@ export default class ListSelector extends UI5Object {
      */
      constructor() {
         super();
-        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector[\\"_fnResolveListHasBeenSet\\"]) {
             this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
