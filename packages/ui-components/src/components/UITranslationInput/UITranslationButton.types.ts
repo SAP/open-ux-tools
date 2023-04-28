@@ -36,7 +36,7 @@ export interface TranslationEntry {
 
 export type I18nBundle<T extends TranslationEntry = TranslationEntry> = Record<string, T[]>;
 
-export interface UITranslationProps<T extends TranslationEntry = TranslationEntry> {
+export interface UITranslationProps<T extends TranslationEntry> {
     value?: string;
     id: string;
     disabled?: boolean;
@@ -62,7 +62,7 @@ export enum SuggestValueType {
     New = 'New'
 }
 
-export type TranslationSuggestValue<T extends TranslationEntry = TranslationEntry> =
+export type TranslationSuggestValue<T extends TranslationEntry> =
     | TranslationSuggestValueNew
     | TranslationSuggestValueExisting<T>;
 
@@ -76,13 +76,12 @@ export interface TranslationSuggestValueNew extends TranslationSuggestValueBase 
     type: SuggestValueType.New;
 }
 
-export interface TranslationSuggestValueExisting<T extends TranslationEntry = TranslationEntry>
-    extends TranslationSuggestValueBase {
+export interface TranslationSuggestValueExisting<T extends TranslationEntry> extends TranslationSuggestValueBase {
     entry: T;
     type: SuggestValueType.Existing | SuggestValueType.Update;
 }
 
-export interface TranslationSuggest<T extends TranslationEntry = TranslationEntry> {
+export interface TranslationSuggest<T extends TranslationEntry> {
     tooltip: string;
     message?: React.ReactElement;
     suggest?: TranslationSuggestValue<T>;

@@ -14,7 +14,7 @@ import { UILoadButton } from './UILoadButton';
 
 import './UITranslationInput.scss';
 
-export interface UITranslationButtonProps<T extends TranslationEntry = TranslationEntry> extends UITranslationProps<T> {
+export interface UITranslationButtonProps<T extends TranslationEntry> extends UITranslationProps<T> {
     onUpdateValue?: (value: string) => void;
     suggestion: TranslationSuggest<T>;
 }
@@ -37,9 +37,7 @@ const getStringText = (property: keyof TranslationInputStrings, strings?: Transl
  * @param props Component properties.
  * @returns Component to render translation button with callout.
  */
-export const UITranslationButton = <T extends TranslationEntry = TranslationEntry>(
-    props: UITranslationButtonProps<T>
-): ReactElement => {
+export const UITranslationButton = <T extends TranslationEntry>(props: UITranslationButtonProps<T>): ReactElement => {
     const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry, busy, suggestion } = props;
     const [isCalloutVisible, setCalloutVisible] = useState(false);
     // Callbacks

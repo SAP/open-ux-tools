@@ -23,9 +23,7 @@ import {
 import { defaultTranslationInputStrings } from './defaults';
 import { UIFormattedText, formatText } from './UIFormattedText';
 
-export interface UITranslationInputProps<T extends TranslationEntry = TranslationEntry>
-    extends ITextFieldProps,
-        UITranslationProps<T> {
+export interface UITranslationInputProps<T extends TranslationEntry> extends ITextFieldProps, UITranslationProps<T> {
     id: string;
     // Existing I18n entries
     entries: I18nBundle<T>;
@@ -48,7 +46,7 @@ export interface UITranslationInputProps<T extends TranslationEntry = Translatio
  * @param props Properties of translation input component.
  * @returns Translation suggestion object.
  */
-const getTranslationSuggestion = <T extends TranslationEntry = TranslationEntry>(
+const getTranslationSuggestion = <T extends TranslationEntry>(
     props: UITranslationInputProps<T>
 ): TranslationSuggest<T> => {
     const {
