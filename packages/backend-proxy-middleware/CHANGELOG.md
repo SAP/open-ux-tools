@@ -1,5 +1,18 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.6.50
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+
+## 0.6.49
+
+### Patch Changes
+
+-   Updated dependencies [fa94bfd6]
+    -   @sap-ux/axios-extension@1.2.2
+
 ## 0.6.48
 
 ### Patch Changes
