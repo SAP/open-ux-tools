@@ -19,7 +19,7 @@ export default class ListSelector extends UI5Object {
      */
      constructor() {
         super();
-        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector["_fnResolveListHasBeenSet"]) {
             this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
