@@ -146,10 +146,7 @@ export const applyI18nPattern = (key: string, pattern: TranslationTextPattern, p
  * @param {string} key Search for key.
  * @returns {TranslationEntry | undefined} Key if value is found.
  */
-export const getTranslationByKey = <T extends TranslationEntry>(
-    bundle: I18nBundle<T>,
-    key: string
-): T | undefined => {
+export const getTranslationByKey = <T extends TranslationEntry>(bundle: I18nBundle<T>, key: string): T | undefined => {
     const entries = bundle[key];
     if (entries?.length > 0) {
         return entries[0];
