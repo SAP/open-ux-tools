@@ -146,9 +146,13 @@ export const projectChecks = async (
             console.log('stderr:', npmResult.stderr);
 
             // run checks on the project
-            // Check TS Types
             if (config.appOptions?.typescript) {
+                // Check TS Types
                 npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
+                // Check Eslint
+                npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
                 console.log('stdout:', npmResult.stdout);
                 console.log('stderr:', npmResult.stderr);
             }
