@@ -138,7 +138,6 @@ export function attachConnectionHandler(provider: ServiceProvider) {
     const oneTimeReqInterceptorId = provider.interceptors.request.use((request: AxiosRequestConfig) => {
         request.headers = request.headers ?? {};
         request.headers[CSRF.RequestHeaderName] = CSRF.RequestHeaderValue;
-        provider.interceptors.request.eject(oneTimeReqInterceptorId);
         return request;
     });
 
@@ -156,6 +155,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                 if (response.headers?.[CSRF.ResponseHeaderName]) {
                     provider.defaults.headers.common[CSRF.RequestHeaderName] =
                         response.headers[CSRF.ResponseHeaderName];
+                    provider.interceptors.request.eject(oneTimeReqInterceptorId);
                 }
                 provider.interceptors.response.eject(oneTimeRespInterceptorId);
                 return response;
@@ -167,6 +167,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                 if (error.response.headers?.[CSRF.ResponseHeaderName]) {
                     provider.defaults.headers.common[CSRF.RequestHeaderName] =
                         error.response.headers[CSRF.ResponseHeaderName];
+                    provider.interceptors.request.eject(oneTimeReqInterceptorId);
                 }
                 provider.cookies.setCookies(error.response);
             }

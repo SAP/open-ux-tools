@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-writer
 
+## 0.14.20
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+
 ## 0.14.19
 
 ### Patch Changes

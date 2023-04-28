@@ -3324,9 +3324,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"viewName\\": \\"fefpmjs.ext.main.Main\\",
-              \\"entitySet\\": \\"Booking\\",
-              \\"navigation\\": {}
+              \\"navigation\\": {},
+              \\"contextPath\\": \\"/Booking\\",
+              \\"viewName\\": \\"fefpmjs.ext.main.Main\\"
             }
           }
         }
@@ -7109,9 +7109,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"viewName\\": \\"fefpmts.ext.main.Main\\",
-              \\"entitySet\\": \\"Booking\\",
-              \\"navigation\\": {}
+              \\"navigation\\": {},
+              \\"contextPath\\": \\"/Booking\\",
+              \\"viewName\\": \\"fefpmts.ext.main.Main\\"
             }
           }
         }
