@@ -1,6 +1,6 @@
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { join } from 'path';
+import { dirname, join } from 'path';
 import { readFileSync } from 'fs';
 import { sample } from './sample/metadata';
 import { create as createStore } from 'mem-fs';
@@ -71,7 +71,9 @@ export const updatePackageJSONDependencyToUseLocalPath = async (rootPath: string
     const packagePath = join(rootPath, 'package.json');
     const packageJson = fs.readJSON(packagePath) as any;
     if (packageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']) {
-        packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = '../../../../../eslint-plugin-fiori-tools/';
+        packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = dirname(
+            require.resolve('@sap-ux/eslint-plugin-fiori-tools/package.json')
+        );
     }
     fs.writeJSON(packagePath, packageJson);
 };

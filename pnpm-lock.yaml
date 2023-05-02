@@ -367,6 +367,7 @@ importers:
 
   packages/fiori-elements-writer:
     specifiers:
+      '@sap-ux/eslint-plugin-fiori-tools': workspace:*
       '@sap-ux/fe-fpm-writer': workspace:*
       '@sap-ux/odata-service-writer': workspace:*
       '@sap-ux/ui5-application-writer': workspace:*
@@ -400,6 +401,7 @@ importers:
       read-pkg-up: 7.0.1
       semver: 7.3.5
     devDependencies:
+      '@sap-ux/eslint-plugin-fiori-tools': link:../eslint-plugin-fiori-tools
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.176
@@ -410,6 +412,7 @@ importers:
 
   packages/fiori-freestyle-writer:
     specifiers:
+      '@sap-ux/eslint-plugin-fiori-tools': workspace:*
       '@sap-ux/odata-service-writer': workspace:*
       '@sap-ux/ui5-application-writer': workspace:*
       '@sap-ux/ui5-config': workspace:*
@@ -426,6 +429,7 @@ importers:
       mem-fs-editor: 9.4.0
       read-pkg-up: 7.0.1
     dependencies:
+      '@sap-ux/eslint-plugin-fiori-tools': link:../eslint-plugin-fiori-tools
       '@sap-ux/odata-service-writer': link:../odata-service-writer
       '@sap-ux/ui5-application-writer': link:../ui5-application-writer
       '@sap-ux/ui5-config': link:../ui5-config
@@ -672,6 +676,7 @@ importers:
 
   packages/ui5-application-writer:
     specifiers:
+      '@sap-ux/eslint-plugin-fiori-tools': workspace:*
       '@sap-ux/project-access': workspace:*
       '@sap-ux/ui5-config': workspace:*
       '@types/ejs': 3.1.0
@@ -689,6 +694,7 @@ importers:
       mem-fs-editor: 9.4.0
       semver: 7.3.5
     dependencies:
+      '@sap-ux/eslint-plugin-fiori-tools': link:../eslint-plugin-fiori-tools
       '@sap-ux/ui5-config': link:../ui5-config
       '@ui5/manifest': 1.49.2
       ejs: 3.1.7
