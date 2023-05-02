@@ -14,7 +14,9 @@ import {
 import type { FEOPSettings } from '../src/types';
 
 const TEST_NAME = 'feopTemplate';
-jest.setTimeout(360000); // Needed when debug.debugFull
+if (debug?.enabled) {
+    jest.setTimeout(360000);
+}
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);

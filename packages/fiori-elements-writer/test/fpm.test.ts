@@ -13,7 +13,9 @@ import {
 } from './common';
 
 const TEST_NAME = 'fpmTemplates';
-jest.setTimeout(360000); // Needed when debug.debugFull
+if (debug?.enabled) {
+    jest.setTimeout(360000);
+}
 
 describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
