@@ -1,6 +1,6 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
-Custom linting plugin for Fiori tools apps
+Custom linting plugin for SAPUI5 Fiori apps
 
 ## Installation
 
