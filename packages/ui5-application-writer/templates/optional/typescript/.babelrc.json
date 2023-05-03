@@ -4,7 +4,8 @@
         [
             "transform-ui5",
             {
-                "addControllerStaticPropsToExtend": true
+                "addControllerStaticPropsToExtend": true,
+                "overridesToOverride": true
             }
         ],
         "@babel/preset-typescript"
