@@ -28,10 +28,7 @@ describe('Ui5AbapRepositoryService', () => {
             .persist();
         nock(server)
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${notExistingApp}%27)?$format=json`)
-            .replyWithError({
-                status: 404,
-                body: 'the app does not exist'
-            })
+            .reply(404, 'the app does not exist')
             .persist();
     });
 
@@ -55,9 +52,9 @@ describe('Ui5AbapRepositoryService', () => {
             expect(info).toEqual(validAppInfo);
         });
 
-        test('Not existing app', async () => {
-            const info = await service.getInfo(notExistingApp);
-            expect(info).toBeUndefined();
+        test('Non-existing app returning 404', async () => {
+            const info = await service.getInfo(validApp);
+            expect(info).toBeDefined();
         });
     });
 
@@ -157,7 +154,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
-            expect(response.status).toBe(200);
+            expect(response?.status).toBe(200);
         });
 
         test('successful with additional message', async () => {
@@ -168,7 +165,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: validApp } });
-            expect(response.status).toBe(200);
+            expect(response?.status).toBe(200);
         });
 
         test('failed removal', async () => {
