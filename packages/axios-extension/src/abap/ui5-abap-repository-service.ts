@@ -122,18 +122,14 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @returns application information or undefined
      */
     public async getInfo(app: string): Promise<AppInfo> {
-        console.log(`getInfo>>>> `);
         try {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
-            console.log(`getInfo>>>> return data`);
             return response.odata();
         } catch (error) {
-            console.log(`getInfo>>>> error ${JSON.stringify(error)}`);
             this.log.debug(`Retrieving application ${app}, ${error}`);
             if (isAxiosError(error) && error.response?.status !== 404) {
                 throw error;
             }
-            console.log(`getInfo>>>> return undefined`);
             return undefined;
         }
     }
