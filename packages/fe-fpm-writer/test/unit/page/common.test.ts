@@ -8,10 +8,11 @@ import {
     generateRouteTarget,
     getManifestJsonExtensionHelper,
     PATTERN_SUFFIX,
-    validatePageConfig
+    validatePageConfig,
+    initializeTargetSettings
 } from '../../../src/page/common';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { CustomPage } from '../../../src/page/types';
+import type { CustomPage, FpmPage } from '../../../src/page/types';
 
 describe('common page functionality', () => {
     const mainEntity = 'Main';
@@ -213,6 +214,87 @@ describe('common page functionality', () => {
             delete manifest['sap.ui5'];
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
             expect(() => validatePageConfig(target, config, fs)).toThrowError();
+        });
+    });
+
+    describe('initializeTargetSettings', () => {
+        type testData = {
+            data: FpmPage;
+            addSettings?: Record<string, unknown>;
+            expected: object;
+        };
+        const testCases: testData[] = [
+            {
+                data: {
+                    entity: 'testEntity',
+                    contextPath: undefined,
+                    minUI5Version: '1.54'
+                },
+                expected: {
+                    entitySet: 'testEntity',
+                    navigation: {}
+                }
+            },
+            {
+                data: {
+                    entity: 'testEntity',
+                    contextPath: '/any/invalid/data',
+                    minUI5Version: '1.54'
+                },
+                expected: {
+                    entitySet: 'testEntity',
+                    navigation: {}
+                }
+            },
+            {
+                data: {
+                    entity: 'testEntity',
+                    contextPath: '/any/valid/data',
+                    minUI5Version: '2.1.1'
+                },
+                expected: {
+                    contextPath: '/any/valid/data',
+                    navigation: {}
+                }
+            },
+            {
+                data: {
+                    entity: 'testEntity',
+                    minUI5Version: '1.94.0'
+                },
+                expected: {
+                    contextPath: '/testEntity',
+                    navigation: {}
+                }
+            },
+            {
+                data: {
+                    entity: 'testEntity',
+                    minUI5Version: '1.96.1'
+                },
+                expected: {
+                    contextPath: '/testEntity',
+                    navigation: {}
+                }
+            },
+            {
+                data: {
+                    entity: 'testEntity',
+                    minUI5Version: '1.118.0'
+                },
+                addSettings: {
+                    any: 'existing'
+                },
+                expected: {
+                    any: 'existing',
+                    contextPath: '/testEntity',
+                    navigation: {}
+                }
+            }
+        ];
+        test.each(testCases)('', (testData) => {
+            const settings = initializeTargetSettings(testData.data, testData.addSettings);
+            expect(settings).toEqual(testData.expected);
         });
     });
 });

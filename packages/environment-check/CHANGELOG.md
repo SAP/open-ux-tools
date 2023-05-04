@@ -1,5 +1,27 @@
 # @sap-ux/environment-check
 
+## 0.15.15
+
+### Patch Changes
+
+-   50c1f8be: Remove empty folders if ignored
+
+## 0.15.14
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+    -   @sap-ux/project-access@1.3.1
+
+## 0.15.13
+
+### Patch Changes
+
+-   Updated dependencies [fa94bfd6]
+    -   @sap-ux/axios-extension@1.2.2
+
 ## 0.15.12
 
 ### Patch Changes
