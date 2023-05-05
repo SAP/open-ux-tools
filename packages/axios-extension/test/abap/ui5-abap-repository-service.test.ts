@@ -1,12 +1,13 @@
 import nock from 'nock';
 import type { AppInfo } from '../../src';
 import { Ui5AbapRepositoryService, createForAbap } from '../../src';
-import { AxiosDefaults, AxiosRequestConfig } from 'axios';
+import mockErrorDetails from './mockResponses/errordetails.json';
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
     const validApp = 'VALID_APP';
     const notExistingApp = 'NOT_EXISTING_APP';
+    const restrictedApp = 'RESTRICTED_APP';
     const validAppInfo: AppInfo = {
         Name: validApp,
         Package: 'my_package'
@@ -29,6 +30,10 @@ describe('Ui5AbapRepositoryService', () => {
         nock(server)
             .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${notExistingApp}%27)?$format=json`)
             .reply(404, 'the app does not exist')
+            .persist();
+        nock(server)
+            .get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${restrictedApp}%27)?$format=json`)
+            .reply(401, { d: validAppInfo })
             .persist();
     });
 
@@ -55,6 +60,10 @@ describe('Ui5AbapRepositoryService', () => {
         test('Non-existing app returning 404', async () => {
             const info = await service.getInfo(validApp);
             expect(info).toBeDefined();
+        });
+
+        test('Not authorized to access app', async () => {
+            await expect(service.getInfo(restrictedApp)).rejects.toThrowError();
         });
     });
 
@@ -132,19 +141,34 @@ describe('Ui5AbapRepositoryService', () => {
             }
         });
 
-        test('testMode and safeMode', async () => {
+        test('testMode enabled', async () => {
             nock(server)
                 .put(
-                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true&SafeMode=false`
+                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true&SafeMode=true`
                 )
                 .reply(200);
             const response = await service.deploy({
                 archive,
                 bsp: { name: validApp },
                 testMode: true,
-                safeMode: false
+                safeMode: true
             });
             expect(response.data).toBeDefined();
+        });
+
+        test('testMode enabled with error', async () => {
+            nock(server)
+                .put(
+                    `${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}&TestMode=true&SafeMode=true`
+                )
+                .reply(403, JSON.stringify(mockErrorDetails));
+            const response = await service.deploy({
+                archive,
+                bsp: { name: validApp },
+                testMode: true,
+                safeMode: true
+            });
+            expect(response.data).toContain('CA-UI5-ABA-SAR');
         });
     });
 
@@ -194,7 +218,7 @@ describe('Ui5AbapRepositoryService', () => {
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?${updateParams}`)
                 .reply(200);
             const response = await service.undeploy({ bsp: { name: appName } });
-            expect(response.status).toBe(200);
+            expect(response?.status).toBe(200);
         });
     });
 

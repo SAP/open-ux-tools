@@ -170,7 +170,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 this.log.info(`App available at ${frontendUrl}${path}${query}`);
             } else if (testMode) {
                 prettyPrintError({
-                    error: this.getErrorMessageFromString(response.data),
+                    error: this.getErrorMessageFromString(response?.data),
                     log: this.log,
                     host: frontendUrl
                 });
