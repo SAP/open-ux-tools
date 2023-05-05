@@ -1,5 +1,13 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.11.3
+
+### Patch Changes
+
+-   1522b416: Remove redundant commas from templates
+-   Updated dependencies [1522b416]
+    -   @sap-ux/fe-fpm-writer@0.18.9
+
 ## 0.11.2
 
 ### Patch Changes
