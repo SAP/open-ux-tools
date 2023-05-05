@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.18.9
+
+### Patch Changes
+
+-   1522b416: Remove redundant commas from templates
+
 ## 0.18.8
 
 ### Patch Changes
