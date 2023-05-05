@@ -1,5 +1,6 @@
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { ErrorMessage, prettyPrintError, prettyPrintMessage } from './message';
+import { prettyPrintError, prettyPrintMessage } from './message';
+import type { ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
 
