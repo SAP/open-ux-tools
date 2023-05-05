@@ -19,4 +19,4 @@ To consume this module, add @sap-ux/eslint-plugin-fiori-tools to `extend` in you
 
 - default: contains rules for typescript and rules for both prod and test code from plugin eslint-plugin-fiori-custom 
 - testcode: contains rules for typescript and rules for test code from plugin eslint-plugin-fiori-custom
-- prodCode: contains rules for typescript and rules for prodcode from plugin eslint-plugin-fiori-custom
+- prodCode: contains rules for typescript and rules for production code from plugin eslint-plugin-fiori-custom

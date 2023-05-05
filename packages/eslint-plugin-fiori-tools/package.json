@@ -8,11 +8,20 @@
     "eslint-plugin"
   ],
   "main": "./lib/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf lib coverage *.tsbuildinfo",
+    "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests"
+  },
   "devDependencies": {
     "eslint": "7.32.0"
   },
   "dependencies": {
-    "eslint-plugin-fiori-custom": "2.6.7"
+    "eslint-plugin-fiori-custom": "2.6.7",
+    "yaml": "2.2.2"
   },
   "peerDependencies": {
     "eslint": ">=7",

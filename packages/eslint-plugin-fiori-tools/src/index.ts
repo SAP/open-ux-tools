@@ -1,7 +1,7 @@
-"use strict";
 //------------------------------------------------------------------------------
 // Plugin Definition
 //------------------------------------------------------------------------------
+
 module.exports.configs = {
     default: {
         extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js', '../eslintrc-test.js']
@@ -13,4 +13,3 @@ module.exports.configs = {
         extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js']
     }
 };
-//# sourceMappingURL=index.js.map

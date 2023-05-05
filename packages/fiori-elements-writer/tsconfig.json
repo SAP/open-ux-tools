@@ -11,6 +11,9 @@
     },
     "references": [
         {
+            "path": "../eslint-plugin-fiori-tools"
+        },
+        {
             "path": "../fe-fpm-writer"
         },
         {

@@ -1,15 +1,16 @@
 'use strict';
-
+const { getWebAppPath } = require('./lib/utils');
+const webappPath = getWebAppPath();
 module.exports = {
     overrides: [
         {
             'plugins': ['fiori-custom'],
-            'files': ['**/*.js', '**/*.ts'],
+            'files': [`./${webappPath}/**/*.js`, `./${webappPath}/**/*.ts`],
             'excludedFiles': [
                 'test/**',
                 'target/**',
-                'webapp/test/**',
-                'webapp/localservice/**',
+                `${webappPath}/test/**`,
+                `${webappPath}/localservice/**`,
                 'backup/**',
                 'Gruntfile.js',
                 'changes_preview.js',

@@ -331,8 +331,10 @@ importers:
     specifiers:
       eslint: 7.32.0
       eslint-plugin-fiori-custom: 2.6.7
+      yaml: 2.2.2
     dependencies:
       eslint-plugin-fiori-custom: 2.6.7_eslint@7.32.0
+      yaml: 2.2.2
     devDependencies:
       eslint: 7.32.0
 
