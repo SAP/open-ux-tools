@@ -123,7 +123,25 @@ describe('Ui5AbapRepositoryService', () => {
             await expect(service.deploy({ archive, bsp: { name: validApp } })).rejects.toThrowError();
         });
 
-        test('retry deployment on 504', async () => {
+        it.each([{ code: 408 }, { code: 504 }])('retry deployment based on error codes', async ({ code }) => {
+            const badService = createForAbap({ baseURL: server }).getUi5AbapRepository();
+            const mockPut = jest.fn().mockRejectedValue({
+                response: {
+                    status: code
+                }
+            });
+            badService.put = mockPut;
+            try {
+                await badService.deploy({ archive, bsp: { name: validApp } });
+                fail('Function should have thrown an error');
+            } catch (error) {
+                expect(error.response?.status).toBe(code);
+                // in case of 504 we retry 2 times
+                expect(mockPut).toHaveBeenCalledTimes(3);
+            }
+        });
+
+        test('retry deployment on 504 and 408', async () => {
             const badService = createForAbap({ baseURL: server }).getUi5AbapRepository();
             const mockPut = jest.fn().mockRejectedValue({
                 response: {
