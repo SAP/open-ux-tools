@@ -16,6 +16,13 @@ describe('Tests for utils.ts', () => {
 
         expect(await getWebAppPath()).toEqual('src/webapp');
     });
+    test('getWebAppPath', async () => {
+        mockCwd = jest.spyOn(process, 'cwd');
+        mockCwd.mockImplementation(() => join(__dirname, 'test-input/nonUI5Project'));
+
+        expect(await getWebAppPath()).toEqual('webapp');
+    });
+
     test('configs', async () => {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const configs = require('../src/index');
