@@ -68,7 +68,8 @@ exports[`CustomFilter generateCustomFilter Create several new custom filters 2`]
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Create several new custom filters 3`] = `
@@ -149,7 +150,8 @@ exports[`CustomFilter generateCustomFilter New custom filter (no eventhandler) 2
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter New custom filter (no eventhandler) 3`] = `
@@ -319,7 +321,8 @@ exports[`CustomFilter generateCustomFilter Test 'typescript' property. JavaScrip
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Test 'typescript' property. TypeScript 1`] = `
@@ -370,7 +373,8 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
@@ -394,7 +398,8 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is "object", action with lowercase first letter 1`] = `
@@ -418,7 +423,8 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
@@ -442,7 +448,8 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
@@ -482,7 +489,8 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
@@ -522,7 +530,8 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter specific target folder, event handler as boolean 1`] = `
@@ -603,7 +612,8 @@ exports[`CustomFilter generateCustomFilter specific target folder, event handler
 			}
 		}
 	};
-});"
+});
+"
 `;
 
 exports[`CustomFilter generateCustomFilter with existing event handler as string 1`] = `

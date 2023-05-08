@@ -194,7 +194,8 @@ Object {
 			}
 		}
 	};
-});",
+});
+",
     "state": "modified",
   },
   "lrop/webapp/ext/newCustomView/NewCustomView.controller.js": Object {
