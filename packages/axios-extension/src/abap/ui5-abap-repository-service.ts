@@ -128,10 +128,10 @@ export class Ui5AbapRepositoryService extends ODataService {
             return response.odata();
         } catch (error) {
             this.log.debug(`Retrieving application ${app}, ${error}`);
-            if (isAxiosError(error) && error.response?.status !== 404) {
-                throw error;
+            if (isAxiosError(error) && error.response?.status === 404) {
+                return undefined;
             }
-            return undefined;
+            throw error;
         }
     }
 
@@ -169,7 +169,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                     ? '?sap-client=' + this.defaults.params['sap-client']
                     : '';
                 this.log.info(`App available at ${frontendUrl}${path}${query}`);
-            } else if (testMode) {
+            } else {
                 prettyPrintError({
                     error: this.getErrorMessageFromString(response?.data),
                     log: this.log,
@@ -338,6 +338,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 return response;
             }
         } catch (error) {
+            // Known ABAP timeout exception codes should re-trigger a deployment again to confirm the app was deployed
             if ([504, 408].includes(error?.response?.status)) {
                 // Kill the flow after three attempts
                 if (tryCount >= 3) {
