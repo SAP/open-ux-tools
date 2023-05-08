@@ -3324,9 +3324,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"viewName\\": \\"fefpmjs.ext.main.Main\\",
-              \\"entitySet\\": \\"Booking\\",
-              \\"navigation\\": {}
+              \\"navigation\\": {},
+              \\"contextPath\\": \\"/Booking\\",
+              \\"viewName\\": \\"fefpmjs.ext.main.Main\\"
             }
           }
         }
@@ -3488,7 +3488,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     }
                     resolve(result);
                 })
-                .fail(function (error) {
+                .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
@@ -3554,7 +3554,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -3980,7 +3980,7 @@ export default class Main extends Controller {
      */
     // public  onBeforeRendering(): void {
     //
-    //  },
+    //  }
 
     /**
      * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
@@ -3989,7 +3989,7 @@ export default class Main extends Controller {
      */
     // public  onAfterRendering(): void {
     //
-    //  },
+    //  }
 
     /**
      * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
@@ -7125,9 +7125,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"name\\": \\"sap.fe.core.fpm\\",
           \\"options\\": {
             \\"settings\\": {
-              \\"viewName\\": \\"fefpmts.ext.main.Main\\",
-              \\"entitySet\\": \\"Booking\\",
-              \\"navigation\\": {}
+              \\"navigation\\": {},
+              \\"contextPath\\": \\"/Booking\\",
+              \\"viewName\\": \\"fefpmts.ext.main.Main\\"
             }
           }
         }

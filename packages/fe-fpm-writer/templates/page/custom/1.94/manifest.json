@@ -8,11 +8,7 @@
                     "name": "sap.fe.core.fpm",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
-                        "settings": {
-                            "viewName": "<%- ns %>.<%- name %>",
-                            "entitySet": "<%- entity %>",
-                            "navigation": { }
-                        }
+                        "settings": <%- JSON.stringify({ ...settings, viewName: `${ns}.${name}`}) %>
                     }
                 }<%if (locals.navigation) {%>,
                 "<%- navigation.sourcePage %>": {

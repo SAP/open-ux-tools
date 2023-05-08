@@ -478,7 +478,7 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
             history.go(-1);
         } else {
             this.getRouter().navTo(\\"list\\", {});
@@ -2247,7 +2247,7 @@ export function createDeviceModel () {
                     }
                     resolve(result);
                 })
-                .fail(function (error) {
+                .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
@@ -2313,7 +2313,7 @@ export function createDeviceModel () {
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -3164,7 +3164,7 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
             history.go(-1);
         } else {
             this.getRouter().navTo(\\"list\\", {});
@@ -4933,7 +4933,7 @@ export function createDeviceModel () {
                     }
                     resolve(result);
                 })
-                .fail(function (error) {
+                .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
@@ -4999,7 +4999,7 @@ export function createDeviceModel () {
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -5379,17 +5379,46 @@ Object {
   \\"root\\": true,
   \\"plugins\\": [
     \\"@sap/ui5-jsdocs\\",
-    \\"eslint-plugin-fiori-custom\\"
+    \\"fiori-custom\\"
   ],
   \\"extends\\": [
     \\"plugin:@sap/ui5-jsdocs/recommended\\",
-    \\"eslint:recommended\\",
-    \\"./node_modules/eslint-plugin-fiori-custom/configure.eslintrc\\"
+    \\"eslint:recommended\\"
   ],
-  \\"ignorePatterns\\": [
-    \\"webapp/localService/**\\",
-    \\"webapp/test/**\\",
-    \\"dist/**\\"
+  \\"overrides\\": [
+    {
+      \\"files\\": [
+        \\"**/*.*\\"
+      ],
+      \\"excludedFiles\\": [
+        \\"test/**\\",
+        \\"target/**\\",
+        \\"webapp/test/**\\",
+        \\"webapp/localservice/**\\",
+        \\"backup/**\\",
+        \\"Gruntfile.js\\",
+        \\"changes_preview.js\\",
+        \\"gulpfile.js\\"
+      ],
+      \\"plugins\\": [
+        \\"fiori-custom\\"
+      ],
+      \\"extends\\": [
+        \\"eslint:recommended\\",
+        \\"plugin:fiori-custom/fioriToolsDefault\\"
+      ]
+    },
+    {
+      \\"files\\": [
+        \\"webapp/test/**\\"
+      ],
+      \\"plugins\\": [
+        \\"fiori-custom\\"
+      ],
+      \\"extends\\": [
+        \\"plugin:fiori-custom/fioriToolsTestcode\\"
+      ]
+    }
   ]
 }
 ",
@@ -5427,7 +5456,7 @@ archive.zip
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"1.71.15\\",
-    \\"eslint-plugin-fiori-custom\\": \\"2.2.1\\",
+    \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -5435,7 +5464,7 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"lint\\": \\"eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
@@ -5634,7 +5663,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line sap-no-proprietary-browser-api
+                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
                 if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                     this._sContentDensityClass = \\"\\";
                 } else if (!Device.support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -5752,7 +5781,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
             var sPreviousHash = History.getInstance().getPreviousHash();
 
             if (sPreviousHash !== undefined) {
-                // eslint-disable-next-line sap-no-history-manipulation
+                // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
                 history.go(-1);
             } else {
                 this.getRouter().navTo(\\"list\\", {}, true);
@@ -6275,7 +6304,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
          * @public
          */
         onNavBack: function() {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
             history.go(-1);
         },
 
@@ -7516,7 +7545,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
                     }
                     resolve(result);
                 })
-                .fail(function (error) {
+                .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
@@ -7582,7 +7611,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;
@@ -8375,7 +8404,7 @@ export default class BaseController extends Controller {
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
-            // eslint-disable-next-line sap-no-history-manipulation
+            // eslint-disable-next-line fiori-custom/sap-no-history-manipulation
             history.go(-1);
         } else {
             this.getRouter().navTo(\\"list\\", {});
@@ -10055,7 +10084,7 @@ export function createDeviceModel () {
                     }
                     resolve(result);
                 })
-                .fail(function (error) {
+                .fail(function () {
                     reject(new Error(\\"Could not fetch manifest at '\\" + manifestPath));
                 });
         });
@@ -10121,7 +10150,7 @@ export function createDeviceModel () {
     };
 })(sap);
 
-/*eslint-disable sap-browser-api-warning, sap-no-dom-access*/
+/*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
 if (!currentScript) {
     currentScript = document.currentScript;

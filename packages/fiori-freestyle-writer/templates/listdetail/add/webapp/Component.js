@@ -59,7 +59,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
         getContentDensityClass : function() {
             if (this._sContentDensityClass === undefined) {
                 // check whether FLP has already set the content density class; do nothing in this case
-                // eslint-disable-next-line sap-no-proprietary-browser-api
+                // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
                 if (document.body.classList.contains("sapUiSizeCozy") || document.body.classList.contains("sapUiSizeCompact")) {
                     this._sContentDensityClass = "";
                 } else if (!Device.support.touch) { // apply "compact" mode if touch is not supported

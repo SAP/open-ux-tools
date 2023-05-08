@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.13.5
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+
 ## 0.13.4
 
 ### Patch Changes

@@ -3,10 +3,6 @@ import React from 'react';
 import type { ISearchBoxProps, ISearchBoxStyleProps, ISearchBoxStyles } from '@fluentui/react';
 import { SearchBox } from '@fluentui/react';
 
-import { UiIcons } from '../Icons';
-
-const searchIcon = { iconName: UiIcons.Search };
-
 /**
  * UISearchBox component
  * based on https://developer.microsoft.com/en-us/fluentui#/controls/web/searchbox
@@ -150,6 +146,6 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
             }
         });
 
-        return <SearchBox {...this.props} styles={searchBoxStyles} iconProps={searchIcon} />;
+        return <SearchBox {...this.props} styles={searchBoxStyles} />;
     }
 }

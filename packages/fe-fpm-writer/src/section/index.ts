@@ -10,7 +10,7 @@ import { setCommonDefaults, getDefaultFragmentContent } from '../common/defaults
 import { applyEventHandlerConfiguration } from '../common/event-handler';
 import { extendJSON } from '../common/file';
 import { getTemplatePath } from '../templates';
-import { coerce } from 'semver';
+import { coerce, gte } from 'semver';
 
 /**
  * Get the template folder for the given UI5 version.
@@ -20,7 +20,7 @@ import { coerce } from 'semver';
  */
 export function getManifestRoot(ui5Version?: string): string {
     const minVersion = coerce(ui5Version);
-    if (!minVersion || minVersion.minor >= 86) {
+    if (!minVersion || gte(minVersion, '1.86.0')) {
         return getTemplatePath('/section/1.86');
     } else {
         return getTemplatePath('/section/1.85');
@@ -35,7 +35,7 @@ export function getManifestRoot(ui5Version?: string): string {
  */
 function getAdditionalDependencies(ui5Version?: string): CustomSectionDependencies | undefined {
     const minVersion = coerce(ui5Version);
-    return !minVersion || minVersion.minor >= 90 ? { 'xmlns:macros': 'sap.fe.macros' } : undefined;
+    return !minVersion || gte(minVersion, '1.90.0') ? { 'xmlns:macros': 'sap.fe.macros' } : undefined;
 }
 
 /**

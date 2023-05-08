@@ -1,5 +1,54 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.11.3
+
+### Patch Changes
+
+-   1522b416: Remove redundant commas from templates
+-   Updated dependencies [1522b416]
+    -   @sap-ux/fe-fpm-writer@0.18.9
+
+## 0.11.2
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+    -   @sap-ux/odata-service-writer@0.14.20
+    -   @sap-ux/ui5-application-writer@0.21.1
+    -   @sap-ux/fe-fpm-writer@0.18.8
+    -   @sap-ux/ui5-test-writer@0.1.7
+
+## 0.11.1
+
+### Patch Changes
+
+-   Updated dependencies [3391be7f]
+    -   @sap-ux/fe-fpm-writer@0.18.8
+
+## 0.11.0
+
+### Minor Changes
+
+-   e39c14d7: Add configuration option generateIndex to toggle the generation of index.html
+
+### Patch Changes
+
+-   Updated dependencies [e39c14d7]
+    -   @sap-ux/ui5-application-writer@0.21.0
+
+## 0.10.0
+
+### Minor Changes
+
+-   f3ec7324: Update eslint fiori custom package and rules
+
+### Patch Changes
+
+-   Updated dependencies [f3ec7324]
+    -   @sap-ux/ui5-application-writer@0.20.0
+
 ## 0.9.2
 
 ### Patch Changes

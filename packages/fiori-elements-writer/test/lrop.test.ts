@@ -208,6 +208,22 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }),
                 service: v2Service
             } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lropV2_without_start-noflp',
+            config: {
+                ...Object.assign(feBaseConfig('lropV2_ts'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v2TemplateSettings
+                    },
+                    ui5: {
+                        version: '1.77.2'
+                    },
+                    appOptions: { generateIndex: false }
+                }),
+                service: v2Service
+            } as FioriElementsApp<LROPSettings>
         }
     ];
 

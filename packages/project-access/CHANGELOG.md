@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 1.3.1
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+
 ## 1.3.0
 
 ### Minor Changes
