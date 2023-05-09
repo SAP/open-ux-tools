@@ -61,7 +61,7 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
             false,
             config.typescript,
             contextParameter,
-            { templatePath: 'filter/Controller', fnName: 'itemsFilter', fileName: config.name }
+            { templatePath: 'filter/Controller', fnName: 'itemsFilter' }
         );
     } else {
         // create a controller file

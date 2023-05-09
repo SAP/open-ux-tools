@@ -43,7 +43,7 @@ export const contextParameter: EventHandlerTypescriptParameters = {
  * @param controllerSuffix - append controller suffix to new file
  * @param typescript - create Typescript file instead of Javascript
  * @param parameters - parameter configurations for the event handler
- * @param defaultConfig - default path to the template without the extension, default functionName, default fileName
+ * @param defaultConfig - default path to the template without the extension, default functionName
  * @returns {string} full namespace path to method
  */
 export function applyEventHandlerConfiguration(
@@ -53,7 +53,7 @@ export function applyEventHandlerConfiguration(
     controllerSuffix = false,
     typescript?: boolean,
     parameters: EventHandlerTypescriptParameters = defaultParameter,
-    defaultConfig = { templatePath: 'common/EventHandler', fnName: 'onPress', fileName: config.name }
+    defaultConfig = { templatePath: 'common/EventHandler', fnName: 'onPress' }
 ): string {
     if (typeof eventHandler === 'string') {
         // Existing event handler is passed - no need for file creation/update
@@ -63,7 +63,7 @@ export function applyEventHandlerConfiguration(
     let eventHandlerFnName = defaultConfig.fnName;
     let insertScript: TextFragmentInsertion | undefined;
     // By default - use config name for js file name
-    let fileName = defaultConfig.fileName;
+    let fileName = config.name;
     if (typeof eventHandler === 'object') {
         if (eventHandler.fnName) {
             eventHandlerFnName = eventHandler.fnName;
