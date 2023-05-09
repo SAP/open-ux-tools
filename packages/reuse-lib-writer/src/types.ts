@@ -2,8 +2,8 @@ export interface UI5LibConfig {
     libraryName: string;
     namespace: string;
     framework: 'SAPUI5' | 'OpenUI5';
-    frameworkVersion: 'string';
-    author: 'string';
+    frameworkVersion: string;
+    author: string;
     typescript: boolean;
 }
 
