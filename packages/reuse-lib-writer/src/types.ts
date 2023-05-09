@@ -1,5 +1,5 @@
 export interface UI5LibConfig {
-    libraryname: string;
+    libraryName: string;
     namespace: string;
     framework: 'SAPUI5' | 'OpenUI5';
     frameworkVersion: 'string';
@@ -9,13 +9,12 @@ export interface UI5LibConfig {
 
 export interface UI5LibInput extends UI5LibConfig {
     namespaceURI: string;
-    librarynamespace: string;
-    librarynamespaceURI: string;
-    librarybasepath: string;
-    frameworklowercase: string;
+    libraryNamespace: string;
+    libraryNamespaceURI: string;
+    libraryBasepath: string;
 }
 
 export interface UI5LibInputTS extends UI5LibInput {
-    tstypes: string;
-    tstypesVersion: string;
+    tsTypes: string;
+    tsTypesVersion: string;
 }

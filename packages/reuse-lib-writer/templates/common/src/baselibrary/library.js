@@ -3,7 +3,7 @@
  */
 
 /**
- * Initialization Code and shared classes of library <%= librarynamespace %>.
+ * Initialization Code and shared classes of library <%= libraryNamespace %>.
  */
 sap.ui.define([
 	"sap/ui/core/library"
@@ -13,35 +13,35 @@ sap.ui.define([
 	// delegate further initialization of this library to the Core
 	// Hint: sap.ui.getCore() must still be used to support preload with sync bootstrap!
 	sap.ui.getCore().initLibrary({
-		name: "<%= librarynamespace %>",
+		name: "<%= libraryNamespace %>",
 		version: "${version}",
 		dependencies: [ // keep in sync with the ui5.yaml and .library files
 			"sap.ui.core"
 		],
 		types: [
-			"<%= librarynamespace %>.ExampleColor"
+			"<%= libraryNamespace %>.ExampleColor"
 		],
 		interfaces: [],
 		controls: [
-			"<%= librarynamespace %>.Example"
+			"<%= libraryNamespace %>.Example"
 		],
 		elements: [],
 		noLibraryCSS: false // if no CSS is provided, you can disable the library.css load here
 	});
 
 	/**
-	 * Some description about <code><%= libraryname %></code>
+	 * Some description about <code><%= libraryName %></code>
 	 *
 	 * @namespace
-	 * @name <%= librarynamespace %>
+	 * @name <%= libraryNamespace %>
 	 * @author <%= author %>
 	 * @version ${version}
 	 * @public
 	 */
-	var thisLib = <%= librarynamespace %>;
+	var thisLib = <%= libraryNamespace %>;
 
 	/**
-	 * Semantic Colors of the <code><%= librarynamespace %>.Example</code>.
+	 * Semantic Colors of the <code><%= libraryNamespace %>.Example</code>.
 	 *
 	 * @enum {string}
 	 * @public

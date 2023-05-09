@@ -13,9 +13,9 @@
     "rootDir": "./",
     "outDir": "./src-gen",
     "baseUrl": "./",
-    "typeRoots": ["./node_modules/@types", "./node_modules/<%= tstypes %>"],
+    "typeRoots": ["./node_modules/@types", "./node_modules/<%= tsTypes %>"],
     "paths": {
-      "<%= librarynamespaceURI %>/*": ["./src/<%= librarynamespaceURI %>/*"]
+      "<%= libraryNamespaceURI %>/*": ["./src/<%= libraryNamespaceURI %>/*"]
     }
   },
   "references": [

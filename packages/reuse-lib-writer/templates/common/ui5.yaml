@@ -1,6 +1,6 @@
 specVersion: '2.2'
 metadata:
-  name: "<%= libraryname %>"
+  name: "<%= libraryName %>"
 type: library
 framework:
   name: <%= framework %>

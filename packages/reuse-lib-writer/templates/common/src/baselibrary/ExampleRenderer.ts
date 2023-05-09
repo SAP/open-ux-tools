@@ -23,7 +23,7 @@ const ExampleRenderer = {
 	 */
 	render: function (rm: RenderManager, control: Example) {
 
-		const i18n = Core.getLibraryResourceBundle("<%= librarynamespace %>") as ResourceBundle;
+		const i18n = Core.getLibraryResourceBundle("<%= libraryNamespace %>") as ResourceBundle;
 
 		rm.openStart("div", control);
 		if (control.getColor() === ExampleColor.Highlight) {

@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <library xmlns="http://www.sap.com/sap.ui.library.xsd">
-	<name><%= librarynamespace %></name>
+	<name><%= libraryNamespace %></name>
 	<vendor><%= author %></vendor>
 	<version>${version}</version>
 	<copyright>${copyright}</copyright>
-	<title><%= libraryname %></title>
-	<documentation>Some description about <%= libraryname %></documentation>
+	<title><%= libraryName %></title>
+	<documentation>Some description about <%= libraryName %></documentation>
 	<dependencies>
 		<dependency>
 			<libraryName>sap.ui.core</libraryName>

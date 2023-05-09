@@ -2,7 +2,7 @@
  * ${copyright}
  */
 
-// Provides control <%= librarynamespace %>.Example.
+// Provides control <%= libraryNamespace %>.Example.
 import Control from	"sap/ui/core/Control";
 import ExampleRenderer from "./ExampleRenderer";
 import { ExampleColor } from "./library";
@@ -10,7 +10,7 @@ import { ExampleColor } from "./library";
 
 
 /**
- * Constructor for a new <code><%= librarynamespace %>.Example</code> control.
+ * Constructor for a new <code><%= libraryNamespace %>.Example</code> control.
  *
  * Some class description goes here.
  * @extends Control
@@ -20,7 +20,7 @@ import { ExampleColor } from "./library";
  *
  * @constructor
  * @public
- * @name <%= librarynamespace %>.Example
+ * @name <%= libraryNamespace %>.Example
  */
 export default class Example extends Control {
 
@@ -30,7 +30,7 @@ export default class Example extends Control {
 	constructor(id?: string, settings?: $ExampleSettings) { super(id, settings); }
 
 	static readonly metadata = {
-		library: "<%= librarynamespace %>",
+		library: "<%= libraryNamespace %>",
 		properties: {
 			/**
 			 * The text to display.
@@ -44,7 +44,7 @@ export default class Example extends Control {
 			 * The color to use (default to "Default" color).
 			 */
 			color: {
-				type: "<%= librarynamespace %>.ExampleColor",
+				type: "<%= libraryNamespace %>.ExampleColor",
 				group: "Appearance",
 				defaultValue: ExampleColor.Default
 			}

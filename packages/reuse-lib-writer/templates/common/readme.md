@@ -1,4 +1,4 @@
-# UI5 Library `<%= libraryname %>`
+# UI5 Library `<%= libraryName %>`
 
 Insert the purpose of this project and some interesting info here...
 

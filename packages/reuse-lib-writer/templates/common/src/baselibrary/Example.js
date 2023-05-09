@@ -2,7 +2,7 @@
  * ${copyright}
  */
 
-// Provides control <%= librarynamespace %>.Example.
+// Provides control <%= libraryNamespace %>.Example.
 sap.ui.define([
 	"./library", 
 	"sap/ui/core/Control", 
@@ -14,7 +14,7 @@ sap.ui.define([
 	var ExampleColor = library.ExampleColor;
 
 	/**
-	 * Constructor for a new <code><%= librarynamespace %>.Example</code> control.
+	 * Constructor for a new <code><%= libraryNamespace %>.Example</code> control.
 	 *
 	 * @param {string} [sId] id for the new control, generated automatically if no id is given
 	 * @param {object} [mSettings] initial settings for the new control
@@ -28,11 +28,11 @@ sap.ui.define([
 	 *
 	 * @constructor
 	 * @public
-	 * @alias <%= librarynamespace %>.Example
+	 * @alias <%= libraryNamespace %>.Example
 	 */
-	var Example = Control.extend("<%= librarynamespace %>.Example", /** @lends <%= librarynamespace %>.Example.prototype */ {
+	var Example = Control.extend("<%= libraryNamespace %>.Example", /** @lends <%= libraryNamespace %>.Example.prototype */ {
 		metadata: {
-			library: "<%= librarynamespace %>",
+			library: "<%= libraryNamespace %>",
 			properties: {
 				/**
 				 * The text to display.
@@ -46,7 +46,7 @@ sap.ui.define([
 				 * The color to use (default to "Default" color).
 				 */
 				color: {
-					type: "<%= librarynamespace %>.ExampleColor",
+					type: "<%= libraryNamespace %>.ExampleColor",
 					group: "Appearance",
 					defaultValue: ExampleColor.Default
 				}

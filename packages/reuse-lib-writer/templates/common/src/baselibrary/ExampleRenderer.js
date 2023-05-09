@@ -28,7 +28,7 @@ sap.ui.define([
 	 */
 	ExampleRenderer.render = function (rm, control) {
 
-		var i18n = Core.getLibraryResourceBundle("<%= librarynamespace %>");
+		var i18n = Core.getLibraryResourceBundle("<%= libraryNamespace %>");
 
 		rm.openStart("div", control);
 		if (control.getColor() === ExampleColor.Highlight) {

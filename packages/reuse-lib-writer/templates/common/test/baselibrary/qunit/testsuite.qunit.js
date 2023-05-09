@@ -2,11 +2,11 @@ sap.ui.define(function() {
 	"use strict";
 
 	return {
-		name: "QUnit TestSuite for <%= librarynamespace %>",
+		name: "QUnit TestSuite for <%= libraryNamespace %>",
 		defaults: {
 			bootCore: true,
 			ui5: {
-				libs: "sap.ui.core,<%= librarynamespace %>",
+				libs: "sap.ui.core,<%= libraryNamespace %>",
 				theme: "sap_fiori_3",
 				noConflict: true,
 				preload: "auto"
@@ -26,7 +26,7 @@ sap.ui.define(function() {
 			// test file for the Example control
 			Example: {
 				title: "QUnit Test for Example",
-				_alternativeTitle: "QUnit tests: <%= librarynamespace %>.Example"
+				_alternativeTitle: "QUnit tests: <%= libraryNamespace %>.Example"
 			}
 		}
 	};

@@ -2,8 +2,8 @@
 sap.ui.define([
 	"sap/ui/qunit/QUnitUtils",
 	"sap/ui/qunit/utils/createAndAppendDiv",
-	"<%= librarynamespaceURI %>/library",
-	"<%= librarynamespaceURI %>/Example"
+	"<%= libraryNamespaceURI %>/library",
+	"<%= libraryNamespaceURI %>/Example"
 ], function(qutils, createAndAppendDiv, library, Example) {
 	"use strict";
 

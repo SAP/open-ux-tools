@@ -18,34 +18,33 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
     const ignoreJSFiles = ['**/src/Example.js', '**/ExampleRenderer.js', '**/library.js'];
     const ignore = reuseLib.typescript ? ignoreJSFiles : ['**/*.ts'];
 
-    const librarynamespace = `${reuseLib.namespace}.${reuseLib.libraryname}`;
+    const libraryNamespace = `${reuseLib.namespace}.${reuseLib.libraryName}`;
     const libConfig: UI5LibInput = {
         ...reuseLib,
         namespaceURI: reuseLib.namespace.split('.').join('/'),
-        librarynamespace,
-        librarynamespaceURI: librarynamespace.split('.').join('/'),
-        librarybasepath:
-            librarynamespace
+        libraryNamespace,
+        libraryNamespaceURI: libraryNamespace.split('.').join('/'),
+        libraryBasepath:
+            libraryNamespace
                 .split('.')
                 .map((_) => '..')
-                .join('/') + '/',
-        frameworklowercase: reuseLib.framework.toLowerCase()
+                .join('/') + '/'
     };
 
-    basePath = join(basePath, librarynamespace);
+    basePath = join(basePath, libraryNamespace);
 
     fs.copyTpl(join(tmplPath, 'common', '**/*.*'), basePath, libConfig, undefined, {
         globOptions: { dot: true, ignore },
         processDestinationPath: (filePath: string) => {
-            return filePath.replace(/^_/, '').replace('baselibrary', libConfig.librarynamespaceURI).replace(/\/_/, '/');
+            return filePath.replace(/^_/, '').replace('baselibrary', libConfig.libraryNamespaceURI).replace(/\/_/, '/');
         }
     });
 
     if (reuseLib.typescript) {
         const tsLibConfig = {
             ...libConfig,
-            tstypes: getTypePackageFor(libConfig.framework, libConfig.frameworkVersion),
-            tstypesVersion: libConfig.frameworkVersion
+            tsTypes: getTypePackageFor(libConfig.framework, libConfig.frameworkVersion),
+            tsTypesVersion: libConfig.frameworkVersion
         };
 
         await enableTypescript(tsLibConfig, basePath, tmplPath, fs);

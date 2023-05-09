@@ -1,5 +1,5 @@
 {
-  "name": "<%= libraryname %>",
+  "name": "<%= libraryName %>",
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
@@ -17,8 +17,8 @@
   },
   "scripts": {
     "build": "ui5 build --clean-dest",
-    "start": "ui5 serve --open test-resources/<%= librarynamespaceURI %>/Example.html",
-    "testsuite": "ui5 serve --open test-resources/<%= librarynamespaceURI %>/qunit/testsuite.qunit.html",
+    "start": "ui5 serve --open test-resources/<%= libraryNamespaceURI %>/Example.html",
+    "testsuite": "ui5 serve --open test-resources/<%= libraryNamespaceURI %>/qunit/testsuite.qunit.html",
     "test": "karma start --browsers=ChromeHeadless --singleRun=true"
   },
   "license": "UNLICENSED"

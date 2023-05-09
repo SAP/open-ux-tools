@@ -1,6 +1,6 @@
 sap.ui.define([
-	"<%= librarynamespaceURI %>/library",
-	"<%= librarynamespaceURI %>/Example"
+	"<%= libraryNamespaceURI %>/library",
+	"<%= libraryNamespaceURI %>/Example"
 ], function(library, Example) {
 	"use strict";
 
