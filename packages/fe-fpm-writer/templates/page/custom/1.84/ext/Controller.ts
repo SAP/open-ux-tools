@@ -21,7 +21,7 @@ export default class <%- name %> extends Controller {
      */
     // public  onBeforeRendering(): void {
     //
-    //  },
+    //  }
 
     /**
      * Called when the View has been rendered (so its HTML is part of the document). Post-rendering manipulations of the HTML could be done here.
@@ -30,7 +30,7 @@ export default class <%- name %> extends Controller {
      */
     // public  onAfterRendering(): void {
     //
-    //  },
+    //  }
 
     /**
      * Called when the Controller is destroyed. Use this one to free resources and finalize activities.
