@@ -31,7 +31,7 @@ export function validateLibName(libName: string): boolean {
  * @throws Error with validation message, if the namespace is not valid
  * @returns if namespace is valid
  */
-function validateNamespacePattern(namespace: string, libName: string): boolean {
+function validateNamespacePattern(namespace: string, libName?: string): boolean {
     if (!/^[a-zA-Z]/.test(namespace)) {
         throw new Error(t('error.invalidNamespace.mustStartWithLetter'));
     }
@@ -65,7 +65,7 @@ function validateNamespacePattern(namespace: string, libName: string): boolean {
  * @throws Error with validation message, if the namespace is not valid
  * @returns true, if app id is validated
  */
-export function validateNamespace(namespace: string, libName: string): boolean {
+export function validateNamespace(namespace: string, libName?: string): boolean {
     if (!namespace) {
         throw new Error(t('error.missingRequiredProperty', { propertyName: 'namespace' }));
     }

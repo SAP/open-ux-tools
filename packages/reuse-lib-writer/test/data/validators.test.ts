@@ -95,7 +95,7 @@ describe('validators', () => {
         it('should throw an error for a namespace exceeding the maximum length', () => {
             const namespace = 'VeryLongInvalidNamespaceThatExceedsTheMaximumLengthLimitOfSeventyCharacters';
             expect(() => {
-                validateNamespace(namespace);
+                validateNamespace(namespace, 'testLib');
             }).toThrowError(t('error.invalidNamespace.tooLong', { length: 70 }));
         });
     });
