@@ -175,25 +175,25 @@ Object {
   },
   "lrop/webapp/ext/newCustomFilter/NewCustomFilter.js": Object {
     "contents": "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
-	\\"use strict\\";
-	return {
-		itemsFilter: function(sValue) {
-			switch (sValue) {
-				case \\"0\\":
-						return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-				case \\"1\\":
-						return new Filter({
-						filters: [
-							new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-							new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-						],
-						and: true
-					});
-				case \\"2\\":
-						return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-			}
-		}
-	};
+    \\"use strict\\";
+    return {
+        itemsFilter: function(sValue) {
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
 });
 ",
     "state": "modified",
@@ -704,20 +704,20 @@ import FilterOperator from 'sap/ui/model/FilterOperator';
  * @returns new Filter
  */
 export function itemsFilter(sValue: string) {
-	switch (sValue) {
-		case \\"0\\":
-			return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
-		case \\"1\\":
-			return new Filter({
-				filters: [
-					new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
-					new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
-				],
-				and: true
-			});
-		case \\"2\\":
-			return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
-	}
+    switch (sValue) {
+        case \\"0\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+        case \\"1\\":
+            return new Filter({
+                filters: [
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                ],
+                and: true
+            });
+        case \\"2\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+    }
 }",
     "state": "modified",
   },

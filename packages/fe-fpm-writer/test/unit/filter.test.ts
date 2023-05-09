@@ -193,10 +193,10 @@ describe('CustomFilter', () => {
                     'position as object',
                     {
                         line: 18,
-                        character: 3
+                        character: 9
                     }
                 ],
-                ['absolute position', 633 + 18 * os.EOL.length]
+                ['absolute position', 870 + 18 * os.EOL.length]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
                 (_desc: string, position: number | FileContentPosition) => {
