@@ -5,17 +5,16 @@ import type { UI5LibConfig } from '../types';
 /**
  * Validates the specified lib name to ensure we do not create malformed documents.
  *
- * @param libraryName name for library
+ * @param libName name for library
  * @throws Error with validation message, if the app id is not valid
  * @returns true, if app id is validated
  */
-export function validateLibName(libraryName: string): boolean {
-    if (!libraryName) {
+export function validateLibName(libName: string): boolean {
+    if (!libName) {
         throw new Error(t('error.missingRequiredProperty', { propertyName: 'libraryName' }));
     }
-    const match = libraryName.match(/["]/);
+    const match = libName.match(/["]/);
     if (match) {
-        const x = match.join();
         throw new Error(
             t('error.disallowedCharacters', { propertyName: 'libraryName', disallowedChars: `${match.join()}` })
         );
@@ -24,15 +23,15 @@ export function validateLibName(libraryName: string): boolean {
 }
 
 /**
- * 
- * The namespace must start with a letter and may contain letters, digits, periods, and underscores (but no spaces), 
- * and cannot end in a period. A namespace cannot be 'sap' or start with the word 'new', and a number cannot follow a period.
- 
- * @param namespace
+ *
+ * Validates the namespace using regex pattern.
+ *
+ * @param namespace namespace specified
+ * @param libName name for library
  * @throws Error with validation message, if the namespace is not valid
  * @returns if namespace is valid
  */
-function validateNamespacePattern(namespace: string, modName = ''): boolean {
+function validateNamespacePattern(namespace: string, libName: string): boolean {
     if (!/^[a-zA-Z]/.test(namespace)) {
         throw new Error(t('error.invalidNamespace.mustStartWithLetter'));
     }
@@ -51,7 +50,7 @@ function validateNamespacePattern(namespace: string, modName = ''): boolean {
     if (!/^[\w\d._]+$/.test(namespace)) {
         throw new Error(t('error.invalidNamespace.specialCharacter'));
     }
-    if ((modName + namespace).length > 70) {
+    if ((libName + namespace).length > 70) {
         throw new Error(t('error.invalidNamespace.tooLong', { length: 70 }));
     }
 
@@ -61,15 +60,16 @@ function validateNamespacePattern(namespace: string, modName = ''): boolean {
 /**
  * Validates the namespace to ensure we do not create malformed libs.
  *
- * @param libraryName name for library
+ * @param namespace namespace specified
+ * @param libName name for library
  * @throws Error with validation message, if the namespace is not valid
  * @returns true, if app id is validated
  */
-export function validateNamespace(namespace: string): boolean {
+export function validateNamespace(namespace: string, libName: string): boolean {
     if (!namespace) {
         throw new Error(t('error.missingRequiredProperty', { propertyName: 'namespace' }));
     }
-    return validateNamespacePattern(namespace);
+    return validateNamespacePattern(namespace, libName);
 }
 
 /**
@@ -97,7 +97,7 @@ export function validateUI5Version(version: string | undefined): boolean {
 export function validate(ui5Lib: UI5LibConfig): boolean {
     return (
         validateLibName(ui5Lib.libraryName) &&
-        validateNamespace(ui5Lib.namespace) &&
+        validateNamespace(ui5Lib.namespace, ui5Lib.libraryName) &&
         validateUI5Version(ui5Lib.frameworkVersion)
     );
 }

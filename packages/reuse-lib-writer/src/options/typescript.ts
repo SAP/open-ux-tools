@@ -69,7 +69,7 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
  * Returns the types package depending on ui5 version.
  *
  * @param framework SAPUI5 or OpenUI5
- * @param version
+ * @param version ui5 version
  * @returns types package
  */
 function getTypePackageFor(framework: 'SAPUI5' | 'OpenUI5', version: string): string {
