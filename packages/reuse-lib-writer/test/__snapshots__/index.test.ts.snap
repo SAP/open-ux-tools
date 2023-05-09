@@ -1,0 +1,3413 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Reuse lib templates generates files correctly (typescript) 1`] = `
+Object {
+  "com.sap.myUI5Lib/.editorconfig": Object {
+    "contents": "# EditorConfig helps developers define and maintain consistent
+# coding styles between different editors and IDEs
+# see https://editorconfig.org
+
+root = true
+
+[*]
+# We recommend you to keep these unchanged
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Change these settings to your own preference
+indent_style = space
+
+[*.md]
+trim_trailing_whitespace = false
+
+[{package.json,*.yaml}]
+indent_size = 2
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/.gitignore": Object {
+    "contents": "node_modules/
+dist/
+package-lock.json
+.env",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/karma.conf.js": Object {
+    "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
+module.exports = function (config) {
+    config.set({
+        frameworks: [\\"ui5\\"],
+        browsers: [\\"Chrome\\"]
+    });
+};",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/package.json": Object {
+    "contents": "{
+  \\"name\\": \\"myUI5Lib\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"private\\": true,
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.9.3\\",
+    \\"karma\\": \\"^6.1.1\\",
+    \\"karma-chrome-launcher\\": \\"^3.1.0\\",
+    \\"karma-cli\\": \\"^2.0.0\\",
+    \\"karma-ui5\\": \\"^2.3.3\\",
+    \\"ui5-middleware-livereload\\": \\"^0.5.1\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"ui5-middleware-livereload\\"
+    ]
+  },
+  \\"scripts\\": {
+    \\"build\\": \\"ui5 build --clean-dest\\",
+    \\"start\\": \\"ui5 serve --open test-resources/com/sap/myUI5Lib/Example.html\\",
+    \\"testsuite\\": \\"ui5 serve --open test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit.html\\",
+    \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\"
+  },
+  \\"license\\": \\"UNLICENSED\\"
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/.library": Object {
+    "contents": "<?xml version=\\"1.0\\" ?>
+<library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
+	<name>com.sap.myUI5Lib</name>
+	<vendor>Cian Morrin</vendor>
+	<version>\${version}</version>
+	<copyright>\${copyright}</copyright>
+	<title>myUI5Lib</title>
+	<documentation>Some description about myUI5Lib</documentation>
+	<dependencies>
+		<dependency>
+			<libraryName>sap.ui.core</libraryName>
+		</dependency>
+	</dependencies>
+</library>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/Example.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+// Provides control com.sap.myUI5Lib.Example.
+sap.ui.define([
+	\\"./library\\", 
+	\\"sap/ui/core/Control\\", 
+	\\"./ExampleRenderer\\"
+], function (library, Control, ExampleRenderer) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Constructor for a new <code>com.sap.myUI5Lib.Example</code> control.
+	 *
+	 * @param {string} [sId] id for the new control, generated automatically if no id is given
+	 * @param {object} [mSettings] initial settings for the new control
+	 *
+	 * @class
+	 * Some class description goes here.
+	 * @extends sap.ui.core.Control
+	 *
+	 * @author Cian Morrin
+	 * @version \${version}
+	 *
+	 * @constructor
+	 * @public
+	 * @alias com.sap.myUI5Lib.Example
+	 */
+	var Example = Control.extend(\\"com.sap.myUI5Lib.Example\\", /** @lends com.sap.myUI5Lib.Example.prototype */ {
+		metadata: {
+			library: \\"com.sap.myUI5Lib\\",
+			properties: {
+				/**
+				 * The text to display.
+				 */
+				text: {
+					type: \\"string\\",
+					group: \\"Data\\",
+					defaultValue: null
+				},
+				/**
+				 * The color to use (default to \\"Default\\" color).
+				 */
+				color: {
+					type: \\"com.sap.myUI5Lib.ExampleColor\\",
+					group: \\"Appearance\\",
+					defaultValue: ExampleColor.Default
+				}
+			},
+			events: {
+				/**
+				 * Event is fired when the user clicks the control.
+				 */
+				press: {}
+			}
+		},
+		renderer: ExampleRenderer,
+    onclick: function() {
+      this.firePress();
+    }
+	});
+	return Example;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/ExampleRenderer.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+sap.ui.define([
+	\\"sap/ui/core/Core\\",
+	\\"./library\\"
+], function (Core, library) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Example renderer.
+	 * @namespace
+	 */
+	var ExampleRenderer = {
+		apiVersion: 2 // usage of DOM Patcher
+	};
+
+	/**
+	 * Renders the HTML for the given control, using the provided
+	 * {@link sap.ui.core.RenderManager}.
+	 *
+	 * @param {sap.ui.core.RenderManager} rm The reference to the <code>sap.ui.core.RenderManager</code>
+	 * @param {sap.ui.core.Control} control The control instance to be rendered
+	 */
+	ExampleRenderer.render = function (rm, control) {
+
+		var i18n = Core.getLibraryResourceBundle(\\"com.sap.myUI5Lib\\");
+
+		rm.openStart(\\"div\\", control);
+		if (control.getColor() === ExampleColor.Highlight) {
+			rm.class(\\"myLibPrefixExampleHighlight\\");
+		} else {
+			rm.class(\\"myLibPrefixExample\\");
+		}
+		rm.openEnd( );
+		rm.text(i18n.getText(\\"ANY_TEXT\\") + \\": \\" + control.getText());
+		rm.close(\\"div\\");
+
+	};
+
+	return ExampleRenderer;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/library.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+/**
+ * Initialization Code and shared classes of library com.sap.myUI5Lib.
+ */
+sap.ui.define([
+	\\"sap/ui/core/library\\"
+], function () {
+	\\"use strict\\";
+
+	// delegate further initialization of this library to the Core
+	// Hint: sap.ui.getCore() must still be used to support preload with sync bootstrap!
+	sap.ui.getCore().initLibrary({
+		name: \\"com.sap.myUI5Lib\\",
+		version: \\"\${version}\\",
+		dependencies: [ // keep in sync with the ui5.yaml and .library files
+			\\"sap.ui.core\\"
+		],
+		types: [
+			\\"com.sap.myUI5Lib.ExampleColor\\"
+		],
+		interfaces: [],
+		controls: [
+			\\"com.sap.myUI5Lib.Example\\"
+		],
+		elements: [],
+		noLibraryCSS: false // if no CSS is provided, you can disable the library.css load here
+	});
+
+	/**
+	 * Some description about <code>myUI5Lib</code>
+	 *
+	 * @namespace
+	 * @name com.sap.myUI5Lib
+	 * @author Cian Morrin
+	 * @version \${version}
+	 * @public
+	 */
+	var thisLib = com.sap.myUI5Lib;
+
+	/**
+	 * Semantic Colors of the <code>com.sap.myUI5Lib.Example</code>.
+	 *
+	 * @enum {string}
+	 * @public
+	 */
+	thisLib.ExampleColor = {
+
+		/**
+		 * Default color (brand color)
+		 * @public
+		 */
+		Default : \\"Default\\",
+
+		/**
+		 * Highlight color
+		 * @public
+		 */
+		Highlight : \\"Highlight\\"
+
+	};
+
+	return thisLib;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/messagebundle.properties": Object {
+    "contents": "# Translation file of library com.sap.myUI5Lib.
+ANY_TEXT=AnyText
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/base/Example.less": Object {
+    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+
+.myLibPrefixExample,
+.myLibPrefixExampleHighlight {
+	color: @sapUiText;
+	background-color: @sapUiNeutralBG;
+	border: 1rem solid @sapUiContentForegroundBorderColor;
+	border-radius: 1rem;
+	opacity: 0.8;
+	padding: 2rem;
+	margin: 2rem 8rem;
+	text-align: center;
+	font-size: 2em;
+	line-height: 3em;
+}
+
+.myLibPrefixExampleHighlight {
+	background-color: @sapUiSuccessBG;
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/base/library.source.less": Object {
+    "contents": "@import \\"/resources/sap/ui/core/themes/base/base.less\\";
+@import \\"/resources/sap/ui/core/themes/base/global.less\\";
+
+@import \\"Example.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_plus/library.source.less": Object {
+    "contents": "@import \\"../sap_belize/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/Example.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\" />
+		<title>Test Page for com.sap.myUI5Lib.Example</title>
+		<base href=\\"../../../../\\">
+		<script src=\\"resources/sap-ui-core.js\\"
+				id=\\"sap-ui-bootstrap\\"
+				data-sap-ui-async=\\"true\\"
+				data-sap-ui-oninit=\\"module:local/Example\\"
+				data-sap-ui-libs=\\"sap.ui.core,com.sap.myUI5Lib\\"
+				data-sap-ui-theme=\\"sap_fiori_3\\"
+				data-sap-ui-resourceroots='{\\"local\\" : \\"./test-resources/com/sap/myUI5Lib/\\"}'>
+		</script>
+</head>
+<body class=\\"sapUiBody\\">
+		<h1 id=\\"header\\">Test Page for <code>com.sap.myUI5Lib.Example</code></h1>
+		<div id=\\"content\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/Example.js": Object {
+    "contents": "sap.ui.define([
+	\\"com/sap/myUI5Lib/library\\",
+	\\"com/sap/myUI5Lib/Example\\"
+], function(library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// create a new instance of the Example control and
+	// place it into the DOM element with the id \\"content\\"
+	new Example({
+			text: \\"Example\\",
+			color: ExampleColor.Highlight
+	}).placeAt(\\"content\\");
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/Example.qunit.js": Object {
+    "contents": "/*global QUnit */
+sap.ui.define([
+	\\"sap/ui/qunit/QUnitUtils\\",
+	\\"sap/ui/qunit/utils/createAndAppendDiv\\",
+	\\"com/sap/myUI5Lib/library\\",
+	\\"com/sap/myUI5Lib/Example\\"
+], function(qutils, createAndAppendDiv, library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// prepare DOM
+	createAndAppendDiv(\\"uiArea1\\");
+
+	// module for basic checks
+	QUnit.module(\\"Example Tests\\");
+
+	// example sync test
+	QUnit.test(\\"Sync\\", function(assert) {
+		assert.expect(1);
+		assert.ok(true, \\"ok\\");
+	});
+
+	// example async test
+	QUnit.test(\\"Async\\", function(assert) {
+		assert.expect(1);
+		return new Promise(function(resolve, reject) {
+			assert.ok(true, \\"ok\\");
+			resolve();
+		});
+	})
+
+	// module for basic checks
+	QUnit.module(\\"Basic Control Checks\\");
+
+	// some basic control checks
+	QUnit.test(\\"Test get properties\\", function(assert) {
+		assert.expect(2);
+		var oExample = new Example({
+			text: \\"Example\\"
+		});
+		assert.equal(oExample.getText(), \\"Example\\", \\"Check text equals 'Example'\\");
+		assert.equal(oExample.getColor(), ExampleColor.Default, \\"Check color equals 'Default'\\");
+	});
+
+	// some basic eventing check
+	QUnit.test(\\"Test click event\\", function(assert) {
+		assert.expect(1);
+		var oExample = new Example(\\"example\\", {
+			text: \\"Example\\",
+			press: function() {
+				assert.ok(true, \\"Event has been fired!\\")
+			}
+		}).placeAt(\\"uiArea1\\");
+		return new Promise(function(resolve, reject) {
+			setTimeout(function() {
+				qutils.triggerMouseEvent(\\"example\\", \\"click\\", 1, 1);
+        resolve();
+			}, 100);
+		});
+	});
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+		<meta charset=\\"utf-8\\">
+    <base href=\\"../../../../../\\">
+		<title>QUnit TestSuite for com.sap.myUI5Lib</title>
+		<script src=\\"resources/sap/ui/test/starter/createSuite.js\\"
+				data-sap-ui-testsuite=\\"test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit\\"></script>
+	</head>
+	<body>
+	</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/testsuite.qunit.js": Object {
+    "contents": "sap.ui.define(function() {
+	\\"use strict\\";
+
+	return {
+		name: \\"QUnit TestSuite for com.sap.myUI5Lib\\",
+		defaults: {
+			bootCore: true,
+			ui5: {
+				libs: \\"sap.ui.core,com.sap.myUI5Lib\\",
+				theme: \\"sap_fiori_3\\",
+				noConflict: true,
+				preload: \\"auto\\"
+			},
+			qunit: {
+				version: 2,
+				reorder: false
+			},
+			sinon: {
+				version: 4,
+				qunitBridge: true,
+				useFakeTimers: false
+			},
+			module: \\"./{name}.qunit\\"
+		},
+		tests: {
+			// test file for the Example control
+			Example: {
+				title: \\"QUnit Test for Example\\",
+				_alternativeTitle: \\"QUnit tests: com.sap.myUI5Lib.Example\\"
+			}
+		}
+	};
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/ui5.yaml": Object {
+    "contents": "specVersion: '2.2'
+metadata:
+  name: \\"myUI5Lib\\"
+type: library
+framework:
+  name: SAPUI5
+  version: 1.102.19
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+  - name: ui5-middleware-livereload
+    afterMiddleware: compression
+    configuration:
+      extraExts: \\"xml,json,properties\\"
+      path: [\\"src\\", \\"test\\"]",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/.DS_Store": Object {
+    "contents": "   Bud1            %                       s r cdsclbool                     clbool                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @      �                                        @      �                                          @      �                                          @                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   E   %                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       DSDB                             \`          �                                           @      �                                          @      �                                          @                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/.editorconfig": Object {
+    "contents": "# EditorConfig helps developers define and maintain consistent
+# coding styles between different editors and IDEs
+# see https://editorconfig.org
+
+root = true
+
+[*]
+# We recommend you to keep these unchanged
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Change these settings to your own preference
+indent_style = space
+
+[*.md]
+trim_trailing_whitespace = false
+
+[{package.json,*.yaml}]
+indent_size = 2
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/.gitignore": Object {
+    "contents": "node_modules/
+dist/
+package-lock.json
+.env",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/karma.conf.js": Object {
+    "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
+module.exports = function (config) {
+    config.set({
+        frameworks: [\\"ui5\\"],
+        browsers: [\\"Chrome\\"]
+    });
+};",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/package.json": Object {
+    "contents": "{
+  \\"name\\": \\"myUI5TSLib\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"private\\": true,
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.7\\",
+    \\"karma\\": \\"^6.3.17\\",
+    \\"karma-chrome-launcher\\": \\"^3.1.1\\",
+    \\"karma-cli\\": \\"^2.0.0\\",
+    \\"karma-ui5\\": \\"^2.4.0\\",
+    \\"ui5-middleware-livereload\\": \\"^0.6.0\\",
+    \\"@babel/cli\\": \\"^7.17.6\\",
+    \\"@babel/core\\": \\"^7.17.8\\",
+    \\"@babel/preset-env\\": \\"^7.16.11\\",
+    \\"@babel/preset-typescript\\": \\"^7.16.7\\",
+    \\"@sapui5/ts-types-esm\\": \\"1.102.19\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"@ui5/ts-interface-generator\\": \\"^0.5.0\\",
+    \\"babel-preset-transform-ui5\\": \\"^7.0.5\\",
+    \\"eslint\\": \\"^8.12.0\\",
+    \\"npm-run-all\\": \\"^4.1.5\\",
+    \\"typescript\\": \\"^4.6.3\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"ui5-middleware-livereload\\"
+    ]
+  },
+  \\"scripts\\": {
+    \\"build\\": \\"run-s build:ts build:test-ts build:ui5\\",
+    \\"start\\": \\"run-p watch:ts watch:test-ts start:ui5\\",
+    \\"testsuite\\": \\"ui5 serve --open test-resources/com/sap/myUI5TSLib/qunit/testsuite.qunit.html\\",
+    \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\",
+    \\"build:ts\\": \\"babel src --out-dir src-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles\\",
+    \\"build:test-ts\\": \\"babel test --out-dir test-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles\\",
+    \\"build:ui5\\": \\"ui5 build --clean-dest\\",
+    \\"watch\\": \\"run-p watch:controls watch:ts watch:test-ts start\\",
+    \\"watch:ts\\": \\"babel src --out-dir src-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles  --watch\\",
+    \\"watch:test-ts\\": \\"babel test --out-dir test-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles  --watch\\",
+    \\"watch:controls\\": \\"npx @ui5/ts-interface-generator --watch\\",
+    \\"start:ui5\\": \\"ui5 serve --open test-resources/com/sap/myUI5TSLib/Example.html\\",
+    \\"ts-typecheck\\": \\"tsc --noEmit\\",
+    \\"lint:src\\": \\"eslint src\\",
+    \\"lint:test\\": \\"eslint test\\",
+    \\"lint\\": \\"run-s lint:src lint:test\\"
+  },
+  \\"license\\": \\"UNLICENSED\\"
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/.babelrc.json": Object {
+    "contents": "{
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
+    \\"presets\\": [
+        \\"transform-ui5\\",
+        \\"@babel/preset-typescript\\"
+    ]
+}",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/.library": Object {
+    "contents": "<?xml version=\\"1.0\\" ?>
+<library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
+	<name>com.sap.myUI5TSLib</name>
+	<vendor>Cian Morrin</vendor>
+	<version>\${version}</version>
+	<copyright>\${copyright}</copyright>
+	<title>myUI5TSLib</title>
+	<documentation>Some description about myUI5TSLib</documentation>
+	<dependencies>
+		<dependency>
+			<libraryName>sap.ui.core</libraryName>
+		</dependency>
+	</dependencies>
+</library>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/Example.gen.d.ts": Object {
+    "contents": "import { ExampleColor } from \\"./library\\";
+import Event from \\"sap/ui/base/Event\\";
+import { PropertyBindingInfo } from \\"sap/ui/base/ManagedObject\\";
+import { $ControlSettings } from \\"sap/ui/core/Control\\";
+
+declare module \\"./Example\\" {
+
+    /**
+     * Interface defining the settings object used in constructor calls
+     */
+    interface $ExampleSettings extends $ControlSettings {
+        text?: string | PropertyBindingInfo;
+        color?: ExampleColor | PropertyBindingInfo | \`{\${string}}\`;
+        press?: (event: Event) => void;
+    }
+
+    export default interface Example {
+
+        // property: text
+        getText(): string;
+        setText(text: string): this;
+
+        // property: color
+        getColor(): ExampleColor;
+        setColor(color: ExampleColor): this;
+
+        // event: press
+        attachPress(fn: (event: Event) => void, listener?: object): this;
+        attachPress<CustomDataType extends object>(data: CustomDataType, fn: (event: Event, data: CustomDataType) => void, listener?: object): this;
+        detachPress(fn: (event: Event) => void, listener?: object): this;
+        firePress(parameters?: object): this;
+    }
+}",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/Example.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+// Provides control com.sap.myUI5TSLib.Example.
+sap.ui.define([
+	\\"./library\\", 
+	\\"sap/ui/core/Control\\", 
+	\\"./ExampleRenderer\\"
+], function (library, Control, ExampleRenderer) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Constructor for a new <code>com.sap.myUI5TSLib.Example</code> control.
+	 *
+	 * @param {string} [sId] id for the new control, generated automatically if no id is given
+	 * @param {object} [mSettings] initial settings for the new control
+	 *
+	 * @class
+	 * Some class description goes here.
+	 * @extends sap.ui.core.Control
+	 *
+	 * @author Cian Morrin
+	 * @version \${version}
+	 *
+	 * @constructor
+	 * @public
+	 * @alias com.sap.myUI5TSLib.Example
+	 */
+	var Example = Control.extend(\\"com.sap.myUI5TSLib.Example\\", /** @lends com.sap.myUI5TSLib.Example.prototype */ {
+		metadata: {
+			library: \\"com.sap.myUI5TSLib\\",
+			properties: {
+				/**
+				 * The text to display.
+				 */
+				text: {
+					type: \\"string\\",
+					group: \\"Data\\",
+					defaultValue: null
+				},
+				/**
+				 * The color to use (default to \\"Default\\" color).
+				 */
+				color: {
+					type: \\"com.sap.myUI5TSLib.ExampleColor\\",
+					group: \\"Appearance\\",
+					defaultValue: ExampleColor.Default
+				}
+			},
+			events: {
+				/**
+				 * Event is fired when the user clicks the control.
+				 */
+				press: {}
+			}
+		},
+		renderer: ExampleRenderer,
+    onclick: function() {
+      this.firePress();
+    }
+	});
+	return Example;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/Example.ts": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+// Provides control com.sap.myUI5TSLib.Example.
+import Control from	\\"sap/ui/core/Control\\";
+import ExampleRenderer from \\"./ExampleRenderer\\";
+import { ExampleColor } from \\"./library\\";
+
+
+
+/**
+ * Constructor for a new <code>com.sap.myUI5TSLib.Example</code> control.
+ *
+ * Some class description goes here.
+ * @extends Control
+ *
+ * @author OpenUI5 Team 
+ * @version \${version}
+ *
+ * @constructor
+ * @public
+ * @name com.sap.myUI5TSLib.Example
+ */
+export default class Example extends Control {
+
+	// The following three lines were generated and should remain as-is to make TypeScript aware of the constructor signatures
+	constructor(id?: string | $ExampleSettings);
+	constructor(id?: string, settings?: $ExampleSettings);
+	constructor(id?: string, settings?: $ExampleSettings) { super(id, settings); }
+
+	static readonly metadata = {
+		library: \\"com.sap.myUI5TSLib\\",
+		properties: {
+			/**
+			 * The text to display.
+			 */
+			text: {
+				type: \\"string\\",
+				group: \\"Data\\",
+				defaultValue: null
+			},
+			/**
+			 * The color to use (default to \\"Default\\" color).
+			 */
+			color: {
+				type: \\"com.sap.myUI5TSLib.ExampleColor\\",
+				group: \\"Appearance\\",
+				defaultValue: ExampleColor.Default
+			}
+		},
+		events: {
+			/**
+			 * Event is fired when the user clicks the control.
+			 */
+			press: {}
+		}
+	};
+
+	static renderer = ExampleRenderer;
+
+	onclick = () => {
+		this.firePress();
+	}
+}",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/ExampleRenderer.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+sap.ui.define([
+	\\"sap/ui/core/Core\\",
+	\\"./library\\"
+], function (Core, library) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Example renderer.
+	 * @namespace
+	 */
+	var ExampleRenderer = {
+		apiVersion: 2 // usage of DOM Patcher
+	};
+
+	/**
+	 * Renders the HTML for the given control, using the provided
+	 * {@link sap.ui.core.RenderManager}.
+	 *
+	 * @param {sap.ui.core.RenderManager} rm The reference to the <code>sap.ui.core.RenderManager</code>
+	 * @param {sap.ui.core.Control} control The control instance to be rendered
+	 */
+	ExampleRenderer.render = function (rm, control) {
+
+		var i18n = Core.getLibraryResourceBundle(\\"com.sap.myUI5TSLib\\");
+
+		rm.openStart(\\"div\\", control);
+		if (control.getColor() === ExampleColor.Highlight) {
+			rm.class(\\"myLibPrefixExampleHighlight\\");
+		} else {
+			rm.class(\\"myLibPrefixExample\\");
+		}
+		rm.openEnd( );
+		rm.text(i18n.getText(\\"ANY_TEXT\\") + \\": \\" + control.getText());
+		rm.close(\\"div\\");
+
+	};
+
+	return ExampleRenderer;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/ExampleRenderer.ts": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+import ResourceBundle from \\"sap/base/i18n/ResourceBundle\\";
+import Core from \\"sap/ui/core/Core\\";
+import RenderManager from \\"sap/ui/core/RenderManager\\";
+import Example from \\"./Example\\";
+import { ExampleColor } from \\"./library\\";
+
+/**
+ * Example renderer.
+ * @namespace
+ */
+const ExampleRenderer = {
+	apiVersion: 2, // usage of DOM Patcher
+
+	/**
+	 * Renders the HTML for the given control, using the provided {@link RenderManager}.
+	 *
+	 * @param {RenderManager} rm The reference to the <code>sap.ui.core.RenderManager</code>
+	 * @param {Example} control The control instance to be rendered
+	 */
+	render: function (rm: RenderManager, control: Example) {
+
+		const i18n = Core.getLibraryResourceBundle(\\"com.sap.myUI5TSLib\\") as ResourceBundle;
+
+		rm.openStart(\\"div\\", control);
+		if (control.getColor() === ExampleColor.Highlight) {
+			rm.class(\\"myLibPrefixExampleHighlight\\");
+		} else {
+			rm.class(\\"myLibPrefixExample\\");
+		}
+		rm.openEnd( );
+		rm.text(i18n.getText(\\"ANY_TEXT\\") + \\": \\" + control.getText());
+		rm.close(\\"div\\");
+	}
+
+};
+
+export default ExampleRenderer;",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/library.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+/**
+ * Initialization Code and shared classes of library com.sap.myUI5TSLib.
+ */
+sap.ui.define([
+	\\"sap/ui/core/library\\"
+], function () {
+	\\"use strict\\";
+
+	// delegate further initialization of this library to the Core
+	// Hint: sap.ui.getCore() must still be used to support preload with sync bootstrap!
+	sap.ui.getCore().initLibrary({
+		name: \\"com.sap.myUI5TSLib\\",
+		version: \\"\${version}\\",
+		dependencies: [ // keep in sync with the ui5.yaml and .library files
+			\\"sap.ui.core\\"
+		],
+		types: [
+			\\"com.sap.myUI5TSLib.ExampleColor\\"
+		],
+		interfaces: [],
+		controls: [
+			\\"com.sap.myUI5TSLib.Example\\"
+		],
+		elements: [],
+		noLibraryCSS: false // if no CSS is provided, you can disable the library.css load here
+	});
+
+	/**
+	 * Some description about <code>myUI5TSLib</code>
+	 *
+	 * @namespace
+	 * @name com.sap.myUI5TSLib
+	 * @author Cian Morrin
+	 * @version \${version}
+	 * @public
+	 */
+	var thisLib = com.sap.myUI5TSLib;
+
+	/**
+	 * Semantic Colors of the <code>com.sap.myUI5TSLib.Example</code>.
+	 *
+	 * @enum {string}
+	 * @public
+	 */
+	thisLib.ExampleColor = {
+
+		/**
+		 * Default color (brand color)
+		 * @public
+		 */
+		Default : \\"Default\\",
+
+		/**
+		 * Highlight color
+		 * @public
+		 */
+		Highlight : \\"Highlight\\"
+
+	};
+
+	return thisLib;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/library.ts": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+import ObjectPath from \\"sap/base/util/ObjectPath\\";
+
+/**
+ * Initialization Code and shared classes of library com.sap.myUI5TSLib.
+ */
+
+// delegate further initialization of this library to the Core
+// Hint: sap.ui.getCore() must still be used here to support preload with sync bootstrap!
+sap.ui.getCore().initLibrary({
+	name: \\"com.sap.myUI5TSLib\\",
+	version: \\"\${version}\\",
+	dependencies: [ // keep in sync with the ui5.yaml and .library files
+		\\"sap.ui.core\\"
+	],
+	types: [
+		\\"com.sap.myUI5TSLib.ExampleColor\\"
+	],
+	interfaces: [],
+	controls: [
+		\\"com.sap.myUI5TSLib.Example\\"
+	],
+	elements: [],
+	noLibraryCSS: false // if no CSS is provided, you can disable the library.css load here
+});
+
+// get the library object from global object space because all enums must be attached to it to be usable as UI5 types
+// FIXME: this line is planned to become obsolete and may need to be removed later
+const thisLib : {[key: string]: unknown} = ObjectPath.get(\\"com.sap.myUI5TSLib\\") as {[key: string]: unknown};
+
+/**
+ * Semantic Colors of the com.myorg.myUI5Library.Example control.
+ *
+ * @enum {string}
+ * @public
+ */
+export enum ExampleColor {
+
+	/**
+	 * Default color (brand color)
+	 * @public
+	 */
+	Default = \\"Default\\",
+
+	/**
+	 * Highlight color
+	 * @public
+	 */
+	Highlight = \\"Highlight\\"
+
+}
+// FIXME: this line is planned to become obsolete and may need to be removed later
+thisLib.ExampleColor = ExampleColor; // add the enum to the library; this is important because UI5 otherwise cannot identify the type and will skip type checking for properties of this type",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/messagebundle.properties": Object {
+    "contents": "# Translation file of library com.sap.myUI5TSLib.
+ANY_TEXT=AnyText
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/base/Example.less": Object {
+    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+
+.myLibPrefixExample,
+.myLibPrefixExampleHighlight {
+	color: @sapUiText;
+	background-color: @sapUiNeutralBG;
+	border: 1rem solid @sapUiContentForegroundBorderColor;
+	border-radius: 1rem;
+	opacity: 0.8;
+	padding: 2rem;
+	margin: 2rem 8rem;
+	text-align: center;
+	font-size: 2em;
+	line-height: 3em;
+}
+
+.myLibPrefixExampleHighlight {
+	background-color: @sapUiSuccessBG;
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/base/library.source.less": Object {
+    "contents": "@import \\"/resources/sap/ui/core/themes/base/base.less\\";
+@import \\"/resources/sap/ui/core/themes/base/global.less\\";
+
+@import \\"Example.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_belize/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_belize_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_belize_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_belize_plus/library.source.less": Object {
+    "contents": "@import \\"../sap_belize/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_fiori_3/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/Example.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\" />
+		<title>Test Page for com.sap.myUI5TSLib.Example</title>
+		<base href=\\"../../../../\\">
+		<script src=\\"resources/sap-ui-core.js\\"
+				id=\\"sap-ui-bootstrap\\"
+				data-sap-ui-async=\\"true\\"
+				data-sap-ui-oninit=\\"module:local/Example\\"
+				data-sap-ui-libs=\\"sap.ui.core,com.sap.myUI5TSLib\\"
+				data-sap-ui-theme=\\"sap_fiori_3\\"
+				data-sap-ui-resourceroots='{\\"local\\" : \\"./test-resources/com/sap/myUI5TSLib/\\"}'>
+		</script>
+</head>
+<body class=\\"sapUiBody\\">
+		<h1 id=\\"header\\">Test Page for <code>com.sap.myUI5TSLib.Example</code></h1>
+		<div id=\\"content\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/Example.js": Object {
+    "contents": "sap.ui.define([
+	\\"com/sap/myUI5TSLib/library\\",
+	\\"com/sap/myUI5TSLib/Example\\"
+], function(library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// create a new instance of the Example control and
+	// place it into the DOM element with the id \\"content\\"
+	new Example({
+			text: \\"Example\\",
+			color: ExampleColor.Highlight
+	}).placeAt(\\"content\\");
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/qunit/Example.qunit.js": Object {
+    "contents": "/*global QUnit */
+sap.ui.define([
+	\\"sap/ui/qunit/QUnitUtils\\",
+	\\"sap/ui/qunit/utils/createAndAppendDiv\\",
+	\\"com/sap/myUI5TSLib/library\\",
+	\\"com/sap/myUI5TSLib/Example\\"
+], function(qutils, createAndAppendDiv, library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// prepare DOM
+	createAndAppendDiv(\\"uiArea1\\");
+
+	// module for basic checks
+	QUnit.module(\\"Example Tests\\");
+
+	// example sync test
+	QUnit.test(\\"Sync\\", function(assert) {
+		assert.expect(1);
+		assert.ok(true, \\"ok\\");
+	});
+
+	// example async test
+	QUnit.test(\\"Async\\", function(assert) {
+		assert.expect(1);
+		return new Promise(function(resolve, reject) {
+			assert.ok(true, \\"ok\\");
+			resolve();
+		});
+	})
+
+	// module for basic checks
+	QUnit.module(\\"Basic Control Checks\\");
+
+	// some basic control checks
+	QUnit.test(\\"Test get properties\\", function(assert) {
+		assert.expect(2);
+		var oExample = new Example({
+			text: \\"Example\\"
+		});
+		assert.equal(oExample.getText(), \\"Example\\", \\"Check text equals 'Example'\\");
+		assert.equal(oExample.getColor(), ExampleColor.Default, \\"Check color equals 'Default'\\");
+	});
+
+	// some basic eventing check
+	QUnit.test(\\"Test click event\\", function(assert) {
+		assert.expect(1);
+		var oExample = new Example(\\"example\\", {
+			text: \\"Example\\",
+			press: function() {
+				assert.ok(true, \\"Event has been fired!\\")
+			}
+		}).placeAt(\\"uiArea1\\");
+		return new Promise(function(resolve, reject) {
+			setTimeout(function() {
+				qutils.triggerMouseEvent(\\"example\\", \\"click\\", 1, 1);
+        resolve();
+			}, 100);
+		});
+	});
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/qunit/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+		<meta charset=\\"utf-8\\">
+    <base href=\\"../../../../../\\">
+		<title>QUnit TestSuite for com.sap.myUI5TSLib</title>
+		<script src=\\"resources/sap/ui/test/starter/createSuite.js\\"
+				data-sap-ui-testsuite=\\"test-resources/com/sap/myUI5TSLib/qunit/testsuite.qunit\\"></script>
+	</head>
+	<body>
+	</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/qunit/testsuite.qunit.js": Object {
+    "contents": "sap.ui.define(function() {
+	\\"use strict\\";
+
+	return {
+		name: \\"QUnit TestSuite for com.sap.myUI5TSLib\\",
+		defaults: {
+			bootCore: true,
+			ui5: {
+				libs: \\"sap.ui.core,com.sap.myUI5TSLib\\",
+				theme: \\"sap_fiori_3\\",
+				noConflict: true,
+				preload: \\"auto\\"
+			},
+			qunit: {
+				version: 2,
+				reorder: false
+			},
+			sinon: {
+				version: 4,
+				qunitBridge: true,
+				useFakeTimers: false
+			},
+			module: \\"./{name}.qunit\\"
+		},
+		tests: {
+			// test file for the Example control
+			Example: {
+				title: \\"QUnit Test for Example\\",
+				_alternativeTitle: \\"QUnit tests: com.sap.myUI5TSLib.Example\\"
+			}
+		}
+	};
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/tsconfig.json": Object {
+    "contents": "{
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2015\\",
+    \\"module\\": \\"es2015\\",
+    \\"moduleResolution\\": \\"node\\",
+    \\"skipLibCheck\\": true,
+    \\"preserveConstEnums\\": true,
+    \\"sourceMap\\": false,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictNullChecks\\": true,
+    \\"strictPropertyInitialization\\": true,
+    \\"rootDir\\": \\"./\\",
+    \\"outDir\\": \\"./src-gen\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"typeRoots\\": [\\"./node_modules/@types\\", \\"./node_modules/@sapui5/ts-types-esm\\"],
+    \\"paths\\": {
+      \\"com/sap/myUI5TSLib/*\\": [\\"./src/com/sap/myUI5TSLib/*\\"]
+    }
+  },
+  \\"references\\": [
+    {
+        \\"path\\": \\"../ui5-config\\"
+    }
+],
+  \\"include\\": [\\"./src/**/*\\", \\"./test/**/*\\"]
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/ui5.yaml": Object {
+    "contents": "specVersion: '2.2'
+metadata:
+  name: \\"myUI5TSLib\\"
+type: library
+framework:
+  name: SAPUI5
+  version: 1.102.19
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: ui5-middleware-livereload
+      afterMiddleware: compression
+      configuration:
+        extraExts: xml,json,properties
+        path:
+          - src-gen
+          - test-gen
+resources:
+  configuration:
+    paths:
+      src: src-gen
+      test: test-gen
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Reuse lib templates generates files correctly (typescript, UI5 version > 1.113.0) 1`] = `
+Object {
+  "com.sap.myUI5Lib/.editorconfig": Object {
+    "contents": "# EditorConfig helps developers define and maintain consistent
+# coding styles between different editors and IDEs
+# see https://editorconfig.org
+
+root = true
+
+[*]
+# We recommend you to keep these unchanged
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Change these settings to your own preference
+indent_style = space
+
+[*.md]
+trim_trailing_whitespace = false
+
+[{package.json,*.yaml}]
+indent_size = 2
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/.gitignore": Object {
+    "contents": "node_modules/
+dist/
+package-lock.json
+.env",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/karma.conf.js": Object {
+    "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
+module.exports = function (config) {
+    config.set({
+        frameworks: [\\"ui5\\"],
+        browsers: [\\"Chrome\\"]
+    });
+};",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/package.json": Object {
+    "contents": "{
+  \\"name\\": \\"myUI5Lib\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"private\\": true,
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.9.3\\",
+    \\"karma\\": \\"^6.1.1\\",
+    \\"karma-chrome-launcher\\": \\"^3.1.0\\",
+    \\"karma-cli\\": \\"^2.0.0\\",
+    \\"karma-ui5\\": \\"^2.3.3\\",
+    \\"ui5-middleware-livereload\\": \\"^0.5.1\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"ui5-middleware-livereload\\"
+    ]
+  },
+  \\"scripts\\": {
+    \\"build\\": \\"ui5 build --clean-dest\\",
+    \\"start\\": \\"ui5 serve --open test-resources/com/sap/myUI5Lib/Example.html\\",
+    \\"testsuite\\": \\"ui5 serve --open test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit.html\\",
+    \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\"
+  },
+  \\"license\\": \\"UNLICENSED\\"
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/.library": Object {
+    "contents": "<?xml version=\\"1.0\\" ?>
+<library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
+	<name>com.sap.myUI5Lib</name>
+	<vendor>Cian Morrin</vendor>
+	<version>\${version}</version>
+	<copyright>\${copyright}</copyright>
+	<title>myUI5Lib</title>
+	<documentation>Some description about myUI5Lib</documentation>
+	<dependencies>
+		<dependency>
+			<libraryName>sap.ui.core</libraryName>
+		</dependency>
+	</dependencies>
+</library>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/Example.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+// Provides control com.sap.myUI5Lib.Example.
+sap.ui.define([
+	\\"./library\\", 
+	\\"sap/ui/core/Control\\", 
+	\\"./ExampleRenderer\\"
+], function (library, Control, ExampleRenderer) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Constructor for a new <code>com.sap.myUI5Lib.Example</code> control.
+	 *
+	 * @param {string} [sId] id for the new control, generated automatically if no id is given
+	 * @param {object} [mSettings] initial settings for the new control
+	 *
+	 * @class
+	 * Some class description goes here.
+	 * @extends sap.ui.core.Control
+	 *
+	 * @author Cian Morrin
+	 * @version \${version}
+	 *
+	 * @constructor
+	 * @public
+	 * @alias com.sap.myUI5Lib.Example
+	 */
+	var Example = Control.extend(\\"com.sap.myUI5Lib.Example\\", /** @lends com.sap.myUI5Lib.Example.prototype */ {
+		metadata: {
+			library: \\"com.sap.myUI5Lib\\",
+			properties: {
+				/**
+				 * The text to display.
+				 */
+				text: {
+					type: \\"string\\",
+					group: \\"Data\\",
+					defaultValue: null
+				},
+				/**
+				 * The color to use (default to \\"Default\\" color).
+				 */
+				color: {
+					type: \\"com.sap.myUI5Lib.ExampleColor\\",
+					group: \\"Appearance\\",
+					defaultValue: ExampleColor.Default
+				}
+			},
+			events: {
+				/**
+				 * Event is fired when the user clicks the control.
+				 */
+				press: {}
+			}
+		},
+		renderer: ExampleRenderer,
+    onclick: function() {
+      this.firePress();
+    }
+	});
+	return Example;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/ExampleRenderer.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+sap.ui.define([
+	\\"sap/ui/core/Core\\",
+	\\"./library\\"
+], function (Core, library) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Example renderer.
+	 * @namespace
+	 */
+	var ExampleRenderer = {
+		apiVersion: 2 // usage of DOM Patcher
+	};
+
+	/**
+	 * Renders the HTML for the given control, using the provided
+	 * {@link sap.ui.core.RenderManager}.
+	 *
+	 * @param {sap.ui.core.RenderManager} rm The reference to the <code>sap.ui.core.RenderManager</code>
+	 * @param {sap.ui.core.Control} control The control instance to be rendered
+	 */
+	ExampleRenderer.render = function (rm, control) {
+
+		var i18n = Core.getLibraryResourceBundle(\\"com.sap.myUI5Lib\\");
+
+		rm.openStart(\\"div\\", control);
+		if (control.getColor() === ExampleColor.Highlight) {
+			rm.class(\\"myLibPrefixExampleHighlight\\");
+		} else {
+			rm.class(\\"myLibPrefixExample\\");
+		}
+		rm.openEnd( );
+		rm.text(i18n.getText(\\"ANY_TEXT\\") + \\": \\" + control.getText());
+		rm.close(\\"div\\");
+
+	};
+
+	return ExampleRenderer;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/library.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+/**
+ * Initialization Code and shared classes of library com.sap.myUI5Lib.
+ */
+sap.ui.define([
+	\\"sap/ui/core/library\\"
+], function () {
+	\\"use strict\\";
+
+	// delegate further initialization of this library to the Core
+	// Hint: sap.ui.getCore() must still be used to support preload with sync bootstrap!
+	sap.ui.getCore().initLibrary({
+		name: \\"com.sap.myUI5Lib\\",
+		version: \\"\${version}\\",
+		dependencies: [ // keep in sync with the ui5.yaml and .library files
+			\\"sap.ui.core\\"
+		],
+		types: [
+			\\"com.sap.myUI5Lib.ExampleColor\\"
+		],
+		interfaces: [],
+		controls: [
+			\\"com.sap.myUI5Lib.Example\\"
+		],
+		elements: [],
+		noLibraryCSS: false // if no CSS is provided, you can disable the library.css load here
+	});
+
+	/**
+	 * Some description about <code>myUI5Lib</code>
+	 *
+	 * @namespace
+	 * @name com.sap.myUI5Lib
+	 * @author Cian Morrin
+	 * @version \${version}
+	 * @public
+	 */
+	var thisLib = com.sap.myUI5Lib;
+
+	/**
+	 * Semantic Colors of the <code>com.sap.myUI5Lib.Example</code>.
+	 *
+	 * @enum {string}
+	 * @public
+	 */
+	thisLib.ExampleColor = {
+
+		/**
+		 * Default color (brand color)
+		 * @public
+		 */
+		Default : \\"Default\\",
+
+		/**
+		 * Highlight color
+		 * @public
+		 */
+		Highlight : \\"Highlight\\"
+
+	};
+
+	return thisLib;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/messagebundle.properties": Object {
+    "contents": "# Translation file of library com.sap.myUI5Lib.
+ANY_TEXT=AnyText
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/base/Example.less": Object {
+    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+
+.myLibPrefixExample,
+.myLibPrefixExampleHighlight {
+	color: @sapUiText;
+	background-color: @sapUiNeutralBG;
+	border: 1rem solid @sapUiContentForegroundBorderColor;
+	border-radius: 1rem;
+	opacity: 0.8;
+	padding: 2rem;
+	margin: 2rem 8rem;
+	text-align: center;
+	font-size: 2em;
+	line-height: 3em;
+}
+
+.myLibPrefixExampleHighlight {
+	background-color: @sapUiSuccessBG;
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/base/library.source.less": Object {
+    "contents": "@import \\"/resources/sap/ui/core/themes/base/base.less\\";
+@import \\"/resources/sap/ui/core/themes/base/global.less\\";
+
+@import \\"Example.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_plus/library.source.less": Object {
+    "contents": "@import \\"../sap_belize/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/Example.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\" />
+		<title>Test Page for com.sap.myUI5Lib.Example</title>
+		<base href=\\"../../../../\\">
+		<script src=\\"resources/sap-ui-core.js\\"
+				id=\\"sap-ui-bootstrap\\"
+				data-sap-ui-async=\\"true\\"
+				data-sap-ui-oninit=\\"module:local/Example\\"
+				data-sap-ui-libs=\\"sap.ui.core,com.sap.myUI5Lib\\"
+				data-sap-ui-theme=\\"sap_fiori_3\\"
+				data-sap-ui-resourceroots='{\\"local\\" : \\"./test-resources/com/sap/myUI5Lib/\\"}'>
+		</script>
+</head>
+<body class=\\"sapUiBody\\">
+		<h1 id=\\"header\\">Test Page for <code>com.sap.myUI5Lib.Example</code></h1>
+		<div id=\\"content\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/Example.js": Object {
+    "contents": "sap.ui.define([
+	\\"com/sap/myUI5Lib/library\\",
+	\\"com/sap/myUI5Lib/Example\\"
+], function(library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// create a new instance of the Example control and
+	// place it into the DOM element with the id \\"content\\"
+	new Example({
+			text: \\"Example\\",
+			color: ExampleColor.Highlight
+	}).placeAt(\\"content\\");
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/Example.qunit.js": Object {
+    "contents": "/*global QUnit */
+sap.ui.define([
+	\\"sap/ui/qunit/QUnitUtils\\",
+	\\"sap/ui/qunit/utils/createAndAppendDiv\\",
+	\\"com/sap/myUI5Lib/library\\",
+	\\"com/sap/myUI5Lib/Example\\"
+], function(qutils, createAndAppendDiv, library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// prepare DOM
+	createAndAppendDiv(\\"uiArea1\\");
+
+	// module for basic checks
+	QUnit.module(\\"Example Tests\\");
+
+	// example sync test
+	QUnit.test(\\"Sync\\", function(assert) {
+		assert.expect(1);
+		assert.ok(true, \\"ok\\");
+	});
+
+	// example async test
+	QUnit.test(\\"Async\\", function(assert) {
+		assert.expect(1);
+		return new Promise(function(resolve, reject) {
+			assert.ok(true, \\"ok\\");
+			resolve();
+		});
+	})
+
+	// module for basic checks
+	QUnit.module(\\"Basic Control Checks\\");
+
+	// some basic control checks
+	QUnit.test(\\"Test get properties\\", function(assert) {
+		assert.expect(2);
+		var oExample = new Example({
+			text: \\"Example\\"
+		});
+		assert.equal(oExample.getText(), \\"Example\\", \\"Check text equals 'Example'\\");
+		assert.equal(oExample.getColor(), ExampleColor.Default, \\"Check color equals 'Default'\\");
+	});
+
+	// some basic eventing check
+	QUnit.test(\\"Test click event\\", function(assert) {
+		assert.expect(1);
+		var oExample = new Example(\\"example\\", {
+			text: \\"Example\\",
+			press: function() {
+				assert.ok(true, \\"Event has been fired!\\")
+			}
+		}).placeAt(\\"uiArea1\\");
+		return new Promise(function(resolve, reject) {
+			setTimeout(function() {
+				qutils.triggerMouseEvent(\\"example\\", \\"click\\", 1, 1);
+        resolve();
+			}, 100);
+		});
+	});
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+		<meta charset=\\"utf-8\\">
+    <base href=\\"../../../../../\\">
+		<title>QUnit TestSuite for com.sap.myUI5Lib</title>
+		<script src=\\"resources/sap/ui/test/starter/createSuite.js\\"
+				data-sap-ui-testsuite=\\"test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit\\"></script>
+	</head>
+	<body>
+	</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/testsuite.qunit.js": Object {
+    "contents": "sap.ui.define(function() {
+	\\"use strict\\";
+
+	return {
+		name: \\"QUnit TestSuite for com.sap.myUI5Lib\\",
+		defaults: {
+			bootCore: true,
+			ui5: {
+				libs: \\"sap.ui.core,com.sap.myUI5Lib\\",
+				theme: \\"sap_fiori_3\\",
+				noConflict: true,
+				preload: \\"auto\\"
+			},
+			qunit: {
+				version: 2,
+				reorder: false
+			},
+			sinon: {
+				version: 4,
+				qunitBridge: true,
+				useFakeTimers: false
+			},
+			module: \\"./{name}.qunit\\"
+		},
+		tests: {
+			// test file for the Example control
+			Example: {
+				title: \\"QUnit Test for Example\\",
+				_alternativeTitle: \\"QUnit tests: com.sap.myUI5Lib.Example\\"
+			}
+		}
+	};
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/ui5.yaml": Object {
+    "contents": "specVersion: '2.2'
+metadata:
+  name: \\"myUI5Lib\\"
+type: library
+framework:
+  name: SAPUI5
+  version: 1.102.19
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+  - name: ui5-middleware-livereload
+    afterMiddleware: compression
+    configuration:
+      extraExts: \\"xml,json,properties\\"
+      path: [\\"src\\", \\"test\\"]",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/.DS_Store": Object {
+    "contents": "   Bud1            %                       s r cdsclbool                     clbool                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @      �                                        @      �                                          @      �                                          @                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   E   %                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       DSDB                             \`          �                                           @      �                                          @      �                                          @                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/.editorconfig": Object {
+    "contents": "# EditorConfig helps developers define and maintain consistent
+# coding styles between different editors and IDEs
+# see https://editorconfig.org
+
+root = true
+
+[*]
+# We recommend you to keep these unchanged
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Change these settings to your own preference
+indent_style = space
+
+[*.md]
+trim_trailing_whitespace = false
+
+[{package.json,*.yaml}]
+indent_size = 2
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/.gitignore": Object {
+    "contents": "node_modules/
+dist/
+package-lock.json
+.env",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/karma.conf.js": Object {
+    "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
+module.exports = function (config) {
+    config.set({
+        frameworks: [\\"ui5\\"],
+        browsers: [\\"Chrome\\"]
+    });
+};",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/package.json": Object {
+    "contents": "{
+  \\"name\\": \\"myUI5TSLib\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"private\\": true,
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.14.7\\",
+    \\"karma\\": \\"^6.3.17\\",
+    \\"karma-chrome-launcher\\": \\"^3.1.1\\",
+    \\"karma-cli\\": \\"^2.0.0\\",
+    \\"karma-ui5\\": \\"^2.4.0\\",
+    \\"ui5-middleware-livereload\\": \\"^0.6.0\\",
+    \\"@babel/cli\\": \\"^7.17.6\\",
+    \\"@babel/core\\": \\"^7.17.8\\",
+    \\"@babel/preset-env\\": \\"^7.16.11\\",
+    \\"@babel/preset-typescript\\": \\"^7.16.7\\",
+    \\"@sapui5/ts-types-esm\\": \\"1.102.19\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"@ui5/ts-interface-generator\\": \\"^0.5.0\\",
+    \\"babel-preset-transform-ui5\\": \\"^7.0.5\\",
+    \\"eslint\\": \\"^8.12.0\\",
+    \\"npm-run-all\\": \\"^4.1.5\\",
+    \\"typescript\\": \\"^4.6.3\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"ui5-middleware-livereload\\"
+    ]
+  },
+  \\"scripts\\": {
+    \\"build\\": \\"run-s build:ts build:test-ts build:ui5\\",
+    \\"start\\": \\"run-p watch:ts watch:test-ts start:ui5\\",
+    \\"testsuite\\": \\"ui5 serve --open test-resources/com/sap/myUI5TSLib/qunit/testsuite.qunit.html\\",
+    \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\",
+    \\"build:ts\\": \\"babel src --out-dir src-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles\\",
+    \\"build:test-ts\\": \\"babel test --out-dir test-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles\\",
+    \\"build:ui5\\": \\"ui5 build --clean-dest\\",
+    \\"watch\\": \\"run-p watch:controls watch:ts watch:test-ts start\\",
+    \\"watch:ts\\": \\"babel src --out-dir src-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles  --watch\\",
+    \\"watch:test-ts\\": \\"babel test --out-dir test-gen --extensions \\\\\\".ts,.js\\\\\\" --copy-files --include-dotfiles  --watch\\",
+    \\"watch:controls\\": \\"npx @ui5/ts-interface-generator --watch\\",
+    \\"start:ui5\\": \\"ui5 serve --open test-resources/com/sap/myUI5TSLib/Example.html\\",
+    \\"ts-typecheck\\": \\"tsc --noEmit\\",
+    \\"lint:src\\": \\"eslint src\\",
+    \\"lint:test\\": \\"eslint test\\",
+    \\"lint\\": \\"run-s lint:src lint:test\\"
+  },
+  \\"license\\": \\"UNLICENSED\\"
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/.babelrc.json": Object {
+    "contents": "{
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
+    \\"presets\\": [
+        \\"transform-ui5\\",
+        \\"@babel/preset-typescript\\"
+    ]
+}",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/.library": Object {
+    "contents": "<?xml version=\\"1.0\\" ?>
+<library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
+	<name>com.sap.myUI5TSLib</name>
+	<vendor>Cian Morrin</vendor>
+	<version>\${version}</version>
+	<copyright>\${copyright}</copyright>
+	<title>myUI5TSLib</title>
+	<documentation>Some description about myUI5TSLib</documentation>
+	<dependencies>
+		<dependency>
+			<libraryName>sap.ui.core</libraryName>
+		</dependency>
+	</dependencies>
+</library>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/Example.gen.d.ts": Object {
+    "contents": "import { ExampleColor } from \\"./library\\";
+import Event from \\"sap/ui/base/Event\\";
+import { PropertyBindingInfo } from \\"sap/ui/base/ManagedObject\\";
+import { $ControlSettings } from \\"sap/ui/core/Control\\";
+
+declare module \\"./Example\\" {
+
+    /**
+     * Interface defining the settings object used in constructor calls
+     */
+    interface $ExampleSettings extends $ControlSettings {
+        text?: string | PropertyBindingInfo;
+        color?: ExampleColor | PropertyBindingInfo | \`{\${string}}\`;
+        press?: (event: Event) => void;
+    }
+
+    export default interface Example {
+
+        // property: text
+        getText(): string;
+        setText(text: string): this;
+
+        // property: color
+        getColor(): ExampleColor;
+        setColor(color: ExampleColor): this;
+
+        // event: press
+        attachPress(fn: (event: Event) => void, listener?: object): this;
+        attachPress<CustomDataType extends object>(data: CustomDataType, fn: (event: Event, data: CustomDataType) => void, listener?: object): this;
+        detachPress(fn: (event: Event) => void, listener?: object): this;
+        firePress(parameters?: object): this;
+    }
+}",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/Example.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+// Provides control com.sap.myUI5TSLib.Example.
+sap.ui.define([
+	\\"./library\\", 
+	\\"sap/ui/core/Control\\", 
+	\\"./ExampleRenderer\\"
+], function (library, Control, ExampleRenderer) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Constructor for a new <code>com.sap.myUI5TSLib.Example</code> control.
+	 *
+	 * @param {string} [sId] id for the new control, generated automatically if no id is given
+	 * @param {object} [mSettings] initial settings for the new control
+	 *
+	 * @class
+	 * Some class description goes here.
+	 * @extends sap.ui.core.Control
+	 *
+	 * @author Cian Morrin
+	 * @version \${version}
+	 *
+	 * @constructor
+	 * @public
+	 * @alias com.sap.myUI5TSLib.Example
+	 */
+	var Example = Control.extend(\\"com.sap.myUI5TSLib.Example\\", /** @lends com.sap.myUI5TSLib.Example.prototype */ {
+		metadata: {
+			library: \\"com.sap.myUI5TSLib\\",
+			properties: {
+				/**
+				 * The text to display.
+				 */
+				text: {
+					type: \\"string\\",
+					group: \\"Data\\",
+					defaultValue: null
+				},
+				/**
+				 * The color to use (default to \\"Default\\" color).
+				 */
+				color: {
+					type: \\"com.sap.myUI5TSLib.ExampleColor\\",
+					group: \\"Appearance\\",
+					defaultValue: ExampleColor.Default
+				}
+			},
+			events: {
+				/**
+				 * Event is fired when the user clicks the control.
+				 */
+				press: {}
+			}
+		},
+		renderer: ExampleRenderer,
+    onclick: function() {
+      this.firePress();
+    }
+	});
+	return Example;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/Example.ts": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+// Provides control com.sap.myUI5TSLib.Example.
+import Control from	\\"sap/ui/core/Control\\";
+import ExampleRenderer from \\"./ExampleRenderer\\";
+import { ExampleColor } from \\"./library\\";
+
+
+
+/**
+ * Constructor for a new <code>com.sap.myUI5TSLib.Example</code> control.
+ *
+ * Some class description goes here.
+ * @extends Control
+ *
+ * @author OpenUI5 Team 
+ * @version \${version}
+ *
+ * @constructor
+ * @public
+ * @name com.sap.myUI5TSLib.Example
+ */
+export default class Example extends Control {
+
+	// The following three lines were generated and should remain as-is to make TypeScript aware of the constructor signatures
+	constructor(id?: string | $ExampleSettings);
+	constructor(id?: string, settings?: $ExampleSettings);
+	constructor(id?: string, settings?: $ExampleSettings) { super(id, settings); }
+
+	static readonly metadata = {
+		library: \\"com.sap.myUI5TSLib\\",
+		properties: {
+			/**
+			 * The text to display.
+			 */
+			text: {
+				type: \\"string\\",
+				group: \\"Data\\",
+				defaultValue: null
+			},
+			/**
+			 * The color to use (default to \\"Default\\" color).
+			 */
+			color: {
+				type: \\"com.sap.myUI5TSLib.ExampleColor\\",
+				group: \\"Appearance\\",
+				defaultValue: ExampleColor.Default
+			}
+		},
+		events: {
+			/**
+			 * Event is fired when the user clicks the control.
+			 */
+			press: {}
+		}
+	};
+
+	static renderer = ExampleRenderer;
+
+	onclick = () => {
+		this.firePress();
+	}
+}",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/ExampleRenderer.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+sap.ui.define([
+	\\"sap/ui/core/Core\\",
+	\\"./library\\"
+], function (Core, library) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Example renderer.
+	 * @namespace
+	 */
+	var ExampleRenderer = {
+		apiVersion: 2 // usage of DOM Patcher
+	};
+
+	/**
+	 * Renders the HTML for the given control, using the provided
+	 * {@link sap.ui.core.RenderManager}.
+	 *
+	 * @param {sap.ui.core.RenderManager} rm The reference to the <code>sap.ui.core.RenderManager</code>
+	 * @param {sap.ui.core.Control} control The control instance to be rendered
+	 */
+	ExampleRenderer.render = function (rm, control) {
+
+		var i18n = Core.getLibraryResourceBundle(\\"com.sap.myUI5TSLib\\");
+
+		rm.openStart(\\"div\\", control);
+		if (control.getColor() === ExampleColor.Highlight) {
+			rm.class(\\"myLibPrefixExampleHighlight\\");
+		} else {
+			rm.class(\\"myLibPrefixExample\\");
+		}
+		rm.openEnd( );
+		rm.text(i18n.getText(\\"ANY_TEXT\\") + \\": \\" + control.getText());
+		rm.close(\\"div\\");
+
+	};
+
+	return ExampleRenderer;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/ExampleRenderer.ts": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+import ResourceBundle from \\"sap/base/i18n/ResourceBundle\\";
+import Core from \\"sap/ui/core/Core\\";
+import RenderManager from \\"sap/ui/core/RenderManager\\";
+import Example from \\"./Example\\";
+import { ExampleColor } from \\"./library\\";
+
+/**
+ * Example renderer.
+ * @namespace
+ */
+const ExampleRenderer = {
+	apiVersion: 2, // usage of DOM Patcher
+
+	/**
+	 * Renders the HTML for the given control, using the provided {@link RenderManager}.
+	 *
+	 * @param {RenderManager} rm The reference to the <code>sap.ui.core.RenderManager</code>
+	 * @param {Example} control The control instance to be rendered
+	 */
+	render: function (rm: RenderManager, control: Example) {
+
+		const i18n = Core.getLibraryResourceBundle(\\"com.sap.myUI5TSLib\\") as ResourceBundle;
+
+		rm.openStart(\\"div\\", control);
+		if (control.getColor() === ExampleColor.Highlight) {
+			rm.class(\\"myLibPrefixExampleHighlight\\");
+		} else {
+			rm.class(\\"myLibPrefixExample\\");
+		}
+		rm.openEnd( );
+		rm.text(i18n.getText(\\"ANY_TEXT\\") + \\": \\" + control.getText());
+		rm.close(\\"div\\");
+	}
+
+};
+
+export default ExampleRenderer;",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/library.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+/**
+ * Initialization Code and shared classes of library com.sap.myUI5TSLib.
+ */
+sap.ui.define([
+	\\"sap/ui/core/library\\"
+], function () {
+	\\"use strict\\";
+
+	// delegate further initialization of this library to the Core
+	// Hint: sap.ui.getCore() must still be used to support preload with sync bootstrap!
+	sap.ui.getCore().initLibrary({
+		name: \\"com.sap.myUI5TSLib\\",
+		version: \\"\${version}\\",
+		dependencies: [ // keep in sync with the ui5.yaml and .library files
+			\\"sap.ui.core\\"
+		],
+		types: [
+			\\"com.sap.myUI5TSLib.ExampleColor\\"
+		],
+		interfaces: [],
+		controls: [
+			\\"com.sap.myUI5TSLib.Example\\"
+		],
+		elements: [],
+		noLibraryCSS: false // if no CSS is provided, you can disable the library.css load here
+	});
+
+	/**
+	 * Some description about <code>myUI5TSLib</code>
+	 *
+	 * @namespace
+	 * @name com.sap.myUI5TSLib
+	 * @author Cian Morrin
+	 * @version \${version}
+	 * @public
+	 */
+	var thisLib = com.sap.myUI5TSLib;
+
+	/**
+	 * Semantic Colors of the <code>com.sap.myUI5TSLib.Example</code>.
+	 *
+	 * @enum {string}
+	 * @public
+	 */
+	thisLib.ExampleColor = {
+
+		/**
+		 * Default color (brand color)
+		 * @public
+		 */
+		Default : \\"Default\\",
+
+		/**
+		 * Highlight color
+		 * @public
+		 */
+		Highlight : \\"Highlight\\"
+
+	};
+
+	return thisLib;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/library.ts": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+import ObjectPath from \\"sap/base/util/ObjectPath\\";
+
+/**
+ * Initialization Code and shared classes of library com.sap.myUI5TSLib.
+ */
+
+// delegate further initialization of this library to the Core
+// Hint: sap.ui.getCore() must still be used here to support preload with sync bootstrap!
+sap.ui.getCore().initLibrary({
+	name: \\"com.sap.myUI5TSLib\\",
+	version: \\"\${version}\\",
+	dependencies: [ // keep in sync with the ui5.yaml and .library files
+		\\"sap.ui.core\\"
+	],
+	types: [
+		\\"com.sap.myUI5TSLib.ExampleColor\\"
+	],
+	interfaces: [],
+	controls: [
+		\\"com.sap.myUI5TSLib.Example\\"
+	],
+	elements: [],
+	noLibraryCSS: false // if no CSS is provided, you can disable the library.css load here
+});
+
+// get the library object from global object space because all enums must be attached to it to be usable as UI5 types
+// FIXME: this line is planned to become obsolete and may need to be removed later
+const thisLib : {[key: string]: unknown} = ObjectPath.get(\\"com.sap.myUI5TSLib\\") as {[key: string]: unknown};
+
+/**
+ * Semantic Colors of the com.myorg.myUI5Library.Example control.
+ *
+ * @enum {string}
+ * @public
+ */
+export enum ExampleColor {
+
+	/**
+	 * Default color (brand color)
+	 * @public
+	 */
+	Default = \\"Default\\",
+
+	/**
+	 * Highlight color
+	 * @public
+	 */
+	Highlight = \\"Highlight\\"
+
+}
+// FIXME: this line is planned to become obsolete and may need to be removed later
+thisLib.ExampleColor = ExampleColor; // add the enum to the library; this is important because UI5 otherwise cannot identify the type and will skip type checking for properties of this type",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/messagebundle.properties": Object {
+    "contents": "# Translation file of library com.sap.myUI5TSLib.
+ANY_TEXT=AnyText
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/base/Example.less": Object {
+    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+
+.myLibPrefixExample,
+.myLibPrefixExampleHighlight {
+	color: @sapUiText;
+	background-color: @sapUiNeutralBG;
+	border: 1rem solid @sapUiContentForegroundBorderColor;
+	border-radius: 1rem;
+	opacity: 0.8;
+	padding: 2rem;
+	margin: 2rem 8rem;
+	text-align: center;
+	font-size: 2em;
+	line-height: 3em;
+}
+
+.myLibPrefixExampleHighlight {
+	background-color: @sapUiSuccessBG;
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/base/library.source.less": Object {
+    "contents": "@import \\"/resources/sap/ui/core/themes/base/base.less\\";
+@import \\"/resources/sap/ui/core/themes/base/global.less\\";
+
+@import \\"Example.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_belize/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_belize_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_belize_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_belize_plus/library.source.less": Object {
+    "contents": "@import \\"../sap_belize/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_fiori_3/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/src/com/sap/myUI5TSLib/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/Example.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\" />
+		<title>Test Page for com.sap.myUI5TSLib.Example</title>
+		<base href=\\"../../../../\\">
+		<script src=\\"resources/sap-ui-core.js\\"
+				id=\\"sap-ui-bootstrap\\"
+				data-sap-ui-async=\\"true\\"
+				data-sap-ui-oninit=\\"module:local/Example\\"
+				data-sap-ui-libs=\\"sap.ui.core,com.sap.myUI5TSLib\\"
+				data-sap-ui-theme=\\"sap_fiori_3\\"
+				data-sap-ui-resourceroots='{\\"local\\" : \\"./test-resources/com/sap/myUI5TSLib/\\"}'>
+		</script>
+</head>
+<body class=\\"sapUiBody\\">
+		<h1 id=\\"header\\">Test Page for <code>com.sap.myUI5TSLib.Example</code></h1>
+		<div id=\\"content\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/Example.js": Object {
+    "contents": "sap.ui.define([
+	\\"com/sap/myUI5TSLib/library\\",
+	\\"com/sap/myUI5TSLib/Example\\"
+], function(library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// create a new instance of the Example control and
+	// place it into the DOM element with the id \\"content\\"
+	new Example({
+			text: \\"Example\\",
+			color: ExampleColor.Highlight
+	}).placeAt(\\"content\\");
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/qunit/Example.qunit.js": Object {
+    "contents": "/*global QUnit */
+sap.ui.define([
+	\\"sap/ui/qunit/QUnitUtils\\",
+	\\"sap/ui/qunit/utils/createAndAppendDiv\\",
+	\\"com/sap/myUI5TSLib/library\\",
+	\\"com/sap/myUI5TSLib/Example\\"
+], function(qutils, createAndAppendDiv, library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// prepare DOM
+	createAndAppendDiv(\\"uiArea1\\");
+
+	// module for basic checks
+	QUnit.module(\\"Example Tests\\");
+
+	// example sync test
+	QUnit.test(\\"Sync\\", function(assert) {
+		assert.expect(1);
+		assert.ok(true, \\"ok\\");
+	});
+
+	// example async test
+	QUnit.test(\\"Async\\", function(assert) {
+		assert.expect(1);
+		return new Promise(function(resolve, reject) {
+			assert.ok(true, \\"ok\\");
+			resolve();
+		});
+	})
+
+	// module for basic checks
+	QUnit.module(\\"Basic Control Checks\\");
+
+	// some basic control checks
+	QUnit.test(\\"Test get properties\\", function(assert) {
+		assert.expect(2);
+		var oExample = new Example({
+			text: \\"Example\\"
+		});
+		assert.equal(oExample.getText(), \\"Example\\", \\"Check text equals 'Example'\\");
+		assert.equal(oExample.getColor(), ExampleColor.Default, \\"Check color equals 'Default'\\");
+	});
+
+	// some basic eventing check
+	QUnit.test(\\"Test click event\\", function(assert) {
+		assert.expect(1);
+		var oExample = new Example(\\"example\\", {
+			text: \\"Example\\",
+			press: function() {
+				assert.ok(true, \\"Event has been fired!\\")
+			}
+		}).placeAt(\\"uiArea1\\");
+		return new Promise(function(resolve, reject) {
+			setTimeout(function() {
+				qutils.triggerMouseEvent(\\"example\\", \\"click\\", 1, 1);
+        resolve();
+			}, 100);
+		});
+	});
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/qunit/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+		<meta charset=\\"utf-8\\">
+    <base href=\\"../../../../../\\">
+		<title>QUnit TestSuite for com.sap.myUI5TSLib</title>
+		<script src=\\"resources/sap/ui/test/starter/createSuite.js\\"
+				data-sap-ui-testsuite=\\"test-resources/com/sap/myUI5TSLib/qunit/testsuite.qunit\\"></script>
+	</head>
+	<body>
+	</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/test/com/sap/myUI5TSLib/qunit/testsuite.qunit.js": Object {
+    "contents": "sap.ui.define(function() {
+	\\"use strict\\";
+
+	return {
+		name: \\"QUnit TestSuite for com.sap.myUI5TSLib\\",
+		defaults: {
+			bootCore: true,
+			ui5: {
+				libs: \\"sap.ui.core,com.sap.myUI5TSLib\\",
+				theme: \\"sap_fiori_3\\",
+				noConflict: true,
+				preload: \\"auto\\"
+			},
+			qunit: {
+				version: 2,
+				reorder: false
+			},
+			sinon: {
+				version: 4,
+				qunitBridge: true,
+				useFakeTimers: false
+			},
+			module: \\"./{name}.qunit\\"
+		},
+		tests: {
+			// test file for the Example control
+			Example: {
+				title: \\"QUnit Test for Example\\",
+				_alternativeTitle: \\"QUnit tests: com.sap.myUI5TSLib.Example\\"
+			}
+		}
+	};
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/tsconfig.json": Object {
+    "contents": "{
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2015\\",
+    \\"module\\": \\"es2015\\",
+    \\"moduleResolution\\": \\"node\\",
+    \\"skipLibCheck\\": true,
+    \\"preserveConstEnums\\": true,
+    \\"sourceMap\\": false,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictNullChecks\\": true,
+    \\"strictPropertyInitialization\\": true,
+    \\"rootDir\\": \\"./\\",
+    \\"outDir\\": \\"./src-gen\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"typeRoots\\": [\\"./node_modules/@types\\", \\"./node_modules/@sapui5/ts-types-esm\\"],
+    \\"paths\\": {
+      \\"com/sap/myUI5TSLib/*\\": [\\"./src/com/sap/myUI5TSLib/*\\"]
+    }
+  },
+  \\"references\\": [
+    {
+        \\"path\\": \\"../ui5-config\\"
+    }
+],
+  \\"include\\": [\\"./src/**/*\\", \\"./test/**/*\\"]
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5TSLib/ui5.yaml": Object {
+    "contents": "specVersion: '2.2'
+metadata:
+  name: \\"myUI5TSLib\\"
+type: library
+framework:
+  name: SAPUI5
+  version: 1.102.19
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: ui5-middleware-livereload
+      afterMiddleware: compression
+      configuration:
+        extraExts: xml,json,properties
+        path:
+          - src-gen
+          - test-gen
+resources:
+  configuration:
+    paths:
+      src: src-gen
+      test: test-gen
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Reuse lib templates generates files correctly 1`] = `
+Object {
+  "com.sap.myUI5Lib/.editorconfig": Object {
+    "contents": "# EditorConfig helps developers define and maintain consistent
+# coding styles between different editors and IDEs
+# see https://editorconfig.org
+
+root = true
+
+[*]
+# We recommend you to keep these unchanged
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Change these settings to your own preference
+indent_style = space
+
+[*.md]
+trim_trailing_whitespace = false
+
+[{package.json,*.yaml}]
+indent_size = 2
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/.gitignore": Object {
+    "contents": "node_modules/
+dist/
+package-lock.json
+.env",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/karma.conf.js": Object {
+    "contents": "// karma-ui5 usage: https://github.com/SAP/karma-ui5
+module.exports = function (config) {
+    config.set({
+        frameworks: [\\"ui5\\"],
+        browsers: [\\"Chrome\\"]
+    });
+};",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/package.json": Object {
+    "contents": "{
+  \\"name\\": \\"myUI5Lib\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"private\\": true,
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^2.9.3\\",
+    \\"karma\\": \\"^6.1.1\\",
+    \\"karma-chrome-launcher\\": \\"^3.1.0\\",
+    \\"karma-cli\\": \\"^2.0.0\\",
+    \\"karma-ui5\\": \\"^2.3.3\\",
+    \\"ui5-middleware-livereload\\": \\"^0.5.1\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"ui5-middleware-livereload\\"
+    ]
+  },
+  \\"scripts\\": {
+    \\"build\\": \\"ui5 build --clean-dest\\",
+    \\"start\\": \\"ui5 serve --open test-resources/com/sap/myUI5Lib/Example.html\\",
+    \\"testsuite\\": \\"ui5 serve --open test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit.html\\",
+    \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\"
+  },
+  \\"license\\": \\"UNLICENSED\\"
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/.library": Object {
+    "contents": "<?xml version=\\"1.0\\" ?>
+<library xmlns=\\"http://www.sap.com/sap.ui.library.xsd\\">
+	<name>com.sap.myUI5Lib</name>
+	<vendor>Cian Morrin</vendor>
+	<version>\${version}</version>
+	<copyright>\${copyright}</copyright>
+	<title>myUI5Lib</title>
+	<documentation>Some description about myUI5Lib</documentation>
+	<dependencies>
+		<dependency>
+			<libraryName>sap.ui.core</libraryName>
+		</dependency>
+	</dependencies>
+</library>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/Example.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+// Provides control com.sap.myUI5Lib.Example.
+sap.ui.define([
+	\\"./library\\", 
+	\\"sap/ui/core/Control\\", 
+	\\"./ExampleRenderer\\"
+], function (library, Control, ExampleRenderer) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Constructor for a new <code>com.sap.myUI5Lib.Example</code> control.
+	 *
+	 * @param {string} [sId] id for the new control, generated automatically if no id is given
+	 * @param {object} [mSettings] initial settings for the new control
+	 *
+	 * @class
+	 * Some class description goes here.
+	 * @extends sap.ui.core.Control
+	 *
+	 * @author Cian Morrin
+	 * @version \${version}
+	 *
+	 * @constructor
+	 * @public
+	 * @alias com.sap.myUI5Lib.Example
+	 */
+	var Example = Control.extend(\\"com.sap.myUI5Lib.Example\\", /** @lends com.sap.myUI5Lib.Example.prototype */ {
+		metadata: {
+			library: \\"com.sap.myUI5Lib\\",
+			properties: {
+				/**
+				 * The text to display.
+				 */
+				text: {
+					type: \\"string\\",
+					group: \\"Data\\",
+					defaultValue: null
+				},
+				/**
+				 * The color to use (default to \\"Default\\" color).
+				 */
+				color: {
+					type: \\"com.sap.myUI5Lib.ExampleColor\\",
+					group: \\"Appearance\\",
+					defaultValue: ExampleColor.Default
+				}
+			},
+			events: {
+				/**
+				 * Event is fired when the user clicks the control.
+				 */
+				press: {}
+			}
+		},
+		renderer: ExampleRenderer,
+    onclick: function() {
+      this.firePress();
+    }
+	});
+	return Example;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/ExampleRenderer.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+sap.ui.define([
+	\\"sap/ui/core/Core\\",
+	\\"./library\\"
+], function (Core, library) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	/**
+	 * Example renderer.
+	 * @namespace
+	 */
+	var ExampleRenderer = {
+		apiVersion: 2 // usage of DOM Patcher
+	};
+
+	/**
+	 * Renders the HTML for the given control, using the provided
+	 * {@link sap.ui.core.RenderManager}.
+	 *
+	 * @param {sap.ui.core.RenderManager} rm The reference to the <code>sap.ui.core.RenderManager</code>
+	 * @param {sap.ui.core.Control} control The control instance to be rendered
+	 */
+	ExampleRenderer.render = function (rm, control) {
+
+		var i18n = Core.getLibraryResourceBundle(\\"com.sap.myUI5Lib\\");
+
+		rm.openStart(\\"div\\", control);
+		if (control.getColor() === ExampleColor.Highlight) {
+			rm.class(\\"myLibPrefixExampleHighlight\\");
+		} else {
+			rm.class(\\"myLibPrefixExample\\");
+		}
+		rm.openEnd( );
+		rm.text(i18n.getText(\\"ANY_TEXT\\") + \\": \\" + control.getText());
+		rm.close(\\"div\\");
+
+	};
+
+	return ExampleRenderer;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/library.js": Object {
+    "contents": "/*!
+ * \${copyright}
+ */
+
+/**
+ * Initialization Code and shared classes of library com.sap.myUI5Lib.
+ */
+sap.ui.define([
+	\\"sap/ui/core/library\\"
+], function () {
+	\\"use strict\\";
+
+	// delegate further initialization of this library to the Core
+	// Hint: sap.ui.getCore() must still be used to support preload with sync bootstrap!
+	sap.ui.getCore().initLibrary({
+		name: \\"com.sap.myUI5Lib\\",
+		version: \\"\${version}\\",
+		dependencies: [ // keep in sync with the ui5.yaml and .library files
+			\\"sap.ui.core\\"
+		],
+		types: [
+			\\"com.sap.myUI5Lib.ExampleColor\\"
+		],
+		interfaces: [],
+		controls: [
+			\\"com.sap.myUI5Lib.Example\\"
+		],
+		elements: [],
+		noLibraryCSS: false // if no CSS is provided, you can disable the library.css load here
+	});
+
+	/**
+	 * Some description about <code>myUI5Lib</code>
+	 *
+	 * @namespace
+	 * @name com.sap.myUI5Lib
+	 * @author Cian Morrin
+	 * @version \${version}
+	 * @public
+	 */
+	var thisLib = com.sap.myUI5Lib;
+
+	/**
+	 * Semantic Colors of the <code>com.sap.myUI5Lib.Example</code>.
+	 *
+	 * @enum {string}
+	 * @public
+	 */
+	thisLib.ExampleColor = {
+
+		/**
+		 * Default color (brand color)
+		 * @public
+		 */
+		Default : \\"Default\\",
+
+		/**
+		 * Highlight color
+		 * @public
+		 */
+		Highlight : \\"Highlight\\"
+
+	};
+
+	return thisLib;
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/messagebundle.properties": Object {
+    "contents": "# Translation file of library com.sap.myUI5Lib.
+ANY_TEXT=AnyText
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/base/Example.less": Object {
+    "contents": "/* Theme Parameter Toolbox: https://openui5.hana.ondemand.com/test-resources/sap/m/demokit/theming/webapp/index.html */
+
+.myLibPrefixExample,
+.myLibPrefixExampleHighlight {
+	color: @sapUiText;
+	background-color: @sapUiNeutralBG;
+	border: 1rem solid @sapUiContentForegroundBorderColor;
+	border-radius: 1rem;
+	opacity: 0.8;
+	padding: 2rem;
+	margin: 2rem 8rem;
+	text-align: center;
+	font-size: 2em;
+	line-height: 3em;
+}
+
+.myLibPrefixExampleHighlight {
+	background-color: @sapUiSuccessBG;
+}
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/base/library.source.less": Object {
+    "contents": "@import \\"/resources/sap/ui/core/themes/base/base.less\\";
+@import \\"/resources/sap/ui/core/themes/base/global.less\\";
+
+@import \\"Example.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_belize_plus/library.source.less": Object {
+    "contents": "@import \\"../sap_belize/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_belize_plus/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_dark/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_dark/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_hcb/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcb/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/src/com/sap/myUI5Lib/themes/sap_fiori_3_hcw/library.source.less": Object {
+    "contents": "@import \\"../base/library.source.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/base.less\\";
+@import \\"/resources/sap/ui/core/themes/sap_fiori_3_hcw/global.less\\";
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/Example.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\" />
+		<title>Test Page for com.sap.myUI5Lib.Example</title>
+		<base href=\\"../../../../\\">
+		<script src=\\"resources/sap-ui-core.js\\"
+				id=\\"sap-ui-bootstrap\\"
+				data-sap-ui-async=\\"true\\"
+				data-sap-ui-oninit=\\"module:local/Example\\"
+				data-sap-ui-libs=\\"sap.ui.core,com.sap.myUI5Lib\\"
+				data-sap-ui-theme=\\"sap_fiori_3\\"
+				data-sap-ui-resourceroots='{\\"local\\" : \\"./test-resources/com/sap/myUI5Lib/\\"}'>
+		</script>
+</head>
+<body class=\\"sapUiBody\\">
+		<h1 id=\\"header\\">Test Page for <code>com.sap.myUI5Lib.Example</code></h1>
+		<div id=\\"content\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/Example.js": Object {
+    "contents": "sap.ui.define([
+	\\"com/sap/myUI5Lib/library\\",
+	\\"com/sap/myUI5Lib/Example\\"
+], function(library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// create a new instance of the Example control and
+	// place it into the DOM element with the id \\"content\\"
+	new Example({
+			text: \\"Example\\",
+			color: ExampleColor.Highlight
+	}).placeAt(\\"content\\");
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/Example.qunit.js": Object {
+    "contents": "/*global QUnit */
+sap.ui.define([
+	\\"sap/ui/qunit/QUnitUtils\\",
+	\\"sap/ui/qunit/utils/createAndAppendDiv\\",
+	\\"com/sap/myUI5Lib/library\\",
+	\\"com/sap/myUI5Lib/Example\\"
+], function(qutils, createAndAppendDiv, library, Example) {
+	\\"use strict\\";
+
+	// refer to library types
+	var ExampleColor = library.ExampleColor;
+
+	// prepare DOM
+	createAndAppendDiv(\\"uiArea1\\");
+
+	// module for basic checks
+	QUnit.module(\\"Example Tests\\");
+
+	// example sync test
+	QUnit.test(\\"Sync\\", function(assert) {
+		assert.expect(1);
+		assert.ok(true, \\"ok\\");
+	});
+
+	// example async test
+	QUnit.test(\\"Async\\", function(assert) {
+		assert.expect(1);
+		return new Promise(function(resolve, reject) {
+			assert.ok(true, \\"ok\\");
+			resolve();
+		});
+	})
+
+	// module for basic checks
+	QUnit.module(\\"Basic Control Checks\\");
+
+	// some basic control checks
+	QUnit.test(\\"Test get properties\\", function(assert) {
+		assert.expect(2);
+		var oExample = new Example({
+			text: \\"Example\\"
+		});
+		assert.equal(oExample.getText(), \\"Example\\", \\"Check text equals 'Example'\\");
+		assert.equal(oExample.getColor(), ExampleColor.Default, \\"Check color equals 'Default'\\");
+	});
+
+	// some basic eventing check
+	QUnit.test(\\"Test click event\\", function(assert) {
+		assert.expect(1);
+		var oExample = new Example(\\"example\\", {
+			text: \\"Example\\",
+			press: function() {
+				assert.ok(true, \\"Event has been fired!\\")
+			}
+		}).placeAt(\\"uiArea1\\");
+		return new Promise(function(resolve, reject) {
+			setTimeout(function() {
+				qutils.triggerMouseEvent(\\"example\\", \\"click\\", 1, 1);
+        resolve();
+			}, 100);
+		});
+	});
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+		<meta charset=\\"utf-8\\">
+    <base href=\\"../../../../../\\">
+		<title>QUnit TestSuite for com.sap.myUI5Lib</title>
+		<script src=\\"resources/sap/ui/test/starter/createSuite.js\\"
+				data-sap-ui-testsuite=\\"test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit\\"></script>
+	</head>
+	<body>
+	</body>
+</html>
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/test/com/sap/myUI5Lib/qunit/testsuite.qunit.js": Object {
+    "contents": "sap.ui.define(function() {
+	\\"use strict\\";
+
+	return {
+		name: \\"QUnit TestSuite for com.sap.myUI5Lib\\",
+		defaults: {
+			bootCore: true,
+			ui5: {
+				libs: \\"sap.ui.core,com.sap.myUI5Lib\\",
+				theme: \\"sap_fiori_3\\",
+				noConflict: true,
+				preload: \\"auto\\"
+			},
+			qunit: {
+				version: 2,
+				reorder: false
+			},
+			sinon: {
+				version: 4,
+				qunitBridge: true,
+				useFakeTimers: false
+			},
+			module: \\"./{name}.qunit\\"
+		},
+		tests: {
+			// test file for the Example control
+			Example: {
+				title: \\"QUnit Test for Example\\",
+				_alternativeTitle: \\"QUnit tests: com.sap.myUI5Lib.Example\\"
+			}
+		}
+	};
+
+});
+",
+    "state": "modified",
+  },
+  "com.sap.myUI5Lib/ui5.yaml": Object {
+    "contents": "specVersion: '2.2'
+metadata:
+  name: \\"myUI5Lib\\"
+type: library
+framework:
+  name: SAPUI5
+  version: 1.102.19
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_belize
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+  - name: ui5-middleware-livereload
+    afterMiddleware: compression
+    configuration:
+      extraExts: \\"xml,json,properties\\"
+      path: [\\"src\\", \\"test\\"]",
+    "state": "modified",
+  },
+}
+`;

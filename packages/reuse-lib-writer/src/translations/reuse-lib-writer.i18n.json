@@ -1,0 +1,16 @@
+{
+    "error": {
+        "missingRequiredProperty": "The property: {{ propertyName }} must have a value",
+        "disallowedCharacters": "The property: {{ propertyName }} contains disallowed characters: {{- disallowedChars }}",
+        "invalidUI5Version": "The specified UI5 version is invalid: {{ version }}",
+        "invalidNamespace": {
+            "mustStartWithLetter": "The namespace must start with a letter",
+            "endsInPeriod": "The namespace cannot end with a period",
+            "isSap": "The namespace cannot be {{ str }}",
+            "startsWithNew": "The namespace cannot start with {{ str }}",
+            "numAfterPeriod": "A number cannot follow a period in the namespace",
+            "specialCharacter": "The namespace can only contain letters, digits, dots, and underscores",
+            "tooLong": "The combined length of the application namespace and module name must not exceed {{ length }} characters"
+        }
+    }
+}
