@@ -10548,7 +10548,7 @@ packages:
   /i18next/21.6.11:
     resolution: {integrity: sha512-tJ2+o0lVO+fhi8bPkCpBAeY1SgkqmQm5NzgPWCQssBrywJw98/o+Kombhty5nxQOpHtvMmsxcOopczUiH6bJxQ==}
     dependencies:
-      '@babel/runtime': 7.16.7
+      '@babel/runtime': 7.20.13
     dev: false
 
   /iconv-lite/0.4.24:
