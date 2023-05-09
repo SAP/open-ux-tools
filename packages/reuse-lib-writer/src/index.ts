@@ -15,7 +15,7 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
     }
 
     const tmplPath = join(__dirname, '..', 'templates');
-    const ignoreJSFiles = ['**/src/Example.js', '**/ExampleRenderer.js', '**/library.js'];
+    const ignoreJSFiles = ['**/src/baselibrary/Example.js', '**/ExampleRenderer.js', '**/library.js'];
     const ignore = reuseLib.typescript ? ignoreJSFiles : ['**/*.ts'];
 
     const libraryNamespace = `${reuseLib.namespace}.${reuseLib.libraryName}`;
