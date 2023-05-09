@@ -41,19 +41,19 @@ describe('Reuse lib templates', () => {
     };
 
     it('generates files correctly', async () => {
-        let projectDir = join(outputDir, 'testlib-simple');
+        const projectDir = join(outputDir, 'testlib-simple');
         await generate(projectDir, ui5LibConfig, fs);
         expect(fs.dump(projectDir)).toMatchSnapshot();
     });
 
     it('generates files correctly (typescript)', async () => {
-        let projectDir = join(outputDir, 'testlib-simple');
+        const projectDir = join(outputDir, 'testlib-simple');
         await generate(projectDir, ui5LibTSConfig, fs);
         expect(fs.dump(projectDir)).toMatchSnapshot();
     });
 
     it('generates files correctly (typescript, UI5 version > 1.113.0)', async () => {
-        let projectDir = join(outputDir, 'testlib-simple');
+        const projectDir = join(outputDir, 'testlib-simple');
         await generate(projectDir, { ...ui5LibTSConfig, libraryName: 'myUI5Lib2', frameworkVersion: '1.113.1' });
         expect(fs.dump(projectDir)).toMatchSnapshot();
     });

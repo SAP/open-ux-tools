@@ -7,6 +7,14 @@ import type { UI5LibConfig } from './types';
 import { enableTypescript } from './options';
 import { mergeWithDefaults } from './data';
 
+/**
+ * Writes the template to the memfs editor instance.
+ *
+ * @param basePath - the base path
+ * @param ui5LibConfig - the Ui5 lib instance
+ * @param fs - the memfs editor instance
+ * @returns the updated memfs editor instance
+ */
 async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Editor): Promise<Editor> {
     const reuseLib = cloneDeep(ui5LibConfig);
 

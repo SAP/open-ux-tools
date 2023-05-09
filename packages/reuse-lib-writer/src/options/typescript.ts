@@ -9,9 +9,9 @@ import { gte } from 'semver';
 /**
  * Enable typescript for the given input.
  *
- * @param input Input required to enable the optional typescript features
- * @param tmplPath - the template path
+ * @param libInput Input required to enable the optional typescript features
  * @param basePath - the base path
+ * @param tmplPath - the template path
  * @param fs - the memfs editor instance
  */
 export async function enableTypescript(libInput: UI5LibInput, basePath: string, tmplPath: string, fs: Editor) {
@@ -65,7 +65,14 @@ export async function enableTypescript(libInput: UI5LibInput, basePath: string, 
     fs.write(ui5ConfigPath, ui5Config.toString());
 }
 
-function getTypePackageFor(framework: 'SAPUI5' | 'OpenUI5', version: string) {
+/**
+ * Returns the types package depending on ui5 version.
+ *
+ * @param framework SAPUI5 or OpenUI5
+ * @param version
+ * @returns types package
+ */
+function getTypePackageFor(framework: 'SAPUI5' | 'OpenUI5', version: string): string {
     const typesName = gte(version, '1.113.0') ? 'types' : 'ts-types-esm';
     return `@${framework.toLowerCase()}/${typesName}`;
 }

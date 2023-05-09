@@ -28,7 +28,8 @@ export function validateLibName(libraryName: string): boolean {
  * The namespace must start with a letter and may contain letters, digits, periods, and underscores (but no spaces), 
  * and cannot end in a period. A namespace cannot be 'sap' or start with the word 'new', and a number cannot follow a period.
  
- * @param namespace 
+ * @param namespace
+ * @throws Error with validation message, if the namespace is not valid
  * @returns if namespace is valid
  */
 function validateNamespacePattern(namespace: string, modName = ''): boolean {
@@ -61,7 +62,7 @@ function validateNamespacePattern(namespace: string, modName = ''): boolean {
  * Validates the namespace to ensure we do not create malformed libs.
  *
  * @param libraryName name for library
- * @throws Error with validation message, if the app id is not valid
+ * @throws Error with validation message, if the namespace is not valid
  * @returns true, if app id is validated
  */
 export function validateNamespace(namespace: string): boolean {
