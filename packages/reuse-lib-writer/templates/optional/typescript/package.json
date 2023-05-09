@@ -1,0 +1,49 @@
+{
+    "name": "<%= libraryname %>",
+    "version": "1.0.0",
+    "private": true,
+    "devDependencies": {
+      "@babel/cli": "^7.17.6",
+      "@babel/core": "^7.17.8",
+      "@babel/preset-env": "^7.16.11",
+      "@babel/preset-typescript": "^7.16.7",
+      "<%= tstypes %>": "<%= tstypesVersion %>",
+      "@typescript-eslint/eslint-plugin": "^5.17.0",
+      "@typescript-eslint/parser": "^5.17.0",
+      "@ui5/cli": "^2.14.7",
+      "@ui5/ts-interface-generator": "^0.5.0",
+      "babel-preset-transform-ui5": "^7.0.5",
+      "eslint": "^8.12.0",
+      "karma": "^6.3.17",
+      "karma-chrome-launcher": "^3.1.1",
+      "karma-cli": "^2.0.0",
+      "karma-ui5": "^2.4.0",
+      "npm-run-all": "^4.1.5",
+      "typescript": "^4.6.3",
+      "ui5-middleware-livereload": "^0.6.0"
+    },
+    "ui5": {
+      "dependencies": [
+        "ui5-middleware-livereload"
+      ]
+    },
+    "scripts": {
+        "build": "run-s build:ts build:test-ts build:ui5",
+        "build:ts": "babel src --out-dir src-gen --extensions \".ts,.js\" --copy-files --include-dotfiles",
+        "build:test-ts": "babel test --out-dir test-gen --extensions \".ts,.js\" --copy-files --include-dotfiles",
+        "build:ui5": "ui5 build --clean-dest",
+        "watch": "run-p watch:controls watch:ts watch:test-ts start",
+        "watch:ts": "babel src --out-dir src-gen --extensions \".ts,.js\" --copy-files --include-dotfiles  --watch",
+        "watch:test-ts": "babel test --out-dir test-gen --extensions \".ts,.js\" --copy-files --include-dotfiles  --watch",
+        "watch:controls": "npx @ui5/ts-interface-generator --watch",
+        "start": "run-p watch:ts watch:test-ts start:ui5",
+        "start:ui5": "ui5 serve --open test-resources/<%= librarynamespaceURI %>/Example.html",
+        "testsuite": "ui5 serve --open test-resources/<%= librarynamespaceURI %>/qunit/testsuite.qunit.html",
+        "test": "karma start --browsers=ChromeHeadless --singleRun=true",
+        "ts-typecheck": "tsc --noEmit",
+        "lint:src": "eslint src",
+        "lint:test": "eslint test",
+        "lint": "run-s lint:src lint:test"
+    },
+    "license": "UNLICENSED"
+  }
