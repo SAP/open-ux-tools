@@ -24,14 +24,16 @@ import { join } from 'path';
 const exampleWriter = async () => {
 
   const reuseLibConfig = {
-    moduleName: '',
-    namespace: '',
-    minSapUi5Version: '',
-    enableTypescript: '',
+    libraryName: 'myUI5Library';
+    namespace: 'com.myorg';
+    framework: 'SAPUI5'; // SAPUI5 | OpenUI5
+    frameworkVersion: '1.102.19';
+    author: 'New User';
+    typescript: false;
   };
 
-  const projectPath = join(curTestOutPath, name);
-  const fs = await generate(join(projectPath), appConfig);
+  const projectDir = join(__dirname, 'testLibs');
+  const fs = await generate(join(projectDir), appConfig);
   return new Promise((resolve) => {
       fs.commit(resolve); // When using with Yeoman it handle the fs commit.
   });
