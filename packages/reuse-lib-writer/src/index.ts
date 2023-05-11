@@ -32,7 +32,11 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
     fs.copyTpl(join(tmplPath, 'common', '**/*.*'), basePath, libInput, undefined, {
         globOptions: { dot: true, ignore },
         processDestinationPath: (filePath: string) => {
-            return filePath.replace(/^_/, '').replace('baselibrary', libInput.libraryNamespaceURI).replace(/\/_/, '/');
+            const separator = process.platform === 'win32' ? '\\' : '/';
+            return filePath
+                .replace(/^_/, '')
+                .replace('baselibrary', libInput.libraryNamespaceURI)
+                .replace(new RegExp(`\\${separator}_`), separator);
         }
     });
 
