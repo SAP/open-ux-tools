@@ -1,6 +1,7 @@
 import { basename, dirname, join } from 'path';
 import type { WorkspaceFolder } from '../../src';
 import { findAllApps, findProjectRoot, getAppRootFromWebappPath } from '../../src';
+import { findFioriArtifacts } from '../../src/project/search';
 
 const testDataRoot = join(__dirname, '..', 'test-data');
 
@@ -167,5 +168,51 @@ describe('Test getAppRootFromManifestPath()', () => {
         const appRoot = join(testDataRoot, 'project', 'webapp-path', 'custom-webapp-path');
         const manifestPath = join(appRoot, 'src', 'webapp');
         expect(await getAppRootFromWebappPath(manifestPath)).toBe(appRoot);
+    });
+});
+
+describe('Test findFioriArtifacts()', () => {
+    test('Find all artifacts', async () => {
+        const result = await findFioriArtifacts({
+            wsFolders: [join(testDataRoot, 'project/find-all-apps')],
+            artifacts: ['adaptations', 'applications', 'extensions', 'libraries']
+        });
+        expect(result.applications?.length).toBeGreaterThan(0);
+        expect(result.adaptations).toEqual([
+            { appRoot: join(testDataRoot, 'project/find-all-apps/adaptations/valid-adaptation') }
+        ]);
+        expect(result.extensions).toEqual([
+            { appRoot: join(testDataRoot, 'project/find-all-apps/extensions/valid-extension') }
+        ]);
+        expect(result.libraries).toEqual([
+            {
+                manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library'),
+                manifest: {
+                    'sap.app': {
+                        'type': 'library'
+                    }
+                }
+            }
+        ]);
+    });
+
+    test('Find all libraries to check reading without cached manifest', async () => {
+        const result = await findFioriArtifacts({
+            wsFolders: [join(testDataRoot, 'project/find-all-apps/libraries')],
+            artifacts: ['libraries']
+        });
+        expect(result.applications?.length).toBeUndefined();
+        expect(result.adaptations?.length).toBeUndefined();
+        expect(result.extensions?.length).toBeUndefined();
+        expect(result.libraries).toEqual([
+            {
+                manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library'),
+                manifest: {
+                    'sap.app': {
+                        'type': 'library'
+                    }
+                }
+            }
+        ]);
     });
 });
