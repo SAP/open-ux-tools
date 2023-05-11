@@ -13,7 +13,7 @@ export function validateLibName(libName: string): boolean {
     if (!libName) {
         throw new Error(t('error.missingRequiredProperty', { propertyName: 'libraryName' }));
     }
-    const match = libName.match(/["]/);
+    const match = /"/.exec(libName);
     if (match) {
         throw new Error(
             t('error.disallowedCharacters', { propertyName: 'libraryName', disallowedChars: `${match.join()}` })
@@ -35,7 +35,7 @@ function validateNamespacePattern(namespace: string, libName?: string): boolean 
     if (!/^[a-zA-Z]/.test(namespace)) {
         throw new Error(t('error.invalidNamespace.mustStartWithLetter'));
     }
-    if (/\.$/.test(namespace)) {
+    if (namespace.endsWith('.')) {
         throw new Error(t('error.invalidNamespace.mustEndInPeriod'));
     }
     if (namespace.toUpperCase() === 'SAP') {
@@ -47,7 +47,7 @@ function validateNamespacePattern(namespace: string, libName?: string): boolean 
     if (/\.\d/.test(namespace)) {
         throw new Error(t('error.invalidNamespace.numAfterPeriod'));
     }
-    if (!/^[\w\d._]+$/.test(namespace)) {
+    if (!/^[a-zA-Z\d_.]+$/.test(namespace)) {
         throw new Error(t('error.invalidNamespace.specialCharacter'));
     }
     if ((libName + namespace).length > 70) {

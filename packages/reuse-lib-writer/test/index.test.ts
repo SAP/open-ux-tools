@@ -2,7 +2,7 @@ import { create as createStorage } from 'mem-fs';
 import { removeSync } from 'fs-extra';
 import { create } from 'mem-fs-editor';
 import { join } from 'path';
-import { UI5LibConfig } from '../src';
+import type { UI5LibConfig } from '../src';
 import { generate } from '../src';
 
 describe('Reuse lib templates', () => {
@@ -34,28 +34,25 @@ describe('Reuse lib templates', () => {
         typescript: false
     };
 
-    const ui5LibTSConfig: UI5LibConfig = {
-        ...ui5LibConfig,
-        libraryName: 'myUI5TSLib',
-        typescript: true
-    };
-
     it('generates files correctly', async () => {
-        const projectDir = join(outputDir, 'testlib-simple');
-        await generate(projectDir, ui5LibConfig, fs);
-        expect(fs.dump(projectDir)).toMatchSnapshot();
-    });
+        await generate(outputDir, ui5LibConfig, fs);
+        expect(fs.dump(join(outputDir))).toMatchSnapshot();
 
-    it('generates files correctly (typescript)', async () => {
-        const projectDir = join(outputDir, 'testlib-simple');
-        await generate(projectDir, ui5LibTSConfig, fs);
-        expect(fs.dump(projectDir)).toMatchSnapshot();
-    });
+        // with typescript
+        const ui5LibTSConfig: UI5LibConfig = {
+            ...ui5LibConfig,
+            libraryName: 'myUI5TSLib',
+            typescript: true
+        };
+        await generate(outputDir, ui5LibTSConfig, fs);
+        expect(fs.read(join(outputDir, 'com.sap.myUI5TSLib', 'tsconfig.json'))).toMatchSnapshot();
+        expect(fs.read(join(outputDir, 'com.sap.myUI5TSLib', 'src', '.babelrc.json'))).toMatchSnapshot();
 
-    it('generates files correctly (typescript, UI5 version > 1.113.0)', async () => {
-        const projectDir = join(outputDir, 'testlib-simple');
-        await generate(projectDir, { ...ui5LibTSConfig, libraryName: 'myUI5Lib2', frameworkVersion: '1.113.1' });
-        expect(fs.dump(projectDir)).toMatchSnapshot();
+        // with typescript and version 1.113.1
+        await generate(outputDir, { ...ui5LibTSConfig, libraryName: 'myUI5TSLib2', frameworkVersion: '1.113.1' }, fs);
+        const pkgData = fs.read(join(outputDir, 'com.sap.myUI5TSLib2', 'package.json'));
+        const packageJson = JSON.parse(pkgData);
+        expect(packageJson.devDependencies).toHaveProperty('@sapui5/types');
     });
 
     // Test to ensure generation will throw error when input is invalid
