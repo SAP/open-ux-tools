@@ -102,7 +102,7 @@ function logFullURL({ host, path, log }: { host: string; path?: string; log: Log
 }
 
 /**
- * Log a Gateway error.
+ * Log Gateway errors returned from the S_MGW_ODATA_INNER_ERROR table which is a store of OData Inner Error data.
  *
  * @param  options options
  * @param options.error error message returned from gateway
