@@ -1,4 +1,6 @@
 export const FileName = {
+    AdaptationConfig: 'config.json',
+    ExtConfigJson: '.extconfig.json',
     Manifest: 'manifest.json',
     Package: 'package.json',
     Tsconfig: 'tsconfig.json',
