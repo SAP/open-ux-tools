@@ -23,7 +23,6 @@ export function validateLibName(libName: string): boolean {
 }
 
 /**
- *
  * Validates the namespace using regex pattern.
  *
  * @param namespace namespace specified
