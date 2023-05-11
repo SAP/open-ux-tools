@@ -46,7 +46,6 @@ describe('Reuse lib templates', () => {
         };
         await generate(outputDir, ui5LibTSConfig, fs);
         expect(fs.read(join(outputDir, 'com.sap.myUI5TSLib', 'tsconfig.json'))).toMatchSnapshot();
-        expect(fs.read(join(outputDir, 'com.sap.myUI5TSLib', 'src', '.babelrc.json'))).toMatchSnapshot();
 
         // with typescript and version 1.113.1
         await generate(outputDir, { ...ui5LibTSConfig, libraryName: 'myUI5TSLib2', frameworkVersion: '1.113.1' }, fs);

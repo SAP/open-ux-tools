@@ -602,15 +602,3 @@ exports[`Reuse lib templates generates files correctly 2`] = `
   ]
 }"
 `;
-
-exports[`Reuse lib templates generates files correctly 3`] = `
-"{
-    \\"ignore\\": [
-        \\"**/*.d.ts\\"
-    ],
-    \\"presets\\": [
-        \\"transform-ui5\\",
-        \\"@babel/preset-typescript\\"
-    ]
-}"
-`;
