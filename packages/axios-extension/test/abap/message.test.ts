@@ -58,6 +58,11 @@ describe('message helpers', () => {
             1 + Object.keys(error.innererror.Error_Resolution).length + error.innererror.errordetails.length
         );
 
+        // Restrict to only errordetails, typical for deployment with test mode enabled
+        errorMock.mockReset();
+        prettyPrintError({ error, log, host }, false);
+        expect(errorMock).toBeCalledTimes(Object.keys(error.innererror.Error_Resolution).length);
+
         delete error.message;
         delete error.innererror.errordetails;
         delete error.innererror.Error_Resolution;
