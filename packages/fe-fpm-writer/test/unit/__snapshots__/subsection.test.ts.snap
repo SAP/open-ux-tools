@@ -1,0 +1,754 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/dummyAction'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.DummyOnAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is "object" - create new file with custom file and function names 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        DummyOnAction: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.DummyOnAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is "object" - create new file with custom function name 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        DummyOnAction: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is empty "object" - create new file with default function name 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onHandleSecondAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with absolute position 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onHandleSecondAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 1`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/MyExistingAction'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onHandleSecondAction\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Test property "eventHandler" "eventHandler" is object. Append new function to existing js file with position as object 2`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        },
+        onHandleSecondAction: function() {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.84, with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "title": "New Custom Sub Section",
+            "type": "XMLFragment",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.84, with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.84, with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.85, with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "name": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "title": "New Custom Sub Section",
+            "type": "XMLFragment",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.85, with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.85, with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.86, with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "title": "New Custom Sub Section",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.86, with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.86, with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.89, with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "title": "New Custom Sub Section",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.89, with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.89, with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.90, with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "title": "New Custom Sub Section",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.90, with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.90, with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.98, with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "title": "New Custom Sub Section",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.98, with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection Versions 1.98, with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;
+
+exports[`SubCustomSection generateCustomSubSection custom control 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "title": "New Custom Sub Section",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection custom control 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<CustomXML text=\\"\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection different data and not existing target 1`] = `
+Object {
+  "dummy": Object {
+    "options": Object {
+      "settings": Object {
+        "content": Object {
+          "body": Object {
+            "sections": Object {
+              "dummyParentFacet": Object {
+                "subSections": Object {
+                  "DummySubSection": Object {
+                    "position": Object {
+                      "anchor": "NewDummyFacet",
+                      "placement": "Before",
+                    },
+                    "template": "sapux.fe.fpm.writer.test.extensions.custom.DummySubSection",
+                    "title": "Dummy Sub Section",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "sample": Object {
+    "id": "Default",
+    "name": "sap.fe.templates.ObjectPage",
+    "options": Object {
+      "settings": Object {
+        "content": Object {
+          "body": Object {
+            "sections": Object {
+              "ExistingFacet1": Object {
+                "visible": true,
+              },
+              "ExistingFacet2": Object {
+                "subSections": Object {
+                  "ExistingCustomSubSection": Object {
+                    "position": Object {
+                      "anchor": "IncidentOverviewFacet",
+                      "placement": "Before",
+                    },
+                    "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+                    "title": "Custom Title",
+                  },
+                },
+                "visible": true,
+              },
+            },
+          },
+        },
+        "entitySet": "RootEntity",
+      },
+    },
+    "type": "Component",
+    "viewLevel": 1,
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection different data and not existing target 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Text text=\\"DummySubSection\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection no handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "title": "New Custom Sub Section",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection no handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Text text=\\"NewCustomSubSection\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection no handler, no fs, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "title": "New Custom Sub Section",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection no handler, no fs, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Text text=\\"NewCustomSubSection\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection with existing handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "title": "New Custom Sub Section",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingFacet1": Object {
+        "visible": true,
+      },
+      "ExistingFacet2": Object {
+        "subSections": Object {
+          "ExistingCustomSubSection": Object {
+            "position": Object {
+              "anchor": "IncidentOverviewFacet",
+              "placement": "Before",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+            "title": "Custom Title",
+          },
+        },
+        "visible": true,
+      },
+      "dummyParentFacet": Object {
+        "subSections": Object {
+          "NewCustomSubSection": Object {
+            "position": Object {
+              "anchor": "DummyFacet",
+              "placement": "After",
+            },
+            "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSubSection",
+            "title": "New Custom Sub Section",
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`SubCustomSection generateCustomSubSection with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSubSection'}\\" text=\\"NewCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>"
+`;
+
+exports[`SubCustomSection generateCustomSubSection with handler, all properties 3`] = `
+"sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+"
+`;

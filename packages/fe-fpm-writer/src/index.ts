@@ -8,7 +8,7 @@ export { CustomTableColumn } from './column/types';
 export { generateCustomColumn } from './column';
 
 export { CustomSection } from './section/types';
-export { generateCustomSection } from './section';
+export { generateCustomSection, generateCustomSubSection } from './section';
 
 export { CustomView } from './view/types';
 export { generateCustomView } from './view';
