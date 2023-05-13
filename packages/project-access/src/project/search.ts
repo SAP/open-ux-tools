@@ -30,6 +30,12 @@ const filterFileMap: Record<FioriArtifactTypes, string> = {
 };
 
 /**
+ * Type that is used locally only to keep list of found files with cache of the
+ * content in order to avoid multiple file reads.
+ */
+type FileMapAndCache = { [path: string]: null | string | object };
+
+/**
  * WorkspaceFolder type guard.
  *
  * @param value - value to type check
@@ -223,7 +229,7 @@ async function findRootsForPath(path: string): Promise<{ appRoot: string; projec
  */
 export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | undefined): Promise<AllAppResults[]> {
     const findResults = await findFioriArtifacts({ wsFolders, artifacts: ['applications'] });
-    return findResults.applications || [];
+    return findResults.applications ?? [];
 }
 
 /**
@@ -232,7 +238,7 @@ export async function findAllApps(wsFolders: WorkspaceFolder[] | string[] | unde
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-async function filterApplications(pathMap: { [path: string]: null | string | object }): Promise<AllAppResults[]> {
+async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResults[]> {
     const result: AllAppResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
@@ -262,7 +268,7 @@ async function filterApplications(pathMap: { [path: string]: null | string | obj
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as array of found adaptation projects.
  */
-async function filterAdaptations(pathMap: { [path: string]: null | string | object }): Promise<AllAdaptationResults[]> {
+async function filterAdaptations(pathMap: FileMapAndCache): Promise<AllAdaptationResults[]> {
     const results: AllAdaptationResults[] = [];
     const adaptationConfigs = Object.keys(pathMap).filter((path) =>
         path.endsWith(join('/.adp', FileName.AdaptationConfig))
@@ -279,7 +285,7 @@ async function filterAdaptations(pathMap: { [path: string]: null | string | obje
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as array of found extension projects.
  */
-async function filterExtensions(pathMap: { [path: string]: null | string | object }): Promise<AllExtensionResults[]> {
+async function filterExtensions(pathMap: FileMapAndCache): Promise<AllExtensionResults[]> {
     const results: AllExtensionResults[] = [];
     const extensionConfigs = Object.keys(pathMap).filter((path) => basename(path) === FileName.ExtConfigJson);
     for (const extensionConfig of extensionConfigs) {
@@ -294,7 +300,7 @@ async function filterExtensions(pathMap: { [path: string]: null | string | objec
  * @param pathMap - path to files
  * @returns - results as array of found library projects.
  */
-async function filterLibraries(pathMap: { [path: string]: null | string | object }): Promise<AllLibraryResults[]> {
+async function filterLibraries(pathMap: FileMapAndCache): Promise<AllLibraryResults[]> {
     const results: AllLibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
@@ -343,7 +349,7 @@ export async function findFioriArtifacts(options: {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
-    const pathMap: { [path: string]: null | string | object } = {};
+    const pathMap: FileMapAndCache = {};
     for (const root of wsRoots) {
         try {
             const foundFiles = await findBy({
