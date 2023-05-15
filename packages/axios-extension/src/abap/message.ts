@@ -119,17 +119,15 @@ export function prettyPrintError(
         if (showAllMessages) {
             log.error(error.message?.value || 'An unknown error occurred.');
         }
-        if (error.innererror) {
-            (error.innererror.errordetails || []).forEach((entry) => {
-                if (!entry.message.startsWith('<![CDATA')) {
-                    logLevel(entry.severity, entry.message, log, true);
-                }
-                logFullURL({ host, path: error['longtext_url'], log });
-            });
-            if (showAllMessages) {
-                for (const key in error.innererror.Error_Resolution || {}) {
-                    log.error(`${key}: ${error.innererror.Error_Resolution[key]}`);
-                }
+        (error.innererror?.errordetails || []).forEach((entry) => {
+            if (!entry.message.startsWith('<![CDATA')) {
+                logLevel(entry.severity, entry.message, log, true);
+            }
+            logFullURL({ host, path: error['longtext_url'], log });
+        });
+        if (showAllMessages && error.innererror?.Error_Resolution) {
+            for (const key in error.innererror.Error_Resolution) {
+                log.error(`${key}: ${error.innererror.Error_Resolution[key]}`);
             }
         }
     }

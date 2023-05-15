@@ -64,8 +64,7 @@ describe('message helpers', () => {
         expect(errorMock).toBeCalledTimes(Object.keys(error.innererror.Error_Resolution).length);
 
         delete error.message;
-        delete error.innererror.errordetails;
-        delete error.innererror.Error_Resolution;
+        delete error.innererror;
         errorMock.mockReset();
         prettyPrintError({ error, log, host });
         expect(errorMock).toBeCalledTimes(1);
