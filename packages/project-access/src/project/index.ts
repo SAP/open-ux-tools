@@ -1,4 +1,10 @@
-export { getCapModelAndServices, getCapProjectType, isCapJavaProject, isCapNodeJsProject, getCapEnvironment } from './cap';
+export {
+    getCapModelAndServices,
+    getCapProjectType,
+    isCapJavaProject,
+    isCapNodeJsProject,
+    getCapEnvironment
+} from './cap';
 export { getAppProgrammingLanguage } from './info';
 export { loadModuleFromProject } from './module-loader';
 export { findAllApps, findProjectRoot, getAppRootFromWebappPath } from './search';
