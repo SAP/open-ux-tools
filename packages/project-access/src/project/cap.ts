@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { FileName } from '../constants';
-import type { CapCustomPaths, CapProjectType, csn, Package } from '../types';
+import type { CapCustomPaths, CapProjectType, CdsEnvironment, csn, Package } from '../types';
 import { fileExists, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
 
@@ -60,8 +60,7 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
         srv: 'srv/'
     };
     try {
-        const cds = await loadModuleFromProject<any>(capProjectPath, '@sap/cds');
-        const cdsCustomPaths = cds.env.for('cds', capProjectPath);
+        const cdsCustomPaths = await getCapEnvironment(capProjectPath);
         if (cdsCustomPaths.folders) {
             result.app = cdsCustomPaths.folders.app;
             result.db = cdsCustomPaths.folders.db;
@@ -95,4 +94,16 @@ export async function getCapModelAndServices(
         model,
         services
     };
+}
+
+/**
+ * Get CAP CDS project environment config for project root.
+ *
+ * @param capProjectPath - project root of a CAP project
+ * @returns - environment config for CAP project
+ */
+export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvironment> {
+    const cds = await loadModuleFromProject<any>(capProjectPath, '@sap/cds');
+    const facade = 'default' in cds ? cds.default : cds;
+    return facade.env.for('cds', capProjectPath);
 }
