@@ -165,6 +165,32 @@ describe('SubCustomSection', () => {
             expect(fs.read(fragmentPath)).toMatchSnapshot();
         });
 
+        test('Insert custom sub section into existing section without existing subsections', () => {
+            const testCustomSubSection: CustomSubSection = {
+                ...customSubSection,
+                parentSection: 'ExistingFacet1'
+            };
+            generateCustomSubSection(testDir, { ...testCustomSubSection }, fs);
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
+            expect(settings.content).toMatchSnapshot();
+        });
+
+        test('Insert custom sub section into existing section with subsection', () => {
+            const testCustomSubSection: CustomSubSection = {
+                ...customSubSection,
+                parentSection: 'ExistingFacet2'
+            };
+            generateCustomSubSection(testDir, { ...testCustomSubSection }, fs);
+            const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+            const settings = (
+                updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+            )['settings'];
+            expect(settings.content).toMatchSnapshot();
+        });
+
         const testVersions = ['1.85', '1.84', '1.86', '1.89', '1.90', '1.98'];
         test.each(testVersions)('Versions %s, with handler, all properties', (minUI5Version) => {
             const testCustomSubSection: CustomSubSection = {
