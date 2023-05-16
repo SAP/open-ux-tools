@@ -1,10 +1,12 @@
 import React from 'react';
-import { IStackTokens, setFocusVisibility } from '@fluentui/react';
+import { setFocusVisibility } from '@fluentui/react';
+import type { IStackTokens } from '@fluentui/react';
 import { Stack } from '@fluentui/react';
 import type { I18nBundle, TranslationEntry } from '../src/components/UITranslationInput';
 import { TranslationTextPattern, UITranslationInput } from '../src/components/UITranslationInput';
 import { initIcons, UiIcons } from '../src/components/Icons';
-import { ColumnControlType, UIColumn, UITable } from '../src/components/UITable';
+import { UITable } from '../src/components/UITable';
+import type { UIColumn } from '../src/components/UITable';
 import { UIIconButton } from '../src/components/UIButton';
 import { UICheckbox } from '../src/components/UICheckbox';
 
@@ -20,15 +22,21 @@ interface I18nTableProps {
     onDelete: (key: string) => void;
 }
 
+interface CustomTranslationEntry extends TranslationEntry {
+    dummyPath: string;
+}
+
 initIcons();
 
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 const I18N_BUNDLE_KEY = 'ui-components-i18n-bundle';
-const getI18nBundle = (): I18nBundle => {
-    let i18nBundle: I18nBundle = {};
+const getI18nBundle = (): I18nBundle<CustomTranslationEntry> => {
+    let i18nBundle: I18nBundle<CustomTranslationEntry> = {};
     try {
-        i18nBundle = JSON.parse(window.localStorage.getItem(I18N_BUNDLE_KEY) || '') as I18nBundle;
+        i18nBundle = JSON.parse(
+            window.localStorage.getItem(I18N_BUNDLE_KEY) || ''
+        ) as I18nBundle<CustomTranslationEntry>;
     } catch (e) {
         i18nBundle = {};
     }
@@ -49,12 +57,12 @@ export const translationInput = () => {
     };
     const onCreateNewEntry = (entry: TranslationEntry) => {
         if (!i18nBundle[entry.key.value]) {
-            i18nBundle[entry.key.value] = [entry];
+            i18nBundle[entry.key.value] = [{ ...entry, dummyPath: 'dddd' }];
             updateI18nBundle(i18nBundle);
             setI18nBundle({ ...i18nBundle });
         }
     };
-    const onShowExistingEntry = (entry: TranslationEntry) => {
+    const onShowExistingEntry = (entry: CustomTranslationEntry) => {
         const cell = document.querySelector(`div[data-i18n-key="${entry.key.value}"]`) as HTMLElement;
         (cell?.parentElement as HTMLElement).focus();
         setFocusVisibility(true, cell?.parentElement as HTMLElement);
