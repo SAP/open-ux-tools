@@ -248,9 +248,7 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
     for (const manifestPath of manifestPaths) {
         try {
             // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
-            if (pathMap[manifestPath] === null) {
-                pathMap[manifestPath] = await readJSON<Manifest>(manifestPath);
-            }
+            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
             const manifest = pathMap[manifestPath] as Manifest;
             if (!manifest['sap.app'] || !manifest['sap.app'].id || manifest['sap.app'].type !== 'application') {
                 continue;
@@ -300,9 +298,7 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
                 (path) => path.startsWith(dirname(extensionConfig) + sep) && basename(path) === FileName.Manifest
             );
             if (manifestPath) {
-                if (pathMap[manifestPath] === null) {
-                    pathMap[manifestPath] = await readJSON<Manifest>(manifestPath);
-                }
+                pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
                 manifest = pathMap[manifestPath] as Manifest;
             } else {
                 const manifests = await findBy({
@@ -336,9 +332,7 @@ async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
         try {
-            if (pathMap[manifestPath] === null) {
-                pathMap[manifestPath] = await readJSON<Manifest>(manifestPath);
-            }
+            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
             const manifest = pathMap[manifestPath] as Manifest;
             if (manifest['sap.app'] && manifest['sap.app'].type === 'library') {
                 const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath));
