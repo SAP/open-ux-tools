@@ -102,24 +102,31 @@ function logFullURL({ host, path, log }: { host: string; path?: string; log: Log
 }
 
 /**
- * Log a Gateway error.
+ * Log Gateway errors returned from the S_MGW_ODATA_INNER_ERROR table which is a store of OData Inner Error data. In certain flows,
+ * for example, when test mode is enabled, not all error details should be displayed to the user and need to be restricted.
  *
  * @param  options options
  * @param options.error error message returned from gateway
  * @param options.log logger to be used
  * @param options.host optional host name to pretty print links
+ * @param showAllMessages optional, show all errors but restrict for certain flows i.e. test mode
  */
-export function prettyPrintError({ error, log, host }: { error: ErrorMessage; log: Logger; host?: string }): void {
+export function prettyPrintError(
+    { error, log, host }: { error: ErrorMessage; log: Logger; host?: string },
+    showAllMessages = true
+): void {
     if (error) {
-        log.error(error.message?.value || 'An unknown error occurred.');
-        if (error.innererror) {
-            (error.innererror.errordetails || []).forEach((entry) => {
-                if (!entry.message.startsWith('<![CDATA')) {
-                    logLevel(entry.severity, entry.message, log, true);
-                }
-                logFullURL({ host, path: error['longtext_url'], log });
-            });
-            for (const key in error.innererror.Error_Resolution || {}) {
+        if (showAllMessages) {
+            log.error(error.message?.value || 'An unknown error occurred.');
+        }
+        (error.innererror?.errordetails || []).forEach((entry) => {
+            if (!entry.message.startsWith('<![CDATA')) {
+                logLevel(entry.severity, entry.message, log, true);
+            }
+            logFullURL({ host, path: error['longtext_url'], log });
+        });
+        if (showAllMessages && error.innererror?.Error_Resolution) {
+            for (const key in error.innererror.Error_Resolution) {
                 log.error(`${key}: ${error.innererror.Error_Resolution[key]}`);
             }
         }

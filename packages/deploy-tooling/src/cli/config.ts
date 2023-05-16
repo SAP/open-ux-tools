@@ -113,6 +113,7 @@ export async function mergeConfig(taskConfig: AbapDeployConfig, options: CliOpti
     const target = mergeTarget(taskConfig.target, options);
     const config: AbapDeployConfig = { app, target, credentials: taskConfig.credentials };
     config.test = mergeFlag(options.test, taskConfig.test);
+    config.safe = mergeFlag(options.safe, taskConfig.safe);
     config.keep = mergeFlag(options.keep, taskConfig.keep);
     config.strictSsl = mergeFlag(options.strictSsl, taskConfig.strictSsl);
     config.yes = mergeFlag(options.yes, taskConfig.yes);

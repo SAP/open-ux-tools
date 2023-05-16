@@ -78,6 +78,7 @@ async function getFileList(cwd: string): Promise<string[]> {
         cwd,
         dot,
         ignore: ignore().add(ignores),
+        mark: true,
         skip
     });
     return files;
