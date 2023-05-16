@@ -146,27 +146,12 @@ describe('Test getCapEnvironment', () => {
         jest.restoreAllMocks();
     });
 
-    test('without default property', async () => {
+    test('default export', async () => {
         const forSpy = jest.fn();
         jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => {
             return Promise.resolve({
                 env: {
                     for: forSpy
-                }
-            });
-        });
-        await getCapEnvironment('PROJECT_ROOT');
-        expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
-    });
-
-    test('default export', async () => {
-        const forSpy = jest.fn();
-        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => {
-            return Promise.resolve({
-                default: {
-                    env: {
-                        for: forSpy
-                    }
                 }
             });
         });

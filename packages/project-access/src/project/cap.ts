@@ -4,6 +4,21 @@ import type { CapCustomPaths, CapProjectType, CdsEnvironment, csn, Package } fro
 import { fileExists, readJSON } from '../file';
 import { loadModuleFromProject } from './module-loader';
 
+interface CdsFacade {
+    env: { for: (mode: string, path: string) => CdsEnvironment };
+    load: (paths: string | string[]) => Promise<csn>;
+    compile: {
+        to: {
+            serviceinfo: (model: csn, options?: { root?: string }) => ServiceInfo[];
+        };
+    };
+}
+
+interface ServiceInfo {
+    name: string;
+    urlPath: string;
+}
+
 /**
  * Returns true if the project is a CAP Node.js project.
  *
@@ -77,10 +92,8 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  *
  * @param projectRoot - CAP project root where package.json resides
  */
-export async function getCapModelAndServices(
-    projectRoot: string
-): Promise<{ model: csn; services: { name: string; urlPath: string }[] }> {
-    const cds = await loadModuleFromProject<any>(projectRoot, '@sap/cds');
+export async function getCapModelAndServices(projectRoot: string): Promise<{ model: csn; services: ServiceInfo[] }> {
+    const cds = await loadModuleFromProject<CdsFacade>(projectRoot, '@sap/cds');
     const capProjectPaths = await getCapCustomPaths(projectRoot);
     const modelPaths = [
         join(projectRoot, capProjectPaths.app),
@@ -103,7 +116,6 @@ export async function getCapModelAndServices(
  * @returns - environment config for CAP project
  */
 export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvironment> {
-    const cds = await loadModuleFromProject<any>(capProjectPath, '@sap/cds');
-    const facade = 'default' in cds ? cds.default : cds;
-    return facade.env.for('cds', capProjectPath);
+    const cds = await loadModuleFromProject<CdsFacade>(capProjectPath, '@sap/cds');
+    return cds.env.for('cds', capProjectPath);
 }
