@@ -1,11 +1,11 @@
 import { basename, dirname, join, parse, sep } from 'path';
 import type {
-    AllAdaptationResults,
+    AdaptationResults,
     AllAppResults,
-    AllExtensionResults,
-    AllLibraryResults,
+    ExtensionResults,
     FioriArtifactTypes,
     FoundFioriArtifacts,
+    LibraryResults,
     Manifest,
     Package,
     WorkspaceFolder
@@ -24,7 +24,7 @@ import { getWebappPath } from './ui5-config';
  */
 const filterFileMap: Record<FioriArtifactTypes, string> = {
     applications: FileName.Manifest,
-    adaptations: FileName.AdaptationConfig,
+    adaptations: FileName.ManifestAppDescrVar,
     extensions: FileName.ExtConfigJson,
     libraries: FileName.Manifest
 };
@@ -35,6 +35,10 @@ const filterFileMap: Record<FioriArtifactTypes, string> = {
  */
 type FileMapAndCache = { [path: string]: null | string | object };
 
+/**
+ * Default folders to exclude from search.
+ */
+const excludeFolders = ['.git', 'node_modules', 'dist'];
 /**
  * WorkspaceFolder type guard.
  *
@@ -268,13 +272,14 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as array of found adaptation projects.
  */
-async function filterAdaptations(pathMap: FileMapAndCache): Promise<AllAdaptationResults[]> {
-    const results: AllAdaptationResults[] = [];
-    const adaptationConfigs = Object.keys(pathMap).filter((path) =>
-        path.endsWith(join('/.adp', FileName.AdaptationConfig))
-    );
-    for (const adaptationConfig of adaptationConfigs) {
-        results.push({ appRoot: dirname(dirname(adaptationConfig)) });
+async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationResults[]> {
+    const results: AdaptationResults[] = [];
+    const manifestAppDescrVars = Object.keys(pathMap).filter((path) => path.endsWith(FileName.ManifestAppDescrVar));
+    for (const manifestAppDescrVar of manifestAppDescrVars) {
+        const adpPath = await findFileUp('.adp', dirname(manifestAppDescrVar));
+        if (adpPath && (await fileExists(join(adpPath, FileName.AdaptationConfig)))) {
+            results.push({ appRoot: dirname(adpPath) });
+        }
     }
     return results;
 }
@@ -285,11 +290,37 @@ async function filterAdaptations(pathMap: FileMapAndCache): Promise<AllAdaptatio
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
  * @returns - results as array of found extension projects.
  */
-async function filterExtensions(pathMap: FileMapAndCache): Promise<AllExtensionResults[]> {
-    const results: AllExtensionResults[] = [];
+async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResults[]> {
+    const results: ExtensionResults[] = [];
     const extensionConfigs = Object.keys(pathMap).filter((path) => basename(path) === FileName.ExtConfigJson);
     for (const extensionConfig of extensionConfigs) {
-        results.push({ appRoot: dirname(extensionConfig) });
+        try {
+            let manifest: Manifest | null = null;
+            let manifestPath = Object.keys(pathMap).find(
+                (path) => path.startsWith(dirname(extensionConfig) + sep) && basename(path) === FileName.Manifest
+            );
+            if (manifestPath) {
+                if (pathMap[manifestPath] === null) {
+                    pathMap[manifestPath] = await readJSON<Manifest>(manifestPath);
+                }
+                manifest = pathMap[manifestPath] as Manifest;
+            } else {
+                const manifests = await findBy({
+                    fileNames: [FileName.Manifest],
+                    root: dirname(extensionConfig),
+                    excludeFolders
+                });
+                if (manifests.length === 1) {
+                    [manifestPath] = manifests;
+                    manifest = await readJSON<Manifest>(manifestPath);
+                }
+            }
+            if (manifestPath && manifest) {
+                results.push({ appRoot: dirname(extensionConfig), manifest, manifestPath });
+            }
+        } catch {
+            // ignore exceptions for invalid manifests
+        }
     }
     return results;
 }
@@ -300,8 +331,8 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<AllExtensionR
  * @param pathMap - path to files
  * @returns - results as array of found library projects.
  */
-async function filterLibraries(pathMap: FileMapAndCache): Promise<AllLibraryResults[]> {
-    const results: AllLibraryResults[] = [];
+async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
+    const results: LibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
         try {
@@ -310,7 +341,11 @@ async function filterLibraries(pathMap: FileMapAndCache): Promise<AllLibraryResu
             }
             const manifest = pathMap[manifestPath] as Manifest;
             if (manifest['sap.app'] && manifest['sap.app'].type === 'library') {
-                results.push({ manifestPath: dirname(manifestPath), manifest });
+                const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath));
+                const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
+                if (projectRoot && (await fileExists(join(projectRoot, FileName.Ui5Yaml)))) {
+                    results.push({ projectRoot, manifestPath, manifest });
+                }
             }
         } catch {
             // ignore exceptions for invalid manifests
@@ -355,7 +390,7 @@ export async function findFioriArtifacts(options: {
             const foundFiles = await findBy({
                 fileNames,
                 root,
-                excludeFolders: ['.git', 'node_modules', 'dist']
+                excludeFolders
             });
             foundFiles.forEach((path) => (pathMap[path] = null));
         } catch {

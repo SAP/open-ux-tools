@@ -182,16 +182,28 @@ describe('Test findFioriArtifacts()', () => {
             { appRoot: join(testDataRoot, 'project/find-all-apps/adaptations/valid-adaptation') }
         ]);
         expect(result.extensions).toEqual([
-            { appRoot: join(testDataRoot, 'project/find-all-apps/extensions/valid-extension') }
+            {
+                appRoot: join(testDataRoot, 'project/find-all-apps/extensions/valid-extension'),
+                manifestPath: join(
+                    testDataRoot,
+                    'project/find-all-apps/extensions/valid-extension/webapp/manifest.json'
+                ),
+                manifest: {
+                    'sap.app': {
+                        'type': 'application'
+                    }
+                }
+            }
         ]);
         expect(result.libraries).toEqual([
             {
-                manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library'),
+                manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
                 manifest: {
                     'sap.app': {
                         'type': 'library'
                     }
-                }
+                },
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/valid-library')
             }
         ]);
     });
@@ -201,15 +213,64 @@ describe('Test findFioriArtifacts()', () => {
             wsFolders: [join(testDataRoot, 'project/find-all-apps/libraries')],
             artifacts: ['libraries']
         });
-        expect(result.applications?.length).toBeUndefined();
-        expect(result.adaptations?.length).toBeUndefined();
-        expect(result.extensions?.length).toBeUndefined();
+        expect(result.applications).toBeUndefined();
+        expect(result.adaptations).toBeUndefined();
+        expect(result.extensions).toBeUndefined();
         expect(result.libraries).toEqual([
             {
-                manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library'),
+                manifestPath: join(testDataRoot, 'project/find-all-apps/libraries/valid-library/src/manifest.json'),
                 manifest: {
                     'sap.app': {
                         'type': 'library'
+                    }
+                },
+                projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/valid-library')
+            }
+        ]);
+    });
+
+    test('Find all extensions without cached manifest', async () => {
+        const result = await findFioriArtifacts({
+            wsFolders: [join(testDataRoot, 'project/find-all-apps/extensions')],
+            artifacts: ['extensions']
+        });
+        expect(result.applications).toBeUndefined();
+        expect(result.adaptations).toBeUndefined();
+        expect(result.libraries).toBeUndefined();
+        expect(result.extensions).toEqual([
+            {
+                appRoot: join(testDataRoot, 'project/find-all-apps/extensions/valid-extension'),
+                manifestPath: join(
+                    testDataRoot,
+                    'project/find-all-apps/extensions/valid-extension/webapp/manifest.json'
+                ),
+                manifest: {
+                    'sap.app': {
+                        'type': 'application'
+                    }
+                }
+            }
+        ]);
+    });
+
+    test('Find all extensions and libraries, libraries have no result', async () => {
+        const result = await findFioriArtifacts({
+            wsFolders: [join(testDataRoot, 'project/find-all-apps/extensions')],
+            artifacts: ['libraries', 'extensions']
+        });
+        expect(result.applications).toBeUndefined();
+        expect(result.adaptations).toBeUndefined();
+        expect(result.libraries?.length).toBe(0);
+        expect(result.extensions).toEqual([
+            {
+                appRoot: join(testDataRoot, 'project/find-all-apps/extensions/valid-extension'),
+                manifestPath: join(
+                    testDataRoot,
+                    'project/find-all-apps/extensions/valid-extension/webapp/manifest.json'
+                ),
+                manifest: {
+                    'sap.app': {
+                        'type': 'application'
                     }
                 }
             }
