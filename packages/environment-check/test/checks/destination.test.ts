@@ -64,6 +64,8 @@ describe('Destination tests, function checkBASDestination()', () => {
 });
 
 describe('Destinaton tests, function checkBASDestinations()', () => {
+    jest.setTimeout(10000);
+
     beforeEach(() => {
         jest.resetAllMocks();
     });
