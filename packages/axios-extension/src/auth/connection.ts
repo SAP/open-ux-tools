@@ -1,4 +1,5 @@
-import { AxiosResponse, AxiosRequestConfig, AxiosError, InternalAxiosRequestConfig, AxiosHeaders } from 'axios';
+import { AxiosHeaders } from 'axios';
+import type { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
 import detectContentType from 'detect-content-type';
 

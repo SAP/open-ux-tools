@@ -1,5 +1,6 @@
 import { ServiceInfo } from '@sap-ux/btp-utils';
-import { Axios, AxiosHeaders, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { AxiosHeaders } from 'axios';
+import type { Axios, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import type { ServiceProvider } from '../base/service-provider';
 import type { AbapServiceProvider } from '../abap';
 import { getReentranceTicket } from './reentrance-ticket';

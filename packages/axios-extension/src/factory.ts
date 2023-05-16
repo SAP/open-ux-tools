@@ -210,12 +210,14 @@ export function createForDestination(
 
     // resolve destination service user on first request if required
     if (destinationServiceInstance) {
-        const oneTimeReqInterceptorId = provider.interceptors.request.use(async (request: InternalAxiosRequestConfig) => {
-            const credentials = await getCredentialsForDestinationService(destinationServiceInstance);
-            provider.defaults.headers.common[BAS_DEST_INSTANCE_CRED_HEADER] = credentials;
-            provider.interceptors.request.eject(oneTimeReqInterceptorId);
-            return request;
-        });
+        const oneTimeReqInterceptorId = provider.interceptors.request.use(
+            async (request: InternalAxiosRequestConfig) => {
+                const credentials = await getCredentialsForDestinationService(destinationServiceInstance);
+                provider.defaults.headers.common[BAS_DEST_INSTANCE_CRED_HEADER] = credentials;
+                provider.interceptors.request.eject(oneTimeReqInterceptorId);
+                return request;
+            }
+        );
     }
 
     return provider;
