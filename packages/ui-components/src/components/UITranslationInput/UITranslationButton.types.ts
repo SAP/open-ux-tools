@@ -34,14 +34,14 @@ export interface TranslationEntry {
     value: TranslationEntryValue;
 }
 
-export type I18nBundle = Record<string, TranslationEntry[]>;
+export type I18nBundle<T extends TranslationEntry = TranslationEntry> = Record<string, T[]>;
 
-export interface UITranslationProps {
+export interface UITranslationProps<T extends TranslationEntry> {
     value?: string;
     id: string;
     disabled?: boolean;
     // When entry exists in passed i18n entries and user clicked on show entry button
-    onShowExistingEntry?: (entry: TranslationEntry) => void;
+    onShowExistingEntry?: (entry: T) => void;
     // When creation of new i18n entry is requested
     onCreateNewEntry?: (entry: TranslationEntry) => void;
     // Loader indicator
@@ -62,15 +62,27 @@ export enum SuggestValueType {
     New = 'New'
 }
 
-export interface TranslationSuggestValue {
-    entry: TranslationEntry;
+export type TranslationSuggestValue<T extends TranslationEntry> =
+    | TranslationSuggestValueNew
+    | TranslationSuggestValueExisting<T>;
+
+interface TranslationSuggestValueBase {
     icon?: UiIcons;
-    type: SuggestValueType;
     i18n?: string;
 }
 
-export interface TranslationSuggest {
+export interface TranslationSuggestValueNew extends TranslationSuggestValueBase {
+    entry: TranslationEntry;
+    type: SuggestValueType.New;
+}
+
+export interface TranslationSuggestValueExisting<T extends TranslationEntry> extends TranslationSuggestValueBase {
+    entry: T;
+    type: SuggestValueType.Existing | SuggestValueType.Update;
+}
+
+export interface TranslationSuggest<T extends TranslationEntry> {
     tooltip: string;
     message?: React.ReactElement;
-    suggest?: TranslationSuggestValue;
+    suggest?: TranslationSuggestValue<T>;
 }
