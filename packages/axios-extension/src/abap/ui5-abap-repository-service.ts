@@ -410,7 +410,7 @@ export class Ui5AbapRepositoryService extends ODataService {
      * @param data string value
      * @returns undefined if an error object is not found or populated ErrorMessage object
      */
-    protected getErrorMessageFromString(data: string): ErrorMessage | undefined {
+    protected getErrorMessageFromString(data: string | unknown): ErrorMessage | undefined {
         let error;
         if (typeof data === 'string') {
             try {
