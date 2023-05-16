@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.5.1
+
+### Patch Changes
+
+-   6b26d421: UITranslationInput. Generic type for "entries" property("I18nBundle" type) - generic type is used as parameter when "onShowExistingEntry" is called.
+
 ## 1.5.0
 
 ### Minor Changes
