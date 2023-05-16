@@ -19,6 +19,28 @@ This is the minimal configuration for deployment to `$TMP` without the change be
       url: https://target.example
 ```
 
+#### Configuration with logging enabled
+Set the level of detail for log messages, default is `Info`;
+```json
+Error = 0,
+Warn = 1,
+Info = 2,
+Verbose = 3,
+Debug = 4,
+Silly = 5
+```
+Configuration example:
+```yaml
+- name: abap-deploy-task
+  configuration:
+    log: 5
+    app:
+      name: Z_TEST
+      package: $TMP
+    target:
+      url: https://target.example
+```
+
 ## CLI
 The module also exposes the two commands `deploy` and `undeploy`. 
 

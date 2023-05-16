@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { getFclConfig, extendPageJSON } from './common';
+import { getFclConfig, extendPageJSON, initializeTargetSettings } from './common';
 import type { Manifest } from '../common/types';
 import type { ObjectPage, InternalObjectPage } from './types';
 
@@ -11,11 +11,13 @@ import type { ObjectPage, InternalObjectPage } from './types';
  * @returns enhanced configuration
  */
 function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
-    const config: InternalObjectPage = { settings: {}, ...data, name: 'ObjectPage', ...getFclConfig(manifest) };
+    const config: InternalObjectPage = {
+        ...data,
+        settings: initializeTargetSettings(data, data.settings),
+        name: 'ObjectPage',
+        ...getFclConfig(manifest)
+    };
 
-    // move settings into correct possition in the manifest
-    config.settings.entitySet = data.entity;
-    config.settings.navigation = {};
     // use standard file name if i18n enhancement required
     if (config.settings.enhanceI18n === true) {
         config.settings.enhanceI18n = `i18n/custom${config.entity}${config.name}.properties`;

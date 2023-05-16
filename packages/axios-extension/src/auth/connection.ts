@@ -36,7 +36,7 @@ export class Cookies {
      */
     public addCookie(cookieString: string): Cookies {
         const cookie = cookieString.split(';');
-        const [key, ...values] = cookie[0]?.split('=');
+        const [key, ...values] = cookie[0]?.split('=') || [];
         const value = values?.join('='); // Account for embedded '=' in the value
         if (key && cookieString.indexOf('Max-Age=0') >= 0) {
             delete this.cookies[key];
@@ -138,7 +138,6 @@ export function attachConnectionHandler(provider: ServiceProvider) {
     const oneTimeReqInterceptorId = provider.interceptors.request.use((request: InternalAxiosRequestConfig) => {
         request.headers = request.headers ?? new AxiosHeaders();
         request.headers[CSRF.RequestHeaderName] = CSRF.RequestHeaderValue;
-        provider.interceptors.request.eject(oneTimeReqInterceptorId);
         return request;
     });
 
@@ -156,6 +155,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                 if (response.headers?.[CSRF.ResponseHeaderName]) {
                     provider.defaults.headers.common[CSRF.RequestHeaderName] =
                         response.headers[CSRF.ResponseHeaderName];
+                    provider.interceptors.request.eject(oneTimeReqInterceptorId);
                 }
                 provider.interceptors.response.eject(oneTimeRespInterceptorId);
                 return response;
@@ -167,6 +167,7 @@ export function attachConnectionHandler(provider: ServiceProvider) {
                 if (error.response.headers?.[CSRF.ResponseHeaderName]) {
                     provider.defaults.headers.common[CSRF.RequestHeaderName] =
                         error.response.headers[CSRF.ResponseHeaderName];
+                    provider.interceptors.request.eject(oneTimeReqInterceptorId);
                 }
                 provider.cookies.setCookies(error.response);
             }

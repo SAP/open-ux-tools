@@ -1,5 +1,23 @@
 # @sap-ux/axios-extension
 
+## 1.2.3
+
+### Patch Changes
+
+-   31eb27c4: Only eject the fetch request interceptor when a valid csrf token is received
+
+## 1.2.2
+
+### Patch Changes
+
+-   fa94bfd6: Only eject the fetch request interceptor when a valid csrf token is received
+
+## 1.2.1
+
+### Patch Changes
+
+-   3d3d8c64: Fixes for unsage usage of optional chaining sonar bugs
+
 ## 1.2.0
 
 ### Minor Changes

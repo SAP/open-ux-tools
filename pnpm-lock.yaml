@@ -193,7 +193,7 @@ importers:
       prompts: 2.4.2
       proxy-from-env: 1.1.0
       supertest: 6.3.2
-      yaml: 2.0.0-10
+      yaml: 2.2.2
     dependencies:
       '@sap-ux/axios-extension': link:../axios-extension
       '@sap-ux/btp-utils': link:../btp-utils
@@ -215,7 +215,7 @@ importers:
       express: 4.18.2
       nock: 13.2.4
       supertest: 6.3.2
-      yaml: 2.0.0-10
+      yaml: 2.2.2
 
   packages/btp-utils:
     specifiers:
@@ -725,7 +725,7 @@ importers:
       nock: 13.2.4
       proxy-from-env: 1.1.0
       supertest: 6.3.2
-      yaml: 2.0.0-10
+      yaml: 2.2.2
     dependencies:
       '@sap-ux/logger': link:../logger
       '@sap-ux/ui5-config': link:../ui5-config
@@ -742,7 +742,7 @@ importers:
       express: 4.18.2
       nock: 13.2.4
       supertest: 6.3.2
-      yaml: 2.0.0-10
+      yaml: 2.2.2
 
   packages/ui5-test-writer:
     specifiers:
@@ -774,10 +774,10 @@ importers:
       '@types/i18next-fs-backend': 1.0.0
       '@types/lodash': 4.14.176
       lodash: 4.17.21
-      yaml: 2.0.0-10
+      yaml: 2.2.2
     dependencies:
       lodash: 4.17.21
-      yaml: 2.0.0-10
+      yaml: 2.2.2
     devDependencies:
       '@types/i18next-fs-backend': 1.0.0
       '@types/lodash': 4.14.176
@@ -5604,12 +5604,12 @@ packages:
       acorn: 7.4.1
     dev: true
 
-  /acorn-jsx/5.3.2_acorn@8.8.0:
+  /acorn-jsx/5.3.2_acorn@8.8.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
-      acorn: 8.8.0
+      acorn: 8.8.2
     dev: true
 
   /acorn-walk/7.2.0:
@@ -5630,12 +5630,6 @@ packages:
 
   /acorn/7.4.1:
     resolution: {integrity: sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-    dev: true
-
-  /acorn/8.8.0:
-    resolution: {integrity: sha512-QOxyigPVrpZ2GXT+PFyZTl6TtOFc5egxHIP9IlQ+RbupQuX4RkT/Bee4/kQuC02Xkzg84JcT7oLYtDIQxp+v7w==}
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: true
@@ -9091,8 +9085,8 @@ packages:
     resolution: {integrity: sha512-DQmnRpLj7f6TgN/NYb0MTzJXL+vJF9h3pHy4JhCIs3zwcgez8xmGg3sXHcEO97BrmO2OSvCwMdfdlyl+E9KjOw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dependencies:
-      acorn: 8.8.0
-      acorn-jsx: 5.3.2_acorn@8.8.0
+      acorn: 8.8.2
+      acorn-jsx: 5.3.2_acorn@8.8.2
       eslint-visitor-keys: 3.3.0
     dev: true
 
@@ -17236,9 +17230,9 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /yaml/2.0.0-10:
-    resolution: {integrity: sha512-FHV8s5ODFFQXX/enJEU2EkanNl1UDBUz8oa4k5Qo/sR+Iq7VmhCDkRMb0/mjJCNeAWQ31W8WV6PYStDE4d9EIw==}
-    engines: {node: '>= 12'}
+  /yaml/2.2.2:
+    resolution: {integrity: sha512-CBKFWExMn46Foo4cldiChEzn7S7SRV+wqiluAb6xmueD/fGyRHIhX8m14vVGgeFWjN540nKCNVj6P21eQjgTuA==}
+    engines: {node: '>= 14'}
 
   /yamljs/0.3.0:
     resolution: {integrity: sha512-C/FsVVhht4iPQYXOInoxUM/1ELSf9EsgKH34FofQOp6hwCPrW4vG4w5++TED3xRUo8gD7l0P1J1dLlDYzODsTQ==}

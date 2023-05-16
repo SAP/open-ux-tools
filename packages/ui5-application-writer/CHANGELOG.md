@@ -1,5 +1,19 @@
 # @sap-ux/ui5-application-writer
 
+## 0.21.1
+
+### Patch Changes
+
+-   100248f3: fix(security): upgrade yaml
+-   Updated dependencies [100248f3]
+    -   @sap-ux/ui5-config@0.16.6
+
+## 0.21.0
+
+### Minor Changes
+
+-   e39c14d7: Add configuration option generateIndex to toggle the generation of index.html
+
 ## 0.20.0
 
 ### Minor Changes

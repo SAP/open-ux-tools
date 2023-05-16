@@ -1,5 +1,6 @@
 import type { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { prettyPrintError, prettyPrintMessage } from './message';
+import type { ErrorMessage } from './message';
 import { ODataService } from '../base/odata-service';
 import { isAxiosError } from '../base/odata-request-error';
 
@@ -126,8 +127,11 @@ export class Ui5AbapRepositoryService extends ODataService {
             const response = await this.get<AppInfo>(`/Repositories('${encodeURIComponent(app)}')`);
             return response.odata();
         } catch (error) {
-            this.log.debug(`Retrieving application ${app}, error found ${error}`);
-            return undefined;
+            this.log.debug(`Retrieving application ${app}, ${error}`);
+            if (isAxiosError(error) && error.response?.status === 404) {
+                return undefined;
+            }
+            throw error;
         }
     }
 
@@ -158,12 +162,20 @@ export class Ui5AbapRepositoryService extends ODataService {
             if (response?.headers?.['sap-message']) {
                 prettyPrintMessage({ msg: response.headers['sap-message'], log: this.log, host: frontendUrl });
             }
-            // log url of created/updated app
-            const path = '/sap/bc/ui5_ui5' + (!bsp.name.startsWith('/') ? '/sap/' : '') + bsp.name.toLowerCase();
-            const query = this.defaults.params?.['sap-client']
-                ? '?sap-client=' + this.defaults.params['sap-client']
-                : '';
-            this.log.info(`App available at ${frontendUrl}${path}${query}`);
+            if (!testMode) {
+                // log url of created/updated app
+                const path = '/sap/bc/ui5_ui5' + (!bsp.name.startsWith('/') ? '/sap/' : '') + bsp.name.toLowerCase();
+                const query = this.defaults.params?.['sap-client']
+                    ? '?sap-client=' + this.defaults.params['sap-client']
+                    : '';
+                this.log.info(`App available at ${frontendUrl}${path}${query}`);
+            } else {
+                prettyPrintError({
+                    error: this.getErrorMessageFromString(response?.data),
+                    log: this.log,
+                    host: frontendUrl
+                });
+            }
             return response;
         } catch (error) {
             this.logError({ error, host: frontendUrl });
@@ -326,7 +338,8 @@ export class Ui5AbapRepositoryService extends ODataService {
                 return response;
             }
         } catch (error) {
-            if (error?.response?.status === 504) {
+            // Known ABAP timeout exception codes should re-trigger a deployment again to confirm the app was deployed
+            if ([504, 408].includes(error?.response?.status)) {
                 // Kill the flow after three attempts
                 if (tryCount >= 3) {
                     throw error;
@@ -382,19 +395,33 @@ export class Ui5AbapRepositoryService extends ODataService {
     protected logError({ error, host }: { error: Error; host?: string }): void {
         this.log.error(error.message);
         if (isAxiosError(error) && error.response?.data) {
-            let responseData = error.response.data;
-            if (typeof error.response.data === 'string') {
-                try {
-                    responseData = JSON.parse(error.response.data);
-                } catch {
-                    // Not much we can do!
-                }
-            }
-            if (responseData?.['error']) {
-                prettyPrintError({ error: responseData['error'], host, log: this.log });
+            const errorMessage = this.getErrorMessageFromString(error.response?.data);
+            if (errorMessage) {
+                prettyPrintError({ error: errorMessage, host, log: this.log });
             } else {
                 this.log.error(error.response.data.toString());
             }
         }
+    }
+
+    /**
+     * Get ErrorMessage object from response contain an error as a string.
+     *
+     * @param data string value
+     * @returns undefined if an error object is not found or populated ErrorMessage object
+     */
+    protected getErrorMessageFromString(data: string): ErrorMessage | undefined {
+        let error;
+        if (typeof data === 'string') {
+            try {
+                const errorMsg = JSON.parse(data);
+                if (errorMsg.error) {
+                    error = errorMsg.error as ErrorMessage;
+                }
+            } catch {
+                // Not much we can do!
+            }
+        }
+        return error;
     }
 }
