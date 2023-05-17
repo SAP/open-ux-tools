@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.4.0
+
+### Minor Changes
+
+-   f50c3517: Add getCapEnvironment() to allow getting project specific configuration
+
 ## 1.3.1
 
 ### Patch Changes

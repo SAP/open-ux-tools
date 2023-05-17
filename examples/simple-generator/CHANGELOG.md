@@ -1,5 +1,12 @@
 # @sap-ux/generator-simple-fe
 
+## 0.2.101
+
+### Patch Changes
+
+-   Updated dependencies [aeba5509]
+    -   @sap-ux/axios-extension@1.2.4
+
 ## 0.2.100
 
 ### Patch Changes

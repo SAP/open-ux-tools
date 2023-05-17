@@ -170,11 +170,15 @@ export class Ui5AbapRepositoryService extends ODataService {
                     : '';
                 this.log.info(`App available at ${frontendUrl}${path}${query}`);
             } else {
-                prettyPrintError({
-                    error: this.getErrorMessageFromString(response?.data),
-                    log: this.log,
-                    host: frontendUrl
-                });
+                // Test mode returns a HTTP response code of 403 so we dont want to show all error messages
+                prettyPrintError(
+                    {
+                        error: this.getErrorMessageFromString(response?.data),
+                        log: this.log,
+                        host: frontendUrl
+                    },
+                    false
+                );
             }
             return response;
         } catch (error) {
