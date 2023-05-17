@@ -12,26 +12,9 @@ const testDir = join(__dirname, 'sample/subsection');
 
 describe('SubCustomSection generateCustomSubSection', () => {
     let fs: Editor;
-    // Prepare manifest for sub sections scenario by enhancing manifest for sections
+    // Prepare manifest for sub sections scenario by reusing manifest from sections
     const manifest = JSON.parse(JSON.stringify(manifestSections));
-    manifest['sap.ui5'].routing.targets.sample.options.settings.content.body.sections = {
-        'ExistingFacet1': {
-            'visible': true
-        },
-        'ExistingFacet2': {
-            'visible': true,
-            'subSections': {
-                'ExistingCustomSubSection': {
-                    'template': 'sapux.fe.fpm.writer.test.extensions.custom.Custom1',
-                    'position': {
-                        'anchor': 'IncidentOverviewFacet',
-                        'placement': 'Before'
-                    },
-                    'title': 'Custom Title'
-                }
-            }
-        }
-    };
+    manifest['sap.ui5'].routing.targets.sample.options.settings.content.body.sections = {};
     // Basic custom sub section object
     const customSubSection: CustomSubSection = {
         target: 'sample',
@@ -87,6 +70,26 @@ describe('SubCustomSection generateCustomSubSection', () => {
         }
     ];
     test.each(existingParentSectionTestCases)('$name', ({ parentSection }) => {
+        // Prepare manifest by adding existing sections
+        const manifestTemp = JSON.parse(JSON.stringify(manifest));
+        manifestTemp['sap.ui5'].routing.targets.sample.options.settings.content.body.sections = {
+            'ExistingFacet1': {
+                'visible': true
+            },
+            'ExistingFacet2': {
+                'visible': true,
+                'subSections': {
+                    'ExistingCustomSubSection': {
+                        'template': 'sapux.fe.fpm.writer.test.extensions.custom.Custom1',
+                        'position': {
+                            'anchor': 'IncidentOverviewFacet',
+                            'placement': 'Before'
+                        },
+                        'title': 'Custom Title'
+                    }
+                }
+            }
+        };
         const testCustomSubSection: CustomSubSection = {
             ...customSubSection,
             parentSection
