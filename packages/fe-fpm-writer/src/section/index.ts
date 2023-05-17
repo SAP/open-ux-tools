@@ -17,13 +17,12 @@ type CustomSectionUnion = CustomSection | CustomSubSection;
 /**
  * Get the template folder for the given UI5 version.
  *
+ * @param folderName template folder name.
  * @param ui5Version required UI5 version.
- * @param subSection requested template is for sub section.
  * @returns path to the template folder containing the manifest.json ejs template
  */
-export function getManifestRoot(ui5Version?: string, subSection = false): string {
+export function getManifestRoot(folderName: string, ui5Version?: string): string {
     const minVersion = coerce(ui5Version);
-    const folderName = subSection ? 'subsection' : 'section';
     if (!minVersion || gte(minVersion, '1.86.0')) {
         return getTemplatePath(`/${folderName}/1.86`);
     } else {
@@ -78,10 +77,16 @@ function enhanceConfig(
  *
  * @param {string} basePath - the base path
  * @param {CustomSection} customSection - the custom section configuration
+ * @param {string} manifestTemplateRoot - path to the template folder containing the manifest.json ejs template
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-function generate(basePath: string, customSection: CustomSectionUnion, fs?: Editor): Editor {
+function generate(
+    basePath: string,
+    customSection: CustomSectionUnion,
+    manifestTemplateRoot: string,
+    fs?: Editor
+): Editor {
     validateVersion(customSection.minUI5Version);
     if (!fs) {
         fs = create(createStorage());
@@ -95,9 +100,7 @@ function generate(basePath: string, customSection: CustomSectionUnion, fs?: Edit
     const completeSection = enhanceConfig(fs, customSection, manifestPath, manifest);
 
     // enhance manifest with section definition
-    const isSubsection = 'parentSection' in completeSection;
-    const manifestRoot = getManifestRoot(customSection.minUI5Version, isSubsection);
-    const filledTemplate = render(fs.read(join(manifestRoot, `manifest.json`)), completeSection, {});
+    const filledTemplate = render(fs.read(join(manifestTemplateRoot, `manifest.json`)), completeSection, {});
     extendJSON(fs, {
         filepath: manifestPath,
         content: filledTemplate,
@@ -122,7 +125,8 @@ function generate(basePath: string, customSection: CustomSectionUnion, fs?: Edit
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
 export function generateCustomSection(basePath: string, customSection: CustomSection, fs?: Editor): Editor {
-    return generate(basePath, customSection, fs);
+    const manifestRoot = getManifestRoot('section', customSection.minUI5Version);
+    return generate(basePath, customSection, manifestRoot, fs);
 }
 
 /**
@@ -134,5 +138,6 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
 export function generateCustomSubSection(basePath: string, customSection: CustomSubSection, fs?: Editor): Editor {
-    return generate(basePath, customSection, fs);
+    const manifestRoot = getManifestRoot('subsection', customSection.minUI5Version);
+    return generate(basePath, customSection, manifestRoot, fs);
 }
