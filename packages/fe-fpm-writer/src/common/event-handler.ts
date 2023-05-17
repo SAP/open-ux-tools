@@ -43,7 +43,7 @@ export const contextParameter: EventHandlerTypescriptParameters = {
  * @param controllerSuffix - append controller suffix to new file
  * @param typescript - create Typescript file instead of Javascript
  * @param parameters - parameter configurations for the event handler
- * @param defaultConfig - default path to the template without the extension, default functionName
+ * @param templatePath - path to the template without the extension
  * @returns {string} full namespace path to method
  */
 export function applyEventHandlerConfiguration(
@@ -53,16 +53,16 @@ export function applyEventHandlerConfiguration(
     controllerSuffix = false,
     typescript?: boolean,
     parameters: EventHandlerTypescriptParameters = defaultParameter,
-    defaultConfig = { templatePath: 'common/EventHandler', fnName: 'onPress' }
+    templatePath = 'common/EventHandler'
 ): string {
     if (typeof eventHandler === 'string') {
         // Existing event handler is passed - no need for file creation/update
         return eventHandler;
     }
     // New event handler function name - 'onPress' is default
-    let eventHandlerFnName = defaultConfig.fnName;
+    let { eventHandlerFnName } = { eventHandlerFnName: 'onPress', ...config };
     let insertScript: TextFragmentInsertion | undefined;
-    // By default - use config name for js file name
+    // By default - use config name for created file name
     let fileName = config.name;
     if (typeof eventHandler === 'object') {
         if (eventHandler.fnName) {
@@ -78,7 +78,7 @@ export function applyEventHandlerConfiguration(
     const ext = typescript ? 'ts' : 'js';
     const controllerPath = join(config.path || '', `${fileName}${controllerSuffix ? '.controller' : ''}.${ext}`);
     if (!fs.exists(controllerPath)) {
-        fs.copyTpl(getTemplatePath(`${defaultConfig.templatePath}.${ext}`), controllerPath, {
+        fs.copyTpl(getTemplatePath(`${templatePath}.${ext}`), controllerPath, {
             eventHandlerFnName,
             parameters,
             ...config

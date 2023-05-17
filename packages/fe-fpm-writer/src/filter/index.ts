@@ -30,6 +30,8 @@ function enhanceConfig(data: CustomFilter, manifestPath: string, manifest: Manif
     config.required = config.required || false;
     config.typescript = !!config.typescript;
     config.fragmentFile = config.fragmentFile || config.name;
+    config.eventHandlerFnName =
+        (typeof config.eventHandler === 'object' && config.eventHandler.fnName) || 'itemsFilter';
 
     return config as InternalCustomFilter;
 }
@@ -61,7 +63,7 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
             false,
             config.typescript,
             contextParameter,
-            { templatePath: 'filter/Controller', fnName: 'itemsFilter' }
+            'filter/Controller'
         );
     } else {
         // create a controller file
