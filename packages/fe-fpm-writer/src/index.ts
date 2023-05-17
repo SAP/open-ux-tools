@@ -7,7 +7,7 @@ export { generateCustomAction } from './action';
 export { CustomTableColumn } from './column/types';
 export { generateCustomColumn } from './column';
 
-export { CustomSection } from './section/types';
+export { CustomSection, CustomSubSection } from './section/types';
 export { generateCustomSection, generateCustomSubSection } from './section';
 
 export { CustomView } from './view/types';
