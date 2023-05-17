@@ -206,7 +206,7 @@ async function handleAxiosError(
             );
             logger.info('Please enter your credentials for this deployment.');
             const credentials = await promptCredentials(service.defaults.auth?.username);
-            if (credentials) {
+            if (Object.keys(credentials).length) {
                 service.defaults.auth = credentials;
                 await tryDeploy(archive, service, config, logger);
                 return true;

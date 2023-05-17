@@ -3,15 +3,20 @@ import type { ReactElement } from 'react';
 import { UIDefaultButton } from '../UIButton';
 import { UICallout, UICalloutContentPadding } from '../UICallout';
 import { UiIcons } from '../Icons';
-import type { UITranslationProps, TranslationInputStrings, TranslationSuggest } from './UITranslationButton.types';
+import type {
+    UITranslationProps,
+    TranslationInputStrings,
+    TranslationSuggest,
+    TranslationEntry
+} from './UITranslationButton.types';
 import { SuggestValueType } from './UITranslationButton.types';
 import { UILoadButton } from './UILoadButton';
 
 import './UITranslationInput.scss';
 
-export interface UITranslationButtonProps extends UITranslationProps {
+export interface UITranslationButtonProps<T extends TranslationEntry> extends UITranslationProps<T> {
     onUpdateValue?: (value: string) => void;
-    suggestion: TranslationSuggest;
+    suggestion: TranslationSuggest<T>;
 }
 
 /**
@@ -32,7 +37,7 @@ const getStringText = (property: keyof TranslationInputStrings, strings?: Transl
  * @param props Component properties.
  * @returns Component to render translation button with callout.
  */
-export function UITranslationButton(props: UITranslationButtonProps): ReactElement {
+export const UITranslationButton = <T extends TranslationEntry>(props: UITranslationButtonProps<T>): ReactElement => {
     const { id, strings, value, onCreateNewEntry, onUpdateValue, onShowExistingEntry, busy, suggestion } = props;
     const [isCalloutVisible, setCalloutVisible] = useState(false);
     // Callbacks
@@ -100,4 +105,4 @@ export function UITranslationButton(props: UITranslationButtonProps): ReactEleme
             )}
         </div>
     );
-}
+};

@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.2.4
+
+### Patch Changes
+
+-   aeba5509: Better error logging when test mode is enabled
+
+## 1.2.3
+
+### Patch Changes
+
+-   31eb27c4: Only eject the fetch request interceptor when a valid csrf token is received
+
 ## 1.2.2
 
 ### Patch Changes
