@@ -12900,7 +12900,8 @@ Object {
         [
             \\"transform-ui5\\",
             {
-                \\"addControllerStaticPropsToExtend\\": true
+                \\"addControllerStaticPropsToExtend\\": true,
+                \\"overridesToOverride\\": true
             }
         ],
         \\"@babel/preset-typescript\\"
@@ -12964,7 +12965,6 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"babel-preset-transform-ui5\\": \\"~7.1.4\\",
     \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
@@ -16266,7 +16266,8 @@ Object {
         [
             \\"transform-ui5\\",
             {
-                \\"addControllerStaticPropsToExtend\\": true
+                \\"addControllerStaticPropsToExtend\\": true,
+                \\"overridesToOverride\\": true
             }
         ],
         \\"@babel/preset-typescript\\"
@@ -16330,7 +16331,6 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
-    \\"babel-preset-transform-ui5\\": \\"~7.1.4\\",
     \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
