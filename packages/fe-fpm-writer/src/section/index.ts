@@ -133,11 +133,11 @@ export function generateCustomSection(basePath: string, customSection: CustomSec
  * Add a custom sub section to an existing UI5 application.
  *
  * @param {string} basePath - the base path
- * @param {CustomSection} customSection - the custom section configuration
+ * @param {CustomSubSection} customSubSection - the custom sub section configuration
  * @param {Editor} [fs] - the mem-fs editor instance
  * @returns {Promise<Editor>} the updated mem-fs editor instance
  */
-export function generateCustomSubSection(basePath: string, customSection: CustomSubSection, fs?: Editor): Editor {
-    const manifestRoot = getManifestRoot('subsection', customSection.minUI5Version);
-    return generate(basePath, customSection, manifestRoot, fs);
+export function generateCustomSubSection(basePath: string, customSubSection: CustomSubSection, fs?: Editor): Editor {
+    const manifestRoot = getManifestRoot('subsection', customSubSection.minUI5Version);
+    return generate(basePath, customSubSection, manifestRoot, fs);
 }
