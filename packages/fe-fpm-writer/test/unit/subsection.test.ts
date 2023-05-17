@@ -90,6 +90,7 @@ describe('SubCustomSection generateCustomSubSection', () => {
                 }
             }
         };
+        fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifestTemp));
         const testCustomSubSection: CustomSubSection = {
             ...customSubSection,
             parentSection
