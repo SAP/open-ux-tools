@@ -4,6 +4,7 @@ export {
     findProjectRoot,
     getAppRootFromWebappPath,
     getAppProgrammingLanguage,
+    getCapEnvironment,
     getCapModelAndServices,
     getCapProjectType,
     getWebappPath,
