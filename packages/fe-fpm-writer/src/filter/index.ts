@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomFilter, InternalCustomFilter } from './types';
+import type { CustomFilter, InternalCustomFilter, PageOptions } from './types';
 import { join } from 'path';
 import { render } from 'ejs';
 import { validateBasePath } from '../common/validate';
@@ -11,6 +11,7 @@ import { getTemplatePath } from '../templates';
 import { getJsonSpace } from '../common/file';
 import { applyEventHandlerConfiguration, contextParameter } from '../common/event-handler';
 import type { FilterField } from '../building-block/types';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Enhances the provided custom filter configuration with default data.
@@ -30,8 +31,12 @@ function enhanceConfig(data: CustomFilter, manifestPath: string, manifest: Manif
     config.required = config.required || false;
     config.typescript = !!config.typescript;
     config.fragmentFile = config.fragmentFile || config.name;
-    config.eventHandlerFnName =
-        (typeof config.eventHandler === 'object' && config.eventHandler.fnName) || 'itemsFilter';
+    if (config.eventHandler === true) {
+        config.eventHandler = {};
+    }
+    if (typeof config.eventHandler === 'object' && !config.eventHandler.fnName) {
+        config.eventHandler.fnName = 'filterItems';
+    }
 
     return config as InternalCustomFilter;
 }
@@ -92,10 +97,10 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
  * @param {Manifest} manifest - the application manifest
  * @returns Filters object of the first page
  */
-function enhanceManifestAndGetFiltersReference(manifest: Manifest): FilterField[] {
+function enhanceManifestAndGetFiltersReference(manifest: Manifest): FilterField | {} {
     if (manifest['sap.ui5'] && manifest['sap.ui5'].routing && manifest['sap.ui5'].routing.targets) {
         const pages = manifest['sap.ui5'].routing.targets;
-        const lrPage = Object.values(pages)[0] as any;
+        const lrPage: ManifestNamespace.Target & PageOptions = Object.values(pages)[0];
         lrPage.options ||= {};
         lrPage.options.settings ||= {};
         lrPage.options.settings.controlConfiguration ||= {};
@@ -103,5 +108,5 @@ function enhanceManifestAndGetFiltersReference(manifest: Manifest): FilterField[
         lrPage.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'].filterFields ||= {};
         return lrPage.options.settings.controlConfiguration['@com.sap.vocabularies.UI.v1.SelectionFields'].filterFields;
     }
-    return [];
+    return {};
 }

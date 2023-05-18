@@ -1,3 +1,4 @@
+import type { FilterField } from '../building-block/types';
 import type { CustomElement, InternalCustomElement, Position, EventHandler } from '../common/types';
 
 /**
@@ -13,7 +14,7 @@ export interface CustomFilter extends CustomElement, EventHandler {
      */
     property: string;
     /**
-     * ID of the embedded filter XML view.
+     * ID of the filter comboBox in the embedded filter XML view.
      */
     controlID: string;
     /**
@@ -21,11 +22,6 @@ export interface CustomFilter extends CustomElement, EventHandler {
      * If not set, is equal to the name specified in the config.
      */
     fragmentFile?: string;
-    /**
-     * Name of the created filter function.
-     * If function name is not set in the eventHandler, is equal to 'itemsFilter'.
-     */
-    eventHandlerFnName?: string;
     /**
      * Sets the required property of the custom filter.
      */
@@ -38,6 +34,19 @@ export interface CustomFilter extends CustomElement, EventHandler {
      * Specifies whether the controller file is generated in Typescript instead of Javascript.
      */
     typescript?: boolean;
+}
+
+/**
+ * Represents options available to a page in the manifest.json
+ */
+export interface PageOptions {
+    options?: {
+        settings?: {
+            controlConfiguration?: {
+                ['@com.sap.vocabularies.UI.v1.SelectionFields']?: { filterFields?: FilterField | {} };
+            };
+        };
+    };
 }
 
 export type InternalCustomFilter = CustomFilter & InternalCustomElement;
