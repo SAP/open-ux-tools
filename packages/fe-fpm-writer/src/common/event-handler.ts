@@ -60,7 +60,7 @@ export function applyEventHandlerConfiguration(
         return eventHandler;
     }
     // New event handler function name - 'onPress' is default
-    let { eventHandlerFnName } = { eventHandlerFnName: 'onPress', ...config };
+    let eventHandlerFnName = 'onPress';
     let insertScript: TextFragmentInsertion | undefined;
     // By default - use config name for created file name
     let fileName = config.name;
