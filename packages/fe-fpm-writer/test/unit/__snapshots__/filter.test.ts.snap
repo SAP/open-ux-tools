@@ -51,7 +51,7 @@ exports[`CustomFilter generateCustomFilter Create several new custom filters 2`]
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
-        itemsFilter: function(sValue) {
+        filterItems: function(sValue) {
             switch (sValue) {
                 case \\"0\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -77,11 +77,11 @@ exports[`CustomFilter generateCustomFilter Create several new custom filters 3`]
         <ComboBox
             id=\\"testID2\\"
             core:require=\\"{handler: 'myTestApp/ext/newCustomFilter2/NewCustomFilter2'}\\"
-            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter2.NewCustomFilter2.itemsFilter' }}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter2.NewCustomFilter2.filterItems' }}\\"
         >
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
-                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
@@ -133,7 +133,7 @@ exports[`CustomFilter generateCustomFilter New custom filter (no eventhandler) 2
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
-        itemsFilter: function(sValue) {
+        filterItems: function(sValue) {
             switch (sValue) {
                 case \\"0\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -159,11 +159,11 @@ exports[`CustomFilter generateCustomFilter New custom filter (no eventhandler) 3
         <ComboBox
             id=\\"testID\\"
             core:require=\\"{handler: 'myTestApp/ext/newCustomFilter/NewCustomFilter'}\\"
-            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter.NewCustomFilter.itemsFilter' }}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
         >
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
-                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
@@ -304,7 +304,7 @@ exports[`CustomFilter generateCustomFilter Test 'typescript' property. JavaScrip
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
-        itemsFilter: function(sValue) {
+        filterItems: function(sValue) {
             switch (sValue) {
                 case \\"0\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -334,7 +334,7 @@ import FilterOperator from 'sap/ui/model/FilterOperator';
  * @param sValue selected filter item
  * @returns new Filter
  */
-export function itemsFilter(sValue: string) {
+export function filterItems(sValue: string) {
     switch (sValue) {
         case \\"0\\":
             return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -356,7 +356,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
-        DummyItemsFilter: function(sValue) {
+        DummyFilterItems: function(sValue) {
             switch (sValue) {
                 case \\"0\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -431,7 +431,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
-        itemsFilter: function(sValue) {
+        filterItems: function(sValue) {
             switch (sValue) {
                 case \\"0\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -456,7 +456,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
-        itemsFilter: function(sValue) {
+        filterItems: function(sValue) {
             switch (sValue) {
                 case \\"0\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -472,7 +472,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
             }
         },
-		itemsFilter2: function(sValue) {
+		filterItems2: function(sValue) {
 			switch (sValue) {
 				case \\"0\\":
 						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
@@ -497,7 +497,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
-        itemsFilter: function(sValue) {
+        filterItems: function(sValue) {
             switch (sValue) {
                 case \\"0\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -513,7 +513,7 @@ exports[`CustomFilter generateCustomFilter Test property "eventHandler" "eventHa
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
             }
         },
-		itemsFilter2: function(sValue) {
+		filterItems2: function(sValue) {
 			switch (sValue) {
 				case \\"0\\":
 						return new Filter({ path: \\"FlightPrice\\", operator: FilterOperator.LT, value1: 100 });
@@ -580,11 +580,11 @@ exports[`CustomFilter generateCustomFilter specific target folder, event handler
         <ComboBox
             id=\\"testID\\"
             core:require=\\"{handler: 'myTestApp/ext/newCustomFilter/NewCustomFilter'}\\"
-            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter.NewCustomFilter.itemsFilter' }}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'myTestApp.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
         >
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
-                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
@@ -595,7 +595,7 @@ exports[`CustomFilter generateCustomFilter specific target folder, event handler
 "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
-        itemsFilter: function(sValue) {
+        filterItems: function(sValue) {
             switch (sValue) {
                 case \\"0\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -666,7 +666,7 @@ exports[`CustomFilter generateCustomFilter with existing event handler as string
         >
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
-                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
@@ -723,7 +723,7 @@ exports[`CustomFilter generateCustomFilter with new event handler as string 2`] 
         >
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
-                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>

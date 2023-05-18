@@ -152,7 +152,7 @@ describe('CustomFilter', () => {
 
             test('"eventHandler" is "object" - create new file with custom file and function names', () => {
                 const extension = {
-                    fnName: 'DummyItemsFilter',
+                    fnName: 'DummyFilterItems',
                     fileName: 'dummyFilter'
                 };
                 const folder = join('ext', 'custom');
@@ -215,7 +215,7 @@ describe('CustomFilter', () => {
                             fnName,
                             fileName,
                             insertScript: {
-                                fragment: `,\n\t\titemsFilter2: function(sValue) {
+                                fragment: `,\n\t\tfilterItems2: function(sValue) {
 			switch (sValue) {
 				case "0":
 						return new Filter({ path: "FlightPrice", operator: FilterOperator.LT, value1: 100 });

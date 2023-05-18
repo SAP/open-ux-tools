@@ -162,11 +162,11 @@ Object {
         <ComboBox
             id=\\"testID\\"
             core:require=\\"{handler: 'v4travel/ext/newCustomFilter/NewCustomFilter'}\\"
-            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.itemsFilter' }}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
         >
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
-                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
@@ -177,7 +177,7 @@ Object {
     "contents": "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
     \\"use strict\\";
     return {
-        itemsFilter: function(sValue) {
+        filterItems: function(sValue) {
             switch (sValue) {
                 case \\"0\\":
                         return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
@@ -683,11 +683,11 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
         <ComboBox
             id=\\"testID\\"
             core:require=\\"{handler: 'v4travel/ext/newCustomFilter/NewCustomFilter'}\\"
-            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.itemsFilter' }}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
         >
             <items>
                 <core:Item key=\\"0\\" text=\\"Item1\\"/>
-                <core:Item key=\\"1\\" text=\\"Item2\\"/>       
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
                 <core:Item key=\\"2\\" text=\\"Item3\\"/>
             </items>
         </ComboBox>
@@ -703,7 +703,7 @@ import FilterOperator from 'sap/ui/model/FilterOperator';
  * @param sValue selected filter item
  * @returns new Filter
  */
-export function itemsFilter(sValue: string) {
+export function filterItems(sValue: string) {
     switch (sValue) {
         case \\"0\\":
             return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
