@@ -1096,7 +1096,6 @@ Object {
         [
             \\"transform-ui5\\",
             {
-                \\"addControllerStaticPropsToExtend\\": true,
                 \\"overridesToOverride\\": true
             }
         ],
