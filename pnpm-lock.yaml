@@ -431,7 +431,6 @@ importers:
       mem-fs-editor: 9.4.0
       read-pkg-up: 7.0.1
     dependencies:
-      '@sap-ux/eslint-plugin-fiori-tools': link:../eslint-plugin-fiori-tools
       '@sap-ux/odata-service-writer': link:../odata-service-writer
       '@sap-ux/ui5-application-writer': link:../ui5-application-writer
       '@sap-ux/ui5-config': link:../ui5-config
@@ -442,6 +441,7 @@ importers:
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
       read-pkg-up: 7.0.1
     devDependencies:
+      '@sap-ux/eslint-plugin-fiori-tools': link:../eslint-plugin-fiori-tools
       '@types/ejs': 3.1.0
       '@types/fs-extra': 9.0.13
       '@types/lodash': 4.14.176

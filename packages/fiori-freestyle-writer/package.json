@@ -32,7 +32,6 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
@@ -44,6 +43,7 @@
         "read-pkg-up": "7.0.1"
     },
     "devDependencies": {
+        "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@types/ejs": "3.1.0",
         "@types/fs-extra": "9.0.13",
         "@types/lodash": "4.14.176",
