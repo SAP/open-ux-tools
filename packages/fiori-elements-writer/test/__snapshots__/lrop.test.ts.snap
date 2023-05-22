@@ -17605,7 +17605,7 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/default\\",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
     \\"root\\": true
 }
 ",
@@ -21102,7 +21102,7 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/default\\",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
     \\"root\\": true
 }
 ",
@@ -24588,7 +24588,7 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/default\\",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
     \\"root\\": true
 }
 ",
