@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.6.0
+
+### Minor Changes
+
+-   14c4c34f: feat: update clipboard icons
+
 ## 1.5.1
 
 ### Patch Changes
