@@ -7,19 +7,21 @@ import { fileExists } from './file-access';
  * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).
  *
  * @param changes - memfs editor changes, usually retrieved by fs.dump()
- * @param query - search string, file name or file extension
- * @param by - search by file 'name' or file 'extension'
+ * @param fileNames - array of file names to search for
+ * @param extensionNames - array of extensions names to search for
  * @returns - array of deleted and modified files filtered by query
  */
 function getMemFsChanges(
     changes: FileMap,
-    query: string,
-    by: 'name' | 'extension'
+    fileNames: string[],
+    extensionNames: string[]
 ): { deleted: string[]; modified: string[] } {
     const deleted: string[] = [];
     const modified: string[] = [];
-    const getFilePartToCompare = by === 'extension' ? extname : basename;
-    for (const file of Object.keys(changes).filter((f) => getFilePartToCompare(f) === query)) {
+    const filteredChanges = Object.keys(changes).filter(
+        (f) => fileNames.includes(basename(f)) || extensionNames.includes(extname(f))
+    );
+    for (const file of filteredChanges) {
         if (changes[file].state === 'deleted') {
             deleted.push(join(file));
         }
@@ -31,47 +33,47 @@ function getMemFsChanges(
 }
 
 /**
- * Find function to search for files.
+ * Find function to search for files by names or file extensions.
  *
  * @param options - find options
- * @param options.query - search string
- * @param options.by - search by file 'name' or file 'extension'
+ * @param [options.fileNames] - optional array of file names to search for
+ * @param [options.extensionNames] - optional array of file extensions to search for
  * @param options.root - folder to start recursive search
- * @param options.excludeFolders - folder names to exclude
+ * @param [options.excludeFolders] - optional array of folder names to exclude
  * @param [options.memFs] - optional memfs editor instance
- * @returns - array of paths that contain the file if searched for name; array of full file paths in case of search by extension
+ * @returns - array of paths that contain the file
  */
-function findBy(options: {
-    query: string;
-    by: 'name' | 'extension';
+export function findBy(options: {
+    fileNames?: string[];
+    extensionNames?: string[];
     root: string;
-    excludeFolders: string[];
+    excludeFolders?: string[];
     memFs?: Editor;
 }): Promise<string[]> {
-    const getFilePartToCompare = options.by === 'extension' ? extname : basename;
     return new Promise((resolve, reject) => {
         const results: string[] = [];
+        const fileNames = Array.isArray(options.fileNames) ? options.fileNames : [];
+        const extensionNames = Array.isArray(options.extensionNames) ? options.extensionNames : [];
+        const excludeFolders = Array.isArray(options.excludeFolders) ? options.excludeFolders : [];
+
         const finder = find(options.root);
         finder.on('directory', (dir: string, _stat: unknown, stop: () => void) => {
             const base = basename(dir);
-            if (options.excludeFolders.includes(base)) {
+            if (excludeFolders.includes(base)) {
                 stop();
             }
         });
         finder.on('file', (file: string) => {
-            if (getFilePartToCompare(file) === options.query) {
+            if (extensionNames.includes(extname(file)) || fileNames.includes(basename(file))) {
                 results.push(file);
             }
         });
         finder.on('end', () => {
             let searchResult: string[] = results;
             if (options.memFs) {
-                const { modified, deleted } = getMemFsChanges(options.memFs.dump(''), options.query, options.by);
+                const { modified, deleted } = getMemFsChanges(options.memFs.dump(''), fileNames, extensionNames);
                 const merged = Array.from(new Set([...results, ...modified]));
                 searchResult = merged.filter((f) => !deleted.includes(f));
-            }
-            if (options.by === 'name') {
-                searchResult = searchResult.map((f) => dirname(f));
             }
             resolve(searchResult);
         });
@@ -90,8 +92,14 @@ function findBy(options: {
  * @param [memFs] - optional mem-fs-editor instance
  * @returns - array of paths that contain the filename
  */
-export function findFiles(filename: string, root: string, excludeFolders: string[], memFs?: Editor): Promise<string[]> {
-    return findBy({ query: filename, by: 'name', root, excludeFolders, memFs });
+export async function findFiles(
+    filename: string,
+    root: string,
+    excludeFolders: string[],
+    memFs?: Editor
+): Promise<string[]> {
+    const results = await findBy({ fileNames: [filename], root, excludeFolders, memFs });
+    return results.map((f) => dirname(f));
 }
 
 /**
@@ -109,7 +117,7 @@ export function findFilesByExtension(
     excludeFolders: string[],
     memFs?: Editor
 ): Promise<string[]> {
-    return findBy({ query: extension, by: 'extension', root, excludeFolders, memFs });
+    return findBy({ extensionNames: [extension], root, excludeFolders, memFs });
 }
 
 /**
