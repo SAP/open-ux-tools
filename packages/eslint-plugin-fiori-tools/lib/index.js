@@ -3,11 +3,8 @@
 // Plugin Definition
 //------------------------------------------------------------------------------
 module.exports.configs = {
-    defaultTS: {
+    default: {
         extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-prod.js', '../eslintrc-test.js']
-    },
-    defaultJS: {
-        extends: ['../eslintrc-common.js', '../eslintrc-prod.js', '../eslintrc-test.js']
     },
     testCode: {
         extends: ['../eslintrc-common.js', '../eslintrc-typescript.js', '../eslintrc-test.js']
