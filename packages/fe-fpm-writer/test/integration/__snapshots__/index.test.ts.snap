@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`use FPM with existing apps extend UI5 application with FPM generateControllerExtension in ObjectPage 1`] = `
+exports[`use FPM with existing apps extend UI5 application with FPM generateCustomSubSection in ObjectPage 1`] = `
 Object {
   "lrop/webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
     "contents": "sap.ui.define([
@@ -122,6 +122,27 @@ Object {
     "state": "modified",
   },
   "lrop/webapp/ext/myCustomSection/MyCustomSection.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/myCustomSubSection/MyCustomSubSection.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSubSection/MyCustomSubSection'}\\" text=\\"MyCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/myCustomSubSection/MyCustomSubSection.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
 ], function(MessageToast) {
@@ -381,6 +402,18 @@ Object {
                         \\"anchor\\": \\"DummyFacet\\"
                       },
                       \\"title\\": \\"My Custom Section\\"
+                    },
+                    \\"ReferenceFacet1\\": {
+                      \\"subSections\\": {
+                        \\"MyCustomSubSection\\": {
+                          \\"template\\": \\"v4travel.ext.myCustomSubSection.MyCustomSubSection\\",
+                          \\"position\\": {
+                            \\"placement\\": \\"After\\",
+                            \\"anchor\\": \\"DummySubAnchor\\"
+                          },
+                          \\"title\\": \\"My Custom Sub Section\\"
+                        }
+                      }
                     }
                   }
                 }
@@ -586,6 +619,28 @@ export default class MyCustomPage extends Controller {
     "state": "modified",
   },
   "ts/webapp/ext/myCustomSection/MyCustomSection.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider
+ */
+export function onPress(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomSubSection/MyCustomSubSection.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSubSection/MyCustomSubSection'}\\" text=\\"MyCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomSubSection/MyCustomSubSection.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import UI5Event from 'sap/ui/base/Event';
 import MessageToast from 'sap/m/MessageToast';
@@ -895,6 +950,18 @@ declare module 'sap/fe/core/PageController' {
                         \\"anchor\\": \\"DummyFacet\\"
                       },
                       \\"title\\": \\"My Custom Section\\"
+                    },
+                    \\"ReferenceFacet1\\": {
+                      \\"subSections\\": {
+                        \\"MyCustomSubSection\\": {
+                          \\"template\\": \\"v4travel.ext.myCustomSubSection.MyCustomSubSection\\",
+                          \\"position\\": {
+                            \\"placement\\": \\"After\\",
+                            \\"anchor\\": \\"DummySubAnchor\\"
+                          },
+                          \\"title\\": \\"My Custom Sub Section\\"
+                        }
+                      }
                     }
                   }
                 }
