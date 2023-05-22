@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.19.0
+
+### Minor Changes
+
+-   970dc528: Feature: Custom SubSections support for fe-fpm-writer
+
 ## 0.18.9
 
 ### Patch Changes
