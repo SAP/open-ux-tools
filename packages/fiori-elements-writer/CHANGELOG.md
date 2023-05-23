@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
+### Patch Changes
+
+-   Updated dependencies [7ac0cb40]
+    -   @sap-ux/ui5-application-writer@0.22.0
+
 ## 0.11.4
 
 ### Patch Changes
