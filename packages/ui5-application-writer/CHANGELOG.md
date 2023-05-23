@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.22.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
 ## 0.21.1
 
 ### Patch Changes

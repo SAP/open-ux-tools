@@ -1,5 +1,16 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
+### Patch Changes
+
+-   Updated dependencies [7ac0cb40]
+    -   @sap-ux/ui5-application-writer@0.22.0
+
 ## 0.18.1
 
 ### Patch Changes
