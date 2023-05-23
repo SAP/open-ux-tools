@@ -7,8 +7,8 @@ export { generateCustomAction } from './action';
 export { CustomTableColumn } from './column/types';
 export { generateCustomColumn } from './column';
 
-export { CustomSection } from './section/types';
-export { generateCustomSection } from './section';
+export { CustomSection, CustomSubSection } from './section/types';
+export { generateCustomSection, generateCustomSubSection } from './section';
 
 export { CustomFilter } from './filter/types';
 export { generateCustomFilter } from './filter';

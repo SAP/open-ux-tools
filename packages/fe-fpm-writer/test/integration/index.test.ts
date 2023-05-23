@@ -11,7 +11,8 @@ import {
     enableFPM,
     generateControllerExtension,
     ControllerExtensionPageType,
-    generateCustomFilter
+    generateCustomFilter,
+    generateCustomSubSection
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
@@ -289,6 +290,25 @@ describe('use FPM with existing apps', () => {
                     extension: {
                         pageType: ControllerExtensionPageType.ObjectPage
                     },
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateCustomSubSection in ObjectPage', (config) => {
+            generateCustomSubSection(
+                config.path,
+                {
+                    name: 'MyCustomSubSection',
+                    target: 'TravelObjectPage',
+                    parentSection: 'ReferenceFacet1',
+                    title: 'My Custom Sub Section',
+                    position: {
+                        placement: Placement.After,
+                        anchor: 'DummySubAnchor'
+                    },
+                    eventHandler: true,
                     ...config.settings
                 },
                 fs
