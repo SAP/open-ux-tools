@@ -4,7 +4,7 @@ import { UIIcon, UiIcons } from '../../../src/components';
 import type { IActionCalloutDetail } from '../../../src/components/UIActionCallout';
 import { UIActionCallout } from '../../../src/components/UIActionCallout';
 
-describe('<UICallout />', () => {
+describe('<UIActionCallout />', () => {
     const helpLinkURL: IActionCalloutDetail = {
         linkText: 'Some link text',
         subText: 'some sub-text',
@@ -55,14 +55,15 @@ describe('<UICallout />', () => {
 
     it('Callback on click with provided command', () => {
         const onGABoxClick = jest.fn();
-
+        const onClickCallback = jest.fn();
         const { container } = render(
             <div>
                 <div id="aDivId"></div>
                 <UIActionCallout
                     commandAction={onGABoxClick}
                     targetElementId={'aDivId'}
-                    actionDetail={helpLinkCommand}></UIActionCallout>
+                    actionDetail={helpLinkCommand}
+                    onClick={onClickCallback}></UIActionCallout>
             </div>
         );
 
@@ -78,6 +79,7 @@ describe('<UICallout />', () => {
 
         fireEvent.click(callout);
 
+        expect(onClickCallback).toHaveBeenCalledTimes(1);
         expect(onGABoxClick).toHaveBeenCalledWith(helpLinkCommand.command);
     });
 
