@@ -30,14 +30,14 @@ export default class List extends BaseController {
         
     private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
         <%=template.settings.entity.numberProperty%>: (context: Context) => {
-            const iNumber = context.getProperty('<%=template.settings.entity.numberProperty%>');
+            const iNumber = context.getProperty("<%=template.settings.entity.numberProperty%>");
             let key, text;
             if (iNumber <= 20) {
                 key = "LE20";
-                text = this.getResourceBundle().getText("listGroup1Header1") || '';
+                text = this.getResourceBundle().getText("listGroup1Header1") || "";
             } else {
                 key = "GT20";
-                text = this.getResourceBundle().getText("listGroup1Header2") || '';
+                text = this.getResourceBundle().getText("listGroup1Header2") || "";
             }
             return {
                 key: key,
@@ -171,7 +171,7 @@ export default class List extends BaseController {
      */
     public onConfirmViewSettingsDialog(event: Event) {
         <%if (template.settings.entity.numberProperty) {%>
-        const filterItems = event.getParameter('filterItems') as ViewSettingsItem[];
+        const filterItems = event.getParameter("filterItems") as ViewSettingsItem[];
         const filters:  Filter[] = [];
         const captions: string[] = [];
 
