@@ -19,6 +19,8 @@ export interface ActionCalloutProps {
     commandAction?(command: IActionCalloutDetail['command']): void;
     /** The icon to use if provided, otherwise a default icon is applied */
     icon?: UIIcon;
+    /** Call back function to be called on every click */
+    onClick?(): void;
 }
 
 export interface IActionCalloutDetail {
@@ -48,7 +50,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
     private targetElementId: string;
     private showInline: boolean | undefined;
     private icon: UIIcon | undefined;
-
+    private onClick: ActionCalloutProps['onClick'];
     /**
      * Initializes component properties.
      *
@@ -63,6 +65,7 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
         this.anchor = React.createRef<HTMLAnchorElement>();
         this.onCalloutClick = this.onCalloutClick.bind(this);
         this.icon = props.icon;
+        this.onClick = props.onClick;
     }
 
     private onCalloutClick() {
@@ -70,6 +73,9 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
             this.commandAction(this.actionDetail.command);
         } else {
             this.anchor.current?.click();
+        }
+        if (this.onClick) {
+            this.onClick();
         }
     }
 

@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.7.0
+
+### Minor Changes
+
+-   8c3aecc6: update to ui action callout component
+
 ## 1.6.0
 
 ### Minor Changes

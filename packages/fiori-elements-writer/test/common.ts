@@ -2,8 +2,9 @@ import type { OdataService } from '@sap-ux/odata-service-writer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFileSync } from 'fs';
 import { create as createStore } from 'mem-fs';
+import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import type { FEOPSettings, FioriElementsApp, LROPSettings, WorklistSettings } from '../src/types';
 import { promisify } from 'util';
 import { exec as execCP } from 'child_process';
@@ -120,6 +121,17 @@ export const v2TemplateSettings: LROPSettings | WorklistSettings = {
     }
 };
 
+export const updatePackageJSONDependencyToUseLocalPath = async (rootPath: string, fs: Editor): Promise<void> => {
+    const packagePath = join(rootPath, 'package.json');
+    const packageJson = fs.readJSON(packagePath) as any;
+    if (packageJson?.devDependencies?.['@sap-ux/eslint-plugin-fiori-tools']) {
+        packageJson.devDependencies['@sap-ux/eslint-plugin-fiori-tools'] = dirname(
+            require.resolve('@sap-ux/eslint-plugin-fiori-tools/package.json')
+        );
+    }
+    fs.writeJSON(packagePath, packageJson);
+};
+
 export const projectChecks = async (
     rootPath: string,
     config: FioriElementsApp<unknown>,
@@ -136,9 +148,13 @@ export const projectChecks = async (
             console.log('stderr:', npmResult.stderr);
 
             // run checks on the project
-            // Check TS Types
             if (config.appOptions?.typescript) {
+                // Check TS Types
                 npmResult = await exec(`${npm} run ts-typecheck`, { cwd: rootPath });
+                console.log('stdout:', npmResult.stdout);
+                console.log('stderr:', npmResult.stderr);
+                // Check Eslint
+                npmResult = await exec(`${npm} run lint`, { cwd: rootPath });
                 console.log('stdout:', npmResult.stdout);
                 console.log('stderr:', npmResult.stderr);
             }
