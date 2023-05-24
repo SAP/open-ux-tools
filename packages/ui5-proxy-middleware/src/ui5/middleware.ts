@@ -83,8 +83,10 @@ module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>):
     }
 
     if (directLoad) {
-        const directLoadProxy = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-            await injectScripts(req, res, next, ui5Configs);
+        const directLoadProxy = (req: Request, res: Response, next: NextFunction): void => {
+            injectScripts(req, res, next, ui5Configs).catch((reason) => {
+                logger.debug(reason);
+            });
         };
 
         HTML_MOUNT_PATHS.forEach((path) => {
