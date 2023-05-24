@@ -345,14 +345,14 @@ describe('Use existing connection session', () => {
     });
 
     it.each([
-        { remove: 'clientid', errorStr: 'Client ID missing'},
-        { remove: 'clientsecret', errorStr: 'Client Secret missing'},
-        { remove: 'url', errorStr: 'UAA URL missing'},
+        { remove: 'clientid', errorStr: 'Client ID missing' },
+        { remove: 'clientsecret', errorStr: 'Client Secret missing' },
+        { remove: 'url', errorStr: 'UAA URL missing' }
     ])('Fail with error: $errorStr', async ({ remove, errorStr }) => {
         try {
             const cloneObj = cloneDeep(configForAbapOnCloud);
             delete cloneObj.service.uaa[remove];
-            createForAbapOnCloud(cloneObj as any)
+            createForAbapOnCloud(cloneObj as any);
             throw new Error('Should not pass');
         } catch (error) {
             expect(error).toEqual(new Error(errorStr));
