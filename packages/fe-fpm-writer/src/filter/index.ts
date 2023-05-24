@@ -34,8 +34,8 @@ function enhanceConfig(data: CustomFilter, manifestPath: string, manifest: Manif
     if (config.eventHandler === true) {
         config.eventHandler = {};
     }
-    if (typeof config.eventHandler === 'object') {
-        config.eventHandler.fnName ??= 'filterItems';
+    if (typeof config.eventHandler === 'object' && !config.eventHandler.fnName) {
+        config.eventHandler.fnName = 'filterItems';
     }
 
     return config as InternalCustomFilter;
