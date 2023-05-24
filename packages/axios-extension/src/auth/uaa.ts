@@ -87,6 +87,24 @@ export class Uaa {
     }
 
     /**
+     * Getter for resource owner.
+     *
+     * @returns username
+     */
+    private get username(): string {
+        return this.serviceInfo.uaa.username;
+    }
+
+    /**
+     * Getter for resource owner password.
+     *
+     * @returns password
+     */
+    private get password(): string {
+        return this.serviceInfo.uaa.password;
+    }
+
+    /**
      * Generates a request url based on the provided redirect url.
      *
      * @param params config parameters
@@ -103,6 +121,26 @@ export class Uaa {
                 client_id: this.clientid
             })
         );
+    }
+
+    /**
+     * Generate an access token using grant_type password to the authorization service (XSUAA)
+     */
+    protected getTokenRequestForClientCredential(): AxiosRequestConfig {
+        return {
+            url: this.url + '/oauth/token',
+            method: 'POST',
+            data: qs.stringify({
+                grant_type: 'password',
+                username: this.username,
+                password: this.password
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Accept: 'application/json',
+                Authorization: `Basic ${Buffer.from(this.clientid + ':' + this.clientsecret).toString('base64')}`
+            }
+        };
     }
 
     /**
@@ -205,6 +243,7 @@ export class Uaa {
             server.listen();
             redirect = new Redirect((server.address() as AddressInfo).port);
             const oauthUrl = this.getAuthCodeUrl({ redirectUri: redirect.url() });
+
             open(oauthUrl);
         });
     }
@@ -255,6 +294,22 @@ export class Uaa {
         }
 
         this.log.info('Got access token successfully');
+        return response?.data?.access_token;
+    }
+
+    /**
+     * @returns an access token
+     */
+    public async getAccessTokenUsingClientCredentials(): Promise<string> {
+        let response: AxiosResponse;
+        try {
+            const tokenRequest = await this.getTokenRequestForClientCredential();
+            response = await axios.request(tokenRequest);
+        } catch (e) {
+            throw e;
+        }
+
+        this.log.info('Got access token successfully using client credentials');
         return response?.data?.access_token;
     }
 }

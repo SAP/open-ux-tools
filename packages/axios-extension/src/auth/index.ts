@@ -37,12 +37,12 @@ export function attachUaaAuthInterceptor(
     let token: string;
     // provide function to fetch user infos from UAA if needed
     provider.user = async () => {
-        token = token ?? (await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
+        token = token ?? (service.uaa?.username ? await uaa.getAccessTokenUsingClientCredentials() : await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
         return uaa.getUserInfo(token);
     };
 
     const oneTimeInterceptorId = provider.interceptors.request.use(async (request: AxiosRequestConfig) => {
-        token = token ?? (await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
+        token = token ?? (service.uaa?.username ? await uaa.getAccessTokenUsingClientCredentials() : await uaa.getAccessToken(refreshToken, refreshTokenUpdateCb));
         // add token as auth header
         request.headers = request.headers ?? {};
         request.headers.authorization = `bearer ${token}`;

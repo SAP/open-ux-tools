@@ -12,6 +12,9 @@ import {
 import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
 import fs from 'fs';
+import open from 'open';
+
+jest.mock('open');
 
 /**
  * URL are specific to the discovery schema.
@@ -39,7 +42,13 @@ const existingCookieConfig = {
     cookies: 'sap-usercontext=sap-client=100;SAP_SESSIONID_Y05_100=abc'
 };
 const configForAbapOnCloud = {
-    service: {},
+    service: {
+        log: console, url: server, uaa: {
+            clientid: 'ClientId',
+            clientsecret: 'ClientSecret',
+            url: server
+        }
+    } as any,
     environment: AbapCloudEnvironment.Standalone
 };
 const existingCookieConfigForAbapOnCloud = {
@@ -266,6 +275,10 @@ describe('Use existing connection session', () => {
         nock.disableNetConnect();
     });
 
+    beforeEach(() => {
+        nock.cleanAll();
+    })
+
     afterAll(() => {
         nock.cleanAll();
         nock.enableNetConnect();
@@ -299,8 +312,30 @@ describe('Use existing connection session', () => {
             .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
 
         const provider = createForAbapOnCloud(configForAbapOnCloud as any);
+        expect(await provider.isS4Cloud()).toBe(true);
+        expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(1);
+    });
+
+    test('abap service provider for cloud - with authentication provided', async () => {
+        // Need to reset here so that we can call the user method otherwise it will be mocked
+        attachUaaAuthInterceptorSpy.mockRestore();
+        nock(server)
+          .post('/oauth/token')
+          .reply(201, { access_token: 'accessToken', refresh_token: 'refreshToken' })
+          .get('/userinfo')
+          .reply(200,{ email: 'email', name: 'name' });
+
+        const configForAbapOnCloudWithAuthentication = Object.assign({}, configForAbapOnCloud);
+        configForAbapOnCloudWithAuthentication.service = { log: console, url: server, uaa: {
+                username: 'TestUsername',
+                password: 'TestPassword',
+                clientid: 'ClientId',
+                clientsecret: 'ClientSecret',
+                url: server
+            }};
+        const provider = createForAbapOnCloud(configForAbapOnCloudWithAuthentication as any);
         expect(await provider.isS4Cloud()).toBe(false);
-        expect(attachUaaAuthInterceptorSpy.mockImplementation(jest.fn())).toBeCalledTimes(1);
+        expect(await provider.user()).toBe('email');
     });
 });
 
