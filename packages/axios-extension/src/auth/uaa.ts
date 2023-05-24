@@ -303,14 +303,8 @@ export class Uaa {
      * @returns an access token
      */
     public async getAccessTokenUsingClientCredentials(): Promise<string> {
-        let response: AxiosResponse;
-        try {
-            const tokenRequest = await this.getTokenRequestForClientCredential();
-            response = await axios.request(tokenRequest);
-        } catch (e) {
-            throw e;
-        }
-
+        const tokenRequest = this.getTokenRequestForClientCredential();
+        const response: AxiosResponse = await axios.request(tokenRequest);
         this.log.info('Got access token successfully using client credentials');
         return response?.data?.access_token;
     }
