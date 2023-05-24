@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.1
+
+### Patch Changes
+
+-   91e95ef8: BUG - Generated Controller Extensions do not always work with TS
+-   Updated dependencies [91e95ef8]
+    -   @sap-ux/ui5-application-writer@0.22.1
+
 ## 0.19.0
 
 ### Minor Changes

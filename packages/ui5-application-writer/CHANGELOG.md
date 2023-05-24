@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.22.1
+
+### Patch Changes
+
+-   91e95ef8: BUG - Generated Controller Extensions do not always work with TS
+
 ## 0.22.0
 
 ### Minor Changes
