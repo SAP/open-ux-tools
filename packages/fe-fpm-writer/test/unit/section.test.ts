@@ -339,7 +339,9 @@ describe('CustomSection', () => {
                         }
                     };
                     // Generate handler with single method - content should be updated during generating of custom section
-                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath,  { eventHandlerFnName: 'onPress' });
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
+                        eventHandlerFnName: 'onPress'
+                    });
 
                     generateCustomSectionWithEventHandler(id, extension, folder);
                     const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);
