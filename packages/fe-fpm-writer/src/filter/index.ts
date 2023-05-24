@@ -70,13 +70,6 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
             contextParameter,
             'filter/Controller'
         );
-    } else {
-        // create a controller file
-        const ext = filterConfig.typescript ? 'ts' : 'js';
-        const viewPath = join(config.path, `${config.name}.${ext}`);
-        if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath(`filter/Controller.${ext}`), viewPath, config);
-        }
     }
 
     // enhance manifest with the filter definition and controller reference

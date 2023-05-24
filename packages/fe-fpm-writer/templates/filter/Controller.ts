@@ -6,8 +6,8 @@ import FilterOperator from 'sap/ui/model/FilterOperator';
  * @param sValue selected filter item
  * @returns new Filter
  */
-export function <%- (typeof eventHandlerFnName !== 'undefined' && eventHandlerFnName) || 'filterItems' %>(sValue: string) {
-    switch (sValue) {
+export function <%- eventHandlerFnName %>(value: string) {
+    switch (value) {
         case "0":
             return new Filter({ path: "<%- property %>", operator: FilterOperator.LT, value1: 100 });
         case "1":
