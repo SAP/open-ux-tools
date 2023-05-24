@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { IStackTokens } from '@fluentui/react';
+import { IStackTokens, Icon } from '@fluentui/react';
 import { Text, Stack } from '@fluentui/react';
 
 import {
@@ -12,6 +12,7 @@ import {
 } from '../src/components/UIButton';
 import type { UIContextualMenuItem } from '../src/components/UIContextualMenu';
 import { initIcons, UiIcons } from '../src/components/Icons';
+import { UIDirectionalHint } from '../src/components/UITreeDropdown';
 
 initIcons();
 
@@ -40,6 +41,13 @@ export const defaultUsage = (): JSX.Element => {
             text: 'option 3'
         }
     ];
+
+    const menuItemsWithIcon = menuItems.map((source) => ({
+        ...source,
+        iconProps: {
+            iconName: UiIcons.GuidedDevelopment
+        }
+    }));
 
     return (
         <Stack tokens={stackTokens}>
@@ -78,6 +86,12 @@ export const defaultUsage = (): JSX.Element => {
                         id="test"
                         callback={onCallback.bind(this)}
                         menuItems={menuItems}
+                        button={buttonItem}
+                    />
+                    <UISplitButton
+                        id="test"
+                        callback={onCallback.bind(this)}
+                        menuItems={menuItemsWithIcon}
                         button={buttonItem}
                     />
                     <span>selection: {selection}</span>
@@ -139,6 +153,17 @@ export const defaultUsage = (): JSX.Element => {
                         }}>
                         Icon with color - disabled
                     </UIActionButton>
+                    <UIActionButton
+                        iconProps={{
+                            iconName: UiIcons.Bulb
+                        }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: menuItemsWithIcon
+                        }}>
+                        Button with menu
+                    </UIActionButton>
                 </Stack>
             </Stack>
 
@@ -148,6 +173,31 @@ export const defaultUsage = (): JSX.Element => {
                 </Text>
                 <Stack horizontal tokens={stackTokens}>
                     <UISmallButton primary>Clear All</UISmallButton>
+                </Stack>
+            </Stack>
+
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
+                    Dropdown Button
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UIIconButton
+                        iconProps={{ iconName: UiIcons.Add }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: menuItems
+                        }}
+                    />
+
+                    <UIIconButton
+                        iconProps={{ iconName: UiIcons.Add }}
+                        menuProps={{
+                            directionalHint: UIDirectionalHint.bottomRightEdge,
+                            directionalHintFixed: false,
+                            items: menuItemsWithIcon
+                        }}
+                    />
                 </Stack>
             </Stack>
         </Stack>
