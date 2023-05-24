@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.19.1
+
+### Patch Changes
+
+-   cca1095c: remove of superfluous checks in template
+
 ## 0.19.0
 
 ### Minor Changes
