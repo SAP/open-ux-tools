@@ -312,7 +312,9 @@ describe('Use existing connection session', () => {
             .get(AdtServices.ATO_SETTINGS)
             .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
 
-        const provider = createForAbapOnCloud(configForAbapOnCloud as any);
+        const cloneObj = cloneDeep(configForAbapOnCloud);
+        delete cloneObj.service.uaa;
+        const provider = createForAbapOnCloud(cloneObj as any);
         expect(await provider.isS4Cloud()).toBe(true);
         await provider.user();
         expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(1);
