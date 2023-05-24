@@ -2,4 +2,4 @@
 '@sap-ux/fe-fpm-writer': patch
 ---
 
-remove of superfluous checks in template
+remove of superfluous checks in template 
