@@ -14,6 +14,7 @@ import type { ArchiveFileNode } from '../../src/abap/types';
 import fs from 'fs';
 import open from 'open';
 import cloneDeep from 'lodash/cloneDeep';
+import { Uaa } from '../../src/auth/uaa';
 
 jest.mock('open');
 
@@ -280,11 +281,14 @@ describe('Use existing connection session', () => {
 
     beforeEach(() => {
         nock.cleanAll();
+        attachUaaAuthInterceptorSpy.mockRestore();
+        Uaa.prototype.getAccessToken = jest.fn();
     });
 
     afterAll(() => {
         nock.cleanAll();
         nock.enableNetConnect();
+        jest.resetAllMocks();
     });
 
     test('abap service provider', async () => {
@@ -302,7 +306,7 @@ describe('Use existing connection session', () => {
         const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloud as any);
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
         expect(await provider.isS4Cloud()).toBe(false);
-        expect(attachUaaAuthInterceptorSpy.mockImplementation(jest.fn())).toBeCalledTimes(0);
+        expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(0);
     });
 
     test('abap service provider for cloud - require authentication', async () => {
@@ -310,26 +314,25 @@ describe('Use existing connection session', () => {
             .get(AdtServices.DISCOVERY)
             .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
             .get(AdtServices.ATO_SETTINGS)
-            .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
+            .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'))
+            .get('/userinfo')
+            .reply(200, { email: 'emailTest', name: 'nameTest' });
 
         const cloneObj = cloneDeep(configForAbapOnCloud);
-        delete cloneObj.service.uaa;
+        delete cloneObj.service.uaa.username;
         const provider = createForAbapOnCloud(cloneObj as any);
         expect(await provider.isS4Cloud()).toBe(true);
-        await provider.user();
-        expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(1);
+        expect(await provider.user()).toBe('emailTest');
     });
 
     test('abap service provider for cloud - with authentication provided', async () => {
-        // Need to reset here so that we can call the user method otherwise it will be mocked
-        attachUaaAuthInterceptorSpy.mockRestore();
         nock(server)
             .post('/oauth/token')
             .reply(201, { access_token: 'accessToken', refresh_token: 'refreshToken' })
             .get('/userinfo')
             .reply(200, { email: 'email', name: 'name' });
 
-        const configForAbapOnCloudWithAuthentication = Object.assign({}, configForAbapOnCloud);
+        const configForAbapOnCloudWithAuthentication = cloneDeep(configForAbapOnCloud);
         configForAbapOnCloudWithAuthentication.service = {
             log: console,
             url: server,
