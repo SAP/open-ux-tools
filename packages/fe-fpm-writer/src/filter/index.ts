@@ -34,8 +34,8 @@ function enhanceConfig(data: CustomFilter, manifestPath: string, manifest: Manif
     if (config.eventHandler === true) {
         config.eventHandler = {};
     }
-    if (typeof config.eventHandler === 'object' && !config.eventHandler.fnName) {
-        config.eventHandler.fnName = 'filterItems';
+    if (typeof config.eventHandler === 'object') {
+        config.eventHandler.fnName ??= 'filterItems';
     }
 
     return config as InternalCustomFilter;
@@ -70,13 +70,6 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
             contextParameter,
             'filter/Controller'
         );
-    } else {
-        // create a controller file
-        const ext = filterConfig.typescript ? 'ts' : 'js';
-        const viewPath = join(config.path, `${config.name}.${ext}`);
-        if (!fs.exists(viewPath)) {
-            fs.copyTpl(getTemplatePath(`filter/Controller.${ext}`), viewPath, config);
-        }
     }
 
     // enhance manifest with the filter definition and controller reference

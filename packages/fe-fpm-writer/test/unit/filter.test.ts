@@ -55,9 +55,7 @@ describe('CustomFilter', () => {
         test('New custom filter (no eventhandler)', () => {
             generateCustomFilter(testDir, filter, fs);
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.exists(getControllerPath(filter))).toBeTruthy();
-            expect(fs.read(getControllerPath(filter))).toMatchSnapshot();
-            expect(fs.exists(getExpectedFragmentPath(filter))).toBeTruthy();
+            expect(fs.exists(getControllerPath(filter))).toBe(false);
             expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
         });
 
@@ -72,9 +70,7 @@ describe('CustomFilter', () => {
 
             generateCustomFilter(testDir, secondFilter, fs);
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.exists(getControllerPath(secondFilter))).toBeTruthy();
-            expect(fs.read(getControllerPath(secondFilter))).toMatchSnapshot();
-            expect(fs.exists(getExpectedFragmentPath(secondFilter))).toBeTruthy();
+            expect(fs.exists(getControllerPath(secondFilter))).toBe(false);
             expect(fs.read(getExpectedFragmentPath(secondFilter))).toMatchSnapshot();
         });
 
@@ -88,7 +84,6 @@ describe('CustomFilter', () => {
                 fs
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.exists(getExpectedFragmentPath(filter))).toBeTruthy();
             expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
         });
 
@@ -104,9 +99,7 @@ describe('CustomFilter', () => {
                 fs
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.exists(getExpectedFragmentPath(filter))).toBeTruthy();
             expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
-            expect(fs.exists(controllerPath)).toBe(true);
             expect(fs.read(controllerPath)).toEqual('dummyContent');
         });
 
@@ -120,7 +113,6 @@ describe('CustomFilter', () => {
                 fs
             );
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
-            expect(fs.exists(getExpectedFragmentPath(filter))).toBeTruthy();
             expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
             expect(fs.read(getControllerPath(filter))).toMatchSnapshot();
         });
@@ -205,7 +197,7 @@ describe('CustomFilter', () => {
                     const folder = join('ext', 'fragments');
                     const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
                     // Generate handler with single method - content should be updated during generating of custom filter
-                    fs.copyTpl(join(__dirname, '../../templates', 'filter/Controller.js'), existingPath, filter);
+                    fs.copyTpl(join(__dirname, '../../templates', 'filter/Controller.js'), existingPath, { ...filter, eventHandlerFnName: 'filterItems'});
                     // Create third action - append existing js file
                     const filterName = 'CustomFilter2';
                     const fnName = 'onHandleSecondAction';
@@ -292,6 +284,7 @@ describe('CustomFilter', () => {
                     testDir,
                     {
                         ...filter,
+                        eventHandler: {},
                         typescript: languageConfig.typescript
                     },
                     fs
