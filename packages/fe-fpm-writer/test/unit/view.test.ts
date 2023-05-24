@@ -296,7 +296,7 @@ describe('CustomView', () => {
                 const folder = join('extensions', 'custom');
                 const existingPath = join(testDir, 'webapp', folder, `${fileName}.controller.js`);
                 // Generate handler with single method - content should be updated during generating of custom view
-                fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, { eventHandlerFnName: 'onPress' });
                 const fnName = 'onHandleSecondAction';
 
                 const extension = {

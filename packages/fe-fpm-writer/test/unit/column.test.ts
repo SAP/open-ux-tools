@@ -271,7 +271,7 @@ describe('CustomAction', () => {
                     const folder = join('extensions', 'custom');
                     const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
                     // Generate handler with single method - content should be updated during generating of custom column
-                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath,  { eventHandlerFnName: 'onPress' });
                     const fnName = 'onHandleSecondAction';
 
                     const extension = {
