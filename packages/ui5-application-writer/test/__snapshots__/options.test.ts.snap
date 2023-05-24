@@ -6,48 +6,9 @@ Object {
     "contents": "{
   \\"root\\": true,
   \\"plugins\\": [
-    \\"@sap/ui5-jsdocs\\",
-    \\"fiori-custom\\"
+    \\"@sap/ui5-jsdocs\\"
   ],
-  \\"extends\\": [
-    \\"plugin:@sap/ui5-jsdocs/recommended\\",
-    \\"eslint:recommended\\"
-  ],
-  \\"overrides\\": [
-    {
-      \\"files\\": [
-        \\"**/*.*\\"
-      ],
-      \\"excludedFiles\\": [
-        \\"test/**\\",
-        \\"target/**\\",
-        \\"webapp/test/**\\",
-        \\"webapp/localservice/**\\",
-        \\"backup/**\\",
-        \\"Gruntfile.js\\",
-        \\"changes_preview.js\\",
-        \\"gulpfile.js\\"
-      ],
-      \\"plugins\\": [
-        \\"fiori-custom\\"
-      ],
-      \\"extends\\": [
-        \\"eslint:recommended\\",
-        \\"plugin:fiori-custom/fioriToolsDefault\\"
-      ]
-    },
-    {
-      \\"files\\": [
-        \\"webapp/test/**\\"
-      ],
-      \\"plugins\\": [
-        \\"fiori-custom\\"
-      ],
-      \\"extends\\": [
-        \\"plugin:fiori-custom/fioriToolsTestcode\\"
-      ]
-    }
-  ]
+  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS\\"
 }
 ",
     "state": "modified",
@@ -85,6 +46,7 @@ archive.zip
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"1.71.15\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.1.0\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\"
   },

@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.2
+
+### Patch Changes
+
+-   495a22cb: Use @sap-ux/eslint-plugin-fiori-tools for JS projects with eslint option
+-   Updated dependencies [495a22cb]
+    -   @sap-ux/ui5-application-writer@0.22.2
+
 ## 0.19.1
 
 ### Patch Changes

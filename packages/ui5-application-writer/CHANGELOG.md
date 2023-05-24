@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.22.2
+
+### Patch Changes
+
+-   495a22cb: Use @sap-ux/eslint-plugin-fiori-tools for JS projects with eslint option
+
 ## 0.22.1
 
 ### Patch Changes
