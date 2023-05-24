@@ -35,6 +35,7 @@
       ],
       "outputs": [
         "{projectRoot}/dist",
+        "{projectRoot}/lib",
         "{projectRoot}/storybook"
       ]
     },
