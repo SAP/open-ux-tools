@@ -43,7 +43,9 @@ const existingCookieConfig = {
 };
 const configForAbapOnCloud = {
     service: {
-        log: console, url: server, uaa: {
+        log: console,
+        url: server,
+        uaa: {
             clientid: 'ClientId',
             clientsecret: 'ClientSecret',
             url: server
@@ -277,7 +279,7 @@ describe('Use existing connection session', () => {
 
     beforeEach(() => {
         nock.cleanAll();
-    })
+    });
 
     afterAll(() => {
         nock.cleanAll();
@@ -320,19 +322,23 @@ describe('Use existing connection session', () => {
         // Need to reset here so that we can call the user method otherwise it will be mocked
         attachUaaAuthInterceptorSpy.mockRestore();
         nock(server)
-          .post('/oauth/token')
-          .reply(201, { access_token: 'accessToken', refresh_token: 'refreshToken' })
-          .get('/userinfo')
-          .reply(200,{ email: 'email', name: 'name' });
+            .post('/oauth/token')
+            .reply(201, { access_token: 'accessToken', refresh_token: 'refreshToken' })
+            .get('/userinfo')
+            .reply(200, { email: 'email', name: 'name' });
 
         const configForAbapOnCloudWithAuthentication = Object.assign({}, configForAbapOnCloud);
-        configForAbapOnCloudWithAuthentication.service = { log: console, url: server, uaa: {
+        configForAbapOnCloudWithAuthentication.service = {
+            log: console,
+            url: server,
+            uaa: {
                 username: 'TestUsername',
                 password: 'TestPassword',
                 clientid: 'ClientId',
                 clientsecret: 'ClientSecret',
                 url: server
-            }};
+            }
+        };
         const provider = createForAbapOnCloud(configForAbapOnCloudWithAuthentication as any);
         expect(await provider.isS4Cloud()).toBe(false);
         expect(await provider.user()).toBe('email');

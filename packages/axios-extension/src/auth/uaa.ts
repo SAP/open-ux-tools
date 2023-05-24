@@ -124,7 +124,9 @@ export class Uaa {
     }
 
     /**
-     * Generate an access token using grant_type password to the authorization service (XSUAA)
+     * Generate an access token using grant_type password to the authorization service (XSUAA).
+     *
+     * @returns an axios request config
      */
     protected getTokenRequestForClientCredential(): AxiosRequestConfig {
         return {
