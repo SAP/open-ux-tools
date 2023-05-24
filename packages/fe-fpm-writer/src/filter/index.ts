@@ -28,9 +28,9 @@ function enhanceConfig(data: CustomFilter, manifestPath: string, manifest: Manif
     setCommonDefaults(config, manifestPath, manifest);
 
     // set default values for requirement, language, the fragment file name
-    config.required = config.required || false;
+    config.required = config.required ?? false;
     config.typescript = !!config.typescript;
-    config.fragmentFile = config.fragmentFile || config.name;
+    config.fragmentFile = config.fragmentFile ?? config.name;
     if (config.eventHandler === true) {
         config.eventHandler = {};
     }
@@ -91,7 +91,7 @@ export function generateCustomFilter(basePath: string, filterConfig: CustomFilte
  * @returns Filters object of the first page
  */
 function enhanceManifestAndGetFiltersReference(manifest: Manifest): FilterField | {} {
-    if (manifest['sap.ui5'] && manifest['sap.ui5'].routing && manifest['sap.ui5'].routing.targets) {
+    if (manifest['sap.ui5']?.routing?.targets) {
         const pages = manifest['sap.ui5'].routing.targets;
         const lrPage: ManifestNamespace.Target & PageOptions = Object.values(pages)[0];
         lrPage.options ||= {};
