@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 0.1.5
+
+### Patch Changes
+
+-   5c7f40c6: fix build cache for release artefact
+
 ## 0.1.4
 
 ### Patch Changes
