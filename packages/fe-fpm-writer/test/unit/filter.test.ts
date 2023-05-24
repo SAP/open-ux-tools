@@ -197,7 +197,10 @@ describe('CustomFilter', () => {
                     const folder = join('ext', 'fragments');
                     const existingPath = join(testDir, 'webapp', folder, `${fileName}.js`);
                     // Generate handler with single method - content should be updated during generating of custom filter
-                    fs.copyTpl(join(__dirname, '../../templates', 'filter/Controller.js'), existingPath, { ...filter, eventHandlerFnName: 'filterItems'});
+                    fs.copyTpl(join(__dirname, '../../templates', 'filter/Controller.js'), existingPath, {
+                        ...filter,
+                        eventHandlerFnName: 'filterItems'
+                    });
                     // Create third action - append existing js file
                     const filterName = 'CustomFilter2';
                     const fnName = 'onHandleSecondAction';
