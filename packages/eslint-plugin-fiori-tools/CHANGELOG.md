@@ -1,5 +1,11 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 0.1.4
+
+### Patch Changes
+
+-   b6793a50: release new version
+
 ## 0.1.2
 
 ### Patch Changes
