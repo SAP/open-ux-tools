@@ -13,6 +13,7 @@ import * as auth from '../../src/auth';
 import type { ArchiveFileNode } from '../../src/abap/types';
 import fs from 'fs';
 import open from 'open';
+import cloneDeep from 'lodash/cloneDeep';
 
 jest.mock('open');
 
@@ -43,7 +44,6 @@ const existingCookieConfig = {
 };
 const configForAbapOnCloud = {
     service: {
-        log: console,
         url: server,
         uaa: {
             clientid: 'ClientId',
@@ -273,6 +273,7 @@ describe('Transport checks', () => {
 });
 
 describe('Use existing connection session', () => {
+    const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
     beforeAll(() => {
         nock.disableNetConnect();
     });
@@ -285,8 +286,6 @@ describe('Use existing connection session', () => {
         nock.cleanAll();
         nock.enableNetConnect();
     });
-
-    const attachUaaAuthInterceptorSpy = jest.spyOn(auth, 'attachUaaAuthInterceptor');
 
     test('abap service provider', async () => {
         const provider = createForAbap(existingCookieConfig);
@@ -315,6 +314,7 @@ describe('Use existing connection session', () => {
 
         const provider = createForAbapOnCloud(configForAbapOnCloud as any);
         expect(await provider.isS4Cloud()).toBe(true);
+        await provider.user();
         expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(1);
     });
 
@@ -342,6 +342,21 @@ describe('Use existing connection session', () => {
         const provider = createForAbapOnCloud(configForAbapOnCloudWithAuthentication as any);
         expect(await provider.isS4Cloud()).toBe(false);
         expect(await provider.user()).toBe('email');
+    });
+
+    it.each([
+        { remove: 'clientid', errorStr: 'Client ID missing'},
+        { remove: 'clientsecret', errorStr: 'Client Secret missing'},
+        { remove: 'url', errorStr: 'UAA URL missing'},
+    ])('Fail with error: $errorStr', async ({ remove, errorStr }) => {
+        try {
+            const cloneObj = cloneDeep(configForAbapOnCloud);
+            delete cloneObj.service.uaa[remove];
+            createForAbapOnCloud(cloneObj as any)
+            throw new Error('Should not pass');
+        } catch (error) {
+            expect(error).toEqual(new Error(errorStr));
+        }
     });
 });
 
