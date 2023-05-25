@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui5-library-writer",
-    "description": "Writer module to generate a new reuse library",
+    "description": "Writer module to generate a new ui5 library",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
