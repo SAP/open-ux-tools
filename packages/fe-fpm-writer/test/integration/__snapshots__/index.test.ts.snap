@@ -178,6 +178,47 @@ Object {
 ",
     "state": "modified",
   },
+  "lrop/webapp/ext/newCustomFilter/NewCustomFilter.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox
+            id=\\"testID\\"
+            core:require=\\"{handler: 'v4travel/ext/newCustomFilter/NewCustomFilter'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
+        >
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/newCustomFilter/NewCustomFilter.js": Object {
+    "contents": "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
+    \\"use strict\\";
+    return {
+        filterItems: function(sValue) {
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
+        }
+    };
+});
+",
+    "state": "modified",
+  },
   "lrop/webapp/ext/newCustomView/NewCustomView.controller.js": Object {
     "contents": "sap.ui.define([
     \\"sap/m/MessageToast\\"
@@ -337,6 +378,20 @@ Object {
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My Custom Action\\"
+                    }
+                  }
+                },
+                \\"@com.sap.vocabularies.UI.v1.SelectionFields\\": {
+                  \\"filterFields\\": {
+                    \\"NewCustomFilter\\": {
+                      \\"label\\": \\"Test Custom Filter\\",
+                      \\"property\\": \\"Testing\\",
+                      \\"template\\": \\"v4travel.ext.newCustomFilter.NewCustomFilter\\",
+                      \\"required\\": false,
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyFacet\\"
+                      }
                     }
                   }
                 }
@@ -678,6 +733,49 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
 }",
     "state": "modified",
   },
+  "ts/webapp/ext/newCustomFilter/NewCustomFilter.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox
+            id=\\"testID\\"
+            core:require=\\"{handler: 'v4travel/ext/newCustomFilter/NewCustomFilter'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
+        >
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/newCustomFilter/NewCustomFilter.ts": Object {
+    "contents": "import Filter from 'sap/ui/model/Filter';
+import FilterOperator from 'sap/ui/model/FilterOperator';
+
+/**
+ * Custom filter
+ * @param sValue selected filter item
+ * @returns new Filter
+ */
+export function filterItems(value: string) {
+    switch (value) {
+        case \\"0\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+        case \\"1\\":
+            return new Filter({
+                filters: [
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                ],
+                and: true
+            });
+        case \\"2\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+    }
+}",
+    "state": "modified",
+  },
   "ts/webapp/ext/newCustomView/NewCustomView.controller.ts": Object {
     "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
 import UI5Event from 'sap/ui/base/Event';
@@ -885,6 +983,20 @@ declare module 'sap/fe/core/PageController' {
                       \\"visible\\": true,
                       \\"enabled\\": true,
                       \\"text\\": \\"My Custom Action\\"
+                    }
+                  }
+                },
+                \\"@com.sap.vocabularies.UI.v1.SelectionFields\\": {
+                  \\"filterFields\\": {
+                    \\"NewCustomFilter\\": {
+                      \\"label\\": \\"Test Custom Filter\\",
+                      \\"property\\": \\"Testing\\",
+                      \\"template\\": \\"v4travel.ext.newCustomFilter.NewCustomFilter\\",
+                      \\"required\\": false,
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyFacet\\"
+                      }
                     }
                   }
                 }
