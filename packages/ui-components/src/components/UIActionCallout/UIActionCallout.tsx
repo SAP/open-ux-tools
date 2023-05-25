@@ -51,6 +51,8 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
     private showInline: boolean | undefined;
     private icon: UIIcon | undefined;
     private onClick: ActionCalloutProps['onClick'];
+    private anchorClicked: boolean;
+
     /**
      * Initializes component properties.
      *
@@ -66,17 +68,24 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
         this.onCalloutClick = this.onCalloutClick.bind(this);
         this.icon = props.icon;
         this.onClick = props.onClick;
+        this.anchorClicked = false;
     }
 
     private onCalloutClick() {
+        if (this.onClick && !this.anchorClicked) {
+            this.onClick();
+        }
+
         if (this.actionDetail.command && this.commandAction) {
             this.commandAction(this.actionDetail.command);
         } else {
             this.anchor.current?.click();
+            this.anchorClicked = false;
         }
-        if (this.onClick) {
-            this.onClick();
-        }
+    }
+
+    private handleAnchorClick() {
+        this.anchorClicked = true;
     }
 
     /**
@@ -105,7 +114,8 @@ export class UIActionCallout extends React.Component<ActionCalloutProps> {
                     href={this.actionDetail.url}
                     className="UIActionCallout-link"
                     target="_blank"
-                    rel="noreferrer">
+                    rel="noreferrer"
+                    onClick={() => this.handleAnchorClick()}>
                     {this.actionDetail.linkText}
                 </a>
                 <div className="UIActionCallout-subText">{this.actionDetail.subText}</div>
