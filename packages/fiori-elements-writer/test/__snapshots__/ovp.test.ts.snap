@@ -1910,7 +1910,7 @@ builder:
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/ovp/app/Component';
+    "contents": "import BaseComponent from \\"sap/ovp/app/Component\\";
 
 /**
  * @namespace feovp1
@@ -9342,7 +9342,7 @@ builder:
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/ovp/app/Component';
+    "contents": "import BaseComponent from \\"sap/ovp/app/Component\\";
 
 /**
  * @namespace feovp2

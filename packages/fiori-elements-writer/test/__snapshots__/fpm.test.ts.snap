@@ -3897,7 +3897,7 @@ builder:
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/fe/core/AppComponent';
+    "contents": "import BaseComponent from \\"sap/fe/core/AppComponent\\";
 
 /**
  * @namespace fefpmts
@@ -3941,7 +3941,7 @@ export default class Component extends BaseComponent {
     "state": "modified",
   },
   "webapp/ext/main/Main.controller.ts": Object {
-    "contents": "import Controller from 'sap/fe/core/PageController';
+    "contents": "import Controller from \\"sap/fe/core/PageController\\";
 
 /**
  * @namespace fefpmts.ext.main.Main.controller
