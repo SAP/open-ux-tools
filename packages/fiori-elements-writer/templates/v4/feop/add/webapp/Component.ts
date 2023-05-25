@@ -1,4 +1,4 @@
-import AppComponent from "<%- app.baseComponent %>";
+import AppComponent from '<%- app.baseComponent %>';
 
 /**
  * @namespace <%- app.id %>

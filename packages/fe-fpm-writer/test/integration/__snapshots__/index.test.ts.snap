@@ -525,7 +525,7 @@ Object {
     "state": "modified",
   },
   "ts/webapp/Component.ts": Object {
-    "contents": "import AppComponent from \\"sap/fe/core/AppComponent\\";
+    "contents": "import AppComponent from 'sap/fe/core/AppComponent';
 
 /**
  * @namespace v4travel
@@ -614,7 +614,7 @@ export function onPress(this: ExtensionAPI, pageContext: Context) {
     "state": "modified",
   },
   "ts/webapp/ext/myCustomPage/MyCustomPage.controller.ts": Object {
-    "contents": "import Controller from \\"sap/fe/core/PageController\\";
+    "contents": "import Controller from 'sap/fe/core/PageController';
 
 /**
  * @namespace v4travel.ext.myCustomPage.MyCustomPage.controller
