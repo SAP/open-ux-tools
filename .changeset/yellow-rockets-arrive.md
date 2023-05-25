@@ -1,5 +1,5 @@
 ---
-'@sap-ux/axios-extension': patch
+'@sap-ux/axios-extension': minor
 ---
 
-handle uaa credentials
+handle btp uaa credentials

@@ -129,8 +129,9 @@ export class Uaa {
      * @returns an axios request config
      */
     protected getTokenRequestForClientCredential(): AxiosRequestConfig {
+        const secret = `${this.clientid}:${this.clientsecret}`
         return {
-            url: this.url + '/oauth/token',
+            url: `${this.url}/oauth/token`,
             method: 'POST',
             data: qs.stringify({
                 grant_type: 'password',
@@ -140,7 +141,7 @@ export class Uaa {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 Accept: 'application/json',
-                Authorization: `Basic ${Buffer.from(this.clientid + ':' + this.clientsecret).toString('base64')}`
+                Authorization: `Basic ${Buffer.from(secret).toString('base64')}`
             }
         };
     }
@@ -155,7 +156,7 @@ export class Uaa {
      */
     protected getTokenRequestForAuthCode({ redirectUri, authCode }): AxiosRequestConfig {
         return {
-            url: this.url + '/oauth/token',
+            url: `${this.url}/oauth/token`,
             auth: { username: this.clientid, password: this.clientsecret },
             method: 'POST',
             data: qs.stringify({
@@ -179,7 +180,7 @@ export class Uaa {
      */
     protected getTokenRequestForRefreshToken(refreshToken): AxiosRequestConfig {
         return {
-            url: this.url + '/oauth/token',
+            url: `${this.url}/oauth/token`,
             auth: { username: this.clientid, password: this.clientsecret },
             method: 'POST',
             data: qs.stringify({
@@ -201,7 +202,7 @@ export class Uaa {
      */
     public async getUserInfo(accessToken: string): Promise<string | undefined> {
         const userInfoResp = await axios.request({
-            url: this.url + '/userinfo',
+            url: `${this.url}/userinfo`,
             method: 'GET',
             headers: {
                 authorization: `bearer ${accessToken}`
@@ -300,7 +301,7 @@ export class Uaa {
     }
 
     /**
-     * @returns an access token
+     * @returns an access token using the BTP UAA credentials
      */
     public async getAccessTokenUsingClientCredentials(): Promise<string> {
         const tokenRequest = this.getTokenRequestForClientCredential();
