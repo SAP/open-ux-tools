@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.20.0
+
+### Minor Changes
+
+-   5c16776d: Generate custom filter
+
 ## 0.19.1
 
 ### Patch Changes
