@@ -129,7 +129,7 @@ export class Uaa {
      * @returns an axios request config
      */
     protected getTokenRequestForClientCredential(): AxiosRequestConfig {
-        const secret = `${this.clientid}:${this.clientsecret}`
+        const secret = `${this.clientid}:${this.clientsecret}`;
         return {
             url: `${this.url}/oauth/token`,
             method: 'POST',
