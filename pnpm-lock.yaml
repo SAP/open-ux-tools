@@ -555,41 +555,6 @@ importers:
       '@ui5/manifest': 1.51.0
       vscode-uri: 3.0.6
 
-  packages/reuse-lib-writer:
-    specifiers:
-      '@sap-ux/ui5-application-writer': workspace:*
-      '@sap-ux/ui5-config': workspace:*
-      '@types/ejs': 3.1.0
-      '@types/fs-extra': 9.0.13
-      '@types/lodash': 4.14.176
-      '@types/mem-fs': 1.1.2
-      '@types/mem-fs-editor': 7.0.1
-      '@types/semver': 7.3.9
-      ejs: 3.1.7
-      fs-extra: 10.0.0
-      i18next: 20.3.2
-      lodash: 4.17.21
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0
-      semver: 7.3.5
-    dependencies:
-      '@sap-ux/ui5-application-writer': link:../ui5-application-writer
-      '@sap-ux/ui5-config': link:../ui5-config
-      ejs: 3.1.7
-      i18next: 20.3.2
-      lodash: 4.17.21
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0_mem-fs@2.1.0
-      semver: 7.3.5
-    devDependencies:
-      '@types/ejs': 3.1.0
-      '@types/fs-extra': 9.0.13
-      '@types/lodash': 4.14.176
-      '@types/mem-fs': 1.1.2
-      '@types/mem-fs-editor': 7.0.1
-      '@types/semver': 7.3.9
-      fs-extra: 10.0.0
-
   packages/store:
     specifiers:
       '@sap-ux/logger': workspace:*
@@ -761,6 +726,41 @@ importers:
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0_mem-fs@2.1.0
 
+  packages/ui5-library-writer:
+    specifiers:
+      '@sap-ux/ui5-application-writer': workspace:*
+      '@sap-ux/ui5-config': workspace:*
+      '@types/ejs': 3.1.0
+      '@types/fs-extra': 9.0.13
+      '@types/lodash': 4.14.176
+      '@types/mem-fs': 1.1.2
+      '@types/mem-fs-editor': 7.0.1
+      '@types/semver': 7.3.9
+      ejs: 3.1.7
+      fs-extra: 10.0.0
+      i18next: 20.3.2
+      lodash: 4.17.21
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0
+      semver: 7.3.5
+    dependencies:
+      '@sap-ux/ui5-application-writer': link:../ui5-application-writer
+      '@sap-ux/ui5-config': link:../ui5-config
+      ejs: 3.1.7
+      i18next: 20.3.2
+      lodash: 4.17.21
+      mem-fs: 2.1.0
+      mem-fs-editor: 9.4.0_mem-fs@2.1.0
+      semver: 7.3.5
+    devDependencies:
+      '@types/ejs': 3.1.0
+      '@types/fs-extra': 9.0.13
+      '@types/lodash': 4.14.176
+      '@types/mem-fs': 1.1.2
+      '@types/mem-fs-editor': 7.0.1
+      '@types/semver': 7.3.9
+      fs-extra: 10.0.0
+
   packages/ui5-proxy-middleware:
     specifiers:
       '@sap-ux/logger': workspace:*
@@ -917,7 +917,7 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@babel/eslint-parser/7.19.1_go3kp2l7mdrkdyt3xfyeu7ppfa:
+  /@babel/eslint-parser/7.19.1_33b6a7e97f60e2a1e27bb9704a7def28:
     resolution: {integrity: sha512-AqNf2QWt1rtu2/1rLswy6CDP7H9Oh3mMhk177Y67Rg8d7RD9WfOLLv8CGn6tisFvS2htm86yIe1yLF6I1UDaGQ==}
     engines: {node: ^10.13.0 || ^12.13.0 || >=14.0.0}
     peerDependencies:
@@ -2734,8 +2734,8 @@ packages:
     resolution: {integrity: sha512-qDbZNiXVPx6X/Z2MpU3Oa2kWNSrk5+mG8ZRdH/thD7iwnV4l6DtBctNyXK/Cjq4EpG3eQQra8LBVxwOyDt0GqA==}
     dependencies:
       '@fluentui/set-version': 8.2.2
-      '@fluentui/style-utilities': 8.8.1_vshvapmxg47tngu7tvrsqpq55u
-      '@fluentui/utilities': 8.13.2_vshvapmxg47tngu7tvrsqpq55u
+      '@fluentui/style-utilities': 8.8.1_ac8f503d97373f369a9f9d63283e1ded
+      '@fluentui/utilities': 8.13.2_ac8f503d97373f369a9f9d63283e1ded
       tslib: 2.5.0
     transitivePeerDependencies:
       - '@types/react'
@@ -8792,7 +8792,7 @@ packages:
       eslint: '>=7.5'
     dependencies:
       '@babel/core': 7.20.12
-      '@babel/eslint-parser': 7.19.1_go3kp2l7mdrkdyt3xfyeu7ppfa
+      '@babel/eslint-parser': 7.19.1_33b6a7e97f60e2a1e27bb9704a7def28
       eslint: 7.32.0
       lodash: 4.17.21
       requireindex: 1.2.0
@@ -8800,7 +8800,7 @@ packages:
       - supports-color
     dev: false
 
-  /eslint-plugin-import/2.27.5_kuqv7qxblf6fgldep4hddd7xwa:
+  /eslint-plugin-import/2.27.5_eslint@8.33.0:
     resolution: {integrity: sha512-LmEt3GVofgiGuiE+ORpnvP+kAm3h6MLZJ4Q5HCyHADofsb4VzXFsRiWj3c0OFiV+3DWFh0qg3v9gcPlfc3zRow==}
     engines: {node: '>=4'}
     peerDependencies:

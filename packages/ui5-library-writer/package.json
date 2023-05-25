@@ -1,13 +1,13 @@
 {
-    "name": "@sap-ux/reuse-lib-writer",
+    "name": "@sap-ux/ui5-library-writer",
     "description": "Writer module to generate a new reuse library",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/reuse-lib-writer"
+        "directory": "packages/ui5-library-writer"
     },
     "bugs": {
-        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Areuse-lib-writer"
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-library-writer"
     },
     "version": "0.0.1",
     "license": "Apache-2.0",

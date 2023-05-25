@@ -1,8 +1,8 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/reuse-lib-writer.i18n.json';
+import translations from './translations/ui5-library-writer.i18n.json';
 
-const NS = 'reuse-lib-writer';
+const NS = 'ui5-library-writer';
 
 /**
  * Initialize i18next with the translations for this module.

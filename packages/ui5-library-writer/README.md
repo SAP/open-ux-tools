@@ -1,24 +1,24 @@
-# @sap-ux/reuse-lib-writer
+# @sap-ux/ui5-library-writer
 
 Easy to use Reuse Library files writer for use within Yeoman generator and other prompting libraries. 
 
 
 ## Installation
 Npm
-`npm install --save @sap-ux/reuse-lib-writer`
+`npm install --save @sap-ux/ui5-library-writer`
 
 Yarn
-`yarn add @sap-ux/reuse-lib-writer`
+`yarn add @sap-ux/ui5-library-writer`
 
 Pnpm
-`pnpm add @sap-ux/reuse-lib-writer`
+`pnpm add @sap-ux/ui5-library-writer`
 
 ## Usage
 
 
 Calling the `generate` function
 ```javascript
-import { generate } from '@sap-ux/reuse-lib-writer'
+import { generate } from '@sap-ux/ui5-library-writer'
 import { join } from 'path';
 
 const exampleWriter = async () => {
