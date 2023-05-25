@@ -10,6 +10,9 @@ export { generateCustomColumn } from './column';
 export { CustomSection, CustomSubSection } from './section/types';
 export { generateCustomSection, generateCustomSubSection } from './section';
 
+export { CustomFilter } from './filter/types';
+export { generateCustomFilter } from './filter';
+
 export { CustomView } from './view/types';
 export { generateCustomView } from './view';
 
