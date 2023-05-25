@@ -83,6 +83,29 @@ describe('<UIActionCallout />', () => {
         expect(onGABoxClick).toHaveBeenCalledWith(helpLinkCommand.command);
     });
 
+    it('Callback on click with no command (URL)', () => {
+        const onGABoxClick = jest.fn();
+        const onClickCallback = jest.fn();
+
+        const { container } = render(
+            <div>
+                <div id="aDivId"></div>
+                <UIActionCallout
+                    commandAction={onGABoxClick}
+                    targetElementId={'aDivId'}
+                    actionDetail={{ linkText: 'Some link text', subText: 'some sub-text' }}
+                    onClick={onClickCallback}></UIActionCallout>
+            </div>
+        );
+
+        const callout = container.getElementsByClassName('UIActionCallout-callout')[0];
+
+        fireEvent.click(callout);
+
+        expect(onClickCallback).toHaveBeenCalledTimes(1);
+        expect(onGABoxClick).not.toHaveBeenCalled();
+    });
+
     it('Renders with correct root position via "showInline" property', () => {
         let { container } = render(
             <div>
