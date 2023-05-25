@@ -1,5 +1,26 @@
 # @sap-ux/deploy-tooling
 
+## 0.2.7
+
+### Patch Changes
+
+-   c1dcb9d4: Cleanup archive.zip name
+
+## 0.2.6
+
+### Patch Changes
+
+-   Updated dependencies [aeba5509]
+    -   @sap-ux/axios-extension@1.2.4
+
+## 0.2.5
+
+### Patch Changes
+
+-   31eb27c4: Only eject the fetch request interceptor when a valid csrf token is received
+-   Updated dependencies [31eb27c4]
+    -   @sap-ux/axios-extension@1.2.3
+
 ## 0.2.4
 
 ### Patch Changes

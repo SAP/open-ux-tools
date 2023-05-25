@@ -2,13 +2,13 @@ import type { FreestyleApp } from '../src';
 import { generate, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
-import { testOutputDir, debug } from './common';
+import { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath } from './common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
 import { projectChecks } from './common';
 
 const TEST_NAME = 'basicTemplate';
-jest.setTimeout(120000); // Needed when debug.enabled
+jest.setTimeout(240000); // Needed when debug.enabled
 
 jest.mock('read-pkg-up', () => ({
     sync: jest.fn().mockReturnValue({
@@ -148,9 +148,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         const fs = await generate(testPath, config);
         expect(fs.dump(testPath)).toMatchSnapshot();
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // write out the files for debugging
             if (debug?.enabled) {
+                await updatePackageJSONDependencyToUseLocalPath(testPath, fs);
                 fs.commit(resolve);
             } else {
                 resolve(true);

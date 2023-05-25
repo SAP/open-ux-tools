@@ -9,7 +9,7 @@ Object {
         [
             \\"transform-ui5\\",
             {
-                \\"addControllerStaticPropsToExtend\\": true
+                \\"overridesToOverride\\": true
             }
         ],
         \\"@babel/preset-typescript\\"
@@ -19,28 +19,10 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"root\\": true,
-    \\"env\\": {
-        \\"browser\\": true,
-        \\"es6\\": true,
-        \\"node\\": true
-    },
-    \\"extends\\": [
-        \\"eslint:recommended\\",
-        \\"plugin:@typescript-eslint/recommended\\",
-        \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\"
-    ],
-	\\"ignorePatterns\\": [\\".eslintignore.js\\"],
-    \\"parser\\": \\"@typescript-eslint/parser\\",
-    \\"parserOptions\\": {
-        \\"project\\": [\\"./tsconfig.json\\"],
-        \\"tsconfigRootDir\\": \\".\\",
-        \\"sourceType\\": \\"module\\"
-    },
-    \\"plugins\\": [
-        \\"@typescript-eslint\\"
-    ]
-}",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
+    \\"root\\": true
+}
+",
     "state": "modified",
   },
   ".gitignore": Object {
@@ -73,16 +55,18 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
+    \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
     \\"typescript\\": \\"^4.6.3\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.1.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
@@ -344,7 +328,7 @@ export default class Component extends UIComponent {
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line sap-no-proprietary-browser-api
+            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -489,7 +473,7 @@ export default class BaseController extends Controller {
   },
   "webapp/controller/Detail.controller.ts": Object {
     "contents": "import { URLHelper } from \\"sap/m/library\\";
-import Table from \\"sap/m/Table\\";;
+import Table from \\"sap/m/Table\\";
 import Event from \\"sap/ui/base/Event\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
 import ListBinding from \\"sap/ui/model/ListBinding\\";
@@ -629,7 +613,7 @@ export default class Detail extends BaseController {
         const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
         const viewModel = this.getModel<JSONModel>(\\"detailView\\");
         const lineItemTable = this.byId(\\"lineItemsList\\") as Table;
-        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time
@@ -716,7 +700,7 @@ export default class ErrorHandler extends UI5Object {
         const model = component.getModel() as ODataModel;
         model.attachMetadataFailed(this.showServiceError);
         model.attachRequestFailed(function (this: ErrorHandler, event: Event) {
-            const params = event.getParameters() as { response: XMLHttpRequest['response'] };
+            const params = event.getParameters() as { response: XMLHttpRequest[\\"response\\"] };
             // An entity that was not found in the service is also throwing a 404 error in oData.
             // We already cover this case with a notFound target so we skip it here.
             // A request that cannot be sent to the server is a technical error that we have to handle though
@@ -740,7 +724,7 @@ export default class ErrorHandler extends UI5Object {
             ((this.component.getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle).getText(\\"errorText\\") || \\"\\",
             {
                 id: \\"serviceErrorMessageBox\\",
-                details: (event.getParameters() as XMLHttpRequest['response']).response,
+                details: (event.getParameters() as XMLHttpRequest[\\"response\\"]).response,
                 styleClass: this.component.getContentDensityClass(),
                 actions: [Action.CLOSE],
                 onClose: function (this: ErrorHandler) {
@@ -786,14 +770,14 @@ export default class List extends BaseController {
         
     private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
         Phone: (context: Context) => {
-            const iNumber = context.getProperty('Phone');
+            const iNumber = context.getProperty(\\"Phone\\");
             let key, text;
             if (iNumber <= 20) {
                 key = \\"LE20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || '';
+                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || \\"\\";
             } else {
                 key = \\"GT20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || '';
+                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || \\"\\";
             }
             return {
                 key: key,
@@ -927,7 +911,7 @@ export default class List extends BaseController {
      */
     public onConfirmViewSettingsDialog(event: Event) {
         
-        const filterItems = event.getParameter('filterItems') as ViewSettingsItem[];
+        const filterItems = event.getParameter(\\"filterItems\\") as ViewSettingsItem[];
         const filters:  Filter[] = [];
         const captions: string[] = [];
 
@@ -1112,12 +1096,12 @@ export default class ListSelector extends UI5Object {
      */
      constructor() {
         super();
-        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector[\\"_fnResolveListHasBeenSet\\"]) {
             this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
         // invoke selectItem functions before calling setBoundList
-        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: (arg0: { oList: List; }) => void, reject: (arg0: { oList: List; }) => void) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
                     oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
@@ -1132,7 +1116,7 @@ export default class ListSelector extends UI5Object {
                     );
                 }.bind(this));
         }.bind(this));
-    };
+    }
 
     /**
      * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
@@ -2090,7 +2074,7 @@ export function currencyValue(value: string): string {
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",
@@ -2695,7 +2679,7 @@ Object {
         [
             \\"transform-ui5\\",
             {
-                \\"addControllerStaticPropsToExtend\\": true
+                \\"overridesToOverride\\": true
             }
         ],
         \\"@babel/preset-typescript\\"
@@ -2705,28 +2689,10 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"root\\": true,
-    \\"env\\": {
-        \\"browser\\": true,
-        \\"es6\\": true,
-        \\"node\\": true
-    },
-    \\"extends\\": [
-        \\"eslint:recommended\\",
-        \\"plugin:@typescript-eslint/recommended\\",
-        \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\"
-    ],
-	\\"ignorePatterns\\": [\\".eslintignore.js\\"],
-    \\"parser\\": \\"@typescript-eslint/parser\\",
-    \\"parserOptions\\": {
-        \\"project\\": [\\"./tsconfig.json\\"],
-        \\"tsconfigRootDir\\": \\".\\",
-        \\"sourceType\\": \\"module\\"
-    },
-    \\"plugins\\": [
-        \\"@typescript-eslint\\"
-    ]
-}",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
+    \\"root\\": true
+}
+",
     "state": "modified",
   },
   ".gitignore": Object {
@@ -2759,16 +2725,18 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
+    \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
     \\"typescript\\": \\"^4.6.3\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.1.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
@@ -3030,7 +2998,7 @@ export default class Component extends UIComponent {
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line sap-no-proprietary-browser-api
+            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -3175,7 +3143,7 @@ export default class BaseController extends Controller {
   },
   "webapp/controller/Detail.controller.ts": Object {
     "contents": "import { URLHelper } from \\"sap/m/library\\";
-import Table from \\"sap/m/Table\\";;
+import Table from \\"sap/m/Table\\";
 import Event from \\"sap/ui/base/Event\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
 import ListBinding from \\"sap/ui/model/ListBinding\\";
@@ -3315,7 +3283,7 @@ export default class Detail extends BaseController {
         const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
         const viewModel = this.getModel<JSONModel>(\\"detailView\\");
         const lineItemTable = this.byId(\\"lineItemsList\\") as Table;
-        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time
@@ -3402,7 +3370,7 @@ export default class ErrorHandler extends UI5Object {
         const model = component.getModel() as ODataModel;
         model.attachMetadataFailed(this.showServiceError);
         model.attachRequestFailed(function (this: ErrorHandler, event: Event) {
-            const params = event.getParameters() as { response: XMLHttpRequest['response'] };
+            const params = event.getParameters() as { response: XMLHttpRequest[\\"response\\"] };
             // An entity that was not found in the service is also throwing a 404 error in oData.
             // We already cover this case with a notFound target so we skip it here.
             // A request that cannot be sent to the server is a technical error that we have to handle though
@@ -3426,7 +3394,7 @@ export default class ErrorHandler extends UI5Object {
             ((this.component.getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle).getText(\\"errorText\\") || \\"\\",
             {
                 id: \\"serviceErrorMessageBox\\",
-                details: (event.getParameters() as XMLHttpRequest['response']).response,
+                details: (event.getParameters() as XMLHttpRequest[\\"response\\"]).response,
                 styleClass: this.component.getContentDensityClass(),
                 actions: [Action.CLOSE],
                 onClose: function (this: ErrorHandler) {
@@ -3472,14 +3440,14 @@ export default class List extends BaseController {
         
     private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
         Phone: (context: Context) => {
-            const iNumber = context.getProperty('Phone');
+            const iNumber = context.getProperty(\\"Phone\\");
             let key, text;
             if (iNumber <= 20) {
                 key = \\"LE20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || '';
+                text = this.getResourceBundle().getText(\\"listGroup1Header1\\") || \\"\\";
             } else {
                 key = \\"GT20\\";
-                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || '';
+                text = this.getResourceBundle().getText(\\"listGroup1Header2\\") || \\"\\";
             }
             return {
                 key: key,
@@ -3613,7 +3581,7 @@ export default class List extends BaseController {
      */
     public onConfirmViewSettingsDialog(event: Event) {
         
-        const filterItems = event.getParameter('filterItems') as ViewSettingsItem[];
+        const filterItems = event.getParameter(\\"filterItems\\") as ViewSettingsItem[];
         const filters:  Filter[] = [];
         const captions: string[] = [];
 
@@ -3798,12 +3766,12 @@ export default class ListSelector extends UI5Object {
      */
      constructor() {
         super();
-        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector[\\"_fnResolveListHasBeenSet\\"]) {
             this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
         // invoke selectItem functions before calling setBoundList
-        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: (arg0: { oList: List; }) => void, reject: (arg0: { oList: List; }) => void) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
                     oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
@@ -3818,7 +3786,7 @@ export default class ListSelector extends UI5Object {
                     );
                 }.bind(this));
         }.bind(this));
-    };
+    }
 
     /**
      * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
@@ -4776,7 +4744,7 @@ export function currencyValue(value: string): string {
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",
@@ -5378,48 +5346,9 @@ Object {
     "contents": "{
   \\"root\\": true,
   \\"plugins\\": [
-    \\"@sap/ui5-jsdocs\\",
-    \\"fiori-custom\\"
+    \\"@sap/ui5-jsdocs\\"
   ],
-  \\"extends\\": [
-    \\"plugin:@sap/ui5-jsdocs/recommended\\",
-    \\"eslint:recommended\\"
-  ],
-  \\"overrides\\": [
-    {
-      \\"files\\": [
-        \\"**/*.*\\"
-      ],
-      \\"excludedFiles\\": [
-        \\"test/**\\",
-        \\"target/**\\",
-        \\"webapp/test/**\\",
-        \\"webapp/localservice/**\\",
-        \\"backup/**\\",
-        \\"Gruntfile.js\\",
-        \\"changes_preview.js\\",
-        \\"gulpfile.js\\"
-      ],
-      \\"plugins\\": [
-        \\"fiori-custom\\"
-      ],
-      \\"extends\\": [
-        \\"eslint:recommended\\",
-        \\"plugin:fiori-custom/fioriToolsDefault\\"
-      ]
-    },
-    {
-      \\"files\\": [
-        \\"webapp/test/**\\"
-      ],
-      \\"plugins\\": [
-        \\"fiori-custom\\"
-      ],
-      \\"extends\\": [
-        \\"plugin:fiori-custom/fioriToolsTestcode\\"
-      ]
-    }
-  ]
+  \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultJS\\"
 }
 ",
     "state": "modified",
@@ -5456,6 +5385,7 @@ archive.zip
     \\"eslint\\": \\"7.32.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
     \\"@sapui5/ts-types\\": \\"1.71.15\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.1.0\\",
     \\"eslint-plugin-fiori-custom\\": \\"2.6.7\\",
     \\"@babel/eslint-parser\\": \\"7.14.7\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -7935,7 +7865,7 @@ Object {
         [
             \\"transform-ui5\\",
             {
-                \\"addControllerStaticPropsToExtend\\": true
+                \\"overridesToOverride\\": true
             }
         ],
         \\"@babel/preset-typescript\\"
@@ -7945,28 +7875,10 @@ Object {
   },
   ".eslintrc": Object {
     "contents": "{
-    \\"root\\": true,
-    \\"env\\": {
-        \\"browser\\": true,
-        \\"es6\\": true,
-        \\"node\\": true
-    },
-    \\"extends\\": [
-        \\"eslint:recommended\\",
-        \\"plugin:@typescript-eslint/recommended\\",
-        \\"plugin:@typescript-eslint/recommended-requiring-type-checking\\"
-    ],
-	\\"ignorePatterns\\": [\\".eslintignore.js\\"],
-    \\"parser\\": \\"@typescript-eslint/parser\\",
-    \\"parserOptions\\": {
-        \\"project\\": [\\"./tsconfig.json\\"],
-        \\"tsconfigRootDir\\": \\".\\",
-        \\"sourceType\\": \\"module\\"
-    },
-    \\"plugins\\": [
-        \\"@typescript-eslint\\"
-    ]
-}",
+    \\"extends\\": \\"plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS\\",
+    \\"root\\": true
+}
+",
     "state": "modified",
   },
   ".gitignore": Object {
@@ -7999,16 +7911,18 @@ archive.zip
     \\"@ui5/cli\\": \\"^3.0.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.3.7\\",
+    \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
     \\"typescript\\": \\"^4.6.3\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^5.17.0\\",
-    \\"@typescript-eslint/parser\\": \\"^5.17.0\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
+    \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
+    \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.1.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
@@ -8270,7 +8184,7 @@ export default class Component extends UIComponent {
     public getContentDensityClass(): string {
         if (this.contentDensityClass === undefined) {
             // check whether FLP has already set the content density class; do nothing in this case
-            // eslint-disable-next-line sap-no-proprietary-browser-api
+            // eslint-disable-next-line fiori-custom/sap-no-proprietary-browser-api
             if (document.body.classList.contains(\\"sapUiSizeCozy\\") || document.body.classList.contains(\\"sapUiSizeCompact\\")) {
                 this.contentDensityClass = \\"\\";
             } else if (!support.touch) { // apply \\"compact\\" mode if touch is not supported
@@ -8415,7 +8329,7 @@ export default class BaseController extends Controller {
   },
   "webapp/controller/Detail.controller.ts": Object {
     "contents": "import { URLHelper } from \\"sap/m/library\\";
-import Table from \\"sap/m/Table\\";;
+import Table from \\"sap/m/Table\\";
 import Event from \\"sap/ui/base/Event\\";
 import JSONModel from \\"sap/ui/model/json/JSONModel\\";
 import ListBinding from \\"sap/ui/model/ListBinding\\";
@@ -8555,7 +8469,7 @@ export default class Detail extends BaseController {
         const originalViewBusyDelay = this.getView()!.getBusyIndicatorDelay();
         const viewModel = this.getModel<JSONModel>(\\"detailView\\");
         const lineItemTable = this.byId(\\"lineItemsList\\") as Table;
-        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();;
+        const originalLineItemTableBusyDelay = lineItemTable.getBusyIndicatorDelay();
 
         // Make sure busy indicator is displayed immediately when
         // detail view is displayed for the first time
@@ -8642,7 +8556,7 @@ export default class ErrorHandler extends UI5Object {
         const model = component.getModel() as ODataModel;
         model.attachMetadataFailed(this.showServiceError);
         model.attachRequestFailed(function (this: ErrorHandler, event: Event) {
-            const params = event.getParameters() as { response: XMLHttpRequest['response'] };
+            const params = event.getParameters() as { response: XMLHttpRequest[\\"response\\"] };
             // An entity that was not found in the service is also throwing a 404 error in oData.
             // We already cover this case with a notFound target so we skip it here.
             // A request that cannot be sent to the server is a technical error that we have to handle though
@@ -8666,7 +8580,7 @@ export default class ErrorHandler extends UI5Object {
             ((this.component.getModel(\\"i18n\\") as ResourceModel).getResourceBundle() as ResourceBundle).getText(\\"errorText\\") || \\"\\",
             {
                 id: \\"serviceErrorMessageBox\\",
-                details: (event.getParameters() as XMLHttpRequest['response']).response,
+                details: (event.getParameters() as XMLHttpRequest[\\"response\\"]).response,
                 styleClass: this.component.getContentDensityClass(),
                 actions: [Action.CLOSE],
                 onClose: function (this: ErrorHandler) {
@@ -8979,12 +8893,12 @@ export default class ListSelector extends UI5Object {
      */
      constructor() {
         super();
-        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector['_fnResolveListHasBeenSet']) {
+        this._oWhenListHasBeenSet = new Promise(function (this: ListSelector, fnResolveListHasBeenSet: ListSelector[\\"_fnResolveListHasBeenSet\\"]) {
             this._fnResolveListHasBeenSet = fnResolveListHasBeenSet;
         }.bind(this));
         // This promise needs to be created in the constructor, since it is allowed to
         // invoke selectItem functions before calling setBoundList
-        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: Function, reject: Function) {
+        this.oWhenListLoadingIsDone = new Promise(function (this: ListSelector, resolve: (arg0: { oList: List; }) => void, reject: (arg0: { oList: List; }) => void) {
             this._oWhenListHasBeenSet
                 .then(function (this: ListSelector, oList: List) {
                     oList.getBinding(\\"items\\")?.attachEventOnce(\\"dataReceived\\",
@@ -8999,7 +8913,7 @@ export default class ListSelector extends UI5Object {
                     );
                 }.bind(this));
         }.bind(this));
-    };
+    }
 
     /**
      * A bound list should be passed in here. Should be done, before the list has received its initial data from the server.
@@ -9927,7 +9841,7 @@ export function currencyValue(value: string): string {
 import Device from \\"sap/ui/Device\\";
 
 export function createDeviceModel () {
-    var model = new JSONModel(Device);
+    const model = new JSONModel(Device);
     model.setDefaultBindingMode(\\"OneWay\\");
     return model;
 }",

@@ -1,5 +1,17 @@
 # @sap-ux/project-access
 
+## 1.5.0
+
+### Minor Changes
+
+-   d80f6f34: Add findFioriArtifacts() to allow searching for apps, adaptation projects, extension projects, and libraries
+
+## 1.4.0
+
+### Minor Changes
+
+-   f50c3517: Add getCapEnvironment() to allow getting project specific configuration
+
 ## 1.3.1
 
 ### Patch Changes

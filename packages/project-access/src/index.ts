@@ -1,9 +1,11 @@
 export { FileName } from './constants';
 export {
     findAllApps,
+    findFioriArtifacts,
     findProjectRoot,
     getAppRootFromWebappPath,
     getAppProgrammingLanguage,
+    getCapEnvironment,
     getCapModelAndServices,
     getCapProjectType,
     getWebappPath,

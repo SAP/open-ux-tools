@@ -206,7 +206,7 @@ async function handleAxiosError(
             );
             logger.info('Please enter your credentials for this deployment.');
             const credentials = await promptCredentials(service.defaults.auth?.username);
-            if (credentials) {
+            if (Object.keys(credentials).length) {
                 service.defaults.auth = credentials;
                 await tryDeploy(archive, service, config, logger);
                 return true;
@@ -235,7 +235,7 @@ async function handleAxiosError(
  */
 export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger): Promise<void> {
     if (config.keep) {
-        writeFileSync(`archive-${Date.now()}.zip`, archive);
+        writeFileSync(`archive.zip`, archive);
     }
     const service = await createDeployService(config, logger);
     service.log = logger;

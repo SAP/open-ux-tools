@@ -3,7 +3,7 @@ import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
 import { isCapNodeJsProject, isCapJavaProject, getCapModelAndServices, getCapProjectType } from '../../src';
-import { getCapCustomPaths } from '../../src/project/cap';
+import { getCapCustomPaths, getCapEnvironment } from '../../src/project/cap';
 import { readJSON } from '../../src/file';
 
 describe('Test getCapProjectType()', () => {
@@ -138,5 +138,24 @@ describe('Test getCapCustomPaths()', () => {
             db: 'db/',
             srv: 'srv/'
         });
+    });
+});
+
+describe('Test getCapEnvironment', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('default export', async () => {
+        const forSpy = jest.fn();
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => {
+            return Promise.resolve({
+                env: {
+                    for: forSpy
+                }
+            });
+        });
+        await getCapEnvironment('PROJECT_ROOT');
+        expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
 });
