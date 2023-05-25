@@ -17,6 +17,7 @@ Pnpm
 
 To consume this module, add @sap-ux/eslint-plugin-fiori-tools to `extend` in your existing eslintrc configuration. You must specify one of the following configurations:
 
-- default: contains rules for typescript and rules for both prod and test code from plugin eslint-plugin-fiori-custom 
+- defaultJS: contains rules for JavaScript for both prod and test code from plugin eslint-plugin-fiori-custom 
+- defaultTS: contains rules for typescript and rules for both prod and test code from plugin eslint-plugin-fiori-custom 
 - testcode: contains rules for typescript and rules for test code from plugin eslint-plugin-fiori-custom
 - prodCode: contains rules for typescript and rules for production code from plugin eslint-plugin-fiori-custom
