@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.8.0
+
+### Minor Changes
+
+-   5c34522c: fix on click logic
+
 ## 1.7.0
 
 ### Minor Changes
