@@ -1,5 +1,20 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.6
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+-   Updated dependencies [0aa02ab0]
+    -   @sap-ux/fe-fpm-writer@0.20.1
+
+## 0.12.5
+
+### Patch Changes
+
+-   Updated dependencies [906b7fea]
+    -   @sap-ux/ui5-application-writer@0.22.3
+
 ## 0.12.4
 
 ### Patch Changes
