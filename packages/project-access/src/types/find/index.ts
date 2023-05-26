@@ -38,6 +38,11 @@ export interface AdaptationResults {
      * Root of the adapted application where package.json and ui5.yaml resides.
      */
     appRoot: string;
+
+    /**
+     * Path to manifest.appdescr_variant
+     */
+    manifestAppdescrVariantPath: string;
 }
 
 /**
