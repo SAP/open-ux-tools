@@ -1632,26 +1632,29 @@ exports[`Fiori Elements template: ovpTemplate Generate files for template: ovpV2
 Object {
   ".babelrc.json": Object {
     "contents": "{
-	\\"ignore\\": [\\"**/*.d.ts\\"],
-	\\"presets\\": [
-        \\"@babel/preset-env\\", 
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
+    \\"presets\\": [
+        \\"@babel/preset-env\\",
         [
             \\"transform-ui5\\",
             {
                 \\"overridesToOverride\\": true
             }
         ],
-        \\"@babel/preset-typescript\\"],
-	\\"plugins\\": [
-		\\"transform-remove-console\\",
+        \\"@babel/preset-typescript\\"
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
         [
-			\\"transform-async-to-promises\\",
-			{
-				\\"inlineHelpers\\": true
-			}
-		]
-	],
-	\\"sourceMaps\\": true
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }",
     "state": "modified",
   },
@@ -1721,30 +1724,32 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"feovp1/*\\": [
-        \\"webapp/*\\"
-      ]
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2015\\",
+        \\"module\\": \\"es2015\\",
+        \\"skipLibCheck\\": true,
+        \\"preserveConstEnums\\": true,
+        \\"inlineSourceMap\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictNullChecks\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"webapp\\",
+        \\"outDir\\": \\"./dist\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"feovp1/*\\": [
+                \\"webapp/*\\"
+            ]
+        },
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
+        ]
     },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
+    \\"include\\": [
+        \\"webapp/**/*\\"
+    ]
 }",
     "state": "modified",
   },
@@ -9062,26 +9067,29 @@ exports[`Fiori Elements template: ovpTemplate Generate files for template: ovpV4
 Object {
   ".babelrc.json": Object {
     "contents": "{
-	\\"ignore\\": [\\"**/*.d.ts\\"],
-	\\"presets\\": [
-        \\"@babel/preset-env\\", 
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
+    \\"presets\\": [
+        \\"@babel/preset-env\\",
         [
             \\"transform-ui5\\",
             {
                 \\"overridesToOverride\\": true
             }
         ],
-        \\"@babel/preset-typescript\\"],
-	\\"plugins\\": [
-		\\"transform-remove-console\\",
+        \\"@babel/preset-typescript\\"
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
         [
-			\\"transform-async-to-promises\\",
-			{
-				\\"inlineHelpers\\": true
-			}
-		]
-	],
-	\\"sourceMaps\\": true
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }",
     "state": "modified",
   },
@@ -9151,30 +9159,32 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"feovp2/*\\": [
-        \\"webapp/*\\"
-      ]
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2015\\",
+        \\"module\\": \\"es2015\\",
+        \\"skipLibCheck\\": true,
+        \\"preserveConstEnums\\": true,
+        \\"inlineSourceMap\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictNullChecks\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"webapp\\",
+        \\"outDir\\": \\"./dist\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"feovp2/*\\": [
+                \\"webapp/*\\"
+            ]
+        },
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
+        ]
     },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
+    \\"include\\": [
+        \\"webapp/**/*\\"
+    ]
 }",
     "state": "modified",
   },
