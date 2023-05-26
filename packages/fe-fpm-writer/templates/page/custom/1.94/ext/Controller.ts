@@ -1,4 +1,4 @@
-import Controller from 'sap/fe/core/PageController';
+import Controller from "sap/fe/core/PageController";
 
 /**
  * @namespace <%- ns %>.<%- name %>.controller

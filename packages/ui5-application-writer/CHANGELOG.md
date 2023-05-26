@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 0.22.3
+
+### Patch Changes
+
+-   906b7fea: Fix: incorrect settings for ui5-middleware-transpile
+
 ## 0.22.2
 
 ### Patch Changes

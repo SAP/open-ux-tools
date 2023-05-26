@@ -17590,8 +17590,11 @@ exports[`Fiori Elements template: lropTemplates Generate files for template: lro
 Object {
   ".babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [\\"**/*.d.ts\\"],
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
     \\"presets\\": [
+        \\"@babel/preset-env\\",
         [
             \\"transform-ui5\\",
             {
@@ -17599,7 +17602,17 @@ Object {
             }
         ],
         \\"@babel/preset-typescript\\"
-    ]
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
+        [
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }",
     "state": "modified",
   },
@@ -17642,7 +17655,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.77\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
+    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
@@ -17669,30 +17682,28 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"lropV2_ts/*\\": [
-        \\"webapp/*\\"
-      ]
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
+        \\"skipLibCheck\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"./webapp\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"lropV2_ts/*\\": [
+                \\"./webapp/*\\"
+            ]
+        },
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
+        ]
     },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
+    \\"include\\": [
+        \\"./webapp/**/*\\"
+    ]
 }",
     "state": "modified",
   },
@@ -17727,8 +17738,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -17755,9 +17764,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -17793,8 +17799,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -17813,9 +17817,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -17851,8 +17852,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -17861,14 +17860,11 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
+    "contents": "import BaseComponent from \\"sap/suite/ui/generic/template/lib/AppComponent\\";
 
 /**
  * @namespace lropV2_ts
@@ -21087,8 +21083,11 @@ exports[`Fiori Elements template: lropTemplates Generate files for template: lro
 Object {
   ".babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [\\"**/*.d.ts\\"],
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
     \\"presets\\": [
+        \\"@babel/preset-env\\",
         [
             \\"transform-ui5\\",
             {
@@ -21096,7 +21095,17 @@ Object {
             }
         ],
         \\"@babel/preset-typescript\\"
-    ]
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
+        [
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }",
     "state": "modified",
   },
@@ -21139,7 +21148,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.108\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
+    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
@@ -21166,30 +21175,28 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"lropV2_ts_ui5_1_108/*\\": [
-        \\"webapp/*\\"
-      ]
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
+        \\"skipLibCheck\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"./webapp\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"lropV2_ts_ui5_1_108/*\\": [
+                \\"./webapp/*\\"
+            ]
+        },
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
+        ]
     },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
+    \\"include\\": [
+        \\"./webapp/**/*\\"
+    ]
 }",
     "state": "modified",
   },
@@ -21224,8 +21231,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -21252,9 +21257,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -21290,8 +21292,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -21310,9 +21310,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -21348,8 +21345,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -21358,14 +21353,11 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
+    "contents": "import BaseComponent from \\"sap/suite/ui/generic/template/lib/AppComponent\\";
 
 /**
  * @namespace lropV2_ts_ui5_1_108
@@ -24573,8 +24565,11 @@ exports[`Fiori Elements template: lropTemplates Generate files for template: lro
 Object {
   ".babelrc.json": Object {
     "contents": "{
-    \\"ignore\\": [\\"**/*.d.ts\\"],
+    \\"ignore\\": [
+        \\"**/*.d.ts\\"
+    ],
     \\"presets\\": [
+        \\"@babel/preset-env\\",
         [
             \\"transform-ui5\\",
             {
@@ -24582,7 +24577,17 @@ Object {
             }
         ],
         \\"@babel/preset-typescript\\"
-    ]
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
+        [
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }",
     "state": "modified",
   },
@@ -24625,7 +24630,7 @@ archive.zip
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap/ux-specification\\": \\"UI5-1.111\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
-    \\"ui5-tooling-transpile\\": \\"^0.7.8\\",
+    \\"ui5-tooling-transpile\\": \\"^0.7.10\\",
     \\"typescript\\": \\"^4.6.3\\",
     \\"@typescript-eslint/eslint-plugin\\": \\"^5.59.0\\",
     \\"@typescript-eslint/parser\\": \\"^5.59.0\\",
@@ -24652,30 +24657,28 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-  \\"compilerOptions\\": {
-    \\"target\\": \\"es2015\\",
-    \\"module\\": \\"es2015\\",
-    \\"skipLibCheck\\": true,
-    \\"preserveConstEnums\\": true,
-    \\"inlineSourceMap\\": true,
-    \\"allowJs\\": true,
-    \\"strict\\": true,
-    \\"strictNullChecks\\": true,
-    \\"strictPropertyInitialization\\": false,
-    \\"moduleResolution\\": \\"node\\",
-    \\"rootDir\\": \\"webapp\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"paths\\": {
-      \\"lropV2_ts_ui5_1_111/*\\": [
-        \\"webapp/*\\"
-      ]
+    \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
+        \\"skipLibCheck\\": true,
+        \\"allowJs\\": true,
+        \\"strict\\": true,
+        \\"strictPropertyInitialization\\": false,
+        \\"moduleResolution\\": \\"node\\",
+        \\"rootDir\\": \\"./webapp\\",
+        \\"baseUrl\\": \\"./\\",
+        \\"paths\\": {
+            \\"lropV2_ts_ui5_1_111/*\\": [
+                \\"./webapp/*\\"
+            ]
+        },
+        \\"types\\": [
+            \\"@sapui5/ts-types-esm\\"
+        ]
     },
-    \\"types\\": [ \\"@sapui5/ts-types-esm\\" ]
-  },
-  \\"include\\": [
-    \\"webapp/**/*\\"
-  ]
+    \\"include\\": [
+        \\"./webapp/**/*\\"
+    ]
 }",
     "state": "modified",
   },
@@ -24710,8 +24713,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: fiori-tools-proxy
@@ -24738,9 +24739,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -24776,8 +24774,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
     - name: sap-fe-mockserver
@@ -24796,9 +24792,6 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
@@ -24834,8 +24827,6 @@ server:
       afterMiddleware: compression
       configuration:
         debug: true
-        transpileAsync: true
-        transpileTypeScript: true
         excludePatterns:
           - /Component-preload.js
 builder:
@@ -24844,14 +24835,11 @@ builder:
       afterTask: replaceVersion
       configuration:
         debug: true
-        removeConsoleStatements: true
-        transpileAsync: true
-        transpileTypeScript: true
 ",
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
+    "contents": "import BaseComponent from \\"sap/suite/ui/generic/template/lib/AppComponent\\";
 
 /**
  * @namespace lropV2_ts_ui5_1_111

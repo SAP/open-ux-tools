@@ -1,6 +1,9 @@
 {
-    "ignore": ["**/*.d.ts"],
+    "ignore": [
+        "**/*.d.ts"
+    ],
     "presets": [
+        "@babel/preset-env",
         [
             "transform-ui5",
             {
@@ -8,5 +11,15 @@
             }
         ],
         "@babel/preset-typescript"
-    ]
+    ],
+    "plugins": [
+        "transform-remove-console",
+        [
+            "transform-async-to-promises",
+            {
+                "inlineHelpers": true
+            }
+        ]
+    ],
+    "sourceMaps": true
 }
