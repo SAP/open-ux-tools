@@ -17864,7 +17864,7 @@ builder:
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
+    "contents": "import BaseComponent from \\"sap/suite/ui/generic/template/lib/AppComponent\\";
 
 /**
  * @namespace lropV2_ts
@@ -21357,7 +21357,7 @@ builder:
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
+    "contents": "import BaseComponent from \\"sap/suite/ui/generic/template/lib/AppComponent\\";
 
 /**
  * @namespace lropV2_ts_ui5_1_108
@@ -24839,7 +24839,7 @@ builder:
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import BaseComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
+    "contents": "import BaseComponent from \\"sap/suite/ui/generic/template/lib/AppComponent\\";
 
 /**
  * @namespace lropV2_ts_ui5_1_111

@@ -3878,7 +3878,7 @@ builder:
     "state": "modified",
   },
   "webapp/Component.ts": Object {
-    "contents": "import AppComponent from 'sap/fe/core/AppComponent';
+    "contents": "import AppComponent from \\"sap/fe/core/AppComponent\\";
 
 /**
  * @namespace fefeop2ts
