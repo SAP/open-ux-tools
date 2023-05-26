@@ -12986,22 +12986,18 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
-        \\"target\\": \\"es2015\\",
-        \\"module\\": \\"es2015\\",
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
-        \\"preserveConstEnums\\": true,
-        \\"inlineSourceMap\\": true,
         \\"allowJs\\": true,
         \\"strict\\": true,
-        \\"strictNullChecks\\": true,
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
-        \\"rootDir\\": \\"webapp\\",
-        \\"outDir\\": \\"./dist\\",
+        \\"rootDir\\": \\"./webapp\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"wrk1/*\\": [
-                \\"webapp/*\\"
+                \\"./webapp/*\\"
             ]
         },
         \\"types\\": [
@@ -13009,7 +13005,7 @@ archive.zip
         ]
     },
     \\"include\\": [
-        \\"webapp/**/*\\"
+        \\"./webapp/**/*\\"
     ]
 }",
     "state": "modified",
@@ -16336,22 +16332,18 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
-        \\"target\\": \\"es2015\\",
-        \\"module\\": \\"es2015\\",
+        \\"target\\": \\"es2022\\",
+        \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
-        \\"preserveConstEnums\\": true,
-        \\"inlineSourceMap\\": true,
         \\"allowJs\\": true,
         \\"strict\\": true,
-        \\"strictNullChecks\\": true,
         \\"strictPropertyInitialization\\": false,
         \\"moduleResolution\\": \\"node\\",
-        \\"rootDir\\": \\"webapp\\",
-        \\"outDir\\": \\"./dist\\",
+        \\"rootDir\\": \\"./webapp\\",
         \\"baseUrl\\": \\"./\\",
         \\"paths\\": {
             \\"wrk1/*\\": [
-                \\"webapp/*\\"
+                \\"./webapp/*\\"
             ]
         },
         \\"types\\": [
@@ -16359,7 +16351,7 @@ archive.zip
         ]
     },
     \\"include\\": [
-        \\"webapp/**/*\\"
+        \\"./webapp/**/*\\"
     ]
 }",
     "state": "modified",

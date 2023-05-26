@@ -1,21 +1,17 @@
 {
     "compilerOptions": {
-        "target": "es2015",
-        "module": "es2015",
+        "target": "es2022",
+        "module": "es2022",
         "skipLibCheck": true,
-        "preserveConstEnums": true,
-        "inlineSourceMap": true,
         "allowJs": true,
         "strict": true,
-        "strictNullChecks": true,
         "strictPropertyInitialization": false,
         "moduleResolution": "node",
-        "rootDir": "webapp",
-        "outDir": "./dist",
+        "rootDir": "./webapp",
         "baseUrl": "./",
         "paths": {
             "<%-app.id.replace(/\./g, '/') %>/*": [
-                "webapp/*"
+                "./webapp/*"
             ]
         },
         "types": [
@@ -23,6 +19,6 @@
         ]
     },
     "include": [
-        "webapp/**/*"
+        "./webapp/**/*"
     ]
 }

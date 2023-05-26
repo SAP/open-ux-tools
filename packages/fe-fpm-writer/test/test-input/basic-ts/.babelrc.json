@@ -1,22 +1,25 @@
 {
-	"ignore": ["**/*.d.ts"],
-	"presets": [
-        "@babel/preset-env", 
+    "ignore": [
+        "**/*.d.ts"
+    ],
+    "presets": [
+        "@babel/preset-env",
         [
             "transform-ui5",
             {
                 "overridesToOverride": true
             }
         ],
-        "@babel/preset-typescript"],
-	"plugins": [
-		"transform-remove-console",
+        "@babel/preset-typescript"
+    ],
+    "plugins": [
+        "transform-remove-console",
         [
-			"transform-async-to-promises",
-			{
-				"inlineHelpers": true
-			}
-		]
-	],
-	"sourceMaps": true
+            "transform-async-to-promises",
+            {
+                "inlineHelpers": true
+            }
+        ]
+    ],
+    "sourceMaps": true
 }
