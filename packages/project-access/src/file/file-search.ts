@@ -2,6 +2,7 @@ import type { Editor, FileMap } from 'mem-fs-editor';
 import { basename, dirname, extname, join } from 'path';
 import { default as find } from 'findit2';
 import { fileExists } from './file-access';
+import { readdirSync, statSync } from 'fs';
 
 /**
  * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).
@@ -135,4 +136,19 @@ export async function findFileUp(fileName: string, startPath: string, fs?: Edito
     } else {
         return dirname(startPath) !== startPath ? findFileUp(fileName, dirname(startPath), fs) : undefined;
     }
+}
+
+/**
+ * @description Returns a flat list of all file paths under a directory tree,
+ * recursing through all subdirectories
+ * @param {string} dir - the directory to walk
+ * @returns {string[]} - array of file path strings
+ * @throws if an error occurs reading a file path
+ */
+export function getFilePaths(dir: string): string[] | [] {
+    return readdirSync(dir).reduce((files: string[], entry: string) => {
+        const entryPath = join(dir, entry);
+        const isDirectory = statSync(entryPath).isDirectory();
+        return isDirectory ? [...files, ...getFilePaths(entryPath)] : [...files, entryPath];
+    }, []);
 }
