@@ -235,7 +235,7 @@ async function handleAxiosError(
  */
 export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger): Promise<void> {
     if (config.keep) {
-        writeFileSync(`archive-${Date.now()}.zip`, archive);
+        writeFileSync(`archive.zip`, archive);
     }
     const service = await createDeployService(config, logger);
     service.log = logger;

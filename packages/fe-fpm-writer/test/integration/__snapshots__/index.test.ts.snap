@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`use FPM with existing apps extend UI5 application with FPM generateControllerExtension in ObjectPage 1`] = `
+exports[`use FPM with existing apps extend UI5 application with FPM generateCustomSubSection in ObjectPage 1`] = `
 Object {
   "lrop/webapp/ext/anotherCustomAction/AnotherCustomAction.js": Object {
     "contents": "sap.ui.define([
@@ -136,6 +136,27 @@ Object {
 ",
     "state": "modified",
   },
+  "lrop/webapp/ext/myCustomSubSection/MyCustomSubSection.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSubSection/MyCustomSubSection'}\\" text=\\"MyCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/myCustomSubSection/MyCustomSubSection.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/m/MessageToast\\"
+], function(MessageToast) {
+    'use strict';
+
+    return {
+        onPress: function(oEvent) {
+            MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
   "lrop/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
@@ -151,6 +172,47 @@ Object {
     return {
         onPress: function(oEvent) {
             MessageToast.show(\\"Custom handler invoked.\\");
+        }
+    };
+});
+",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/newCustomFilter/NewCustomFilter.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox
+            id=\\"testID\\"
+            core:require=\\"{handler: 'v4travel/ext/newCustomFilter/NewCustomFilter'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
+        >
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "lrop/webapp/ext/newCustomFilter/NewCustomFilter.js": Object {
+    "contents": "sap.ui.define([\\"sap/ui/model/Filter\\", \\"sap/ui/model/FilterOperator\\"], function(Filter, FilterOperator) {
+    \\"use strict\\";
+    return {
+        filterItems: function(sValue) {
+            switch (sValue) {
+                case \\"0\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+                case \\"1\\":
+                        return new Filter({
+                        filters: [
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                            new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                        ],
+                        and: true
+                    });
+                case \\"2\\":
+                        return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+            }
         }
     };
 });
@@ -318,6 +380,20 @@ Object {
                       \\"text\\": \\"My Custom Action\\"
                     }
                   }
+                },
+                \\"@com.sap.vocabularies.UI.v1.SelectionFields\\": {
+                  \\"filterFields\\": {
+                    \\"NewCustomFilter\\": {
+                      \\"label\\": \\"Test Custom Filter\\",
+                      \\"property\\": \\"Testing\\",
+                      \\"template\\": \\"v4travel.ext.newCustomFilter.NewCustomFilter\\",
+                      \\"required\\": false,
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyFacet\\"
+                      }
+                    }
+                  }
                 }
               },
               \\"views\\": {
@@ -381,6 +457,18 @@ Object {
                         \\"anchor\\": \\"DummyFacet\\"
                       },
                       \\"title\\": \\"My Custom Section\\"
+                    },
+                    \\"ReferenceFacet1\\": {
+                      \\"subSections\\": {
+                        \\"MyCustomSubSection\\": {
+                          \\"template\\": \\"v4travel.ext.myCustomSubSection.MyCustomSubSection\\",
+                          \\"position\\": {
+                            \\"placement\\": \\"After\\",
+                            \\"anchor\\": \\"DummySubAnchor\\"
+                          },
+                          \\"title\\": \\"My Custom Sub Section\\"
+                        }
+                      }
                     }
                   }
                 }
@@ -601,6 +689,28 @@ export function onPress(this: ExtensionAPI, event: UI5Event) {
 }",
     "state": "modified",
   },
+  "ts/webapp/ext/myCustomSubSection/MyCustomSubSection.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<Button core:require=\\"{ handler: 'v4travel/ext/myCustomSubSection/MyCustomSubSection'}\\" text=\\"MyCustomSubSection\\" press=\\"handler.onPress\\" />
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/myCustomSubSection/MyCustomSubSection.ts": Object {
+    "contents": "import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider
+ */
+export function onPress(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
   "ts/webapp/ext/newCustomColumn/NewCustomColumn.fragment.xml": Object {
     "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
 	<Button core:require=\\"{ handler: 'v4travel/ext/newCustomColumn/NewCustomColumn'}\\" text=\\"{=%{TotalPrice} + ' ' + %{CurrencyCode}}\\" press=\\"handler.onPress\\" />
@@ -620,6 +730,49 @@ import MessageToast from 'sap/m/MessageToast';
  */
 export function onPress(this: ExtensionAPI, event: UI5Event) {
     MessageToast.show(\\"Custom handler invoked.\\");
+}",
+    "state": "modified",
+  },
+  "ts/webapp/ext/newCustomFilter/NewCustomFilter.fragment.xml": Object {
+    "contents": "<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\">
+        <ComboBox
+            id=\\"testID\\"
+            core:require=\\"{handler: 'v4travel/ext/newCustomFilter/NewCustomFilter'}\\"
+            selectedKey=\\"{path: 'filterValues>', type: 'sap.fe.macros.filter.type.Value', formatOptions: { operator: 'v4travel.ext.newCustomFilter.NewCustomFilter.filterItems' }}\\"
+        >
+            <items>
+                <core:Item key=\\"0\\" text=\\"Item1\\"/>
+                <core:Item key=\\"1\\" text=\\"Item2\\"/>
+                <core:Item key=\\"2\\" text=\\"Item3\\"/>
+            </items>
+        </ComboBox>
+</core:FragmentDefinition>",
+    "state": "modified",
+  },
+  "ts/webapp/ext/newCustomFilter/NewCustomFilter.ts": Object {
+    "contents": "import Filter from 'sap/ui/model/Filter';
+import FilterOperator from 'sap/ui/model/FilterOperator';
+
+/**
+ * Custom filter
+ * @param sValue selected filter item
+ * @returns new Filter
+ */
+export function filterItems(value: string) {
+    switch (value) {
+        case \\"0\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 100 });
+        case \\"1\\":
+            return new Filter({
+                filters: [
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 100 }),
+                    new Filter({ path: \\"Testing\\", operator: FilterOperator.LT, value1: 500 })
+                ],
+                and: true
+            });
+        case \\"2\\":
+            return new Filter({ path: \\"Testing\\", operator: FilterOperator.GT, value1: 500 });
+    }
 }",
     "state": "modified",
   },
@@ -832,6 +985,20 @@ declare module 'sap/fe/core/PageController' {
                       \\"text\\": \\"My Custom Action\\"
                     }
                   }
+                },
+                \\"@com.sap.vocabularies.UI.v1.SelectionFields\\": {
+                  \\"filterFields\\": {
+                    \\"NewCustomFilter\\": {
+                      \\"label\\": \\"Test Custom Filter\\",
+                      \\"property\\": \\"Testing\\",
+                      \\"template\\": \\"v4travel.ext.newCustomFilter.NewCustomFilter\\",
+                      \\"required\\": false,
+                      \\"position\\": {
+                        \\"placement\\": \\"After\\",
+                        \\"anchor\\": \\"DummyFacet\\"
+                      }
+                    }
+                  }
                 }
               },
               \\"views\\": {
@@ -895,6 +1062,18 @@ declare module 'sap/fe/core/PageController' {
                         \\"anchor\\": \\"DummyFacet\\"
                       },
                       \\"title\\": \\"My Custom Section\\"
+                    },
+                    \\"ReferenceFacet1\\": {
+                      \\"subSections\\": {
+                        \\"MyCustomSubSection\\": {
+                          \\"template\\": \\"v4travel.ext.myCustomSubSection.MyCustomSubSection\\",
+                          \\"position\\": {
+                            \\"placement\\": \\"After\\",
+                            \\"anchor\\": \\"DummySubAnchor\\"
+                          },
+                          \\"title\\": \\"My Custom Sub Section\\"
+                        }
+                      }
                     }
                   }
                 }

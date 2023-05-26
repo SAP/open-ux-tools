@@ -1,5 +1,11 @@
 # @sap-ux/deploy-tooling
 
+## 0.2.7
+
+### Patch Changes
+
+-   c1dcb9d4: Cleanup archive.zip name
+
 ## 0.2.6
 
 ### Patch Changes

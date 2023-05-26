@@ -26,7 +26,14 @@ export interface CustomSectionDependencies {
     [key: string]: string;
 }
 
-export interface InternalCustomSection extends CustomSection, InternalCustomElement {
+export interface InternalCustomSection extends CustomSection, CustomSubSection, InternalCustomElement {
     content: string;
     dependencies?: CustomSectionDependencies;
+}
+
+export interface CustomSubSection extends CustomSection {
+    /**
+     * Id of parent section.
+     */
+    parentSection: string;
 }

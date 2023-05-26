@@ -3,6 +3,7 @@ import { join } from 'path';
 import { createCommand, runDeploy, runUndeploy } from '../../../src/cli';
 import { mockedUi5RepoService } from '../../__mocks__';
 import { Command } from 'commander';
+import fs from 'fs';
 
 describe('cli', () => {
     const fixture = join(__dirname, '../../test-input/');
@@ -10,9 +11,11 @@ describe('cli', () => {
 
     beforeEach(() => {
         mockedUi5RepoService.deploy.mockReset();
+        jest.clearAllMocks();
     });
 
     describe('runDeploy', () => {
+        const spy = jest.spyOn(fs, 'writeFileSync');
         // Command for deploying with a configuration file, assumes 'dist' is the target archive folder if no archive-folder or archive-path is specified;
         // npx deploy -c ui5-deploy.yaml --archive-folder webapp
         const minimumConfigCmds = [
@@ -59,14 +62,19 @@ describe('cli', () => {
             '--yes'
         ];
 
-        test.each([{ params: minimumConfigCmds }, { params: overwriteConfigCmds }, { params: cliCmds }])(
-            'successful deploy with different options',
-            async ({ params }) => {
-                process.argv = params;
-                await runDeploy();
-                expect(mockedUi5RepoService.deploy).toBeCalled();
+        test.each([
+            { params: minimumConfigCmds, writeFileSyncCalled: 1 },
+            { params: overwriteConfigCmds, writeFileSyncCalled: 1 },
+            { params: cliCmds, writeFileSyncCalled: 0 }
+        ])('successful deploy with different options', async ({ params, writeFileSyncCalled }) => {
+            process.argv = params;
+            await runDeploy();
+            expect(mockedUi5RepoService.deploy).toBeCalled();
+            expect(spy).toHaveBeenCalledTimes(writeFileSyncCalled);
+            if (writeFileSyncCalled > 0) {
+                expect(spy.mock.calls[0][0]).toBe('archive.zip');
             }
-        );
+        });
     });
 
     describe('runUndeploy', () => {
