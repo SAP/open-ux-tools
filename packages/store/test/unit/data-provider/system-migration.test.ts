@@ -18,7 +18,7 @@ describe('System migration data provider', () => {
         mockGetFilesystemStore.mockReturnValue(mockFsStore);
     });
 
-    it('read delegates to data accessor', () => {
+    it('read delegates to data accessor', async () => {
         const migrationStatus: SystemMigrationStatus = Object.freeze({
             migrationDone: true,
             authTypeMigrated: false,
@@ -27,7 +27,7 @@ describe('System migration data provider', () => {
 
         mockFsStore.read.mockResolvedValueOnce(migrationStatus);
 
-        expect(new SystemMigrationStatusDataProvider(logger).read(new SystemMigrationStatusKey())).resolves.toBe(
+        await expect(new SystemMigrationStatusDataProvider(logger).read(new SystemMigrationStatusKey())).resolves.toBe(
             migrationStatus
         );
         expect(mockFsStore.read).toBeCalledWith({
@@ -36,7 +36,7 @@ describe('System migration data provider', () => {
         });
     });
 
-    it('write delegates to data accessor', () => {
+    it('write delegates to data accessor', async () => {
         const migrationStatus: SystemMigrationStatus = Object.freeze({
             migrationDone: true,
             authTypeMigrated: false,
@@ -44,7 +44,7 @@ describe('System migration data provider', () => {
         });
 
         mockFsStore.write.mockResolvedValueOnce(migrationStatus);
-        expect(
+        await expect(
             new SystemMigrationStatusDataProvider(logger).write(new SystemMigrationStatus(migrationStatus))
         ).resolves.toBe(migrationStatus);
         expect(mockFsStore.write).toBeCalledWith({
@@ -54,7 +54,7 @@ describe('System migration data provider', () => {
         });
     });
 
-    it('delete delegates to data accessor', () => {
+    it('delete delegates to data accessor', async () => {
         const migrationStatus: SystemMigrationStatus = Object.freeze({
             migrationDone: true,
             authTypeMigrated: false,
@@ -62,7 +62,7 @@ describe('System migration data provider', () => {
         });
 
         mockFsStore.del.mockResolvedValueOnce(true);
-        expect(
+        await expect(
             new SystemMigrationStatusDataProvider(logger).delete(new SystemMigrationStatus(migrationStatus))
         ).resolves.toBe(true);
         expect(mockFsStore.del).toBeCalledWith({
@@ -71,7 +71,7 @@ describe('System migration data provider', () => {
         });
     });
 
-    it('getAll delegates to data accessor', () => {
+    it('getAll delegates to data accessor', async () => {
         const migrationStatus: SystemMigrationStatus = Object.freeze({
             migrationDone: true,
             authTypeMigrated: false,
@@ -79,7 +79,7 @@ describe('System migration data provider', () => {
         });
 
         mockFsStore.getAll.mockResolvedValueOnce([new SystemMigrationStatus(migrationStatus)]);
-        expect(new SystemMigrationStatusDataProvider(logger).getAll()).resolves.toEqual([
+        await expect(new SystemMigrationStatusDataProvider(logger).getAll()).resolves.toEqual([
             new SystemMigrationStatus(migrationStatus)
         ]);
         expect(mockFsStore.getAll).toBeCalledWith({

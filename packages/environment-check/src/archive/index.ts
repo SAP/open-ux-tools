@@ -52,7 +52,7 @@ export async function archiveProject({
                 zip.file(join(projectRoot, file), { name: file });
             }
             writeStream.on('close', () => resolve({ path: targetPath, size: byteNumberToSizeString(zip.pointer()) }));
-            zip.finalize();
+            zip.finalize().catch((error) => reject(error));
         } catch (error) {
             reject(error);
         }

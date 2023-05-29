@@ -12,7 +12,6 @@ import {
     v2Service,
     projectChecks
 } from './common';
-import { UI5_DEFAULT } from '@sap-ux/ui5-application-writer/src/data/defaults';
 
 const TEST_NAME = 'lropTemplates';
 jest.setTimeout(120000); // Needed when debug.debugFull

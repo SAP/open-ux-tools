@@ -35,5 +35,5 @@ export function storeResultsZip(results: EnvironmentCheckResult, targetFile = 'e
     const jsonString = Buffer.from(JSON.stringify(results, null, 4));
     zip.append(jsonString, { name: 'envcheck-results.json' });
 
-    zip.finalize();
+    zip.finalize().catch((error) => console.error(error));
 }
