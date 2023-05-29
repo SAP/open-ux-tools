@@ -2,9 +2,8 @@ import type { Editor, FileMap } from 'mem-fs-editor';
 import { basename, dirname, extname, join } from 'path';
 import { default as find } from 'findit2';
 import { fileExists } from './file-access';
-import { promises } from 'fs';
+import { promises as fs } from 'fs';
 
-const { readdir, stat } = promises;
 /**
  * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).
  *
@@ -147,11 +146,11 @@ export async function findFileUp(fileName: string, startPath: string, fs?: Edito
  * @throws if an error occurs reading a file path
  */
 export async function getFilePaths(dir: string): Promise<string[] | []> {
-    const entries = await readdir(dir);
+    const entries = await fs.readdir(dir);
 
     const filePathsPromises = entries.map(async (entry) => {
         const entryPath = join(dir, entry);
-        const isDirectory = (await stat(entryPath)).isDirectory();
+        const isDirectory = (await fs.stat(entryPath)).isDirectory();
         return isDirectory ? getFilePaths(entryPath) : entryPath;
     });
 
