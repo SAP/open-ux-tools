@@ -106,7 +106,7 @@ describe('findFiles', () => {
                 expect.stringContaining(join('file/rootfile'))
             ];
 
-            const filePaths = await getFilePaths(root);
+            const filePaths = getFilePaths(root);
 
             expect(filePaths).toEqual(expect.arrayContaining(expectedPaths));
         });
