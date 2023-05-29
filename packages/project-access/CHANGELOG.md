@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.5.1
+
+### Patch Changes
+
+-   7ed591a8: properly handle "@sap/cds" dynamic import
+
 ## 1.5.0
 
 ### Minor Changes
