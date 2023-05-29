@@ -28,9 +28,10 @@ export interface FeatureInput {
  * @param input.basePath project base path
  * @param input.tmplPath template basepath
  */
-function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: FeatureInput) {
+async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: FeatureInput) {
     const optTmplDirPath = join(tmplPath, 'optional', `${name}`);
-    const optTmplFilePaths = getFilePaths(optTmplDirPath);
+    const optTmplFilePaths = await getFilePaths(optTmplDirPath);
+
     optTmplFilePaths.forEach((optTmplFilePath) => {
         const relPath = optTmplFilePath.replace(optTmplDirPath, '');
         const outPath = join(basePath, relPath);
@@ -51,13 +52,13 @@ function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: Feature
 /**
  * Factory functions for applying optional features.
  */
-const factories: { [key: string]: (input: FeatureInput) => void } = {
-    codeAssist: (input: FeatureInput) => copyTemplates('codeAssist', input),
-    eslint: (input: FeatureInput) => copyTemplates('eslint', input),
-    loadReuseLibs: (input: FeatureInput) => copyTemplates('loadReuseLibs', input),
-    sapux: (input: FeatureInput) => copyTemplates('sapux', input),
-    typescript: enableTypescript,
-    npmPackageConsumption: enableNpmPackageConsumption
+const factories: { [key: string]: (input: FeatureInput) => Promise<void> } = {
+    codeAssist: async (input: FeatureInput) => await copyTemplates('codeAssist', input),
+    eslint: async (input: FeatureInput) => await copyTemplates('eslint', input),
+    loadReuseLibs: async (input: FeatureInput) => await copyTemplates('loadReuseLibs', input),
+    sapux: async (input: FeatureInput) => await copyTemplates('sapux', input),
+    typescript: async (input: FeatureInput) => await enableTypescript(input),
+    npmPackageConsumption: async (input: FeatureInput) => await enableNpmPackageConsumption(input)
 };
 
 /**
@@ -66,9 +67,9 @@ const factories: { [key: string]: (input: FeatureInput) => void } = {
  * @param input Input required to enable the optional typescript features
  * @param keepOldComponent if set to true then the old Component.js will be renamed but kept.
  */
-export function enableTypescript(input: FeatureInput, keepOldComponent: boolean = false) {
+export async function enableTypescript(input: FeatureInput, keepOldComponent: boolean = false) {
     input.ui5App.app.baseComponent = input.ui5App.app.baseComponent ?? UI5_DEFAULT.BASE_COMPONENT;
-    copyTemplates('typescript', input);
+    await copyTemplates('typescript', input);
     input.ui5Configs.forEach((ui5Config) => {
         ui5Config.addCustomMiddleware([ui5TSSupport.middleware]);
         ui5Config.addCustomTasks([ui5TSSupport.task]);
@@ -86,8 +87,8 @@ export function enableTypescript(input: FeatureInput, keepOldComponent: boolean 
  *
  * @param input Input required to enable the optional npm modules import
  */
-export function enableNpmPackageConsumption(input: FeatureInput) {
-    copyTemplates('npmPackageConsumption', input);
+export async function enableNpmPackageConsumption(input: FeatureInput) {
+    await copyTemplates('npmPackageConsumption', input);
     input.ui5Configs.forEach((ui5Config) => {
         ui5Config.addCustomMiddleware([ui5NPMSupport.middleware]);
         ui5Config.addCustomTasks([ui5NPMSupport.task]);
@@ -103,7 +104,7 @@ export function enableNpmPackageConsumption(input: FeatureInput) {
  * @param tmplPath template basepath
  * @param ui5Configs available UI5 configs
  */
-export function applyOptionalFeatures(
+export async function applyOptionalFeatures(
     ui5App: Ui5App,
     fs: Editor,
     basePath: string,
@@ -111,10 +112,10 @@ export function applyOptionalFeatures(
     ui5Configs: UI5Config[]
 ) {
     if (ui5App.appOptions) {
-        Object.entries(ui5App.appOptions).forEach(([key, value]) => {
+        for (const [key, value] of Object.entries(ui5App.appOptions)) {
             if (value === true) {
-                factories[key]?.({ ui5App, fs, basePath, tmplPath, ui5Configs });
+                await factories[key]?.({ ui5App, fs, basePath, tmplPath, ui5Configs });
             }
-        });
+        }
     }
 }
