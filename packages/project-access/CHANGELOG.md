@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.6.0
+
+### Minor Changes
+
+-   71a06864: Add path to manifest.appdescr_variant to search results of search for adaptation projects
+
 ## 1.5.1
 
 ### Patch Changes
