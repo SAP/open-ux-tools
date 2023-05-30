@@ -116,6 +116,7 @@ export async function getCapModelAndServices(projectRoot: string): Promise<{ mod
  * @returns - environment config for CAP project
  */
 export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvironment> {
-    const cds = await loadModuleFromProject<CdsFacade>(capProjectPath, '@sap/cds');
+    const module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
+    const cds: CdsFacade = 'default' in module ? module.default : module;
     return cds.env.for('cds', capProjectPath);
 }
