@@ -276,7 +276,7 @@ async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationRe
     for (const manifestAppDescrVar of manifestAppDescrVars) {
         const adpPath = await findFileUp('.adp', dirname(manifestAppDescrVar));
         if (adpPath && (await fileExists(join(adpPath, FileName.AdaptationConfig)))) {
-            results.push({ appRoot: dirname(adpPath) });
+            results.push({ appRoot: dirname(adpPath), manifestAppdescrVariantPath: manifestAppDescrVar });
         }
     }
     return results;
