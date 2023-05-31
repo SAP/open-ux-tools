@@ -5670,7 +5670,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
@@ -11612,7 +11613,8 @@ appDescription=A Fiori application.",
                 fiori2: {
                     componentData: {
                         config: {
-                            search: \\"hidden\\"
+                            search: \\"hidden\\",
+                            enableSearch: false
                         }
                     }
                 }
