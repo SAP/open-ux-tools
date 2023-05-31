@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.1.12
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.0.14
+
 ## 0.1.11
 
 ### Patch Changes
