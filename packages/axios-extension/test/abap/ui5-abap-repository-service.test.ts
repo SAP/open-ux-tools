@@ -2,6 +2,17 @@ import nock from 'nock';
 import type { AppInfo } from '../../src';
 import { Ui5AbapRepositoryService, createForAbap } from '../../src';
 import mockErrorDetails from './mockResponses/errordetails.json';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn()
+} as Partial<ToolsLogger> as ToolsLogger;
+
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -191,6 +202,10 @@ describe('Ui5AbapRepositoryService', () => {
     });
 
     describe('undeploy', () => {
+        beforeEach(() => {
+            jest.resetAllMocks();
+        });
+
         test('successful removal', async () => {
             nock(server)
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
@@ -213,8 +228,17 @@ describe('Ui5AbapRepositoryService', () => {
         test('failed removal', async () => {
             nock(server)
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
-                .replyWithError('Failed');
+              .replyWithError('Failed');
             await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrowError();
+        });
+
+        test('failed removal, not authorised', async () => {
+            const appName = 'TestApp';
+            nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`).reply(401);
+            await expect(service.undeploy({ bsp: { name: appName } })).rejects.toThrowError();
+            expect(loggerMock.debug).toHaveBeenCalledTimes(1);
+            expect(loggerMock.info).toHaveBeenCalledTimes(0);
+            expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });
 
         test('failed removal, application not found', async () => {
