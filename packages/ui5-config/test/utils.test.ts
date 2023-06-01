@@ -1,6 +1,50 @@
-import { getEsmTypesVersion, getTypesVersion, UI5_DEFAULT } from '../src/data/defaults';
+import { UI5_DEFAULT } from '../src/defaults';
+import { getEsmTypesVersion, getTypesVersion, mergeObjects } from '../src/utils';
 
-describe('Defaults', () => {
+describe('mergeObjects', () => {
+    const base = {
+        scripts: {
+            first: 'first'
+        },
+        ui5: {
+            dependencies: ['module-1']
+        }
+    };
+
+    test('additional ui5 dependencies (array merge)', () => {
+        const extension = {
+            name: 'test',
+            ui5: {
+                dependencies: ['module-2']
+            }
+        };
+        const merged = mergeObjects(base, extension);
+        expect(merged.ui5?.dependencies).toStrictEqual(['module-1', 'module-2']);
+    });
+
+    test('duplicated ui5 dependencies (array merge)', () => {
+        const extension = {
+            name: 'test',
+            ui5: {
+                dependencies: ['module-1', 'module-2']
+            }
+        };
+        const merged = mergeObjects(base, extension);
+        expect(merged.ui5?.dependencies).toStrictEqual(['module-1', 'module-2']);
+    });
+
+    test('overwrite property', () => {
+        const extension = {
+            name: 'test',
+            scripts: {
+                first: 'second'
+            }
+        };
+        const merged = mergeObjects(base, extension);
+        expect(merged.scripts?.first).toBe(extension.scripts?.first);
+    });
+});
+describe('getEsmTypesVersion, getTypesVersion', () => {
     const esmTypesVersionSince = `~${UI5_DEFAULT.ESM_TYPES_VERSION_SINCE}`;
     const typesVersionBest = `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
     const minU5Version = UI5_DEFAULT.TYPES_VERSION_PREVIOUS;

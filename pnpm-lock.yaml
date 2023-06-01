@@ -1039,7 +1039,19 @@ importers:
       '@sap-ux/yaml':
         specifier: workspace:*
         version: link:../yaml
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+      semver:
+        specifier: 7.3.5
+        version: 7.3.5
     devDependencies:
+      '@types/lodash':
+        specifier: 4.14.176
+        version: 4.14.176
+      '@types/semver':
+        specifier: 7.3.9
+        version: 7.3.9
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -4672,7 +4684,7 @@ packages:
       '@babel/preset-env': 7.19.1(@babel/core@7.20.12)
       '@babel/types': 7.20.7
       '@mdx-js/mdx': 1.6.22
-      '@types/lodash': 4.14.178
+      '@types/lodash': 4.14.176
       js-string-escape: 1.0.1
       loader-utils: 2.0.4
       lodash: 4.17.21
@@ -5228,10 +5240,6 @@ packages:
 
   /@types/lodash@4.14.176:
     resolution: {integrity: sha512-xZmuPTa3rlZoIbtDUyJKZQimJV3bxCmzMIO2c9Pz9afyDro6kr7R79GwcB6mRhuoPmV2p1Vb66WOJH7F886WKQ==}
-    dev: true
-
-  /@types/lodash@4.14.178:
-    resolution: {integrity: sha512-0d5Wd09ItQWH1qFbEyQ7oTQ3GZrMfth5JkbN3EvTKLXcHLRDSXeLnlvlOn0wvxVIwK5o2M8JzP/OWz7T3NRsbw==}
     dev: true
 
   /@types/mdast@3.0.10:
