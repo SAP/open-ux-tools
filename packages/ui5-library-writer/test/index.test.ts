@@ -66,7 +66,7 @@ describe('Reuse lib templates', () => {
                 libraryName: 'test"AppId'
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(
-            `"Please use alpha numeric characters only for the proptery libraryName"`
+            `"Please use alpha numeric characters only for the property libraryName"`
         );
 
         // Ensure undefined, null or '' cannot be used

@@ -2,36 +2,16 @@
 
 exports[`Reuse lib templates generates files correctly 1`] = `
 Object {
-  "com.sap.myUI5Lib/.editorconfig": Object {
-    "contents": "# EditorConfig helps developers define and maintain consistent
-# coding styles between different editors and IDEs
-# see https://editorconfig.org
-
-root = true
-
-[*]
-# We recommend you to keep these unchanged
-end_of_line = lf
-charset = utf-8
-trim_trailing_whitespace = true
-insert_final_newline = true
-
-# Change these settings to your own preference
-indent_style = space
-
-[*.md]
-trim_trailing_whitespace = false
-
-[{package.json,*.yaml}]
-indent_size = 2
-",
-    "state": "modified",
-  },
   "com.sap.myUI5Lib/.gitignore": Object {
     "contents": "node_modules/
 dist/
-package-lock.json
-.env",
+.scp/
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
     "state": "modified",
   },
   "com.sap.myUI5Lib/karma.conf.js": Object {
@@ -50,25 +30,19 @@ module.exports = function (config) {
   \\"version\\": \\"1.0.0\\",
   \\"private\\": true,
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^2.9.3\\",
-    \\"karma\\": \\"^6.1.1\\",
-    \\"karma-chrome-launcher\\": \\"^3.1.0\\",
+    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"karma\\": \\"6.3.17\\",
+    \\"karma-chrome-launcher\\": \\"^3.1.1\\",
     \\"karma-cli\\": \\"^2.0.0\\",
-    \\"karma-ui5\\": \\"^2.3.3\\",
-    \\"ui5-middleware-livereload\\": \\"^0.5.1\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"ui5-middleware-livereload\\"
-    ]
+    \\"karma-ui5\\": \\"2.4.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
     \\"build\\": \\"ui5 build --clean-dest\\",
-    \\"start\\": \\"ui5 serve --open test-resources/com/sap/myUI5Lib/Example.html\\",
-    \\"testsuite\\": \\"ui5 serve --open test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit.html\\",
+    \\"start-local\\": \\"fiori run --open test-resources/com/sap/myUI5Lib/Example.html\\",
+    \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\"
-  },
-  \\"license\\": \\"UNLICENSED\\"
+  }
 }
 ",
     "state": "modified",
@@ -560,11 +534,11 @@ framework:
     - name: themelib_sap_fiori_3
 server:
   customMiddleware:
-  - name: ui5-middleware-livereload
-    afterMiddleware: compression
-    configuration:
-      extraExts: \\"xml,json,properties\\"
-      path: [\\"src\\", \\"test\\"]",
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        delay: 300",
     "state": "modified",
   },
 }
@@ -573,16 +547,13 @@ server:
 exports[`Reuse lib templates generates files correctly 2`] = `
 "{
   \\"compilerOptions\\": {
-      \\"target\\": \\"es2015\\",
-      \\"module\\": \\"es2015\\",
+    \\"target\\": \\"es2022\\",
+    \\"module\\": \\"es2022\\",
       \\"moduleResolution\\": \\"node\\",
       \\"skipLibCheck\\": true,
-      \\"preserveConstEnums\\": true,
-      \\"sourceMap\\": false,
       \\"allowJs\\": true,
       \\"strict\\": true,
-      \\"strictNullChecks\\": true,
-      \\"strictPropertyInitialization\\": true,
+      \\"strictPropertyInitialization\\": false,
       \\"rootDir\\": \\"./\\",
       \\"outDir\\": \\"./src-gen\\",
       \\"baseUrl\\": \\"./\\",
@@ -609,8 +580,24 @@ exports[`Reuse lib templates generates files correctly 3`] = `
         \\"**/*.d.ts\\"
     ],
     \\"presets\\": [
-        \\"transform-ui5\\",
+        \\"@babel/preset-env\\",
+        [
+            \\"transform-ui5\\",
+            {
+                \\"overridesToOverride\\": true
+            }
+        ],
         \\"@babel/preset-typescript\\"
-    ]
+    ],
+    \\"plugins\\": [
+        \\"transform-remove-console\\",
+        [
+            \\"transform-async-to-promises\\",
+            {
+                \\"inlineHelpers\\": true
+            }
+        ]
+    ],
+    \\"sourceMaps\\": true
 }"
 `;
