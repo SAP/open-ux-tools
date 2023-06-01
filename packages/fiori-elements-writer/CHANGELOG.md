@@ -1,5 +1,67 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.6
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+-   Updated dependencies [0aa02ab0]
+    -   @sap-ux/fe-fpm-writer@0.20.1
+
+## 0.12.5
+
+### Patch Changes
+
+-   Updated dependencies [906b7fea]
+    -   @sap-ux/ui5-application-writer@0.22.3
+
+## 0.12.4
+
+### Patch Changes
+
+-   Updated dependencies [5c16776d]
+    -   @sap-ux/fe-fpm-writer@0.20.0
+
+## 0.12.3
+
+### Patch Changes
+
+-   Updated dependencies [cca1095c]
+    -   @sap-ux/fe-fpm-writer@0.19.1
+
+## 0.12.2
+
+### Patch Changes
+
+-   Updated dependencies [495a22cb]
+    -   @sap-ux/ui5-application-writer@0.22.2
+
+## 0.12.1
+
+### Patch Changes
+
+-   91e95ef8: BUG - Generated Controller Extensions do not always work with TS
+-   Updated dependencies [91e95ef8]
+    -   @sap-ux/ui5-application-writer@0.22.1
+
+## 0.12.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
+### Patch Changes
+
+-   Updated dependencies [7ac0cb40]
+    -   @sap-ux/ui5-application-writer@0.22.0
+
+## 0.11.4
+
+### Patch Changes
+
+-   Updated dependencies [970dc528]
+    -   @sap-ux/fe-fpm-writer@0.19.0
+
 ## 0.11.3
 
 ### Patch Changes

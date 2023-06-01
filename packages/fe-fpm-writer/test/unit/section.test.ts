@@ -25,11 +25,11 @@ describe('CustomSection', () => {
             { version: '1.86', expected: join(root, 'section', '1.86') }
         ];
         test.each(testInput)('get root path of template', ({ version, expected }) => {
-            expect(getManifestRoot(version)).toEqual(expected);
+            expect(getManifestRoot('section', version)).toEqual(expected);
         });
         test('invalid version', () => {
             try {
-                getManifestRoot('1.8');
+                getManifestRoot('section', '1.8');
                 expect(true).toBeFalsy();
             } catch (error) {
                 expect(error).toBeDefined();
@@ -339,7 +339,9 @@ describe('CustomSection', () => {
                         }
                     };
                     // Generate handler with single method - content should be updated during generating of custom section
-                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath);
+                    fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
+                        eventHandlerFnName: 'onPress'
+                    });
 
                     generateCustomSectionWithEventHandler(id, extension, folder);
                     const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);

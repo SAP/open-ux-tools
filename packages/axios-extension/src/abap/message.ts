@@ -76,7 +76,7 @@ export function prettyPrintMessage({ msg, log, host }: { msg: string; log: Logge
         logFullURL({ host, path: jsonMsg['longtext_url'], log });
         if (jsonMsg.details) {
             jsonMsg.details.forEach((entry) => {
-                log.info(entry.message);
+                logLevel(entry.severity, entry.message, log);
             });
         }
     } catch (error) {

@@ -1,5 +1,45 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 0.19.4
+
+### Patch Changes
+
+-   0aa02ab0: TBI - Clean up eslint warnings in generated projects
+
+## 0.19.3
+
+### Patch Changes
+
+-   Updated dependencies [906b7fea]
+    -   @sap-ux/ui5-application-writer@0.22.3
+
+## 0.19.2
+
+### Patch Changes
+
+-   495a22cb: Use @sap-ux/eslint-plugin-fiori-tools for JS projects with eslint option
+-   Updated dependencies [495a22cb]
+    -   @sap-ux/ui5-application-writer@0.22.2
+
+## 0.19.1
+
+### Patch Changes
+
+-   91e95ef8: BUG - Generated Controller Extensions do not always work with TS
+-   Updated dependencies [91e95ef8]
+    -   @sap-ux/ui5-application-writer@0.22.1
+
+## 0.19.0
+
+### Minor Changes
+
+-   7ac0cb40: Add new module containing an eslint plugin with reusable eslint configs
+
+### Patch Changes
+
+-   Updated dependencies [7ac0cb40]
+    -   @sap-ux/ui5-application-writer@0.22.0
+
 ## 0.18.1
 
 ### Patch Changes

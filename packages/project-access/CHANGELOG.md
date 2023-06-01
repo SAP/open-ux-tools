@@ -1,5 +1,23 @@
 # @sap-ux/project-access
 
+## 1.6.0
+
+### Minor Changes
+
+-   71a06864: Add path to manifest.appdescr_variant to search results of search for adaptation projects
+
+## 1.5.1
+
+### Patch Changes
+
+-   7ed591a8: properly handle "@sap/cds" dynamic import
+
+## 1.5.0
+
+### Minor Changes
+
+-   d80f6f34: Add findFioriArtifacts() to allow searching for apps, adaptation projects, extension projects, and libraries
+
 ## 1.4.0
 
 ### Minor Changes

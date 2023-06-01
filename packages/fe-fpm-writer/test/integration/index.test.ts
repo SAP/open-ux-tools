@@ -10,7 +10,9 @@ import {
     generateCustomView,
     enableFPM,
     generateControllerExtension,
-    ControllerExtensionPageType
+    ControllerExtensionPageType,
+    generateCustomFilter,
+    generateCustomSubSection
 } from '../../src';
 import { Placement } from '../../src/common/types';
 import { generateListReport, generateObjectPage } from '../../src/page';
@@ -261,6 +263,25 @@ describe('use FPM with existing apps', () => {
             );
         });
 
+        test.each(configs)('generateCustomFilter in ListReportPage', (config) => {
+            generateCustomFilter(
+                config.path,
+                {
+                    name: 'NewCustomFilter',
+                    label: 'Test Custom Filter',
+                    controlID: 'testID',
+                    property: 'Testing',
+                    position: {
+                        placement: Placement.After,
+                        anchor: 'DummyFacet'
+                    },
+                    eventHandler: true,
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
         test.each(configs)('generateControllerExtension in ObjectPage', (config) => {
             generateControllerExtension(
                 config.path,
@@ -269,6 +290,25 @@ describe('use FPM with existing apps', () => {
                     extension: {
                         pageType: ControllerExtensionPageType.ObjectPage
                     },
+                    ...config.settings
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateCustomSubSection in ObjectPage', (config) => {
+            generateCustomSubSection(
+                config.path,
+                {
+                    name: 'MyCustomSubSection',
+                    target: 'TravelObjectPage',
+                    parentSection: 'ReferenceFacet1',
+                    title: 'My Custom Sub Section',
+                    position: {
+                        placement: Placement.After,
+                        anchor: 'DummySubAnchor'
+                    },
+                    eventHandler: true,
                     ...config.settings
                 },
                 fs

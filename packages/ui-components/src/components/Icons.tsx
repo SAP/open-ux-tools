@@ -41,6 +41,7 @@ export enum UiIcons {
     ContractNodesSmall = 'ContractNodesSmall',
     Copy = 'Copy',
     CopyToClipboard = 'CopyToClipboard',
+    CopyToClipboardLong = 'CopyToClipboardLong',
     Columns = 'Columns',
     ComplexType = 'ComplexType',
     ComplexTypeSmall = 'ComplexTypeSmall',
@@ -592,8 +593,30 @@ export function initIcons(): void {
                         d="M5 2H3V3H1V14H6.59971C6.43777 13.6832 6.30564 13.3486 6.20703 13H2V4H12V6.02242C12.3434 6.05337 12.6777 6.11588 13 6.20703V3H11V2H9C9 0.895431 8.10457 0 7 0C5.89543 0 5 0.895431 5 2ZM7 1C6.44772 1 6 1.44772 6 2H8C8 1.44772 7.55228 1 7 1Z"
                         fill={COLORS.default}
                     />
-                    <path d="M8.33692 7H3V8H7.25716C7.57052 7.62057 7.93379 7.28389 8.33692 7Z" fill={COLORS.default} />
                     <path d="M3 5V6H11V5H3Z" fill={COLORS.default} />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M11.5 16C13.9853 16 16 13.9853 16 11.5C16 9.01472 13.9853 7 11.5 7C9.01472 7 7 9.01472 7 11.5C7 13.9853 9.01472 16 11.5 16ZM11.1465 9.14645C11.3418 8.95118 11.6584 8.95118 11.8536 9.14645L14.2072 11.5L13.5001 12.2071L12 10.707V14H11V10.7072L9.50008 12.2071L8.79297 11.5L11.1465 9.14645Z"
+                        fill={COLORS.info}
+                    />
+                </svg>
+            ),
+            [UiIcons.CopyToClipboardLong]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M5 2H3V3H1V14H6.59971C6.43777 13.6832 6.30564 13.3486 6.20703 13H2V4H12V6.02242C12.3434 6.05337 12.6777 6.11588 13 6.20703V3H11V2H9C9 0.895431 8.10457 0 7 0C5.89543 0 5 0.895431 5 2ZM7 1C6.44772 1 6 1.44772 6 2H8C8 1.44772 7.55228 1 7 1Z"
+                        fill={COLORS.default}
+                    />
+                    <path d="M8.33692 7H3V8H7.25716C7.57052 7.62057 7.93379 7.28389 8.33692 7Z" fill={COLORS.default} />
+                    <path d="M3 6V5H11V6H3Z" fill={COLORS.default} />
+                    <path d="M3 9H6.5997C6.43774 9.3168 6.30563 9.65137 6.20703 10H3V9Z" fill={COLORS.default} />
+                    <path
+                        d="M3 11H6.02243C6.0076 11.1647 6 11.3315 6 11.5C6 11.6685 6.0076 11.8353 6.02243 12H3V11Z"
+                        fill={COLORS.default}
+                    />
                     <path
                         fillRule="evenodd"
                         clipRule="evenodd"
