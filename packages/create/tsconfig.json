@@ -13,6 +13,9 @@
             "path": "../app-config-writer"
         },
         {
+            "path": "../cap-config-writer"
+        },
+        {
             "path": "../logger"
         },
         {
