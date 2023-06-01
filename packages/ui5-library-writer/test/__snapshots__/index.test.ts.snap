@@ -39,7 +39,7 @@ module.exports = function (config) {
   },
   \\"scripts\\": {
     \\"build\\": \\"ui5 build --clean-dest\\",
-    \\"start-local\\": \\"fiori run --open test-resources/com/sap/myUI5Lib/Example.html\\",
+    \\"start\\": \\"fiori run --open test-resources/com/sap/myUI5Lib/Example.html\\",
     \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myUI5Lib/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\"
   }
@@ -537,6 +537,7 @@ server:
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
+        path: test
         port: 35729
         delay: 300",
     "state": "modified",
