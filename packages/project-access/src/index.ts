@@ -14,4 +14,5 @@ export {
     loadModuleFromProject,
     readUi5Yaml
 } from './project';
+export { getFilePaths } from './file';
 export * from './types';

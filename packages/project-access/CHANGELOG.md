@@ -1,5 +1,16 @@
 # @sap-ux/project-access
 
+## 1.7.0
+
+### Minor Changes
+
+-   31207b95: abstract ui5-app-writer functions into appropriate modules
+
+### Patch Changes
+
+-   Updated dependencies [31207b95]
+    -   @sap-ux/ui5-config@0.17.0
+
 ## 1.6.0
 
 ### Minor Changes
