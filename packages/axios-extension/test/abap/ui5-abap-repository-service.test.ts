@@ -228,7 +228,7 @@ describe('Ui5AbapRepositoryService', () => {
         test('failed removal', async () => {
             nock(server)
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${validApp}%27)?${updateParams}`)
-              .replyWithError('Failed');
+                .replyWithError('Failed');
             await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrowError();
         });
 
