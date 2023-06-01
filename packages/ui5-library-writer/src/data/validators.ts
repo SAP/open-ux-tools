@@ -13,12 +13,11 @@ export function validateLibName(libName: string): boolean {
     if (!libName) {
         throw new Error(t('error.missingRequiredProperty', { propertyName: 'libraryName' }));
     }
-    const match = /"/.exec(libName);
-    if (match) {
-        throw new Error(
-            t('error.disallowedCharacters', { propertyName: 'libraryName', disallowedChars: `${match.join()}` })
-        );
+
+    if (!/^\d*[a-zA-Z][a-zA-Z0-9]*$/g.test(libName)) {
+        throw new Error(t('error.useAlphaNumeric', { propertyName: 'libraryName' }));
     }
+
     return true;
 }
 

@@ -65,7 +65,9 @@ describe('Reuse lib templates', () => {
                 ...ui5LibConfig,
                 libraryName: 'test"AppId'
             })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: libraryName contains disallowed characters: \\""`);
+        ).rejects.toThrowErrorMatchingInlineSnapshot(
+            `"Please use alpha numeric characters only for the proptery libraryName"`
+        );
 
         // Ensure undefined, null or '' cannot be used
         await expect(

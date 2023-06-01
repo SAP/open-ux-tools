@@ -18,7 +18,7 @@ describe('validators', () => {
         it('should return error for an invalid libName', () => {
             expect(() => {
                 validateLibName('Test"App');
-            }).toThrowError(t('error.disallowedCharacters', { propertyName: 'libraryName', disallowedChars: '"' }));
+            }).toThrowError(t('error.useAlphaNumeric', { propertyName: 'libraryName' }));
         });
     });
 
