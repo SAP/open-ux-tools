@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "ui5 build --clean-dest",
-    "start-local": "fiori run --open test-resources/<%= libraryNamespaceURI %>/Example.html",
+    "start": "fiori run --open test-resources/<%= libraryNamespaceURI %>/Example.html",
     "testsuite": "fiori run --open test-resources/<%= libraryNamespaceURI %>/qunit/testsuite.qunit.html",
     "test": "karma start --browsers=ChromeHeadless --singleRun=true"
   }

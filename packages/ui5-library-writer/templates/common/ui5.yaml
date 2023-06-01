@@ -14,5 +14,6 @@ server:
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
+        path: test
         port: 35729
         delay: 300
