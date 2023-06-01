@@ -12,6 +12,7 @@ import {
 } from '../base';
 import dotenv from 'dotenv';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
+import { Manifest } from '@sap-ux/project-access';
 
 /**
  * Create proxy options based on the middleware config.
@@ -46,13 +47,21 @@ function createRequestHandler(routes: { route: string; handler: RequestHandler }
     };
 }
 
-module.exports = async ({ options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
+async function loadManifest(rootProject: any): Promise<Manifest | undefined> {
+    const files = await rootProject.byGlob("**/manifest.json");
+    if (files.length > 0) {
+        return JSON.parse(await files.pop().getString());
+    }
+}
+
+module.exports = async ({ resources, options }: MiddlewareParameters<Ui5MiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
     dotenv.config();
     const config = options.configuration;
-    const ui5Version = await resolveUI5Version(config.version, logger);
+    const manifest = await loadManifest((resources as any).rootProject);   
+    const ui5Version = await resolveUI5Version(config.version, logger, manifest);
     const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;
     const directLoad = !!config.directLoad;
     const corporateProxyServer = getCorporateProxyServer(config.proxy);
