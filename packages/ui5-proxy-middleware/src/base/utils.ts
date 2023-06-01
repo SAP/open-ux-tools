@@ -210,6 +210,7 @@ export const getManifest = async (args: string[]): Promise<Manifest | undefined>
  * Gets the minUI5Version from the manifest.json.
  *
  * @param args list of runtime args
+ * @param manifest
  * @returns The minUI5Version from manifest.json or undefined otherwise
  */
 export async function getUI5VersionFromManifest(args: string[], manifest?: Manifest): Promise<string | undefined> {
@@ -222,6 +223,7 @@ export async function getUI5VersionFromManifest(args: string[], manifest?: Manif
  *
  * @param version ui5 version as defined in the yaml or via cli argument
  * @param log logger for outputing information from where ui5 version config is coming
+ * @param manifest
  * @returns The UI5 version with which the application will be started
  */
 export async function resolveUI5Version(version?: string, log?: ToolsLogger, manifest?: Manifest): Promise<string> {
