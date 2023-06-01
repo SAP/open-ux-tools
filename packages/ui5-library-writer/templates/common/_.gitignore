@@ -1,4 +1,9 @@
 node_modules/
 dist/
-package-lock.json
-.env
+.scp/
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp

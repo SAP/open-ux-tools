@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-      "target": "es2015",
-      "module": "es2015",
+    "target": "es2022",
+    "module": "es2022",
       "moduleResolution": "node",
       "skipLibCheck": true,
-      "preserveConstEnums": true,
-      "sourceMap": false,
       "allowJs": true,
       "strict": true,
-      "strictNullChecks": true,
-      "strictPropertyInitialization": true,
+      "strictPropertyInitialization": false,
       "rootDir": "./",
       "outDir": "./src-gen",
       "baseUrl": "./",

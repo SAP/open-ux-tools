@@ -1,7 +1,7 @@
 {
     "error": {
         "missingRequiredProperty": "The property: {{ propertyName }} must have a value",
-        "useAlphaNumeric": "Please use alpha numeric characters only for the proptery {{ propertyName }}",
+        "useAlphaNumeric": "Please use alpha numeric characters only for the property {{ propertyName }}",
         "invalidUI5Version": "The specified UI5 version is invalid: {{ version }}",
         "invalidNamespace": {
             "mustStartWithLetter": "The namespace must start with a letter",
