@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 0.12.8
+
+### Patch Changes
+
+-   7aed929c: disable search in flpSandbox
+
 ## 0.12.7
 
 ### Patch Changes
