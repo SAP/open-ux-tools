@@ -1,4 +1,4 @@
-import { gte } from 'semver';
+import { coerce, gte } from 'semver';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Package } from '@sap-ux/project-access';
 
@@ -51,7 +51,7 @@ export function addCdsPluginUi5(packageJson: Package): void {
  * @returns - true: min cds version is present; false: cds version needs update
  */
 export function hasMinCdsVersion(packageJson: Package): boolean {
-    return gte(packageJson.dependencies?.['@sap/cds'] ?? '0.0.0', minCdsVersion);
+    return gte(coerce(packageJson.dependencies?.['@sap/cds']) ?? '0.0.0', minCdsVersion);
 }
 
 /**

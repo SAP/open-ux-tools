@@ -352,6 +352,9 @@ importers:
       '@sap-ux/app-config-writer':
         specifier: workspace:*
         version: link:../app-config-writer
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
