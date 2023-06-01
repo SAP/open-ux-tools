@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.2.5
+
+### Patch Changes
+
+-   aeb4cd83: handle entry severity in logging
+
 ## 1.2.4
 
 ### Patch Changes

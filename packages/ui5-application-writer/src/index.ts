@@ -3,14 +3,12 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { App, AppOptions, Package, UI5 } from './types';
-import { UI5Config } from '@sap-ux/ui5-config';
+import { UI5Config, getEsmTypesVersion } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption } from './options';
 import { Ui5App } from './types';
-import { getEsmTypesVersion, mergeObjects } from './data/defaults';
-import { getFilePaths } from './files';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -61,7 +59,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     ui5LocalConfig.addFioriToolsAppReloadMiddleware();
 
     // Add optional features
-    applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
+    await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
 
     // write ui5 yamls
     fs.write(ui5ConfigPath, ui5Config.toString());
@@ -123,12 +121,12 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
             typesVersion: getEsmTypesVersion(manifest['sap.ui5']?.dependencies?.minUI5Version)
         }
     };
-    enableTypescriptOption({ basePath, fs, ui5Configs: [ui5Config], tmplPath, ui5App }, true);
+    await enableTypescriptOption({ basePath, fs, ui5Configs: [ui5Config], tmplPath, ui5App }, true);
 
     fs.write(ui5ConfigPath, ui5Config.toString());
 
     return fs;
 }
 
-export { Ui5App, generate, enableTypescript, isTypescriptEnabled, getFilePaths, mergeObjects };
+export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
 export { App, Package, UI5, AppOptions };

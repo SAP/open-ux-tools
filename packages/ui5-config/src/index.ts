@@ -15,5 +15,6 @@ export {
     UI5ProxyConfig,
     UI5ProxyConfigTarget
 } from './types';
-
+export { UI5_DEFAULT } from './defaults';
+export { mergeObjects, getEsmTypesVersion, getTypesVersion } from './utils';
 export { errorCode as yamlErrorCode, YAMLError } from '@sap-ux/yaml';
