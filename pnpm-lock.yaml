@@ -1032,39 +1032,56 @@ importers:
         version: 9.4.0(mem-fs@2.1.0)
 
   packages/ui5-library-writer:
-    specifiers:
-      '@sap-ux/ui5-application-writer': workspace:*
-      '@sap-ux/ui5-config': workspace:*
-      '@types/ejs': 3.1.0
-      '@types/fs-extra': 9.0.13
-      '@types/lodash': 4.14.176
-      '@types/mem-fs': 1.1.2
-      '@types/mem-fs-editor': 7.0.1
-      '@types/semver': 7.3.9
-      ejs: 3.1.7
-      fs-extra: 10.0.0
-      i18next: 20.3.2
-      lodash: 4.17.21
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0
-      semver: 7.3.5
     dependencies:
-      '@sap-ux/ui5-application-writer': link:../ui5-application-writer
-      '@sap-ux/ui5-config': link:../ui5-config
-      ejs: 3.1.7
-      i18next: 20.3.2
-      lodash: 4.17.21
-      mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0_mem-fs@2.1.0
-      semver: 7.3.5
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/ui5-application-writer':
+        specifier: workspace:*
+        version: link:../ui5-application-writer
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      ejs:
+        specifier: 3.1.7
+        version: 3.1.7
+      i18next:
+        specifier: 20.3.2
+        version: 20.3.2
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      semver:
+        specifier: 7.3.5
+        version: 7.3.5
     devDependencies:
-      '@types/ejs': 3.1.0
-      '@types/fs-extra': 9.0.13
-      '@types/lodash': 4.14.176
-      '@types/mem-fs': 1.1.2
-      '@types/mem-fs-editor': 7.0.1
-      '@types/semver': 7.3.9
-      fs-extra: 10.0.0
+      '@types/ejs':
+        specifier: 3.1.0
+        version: 3.1.0
+      '@types/fs-extra':
+        specifier: 9.0.13
+        version: 9.0.13
+      '@types/lodash':
+        specifier: 4.14.176
+        version: 4.14.176
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/semver':
+        specifier: 7.3.9
+        version: 7.3.9
+      fs-extra:
+        specifier: 10.0.0
+        version: 10.0.0
 
   packages/ui5-proxy-middleware:
     dependencies:
@@ -3412,6 +3429,8 @@ packages:
       '@jest/types': 24.9.0
       jest-message-util: 24.9.0
       jest-mock: 24.9.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@jest/fake-timers@29.5.0:
@@ -4095,6 +4114,7 @@ packages:
       webpack-hot-middleware: 2.25.2
       webpack-virtual-modules: 0.2.2
     transitivePeerDependencies:
+      - bluebird
       - eslint
       - supports-color
       - vue-template-compiler
@@ -4468,6 +4488,7 @@ packages:
       x-default-browser: 0.4.0
     transitivePeerDependencies:
       - '@storybook/mdx2-csf'
+      - bluebird
       - bufferutil
       - encoding
       - eslint
@@ -4505,6 +4526,7 @@ packages:
       webpack: 5.76.0
     transitivePeerDependencies:
       - '@storybook/mdx2-csf'
+      - bluebird
       - bufferutil
       - encoding
       - eslint
@@ -4612,6 +4634,7 @@ packages:
       webpack-dev-middleware: 3.7.3(webpack@4.46.0)
       webpack-virtual-modules: 0.2.2
     transitivePeerDependencies:
+      - bluebird
       - encoding
       - eslint
       - supports-color
@@ -4825,6 +4848,7 @@ packages:
       - '@storybook/mdx2-csf'
       - '@swc/core'
       - '@types/webpack'
+      - bluebird
       - bufferutil
       - encoding
       - esbuild
@@ -6347,6 +6371,8 @@ packages:
     dependencies:
       micromatch: 3.1.10
       normalize-path: 2.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /anymatch@3.1.2:
@@ -7061,6 +7087,8 @@ packages:
       raw-body: 2.5.1
       type-is: 1.6.18
       unpipe: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /boolbase@1.0.0:
@@ -7114,6 +7142,8 @@ packages:
       snapdragon-node: 2.1.1
       split-string: 3.1.0
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /braces@3.0.2:
@@ -7315,6 +7345,8 @@ packages:
       ssri: 8.0.1
       tar: 6.1.11
       unique-filename: 1.1.1
+    transitivePeerDependencies:
+      - bluebird
     dev: true
 
   /cache-base@1.0.1:
@@ -7505,6 +7537,8 @@ packages:
       upath: 1.2.0
     optionalDependencies:
       fsevents: 1.2.13
+    transitivePeerDependencies:
+      - supports-color
     dev: true
     optional: true
 
@@ -7850,6 +7884,8 @@ packages:
       on-headers: 1.0.2
       safe-buffer: 5.1.2
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /concat-map@0.0.1:
@@ -8003,6 +8039,8 @@ packages:
       p-all: 2.1.0
       p-filter: 2.1.0
       p-map: 3.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /crc-32@1.2.2:
@@ -8251,12 +8289,22 @@ packages:
 
   /debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.0.0
     dev: true
 
   /debug@3.2.7:
     resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.1.3
     dev: true
@@ -8464,6 +8512,8 @@ packages:
     dependencies:
       address: 1.2.1
       debug: 2.6.9
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /dezalgo@1.0.4:
@@ -9206,6 +9256,8 @@ packages:
       debug: 3.2.7
       is-core-module: 2.11.0
       resolve: 1.22.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /eslint-import-resolver-typescript@3.5.3(eslint-plugin-import@2.27.5)(eslint@8.33.0):
@@ -9232,9 +9284,21 @@ packages:
     resolution: {integrity: sha512-j4GT+rqzCoRKHwURX7pddtIPGySnX9Si/cgMI5ztrcqOPtk5dDEeZ34CQVPphnqkJytlc97Vuk05Um2mJ3gEQA==}
     engines: {node: '>=4'}
     peerDependencies:
+      '@typescript-eslint/parser': '*'
       eslint: '*'
+      eslint-import-resolver-node: '*'
+      eslint-import-resolver-typescript: '*'
+      eslint-import-resolver-webpack: '*'
     peerDependenciesMeta:
+      '@typescript-eslint/parser':
+        optional: true
       eslint:
+        optional: true
+      eslint-import-resolver-node:
+        optional: true
+      eslint-import-resolver-typescript:
+        optional: true
+      eslint-import-resolver-webpack:
         optional: true
     dependencies:
       '@typescript-eslint/parser': 5.51.0(eslint@8.33.0)(typescript@4.9.4)
@@ -9265,7 +9329,11 @@ packages:
     resolution: {integrity: sha512-LmEt3GVofgiGuiE+ORpnvP+kAm3h6MLZJ4Q5HCyHADofsb4VzXFsRiWj3c0OFiV+3DWFh0qg3v9gcPlfc3zRow==}
     engines: {node: '>=4'}
     peerDependencies:
+      '@typescript-eslint/parser': '*'
       eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
+    peerDependenciesMeta:
+      '@typescript-eslint/parser':
+        optional: true
     dependencies:
       '@typescript-eslint/parser': 5.51.0(eslint@8.33.0)(typescript@4.9.4)
       array-includes: 3.1.6
@@ -9284,6 +9352,10 @@ packages:
       resolve: 1.22.1
       semver: 6.3.0
       tsconfig-paths: 3.14.1
+    transitivePeerDependencies:
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
     dev: true
 
   /eslint-plugin-jsdoc@40.0.0(eslint@8.33.0):
@@ -9707,6 +9779,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /expand-template@2.0.3:
@@ -9772,6 +9846,8 @@ packages:
       type-is: 1.6.18
       utils-merge: 1.0.1
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /extend-shallow@2.0.1:
@@ -9818,6 +9894,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /fast-check@2.19.0:
@@ -9844,6 +9922,8 @@ packages:
       is-glob: 4.0.3
       merge2: 1.4.1
       micromatch: 3.1.10
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /fast-glob@3.2.11:
@@ -9987,6 +10067,8 @@ packages:
       parseurl: 1.3.3
       statuses: 2.0.1
       unpipe: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /find-cache-dir@2.1.0:
@@ -10113,19 +10195,6 @@ packages:
   /fork-ts-checker-webpack-plugin@4.1.6(eslint@8.23.0)(typescript@4.9.4)(webpack@4.46.0):
     resolution: {integrity: sha512-DUxuQaKoqfNne8iikd14SAkh5uw4+8vNifp6gmA73yYNS6ywLIWSLD/n/mBzHQRpW3J7rbATEakmiA8JvkTyZw==}
     engines: {node: '>=6.11.5', yarn: '>=1.0.0'}
-    dependencies:
-      '@babel/code-frame': 7.18.6
-      chalk: 2.4.2
-      micromatch: 3.1.10
-      minimatch: 3.1.2
-      semver: 5.7.1
-      tapable: 1.1.3
-      worker-rpc: 0.1.1
-    dev: true
-
-  /fork-ts-checker-webpack-plugin/6.5.2_28a4ebdf215958e5ff4c0a7479438517:
-    resolution: {integrity: sha512-m5cUmF30xkZ7h4tWUgTAcEaKmUW7tfyUyTqNNOz7OxWJ0v1VWKTcOvH8FWHUwSjlW/356Ijc9vi3XfcPstpQKA==}
-    engines: {node: '>=10', yarn: '>=1.0.0'}
     peerDependencies:
       eslint: '>= 6'
       typescript: '>= 2.7'
@@ -10138,21 +10207,17 @@ packages:
         optional: true
     dependencies:
       '@babel/code-frame': 7.18.6
-      '@types/json-schema': 7.0.9
-      chalk: 4.1.2
-      chokidar: 3.5.3
-      cosmiconfig: 6.0.0
-      deepmerge: 4.2.2
+      chalk: 2.4.2
       eslint: 8.23.0
-      fs-extra: 9.1.0
-      glob: 7.2.0
-      memfs: 3.3.0
+      micromatch: 3.1.10
       minimatch: 3.1.2
-      schema-utils: 2.7.0
-      semver: 7.3.5
+      semver: 5.7.1
       tapable: 1.1.3
       typescript: 4.9.4
       webpack: 4.46.0
+      worker-rpc: 0.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /fork-ts-checker-webpack-plugin@6.5.2(eslint@8.23.0)(typescript@4.9.4)(webpack@4.46.0):
@@ -10641,6 +10706,8 @@ packages:
       ignore: 4.0.6
       pify: 4.0.1
       slash: 2.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /globrex@0.1.2:
@@ -11951,6 +12018,8 @@ packages:
       walker: 1.0.8
     optionalDependencies:
       fsevents: 1.2.13
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /jest-haste-map@29.5.0:
@@ -12012,6 +12081,8 @@ packages:
       micromatch: 3.1.10
       slash: 2.0.0
       stack-utils: 1.0.5
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /jest-message-util@29.4.2:
@@ -12233,6 +12304,8 @@ packages:
       mkdirp: 0.5.6
       slash: 2.0.0
       source-map: 0.6.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /jest-util@29.4.2:
@@ -13043,6 +13116,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /micromatch@4.0.4:
@@ -13311,6 +13386,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /napi-build-utils@1.0.2:
@@ -14942,6 +15019,8 @@ packages:
       graceful-fs: 4.2.9
       micromatch: 3.1.10
       readable-stream: 2.3.7
+    transitivePeerDependencies:
+      - supports-color
     dev: true
     optional: true
 
@@ -15347,6 +15426,8 @@ packages:
       micromatch: 3.1.10
       minimist: 1.2.6
       walker: 1.0.8
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /sanitize-html@2.7.3:
@@ -15501,6 +15582,8 @@ packages:
       on-finished: 2.4.1
       range-parser: 1.2.1
       statuses: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /serialize-javascript@4.0.0:
@@ -15540,6 +15623,8 @@ packages:
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.18.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /set-blocking@2.0.0:
@@ -15714,6 +15799,8 @@ packages:
       source-map: 0.5.7
       source-map-resolve: 0.5.3
       use: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /sort-keys@4.2.0:
@@ -16324,6 +16411,8 @@ packages:
       terser: 5.15.0
       webpack: 4.46.0
       webpack-sources: 1.4.3
+    transitivePeerDependencies:
+      - bluebird
     dev: true
 
   /terser-webpack-plugin@5.3.6(webpack@5.76.0):
@@ -17102,6 +17191,8 @@ packages:
     requiresBuild: true
     dependencies:
       chokidar: 2.1.8
+    transitivePeerDependencies:
+      - supports-color
     dev: true
     optional: true
 
@@ -17113,6 +17204,8 @@ packages:
     optionalDependencies:
       chokidar: 3.5.3
       watchpack-chokidar2: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /watchpack@2.4.0:
@@ -17219,6 +17312,8 @@ packages:
     resolution: {integrity: sha512-kDUmfm3BZrei0y+1NTHJInejzxfhtU8eDj2M7OKb2IWrPFAeO1SOH2KuQ68MSZu9IGEHcxbkKKR1v18FrUSOmA==}
     dependencies:
       debug: 3.2.7
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /webpack-virtual-modules@0.4.5:
@@ -17261,6 +17356,8 @@ packages:
       terser-webpack-plugin: 1.4.5(webpack@4.46.0)
       watchpack: 1.7.5
       webpack-sources: 1.4.3
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /webpack@5.76.0:

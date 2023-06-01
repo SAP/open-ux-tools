@@ -1,9 +1,9 @@
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import type { UI5LibInput, UI5LibInputTS } from '../types';
-import { getFilePaths, mergeObjects } from '@sap-ux/ui5-application-writer';
+import { getFilePaths } from '@sap-ux/project-access';
+import { mergeObjects, UI5Config } from '@sap-ux/ui5-config';
 import { join } from 'path';
-import { UI5Config } from '@sap-ux/ui5-config';
 import { gte } from 'semver';
 
 /**
@@ -16,7 +16,7 @@ import { gte } from 'semver';
  */
 export async function enableTypescript(libInput: UI5LibInput, basePath: string, tmplPath: string, fs: Editor) {
     const tsTmplDirPath = join(tmplPath, 'optional', 'typescript');
-    const tsTmplFilePaths = getFilePaths(tsTmplDirPath);
+    const tsTmplFilePaths = await getFilePaths(tsTmplDirPath);
 
     const tsLibInput: UI5LibInputTS = {
         ...libInput,

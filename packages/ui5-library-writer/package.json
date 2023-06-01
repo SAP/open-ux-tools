@@ -36,6 +36,7 @@
         "node": ">= 14.16.0 < 15.0.0 || >=16.1.0 < 17.0.0 || >=18.0.0 < 19.0.0"
     },
     "dependencies": {
+        "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.7",
