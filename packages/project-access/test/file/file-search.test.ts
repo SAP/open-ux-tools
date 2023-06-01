@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { findFiles, findFilesByExtension, findFileUp } from '../../src/file';
+import { findFiles, findFilesByExtension, findFileUp, getFilePaths } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
@@ -89,6 +89,26 @@ describe('findFiles', () => {
             const fs = create(createStorage());
             fs.write(join(root, file), '...');
             expect(await findFileUp(file, root, fs)).toBe(join(root, file));
+        });
+    });
+
+    describe('getFilePaths', () => {
+        test('files in the file folder', async () => {
+            const expectedPaths = [
+                expect.stringContaining(join('file/childA/child')),
+                expect.stringContaining(join('file/childA/child.extension')),
+                expect.stringContaining(join('file/childA/firstchild')),
+                expect.stringContaining(join('file/childB/child')),
+                expect.stringContaining(join('file/childC/child')),
+                expect.stringContaining(join('file/childC/nested1/nochild')),
+                expect.stringContaining(join('file/childC/nested2/child')),
+                expect.stringContaining(join('file/root.extension')),
+                expect.stringContaining(join('file/rootfile'))
+            ];
+
+            const filePaths = await getFilePaths(root);
+
+            expect(filePaths).toEqual(expect.arrayContaining(expectedPaths));
         });
     });
 });
