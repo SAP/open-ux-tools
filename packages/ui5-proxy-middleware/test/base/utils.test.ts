@@ -21,7 +21,7 @@ import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 
-describe('Utils', () => {
+describe('utils', () => {
     const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
     const readFileMock = jest.spyOn(fs, 'readFileSync').mockReturnValue('');
     const logger = new ToolsLogger({

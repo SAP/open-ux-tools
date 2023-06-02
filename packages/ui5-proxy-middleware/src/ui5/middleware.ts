@@ -69,15 +69,22 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
 
-    if (!options.configuration) {
+    if (!options.configuration?.ui5) {
         logger.error('Configuration missing, no proxy created.');
         return (_req, _res, next) => next();
     }
 
     dotenv.config();
     const config = options.configuration;
-    const manifest = await loadManifest(resources.rootProject);
-    const ui5Version = await resolveUI5Version(config.version, logger, manifest);
+    let ui5Version: string | undefined;
+    try {
+        const manifest = await loadManifest(resources.rootProject);
+        ui5Version = await resolveUI5Version(config.version, logger, manifest);
+    } catch (error) {
+        logger.warn('Retrieving UI5 version failed, using latest version instead.');
+        logger.debug(error);
+    }
+
     const envUI5Url = process.env.FIORI_TOOLS_UI5_URI;
     const directLoad = !!config.directLoad;
     const corporateProxyServer = getCorporateProxyServer(config.proxy);
